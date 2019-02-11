@@ -495,11 +495,6 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        this.invoice.contactId = undefined;
-        this.invoice.amount = 0;
-        this.invoice.invoiceNumber = '';
-        this.invoice.purchaseOrder = '';
-        this.invoice.dueDate = undefined;
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
         } else {
