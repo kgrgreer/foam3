@@ -200,6 +200,16 @@ public class BusinessOnboardingValidator implements Validator {
 
   public void validateSigningOfficer(User signingOfficer) {
 
+    // first name
+    if ( SafetyUtil.isEmpty(signingOfficer.getFirstName()) ) {
+      throw new RuntimeException("First name required.");
+    }
+
+    // last name
+    if ( SafetyUtil.isEmpty(signingOfficer.getLastName()) ) {
+      throw new RuntimeException("Last name required.");
+    }
+
     // job title
     if ( SafetyUtil.isEmpty(signingOfficer.getJobTitle()) ) {
       throw new RuntimeException("Job title required.");
