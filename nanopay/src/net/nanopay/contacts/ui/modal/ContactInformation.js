@@ -359,6 +359,7 @@ foam.CLASS({
               throw new Error(`Could not find account with id ${this.wizard.data.bankAccount}.`);
             }
             if ( account.denomination === 'CAD' ) {
+              // 1) IF CAD BANK ACCOUNT
               this.caAccount.copyFrom(account);
               this.isCABank = true;
 
@@ -403,8 +404,24 @@ foam.CLASS({
                   this.notify(msg, 'error');
                 });
             } else {
+              // 2) IF US BANK ACCOUNT
               this.usAccount.copyFrom(account);
               this.isCABank = false;
+              // Get the routing number (aka branch number).
+              this.branchDAO
+                .find(account.branch)
+                .then((branch) => {
+                  if ( branch == null ) throw new Error(this.BRANCH_NOT_FOUND);
+                  this.usAccount.copyFrom({
+                    branchId: branch.branchId
+                  });
+                })
+                .catch((err) => {
+                  var msg = err != null && err.message
+                    ? err.message
+                    : this.BRANCH_NOT_FOUND;
+                  this.notify(msg, 'error');
+                });
             }
             this.isConnecting = false;
           })
@@ -650,8 +667,8 @@ foam.CLASS({
       var contact = this.wizard.data;
       var bankAccount = this.isCABank ? this.caAccount : this.usAccount;
 
-      bankAccount.name = this.wizard.data.organization + ' Contact ' +
-        (this.isCABank ? ' CA ' : ' US ') + ' Bank Account';
+      bankAccount.name = this.wizard.data.organization + ' Contact' +
+        (this.isCABank ? ' CA ' : ' US ') + 'Bank Account';
       bankAccount.owner = this.wizard.data.id;
 
       try {
