@@ -386,7 +386,7 @@ foam.CLASS({
             await this.transactionDAO.put(transaction);
           } catch ( error ) {
             console.error(error);
-            this.notify(error.message, 'error');
+            this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
             this.loadingSpin.hide();
             return;
           }
@@ -495,11 +495,6 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        this.invoice.contactId = undefined;
-        this.invoice.amount = 0;
-        this.invoice.invoiceNumber = '';
-        this.invoice.purchaseOrder = '';
-        this.invoice.dueDate = undefined;
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
         } else {
