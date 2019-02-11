@@ -59,7 +59,7 @@ Expired compliance records will be re-scheduled for excution via RenewExpiredCom
 
 | Rule engine                                                  | Compliance service                                           |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| RulerDAO                                                     | ComplianceValidationDAO                                      |
+| **RulerDAO**                                                 | **ComplianceValidationDAO**                                  |
 | - applies rules on DAO.put_ and DAO.remove_                  | - applies complianceRules on DAO.put_                        |
 | - can apply rules before or after DAO operation              | - applies rules after DAO operation                          |
 | - applies rules in order of rule.priority                    | - no rules ordering                                          |
@@ -67,7 +67,7 @@ Expired compliance records will be re-scheduled for excution via RenewExpiredCom
 | - evaluates `rule.predicate.f(obj)` before applying rule     | - evaluates `predicate(oldObj, obj)`                         |
 | - applies actions synchronously                              | - delegates to CompliaceService                              |
 |                                                              |                                                              |
-| Rule                                                         | ComplianceRule                                               |
+| **Rule**                                                     | **ComplianceRule**                                           |
 | - N/A                                                        | - `enabled` flag to enable/disable a rule                    |
 | - N/A                                                        | - `validity` for automatic re-scheduling                     |
 | - `predicate` (mlang predicate) to check applicability       | - delegates to `ComplianceValidator.canValidate`             |
@@ -77,25 +77,25 @@ Expired compliance records will be re-scheduled for excution via RenewExpiredCom
 | - `after` flag to apply rule after DAO operation             | - always after                                               |
 | - `stops` flag to stop running subsequent rules in the same group | - N/A                                                        |
 |                                                              |                                                              |
-| RuleAction                                                   | ComplianceValidator                                          |
+| **RuleAction**                                               | **ComplianceValidator**                                      |
 | - not needed (`Rule.predicate` would be sufficient)          | - `canValidate(x, obj)`                                      |
 | - `applyAction(x, obj, oldObj)`                              | - `validate(x, obj)`                                         |
 |                                                              |                                                              |
-|                                                              | ComplianceHistory                                            |
+|                                                              | **ComplianceHistory**                                        |
 |                                                              | - `created`, `createdBy`, `lastModified`, `lastModifiedBy` for auditability |
 |                                                              | - `ruleId`, `entityId` and `entityDaoKey` for validating the entity (user/business/account) |
 |                                                              | - `status` stores result from Compliance.validate            |
 |                                                              | - `expirationDate` and `wasRenew` for automatic re-scheduling |
 |                                                              | - `retry` for handling retry when rule validator encounter failure |
 |                                                              |                                                              |
-|                                                              | ComplianceService/NanopayComplianceService                   |
+|                                                              | **ComplianceService**/**NanopayComplianceService**           |
 |                                                              | - `validate(x, entity)` adds compliance history records pending for validation for all applicable rules |
 |                                                              | - `execute(x, record)` runs compliance validation on the compliance history record and update compliance status on the entity |
 |                                                              |                                                              |
-|                                                              | ExecuteComplianceHistoryDAO                                  |
+|                                                              | **ExecuteComplianceHistoryDAO**                              |
 |                                                              | - runs `ComplianceService.execute` asynchronously when adding new compliance history record to DAO |
 |                                                              |                                                              |
-|                                                              | RenewExpiredComplianceHistoryCron                            |
+|                                                              | **RenewExpiredComplianceHistoryCron**                        |
 |                                                              | - re-news compliance history records that are expired        |
 |                                                              |                                                              |
 
