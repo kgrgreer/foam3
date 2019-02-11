@@ -47,7 +47,6 @@ foam.CLASS({
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'General economic grouping for business.',
-      flags: ['js'],
       view: function(args, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
