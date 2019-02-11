@@ -39,7 +39,7 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'privacyUrl',
-    'termsUrl',
+    'termsUrl'
   ],
 
   implements: [
@@ -257,31 +257,48 @@ foam.CLASS({
       });
     },
 
-    function requestLogin() {
+    async function requestLogin() {
       var self = this;
-      // don't go to log in screen if going to reset password screen
-      if ( location.hash != null && location.hash === '#reset' ) {
-        return new Promise(function(resolve, reject) {
-          // TODO SME specific
-          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
-          self.loginSuccess$.sub(resolve);
-        });
-      }
+      var searchParams;
+      var locHash = location.hash;
 
-      // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' && ! self.loginSuccess ) {
-        var searchParams = new URLSearchParams(location.search);
-        return new Promise(function(resolve, reject) {
-          self.stack.push({
-            class: 'net.nanopay.sme.ui.SignUpView',
-            emailField: searchParams.get('email'),
-            disableEmail: true,
-            signUpToken: searchParams.get('token'),
-            companyNameField: searchParams.has('companyName') ? searchParams.get('companyName'): '',
-            disableCompanyName: searchParams.has('companyName')
+      if ( locHash ) {
+        // don't go to log in screen if going to reset password screen
+        if ( locHash === '#reset' ) {
+          return new Promise(function(resolve, reject) {
+            // TODO SME specific
+            self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
+            self.loginSuccess$.sub(resolve);
           });
-          self.loginSuccess$.sub(resolve);
-        });
+        }
+        searchParams = new URLSearchParams(location.search);
+        // don't go to log in screen if going to sign up password screen
+        if ( locHash === '#sign-up' && ! self.loginSuccess ) {
+          return new Promise(function(resolve, reject) {
+            self.stack.push({
+              class: 'net.nanopay.sme.ui.SignUpView',
+              emailField: searchParams.get('email'),
+              disableEmail: true,
+              signUpToken: searchParams.get('token'),
+              companyNameField: searchParams.has('companyName') ? searchParams.get('companyName'): '',
+              disableCompanyName: searchParams.has('companyName')
+            });
+            self.loginSuccess$.sub(resolve);
+          });
+        }
+
+        // Situation where redirect is from adding an existing user to a business
+        if ( locHash === '#sign-in' ) {
+          return new Promise(function(resolve, reject) {
+            self.stack.push({
+              class: 'net.nanopay.sme.ui.SignInView',
+              email: searchParams.get('email'),
+              disableEmail: true,
+              signUpToken: searchParams.get('token'),
+            });
+            self.loginSuccess$.sub(resolve);
+          });
+        }
       }
 
       return new Promise(function(resolve, reject) {

@@ -387,8 +387,7 @@ foam.CLASS({
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
           welcomeEmailSent: true,
-          group: 'sme',
-          signUpToken: this.signUpToken
+          group: 'sme'
         });
 
         this.smeBusinessRegistrationDAO

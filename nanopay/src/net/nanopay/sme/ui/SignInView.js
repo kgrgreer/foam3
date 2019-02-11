@@ -9,6 +9,8 @@ foam.CLASS({
     'auth',
     'loginSuccess',
     'menuDAO',
+    'notify',
+    'smeBusinessRegistrationDAO',
     'stack',
     'user',
     'validateEmail'
@@ -114,6 +116,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'messageType'
+    },
+    {
+      class: 'Boolean',
+      name: 'disableEmail'
+    },
+    {
+      class: 'String',
+      name: 'signUpToken'
     }
   ],
 
@@ -132,6 +142,8 @@ foam.CLASS({
     function initE() {
       var self = this;
       var split = net.nanopay.sme.ui.SplitBorder.create();
+      var emailDisplayMode = this.disableEmail ?
+      foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
       var left = this.Element.create()
         .addClass('cover-img-block')
@@ -149,7 +161,8 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start().addClass('input-field-wrapper')
-              .start(this.EMAIL).addClass('input-field')
+              .start(this.EMAIL, { mode: emailDisplayMode })
+                .addClass('input-field')
                 .attr('placeholder', 'you@example.com')
               .end()
             .end()
@@ -211,9 +224,7 @@ foam.CLASS({
     {
       name: 'logIn',
       label: 'Sign in',
-      code: function(X, obj) {
-        var self = this;
-
+      code: async function(X, obj) {
         if ( ! this.email ) {
           this.add(this.NotificationMessage.create({
               message: 'Please enter an email address', type: 'error' }));
@@ -231,31 +242,38 @@ foam.CLASS({
               message: 'Invalid email address.', type: 'error' }));
           return;
         }
-
-        this.auth.loginByEmail(X, this.email, this.password).then(function(user) {
-          if ( user && user.twoFactorEnabled ) {
-            self.loginSuccess = false;
-            self.user.copyFrom(user);
-            self.stack.push({
-              class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
+        var usr = await this.auth.loginByEmail(X, this.email, this.password);
+        if ( ! usr ) return;
+        usr.signUpToken = this.signUpToken;
+        this.user.copyFrom(usr);
+        await this.invitedTokenProcess();
+        if ( this.user && this.user.twoFactorEnabled ) {
+          this.loginSuccess = false;
+          this.stack.push({
+            class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
+          });
+        } else {
+          this.loginSuccess = this.user ? true : false;
+          if ( ! this.user.emailVerified ) {
+            this.stack.push({
+              class: 'foam.nanos.auth.ResendVerificationEmail'
             });
           } else {
-            self.loginSuccess = user ? true : false;
-            self.user.copyFrom(user);
-            if ( ! self.user.emailVerified ) {
-              self.stack.push({
-                class: 'foam.nanos.auth.ResendVerificationEmail'
-              });
-            } else {
-              // This is required for signin
-              window.location.hash = '';
-              window.location.reload();
-            }
+            // This is required for signin
+            window.location.hash = '';
+            window.location.reload();
           }
-        }).catch(function(a) {
-          self.messageType = 'error';
-          self.errorMessage = a.message;
-        });
+        }
+      }
+    },
+
+    async function invitedTokenProcess() {
+      if ( ! this.signUpToken ) return;
+      var userr = await this.smeBusinessRegistrationDAO.put(this.user);
+      if ( userr ) {
+        this.user.copyFrom(userr);
+      } else {
+        this.notify(err.message || 'User was invited to a business however an error has occured during processing.', 'error');
       }
     }
   ]

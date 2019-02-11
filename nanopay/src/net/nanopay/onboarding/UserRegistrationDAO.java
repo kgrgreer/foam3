@@ -10,11 +10,11 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.Token;
+import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
-import foam.util.Auth;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -47,30 +47,13 @@ public class UserRegistrationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    DAO userUserDAO = (DAO) x.get("userUserDAO");
     User user = (User) obj;
+    Boolean testInternal = false;
 
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }
-
-    User userWithSameEmail = (User) getDelegate()
-      .inX(x)
-      .find(
-        AND(
-          EQ(User.EMAIL, user.getEmail()),
-          NOT(INSTANCE_OF(Business.getOwnClassInfo())),
-          NOT(INSTANCE_OF(Contact.getOwnClassInfo()))
-        )
-      );
-
-    if ( userWithSameEmail != null ) {
-      throw new RuntimeException("User with same email address already exists: " + user.getEmail());
-    }
-
-    user.setSpid(spid_);
-    user.setGroup(group_);
-
+    
     // We want the system user to be putting the User we're trying to create. If
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
@@ -91,6 +74,12 @@ public class UserRegistrationDAO
 
       Map<String, Object> params = (Map) token.getParameters();
 
+      // Check if user is internal ( already a registered user ), which will happen if adding a user to
+      // a business.
+      testInternal = params.containsKey("internal" ) && ! ((Boolean) params.get("internal"));
+      if ( testInternal ) {
+        checkUserDuplication(x, user);
+      }
       if ( params.containsKey("businessId") ) {
         long businessId = (long) params.get("businessId");
 
@@ -113,7 +102,7 @@ public class UserRegistrationDAO
             );
 
           if ( params.containsKey("inviteeEmail") ) {
-            if (invitation == null || params.get("inviteeEmail") != invitation.getEmail()) {
+            if ( invitation == null || (! params.get("inviteeEmail").equals(invitation.getEmail())) ) {
               throw new RuntimeException(("Email does not match invited email."));
             }
           } else {
@@ -122,8 +111,26 @@ public class UserRegistrationDAO
         }
       }
     }
-
+    if ( ! testInternal ) checkUserDuplication(x, user);
     return super.put_(sysContext, user);
+  }
+
+  public void checkUserDuplication(X x, User user) {
+    User userWithSameEmail = (User) getDelegate()
+        .inX(x)
+        .find(
+          AND(
+            EQ(User.EMAIL, user.getEmail()),
+            NOT(INSTANCE_OF(Business.getOwnClassInfo())),
+            NOT(INSTANCE_OF(Contact.getOwnClassInfo()))
+          )
+        );
+    if ( userWithSameEmail == null ) {
+      throw new RuntimeException("User with same email address already exists: " + user.getEmail());
+    }
+
+    user.setSpid(spid_);
+    user.setGroup(group_);
   }
 
   @Override

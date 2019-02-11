@@ -133,10 +133,10 @@ foam.CLASS({
   listeners: [
     function updateDAO() {
       var self = this;
-      // Populate the clientJunctionDAO with presentable junction information.
+      // Populate the clientJunctionDAO with all the agents this.user is related to.
       var agentJunctionDAO = this.agentJunctionDAO.where(this.EQ(this.UserUserJunction.TARGET_ID, this.user.id));
       this.clientJunctionDAO.removeAll();
-
+      
       agentJunctionDAO.select({
         put: function(junction) {
           junction = self.ClientUserJunction.create({
@@ -156,7 +156,6 @@ foam.CLASS({
         .where(
           this.AND(
             this.EQ(this.Invitation.CREATED_BY, this.user.id),
-            this.EQ(this.Invitation.INTERNAL, false),
             this.EQ(this.Invitation.STATUS, this.InvitationStatus.SENT)
           )
         )

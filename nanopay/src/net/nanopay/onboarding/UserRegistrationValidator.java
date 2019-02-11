@@ -12,7 +12,7 @@ public class UserRegistrationValidator implements Validator {
   public void validate(X x, FObject obj) throws IllegalStateException {
     User user = (User) obj;
 
-    ( (AuthService) x.get("auth") ).validatePassword( user.getDesiredPassword() );
+    // ( (AuthService) x.get("auth") ).validatePassword( user.getDesiredPassword() );
 
     // TODO move all other registration related validation from Ablii front-end ot here.
   }
