@@ -180,10 +180,9 @@ foam.CLASS({
     {
       name: 'hasSaveOption',
       expression: function(isForm, position) {
-        if ( isForm && this.invoice.status !== this.InvoiceStatus.DRAFT && position === 0 ) {
-          return true;
-        }
-        return false;
+        return isForm &&
+          this.invoice.status !== this.InvoiceStatus.DRAFT &&
+          position === 0;
       },
       documentation: `An expression is required for the 1st step of the 
         send/request payment flow to show the 'Save as draft' button.`
@@ -443,9 +442,6 @@ foam.CLASS({
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
-        /* This if condition is required when redirecting
-           from Upcoming & overdue of the dashboard */
-        if ( this.isList === true ) return false;
         return hasSaveOption;
       },
       isEnabled: function(errors) {
