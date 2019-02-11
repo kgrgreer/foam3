@@ -809,7 +809,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniPhone' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniName' },
-  { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniErrors' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniErrorComponent' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniDataSources' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniAddress' },

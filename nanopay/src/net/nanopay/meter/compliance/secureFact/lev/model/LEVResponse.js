@@ -4,9 +4,12 @@ foam.CLASS({
   extends: 'net.nanopay.meter.compliance.secureFact.sidni.model.BasicResponseObject',
 
   tableColumns: [
-    'id', 'searchId', 'httpCode'
+    'id', 'name', 'entityId', 'closeMatches', 'searchId'
   ],
 
+  imports: [
+    'businessDAO'
+  ],
 
   properties: [
     {
@@ -14,9 +17,36 @@ foam.CLASS({
       name: 'id'
     },
     {
+      class: 'String',
+      name: 'name',
+      label: 'Entity Name',
+      tableCellFormatter: function(value, obj) {
+        var self = this;
+        obj.businessDAO.find(value).then( function(business) {
+          if ( business ) {
+            self.start().add(business.businessName).end();
+          }
+        });
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'entityId',
+      label: 'Entity Id',
+      postSet: function(old, nu) {
+        this.name = nu;
+      }
+    },
+    {
       class: 'Int',
       name: 'searchId',
       documentation: 'SecureFact unique serch id.'
+    },
+    {
+      class: 'String',
+      name: 'closeMatches',
+      label: 'Close Matches'
     },
     {
       class: 'Array',

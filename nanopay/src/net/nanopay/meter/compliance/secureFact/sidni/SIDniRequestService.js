@@ -13,7 +13,6 @@ foam.CLASS({
     'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniCustomer',
     'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
     'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniPhone',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniErrors',
     'org.apache.http.entity.StringEntity',
     'org.apache.http.HttpResponse',
     'org.apache.http.entity.ContentType',
@@ -118,10 +117,10 @@ foam.CLASS({
           javaType: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest'
         }
       ],
-      javaReturns: 'net.nanopay.meter.compliance.secureFact.sidni.model.BasicResponseObject',
+      javaReturns: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
       javaCode: `
       // key must end with :" 
-      String key = "insertKeyHere:";
+      String key = "NTc5MDk0MDc5OTUyNzMxMDYwNzg1NDgxMTQ3OTkwNDI4MDkwMzY4:";
       CloseableHttpClient httpClient = HttpClients.createDefault();
 
       HttpPost httpPost = new HttpPost("https://qa2-sidni.securefact.com/rest/v3/verifyIndividual");
@@ -140,26 +139,14 @@ foam.CLASS({
             String responseJson = EntityUtils.toString(response.getEntity());
             System.out.println(responseJson);
             JSONParser parser = new JSONParser();
-            if (response.getStatusLine().getStatusCode() == 200 ) {
               SIDniResponse sidniResponse = (SIDniResponse) parser.parseString(responseJson, SIDniResponse.class);
               sidniResponse.setHttpCode(response.getStatusLine().getStatusCode()+"");
+              sidniResponse.setUserReference(request.getCustomer().getUserReference());
               return sidniResponse;
-            } else if (response.getStatusLine().toString().startsWith("4")){
-              SIDniErrors sidniErrors = (SIDniErrors) parser.parseString(responseJson, SIDniErrors.class);
-              System.out.println(sidniErrors);
-              sidniErrors.setHttpCode(response.getStatusLine().getStatusCode()+"");
-              return sidniErrors;
-            } else if (response.getStatusLine().toString().startsWith("5")){
-              SIDniErrors sidniErrors = new SIDniErrors();
-              sidniErrors.setHttpCode(response.getStatusLine().getStatusCode()+"");
-              return sidniErrors;
-            }
           } catch(Exception e) {
             System.out.println(e.getStackTrace());
             return null;
           }
-          return null;
-
       `
     },
   ]

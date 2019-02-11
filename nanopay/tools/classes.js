@@ -474,7 +474,6 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniName',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAddress',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniPhone',
-  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniErrors',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniErrorComponent',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAdditionalMatchInfo',

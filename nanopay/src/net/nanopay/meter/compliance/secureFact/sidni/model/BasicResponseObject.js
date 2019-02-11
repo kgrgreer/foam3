@@ -6,7 +6,6 @@ foam.CLASS({
       {
         class: 'String',
         name: 'httpCode'
-      },
-
+      }
     ]
   });

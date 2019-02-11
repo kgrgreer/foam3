@@ -29,7 +29,7 @@ foam.CLASS({
     },
     {
       name: 'validate',
-      javaCode: `
+      javaCode: ` 
       System.out.println("---------------------------------------------------------------");
       Logger logger = (Logger) getX().get("logger");
       Business business = (Business) obj;
@@ -38,10 +38,11 @@ foam.CLASS({
       LEVRequest request = service.createRequest(business);
       
       LEVResponse response = service.sendRequest(request);
-      
+      response.setName(business.getBusinessName());
+      response.setEntityId(business.getId());
+      DAO dao = (DAO) x.get("secureFactLEVDAO");
+      dao.put(response);
       if (response.getHttpCode().equals("200")) {
-        DAO dao = (DAO) x.get("secureFactLEVDAO");
-        dao.put(response);
           LEVResult[] result = response.getResults();
           int closeMatchCounter = 0;
           for (int i=0;i<result.length;i++) {
@@ -49,11 +50,12 @@ foam.CLASS({
               closeMatchCounter++;
             }
           }
-          // if number of close matches makes majority auto verify for now. ask scott later
-          if ( closeMatchCounter > java.lang.Math.ceil(result.length/2)) {
+          response.setCloseMatches(closeMatchCounter + "/" + result.length);
+          dao.put(response);
+          if ( closeMatchCounter == result.length ) {
             return ComplianceValidationStatus.VALIDATED;
           } else {
-            return ComplianceValidationStatus.REJECTED;
+            return ComplianceValidationStatus.INVESTIGATING;
           }
       } else {
         if (response.getHttpCode().startsWith("4")){
@@ -62,7 +64,6 @@ foam.CLASS({
         } else if (response.getHttpCode().startsWith("5")){
           logger.error("LEV request failed with" + response.getHttpCode() + ". SecureFact server side error");
           //throw comliance error and log it
-          throw new ComplianceValidationException("SecureFact LEV request failed with " + response.getHttpCode() + ". SecureFact server side error.");
         }
       }
       return ComplianceValidationStatus.INVESTIGATING;

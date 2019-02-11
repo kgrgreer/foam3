@@ -5,14 +5,39 @@ foam.CLASS({
   documentation: `The object for a SIDni response`,
 
   tableColumns: [
-    'id', 'userReference', 'orderId', 'individualName',
-    'verified', 'reason'
+    'id', 'name', 'entityId', 'verified', 'reason'
+  ],
+
+  imports: [
+    'userDAO'
   ],
 
   properties: [
     {
       class: 'Long',
       name: 'id'
+    },
+    {
+      class: 'String',
+      name: 'name',
+      label: 'Entity Name',
+      tableCellFormatter: function(value, obj) {
+        var self = this;
+        obj.userDAO.find(value).then( function(user) {
+          if ( user ) {
+            self.start().add(user.legalName).end();
+          }
+        });
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'entityId',
+      label: 'Entity Id',
+      postSet: function(old, nu) {
+        this.name = nu;
+      }
     },
     {
       class: 'String',
@@ -31,6 +56,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verified',
+      tableCellFormatter: function(verifiedSources) {
+        if ( verifiedSources ) {
+          this.start().add('true').end();
+        } else {
+          this.start().add('false').end();
+        }
+     }
     },
     {
       class: 'String',
@@ -39,7 +71,7 @@ foam.CLASS({
     {
       class: 'Array',
       of: 'String',
-      name: 'verifiedSources',
+      name: 'verifiedSources'
     },
     {
       class: 'FObjectArray',
@@ -50,6 +82,11 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAdditionalMatchInfo',
       name: 'additionalMatchInfo',
+    },
+    {
+      class: 'FObjectArray',
+      of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniErrorComponent',
+      name: 'errors',
     },
   ]
 });
