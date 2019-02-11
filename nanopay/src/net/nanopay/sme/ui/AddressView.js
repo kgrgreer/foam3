@@ -92,9 +92,10 @@ foam.CLASS({
                 )),
                 objToChoice: function(a) {
                   return [a.id, a.name];
-                }
+                },
+                mode$: this.mode$
               }
-            }, { mode$: this.mode$ }))
+            }))
             .end()
           .end()
           .start().addClass('label-input')
@@ -106,9 +107,10 @@ foam.CLASS({
                 objToChoice: function(region) {
                   return [region.id, region.name];
                 },
-                dao$: choices
+                dao$: choices,
+                mode$: this.mode$
               }
-            }, { mode$: this.mode$ }))
+            }))
             .end()
           .end()
         .end()
