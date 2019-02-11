@@ -170,27 +170,6 @@ foam.CLASS({
       postSet: function(_, n) {
         this.bank.accountNumber = n;
       }
-    },
-    {
-      class: 'String',
-      name: 'nickname',
-      view: {
-        class: 'foam.u2.tag.Input',
-        maxLength: 32,
-        placeholder: 'My Bank',
-        onKey: true
-      },
-      factory: function() {
-        return this.bank.name ? this.bank.name : '';
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^[a-z0-9 ]{0,32}$/i; // alphanumerical only
-        return reg.test(n) ? n : o;
-      },
-      postSet: function(_, n) {
-        this.bank.name = n;
-      }
     }
   ],
 
@@ -207,7 +186,7 @@ foam.CLASS({
     { name: 'INVALID_TRANSIT', message: 'Invalid transit #.' },
     { name: 'INVALID_INSTITUTION', message: 'Invalid institution #.' },
     { name: 'INVALID_ACCOUNT', message: 'Invalid account #.' },
-    { name: 'INVALID_NAME', message: 'Invalid nickname. Please use alphanumerical values only.' }
+    { name: 'BANK_NAME_PLACEHOLDER', message: 'My Bank' }
   ],
 
   methods: [
@@ -240,7 +219,9 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('field-container')).addClass(this.myClass('name-container'))
             .start('p').addClass('field-label').add(this.LABEL_NICKNAME).end()
-            .tag(this.NICKNAME)
+            .startContext({ data: this.bank })
+              .tag(this.bank.name, { placeholder: this.BANK_NAME_PLACEHOLDER })
+            .endContext()
             .start('p').addClass(this.myClass('hint')).add(this.HINT).end()
           .end()
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
@@ -275,8 +256,9 @@ foam.CLASS({
         ctrl.notify(this.INVALID_ACCOUNT, 'error');
         return false;
       }
-      if ( ! nameRegEx.test(this.bank.name) ) {
-        ctrl.notify(this.INVALID_NAME, 'error');
+
+      if ( this.bank.errors_ ) {
+        ctrl.notify(this.bank.errors_[0][1], 'error');
         return false;
       }
 
