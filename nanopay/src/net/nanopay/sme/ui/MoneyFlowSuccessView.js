@@ -160,7 +160,7 @@ foam.CLASS({
     { name: 'REF', message: 'Your reference ID ' },
     { name: 'V_PAY', message: 'View this payable' },
     { name: 'V_REC', message: 'View this receivable' },
-    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX transaction confirmation' }
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' }
   ],
 
   methods: [
