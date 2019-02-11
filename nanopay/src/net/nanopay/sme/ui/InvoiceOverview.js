@@ -365,14 +365,15 @@ foam.CLASS({
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = `${currency.format(0)} `
-                  + `${currency.alphabeticCode}`;
+                this.fee = `${currency.format(0)} ${currency.alphabeticCode}`;
               });
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
             this.currencyDAO.find(account.denomination).then((currency) => {
-              this.formattedAmountPaid = `${currency.format(transaction.amount)} ${currency.alphabeticCode}`;
+              this.formattedAmountPaid =
+                `${currency.format(transaction.amount)} ` +
+                `${currency.alphabeticCode}`;
             });
 
             if ( this.invoice.destinationCurrency === account.denomination ) {
