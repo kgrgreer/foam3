@@ -141,7 +141,8 @@ foam.CLASS({
     { name: 'ERROR_INVALID_ROUTING', message: 'Invalid routing #' },
     { name: 'ERROR_INVALID_ACCOUNT', message: 'Invalid account #' },
     { name: 'ERROR_INVALID_NICKNAME', message: 'Invalid nickname' },
-    { name: 'ERROR_MISSING_SAMPLE', message: 'Please attach a void check.' }
+    { name: 'ERROR_MISSING_SAMPLE', message: 'Please attach a void check.' },
+    { name: 'BANK_NAME_PLACEHOLDER', message: 'My Bank' }
   ],
 
   properties: [
@@ -187,29 +188,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'nickname',
-      view: {
-        class: 'foam.u2.tag.Input',
-        maxLength: 32,
-        placeholder: 'My Bank',
-        onKey: true
-      },
-      factory: function() {
-        return this.bank.name ? this.bank.name : '';
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\w[a-z0-9 ]{0,32}$/i; // alphanumerical only
-        if ( /^\s+$/.test(n) ) return 'Nickname cannot contain only whitespace.';
-        if ( n.trim() > 32 ) return 'Maximum len'
-        return reg.test(n) ? n : o;
-      },
-      postSet: function(_, n) {
-        this.bank.name = n;
-      }
-    },
-    {
       class: 'foam.nanos.fs.FileArray',
       name: 'voidCheckFile',
       factory: function() {
@@ -248,7 +226,9 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('field-container')).addClass(this.myClass('name-container'))
             .start('p').addClass('fieldTitle').add(this.LABEL_NICKNAME).end()
-            .tag(this.NICKNAME)
+            .startContext({ data: this.bank })
+              .tag(this.bank.NAME, { placeholder: this.BANK_NAME_PLACEHOLDER })
+            .endContext()
             .start('p').addClass(this.myClass('hint')).add(this.HINT).end()
           .end()
           .start().addClass('divider').end()
@@ -281,19 +261,27 @@ foam.CLASS({
         ctrl.notify(this.ERROR_INVALID_ROUTING, 'error');
         return false;
       }
+
       if ( ! this.validateAccountNumber(this.accountNum) ) {
         ctrl.notify(this.ERROR_INVALID_ACCOUNT, 'error');
         return false;
       }
-      var nameRegEx = /^[a-z0-9 ]{1,32}$/i;
-      if ( ! nameRegEx.test(this.nickname) ) {
+
+      if ( this.bank.name === '' ) {
         ctrl.notify(this.ERROR_INVALID_NICKNAME, 'error');
         return false;
       }
+
+      if ( this.bank.errors_ ) {
+        ctrl.notify(this.bank.errors_[0][1], 'error');
+        return false;
+      }
+
       if ( this.voidCheckFile.length === 0 ) {
         ctrl.notify(this.ERROR_MISSING_SAMPLE, 'error');
         return false;
       }
+
       return true;
     }
   ],

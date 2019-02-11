@@ -285,7 +285,10 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
-      view: { class: 'foam.nanos.auth.ProfilePictureView' }
+      view: {
+        class: 'foam.nanos.auth.ProfilePictureView',
+        placeholderImage: 'images/business-placeholder.png'
+      }
     },
     {
       class: 'Boolean',
@@ -409,6 +412,15 @@ foam.CLASS({
       value: false,
       permissionRequired: true
     },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'profilePicture',
+      documentation: 'User\' profile picture.',
+      view: {
+        class: 'foam.nanos.auth.ProfilePictureView',
+        placeholderImage: 'images/ic-placeholder.png'
+      }
+    }
   ],
   axioms: [
     {
