@@ -220,7 +220,7 @@ foam.CLASS({
           .start().addClass(this.myClass('field-container')).addClass(this.myClass('name-container'))
             .start('p').addClass('field-label').add(this.LABEL_NICKNAME).end()
             .startContext({ data: this.bank })
-              .tag(this.bank.name, { placeholder: this.BANK_NAME_PLACEHOLDER })
+              .tag(this.bank.NAME, { placeholder: this.BANK_NAME_PLACEHOLDER })
             .endContext()
             .start('p').addClass(this.myClass('hint')).add(this.HINT).end()
           .end()
