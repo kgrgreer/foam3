@@ -386,7 +386,7 @@ foam.CLASS({
             await this.transactionDAO.put(transaction);
           } catch ( error ) {
             console.error(error);
-            this.notify(error.message, 'error');
+            this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
             this.loadingSpin.hide();
             return;
           }
