@@ -121,12 +121,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
     String industry = businessSector.getName();
     String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
-
     String isThirdParty = business.getThirdParty() ? "Yes" : "No";
     String targetCustomers = business.getTargetCustomers();
     String sourceOfFunds = business.getSourceOfFunds();
     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
     String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
+    String internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
+    String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
+
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
 
@@ -151,13 +153,18 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
       list.add(new ListItem("Industry: " + industry + " (" + businessSector.getId() + ") - NAICS"));
+      if ( country.equals("US") ) {
+        String taxId = business.getTaxIdentificationNumber();
+        list.add(new ListItem("Tax Identification Number: " + taxId));
+      }
+      list.add(new ListItem("Do you operate this business from your residence? " + residenceOperated));
       list.add(new ListItem("Are you taking instructions from and/or conducting transactions on behalf of a 3rd party? " + isThirdParty));
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
       list.add(new ListItem("Is this a holding company? " + isHoldingCompany));
       list.add(new ListItem("Annual gross sales in your base currency: " + annualRevenue));
       list.add(new ListItem("Base currency: " + baseCurrency));
-
+      list.add(new ListItem("Are you sending or receiving international payments? " + internationalTransactions));
 
       // if user going to do transactions to the USA, we add International transfers report
       if ( !"".equals(business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount()) ) {
@@ -239,7 +246,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
     String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
     String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
-
+    String principalType = signingOfficer.getPrincipleType();
     IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
     String nameOfPerson = ipHistory.findUser(x).getLegalName();
     String timestamp = sdf.format(ipHistory.getCreated());
@@ -263,6 +270,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         "Head of an International Organization (HIO), or a close associate or family member of any such person? " + isPEPHIORelated));
       list.add(new ListItem("Name: " + name));
       list.add(new ListItem("Title: " + title));
+      list.add(new ListItem("Principal Type: " + principalType));
       list.add(new ListItem("Date of birth: " + birthday));
       list.add(new ListItem("Phone number: " + phoneNumber));
       list.add(new ListItem("Email address: " + email));
@@ -350,7 +358,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Principal type: " + principalType));
-          list.add(new ListItem("Percent ownership: " + percentOwnership));
+          list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
           list.add(new ListItem("State/Province: " + province));
