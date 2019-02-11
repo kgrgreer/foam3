@@ -154,7 +154,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
       list.add(new ListItem("Industry: " + industry + " (" + businessSector.getId() + ") - NAICS"));
-      list.add(new ListItem("Do you operate this business from your residence" + residenceOperated));
+      list.add(new ListItem("Do you operate this business from your residence? " + residenceOperated));
       list.add(new ListItem("Are you taking instructions from and/or conducting transactions on behalf of a 3rd party? " + isThirdParty));
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
@@ -355,7 +355,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
           list.add(new ListItem("Principal type: " + principalType));
-          list.add(new ListItem("Percent ownership: " + percentOwnership));
+          list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
           list.add(new ListItem("State/Province: " + province));
