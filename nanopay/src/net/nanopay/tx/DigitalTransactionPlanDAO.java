@@ -37,10 +37,6 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
         }
         //dt.setStatus(TransactionStatus.COMPLETED);
         dt.setIsQuoted(true);
-        dt.add(new Transfer [] {
-          new Transfer.Builder(x).setAccount(dt.getSourceAccount()).setAmount(-dt.getTotal()).build(),
-          new Transfer.Builder(x).setAccount(dt.getDestinationAccount()).setAmount(dt.getTotal()).build()
-        });
         quote.addPlan(dt);
       }
     }

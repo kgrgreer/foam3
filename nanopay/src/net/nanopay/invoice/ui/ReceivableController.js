@@ -77,6 +77,28 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
+              name: 'edit',
+              label: 'Edit',
+              isAvailable: function() {
+                return this.status === self.InvoiceStatus.DRAFT;
+              },
+              code: function(X) {
+                self.checkComplianceAndBanking().then((result) => {
+                  if ( ! result ) return;
+                  X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                    var clone = menu.clone();
+                    Object.assign(clone.handler.view, {
+                      isPayable: false,
+                      isForm: true,
+                      isDetailView: false,
+                      invoice: this
+                    });
+                    clone.launch(X, X.controllerView);
+                  });
+                });
+              }
+            }),
+            foam.core.Action.create({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {

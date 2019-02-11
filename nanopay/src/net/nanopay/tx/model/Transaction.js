@@ -215,7 +215,6 @@ foam.CLASS({
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
       visibility: 'RO',
-      flags: ['js'],
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' }
     },
      {
