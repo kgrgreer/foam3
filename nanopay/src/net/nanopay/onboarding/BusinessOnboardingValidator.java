@@ -291,7 +291,7 @@ public class BusinessOnboardingValidator implements Validator {
     }
 
     // check if passport is chosen as the identification
-    if ( identification.getIdentificationNumber().equals(3) && SafetyUtil.isEmpty(identification.getRegionId()) ) {
+    if ( identification.getIdentificationTypeId() != 3 && SafetyUtil.isEmpty(identification.getRegionId()) ) {
       String regionType;
       switch ( identification.getCountryId() ) {
         case "CA":
