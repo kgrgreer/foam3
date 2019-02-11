@@ -140,6 +140,9 @@ foam.CLASS({
     ^ .align-right {
       text-align: right;
     }
+    ^annotation {
+      font-size: 10px;
+    }
   `,
 
   messages: [
@@ -150,6 +153,7 @@ foam.CLASS({
     { name: 'AMOUNT_DUE', message: 'Amount due' },
     { name: 'AMOUNT_PAID', message: 'Amount paid' },
     { name: 'DATE_PAID', message: 'Date paid' },
+    { name: 'CREDIT_DATE', message: 'Estimated credit date' },
     { name: 'INVOICE_HISTORY', message: 'History' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
     { name: 'VOID_MESSAGE', message: 'Mark as void' },
@@ -158,7 +162,8 @@ foam.CLASS({
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
-    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' }
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' },
+    { name: 'ANNOTATION', message: '* The dates above are estimates and are subject to change.' }
   ],
 
   constants: [
@@ -256,6 +261,14 @@ foam.CLASS({
       name: 'isPaid',
       expression: function(invoice) {
         return invoice.status === this.InvoiceStatus.PAID;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isProcess',
+      expression: function(invoice) {
+        return invoice.status === this.InvoiceStatus.IN_TRANSIT ||
+          invoice.status === this.InvoiceStatus.PENDING;
       }
     },
     {
@@ -476,19 +489,34 @@ foam.CLASS({
                       }
                     }))
                   .end()
-                  .start().show(this.isProcessOrComplete$).addClass('invoice-text-right')
-                    .start().addClass('table-content').add(this.DATE_PAID).end()
+                  .start().show(this.isProcessOrComplete$)
+                    .addClass('invoice-text-right')
                     .start().show(this.isPaid$)
+                      .addClass('table-content')
+                      .add(this.DATE_PAID)
+                    .end()
+                    .start().show(this.isProcess$)
+                      .addClass('table-content')
+                      .add(this.CREDIT_DATE)
+                    .end()
+                    .start()
                       .add(this.relatedTransaction$.map((transaction) => {
                         if ( transaction != null && transaction.completionDate ) {
                           return transaction.completionDate
                             .toISOString().substring(0, 10);
                         }
                       }))
+                      .start().hide(this.isPaid$)
+                        .addClass('inline-block')
+                        .add('*')
+                      .end()
                     .end()
-                    .start().add('--').hide(this.isPaid$).end()
                   .end()
                 .end()
+              .end()
+              .start().show(this.isProcess$)
+                .addClass(this.myClass('annotation'))
+                .add(this.ANNOTATION)
               .end()
             .end()
 
