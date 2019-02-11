@@ -578,8 +578,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true,
-    flags: ['js']
+    hidden: true
   },
   targetProperty: {
     label: 'Vendor',
@@ -613,8 +612,7 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payee ? obj.payee.label() : 'N/A');
-    },
-    flags: ['js']
+    }
   },
   sourceMethod: { flags: ['js', 'java'] },
   targetMethod: { flags: ['js', 'java'] },
@@ -629,8 +627,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true,
-    flags: ['js']
+    hidden: true
   },
   targetProperty: {
     label: 'Customer',
@@ -664,8 +661,7 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payer ? obj.payer.label() : 'N/A');
-    },
-    flags: ['js']
+    }
   },
   sourceMethod: { flags: ['js', 'java'] },
   targetMethod: { flags: ['js', 'java'] },
