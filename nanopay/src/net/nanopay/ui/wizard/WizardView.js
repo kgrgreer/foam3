@@ -238,10 +238,12 @@ foam.CLASS({
                 .callIf(this.hasExitOption, function() {
                   this.start(self.EXIT, { label$: self.exitLabel$ }).addClass('plainAction').end();
                 })
-                .start()
-                  .addClass('inlineDisplay')
-                  .tag(self.SAVE, { label$: self.saveLabel$ })
-                .end()
+                .add(self.slot(function(hasSaveOption) {
+                  if ( hasSaveOption ) {
+                    return this.E().addClass('inlineDisplay')
+                      .start(self.SAVE, { label$: self.saveLabel$ }).end();
+                  }
+                }))
               .end()
               .start('div').addClass('backNextContainer')
                 .add(self.slot(function(hasBackOption) {
