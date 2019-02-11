@@ -254,9 +254,7 @@ foam.CLASS({
                       .end();
                   }
                 }))
-                .callIf(this.hasNextOption, function() {
-                  this.tag(self.GO_NEXT, { label$: self.nextLabel$ });
-                })
+                .tag(self.GO_NEXT, { label$: self.nextLabel$ })
               .end()
             .end()
           .end();
@@ -319,9 +317,9 @@ foam.CLASS({
     },
     {
       name: 'goNext',
-      isAvailable: function(position, errors) {
+      isAvailable: function(position, errors, hasNextOption) {
         if ( errors ) return false; // Error present
-        return true;
+        return hasNextOption;
       },
       code: function(X) {
         if ( this.position == this.views.length - 1 ) { // If last page
