@@ -17,6 +17,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.USBankAccount;
+import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
 import net.nanopay.meter.IpHistory;
 import net.nanopay.model.*;
 import net.nanopay.payment.Institution;
@@ -380,6 +381,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO  accountDAO        = (DAO) x.get("accountDAO");
     DAO  branchDAO         = (DAO) x.get("branchDAO");
     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
+    DAO  flinksResponseDAO  = (DAO) x.get("flinksAccountsDetailResponseDAO");
 
     Logger logger = (Logger) x.get("logger");
 
@@ -450,9 +452,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Micro transaction verification date: " + verification));
           list.add(new ListItem("PAD agreement date: " + bankAddedDate));
         } else { // flinks
+          FlinksAccountsDetailResponse flinksAccountInformation = (FlinksAccountsDetailResponse) flinksResponseDAO.find(
+            EQ(FlinksAccountsDetailResponse.USER_ID, business.getId())
+          );
           Date createDate = caBankAccount.getCreated();
           String dateOfValidation = sdf.format(createDate);
+          String flinksRequestId = flinksAccountInformation.getRequestId();
           list.add(new ListItem("Validated by Flinks at: " + dateOfValidation));
+          list.add(new ListItem("Flink response ID: " + flinksRequestId));
         }
       } else if ( bankAccount instanceof USBankAccount) {
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
