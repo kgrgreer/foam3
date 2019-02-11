@@ -359,6 +359,12 @@ css: `
     ^ input[type='checkbox']:focus{
       border: solid 2px #5a5a5a;
     }
+
+    ^ .disclosure {
+      color: #525455;
+      font-size: 10px;
+      line-height: 15px;
+    }
   `,
 
 properties: [
@@ -580,7 +586,11 @@ messages: [
     message: 'This user is already assigned as a beneficial owner.'
   },
   { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
-  { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' }
+  { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
+  { name: 'SECUREFACT_DISCLOSURE_1', message: `We have engaged Securefact Transaction Services Inc. ("Securefact") to provide this verification for us.` },
+  { name: 'SECUREFACT_DISCLOSURE_2', message: `To verify your identity, your personal information will be matched with the information contained in your Credit File Report and other third party sources. This is a soft inquiry and will not affect your credit score or be visible to other financial institutions.` },
+  { name: 'SECUREFACT_DISCLOSURE_3', message: `You also consent to your personal information being compared to records maintained by third parties, including telecom and other service providers, and you consent to those third parties providing personal information to us and our third-party suppliers for the purpose of identity verification.` },
+  { name: 'SECUREFACT_DISCLOSURE_4', message: `By clicking “Complete” and submitting the information above, you confirm your consent to Securefact collecting, using, disclosing, and storing your personal information for the purpose of this verification.` },
 ],
 
 methods: [
@@ -728,6 +738,10 @@ methods: [
             }
           }).end()
         .end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_1).end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
       .end();
   },
 
