@@ -121,7 +121,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
     String industry = businessSector.getName();
     String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
-
     String isThirdParty = business.getThirdParty() ? "Yes" : "No";
     String targetCustomers = business.getTargetCustomers();
     String sourceOfFunds = business.getSourceOfFunds();
@@ -154,6 +153,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
       list.add(new ListItem("Industry: " + industry + " (" + businessSector.getId() + ") - NAICS"));
+      if ( country.equals("US") ) {
+        String taxId = business.getTaxIdentificationNumber();
+        list.add(new ListItem("Tax Identification Number: " + taxId));
+      }
       list.add(new ListItem("Do you operate this business from your residence? " + residenceOperated));
       list.add(new ListItem("Are you taking instructions from and/or conducting transactions on behalf of a 3rd party? " + isThirdParty));
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
