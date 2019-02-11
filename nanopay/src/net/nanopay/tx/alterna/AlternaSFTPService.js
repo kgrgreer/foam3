@@ -52,6 +52,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',
+    'java.io.PrintWriter',
     'java.util.Date',
     'java.util.Properties',
     'java.util.Vector',
@@ -65,12 +66,12 @@ foam.CLASS({
       name: 'sendCICOFile',
       javaCode:
         `Date now = new Date();
-ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
 X x = getX();
 DAO notificationDAO = (DAO) x.get("notificationDAO");
 
-CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+PrintWriter printWriter = new PrintWriter(baos);
+CsvUtil.writeCsvFile(x, printWriter, OutputterMode.STORAGE);
 // don't send CSV file if there is no pending transaction
 if ( baos.toByteArray().length == 0 ) {
   return;

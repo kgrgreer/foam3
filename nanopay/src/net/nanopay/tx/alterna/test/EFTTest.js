@@ -30,6 +30,7 @@ foam.CLASS({
     'java.io.ByteArrayOutputStream',
     'java.io.IOException',
     'java.io.InputStream',
+    'java.io.PrintWriter',
     'java.util.Date',
     'java.util.List',
     'static foam.mlang.MLang.EQ',
@@ -210,7 +211,8 @@ throw new RuntimeException("Plan transaction not instance of AlternaCITransactio
       ],
       javaCode: `
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
+PrintWriter printWriter = new PrintWriter(baos);
+CsvUtil.writeCsvFile(x, printWriter, OutputterMode.STORAGE);
 
 try {
   String response = IOUtils.toString(new ByteArrayInputStream(baos.toByteArray()),"UTF-8");
