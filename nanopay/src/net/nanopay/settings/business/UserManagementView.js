@@ -181,7 +181,10 @@ foam.CLASS({
       name: 'addUser',
       code: function() {
         // Add add user flow
-        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
+        ctrl.add(this.Popup.create().tag({ 
+          class: 'net.nanopay.sme.ui.AddUserToBusinessModal',
+          dao: this.clientJunctionDAO
+        }));
       }
     }
   ]

@@ -8,6 +8,8 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.auth.AgentJunctionStatus',
+    'net.nanopay.model.ClientUserJunction',
     'net.nanopay.model.Invitation',
     'foam.u2.dialog.NotificationMessage'
   ],
@@ -73,7 +75,8 @@ foam.CLASS({
           'Employee'
         ]
       }
-    }
+    },
+    'dao'
   ],
 
   messages: [
@@ -83,7 +86,8 @@ foam.CLASS({
     { name: 'INVITATION_INTERNAL_SUCCESS', message: 'User successfully added to business.' },
     { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'Invitation sent' },
     { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.' }
+    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
+    { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business.' }
   ],
 
   methods: [
@@ -110,10 +114,25 @@ foam.CLASS({
   actions: [
     {
       name: 'addUser',
-      code: function() {
+      code: async function() {
         if ( ! this.validateEmail(this.email) ) {
           this.notify(this.INVALID_EMAIL, 'error');
           return;
+        }
+        // Disallow the adding of a user if they are currently already a user in the business.
+        // dao is populated when this modal is called from UserManagementView.js
+        if ( this.dao ) {
+          var returnning = false;
+          var currentBusUserArray = (await this.dao.where(this.EQ(this.ClientUserJunction.STATUS, this.AgentJunctionStatus.ACTIVE)).select()).array;
+          currentBusUserArray.forEach( (busUser) => {
+            if ( foam.util.equals(busUser.email, this.email) ) {
+              this.notify(this.INVALID_EMAIL2, 'error');
+              returnning = true;
+              // only exits loop with return, due to nesting function
+              return;
+            }
+          });
+          if ( returnning ) return;
         }
         var invitation = this.Invitation.create({
           // A legal requirement is that we need to do a compliance check on any

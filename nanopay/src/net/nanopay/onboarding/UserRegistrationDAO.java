@@ -48,7 +48,7 @@ public class UserRegistrationDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) obj;
-    Boolean testInternal = false;
+    Boolean isInternal = false;
 
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
@@ -76,8 +76,8 @@ public class UserRegistrationDAO
 
       // Check if user is internal ( already a registered user ), which will happen if adding a user to
       // a business.
-      testInternal = params.containsKey("internal" ) && ! ((Boolean) params.get("internal"));
-      if ( testInternal ) {
+      isInternal = params.containsKey("internal" ) && ((Boolean) params.get("internal"));
+      if ( ! isInternal ) {
         checkUserDuplication(x, user);
       }
       if ( params.containsKey("businessId") ) {
@@ -111,7 +111,7 @@ public class UserRegistrationDAO
         }
       }
     }
-    if ( ! testInternal ) checkUserDuplication(x, user);
+    if ( ! isInternal ) checkUserDuplication(x, user);
     return super.put_(sysContext, user);
   }
 
@@ -125,7 +125,7 @@ public class UserRegistrationDAO
             NOT(INSTANCE_OF(Contact.getOwnClassInfo()))
           )
         );
-    if ( userWithSameEmail == null ) {
+    if ( userWithSameEmail != null ) {
       throw new RuntimeException("User with same email address already exists: " + user.getEmail());
     }
 
