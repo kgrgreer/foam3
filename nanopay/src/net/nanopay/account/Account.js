@@ -47,7 +47,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      validateObj: function(name) {
+        if ( /^\s+$/.test(name) ) {
+          return 'Account name may not consist of only whitespace.';
+        }
+      }
     },
     {
       class: 'String',

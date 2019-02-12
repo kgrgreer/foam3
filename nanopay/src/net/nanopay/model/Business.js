@@ -26,6 +26,11 @@ foam.CLASS({
       name: 'loginEnabled',
       value: false
     },
+    {
+      class: 'Boolean',
+      name: 'residenceOperated',
+      documentation: 'Details whether business is operated in the owners residence.'
+    }
   ],
 
   javaImports: [
