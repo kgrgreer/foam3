@@ -494,14 +494,10 @@ foam.CLASS({
                     .end()
                     .start().show(this.relatedTransaction$)
                       .add(this.relatedTransaction$.map((transaction) => {
-                        if ( transaction != null && transaction.completionDate ) {
-                          if ( ! this.isPaid ) {
-                            return `${transaction.completionDate
-                            .toISOString().substring(0, 10)} *`;
-                          } else {
-                            return transaction.completionDate
+                        if ( transaction != null &&transaction.completionDate ) {
+                          var creditDate = transaction.completionDate
                             .toISOString().substring(0, 10);
-                          }
+                          return this.isPaid ? creditDate : `${creditDate} *`;
                         } else {
                           return '--';
                         }
