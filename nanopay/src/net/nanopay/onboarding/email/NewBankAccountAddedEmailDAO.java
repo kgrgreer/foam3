@@ -30,8 +30,7 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
   };
 
   public NewBankAccountAddedEmailDAO(X x, DAO delegate) {
-    setX(x);
-    setDelegate(delegate);
+    super(x, delegate);
     userDAO_ = (DAO) x.get("userDAO");
   }
 
@@ -45,26 +44,30 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
     BankAccount account    = (BankAccount) obj;
 
     // Check 1: Don't send email if account is not enabled
-    if ( ! account.getEnabled() )
+    if ( ! account.getEnabled() ) {
       return getDelegate().put_(x, obj);
-
+    }
     // Check 2: Doesn't send email if the status of the account isn't verified
-    if ( ! BankAccountStatus.VERIFIED.equals(account.getStatus()) )
+    if ( ! BankAccountStatus.VERIFIED.equals(account.getStatus()) ) {
       return getDelegate().put_(x, obj);
-
+    }
     // Gathering additional information
-    BankAccount oldAccount = (BankAccount) getDelegate().find_(x, account.getId());
+    BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
-    // Check 3: Doesn't send email if account has been previously verified
-    if ( oldAccount == null || oldAccount.getStatus().equals(account.getStatus()) )
-    return getDelegate().put_(x, obj);
-
+    // Check 3: Under current implentation, BankAccount is added to dao prior verification so oldAccount should exist
+    if ( oldAccount == null ) {
+      return super.put_(x, obj);
+    }
+    // Check 4: Don't send email if account has been previously verified
+    if ( oldAccount.getStatus().equals(account.getStatus()) ) {
+      return getDelegate().put_(x, obj);
+    }
     // Gathering additional information
     User        owner      = (User) userDAO_.inX(x).find(account.getOwner());
     PropertyInfo prop = (PropertyInfo) BankAccount.getOwnClassInfo().getAxiomByName("status");
     if ( owner == null ) {
       // log an error since we should be sending an email at this point
-      String message = "Email Ment for complaince team Error: Account name = "+account.getName();
+      String message = "Email ment for complaince team Error: Account name = "+account.getName();
       Notification notification = new Notification.Builder(x)
         .setTemplate("NOC")
         .setBody(message)
