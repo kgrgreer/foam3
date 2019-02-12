@@ -47,7 +47,7 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
     }
 
     // Check 2: Don't send email if account was deleted
-    if ( ! account.getDeleted() ) {
+    if ( account.getDeleted() ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -88,19 +88,25 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
     StringBuilder builder = sb.get()
       .append("<p>User added a bankAccount:<p>")
       .append("<ul><li>")
-      .append(owner.getLegalName())
+      .append("User: LegalName = " + owner.getLegalName())
       .append(" - ")
-      .append(owner.getEmail())
+      .append("Email = " + owner.getEmail())
+      .append(" - ")
+      .append("Company = " + owner.getOrganization())
       .append("</li>")
       .append("<li>")
-      .append(account.getDenomination())
+      .append("Bank Account: Currency/Denomination = " + account.getDenomination())
       .append(" - ")
       .append("Bank Account Name = " + account.getName())
       .append(" - ")
       .append("Bank Account id = " + account.getId())
       .append("</li></ul>");
-
-    message.setTo(new String[] { "enrollment-team@nanopay.net" });
+    if ( owner.getOnboarded() ) {
+      builder.append("<br> <p> USER HAS ALSO BEEN ONBOARDED <p>");
+    } else {
+      builder.append("<br> <p> NOT ONBOARDED <p>");
+    }
+    message.setTo(new String[] { "anna@nanopay.net" });
     message.setSubject("User Added Bank Account");
     message.setBody(builder.toString());
     emailService.sendEmail(x, message);
