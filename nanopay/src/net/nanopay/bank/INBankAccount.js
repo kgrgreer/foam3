@@ -21,8 +21,8 @@ foam.CLASS({
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{9,18}$")'
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{9,18}$")'
     }
   ],
 
@@ -31,10 +31,10 @@ foam.CLASS({
       name: 'validate',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
@@ -43,7 +43,7 @@ foam.CLASS({
     },
     {
       name: 'validateAccountNumber',
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       String accountNumber = this.getAccountNumber();

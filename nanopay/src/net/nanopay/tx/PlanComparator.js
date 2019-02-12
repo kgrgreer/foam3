@@ -16,15 +16,15 @@ foam.INTERFACE({
   methods: [
     {
       name: 'compare',
-      javaReturns: 'int',
+      type: 'Integer',
       args: [
         {
           name: 'o1',
-          javaType: 'Object'
+          type: 'Any'
         },
         {
           name: 'o2',
-          javaType: 'Object'
+          type: 'Any'
         }
       ]
     },

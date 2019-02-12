@@ -30,22 +30,22 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'old',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         },
         {
           name: 'nu',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         },
         {
           name: 'reverse',
-          javaType: 'Boolean'
+          type: 'Boolean'
         }
       ],
-      javaReturns: 'net.nanopay.tx.Transfer[]',
+      type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
         return new Transfer[0];
       `
