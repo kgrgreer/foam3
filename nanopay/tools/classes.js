@@ -310,6 +310,10 @@ var classes = [
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
 
+  // settings
+  'net.nanopay.settings.AcceptanceDocument',
+  'net.nanopay.settings.AcceptanceDocumentService',
+
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
 
