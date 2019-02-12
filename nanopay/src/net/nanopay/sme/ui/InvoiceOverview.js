@@ -499,17 +499,20 @@ foam.CLASS({
                       .addClass('table-content')
                       .add(this.ESTIMATED_CREDIT_DATE)
                     .end()
-                    .start()
+                    .start().show(this.relatedTransaction$)
                       .add(this.relatedTransaction$.map((transaction) => {
                         if ( transaction != null && transaction.completionDate ) {
-                          return transaction.completionDate
+                          if ( ! this.isPaid ) {
+                            return `${transaction.completionDate
+                            .toISOString().substring(0, 10)} *`;
+                          } else {
+                            return transaction.completionDate
                             .toISOString().substring(0, 10);
+                          }
+                        } else {
+                          return '--';
                         }
                       }))
-                      .start().hide(this.isPaid$)
-                        .addClass('inline-block')
-                        .add('*')
-                      .end()
                     .end()
                   .end()
                   .start().show(this.showBankAccount$).addClass('invoice-text-left')
