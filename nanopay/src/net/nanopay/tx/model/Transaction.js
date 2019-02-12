@@ -364,7 +364,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'destinationAmount',
       label: 'Destination Amount',
-      description: 'Amount in Receiver Currency',
+      documentation: 'Amount in Receiver Currency',
       visibility: 'RO',
       tableCellFormatter: function(destinationAmount, X) {
         var formattedAmount = destinationAmount/100;

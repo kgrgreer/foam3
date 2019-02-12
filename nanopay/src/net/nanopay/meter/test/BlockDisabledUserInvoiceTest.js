@@ -37,8 +37,8 @@ foam.CLASS({
       name: 'setUserStatus',
       type: 'foam.nanos.auth.User',
       args: [
-        { of: 'String', name: 'email' },
-        { of: 'net.nanopay.admin.model.AccountStatus', name: 'status' }
+        { type: 'String', name: 'email' },
+        { type: 'net.nanopay.admin.model.AccountStatus', name: 'status' }
       ],
       javaCode: `
         User user = (User) userDAO_.find(MLang.EQ(User.EMAIL, email));
@@ -57,7 +57,7 @@ foam.CLASS({
       name: 'findOrCreateBankAccount',
       type: 'net.nanopay.bank.CABankAccount',
       args: [
-        { of: 'User', name: 'user' }
+        { type: 'foam.nanos.auth.User', name: 'user' }
       ],
       javaCode: `
         CABankAccount bankAccount = (CABankAccount) accountDAO_.find(
@@ -79,8 +79,8 @@ foam.CLASS({
       name: 'buildInvoice',
       type: 'net.nanopay.invoice.model.Invoice',
       args: [
-        { of: 'User', name: 'payer' },
-        { of: 'User', name: 'payee' }
+        { type: 'foam.nanos.auth.User', name: 'payer' },
+        { type: 'foam.nanos.auth.User', name: 'payee' }
       ],
       javaCode: `
         return new Invoice.Builder(x_)

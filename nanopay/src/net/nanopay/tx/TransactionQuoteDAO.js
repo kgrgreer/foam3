@@ -90,7 +90,7 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'message',

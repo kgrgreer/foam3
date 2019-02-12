@@ -71,11 +71,11 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'obj',
-          of: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ],
       type: 'foam.core.FObject',
@@ -95,11 +95,11 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'currentDefaultAccount',
-          of: 'net.nanopay.bank.BankAccount'
+          type: 'net.nanopay.bank.BankAccount'
         }
       ],
       javaCode: `
