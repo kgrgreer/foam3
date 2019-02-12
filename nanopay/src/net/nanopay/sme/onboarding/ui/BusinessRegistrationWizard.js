@@ -484,7 +484,8 @@ foam.CLASS({
         var result = await this.businessDAO.put(this.user);
         this.user.copyFrom(result);
         this.viewData.user = this.user;
-      } catch (exp) {
+      } catch (err) {
+        console.error(err);
         this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
         return false;
       }
