@@ -63,23 +63,30 @@ foam.CLASS({
       documentation: `The email address of the person to invite.`
     },
     {
-      class: 'String',
-      name: 'userGroup',
+      type: 'String',
+      name: 'role',
+      documentation: `This will determine the invitee's role in the business.`,
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          'Admin',
-          'Approver',
-          'Employee'
+          ['admin', 'Admin'],
+          ['approver', 'Approver'],
+          ['employee', 'Employee']
         ]
       }
+    },
+    {
+      type: 'Boolean',
+      name: 'noChoice',
+      value: false,
+      documentation: `Set to true to hide the role selector.`
     }
   ],
 
   messages: [
     { name: 'TITLE', message: 'Invite to ' },
     { name: 'EMAIL_LABEL', message: 'Email' },
-    { name: 'USER_GROUP_LABEL', message: 'User permission' },
+    { name: 'ROLE_LABEL', message: 'Role' },
     { name: 'INVITATION_INTERNAL_SUCCESS', message: 'User successfully added to business.' },
     { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'Invitation sent' },
     { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
@@ -91,6 +98,11 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('input-container')
           .start('h2').add(this.TITLE, this.user.businessName).addClass('medium-header').end()
+          .start().addClass('input-wrapper')
+            .hide(this.noChoice$)
+            .start().addClass('input-label').add(this.ROLE_LABEL).end()
+            .tag(this.ROLE)
+          .end()
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start(this.EMAIL).addClass('input-field').end()
@@ -116,13 +128,7 @@ foam.CLASS({
           return;
         }
         var invitation = this.Invitation.create({
-          // A legal requirement is that we need to do a compliance check on any
-          // user that can make payments, which includes admins and approvers.
-          // However, we only do compliance checks on the company right now, not
-          // every user that can act as it. Therefore in the short term we'll
-          // only allow users to invite employees, because employees can't pay
-          // invoices, only submit them for approval.
-          group: 'employee', // TODO: Use this.userGroup.toLowerCase()
+          group: this.role,
           createdBy: this.user.id,
           email: this.email
         });

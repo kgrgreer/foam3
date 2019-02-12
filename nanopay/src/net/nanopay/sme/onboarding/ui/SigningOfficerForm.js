@@ -1354,7 +1354,11 @@ foam.CLASS({
       name: 'addUsers',
       isEnabled: (signingOfficer) => signingOfficer === 'No',
       code: function() {
-        this.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.sme.ui.AddUserToBusinessModal',
+          role: 'admin',
+          noChoice: true
+        }));
       }
     }
   ]
