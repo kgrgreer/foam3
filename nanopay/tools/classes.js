@@ -313,7 +313,7 @@ var classes = [
   // settings
   'net.nanopay.settings.AcceptanceDocument',
   'net.nanopay.settings.AcceptanceDocumentService',
-
+  'net.nanopay.settings.ClientAcceptanceDocumentService',
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
 
@@ -463,6 +463,7 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.settings.AcceptanceDocumentService',
   'net.nanopay.integration.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',

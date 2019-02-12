@@ -65,7 +65,6 @@ foam.CLASS({
       class: 'String',
       name: 'transactionType',
       documentation: 'Type of transaction that acceptance document applies to. This also identifies the Payment Provider',
-      required: true
     },
   ]
 });
