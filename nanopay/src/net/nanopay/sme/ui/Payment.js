@@ -28,8 +28,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      // Hide save button
-      this.hasSaveOption = false;
       // Show back button
       this.hasBackOption = true;
       // Update the next button label
