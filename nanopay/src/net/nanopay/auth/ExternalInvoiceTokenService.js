@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'ExternalInvoiceTokenService',
   extends: 'foam.nanos.auth.token.AbstractTokenService',
 
-  description: `The external token service provides two functionalities.
+  documentation: `The external token service provides two functionalities.
     Generating/storing tokens and associating them to the created email templates
     associated to the request. The second feature consists of processing
     tokens, checking validity and registering the users to the platform
