@@ -181,8 +181,7 @@ foam.CLASS({
     name: 'getPacs008EndToEndId',
     args: [
       {
-        class: 'FObjectProperty',
-        of: 'net.nanopay.tx.model.Transaction',
+        type: 'net.nanopay.tx.model.Transaction',
         name: 'transaction'
       }
     ],
