@@ -21,23 +21,23 @@ foam.CLASS({
     constants: [
       {
         name: 'IBAN_PATTERN',
-        type: 'Pattern',
-        value: 'Pattern.compile("^[A-Z]{2}[0-9]{2}[0-9a-zA-Z]{4}[0-9]{16}$")'
+        type: 'Regex',
+        javaValue: 'Pattern.compile("^[A-Z]{2}[0-9]{2}[0-9a-zA-Z]{4}[0-9]{16}$")'
       },
       {
         name: 'SWIFT_CODE_PATTERN',
-        type: 'Pattern',
-        value: 'Pattern.compile("^[0-9a-zA-Z]{4}$")'
+        type: 'Regex',
+        javaValue: 'Pattern.compile("^[0-9a-zA-Z]{4}$")'
       },
       {
         name: 'ACCOUNT_NUMBER_PATTERN',
-        type: 'Pattern',
-        value: 'Pattern.compile("^[0-9]{16}$")'
+        type: 'Regex',
+        javaValue: 'Pattern.compile("^[0-9]{16}$")'
       },
       {
         name: 'BRANCH_ID_PATTERN',
-        type: 'Pattern',
-        value: 'Pattern.compile("^[0-9]{9}$")'
+        type: 'Regex',
+        javaValue: 'Pattern.compile("^[0-9]{9}$")'
       },
     ],
 
@@ -107,14 +107,14 @@ foam.CLASS({
         name: 'validate',
         args: [
           {
-            name: 'x', javaType: 'foam.core.X'
+            name: 'x', type: 'Context'
           }
         ],
-        javaReturns: 'void',
+        type: 'Void',
         javaThrows: ['IllegalStateException'],
         javaCode: `
-          super.validate(x); 
-          validateAccountNumber();    
+          super.validate(x);
+          validateAccountNumber();
           validateSwiftCode();
           validateNationalIban();
           //validateBranchId(x);
@@ -122,7 +122,7 @@ foam.CLASS({
       },
       {
         name: 'validateNationalIban',
-        javaReturns: 'void',
+        type: 'Void',
         javaThrows: ['IllegalStateException'],
         javaCode: `
         String iban = this.getAccountNumber();
@@ -138,7 +138,6 @@ foam.CLASS({
       },
       {
         name: 'validateSwiftCode',
-        javaReturns: 'void',
         javaThrows: ['IllegalStateException'],
         javaCode: `
         long institutionId = this.getInstitution();
@@ -156,11 +155,11 @@ foam.CLASS({
       },
       {
         name: 'validateAccountNumber',
-        javaReturns: 'void',
+        type: 'Void',
         javaThrows: ['IllegalStateException'],
         javaCode: `
         String accountNumber = this.getAccountNumber();
-  
+
         // is empty
         if ( SafetyUtil.isEmpty(accountNumber) ) {
           throw new IllegalStateException("Please enter an account number.");
@@ -174,10 +173,10 @@ foam.CLASS({
       name: 'validateBranchId',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       Branch branch = this.findBranch(x);
@@ -198,4 +197,3 @@ foam.CLASS({
     }*/
     ]
   });
-

@@ -8,11 +8,11 @@ foam.INTERFACE({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'entity',
-          javaType: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ]
     },
@@ -21,7 +21,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'record',

@@ -54,7 +54,7 @@ foam.CLASS({
     },
     {
       name: 'institutionNumber',
-      visbility: 'HIDDEN',
+      visibility: 'HIDDEN',
       value: 'US0000000'
     },
     {
@@ -76,10 +76,10 @@ foam.CLASS({
   methods: [
    {
      name: 'getBankCode',
-     javaReturns: 'String',
+     type: 'String',
      args: [
        {
-         name: 'x', javaType: 'foam.core.X'
+         name: 'x', type: 'Context'
        }
      ],
      javaCode: `

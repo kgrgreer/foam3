@@ -40,8 +40,7 @@ foam.CLASS({
       class: 'String',
       name: 'description',
       documentation: 'Description of the the transaction purpose.',
-      required: true,
-      swiftName: 'desc'
+      required: true
     },
     {
       class: 'Boolean',

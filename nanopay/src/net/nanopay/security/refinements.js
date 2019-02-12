@@ -1,4 +1,6 @@
 foam.CLASS({
+  package: 'net.nanopay.security',
+  name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
 
   javaImports: [
@@ -20,15 +22,16 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'nextLoginAttemptAllowedAt',
-      javaType: 'java.util.Date',
+      type: 'Date',
       javaFactory: 'return new Date();',
     }
   ]
 });
 
 foam.CLASS({
+  package: 'net.nanopay.security',
+  name: 'TransactionRefine',
   refines: 'net.nanopay.tx.model.Transaction',
-
   properties: [
     {
       class: 'List',

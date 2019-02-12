@@ -359,6 +359,8 @@ css: `
     ^ input[type='checkbox']:focus{
       border: solid 2px #5a5a5a;
     }
+    ^ .foam-u2-tag-Select:disabled {
+      padding-left: 10px !important;
 
     ^ .disclosure {
       color: #525455;
@@ -608,6 +610,10 @@ methods: [
     this.principleTypeField = 'Shareholder';
     this.scrollToTop();
 
+    var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin) {
+      return isSameAsAdmin ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+    });
+
     this.addClass(this.myClass())
       .start().addClass('medium-header').add(this.TITLE).end()
       .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
@@ -636,16 +642,16 @@ methods: [
             .start().addClass('flex-container')
               .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
                 .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
-                .start().add(this.FIRST_NAME_FIELD).end()
+                .start(this.FIRST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
               .start().addClass('label-input').addClass('half-container')
                 .start().addClass('label').add(this.LAST_NAME_LABEL).end()
-                .start().add(this.LAST_NAME_FIELD).end()
+                .start(this.LAST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
             .end()
             .start().addClass('label-input')
               .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
-              .start().add(this.PRINCIPLE_TYPE_FIELD).end()
+              .start(this.PRINCIPLE_TYPE_FIELD, { mode$: modeSlotSameAsAdmin }).end()
             .end()
 
             .start()
@@ -654,14 +660,14 @@ methods: [
               })
               .start().addClass('label-input')
                 .start().addClass('label').add(this.JOB_TITLE_LABEL).end()
-                .start(this.JOB_TITLE_FIELD).end()
+                .start(this.JOB_TITLE_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
               .start().addClass('label-input')
                 .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
-                .start().add(this.BIRTHDAY_FIELD).end()
+                .start(this.BIRTHDAY_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
 
-              .start(this.ADDRESS_FIELD).end()
+              .start(this.ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .start().addClass('pushLeft')
                 .start(this.CANCEL_EDIT)
                   .enableClass('hidden', this.editingPrincipalOwner$, true)

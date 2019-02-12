@@ -25,8 +25,8 @@ foam.CLASS({
     {
       name: 'sendReverseNotification',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+        { name: 'x', type: 'Context' },
+        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
       if ( getStatus() != TransactionStatus.DECLINED && getStatus() != TransactionStatus.FAILED ) return;
@@ -44,14 +44,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'Transfer[]',
+      type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
       return new Transfer[0];
       `
@@ -62,14 +62,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'Boolean',
+      type: 'Boolean',
       javaCode: `
         return false;
       `
@@ -80,14 +80,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'Boolean',
+      type: 'Boolean',
       javaCode: `
         return false;
       `
