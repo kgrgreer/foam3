@@ -156,8 +156,8 @@ foam.CLASS({
     { name: 'PAYMENT_FEE', message: 'Fee' },
     { name: 'AMOUNT_DUE', message: 'Amount due' },
     { name: 'AMOUNT_PAID', message: 'Amount paid' },
-    { name: 'DATE_PAID', message: 'Date paid' },
-    { name: 'CREDIT_DATE', message: 'Estimated credit date' },
+    { name: 'DATE_CREDITED', message: 'Date credited' },
+    { name: 'ESTIMATED_CREDIT_DATE', message: 'Estimated credit date' },
     { name: 'INVOICE_HISTORY', message: 'History' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
     { name: 'VOID_MESSAGE', message: 'Mark as void' },
@@ -489,27 +489,15 @@ foam.CLASS({
                   .end()
                 .end()
                 .start().addClass('invoice-row')
-                  .start().show(this.showBankAccount$).addClass('invoice-text-left')
-                    .start().addClass('table-content').add(this.bankAccountLabel).end()
-                    .add(this.bankAccount$.map((account) => {
-                      if ( account != null ) {
-                        return `${account.name} ` +
-                          `${'*'.repeat(account.accountNumber.length-4)}` +
-                          `${account.accountNumber.slice(-4)}`;
-                      } else {
-                        return '--';
-                      }
-                    }))
-                  .end()
                   .start().show(this.isProcessOrComplete$)
                     .addClass('invoice-text-right')
                     .start().show(this.isPaid$)
                       .addClass('table-content')
-                      .add(this.DATE_PAID)
+                      .add(this.DATE_CREDITED)
                     .end()
                     .start().show(this.isProcess$)
                       .addClass('table-content')
-                      .add(this.CREDIT_DATE)
+                      .add(this.ESTIMATED_CREDIT_DATE)
                     .end()
                     .start()
                       .add(this.relatedTransaction$.map((transaction) => {
@@ -523,6 +511,18 @@ foam.CLASS({
                         .add('*')
                       .end()
                     .end()
+                  .end()
+                  .start().show(this.showBankAccount$).addClass('invoice-text-left')
+                    .start().addClass('table-content').add(this.bankAccountLabel).end()
+                    .add(this.bankAccount$.map((account) => {
+                      if ( account != null ) {
+                        return `${account.name} ` +
+                          `${'*'.repeat(account.accountNumber.length-4)}` +
+                          `${account.accountNumber.slice(-4)}`;
+                      } else {
+                        return '--';
+                      }
+                    }))
                   .end()
                 .end()
               .end()
