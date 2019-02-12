@@ -110,7 +110,9 @@ foam.CLASS({
         onKey: true
       },
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.annualRevenue ) return this.viewData.user.suggestedUserTransactionInfo.annualRevenue;
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualRevenue ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualRevenue;
+        }
       },
       preSet: function(o, n) {
         if ( n === '' ) return n;
@@ -148,7 +150,9 @@ foam.CLASS({
         maxLength: 150
       },
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.transactionPurpose ) return this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
+        if ( this.viewData.user.suggestedUserTransactionInfo.transactionPurpose ) {
+          return this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
+        }
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.transactionPurpose = n.trim();
@@ -158,7 +162,9 @@ foam.CLASS({
       class: 'String',
       name: 'annualField',
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount ) return this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount;
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount;
+        }
       },
       adapt: function(oldValue, newValue) {
         if ( typeof newValue === 'string' ) {
@@ -174,7 +180,9 @@ foam.CLASS({
       class: 'String',
       name: 'estimatedField',
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.annualVolume ) return this.viewData.user.suggestedUserTransactionInfo.annualVolume;
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualVolume ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualVolume;
+        }
       },
       adapt: function(oldValue, newValue) {
         if ( typeof newValue === 'string' ) {
@@ -190,10 +198,73 @@ foam.CLASS({
       class: 'Date',
       name: 'firstTradeDateField',
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.firstTradeDate ) return this.viewData.user.suggestedUserTransactionInfo.firstTradeDate;
+        if ( this.viewData.user.suggestedUserTransactionInfo.firstTradeDate ) {
+          return this.viewData.user.suggestedUserTransactionInfo.firstTradeDate;
+        }
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.firstTradeDate = n;
+      }
+    },
+    {
+      class: 'String',
+      name: 'annualFieldDomestic',
+      factory: function() {
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount;
+        }
+      },
+      adapt: function(oldValue, newValue) {
+        if ( typeof newValue === 'string' ) {
+          return newValue.replace(/\D/g, '');
+        }
+        return newValue;
+      },
+      postSet: function(o, n) {
+        if ( n ) this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount = n.trim();
+      }
+    },
+    {
+      class: 'String',
+      name: 'estimatedFieldDomestic',
+      factory: function() {
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume;
+        }
+      },
+      adapt: function(oldValue, newValue) {
+        if ( typeof newValue === 'string' ) {
+          return newValue.replace(/\D/g, '');
+        }
+        return newValue;
+      },
+      postSet: function(o, n) {
+        this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume = n;
+      }
+    },
+    {
+      class: 'Date',
+      name: 'firstTradeDateFieldDomestic',
+      factory: function() {
+        if ( this.viewData.user.suggestedUserTransactionInfo.firstTradeDateDomestic ) {
+          return this.viewData.user.suggestedUserTransactionInfo.firstTradeDateDomestic;
+        }
+      },
+      postSet: function(o, n) {
+        this.viewData.user.suggestedUserTransactionInfo.firstTradeDateDomestic = n;
+      }
+    },
+    {
+      class: 'String',
+      name: 'isUSABasedCompany',
+      expression: function(viewData) {
+        if ( viewData.isCanadian == 'undefined' ) {
+          viewData.isCanadian = false;
+          if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
+            viewData.isCanadian = true;
+          }
+        }
+        return ! viewData.isCanadian;
       }
     },
     {
@@ -218,6 +289,7 @@ foam.CLASS({
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
+    { name: 'THIRD_TITLE', message: 'Domestic USD transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
     { name: 'CA_DOLLAR_LABEL', message: 'Canadian Dollar' },
@@ -254,6 +326,25 @@ foam.CLASS({
         .start().addClass('label-input')
           .start().addClass('inline').addClass('info-width').add(this.REVENUE_ESTIMATE_LABEL).end()
           .start().addClass('small-width-input').add(this.REVENUE_ESTIMATE).end()
+        .end()
+        .start().addClass('transfer-container').show(this.isUSABasedCompany$)
+          .start().addClass('medium-header').add(this.THIRD_TITLE).end()
+          .start().addClass('label-input')
+            .start({ class: 'foam.u2.tag.Image', data: this.flag$ }).addClass('flag-image').end()
+            .start().addClass('inline').addClass('bold-label').add(this.currencyType$).end()
+          .end()
+          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
+            .start().addClass('label').add(this.ANNUAL_LABEL).end()
+            .tag(this.ANNUAL_FIELD, { onKey: true })
+          .end()
+          .start().addClass('label-input').addClass('half-container')
+            .start().addClass('label').add(this.estimatedLabel$).end()
+            .tag(this.ESTIMATED_FIELD, { onKey: true })
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
+            .start(this.FIRST_TRADE_DATE_FIELD).end()
+          .end()
         .end()
         .start().addClass('label-input')
           .start().addClass('inline').addClass('info-width').add(this.INTERNATIONAL_PAYMENTS_LABEL).end()
