@@ -4,7 +4,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.mlang.predicate.In;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.*;
 import foam.nanos.auth.token.Token;
@@ -23,16 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.*;
 
 /**
-  * Business invitation DAO is responsible for checking if the invitation is sent to an external
-  * or internal user. Internal Users will receive a notification & email allowing them to join the business
-  * External Users will receive an email which will redirect them to the sign up portal and take them through
-  * the necessary steps to join a business.
-*/
+ * Business invitation DAO is responsible for checking if the invitation is sent
+ * to an external or internal user. Internal Users will receive a notification &
+ * email allowing them to join the business. External Users will receive an
+ * email which will redirect them to the sign up portal and take them through
+ * the necessary steps to join a business.
+ */
 public class BusinessInvitationDAO
   extends ProxyDAO
 {
@@ -149,8 +147,8 @@ public class BusinessInvitationDAO
     HashMap<String, Object> args = new HashMap<>();
     args.put("inviterName", agent.getFirstName());
     args.put("business", business.getBusinessName());
-    
-    // encoding business name and email to handle specail characters.
+
+    // Encoding business name and email to handle special characters.
     String encodedBusinessName, encodedEmail;
     try {
       encodedEmail =  URLEncoder.encode(invite.getEmail(), "UTF-8");
@@ -159,7 +157,7 @@ public class BusinessInvitationDAO
       logger.error("Error encoding the email or business name.", e);
       throw new RuntimeException(e);
     }
-    args.put("link", url +"?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up");
+    args.put("link", url + "?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up");
     email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
   }
 }

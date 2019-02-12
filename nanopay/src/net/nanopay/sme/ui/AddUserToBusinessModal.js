@@ -8,8 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.Invitation',
-    'foam.u2.dialog.NotificationMessage'
+    'net.nanopay.model.Invitation'
   ],
 
   imports: [
@@ -59,8 +58,9 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'email'
+      type: 'EMail',
+      name: 'email',
+      documentation: `The email address of the person to invite.`
     },
     {
       class: 'String',
