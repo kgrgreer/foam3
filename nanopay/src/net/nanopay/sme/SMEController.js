@@ -6,7 +6,6 @@ foam.CLASS({
   documentation: 'SME Top-Level Application Controller.',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.CABankAccount',
@@ -22,7 +21,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
     'net.nanopay.sme.ui.SuccessPasswordView',
-    'net.nanopay.sme.ui.ToastNotification',
+    'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
     'net.nanopay.sme.ui.VerifyEmail'
   ],
