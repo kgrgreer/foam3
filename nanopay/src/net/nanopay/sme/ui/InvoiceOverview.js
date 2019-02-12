@@ -339,9 +339,9 @@ foam.CLASS({
 
           if ( transaction.type === 'AscendantFXTransaction' && transaction.fxRate ) {
             if ( transaction.fxRate !== 1 ) {
-              this.exchangeRateInfo = `1 ${transaction.sourceCurrency} = `
-                + `${transaction.fxRate.toFixed(4)} `
-                + `${transaction.destinationCurrency}`;
+              this.exchangeRateInfo = `1 ${transaction.destinationCurrency} = `
+                + `${(1 / transaction.fxRate).toFixed(4)} `
+                + `${transaction.sourceCurrency}`;
             }
 
             this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
@@ -612,7 +612,6 @@ foam.CLASS({
                 isPayable: this.isPayable,
                 isForm: false,
                 isDetailView: true,
-                hasSaveOption: false,
                 invoice: this.invoice.clone()
               });
               clone.launch(X, X.controllerView);

@@ -34,7 +34,7 @@ foam.CLASS({
     ^ .link {
       color: #7404EA;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 16px;
       text-align: center;
     }
     ^ .success-title {
@@ -42,8 +42,8 @@ foam.CLASS({
       text-align: center
     }
     ^ .success-body {
-      font-size: 14px;
-      width: 500px;
+      font-size: 16px;
+      line-height: 24px;
     }
     ^success-img {
       width: 53px;
@@ -193,9 +193,9 @@ foam.CLASS({
           .start('p')
             .addClass('success-body').addClass('subdued-text')
             .add(this.body_$)
-            .br()
-            .br()
-            .br()
+          .end()
+          .start('p')
+            .addClass('success-body').addClass('subdued-text')
             .add(this.REF)
             .add(this.invoice.referenceId)
           .end()

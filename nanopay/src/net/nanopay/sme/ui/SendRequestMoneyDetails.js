@@ -153,7 +153,6 @@ foam.CLASS({
       this.SUPER();
       var newButtonLabel = `New`;
       var existingButtonLabel = `Existing`;
-      this.hasNextOption = true;
       this.hasBackOption = false;
       // Update the next button label
       this.nextLabel = 'Next';
@@ -218,8 +217,6 @@ foam.CLASS({
               return ! bool ? null :
               this.E().start()
                 .add(this.slot((invoice) => {
-                  // Enable next button
-                  this.hasNextOption = true;
                   var detailView =  this.E().addClass('block')
                     .start().addClass('header')
                       .add(`${this.EXISTING_HEADER} ${this.type}`)
@@ -230,8 +227,6 @@ foam.CLASS({
                         this.isForm = false;
                         this.isList = true;
                         this.isDetailView = false;
-                        // Disable next button
-                        this.hasNextOption = false;
                       })
                     .end();
 
@@ -268,8 +263,6 @@ foam.CLASS({
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
-        // Enable the next button
-        this.hasNextOption = true;
         // Get the previous temp invoice data
         if ( this.Invoice.isInstance(this.dataFromNewInvoiceForm) ) {
           this.invoice = this.dataFromNewInvoiceForm;
@@ -284,8 +277,6 @@ foam.CLASS({
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;
-        // Disable the next button
-        this.hasNextOption = false;
         // Save the temp invoice data in a property
         if ( this.invoice.id === 0 ) { // only do this for temp invoice.
           this.dataFromNewInvoiceForm = this.invoice;

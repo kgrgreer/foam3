@@ -136,17 +136,21 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isForm',
-      value: true
+      value: true,
+      documentation: `Form stands for the new invoice form 
+      or the draft invoice form.`
     },
     {
       class: 'Boolean',
       name: 'isDetailView',
-      value: false
+      value: false,
+      documentation: 'DetailView stands for the invoice detail view.'
     },
     {
       class: 'Boolean',
       name: 'isList',
-      value: false
+      value: false,
+      documentation: 'List stands for the invoice list'
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -173,18 +177,21 @@ foam.CLASS({
     },
     {
       name: 'hasSaveOption',
-      expression: function(isForm) {
-        if ( isForm && this.invoice.status !== this.InvoiceStatus.DRAFT ) {
-          return true;
-        }
-        return false;
+      expression: function(isForm, position) {
+        return isForm &&
+          this.invoice.status !== this.InvoiceStatus.DRAFT &&
+          position === 0;
       },
       documentation: `An expression is required for the 1st step of the 
         send/request payment flow to show the 'Save as draft' button.`
     },
     {
       name: 'hasNextOption',
-      value: true
+      expression: function(isList) {
+        return ! isList;
+      },
+      documentation: `An expression is required for the 1st step of the 
+        send/request payment flow to show the 'Save as draft' button.`
     },
     {
       name: 'hasExitOption',
@@ -379,7 +386,7 @@ foam.CLASS({
             await this.transactionDAO.put(transaction);
           } catch ( error ) {
             console.error(error);
-            this.notify(error.message, 'error');
+            this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
             this.loadingSpin.hide();
             return;
           }
@@ -437,9 +444,6 @@ foam.CLASS({
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
-        /* This if condition is required when redirecting
-           from Upcoming & overdue of the dashboard */
-        if ( this.isList === true ) return false;
         return hasSaveOption;
       },
       isEnabled: function(errors) {
@@ -491,11 +495,6 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        this.invoice.contactId = undefined;
-        this.invoice.amount = 0;
-        this.invoice.invoiceNumber = '';
-        this.invoice.purchaseOrder = '';
-        this.invoice.dueDate = undefined;
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
         } else {
