@@ -897,49 +897,41 @@ foam.CLASS({
 
     /* contact status styles */
 
+    [class*="contact-status"] {
+      display: inline-block;
+      font-size: 11px;
+    }
+
+    [class*="contact-status-circle"] {
+      height: 6px;
+      width: 6px;
+      margin-bottom: 1px;
+      margin-right: 4px;
+      border-radius: 50%;
+    }
+
     .contact-status-Active {
       color: #07941f;
-      display: inline-block;
     }
 
     .contact-status-circle-Active {
-      height: 7px;
-      width: 7px;
-      margin-bottom: 2px;
-      margin-right: 4px;
       background-color: #07941f;
-      border-radius: 50%;
-      display: inline-block;
     }
 
     .contact-status-NotInvited {
       color: #424242;
-      display: inline-block;
     }
 
     .contact-status-circle-NotInvited {
-      height: 7px;
-      width: 7px;
-      margin-bottom: 2px;
-      margin-right: 4px;
       background-color: #424242;
-      border-radius: 50%;
-      display: inline-block;
     }
 
     .contact-status-Invited {
       color: #545d87;
-      display: inline-block;
     }
 
     .contact-status-circle-Invited {
-      height: 7px;
-      width: 7px;
-      margin-bottom: 2px;
-      margin-right: 4px;
       background-color: #545d87;
-      border-radius: 50%;
-      display: inline-block;
     }
 
     /* Styles for ResetPassword/SigninView/SignupView */
