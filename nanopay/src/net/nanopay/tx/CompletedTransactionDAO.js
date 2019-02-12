@@ -20,14 +20,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'obj',
-          of: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ],
-      javaReturns: 'foam.core.FObject',
+      type: 'foam.core.FObject',
       javaCode: `
       Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
       Transaction txn = (Transaction) getDelegate().put_(x, obj);

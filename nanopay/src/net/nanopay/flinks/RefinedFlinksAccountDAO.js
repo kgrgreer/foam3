@@ -57,10 +57,10 @@ foam.CLASS({
     },
     {
       name: 'refine',
-      javaReturns: 'FlinksAccountsDetailResponse',
+      type: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
       args: [
-        { of: 'foam.core.X', name: 'x' },
-        { of: 'foam.core.FObject', name: 'obj' }
+        { type: 'Context',           name: 'x' },
+        { type: 'foam.core.FObject', name: 'obj' }
       ],
       javaCode: `
         FlinksAccountsDetailResponse result = (FlinksAccountsDetailResponse) obj.fclone();
@@ -79,10 +79,9 @@ foam.CLASS({
     },
     {
       name: 'reset',
-      javaReturns: 'void',
       args: [
-        { of: 'foam.core.FObject', name: 'obj' },
-        { of: 'String', name: 'field' }
+        { type: 'foam.core.FObject', name: 'obj' },
+        { type: 'String', name: 'field' }
       ],
       javaCode: `
         PropertyInfo prop = (PropertyInfo) AccountWithDetailModel.getOwnClassInfo()

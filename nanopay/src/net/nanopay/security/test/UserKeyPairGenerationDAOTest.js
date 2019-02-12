@@ -25,10 +25,10 @@ foam.CLASS({
 
   constants: [
     {
-      type: 'User',
+      type: 'foam.nanos.auth.User',
       name: 'INPUT',
       documentation: 'Original input',
-      value: `
+      javaValue: `
         new User.Builder(EmptyX.instance())
           .setId(1100)
           .setFirstName("Rumple")
@@ -72,16 +72,16 @@ foam.CLASS({
       name: 'UserKeyPairGenerationDAO_KeysUseProvidedAlgorithm',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         },
         {
-          name: 'generatedKeyPair', javaType: 'net.nanopay.security.KeyPairEntry'
+          name: 'generatedKeyPair', type: 'net.nanopay.security.KeyPairEntry'
         },
         {
-          name: 'privateKey', javaType: 'net.nanopay.security.PrivateKeyEntry'
+          name: 'privateKey', type: 'net.nanopay.security.PrivateKeyEntry'
         },
         {
-          name: 'publicKey', javaType: 'net.nanopay.security.PublicKeyEntry'
+          name: 'publicKey', type: 'net.nanopay.security.PublicKeyEntry'
         }
       ],
       javaCode: `
@@ -93,13 +93,13 @@ foam.CLASS({
       name: 'UserKeyPairGenerationDAO_KeysUseProvidedKeySize',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         },
         {
-          name: 'UserKeyPairGenerationDAO', javaType: 'foam.dao.DAO'
+          name: 'UserKeyPairGenerationDAO', type: 'foam.dao.DAO'
         },
         {
-          name: 'publicKey', javaType: 'net.nanopay.security.PublicKeyEntry'
+          name: 'publicKey', type: 'net.nanopay.security.PublicKeyEntry'
         }
       ],
       javaCode: `
@@ -112,13 +112,13 @@ foam.CLASS({
       name: 'UserKeyPairGenerationDAO_KeysBase64Encoded',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         },
         {
-          name: 'privateKey', javaType: 'net.nanopay.security.PrivateKeyEntry'
+          name: 'privateKey', type: 'net.nanopay.security.PrivateKeyEntry'
         },
         {
-          name: 'publicKey', javaType: 'net.nanopay.security.PublicKeyEntry'
+          name: 'publicKey', type: 'net.nanopay.security.PublicKeyEntry'
         }
       ],
       javaCode: `
@@ -130,13 +130,13 @@ foam.CLASS({
       name: 'UserKeyPairGenerationDAO_PrivateKeyIsEncrypted',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         },
         {
-          name: 'privateKey', javaType: 'net.nanopay.security.PrivateKeyEntry'
+          name: 'privateKey', type: 'net.nanopay.security.PrivateKeyEntry'
         },
         {
-          name: 'keyStoreManager', javaType: 'net.nanopay.security.KeyStoreManager'
+          name: 'keyStoreManager', type: 'net.nanopay.security.KeyStoreManager'
         }
       ],
       javaCode: `
@@ -159,13 +159,13 @@ foam.CLASS({
       name: 'UserKeyPairGenerationDAO_MultiplePutsGenerateOnlyOneKeyPair',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         },
         {
-          name: 'UserKeyPairGenerationDAO', javaType: 'foam.dao.DAO'
+          name: 'UserKeyPairGenerationDAO', type: 'foam.dao.DAO'
         },
         {
-          name: 'keyPairDAO', javaType: 'foam.dao.DAO'
+          name: 'keyPairDAO', type: 'foam.dao.DAO'
         }
       ],
       javaCode: `
@@ -180,13 +180,13 @@ foam.CLASS({
       name: 'UserKeyPairGenerationDAO_FailOnIncompatibleAlgorithmKeySizeCombination',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         },
         {
-          name: 'UserKeyPairGenerationDAO', javaType: 'foam.dao.DAO'
+          name: 'UserKeyPairGenerationDAO', type: 'foam.dao.DAO'
         },
         {
-          name: 'keyPairDAO', javaType: 'foam.dao.DAO'
+          name: 'keyPairDAO', type: 'foam.dao.DAO'
         }
       ],
       javaCode: `

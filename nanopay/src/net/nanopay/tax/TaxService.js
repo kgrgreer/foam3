@@ -4,8 +4,8 @@ foam.INTERFACE({
     methods: [
         {
             name: 'getTaxQuote',
-            javaReturns: 'net.nanopay.tax.TaxQuote',
-            returns: 'Promise',
+            type: 'net.nanopay.tax.TaxQuote',
+            async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [
                 {

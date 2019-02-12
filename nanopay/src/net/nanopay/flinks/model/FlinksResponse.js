@@ -23,14 +23,14 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      javaType: 'foam.lib.json.UnknownFObjectArray',
+      type: 'foam.lib.json.UnknownFObjectArray',
       javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       javaJSONParser: 'new foam.lib.json.UnknownFObjectArrayParser()',
       name: 'Links',
       visibility: 'RO'
     },
     {
-      javaType: 'foam.lib.json.UnknownFObject',
+      type: 'foam.lib.json.UnknownFObject',
       javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
       name: 'ValidationDetails',
@@ -42,7 +42,7 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      //javaType: 'net.nanopay.flinks.model.LoginModel',
+      //type: 'net.nanopay.flinks.model.LoginModel',
       //javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       //javaJSONParser: 'new foam.lib.json.FObjectParser(net.nanopay.flinks.model.LoginModel.class)',
       class: 'FObjectProperty',

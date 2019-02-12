@@ -61,8 +61,6 @@ foam.CLASS({
       type: 'String',
       name: 'FIREBASE_DYNAMIC_URL',
       value: 'http://n43qr.app.goo.gl',
-      swiftType: 'String',
-      swiftValue: '"http://n43qr.app.goo.gl"'
     }
   ],
 

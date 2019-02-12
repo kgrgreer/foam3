@@ -212,19 +212,19 @@ try {
     {
       name: 'getCustomers',
       documentation: `Retrieves the query and parses to Query models for Customers`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'net.nanopay.integration.ResultResponse',
+          type: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -251,19 +251,19 @@ try {
     {
       name: 'getVendors',
       documentation: `Retrieves the query and parses to Query models for Vendors`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'net.nanopay.integration.ResultResponse',
+          type: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -290,19 +290,19 @@ try {
     {
       name: 'getBills',
       documentation: `Retrieves the query and parses to Query models for Bills, then pulls relative data and applys to portal model`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'net.nanopay.integration.ResultResponse',
+          type: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -455,19 +455,19 @@ try {
     {
       name: 'getInvoices',
       documentation: `Retrieves the query and parses to Query models for Invoices, then pulls relative data and applys to portal model`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'net.nanopay.integration.ResultResponse',
+          type: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -624,19 +624,19 @@ try {
     {
       name: 'importContacts',
       documentation: `Retrieves the query and parses to Query models for Customers or Vendors, then pulls relative data and applys to portal model`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'contacts',
-          javaType: 'net.nanopay.integration.quick.model.QuickQueryContact []',
+          type: 'net.nanopay.integration.quick.model.QuickQueryContact []',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         },
       ],
       javaCode:
@@ -767,23 +767,23 @@ try {
     {
       name: 'getRequest',
       documentation: `Makes all GET requests for QuickBooks`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'ts',
-          javaType: 'net.nanopay.integration.quick.QuickTokenStorage',
+          type: 'net.nanopay.integration.quick.QuickTokenStorage',
         },
         {
           name: 'config',
-          javaType: 'net.nanopay.integration.quick.QuickConfig',
+          type: 'net.nanopay.integration.quick.QuickConfig',
         },
         {
           name: 'query',
-          javaType: 'String',
+          type: 'String',
         }
       ],
       javaCode:
@@ -810,11 +810,11 @@ try {
     {
       name: 'getDate',
       documentation: `Converts the data string`,
-      javaReturns: 'Date',
+      type: 'Date',
       args: [
         {
           name: 'str',
-          javaType: 'String',
+          type: 'String',
         },
       ],
       javaCode:
@@ -828,19 +828,19 @@ try {
     {
       name: 'getAttachments',
       documentation: `Gets attachments for the invoices`,
-      javaReturns: 'foam.nanos.fs.File[]',
+      javaType: 'foam.nanos.fs.File[]',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'type',
-          javaType: 'String',
+          type: 'String',
         },
         {
           name: 'value',
-          javaType: 'String',
+          type: 'String',
         },
       ],
       javaCode:
@@ -897,16 +897,16 @@ return files;`,
     {
       name: 'resyncInvoice',
       documentation: `Updates Quickbooks with a processed invoice`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X',
+          type: 'Context',
           swiftType: 'Context?'
         },
         {
           name: 'nano',
-          javaType: 'net.nanopay.integration.quick.model.QuickInvoice',
+          type: 'net.nanopay.integration.quick.model.QuickInvoice',
         },
       ],
       javaCode:
