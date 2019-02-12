@@ -8,7 +8,6 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
-import foam.util.SafetyUtil;
 import net.nanopay.admin.model.AccountStatus;
 
 public class NewUserOnboardedEmailDAO extends ProxyDAO {

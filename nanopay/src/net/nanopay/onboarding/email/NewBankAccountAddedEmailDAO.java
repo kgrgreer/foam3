@@ -14,7 +14,6 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 
 public class NewBankAccountAddedEmailDAO extends ProxyDAO {
-  protected DAO userDAO_;
   protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
     @Override
     protected StringBuilder initialValue() {
@@ -31,7 +30,6 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
 
   public NewBankAccountAddedEmailDAO(X x, DAO delegate) {
     super(x, delegate);
-    userDAO_ = (DAO) x.get("userDAO");
   }
 
   @Override
@@ -47,23 +45,32 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
     if ( ! account.getEnabled() ) {
       return getDelegate().put_(x, obj);
     }
-    // Check 2: Doesn't send email if the status of the account isn't verified
+
+    // Check 2: Don't send email if account was deleted
+    if ( ! account.getDeleted() ) {
+      return getDelegate().put_(x, obj);
+    }
+
+    // Check 3: Doesn't send email if the status of the account isn't verified
     if ( ! BankAccountStatus.VERIFIED.equals(account.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
+
     // Gathering additional information
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
-    // Check 3: Under current implentation, BankAccount is added to dao prior verification so oldAccount should exist
+    // Check 4: Under current implementation, BankAccount is added to dao prior verification so oldAccount should exist
     if ( oldAccount == null ) {
       return super.put_(x, obj);
     }
-    // Check 4: Don't send email if account has been previously verified
+
+    // Check 5: Don't send email if account has been previously verified
     if ( oldAccount.getStatus().equals(account.getStatus()) ) {
       return getDelegate().put_(x, obj);
     }
+
     // Gathering additional information
-    User        owner      = (User) userDAO_.inX(x).find(account.getOwner());
+    User        owner      = (User) account.findOwner(x);
     PropertyInfo prop = (PropertyInfo) BankAccount.getOwnClassInfo().getAxiomByName("status");
     if ( owner == null ) {
       // log an error since we should be sending an email at this point
@@ -73,7 +80,7 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
         .setBody(message)
         .build();
       ((DAO) x.get("notificationDAO")).put(notification);
-      ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
+      ((Logger) x.get("logger")).info(this.getClass().getSimpleName(), message);
     } 
     // Send email only after passing above checks
     EmailService emailService = (EmailService) x.get("email");
