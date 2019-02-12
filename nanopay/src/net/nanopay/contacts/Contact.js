@@ -110,9 +110,13 @@ foam.CLASS({
         Keeps track of the different states a contact can be in with respect to
         whether the real user has signed up yet or not.
       `,
-      tableCellFormatter: function(status) {
-        // TODO: Make sure this is styled correctly.
-        this.start('span').add(status.label).end();
+      tableCellFormatter: function(state, obj) {
+        this.start()
+          .start().addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
+          .start().addClass('contact-status-' + (state.label).replace(/\s+/g, ''))
+            .add(state.label)
+          .end()
+        .end();
       }
     },
     {
