@@ -11,8 +11,8 @@ foam.INTERFACE({
           class: 'String'
         }
       ],
-      returns: 'Promise',
-      javaReturns: 'int'
+      async: true,
+      type: 'Integer'
     }
   ]
 });

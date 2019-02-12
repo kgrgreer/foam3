@@ -8,11 +8,11 @@ foam.INTERFACE({
       args: [
         {
           name: 'account',
-          javaType: 'long'
+          type: 'Long'
         },
         {
           name: 'frequency',
-          javaType: 'net.nanopay.tx.model.Frequency'
+          type: 'net.nanopay.tx.model.Frequency'
         }
       ]
     },
@@ -21,7 +21,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'frequency',
-          javaType: 'net.nanopay.tx.model.Frequency'
+          type: 'net.nanopay.tx.model.Frequency'
         }
       ]
     }

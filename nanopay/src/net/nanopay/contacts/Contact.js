@@ -34,7 +34,7 @@ foam.CLASS({
   constants: [
     {
       name: 'NAME_MAX_LENGTH',
-      type: 'int',
+      type: 'Integer',
       value: 70
     }
   ],
@@ -170,10 +170,10 @@ foam.CLASS({
       name: 'validate',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String containsDigitRegex = ".*\\\\d.*";

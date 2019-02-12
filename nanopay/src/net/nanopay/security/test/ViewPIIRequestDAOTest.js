@@ -24,10 +24,10 @@ foam.CLASS({
 
   constants: [
     {
-      type: 'User',
+      type: 'foam.nanos.auth.User',
       name: 'INPUT',
       documentation: 'Original input',
-      value: `
+      javaValue: `
         new User.Builder(EmptyX.instance())
           .setId(1100)
           .setFirstName("Rumple")
@@ -54,7 +54,7 @@ foam.CLASS({
       name: 'ViewPIIRequestDAO_DAOIsAuthenticated',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
       javaCode: `
@@ -135,10 +135,10 @@ foam.CLASS({
       name: 'ViewPIIRequestDAO_ApprovedValidRequestIsFrozen',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         },
         {
-          name: 'vprDAO', javaType: 'foam.dao.DAO'
+          name: 'vprDAO', type: 'foam.dao.DAO'
         }
       ],
       javaCode: `
@@ -164,10 +164,10 @@ foam.CLASS({
       name: 'ViewPIIRequestDAO_DownloadTimesAreLogged',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         },
         {
-          name: 'vprDAO', javaType: 'foam.dao.DAO'
+          name: 'vprDAO', type: 'foam.dao.DAO'
         }
       ],
       javaCode: `
@@ -193,10 +193,10 @@ foam.CLASS({
       name: 'ViewPIIRequestDAO_EnforcesOnlyValidOneRequestPerUser',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         },
         {
-          name: 'vprDAO', javaType: 'foam.dao.DAO'
+          name: 'vprDAO', type: 'foam.dao.DAO'
         }
       ],
       javaCode: `

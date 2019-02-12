@@ -75,17 +75,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
 
     Logger logger = (Logger) x.get("logger");
@@ -197,7 +186,7 @@ foam.CLASS({
         name: 'transaction'
       }
     ],
-    javaReturns: 'String',
+    type: 'String',
     javaCode: `
     String pacsEndToEndId = null;
     if ( null != transaction.getReferenceData() && transaction.getReferenceData().length > 0 ) {

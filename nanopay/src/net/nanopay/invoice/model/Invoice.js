@@ -472,9 +472,9 @@ foam.CLASS({
     {
       name: `validate`,
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         DAO bareUserDAO = (DAO) x.get("bareUserDAO");
@@ -614,8 +614,6 @@ foam.RELATIONSHIP({
       this.add(obj.payee ? obj.payee.label() : 'N/A');
     }
   },
-  sourceMethod: { flags: ['js', 'java'] },
-  targetMethod: { flags: ['js', 'java'] },
 });
 
 
@@ -663,6 +661,4 @@ foam.RELATIONSHIP({
       this.add(obj.payer ? obj.payer.label() : 'N/A');
     }
   },
-  sourceMethod: { flags: ['js', 'java'] },
-  targetMethod: { flags: ['js', 'java'] },
 });

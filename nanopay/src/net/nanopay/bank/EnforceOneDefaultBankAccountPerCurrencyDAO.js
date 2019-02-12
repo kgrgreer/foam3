@@ -24,17 +24,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
       if ( ! ( obj instanceof BankAccount ) ) {
         return getDelegate().put_(x, obj);
@@ -89,7 +78,7 @@ foam.CLASS({
           of: 'foam.core.FObject'
         }
       ],
-      javaReturns: 'foam.core.FObject',
+      type: 'foam.core.FObject',
       javaCode: `
       if ( ! ( obj instanceof BankAccount ) || ! ((Account) obj).getIsDefault() ) {
         return getDelegate().remove_(x, obj);
@@ -113,7 +102,6 @@ foam.CLASS({
           of: 'net.nanopay.bank.BankAccount'
         }
       ],
-      javaReturns: 'void',
       javaCode: `
       // set the current account to not default
       currentDefaultAccount.setIsDefault(false);

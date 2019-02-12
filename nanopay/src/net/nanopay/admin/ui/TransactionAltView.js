@@ -3,8 +3,6 @@ foam.CLASS({
    name: 'TransactionAltView',
    extends: 'foam.u2.view.AltView',
 
-   import: ['appConfig'],
-
    requires: [
      'foam.nanos.menu.Menu',
      'foam.u2.view.TableView'

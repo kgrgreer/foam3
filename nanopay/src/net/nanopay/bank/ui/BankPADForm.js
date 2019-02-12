@@ -5,12 +5,6 @@ foam.CLASS({
 
   documentation: 'Agreement form for PAD Authorization',
 
-  import: [
-    'countryDAO',
-    'regionDAO',
-    'user'
-  ],
-
   css: `
     ^section-header {
       font-size: 16px;

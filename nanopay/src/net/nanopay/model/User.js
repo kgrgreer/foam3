@@ -1,4 +1,6 @@
 foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
 
   documentation: 'Base user in the system. Utlized for authentication,' +
@@ -38,7 +40,6 @@ foam.CLASS({
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
       documentation: 'Proprietor details for business.',
-      flags: ['js']
     },
     {
       class: 'Reference',
@@ -46,7 +47,6 @@ foam.CLASS({
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'General economic grouping for business.',
-      flags: ['js'],
       view: function(args, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
