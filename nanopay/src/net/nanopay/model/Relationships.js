@@ -288,7 +288,7 @@ foam.CLASS({
         Group groupToBePut = (Group) groupDAO.inX(x).find(this.getGroup());
 
         if ( groupToBePut == null ) {
-          throw new IllegalStateException("Junction object group doesn't exist.");
+          throw new IllegalStateException(String.format("No group found with id '%s'.", this.getGroup()));
         }
 
         if ( ! auth.check(x, (String) buildPermissionString(x, this, "add")) ) {
