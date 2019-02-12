@@ -143,6 +143,11 @@ foam.CLASS({
     ^annotation {
       font-size: 10px;
     }
+    ^primary-disable {
+      background: #4d38e1 !important;
+      cursor: default;
+      opacity: 0.7;
+    }
   `,
 
   messages: [
@@ -573,8 +578,16 @@ foam.CLASS({
           .end()
           .start()
             .addClass('align-right')
-            .start(this.PAY_NOW).addClass('sme').addClass('button').addClass('primary').end()
-            .start(this.EDIT).addClass('sme').addClass('button').addClass('primary').end()
+            .start(this.PAY_NOW)
+              .addClass('sme').addClass('button').addClass('primary')
+            .end()
+            .start(this.EDIT)
+              .addClass('sme').addClass('button').addClass('primary')
+            .end()
+            .start(this.PAID)
+              .addClass('sme').addClass('button').addClass('primary')
+              .addClass(this.myClass('primary-disable'))
+            .end()
           .end()
         .endContext();
     },
@@ -652,13 +665,23 @@ foam.CLASS({
       }
     },
     {
+      name: 'paid',
+      label: 'Paid',
+      isAvailable: function() {
+        return this.isPayable && this.isProcessOrComplete;
+      },
+      code: function(X) {
+        // No action needs to do here
+      }
+    },
+    {
       name: 'sendReminder',
       label: 'Send a reminder',
       isAvailable: function() {
         // return this.isSendRemindable;
         return false;
       },
-      code: async function(X) {
+      code: function(X) {
         // TODO: need to write a service that would be called by client,
         // for this feature. But need to confirm feature requirements prior
         // to implementation. Some have suggested this action should not exist
