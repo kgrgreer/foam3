@@ -113,8 +113,8 @@ public class UserRegistrationDAO
             );
 
           if ( params.containsKey("inviteeEmail") ) {
-            if (invitation == null || params.get("inviteeEmail") != invitation.getEmail()) {
-              throw new RuntimeException(("Email does not match invited email."));
+            if ( invitation == null || ! SafetyUtil.equals(params.get("inviteeEmail"), invitation.getEmail()) ) {
+              throw new RuntimeException("Email does not match invited email.");
             }
           } else {
             throw new RuntimeException("Invitation is out of date. Please request a new one.");
