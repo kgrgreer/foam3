@@ -71,6 +71,9 @@ foam.CLASS({
     ^ .foam-u2-DateView {
       width: 229px;
     }
+    ^ .additiveBottomSpace {
+      padding-bottom: 50px;
+    }
   `,
 
   properties: [
@@ -255,16 +258,14 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Boolean',
       name: 'isUSABasedCompany',
       expression: function(viewData) {
-        if ( viewData.isCanadian == 'undefined' ) {
-          viewData.isCanadian = false;
-          if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
-            viewData.isCanadian = true;
-          }
+        viewData.isCanadian = false;
+        if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
+          viewData.isCanadian = true;
         }
-        return ! viewData.isCanadian;
+        return (! viewData.isCanadian);
       }
     },
     {
@@ -335,15 +336,15 @@ foam.CLASS({
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.ANNUAL_LABEL).end()
-            .tag(this.ANNUAL_FIELD, { onKey: true })
+            .tag(this.ANNUAL_FIELD_DOMESTIC, { onKey: true })
           .end()
           .start().addClass('label-input').addClass('half-container')
             .start().addClass('label').add(this.estimatedLabel$).end()
-            .tag(this.ESTIMATED_FIELD, { onKey: true })
+            .tag(this.ESTIMATED_FIELD_DOMESTIC, { onKey: true })
           .end()
-          .start().addClass('label-input')
+          .start().addClass('label-input').addClass('additiveBottomSpace')
             .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
-            .start(this.FIRST_TRADE_DATE_FIELD).end()
+            .start(this.FIRST_TRADE_DATE_FIELD_DOMESTIC).end()
           .end()
         .end()
         .start().addClass('label-input')
