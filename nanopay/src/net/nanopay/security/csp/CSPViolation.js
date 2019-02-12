@@ -8,7 +8,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      doumentation: 'Sequence number.'
+      documentation: 'Sequence number.'
     },
     {
       class: 'DateTime',

@@ -57,7 +57,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      swiftName: 'swiftDescription'
     },
     {
       class: 'Boolean',
