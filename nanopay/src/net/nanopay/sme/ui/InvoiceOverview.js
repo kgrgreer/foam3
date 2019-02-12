@@ -144,9 +144,8 @@ foam.CLASS({
       font-size: 10px;
     }
     ^primary-disable {
-      background: #4d38e1 !important;
-      cursor: default;
-      opacity: 0.7;
+      background: #bdb4fd !important;
+      cursor: default !important;
     }
   `,
 
@@ -303,10 +302,17 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isVoidable',
       documentation: `Either payable or receivable invoices that are unpaid or overdue, are voidable`,
-      expression: function(invoice$status, invoice$createdBy) {
-        return this.user.id === invoice$createdBy &&
-        ( invoice$status === this.InvoiceStatus.UNPAID ||
-          invoice$status === this.InvoiceStatus.OVERDUE );
+      expression: function(invoice$status, invoice$createdBy, isPayable) {
+        if ( this.user.id === invoice$createdBy &&
+          (invoice$status === this.InvoiceStatus.UNPAID ||
+            invoice$status === this.InvoiceStatus.OVERDUE) ) {
+              return true;
+        } else if ( isPayable &&
+          invoice$status === this.InvoiceStatus.PENDING_APPROVAL ) {
+          return true;
+        } else {
+          return false;
+        }
       }
     },
     {
