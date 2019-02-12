@@ -56,7 +56,7 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
     BankAccount oldAccount = (BankAccount) getDelegate().find_(x, account.getId());
 
     // Check 3: Doesn't send email if account has been previously verified
-    if ( oldAccount.getStatus().equals(account.getStatus()) )
+    if ( oldAccount == null || oldAccount.getStatus().equals(account.getStatus()) )
     return getDelegate().put_(x, obj);
 
     // Gathering additional information
