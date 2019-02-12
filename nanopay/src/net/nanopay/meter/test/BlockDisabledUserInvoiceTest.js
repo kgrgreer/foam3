@@ -35,7 +35,7 @@ foam.CLASS({
     },
     {
       name: 'setUserStatus',
-      javaReturns: 'User',
+      type: 'foam.nanos.auth.User',
       args: [
         { of: 'String', name: 'email' },
         { of: 'net.nanopay.admin.model.AccountStatus', name: 'status' }
@@ -55,7 +55,7 @@ foam.CLASS({
     },
     {
       name: 'findOrCreateBankAccount',
-      javaReturns: 'CABankAccount',
+      type: 'net.nanopay.bank.CABankAccount',
       args: [
         { of: 'User', name: 'user' }
       ],
@@ -77,14 +77,14 @@ foam.CLASS({
     },
     {
       name: 'buildInvoice',
-      javaReturns: 'Invoice',
+      type: 'net.nanopay.invoice.model.Invoice',
       args: [
         { of: 'User', name: 'payer' },
         { of: 'User', name: 'payee' }
       ],
       javaCode: `
         return new Invoice.Builder(x_)
-          .setPayerId(payer.getId())
+          .setPayerId(payer.getId())	
           .setPayeeId(payee.getId())
           .setAccount(findOrCreateBankAccount(payer).getId())
           .setSourceCurrency("CAD")

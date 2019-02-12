@@ -37,17 +37,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
     // NOTE: for requests such as RetailTransaction, it is
     // the responsibility of, perhaps a RetailTransactionDAO, to
@@ -105,7 +94,7 @@ foam.CLASS({
         },
         {
           name: 'message',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `

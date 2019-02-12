@@ -95,15 +95,15 @@ foam.CLASS({
     {
       name: 'IMPURITY_THRESHOLD',
       documentation: 'A journal is rolled over after this threshold is reached.',
-      type: 'double',
+      type: 'Double',
       value: 0.85
     },
     {
       name: 'MIN_RECORDS',
       documentation: `The impurity threshold is used only after these many
         records exist in the journal.`,
-      type: 'long',
-      value: '4300000000L'
+      type: 'Long',
+      javaValue: '4300000000L'
     }
   ],
 
@@ -169,7 +169,7 @@ foam.CLASS({
       name: 'getNextJournalNumber',
       documentation: `Scan the journals directory and retrieve the next journal
         number.`,
-      javaReturns: 'long',
+      type: 'Long',
       javaCode: `
         File folder = new File(System.getProperty("JOURNAL_HOME"));
         File[] listOfFiles = folder.listFiles();
@@ -196,7 +196,7 @@ foam.CLASS({
     {
       name: 'getNextJournal',
       documentation: `Scan the journals directory and retrieve the next journal.`,
-      javaReturns: 'File',
+      javaType: 'File',
       javaCode: `
         File file = null;
 
@@ -213,7 +213,7 @@ foam.CLASS({
       name: 'getImageFileNumber',
       documentation: `Scan the journals directory and retrieve the image journal
         number to be read.`,
-      javaReturns: 'long',
+      type: 'Long',
       javaCode: `
         File folder = new File(System.getProperty("JOURNAL_HOME"));
         File[] listOfFiles = folder.listFiles();
@@ -279,7 +279,7 @@ foam.CLASS({
     {
       name: 'isJournalImpure',
       synchronized: true,
-      javaReturns: 'boolean',
+      type: 'Boolean',
       javaCode: `
         return getTotalRecords() != 0 && (double) getImpurityLevel() / (double) getTotalRecords() > IMPURITY_THRESHOLD && getTotalRecords() >= MIN_RECORDS;
       `
@@ -288,8 +288,8 @@ foam.CLASS({
       name: 'incrementRecord',
       args: [
         {
+          type: 'Boolean',
           name: 'impure',
-          class: 'Boolean'
         }
       ],
       javaCode: `
@@ -305,7 +305,7 @@ foam.CLASS({
     {
       name: 'getPrivateKey',
       documentation: 'Fetches the Private key used to sign the image file.',
-      javaReturns: 'PrivateKey',
+      javaType: 'PrivateKey',
       javaCode: `
         KeyStoreManager keyStoreManager = (KeyStoreManager) getX().get("keyStoreManager");
         KeyStore.PrivateKeyEntry entry;
@@ -325,11 +325,11 @@ foam.CLASS({
       name: 'createJournal',
       args: [
         {
-          class: 'String',
+          type: 'String',
           name: 'name'
         }
       ],
-      javaReturns: 'java.io.File',
+      javaType: 'java.io.File',
       javaCode: `
         try {
           getLogger().info("RollingJournal :: Creating journal: " + name);
@@ -362,7 +362,7 @@ foam.CLASS({
           name: 'fileFrom'
         },
         {
-          javaType: 'String',
+          type: 'String',
           name: 'fileToName'
         }
       ],
@@ -417,12 +417,11 @@ foam.CLASS({
       ],
       args: [
         {
-          class: 'Object',
           javaType: 'BufferedWriter',
           name: 'writer'
         },
         {
-          class: 'String',
+          type: 'String',
           name: 'record'
         }
       ],
@@ -439,7 +438,6 @@ foam.CLASS({
         empty and all of the DAOs have been read (dumped) into the Queue.`,
       args: [
         {
-          class: 'Object',
           name: 'image',
           javaType: 'Image'
         }
@@ -490,14 +488,13 @@ foam.CLASS({
       args: [
         {
           name: 'serviceName',
-          javaType: 'String'
+          type: 'String'
         },
         {
           name: 'dao',
-          javaType: 'foam.dao.DAO'
+          type: 'foam.dao.DAO'
         },
         {
-          class: 'Object',
           name: 'image',
           javaType: 'Image'
         },
@@ -623,7 +620,7 @@ foam.CLASS({
       args: [
         {
           name: 'journalName',
-          class: 'String'
+          type: 'String'
         }
       ],
       javaThrows: [ 'java.io.IOException' ],
@@ -684,10 +681,10 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         },
         {
-          of: 'FObject',
+          type: 'foam.core.FObject',
           name: 'obj'
         }
       ],
@@ -714,14 +711,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         },
         {
-          of: 'FObject',
+          type: 'foam.core.FObject',
           name: 'old'
         },
         {
-          of: 'FObject',
+          type: 'foam.core.FObject',
           name: 'nu'
         }
       ],
@@ -754,10 +751,10 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         },
         {
-          of: 'FObject',
+          type: 'foam.core.FObject',
           name: 'obj'
         }
       ],
@@ -833,11 +830,11 @@ foam.CLASS({
       args: [
         {
           name: 'serviceName',
-          class: 'String'
+          type: 'String'
         },
         {
           name: 'serviceDAO',
-          javaType: 'DAO'
+          type: 'foam.dao.DAO'
         }
       ],
       javaCode: `

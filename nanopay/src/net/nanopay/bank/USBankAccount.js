@@ -76,10 +76,10 @@ foam.CLASS({
   methods: [
    {
      name: 'getBankCode',
-     javaReturns: 'String',
+     type: 'String',
      args: [
        {
-         name: 'x', javaType: 'foam.core.X'
+         name: 'x', type: 'Context'
        }
      ],
      javaCode: `

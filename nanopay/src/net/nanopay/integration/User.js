@@ -1,6 +1,7 @@
 foam.CLASS({
+  package: 'net.nanopay.integration',
+  name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
-
   properties: [
     {
       class: 'foam.core.Enum',

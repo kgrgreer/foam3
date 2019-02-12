@@ -5,104 +5,104 @@ foam.INTERFACE({
   methods: [
   {
     name: 'authorize',
-    javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
+    type: 'net.nanopay.flinks.model.FlinksResponse',
+    async: true,
     javaThrows: [ 'foam.nanos.auth.AuthenticationException'],
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       },
       {
         name: 'institution',
-        javaType: 'String'
+        type: 'String'
       },
       {
         name: 'username',
-        javaType: 'String'
+        type: 'String'
       },
       {
         name: 'password',
-        javaType: 'String'
+        type: 'String'
       },
       {
-        class: 'FObjectProperty',
-        of: 'foam.nanos.auth.User',
+        type: 'foam.nanos.auth.User',
         name: 'currentUser'
       }
     ]
   },
   {
     name: 'challengeQuestion',
-    javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
+    type: 'net.nanopay.flinks.model.FlinksResponse',
+    async: true,
     javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       },
       {
         name: 'institution',
-        javaType: 'String'
+        type: 'String'
       },
       {
         name: 'username',
-        javaType: 'String'
+        type: 'String'
       },
       {
         name: 'requestId',
-        javaType: 'String'
+        type: 'String'
       },
       {
         name: 'map1',
-        javaType: 'java.util.Map'
+        type: 'Map'
       },
       {
         name: 'type',
-        javaType: 'String'
+        type: 'String'
       },
       {
-        class: 'FObjectProperty',
-        of: 'foam.nanos.auth.User',
+        type: 'foam.nanos.auth.User',
         name: 'currentUser'
       }
     ]
   },
   {
     name: 'getAccountSummary',
-    javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
+    type: 'net.nanopay.flinks.model.FlinksResponse',
+    async: true,
     javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       },
       {
         name: 'requestId',
-        javaType: 'String'
+        type: 'String'
       },
       {
-        class: 'FObjectProperty',
-        of: 'foam.nanos.auth.User',
+        type: 'foam.nanos.auth.User',
         name: 'currentUser'
       }
     ]
   },
   {
     name: 'pollAsync',
-    javaReturns: 'net.nanopay.flinks.model.FlinksResponse',
+    type: 'net.nanopay.flinks.model.FlinksResponse',
+    async: true,
     javaThrows: [ 'foam.nanos.auth.AuthenticationException' ],
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       },
       {
         name: 'requestId',
-        javaType: 'String'
+        type: 'String'
       },
       {
-        class: 'FObjectProperty',
-        of: 'foam.nanos.auth.User',
+        type: 'foam.nanos.auth.User',
         name: 'currentUser'
       }
     ]

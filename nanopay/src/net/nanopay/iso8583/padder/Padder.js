@@ -7,25 +7,25 @@ foam.INTERFACE({
   methods: [
     {
       name: 'pad',
-      javaReturns: 'String',
+      type: 'String',
       args: [
         {
           name: 'data',
-          javaType: 'String'
+          type: 'String'
         },
         {
           name: 'maxLength',
-          javaType: 'int'
+          type: 'Integer'
         }
       ]
     },
     {
       name: 'unpad',
-      javaReturns: 'String',
+      type: 'String',
       args: [
         {
           name: 'data',
-          javaType: 'String'
+          type: 'String'
         }
       ]
     }

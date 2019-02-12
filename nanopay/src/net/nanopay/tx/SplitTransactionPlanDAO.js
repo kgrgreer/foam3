@@ -48,17 +48,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
       TransactionQuote quote = (TransactionQuote) obj;
 
@@ -244,15 +233,15 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'sourceAccount',
-          javaType: 'net.nanopay.account.Account'
+          type: 'net.nanopay.account.Account'
         },
         {
           name: 'destinationAccount',
-          javaType: 'net.nanopay.account.Account'
+          type: 'net.nanopay.account.Account'
         }
       ],
       javaCode: `
@@ -270,7 +259,7 @@ foam.CLASS({
       args: [
         {
           name: 'txn',
-          of: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
       javaCode: `

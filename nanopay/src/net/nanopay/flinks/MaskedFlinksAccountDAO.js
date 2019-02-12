@@ -54,9 +54,9 @@ foam.CLASS({
     },
     {
       name: 'mask',
-      javaReturns: 'FlinksAccountsDetailResponse',
+      type: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
       args: [
-        { of: 'foam.core.FObject', name: 'obj' }
+        { type: 'foam.core.FObject', name: 'obj' }
       ],
       javaCode: `
         FlinksAccountsDetailResponse result = (FlinksAccountsDetailResponse) obj.fclone();
@@ -73,9 +73,9 @@ foam.CLASS({
     },
     {
       name: 'maskedAccountNumber',
-      javaReturns: 'String',
+      type: 'String',
       args: [
-        { of: 'String', name: 'accountNumber' }
+        { type: 'String', name: 'accountNumber' }
       ],
       javaCode: `
         int maskedLength = accountNumber.length() - 4;

@@ -70,7 +70,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Verify your bank account' },
-    { name: 'INSTRUCTIONS_1', message: 'To verify that you own this account, we have made a micro-deposit (a small transaction between $0.01-$0.99).  This will appear in your account records in 2-3 business days. ' },
+    { name: 'INSTRUCTIONS_1', message: 'To verify that you own this account, we have made a micro-deposit (a small transaction between $0.01-$0.99).  This will appear in your account records in 2-3 business days.' },
     { name: 'INSTRUCTIONS_2', message: 'When the micro-deposit appears, enter the amount of the transaction below to verify your bank account.' },
     { name: 'MICRO', message: 'Micro deposit amount' },
     { name: 'MICRO_PLACEHOLDER', message: 'Enter micro-deposit amount' },

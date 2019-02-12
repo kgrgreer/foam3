@@ -35,7 +35,7 @@ foam.CLASS({
     },
     {
       name: 'setUserStatus',
-      javaReturns: 'User',
+      type: 'foam.nanos.auth.User',
       args: [
         { of: 'String', name: 'email' },
         { of: 'net.nanopay.admin.model.AccountStatus', name: 'status' }
@@ -55,7 +55,7 @@ foam.CLASS({
     },
     {
       name: 'findOrCreateBankAccount',
-      javaReturns: 'CABankAccount',
+      type: 'net.nanopay.bank.CABankAccount',
       args: [
         { of: 'User', name: 'user' }
       ],
@@ -77,7 +77,7 @@ foam.CLASS({
     },
     {
       name: 'buildTransaction',
-      javaReturns: 'Transaction',
+      type: 'net.nanopay.tx.model.Transaction',
       args: [
         { of: 'User', name: 'sender' },
         { of: 'User', name: 'receiver' }

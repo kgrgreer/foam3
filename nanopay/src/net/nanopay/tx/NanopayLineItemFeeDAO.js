@@ -35,7 +35,7 @@ foam.CLASS({
           of: 'foam.core.FObject'
         }
       ],
-      javaReturns: 'foam.core.FObject',
+      type: 'foam.core.FObject',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
@@ -62,7 +62,7 @@ foam.CLASS({
           of: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'net.nanopay.tx.model.Transaction',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
       if ( transaction == null ||

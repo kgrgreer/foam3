@@ -40,7 +40,6 @@ foam.CLASS({
     },
     {
       name: 'logoutAgent',
-      javaReturns: 'void',
       args: [
         { of: 'User', name: 'agent' },
         { of: 'DAO', name: 'entitiesDAO'}
@@ -56,7 +55,6 @@ foam.CLASS({
     },
     {
       name: 'logoutUser',
-      javaReturns: 'void',
       args: [
         { of: 'User', name: 'user' },
         { of: 'User', name: 'entity' }

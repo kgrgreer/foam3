@@ -52,8 +52,8 @@ foam.CLASS({
   constants: [
     {
       name: 'STATUS_BLACKLIST',
-      type: 'Set<TransactionStatus>',
-      value: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+      javaType: 'Set<TransactionStatus>',
+      javaValue: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
         add(TransactionStatus.REFUNDED);
         add(TransactionStatus.PENDING);
       }});`
@@ -450,14 +450,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'net.nanopay.tx.model.Transaction',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         if ( oldTxn == null ) return this;
         Transaction newTx = (Transaction) oldTxn.fclone();
@@ -471,7 +471,7 @@ foam.CLASS({
       args: [
         {
           name: 'other',
-          javaType: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
       javaCode: `
@@ -483,7 +483,7 @@ foam.CLASS({
     },
     {
       name: 'isActive',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       javaCode: `
          return false;
       `
@@ -496,7 +496,7 @@ foam.CLASS({
       args: [
         {
           name: 'transferArr',
-          javaType: 'Transfer[]'
+          type: 'net.nanopay.tx.Transfer[]'
         }
       ],
       javaCode: `
@@ -514,14 +514,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'Boolean',
+      type: 'Boolean',
       javaCode: `
         if ( getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED &&
              ( oldTxn == null ||
@@ -538,14 +538,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'Boolean',
+      type: 'Boolean',
       javaCode: `
         return false;
       `
@@ -555,14 +555,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'Transfer[]',
+      type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
         List all = new ArrayList();
         TransactionLineItem[] lineItems = getLineItems();
@@ -583,9 +583,9 @@ foam.CLASS({
     {
       name: `validate`,
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaCode: `
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
@@ -651,8 +651,8 @@ foam.CLASS({
     {
       name: 'sendCompletedNotification',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+        { name: 'x', type: 'Context' },
+        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
       `
@@ -660,8 +660,8 @@ foam.CLASS({
     {
       name: 'sendReverseNotification',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+        { name: 'x', type: 'Context' },
+        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
       `
@@ -670,9 +670,9 @@ foam.CLASS({
       documentation: 'Returns childrens status.',
       name: 'getState',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'net.nanopay.tx.model.TransactionStatus',
+      type: 'net.nanopay.tx.model.TransactionStatus',
       javaCode: `
       if ( getStatus() != TransactionStatus.COMPLETED ) {
         return getStatus();
@@ -700,8 +700,8 @@ foam.CLASS({
         }
       },
       args: [
-        { name: 'forward', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
-        { name: 'reverse', javaType: 'net.nanopay.tx.TransactionLineItem[]' }
+        { name: 'forward', type: 'net.nanopay.tx.TransactionLineItem[]' },
+        { name: 'reverse', type: 'net.nanopay.tx.TransactionLineItem[]' }
       ],
       javaCode: `
     if ( forward != null && forward.length > 0 ) {
@@ -721,10 +721,10 @@ foam.CLASS({
         return to;
       },
       args: [
-        { name: 'from', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
-        { name: 'to', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
+        { name: 'from', type: 'net.nanopay.tx.TransactionLineItem[]' },
+        { name: 'to', type: 'net.nanopay.tx.TransactionLineItem[]' },
      ],
-      javaReturns: 'net.nanopay.tx.TransactionLineItem[]',
+      type: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
       ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
       Arrays.asList(from).forEach((item) -> {
@@ -747,7 +747,7 @@ foam.CLASS({
         }
         return value;
       },
-      javaReturns: 'Long',
+      type: 'Long',
       javaCode: `
         TransactionLineItem[] lineItems = getLineItems();
         Long value = 0L;
@@ -771,7 +771,7 @@ foam.CLASS({
         }
         return value;
       },
-      javaReturns: 'Long',
+      type: 'Long',
       javaCode: `
         TransactionLineItem[] lineItems = getLineItems();
         Long value = 0L;
@@ -787,7 +787,7 @@ foam.CLASS({
     {
       name: 'addNext',
       args: [
-        { name: 'txn', javaType: 'net.nanopay.tx.model.Transaction' }
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
       Transaction tx = this;
@@ -805,14 +805,14 @@ foam.CLASS({
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       },
       {
         name: 'oldTxn',
-        javaType: 'Transaction'
+        type: 'net.nanopay.tx.model.Transaction'
       }
     ],
-    javaReturns: 'Transaction',
+    type: 'net.nanopay.tx.model.Transaction',
     javaCode: `
     Transaction ret = limitedClone(x, oldTxn);
     ret.validate(x);
@@ -825,11 +825,11 @@ foam.CLASS({
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       },
       {
         name: 'oldTxn',
-        javaType: 'Transaction'
+        type: 'net.nanopay.tx.model.Transaction'
       }
     ],
     javaCode: `
@@ -844,7 +844,7 @@ foam.CLASS({
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       }
     ],
     javaCode: `
