@@ -67,7 +67,7 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
     PropertyInfo prop = (PropertyInfo) BankAccount.getOwnClassInfo().getAxiomByName("status");
     if ( owner == null ) {
       // log an error since we should be sending an email at this point
-      String message = "Email ment for complaince team Error: Account name = "+account.getName();
+      String message = "Email meant for complaince team Error: Account name = "+account.getName();
       Notification notification = new Notification.Builder(x)
         .setTemplate("NOC")
         .setBody(message)
