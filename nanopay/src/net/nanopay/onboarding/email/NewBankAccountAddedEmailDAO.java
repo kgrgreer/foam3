@@ -61,7 +61,7 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
 
     // Check 4: Under current implementation, BankAccount is added to dao prior verification so oldAccount should exist
     if ( oldAccount == null ) {
-      return super.put_(x, obj);
+      return getDelegate().put_(x, obj);
     }
 
     // Check 5: Don't send email if account has been previously verified
@@ -70,17 +70,16 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
     }
 
     // Gathering additional information
-    User        owner      = (User) account.findOwner(x);
-    PropertyInfo prop = (PropertyInfo) BankAccount.getOwnClassInfo().getAxiomByName("status");
+    User        owner      = (User) account.findOwner(getX());
     if ( owner == null ) {
       // log an error since we should be sending an email at this point
-      String message = "Email meant for complaince team Error: Account name = "+account.getName();
+      String message = "Email meant for complaince team Error - account owner was null: Account name = " + account.getName();
       Notification notification = new Notification.Builder(x)
         .setTemplate("NOC")
         .setBody(message)
         .build();
       ((DAO) x.get("notificationDAO")).put(notification);
-      ((Logger) x.get("logger")).info(this.getClass().getSimpleName(), message);
+      ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), message);
     } 
     // Send email only after passing above checks
     EmailService emailService = (EmailService) x.get("email");
@@ -111,6 +110,6 @@ public class NewBankAccountAddedEmailDAO extends ProxyDAO {
     message.setBody(builder.toString());
     emailService.sendEmail(x, message);
 
-    return account;
+    return getDelegate().put_(x, obj);
   }
 }
