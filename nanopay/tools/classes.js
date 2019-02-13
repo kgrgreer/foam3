@@ -312,6 +312,7 @@ var classes = [
 
   // settings
   'net.nanopay.settings.AcceptanceDocument',
+  'net.nanopay.settings.UserAcceptanceDocument',
   'net.nanopay.settings.AcceptanceDocumentService',
   'net.nanopay.settings.ClientAcceptanceDocumentService',
   // tx tests

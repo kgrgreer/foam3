@@ -425,6 +425,7 @@ FOAM_FILES([
 
   // settings
   { name: 'net/nanopay/settings/AcceptanceDocument' },
+  { name: 'net/nanopay/settings/UserAcceptanceDocument' },
   { name: 'net/nanopay/settings/ClientAcceptanceDocumentService' },
   { name: 'net/nanopay/settings/AcceptanceDocumentService' },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
