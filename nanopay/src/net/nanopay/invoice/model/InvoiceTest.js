@@ -19,7 +19,7 @@ foam.CLASS({
   methods: [
     {
       name: 'runTest',
-      javaReturns: 'void',
+      type: 'Void',
       javaCode: `
         // create mock invoiceDAO
         DAO invoiceDAO = new MDAO(Invoice.getOwnClassInfo());
@@ -67,8 +67,8 @@ foam.CLASS({
     {
       name: 'overdueTest',
       args: [
-        { name: 'invoice', javaType: 'Invoice' },
-        { name: 'invoiceDAO', javaType: 'DAO' }
+        { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+        { name: 'invoiceDAO', type: 'foam.dao.DAO' }
       ],
       javaCode: `
         Count count = (Count) invoiceDAO.where(MLang.EQ(Invoice.STATUS, invoice.getStatus())).select(new Count());
@@ -112,8 +112,8 @@ foam.CLASS({
     {
       name: 'unpaidTest',
       args: [
-        { name: 'invoice', javaType: 'Invoice' },
-        { name: 'invoiceDAO', javaType: 'DAO' }
+        { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+        { name: 'invoiceDAO', type: 'foam.dao.DAO' }
       ],
       javaCode: `
         Count count = (Count) invoiceDAO.where(MLang.EQ(Invoice.STATUS, invoice.getStatus())).select(new Count());
@@ -157,8 +157,8 @@ foam.CLASS({
     {
       name: 'scheduledTest',
       args: [
-        { name: 'invoice', javaType: 'Invoice' },
-        { name: 'invoiceDAO', javaType: 'DAO' }
+        { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+        { name: 'invoiceDAO', type: 'foam.dao.DAO' }
       ],
       javaCode: `
         Count count = (Count) invoiceDAO.where(MLang.EQ(Invoice.STATUS, invoice.getStatus())).select(new Count());
@@ -202,8 +202,8 @@ foam.CLASS({
     {
       name: 'voidTest',
       args: [
-        { name: 'invoice', javaType: 'Invoice' },
-        { name: 'invoiceDAO', javaType: 'DAO' }
+        { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+        { name: 'invoiceDAO', type: 'foam.dao.DAO' }
       ],
       javaCode: `
         Count count = (Count) invoiceDAO.where(MLang.EQ(Invoice.STATUS, invoice.getStatus())).select(new Count());
@@ -245,8 +245,8 @@ foam.CLASS({
     {
       name: 'pendingTest',
       args: [
-        { name: 'invoice', javaType: 'Invoice' },
-        { name: 'invoiceDAO', javaType: 'DAO' }
+        { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+        { name: 'invoiceDAO', type: 'foam.dao.DAO' }
       ],
       javaCode: `
         Count count = (Count) invoiceDAO.where(MLang.EQ(Invoice.STATUS, invoice.getStatus())).select(new Count());
@@ -288,8 +288,8 @@ foam.CLASS({
     {
       name: 'paidTest',
       args: [
-        { name: 'invoice', javaType: 'Invoice' },
-        { name: 'invoiceDAO', javaType: 'DAO' }
+        { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+        { name: 'invoiceDAO', type: 'foam.dao.DAO' }
       ],
       javaCode: `
         Count count = (Count) invoiceDAO.where(MLang.EQ(Invoice.STATUS, invoice.getStatus())).select(new Count());

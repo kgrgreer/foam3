@@ -5,15 +5,16 @@ foam.INTERFACE({
   methods: [
     {
       name: 'findDefault',
-      javaReturns: 'net.nanopay.account.DigitalAccount',
+      async: true,
+      type: 'net.nanopay.account.DigitalAccount',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'denomination',
-          javaType: 'String'
+          type: 'String'
         }
       ]
     }

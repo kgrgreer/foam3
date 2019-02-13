@@ -65,7 +65,7 @@ public class TransactionTest
 
     tq = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, tq);
     test(tq.getPlan().getClass()== FXTransaction.class, "best plan is an "+tq.getPlan().getClass());
-    test(tq.getPlan().getCost() !=0,tq.getPlan().getCost().toString());
+    test(tq.getPlan().getCost() !=0,String.valueOf(tq.getPlan().getCost()));
     //txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, txn).fclone();
     test(tq.getPlan().getClass()==FXTransaction.class,"Transaction is of type FXTransaction");
     test(tq.getPlan().getStatus()==TransactionStatus.COMPLETED,"FXTransaction is in completed status");
@@ -108,8 +108,8 @@ public class TransactionTest
       .setPayerId(sender_.getId())
       .setSourceAccount(((CABankAccount) ((DAO) x_.get("localAccountDAO"))
         .find(AND(EQ(CABankAccount.OWNER,sender_.getId()),INSTANCE_OF(CABankAccount.class)))).getId())
-      .setInvoiceId(inv.getId())
-      .setAmount(123)
+        .setInvoiceId(inv.getId())
+        .setAmount(123)
       .build();
 
     TransactionQuote tq = new TransactionQuote();

@@ -12,14 +12,14 @@ foam.INTERFACE({
     {
       name: 'pack',
       documentation: 'Packs an ISO 8583 Component into the OutputStream',
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: [
         'java.io.IOException'
       ],
       args: [
         {
           name: 'm',
-          javaType: 'net.nanopay.iso8583.ISOComponent'
+          type: 'net.nanopay.iso8583.ISOComponent'
         },
         {
           name: 'out',
@@ -30,14 +30,14 @@ foam.INTERFACE({
     {
       name: 'unpack',
       documentation: 'Reads an ISO 8583 Component from an InputStream',
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: [
         'java.io.IOException'
       ],
       args: [
         {
           name: 'm',
-          javaType: 'net.nanopay.iso8583.ISOComponent'
+          type: 'net.nanopay.iso8583.ISOComponent'
         },
         {
           name: 'in',

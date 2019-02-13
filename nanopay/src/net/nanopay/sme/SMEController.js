@@ -6,7 +6,6 @@ foam.CLASS({
   documentation: 'SME Top-Level Application Controller.',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.CABankAccount',
@@ -22,7 +21,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
     'net.nanopay.sme.ui.SuccessPasswordView',
-    'net.nanopay.sme.ui.ToastNotification',
+    'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
     'net.nanopay.sme.ui.VerifyEmail'
   ],
@@ -171,7 +170,6 @@ foam.CLASS({
 
       self.clientPromise.then(function(client) {
         self.setPrivate_('__subContext__', client.__subContext__);
-        foam.__context__.register(foam.u2.UnstyledActionView, 'foam.u2.ActionView');
         self.getCurrentUser();
 
         window.onpopstate = function(event) {
@@ -224,16 +222,16 @@ foam.CLASS({
         // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
         self.BankPadAuthorization.create();
 
-        foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
-        foam.__context__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
-        foam.__context__.register(self.SMEModal, 'foam.u2.dialog.Popup');
-        foam.__context__.register(self.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
-        foam.__context__.register(self.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
-        foam.__context__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
-        foam.__context__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
-        foam.__context__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
-        foam.__context__.register(self.ToastNotification, 'foam.u2.dialog.NotificationMessage');
-        foam.__context__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
+        self.__subContext__.register(self.ActionView, 'foam.u2.ActionView');
+        self.__subContext__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
+        self.__subContext__.register(self.SMEModal, 'foam.u2.dialog.Popup');
+        self.__subContext__.register(self.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
+        self.__subContext__.register(self.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
+        self.__subContext__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
+        self.__subContext__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
+        self.__subContext__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
+        self.__subContext__.register(self.ToastNotification, 'foam.u2.dialog.NotificationMessage');
+        self.__subContext__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
 
         self.findBalance();
         self.addClass(self.myClass())

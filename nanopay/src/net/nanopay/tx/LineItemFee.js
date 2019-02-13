@@ -65,12 +65,10 @@ foam.CLASS({
       args: [
         {
           name: 'transactionAmount',
-          javaType: 'long',
-          swiftType: 'Int',
+          type: 'Long',
         }
       ],
-      javaReturns: 'long',
-      swiftReturns: 'Int',
+      type: 'Long',
       javaCode: `
       if ( this.getAmount().getType() == LineItemAmountType.TOTAL ) {
         return this.getAmount().getValue();

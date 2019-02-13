@@ -6,9 +6,9 @@ foam.CLASS({
 
   constants: [
     {
-      type: 'java.util.HashSet<String>',
+      javaType: 'java.util.HashSet<String>',
       name: 'SUPPORTED_TYPES',
-      value: `new java.util.HashSet() {{
+      javaValue: `new java.util.HashSet() {{
         add("QuestionAndAnswer");
         add("MultipleChoice");
         add("MultipleChoiceMultipleAnswers");
@@ -36,7 +36,7 @@ foam.CLASS({
   methods: [
     {
       name: 'validate',
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: [ 'java.lang.Exception' ],
       javaCode: `
         String type = getType();
