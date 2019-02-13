@@ -16,9 +16,9 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Object',
+      class: 'FObjectProperty',
       name: 'predicate',
-      javaType: 'net.nanopay.meter.compliance.CompliancePredicate',
+      type: 'net.nanopay.meter.compliance.CompliancePredicate',
       javaFactory: `
         return new CompliancePredicate() {
           @Override

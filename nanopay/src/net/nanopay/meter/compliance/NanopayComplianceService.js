@@ -105,7 +105,7 @@ foam.CLASS({
         },
         {
           name: 'record',
-          javaType: 'net.nanopay.meter.compliance.ComplianceHistory'
+          type: 'net.nanopay.meter.compliance.ComplianceHistory'
         }
       ],
       javaCode: `
@@ -142,15 +142,15 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'entityId',
-          javaType: 'Object'
+          type: 'Object'
         },
         {
           name: 'entityDaoKey',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `
@@ -200,15 +200,15 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'record',
-          javaType: 'net.nanopay.meter.compliance.ComplianceHistory'
+          type: 'net.nanopay.meter.compliance.ComplianceHistory'
         },
         {
           name: 'reason',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `

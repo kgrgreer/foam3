@@ -25,7 +25,7 @@ foam.INTERFACE({
         },
         {
           name: 'record',
-          javaType: 'net.nanopay.meter.compliance.ComplianceHistory'
+          type: 'net.nanopay.meter.compliance.ComplianceHistory'
         }
       ]
     }

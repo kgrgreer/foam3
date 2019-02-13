@@ -38,7 +38,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.meter.compliance.ComplianceValidator',
+      type: 'net.nanopay.meter.compliance.ComplianceValidator',
       name: 'validator',
       documentation: 'Validator class that knows how to validate a given object'
     }
@@ -67,7 +67,7 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'entity',

@@ -36,7 +36,7 @@ foam.CLASS({
       args: [
         {
           name: 'obj',
-          javaType: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ],
       javaCode: `
@@ -48,17 +48,20 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'obj',
-          javaType: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ],
       javaCode: `
         User user = (User) obj;
         Predicate predicate = obj instanceof Business
-          ? new ContainsIC(MLang.prepare(Record.ENTITY), MLang.prepare(user.getBusinessName()))
+          ? new ContainsIC.Builder(x)
+            .setArg1(MLang.prepare(Record.ENTITY))
+            .setArg2(MLang.prepare(user.getBusinessName()))
+            .build()
           // TODO: Add support for fuzzy string matching for name search
           : MLang.AND(
               MLang.EQ(Record.LAST_NAME, user.getLastName().toUpperCase()),

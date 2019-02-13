@@ -97,11 +97,11 @@ foam.CLASS({
   methods: [
     {
       name: 'getEntity',
-      javaReturns: 'foam.core.FObject',
+      type: 'foam.core.FObject',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         }
       ],
       javaCode: `

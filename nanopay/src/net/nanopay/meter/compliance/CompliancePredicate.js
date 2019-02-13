@@ -7,15 +7,15 @@ foam.INTERFACE({
   methods: [
     {
       name: 'test',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       args: [
         {
           name: 'oldObj',
-          javaType: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         },
         {
           name: 'newObj',
-          javaType: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ]
     }
