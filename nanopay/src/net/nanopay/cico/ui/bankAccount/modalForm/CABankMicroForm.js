@@ -6,7 +6,6 @@ foam.CLASS({
   documentation: 'Input micro-deposit amount screen',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -115,14 +114,14 @@ foam.CLASS({
         var isVerified = await this.bankAccountVerification
           .verify(null, this.bank.id, this.amount*100);
       } catch (error) {
-        ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
+        this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
         return;
       } finally {
         this.isConnecting = false;
       }
 
       if ( isVerified ) {
-        this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS }));
+        this.ctrl.notify(this.SUCCESS);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
       }

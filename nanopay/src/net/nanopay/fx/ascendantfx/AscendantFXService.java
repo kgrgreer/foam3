@@ -41,7 +41,10 @@ public class AscendantFXService
       sbuf.append("\n");
       // send soap message
       sbuf.append("Soap Response--------------------------\n");
+      long startTime = System.currentTimeMillis();
       SOAPMessage response = sendMessage("GetQuote", message);
+      long estimatedTime = System.currentTimeMillis() - startTime;
+      sbuf.append("Time Spent is: " + estimatedTime + "-----------------------\n");
       ByteArrayOutputStream responseBaos = new ByteArrayOutputStream();
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
@@ -82,7 +85,10 @@ public class AscendantFXService
       sbuf.append("\n");
       // send soap message
       sbuf.append("Soap Response--------------------------\n");
+      long startTime = System.currentTimeMillis();
       SOAPMessage response = sendMessage("SubmitDeal", message);
+      long estimatedTime = System.currentTimeMillis() - startTime;
+      sbuf.append("Time Spent is: " + estimatedTime + "-----------------------\n");
       ByteArrayOutputStream responseBaos = new ByteArrayOutputStream();
       response.writeTo(responseBaos);
       sbuf.append(responseBaos.toString());
