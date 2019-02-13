@@ -52,7 +52,6 @@ foam.CLASS({
     { name: 'LEGAL_NAME_LABEL', message: 'Legal name' },
     { name: 'JOB_TITLE_LABEL', message: 'Job title' },
     { name: 'ADDRESS_LABEL', message: 'Residential address' },
-    { name: 'PRINCIPAL_TYPE_LABEL', message: 'Principal type' },
     { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of birth' },
     { name: 'OWNER_COUNT_LABEL', message: 'Principal owner' }
   ],
@@ -77,10 +76,6 @@ foam.CLASS({
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.ADDRESS_LABEL).end()
               .start().addClass('table-content').addClass('subdued-text').add(owner.address.getAddress()).end()
-            .end()
-            .start().addClass('info-container')
-              .start().addClass('table-content').add(this.PRINCIPAL_TYPE_LABEL).end()
-              .start().addClass('table-content').addClass('subdued-text').add(owner.principleType).end()
             .end()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.DATE_OF_BIRTH_LABEL).end()

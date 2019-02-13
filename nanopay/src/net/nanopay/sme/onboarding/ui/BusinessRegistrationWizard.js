@@ -586,8 +586,7 @@ foam.CLASS({
                     lastName: this.viewData.beneficialOwner.lastName,
                     birthday: this.viewData.beneficialOwner.birthday,
                     address: this.viewData.beneficialOwner.address,
-                    jobTitle: this.viewData.beneficialOwner.jobTitle,
-                    principleType: this.viewData.beneficialOwner.principleType
+                    jobTitle: this.viewData.beneficialOwner.jobTitle
                   });
                   await this.principalOwnersDAO.put(beneficialOwner);
                   var beneficialOwnerArray = (await this.principalOwnersDAO.select()).array;

@@ -181,12 +181,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'principleType',
-      label: 'Principal Type',
-      documentation: 'Type of principal owner. (shareholder, owner etc...)'
-    },
-    {
       class: 'Boolean',
       name: 'welcomeEmailSent',
       documentation: 'Determines whether welcome email has been sent.',

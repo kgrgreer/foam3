@@ -242,21 +242,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'principalTypeField',
-      value: 'Shareholder',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: ['Shareholder', 'Owner', 'Officer']
-      },
-      postSet: function(o, n) {
-        this.viewData.agent.principleType = n;
-      },
-      factory: function() {
-        return this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
-          'Shareholder';
-      },
-    },
-    {
       class: 'FObjectProperty',
       name: 'identification',
       of: 'net.nanopay.model.PersonalIdentification',
@@ -1201,7 +1186,6 @@ foam.CLASS({
     { name: 'INVITE_TITLE', message: 'Invite users to your business' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
     { name: 'LAST_NAME_LABEL', message: 'Last Name' },
-    { name: 'PRINCIPAL_LABEL', message: 'Principal Type' },
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
@@ -1271,10 +1255,6 @@ foam.CLASS({
           .start().addClass('label-input')
             .start().addClass('label').add(this.LAST_NAME_LABEL).end()
             .start(this.LAST_NAME_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PRINCIPAL_LABEL).end()
-            .start(this.PRINCIPAL_TYPE_FIELD).end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.JOB_LABEL).end()

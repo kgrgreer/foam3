@@ -462,17 +462,6 @@ properties: [
     }
   },
   {
-    name: 'principleTypeField',
-    value: 'Shareholder',
-    view: {
-      class: 'foam.u2.view.ChoiceView',
-      choices: ['Shareholder', 'Owner', 'Officer']
-    },
-    postSet: function(o, n) {
-      this.viewData.beneficialOwner.principleType = n;
-    }
-  },
-  {
     class: 'Date',
     name: 'birthdayField',
     tableCellFormatter: function(date) {
@@ -557,7 +546,6 @@ messages: [
   { name: 'LAST_NAME_LABEL', message: 'Last Name' },
   { name: 'JOB_TITLE_LABEL', message: 'Job Title' },
   { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
-  { name: 'PRINCIPLE_TYPE_LABEL', message: 'Principal Type' },
   { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
   { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
   { name: 'PRINCIPAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
@@ -607,7 +595,6 @@ methods: [
   function initE() {
     var self = this;
     this.nextLabel = 'Complete';
-    this.principleTypeField = 'Shareholder';
     this.scrollToTop();
 
     var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin) {
@@ -649,10 +636,6 @@ methods: [
                 .start(this.LAST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
             .end()
-            .start().addClass('label-input')
-              .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
-              .start(this.PRINCIPLE_TYPE_FIELD, { mode$: modeSlotSameAsAdmin }).end()
-            .end()
 
             .start()
               .on('click', function() {
@@ -688,7 +671,7 @@ methods: [
           editColumnsEnabled: false,
           disableUserSelection: true,
           columns: [
-            'legalName', 'jobTitle', 'principleType',
+            'legalName', 'jobTitle',
             foam.core.Property.create({
               name: 'delete',
               label: '',
@@ -757,7 +740,6 @@ methods: [
     this.lastNameField = '';
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = '';
-    this.principleTypeField = 'Shareholder';
     this.birthdayField = null;
 
     this.addressField = this.Address.create({});
@@ -776,7 +758,6 @@ methods: [
     this.lastNameField = user.lastName;
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = user.jobTitle;
-    this.principleTypeField = user.principleType;
     this.birthdayField = user.birthday;
 
     this.addressField = user.address;
@@ -797,8 +778,6 @@ methods: [
       this.addressField = this.viewData.agent.address;
       this.birthdayField = this.viewData.agent.birthday;
       this.ownershipPercent = this.viewData.beneficialOwner.ownershipPercent;
-      this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
-        'Shareholder';
     }
   },
 
@@ -846,7 +825,6 @@ actions: [
       principalOwner.birthday = this.birthdayField;
       principalOwner.address = this.addressField;
       principalOwner.jobTitle = this.jobTitleField;
-      principalOwner.principleType = this.principleTypeField;
 
       if ( ! this.validatePrincipalOwner(principalOwner) ) return;
 

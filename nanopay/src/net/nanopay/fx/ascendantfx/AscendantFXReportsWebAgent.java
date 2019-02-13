@@ -247,7 +247,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
     String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
     String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
-    String principalType = signingOfficer.getPrincipleType();
     IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
     String nameOfPerson = ipHistory.findUser(x).getLegalName();
     String timestamp = sdf.format(ipHistory.getCreated());
@@ -271,7 +270,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         "Head of an International Organization (HIO), or a close associate or family member of any such person? " + isPEPHIORelated));
       list.add(new ListItem("Name: " + name));
       list.add(new ListItem("Title: " + title));
-      list.add(new ListItem("Principal Type: " + principalType));
       list.add(new ListItem("Date of birth: " + birthday));
       list.add(new ListItem("Phone number: " + phoneNumber));
       list.add(new ListItem("Email address: " + email));
@@ -342,7 +340,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String firstName = beneficialOwner.getFirstName();
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
-          String principalType = beneficialOwner.getPrincipleType();
           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
           String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
           String city = beneficialOwner.getAddress().getCity();
@@ -358,7 +355,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("First name: " + firstName));
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
-          list.add(new ListItem("Principal type: " + principalType));
           list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
