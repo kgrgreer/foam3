@@ -141,7 +141,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.auth.PublicUserInfo',
   'net.nanopay.account.Account',
-  'net.nanopay.account.AccountAccountJunction',
+  //'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
   'net.nanopay.tx.BalanceHistory',
   'net.nanopay.account.DigitalAccount',

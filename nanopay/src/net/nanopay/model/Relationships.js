@@ -152,14 +152,14 @@ foam.CLASS({
   ]
 });
 
-foam.RELATIONSHIP({
-  cardinality: '*:*',
-  sourceModel: 'net.nanopay.account.Account',
-  targetModel: 'net.nanopay.account.Account',
-  forwardName: 'children',
-  inverseName: 'parent',
-  junctionDAOKey: 'accountJunctionDAO'
-});
+// foam.RELATIONSHIP({
+//   cardinality: '*:*',
+//   sourceModel: 'net.nanopay.account.Account',
+//   targetModel: 'net.nanopay.account.Account',
+//   forwardName: 'children',
+//   inverseName: 'parent',
+//   junctionDAOKey: 'accountJunctionDAO'
+// });
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
