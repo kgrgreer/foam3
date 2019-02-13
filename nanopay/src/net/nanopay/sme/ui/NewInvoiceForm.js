@@ -30,7 +30,8 @@ foam.CLASS({
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'foam.u2.dialog.Popup'
   ],
 
   css: `
@@ -128,12 +129,31 @@ foam.CLASS({
       margin-top: 16px;
       min-height: 264px;
     }
+    ^ .small-error-icon {
+      height: 10px;
+      margin-top: 2px;
+      margin-right: 2px;
+    }
+    ^ .add-banking-information {
+      float: right;
+      color: #6a39ff;
+      margin-left: 30px;
+      text-decoration: underline;
+    }
+    ^ .foam-u2-view-RichChoiceView.invalid .foam-u2-view-RichChoiceView-selection-view, 
+    ^ .error-box {
+      border-color: #f91c1c;
+      background: #fff6f6;
+    }
+    ^ .error-box-outline {
+      border-color: #f91c1c;
+    }
   `,
 
   messages: [
     {
       name: 'PAYABLE_ERROR_MSG',
-      message: 'The selected contact cannot receive payment in the selected currency.'
+      message: 'Banking information for this contact must be provided'
     },
     {
       name: 'RECEIVABLE_ERROR_MSG',
@@ -154,6 +174,18 @@ foam.CLASS({
     {
       name: 'ADD_NOTE',
       message: 'Note'
+    },
+    {
+      name: 'ADD_BANK',
+      message: 'Add Banking Information'
+    },
+    {
+      name: 'UNSUPPORTED_CURRENCY1',
+      message: `Sorry, we don't support `
+    },
+    {
+      name: 'UNSUPPORTED_CURRENCY2',
+      message: ' for this contact'
     }
   ],
 
@@ -203,11 +235,21 @@ foam.CLASS({
       factory: function() {
         return this.type === 'payable' ? 'Send to' : 'Request from';
       }
+    },
+    {
+      class: 'String',
+      name: 'selectedCurrency'
+    },
+    {
+      class: 'Boolean',
+      name: 'showAddBank',
+      value: false
     }
   ],
 
   methods: [
     function initE() {
+      var self = this;
       // Setup the default destination currency
       this.invoice.destinationCurrency
         = this.currencyType;
@@ -230,32 +272,68 @@ foam.CLASS({
             .add(this.contactLabel)
           .end()
           .startContext({ data: this.invoice })
-            .tag(this.invoice.CONTACT_ID)
+            .start(this.invoice.CONTACT_ID)
+              .enableClass('invalid', this.slot(
+                function(isInvalid, type) {
+                  return isInvalid && type === 'payable';
+                }))
+            .end()
           .endContext()
           .start()
             .show(this.isInvalid$)
             .addClass('validation-failure-container')
-            .add(this.type === 'payable' ?
-              this.PAYABLE_ERROR_MSG :
-              this.RECEIVABLE_ERROR_MSG)
+            .start().show(this.showAddBank$)
+              .start('img').addClass('small-error-icon').attrs({ src: 'images/inline-error-icon.svg' }).end()
+              .add(this.PAYABLE_ERROR_MSG)
+              .start().add(this.ADD_BANK).addClass('add-banking-information')
+                .on('click', async function() {
+                  self.userDAO.find(self.invoice.contactId).then((contact)=>{
+                    self.add(self.Popup.create({ onClose: self.checkUser().bind(self) }).tag({
+                      class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
+                      data: contact
+                    }));
+                  });
+                })
+              .end()
+            .end()
+            .start().show(! (this.type === 'payable'))
+              .add(this.RECEIVABLE_ERROR_MSG)
+            .end()
           .end()
         .end()
         .startContext({ data: this.invoice })
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add('Amount').end()
               .startContext({ data: this })
-                .start(this.CURRENCY_TYPE)
+                .start(this.CURRENCY_TYPE).enableClass('error-box-outline', this.slot(
+                  function(isInvalid, type) {
+                    return isInvalid && type === 'payable';
+                  }))
                   .on('click', () => {
                     this.invoice.destinationCurrency
                       = this.currencyType.alphabeticCode;
                   })
                 .end()
               .endContext()
-                .start().addClass('invoice-amount-input')
-                  .start(this.Invoice.AMOUNT)
-                    .addClass('invoice-input-box')
-                  .end()
+              .start().addClass('invoice-amount-input')
+                .start(this.Invoice.AMOUNT).enableClass('error-box', this.slot(
+                  function(isInvalid, type) {
+                    return isInvalid && type === 'payable';
+                  }))
+                  .addClass('invoice-input-box')
                 .end()
+              .end()  
+              .start().show(this.isInvalid$)
+                .start().show(this.type === 'payable').addClass('validation-failure-container')
+                  .start('img')
+                    .addClass('small-error-icon')
+                    .attrs({ src: 'images/inline-error-icon.svg' })
+                  .end()
+                  .add(this.UNSUPPORTED_CURRENCY1)
+                  .add(this.selectedCurrency$)
+                  .add(this.UNSUPPORTED_CURRENCY2)
+                .end()
+              .end()
             .end()
 
             .start().addClass('invoice-block')
@@ -317,6 +395,20 @@ foam.CLASS({
           .end()
         .endContext()
       .end();
+    },
+    function checkBankAccount() {
+      var self = this;
+      this.userDAO.find(this.invoice.contactId).then(function(contact) {
+        if ( contact && contact.bankAccount ) {
+          self.showAddBank = false;
+          return;
+        }
+        if ( self.type === 'payable' ) {
+          self.showAddBank = true;
+        } else {
+          self.showAddBank = false;
+        }
+      });
     }
   ],
 
@@ -325,6 +417,7 @@ foam.CLASS({
       this.checkUser(this.invoice.destinationCurrency);
     },
     function onCurrencyTypeChange() {
+      this.selectedCurrency = this.currencyType.alphabeticCode === 'CAD' ? 'CAD':'USD';
       this.checkUser(this.currencyType.alphabeticCode);
     },
     function checkUser(currency) {
@@ -345,6 +438,7 @@ foam.CLASS({
           }
         });
       }
+      this.checkBankAccount();
     }
   ]
 });
