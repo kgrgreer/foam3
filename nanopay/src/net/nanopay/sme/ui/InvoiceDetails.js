@@ -285,7 +285,7 @@ foam.CLASS({
               .end()
               .add(this.PromiseSlot.create({
                 promise$: this.formattedAmount$,
-                value: '...',
+                value: '--',
               }))
               .add(' ')
               .add(this.invoice$.dot('destinationCurrency'))
@@ -309,47 +309,61 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start()
+        .start().addClass('invoice-row')
           .start()
             .add(this.ATTACHMENT_LABEL)
             .addClass('bold-label')
           .end()
           .start()
             .add(this.slot(function(invoice$invoiceFile) {
-              return self.E().forEach(invoice$invoiceFile, function(file) {
-                this
-                  .start().addClass(self.myClass('attachment-row'))
-                    .start('img')
-                      .addClass('icon')
-                      .addClass(self.myClass('attachment-icon'))
-                      .attr('src', 'images/attach-icon.svg')
-                    .end()
-                    .start().addClass(self.myClass('attachment'))
-                      .add(file.filename)
-                      .on('click', () => {
-                        // If file.id is not empty, the invoice is created
-                        // and the uploaded file is saved
-                        if ( file.id ) {
-                          window.open(file.address);
-                        } else {
-                          // The uploaded file only exists temporarily
-                          window.open(URL.createObjectURL(file.data.blob));
-                        }
-                      })
-                    .end()
+              if ( invoice$invoiceFile.length !== 0 ) {
+                return self.E().forEach(invoice$invoiceFile, function(file) {
+                  this
+                    .start().addClass(self.myClass('attachment-row'))
+                      .start('img')
+                        .addClass('icon')
+                        .addClass(self.myClass('attachment-icon'))
+                        .attr('src', 'images/attach-icon.svg')
+                      .end()
+                      .start().addClass(self.myClass('attachment'))
+                        .add(file.filename)
+                        .on('click', () => {
+                          // If file.id is not empty, the invoice is created
+                          // and the uploaded file is saved
+                          if ( file.id ) {
+                            window.open(file.address);
+                          } else {
+                            // The uploaded file only exists temporarily
+                            window.open(URL.createObjectURL(file.data.blob));
+                          }
+                        })
+                      .end()
+                    .end();
+                });
+              } else {
+                return self.E()
+                  .start().addClass('invoice-text-left')
+                    .add('No attachments provided')
                   .end();
-              });
+              }
             }))
           .end()
         .end()
-        .br()
-        .start()
-          .addClass('bold-label')
-          .add(this.NOTE_LABEL)
-        .end()
-        .start('span')
-          .addClass('invoice-note')
-          .add(this.invoice$.dot('note'))
+        .start().addClass('invoice-row')
+          .start()
+            .addClass('bold-label')
+            .add(this.NOTE_LABEL)
+          .end()
+          .start('span').addClass('invoice-text-left')
+            .addClass('invoice-note')
+            .add(this.slot(function(invoice$note) {
+              if ( invoice$note ) {
+                return invoice$note;
+              } else {
+                return 'No notes provided';
+              }
+            }))
+          .end()
         .end()
 
         .start()
