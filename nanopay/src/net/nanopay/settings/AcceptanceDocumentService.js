@@ -38,5 +38,26 @@ foam.INTERFACE({
                 },
             ]
         },
+        {
+            name: 'updateUserAcceptanceDocument',
+            args: [
+                {
+                  class: 'Reference',
+                  of: 'foam.nanos.auth.User',
+                  name: 'user',
+                  documentation: 'User to be added as Payee'
+                },
+                {
+                  class: 'Reference',
+                  of: 'net.nanopay.settings.AcceptanceDocument',
+                  name: 'acceptanceDocument',
+                  documentation: 'User to be added as Payee'
+                },
+                {
+                    name: 'accepted',
+                    javaType: 'Boolean'
+                },
+            ]
+        },
     ]
 });

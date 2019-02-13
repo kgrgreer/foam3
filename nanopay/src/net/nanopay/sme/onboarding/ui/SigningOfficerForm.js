@@ -305,6 +305,9 @@ foam.CLASS({
       name: 'canadianScrollBoxOne',
       postSet: function(o, n) {
         this.viewData.canadianScrollBoxOne = n;
+        if ( this.triPartyAgreementCad ) {
+          this.updateUserAcceptance(this.triPartyAgreementCad.id, n);
+        }
       },
       factory: function() {
         return this.viewData.canadianScrollBoxOne = false;
@@ -315,6 +318,9 @@ foam.CLASS({
       name: 'canadianScrollBoxTwo',
       postSet: function(o, n) {
         this.viewData.canadianScrollBoxTwo = n;
+        if ( this.dualPartyAgreementCad ) {
+            this.updateUserAcceptance(this.dualPartyAgreementCad.id, n);
+        }
       },
       factory: function() {
         return this.viewData.canadianScrollBoxTwo = false;
@@ -325,6 +331,9 @@ foam.CLASS({
       name: 'americanScrollBox',
       postSet: function(o, n) {
         this.viewData.americanScrollBox = n;
+        if ( this.triPartyAgreementUsd ) {
+            this.updateUserAcceptance(this.triPartyAgreementUsd.id, n);
+        }
       },
       factory: function() {
         return this.viewData.americanScrollBox = false;
@@ -343,10 +352,11 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.settings.AcceptanceDocument',
       name: 'triPartyAgreementCad',
       view: function(args, x) {
-        var data = x.data$.dot('triPartyAgreementCad');
+        var data = x.data$.dot('triPartyAgreementCad').dot('body');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
         style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
@@ -354,10 +364,11 @@ foam.CLASS({
       displayWidth: 60,
     },
     {
-      class: 'String',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.settings.AcceptanceDocument',
       name: 'triPartyAgreementUsd',
       view: function(args, x) {
-        var data = x.data$.dot('triPartyAgreementUsd');
+        var data = x.data$.dot('triPartyAgreementUsd').dot('body');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
         style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
@@ -365,39 +376,16 @@ foam.CLASS({
       displayWidth: 60,
     },
     {
-      class: 'String',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.settings.AcceptanceDocument',
       name: 'dualPartyAgreementCad',
       view: function(args, x) {
-        var data = x.data$.dot('dualPartyAgreementCad');
+        var data = x.data$.dot('dualPartyAgreementCad').dot('body');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
         style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
       },
       displayWidth: 60,
-    },
-    {
-      class: 'String',
-      name: 'triPartyCadCheckboxText',
-    },
-    {
-      class: 'String',
-      name: 'triPartyUsdCheckboxText',
-    },
-    {
-      class: 'String',
-      name: 'dualPartyCadCheckboxText',
-    },
-    {
-      class: 'String',
-      name: 'triPartyCadLink',
-    },
-    {
-      class: 'String',
-      name: 'triPartyUsdLink',
-    },
-    {
-      class: 'String',
-      name: 'dualPartyCadLink',
     },
   ],
 
@@ -520,7 +508,8 @@ foam.CLASS({
                 .addClass(this.myClass('terms-link'))
                 .add('Download or Print this Agreement Here')
                 .on('click', () => {
-                  window.open(this.triPartyCadLink);
+                  var link = this.triPartyAgreementCad ? this.triPartyAgreementCad.link : '';
+                  window.open(link);
                 })
               .end()
             .show(this.isCanadian$).end()
@@ -529,7 +518,8 @@ foam.CLASS({
                 .addClass(this.myClass('terms-link'))
                 .add('Download or Print this Agreement Here')
                 .on('click', () => {
-                  window.open(this.dualPartyCadLink);
+                  var link = this.dualPartyAgreementCad ? this.dualPartyAgreementCad.link : '';
+                  window.open(link);
                 })
               .end()
             .show(this.isCanadian$).end()
@@ -538,18 +528,19 @@ foam.CLASS({
                 .addClass(this.myClass('terms-link'))
                 .add('Download or Print this Agreement Here')
                 .on('click', () => {
-                  window.open(this.triPartyUsdLink);
+                  var link = this.triPartyAgreementUsd ? this.triPartyAgreementUsd.link : '';
+                  window.open(link);
                 })
               .end()
             .hide(this.isCanadian$).end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyCadCheckboxText$).end()
+              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
             .end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxTwo$ }).add(this.dualPartyCadCheckboxText$).end()
+              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxTwo$ }).add(this.dualPartyAgreementCad$.dot('checkboxText')).end()
             .end()
             .start().addClass('checkBoxes').hide(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.americanScrollBox$ }).add(this.triPartyUsdCheckboxText$).end()
+              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.americanScrollBox$ }).add(this.triPartyAgreementUsd$.dot('checkboxText')).end()
             .end()
           // End of Terms and Services and Compliance stuff
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
@@ -581,28 +572,36 @@ foam.CLASS({
           .tag(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
       .end();
     },
+    async function updateUserAcceptance(id, val) {
+      try {
+        this.acceptanceDocumentService
+          .updateUserAcceptanceDocument(this.user.id, id, val);
+      } catch (error) {
+        console.warn('Error updating user accepted document: ', error);
+      }
+    }
   ],
 
   listeners: [
     async function loadAcceptanceDocuments() {
       try {
-        var triPartyCAD = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementCAD', '');
-        this.triPartyAgreementCad = triPartyCAD ? triPartyCAD.body : '';
-        this.triPartyCadCheckboxText = triPartyCAD ? triPartyCAD.checkboxText : '';
-        this.triPartyCadLink = triPartyCAD ? triPartyCAD.link : '';
-
-        var triPartyUSD = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementUSD', '');
-        this.triPartyAgreementUsd = triPartyUSD ? triPartyUSD.body : '';
-        this.triPartyUsdCheckboxText = triPartyUSD ? triPartyUSD.checkboxText : '';
-        this.triPartyUsdLink = triPartyUSD ? triPartyUSD.link : '';
-
-        var dualPartyCAD = await this.acceptanceDocumentService.getAcceptanceDocument('dualPartyAgreementCad', '');
-        this.dualPartyAgreementCad = dualPartyCAD ? dualPartyCAD.body : '';
-        this.dualPartyCadCheckboxText = dualPartyCAD ? dualPartyCAD.checkboxText : '';
-        this.dualPartyCadLink = dualPartyCAD ? dualPartyCAD.link : '';
+        this.triPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementCAD', '');
       } catch (error) {
+        console.warn('Error occured finding Tri-Party Agreement CAD: ', error);
       }
-    }
+
+      try {
+        this.triPartyAgreementUsd = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementUSD', '');
+      } catch (error) {
+        console.warn('Error occured finding Tri-Party Agreement USD: ', error);
+      }
+
+      try {
+        this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument('dualPartyAgreementCad', '');
+      } catch (error) {
+        console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
+      }
+    },
   ],
 
   actions: [

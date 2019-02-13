@@ -11,10 +11,12 @@ import foam.util.SafetyUtil;
 public class AcceptanceDocumentServer extends ContextAwareSupport implements AcceptanceDocumentService, NanoService {
 
   private DAO acceptanceDocumentDAO_;
+  private DAO userAcceptanceDocumentDAO_;
 
   @Override
   public void start() {
     this.acceptanceDocumentDAO_ = (DAO) getX().get("acceptanceDocumentDAO");
+    this.userAcceptanceDocumentDAO_ = (DAO) getX().get("userAcceptanceDocumentDAO");
   }
 
   public AcceptanceDocument getAcceptanceDocument(String name, String version) throws RuntimeException {
@@ -56,6 +58,23 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
           ));
     }
     return acceptanceDocument;
+  }
+
+  public void updateUserAcceptanceDocument(long user, long acceptanceDocument, Boolean accepted) throws RuntimeException {
+      UserAcceptanceDocument acceptedDocument = (UserAcceptanceDocument) userAcceptanceDocumentDAO_.find(
+      AND(
+        EQ(UserAcceptanceDocument.USER, user),
+        EQ(UserAcceptanceDocument.ACCEPTED_DOCUMENT, acceptanceDocument)
+        )
+      );
+
+      if ( null == acceptedDocument ) {
+        acceptedDocument = new UserAcceptanceDocument.Builder(getX()).setUser(user).setAcceptedDocument(acceptanceDocument).build();
+      }
+
+      acceptedDocument = (UserAcceptanceDocument) acceptedDocument.fclone();
+      acceptedDocument.setAccepted(accepted);
+      userAcceptanceDocumentDAO_.put_(getX(), acceptedDocument);
   }
 
 }
