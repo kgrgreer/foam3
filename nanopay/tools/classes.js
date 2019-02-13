@@ -42,7 +42,6 @@ var classes = [
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.payment.client.ClientPaymentService',
-  //'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
