@@ -85,7 +85,7 @@ public class NewUserOnboardedEmailDAO extends ProxyDAO {
         builder.append("<br><p>Above user does not have a verified bankAccount yet<p>");
       }
 
-      message.setTo(new String[] { "anna@nanopay.net" });
+      message.setTo(new String[] { "enrollment-team@nanopay.net" });
       message.setSubject("New User Onboarded");
       message.setBody(builder.toString());
       emailService.sendEmail(x, message);
