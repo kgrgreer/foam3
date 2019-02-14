@@ -263,7 +263,7 @@ foam.CLASS({
       });
     },
 
-    async function requestLogin() {
+    function requestLogin() {
       var self = this;
       var searchParams;
       var locHash = location.hash;
