@@ -321,14 +321,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isCanadian',
-      expression: function(viewData) {
-        if ( viewData.isCanadian == 'undefined' ) {
-          viewData.isCanadian = false;
-          if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
-            viewData.isCanadian = true;
-          }
-        }
-        return viewData.isCanadian;
+      expression: function() {
+        return vfoam.util.equals(viewData.user.businessAddress.countryId, 'CA');
       }
     },
     {

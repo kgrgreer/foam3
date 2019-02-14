@@ -260,12 +260,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isUSABasedCompany',
-      expression: function(viewData) {
-        viewData.isCanadian = false;
-        if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
-          viewData.isCanadian = true;
-        }
-        return (! viewData.isCanadian);
+      expression: function() {
+        return foam.util.equals(viewData.user.businessAddress.countryId, 'US');
       }
     },
     {
