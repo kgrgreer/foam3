@@ -242,27 +242,33 @@ foam.CLASS({
               message: 'Invalid email address.', type: 'error' }));
           return;
         }
-        var usr = await this.auth.loginByEmail(X, this.email, this.password);
-        if ( ! usr ) return;
-        usr.signUpToken = this.signUpToken;
-        this.user.copyFrom(usr);
-        await this.invitedTokenProcess();
-        if ( this.user && this.user.twoFactorEnabled ) {
-          this.loginSuccess = false;
-          this.stack.push({
-            class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
-          });
-        } else {
-          this.loginSuccess = this.user ? true : false;
-          if ( ! this.user.emailVerified ) {
+
+        try {
+          var usr = await this.auth.loginByEmail(X, this.email, this.password);
+          if ( ! usr ) return;
+          usr.signUpToken = this.signUpToken;
+          this.user.copyFrom(usr);
+          await this.invitedTokenProcess();
+          if ( this.user && this.user.twoFactorEnabled ) {
+            this.loginSuccess = false;
             this.stack.push({
-              class: 'foam.nanos.auth.ResendVerificationEmail'
+              class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
             });
           } else {
-            // This is required for signin
-            window.location.hash = '';
-            window.location.reload();
+            this.loginSuccess = this.user ? true : false;
+            if ( ! this.user.emailVerified ) {
+              this.stack.push({
+                class: 'foam.nanos.auth.ResendVerificationEmail'
+              });
+            } else {
+              // This is required for signin
+              window.location.hash = '';
+              window.location.reload();
+            }
           }
+        } catch (error) {
+          this.messageType = 'error';
+          this.errorMessage = error.message;
         }
       }
     },
