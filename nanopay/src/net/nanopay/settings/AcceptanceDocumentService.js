@@ -4,8 +4,8 @@ foam.INTERFACE({
     methods: [
         {
             name: 'getAcceptanceDocument',
-            javaReturns: 'net.nanopay.settings.AcceptanceDocument',
-            returns: 'Promise',
+            type: 'net.nanopay.settings.AcceptanceDocument',
+            async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [
                 {
@@ -20,8 +20,8 @@ foam.INTERFACE({
         },
         {
             name: 'getTransactionAcceptanceDocument',
-            javaReturns: 'net.nanopay.settings.AcceptanceDocument',
-            returns: 'Promise',
+            type: 'net.nanopay.settings.AcceptanceDocument',
+            async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [
                 {
