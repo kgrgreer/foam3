@@ -288,7 +288,7 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    self.add(self.Popup.create({ onClose: self.checkUser().bind(self) }).tag({
+                    self.add(self.Popup.create({ onClose: self.checkUser.bind(self) }).tag({
                       class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
                       data: contact
                     }));
@@ -322,7 +322,7 @@ foam.CLASS({
                   }))
                   .addClass('invoice-input-box')
                 .end()
-              .end()  
+              .end()
               .start().show(this.isInvalid$)
                 .start().show(this.type === 'payable').addClass('validation-failure-container')
                   .start('img')
