@@ -667,9 +667,6 @@ foam.CLASS({
       label: 'Paid',
       isAvailable: function() {
         return this.isPayable && this.isProcessOrComplete;
-      },
-      code: function(X) {
-        // No action needs to do here
       }
     },
     {
