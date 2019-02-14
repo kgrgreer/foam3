@@ -106,6 +106,9 @@ foam.CLASS({
       margin-right: 5px !important;
       display: inline;
     }
+    ^italic {
+      font-style: italic;
+    }
   `,
 
   constants: [
@@ -319,7 +322,8 @@ foam.CLASS({
               if ( invoice$invoiceFile.length !== 0 ) {
                 return self.E().forEach(invoice$invoiceFile, function(file) {
                   this
-                    .start().addClass(self.myClass('attachment-row'))
+                    .start()
+                      .addClass(self.myClass('attachment-row'))
                       .start('img')
                         .addClass('icon')
                         .addClass(self.myClass('attachment-icon'))
@@ -342,7 +346,9 @@ foam.CLASS({
                 });
               } else {
                 return self.E()
-                  .start().addClass('invoice-text-left')
+                  .start()
+                    .addClass('invoice-text-left')
+                    .addClass(this.myClass('italic'))
                     .add('No attachments provided')
                   .end();
               }
@@ -358,9 +364,15 @@ foam.CLASS({
             .addClass('invoice-note')
             .add(this.slot(function(invoice$note) {
               if ( invoice$note ) {
-                return invoice$note;
+                return self.E()
+                  .start()
+                    .add(invoice$note)
+                  .end();
               } else {
-                return 'No notes provided';
+                return self.E()
+                  .start().addClass(this.myClass('italic'))
+                    .add('No notes provided')
+                  .end();
               }
             }))
           .end()
