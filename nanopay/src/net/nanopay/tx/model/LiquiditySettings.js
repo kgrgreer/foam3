@@ -88,3 +88,18 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'net.nanopay.tx.model',
+  name: 'GroupRefine',
+  refines: 'foam.nanos.auth.Group',
+
+  properties: [
+    {
+      name: 'liquiditySettings',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.LiquiditySettings',
+      factory: function() { return net.nanopay.tx.model.LiquiditySettings.create(); }
+    }
+  ]
+});

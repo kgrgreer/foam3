@@ -92,7 +92,7 @@ foam.CLASS({
     },
     {
       name: 'getHash',
-      javaReturns: 'byte[]',
+      type: 'Byte[]',
       javaThrows: [
         'java.io.UnsupportedEncodingException'
       ],
@@ -110,11 +110,11 @@ foam.CLASS({
       name: 'getParentHashes',
       documentation: `Returns the hashes for the parent nodes for the given
         child nodes. The length of the child nodes must be even.`,
-      javaReturns: 'byte[][]',
+      type: 'Byte[][]',
       args: [
         {
           class: 'Object',
-          javaType: 'byte[][]',
+          type: 'Byte[][]',
           name: 'children'
         }
       ],

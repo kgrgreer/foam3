@@ -43,7 +43,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      swiftName: 'description_',
       visibility: foam.u2.Visibility.RO
     },
   ],
@@ -54,7 +53,7 @@ foam.CLASS({
       args: [
         {
           name: 'other',
-          javaType: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         },
       ],
       javaCode: `
@@ -70,7 +69,7 @@ foam.CLASS({
     },
     {
       name: 'isActive',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       javaCode: `
          return
            getStatus().equals(TransactionStatus.PENDING) ||

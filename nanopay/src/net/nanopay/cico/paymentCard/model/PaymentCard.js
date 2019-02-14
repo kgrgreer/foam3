@@ -86,7 +86,7 @@ foam.CLASS({
       code: function() {
         return Date().setHours(0,0,0,0) > this.expirationDate.setHours(0,0,0,0);
       },
-      javaReturns: 'boolean',
+      type: 'Boolean',
       javaCode: `
 Calendar today = Calendar.getInstance();
 today.set(Calendar.HOUR_OF_DAY, 0);
@@ -94,7 +94,6 @@ today.set(Calendar.MINUTE, 0);
 today.set(Calendar.SECOND, 0);
 return today.getTime().after(this.getExpirationDate());
       `,
-      swiftReturns: 'Bool',
       swiftCode: `
 let date = Date()
 let cal = Calendar(identifier: .gregorian)
@@ -115,7 +114,7 @@ return today > expDate
         }
         return expirationMonth.toString();
       },
-      javaReturns: 'String',
+      type: 'String',
       javaCode: `
 LocalDate localDate = this.getExpirationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 int month = localDate.getMonthValue();
@@ -124,7 +123,6 @@ if ( month < 10 ) {
 }
 return String.valueOf(month);
       `,
-      swiftReturns: 'String',
       swiftCode: `
 let calendar = Calendar.current
 
@@ -141,13 +139,12 @@ return "\\(month)"
         var expirationYear = this.expirationDate.getFullYear();
         return expirationYear.toString().substring(2);
       },
-      javaReturns: 'String',
+      type: 'String',
       javaCode: `
 LocalDate localDate = this.getExpirationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 int year = localDate.getYear();
 return String.valueOf(year).substring(2);
       `,
-      swiftReturns: 'String',
       swiftCode: `
 let calendar = Calendar.current
 

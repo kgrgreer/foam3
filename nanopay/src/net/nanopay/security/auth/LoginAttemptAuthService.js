@@ -69,19 +69,19 @@ foam.CLASS({
     {
       name: 'login_',
       documentation: 'Helper login function to reduce duplicated code',
-      javaReturns: 'foam.nanos.auth.User',
+      type: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'id',
-          javaType: 'Object'
+          type: 'Any'
         },
         {
           name: 'password',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `
@@ -127,15 +127,15 @@ foam.CLASS({
     {
       name: 'getUserById',
       documentation: 'Convenience method to get a user by id',
-      javaReturns: 'foam.nanos.auth.User',
+      type: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'id',
-          javaType: 'long'
+          type: 'Long'
         }
       ],
       javaCode: `
@@ -145,15 +145,15 @@ foam.CLASS({
     {
       name: 'getUserByEmail',
       documentation: 'Convenience method to get a user by email',
-      javaReturns: 'foam.nanos.auth.User',
+      type: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'email',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `
@@ -171,11 +171,11 @@ foam.CLASS({
     {
       name: 'isLoginAttemptsExceeded',
       documentation: 'Convenience method to check if a user has exceeded their login attempts',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       args: [
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User'
+          type: 'foam.nanos.auth.User'
         }
       ],
       javaCode: `
@@ -188,19 +188,19 @@ foam.CLASS({
     {
       name: 'getErrorMessage',
       documentation: 'Convenience method with returns a formatted error message',
-      javaReturns: 'String',
+      type: 'String',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User'
+          type: 'foam.nanos.auth.User'
         },
         {
           name: 'reason',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `
@@ -221,15 +221,15 @@ foam.CLASS({
     {
       name: 'resetLoginAttempts',
       documentation: 'Checks if login attempts have been modified, and resets them if they have been',
-      javaReturns: 'foam.nanos.auth.User',
+      type: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User'
+          type: 'foam.nanos.auth.User'
         }
       ],
       javaCode: `
@@ -246,15 +246,15 @@ foam.CLASS({
     {
       name: 'incrementLoginAttempts',
       documentation: 'Increments login attempts by 1',
-      javaReturns: 'foam.nanos.auth.User',
+      type: 'foam.nanos.auth.User',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User'
+          type: 'foam.nanos.auth.User'
         }
       ],
       javaCode: `
@@ -266,15 +266,15 @@ foam.CLASS({
     {
        name: 'incrementNextLoginAttemptAllowedAt',
        documentation: 'Increases time delay between attempts',
-       javaReturns: 'void',
+       type: 'Void',
        args: [
          {
            name: 'x',
-           javaType: 'foam.core.X'
+           type: 'Context'
          },
          {
            name: 'user',
-           javaType: 'foam.nanos.auth.User'
+           type: 'foam.nanos.auth.User'
          }
        ],
        javaCode: `
@@ -288,11 +288,11 @@ foam.CLASS({
     {
       name: 'isAdminUser',
       documentation: 'Convenience method to check if a user is an admin user',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       args: [
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User'
+          type: 'foam.nanos.auth.User'
         }
       ],
       javaCode: `
@@ -305,11 +305,11 @@ foam.CLASS({
     {
       name: 'loginFreezeWindowReached',
       documentation: 'Convenience method to check if user next allowed login attempt date has been reached',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       args: [
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User'
+          type: 'foam.nanos.auth.User'
         }
       ],
       javaCode: `

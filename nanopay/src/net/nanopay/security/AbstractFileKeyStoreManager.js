@@ -76,7 +76,7 @@ foam.CLASS({
       name: 'passphrase',
       documentation: 'Passphrase used to load KeyStore',
       transient: true,
-      javaType: 'char[]',
+      type: 'Char[]',
       javaFactory: `
         try {
           StringBuilder builder = new StringBuilder();

@@ -39,7 +39,7 @@ foam.CLASS({
 
     {
       name: 'validate',
-      javaReturns: 'void',
+      type: 'Void',
       javaCode: `
       `
     },
@@ -48,17 +48,17 @@ foam.CLASS({
       args: [
         {
           name: 'balance',
-          of: 'Balance'
+          type: 'net.nanopay.account.Balance'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaCode: `
       balance.setBalance(balance.getBalance() + getAmount());
       `
     },
     {
       name: 'getLock',
-      javaReturns: 'Object',
+      type: 'Any',
       javaCode: `
         return String.valueOf(getAccount()).intern();
       `

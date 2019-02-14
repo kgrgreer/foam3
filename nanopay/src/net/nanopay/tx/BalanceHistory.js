@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'BalanceHistory',
 
-  documemtation: 'Model to be added to transaction reference data for displaying balance before and after transaction.',
+  documentation: 'Model to be added to transaction reference data for displaying balance before and after transaction.',
 
   javaImports: [
     'java.util.Date'
