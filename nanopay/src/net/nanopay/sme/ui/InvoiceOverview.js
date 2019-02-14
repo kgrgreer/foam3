@@ -429,7 +429,7 @@ foam.CLASS({
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
-              .attr('src', this.COMPLETE_ICON_COMPLETE)
+              .attr('src', this.COMPLETE_ICON_HOVER)
             .end()
             .add(this.MARK_AS_COMP_MESSAGE)
             .on('click', () => this.markAsComplete())

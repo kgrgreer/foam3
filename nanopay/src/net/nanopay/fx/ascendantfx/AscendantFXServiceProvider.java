@@ -550,13 +550,13 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
   private Double toDecimal(Long amount) {
     BigDecimal x100 = new BigDecimal(100);
-    BigDecimal val = BigDecimal.valueOf(amount).setScale(2);
-    return val.divide(x100).setScale(2).doubleValue();
+    BigDecimal val = BigDecimal.valueOf(amount).setScale(2,BigDecimal.ROUND_HALF_DOWN);
+    return val.divide(x100).setScale(2,BigDecimal.ROUND_HALF_DOWN).doubleValue();
   }
 
   private Long fromDecimal(Double amount) {
     BigDecimal x100 = new BigDecimal(100);
-    BigDecimal val = BigDecimal.valueOf(amount).setScale(2);
+    BigDecimal val = BigDecimal.valueOf(amount).setScale(2,BigDecimal.ROUND_HALF_DOWN);
     return val.multiply(x100).longValueExact();
   }
 
