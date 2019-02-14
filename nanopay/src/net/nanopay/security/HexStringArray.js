@@ -5,7 +5,10 @@ foam.CLASS({
   flags: ['java'],
 
   properties: [
-    ['javaType', 'byte[][]'],
+    {
+      name: 'javaType',
+      factory: function() { return 'byte[][]' },
+    },
     ['javaValue', 'null'],
     ['javaInfoType', 'net.nanopay.security.AbstractHexStringArrayPropertyInfo'],
     ['javaJSONParser', 'new net.nanopay.security.HexStringArrayParser()']

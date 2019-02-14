@@ -9,10 +9,6 @@ foam.CLASS({
     'foam.nanos.auth.Address'
   ],
 
-  import: [
-    'user',
-    'userDAO'
-  ],
   css: `
     ^ .col {
       display: inline-block;

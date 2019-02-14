@@ -53,15 +53,15 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'balance',
-          javaType: 'net.nanopay.account.Balance'
+          type: 'net.nanopay.account.Balance'
         },
         {
           name: 'amount',
-          javaType: 'Long'
+          type: 'Long'
         }
       ],
       javaCode: `

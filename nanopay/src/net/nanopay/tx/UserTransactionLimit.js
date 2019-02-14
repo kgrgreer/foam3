@@ -5,58 +5,47 @@ foam.INTERFACE({
   methods: [
     {
       name: 'start',
-      javaReturns: 'void'
     },
     {
       name: 'getLimit',
-      javaReturns: 'long',
-      swiftReturns: 'Int',
-      returns: 'Promise',
+      type: 'Long',
+      async: true,
       swiftThrows: true,
       args: [
         {
           name: 'userId',
-          javaType: 'long',
-          swiftType: 'Int'
+          type: 'Long',
         },
         {
-          class: 'foam.core.Enum',
-          of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
+          type: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
           name: 'timeFrame'
         },
         {
-          class: 'foam.core.Enum',
-          of: 'net.nanopay.tx.model.TransactionLimitType',
+          type: 'net.nanopay.tx.model.TransactionLimitType',
           name: 'type'
         }
       ]
     },
     {
       name: 'getRemainingLimit',
-      javaReturns: 'long',
-      swiftReturns: 'Int',
-      returns: 'Promise',
-      swiftThrows: true,
+      type: 'Long',
+      async: true,
       args: [
         {
+          type: 'Context',
           name: 'x',
-          javaType: 'foam.core.X',
-          swiftType: 'Context'
         },
         {
           name: 'userId',
-          javaType: 'long',
-          swiftType: 'Int'
+          type: 'Long',
         },
         {
-          class: 'foam.core.Enum',
-          of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
+          type: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
           name: 'timeFrame'
         },
         {
-          class: 'foam.core.Enum',
           name: 'type',
-          of: 'net.nanopay.tx.model.TransactionLimitType'
+          type: 'net.nanopay.tx.model.TransactionLimitType'
         }
       ]
     }
