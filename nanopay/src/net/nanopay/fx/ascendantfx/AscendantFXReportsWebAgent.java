@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -404,6 +405,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       .find(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
+        EQ(BankAccount.DELETED, false),
         EQ(Account.OWNER, business.getId())));
 
     if ( bankAccount == null ) {
@@ -431,6 +433,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       }
 
       String accountNum = bankAccount.getAccountNumber();
+      String accountName = bankAccount.getName();
       String accountCurrency = bankAccount.getDenomination();
       String companyName = business.getBusinessName();
       String operatingName = business.getOperatingBusinessName();
@@ -440,6 +443,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       String reportGeneratedDate = sdf.format(new Date());
 
       List list = new List(List.UNORDERED);
+      list.add(new ListItem("Account name: " + accountName));
       list.add(new ListItem("Routing number: " + routingNum));
       list.add(new ListItem("Institution number: " + institutionNum));
       list.add(new ListItem("Account number: " + accountNum));
@@ -453,7 +457,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       if ( bankAccount instanceof CABankAccount ) {
         CABankAccount caBankAccount = (CABankAccount) bankAccount;
         if ( microVerificationTimestamp != null ) { // micro-deposit
-          list.add(new ListItem("Amount sent in the micro-deposit: " + randomDepositAmount));
+          DecimalFormat df = new DecimalFormat("0.00");
+          String depositAmount = df.format((double)randomDepositAmount / 100);
+          list.add(new ListItem("Amount sent in the micro-deposit: $" + depositAmount));
           Date createDate = caBankAccount.getCreated();
           String verification = sdf.format(microVerificationTimestamp);
           String bankAddedDate = sdf.format(createDate);
