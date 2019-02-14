@@ -174,28 +174,13 @@ public class BusinessOnboardingValidator implements Validator {
   }
 
   public void validateSigningOfficers(X x, Business business) {
-    DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-    DAO localUserDAO     = (DAO) x.get("localUserDAO");
+    List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
 
-    List<UserUserJunction> junctions = ((ArraySink) agentJunctionDAO
-      .where(EQ(UserUserJunction.TARGET_ID, business.getId()))
-      .select(new ArraySink())).getArray();
-    List ids = junctions.stream().map(j -> j.getSourceId()).collect(Collectors.toList());
-    Long[] idArray = (Long[]) (junctions.stream().map(j -> j.getSourceId()).collect(Collectors.toList())).toArray(new Long[ids.size()]);
-
-    List signingOfficers = ((ArraySink) localUserDAO
-      .where(AND(
-        IN(User.ID, idArray),
-        EQ(User.SIGNING_OFFICER, true)
-      ))
-      .select(new ArraySink())).getArray();
-
-    if ( signingOfficers == null || signingOfficers.isEmpty() ) {
-      throw new RuntimeException("Signing officer is required.");
+    if ( signingOfficers.size() == 0 ) {
+      throw new RuntimeException("At least one signing officer is required for each business.");
     }
 
-    signingOfficers.forEach(u -> validateSigningOfficer((User) u));
-
+    signingOfficers.forEach(this::validateSigningOfficer);
   }
 
   public void validateSigningOfficer(User signingOfficer) {
