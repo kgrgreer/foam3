@@ -77,9 +77,8 @@ public class BusinessInvitationDAO
     User internalUser = (User) localUserUserDAO.find(EQ(User.EMAIL, invite.getEmail()));
     boolean internalUserBool;
     if ( internalUserBool = internalUser != null ) {
-      // addUserToBusiness(x, business, internalUser, invite);
       invite.setInternal(true);
-      invite.setStatus(InvitationStatus.SENT); // COMPLETED);
+      invite.setStatus(InvitationStatus.SENT);
     } else {
       // Add invited user to the email whitelist.
       EmailWhitelistEntry entry = new EmailWhitelistEntry();
@@ -141,7 +140,7 @@ public class BusinessInvitationDAO
     }
 
     url += "?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName;
-    url += ( internalUserBool ? "#sign-in" : "#sign-up" ) ;
+    url += ( internalUserBool ? "#invited" : "#sign-up" ) ;
     args.put("link", url);
     email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
   }

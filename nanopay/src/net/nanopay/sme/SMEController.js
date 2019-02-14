@@ -189,7 +189,9 @@ foam.CLASS({
                   if ( menu ) {
                     menu.launch();
                   } else {
-                    self.pushMenu('sme.main.dashboard');
+                    self.confirmHashRedirectIfInvitedAndSignedIn();
+                    // TODO clear properties on url
+                    // self.pushMenu('sme.main.dashboard');
                   }
                 });
               }
@@ -292,16 +294,18 @@ foam.CLASS({
         }
 
         // Situation where redirect is from adding an existing user to a business
-        if ( locHash === '#sign-in' ) {
-          return new Promise(function(resolve, reject) {
-            self.stack.push({
-              class: 'net.nanopay.sme.ui.SignInView',
-              email: searchParams.get('email'),
-              disableEmail: true,
-              signUpToken: searchParams.get('token'),
+        if ( locHash === '#invited' ) {
+          if ( ! self.loginSuccess ) {
+            return new Promise(function(resolve, reject) {
+              self.stack.push({
+                class: 'net.nanopay.sme.ui.SignInView',
+                email: searchParams.get('email'),
+                disableEmail: true,
+                signUpToken: searchParams.get('token'),
+              });
+              self.loginSuccess$.sub(resolve);
             });
-            self.loginSuccess$.sub(resolve);
-          });
+          }
         }
       }
 
@@ -309,6 +313,30 @@ foam.CLASS({
         self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
         self.loginSuccess$.sub(resolve);
       });
+    },
+
+    function confirmHashRedirectIfInvitedAndSignedIn() {
+      var locHash = location.hash;
+      var searchParams = new URLSearchParams(location.search);
+      if ( locHash === '#invited' && this.loginSuccess ) {
+        this.clientPromise.then((client) => {
+          this.client.nSpecDAO.find('smeBusinessRegistrationDAO').then((dao) => {
+            //var dao = ctrl.__subContext__.smeBusinessRegistrationDAO;
+            if ( dao ) {
+              this.user.signUpToken = searchParams.get('token');
+              var userr = dao.put(this.user);
+              if ( userr ) {
+                this.user.copyFrom(userr);
+                ctrl.notify('Success you are now apart of a new business');
+              } else {
+                ctrl.notify(err.message || 'User was invited to a business however an error has occured during processing.', 'error');
+                this.pushMenu('sme.main.dashboard');
+              }
+            }
+          });
+       });
+      }
+      this.pushMenu('sme.main.dashboard');
     },
 
     function getCurrentUser() {

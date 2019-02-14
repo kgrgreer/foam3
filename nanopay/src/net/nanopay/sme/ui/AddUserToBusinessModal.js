@@ -83,8 +83,8 @@ foam.CLASS({
     { name: 'TITLE', message: 'Invite to ' },
     { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'USER_GROUP_LABEL', message: 'User permission' },
-    { name: 'INVITATION_INTERNAL_SUCCESS', message: 'User successfully added to business.' },
-    { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'Invitation sent' },
+    { name: 'INVITATION_INTERNAL_SUCCESS', message: 'User successfully invited to business: Invitation Sent' },
+    { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'User successfully invited to business: Invitation Sent' },
     { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
     { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
     { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business.' }

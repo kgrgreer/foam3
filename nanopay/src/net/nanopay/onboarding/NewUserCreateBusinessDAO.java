@@ -67,10 +67,10 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     // Set the user's status to Active so that they can be found in publicUserDAO.
     user.setStatus(AccountStatus.ACTIVE);
 
-    // 1
     if ( ! SafetyUtil.isEmpty(user.getSignUpToken()) ) {
       // Check if Token exists
       Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
+      user.setEmailVerified(token != null);
       if ( token == null ) {
         throw new RuntimeException("Unable to process user registration");
       }
@@ -80,7 +80,6 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       clone.setProcessed(true);
       tokenDAO_.inX(sysContext).put(clone);
 
-      // 2
       // There can be different tokens with different parameters used.
       // When adding a user to a business, we'll have the group
       // and businessId parameters set, so check for those here.
@@ -89,7 +88,6 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
         long businessId = (long) params.get("businessId");
         UserUserJunction junction;
 
-        // 3
         if ( businessId != 0 ) {
           /* CHECKS general : for both internal and external users */
 
@@ -99,10 +97,9 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             throw new RuntimeException("Business doesn't exist");
           }
 
-          // 4 Does the User already exist?
+          // Does the User already exist?
           if ( user.getId() != 0 ) {
             /* PROCESSING internal users */
-
             // If junction already exists, throw exception.
             junction = (UserUserJunction) agentJunctionDAO_.find(AND(
               EQ(UserUserJunction.SOURCE_ID, user.getId()),
@@ -111,13 +108,10 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             if ( junction != null ) {
               throw new AuthorizationException("User already exists within the business.");
             }
-
           } else {
             /* PROCESSING external users */
-
             user.setEmailVerified(token != null);
             user = (User) super.put_(sysContext, user);
-
           }
             // Set up new connection between user and business
             junction = new UserUserJunction();
@@ -128,7 +122,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             junction.setGroup(junctionGroup);
 
             agentJunctionDAO_.inX(sysContext).put(junction);
-
+            
             // Get a context with the Business in it so we can update the invitation.
             X businessContext = Auth.sudo(sysContext, business);
 
