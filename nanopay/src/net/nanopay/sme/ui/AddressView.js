@@ -20,27 +20,6 @@ foam.CLASS({
     'regionDAO'
   ],
 
-  properties: [
-    {
-      name: 'countryId',
-      factory: function() {
-        return this.data.countryId ? this.data.countryId : this.Country.create({});
-      },
-      postSet: function(o, n) {
-        this.data.countryId = n;
-      }
-    },
-    {
-      name: 'regionId',
-      factory: function() {
-        return this.data.regionId ? this.data.regionId : this.Region.create({});
-      },
-      postSet: function(o, n) {
-        this.data.regionId = n;
-      }
-    }
-  ],
-
   css: `
     ^ .foam-u2-tag-Select {
       width: 100%;
@@ -103,7 +82,7 @@ foam.CLASS({
           .addClass('side-by-side')
           .start().addClass('label-input')
             .start().addClass('label').add(this.COUNTRY_LABEL).end()
-            .start(this.COUNTRY_ID.clone().copyFrom({
+            .start(this.Address.COUNTRY_ID.clone().copyFrom({
               view: {
                 class: 'foam.u2.view.ChoiceView',
                 placeholder: '- Please select -',
@@ -113,48 +92,52 @@ foam.CLASS({
                 )),
                 objToChoice: function(a) {
                   return [a.id, a.name];
-                }
+                },
+                mode$: this.mode$
               }
-            })).end()
+            }))
+            .end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.PROVINCE_LABEL).end()
-            .start(this.REGION_ID.clone().copyFrom({
+            .start(this.Address.REGION_ID.clone().copyFrom({
               view: {
                 class: 'foam.u2.view.ChoiceView',
                 placeholder: '- Please select -',
                 objToChoice: function(region) {
                   return [region.id, region.name];
                 },
-                dao$: choices
+                dao$: choices,
+                mode$: this.mode$
               }
-            })).end()
+            }))
+            .end()
           .end()
         .end()
         .start()
           .addClass('side-by-side')
           .start().addClass('label-input')
             .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
-            .start(this.Address.STREET_NUMBER).addClass('input-field').end()
+            .start(this.Address.STREET_NUMBER, { mode$: this.mode$ }).addClass('input-field').end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.STREET_NAME_LABEL).end()
-            .start(this.Address.STREET_NAME).addClass('input-field').end()
+            .start(this.Address.STREET_NAME, { mode$: this.mode$ }).addClass('input-field').end()
           .end()
         .end()
         .start().addClass('label-input')
           .start().addClass('label').add(this.ADDRESS_LABEL).end()
-          .start(this.Address.SUITE).addClass('input-field').end()
+          .start(this.Address.SUITE, { mode$: this.mode$ }).addClass('input-field').end()
         .end()
         .start()
           .addClass('side-by-side')
           .start().addClass('label-input')
             .start().addClass('label').add(this.CITY_LABEL).end()
-            .start(this.Address.CITY).addClass('input-field').end()
+            .start(this.Address.CITY, { mode$: this.mode$ }).addClass('input-field').end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.POSTAL_CODE_LABEL).end()
-            .start(this.Address.POSTAL_CODE).addClass('input-field').end()
+            .start(this.Address.POSTAL_CODE, { mode$: this.mode$ }).addClass('input-field').end()
           .end()
         .end();
     }

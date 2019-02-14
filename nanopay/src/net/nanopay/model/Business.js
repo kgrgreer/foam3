@@ -16,7 +16,7 @@ foam.CLASS({
       expression: function(businessName, id) {
         return businessName.replace(/\W/g, '').toLowerCase() + id;
       },
-      javaType: 'String',
+      type: 'String',
       javaGetter: `
         return getBusinessName().replaceAll("\\\\W", "").toLowerCase() + getId();
       `
@@ -26,6 +26,11 @@ foam.CLASS({
       name: 'loginEnabled',
       value: false
     },
+    {
+      class: 'Boolean',
+      name: 'residenceOperated',
+      documentation: 'Details whether business is operated in the owners residence.'
+    }
   ],
 
   javaImports: [
@@ -44,9 +49,9 @@ foam.CLASS({
     {
       name: `validate`,
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         if ( SafetyUtil.isEmpty(this.getBusinessName()) ) {

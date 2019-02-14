@@ -230,7 +230,6 @@ foam.CLASS({
         'targetAmount',
         'destinationAmount'
       ],
-      precision: 2, // TODO: This should depend on the precision of the currency
       required: true,
       tableCellFormatter: function(value, invoice) {
         // Needed to show amount value for old invoices that don't have destination currency set
@@ -255,7 +254,6 @@ foam.CLASS({
       documentation: `
         The amount used to pay the invoice, prior to exchange rates & fees.
       `,
-      precision: 2, // TODO: This should depend on the precision of the currency
       tableCellFormatter: function(value, invoice) {
         invoice.sourceCurrency$find.then(function(currency) {
           this.start()
@@ -272,7 +270,6 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      precision: 2,
       name: 'exchangeRate',
       documentation: 'Exchange rate captured on time of payment.'
     },
@@ -472,9 +469,9 @@ foam.CLASS({
     {
       name: `validate`,
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         DAO bareUserDAO = (DAO) x.get("bareUserDAO");
@@ -578,8 +575,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true,
-    flags: ['js']
+    hidden: true
   },
   targetProperty: {
     label: 'Vendor',
@@ -613,11 +609,8 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payee ? obj.payee.label() : 'N/A');
-    },
-    flags: ['js']
+    }
   },
-  sourceMethod: { flags: ['js', 'java'] },
-  targetMethod: { flags: ['js', 'java'] },
 });
 
 
@@ -629,8 +622,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true,
-    flags: ['js']
+    hidden: true
   },
   targetProperty: {
     label: 'Customer',
@@ -664,9 +656,6 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payer ? obj.payer.label() : 'N/A');
-    },
-    flags: ['js']
+    }
   },
-  sourceMethod: { flags: ['js', 'java'] },
-  targetMethod: { flags: ['js', 'java'] },
 });

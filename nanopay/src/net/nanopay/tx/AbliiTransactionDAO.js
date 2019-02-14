@@ -25,14 +25,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'obj',
-          of: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ],
-      javaReturns: 'foam.core.FObject',
+      type: 'foam.core.FObject',
       javaCode: `
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction request = (Transaction) quote.getRequestTransaction().fclone();

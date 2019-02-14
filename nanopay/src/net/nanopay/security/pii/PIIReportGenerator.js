@@ -38,14 +38,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'id',
           class: 'Long'
         }
       ],
-      javaReturns: 'String',
+      type: 'String',
       javaCode:
         `
   DAO userDAO = (DAO) x.get("userDAO");
@@ -58,11 +58,11 @@ foam.CLASS({
       name: 'addTimeToPIIRequest',
       documentation: `clones a PIIRequest and adds the current date to the DownloadedAt Array and puts 
       it back to the dao `,
-      javaReturns: 'void',
+      type: 'Void',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         }
       ],
       javaCode: `

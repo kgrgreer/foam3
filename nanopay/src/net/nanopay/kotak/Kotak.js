@@ -7,24 +7,22 @@ foam.INTERFACE({
   methods: [
     {
       name: 'submitPayment',
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.kotak.model.paymentResponse.AcknowledgementType',
+      async: true,
+      type: 'net.nanopay.kotak.model.paymentResponse.AcknowledgementType',
       args: [
         {
-          class: 'FObjectProperty',
-          of: 'net.nanopay.kotak.model.paymentResponse.InitiateRequest',
+          type: 'FObject',
           name: 'request'
         }
       ]
     },
     {
       name: 'submitReversal',
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.kotak.model.reversal.Reversal',
+      async: true,
+      type: 'net.nanopay.kotak.model.reversal.Reversal',
       args: [
         {
-          class: 'FObjectProperty',
-          of: 'net.nanopay.kotak.model.reversal.Reversal',
+          type: 'net.nanopay.kotak.model.reversal.Reversal',
           name: 'request'
         }
       ]

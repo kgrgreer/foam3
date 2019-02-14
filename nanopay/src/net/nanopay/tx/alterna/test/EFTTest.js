@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-  'net.nanopay.tx.model.LiquiditySettings',
+    'net.nanopay.tx.model.LiquiditySettings',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
@@ -30,6 +30,7 @@ foam.CLASS({
     'java.io.ByteArrayOutputStream',
     'java.io.IOException',
     'java.io.InputStream',
+    'java.io.PrintWriter',
     'java.util.Date',
     'java.util.List',
     'static foam.mlang.MLang.EQ',
@@ -40,7 +41,7 @@ foam.CLASS({
   methods: [
     {
       name: 'runTest',
-      javaReturns: 'void',
+      type: 'Void',
       javaCode: `
 DAO userDAO        = (DAO) x.get("localUserDAO");
 
@@ -84,11 +85,11 @@ completionTest(x, testBankAccount, testDigitalAccount);
     },
     {
       name: 'createTestBankAccount',
-      javaReturns: 'CABankAccount',
+      type: 'net.nanopay.bank.CABankAccount',
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         }
       ],
       javaCode: `
@@ -130,15 +131,15 @@ if ( account == null ) {
     },
     {
       name: 'createTestDigitalAccount',
-      javaReturns: 'DigitalAccount',
+      type: 'net.nanopay.account.DigitalAccount',
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         },
         {
           name: 'testBankAccount',
-          javaType: 'CABankAccount'
+          type: 'net.nanopay.bank.CABankAccount'
         },
       ],
       javaCode: `
@@ -149,19 +150,19 @@ return DigitalAccount.findDefault(x, user, "CAD");
     },
     {
       name: 'createTestCITransaction',
-      javaReturns: 'AlternaCITransaction',
+      type: 'net.nanopay.tx.alterna.AlternaCITransaction',
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         },
         {
           name: 'testBankAccount',
-          javaType: 'CABankAccount'
+          type: 'net.nanopay.bank.CABankAccount'
         },
         {
           name: 'testDigitalAccount',
-          javaType: 'DigitalAccount'
+          type: 'net.nanopay.account.DigitalAccount'
         }
       ],
       javaCode: `
@@ -197,20 +198,21 @@ throw new RuntimeException("Plan transaction not instance of AlternaCITransactio
     },
     {
       name: 'CSVFileSendingTest',
-      javaReturns: 'void',
+      type: 'Void',
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         },
         {
           name: 'expectedCSV',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-CsvUtil.writeCsvFile(x, baos, OutputterMode.STORAGE);
+PrintWriter printWriter = new PrintWriter(baos);
+CsvUtil.writeCsvFile(x, printWriter, OutputterMode.STORAGE);
 
 try {
   String response = IOUtils.toString(new ByteArrayInputStream(baos.toByteArray()),"UTF-8");
@@ -229,19 +231,19 @@ try {
     },
     {
       name: 'confirmationFileProcessingTest',
-      javaReturns: 'void',
+      type: 'Void',
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         },
         {
           name: 'testConfirmationFile',
-          javaType: 'String'
+          type: 'String'
         },
         {
           name: 'testUploadFile',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `
@@ -276,15 +278,15 @@ for ( int i = 0; i < confirmationFile.size(); i++ ) {
     },
     {
       name: 'returnFileProcessingTest',
-      javaReturns: 'void',
+      type: 'Void',
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         },
         {
           name: 'testReturnFile',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `
@@ -313,19 +315,19 @@ for ( FObject record : returnFile ) {
     },
     {
       name: 'completionTest',
-      javaReturns: 'void',
+      type: 'Void',
       args: [
         {
           name: 'x',
-          javaType: 'X'
+          type: 'Context'
         },
         {
           name: 'testBankAccount',
-          javaType: 'CABankAccount'
+          type: 'net.nanopay.bank.CABankAccount'
         },
         {
           name: 'testDigitalAccount',
-          javaType: 'DigitalAccount'
+          type: 'net.nanopay.account.DigitalAccount'
         }
       ],
       javaCode: `

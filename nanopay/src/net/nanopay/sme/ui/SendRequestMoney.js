@@ -13,6 +13,7 @@ foam.CLASS({
 
   imports: [
     'agent',
+    'auth',
     'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
     'contactDAO',
@@ -35,6 +36,7 @@ foam.CLASS({
     'isDetailView',
     'isForm',
     'isList',
+    'isPayable',
     'loadingSpin',
     'newButton',
     'predicate'
@@ -99,10 +101,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isPayable',
-      documentation: 'Determines displaying certain elements related to payables or receivables.',
-      postSet: function(o, n) {
-        this.viewData.isPayable = n;
-      }
+      documentation: 'Determines displaying certain elements related to payables or receivables.'
     },
     {
       class: 'Boolean',
@@ -137,17 +136,21 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isForm',
-      value: true
+      value: true,
+      documentation: `Form stands for the new invoice form 
+      or the draft invoice form.`
     },
     {
       class: 'Boolean',
       name: 'isDetailView',
-      value: false
+      value: false,
+      documentation: 'DetailView stands for the invoice detail view.'
     },
     {
       class: 'Boolean',
       name: 'isList',
-      value: false
+      value: false,
+      documentation: 'List stands for the invoice list'
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -174,11 +177,21 @@ foam.CLASS({
     },
     {
       name: 'hasSaveOption',
-      value: true
+      expression: function(isForm, position) {
+        return isForm &&
+          this.invoice.status !== this.InvoiceStatus.DRAFT &&
+          position === 0;
+      },
+      documentation: `An expression is required for the 1st step of the 
+        send/request payment flow to show the 'Save as draft' button.`
     },
     {
       name: 'hasNextOption',
-      value: true
+      expression: function(isList) {
+        return ! isList;
+      },
+      documentation: `An expression is required for the 1st step of the 
+        send/request payment flow to show the 'Save as draft' button.`
     },
     {
       name: 'hasExitOption',
@@ -195,6 +208,10 @@ foam.CLASS({
       factory: function() {
         return this.Invoice.create({});
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'permitToPay'
     }
   ],
 
@@ -268,6 +285,10 @@ foam.CLASS({
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
 
+      this.auth.check(this, 'invoice.pay').then((result) => {
+        this.permitToPay = result;
+      });
+
       this.SUPER();
     },
 
@@ -332,6 +353,10 @@ foam.CLASS({
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
+        // set destination account for receivables
+        if ( ! this.isPayable ) {
+          this.invoice.destinationAccount = this.viewData.bankAccount;
+        }
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
@@ -361,7 +386,7 @@ foam.CLASS({
             await this.transactionDAO.put(transaction);
           } catch ( error ) {
             console.error(error);
-            this.notify(error.message, 'error');
+            this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
             this.loadingSpin.hide();
             return;
           }
@@ -419,9 +444,6 @@ foam.CLASS({
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
-        /* This if condition is required when redirecting
-           from Upcoming & overdue of the dashboard */
-        if ( this.isList === true ) return false;
         return hasSaveOption;
       },
       isEnabled: function(errors) {
@@ -445,11 +467,11 @@ foam.CLASS({
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
-            if ( ! this.agent.twoFactorEnabled && this.isPayable ) {
+            if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
+            if ( ! this.agent.twoFactorEnabled && this.isPayable && this.permitToPay ) {
               this.notify(this.TWO_FACTOR_REQUIRED, 'error');
               return;
             }
-            if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);
             });
@@ -473,11 +495,6 @@ foam.CLASS({
     {
       name: 'exit',
       code: function() {
-        this.invoice.contactId = undefined;
-        this.invoice.amount = 0;
-        this.invoice.invoiceNumber = '';
-        this.invoice.purchaseOrder = '';
-        this.invoice.dueDate = undefined;
         if ( this.stack.depth === 1 ) {
           this.pushMenu('sme.main.dashboard');
         } else {

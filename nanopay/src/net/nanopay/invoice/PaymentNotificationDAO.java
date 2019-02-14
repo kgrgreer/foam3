@@ -97,15 +97,20 @@ public class PaymentNotificationDAO extends ProxyDAO {
         notification.setNotificationType("Record payment");
       }
       notification.setEmailIsEnabled(true);
+      notification.setEmailName("invoice-paid");
+
       AppConfig config    = (AppConfig) x.get("appConfig");
-      NumberFormat formatter = NumberFormat.getCurrencyInstance();
-      String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
+      String accountVar = SafetyUtil
+        .isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
+
+      String amount = invoice.findDestinationCurrency(x)
+        .format(invoice.getAmount());
 
       HashMap<String, Object> args = new HashMap<>();
-      args.put("amount",    formatter.format(invoice.getAmount()/100.00));
+      args.put("amount",    amount);
+      args.put("currency",  invoice.getDestinationCurrency());
       args.put("name",      invoice.findPayeeId(getX()).getFirstName());
       args.put("link",      config.getUrl());
-      notification.setEmailName("invoice-paid");
       args.put("fromEmail", invoice.findPayerId(getX()).getEmail());
       args.put("fromName",  invoice.findPayerId(getX()).getFirstName());
       args.put("account", accountVar);

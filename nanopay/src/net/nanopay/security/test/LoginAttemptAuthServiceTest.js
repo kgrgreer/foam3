@@ -7,7 +7,7 @@ foam.CLASS({
     {
       name: 'MAX_ATTEMPTS',
       value: 3,
-      type: 'short'
+      type: 'Short'
     }
   ],
 
@@ -52,27 +52,27 @@ foam.CLASS({
     {
       name: 'Test_LoginAttemptAuthService_LoginAttemptsReset',
       documentation: 'Tests that the login attempts are reset',
-      javaReturns: 'void',
+      type: 'Void',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'userDAO',
-          javaType: 'foam.dao.DAO'
+          type: 'foam.dao.DAO'
         },
         {
           name: 'auth',
-          javaType: 'foam.nanos.auth.AuthService'
+          type: 'foam.nanos.auth.AuthService'
         },
         {
           name: 'id',
-          javaType: 'Object'
+          type: 'Any'
         },
         {
           name: 'method',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `
@@ -94,27 +94,27 @@ foam.CLASS({
     {
       name: 'Test_LoginAttemptAuthService_LoginAttemptsExceeded',
       documentation: 'Tests logging in and exceeding the allotted number of login attempts',
-      javaReturns: 'void',
+      type: 'Void',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'userDAO',
-          javaType: 'foam.dao.DAO'
+          type: 'foam.dao.DAO'
         },
         {
           name: 'auth',
-          javaType: 'foam.nanos.auth.AuthService'
+          type: 'foam.nanos.auth.AuthService'
         },
         {
           name: 'id',
-          javaType: 'Object'
+          type: 'Any'
         },
         {
           name: 'method',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `
@@ -146,15 +146,15 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'auth',
-          javaType: 'foam.nanos.auth.AuthService'
+          type: 'foam.nanos.auth.AuthService'
         },
         {
           name: 'id',
-          javaType: 'Object'
+          type: 'Any'
         },
       ],
       javaCode: `
@@ -171,15 +171,15 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'auth',
-          javaType: 'foam.nanos.auth.AuthService'
+          type: 'foam.nanos.auth.AuthService'
         },
         {
           name: 'id',
-          javaType: 'Object'
+          type: 'Any'
         },
       ],
       javaCode: `
@@ -193,23 +193,23 @@ foam.CLASS({
     {
       name: 'VerifyLoginAttempts',
       documentation: 'Verifies the amount of login attempts',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'userDAO',
-          javaType: 'foam.dao.DAO'
+          type: 'foam.dao.DAO'
         },
         {
           name: 'id',
-          javaType: 'Object'
+          type: 'Any'
         },
         {
           name: 'attempts',
-          javaType: 'int'
+          type: 'Integer'
         }
       ],
       javaCode: `
@@ -222,15 +222,15 @@ foam.CLASS({
     {
       name: 'ResetLoginCount',
       documentation: 'Resets the user\'s login attempt counter',
-      javaReturns: 'void',
+      type: 'Void',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'userDAO',
-          javaType: 'foam.dao.DAO'
+          type: 'foam.dao.DAO'
         }
       ],
       javaCode: `
@@ -244,19 +244,19 @@ foam.CLASS({
     {
       name: 'GetNextLoginAttemptAllowedAtMsg',
       documentation: 'Get user next login allowed time message',
-      javaReturns: 'String',
+      type: 'String',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'userDAO',
-          javaType: 'foam.dao.DAO'
+          type: 'foam.dao.DAO'
         },
         {
           name: 'id',
-          javaType: 'Object'
+          type: 'Any'
         }
       ],
       javaCode: `

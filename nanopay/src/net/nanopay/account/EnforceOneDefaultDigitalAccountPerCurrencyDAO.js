@@ -22,17 +22,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
       if ( ! ( obj instanceof DigitalAccount ) ) {
         return getDelegate().put_(x, obj);

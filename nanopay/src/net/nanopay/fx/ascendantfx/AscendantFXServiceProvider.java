@@ -81,7 +81,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     this.x = x;
   }
 
-  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, Long sourceAmount,  Long destinationAmount,
+  public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,  long destinationAmount,
       String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
 
     return getFXRateWithPaymentMethod(sourceCurrency, targetCurrency, sourceAmount, destinationAmount,
@@ -152,8 +152,8 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
   }
 
-  public Boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
-    Boolean result = false;
+  public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
+    boolean result = false;
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + quoteId);
 
@@ -472,14 +472,14 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       payee.setPayeeReference(String.valueOf(user.getId()));
       payee.setPayeeBankName(bankAccount.getName());
 
-      if ( null != bankAccount.getAddress() ) {
-        payee.setPayeeAddress1(bankAccount.getAddress().getAddress());
-        payee.setPayeeCity(bankAccount.getAddress().getCity());
-        Region region = bankAccount.getAddress().findRegionId(x);
+      if ( null != user.getBusinessAddress() ) {
+        payee.setPayeeAddress1(user.getBusinessAddress().getAddress());
+        payee.setPayeeCity(user.getBusinessAddress().getCity());
+        Region region = user.getBusinessAddress().findRegionId(x);
         if ( region != null ) payee.setPayeeProvince(region.getCode());
-        Country country = bankAccount.getAddress().findCountryId(x);
+        Country country = user.getBusinessAddress().findCountryId(x);
         if ( country != null ) payee.setPayeeCountryID(country.getCode());
-        payee.setPayeePostalCode(bankAccount.getAddress().getPostalCode());
+        payee.setPayeePostalCode(user.getBusinessAddress().getPostalCode());
       }
 
       if ( null != bankAccount.getBankAddress() ) {
@@ -550,13 +550,13 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
   private Double toDecimal(Long amount) {
     BigDecimal x100 = new BigDecimal(100);
-    BigDecimal val = BigDecimal.valueOf(amount).setScale(2);
-    return val.divide(x100).setScale(2).doubleValue();
+    BigDecimal val = BigDecimal.valueOf(amount).setScale(2,BigDecimal.ROUND_HALF_DOWN);
+    return val.divide(x100).setScale(2,BigDecimal.ROUND_HALF_DOWN).doubleValue();
   }
 
   private Long fromDecimal(Double amount) {
     BigDecimal x100 = new BigDecimal(100);
-    BigDecimal val = BigDecimal.valueOf(amount).setScale(2);
+    BigDecimal val = BigDecimal.valueOf(amount).setScale(2,BigDecimal.ROUND_HALF_DOWN);
     return val.multiply(x100).longValueExact();
   }
 
