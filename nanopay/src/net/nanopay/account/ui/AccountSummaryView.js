@@ -28,7 +28,7 @@ foam.CLASS({
       this.views = [
         [{
           class: 'foam.u2.view.TableView',
-          data: this.accountDAO.where(this.NEQ(this.Account.TYPE, 'CABankAccount'))
+          data: this.accountDAO
         }, 'Table'],
         [
           function() { return {
@@ -69,7 +69,7 @@ foam.CLASS({
             x: 0,
             y: 0,
             relationship: net.nanopay.account.AggregateAccountAccountchildrenRelationship,
-            data: net.nanopay.account.AggregateAccount.create({id:18, name:'ABC Global', denomination: 'CAD'})
+            data: net.nanopay.account.AggregateAccount.create({ id: 0, name: 'Temporal until Kevin fixes it', denomination: 'CAD' })
           }},
           'Graph'
         ]

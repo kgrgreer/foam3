@@ -18,16 +18,16 @@ foam.CLASS({
   ],
 
    imports: [
-    'currentAccount',
-    'transactionDAO',
     'accountDAO',
+    'balance',
     'balanceDAO',
     'currencyDAO',
-    'balance',
-    'userDAO',
-    'user',
+    'currentAccount',
+    'selection',
     'stack',
-    'selection'
+    'transactionDAO',
+    'user',
+    'userDAO'
   ],
 
    exports: [
@@ -159,38 +159,33 @@ foam.CLASS({
         .listen({ reset: this.onDAOUpdate, put: this.onDAOUpdate });
       this.onDAOUpdate();
 
-       this
-        .addClass(this.myClass());
+      this
+      .addClass(this.myClass());
 
-       this.start('div').addClass('topContainer')
-              .start('div').addClass('balanceBox')
-                .start().addClass('boxPadding')
-                  .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
-                  .start().add(this.formattedBalance$).addClass('balance').end()
-                .end()
-              .end()
-              .start().addClass('flexBox')
-                .tag({
-                  class: 'foam.u2.view.TreeView',
-                  data: this.accountDAO.where(this.NEQ(this.Account.TYPE, 'CABankAccount')),
-                  selection$: this.selectedAccount$,
-                  relationship: net.nanopay.account.AggregateAccountAccountChildrenRelationship,
-                  formatter: function(data) {
-                    this.add(data.name);
-                  }
-                }).addClass('margin-treeView')
-              .start(
-                this.TxnTableView.create()
-                )
-              .end()
-              // .tag({
-              //   class: 'net.nanopay.ui.Placeholder',
-              //   dao$: this.transactions$,
-              //   message: "No data to show yet",
-              //   image: 'images/ic-bankempty.svg'
-              // })
+      this
+        .start('div').addClass('topContainer')
+          .start('div').addClass('balanceBox')
+            .start().addClass('boxPadding')
+              .start().add(this.balanceTitle).addClass('balanceBoxTitle').end()
+              .start().add(this.formattedBalance$).addClass('balance').end()
             .end()
-          .end();
+          .end()
+          .start().addClass('flexBox')
+            .tag({
+              class: 'foam.u2.view.TreeView',
+              data: this.accountDAO.where(this.NEQ(this.Account.TYPE, 'CABankAccount')),
+              selection$: this.selectedAccount$,
+              relationship: net.nanopay.account.AggregateAccountAccountChildrenRelationship,
+              formatter: function(data) {
+                this.add(data.name);
+              }
+            }).addClass('margin-treeView')
+            .start(
+              this.TxnTableView.create()
+              )
+            .end()
+          .end()
+      .end();
     },
     async function getTransactions(account) {
       if ( account ) {
@@ -267,9 +262,9 @@ foam.CLASS({
       ],
 
        imports: [
-        'transactions',
         'accountDAO',
-        'currencyDAO'
+        'currencyDAO',
+        'transactions'
       ],
 
        methods: [

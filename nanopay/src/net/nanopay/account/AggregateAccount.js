@@ -41,7 +41,7 @@ foam.CLASS({
         {
           name: 'x',
           javaType: 'foam.core.X'
-        },
+        }
       ],
       code: async function(x) {
         var balance = 0;
