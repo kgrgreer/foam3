@@ -489,3 +489,23 @@ foam.RELATIONSHIP({
     hidden: true
   }
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.model.Business',
+  targetModel: 'foam.nanos.auth.User',
+  cardinality: '*:*',
+  forwardName: 'signingOfficers',
+  inverseName: 'businessesInWhichThisUserIsASigningOfficer',
+  targetProperty: { hidden: true },
+  junctionDAOKey: 'signingOfficerJunctionDAO'
+});
+
+foam.RELATIONSHIP({
+  cardinality: '*:*',
+  sourceModel: 'net.nanopay.model.Business',
+  targetModel: 'foam.nanos.auth.User',
+  forwardName: 'beneficialOwners',
+  inverseName: 'businessesInWhichThisUserIsABeneficialOwner',
+  targetProperty: { hidden: true },
+  junctionDAOKey: 'beneficialOwnerJunctionDAO'
+});

@@ -294,6 +294,7 @@ var classes = [
   'net.nanopay.fx.lianlianpay.model.Statement',
   'net.nanopay.fx.lianlianpay.model.StatementRecord',
   'foam.nanos.auth.UserUserJunction',
+  'net.nanopay.model.BusinessUserJunction',
   'net.nanopay.auth.LoginAttempt',
   'net.nanopay.fx.interac.model.ExchangerateApiModel',
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
