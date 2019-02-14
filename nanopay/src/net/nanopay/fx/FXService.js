@@ -4,60 +4,56 @@ foam.INTERFACE({
     methods: [
         {
             name: 'getFXRate',
-            javaReturns: 'net.nanopay.fx.FXQuote',
-            returns: 'Promise',
+            type: 'net.nanopay.fx.FXQuote',
+            async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [
                 {
                     name: 'sourceCurrency',
-                    javaType: 'String'
+                    type: 'String'
                 },
                 {
                     name: 'targetCurrency',
-                    javaType: 'String'
+                    type: 'String'
                 },
                 {
                     name: 'sourceAmount',
-                    javaType: 'Long'
+                    type: 'Long'
                 },
                 {
                     name: 'destinationAmount',
-                    javaType: 'Long'
+                    type: 'Long'
                 },
                 {
-                    class: 'String',
+                    type: 'String',
                     name: 'fxDirection',
-                    of: 'net.nanopay.fx.FXDirection'
                 },
                 {
                     name: 'valueDate',
-                    javaType: 'String'// TODO: investigate why java.util.dat can't be used here
+                    type: 'String'// TODO: investigate why java.util.dat can't be used here
                 },
                 {
-                  class: 'Reference',
-                  of: 'foam.nanos.auth.User',
+                  type: 'Long',
                   name: 'user'
                 },
                 {
-                  class: 'Reference',
-                  of: 'net.nanopay.fx.FXProvider',
+                  type: 'String',
                   name: 'fxProvider'
                 }
             ]
         },
         {
             name: 'acceptFXRate',
-            javaReturns: 'Boolean',
-            returns: 'Promise',
+            type: 'Boolean',
+            async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [
                 {
                     name: 'quoteId',
-                    javaType: 'String'
+                    type: 'String'
                 },
                 {
-                  class: 'Reference',
-                  of: 'foam.nanos.auth.User',
+                  type: 'Long',
                   name: 'user'
                 }
             ]

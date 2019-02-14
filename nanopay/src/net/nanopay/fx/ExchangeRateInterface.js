@@ -5,71 +5,69 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getRateFromSource',
-      javaReturns: 'net.nanopay.fx.ExchangeRateQuote',
-      returns: 'Promise',
+      type: 'net.nanopay.fx.ExchangeRateQuote',
+      async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
+          type: 'String',
           name: 'sourceCurrency',
-          javaType: 'String'
         },
         {
+          type: 'String',
           name: 'targetCurrency',
-          javaType: 'String'
         },
         {
+          type: 'Double',
           name: 'sourceAmount',
-          javaType: 'double'
         },
         {
+          type: 'String',
           name: 'valueDate',
-          javaType: 'String'
         }
       ]
     },
     {
       name: 'getRateFromTarget',
-      javaReturns: 'net.nanopay.fx.ExchangeRateQuote',
-      returns: 'Promise',
+      type: 'net.nanopay.fx.ExchangeRateQuote',
+      async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
+          type: 'String',
           name: 'sourceCurrency',
-          javaType: 'String'
         },
         {
+          type: 'String',
           name: 'targetCurrency',
-          javaType: 'String'
         },
         {
+          type: 'Double',
           name: 'targetAmount',
-          javaType: 'double'
         },
         {
+          type: 'String',// 'java.util.Date'
           name: 'valueDate',
-          javaType: 'String'// 'java.util.Date'
         }
       ]
     },
     {
       name: 'fetchRates',
-      javaReturns: 'void',
       javaThrows: ['java.lang.RuntimeException'],
-      args: []
     },
     {
       name: 'acceptRate',
-      javaReturns: 'net.nanopay.fx.interac.model.AcceptRateApiModel',
-      returns: 'Promise',
+      type: 'net.nanopay.fx.interac.model.AcceptRateApiModel',
+      async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
+          type: 'String',
           name: 'endToEndId',
-          javaType: 'String'
         },
         {
+          type: 'String',
           name: 'dealRefNum',
-          javaType: 'String'
         }
       ]
     }

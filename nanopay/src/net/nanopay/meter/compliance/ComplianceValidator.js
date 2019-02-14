@@ -5,21 +5,21 @@ foam.INTERFACE({
   methods: [
     {
       name: 'canValidate',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       args: [
         {
           name: 'obj',
-          javaType: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ]
     },
     {
       name: 'validate',
-      javaReturns: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
+      type: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
       args: [
         {
           name: 'obj',
-          javaType: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ]
     }

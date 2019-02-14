@@ -40,10 +40,9 @@ foam.CLASS({
     },
     {
       name: 'logoutAgent',
-      javaReturns: 'void',
       args: [
-        { of: 'User', name: 'agent' },
-        { of: 'DAO', name: 'entitiesDAO'}
+        { type: 'foam.nanos.auth.User', name: 'agent' },
+        { type: 'foam.dao.DAO', name: 'entitiesDAO'}
       ],
       javaCode: `
         entitiesDAO.select(new AbstractSink() {
@@ -56,10 +55,9 @@ foam.CLASS({
     },
     {
       name: 'logoutUser',
-      javaReturns: 'void',
       args: [
-        { of: 'User', name: 'user' },
-        { of: 'User', name: 'entity' }
+        { type: 'foam.nanos.auth.User', name: 'user' },
+        { type: 'foam.nanos.auth.User', name: 'entity' }
       ],
       javaCode: `
         long userId = user.getId();

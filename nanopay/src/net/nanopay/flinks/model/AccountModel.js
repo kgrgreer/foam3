@@ -5,7 +5,7 @@ foam.CLASS({
   documentation: 'model for Flinks account model',
 
   imports: [ 'bankAccountDAO' ],
-  
+
   javaImports: [
     'foam.dao.DAO',
     'net.nanopay.bank.BankAccount',
@@ -36,7 +36,7 @@ foam.CLASS({
     },
     //maybe dangerous if property=null or property={}
     {
-      // javaType: 'net.nanopay.flinks.model.BalanceModel',
+      // type: 'net.nanopay.flinks.model.BalanceModel',
       // javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       // javaJSONParser: 'new foam.lib.json.FObjectParser(net.nanopay.flinks.model.BalanceModel.class)',
       class: 'FObjectProperty',
@@ -48,7 +48,7 @@ foam.CLASS({
   methods: [
     {
       name: 'generateBankAccount',
-      javaReturns: 'net.nanopay.bank.BankAccount',
+      type: 'net.nanopay.bank.BankAccount',
       javaCode:
         `DAO accountDAO = (DAO) getX().get("accountDAO");
         BankAccount account = new CABankAccount();

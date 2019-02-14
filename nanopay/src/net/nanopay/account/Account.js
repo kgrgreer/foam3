@@ -47,7 +47,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      validateObj: function(name) {
+        if ( /^\s+$/.test(name) ) {
+          return 'Account name may not consist of only whitespace.';
+        }
+      }
     },
     {
       class: 'String',
@@ -141,10 +146,10 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         }
       ],
-      javaReturns: 'Object',
+      type: 'Any',
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
@@ -163,16 +168,16 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'balance',
-          javaType: 'net.nanopay.account.Balance'
+          type: 'net.nanopay.account.Balance'
         },
         {
           name: 'amount',
 
-          javaType: 'Long'
+          type: 'Long'
         }
       ],
       javaCode: `

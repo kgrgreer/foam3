@@ -506,16 +506,16 @@ try {
     {
       name: 'resyncInvoice',
       documentation: `Updates Xero with a processed invoice`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X',
+          type: 'Context',
           swiftType: 'Context?'
         },
         {
           name: 'nano',
-          javaType: 'net.nanopay.integration.xero.model.XeroInvoice',
+          type: 'net.nanopay.integration.xero.model.XeroInvoice',
         },
         {
           name: 'xero',

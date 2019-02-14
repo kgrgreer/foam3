@@ -359,6 +359,14 @@ css: `
     ^ input[type='checkbox']:focus{
       border: solid 2px #5a5a5a;
     }
+    ^ .foam-u2-tag-Select:disabled {
+      padding-left: 10px !important;
+
+    ^ .disclosure {
+      color: #525455;
+      font-size: 10px;
+      line-height: 15px;
+    }
   `,
 
 properties: [
@@ -580,7 +588,11 @@ messages: [
     message: 'This user is already assigned as a beneficial owner.'
   },
   { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
-  { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' }
+  { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
+  { name: 'SECUREFACT_DISCLOSURE_1', message: `We have engaged Securefact Transaction Services Inc. ("Securefact") to provide this verification for us.` },
+  { name: 'SECUREFACT_DISCLOSURE_2', message: `To verify your identity, your personal information will be matched with the information contained in your Credit File Report and other third party sources. This is a soft inquiry and will not affect your credit score or be visible to other financial institutions.` },
+  { name: 'SECUREFACT_DISCLOSURE_3', message: `You also consent to your personal information being compared to records maintained by third parties, including telecom and other service providers, and you consent to those third parties providing personal information to us and our third-party suppliers for the purpose of identity verification.` },
+  { name: 'SECUREFACT_DISCLOSURE_4', message: `By clicking “Complete” and submitting the information above, you confirm your consent to Securefact collecting, using, disclosing, and storing your personal information for the purpose of this verification.` },
 ],
 
 methods: [
@@ -597,6 +609,10 @@ methods: [
     this.nextLabel = 'Complete';
     this.principleTypeField = 'Shareholder';
     this.scrollToTop();
+
+    var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin) {
+      return isSameAsAdmin ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+    });
 
     this.addClass(this.myClass())
       .start().addClass('medium-header').add(this.TITLE).end()
@@ -626,16 +642,16 @@ methods: [
             .start().addClass('flex-container')
               .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
                 .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
-                .start().add(this.FIRST_NAME_FIELD).end()
+                .start(this.FIRST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
               .start().addClass('label-input').addClass('half-container')
                 .start().addClass('label').add(this.LAST_NAME_LABEL).end()
-                .start().add(this.LAST_NAME_FIELD).end()
+                .start(this.LAST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
             .end()
             .start().addClass('label-input')
               .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
-              .start().add(this.PRINCIPLE_TYPE_FIELD).end()
+              .start(this.PRINCIPLE_TYPE_FIELD, { mode$: modeSlotSameAsAdmin }).end()
             .end()
 
             .start()
@@ -644,14 +660,14 @@ methods: [
               })
               .start().addClass('label-input')
                 .start().addClass('label').add(this.JOB_TITLE_LABEL).end()
-                .start(this.JOB_TITLE_FIELD).end()
+                .start(this.JOB_TITLE_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
               .start().addClass('label-input')
                 .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
-                .start().add(this.BIRTHDAY_FIELD).end()
+                .start(this.BIRTHDAY_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
 
-              .start(this.ADDRESS_FIELD).end()
+              .start(this.ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .start().addClass('pushLeft')
                 .start(this.CANCEL_EDIT)
                   .enableClass('hidden', this.editingPrincipalOwner$, true)
@@ -728,6 +744,10 @@ methods: [
             }
           }).end()
         .end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_1).end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
       .end();
   },
 

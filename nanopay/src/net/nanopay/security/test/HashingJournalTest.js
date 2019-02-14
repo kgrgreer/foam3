@@ -21,10 +21,10 @@ foam.CLASS({
 
   constants: [
     {
-      type: 'User',
+      type: 'foam.nanos.auth.User',
       name: 'INPUT',
       documentation: 'Original input',
-      value: `
+      javaValue: `
         new User.Builder(EmptyX.instance())
           .setId(1000)
           .setFirstName("Kirk")
@@ -62,7 +62,7 @@ foam.CLASS({
     {
       name: 'HashingJournal_ConstructWithDefaultValues_Initializes',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
       javaCode: `
         HashingJournal journal = new HashingJournal.Builder(x).build();
@@ -77,7 +77,7 @@ foam.CLASS({
     {
       name: 'HashingJournal_ConstructWithValidAlgorithm_Initializes',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
       javaCode: `
         HashingJournal journal = new HashingJournal.Builder(x).setAlgorithm("SHA-512").build();
@@ -87,7 +87,7 @@ foam.CLASS({
     {
       name: 'HashingJournal_ConstructWithInvalidAlgorithm_RuntimeException',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
       javaCode: `
         try {
@@ -103,7 +103,7 @@ foam.CLASS({
     {
       name: 'HashingJournal_Put_Succeeds',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
       javaCode: `
         try {
@@ -137,7 +137,7 @@ foam.CLASS({
     {
       name: 'HashingJournal_Replay_Succeeds',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
       javaCode: `
         try {
@@ -177,7 +177,7 @@ foam.CLASS({
     {
       name: 'HashingJournal_ReplayJournalWithInvalidDigest_Exception',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
       javaCode: `
         try {

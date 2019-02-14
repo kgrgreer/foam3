@@ -20,7 +20,7 @@ foam.CLASS({
       factory: function() {
         return [];
       },
-      javaType: 'PlanComparator[]',
+      type: 'net.nanopay.tx.PlanComparator[]',
       javaFactory: `
         return new PlanComparator[0];
       `
@@ -30,15 +30,15 @@ foam.CLASS({
   methods: [
     {
       name: 'compare',
-      javaReturns: 'int',
+      type: 'Integer',
       args: [
         {
           name: 'o1',
-          javaType: 'Object'
+          type: 'Any'
         },
         {
           name: 'o2',
-          javaType: 'Object'
+          type: 'Any'
         }
       ],
       javaCode: `
@@ -56,7 +56,7 @@ foam.CLASS({
   args: [
     {
       name: 'planComparator',
-      javaType: 'net.nanopay.tx.PlanComparator'
+      type: 'net.nanopay.tx.PlanComparator'
     }
   ],
   javaCode: `

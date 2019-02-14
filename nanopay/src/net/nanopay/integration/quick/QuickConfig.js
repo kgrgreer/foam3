@@ -30,7 +30,7 @@ foam.CLASS({
     },
     {
       class: 'Object',
-      of: 'com.intuit.oauth2.client.OAuth2PlatformClient',
+      javaType: 'com.intuit.oauth2.client.OAuth2PlatformClient',
       name: 'oAuth',
     },
     {
