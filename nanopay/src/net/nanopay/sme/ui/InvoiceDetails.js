@@ -309,7 +309,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start().addClass('invoice-row')
+        .start()
           .start()
             .add(this.ATTACHMENT_LABEL)
             .addClass('bold-label')
@@ -342,7 +342,7 @@ foam.CLASS({
             }))
           .end()
         .end()
-
+        .br()
         .start()
           .addClass('bold-label')
           .add(this.NOTE_LABEL)
