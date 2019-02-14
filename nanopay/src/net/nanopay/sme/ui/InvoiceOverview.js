@@ -493,10 +493,10 @@ foam.CLASS({
                       .add(this.ESTIMATED_CREDIT_DATE)
                     .end()
                     .start().show(this.relatedTransaction$)
-                      .add(this.relatedTransaction$.map((transaction) => {
-                        if ( transaction != null &&transaction.completionDate ) {
-                          var creditDate = transaction.completionDate
-                            .toISOString().substring(0, 10);
+                      .add(this.slot(function(invoice$paymentDate) {
+                        if ( invoice$paymentDate ) {
+                          var creditDate =
+                            invoice$paymentDate.toISOString().substring(0, 10);
                           return this.isPaid ? creditDate : `${creditDate} *`;
                         } else {
                           return '--';
