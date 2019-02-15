@@ -713,9 +713,10 @@ try {
     // 2. if the contact already exist, skip
     Contact contact = (Contact) contactDAO.find(AND(
       EQ(Contact.EMAIL, email.getAddress()),
-      EQ(Contact.OWNER, user.getId())
+      EQ(Contact.OWNER, user.getId()),
+      NOT(INSTANCE_OF(QuickContact.class))
     ));
-    if ( contact != null && portal.getId() == 0 ) { continue; }
+    if ( contact != null ) { continue; }
 
     // 3. If the contact is a existing user,
     User existUser = (User) userDAO.find(
