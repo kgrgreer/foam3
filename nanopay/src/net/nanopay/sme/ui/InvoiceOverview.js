@@ -72,8 +72,8 @@ foam.CLASS({
       font-weight: 400;
       width: 120px;
     }
-    ^ .parent {
-      margin-left: 15px;
+    ^go-back-label {
+      margin-left: 12px;
     }
     ^ .payment-content {
       padding: 0px 14px;
@@ -413,7 +413,7 @@ foam.CLASS({
                   .end()
                 .end()
                 .start('span')
-                  .addClass('parent')
+                  .addClass(this.myClass('go-back-label'))
                   .add(this.BACK)
                 .end()
                 .on('click', () => {
