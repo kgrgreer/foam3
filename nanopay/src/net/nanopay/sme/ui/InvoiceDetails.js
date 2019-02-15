@@ -36,21 +36,13 @@ foam.CLASS({
       font-size: 18px;
       display: inline-block;
     }
-    ^ .invoice-text-left {
+    ^invoice-content-block {
       display: inline-block;
       vertical-align: top;
-      color: #8e9090;
-      width: 50%;
-    }
-    ^ .invoice-text-right {
-      display: inline-block;
-      vertical-align: top;
-      color: #8e9090;
       width: 50%;
       }
-    ^ .bold-label {
-      color: #2b2b2b;
-      margin-bottom: 5px;
+    ^invoice-content-text {
+      color: #8e9090;
     }
     ^ .invoice-note {
       display: inline-block;
@@ -245,69 +237,84 @@ foam.CLASS({
           .start()
             .addClass('invoice-row')
             .start()
-              .addClass('invoice-text-left')
+              .addClass(this.myClass('invoice-content-block'))
               .start()
                 .addClass('bold-label')
                 .add(this.PAYER_LABEL)
               .end()
-              .add(this.payer$.map(function(payer) {
-                return payer.then(function(payer) {
-                  if ( payer != null ) {
-                    var address = payer.businessAddress;
-                    return self.E()
-                      .start().add(payer.businessName).end()
-                      .start().add(self.formatStreetAddress(address)).end()
-                      .start().add(self.formatRegionAddress(address)).end()
-                      .start().add(address.postalCode).end();
-                  }
-                });
-              }))
+              .start().addClass(this.myClass('invoice-content-text'))
+                .add(this.payer$.map(function(payer) {
+                  return payer.then(function(payer) {
+                    if ( payer != null ) {
+                      var address = payer.businessAddress;
+                      return self.E()
+                        .start().add(payer.businessName).end()
+                        .start().add(self.formatStreetAddress(address)).end()
+                        .start().add(self.formatRegionAddress(address)).end()
+                        .start().add(address.postalCode).end();
+                    }
+                  });
+                }))
+              .end()
             .end()
             .start()
-              .addClass('invoice-text-left')
-              .start().addClass('bold-label').add(this.PAYEE_LABEL).end()
-              .add(this.payee$.map(function(payee) {
-                return payee.then(function(payee) {
-                  if ( payee != null ) {
-                    return self.E()
-                      .start().add(payee.firstName + ' ' + payee.lastName).end()
-                      .start().add(payee.businessPhone.number).end()
-                      .start().add(payee.email).end();
-                  }
-                });
-              }))
+              .addClass(this.myClass('invoice-content-block'))
+              .start()
+                .addClass('bold-label')
+                .add(this.PAYEE_LABEL)
+              .end()
+              .start().addClass(this.myClass('invoice-content-text'))
+                .add(this.payee$.map(function(payee) {
+                  return payee.then(function(payee) {
+                    if ( payee != null ) {
+                      return self.E()
+                        .start().add(payee.firstName + ' ' + payee.lastName).end()
+                        .start().add(payee.businessPhone.number).end()
+                        .start().add(payee.email).end();
+                    }
+                  });
+                }))
+              .end()
             .end()
           .end()
           .start()
             .addClass('invoice-row')
             .start()
-              .addClass('invoice-text-left')
+              .addClass(this.myClass('invoice-content-block'))
               .start()
                 .addClass('bold-label')
                 .add(this.AMOUNT_LABEL)
               .end()
-              .add(this.PromiseSlot.create({
-                promise$: this.formattedAmount$,
-                value: '--',
-              }))
-              .add(' ')
-              .add(this.invoice$.dot('destinationCurrency'))
+              .start().addClass(this.myClass('invoice-content-text'))
+                .add(this.PromiseSlot.create({
+                  promise$: this.formattedAmount$,
+                  value: '--',
+                }))
+                .add(' ')
+                .add(this.invoice$.dot('destinationCurrency'))
+              .end()
             .end()
             .start()
-              .addClass('invoice-text-right')
+              .addClass(this.myClass('invoice-content-block'))
               .start().addClass('inline-block')
                 .start()
                   .addClass('bold-label')
                   .add(this.DUE_DATE_LABEL)
                 .end()
-                .start().add(this.dueDate$).end()
+                .start()
+                  .addClass(this.myClass('invoice-content-text'))
+                  .add(this.dueDate$)
+                .end()
               .end()
               .start().addClass(this.myClass('issue-date-block'))
                 .start()
                   .addClass('bold-label')
                   .add(this.ISSUE_DATE_LABEL)
                 .end()
-                .start().add(this.issueDate$).end()
+                .start()
+                  .addClass(this.myClass('invoice-content-text'))
+                  .add(this.issueDate$)
+                .end()
               .end()
             .end()
           .end()
@@ -347,7 +354,8 @@ foam.CLASS({
               } else {
                 return self.E()
                   .start()
-                    .addClass('invoice-text-left')
+                    .addClass(this.myClass('invoice-content-block'))
+                    .addClass(this.myClass('invoice-content-text'))
                     .addClass(this.myClass('italic'))
                     .add('No attachments provided')
                   .end();
@@ -360,7 +368,9 @@ foam.CLASS({
             .addClass('bold-label')
             .add(this.NOTE_LABEL)
           .end()
-          .start('span').addClass('invoice-text-left')
+          .start('span')
+            .addClass(this.myClass('invoice-content-block'))
+            .addClass(this.myClass('invoice-content-text'))
             .addClass('invoice-note')
             .add(this.slot(function(invoice$note) {
               if ( invoice$note ) {

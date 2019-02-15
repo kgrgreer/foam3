@@ -514,9 +514,14 @@ foam.CLASS({
     /* Text Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea26293d02ff3d04f8892d */
 
     .x-large-header {
-      font-size: 40px;
-      line-height: 48px;
+      /* InvoiceOverview Header format length */
+      font-size: 32px;
       font-weight: 900;
+      line-height: 1.5;
+      max-width: 600px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .large-header {

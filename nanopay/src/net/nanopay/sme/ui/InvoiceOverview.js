@@ -117,8 +117,9 @@ foam.CLASS({
       width: 50%;
     }
     ^ .subheading {
+      font-size: 16px;
+      font-weight: 900;
       margin-bottom: 16px;
-      font-weight: bold;
     }
     ^ .foam-u2-history-HistoryView {
       background: none;
@@ -137,8 +138,15 @@ foam.CLASS({
       vertical-align: top;
       margin-top: -2px;
     }
-    ^ .align-right {
-      text-align: right;
+
+    ^header-align-top {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    ^header-align-right {
+      display: inline-block;
+      vertical-align: middle;
+      float: right;
     }
     ^annotation {
       font-size: 10px;
@@ -342,8 +350,6 @@ foam.CLASS({
 
   methods: [
     function init() {
-      // Dynamic create top button based on 'isPayable'
-      this.generateTop(this.isPayable);
 
       this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
         if ( transaction ) {
@@ -395,9 +401,49 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start()
-            .addClass('x-large-header')
-            .add('Invoice #' + this.invoice.invoiceNumber)
+          .start().add(this.slot(function() {
+            return this.E().startContext({ data: this })
+              .start()
+                .addClass(this.myClass('back-area'))
+                .start('span')
+                  .addClass(this.myClass('back-arrow'))
+                  .add('←')
+                .end()
+                .start('span')
+                  .addClass('parent')
+                  .add(this.BACK)
+                .end()
+                .on('click', () => {
+                  var menuId = this.isPayable ? 'sme.main.invoices.payables'
+                    : 'sme.main.invoices.receivables';
+                  this.menuDAO
+                    .find(menuId)
+                    .then((menu) => menu.launch());
+                })
+              .end()
+              .start()
+                .start()
+                  .addClass(this.myClass('header-align-top'))
+                  .addClass('x-large-header')
+                  .add('Invoice #' + this.invoice.invoiceNumber)
+                .end()
+                // Dynamic create the primary action
+                .start()
+                  .addClass(this.myClass('header-align-right'))
+                  .start(this.PAY_NOW)
+                    .addClass('sme').addClass('button').addClass('primary')
+                  .end()
+                  .start(this.EDIT)
+                    .addClass('sme').addClass('button').addClass('primary')
+                  .end()
+                  .start(this.PAID)
+                    .addClass('sme').addClass('button').addClass('primary')
+                    .addClass(this.myClass('primary-disable'))
+                  .end()
+                .end()
+              .end()
+            .endContext();
+          }))
           .end()
         .end()
 
@@ -552,43 +598,6 @@ foam.CLASS({
       .end();
     },
 
-    function generateTop(isPayable) {
-      // 'startContext' is required to pass the context to the button
-      this
-        .startContext({ data: this })
-          .start()
-            .addClass(this.myClass('back-area'))
-            .start('span')
-              .addClass(this.myClass('back-arrow'))
-              .add('←')
-            .end()
-            .start('span')
-              .addClass('parent')
-              .add(this.BACK)
-            .end()
-            .on('click', () => {
-              var menuId = this.isPayable ? 'sme.main.invoices.payables'
-                : 'sme.main.invoices.receivables';
-              this.menuDAO
-                .find(menuId)
-                .then((menu) => menu.launch());
-            })
-          .end()
-          .start()
-            .addClass('align-right')
-            .start(this.PAY_NOW)
-              .addClass('sme').addClass('button').addClass('primary')
-            .end()
-            .start(this.EDIT)
-              .addClass('sme').addClass('button').addClass('primary')
-            .end()
-            .start(this.PAID)
-              .addClass('sme').addClass('button').addClass('primary')
-              .addClass(this.myClass('primary-disable'))
-            .end()
-          .end()
-        .endContext();
-    },
     function saveAsVoid() {
       if ( ! this.isVoidable ) return;
       this.invoice.paymentMethod = this.PaymentStatus.VOID;
@@ -601,6 +610,7 @@ foam.CLASS({
         this.notify(`${this.PART_ONE_SAVE}${this.invoice.invoiceNumber} ${this.PART_TWO_SAVE_ERROR}`);
       });
     },
+
     function markAsComplete() {
       this.add(this.Popup.create().tag({
         class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
