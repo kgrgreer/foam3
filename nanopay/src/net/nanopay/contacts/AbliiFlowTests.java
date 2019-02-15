@@ -522,7 +522,7 @@ extends Test
     invoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(invoice);
 
     test(invoice.getStatus().equals(InvoiceStatus.DEPOSITING_MONEY),
-      "Flow 4: Given user1 (with Bank Account) and user2 (with no Bank account) and payable invoice from user1 to user2 with status In transit " +
+      "Flow 4: Given user1 (with Bank Account) and user2 (with no Bank account) and payable invoice from user1 to user2 with status pending(processing) " +
         "When a the user 2 creates a valid verified bank account " +
         "Then this should init Auto deposit to the newly create bank account and the invoice status should be DEPOSITING_MONEY");
   }
