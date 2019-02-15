@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.auth.email',
-  name: 'DoNotContact',
+  name: 'DoNotSolicit',
 
   documentation: 'Email CASTLe opt-out registry.',
 
@@ -41,15 +41,15 @@ foam.CLASS({
       class: 'String',
     },
     {
-      documentation: 'Do not email under any circumstances.',
-      name: 'doNotContact',
-      class: 'Boolean'
-    },
-    {
       documentation: 'Do not send solitation emails.',
       name: 'doNotSolicit',
       class: 'Boolean',
       value: true
+    },
+    {
+      documentation: 'Do not email under any circumstances.',
+      name: 'doNotContact',
+      class: 'Boolean'
     },
     {
       name: 'notes',
