@@ -23,7 +23,7 @@ foam.ENUM({
       {
         name: 'PAID',
         documentation: 'The invoice has been paid.',
-        label: 'Completed'
+        label: 'Complete'
       },
       {
         name: 'VOID',
@@ -32,14 +32,8 @@ foam.ENUM({
       },
       {
         name: 'PENDING',
-        documentation: 'The invoice has been paid, but that payment hasn\'t been confirmed yet.',
-        label: 'Pending'
-      },
-      {
-        name: 'IN_TRANSIT',
-        documentation: `The invoice has been paid by moving money into payer owned 
-        holding account(default DigitalAccount), but has not completed a CI to this holding account`,
-        label: 'Funds in transit'
+        documentation: 'The invoice has been paid, but that payment is still in processing.',
+        label: 'Processing'
       },
       {
         name: 'PENDING_ACCEPTANCE',

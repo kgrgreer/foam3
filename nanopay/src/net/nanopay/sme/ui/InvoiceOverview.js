@@ -242,7 +242,6 @@ foam.CLASS({
       name: 'showBankAccount',
       expression: function(invoice) {
         return invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
-          invoice.status === this.InvoiceStatus.IN_TRANSIT ||
           invoice.status === this.InvoiceStatus.PENDING ||
           invoice.status === this.InvoiceStatus.PAID;
       },
@@ -279,16 +278,14 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isProcess',
       expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.IN_TRANSIT ||
-          invoice.status === this.InvoiceStatus.PENDING;
+        return invoice.status === this.InvoiceStatus.PENDING;
       }
     },
     {
       class: 'Boolean',
       name: 'isProcessOrComplete',
       expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.IN_TRANSIT ||
-          invoice.status === this.InvoiceStatus.PENDING ||
+        return invoice.status === this.InvoiceStatus.PENDING ||
           invoice.status === this.InvoiceStatus.PAID;
       }
     },
