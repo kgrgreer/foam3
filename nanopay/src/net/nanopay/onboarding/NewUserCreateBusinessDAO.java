@@ -75,11 +75,14 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
         throw new RuntimeException("Unable to process user registration");
       }
       Map<String, Object> params = (Map) token.getParameters();
-      // Process token
-      Token clone = (Token) token.fclone();
-      clone.setProcessed(true);
-      tokenDAO_.inX(sysContext).put(clone);
 
+      try {
+        // Process token
+        Token clone = (Token) token.fclone();
+        clone.setProcessed(true);
+        tokenDAO_.inX(sysContext).put(clone);
+      } catch (Exception ignored) { }
+      
       // There can be different tokens with different parameters used.
       // When adding a user to a business, we'll have the group
       // and businessId parameters set, so check for those here.
