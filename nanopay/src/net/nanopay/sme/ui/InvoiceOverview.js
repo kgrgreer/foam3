@@ -350,7 +350,6 @@ foam.CLASS({
 
   methods: [
     function init() {
-
       this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
         if ( transaction ) {
           this.relatedTransaction = transaction;
@@ -407,7 +406,11 @@ foam.CLASS({
                 .addClass(this.myClass('back-area'))
                 .start('span')
                   .addClass(this.myClass('back-arrow'))
-                  .add('←')
+                  .start({
+                    class: 'foam.u2.tag.Image',
+                    data: 'images/ablii/gobackarrow-grey.svg'
+                  })
+                  .end()
                 .end()
                 .start('span')
                   .addClass('parent')
