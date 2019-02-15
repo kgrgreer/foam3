@@ -275,9 +275,9 @@ foam.CLASS({
 
     async function invitedTokenProcess() {
       if ( ! this.signUpToken ) return;
-      var userr = await this.smeBusinessRegistrationDAO.put(this.user);
-      if ( userr ) {
-        this.user.copyFrom(userr);
+      var returnedTempUser = await this.smeBusinessRegistrationDAO.put(this.user);
+      if ( returnedTempUser ) {
+        this.user.copyFrom(returnedTempUser);
       } else {
         this.notify(err.message || 'User was invited to a business however an error has occured during processing.', 'error');
       }

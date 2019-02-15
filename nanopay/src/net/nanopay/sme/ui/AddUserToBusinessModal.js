@@ -122,17 +122,17 @@ foam.CLASS({
         // Disallow the adding of a user if they are currently already a user in the business.
         // dao is populated when this modal is called from UserManagementView.js
         if ( this.dao ) {
-          var returnning = false;
+          var disallowUserAdditionReturnFromAddUser = false;
           var currentBusUserArray = (await this.dao.where(this.EQ(this.ClientUserJunction.STATUS, this.AgentJunctionStatus.ACTIVE)).select()).array;
           currentBusUserArray.forEach( (busUser) => {
             if ( foam.util.equals(busUser.email, this.email) ) {
               this.notify(this.INVALID_EMAIL2, 'error');
-              returnning = true;
+              disallowUserAdditionReturnFromAddUser = true;
               // only exits loop with return, due to nesting function
               return;
             }
           });
-          if ( returnning ) return;
+          if ( disallowUserAdditionReturnFromAddUser ) return;
         }
         var invitation = this.Invitation.create({
           // A legal requirement is that we need to do a compliance check on any
