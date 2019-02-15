@@ -343,7 +343,8 @@ foam.CLASS({
                                   EQ(BankAccount.OWNER, user.getId()),
                                   INSTANCE_OF(BankAccount.class),
                                   EQ(Account.DENOMINATION, denomination),
-                                  EQ(Account.IS_DEFAULT, true)
+                                  EQ(Account.IS_DEFAULT, true), 
+                                  NEQ(Account.DELETED, true)
                                 )
                               );
 
