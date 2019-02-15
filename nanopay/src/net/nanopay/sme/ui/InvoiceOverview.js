@@ -140,6 +140,13 @@ foam.CLASS({
     ^ .align-right {
       text-align: right;
     }
+    ^annotation {
+      font-size: 10px;
+    }
+    ^primary-disable {
+      background: #bdb4fd !important;
+      cursor: default !important;
+    }
   `,
 
   messages: [
@@ -149,7 +156,8 @@ foam.CLASS({
     { name: 'PAYMENT_FEE', message: 'Fee' },
     { name: 'AMOUNT_DUE', message: 'Amount due' },
     { name: 'AMOUNT_PAID', message: 'Amount paid' },
-    { name: 'DATE_PAID', message: 'Date paid' },
+    { name: 'DATE_CREDITED', message: 'Date credited' },
+    { name: 'ESTIMATED_CREDIT_DATE', message: 'Estimated credit date' },
     { name: 'INVOICE_HISTORY', message: 'History' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
     { name: 'VOID_MESSAGE', message: 'Mark as void' },
@@ -158,7 +166,8 @@ foam.CLASS({
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
-    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' }
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' },
+    { name: 'ANNOTATION', message: '* The dates above are estimates and are subject to change.' }
   ],
 
   constants: [
@@ -260,6 +269,14 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'isProcess',
+      expression: function(invoice) {
+        return invoice.status === this.InvoiceStatus.IN_TRANSIT ||
+          invoice.status === this.InvoiceStatus.PENDING;
+      }
+    },
+    {
+      class: 'Boolean',
       name: 'isProcessOrComplete',
       expression: function(invoice) {
         return invoice.status === this.InvoiceStatus.IN_TRANSIT ||
@@ -352,14 +369,15 @@ foam.CLASS({
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = `${currency.format(0)} `
-                  + `${currency.alphabeticCode}`;
+                this.fee = `${currency.format(0)} ${currency.alphabeticCode}`;
               });
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
             this.currencyDAO.find(account.denomination).then((currency) => {
-              this.formattedAmountPaid = `${currency.format(transaction.amount)} ${currency.alphabeticCode}`;
+              this.formattedAmountPaid =
+                `${currency.format(transaction.amount)} ` +
+                `${currency.alphabeticCode}`;
             });
 
             if ( this.invoice.destinationCurrency === account.denomination ) {
@@ -411,7 +429,7 @@ foam.CLASS({
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
-              .attr('src', this.COMPLETE_ICON_COMPLETE)
+              .attr('src', this.COMPLETE_ICON_HOVER)
             .end()
             .add(this.MARK_AS_COMP_MESSAGE)
             .on('click', () => this.markAsComplete())
@@ -464,6 +482,28 @@ foam.CLASS({
                   .end()
                 .end()
                 .start().addClass('invoice-row')
+                  .start().show(this.isProcessOrComplete$)
+                    .addClass('invoice-text-right')
+                    .start().show(this.isPaid$)
+                      .addClass('table-content')
+                      .add(this.DATE_CREDITED)
+                    .end()
+                    .start().show(this.isProcess$)
+                      .addClass('table-content')
+                      .add(this.ESTIMATED_CREDIT_DATE)
+                    .end()
+                    .start().show(this.relatedTransaction$)
+                      .add(this.slot(function(invoice$paymentDate) {
+                        if ( invoice$paymentDate ) {
+                          var creditDate =
+                            invoice$paymentDate.toISOString().substring(0, 10);
+                          return this.isPaid ? creditDate : `${creditDate} *`;
+                        } else {
+                          return '--';
+                        }
+                      }))
+                    .end()
+                  .end()
                   .start().show(this.showBankAccount$).addClass('invoice-text-left')
                     .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
@@ -476,19 +516,11 @@ foam.CLASS({
                       }
                     }))
                   .end()
-                  .start().show(this.isProcessOrComplete$).addClass('invoice-text-right')
-                    .start().addClass('table-content').add(this.DATE_PAID).end()
-                    .start().show(this.isPaid$)
-                      .add(this.relatedTransaction$.map((transaction) => {
-                        if ( transaction != null && transaction.completionDate ) {
-                          return transaction.completionDate
-                            .toISOString().substring(0, 10);
-                        }
-                      }))
-                    .end()
-                    .start().add('--').hide(this.isPaid$).end()
-                  .end()
                 .end()
+              .end()
+              .start().show(this.isProcess$)
+                .addClass(this.myClass('annotation'))
+                .add(this.ANNOTATION)
               .end()
             .end()
 
@@ -544,8 +576,16 @@ foam.CLASS({
           .end()
           .start()
             .addClass('align-right')
-            .start(this.PAY_NOW).addClass('sme').addClass('button').addClass('primary').end()
-            .start(this.EDIT).addClass('sme').addClass('button').addClass('primary').end()
+            .start(this.PAY_NOW)
+              .addClass('sme').addClass('button').addClass('primary')
+            .end()
+            .start(this.EDIT)
+              .addClass('sme').addClass('button').addClass('primary')
+            .end()
+            .start(this.PAID)
+              .addClass('sme').addClass('button').addClass('primary')
+              .addClass(this.myClass('primary-disable'))
+            .end()
           .end()
         .endContext();
     },
@@ -623,13 +663,20 @@ foam.CLASS({
       }
     },
     {
+      name: 'paid',
+      label: 'Paid',
+      isAvailable: function() {
+        return this.isPayable && this.isProcessOrComplete;
+      }
+    },
+    {
       name: 'sendReminder',
       label: 'Send a reminder',
       isAvailable: function() {
         // return this.isSendRemindable;
         return false;
       },
-      code: async function(X) {
+      code: function(X) {
         // TODO: need to write a service that would be called by client,
         // for this feature. But need to confirm feature requirements prior
         // to implementation. Some have suggested this action should not exist
