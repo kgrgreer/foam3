@@ -15,10 +15,7 @@ import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-import static foam.mlang.MLang.NOT;
+import static foam.mlang.MLang.*;
 
 /**
  * A standalone DAO that acts like a service. Put an object to it with a user id
@@ -62,7 +59,8 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
         EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-        EQ(Account.OWNER, user.getId())))
+        EQ(Account.OWNER, user.getId()),
+        NEQ(Account.DELETED, true)))
       .select(new Count());
 
      // if the user is a business then the compliance should be passed
