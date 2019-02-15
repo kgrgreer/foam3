@@ -190,8 +190,6 @@ foam.CLASS({
                     menu.launch();
                   } else {
                     self.confirmHashRedirectIfInvitedAndSignedIn();
-                    // TODO clear properties on url
-                    // self.pushMenu('sme.main.dashboard');
                   }
                 });
               }
@@ -319,24 +317,24 @@ foam.CLASS({
       var locHash = location.hash;
       var searchParams = new URLSearchParams(location.search);
       if ( locHash === '#invited' && this.loginSuccess ) {
-        this.clientPromise.then((client) => {
-          this.client.nSpecDAO.find('smeBusinessRegistrationDAO').then((dao) => {
-            //var dao = ctrl.__subContext__.smeBusinessRegistrationDAO;
-            if ( dao ) {
-              this.user.signUpToken = searchParams.get('token');
-              var userr = dao.put(this.user);
-              if ( userr ) {
-                this.user.copyFrom(userr);
-                ctrl.notify('Success you are now apart of a new business');
-              } else {
-                ctrl.notify(err.message || 'User was invited to a business however an error has occured during processing.', 'error');
-                this.pushMenu('sme.main.dashboard');
-              }
-            }
-          });
-       });
+        var dao = ctrl.__subContext__.smeBusinessRegistrationDAO;
+        if ( dao ) {
+          this.agent.signUpToken = searchParams.get('token');
+          var userr = dao.put(this.agent);
+          if ( userr ) {
+            this.agent.copyFrom(userr);
+            ctrl.notify(`Success you are now apart of a new business: ${searchParams.get('companyName')}`);
+            // replace url parameters with 'ablii' and redirect to dashboard, effectively riding the token of url history
+            history.replaceState({}, '', 'ablii');
+            this.pushMenu('sme.main.dashboard');
+          } else {
+            ctrl.notify(err.message || `The invitation to a business ${searchParams.get('companyName')} was not processed, please try again.`, 'error');
+            // replace url parameters with 'ablii' and redirect to dashboard, effectively riding the token of url history
+            history.replaceState({}, '', 'ablii');
+            this.pushMenu('sme.main.dashboard');
+          }
+        }
       }
-      this.pushMenu('sme.main.dashboard');
     },
 
     function getCurrentUser() {

@@ -106,7 +106,9 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
               EQ(UserUserJunction.TARGET_ID, business.getId())
             ));
             if ( junction != null ) {
-              throw new AuthorizationException("User already exists within the business.");
+              // don't want to through an error if user is clicking link for the second time
+              // instead just return if junction already exists.
+              return user;
             }
           } else {
             /* PROCESSING external users */
