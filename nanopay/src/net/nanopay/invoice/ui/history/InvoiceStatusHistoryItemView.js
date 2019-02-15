@@ -100,12 +100,6 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Pending-approval',
             icon: 'images/ic-scheduled.svg'
           };
-        case this.InvoiceStatus.IN_TRANSIT:
-          return {
-            labelText: 'In Transit',
-            labelDecoration: 'Invoice-Status-Pending-approval',
-            icon: 'images/ic-scheduled.svg'
-          };
         case this.InvoiceStatus.PENDING_ACCEPTANCE:
           return {
             labelText: 'Pending acceptance',
