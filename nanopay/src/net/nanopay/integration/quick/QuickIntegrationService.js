@@ -33,6 +33,7 @@ foam.CLASS({
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.quick.model.*',
     'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
+    'net.nanopay.contacts.Contact',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.HttpClient',
     'org.apache.http.client.methods.HttpGet',
@@ -622,6 +623,50 @@ try {
 }`,
     },
     {
+      name: 'isValidContact',
+      type: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'contact',
+          type: 'net.nanopay.integration.quick.model.QuickQueryContact',
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User',
+        },
+      ],
+      javaCode:
+`
+DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
+
+if (
+  contact.getPrimaryEmailAddr() == null ||
+  SafetyUtil.isEmpty(contact.getGivenName()) ||
+  SafetyUtil.isEmpty(contact.getFamilyName()) ||
+  SafetyUtil.isEmpty(contact.getCompanyName()) )
+{
+  Notification notify = new Notification();
+  notify.setUserId(user.getId());
+  String str = "Quick Contact # " +
+    contact.getId() +
+    " can not be added because the contact is missing: " +
+    (contact.getPrimaryEmailAddr() == null ? "[Email]" : "") +
+    (SafetyUtil.isEmpty(contact.getGivenName()) ? " [Given Name] " : "") +
+    (SafetyUtil.isEmpty(contact.getCompanyName()) ? " [Company Name] " : "") +
+    (SafetyUtil.isEmpty(contact.getFamilyName()) ? " [Family Name] " : "");
+  notify.setBody(str);
+  notification.put(notify);
+  return false;
+}
+
+return true;
+`
+    },
+    {
       name: 'importContacts',
       documentation: `Retrieves the query and parses to Query models for Customers or Vendors, then pulls relative data and applys to portal model`,
       type: 'net.nanopay.integration.ResultResponse',
@@ -643,49 +688,52 @@ try {
 `Logger         logger         = (Logger) x.get("logger");
 DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
 DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
+DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
+DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
 CountryService countryService = (CountryService) x.get("countryService");
 RegionService  regionService  = (RegionService) x.get("regionService");
 
 try {
   for ( QuickQueryContact customer : contacts ) {
+    // if the contact not valid
+    if ( ! this.isValidContact(x, customer, user) ) {
+      continue;
+    }
+
     QuickQueryEMail email  = customer.getPrimaryEmailAddr();
 
-    // Checks if there is a pre-existing contact
-    QuickContact portal = (QuickContact) contactDAO.find(
-      AND(
-        EQ(
-          QuickContact.QUICK_ID,
-          customer.getId()
-        ),
-        EQ(
-          QuickContact.OWNER,
-          user.getId()
-        )
-      )
+    // 1. if the quick-contact already exist, overwrite
+    QuickContact portal = (QuickContact) contactDAO.find(AND(
+        EQ(QuickContact.QUICK_ID, customer.getId()),
+        EQ(QuickContact.OWNER, user.getId())
+    ));
+    portal =
+      portal == null ? new QuickContact() : (QuickContact) portal.fclone();
+    
+    // 2. if the contact already exist, skip
+    Contact contact = (Contact) contactDAO.find(AND(
+      EQ(Contact.EMAIL, email.getAddress()),
+      EQ(Contact.OWNER, user.getId())
+    ));
+    if ( contact != null && portal.getId() == 0 ) { continue; }
+
+    // 3. If the contact is a existing user,
+    User existUser = (User) userDAO.find(
+      EQ(User.EMAIL, email.getAddress())
     );
-    if ( portal == null ) {
-
-      // Checks if the required data to become a contact is present in the contact data from Quickbooks.
-      // If not sends a notification informing user of missing data
-      if ( email == null || SafetyUtil.isEmpty(customer.getGivenName()) || SafetyUtil.isEmpty(customer.getFamilyName()) || SafetyUtil.isEmpty(customer.getCompanyName()) ) {
-        Notification notify = new Notification();
-        notify.setUserId(user.getId());
-        String str = "Quick Contact # " +
-          customer.getId() +
-          " can not be added because the contact is missing: " +
-          (email == null ? "[Email]" : "") +
-          (SafetyUtil.isEmpty(customer.getGivenName()) ? " [Given Name] " : "") +
-          (SafetyUtil.isEmpty(customer.getCompanyName()) ? " [Company Name] " : "") +
-          (SafetyUtil.isEmpty(customer.getFamilyName()) ? " [Family Name] " : "");
-        notify.setBody(str);
-        notification.put(notify);
-        continue;
-      }
-
-      // Creates a contact
-      portal = new QuickContact();
-    } else {
-      portal = (QuickContact) portal.fclone();
+    if ( existUser != null ) {
+      Business business = (Business) businessDAO.find(
+        EQ(Business.ORGANIZATION, existUser.getOrganization())
+      );
+      Contact newContact = new Contact();
+      newContact.setOrganization(business.getOrganization());
+      newContact.setBusinessName(business.getBusinessName());
+      newContact.setBusinessId(business.getId());
+      newContact.setEmail(business.getEmail());
+      newContact.setType("Contact");
+      newContact.setGroup("sme");
+      user.getContacts(x).inX(x).put(newContact);
+      continue;
     }
 
     /*
@@ -733,18 +781,6 @@ try {
       .setNumber( mobilePhoneNumber )
       .setVerified( ! mobilePhoneNumber.equals("") )
       .build();
-
-    // Look up to see if there is an associated business for the contact
-    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-    Business business = (Business) localBusinessDAO.find(
-      EQ(
-        User.EMAIL,
-        email.getAddress()
-      )
-    );
-    if ( business != null ) {
-      portal.setBusinessId(business.getId());
-    }
 
     portal.setQuickId(customer.getId());
     portal.setEmail(email.getAddress());
