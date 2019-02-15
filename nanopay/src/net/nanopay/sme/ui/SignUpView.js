@@ -156,7 +156,6 @@ foam.CLASS({
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
-    { name: 'POLICY_LABEL', message: 'Privacy Policy' },
     { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
