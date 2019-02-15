@@ -24,14 +24,22 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
     if ( SafetyUtil.isEmpty(version) ) {
       ArraySink listSink = (ArraySink) acceptanceDocumentDAO_
           .where(
-              EQ(AcceptanceDocument.NAME, name)
+            AND(
+              EQ(AcceptanceDocument.NAME, name),
+              EQ(AcceptanceDocument.ENABLED, true)
+              )
           ).orderBy(new foam.mlang.order.Desc(AcceptanceDocument.ISSUED_DATE))
           .limit(1).select(new ArraySink());
 
           if ( listSink.getArray().size() > 0 ) acceptanceDocument = (AcceptanceDocument) listSink.getArray().get(0);
 
     } else {
-      acceptanceDocument = (AcceptanceDocument) acceptanceDocumentDAO_.find(AND(EQ(AcceptanceDocument.NAME, name), EQ(AcceptanceDocument.VERSION, version)));
+      acceptanceDocument = (AcceptanceDocument) acceptanceDocumentDAO_.find(
+        AND(
+          EQ(AcceptanceDocument.NAME, name),
+          EQ(AcceptanceDocument.VERSION, version),
+          EQ(AcceptanceDocument.ENABLED, true)
+        ));
     }
     return acceptanceDocument;
   }
@@ -43,7 +51,9 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
           .where(
               AND(
                   EQ(AcceptanceDocument.NAME, name),
-                  EQ(AcceptanceDocument.TRANSACTION_TYPE, transactionType))
+                  EQ(AcceptanceDocument.TRANSACTION_TYPE, transactionType),
+                  EQ(AcceptanceDocument.ENABLED, true)
+                )
           ).orderBy(new foam.mlang.order.Desc(AcceptanceDocument.ISSUED_DATE))
           .limit(1).select(new ArraySink());
 
@@ -54,13 +64,14 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
           AND(
               EQ(AcceptanceDocument.NAME, name),
               EQ(AcceptanceDocument.VERSION, version),
-              EQ(AcceptanceDocument.TRANSACTION_TYPE, transactionType)
+              EQ(AcceptanceDocument.TRANSACTION_TYPE, transactionType),
+              EQ(AcceptanceDocument.ENABLED, true)
           ));
     }
     return acceptanceDocument;
   }
 
-  public void updateUserAcceptanceDocument(long user, long acceptanceDocument, Boolean accepted) throws RuntimeException {
+  public void updateUserAcceptanceDocument(long user, long acceptanceDocument, boolean accepted) {
       UserAcceptanceDocument acceptedDocument = (UserAcceptanceDocument) userAcceptanceDocumentDAO_.find(
       AND(
         EQ(UserAcceptanceDocument.USER, user),

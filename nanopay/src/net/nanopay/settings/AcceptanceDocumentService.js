@@ -10,11 +10,11 @@ foam.INTERFACE({
             args: [
                 {
                     name: 'name',
-                    javaType: 'String'
+                    type: 'String'
                 },
                 {
                     name: 'version',
-                    javaType: 'String'
+                    type: 'String'
                 },
             ]
         },
@@ -26,15 +26,15 @@ foam.INTERFACE({
             args: [
                 {
                     name: 'name',
-                    javaType: 'String'
+                    type: 'String'
                 },
                 {
                     name: 'version',
-                    javaType: 'String'
+                    type: 'String'
                 },
                 {
                     name: 'transactionType',
-                    javaType: 'String'
+                    type: 'String'
                 },
             ]
         },
@@ -42,20 +42,16 @@ foam.INTERFACE({
             name: 'updateUserAcceptanceDocument',
             args: [
                 {
-                  class: 'Reference',
-                  of: 'foam.nanos.auth.User',
+                  type: 'Long',
                   name: 'user',
-                  documentation: 'User to be added as Payee'
                 },
                 {
-                  class: 'Reference',
-                  of: 'net.nanopay.settings.AcceptanceDocument',
+                  type: 'Long',
                   name: 'acceptanceDocument',
-                  documentation: 'User to be added as Payee'
                 },
                 {
                     name: 'accepted',
-                    javaType: 'Boolean'
+                    type: 'Boolean'
                 },
             ]
         },
