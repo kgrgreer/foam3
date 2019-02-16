@@ -18,6 +18,43 @@ foam.CLASS({
       name: 'status',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      name: 'statusChoices',
+      hidden: true,
+      documentation: 'Returns available statuses for each transaction depending on current status',
+      factory: function() {
+        if ( this.status == this.TransactionStatus.COMPLETED ) {
+          return [
+            'choose status',
+            ['DECLINED', 'DECLINED']
+          ];
+        }
+        if ( this.status == this.TransactionStatus.SENT ) {
+          return [
+            'choose status',
+            ['DECLINED', 'DECLINED'],
+            ['COMPLETED', 'COMPLETED']
+          ];
+        }
+        if ( this.status == this.TransactionStatus.PENDING ) {
+          return [
+            'choose status',
+            ['PAUSED', 'PAUSED'],
+            ['DECLINED', 'DECLINED'],
+            ['COMPLETED', 'COMPLETED'],
+            ['SENT', 'SENT']
+          ];
+        }
+        if ( this.status == this.TransactionStatus.PAUSED ) {
+          return [
+            'choose status',
+            ['PENDING', 'PENDING'],
+            ['CANCELLED', 'CANCELLED']
+          ];
+        }
+        return ['No status to choose'];
+      }
     }
   ],
 
