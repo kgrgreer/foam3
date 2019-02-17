@@ -52,6 +52,24 @@ foam.CLASS({
       class: 'Date',
       name: 'firstTradeDate',
       documentation: `Anticipated first payment date.`
+    },
+    {
+      class: 'String',
+      name: 'annualDomesticTransactionAmount',
+      documentation: `Estimated annual number of transactions user or business conducts.
+      US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`
+    },
+    {
+      class: 'String',
+      name: 'annualDomesticVolume',
+      documentation: `Estimated annual volume in USD of user or business.
+      US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`
+    },
+    {
+      class: 'Date',
+      name: 'firstTradeDateDomestic',
+      documentation: `Anticipated first payment date.
+      US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`
     }
   ]
 });

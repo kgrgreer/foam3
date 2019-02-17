@@ -93,11 +93,11 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.baseCurrency = n;
-        if ( n == 'USD' ) {
+        if ( n == 'CAD' ) {
           this.flag = 'images/flags/cad.png';
           this.currencyType = this.CA_DOLLAR_LABEL;
           this.estimatedLabel = this.CA_VOLUME_LABEL;
-        } else if ( n == 'CAD' ) {
+        } else if ( n == 'USD' ) {
           this.flag = 'images/flags/us.png';
           this.currencyType = this.US_DOLLAR_LABEL;
           this.estimatedLabel = this.US_VOLUME_LABEL;
