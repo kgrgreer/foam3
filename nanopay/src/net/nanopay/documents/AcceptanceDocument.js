@@ -83,5 +83,10 @@ foam.CLASS({
       label: 'Document Type',
       documentation: `Currently documents can be of Onboarding or Disclosure type.`,
     },
+    {
+      type: 'Long',
+      name: 'paymentProvider',
+      documentation: 'Identifies payment provider related to document'
+    },
   ]
 });
