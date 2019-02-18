@@ -426,11 +426,14 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotification' },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationView', flags: ['web'] },
 
+  // documents
+  { name: 'net/nanopay/documents/AcceptanceDocument' },
+  { name: 'net/nanopay/documents/UserAcceptanceDocument' },
+  { name: 'net/nanopay/documents/ClientAcceptanceDocumentService' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentService' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentType' },
+
   // settings
-  { name: 'net/nanopay/settings/AcceptanceDocument' },
-  { name: 'net/nanopay/settings/UserAcceptanceDocument' },
-  { name: 'net/nanopay/settings/ClientAcceptanceDocumentService' },
-  { name: 'net/nanopay/settings/AcceptanceDocumentService' },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessHoursView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditPrincipalOwnersView', flags: ['web'] },

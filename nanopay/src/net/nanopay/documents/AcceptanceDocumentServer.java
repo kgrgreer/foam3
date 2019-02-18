@@ -1,4 +1,4 @@
-package net.nanopay.settings;
+package net.nanopay.documents;
 
 import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
