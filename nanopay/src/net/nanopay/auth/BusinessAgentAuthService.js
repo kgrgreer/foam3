@@ -98,19 +98,19 @@ foam.CLASS({
     },
     {
       name: 'canActAs',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'agent',
-          javaType: 'User'
+          type: 'foam.nanos.auth.User'
         },
         {
           name: 'entity',
-          javaType: 'User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode: `
@@ -131,7 +131,7 @@ foam.CLASS({
         // Finds the UserUserJunction object to see if user can act as the
         // passed in user. Source (agent) users are permitted to act as
         // target (entity) users, not vice versa.
-        DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO"); 
+        DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
         UserUserJunction permissionJunction = (UserUserJunction) agentJunctionDAO.inX(x).find(AND(
           EQ(UserUserJunction.SOURCE_ID, agent.getId()),
           EQ(UserUserJunction.TARGET_ID, entity.getId())

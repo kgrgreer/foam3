@@ -111,12 +111,10 @@ foam.CLASS({
       args: [
         {
           name: 'transactionAmount',
-          javaType: 'long',
-          swiftType: 'Int',
+          type: 'Long',
         }
       ],
-      javaReturns: 'long',
-      swiftReturns: 'Int',
+      type: 'Long',
       javaCode: `
       return ((Double) (this.getRate()/100.0 * transactionAmount)).longValue();
       `,

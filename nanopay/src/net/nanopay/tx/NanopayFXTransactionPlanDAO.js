@@ -42,12 +42,12 @@ foam.CLASS({
       value: 'localFXService'
     },
     {
-      type: 'long',
+      type: 'Long',
       name: 'NANOPAY_FEE_ACCOUNT_ID',
       value: 2
     },
     {
-      type: 'long',
+      type: 'Long',
       name: 'NANOPAY_BROKER_ID',
       value: 1
     },
@@ -59,17 +59,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
 
       Logger logger = (Logger) x.get("logger");

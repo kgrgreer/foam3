@@ -157,10 +157,10 @@ extends Test
 
     payableInvoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(payableInvoice.getId());
 
-    test(payableInvoice.getStatus() == InvoiceStatus.IN_TRANSIT,
+    test(payableInvoice.getStatus() == InvoiceStatus.PENDING,
       "Flow 1: Given an payable invoice from User1 (with a Bank account) and User2 (no Bank account) " +
         "When a transaction is made to from user1 to user2 to pay the invoice " +
-        "Then the status of the invoice should be 'IN_TRANSIT' ");
+        "Then the status of the invoice should be 'PENDING' ");
 
     // complete the transaction
     txn.setStatus(TransactionStatus.COMPLETED);
@@ -297,11 +297,11 @@ extends Test
     payableInvoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(payableInvoice.getId());
 
     // Was status set correctly for an in progress Cashin from Bank to Digital.
-    test(payableInvoice.getStatus() == InvoiceStatus.IN_TRANSIT,
+    test(payableInvoice.getStatus() == InvoiceStatus.PENDING,
       "Flow 2: Given an payable invoice from User1 (with a Bank account) and Contact " +
         "When a transaction is made to from user1 to Contact to pay the invoice " +
-        "Then the status of the invoice should be 'IN_TRANSIT' " +
-        "Expected Status: " + InvoiceStatus.IN_TRANSIT.getLabel() +
+        "Then the status of the invoice should be 'PENDING' " +
+        "Expected Status: " + InvoiceStatus.PENDING.getLabel() +
         "Actual Status: " + payableInvoice.getStatus().getLabel());
 
     // complete the transaction
@@ -496,10 +496,10 @@ extends Test
     invoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(invoice.getId());
 
     // Was status set correctly for an in progress Cashin from Bank to Digital.
-    test(invoice.getStatus() == InvoiceStatus.IN_TRANSIT,
+    test(invoice.getStatus() == InvoiceStatus.PENDING,
       "Flow 4: Given an payable invoice from User1 (with a Bank account) and User2 (no Bank account) " +
         "When a transaction is made to from user1 to user2 to pay the invoice " +
-        "Then the status of the invoice should be 'IN_TRANSIT' ");
+        "Then the status of the invoice should be 'PENDING' ");
 
     // prior completion of the Cashin to the holding account( payer's default digital account) the User adds a verified bank account
 
@@ -522,7 +522,7 @@ extends Test
     invoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(invoice);
 
     test(invoice.getStatus().equals(InvoiceStatus.DEPOSITING_MONEY),
-      "Flow 4: Given user1 (with Bank Account) and user2 (with no Bank account) and payable invoice from user1 to user2 with status In transit " +
+      "Flow 4: Given user1 (with Bank Account) and user2 (with no Bank account) and payable invoice from user1 to user2 with status pending(processing) " +
         "When a the user 2 creates a valid verified bank account " +
         "Then this should init Auto deposit to the newly create bank account and the invoice status should be DEPOSITING_MONEY");
   }

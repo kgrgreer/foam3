@@ -356,11 +356,11 @@ foam.CLASS({
                         this.quote$.dot('fxRate').map((rate) => {
                           if ( rate ) return 1;
                         }), ' ',
-                        this.quote$.dot('sourceCurrency'),
-                        this.quote$.dot('fxRate').map((rate) => {
-                          if ( rate ) return this.TO + rate.toFixed(4);
-                        }), ' ',
                         this.quote$.dot('destinationCurrency'),
+                        this.quote$.dot('fxRate').map((rate) => {
+                          if ( rate ) return this.TO + (1 / rate).toFixed(4);
+                        }), ' ',
+                        this.quote$.dot('sourceCurrency'),
                         this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
                     .end()

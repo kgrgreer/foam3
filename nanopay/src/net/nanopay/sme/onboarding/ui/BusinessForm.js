@@ -190,10 +190,10 @@ foam.CLASS({
         ]
       },
       factory: function() {
-        return this.viewData.user.primaryResidence ? 'Yes' : 'No';
+        return this.viewData.user.residenceOperated ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
-        this.viewData.user.primaryResidence = n == 'Yes';
+        this.viewData.user.residenceOperated = n == 'Yes';
         if ( n ) {
           this.viewData.user.address = this.viewData.user.businessAddress;
         }

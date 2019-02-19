@@ -10,7 +10,7 @@ foam.CLASS({
       name: 'Name'
     },
     {
-      // javaType: 'net.nanopay.flinks.model.AddressModel',
+      // type: 'net.nanopay.flinks.model.AddressModel',
       // javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       // javaJSONParser: 'new foam.lib.json.FObjectParser(net.nanopay.flinks.model.AddressModel.class)',
       class: 'FObjectProperty',

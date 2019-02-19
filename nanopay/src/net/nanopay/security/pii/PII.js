@@ -5,11 +5,11 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getPIIData',
-      returns: 'String',
+      type: 'String',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'id',
@@ -21,7 +21,7 @@ foam.INTERFACE({
     // TODO - implement method to deletablePII
     // {
     //   name: 'deletePIIData',
-    //   returns: 'void',
+    //   type: 'void',
     // }
   ]
 });
