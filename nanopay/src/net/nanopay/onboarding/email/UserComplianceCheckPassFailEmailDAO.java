@@ -34,9 +34,8 @@ public class UserComplianceCheckPassFailEmailDAO
       if ( oldUser == null || oldUser.getId() == 0 )
         return getDelegate().put_(x, obj);
 
-      // Make sure to only send on complaince status change from PASSED or FAILED
-      if ( ! ComplianceStatus.REQUESTED.equals(oldUser.getCompliance()) ||
-       ! ( ComplianceStatus.PASSED.equals(user.getCompliance()) || ComplianceStatus.FAILED.equals(user.getCompliance()) ) )
+      // Make sure to only send on complaince status change from PASSED. FAILED will take a different route, currently undefined requirements
+      if ( ! ComplianceStatus.REQUESTED == oldUser.getCompliance() || ! ComplianceStatus.PASSED == user.getCompliance() )
         return getDelegate().put_(x, obj);
 
       if ( ! user.getEmailVerified() ) {
@@ -51,12 +50,12 @@ public class UserComplianceCheckPassFailEmailDAO
 
       message.setTo(new String[]{user.getEmail()});
       args.put("business",        user.label());
-      args.put("statusUpdate",    (ComplianceStatus.PASSED.equals(user.getCompliance()) ? "PASSED all checks!" : "unfortunately not passed all checks"));
+      args.put("statusUpdate",   "PASSED all checks!");
 
       try {
-        email.sendEmailFromTemplate(x, user, message, "compliance-Notification-to-user", args);
+        email.sendEmailFromTemplate(x, user, message, "compliance-notification-to-user", args);
       } catch (Exception e) {
-        logger.error("Error sending compliance-Notification-to-user email.", e);
+        logger.error("Error sending compliance-notification-to-user email.", e);
       }
 
       return user;
