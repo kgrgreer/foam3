@@ -35,7 +35,7 @@ public class UserComplianceCheckPassFailEmailDAO
         return getDelegate().put_(x, obj);
 
       // Make sure to only send on complaince status change from PASSED. FAILED will take a different route, currently undefined requirements
-      if ( ! ComplianceStatus.REQUESTED == oldUser.getCompliance() || ! ComplianceStatus.PASSED == user.getCompliance() )
+      if ( ! (ComplianceStatus.REQUESTED == oldUser.getCompliance()) || ! (ComplianceStatus.PASSED == user.getCompliance()) )
         return getDelegate().put_(x, obj);
 
       if ( ! user.getEmailVerified() ) {
