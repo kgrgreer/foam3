@@ -119,6 +119,8 @@ var classes = [
 
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+  'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
+  'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 
   // sme compliance banner
   'net.nanopay.sme.ui.banner.ComplianceBannerData',
