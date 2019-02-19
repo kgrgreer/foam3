@@ -283,6 +283,7 @@ foam.CLASS({
       class: 'Reference',
       name: 'destinationCurrency',
       of: 'net.nanopay.model.Currency',
+      value: 'CAD',
       documentation: `
         Currency of the account the funds with be deposited into.
       `
@@ -291,6 +292,7 @@ foam.CLASS({
       class: 'Reference',
       name: 'sourceCurrency',
       of: 'net.nanopay.model.Currency',
+      value: 'CAD',
       documentation: `Currency of the account the funds with be withdran from.`,
     },
     {
