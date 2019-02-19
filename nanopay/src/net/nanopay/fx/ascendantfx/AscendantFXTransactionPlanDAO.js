@@ -27,6 +27,8 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.bank.USBankAccount',
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
@@ -51,7 +53,6 @@ foam.CLASS({
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
-    'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
     'net.nanopay.tx.DisclosureLineItem'
 
   ],
@@ -100,13 +101,12 @@ foam.CLASS({
       AscendantFXUser.getUserAscendantFXOrgId(x, sourceAccount.getOwner());
 
       // Add Disclosure line item
-      AscendantFXDisclosure disclosure = null;
+      AcceptanceDocument disclosure = null;
       User payer = User.findUser(x, sourceAccount.getOwner());
       if ( null != payer && null != payer.getAddress() ) {
-        disclosure = (AscendantFXDisclosure) ((DAO) x.get("disclosuresDAO"))
-          .find(MLang.AND(MLang.INSTANCE_OF(AscendantFXDisclosure.class),
-          MLang.EQ(AscendantFXDisclosure.COUNTRY, payer.getAddress().getCountryId()),
-          MLang.EQ(AscendantFXDisclosure.STATE, payer.getAddress().getRegionId())));
+        AcceptanceDocumentService acceptanceDocumentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
+        disclosure = acceptanceDocumentService.getTransactionRegionDocuments("AscendantFXTransaction",
+          "DISCLOSURE", payer.getAddress().getCountryId(), payer.getAddress().getRegionId());
       }
 
       // TODO: test if fx already done
@@ -135,7 +135,7 @@ foam.CLASS({
                   ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
                   ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
                   if ( null != disclosure ) {
-                    ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
+                    ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
                   }
                   quote.addPlan(ascendantFXTransaction);
                 }
@@ -149,7 +149,7 @@ foam.CLASS({
                 ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
                 ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
                 if ( null != disclosure ) {
-                  ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
+                  ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
                 }
                 quote.addPlan(ascendantFXTransaction);
               }
@@ -168,7 +168,7 @@ foam.CLASS({
         ascendantFXTransaction.setPayerId(sourceAccount.getOwner());
         ascendantFXTransaction.setPayeeId(destinationAccount.getOwner());
         if ( null != disclosure ) {
-          ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setDisclosure(disclosure).build()}, null);
+          ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
         }
         quote.addPlan(ascendantFXTransaction);
       }

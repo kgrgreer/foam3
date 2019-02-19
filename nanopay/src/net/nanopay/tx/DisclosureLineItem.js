@@ -6,21 +6,17 @@ foam.CLASS({
   requires: [
     'net.nanopay.disclosure.Disclosure',
   ],
-  
+
   javaImports: [
     'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.disclosure.Disclosure',
-      name: 'disclosure',
-      label: 'Disclosure',
-      factory: function() {
-        return this.Disclosure.create();
-      },
-      documentation: 'Disclosure to be displayed'
+      documentation: 'Disclosure Text',
+      name: 'text',
+      class: 'String',
+      view: { class: 'net.nanopay.ui.DisclosureView', data: this }
     },
   ],
 

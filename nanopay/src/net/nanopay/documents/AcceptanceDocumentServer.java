@@ -71,6 +71,33 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
     return acceptanceDocument;
   }
 
+  public AcceptanceDocument getTransactionRegionDocuments(String transactionType, String documentType, String country, String state) throws RuntimeException {
+    AcceptanceDocument acceptanceDocument = null;
+    System.out.println("TransactionType is: " + transactionType);
+    System.out.println("documentType is: " + documentType);
+    System.out.println("country is: " + country);
+    System.out.println("state is: " + state);
+
+    AcceptanceDocumentType type = AcceptanceDocumentType.valueOf(documentType);
+    ArraySink listSink = (ArraySink) acceptanceDocumentDAO_
+        .where(
+            AND(
+                EQ(AcceptanceDocument.TRANSACTION_TYPE, transactionType),
+                EQ(AcceptanceDocument.DOCUMENT_TYPE, type),
+                EQ(AcceptanceDocument.COUNTRY, country),
+                EQ(AcceptanceDocument.STATE, state),
+                EQ(AcceptanceDocument.ENABLED, true)
+              )
+        ).select(new ArraySink());
+
+        if ( listSink.getArray().size() > 0 ) {
+          acceptanceDocument = (AcceptanceDocument) listSink.getArray().get(0);
+          System.out.println("Disclosure found ");
+        }
+
+    return acceptanceDocument;
+  }
+
   public void updateUserAcceptanceDocument(long user, long acceptanceDocument, boolean accepted) {
       UserAcceptanceDocument acceptedDocument = (UserAcceptanceDocument) userAcceptanceDocumentDAO_.find(
       AND(

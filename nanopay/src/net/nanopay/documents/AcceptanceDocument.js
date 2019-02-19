@@ -40,6 +40,14 @@ foam.CLASS({
       }
     },
     {
+      class: 'Date',
+      name: 'expiryDate',
+      documentation: 'Document expiry date after which user must re-accept document',
+      tableCellFormatter: function(date) {
+        this.add(date ? date.toISOString().substring(0, 10) : '');
+      }
+    },
+    {
       class: 'String',
       name: 'body',
       documentation: 'Template body',
@@ -67,12 +75,12 @@ foam.CLASS({
       documentation: 'Type of transaction that acceptance document applies to. This also identifies the Payment Provider',
     },
     {
-      type: 'Long',
+      class: 'String',
       name: 'country',
       documentation: 'For Country specific documents,'
     },
     {
-      type: 'Long',
+      class: 'String',
       name: 'state',
       documentation: 'For State/Province/Region specific documents'
     },
@@ -80,7 +88,6 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.documents.AcceptanceDocumentType',
       name: 'documentType',
-      label: 'Document Type',
       documentation: `Currently documents can be of Onboarding or Disclosure type.`,
     },
     {
