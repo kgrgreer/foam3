@@ -9,6 +9,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.util.HashMap;
+import java.util.Map;
 import net.nanopay.admin.model.ComplianceStatus;
 
 public class UserComplianceCheckPassFailEmailDAO
@@ -38,13 +39,15 @@ public class UserComplianceCheckPassFailEmailDAO
        ! ( ComplianceStatus.PASSED.equals(user.getCompliance()) || ComplianceStatus.FAILED.equals(user.getCompliance()) ) )
         return getDelegate().put_(x, obj);
 
-      if ( ! user.getEmailVerified() )
-        logger.error("user(id=" + user.getId() + ") has had Compliance status changed to " + user.getCompliance() + " but is unable to be notified due to user's email is not yet verified.");
+      if ( ! user.getEmailVerified() ) {
+        logger.error(String.format("user(id=%1$d) has had Compliance status changed to %2$s  but is unable to be notified due to user's email is not yet verified.", user.getId(), user.getCompliance()));
+        return getDelegate().put_(x, obj);
+      }
 
       user = (User) getDelegate().put_(x , obj);
       EmailService            email        = (EmailService) x.get("email");
       EmailMessage            message      = new EmailMessage();
-      HashMap<String, Object> args         = new HashMap<>();
+      Map<String, Object> args         = new HashMap<>();
 
       message.setTo(new String[]{user.getEmail()});
       args.put("business",        user.label());
