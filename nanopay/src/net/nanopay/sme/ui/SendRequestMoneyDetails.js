@@ -130,10 +130,15 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'dataFromNewInvoiceForm',
+      factory: function() {
+        return this.Invoice.create({});
+      },
       documentation: `
         Stores the info that the user has filled out in the "new" tab so if they
         switch to the "existing" tab and back to the "new" tab, the info they
         filled in will still be there.
+        A factory is required for a new empty invoice form,
+        preventing existing invoice data conflicts.
       `
     }
   ],
@@ -148,7 +153,6 @@ foam.CLASS({
       this.SUPER();
       var newButtonLabel = `New`;
       var existingButtonLabel = `Existing`;
-      this.hasNextOption = true;
       this.hasBackOption = false;
       // Update the next button label
       this.nextLabel = 'Next';
@@ -213,8 +217,6 @@ foam.CLASS({
               return ! bool ? null :
               this.E().start()
                 .add(this.slot((invoice) => {
-                  // Enable next button
-                  this.hasNextOption = true;
                   var detailView =  this.E().addClass('block')
                     .start().addClass('header')
                       .add(`${this.EXISTING_HEADER} ${this.type}`)
@@ -225,8 +227,6 @@ foam.CLASS({
                         this.isForm = false;
                         this.isList = true;
                         this.isDetailView = false;
-                        // Disable next button
-                        this.hasNextOption = false;
                       })
                     .end();
 
@@ -263,10 +263,6 @@ foam.CLASS({
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
-        // Enable the save button
-        this.hasSaveOption = true;
-        // Enable the next button
-        this.hasNextOption = true;
         // Get the previous temp invoice data
         if ( this.Invoice.isInstance(this.dataFromNewInvoiceForm) ) {
           this.invoice = this.dataFromNewInvoiceForm;
@@ -281,10 +277,6 @@ foam.CLASS({
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;
-        // Disable the save button
-        this.hasSaveOption = false;
-        // Disable the next button
-        this.hasNextOption = false;
         // Save the temp invoice data in a property
         if ( this.invoice.id === 0 ) { // only do this for temp invoice.
           this.dataFromNewInvoiceForm = this.invoice;

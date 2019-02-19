@@ -10,12 +10,12 @@ foam.INTERFACE({
     {
       name: 'getKeyStore',
       documentation: 'Returns the KeyStore.',
-      javaReturns: 'java.security.KeyStore'
+      javaType: 'java.security.KeyStore'
     },
     {
       name: 'unlock',
       documentation: 'Unlocks the KeyStore.',
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: [
         'java.security.cert.CertificateException',
         'java.security.NoSuchAlgorithmException',
@@ -25,7 +25,7 @@ foam.INTERFACE({
     {
       name: 'loadKey',
       documentation: 'Loads a key from the KeyStore.',
-      javaReturns: 'java.security.KeyStore.Entry',
+      javaType: 'java.security.KeyStore.Entry',
       javaThrows: [
         'java.security.UnrecoverableEntryException',
         'java.security.NoSuchAlgorithmException',
@@ -34,14 +34,14 @@ foam.INTERFACE({
       args: [
         {
           name: 'alias',
-          javaType: 'String'
+          type: 'String'
         }
       ]
     },
     {
       name: 'loadKey_',
       documentation: 'Loads a key from the KeyStore using additional protection parameter.',
-      javaReturns: 'java.security.KeyStore.Entry',
+      javaType: 'java.security.KeyStore.Entry',
       javaThrows: [
         'java.security.UnrecoverableEntryException',
         'java.security.NoSuchAlgorithmException',
@@ -50,7 +50,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'alias',
-          javaType: 'String'
+          type: 'String'
         },
         {
           name: 'protParam',
@@ -61,14 +61,14 @@ foam.INTERFACE({
     {
       name: 'storeKey',
       documentation: 'Stores a new key.',
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: [
         'java.security.KeyStoreException'
       ],
       args: [
         {
           name: 'alias',
-          javaType: 'String'
+          type: 'String'
         },
         {
           name: 'entry',
@@ -79,14 +79,14 @@ foam.INTERFACE({
     {
       name: 'storeKey_',
       documentation: 'Stores a new key using additional protection parameter.',
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: [
         'java.security.KeyStoreException'
       ],
       args: [
         {
           name: 'alias',
-          javaType: 'String'
+          type: 'String'
         },
         {
           name: 'entry',

@@ -9,89 +9,88 @@ foam.INTERFACE({
   methods: [
     {
       name: 'startIntegration',
-      javaReturns: 'net.nanopay.plaid.model.PlaidError',
+      type: 'net.nanopay.plaid.model.PlaidError',
+      async: true,
       javaThrows: ['java.io.IOException'],
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'publicToken',
-          class: 'FObjectProperty',
-          of: 'net.nanopay.plaid.model.PlaidPublicToken'
+          type: 'net.nanopay.plaid.model.PlaidPublicToken'
         }
       ]
     },
     {
       name: 'exchangeForAccessToken',
-      javaReturns: 'String',
+      type: 'String',
+      async: true,
       javaThrows: ['java.io.IOException'],
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'publicToken',
-          class: 'FObjectProperty',
-          of: 'net.nanopay.plaid.model.PlaidPublicToken'
+          type: 'net.nanopay.plaid.model.PlaidPublicToken'
         }
       ]
     },
     {
       name: 'fetchAccountsDetail',
-      javaReturns: 'void',
       javaThrows: ['java.io.IOException'],
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context',
         },
         {
           name: 'userId',
-          class: 'Long'
+          type: 'Long'
         },
         {
           name: 'plaidInstitutionId',
-          class: 'String'
+          type: 'String'
         }
       ]
     },
     {
       name: 'importSelectedAccountToSystem',
-      javaReturns: 'void',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context',
         },
         {
           name: 'userId',
-          class: 'Long'
+          type: 'Long'
         },
         {
           name: 'plaidInstitutionId',
-          class: 'String'
+          type: 'String'
         },
         {
           name: 'selectedAccount',
-          javaType: 'java.util.Map'
+          type: 'Map'
         }
       ]
     },
     {
       name: "getCredentialForClient",
-      javaReturns: "net.nanopay.plaid.config.PlaidCredential",
+      type: "net.nanopay.plaid.config.PlaidCredential",
+      async: true,
       javaThrows: ['java.io.IOException'],
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'userId',
-          class: 'Long'
+          type: 'Long'
         },
       ]
     }

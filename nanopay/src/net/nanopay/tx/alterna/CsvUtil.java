@@ -17,7 +17,7 @@ import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
-import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -124,7 +124,7 @@ public class CsvUtil {
    * @param mode - outputter mode
    * @return the outputter
    */
-  public static void writeCsvFile(X x, OutputStream o, OutputterMode mode) {
+  public static void writeCsvFile(X x, PrintWriter o, OutputterMode mode) {
     final Date now            = new Date();
 
     final DAO bankAccountDAO  = (DAO) x.get("localAccountDAO");
@@ -203,14 +203,32 @@ public class CsvUtil {
             }
           }
 
-          Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+          Branch branch = bankAccount.findBranch(x);
+          if ( branch == null ) {
+            StringBuilder message = new StringBuilder();
+            message.append("Branch not found.");
+            message.append(" Transaction: "+t.getId());
+            message.append(" Account: " +bankAccount.getId());
+            message.append(" Branch ID: " +bankAccount.getBranch());
+
+            logger.error(message.toString());
+            Notification notification = new Notification.Builder(x)
+              .setTemplate("NOC")
+              .setBody(message.toString())
+              .build();
+            notificationDAO.put(notification);
+            return;
+          }
+
+          Institution institution = (Institution) branch.findInstitution(x);
           if ( institution == null ) {
             logger.error("Institution not found. id:", bankAccount.getInstitution(), "for account", bankAccount);
             StringBuilder message = new StringBuilder();
             message.append("Institution not found.");
             message.append(" Transaction: "+t.getId());
             message.append(" Account: " +bankAccount.getId());
-            message.append(" Institution: " +bankAccount.getInstitution());
+            message.append(" Branch ID: " +branch.getId());
+            message.append(" Institution ID: " +branch.getInstitution());
 
             logger.error(message.toString());
             Notification notification = new Notification.Builder(x)
@@ -220,23 +238,6 @@ public class CsvUtil {
             notificationDAO.put(notification);
             return;
           }
-          Branch      branch      = (Branch)      branchDAO.find(bankAccount.getBranch());
-          if ( branch == null ) {
-            StringBuilder message = new StringBuilder();
-            message.append("Branch not found.");
-            message.append(" Transaction: "+t.getId());
-            message.append(" Account: " +bankAccount.getId());
-            message.append(" Branch: " +bankAccount.getBranch());
-
-            logger.error(message.toString());
-            Notification notification = new Notification.Builder(x)
-              .setTemplate("NOC")
-              .setBody(message.toString())
-              .build();
-            notificationDAO.put(notification);
-            return;
-          }
-
           // use transaction ID as the reference number
           refNo = String.valueOf(t.getId());
 

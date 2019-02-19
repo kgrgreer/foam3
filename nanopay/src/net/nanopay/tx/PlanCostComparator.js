@@ -13,22 +13,22 @@ foam.CLASS({
   methods: [
     {
       name: 'compare',
-      javaReturns: 'int',
+      type: 'Integer',
       args: [
         {
           name: 'o1',
-          javaType: 'Object'
+          type: 'Any'
         },
         {
           name: 'o2',
-          javaType: 'Object'
+          type: 'Any'
         }
       ],
       javaCode: `
         if ( o1 instanceof Transaction &&  o2 instanceof Transaction ) {
           Transaction plan1 = (Transaction) o1;
           Transaction plan2 = (Transaction) o2;
-          return plan1.getCost().compareTo(plan2.getCost());
+          return Long.compare(plan1.getCost(), plan2.getCost());
         }
         return 0;
       `
