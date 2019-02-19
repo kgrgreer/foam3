@@ -410,7 +410,8 @@ foam.CLASS({
       name: 'deleted',
       documentation: 'Indicates deleted user.',
       value: false,
-      permissionRequired: true
+      permissionRequired: true,
+      visibility: 'RO'
     },
     {
       class: 'foam.nanos.fs.FileProperty',
