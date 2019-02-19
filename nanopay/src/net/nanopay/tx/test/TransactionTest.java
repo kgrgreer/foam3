@@ -17,6 +17,7 @@ import net.nanopay.tx.alterna.AlternaVerificationTransaction;
 import net.nanopay.tx.model.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.account.LoanAccount;
 
 import static foam.mlang.MLang.*;
 
@@ -36,6 +37,44 @@ public class TransactionTest
     testAbliiTransaction();
     testVerificationTransaction();
     testFXTransaction();
+    testLoanTransaction();
+  }
+
+  public void testLoanTransaction(){
+
+    DAO accountDAO = (DAO) x_.get("localAccountDAO");
+    User loaneeTester = addUser("loantest1@transactiontest.com");
+    User loanerTester = addUser("loantest2@transactiontest.com");
+
+    DigitalAccount loanerAccount = new DigitalAccount.Builder(x_)
+      .setOwner(loanerTester.getId())
+      .setBalance(500000)
+      .setDenomination("CAD")
+      .build();
+    loanerAccount = (DigitalAccount) accountDAO.put_(x_, loanerAccount).fclone();
+
+    LoanAccount loanAccount = new LoanAccount.Builder(x_)
+      .setOwner(loaneeTester.getId())
+      .setRate(0.0)
+      .setLenderAccount(loanerAccount.getId())
+      .build();
+    loanAccount = (LoanAccount) accountDAO.put_(x_, loanAccount).fclone();
+
+    DigitalAccount LoaneeDepositAcc = (DigitalAccount) (accountDAO.find(
+      AND(EQ(DigitalAccount.OWNER, loaneeTester.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class))));
+
+    Transaction txn = new Transaction.Builder(x_)
+      .setSourceAccount(loanAccount.getId())
+      .setDestinationAccount(LoaneeDepositAcc.getId())
+      .setAmount(300000)
+      .build();
+
+    txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, txn).fclone();
+
+
+    test(loanAccount.getBalance() == -300000,"the loan was recorded in the loan account");
+    test(loanerAccount.getBalance() == 200000,"the loan was recorded in the loan account");
+    test(LoaneeDepositAcc.getBalance() == 300000,"the loan was recorded in the loan account");
   }
 
   public void testFXTransaction(){
