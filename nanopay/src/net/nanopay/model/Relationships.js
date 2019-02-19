@@ -49,12 +49,14 @@ foam.RELATIONSHIP({
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.institutionDAO.find(value)
-      .then( function( institution ) {
-        self.add(institution.institutionNumber);
-      }).catch( function( error ) {
-        self.add('N/A');
-        console.error(error);
-      });
+        .then( function( institution ) {
+          if ( institution ) {
+            self.add(institution.institutionNumber);
+          }
+        }).catch( function( error ) {
+          self.add('N/A');
+          console.error(error);
+        });
     }
   }
 });
