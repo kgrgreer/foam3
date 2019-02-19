@@ -6,6 +6,8 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.mlang.MLang;
+import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
@@ -57,19 +59,14 @@ public class NewUserOnboardedEmailDAO extends ProxyDAO {
       
       // For the purpose of sending an email once both onboarding and bank account added
       // Gather info
-      ArraySink arraySink = (ArraySink) newUser.getAccounts(x).select(new ArraySink());
-      List accountsArray =  arraySink.getArray();
-      Boolean doesAccExist = false;
-      Account acc = null;
-      if ( accountsArray != null && accountsArray.size() > 0 ) {
-        for (int i =0; i < accountsArray.size(); i++) { 
-          acc = (Account) accountsArray.get(i);
-          if ( acc.getType().contains("BankAccount")  && ((BankAccount)acc).getStatus() == BankAccountStatus.VERIFIED ) {
-            doesAccExist = true;
-            break;
-          }
-        }
-      }
+      List accountsArray = ((ArraySink) newUser.getAccounts(x).where(
+        MLang.AND(
+          MLang.INSTANCE_OF(BankAccount.class),
+          MLang.EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)))
+        .limit(1).select(new ArraySink())).getArray();
+      Boolean doesAccExist = (accountsArray != null && accountsArray.size() > 0);
+      Account acc = (Account)(doesAccExist ? accountsArray.get(0) : null);
+
       // checking if account has been added
       if ( doesAccExist ) {
         // User also has bankAccount, thus add bank fields to email
