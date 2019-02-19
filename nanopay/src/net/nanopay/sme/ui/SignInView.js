@@ -279,7 +279,7 @@ foam.CLASS({
       if ( returnedTempUser ) {
         this.user.copyFrom(returnedTempUser);
       } else {
-        this.notify(err.message || 'User was invited to a business however an error has occured during processing.', 'error');
+        this.notify('User was invited to a business however an error has occured during processing.', 'error');
       }
     }
   ]
