@@ -433,6 +433,8 @@ var classes = [
   'net.nanopay.iso20022.ISOTimeTest',
 
   // meter
+  'net.nanopay.meter.Blacklist',
+  'net.nanopay.meter.BlacklistEntityType',
   'net.nanopay.meter.IpHistory',
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
@@ -440,6 +442,12 @@ var classes = [
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
   'net.nanopay.meter.UserDisabledEmailNotificationDAO',
+  'net.nanopay.meter.compliance.ComplianceHistory',
+  'net.nanopay.meter.compliance.ComplianceRule',
+  'net.nanopay.meter.compliance.ComplianceValidationStatus',
+  'net.nanopay.meter.compliance.ComplianceValidator',
+  'net.nanopay.meter.compliance.ComplianceService',
+  'net.nanopay.meter.compliance.NanopayComplianceService',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',

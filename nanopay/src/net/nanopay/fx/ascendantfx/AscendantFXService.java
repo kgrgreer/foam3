@@ -7,6 +7,8 @@ import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import java.util.*;
+import java.io.*;
+import foam.nanos.logger.Logger;
 
 public class AscendantFXService
     extends ContextAwareSupport
@@ -15,21 +17,36 @@ public class AscendantFXService
   protected final String host_;
   protected final String username_;
   protected final String password_;
+  protected Logger logger;
 
   public AscendantFXService(X x, String host, String username, String password) {
     setX(x);
     host_ = host;
     username_ = username;
     password_ = password;
+    logger = (Logger) x.get("logger");
   }
 
   @Override
   public GetQuoteResult getQuote(GetQuoteRequest request) {
     try {
+      StringBuffer sbuf = new StringBuffer();
+      sbuf.append("\n------------------------------------\n");
+      sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
       SOAPMessage message = createSOAPMessage("GetQuote", request);
+      ByteArrayOutputStream requestBaos = new ByteArrayOutputStream();
+      message.writeTo(requestBaos);
+      sbuf.append(requestBaos.toString());
+      sbuf.append("\n");
       // send soap message
+      sbuf.append("Soap Response--------------------------\n");
       SOAPMessage response = sendMessage("GetQuote", message);
+      ByteArrayOutputStream responseBaos = new ByteArrayOutputStream();
+      response.writeTo(responseBaos);
+      sbuf.append(responseBaos.toString());
+      sbuf.append("\n");
+      logger.debug(sbuf.toString());
       // parse response
       return (GetQuoteResult) parseMessage(response, GetQuoteResult.class);
     } catch (Throwable t) {
@@ -54,10 +71,23 @@ public class AscendantFXService
   @Override
   public SubmitDealResult submitDeal(SubmitDealRequest request) {
     try {
+      StringBuffer sbuf = new StringBuffer();
+      sbuf.append("\n------------------------------------\n");
+      sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
       SOAPMessage message = createSOAPMessage("SubmitDeal", request);
+      ByteArrayOutputStream requestBaos = new ByteArrayOutputStream();
+      message.writeTo(requestBaos);
+      sbuf.append(requestBaos.toString());
+      sbuf.append("\n");
       // send soap message
+      sbuf.append("Soap Response--------------------------\n");
       SOAPMessage response = sendMessage("SubmitDeal", message);
+      ByteArrayOutputStream responseBaos = new ByteArrayOutputStream();
+      response.writeTo(responseBaos);
+      sbuf.append(responseBaos.toString());
+      sbuf.append("\n");
+      logger.debug(sbuf.toString());
       // parse response
       return (SubmitDealResult) parseMessage(response, SubmitDealResult.class);
     } catch (Throwable t) {
@@ -110,10 +140,23 @@ public class AscendantFXService
   @Override
   public PayeeOperationResult addPayee(PayeeOperationRequest request) {
     try {
+      StringBuffer sbuf = new StringBuffer();
+      sbuf.append("\n------------------------------------\n");
+      sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
       SOAPMessage message = createSOAPMessage("AddPayee", request);
+      ByteArrayOutputStream requestBaos = new ByteArrayOutputStream();
+      message.writeTo(requestBaos);
+      sbuf.append(requestBaos.toString());
+      sbuf.append("\n");
       // send soap message
+      sbuf.append("Soap Response--------------------------\n");
       SOAPMessage response = sendMessage("AddPayee", message);
+      ByteArrayOutputStream responseBaos = new ByteArrayOutputStream();
+      response.writeTo(responseBaos);
+      sbuf.append(responseBaos.toString());
+      sbuf.append("\n");
+      logger.debug(sbuf.toString());
       // parse response
       return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
@@ -124,10 +167,23 @@ public class AscendantFXService
   @Override
   public PayeeOperationResult updatePayee(PayeeOperationRequest request) {
     try {
+      StringBuffer sbuf = new StringBuffer();
+      sbuf.append("\n------------------------------------\n");
+      sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
       SOAPMessage message = createSOAPMessage("UpdatePayee", request);
+      ByteArrayOutputStream requestBaos = new ByteArrayOutputStream();
+      message.writeTo(requestBaos);
+      sbuf.append(requestBaos.toString());
+      sbuf.append("\n");
       // send soap message
+      sbuf.append("Soap Response--------------------------\n");
       SOAPMessage response = sendMessage("UpdatePayee", message);
+      ByteArrayOutputStream responseBaos = new ByteArrayOutputStream();
+      response.writeTo(responseBaos);
+      sbuf.append(responseBaos.toString());
+      sbuf.append("\n");
+      logger.debug(sbuf.toString());
       // parse response
       return (PayeeOperationResult) parseMessage(response, PayeeOperationResult.class);
     } catch (Throwable t) {
@@ -152,10 +208,23 @@ public class AscendantFXService
   @Override
   public GetPayeeInfoResult getPayeeInfo(GetPayeeInfoRequest request) {
     try {
+      StringBuffer sbuf = new StringBuffer();
+      sbuf.append("\n------------------------------------\n");
+      sbuf.append("Soap Request--------------------------\n");
       // initialize soap message
       SOAPMessage message = createSOAPMessage("GetPayeeInfo", request);
+      ByteArrayOutputStream requestBaos = new ByteArrayOutputStream();
+      message.writeTo(requestBaos);
+      sbuf.append(requestBaos.toString());
+      sbuf.append("\n");
       // send soap message
+      sbuf.append("Soap Response--------------------------\n");
       SOAPMessage response = sendMessage("GetPayeeInfo", message);
+      ByteArrayOutputStream responseBaos = new ByteArrayOutputStream();
+      response.writeTo(responseBaos);
+      sbuf.append(responseBaos.toString());
+      sbuf.append("\n");
+      logger.debug(sbuf.toString());
       // parse response
       return (GetPayeeInfoResult) parseMessage(response, GetPayeeInfoResult.class);
     } catch (Throwable t) {

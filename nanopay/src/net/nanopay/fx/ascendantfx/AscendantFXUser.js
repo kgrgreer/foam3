@@ -10,6 +10,15 @@ foam.CLASS({
     'net.nanopay.fx.FXUserStatus'
   ],
 
+  javaImports: [
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.logger.Logger',
+    'foam.mlang.MLang',
+    'foam.util.SafetyUtil',
+    'static foam.mlang.MLang.EQ'
+  ],
+
   searchColumns: [],
 
   tableColumns: [
@@ -81,5 +90,29 @@ foam.CLASS({
       documentation: 'Ascendant Holding Accounts.',
       hidden: true
     },
+  ],
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          static public String getUserAscendantFXOrgId(X x, long userId) throws RuntimeException {
+              String orgId = null;
+              DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
+              final AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(
+                            MLang.EQ(AscendantFXUser.USER, userId)
+                    );
+
+              if ( null != ascendantFXUser && ! SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ) orgId = ascendantFXUser.getOrgId();
+
+              if ( SafetyUtil.isEmpty(orgId) ) {
+                ((Logger) x.get("logger")).error("Unable to find Ascendant Organization ID for User: " + userId);
+                throw new RuntimeException("User is not provisioned for foreign exchange transactions yet, please contact customer support.");
+              }
+
+              return orgId;
+            }
+        `);
+      }
+    }
   ]
 });
