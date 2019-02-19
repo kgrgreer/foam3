@@ -1004,7 +1004,7 @@ foam.CLASS({
       display: inline-block;
     }
 
-    .generic-status-circle.Completed {
+    .generic-status-circle.Complete {
       background: #07941f;
     }
 
@@ -1016,15 +1016,15 @@ foam.CLASS({
       color: #cf6f0a !important;
     }
 
-    .Invoice-Status.Funds-in-transit {
+    .Invoice-Status.Processing {
       color: #cf6f0a !important;
     }
 
-    .generic-status-circle.Funds-in-transit {
+    .generic-status-circle.Processing {
       background: #cf6f0a;
     }
 
-    .Invoice-Status.Completed {
+    .Invoice-Status.Complete {
       color: #07941f !important;
     }
 
@@ -1045,7 +1045,11 @@ foam.CLASS({
     }
 
     .generic-status-circle.draft {
-      background: #8b90a6;
+      border-color: #8b90a6;
+      border-style: solid;
+      border-width: 1.5px;
+      height: 4px;
+      width: 4px;
     }
 
     .Invoice-Status.draft {
@@ -1053,11 +1057,15 @@ foam.CLASS({
     }
 
     .generic-status-circle.pending-approval {
-      background: #cf6f0a;
+      border-color: #545d87;
+      border-style: solid;
+      border-width: 1.5px;
+      height: 4px;
+      width: 4px;
     }
 
     .Invoice-Status.pending-approval {
-      color: #cf6f0a !important;
+      color: #545d87 !important;
     }
 
     .generic-status-circle.depositing-money {
