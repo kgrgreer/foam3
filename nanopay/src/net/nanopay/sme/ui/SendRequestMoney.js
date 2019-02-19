@@ -12,11 +12,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'fxService',
     'canReceiveCurrencyDAO',
+    'checkComplianceAndBanking',
     'contactDAO',
     'ctrl',
-    'hasPassedCompliance',
+    'fxService',
     'menuDAO',
     'notificationDAO',
     'notify',
@@ -30,13 +30,13 @@ foam.CLASS({
   exports: [
     'existingButton',
     'invoice',
+    'isApproving',
     'isDetailView',
     'isForm',
     'isList',
+    'loadingSpin',
     'newButton',
-    'predicate',
-    'isApproving',
-    'loadingSpin'
+    'predicate'
   ],
 
   requires: [
@@ -77,6 +77,9 @@ foam.CLASS({
     }
     ^ .navigationContainer {
       width: 100%;
+    }
+    ^ .plainAction:last-child {
+      margin-right: 25px !important;
     }
   `,
 
@@ -174,7 +177,8 @@ foam.CLASS({
     },
     {
       name: 'saveLabel',
-      value: 'Save as draft'
+      value: 'Save as draft',
+      documentation: 'This property is for the customized label of save button'
     },
     {
       class: 'FObjectProperty',
@@ -182,8 +186,7 @@ foam.CLASS({
       factory: function() {
         return this.Invoice.create({});
       }
-    },
-    'nextLabel'
+    }
   ],
 
   messages: [
@@ -255,10 +258,15 @@ foam.CLASS({
     },
 
     function initE() {
-      if ( ! this.hasPassedCompliance() ) {
-        this.pushMenu('sme.main.dashboard');
-        return;
-      }
+      this.checkComplianceAndBanking().then((result) => {
+        if ( ! result ) {
+          this.pushMenu('sme.main.dashboard');
+          return;
+        }
+      }).catch((err) => {
+        console.warn('Error occured when checking the compliance: ', err);
+      });
+
       this.SUPER();
       this.addClass('full-screen');
     },
@@ -294,10 +302,17 @@ foam.CLASS({
 
     async function submit() {
       this.loadingSpin.show();
-      if ( ! this.hasPassedCompliance() ) {
-        this.notify(this.COMPLIANCE_ERROR, 'error');
+      try {
+        var result = await this.checkComplianceAndBanking();
+        if ( ! result ) {
+          this.notify(this.COMPLIANCE_ERROR, 'error');
+          return;
+        }
+      } catch (err) {
+        console.warn('Error occured when checking the compliance: ', err);
         return;
       }
+
       // Confirm Invoice information:
       this.invoice.draft = false;
 

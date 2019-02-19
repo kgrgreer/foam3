@@ -539,6 +539,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/modal/UploadModal', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/ModalHeader', flags: ['web'] },
   { name: 'net/nanopay/ui/modal/TandCModal', flags: ['web'] },
+  { name: 'net/nanopay/ui/modal/SessionTimeoutModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/ci/ConfirmCashInModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/co/ConfirmCashOutModal', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/ci/CashInModal', flags: ['web'] },
@@ -758,7 +759,13 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
   { name: 'net/nanopay/meter/Report' },
-  { name: 'net/nanopay/meter/LogoutDisabledBusinessAgentsDAO' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
+  { name: 'net/nanopay/meter/UserDisabledEmailNotificationDAO' },
+
+  // meter tests
+  { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
+  { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
+
+  { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 ]);
