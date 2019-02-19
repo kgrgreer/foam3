@@ -33,6 +33,7 @@ foam.CLASS({
     'net.nanopay.integration.xero.model.XeroInvoice',
     'net.nanopay.model.Business',
     'net.nanopay.model.Currency',
+    'net.nanopay.contacts.Contact',
     'java.math.BigDecimal',
     'java.util.ArrayList',
     'java.util.Calendar',
@@ -41,6 +42,42 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'isValidContact',
+      type: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'xeroContact',
+          type: 'com.xero.model.Contact',
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User',
+        }
+      ],
+      javaCode: `
+
+      DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
+      if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) || SafetyUtil.isEmpty(xeroContact.getFirstName()) 
+      || SafetyUtil.isEmpty(xeroContact.getLastName()) || SafetyUtil.isEmpty(xeroContact.getName()) ) {
+        Notification notify = new Notification();
+        notify.setUserId(user.getId());
+        notify.setBody(
+          "Xero Contact: " + xeroContact.getName() +
+            " cannot sync due to the following required fields being empty:" +
+            (SafetyUtil.isEmpty(xeroContact.getEmailAddress()) ? "[Email Address]" : "") +
+            (SafetyUtil.isEmpty(xeroContact.getFirstName()) ? "[First Name]" : "") +
+            (SafetyUtil.isEmpty(xeroContact.getLastName()) ? "[LastName]" : "") + ".");
+        notification.put(notify);
+        return false;
+      }
+      return true;
+      `
+    },
     {
       name: 'isSignedIn',
       documentation: `Used to check if the access-token's are expired for the specific users`,
@@ -140,6 +177,8 @@ XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
 DAO              notification = ((DAO) x.get("notificationDAO")).inX(x);
 Logger           logger       = (Logger) x.get("logger");
+DAO              userDAO      = ((DAO) x.get("localUserUserDAO")).inX(x);
+DAO              businessDAO  = ((DAO) x.get("localBusinessDAO")).inX(x);
 
 // Check that user has accessed xero before
 if ( tokenStorage == null ) {
@@ -155,41 +194,53 @@ try {
 
   // Go through each xero Contact and assess what should be done with it
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
+    if ( ! this.isValidContact(x, xeroContact, user) ) {
+      continue;
+    }
 
-    // Check if Contact already exists on the portal
-    xContact = (XeroContact) contactDAO.find(
-      AND(
-        EQ(
-          XeroContact.XERO_ID,
-          xeroContact.getContactID()
-        ),
-        EQ(
-          XeroContact.OWNER,
-          user.getId()
-        )
-      )
-    );
+    //1: if xero-contact exists, update it
+    xContact = (XeroContact) contactDAO.find(AND(
+        EQ(XeroContact.XERO_ID, xeroContact.getContactID()),
+        EQ(XeroContact.OWNER, user.getId())
+    ));
 
     if ( xContact == null ) {
-
-      // Checks if the required data to become a contact is present in the contact data from Xero.
-      // If not sends a notification informing user of missing data
-      if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) || SafetyUtil.isEmpty(xeroContact.getFirstName()) || SafetyUtil.isEmpty(xeroContact.getLastName()) || SafetyUtil.isEmpty(xeroContact.getName()) ) {
-        Notification notify = new Notification();
-        notify.setUserId(user.getId());
-        notify.setBody(
-          "Xero Contact: " + xeroContact.getName() +
-            " cannot sync due to the following required fields being empty:" +
-            (SafetyUtil.isEmpty(xeroContact.getEmailAddress()) ? "[Email Address]" : "") +
-            (SafetyUtil.isEmpty(xeroContact.getFirstName()) ? "[First Name]" : "") +
-            (SafetyUtil.isEmpty(xeroContact.getLastName()) ? "[LastName]" : "") + ".");
-        notification.put(notify);
-        continue;
-      }
       xContact = new XeroContact();
-
     } else {
       xContact = (XeroContact) xContact.fclone();
+    }
+
+    //2: if user has contact with same email skip
+    Contact contact = (Contact) contactDAO.find(AND(
+      EQ(Contact.EMAIL, xeroContact.getEmailAddress()),
+      EQ(Contact.OWNER, user.getId()),
+      NOT(INSTANCE_OF(XeroContact.class))
+    ));
+
+    if ( contact != null ) {
+      continue;
+    }
+
+    //3: if the contact is already an existing user
+    User existingUser = (User) userDAO.find(
+      EQ(User.EMAIL, xeroContact.getEmailAddress())
+    );
+
+    if ( existingUser != null ) {
+      Business business = (Business) businessDAO.find(
+        EQ(Business.ORGANIZATION, existingUser.getOrganization())
+      );
+      if ( business != null ) {
+      Contact newContact = new Contact();
+        newContact.setOrganization(business.getOrganization());
+        newContact.setBusinessName(business.getBusinessName());
+        newContact.setBusinessId(business.getId());
+        newContact.setEmail(business.getEmail());
+        newContact.setType("Contact");
+        newContact.setGroup("sme");
+        user.getContacts(x).inX(x).put(newContact);
+        continue;
+      }
     }
 
     /*
@@ -259,18 +310,6 @@ try {
       xContact.setBusinessPhone(nanoPhone);
       xContact.setMobile(nanoMobilePhone);
       xContact.setPhoneNumber(phoneNumber);
-    }
-
-    // Look up to see if there is an associated business for the contact
-    DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-    Business business = (Business) businessDAO.find(
-      EQ(
-        Business.EMAIL,
-        xeroContact.getEmailAddress()
-      )
-    );
-    if ( business != null ) {
-      xContact.setBusinessId(business.getId());
     }
 
     xContact.setXeroId(xeroContact.getContactID());
