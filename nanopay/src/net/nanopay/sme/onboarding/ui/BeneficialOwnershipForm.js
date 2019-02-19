@@ -435,6 +435,7 @@ properties: [
   },
   {
     class: 'Int',
+    documentation: `A field displayed in view, to record the percentage of ownership of currently adding user/owner`,
     name: 'ownershipPercent',
     view: {
       class: 'foam.u2.TextField',
@@ -506,7 +507,8 @@ properties: [
   {
     class: 'Boolean',
     name: 'noPrincipalOwners',
-    documentation: 'This cannot be true at the same time as publiclyTradedEntity. UX requirement',
+    documentation: `This is displayed as a checkbox, with text 'No individuals own 25% or more.'
+    This cannot be true at the same time as publiclyTradedEntity. UX requirement`,
     postSet: function(o, n) {
       this.viewData.noPrincipalOwners = n;
       if ( n && this.publiclyTradedEntity ) {
@@ -518,7 +520,8 @@ properties: [
   {
     class: 'Boolean',
     name: 'publiclyTradedEntity',
-    documentation: 'This cannot be true at the same time as noPrincipalOwners. UX requirement',
+    documentation: `This is displayed as a checkbox, with text 'Owned by a publicly traded entity'
+    This cannot be true at the same time as noPrincipalOwners. UX requirement`,
     postSet: function(o, n) {
       this.viewData.publiclyTradedEntity = n;
       if ( n && this.noPrincipalOwners ) {
@@ -570,7 +573,7 @@ messages: [
   },
   {
     name: 'ADVISORY_NOTE',
-    message: `If your business has beneficial owners who, directly or indirectly, own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on one of the two checkboxes below.`
+    message: `If your business has beneficial owners who, directly or indirectly, own 25% or more of the business, please provide the information below for each owner.`
   },
   {
     name: 'PRINCIPAL_OWNER_ERROR',
@@ -773,6 +776,7 @@ methods: [
       this.jobTitleField = this.viewData.agent.jobTitle;
       this.addressField = this.viewData.agent.address;
       this.birthdayField = this.viewData.agent.birthday;
+      this.ownershipPercent = this.viewData.beneficialOwner.ownershipPercent;
       this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
         'Shareholder';
     }
@@ -783,6 +787,12 @@ methods: [
     this.principalOwnersDAO.remove(obj).then(function(deleted) {
       self.prevDeletedPrincipalOwner = deleted;
     });
+    // if first + last names match the admin. Then reset the sameasAdmin choice.
+    var agentNameId = `${this.viewData.agent.firstName.toLowerCase()}${this.viewData.agent.lastName.toLowerCase()}`;
+    var newOwnerNameId = `${obj.firstName.toLowerCase()}${obj.lastName.toLowerCase()}`;
+    if ( agentNameId === newOwnerNameId ) {
+      this.showSameAsAdminOption = true;
+    }
   }
 ],
 

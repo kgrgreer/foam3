@@ -32,7 +32,7 @@ foam.CLASS({
        this.views = [
          [{ class: 'foam.u2.view.ScrollTableView',
            columns: [
-            'status', 'name', 'type', 'createdBy', 'created', 'payer', 'payee', 'total', 'referenceNumber', 'id', 'processDate', 'completionDate'
+            'status', 'invoiceId', 'invoiceNumber', 'name', 'type', 'createdBy', 'created', 'payer', 'payee', 'total', 'referenceNumber', 'id', 'processDate', 'completionDate'
            ] }, 'Table'
          ],
          [{

@@ -251,25 +251,25 @@ foam.CLASS({
           class: 'foam.u2.view.TableView',
           data$: this.filteredTransactionDAO$,
           columns: [
-            'id', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
+            'id', 'invoiceId', 'invoiceNumber', 'name', 'created', 'payer', 'payee', 'total', 'status', 'type'
           ] }, 'Table'
         ],
-        // [{
-        //     class: 'foam.u2.view.TreeView',
-        //     data: this.filteredTransactionDAO,
-        //     relationship: net.nanopay.tx.model.TransactionTransactionchildrenRelationship,
-        //     startExpanded: false,
-        //     draggable: false,
-        //     formatter: function(data) {
-        //       this
-        //           .add('ID: ').add(data.id + '  , ')
-        //           .add('Name: ').add(data.name + '  , ')
-        //           .add('Created: ').add(data.created + '  , ')
-        //           .add('Amount: $').add(data.amount + '  , ')
-        //           .add('Status: ').add(data.status.name);
-        //     }
-        //   }, 'Tree'
-        // ]
+        [{
+            class: 'foam.u2.view.TreeView',
+            data: this.filteredTransactionDAO,
+            relationship: net.nanopay.tx.model.TransactionTransactionchildrenRelationship,
+            startExpanded: false,
+            draggable: false,
+            formatter: function(data) {
+              this
+                  .add('ID: ').add(data.id + '  , ')
+                  .add('Name: ').add(data.name + '  , ')
+                  .add('Created: ').add(data.created + '  , ')
+                  .add('Amount: $').add(data.amount + '  , ')
+                  .add('Status: ').add(data.status.name);
+            }
+          }, 'Tree'
+        ]
       ];
     },
     function dblclick(transaction) {
