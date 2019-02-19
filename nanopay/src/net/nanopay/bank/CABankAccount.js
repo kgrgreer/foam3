@@ -137,6 +137,12 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
+      Branch branch = this.findBranch(x);
+      if ( branch != null &&
+          branch.getInstitution() > 0 ) {
+        return;
+      }
+
       Institution institution = this.findInstitution(x);
 
       // no validation when the institution is attached.
