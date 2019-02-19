@@ -310,6 +310,11 @@ var classes = [
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
 
+  // settings
+  'net.nanopay.settings.AcceptanceDocument',
+  'net.nanopay.settings.UserAcceptanceDocument',
+  'net.nanopay.settings.AcceptanceDocumentService',
+  'net.nanopay.settings.ClientAcceptanceDocumentService',
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
 
@@ -460,6 +465,7 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.settings.AcceptanceDocumentService',
   'net.nanopay.integration.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
