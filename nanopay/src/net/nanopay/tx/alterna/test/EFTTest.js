@@ -117,7 +117,6 @@ if ( account == null ) {
   BankAccount testBankAccount = new CABankAccount.Builder(x)
     .setAccountNumber("12345678")
     .setBranch( branch.getId() )
-    .setInstitution( institution.getId() )
     .setOwner(1348)
     .setName("EFT Test Account")
     .setStatus(BankAccountStatus.VERIFIED)
