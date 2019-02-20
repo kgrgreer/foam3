@@ -19,6 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'currencyDAO',
     'notify',
     'user'
   ],
@@ -150,7 +151,7 @@ foam.CLASS({
       expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
         // Format the amount & add the currency symbol
         if ( invoice$destinationCurrency !== undefined ) {
-          return invoice.destinationCurrency$find.then((currency) => {
+          return this.currencyDAO.find(invoice$destinationCurrency).then((currency) => {
             return currency.format(invoice$amount);
           });
         }
