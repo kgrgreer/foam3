@@ -14,6 +14,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'currencyDAO',
     'menuDAO',
     'stack',
     'user'
@@ -165,7 +166,8 @@ foam.CLASS({
 
   methods: [
     function populateVariables() {
-      this.invoice.destinationCurrency$find.then((currency) => {
+      this.currencyDAO.find(this.invoice.destinationCurrency)
+        .then((currency) => {
         this.formattedAmount_ = currency.format(this.invoice.amount) + ' ' +
           currency.alphabeticCode;
       });

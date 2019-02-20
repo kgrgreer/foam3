@@ -103,7 +103,7 @@ public class PaymentNotificationDAO extends ProxyDAO {
       String accountVar = SafetyUtil
         .isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
 
-      String amount = invoice.findDestinationCurrency(x)
+      String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
         .format(invoice.getAmount());
 
       HashMap<String, Object> args = new HashMap<>();
