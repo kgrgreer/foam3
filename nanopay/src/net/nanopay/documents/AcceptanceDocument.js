@@ -87,7 +87,8 @@ foam.CLASS({
       documentation: 'For State/Province/Region specific documents'
     },
     {
-      type: 'net.nanopay.documents.AcceptanceDocumentType',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.documents.AcceptanceDocumentType',
       name: 'documentType',
       documentation: `Currently documents can be of Onboarding or Disclosure type.`,
     },
