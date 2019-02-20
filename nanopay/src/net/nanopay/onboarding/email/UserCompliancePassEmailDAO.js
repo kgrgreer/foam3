@@ -42,6 +42,7 @@ foam.CLASS({
       if ( (ComplianceStatus.REQUESTED != oldUser.getCompliance() && ComplianceStatus.FAILED != oldUser.getCompliance()) || ComplianceStatus.PASSED != user.getCompliance() )
         return getDelegate().put_(x, obj);
 
+      // Check user property, need email to be verified to send an email.
       if ( ! user.getEmailVerified() ) {
         logger.error(String.format("user(id=%1$d) has had Compliance status changed to %2$s but is unable to be notified due to user's email is not yet verified.", user.getId(), user.getCompliance()));
         return getDelegate().put_(x, obj);
@@ -53,6 +54,14 @@ foam.CLASS({
       EmailMessage            message      = new EmailMessage();
       Map<String, Object>     args         = new HashMap<>();
       String url = ((AppConfig) getX().get("appConfig")).getUrl().replaceAll("/$", "");
+
+      // appConfig is currently set to getUrl() localhost:8080, thus switch to ablii.
+      // also this will not be the case on production thus the check first.
+      if ( url.contains("8080") ) url = "http://ablii:8080/";
+
+      message.setTo(new String[]{user.getEmail()});
+      args.put("business", user.label());
+      args.put("link",     url);
 
       message.setTo(new String[]{user.getEmail()});
       args.put("business",        user.label());
