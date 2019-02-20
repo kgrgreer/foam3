@@ -4,6 +4,7 @@ foam.RELATIONSHIP({
   forwardName: 'bankAccounts',
   inverseName: 'branch',
   cardinality: '1:*',
+  targetDAOKey: 'accountDAO',
   sourceProperty: {
     hidden: true
   },
@@ -34,6 +35,7 @@ foam.RELATIONSHIP({
   forwardName: 'bankAccounts',
   inverseName: 'institution',
   cardinality: '1:*',
+  targetDAOKey: 'accountDAO',
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
