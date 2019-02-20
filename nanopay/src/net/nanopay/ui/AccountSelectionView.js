@@ -12,9 +12,11 @@ foam.CLASS({
     methods: [
       async function initE() {
         var display = 'Select an Account';
-        var account = await this.accountDAO.find(this.data);
-        if ( account ) {
-          display = account.id + ' ' + account.name + ' ' + account.denomination;
+        if ( this.data && this.accountDAO ) {
+          var account = await this.accountDAO.find(this.data);
+          if ( account ) {
+            display = account.id + ' ' + account.name + ' ' + account.denomination;
+          }
         }
         return this.add(display);
       }
