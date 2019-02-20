@@ -178,7 +178,9 @@ foam.CLASS({
         this.passwordStrength = result;
         this.showOuter2 = false;
         this.passwordError = ( result < 3 );
-        }
+      }
+      // used to reset error box css
+      if ( this.data.length == 0 ) this.passwordError = false;
     }
   ]
 });
