@@ -78,7 +78,8 @@ foam.CLASS({
     },
 
     function validatePassword(password) {
-      // TODO: call auth.validatePassword(password)
+      // TODO: call auth.validatePassword(password). Requires adding promise support everywhere this is called.
+      // If passwordValidationRegex in UserAndGroupAuthService is changed, update here to match.
       var re = /^.{6,}$/;
       return re.test(String(password));
     },
