@@ -495,6 +495,20 @@ foam.CLASS({
         var self = this;
         this.balanceDAO.find(this.accounts).then(function(balance) {
           var amount = (balance != null ? balance.balance : 0);
+          if ( amount == 0 || ( self.invoice && amount < self.invoice.amount )) {
+            self.accountDAO
+              .where(self.EQ(self.Account.OWNER, self.accountOwner))
+              .select()
+              .then(function(a) {
+                var accounts = a.array;
+                for ( var i = 0; i < accounts.length; ++i ) {
+                  var accountType = accounts[i].type;
+                  if ( accountType.length >= 11 && accountType.substring(accountType.length - 11) == 'BankAccount' && accounts[i].isDefault ) {
+                    self.types = accountType;
+                  }
+                }
+              })
+          }
           self.viewData.balance = amount;
         });
       }
