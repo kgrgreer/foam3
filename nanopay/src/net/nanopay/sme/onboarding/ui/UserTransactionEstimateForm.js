@@ -302,15 +302,15 @@ foam.CLASS({
         .start().show(this.isUSABasedCompany$)
           .start().addClass('medium-header').add(this.THIRD_TITLE).end()
           .start().addClass('label-input')
-            .start({ class: 'foam.u2.tag.Image', data: this.flag$ }).addClass('flag-image').end()
-            .start().addClass('inline').addClass('bold-label').add(this.currencyTypeLabel$).end()
+            .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' }).addClass('flag-image').end()
+            .start().addClass('inline').addClass('bold-label').add(this.US_DOLLAR_LABEL).end()
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.ANNUAL_LABEL).end()
             .tag(this.ANNUAL_FIELD_DOMESTIC, { onKey: true })
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start().addClass('label').add(this.estimatedLabel$).end()
+            .start().addClass('label').add(this.US_VOLUME_LABEL).end()
             .tag(this.ESTIMATED_FIELD_DOMESTIC, { onKey: true })
           .end()
           .start().addClass('label-input')
@@ -348,16 +348,18 @@ foam.CLASS({
     function setBaseCurrency() {
       var cur = this.isUSABasedCompany ? 'USD': 'CAD';
       this.viewData.user.suggestedUserTransactionInfo.baseCurrency = cur;
-      if ( foam.util.equals('CAD', cur) ) {
+      // if business address is US then international payments are CAD,
+      // if business address is CAD then international payments are USD,
+      if ( foam.util.equals('USD', cur) ) {
         this.flag = 'images/flags/cad.png';
         this.currencyTypeLabel = this.CA_DOLLAR_LABEL;
         this.estimatedLabel = this.CA_VOLUME_LABEL;
-        this.annualLabel = this.REVENUE_ESTIMATE_LABEL_CA;
-      } else if ( foam.util.equals('USD', cur) ) {
+        this.annualLabel = this.REVENUE_ESTIMATE_LABEL_US;
+      } else if ( foam.util.equals('CAD', cur) ) {
         this.flag = 'images/flags/us.png';
         this.currencyTypeLabel = this.US_DOLLAR_LABEL;
         this.estimatedLabel = this.US_VOLUME_LABEL;
-        this.annualLabel = this.REVENUE_ESTIMATE_LABEL_US;
+        this.annualLabel = this.REVENUE_ESTIMATE_LABEL_CA;
       }
     }
   ],

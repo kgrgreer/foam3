@@ -41,12 +41,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualTransactionAmount',
-      documentation: `Estimated annual number of transactions user or business conducts.`
+      documentation: `Estimated annual number of transactions user or business conducts.
+      BaseCurrency of this field which is set when user confirms that they do international transfers,
+      is opposite (CAD - USD) of set base currency of this model.`
     },
     {
       class: 'String',
       name: 'annualVolume',
-      documentation: `Estimated annual volume in USD of user or business.`
+      documentation: `Estimated annual volume in USD of user or business.
+      BaseCurrency of this field which is set when user confirms that they do international transfers,
+      is opposite (CAD - USD) of set base currency of this model.`
     },
     {
       class: 'Date',
@@ -56,13 +60,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualDomesticTransactionAmount',
-      documentation: `Estimated annual number of transactions user or business conducts.
+      documentation: `Estimated annual number of transactions user or business conducts. baseCurrency of this model.
       US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`
     },
     {
       class: 'String',
       name: 'annualDomesticVolume',
-      documentation: `Estimated annual volume in USD of user or business.
+      documentation: `Estimated annual volume in USD of user or business. baseCurrency of this model.
       US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`
     },
     {
