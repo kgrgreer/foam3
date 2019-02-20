@@ -47,7 +47,6 @@ public class UserRegistrationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    DAO userUserDAO = (DAO) x.get("userUserDAO");
     User user = (User) obj;
 
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
@@ -86,10 +85,21 @@ public class UserRegistrationDAO
       user.setEmailVerified(token != null);
 
       if ( token == null ) {
-        throw new RuntimeException("Uknown token.");
+        throw new RuntimeException("Unknown token.");
       }
 
       Map<String, Object> params = (Map) token.getParameters();
+
+      Invitation invitation = (Invitation) invitationDAO_
+        .find(EQ(Invitation.EMAIL, user.getEmail()));
+
+      if ( params.containsKey("inviteeEmail") ) {
+        if (invitation == null || params.get("inviteeEmail") != invitation.getEmail()) {
+          throw new RuntimeException(("Email does not match invited email."));
+        }
+      } else {
+        throw new RuntimeException("Cannot process without an invited email.");
+      }
 
       if ( params.containsKey("businessId") ) {
         long businessId = (long) params.get("businessId");
@@ -98,26 +108,6 @@ public class UserRegistrationDAO
           Business business = (Business) localBusinessDAO_.inX(sysContext).find(businessId);
           if ( business == null ) {
             throw new RuntimeException("Business doesn't exist.");
-          }
-
-          // Get a context with the Business in it
-          X businessContext = Auth.sudo(sysContext, business);
-
-          Invitation invitation = (Invitation) invitationDAO_
-            .inX(businessContext)
-            .find(
-              AND(
-                EQ(Invitation.CREATED_BY, businessId),
-                EQ(Invitation.EMAIL, user.getEmail())
-              )
-            );
-
-          if ( params.containsKey("inviteeEmail") ) {
-            if (invitation == null || params.get("inviteeEmail") != invitation.getEmail()) {
-              throw new RuntimeException(("Email does not match invited email."));
-            }
-          } else {
-            throw new RuntimeException("Invitation is out of date. Please request a new one.");
           }
         }
       }
