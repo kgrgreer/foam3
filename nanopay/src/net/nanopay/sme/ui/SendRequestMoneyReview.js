@@ -90,10 +90,8 @@ foam.CLASS({
       if ( ! this.isPayable ) return;
       try {
         var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(this.viewData.quote.type, 'DISCLOSURE', this.user.address.countryId, this.user.address.regionId);
-        // disclosure = disclosure.array ? disclosure.array[0] : null;
         if ( disclosure ) {
-          var text = '<h4>Transaction to be executed by AscendantFX.</h4>' + disclosure.body;
-          this.disclosureView = this.Document.create({ markup: text });
+          this.disclosureView = this.Document.create({ markup: disclosure.body });
         }
       } catch (error) {
         console.error(error.message);
