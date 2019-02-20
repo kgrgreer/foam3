@@ -361,8 +361,9 @@ try {
         continue;
       }
 
-      // Only update the invoice if its not already in the process of changing
-      if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus() ) {
+      if (
+        ! (net.nanopay.invoice.model.InvoiceStatus.UNPAID == portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT == portal.getStatus())
+      ) {
         continue;
       }
 
@@ -431,7 +432,8 @@ try {
       portal.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
     } else {
       Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
-      portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
+      double doubleAmount = invoice.getBalance() * Math.pow(10.0, currency.getPrecision());
+      portal.setAmount((new Double(doubleAmount)).longValue());
     }
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
     portal.setIssueDate(getDate(invoice.getTxnDate()));
@@ -524,12 +526,9 @@ try {
         continue;
       }
 
-      // Only update invoices that are unpaid or drafts.
       if (
-        net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() &&
-        net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus()
+        ! (net.nanopay.invoice.model.InvoiceStatus.UNPAID == portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT == portal.getStatus())
       ) {
-        // Skip processing this invoice.
         continue;
       }
 
@@ -597,7 +596,8 @@ try {
       portal.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
     } else {
       Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
-      portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
+      double doubleAmount = invoice.getBalance() * Math.pow(10.0, currency.getPrecision());
+      portal.setAmount((new Double(doubleAmount)).longValue());
     }
     portal.setInvoiceNumber(invoice.getDocNumber());
     portal.setQuickId(invoice.getId());
