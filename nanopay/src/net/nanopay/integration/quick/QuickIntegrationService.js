@@ -726,6 +726,10 @@ try {
       Business business = (Business) businessDAO.find(
         EQ(Business.ORGANIZATION, existUser.getOrganization())
       );
+      if ( business == null ) {
+        logger.warning("User do not belong to any business.");
+        continue;
+      }
       Contact newContact = new Contact();
       newContact.setOrganization(business.getOrganization());
       newContact.setBusinessName(business.getBusinessName());
