@@ -29,6 +29,7 @@ foam.CLASS({
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentService',
+    'net.nanopay.documents.AcceptanceDocumentType',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
@@ -106,7 +107,7 @@ foam.CLASS({
       if ( null != payer && null != payer.getAddress() ) {
         AcceptanceDocumentService acceptanceDocumentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
         disclosure = acceptanceDocumentService.getTransactionRegionDocuments("AscendantFXTransaction",
-          "DISCLOSURE", payer.getAddress().getCountryId(), payer.getAddress().getRegionId());
+          AcceptanceDocumentType.DISCLOSURE, payer.getAddress().getCountryId(), payer.getAddress().getRegionId());
       }
 
       // TODO: test if fx already done

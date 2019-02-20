@@ -9,11 +9,11 @@ foam.ENUM({
   values: [
     {
       name: 'ONBOARDING',
-      label: 'onboarding'
+      label: 'Onboarding'
     },
     {
       name: 'DISCLOSURE',
-      label: 'disclose'
+      label: 'Disclosure'
     },
   ]
 });

@@ -75,23 +75,25 @@ foam.CLASS({
       documentation: 'Type of transaction that acceptance document applies to. This also identifies the Payment Provider',
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
       name: 'country',
       documentation: 'For Country specific documents,'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.auth.Region',
       name: 'state',
       documentation: 'For State/Province/Region specific documents'
     },
     {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.documents.AcceptanceDocumentType',
+      type: 'net.nanopay.documents.AcceptanceDocumentType',
       name: 'documentType',
       documentation: `Currently documents can be of Onboarding or Disclosure type.`,
     },
     {
-      type: 'Long',
+      class: 'Reference',
+      of: 'net.nanopay.payment.PaymentProvider',
       name: 'paymentProvider',
       documentation: 'Identifies payment provider related to document'
     },

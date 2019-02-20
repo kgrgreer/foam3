@@ -10,7 +10,8 @@ foam.CLASS({
   requires: [
     'foam.flow.Document',
     'net.nanopay.documents.AcceptanceDocumentService',
-    'net.nanopay.documents.AcceptanceDocument'
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentType'
   ],
 
   implements: [
@@ -89,7 +90,7 @@ foam.CLASS({
     async function updateDisclosure() {
       if ( ! this.isPayable ) return;
       try {
-        var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(this.viewData.quote.type, 'DISCLOSURE', this.user.address.countryId, this.user.address.regionId);
+        var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(this.viewData.quote.type, this.AcceptanceDocumentType.DISCLOSURE, this.user.address.countryId, this.user.address.regionId);
         if ( disclosure ) {
           this.disclosureView = this.Document.create({ markup: disclosure.body });
         }

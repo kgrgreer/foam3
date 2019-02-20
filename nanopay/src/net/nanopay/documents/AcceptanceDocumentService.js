@@ -49,8 +49,8 @@ foam.INTERFACE({
                     type: 'String'
                 },
                 {
-                    name: 'documentType',
-                    type: 'String'
+                  type: 'net.nanopay.documents.AcceptanceDocumentType',
+                  name: 'documentType',
                 },
                 {
                   type: 'String',
