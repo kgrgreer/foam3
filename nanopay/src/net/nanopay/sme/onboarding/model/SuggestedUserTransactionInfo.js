@@ -11,7 +11,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'baseCurrency',
-      documentation: `Frequent currency user transacts in.`
+      documentation: `Currency based on business address.`
     },
     {
       class: 'Boolean',
