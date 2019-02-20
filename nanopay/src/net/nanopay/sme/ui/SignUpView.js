@@ -156,10 +156,7 @@ foam.CLASS({
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
-    { name: 'AND_LABEL', message: '&' },
-    { name: 'POLICY_LABEL', message: 'Privacy Policy' },
     { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' },
-    { name: 'PRIVACY_POLICY_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Privacy-Policy-November-28-2018.pdf' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` }
@@ -240,14 +237,6 @@ foam.CLASS({
                 .add(this.TERMS_AGREEMENT_LABEL_2)
                 .on('click', () => {
                   window.open(this.TERMS_AGREEMENT_LINK);
-                })
-              .end()
-              .start().addClass('inline').add(this.AND_LABEL).end()
-              .start('a').addClass('sme').addClass('link')
-                .addClass(this.myClass('terms-link'))
-                .add(this.POLICY_LABEL)
-                .on('click', () => {
-                  window.open(this.PRIVACY_POLICY_LINK);
                 })
               .end()
             .end()
