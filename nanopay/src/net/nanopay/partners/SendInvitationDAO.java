@@ -19,6 +19,7 @@ import net.nanopay.partners.ui.PartnerInvitationNotification;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.HashMap;
@@ -119,6 +120,7 @@ public class SendInvitationDAO
 
       Token token = new Token();
       token.setParameters(tokenParams);
+      token.setExpiry(this.generateExpiryDate());
       token.setData(UUID.randomUUID().toString());
       token = (Token) tokenDAO.put(token);
 
@@ -145,6 +147,15 @@ public class SendInvitationDAO
     } catch(Throwable t) {
       logger.error("Error sending invitation email.", t);
     }
+  }
+
+  /**
+   * Get a 30 day expiry date
+   */
+  private Date generateExpiryDate(){
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.DAY_OF_MONTH, 30);
+    return calendar.getTime();
   }
 
   /**

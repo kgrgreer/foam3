@@ -8,16 +8,17 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.User;
 import foam.nanos.auth.token.Token;
+import foam.nanos.auth.User;
+import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
-import foam.util.Auth;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 import static foam.mlang.MLang.*;
 
@@ -79,7 +80,7 @@ public class UserRegistrationDAO
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
 
-    // Make sure the email the user is signing up with matches the email the invite was sent to
+    // Check the parameters in the signup token
     if ( ! SafetyUtil.isEmpty(user.getSignUpToken()) ) {
       Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
       user.setEmailVerified(token != null);
@@ -88,13 +89,19 @@ public class UserRegistrationDAO
         throw new RuntimeException("Unknown token.");
       }
 
+      Date currentDate = new Date();
+
+      // Compare current date with the expiry date
+      if ( token.getExpiry() != null && token.getExpiry().before(currentDate) ) {
+        throw new RuntimeException("Invitation expired. Please request a new one.");
+      }
+
       Map<String, Object> params = (Map) token.getParameters();
 
-      Invitation invitation = (Invitation) invitationDAO_
-        .find(EQ(Invitation.EMAIL, user.getEmail()));
+      // Make sure the email the user is signing up with matches the email the invite was sent to
 
       if ( params.containsKey("inviteeEmail") ) {
-        if (invitation == null || params.get("inviteeEmail") != invitation.getEmail()) {
+        if ( ! params.get("inviteeEmail").equals(user.getEmail()) ) {
           throw new RuntimeException(("Email does not match invited email."));
         }
       } else {
