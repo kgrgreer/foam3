@@ -259,7 +259,7 @@ foam.CLASS({
                       .start().add(payer.businessName).end()
                       .start().add(self.formatStreetAddress(address)).end()
                       .start().add(self.formatRegionAddress(address)).end()
-                      .start().add(address.postalCode).end();
+                      .start().add(address != undefined ? address.postalCode : "").end();
                   }
                 });
               }))
@@ -272,7 +272,7 @@ foam.CLASS({
                   if ( payee != null ) {
                     return self.E()
                       .start().add(payee.firstName + ' ' + payee.lastName).end()
-                      .start().add(payee.businessPhone.number).end()
+                      .start().add(payee.businessPhone != undefined ? payee.businessPhone.number : "").end()
                       .start().add(payee.email).end();
                   }
                 });
