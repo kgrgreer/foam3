@@ -50,6 +50,7 @@ foam.CLASS({
     ^ .property-revenueEstimate {
       width: 225px;
       margin-bottom: 30px;
+      height: 35px;
       top: 15px;
       right: 125px;
     }
@@ -70,6 +71,7 @@ foam.CLASS({
     }
     ^ .foam-u2-DateView {
       width: 229px;
+      height: 35px;
     }
   `,
 
