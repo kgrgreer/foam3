@@ -73,10 +73,6 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
 
   public AcceptanceDocument getTransactionRegionDocuments(String transactionType, AcceptanceDocumentType documentType, String country, String state) throws RuntimeException {
     AcceptanceDocument acceptanceDocument = null;
-    System.out.println("TransactionType is: " + transactionType);
-    System.out.println("documentType is: " + documentType);
-    System.out.println("country is: " + country);
-    System.out.println("state is: " + state);
 
     ArraySink listSink = (ArraySink) acceptanceDocumentDAO_
         .where(
@@ -91,7 +87,6 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
 
         if ( listSink.getArray().size() > 0 ) {
           acceptanceDocument = (AcceptanceDocument) listSink.getArray().get(0);
-          System.out.println("Disclosure found ");
         }
 
     return acceptanceDocument;
