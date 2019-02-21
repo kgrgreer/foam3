@@ -267,7 +267,8 @@ foam.CLASS({
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
-        this.invoice.destinationCurrency$find.then((currency) => {
+        this.currencyDAO.find(this.invoice.destinationCurrency)
+          .then((currency) => {
           this.formattedAmount = currency.format(this.invoice.amount);
         });
       }
