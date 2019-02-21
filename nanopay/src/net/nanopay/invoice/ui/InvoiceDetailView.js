@@ -317,7 +317,7 @@ foam.CLASS({
         // Set the time to the very end of the day so that invoices are not
         // shown as overdue until the day after their due date.
         dueDate.setUTCHours(23, 59, 59, 999);
-
+        
         var inv = this.Invoice.create({
           payerId: this.isBill ? this.user.id : this.userList,
           payeeId: this.isBill ? this.userList : this.user.id,
@@ -325,7 +325,7 @@ foam.CLASS({
           amount: this.data.amount,
           dueDate: dueDate,
           purchaseOrder: this.data.purchaseOrder,
-          destinationCurrency: this.currencyType,
+          destinationCurrency: this.currencyType.alphabeticCode,
           note: this.data.note,
           invoiceFile: this.data.invoiceFile,
           invoiceNumber: this.data.invoiceNumber

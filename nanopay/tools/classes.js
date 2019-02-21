@@ -131,6 +131,8 @@ var classes = [
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
+  'net.nanopay.invoice.service.InvoicePaymentService',
+  'net.nanopay.invoice.service.ClientInvoicePaymentService',
 
    // integration
    'net.nanopay.integration.ClientIntegrationService',
@@ -474,7 +476,8 @@ var skeletons = [
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
-  'net.nanopay.payment.PaymentService'
+  'net.nanopay.payment.PaymentService',
+  'net.nanopay.invoice.service.InvoicePaymentService',
 ];
 
 var proxies = [
