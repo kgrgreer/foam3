@@ -400,6 +400,12 @@ try {
         continue;
       }
 
+      if ( xeroInvoice.getStatus() == InvoiceStatus.VOIDED) {
+        xInvoice.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
+        invoiceDAO.put(xInvoice);
+        continue;
+      }
+
       // Only update invoices that are unpaid or drafts.
       if (
         net.nanopay.invoice.model.InvoiceStatus.UNPAID != xInvoice.getStatus() &&
