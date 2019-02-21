@@ -8,16 +8,17 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.User;
 import foam.nanos.auth.token.Token;
+import foam.nanos.auth.User;
+import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
-import foam.util.Auth;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 import static foam.mlang.MLang.*;
 
@@ -47,7 +48,6 @@ public class UserRegistrationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    DAO userUserDAO = (DAO) x.get("userUserDAO");
     User user = (User) obj;
 
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
@@ -80,16 +80,33 @@ public class UserRegistrationDAO
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
 
-    // Make sure the email the user is signing up with matches the email the invite was sent to
+    // Check the parameters in the signup token
     if ( ! SafetyUtil.isEmpty(user.getSignUpToken()) ) {
       Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
       user.setEmailVerified(token != null);
 
       if ( token == null ) {
-        throw new RuntimeException("Uknown token.");
+        throw new RuntimeException("Unknown token.");
+      }
+
+      Date currentDate = new Date();
+
+      // Compare current date with the expiry date
+      if ( token.getExpiry() != null && token.getExpiry().before(currentDate) ) {
+        throw new RuntimeException("Invitation expired. Please request a new one.");
       }
 
       Map<String, Object> params = (Map) token.getParameters();
+
+      // Make sure the email the user is signing up with matches the email the invite was sent to
+
+      if ( params.containsKey("inviteeEmail") ) {
+        if ( ! params.get("inviteeEmail").equals(user.getEmail()) ) {
+          throw new RuntimeException(("Email does not match invited email."));
+        }
+      } else {
+        throw new RuntimeException("Cannot process without an invited email.");
+      }
 
       if ( params.containsKey("businessId") ) {
         long businessId = (long) params.get("businessId");
@@ -98,26 +115,6 @@ public class UserRegistrationDAO
           Business business = (Business) localBusinessDAO_.inX(sysContext).find(businessId);
           if ( business == null ) {
             throw new RuntimeException("Business doesn't exist.");
-          }
-
-          // Get a context with the Business in it
-          X businessContext = Auth.sudo(sysContext, business);
-
-          Invitation invitation = (Invitation) invitationDAO_
-            .inX(businessContext)
-            .find(
-              AND(
-                EQ(Invitation.CREATED_BY, businessId),
-                EQ(Invitation.EMAIL, user.getEmail())
-              )
-            );
-
-          if ( params.containsKey("inviteeEmail") ) {
-            if (invitation == null || params.get("inviteeEmail") != invitation.getEmail()) {
-              throw new RuntimeException(("Email does not match invited email."));
-            }
-          } else {
-            throw new RuntimeException("Invitation is out of date. Please request a new one.");
           }
         }
       }
