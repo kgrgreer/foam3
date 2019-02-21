@@ -34,12 +34,12 @@ foam.CLASS({
 
       // Checks if User has existed which is really just a duplicate check of user.getId() == 0, or at least it should.
       User oldUser = (User) getDelegate().find(user.getId());
-      if ( oldUser == null || oldUser.getId() == 0 )
+      if ( oldUser == null )
         return getDelegate().put_(x, obj);
 
-      // Make sure to only send on complaince status change to PASSED.
-      // complaince status.FAILED will take a different route, currently undefined requirements
-      if ( (ComplianceStatus.REQUESTED != oldUser.getCompliance() && ComplianceStatus.FAILED != oldUser.getCompliance()) || ComplianceStatus.PASSED != user.getCompliance() )
+      // Make sure to only send on compliance status change to PASSED.
+      // compliance status.FAILED will take a different route, currently undefined requirements
+      if ( (ComplianceStatus.REQUESTED != oldUser.getCompliance() && ComplianceStatus.FAILED != oldUser.getCompliance() && ComplianceStatus.NOTREQUESTED != oldUser.getCompliance()) || ComplianceStatus.PASSED != user.getCompliance() )
         return getDelegate().put_(x, obj);
 
       // Check user property, need email to be verified to send an email.
