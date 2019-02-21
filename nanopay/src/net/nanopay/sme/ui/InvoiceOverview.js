@@ -104,17 +104,12 @@ foam.CLASS({
     ^ .invoice-row {
       margin-bottom: 24px;
     }
-    ^ .invoice-text-left {
+    ^ .invoice-text {
       display: inline-block;
       vertical-align: top;
       color: #8e9090;
       width: 50%;
-    }
-    ^ .invoice-text-right {
-      display: inline-block;
-      vertical-align: top;
-      color: #8e9090;
-      width: 50%;
+      line-height: 1.5;
     }
     ^ .subheading {
       font-size: 16px;
@@ -502,18 +497,18 @@ foam.CLASS({
 
               .start()
                 .start().show(this.showTran$).addClass('invoice-row')
-                  .start().addClass('invoice-text-left').show(this.isCrossBorder$)
+                  .start().addClass('invoice-text').show(this.isCrossBorder$)
                     .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
                     .add(this.exchangeRateInfo$)
                   .end()
                   // Only show fee when it is a payable
-                  .start().addClass('invoice-text-right').show(this.isPayable)
+                  .start().addClass('invoice-text').show(this.isPayable)
                     .start().addClass('table-content').add(this.PAYMENT_FEE).end()
                     .add(this.fee$)
                   .end()
                 .end()
                 .start().addClass('invoice-row')
-                  .start().addClass('invoice-text-left')
+                  .start().addClass('invoice-text')
                     .start().addClass('table-content').add(this.AMOUNT_DUE).end()
                     .add(this.PromiseSlot.create({
                       promise$: this.formattedAmountDue$,
@@ -522,7 +517,7 @@ foam.CLASS({
                     .add(' ')
                     .add(this.invoice$.dot('destinationCurrency'))
                   .end()
-                  .start().addClass('invoice-text-right')
+                  .start().addClass('invoice-text')
                     .start().addClass('table-content').add(this.AMOUNT_PAID).end()
                     .start().show(this.isProcessOrComplete$)
                       .add(this.formattedAmountPaid$)
@@ -532,7 +527,7 @@ foam.CLASS({
                 .end()
                 .start().addClass('invoice-row')
                   .start().show(this.isProcessOrComplete$)
-                    .addClass('invoice-text-right')
+                    .addClass('invoice-text')
                     .start().show(this.isPaid$)
                       .addClass('table-content')
                       .add(this.DATE_CREDITED)
@@ -553,7 +548,7 @@ foam.CLASS({
                       }))
                     .end()
                   .end()
-                  .start().show(this.showBankAccount$).addClass('invoice-text-left')
+                  .start().show(this.showBankAccount$).addClass('invoice-text')
                     .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
                       if ( account != null ) {

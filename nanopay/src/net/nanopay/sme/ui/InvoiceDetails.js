@@ -43,6 +43,7 @@ foam.CLASS({
       }
     ^invoice-content-text {
       color: #8e9090;
+      line-height: 1.5;
     }
     ^ .invoice-note {
       display: inline-block;
@@ -100,6 +101,9 @@ foam.CLASS({
     }
     ^italic {
       font-style: italic;
+    }
+    ^ .bold-label {
+      line-height: 1.5;
     }
   `,
 
