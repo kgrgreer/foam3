@@ -38,19 +38,6 @@ public class FlinksRestService
   public static final String ACCOUNTS_STATEMENTS = "GetStatements";
   public static final String CHALLENGE = "Challenge";
 
-  private String address_;
-
-  public FlinksRestService() {
-    this(null, "8bc4718b-3780-46d0-82fd-b217535229f1");
-  }
-  public FlinksRestService(X x, String customerId) {
-    this(x, "https://nanopay-api.private.fin.ag/v3", customerId);
-  }
-  public FlinksRestService(X x, String url, String customerId) {
-    address_ = url + "/" + customerId + "/" + "BankingServices";
-    setX(x);
-  }
-
   public ResponseMsg serve(RequestMsg msg, String RequestInfo) {
     if ( RequestInfo.equals(AUTHORIZE) ) {
       return authorizeService(msg);
@@ -127,6 +114,9 @@ public class FlinksRestService
   }
 
   private ResponseMsg request(RequestMsg req) {
+    FlinksCredentials credentials = (FlinksCredentials) getX().get("flinksCredentials");
+    String address_ = credentials.getUrl() + "/" + credentials.getCustomerId() + "/" + "BankingServices";
+
     BufferedReader rd = null;
     HttpEntity responseEntity = null;
     HttpResponse response = null;
