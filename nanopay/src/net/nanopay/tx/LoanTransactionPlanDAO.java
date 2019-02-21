@@ -4,11 +4,10 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.mlang.MLang;
 import net.nanopay.account.LoanAccount;
+import net.nanopay.account.LoanedTotalAccount;
 import net.nanopay.tx.model.Transaction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoanTransactionPlanDAO extends ProxyDAO {
 
@@ -20,49 +19,87 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
 
-    if ( ! ( obj instanceof TransactionQuote ) ) {
-      return getDelegate().put_(x, obj);
-    }
+    if (!(obj instanceof TransactionQuote)) return getDelegate().put_(x, obj);
 
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction txn = quote.getRequestTransaction();
-    DAO accountDAO = (DAO) x.get("accountDAO");
 
-    // Borrowing from a Loan Account
-    if ( txn.findSourceAccount(x) instanceof LoanAccount ) {
+    if (!(txn.findSourceAccount(x) instanceof LoanAccount || txn.findDestinationAccount(x) instanceof LoanAccount))
+      return getDelegate().put_(x, obj);
 
-      LoanAccount sourceAccount = (LoanAccount) accountDAO.find_(x, txn.getSourceAccount());
-      long lenderAccountNum = sourceAccount.getLenderAccount();
+    DigitalTransaction loanWithdraw = null;
+    DigitalTransaction loanPay = null;
 
-      Transfer loanTransfer = new Transfer.Builder(x)
-        .setAmount(-txn.getAmount())
-        .setAccount(txn.getSourceAccount())
+    if (txn.findSourceAccount(x) instanceof LoanAccount) {
+      DAO accountDAO = (DAO) x.get("accountDAO");
+      LoanAccount sourceAccount = (LoanAccount) txn.findSourceAccount(x);
+      //(LoanAccount) accountDAO.find_(x, txn.getSourceAccount());
+
+      // Create loan transaction to reflect movement
+      loanWithdraw = new DigitalTransaction.Builder(x)
+        .setSourceAccount(sourceAccount.getId())
+        .setSourceCurrency(sourceAccount.getDenomination())
+        .setDestinationCurrency(sourceAccount.getDenomination())
+        .setDestinationAccount(((LoanedTotalAccount) accountDAO.find(MLang.AND(MLang.INSTANCE_OF(LoanedTotalAccount.class),MLang.EQ(LoanedTotalAccount.DENOMINATION,sourceAccount.getDenomination())))).getId())//<----------****
+        .setIsQuoted(true)
+        .setAmount(txn.getAmount())
+        .setName("Withdrawl from Loan Account")
         .build();
 
-      List loanTransfers = new ArrayList();
-      loanTransfers.add(loanTransfer);
-      txn.add((Transfer[]) loanTransfers.toArray(new Transfer[0]));
-
-      txn.setSourceAccount(lenderAccountNum);
+      txn.setSourceAccount(sourceAccount.getLenderAccount());
     }
 
-    // Paying a Loan Account
-    if ( txn.findDestinationAccount(x) instanceof LoanAccount ) {
+    if (txn.findDestinationAccount(x) instanceof LoanAccount) {
+      DAO accountDAO = (DAO) x.get("accountDAO");
+      LoanAccount destinationAccount = (LoanAccount) txn.findDestinationAccount(x);
+      //(LoanAccount) accountDAO.find_(x, txn.getDestinationAccount());
 
-      LoanAccount destinationAccount = (LoanAccount) accountDAO.find_(x, txn.getDestinationAccount());
 
-      Transfer loanTransfer = new Transfer.Builder(x)
+      // Create a loan tx from loan account to global loan account
+      loanPay = new DigitalTransaction.Builder(x)
+        .setDestinationAccount(destinationAccount.getId())
+        .setSourceCurrency(destinationAccount.getDenomination())
+        .setDestinationCurrency(destinationAccount.getDenomination())
+        .setSourceAccount(((LoanedTotalAccount) accountDAO.find(MLang.AND(MLang.INSTANCE_OF(LoanedTotalAccount.class), MLang.EQ(LoanedTotalAccount.DENOMINATION,destinationAccount.getDenomination())))).getId()) //<----------****
+        .setIsQuoted(true)
         .setAmount(txn.getAmount())
-        .setAccount(txn.getDestinationAccount())
+        .setName("Payment to Loan Account")
         .build();
-
-      List loanTransfers = new ArrayList();
-      loanTransfers.add(loanTransfer);
-      txn.add((Transfer[]) loanTransfers.toArray(new Transfer[0]));
 
       txn.setDestinationAccount(destinationAccount.getLenderAccount());
     }
 
-    return getDelegate().put_(x, obj);
+    // finish the quote
+    quote.setRequestTransaction(txn);
+    quote = (TransactionQuote) getDelegate().put_(x, quote);
+
+    // add loan txs to best plan
+    Transaction t = quote.getPlan();
+    while (t.getNext() != null) {
+      t = t.getNext();
+    }
+    if (loanPay != null) {
+      t.setNext(loanPay);
+
+      t = loanPay;
+    }
+    if (loanWithdraw != null) {
+      t.setNext(loanWithdraw);
+    }
+
+    // add loan tx to all plans
+    for (Transaction plan : quote.getPlans()) {
+      t = plan;
+      while (t.getNext() != null) {
+        t = t.getNext();
+      }
+      if (loanPay != null) {
+        t.setNext(loanPay);
+        t = loanPay;
+      }
+      if (loanWithdraw != null) t.setNext(loanWithdraw);
+    }
+
+    return quote;
   }
 }
