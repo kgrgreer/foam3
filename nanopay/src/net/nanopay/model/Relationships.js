@@ -47,12 +47,14 @@ foam.RELATIONSHIP({
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.institutionDAO.find(value)
-      .then( function( institution ) {
-        self.add(institution.institutionNumber);
-      }).catch( function( error ) {
-        self.add('N/A');
-        console.error(error);
-      });
+        .then( function( institution ) {
+          if ( institution ) {
+            self.add(institution.institutionNumber);
+          }
+        }).catch( function( error ) {
+          self.add('N/A');
+          console.error(error);
+        });
     }
   }
 });
@@ -150,15 +152,6 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionLimit'
     }
   ]
-});
-
-foam.RELATIONSHIP({
-  cardinality: '*:*',
-  sourceModel: 'net.nanopay.account.Account',
-  targetModel: 'net.nanopay.account.Account',
-  forwardName: 'children',
-  inverseName: 'parent',
-  junctionDAOKey: 'accountJunctionDAO'
 });
 
 foam.RELATIONSHIP({
