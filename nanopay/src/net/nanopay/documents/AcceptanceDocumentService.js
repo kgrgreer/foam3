@@ -40,7 +40,7 @@ foam.INTERFACE({
         },
         {
             name: 'getTransactionRegionDocuments',
-            javaType: 'net.nanopay.documents.AcceptanceDocument',
+            type: 'net.nanopay.documents.AcceptanceDocument',
             async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [
