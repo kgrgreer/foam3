@@ -144,6 +144,11 @@ function build_jar {
     mvn package
 }
 
+function build_foam {
+    cd "$PROJECT_HOME/foam2"
+    make
+}
+
 function delete_runtime_journals {
   if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
     echo "INFO :: Runtime journals deleted."
@@ -350,19 +355,20 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
-    echo "  -r : Start nanos with whatever was last built."
-    echo "  -s : Stop a running daemonized nanos."
-    echo "  -g : Output running/notrunning status of daemonized nanos."
-    echo "  -t : Run tests."
-    echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
-    echo "  -m : Run migration scripts"
-    echo "  -i : Install npm and git hooks"
-    echo "  -h : Print usage information."
     echo "  -d : Run with JDPA debugging enabled."
-    echo "  -S : When debugging, start suspended."
+    echo "  -f : Build foam."
+    echo "  -g : Output running/notrunning status of daemonized nanos."
+    echo "  -h : Print usage information."
+    echo "  -i : Install npm and git hooks"
     echo "  -j : Delete runtime journals, build, and run app as usual."
     echo "  -l : Delete runtime log, build, and run app as usual."
+    echo "  -m : Run migration scripts"
+    echo "  -r : Start nanos with whatever was last built."
+    echo "  -s : Stop a running daemonized nanos."
+    echo "  -S : When debugging, start suspended."
+    echo "  -t : Run tests."
+    echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo ""
     echo "No options implys -b and -s, (build and then start)."
 }
@@ -370,6 +376,7 @@ function usage {
 ############################
 
 BUILD_ONLY=0
+BUILD_FOAM=0
 CLEAN_BUILD=0
 DEBUG=0
 DEBUG_PORT=8000
@@ -387,11 +394,12 @@ STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
 
-while getopts "brsgtozcmidhjSl" opt ; do
+while getopts "bcdfghijlmrsStz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
+        f) BUILD_FOAM=1 ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
@@ -430,7 +438,9 @@ if [[ $DIST -eq 1 ]]; then
     quit 0
 fi
 
-if [ "$BUILD_ONLY" -eq 1 ]; then
+if [ "$BUILD_FOAM" -eq 1 ]; then
+    build_foam
+elif [ "$BUILD_ONLY" -eq 1 ]; then
     build_jar
     deploy_journals
 elif [ "$RUN_MIGRATION" -eq 1 ]; then
