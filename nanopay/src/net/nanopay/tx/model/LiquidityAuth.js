@@ -13,6 +13,10 @@ foam.INTERFACE({
         {
           name: 'frequency',
           type: 'net.nanopay.tx.model.Frequency'
+        },
+        {
+          name: 'txnAmount',
+          type: 'Long'
         }
       ]
     },

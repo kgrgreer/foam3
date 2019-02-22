@@ -55,11 +55,11 @@ public class LiquidityService
   }
 
   @Override
-  public void liquifyAccount(long accountId, Frequency frequency) {
+  public void liquifyAccount(long accountId, Frequency frequency, long txnAmount) {
     LiquiditySettings ls =null;
     ls = (LiquiditySettings) getLiquiditySettingsDAO().find(accountId);
     if ( ls == null || ls.getCashOutFrequency() != frequency ) return;
-    executeLiquidity(ls);
+    executeLiquidity(ls, txnAmount);
   }
 
   @Override
@@ -68,13 +68,13 @@ public class LiquidityService
       @Override
       public void put(Object o, Detachable d) {
         LiquiditySettings ls = (LiquiditySettings) o;
-        executeLiquidity(ls);
+        executeLiquidity(ls, 0L);
       }
     });
 
   }
 
-  public void executeLiquidity(LiquiditySettings ls) {
+  public void executeLiquidity(LiquiditySettings ls, Long txnAmount) {
     DigitalAccount account = ls.findAccount(getX());
     if ( account == null ) return;
     Account liquidityAccount = ls.findBankAccountId(x_);
@@ -118,15 +118,35 @@ public class LiquidityService
     long source;
     long amount;
     if ( pendingBalance > ls.getMaximumBalance() ) {
-      if ( ! ls.getEnableCashOut() ) return;
+      amount = pendingBalance - ls.getMaximumBalance();
+      if ( txnAmount > 0 && amount > txnAmount ) {
+        //send notification limit went over
+        notifyUser(account, true, "Account has gone above", ls);
+      }
+      if ( ! ls.getEnableCashOut() ) {
+        if ( txnAmount != 0 ) {
+          //send notification that transaction was made outside of the range
+          notifyUser(account, true, "Transaction was made outside of range", ls);
+        }
+        return;
+      }
       source = account.getId();
       destination = payerBankAccountID;
-      amount = pendingBalance - ls.getMaximumBalance();
     } else if ( pendingBalance < ls.getMinimumBalance() ) {
-      if ( ! ls.getEnableCashIn() ) return;
+      amount = ls.getMinimumBalance() - pendingBalance;
+      if ( txnAmount < 0 && amount > -txnAmount ) {
+        //send notification limit went over
+        notifyUser(account, false, "Account has fallen below", ls);
+      }
+      if ( ! ls.getEnableCashIn() ) {
+        if ( txnAmount != 0 ) {
+          //send notification that transaction was made outside of the range
+          notifyUser(account, false, "Transaction was made outside of range", ls);
+        }
+        return;
+      }
       source = payerBankAccountID;
       destination = account.getId();
-      amount = ls.getMinimumBalance() - pendingBalance;
     } else return;
     try {
       addCICOTransaction(amount, source, destination, getX());
@@ -138,6 +158,20 @@ public class LiquidityService
       notification.setBody("Error generating Liquidity transactions. "+e.getMessage());
       ((DAO) x_.get("notificationDAO")).put(notification);
     }
+
+  }
+
+  public void notifyUser(Account account, Boolean above, String notifType, LiquiditySettings ls) {
+    Notification notification = new Notification();
+    if ( above ) {
+      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has gone above maximum value of " + ls.getMaximumBalance());
+    } else {
+      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has fallen below minimum value of " + ls.getMinimumBalance());
+    }
+    notification.setEmailIsEnabled(true);
+    notification.setNotificationType(notifType);
+    notification.setUserId(account.getOwner());
+    ((DAO) x_.get("notificationDAO")).put(notification);
   }
 
   /*
