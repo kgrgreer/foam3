@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'DisclosureLineItem',
   extends: 'net.nanopay.tx.TransactionLineItem',
 
-  requires: [
-    'net.nanopay.disclosure.Disclosure',
-  ],
-
   javaImports: [
     'net.nanopay.tx.model.Transaction'
   ],
