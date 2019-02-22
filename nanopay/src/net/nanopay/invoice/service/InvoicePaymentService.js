@@ -17,7 +17,7 @@ foam.INTERFACE({
           name: 'invoice',
           type: 'net.nanopay.invoice.model.Invoice'
         }
-      ],
-    },
+      ]
+    }
   ]
 });
