@@ -25,7 +25,9 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
-    'java.util.List'
+    'java.util.HashMap',
+    'java.util.List',
+    'java.util.Map'
   ],
 
   methods: [
@@ -39,50 +41,44 @@ foam.CLASS({
         if ( oldUser != null && ! oldUser.getOnboarded() && newUser.getOnboarded() ) {
           EmailService emailService = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage();
+          Map<String, Object>  args = new HashMap<>();
 
-          StringBuilder sb = new StringBuilder();
-          
-          // Writing out the main onboarding email body.
-          sb.append("<p>New user onboarded:<p>")
-            .append("<ul><li>")
-            .append("User: Id = " + newUser.getId() )
-            .append(" - ")
-            .append("Email = " + newUser.getEmail())
-            .append(" - ")
-            .append("Company = " + newUser.getOrganization())
-            .append("</li></ul>");
+          args.put("subTitle1", "User(Account Owner) information: ONBOARDED");
+          args.put("userId", newUser.getId());
+          args.put("userEmail", newUser.getEmail());
+          args.put("userCo", newUser.getOrganization());
 
           // For the purpose of sending an email once both onboarding and bank account added
           List accountsArray = ((ArraySink) newUser.getAccounts(x).where(
             MLang.AND(
               MLang.INSTANCE_OF(BankAccount.class),
-              MLang.EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED))
-            )
+              MLang.EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
+              MLang.EQ(BankAccount.ENABLED, true),
+              MLang.EQ(BankAccount.DELETED, false)
+            ))
             .limit(1).select(new ArraySink())).getArray();
 
-          Boolean doesAccExist = (accountsArray != null && accountsArray.size() > 0);
+          Boolean doesAccExist = (accountsArray != null && accountsArray.size() != 0);
           Account acc = (Account)(doesAccExist ? accountsArray.get(0) : null);
 
           // checking if account has been added
           if ( doesAccExist ) {
             // User also has bankAccount, thus add bank fields to email
-            sb.append("<br><p>User also has a bankAccount:<p>")
-            .append("<ul><li>")
-            .append("Bank Account: Currency/Denomination = " + ((BankAccount) acc).getDenomination())
-            .append(" - ")
-            .append("Bank Account Name = " + ((BankAccount) acc).getName())
-            .append(" - ")
-            .append("Bank Account id = " + ((BankAccount) acc).getId())
-            .append("</li></ul>");
+            args.put("title", "User has Onboarded & previously added an Account");
+            args.put("subTitle2", "BankAccount Information:");
+            args.put("accDen", acc.getDenomination());
+            args.put("accName", acc.getName());
+            args.put("accId", acc.getId());
           } else {
-            sb.append("<br><p>Above user does not have a verified bankAccount yet<p>");
+            args.put("title", "User has Onboarded");
+            args.put("subTitle2", "NO BankAccount Information:");
+            args.put("accDen", "n/a");
+            args.put("accName", "n/a");
+            args.put("accId", "n/a");
           }
           
           try {
-            message.setTo(new String[] { "anna@nanopay.net" });
-            message.setSubject("New User Onboarded");
-            message.setBody(sb.toString());
-            emailService.sendEmail(x, message);
+            emailService.sendEmailFromTemplate(x, newUser, message, "notification-to-onboarding-team", args);
           } catch (Throwable t) {
             String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has finished onboarding.", newUser.getId());
             ((Logger) x.get("logger")).error(msg, t);

@@ -19,7 +19,9 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus'
+    'net.nanopay.bank.BankAccountStatus',
+    'java.util.HashMap',
+    'java.util.Map'
   ],
 
   methods: [
@@ -71,46 +73,38 @@ foam.CLASS({
         return getDelegate().put_(x, obj);
       } 
 
+      // finish processing the account through the dao
+      account = (BankAccount) getDelegate().put_(x, obj);
+
       // Send email only after passing above checks
-
       EmailService emailService = (EmailService) x.get("email");
-      EmailMessage message = new EmailMessage();
-      StringBuilder sb = new StringBuilder();
+      EmailMessage      message = new EmailMessage();
+      Map<String, Object>  args = new HashMap<>();
 
-      sb.append("<p>User added a bankAccount:<p>")
-        .append("<ul><li>")
-        .append("User: LegalName = " + owner.getLegalName())
-        .append(" - ")
-        .append("Id = " + owner.getId())
-        .append(" - ")
-        .append("Email = " + owner.getEmail())
-        .append(" - ")
-        .append("Company = " + owner.getOrganization())
-        .append("</li>")
-        .append("<li>")
-        .append("Bank Account: Currency/Denomination = " + account.getDenomination())
-        .append(" - ")
-        .append("Bank Account Name = " + account.getName())
-        .append(" - ")
-        .append("Bank Account id = " + account.getId())
-        .append("</li></ul>");
+      args.put("userId", owner.getId());
+      args.put("userEmail", owner.getEmail());
+      args.put("userCo", owner.getOrganization());
+      args.put("subTitle2", "BankAccount Information:");
+      args.put("accDen", account.getDenomination());
+      args.put("accName", account.getName());
+      args.put("accId", account.getId());
+
       if ( owner.getOnboarded() ) {
-        sb.append("<br> <p> USER HAS ALSO BEEN ONBOARDED <p>");
+        args.put("title", "User added an Account & was previously onboarded");
+        args.put("subTitle1", "User(Account Owner) information: ONBOARDED");
       } else {
-        sb.append("<br> <p> NOT ONBOARDED <p>");
+        args.put("title", "User has added a Bank Account");
+        args.put("subTitle1", "User(Account Owner) information: NOT ONBOARDED YET");
       }
 
       try {
-        message.setTo(new String[] { "anna@nanopay.net" });
-        message.setSubject("User Added Bank Account");
-        message.setBody(sb.toString());
-        emailService.sendEmail(x, message);
+        emailService.sendEmailFromTemplate(x, owner, message, "notification-to-onboarding-team", args);
       } catch (Throwable t) {
         String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has added a BankAccount (id = %2$d).", owner.getId(), account.getId());
         ((Logger) x.get("logger")).error(msg, t);
       }
       
-      return getDelegate().put_(x, obj);
+      return account;
       `
     }
   ]
