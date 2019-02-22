@@ -19,9 +19,11 @@ import net.nanopay.partners.ui.PartnerInvitationNotification;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 import java.util.UUID;
 
 public class SendInvitationDAO
@@ -113,13 +115,22 @@ public class SendInvitationDAO
     if ( invite.getIsContact() ) {
       DAO tokenDAO = (DAO) x.get("tokenDAO");
       // Create new token and associate passed in external user to token.
+      Map tokenParams = new HashMap();
+      tokenParams.put("inviteeEmail", invite.getEmail());
+
       Token token = new Token();
+      token.setParameters(tokenParams);
+      token.setExpiry(this.generateExpiryDate());
       token.setData(UUID.randomUUID().toString());
       token = (Token) tokenDAO.put(token);
 
       template = "contact-invite";
       try {
-        urlPath = "?email=" + URLEncoder.encode(invite.getEmail(), StandardCharsets.UTF_8.name()) + "&token=" + URLEncoder.encode(token.getData(), StandardCharsets.UTF_8.name()) + "#sign-up";
+        urlPath = "?email="
+          + URLEncoder.encode(invite.getEmail(), StandardCharsets.UTF_8.name())
+          + "&token="
+          + URLEncoder.encode(token.getData(), StandardCharsets.UTF_8.name())
+          + "#sign-up";
       } catch (UnsupportedEncodingException e) {
         logger.error("Error generating contact token: ", e);
         throw new RuntimeException("Failed to encode URL parameters.", e);
@@ -127,6 +138,7 @@ public class SendInvitationDAO
     }
 
     args.put("message", invite.getMessage());
+    args.put("senderCompany", currentUser.getBusinessName());
     args.put("inviterName", currentUser.getBusinessName());
     args.put("link", url + urlPath);
 
@@ -135,6 +147,15 @@ public class SendInvitationDAO
     } catch(Throwable t) {
       logger.error("Error sending invitation email.", t);
     }
+  }
+
+  /**
+   * Get a 30 day expiry date
+   */
+  private Date generateExpiryDate(){
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.DAY_OF_MONTH, 30);
+    return calendar.getTime();
   }
 
   /**
