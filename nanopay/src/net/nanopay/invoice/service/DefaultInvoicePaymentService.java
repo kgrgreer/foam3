@@ -1,6 +1,5 @@
 package net.nanopay.invoice.service;
 
-import foam.core.ContextAware;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
@@ -18,15 +17,17 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
   DAO transactionDAO_;
   DAO invoiceDAO_;
   DAO transactionQuotePlanDAO_;
+  DAO groupDAO_;
 
   public DefaultInvoicePaymentService(X x) {
     setX(x);
   }
 
   public void start() {
-      transactionDAO_ = (DAO) getX().get("transactionDAO");
-      invoiceDAO_ = (DAO) getX().get("invoiceDAO");
-      transactionQuotePlanDAO_ = (DAO) getX().get("transactionQuotePlanDAO");
+    transactionDAO_ = (DAO) getX().get("transactionDAO");
+    invoiceDAO_ = (DAO) getX().get("invoiceDAO");
+    transactionQuotePlanDAO_ = (DAO) getX().get("transactionQuotePlanDAO");
+    groupDAO_ = (DAO) getX().get("groupDAO");
   }
 
 
@@ -50,7 +51,7 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
 
   protected boolean isAbliiUser(User user, X x) {
     Group group = user.findGroup(x);
-    return group != null && group.isDescendantOf("sme", (DAO) x.get("groupDAO"));
+    return group != null && group.isDescendantOf("sme", groupDAO_);
   }
 
   protected void validateInvoice(X x, User user, Invoice invoice) {
@@ -65,9 +66,13 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
 
     if ( ! invoice.getStatus().equals(InvoiceStatus.UNPAID) && ! invoice.getStatus().equals(InvoiceStatus.OVERDUE) )
       throw new RuntimeException("Invoice payment was already initiated.");
+
+    if ( invoice.findAccount(x) == null ) {
+      throw new RuntimeException("Source account of the invoice is required.");
+    }
   }
 
-  protected TransactionQuote getQuote(X x,Invoice invoice, User user) {
+  protected TransactionQuote getQuote(X x, Invoice invoice, User user) {
 
     Transaction requestTransaction;
     if( isAbliiUser(user, x) ) {
