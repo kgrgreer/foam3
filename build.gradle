@@ -98,21 +98,35 @@ sourceSets {
 }
 
 jar {
-  project.logger.info('jar.archive', jar.archivePath)
+  //project.logger.info('jar.archive', jar.archivePath)
   manifest {
-    attributes 'Implementation-Title': 'nanopay'
+    attributes(
+      'Implementation-Title'    : 'nanopay',
+      'Implementation-Version' : "${version}",
+      'Build-Timestamp'         : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+      'Created-By'               : "Gradle ${gradle.gradleVersion}",
+      'Build-Jdk'                 : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+      'Build-OS'                 : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+    )
   }
 }
 
+// This is not working, added another copy in war below
+// processResources {
+//   include('jounals/**')
+// }
+
 war {
-  from("build/webapp/") /*{
-    include "*.js"
-    into("js")    //into ("static/js")
-    }*/
-  // from("src/main/js/data/") {
-  //   include "*.csv"
-  //   into ("data")    //into ("static/data")
-  // }
+  webAppDirName = 'webapp'
+
+  from("nanopay/src/net/nanopay/images") {
+    include "**"
+    into ("images")
+  }
+  from("journals") {
+    include "**"
+    into ("journals")
+  }
 }
 
 task buildFoam(type:Exec) {
@@ -129,4 +143,8 @@ compileJava {
     buildFoam,
     generateJavaSource
   ]
+}
+
+def getDate() {
+    return new Date().format('yyyyMMddHHmmss')
 }
