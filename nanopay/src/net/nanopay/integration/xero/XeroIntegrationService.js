@@ -468,7 +468,7 @@ try {
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     if ( contact == null ) {
       continue;
-    }
+    } 
 
 
     xInvoice.setDestinationCurrency(xeroInvoice.getCurrencyCode().value());
