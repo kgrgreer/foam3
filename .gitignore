@@ -90,3 +90,4 @@ sha256/
 
 # yarn
 yarn-error.log
+tools/js_build/foam-bin.js
