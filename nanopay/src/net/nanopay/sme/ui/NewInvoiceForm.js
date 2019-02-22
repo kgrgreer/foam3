@@ -399,15 +399,14 @@ foam.CLASS({
     function checkBankAccount() {
       var self = this;
       this.userDAO.find(this.invoice.contactId).then(function(contact) {
-        if ( contact && contact.bankAccount ) {
+        if ( contact && contact.businessId ) {
+          self.showAddBank = false;
+          return;
+        } else if ( contact && contact.bankAccount ) {
           self.showAddBank = false;
           return;
         }
-        if ( self.type === 'payable' ) {
-          self.showAddBank = true;
-        } else {
-          self.showAddBank = false;
-        }
+        self.showAddBank = self.type === 'payable';
       });
     }
   ],
@@ -417,7 +416,7 @@ foam.CLASS({
       this.checkUser(this.invoice.destinationCurrency);
     },
     function onCurrencyTypeChange() {
-      this.selectedCurrency = this.currencyType.alphabeticCode === 'CAD' ? 'CAD':'USD';
+      this.selectedCurrency = this.currencyType.alphabeticCode;
       this.checkUser(this.currencyType.alphabeticCode);
     },
     function checkUser(currency) {
