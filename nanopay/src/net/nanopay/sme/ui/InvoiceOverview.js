@@ -133,7 +133,6 @@ foam.CLASS({
       vertical-align: top;
       margin-top: -2px;
     }
-
     ^header-align-top {
       display: inline-block;
       vertical-align: middle;
@@ -396,13 +395,11 @@ foam.CLASS({
             return this.E().startContext({ data: this })
               .start()
                 .addClass(this.myClass('back-area'))
-                .start('span')
-                  .addClass(this.myClass('back-arrow'))
-                  .start({
-                    class: 'foam.u2.tag.Image',
-                    data: 'images/ablii/gobackarrow-grey.svg'
+                .start({
+                  class: 'foam.u2.tag.Image',
+                  data: 'images/ablii/gobackarrow-grey.svg'
                   })
-                  .end()
+                  .addClass(this.myClass('back-arrow'))
                 .end()
                 .start('span')
                   .addClass(this.myClass('go-back-label'))
