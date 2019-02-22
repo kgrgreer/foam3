@@ -10,11 +10,13 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.token.Token;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
+import net.nanopay.model.InvitationStatus;
 
 import java.util.Date;
 import java.util.Map;
@@ -118,6 +120,12 @@ public class UserRegistrationDAO
                 EQ(Invitation.EMAIL, user.getEmail())
               )
             );
+          if ( invitation.getStatus() != InvitationStatus.SENT ) {
+            Logger logger = (Logger) x.get("logger");
+            logger.warning("Business invitation is not in SENT status but is trying to get processed.");
+          }
+          invitation.setStatus(InvitationStatus.ACCEPTED);
+          invitationDAO_.put(invitation);
         }
       }
     }
