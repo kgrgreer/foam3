@@ -130,6 +130,9 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/email/NewBankAccountAddedEmailDAO' },
   { name: 'net/nanopay/onboarding/email/NewUserOnboardedEmailDAO' },
 
+  // compliance Email notification
+  { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
+
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
   { name: 'net/nanopay/fx/ExchangeRate' },
