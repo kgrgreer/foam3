@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
@@ -28,6 +29,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
     'ctrl',
     'currencyDAO',
@@ -641,19 +643,31 @@ foam.CLASS({
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
+        var self = this;
         this.checkComplianceAndBanking().then((result) => {
           if ( result ) {
-            X.menuDAO.find('sme.quickAction.send').then((menu) => {
-              var clone = menu.clone();
-              Object.assign(clone.handler.view, {
-                isPayable: this.isPayable,
-                isForm: false,
-                isDetailView: true,
-                invoice: this.invoice.clone()
+            // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
+            var request = self.CanReceiveCurrency.create({
+              userId: self.invoice.payeeId,
+              currencyId: self.invoice.destinationCurrency
+            });
+            self.canReceiveCurrencyDAO.put(request).then((responseObj) => {
+              if ( ! responseObj.response ) {
+                self.notify(responseObj.message, 'error');
+                return;
+              }
+              X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                var clone = menu.clone();
+                Object.assign(clone.handler.view, {
+                  isPayable: this.isPayable,
+                  isForm: false,
+                  isDetailView: true,
+                  invoice: this.invoice.clone()
+                });
+                clone.launch(X, X.controllerView);
+              }).catch((err) => {
+                console.warn('Error occured when checking the compliance: ', err);
               });
-              clone.launch(X, X.controllerView);
-            }).catch((err) => {
-              console.warn('Error occured when checking the compliance: ', err);
             });
           }
         });
