@@ -4,6 +4,7 @@ foam.RELATIONSHIP({
   forwardName: 'bankAccounts',
   inverseName: 'branch',
   cardinality: '1:*',
+  targetDAOKey: 'accountDAO',
   sourceProperty: {
     hidden: true
   },
@@ -34,6 +35,7 @@ foam.RELATIONSHIP({
   forwardName: 'bankAccounts',
   inverseName: 'institution',
   cardinality: '1:*',
+  targetDAOKey: 'accountDAO',
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
@@ -47,12 +49,14 @@ foam.RELATIONSHIP({
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.institutionDAO.find(value)
-      .then( function( institution ) {
-        self.add(institution.institutionNumber);
-      }).catch( function( error ) {
-        self.add('N/A');
-        console.error(error);
-      });
+        .then( function( institution ) {
+          if ( institution ) {
+            self.add(institution.institutionNumber);
+          }
+        }).catch( function( error ) {
+          self.add('N/A');
+          console.error(error);
+        });
     }
   }
 });
@@ -150,15 +154,6 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionLimit'
     }
   ]
-});
-
-foam.RELATIONSHIP({
-  cardinality: '*:*',
-  sourceModel: 'net.nanopay.account.Account',
-  targetModel: 'net.nanopay.account.Account',
-  forwardName: 'children',
-  inverseName: 'parent',
-  junctionDAOKey: 'accountJunctionDAO'
 });
 
 foam.RELATIONSHIP({

@@ -10,12 +10,15 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
+  { name: 'net/nanopay/account/ui/AccountSummaryView' },
+  { name: 'net/nanopay/account/ui/AccountTreeGraph' },
   { name: 'net/nanopay/account/ui/AccountDetailView', flags: ['web'] },
   { name: 'net/nanopay/account/Balance' },
   { name: 'net/nanopay/account/DigitalAccount' },
   { name: 'net/nanopay/account/DigitalAccountInfo' },
   { name: 'net/nanopay/account/DigitalAccountServiceInterface' },
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
+  { name: 'net/nanopay/account/AggregateAccount' },
   { name: 'net/nanopay/account/ZeroAccount' },
   { name: 'net/nanopay/account/ZeroAccountUserAssociation' },
   { name: 'net/nanopay/account/TrustAccount' },
@@ -73,6 +76,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/email/PreventDuplicateEmailDAO' },
   { name: 'net/nanopay/auth/email/EmailWhitelistEntry' },
+  { name: 'net/nanopay/auth/email/DoNotSolicit' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/SignUpView', flags: ['web'] },
@@ -123,6 +127,9 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/model/Questionnaire' },
   { name: 'net/nanopay/onboarding/InvitationTokenService' },
   { name: 'net/nanopay/onboarding/FirebaseInvitationTokenService' },
+
+  // compliance Email notification
+  { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -288,6 +295,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/TransactionsAccountsView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionAltView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionDetailView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/UserDetailView', flags: ['web'] },
@@ -421,8 +429,14 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotification' },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
+  { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
 
   // settings
+  { name: 'net/nanopay/settings/AcceptanceDocument' },
+  { name: 'net/nanopay/settings/UserAcceptanceDocument' },
+  { name: 'net/nanopay/settings/ClientAcceptanceDocumentService' },
+  { name: 'net/nanopay/settings/AcceptanceDocumentService' },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessHoursView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditPrincipalOwnersView', flags: ['web'] },

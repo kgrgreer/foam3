@@ -69,13 +69,6 @@ foam.CLASS({
     max-width: 300px;
     text-overflow: ellipsis;
   }
-  /* InvoiceOverview Header format length */
-  ^ .x-large-header {
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 600px;
-    text-overflow: ellipsis;
-  }
   /* Side Menu Name format length */
   ^ .net-nanopay-sme-ui-SideNavigationView .account-button-info-detail {
     overflow: hidden;
@@ -224,7 +217,7 @@ foam.CLASS({
         self.__subContext__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
         self.__subContext__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
         self.__subContext__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
-        self.__subContext__.register(self.ToastNotification, 'foam.u2.dialog.NotificationMessage');
+        self.__subContext__.register(self.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
         self.__subContext__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
 
         self.findBalance();
