@@ -19,6 +19,7 @@ foam.CLASS({
 
   imports: [
     'checkComplianceAndBanking',
+    'currencyDAO',
     'stack',
     'user'
   ],
@@ -55,7 +56,8 @@ foam.CLASS({
             }),
             this.Invoice.AMOUNT.clone().copyFrom({
               tableCellFormatter: function(_, invoice) {
-                invoice.destinationCurrency$find.then((currency) => {
+                self.currencyDAO.find(invoice.destinationCurrency)
+                  .then((currency) => {
                   this.add(`+ ${currency.format(invoice.amount)}`);
                 });
               }
