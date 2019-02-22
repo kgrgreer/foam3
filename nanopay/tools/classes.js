@@ -117,6 +117,9 @@ var classes = [
   'net.nanopay.onboarding.InvitationTokenService',
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
 
+  // compliance Email notification
+  'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
+
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
 
