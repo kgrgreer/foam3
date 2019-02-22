@@ -19,6 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'currencyDAO',
     'notify',
     'user'
   ],
@@ -146,7 +147,7 @@ foam.CLASS({
       expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
         // Format the amount & add the currency symbol
         if ( invoice$destinationCurrency !== undefined ) {
-          return invoice.destinationCurrency$find.then((currency) => {
+          return this.currencyDAO.find(invoice$destinationCurrency).then((currency) => {
             return currency.format(invoice$amount);
           });
         }
@@ -255,8 +256,8 @@ foam.CLASS({
                         .start().add(payer.businessName).end()
                         .start().add(self.formatStreetAddress(address)).end()
                         .start().add(self.formatRegionAddress(address)).end()
-                        .start().add(address.postalCode).end();
-                    }
+                        .start().add(address != undefined ? address.postalCode : '').end();
+                      }
                   });
                 }))
               .end()
@@ -273,7 +274,7 @@ foam.CLASS({
                     if ( payee != null ) {
                       return self.E()
                         .start().add(payee.firstName + ' ' + payee.lastName).end()
-                        .start().add(payee.businessPhone.number).end()
+                        .start().add(payee.businessPhone != undefined ? payee.businessPhone.number : '').end()
                         .start().add(payee.email).end();
                     }
                   });

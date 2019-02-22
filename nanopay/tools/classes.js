@@ -117,6 +117,9 @@ var classes = [
   'net.nanopay.onboarding.InvitationTokenService',
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
 
+  // compliance Email notification
+  'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
+
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
 
@@ -310,6 +313,11 @@ var classes = [
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
 
+  // settings
+  'net.nanopay.settings.AcceptanceDocument',
+  'net.nanopay.settings.UserAcceptanceDocument',
+  'net.nanopay.settings.AcceptanceDocumentService',
+  'net.nanopay.settings.ClientAcceptanceDocumentService',
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
 
@@ -422,6 +430,7 @@ var classes = [
   'net.nanopay.auth.BusinessAgentAuthService',
   'net.nanopay.auth.BusinessAuthService',
   'net.nanopay.auth.AgentJunctionStatus',
+  'net.nanopay.auth.email.DoNotSolicit',
   'net.nanopay.auth.email.PreventDuplicateEmailDAO',
   'net.nanopay.auth.email.EmailWhitelistEntry',
 
@@ -459,6 +468,7 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.settings.AcceptanceDocumentService',
   'net.nanopay.integration.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',

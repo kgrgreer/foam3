@@ -240,7 +240,7 @@ foam.CLASS({
           invoice.status === this.InvoiceStatus.PENDING ||
           invoice.status === this.InvoiceStatus.PAID;
       },
-      documentation: `Only show bank accounts when it is requires 
+      documentation: `Only show bank accounts when it is requires
         approval, processing & complete`
     },
     {
@@ -320,18 +320,18 @@ foam.CLASS({
     {
       name: 'formattedAmountPaid',
       value: '--',
-      documentation: `formattedAmountPaid is the amount due 
+      documentation: `formattedAmountPaid is the amount due
         and contains the currency symbol.`
     },
     {
       class: 'String',
       name: 'formattedAmountDue',
-      documentation: `formattedAmountDue is the amount due 
+      documentation: `formattedAmountDue is the amount due
         and contains the currency symbol.`,
       expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
         // Format the amount & add the currency symbol
         if ( invoice$destinationCurrency !== undefined ) {
-          return invoice.destinationCurrency$find.then((currency) => {
+          return this.currencyDAO.find(invoice$destinationCurrency).then((currency) => {
             return currency.format(invoice$amount);
           });
         }
