@@ -128,6 +128,9 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/InvitationTokenService' },
   { name: 'net/nanopay/onboarding/FirebaseInvitationTokenService' },
 
+  // compliance Email notification
+  { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
+
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
   { name: 'net/nanopay/fx/ExchangeRate' },
