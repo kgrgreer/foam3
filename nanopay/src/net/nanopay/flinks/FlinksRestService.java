@@ -6,6 +6,9 @@ import java.net.URL;
 
 import foam.core.ContextAwareSupport;
 import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.logger.Logger;
+import foam.nanos.notification.Notification;
 import net.nanopay.flinks.model.*;
 
 //apach
@@ -114,7 +117,19 @@ public class FlinksRestService
   }
 
   private ResponseMsg request(RequestMsg req) {
-    FlinksCredentials credentials = (FlinksCredentials) getX().get("flinksCredentials");
+    DAO               notificationDAO = (DAO) getX().get("notificationDAO");
+    Logger            logger          = (Logger) getX().get("logger");
+    FlinksCredentials credentials     = (FlinksCredentials) getX().get("flinksCredentials");
+
+    if ( "".equals(credentials.getUrl()) || "".equals(credentials.getCustomerId()) ) {
+      logger.error("Flinks credentials not found");
+      Notification notification = new Notification.Builder(getX())
+        .setTemplate("NOC")
+        .setBody("Flinks credentials not found")
+        .build();
+      notificationDAO.put(notification);
+      return null;
+    }
     String address_ = credentials.getUrl() + "/" + credentials.getCustomerId() + "/" + "BankingServices";
 
     BufferedReader rd = null;
