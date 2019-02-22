@@ -232,6 +232,11 @@ function start_nanos {
         JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
     fi
 
+    # If not running on AWS, serve current directory.
+    if [ $IS_AWS -eq 0 ]; then
+        JAVA_OPTS="-Dnanos.webroot=\"${PWD}\" ${JAVA_OPTS}"
+    fi
+
     if [ $DAEMONIZE -eq 0 ]; then
         exec java $JAVA_OPTS -jar target/root-0.0.1.jar
     else
