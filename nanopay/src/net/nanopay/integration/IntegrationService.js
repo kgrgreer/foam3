@@ -15,15 +15,13 @@ foam.INTERFACE({
       documentation: `
         Returns true if the given user is signed in to the accounting software.
       `,
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.ResultResponse',
-      swiftReturns: 'Bool',
+      async: true,
+      type: 'net.nanopay.integration.ResultResponse',
       swiftThrows: true,
       args: [
         {
+          type: 'Context',
           name: 'x',
-          javaType: 'foam.core.X',
-          swiftType: 'Context?'
         },
       ]
     },
@@ -32,15 +30,13 @@ foam.INTERFACE({
       documentation: `
         Syncs all of the given user's contacts with the accounting software.
       `,
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.ResultResponse',
-      swiftReturns: 'Bool',
+      async: true,
+      type: 'net.nanopay.integration.ResultResponse',
       swiftThrows: true,
       args: [
         {
+          type: 'Context',
           name: 'x',
-          javaType: 'foam.core.X',
-          swiftType: 'Context?'
         },
       ]
     },
@@ -49,15 +45,13 @@ foam.INTERFACE({
       documentation: `
         Syncs all of the given user's invoices with the accounting software.
       `,
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.ResultResponse',
-      swiftReturns: 'Bool',
+      async: true,
+      type: 'net.nanopay.integration.ResultResponse',
       swiftThrows: true,
       args: [
         {
+          type: 'Context',
           name: 'x',
-          javaType: 'foam.core.X',
-          swiftType: 'Context?'
         },
       ]
     },
@@ -67,15 +61,13 @@ foam.INTERFACE({
         Syncs both the given user's invoices and contacts with the accounting
         software.
       `,
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.ResultResponse',
-      swiftReturns: 'Bool',
+      async: true,
+      type: 'net.nanopay.integration.ResultResponse',
       swiftThrows: true,
       args: [
         {
+          type: 'Context',
           name: 'x',
-          javaType: 'foam.core.X',
-          swiftType: 'Context?'
         },
       ]
     },
@@ -84,13 +76,12 @@ foam.INTERFACE({
       documentation: `
         Signs the user out of the accounting software.
       `,
-      returns: 'Promise',
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      async: true,
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
+          type: 'Context',
           name: 'x',
-          javaType: 'foam.core.X',
-          swiftType: 'Context?'
         },
       ]
     },
@@ -99,13 +90,12 @@ foam.INTERFACE({
       documentation: `
         Gets the list of bank accounts from the accounting software.
       `,
-      returns: 'Promise',
-      javaReturns: 'java.util.List<net.nanopay.integration.AccountingBankAccount>',
+      async: true,
+      javaType: 'java.util.List<net.nanopay.integration.AccountingBankAccount>',
       args: [
         {
+          type: 'Context',
           name: 'x',
-          javaType: 'foam.core.X',
-          swiftType: 'Context?'
         },
       ]
     },

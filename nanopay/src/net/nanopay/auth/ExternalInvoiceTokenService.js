@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'ExternalInvoiceTokenService',
   extends: 'foam.nanos.auth.token.AbstractTokenService',
 
-  description: `The external token service provides two functionalities.
+  documentation: `The external token service provides two functionalities.
     Generating/storing tokens and associating them to the created email templates
     associated to the request. The second feature consists of processing
     tokens, checking validity and registering the users to the platform
@@ -14,6 +14,7 @@ foam.CLASS({
    imports: [
     'appConfig',
     'bareUserDAO',
+    'currencyDAO',
     'email',
     'invoiceDAO',
     'userUserDAO',
@@ -48,6 +49,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
+    'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
   ],
 
@@ -62,6 +64,7 @@ foam.CLASS({
         DAO tokenDAO = (DAO) getTokenDAO();
         DAO invoiceDAO = (DAO) getInvoiceDAO();
         DAO bareUserDAO = (DAO) getBareUserDAO();
+        DAO currencyDAO = (DAO) getCurrencyDAO();
         EmailService emailService = (EmailService) getEmail();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
@@ -143,7 +146,8 @@ foam.CLASS({
         }
 
         args.put("name", user.getFirstName());
-        args.put("amount", invoice.findDestinationCurrency(x).format(invoice.getAmount()) + " " + invoice.getDestinationCurrency());
+        args.put("amount", currencyDAO.find(((Currency) currencyDAO.find(invoice.getDestinationCurrency())).format(
+              invoice.getAmount()) + " " + invoice.getDestinationCurrency()));
         if ( ! SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
           args.put("invoiceNumber", invoice.getInvoiceNumber());
         }

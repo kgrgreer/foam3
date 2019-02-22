@@ -6,7 +6,6 @@ foam.CLASS({
   documentation: 'Input micro-deposit amount screen',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -70,7 +69,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Verify your bank account' },
-    { name: 'INSTRUCTIONS_1', message: 'To verify that you own this account, we have made a micro-deposit (a small transaction between $0.01-$0.99).  This will appear in your account records in 2-3 business days. ' },
+    { name: 'INSTRUCTIONS_1', message: 'To verify that you own this account, we have made a micro-deposit (a small transaction between $0.01-$0.99).  This will appear in your account records in 2-3 business days.' },
     { name: 'INSTRUCTIONS_2', message: 'When the micro-deposit appears, enter the amount of the transaction below to verify your bank account.' },
     { name: 'MICRO', message: 'Micro deposit amount' },
     { name: 'MICRO_PLACEHOLDER', message: 'Enter micro-deposit amount' },
@@ -115,14 +114,14 @@ foam.CLASS({
         var isVerified = await this.bankAccountVerification
           .verify(null, this.bank.id, this.amount*100);
       } catch (error) {
-        ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
+        this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
         return;
       } finally {
         this.isConnecting = false;
       }
 
       if ( isVerified ) {
-        this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS }));
+        this.ctrl.notify(this.SUCCESS);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
       }

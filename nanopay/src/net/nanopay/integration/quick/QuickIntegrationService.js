@@ -33,6 +33,7 @@ foam.CLASS({
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.quick.model.*',
     'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
+    'net.nanopay.contacts.Contact',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.HttpClient',
     'org.apache.http.client.methods.HttpGet',
@@ -212,19 +213,19 @@ try {
     {
       name: 'getCustomers',
       documentation: `Retrieves the query and parses to Query models for Customers`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'net.nanopay.integration.ResultResponse',
+          type: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -251,19 +252,19 @@ try {
     {
       name: 'getVendors',
       documentation: `Retrieves the query and parses to Query models for Vendors`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'net.nanopay.integration.ResultResponse',
+          type: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -290,19 +291,19 @@ try {
     {
       name: 'getBills',
       documentation: `Retrieves the query and parses to Query models for Bills, then pulls relative data and applys to portal model`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'net.nanopay.integration.ResultResponse',
+          type: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -360,8 +361,9 @@ try {
         continue;
       }
 
-      // Only update the invoice if its not already in the process of changing
-      if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus() ) {
+      if (
+        ! (net.nanopay.invoice.model.InvoiceStatus.UNPAID == portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT == portal.getStatus())
+      ) {
         continue;
       }
 
@@ -430,7 +432,8 @@ try {
       portal.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
     } else {
       Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
-      portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
+      double doubleAmount = invoice.getBalance() * Math.pow(10.0, currency.getPrecision());
+      portal.setAmount((new Double(doubleAmount)).longValue());
     }
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
     portal.setIssueDate(getDate(invoice.getTxnDate()));
@@ -455,19 +458,19 @@ try {
     {
       name: 'getInvoices',
       documentation: `Retrieves the query and parses to Query models for Invoices, then pulls relative data and applys to portal model`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'query',
-          javaType: 'net.nanopay.integration.ResultResponse',
+          type: 'net.nanopay.integration.ResultResponse',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode:
@@ -523,12 +526,9 @@ try {
         continue;
       }
 
-      // Only update invoices that are unpaid or drafts.
       if (
-        net.nanopay.invoice.model.InvoiceStatus.UNPAID != portal.getStatus() &&
-        net.nanopay.invoice.model.InvoiceStatus.DRAFT != portal.getStatus()
+        ! (net.nanopay.invoice.model.InvoiceStatus.UNPAID == portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT == portal.getStatus())
       ) {
-        // Skip processing this invoice.
         continue;
       }
 
@@ -596,7 +596,8 @@ try {
       portal.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
     } else {
       Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
-      portal.setAmount(new BigDecimal(invoice.getBalance()).movePointRight(currency.getPrecision()).longValue());
+      double doubleAmount = invoice.getBalance() * Math.pow(10.0, currency.getPrecision());
+      portal.setAmount((new Double(doubleAmount)).longValue());
     }
     portal.setInvoiceNumber(invoice.getDocNumber());
     portal.setQuickId(invoice.getId());
@@ -622,70 +623,122 @@ try {
 }`,
     },
     {
-      name: 'importContacts',
-      documentation: `Retrieves the query and parses to Query models for Customers or Vendors, then pulls relative data and applys to portal model`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      name: 'isValidContact',
+      type: 'Boolean',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
-          name: 'contacts',
-          javaType: 'net.nanopay.integration.quick.model.QuickQueryContact []',
+          name: 'contact',
+          type: 'net.nanopay.integration.quick.model.QuickQueryContact',
         },
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User',
+          type: 'foam.nanos.auth.User',
+        },
+      ],
+      javaCode:
+`
+DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
+
+if (
+  contact.getPrimaryEmailAddr() == null ||
+  SafetyUtil.isEmpty(contact.getGivenName()) ||
+  SafetyUtil.isEmpty(contact.getFamilyName()) ||
+  SafetyUtil.isEmpty(contact.getCompanyName()) )
+{
+  Notification notify = new Notification();
+  notify.setUserId(user.getId());
+  String str = "Quick Contact # " +
+    contact.getId() +
+    " can not be added because the contact is missing: " +
+    (contact.getPrimaryEmailAddr() == null ? "[Email]" : "") +
+    (SafetyUtil.isEmpty(contact.getGivenName()) ? " [Given Name] " : "") +
+    (SafetyUtil.isEmpty(contact.getCompanyName()) ? " [Company Name] " : "") +
+    (SafetyUtil.isEmpty(contact.getFamilyName()) ? " [Family Name] " : "");
+  notify.setBody(str);
+  notification.put(notify);
+  return false;
+}
+
+return true;
+`
+    },
+    {
+      name: 'importContacts',
+      documentation: `Retrieves the query and parses to Query models for Customers or Vendors, then pulls relative data and applys to portal model`,
+      type: 'net.nanopay.integration.ResultResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'contacts',
+          type: 'net.nanopay.integration.quick.model.QuickQueryContact []',
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User',
         },
       ],
       javaCode:
 `Logger         logger         = (Logger) x.get("logger");
 DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
 DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
+DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
+DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
 CountryService countryService = (CountryService) x.get("countryService");
 RegionService  regionService  = (RegionService) x.get("regionService");
 
 try {
   for ( QuickQueryContact customer : contacts ) {
+    // if the contact not valid
+    if ( ! this.isValidContact(x, customer, user) ) {
+      continue;
+    }
+
     QuickQueryEMail email  = customer.getPrimaryEmailAddr();
 
-    // Checks if there is a pre-existing contact
-    QuickContact portal = (QuickContact) contactDAO.find(
-      AND(
-        EQ(
-          QuickContact.QUICK_ID,
-          customer.getId()
-        ),
-        EQ(
-          QuickContact.OWNER,
-          user.getId()
-        )
-      )
-    );
-    if ( portal == null ) {
+    // 1. if the quick-contact already exist, overwrite
+    QuickContact portal = (QuickContact) contactDAO.find(AND(
+        EQ(QuickContact.QUICK_ID, customer.getId()),
+        EQ(QuickContact.OWNER, user.getId())
+    ));
+    portal =
+      portal == null ? new QuickContact() : (QuickContact) portal.fclone();
+    
+    // 2. if the contact already exist, skip
+    Contact contact = (Contact) contactDAO.find(AND(
+      EQ(Contact.EMAIL, email.getAddress()),
+      EQ(Contact.OWNER, user.getId()),
+      NOT(INSTANCE_OF(QuickContact.class))
+    ));
+    if ( contact != null ) { continue; }
 
-      // Checks if the required data to become a contact is present in the contact data from Quickbooks.
-      // If not sends a notification informing user of missing data
-      if ( email == null || SafetyUtil.isEmpty(customer.getGivenName()) || SafetyUtil.isEmpty(customer.getFamilyName()) || SafetyUtil.isEmpty(customer.getCompanyName()) ) {
-        Notification notify = new Notification();
-        notify.setUserId(user.getId());
-        String str = "Quick Contact # " +
-          customer.getId() +
-          " can not be added because the contact is missing: " +
-          (email == null ? "[Email]" : "") +
-          (SafetyUtil.isEmpty(customer.getGivenName()) ? " [Given Name] " : "") +
-          (SafetyUtil.isEmpty(customer.getCompanyName()) ? " [Company Name] " : "") +
-          (SafetyUtil.isEmpty(customer.getFamilyName()) ? " [Family Name] " : "");
-        notify.setBody(str);
-        notification.put(notify);
+    // 3. If the contact is a existing user,
+    User existUser = (User) userDAO.find(
+      EQ(User.EMAIL, email.getAddress())
+    );
+    if ( existUser != null ) {
+      Business business = (Business) businessDAO.find(
+        EQ(Business.ORGANIZATION, existUser.getOrganization())
+      );
+      if ( business == null ) {
+        logger.warning("User do not belong to any business.");
         continue;
       }
-
-      // Creates a contact
-      portal = new QuickContact();
-    } else {
-      portal = (QuickContact) portal.fclone();
+      Contact newContact = new Contact();
+      newContact.setOrganization(business.getOrganization());
+      newContact.setBusinessName(business.getBusinessName());
+      newContact.setBusinessId(business.getId());
+      newContact.setEmail(business.getEmail());
+      newContact.setType("Contact");
+      newContact.setGroup("sme");
+      user.getContacts(x).inX(x).put(newContact);
+      continue;
     }
 
     /*
@@ -734,18 +787,6 @@ try {
       .setVerified( ! mobilePhoneNumber.equals("") )
       .build();
 
-    // Look up to see if there is an associated business for the contact
-    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-    Business business = (Business) localBusinessDAO.find(
-      EQ(
-        User.EMAIL,
-        email.getAddress()
-      )
-    );
-    if ( business != null ) {
-      portal.setBusinessId(business.getId());
-    }
-
     portal.setQuickId(customer.getId());
     portal.setEmail(email.getAddress());
     portal.setOrganization(customer.getCompanyName());
@@ -767,23 +808,23 @@ try {
     {
       name: 'getRequest',
       documentation: `Makes all GET requests for QuickBooks`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'ts',
-          javaType: 'net.nanopay.integration.quick.QuickTokenStorage',
+          type: 'net.nanopay.integration.quick.QuickTokenStorage',
         },
         {
           name: 'config',
-          javaType: 'net.nanopay.integration.quick.QuickConfig',
+          type: 'net.nanopay.integration.quick.QuickConfig',
         },
         {
           name: 'query',
-          javaType: 'String',
+          type: 'String',
         }
       ],
       javaCode:
@@ -810,11 +851,11 @@ try {
     {
       name: 'getDate',
       documentation: `Converts the data string`,
-      javaReturns: 'Date',
+      type: 'Date',
       args: [
         {
           name: 'str',
-          javaType: 'String',
+          type: 'String',
         },
       ],
       javaCode:
@@ -828,19 +869,19 @@ try {
     {
       name: 'getAttachments',
       documentation: `Gets attachments for the invoices`,
-      javaReturns: 'foam.nanos.fs.File[]',
+      javaType: 'foam.nanos.fs.File[]',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X ',
+          type: 'Context',
         },
         {
           name: 'type',
-          javaType: 'String',
+          type: 'String',
         },
         {
           name: 'value',
-          javaType: 'String',
+          type: 'String',
         },
       ],
       javaCode:
@@ -897,16 +938,16 @@ return files;`,
     {
       name: 'resyncInvoice',
       documentation: `Updates Quickbooks with a processed invoice`,
-      javaReturns: 'net.nanopay.integration.ResultResponse',
+      type: 'net.nanopay.integration.ResultResponse',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X',
+          type: 'Context',
           swiftType: 'Context?'
         },
         {
           name: 'nano',
-          javaType: 'net.nanopay.integration.quick.model.QuickInvoice',
+          type: 'net.nanopay.integration.quick.model.QuickInvoice',
         },
       ],
       javaCode:

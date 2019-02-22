@@ -19,6 +19,7 @@ foam.CLASS({
 
   imports: [
     'checkComplianceAndBanking',
+    'currencyDAO',
     'stack',
     'user'
   ],
@@ -55,7 +56,8 @@ foam.CLASS({
             }),
             this.Invoice.AMOUNT.clone().copyFrom({
               tableCellFormatter: function(_, invoice) {
-                invoice.destinationCurrency$find.then((currency) => {
+                self.currencyDAO.find(invoice.destinationCurrency)
+                  .then((currency) => {
                   this.add(`+ ${currency.format(invoice.amount)}`);
                 });
               }
@@ -73,6 +75,28 @@ foam.CLASS({
                   class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: this,
                   isPayable: false
+                });
+              }
+            }),
+            foam.core.Action.create({
+              name: 'edit',
+              label: 'Edit',
+              isAvailable: function() {
+                return this.status === self.InvoiceStatus.DRAFT;
+              },
+              code: function(X) {
+                self.checkComplianceAndBanking().then((result) => {
+                  if ( ! result ) return;
+                  X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                    var clone = menu.clone();
+                    Object.assign(clone.handler.view, {
+                      isPayable: false,
+                      isForm: true,
+                      isDetailView: false,
+                      invoice: this
+                    });
+                    clone.launch(X, X.controllerView);
+                  });
                 });
               }
             }),

@@ -17,7 +17,7 @@ import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
-import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -124,7 +124,7 @@ public class CsvUtil {
    * @param mode - outputter mode
    * @return the outputter
    */
-  public static void writeCsvFile(X x, OutputStream o, OutputterMode mode) {
+  public static void writeCsvFile(X x, PrintWriter o, OutputterMode mode) {
     final Date now            = new Date();
 
     final DAO bankAccountDAO  = (DAO) x.get("localAccountDAO");

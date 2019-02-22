@@ -14,7 +14,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'publicUserDAO',
+    'user',
     'validateEmail'
   ],
 
@@ -38,7 +40,8 @@ foam.CLASS({
     { name: 'TITLE', message: 'Add Contact' },
     { name: 'EMAIL_PLACEHOLDER', message: 'example@email.com' },
     { name: 'GENERIC_LOOKUP_FAILED', message: `An unexpected problem occurred. Please try again later.` },
-    { name: 'EMAIL_ERR_MSG', message: 'Invalid email address.' }
+    { name: 'EMAIL_ERR_MSG', message: 'Invalid email address.' },
+    { name: 'ERROR_OWN_EMAIL', message: 'You cannot use your own email address.' }
   ],
 
   properties: [
@@ -97,6 +100,13 @@ foam.CLASS({
          * Contact with or without bank account information.
          */
         const User = foam.nanos.auth.User;
+
+        // Don't let people use their own email address.
+        if ( this.email === this.user.email ) {
+          this.ctrl.notify(this.ERROR_OWN_EMAIL, 'error');
+          return;
+        }
+
         try {
           var count = await X.publicUserDAO
             .where(this.EQ(User.EMAIL, this.email))

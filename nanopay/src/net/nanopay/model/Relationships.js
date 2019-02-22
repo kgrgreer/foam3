@@ -4,6 +4,7 @@ foam.RELATIONSHIP({
   forwardName: 'bankAccounts',
   inverseName: 'branch',
   cardinality: '1:*',
+  targetDAOKey: 'accountDAO',
   sourceProperty: {
     hidden: true
   },
@@ -34,6 +35,7 @@ foam.RELATIONSHIP({
   forwardName: 'bankAccounts',
   inverseName: 'institution',
   cardinality: '1:*',
+  targetDAOKey: 'accountDAO',
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
@@ -47,12 +49,14 @@ foam.RELATIONSHIP({
     tableCellFormatter: function(value, obj, axiom) {
       var self = this;
       this.__subSubContext__.institutionDAO.find(value)
-      .then( function( institution ) {
-        self.add(institution.institutionNumber);
-      }).catch( function( error ) {
-        self.add('N/A');
-        console.error(error);
-      });
+        .then( function( institution ) {
+          if ( institution ) {
+            self.add(institution.institutionNumber);
+          }
+        }).catch( function( error ) {
+          self.add('N/A');
+          console.error(error);
+        });
     }
   }
 });
@@ -140,6 +144,8 @@ foam.RELATIONSHIP({
 
 // Store Transaction Limits as an internal array rather than as an external DAO
 foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'UserTransactionLimitRefine',
   refines: 'foam.nanos.auth.User',
   properties: [
     {
@@ -148,15 +154,6 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionLimit'
     }
   ]
-});
-
-foam.RELATIONSHIP({
-  cardinality: '*:*',
-  sourceModel: 'net.nanopay.account.Account',
-  targetModel: 'net.nanopay.account.Account',
-  forwardName: 'children',
-  inverseName: 'parent',
-  junctionDAOKey: 'accountJunctionDAO'
 });
 
 foam.RELATIONSHIP({
@@ -187,6 +184,8 @@ foam.RELATIONSHIP({
 });
 
 foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'UserUserJunctionRefine',
   refines: 'foam.nanos.auth.UserUserJunction',
 
   javaImports: [
@@ -267,9 +266,9 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['AuthorizationException', 'IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -299,9 +298,9 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'x', type: 'Context' },
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         // Check global permissions and user relation to junction.
@@ -336,10 +335,10 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'oldObj', javaType: 'foam.core.FObject' }
+        { name: 'x', type: 'Context' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['AuthorizationException', 'IllegalStateException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -371,9 +370,9 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
@@ -393,11 +392,11 @@ foam.CLASS({
     {
       name: 'buildPermissionString',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'junctionObj', javaType: 'foam.nanos.auth.UserUserJunction' },
-        { name: 'permissionAction', javaType: 'String' }
+        { name: 'x', type: 'Context' },
+        { name: 'junctionObj', type: 'foam.nanos.auth.UserUserJunction' },
+        { name: 'permissionAction', type: 'String' }
       ],
-      javaReturns: 'String',
+      type: 'String',
       javaCode: `
         DAO businessDAO = (DAO) x.get("businessDAO");
         Business targetUser = (Business) businessDAO.inX(x).find(junctionObj.getTargetId());
@@ -419,18 +418,6 @@ foam.RELATIONSHIP({
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
-  sourceProperty: {
-    flags: ['js']
-  },
-  targetProperty: {
-    flags: ['js']
-  },
-  sourceMethod: {
-    flags: ['js', 'java']
-  },
-  targetMethod: {
-    flags: ['js', 'java']
-  }
 });
 
 foam.RELATIONSHIP({

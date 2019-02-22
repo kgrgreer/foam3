@@ -9,7 +9,7 @@ foam.CLASS({
 
   requires: [
     'foam.flow.Document',
-    'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
+    'net.nanopay.disclosure.Disclosure',
   ],
 
   implements: [
@@ -17,8 +17,10 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'disclosuresDAO',
     'invoice',
+    'isPayable',
     'loadingSpin',
     'notify',
     'user',
@@ -58,7 +60,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.invoice$.sub(this.updateDisclosure);
       this.updateDisclosure();
 
       // Update the next label
@@ -85,23 +86,23 @@ foam.CLASS({
       .end();
     },
     async function updateDisclosure() {
-      if ( ! this.viewData.isPayable && this.viewData.isDomestic ) return;
+      if ( ! this.isPayable ) return;
       try {
         var disclosure = await this.disclosuresDAO.where(
           this.AND(
-            this.EQ(this.AscendantFXDisclosure.COUNTRY, this.user.address.countryId),
-            this.EQ(this.AscendantFXDisclosure.STATE, this.user.address.regionId)
+            this.EQ(this.Disclosure.TRANSACTION_TYPE, this.viewData.quote.type),
+            this.EQ(this.Disclosure.COUNTRY, this.user.address.countryId),
+            this.EQ(this.Disclosure.STATE, this.user.address.regionId)
           )
         ).select();
 
         disclosure = disclosure.array ? disclosure.array[0] : null;
         if ( disclosure ) {
-          var text = '<h4>Transaction to be executed by AscendantFX.</h4>' + disclosure.text;
-          this.disclosureView = this.Document.create({ markup: text });
+          this.disclosureView = this.Document.create({ markup: disclosure.text });
         }
       } catch (error) {
         console.error(error.message);
-        this.notify(error.message, 'error');
+        this.ctrl.notify(error.message, 'error');
       }
     }
   ]

@@ -43,7 +43,7 @@ foam.CLASS({
   constants: [
     {
       name: 'ACCOUNT_NAME_MAX_LENGTH',
-      type: 'int',
+      type: 'Integer',
       value: 70
     }
   ],
@@ -218,10 +218,10 @@ foam.CLASS({
   methods: [
     {
       name: 'getBankCode',
-      javaReturns: 'String',
+      type: 'String',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
       javaCode: `
@@ -235,10 +235,10 @@ foam.CLASS({
     },
     {
       name: 'getRoutingCode',
-      javaReturns: 'String',
+      type: 'String',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
       javaCode: `
@@ -252,10 +252,10 @@ foam.CLASS({
     },
     {
       name: 'getIBAN',
-      javaReturns: 'String',
+      type: 'String',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
       javaCode: `
@@ -266,10 +266,10 @@ foam.CLASS({
       name: 'validate',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String name = this.getName();
@@ -343,7 +343,8 @@ foam.CLASS({
                                   EQ(BankAccount.OWNER, user.getId()),
                                   INSTANCE_OF(BankAccount.class),
                                   EQ(Account.DENOMINATION, denomination),
-                                  EQ(Account.IS_DEFAULT, true)
+                                  EQ(Account.IS_DEFAULT, true), 
+                                  NEQ(Account.DELETED, true)
                                 )
                               );
 

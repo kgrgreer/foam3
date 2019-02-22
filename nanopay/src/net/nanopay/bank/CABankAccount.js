@@ -15,18 +15,18 @@ foam.CLASS({
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{4,30}$")'
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{4,30}$")'
     },
     {
       name: 'BRANCH_ID_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{5}$")'
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{5}$")'
     },
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{3}$")'
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{3}$")'
     }
   ],
 
@@ -99,10 +99,10 @@ foam.CLASS({
       name: 'validate',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
@@ -113,7 +113,7 @@ foam.CLASS({
     },
     {
       name: 'validateAccountNumber',
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       String accountNumber = this.getAccountNumber();
@@ -131,10 +131,10 @@ foam.CLASS({
       name: 'validateInstitutionNumber',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       Branch branch = this.findBranch(x);
@@ -163,10 +163,10 @@ foam.CLASS({
       name: 'validateBranchId',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       Branch branch = this.findBranch(x);

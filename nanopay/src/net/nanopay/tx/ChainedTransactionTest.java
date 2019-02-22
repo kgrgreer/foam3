@@ -4,6 +4,8 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
@@ -57,8 +59,8 @@ public class ChainedTransactionTest
     tx2 = (AlternaCITransaction) sink.getArray().get(0);
     test(tx2 instanceof AlternaCITransaction, "tx2: instanceof AlternaCITransaction");
     test(tx2.getStatus() == TransactionStatus.PENDING, "tx2: has status PENDING");
-    test(tx2.getSourceCurrency() == tx2.getDestinationCurrency(), "tx2: sourceCurrency == detstinationCurrency");
-    test(tx2.getDestinationCurrency() == "CAD", "tx2: destinationCurrency == CAD");
+    test(SafetyUtil.equals(tx2.getSourceCurrency(), tx2.getDestinationCurrency()), "tx2: sourceCurrency == detstinationCurrency");
+    test(SafetyUtil.equals(tx2.getDestinationCurrency(), "CAD"), "tx2: destinationCurrency == CAD");
 
     //test CADDigital -> INRDigital
     FXTransaction tx3;
@@ -67,8 +69,8 @@ public class ChainedTransactionTest
     tx3 = (FXTransaction) sink.getArray().get(0);
     test(tx3.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx3: status PENDING_PARENT_COMPLETED");
     test(tx3.getSourceCurrency() != tx3.getDestinationCurrency(), "tx3: sourceCurrency != detstinationCurrency");
-    test(tx3.getDestinationCurrency() == "INR", "tx3: destinationCurrency == INR");
-    test(tx3.getSourceCurrency() == "CAD", "tx3: sourceCurrency == CAD");
+    test(SafetyUtil.equals(tx3.getDestinationCurrency(),"INR"), "tx3: destinationCurrency == INR");
+    test(SafetyUtil.equals(tx3.getSourceCurrency(),"CAD"), "tx3: sourceCurrency == CAD");
     test(tx3.getFxRate() != 0.0, "tx3: fx rate retrieved");
     test(tx3.getDestinationAmount() != 0, "tx3: destinationAmount is set");
 

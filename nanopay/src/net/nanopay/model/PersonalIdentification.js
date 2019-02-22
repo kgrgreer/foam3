@@ -37,14 +37,7 @@ foam.CLASS({
         if ( ! identificationTypeId ) {
           return 'Identification type is required';
         }
-      },
-      postSet: function(o, n) {
-        n == 3 ? this.isPassport = true : this.isPassport = false;
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'isPassport'
     },
     {
       class: 'String',
@@ -86,7 +79,8 @@ foam.CLASS({
           dao$: choices
         });
       },
-      validateObj: function(regionId, isPassport) {
+      validateObj: function(regionId, identificationTypeId) {
+        var isPassport = identificationTypeId === 3;
         if ( ! regionId && ! isPassport ) {
           return 'Region of issue is required';
         }

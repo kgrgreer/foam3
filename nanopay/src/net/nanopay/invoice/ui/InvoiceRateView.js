@@ -267,7 +267,8 @@ foam.CLASS({
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
-        this.invoice.destinationCurrency$find.then((currency) => {
+        this.currencyDAO.find(this.invoice.destinationCurrency)
+          .then((currency) => {
           this.formattedAmount = currency.format(this.invoice.amount);
         });
       }
@@ -356,11 +357,11 @@ foam.CLASS({
                         this.quote$.dot('fxRate').map((rate) => {
                           if ( rate ) return 1;
                         }), ' ',
-                        this.quote$.dot('sourceCurrency'),
-                        this.quote$.dot('fxRate').map((rate) => {
-                          if ( rate ) return this.TO + rate.toFixed(4);
-                        }), ' ',
                         this.quote$.dot('destinationCurrency'),
+                        this.quote$.dot('fxRate').map((rate) => {
+                          if ( rate ) return this.TO + (1 / rate).toFixed(4);
+                        }), ' ',
+                        this.quote$.dot('sourceCurrency'),
                         this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
                     .end()

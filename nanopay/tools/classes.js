@@ -42,9 +42,7 @@ var classes = [
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.payment.client.ClientPaymentService',
-  'net.nanopay.account.AccountAccountJunction',
   'net.nanopay.account.Balance',
-  'net.nanopay.account.PreventRemoveAccountDAO',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
@@ -53,6 +51,7 @@ var classes = [
   'net.nanopay.account.DigitalAccountInfo',
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
+  'net.nanopay.account.AggregateAccount',
   'net.nanopay.account.ZeroAccount',
   'net.nanopay.account.ZeroAccountUserAssociation',
   'net.nanopay.account.TrustAccount',
@@ -238,7 +237,6 @@ var classes = [
   'net.nanopay.tx.InvoiceTransaction',
   'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.SaveChainedTransactionDAO',
-  'net.nanopay.tx.ErrorTransaction',
   'net.nanopay.tx.SummaryTransaction',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
@@ -312,6 +310,11 @@ var classes = [
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
 
+  // settings
+  'net.nanopay.settings.AcceptanceDocument',
+  'net.nanopay.settings.UserAcceptanceDocument',
+  'net.nanopay.settings.AcceptanceDocumentService',
+  'net.nanopay.settings.ClientAcceptanceDocumentService',
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
 
@@ -424,6 +427,7 @@ var classes = [
   'net.nanopay.auth.BusinessAgentAuthService',
   'net.nanopay.auth.BusinessAuthService',
   'net.nanopay.auth.AgentJunctionStatus',
+  'net.nanopay.auth.email.DoNotSolicit',
   'net.nanopay.auth.email.PreventDuplicateEmailDAO',
   'net.nanopay.auth.email.EmailWhitelistEntry',
 
@@ -461,6 +465,7 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.settings.AcceptanceDocumentService',
   'net.nanopay.integration.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',

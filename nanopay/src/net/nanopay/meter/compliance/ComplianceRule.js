@@ -46,11 +46,11 @@ foam.CLASS({
   methods: [
     {
       name: 'isApplicable',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       args: [
         {
           name: 'obj',
-          javaType: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ],
       javaCode: `
@@ -62,11 +62,11 @@ foam.CLASS({
     },
     {
       name: 'test',
-      javaReturns: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
+      type: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
       args: [
         {
           name: 'entity',
-          javaType: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ],
       javaCode: `

@@ -61,8 +61,8 @@ foam.CLASS({
     {
       name: 'AuthenticatedAccountDAO_CreateAccountWithNullUser',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+        { name: 'x', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
   X nullUserContext = x.put("user", null);
@@ -79,10 +79,10 @@ foam.CLASS({
     {
       name: 'AuthenticatedAccountDAO_UpdateUnownedAccount',
       args: [
-        { name: 'user1', javaType: 'foam.nanos.auth.User' },
-        { name: 'user1Context', javaType: 'foam.core.X' },
-        { name: 'user2Context', javaType: 'foam.core.X' },
-        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+        { name: 'user1', type: 'foam.nanos.auth.User' },
+        { name: 'user1Context', type: 'Context' },
+        { name: 'user2Context', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
   //  create an account with owner as one user, try to modify it as another
@@ -104,9 +104,9 @@ foam.CLASS({
     {
       name: 'AuthenticatedAccountDAO_findOwnedAccount',
       args: [
-        { name: 'user1', javaType: 'foam.nanos.auth.User' },
-        { name: 'user1Context', javaType: 'foam.core.X' },
-        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+        { name: 'user1', type: 'foam.nanos.auth.User' },
+        { name: 'user1Context', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
   //  Create an account
@@ -121,9 +121,9 @@ foam.CLASS({
     {
       name: 'AuthenticatedAccountDAO_UpdateOwnedAccount',
       args: [
-        { name: 'user1', javaType: 'foam.nanos.auth.User' },
-        { name: 'user1Context', javaType: 'foam.core.X' },
-        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+        { name: 'user1', type: 'foam.nanos.auth.User' },
+        { name: 'user1Context', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
   // Create an account, with the denomination set to CAD
@@ -144,9 +144,9 @@ foam.CLASS({
     {
       name: 'AuthenticatedAccountDAO_CreateAccountForOtherUser',
       args: [
-        { name: 'user1', javaType: 'foam.nanos.auth.User' },
-        { name: 'user2Context', javaType: 'foam.core.X' },
-        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+        { name: 'user1', type: 'foam.nanos.auth.User' },
+        { name: 'user2Context', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
   //  create an account with owner as user1, try to put in DAO as user2
@@ -164,11 +164,11 @@ foam.CLASS({
     {
       name: 'AuthenticatedAccountDAO_SelectOnTheDAO',
       args: [
-        { name: 'user1', javaType: 'foam.nanos.auth.User' },
-        { name: 'user2', javaType: 'foam.nanos.auth.User' },
-        { name: 'user1Context', javaType: 'foam.core.X' },
-        { name: 'user2Context', javaType: 'foam.core.X' },
-        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+        { name: 'user1', type: 'foam.nanos.auth.User' },
+        { name: 'user2', type: 'foam.nanos.auth.User' },
+        { name: 'user1Context', type: 'Context' },
+        { name: 'user2Context', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
   // create an accounts for different users, verify that a select returns only owned accounts
@@ -202,10 +202,10 @@ foam.CLASS({
     {
       name: 'AuthenticatedAccountDAO_DeleteUnownedAccount',
       args: [
-        { name: 'user1', javaType: 'foam.nanos.auth.User' },
-        { name: 'user1Context', javaType: 'foam.core.X' },
-        { name: 'user2Context', javaType: 'foam.core.X' },
-        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+        { name: 'user1', type: 'foam.nanos.auth.User' },
+        { name: 'user1Context', type: 'Context' },
+        { name: 'user2Context', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
   //  create an account each for user1 and try to delete from user2 context
@@ -225,11 +225,11 @@ foam.CLASS({
     {
       name: 'AuthenticatedAccountDAO_SummarilyDeleteAccounts',
       args: [
-        { name: 'user1', javaType: 'foam.nanos.auth.User' },
-        { name: 'user2', javaType: 'foam.nanos.auth.User' },
-        { name: 'user1Context', javaType: 'foam.core.X' },
-        { name: 'user2Context', javaType: 'foam.core.X' },
-        { name: 'accountDAO', javaType: 'foam.dao.DAO' },
+        { name: 'user1', type: 'foam.nanos.auth.User' },
+        { name: 'user2', type: 'foam.nanos.auth.User' },
+        { name: 'user1Context', type: 'Context' },
+        { name: 'user2Context', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
       ],
       javaCode: `
       // create an accounts for different users, verify that a removeAll only deletes owned accounts

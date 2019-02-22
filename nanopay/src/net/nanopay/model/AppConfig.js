@@ -1,4 +1,6 @@
 foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'AppConfigRefine',
   refines: 'foam.nanos.app.AppConfig',
   properties: [
     {
