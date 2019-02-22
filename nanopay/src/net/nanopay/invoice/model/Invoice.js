@@ -41,6 +41,10 @@ foam.CLASS({
     'net.nanopay.contacts.Contact'
   ],
 
+  imports: [
+    'currencyDAO'
+  ],
+
   constants: [
     {
       type: 'long',
@@ -236,10 +240,11 @@ foam.CLASS({
         if ( ! invoice.destinationCurrency ) {
           invoice.destinationCurrency = 'CAD';
         }
-        invoice.destinationCurrency$find.then(function(currency) {
-          this.start()
-            .add(invoice.destinationCurrency + ' ' + currency.format(value))
-          .end();
+        this.__subContext__.currencyDAO.find(invoice.destinationCurrency)
+            .then(function(currency) {
+              this.start()
+                .add(invoice.destinationCurrency + ' ' + currency.format(value))
+              .end();
         }.bind(this));
       }
     },
@@ -255,10 +260,11 @@ foam.CLASS({
         The amount used to pay the invoice, prior to exchange rates & fees.
       `,
       tableCellFormatter: function(value, invoice) {
-        invoice.sourceCurrency$find.then(function(currency) {
-          this.start()
-            .add(invoice.sourceCurrency + ' ' + currency.format(value))
-          .end();
+        this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
+          .then(function(currency) {
+            this.start()
+              .add(invoice.sourceCurrency + ' ' + currency.format(value))
+            .end();
         }.bind(this));
       }
     },
@@ -280,17 +286,17 @@ foam.CLASS({
       documentation: `The state of payment of the invoice.`
     },
     {
-      class: 'Reference',
+      class: 'String',
       name: 'destinationCurrency',
-      of: 'net.nanopay.model.Currency',
+      value: 'CAD',
       documentation: `
         Currency of the account the funds with be deposited into.
       `
     },
     {
-      class: 'Reference',
+      class: 'String',
       name: 'sourceCurrency',
-      of: 'net.nanopay.model.Currency',
+      value: 'CAD',
       documentation: `Currency of the account the funds with be withdran from.`,
     },
     {

@@ -98,8 +98,7 @@ foam.CLASS({
 
         disclosure = disclosure.array ? disclosure.array[0] : null;
         if ( disclosure ) {
-          var text = '<h4>Transaction to be executed by AscendantFX.</h4>' + disclosure.text;
-          this.disclosureView = this.Document.create({ markup: text });
+          this.disclosureView = this.Document.create({ markup: disclosure.text });
         }
       } catch (error) {
         console.error(error.message);
