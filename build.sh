@@ -233,10 +233,11 @@ function start_nanos {
     fi
 
     # If not running on AWS, serve current directory.
-    if [ $IS_AWS -eq 0 ]; then
-        JAVA_OPTS="-Dnanos.webroot=\"${PWD}\" ${JAVA_OPTS}"
-    fi
-    JAVA_OPTS="-Dresource.journals.path=journals ${JAVA_OPTS}"
+    #if [ $IS_AWS -eq 0 ]; then
+    #    JAVA_OPTS="-Dnanos.webroot=\"${PWD}\" ${JAVA_OPTS}"
+    #fi
+    #JAVA_OPTS="-Dresource.journals.dir=\"journals\" ${JAVA_OPTS}"
+    JAVA_OPTS="-DRESOURCE_JOURNAL_SOURCE=\"journals\" ${JAVA_OPTS}"
 
     # CLASSPATH=$(echo foam2/lib/*.jar | tr ' ' ':')
     # CLASSPATH=$(echo target/lib/*.jar | tr ' ' ':'):${CLASSPATH}
@@ -244,18 +245,17 @@ function start_nanos {
     # CLASSPATH=$(echo build/libs/nanopay*.jar | tr ' ' ':'):${CLASSPATH}
 
     cd $PROJECT_HOME/target
-    cp nanopay*.jar lib/
-    CLASSPATH=$(echo lib/*.jar | tr ' ' ':')
-    JAVA_OPTS="-cp ${CLASSPATH} ${JAVA_OPTS}"
+    #CLASSPATH=$(echo lib/*.jar | tr ' ' ':')
+    #JAVA_OPTS="-cp ${CLASSPATH} ${JAVA_OPTS}"
 
+    JAR=$(ls nanopay-*.jar | awk '{print $1}')
     echo JAVA_OPTS=$JAVA_OPTS
     if [ $DAEMONIZE -eq 0 ]; then
-        #exec java $JAVA_OPTS -jar target/root-0.0.1.jar
-        #exec java $JAVA_OPTS -jar foam2/build/foam2.jar
-        exec java $JAVA_OPTS foam.nanos.boot.Boot
+        exec java $JAVA_OPTS -jar ${JAR}
     else
-        nohup java $JAVA_OPTS foam.nanos.boot.Boot &>/dev/null &
+        #nohup java $JAVA_OPTS foam.nanos.boot.Boot &>/dev/null &
         #nohup java $JAVA_OPTS -jar target/root-0.0.1.jar &>/dev/null &
+        nohup java $JAVA_OPTS -jar ${JAR} &>/dev/null &
         echo $! > "$NANOS_PIDFILE"
     fi
 }

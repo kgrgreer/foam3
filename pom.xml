@@ -277,8 +277,7 @@
                 <resource>
                   <directory>tools/js_build</directory>
                   <includes>
-                    <include>*.js</include>
-                    <exclude>build.js</exclude>
+                    <include>foam*.js</include>
                     <include>index.html</include>
                   </includes>
                 </resource>
@@ -334,10 +333,10 @@
               <classpathPrefix>lib/</classpathPrefix>
             </manifest>
           </archive>
-          <includes>
-            <include>webroot/**</include>
-            <include>journals/**</include>
-          </includes>
+          <!-- <includes> -->
+          <!--   <include>webroot/**</include> -->
+          <!--   <include>journals/**</include> -->
+          <!-- </includes> -->
         </configuration>
       </plugin>
 
