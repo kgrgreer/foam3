@@ -232,10 +232,11 @@ function start_nanos {
         JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
     fi
 
-    # If not running on AWS, serve current directory.
-    #if [ $IS_AWS -eq 0 ]; then
-    #    JAVA_OPTS="-Dnanos.webroot=\"${PWD}\" ${JAVA_OPTS}"
-    #fi
+    # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
+    # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
+    # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
+    JAVA_OPTS="-Dnanos.webroot=\"${PWD}\" ${JAVA_OPTS}"
+
     #JAVA_OPTS="-Dresource.journals.dir=\"journals\" ${JAVA_OPTS}"
     JAVA_OPTS="-DRESOURCE_JOURNAL_SOURCE=\"journals\" ${JAVA_OPTS}"
 
@@ -250,6 +251,7 @@ function start_nanos {
 
     JAR=$(ls nanopay-*.jar | awk '{print $1}')
     echo JAVA_OPTS=$JAVA_OPTS
+
     if [ $DAEMONIZE -eq 0 ]; then
         exec java $JAVA_OPTS -jar ${JAR}
     else
