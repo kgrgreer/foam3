@@ -236,11 +236,26 @@ function start_nanos {
     if [ $IS_AWS -eq 0 ]; then
         JAVA_OPTS="-Dnanos.webroot=\"${PWD}\" ${JAVA_OPTS}"
     fi
+    JAVA_OPTS="-Dresource.journals.path=journals ${JAVA_OPTS}"
 
+    # CLASSPATH=$(echo foam2/lib/*.jar | tr ' ' ':')
+    # CLASSPATH=$(echo target/lib/*.jar | tr ' ' ':'):${CLASSPATH}
+    # CLASSPATH=$(echo foam2/build/foam2*.jar | tr ' ' ':'):${CLASSPATH}
+    # CLASSPATH=$(echo build/libs/nanopay*.jar | tr ' ' ':'):${CLASSPATH}
+
+    cd $PROJECT_HOME/target
+    cp nanopay*.jar lib/
+    CLASSPATH=$(echo lib/*.jar | tr ' ' ':')
+    JAVA_OPTS="-cp ${CLASSPATH} ${JAVA_OPTS}"
+
+    echo JAVA_OPTS=$JAVA_OPTS
     if [ $DAEMONIZE -eq 0 ]; then
-        exec java $JAVA_OPTS -jar target/root-0.0.1.jar
+        #exec java $JAVA_OPTS -jar target/root-0.0.1.jar
+        #exec java $JAVA_OPTS -jar foam2/build/foam2.jar
+        exec java $JAVA_OPTS foam.nanos.boot.Boot
     else
-        nohup java $JAVA_OPTS -jar target/root-0.0.1.jar &>/dev/null &
+        nohup java $JAVA_OPTS foam.nanos.boot.Boot &>/dev/null &
+        #nohup java $JAVA_OPTS -jar target/root-0.0.1.jar &>/dev/null &
         echo $! > "$NANOS_PIDFILE"
     fi
 }
@@ -446,8 +461,8 @@ fi
 if [ "$BUILD_FOAM" -eq 1 ]; then
     build_foam
 elif [ "$BUILD_ONLY" -eq 1 ]; then
-    build_jar
     deploy_journals
+    build_jar
 elif [ "$RUN_MIGRATION" -eq 1 ]; then
     migrate_journals
 elif [ "$START_ONLY" -eq 1 ]; then

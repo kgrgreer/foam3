@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
-  <version>0.0.1</version>
+  <version>2.4.1</version>
 
   <groupId>net.nanopay</groupId>
-  <artifactId>root</artifactId>
-  <name>nanoPay</name>
+  <artifactId>nanopay</artifactId>
+  <name>nanopay</name>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -239,17 +239,17 @@
       <version>1.0.2</version>
     </dependency>
   </dependencies>
+
   <build>
     <sourceDirectory>.</sourceDirectory>
     <plugins>
-
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
           <execution>
             <id>copy-dependencies</id>
-            <phase>package</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>copy-dependencies</goal>
             </goals>
@@ -258,8 +258,71 @@
               <outputDirectory>${project.build.directory}/lib</outputDirectory>
             </configuration>
           </execution>
+          </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-resources-webroot</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/webroot</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>tools/js_build</directory>
+                  <includes>
+                    <include>*.js</include>
+                    <exclude>build.js</exclude>
+                    <include>index.html</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-images</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/webroot/images</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>nanopay/src/net/nanopay/images</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-journals</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/journals</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>journals</directory>
+                  <includes>
+                    <include>*.0</include>
+                  </includes>
+                </resource>
+              </resources>
+              </configuration>
+          </execution>
         </executions>
       </plugin>
+
+      <!-- NOTE: these copies depend on above setting up classes/ -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.1.0</version>
@@ -271,8 +334,22 @@
               <classpathPrefix>lib/</classpathPrefix>
             </manifest>
           </archive>
+          <includes>
+            <include>webroot/**</include>
+            <include>journals/**</include>
+          </includes>
         </configuration>
       </plugin>
+
+      <!-- <plugin> -->
+      <!--   <artifactId>maven-assembly-plugin</artifactId> -->
+      <!--   <version>3.1.1</version> -->
+      <!--   <configuration> -->
+      <!--     <descriptorRefs> -->
+      <!--       <descriptorRef>jar-with-dependencies</descriptorRef> -->
+      <!--     </descriptorRefs> -->
+      <!--   </configuration> -->
+      <!-- </plugin> -->
     </plugins>
   </build>
 
@@ -294,12 +371,12 @@
               <target>${maven.compiler.target}</target>
               <includes>
                 <include>foam2/src/**/*.java</include>
-                <include>interac/src/**/*.java</include>
-                <include>merchant/src/**/*.java</include>
                 <include>nanopay/src/**/*.java</include>
                 <include>build/**/*.java</include>
               </includes>
               <excludes>
+                <exclude>interac/src/**/*.java</exclude>
+                <exclude>merchant/src/**/*.java</exclude>
                 <exclude>foam2/src/com/chrome/**</exclude>
                 <exclude>foam2/src/foam/nanos/tomcat/**</exclude>
                 <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>
