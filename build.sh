@@ -141,8 +141,12 @@ function clean {
 }
 
 function build_jar {
-    echo "INFO :: Building nanos JAR..."
+    echo "INFO :: Building nanos..."
     ./gen.sh
+
+    echo "INFO :: Packaging js..."
+    ./tools/js_build/build.js
+
     mvn package
 }
 

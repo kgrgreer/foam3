@@ -278,19 +278,12 @@
                   <directory>tools/js_build</directory>
                   <includes>
                     <include>foam*.js</include>
-                    <include>index.html</include>
                   </includes>
                 </resource>
                 <resource>
-                  <directory>nanopay/src/net/nanopay</directory>
+                  <directory>webroot</directory>
                   <includes>
-                    <include>error.html</include>
-                  </includes>
-                </resource>
-                <resource>
-                  <directory>nanopay/src/net/nanopay/ui/errorPage</directory>
-                  <includes>
-                    <include>errorPage.html</include>
+                    <include>**</include>
                   </includes>
                 </resource>
               </resources>
@@ -307,7 +300,12 @@
               <resources>
                 <resource>
                   <directory>nanopay/src/net/nanopay/images</directory>
-                  <filtering>true</filtering>
+                  <filtering>false</filtering>
+                </resource>
+
+                <resource>
+                  <directory>foam2/src/foam/support/images</directory>
+                  <filtering>false</filtering>
                 </resource>
               </resources>
             </configuration>
