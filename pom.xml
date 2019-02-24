@@ -310,7 +310,7 @@
               <outputDirectory>${basedir}/target/classes/journals</outputDirectory>
               <resources>
                 <resource>
-                  <directory>journals</directory>
+                  <directory>target/journals</directory>
                   <includes>
                     <include>*.0</include>
                   </includes>
@@ -333,10 +333,6 @@
               <classpathPrefix>lib/</classpathPrefix>
             </manifest>
           </archive>
-          <!-- <includes> -->
-          <!--   <include>webroot/**</include> -->
-          <!--   <include>journals/**</include> -->
-          <!-- </includes> -->
         </configuration>
       </plugin>
 
