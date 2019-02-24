@@ -1,0 +1,84 @@
+<html>
+    <head>
+     <meta charset="utf-8" />
+     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500" rel="stylesheet">
+     <style>
+          body {
+          background-color: #edf0f4;
+          font-family: Roboto;
+          margin:0; 
+          }
+         .top {
+          width: 100%;
+          height: 80px;
+          display: block;
+          background-color: white;
+          position: relative;
+          }
+         img {
+          display: block;
+          position: absolute;  
+          top: 0;  
+          bottom: 0;  
+          left: 0;  
+          right: 0;  
+          margin: auto;
+          }
+         .content {
+          width: 450px;
+          margin: auto;
+         }
+         h1 {
+          font-size: 30px;
+          font-weight: bold;
+          line-height: 1.0;
+          letter-spacing: 0.5px;
+          text-align: left;
+          color: #093649;
+          margin-top: 100px;
+          margin-bottom: 30px;
+         }
+         p {
+          font-size: 14px;
+          line-height: 1.33;
+          letter-spacing: 0.2px;
+          text-align: left;
+          color: #093649;
+          margin-bottom: 50px;
+         }
+         #home {
+          width: 450px;
+          height: 40px;
+          border-radius: 2px;
+          border: solid 1px #59a5d5;
+          background-color:#edf0f4;
+          padding: 0;
+
+          font-size: 14px;
+          letter-spacing: 0.2px;
+          text-align: center;
+          color: #59a5d5;
+
+          cursor: pointer;
+         }
+         #home:hover{
+           background-color: #59a5d5;
+           color: white;
+         }
+     </style>
+    </head>
+    <body>
+        <div class="top">
+            <img src="/images/nanopay_logo_404.svg" alt="nanopay logo">
+        </div>
+        <div class="content">
+            <h1>Something Went Wrong…</h1>
+            <p>We can’t find the page you’re looking for.
+              <br>
+                You can go back to nanopay platform's homepage.</p>
+            <form>
+                <input type="button" value="Back To Home" id="home" onclick="window.location.href='/index.html'">
+            </form>
+        </div>
+    </body>
+</html>

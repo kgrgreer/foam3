@@ -290,6 +290,24 @@
             </configuration>
           </execution>
           <execution>
+            <id>copy-resources-favicon</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/webroot/favicon</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>favicon</directory>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
             <id>copy-resources-images</id>
             <phase>prepare-package</phase>
             <goals>
