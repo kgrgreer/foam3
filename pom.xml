@@ -281,6 +281,18 @@
                     <include>index.html</include>
                   </includes>
                 </resource>
+                <resource>
+                  <directory>nanopay/src/net/nanopay</directory>
+                  <includes>
+                    <include>error.html</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>nanopay/src/net/nanopay/ui/errorPage</directory>
+                  <includes>
+                    <include>errorPage.html</include>
+                  </includes>
+                </resource>
               </resources>
             </configuration>
           </execution>
