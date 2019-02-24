@@ -239,13 +239,16 @@ function start_nanos {
     # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
     # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
     # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
-    #JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
+    if [ $MIMIC_PROD -eq 1 ]; then
+        JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
+        cd $PROJECT_HOME/target
+        JAR=$(ls lib/nanopay-*.jar | awk '{print $1}')
+    else
+        JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
+        JAR=$(ls target/lib/nanopay-*.jar | awk '{print $1}')
+    fi
 
-    JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
-
-    cd $PROJECT_HOME/target
-
-    JAR=$(ls nanopay-*.jar | awk '{print $1}')
+    echo JAR=$JAR
     echo JAVA_OPTS=$JAVA_OPTS
 
     if [ $DAEMONIZE -eq 0 ]; then
@@ -379,7 +382,8 @@ function usage {
     echo "  -i : Install npm and git hooks"
     echo "  -j : Delete runtime journals, build, and run app as usual."
     echo "  -l : Delete runtime log, build, and run app as usual."
-    echo "  -m : Run migration scripts"
+    echo "  -m : Run migration scripts."
+    echo "  -p : Mimic production deployment."
     echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
@@ -409,8 +413,9 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
+MIMIC_PROD=0
 
-while getopts "bcdfghijlmrsStz" opt ; do
+while getopts "bcdfghijlmprsStz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -422,6 +427,7 @@ while getopts "bcdfghijlmrsStz" opt ; do
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
+        p) MIMIC_PROD=1 ;;
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1 ;;

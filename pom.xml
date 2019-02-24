@@ -361,21 +361,13 @@
             <manifest>
               <mainClass>foam.nanos.boot.Boot</mainClass>
               <addClasspath>true</addClasspath>
-              <classpathPrefix>lib/</classpathPrefix>
+              <classpathPrefix></classpathPrefix>
             </manifest>
           </archive>
+          <outputDirectory>${project.build.directory}/lib</outputDirectory>
         </configuration>
       </plugin>
 
-      <!-- <plugin> -->
-      <!--   <artifactId>maven-assembly-plugin</artifactId> -->
-      <!--   <version>3.1.1</version> -->
-      <!--   <configuration> -->
-      <!--     <descriptorRefs> -->
-      <!--       <descriptorRef>jar-with-dependencies</descriptorRef> -->
-      <!--     </descriptorRefs> -->
-      <!--   </configuration> -->
-      <!-- </plugin> -->
     </plugins>
   </build>
 
