@@ -23,12 +23,6 @@ foam.CLASS({
       name: 'reset',
       documentation: 'Account balance must much reset amount after liquidity transaction was generated.'
     },
-    // {
-    //   class: 'Enum',
-    //   of: 'net.nanopay.tx.model.Frequency',
-    //   name: 'cashOutFrequency',
-    //   documentation: 'Determines how often a automatic cash out can occur.'
-    // },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
