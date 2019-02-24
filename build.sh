@@ -452,10 +452,11 @@ if [[ $DIST -eq 1 ]]; then
     quit 0
 fi
 
+clean
+
 if [ "$BUILD_FOAM" -eq 1 ]; then
     build_foam
 elif [ "$BUILD_ONLY" -eq 1 ]; then
-    clean
     deploy_journals
     build_jar
 elif [ "$RUN_MIGRATION" -eq 1 ]; then
@@ -468,7 +469,6 @@ elif [ "$STOP_ONLY" -eq 1 ]; then
 elif [ "$STATUS" -eq 1 ]; then
     status_nanos
 else
-    clean
     deploy_journals
     build_jar
     stop_nanos
