@@ -127,11 +127,10 @@ function migrate_journals {
     fi
 }
 
-function build_jar {
-    echo "INFO :: Building nanos JAR..."
-    cd "$PROJECT_HOME"
-
+function clean {
     if [[ "$CLEAN_BUILD" -eq 1 || "$TEST" -eq 1 ]]; then
+        echo "INFO :: Cleaning Up"
+
         if [ -d "build/" ]; then
             rm -rf build
             mkdir build
@@ -139,7 +138,10 @@ function build_jar {
 
         mvn clean
     fi
+}
 
+function build_jar {
+    echo "INFO :: Building nanos JAR..."
     ./gen.sh
     mvn package
 }
@@ -453,6 +455,7 @@ fi
 if [ "$BUILD_FOAM" -eq 1 ]; then
     build_foam
 elif [ "$BUILD_ONLY" -eq 1 ]; then
+    clean
     deploy_journals
     build_jar
 elif [ "$RUN_MIGRATION" -eq 1 ]; then
@@ -465,8 +468,9 @@ elif [ "$STOP_ONLY" -eq 1 ]; then
 elif [ "$STATUS" -eq 1 ]; then
     status_nanos
 else
-    build_jar
+    clean
     deploy_journals
+    build_jar
     stop_nanos
     start_nanos
 fi
