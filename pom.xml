@@ -272,18 +272,27 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>nanopay/src/resources</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-webroot-js</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
               <outputDirectory>${basedir}/target/classes/webroot</outputDirectory>
               <resources>
                 <resource>
                   <directory>tools/js_build</directory>
                   <includes>
                     <include>foam*.js</include>
-                  </includes>
-                </resource>
-                <resource>
-                  <directory>webroot</directory>
-                  <includes>
-                    <include>**</include>
                   </includes>
                 </resource>
               </resources>
@@ -314,19 +323,28 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/target/classes/webroot/images</outputDirectory>
+              <outputDirectory>${basedir}/target/classes/webroot</outputDirectory>
               <resources>
                 <resource>
-                  <directory>nanopay/src/net/nanopay/images</directory>
+                  <directory>nanopay/src/net/nanopay</directory>
                   <filtering>false</filtering>
+                  <includes>
+                    <include>images/**</include>
+                  </includes>
                 </resource>
                 <resource>
-                  <directory>foam2/src/foam/u2/images</directory>
+                  <directory>foam2/src/foam/u2</directory>
                   <filtering>false</filtering>
+                  <includes>
+                    <include>images/**</include>
+                  </includes>
                 </resource>
                 <resource>
-                  <directory>foam2/src/foam/support/images</directory>
+                  <directory>foam2/src/foam/support</directory>
                   <filtering>false</filtering>
+                  <includes>
+                    <include>images/**</include>
+                  </includes>
                 </resource>
               </resources>
             </configuration>
