@@ -47,11 +47,6 @@ public class TransactionDAOTest
       sender_ = new User();
       sender_.setEmail("testUser1@nanopay.net");
     }
-    LiquiditySettings ls = new LiquiditySettings();
-    ls.setId(DigitalAccount.findDefault(x_, sender_, "CAD").getId());
-    ls.setEnableCashIn(false);
-    ls.setEnableCashOut(false);
-    ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
     sender_ = (User) sender_.fclone();
     sender_.setEmailVerified(true);
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
@@ -61,8 +56,6 @@ public class TransactionDAOTest
       receiver_ = new User();
       receiver_.setEmail("testUser2@nanopay.net");
     }
-    ls.setId(DigitalAccount.findDefault(x_, receiver_, "CAD").getId());
-    ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
     receiver_ = (User) receiver_.fclone();
     receiver_.setEmailVerified(true);
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();

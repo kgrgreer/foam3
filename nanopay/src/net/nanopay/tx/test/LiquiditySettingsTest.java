@@ -17,10 +17,7 @@ import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.cron.LiquiditySettingsCheckCron;
-import net.nanopay.tx.model.Frequency;
-import net.nanopay.tx.model.LiquiditySettings;
-import net.nanopay.tx.model.Transaction;
-import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.model.*;
 import net.nanopay.tx.FeeTransfer;
 import net.nanopay.tx.Transfer;
 
@@ -43,16 +40,17 @@ public class LiquiditySettingsTest
     txnDAO = (DAO) x.get("localTransactionDAO");
     x_ = x;
     setupAccounts();
+    long initialBalance = (Long)senderDigitalDefault.findBalance(x);
     senderBankAccount_ = (BankAccount) setupBankAccount(x, sender_);
     ls_ = setupLiquiditySettings(x, (Account) senderDigitalDefault, (Account) senderLiquidityDigital, minLimit, maxLimit, Frequency.PER_TRANSACTION);
     Transaction ci = createCompletedCashIn(x, (Account) senderBankAccount_, (Account) senderDigitalDefault, CASH_IN_AMOUNT);
     // Cash-In to self will not trigger Liquidity
     Long balance = (Long)senderDigitalDefault.findBalance(x);
-    test(balance == CASH_IN_AMOUNT, "Initial balance "+CASH_IN_AMOUNT);
+    test(balance == CASH_IN_AMOUNT + initialBalance, "Initial balance "+CASH_IN_AMOUNT);
     // Cash-Out to self will not trigger Liquidity
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
     balance = (Long)senderDigitalDefault.findBalance(x);
-    test(balance == CASH_IN_AMOUNT - CASH_OUT_AMOUNT, "Balance with PENDING Cash-Out "+(CASH_IN_AMOUNT-CASH_OUT_AMOUNT));
+    test(balance == CASH_IN_AMOUNT + initialBalance - CASH_OUT_AMOUNT, "Balance with PENDING Cash-Out "+(initialBalance + CASH_IN_AMOUNT-CASH_OUT_AMOUNT));
 
     testPerTransactionLiquidity();
     testLsCronjob();
@@ -120,9 +118,9 @@ public class LiquiditySettingsTest
     Transaction txn1 = new Transaction();
     txn1.setSourceAccount(senderLiquidityDigital.getId());
     txn1.setDestinationAccount(senderDigitalDefault.getId());
-    txn1.setAmount(maxLimit + 1);
+    txn1.setAmount(maxLimit + 2);
     txn1 = (Transaction) txnDAO.put(txn1);
-    Long expected = originalBalanceDef + maxLimit + 1;
+    Long expected = originalBalanceDef + maxLimit + 2;
     test(SafetyUtil.equals(senderDigitalDefault.findBalance(x_),expected), "before cron job account has "+expected);
     LiquiditySettingsCheckCron cron = new LiquiditySettingsCheckCron(Frequency.DAILY);
     cron.execute(x_);
@@ -135,12 +133,21 @@ public class LiquiditySettingsTest
 
   public void testAffectOfCICO(X x) {
     Long balance = (Long) senderLiquidityDigital.findBalance(x);
-    test(balance == balance, "testAffectofCICO: initial balance: "+balance);
+    test(balance == balance, "testAffectofCICO: initial balance: " + balance);
 
-    ls_.setMinimumBalance(0L);
-    ls_.setMaximumBalance(0L);
-    ls_.setEnableCashIn(false);
+    Liquidity high = new Liquidity();
+    high.setReset(0L);
+    high.setThreshold(0L);
+    high.setEnable(true);
+
+    Liquidity low = new Liquidity();
+    low.setEnable(true);
+    low.setReset(0L);
+    low.setThreshold(0L);
+
     ls_.setCashOutFrequency(Frequency.DAILY);
+    ls_.setHighLiquidity(high);
+    ls_.setLowLiquidity(low);
     ls_ = (LiquiditySettings) ((DAO) x.get("liquiditySettingsDAO")).put(ls_).fclone();
     LiquiditySettingsCheckCron cron = new LiquiditySettingsCheckCron(Frequency.DAILY);
     cron.execute(x_);
@@ -157,7 +164,7 @@ public class LiquiditySettingsTest
     // TODO: how to create comparator for order to order by CREATED property
     List txns = ((ArraySink) d.select_(x, new ArraySink(), 0, 1, Transaction.CREATED, null)).getArray();
     Transaction txn = (Transaction)txns.get(0);
-    //test(SafetyUtil.equals(txn.getAmount(), (CASH_IN_AMOUNT - CASH_OUT_AMOUNT)), "testAffectOfCICO: Txm amount, expected: "+(CASH_IN_AMOUNT - CASH_OUT_AMOUNT)+", found: "+txn.getAmount());
+//test(SafetyUtil.equals(txn.getAmount(), (CASH_IN_AMOUNT - CASH_OUT_AMOUNT)), "testAffectOfCICO: Txm amount, expected: "+(CASH_IN_AMOUNT - CASH_OUT_AMOUNT)+", found: "+txn.getAmount());
   }
 
   public Account setupBankAccount(X x, User user) {
@@ -167,7 +174,7 @@ public class LiquiditySettingsTest
       senderBankAccount_.setAccountNumber("2131412443534534");
       senderBankAccount_.setOwner(user.getId());
     } else {
-      senderBankAccount_ = (CABankAccount)senderBankAccount_.fclone();
+      senderBankAccount_ = (CABankAccount) senderBankAccount_.fclone();
     }
     senderBankAccount_.setStatus(BankAccountStatus.VERIFIED);
     senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_).fclone();
@@ -176,13 +183,21 @@ public class LiquiditySettingsTest
 
   public LiquiditySettings setupLiquiditySettings(X x, Account account, Account bankAccount, Long minLimit, Long maxLimit, Frequency frequency) {
     LiquiditySettings ls = new LiquiditySettings();
+    Liquidity highLiquidity = new Liquidity();
+    highLiquidity.setEnable(true);
+    highLiquidity.setReset(maxLimit);
+    highLiquidity.setThreshold(maxLimit + 1);
+    highLiquidity.setFundAccount(bankAccount.getId());
+    Liquidity lowLiquidity = new Liquidity();
+    lowLiquidity.setEnable(true);
+    lowLiquidity.setThreshold(minLimit - 1);
+    lowLiquidity.setReset(minLimit);
+    lowLiquidity.setFundAccount(bankAccount.getId());
+
     ls.setId(account.getId());
-    ls.setEnableCashIn(true);
-    ls.setEnableCashOut(true);
-    ls.setMaximumBalance(maxLimit);
-    ls.setMinimumBalance(minLimit);
     ls.setCashOutFrequency(frequency);
-    ls.setBankAccountId(bankAccount.getId());
+    ls.setHighLiquidity(highLiquidity);
+    ls.setLowLiquidity(lowLiquidity);
     return (LiquiditySettings)((DAO)x.get("liquiditySettingsDAO")).put(ls).fclone();
   }
 
