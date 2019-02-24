@@ -2,21 +2,16 @@ package net.nanopay.tx.model;
 
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
-import foam.core.X;
 import foam.dao.AbstractSink;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.sink.Sum;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.tx.TransactionQuote;
 import net.nanopay.bank.BankAccount;
-import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
-import java.util.List;
 
 import static foam.mlang.MLang.*;
 
@@ -57,7 +52,7 @@ public class LiquidityService
 
   @Override
   public void liquifyAccount(long accountId, Frequency frequency, long txnAmount) {
-    LiquiditySettings ls =null;
+    LiquiditySettings ls;
     ls = (LiquiditySettings) getLiquiditySettingsDAO().find(accountId);
     if ( ls == null || ls.getCashOutFrequency() != frequency ) return;
     executeLiquidity(ls, txnAmount);
@@ -104,52 +99,6 @@ public class LiquidityService
 
     executeLowLiquidity(pendingBalance, ls, txnAmount);
 
-//    Account liquidityAccount = ls.findBankAccountId(x_);
-//    long fundAccount;
-//    if ( liquidityAccount != null && liquidityAccount instanceof DigitalAccount ) {
-//      fundAccount = liquidityAccount.getId();
-//    } else {
-//      fundAccount = getBankAccountID(ls.getBankAccountId(), account);
-//    }
-//    if ( fundAccount == -1 ) return;
-//
-//
-//    long destination;
-//    long source;
-//    long amount;
-//    if ( pendingBalance > ls.getMaximumBalance() ) {
-//      amount = pendingBalance - ls.getMaximumBalance();
-//      if ( txnAmount > 0 && amount > txnAmount ) {
-//        //send notification limit went over
-//        notifyUser(account, true, "Account has gone above", ls);
-//      }
-//      if ( ! ls.getEnableCashOut() ) {
-//        if ( txnAmount != 0 ) {
-//          //send notification that transaction was made outside of the range
-//          notifyUser(account, true, "Transaction was made outside of range", ls);
-//        }
-//        return;
-//      }
-//      source = account.getId();
-//      destination = fundAccount;
-//    } else if ( pendingBalance < ls.getMinimumBalance() ) {
-//      amount = ls.getMinimumBalance() - pendingBalance;
-//      if ( txnAmount < 0 && amount > -txnAmount ) {
-//        //send notification limit went over
-//        notifyUser(account, false, "Account has fallen below", ls);
-//      }
-//      if ( ! ls.getEnableCashIn() ) {
-//        if ( txnAmount != 0 ) {
-//          //send notification that transaction was made outside of the range
-//          notifyUser(account, false, "Transaction was made outside of range", ls);
-//        }
-//        return;
-//      }
-//      source = fundAccount;
-//      destination = account.getId();
-//    } else return;
-//    addCICOTransaction(amount, source, destination, getX());
-
   }
 
   public void executeHighLiquidity(Long currentBalance, LiquiditySettings ls, long txnAmount) {
@@ -173,7 +122,7 @@ public class LiquidityService
     if ( currentBalance > liquidity.getThreshold() ) {
       if ( txnAmount > 0 && currentBalance - liquidity.getThreshold() > txnAmount ) {
         //send notification when limit went over
-        notifyUser(account, true, "Account has gone above", ls);
+        notifyUser(account, true, ls.getHighLiquidity().getThreshold());
       }
       if ( liquidity.getEnable() ) {
         addCICOTransaction(currentBalance - liquidity.getReset(),account.getId(), fundAccount.getId());
@@ -189,7 +138,7 @@ public class LiquidityService
       Account account = ls.findAccount(x_);
       if ( txnAmount < 0 && currentBalance + txnAmount >  liquidity.getThreshold() ) {
         //send notification when limit went over
-        notifyUser(account, false, "Account has gone below", ls);
+        notifyUser(account, false, ls.getLowLiquidity().getThreshold());
       }
       Account fundAccount = liquidity.findFundAccount(x_);
       if ( ! ( fundAccount instanceof DigitalAccount ) ) {
@@ -210,15 +159,16 @@ public class LiquidityService
 
   }
 
-  public void notifyUser(Account account, Boolean above, String notifType, LiquiditySettings ls) {
+  public void notifyUser(Account account, Boolean above, long amount) {
     Notification notification = new Notification();
     if ( above ) {
-      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has gone above maximum value of " );
+      notification.setNotificationType("Account has gone above");
+      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has gone above maximum value of " + amount);
     } else {
-      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has fallen below minimum value of ");
+      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has fallen below minimum value of " + amount);
+      notification.setNotificationType("fallen below");
     }
     notification.setEmailIsEnabled(true);
-    notification.setNotificationType(notifType);
     notification.setUserId(account.getOwner());
     ((DAO) x_.get("notificationDAO")).put(notification);
   }
@@ -243,38 +193,5 @@ public class LiquidityService
       notification.setBody("Error generating Liquidity transactions. "+e.getMessage());
       ((DAO) x_.get("notificationDAO")).put(notification);
     }
-  }
-
-  public Account getBankAccount(long lsBankId, Account account) {
-    Account bankAccount;
-    //if user ID == 0, that means this user don't set default bank account. If we want to cash in we need to find on
-    // bank account which is enable for this user
-    if ( lsBankId == 0 ) {
-      bankAccount = (Account) getAccountDAO().find(
-          AND(
-              EQ(BankAccount.OWNER, account.getOwner()),
-              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
-          ));
-
-    } else {
-      bankAccount = (Account) getAccountDAO().find(
-          AND(
-              EQ(BankAccount.ID, lsBankId),
-              EQ(BankAccount.OWNER, account.getOwner()),
-              EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
-          ));
-    }
-
-    //if bank account is null we will return -1, because our bank account id will never be negative
-    if ( bankAccount == null ) {
-      Notification notification = new Notification();
-      notification.setNotificationType("No verified bank account for liquidity settings");
-      notification.setBody("You need to add and verify bank account for liquidity settings");
-      notification.setUserId(account.getOwner());
-      ((DAO) x_.get("notificationDAO")).put(notification);
-      return null;
-    }
-
-    return bankAccount;
   }
 }
