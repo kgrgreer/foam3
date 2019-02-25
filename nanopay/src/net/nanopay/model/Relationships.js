@@ -81,6 +81,17 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.account.Account',
+  forwardName: 'parent',
+  inverseName: 'children',
+  cardinality: '1:*',
+  targetProperty: {
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  }
+});
+
+foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.account.Account',
   forwardName: 'accounts',
