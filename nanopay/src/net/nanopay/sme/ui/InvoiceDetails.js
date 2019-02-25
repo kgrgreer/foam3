@@ -19,6 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'currencyDAO',
     'notify',
     'user'
   ],
@@ -36,21 +37,14 @@ foam.CLASS({
       font-size: 18px;
       display: inline-block;
     }
-    ^ .invoice-text-left {
+    ^invoice-content-block {
       display: inline-block;
       vertical-align: top;
-      color: #8e9090;
-      width: 50%;
-    }
-    ^ .invoice-text-right {
-      display: inline-block;
-      vertical-align: top;
-      color: #8e9090;
       width: 50%;
       }
-    ^ .bold-label {
-      color: #2b2b2b;
-      margin-bottom: 5px;
+    ^invoice-content-text {
+      color: #8e9090;
+      line-height: 1.5;
     }
     ^ .invoice-note {
       display: inline-block;
@@ -106,6 +100,12 @@ foam.CLASS({
       margin-right: 5px !important;
       display: inline;
     }
+    ^italic {
+      font-style: italic;
+    }
+    ^ .bold-label {
+      line-height: 1.5;
+    }
   `,
 
   constants: [
@@ -147,7 +147,7 @@ foam.CLASS({
       expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
         // Format the amount & add the currency symbol
         if ( invoice$destinationCurrency !== undefined ) {
-          return invoice.destinationCurrency$find.then((currency) => {
+          return this.currencyDAO.find(invoice$destinationCurrency).then((currency) => {
             return currency.format(invoice$amount);
           });
         }
@@ -242,114 +242,155 @@ foam.CLASS({
           .start()
             .addClass('invoice-row')
             .start()
-              .addClass('invoice-text-left')
+              .addClass(this.myClass('invoice-content-block'))
               .start()
                 .addClass('bold-label')
                 .add(this.PAYER_LABEL)
               .end()
-              .add(this.payer$.map(function(payer) {
-                return payer.then(function(payer) {
-                  if ( payer != null ) {
-                    var address = payer.businessAddress;
-                    return self.E()
-                      .start().add(payer.businessName).end()
-                      .start().add(self.formatStreetAddress(address)).end()
-                      .start().add(self.formatRegionAddress(address)).end()
-                      .start().add(address.postalCode).end();
-                  }
-                });
-              }))
+              .start().addClass(this.myClass('invoice-content-text'))
+                .add(this.payer$.map(function(payer) {
+                  return payer.then(function(payer) {
+                    if ( payer != null ) {
+                      var address = payer.businessAddress;
+                      return self.E()
+                        .start().add(payer.businessName).end()
+                        .start().add(self.formatStreetAddress(address)).end()
+                        .start().add(self.formatRegionAddress(address)).end()
+                        .start().add(address != undefined ? address.postalCode : '').end();
+                      }
+                  });
+                }))
+              .end()
             .end()
             .start()
-              .addClass('invoice-text-left')
-              .start().addClass('bold-label').add(this.PAYEE_LABEL).end()
-              .add(this.payee$.map(function(payee) {
-                return payee.then(function(payee) {
-                  if ( payee != null ) {
-                    return self.E()
-                      .start().add(payee.firstName + ' ' + payee.lastName).end()
-                      .start().add(payee.businessPhone.number).end()
-                      .start().add(payee.email).end();
-                  }
-                });
-              }))
+              .addClass(this.myClass('invoice-content-block'))
+              .start()
+                .addClass('bold-label')
+                .add(this.PAYEE_LABEL)
+              .end()
+              .start().addClass(this.myClass('invoice-content-text'))
+                .add(this.payee$.map(function(payee) {
+                  return payee.then(function(payee) {
+                    if ( payee != null ) {
+                      return self.E()
+                        .start().add(payee.firstName + ' ' + payee.lastName).end()
+                        .start().add(payee.businessPhone != undefined ? payee.businessPhone.number : '').end()
+                        .start().add(payee.email).end();
+                    }
+                  });
+                }))
+              .end()
             .end()
           .end()
           .start()
             .addClass('invoice-row')
             .start()
-              .addClass('invoice-text-left')
+              .addClass(this.myClass('invoice-content-block'))
               .start()
                 .addClass('bold-label')
                 .add(this.AMOUNT_LABEL)
               .end()
-              .add(this.PromiseSlot.create({
-                promise$: this.formattedAmount$,
-                value: '...',
-              }))
-              .add(' ')
-              .add(this.invoice$.dot('destinationCurrency'))
+              .start().addClass(this.myClass('invoice-content-text'))
+                .add(this.PromiseSlot.create({
+                  promise$: this.formattedAmount$,
+                  value: '--',
+                }))
+                .add(' ')
+                .add(this.invoice$.dot('destinationCurrency'))
+              .end()
             .end()
             .start()
-              .addClass('invoice-text-right')
+              .addClass(this.myClass('invoice-content-block'))
               .start().addClass('inline-block')
                 .start()
                   .addClass('bold-label')
                   .add(this.DUE_DATE_LABEL)
                 .end()
-                .start().add(this.dueDate$).end()
+                .start()
+                  .addClass(this.myClass('invoice-content-text'))
+                  .add(this.dueDate$)
+                .end()
               .end()
               .start().addClass(this.myClass('issue-date-block'))
                 .start()
                   .addClass('bold-label')
                   .add(this.ISSUE_DATE_LABEL)
                 .end()
-                .start().add(this.issueDate$).end()
+                .start()
+                  .addClass(this.myClass('invoice-content-text'))
+                  .add(this.issueDate$)
+                .end()
               .end()
             .end()
           .end()
         .end()
-        .start()
+        .start().addClass('invoice-row')
           .start()
             .add(this.ATTACHMENT_LABEL)
             .addClass('bold-label')
           .end()
           .start()
             .add(this.slot(function(invoice$invoiceFile) {
-              return self.E().forEach(invoice$invoiceFile, function(file) {
-                this
-                  .start().addClass(self.myClass('attachment-row'))
-                    .start('img')
-                      .addClass('icon')
-                      .addClass(self.myClass('attachment-icon'))
-                      .attr('src', 'images/attach-icon.svg')
-                    .end()
-                    .start().addClass(self.myClass('attachment'))
-                      .add(file.filename)
-                      .on('click', () => {
-                        // If file.id is not empty, the invoice is created
-                        // and the uploaded file is saved
-                        if ( file.id ) {
-                          window.open(file.address);
-                        } else {
-                          // The uploaded file only exists temporarily
-                          window.open(URL.createObjectURL(file.data.blob));
-                        }
-                      })
-                    .end()
+              if ( invoice$invoiceFile.length !== 0 ) {
+                return self.E().forEach(invoice$invoiceFile, function(file) {
+                  this
+                    .start()
+                      .addClass(self.myClass('attachment-row'))
+                      .start('img')
+                        .addClass('icon')
+                        .addClass(self.myClass('attachment-icon'))
+                        .attr('src', 'images/attach-icon.svg')
+                      .end()
+                      .start().addClass(self.myClass('attachment'))
+                        .add(file.filename)
+                        .on('click', () => {
+                          // If file.id is not empty, the invoice is created
+                          // and the uploaded file is saved
+                          if ( file.id ) {
+                            window.open(file.address);
+                          } else {
+                            // The uploaded file only exists temporarily
+                            window.open(URL.createObjectURL(file.data.blob));
+                          }
+                        })
+                      .end()
+                    .end();
+                });
+              } else {
+                return self.E()
+                  .start()
+                    .addClass(this.myClass('invoice-content-block'))
+                    .addClass(this.myClass('invoice-content-text'))
+                    .addClass(this.myClass('italic'))
+                    .add('No attachments provided')
                   .end();
-              });
+              }
             }))
           .end()
         .end()
-        .br()
-        .start()
-          .addClass('bold-label')
-          .add(this.NOTE_LABEL)
-        .end()
-        .start('span')
-          .addClass('invoice-note')
-          .add(this.invoice$.dot('note'))
+        .start().addClass('invoice-row')
+          .start()
+            .addClass('bold-label')
+            .add(this.NOTE_LABEL)
+          .end()
+          .start('span')
+            .addClass(this.myClass('invoice-content-block'))
+            .addClass(this.myClass('invoice-content-text'))
+            .addClass('invoice-note')
+            .add(this.slot(function(invoice$note) {
+              if ( invoice$note ) {
+                return self.E()
+                  .start()
+                    .add(invoice$note)
+                  .end();
+              } else {
+                return self.E()
+                  .start().addClass(this.myClass('italic'))
+                    .add('No notes provided')
+                  .end();
+              }
+            }))
+          .end()
         .end()
 
         .start()

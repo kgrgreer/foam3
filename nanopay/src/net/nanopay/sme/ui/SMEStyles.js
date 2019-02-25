@@ -514,9 +514,14 @@ foam.CLASS({
     /* Text Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea26293d02ff3d04f8892d */
 
     .x-large-header {
-      font-size: 40px;
-      line-height: 48px;
+      /* InvoiceOverview Header format length */
+      font-size: 32px;
       font-weight: 900;
+      line-height: 1.5;
+      max-width: 600px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .large-header {
@@ -1004,7 +1009,7 @@ foam.CLASS({
       display: inline-block;
     }
 
-    .generic-status-circle.Completed {
+    .generic-status-circle.Complete {
       background: #07941f;
     }
 
@@ -1016,15 +1021,15 @@ foam.CLASS({
       color: #cf6f0a !important;
     }
 
-    .Invoice-Status.Funds-in-transit {
+    .Invoice-Status.Processing {
       color: #cf6f0a !important;
     }
 
-    .generic-status-circle.Funds-in-transit {
+    .generic-status-circle.Processing {
       background: #cf6f0a;
     }
 
-    .Invoice-Status.Completed {
+    .Invoice-Status.Complete {
       color: #07941f !important;
     }
 
@@ -1045,7 +1050,11 @@ foam.CLASS({
     }
 
     .generic-status-circle.draft {
-      background: #8b90a6;
+      border-color: #8b90a6;
+      border-style: solid;
+      border-width: 1.5px;
+      height: 4px;
+      width: 4px;
     }
 
     .Invoice-Status.draft {
@@ -1053,11 +1062,15 @@ foam.CLASS({
     }
 
     .generic-status-circle.pending-approval {
-      background: #cf6f0a;
+      border-color: #545d87;
+      border-style: solid;
+      border-width: 1.5px;
+      height: 4px;
+      width: 4px;
     }
 
     .Invoice-Status.pending-approval {
-      color: #cf6f0a !important;
+      color: #545d87 !important;
     }
 
     .generic-status-circle.depositing-money {

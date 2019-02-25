@@ -52,11 +52,6 @@ public class AscendantFXTransactionPlanDAOTest
     payer_ = (User) ((DAO) x_.get("localUserDAO")).find(1002);
     payer_.setEmailVerified(true);
     payer_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, payer_)).fclone();
-    LiquiditySettings ls = new LiquiditySettings();
-    ls.setId(DigitalAccount.findDefault(x_, payer_, "CAD").getId());
-    ls.setEnableCashIn(false);
-    ls.setEnableCashOut(false);
-    ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
 
     payee_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "testascendantfxtransaction@nanopay.net"));
     if (payee_ == null) {
