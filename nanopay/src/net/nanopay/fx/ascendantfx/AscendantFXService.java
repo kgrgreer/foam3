@@ -14,16 +14,10 @@ public class AscendantFXService
     extends ContextAwareSupport
     implements AscendantFX
 {
-  protected final String host_;
-  protected final String username_;
-  protected final String password_;
   protected Logger logger;
 
-  public AscendantFXService(X x, String host, String username, String password) {
+  public AscendantFXService(X x) {
     setX(x);
-    host_ = host;
-    username_ = username;
-    password_ = password;
     logger = (Logger) x.get("logger");
   }
 
@@ -390,15 +384,16 @@ public class AscendantFXService
       SOAPElement security = header.addChildElement("Security", "o", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
       security.addAttribute(new QName("s:mustUnderstand"), "1");
 
+      AscendantFXCredientials credentials = (AscendantFXCredientials) getX().get("ascendantFXCredientials");
       // add username
       SOAPElement usernameToken = security.addChildElement("UsernameToken", "o");
       SOAPElement username = usernameToken.addChildElement("Username", "o");
-      username.addTextNode(username_);
+      username.addTextNode(credentials.getUser());
 
       // add password
       SOAPElement password = usernameToken.addChildElement("Password", "o");
       password.addAttribute(new QName("Type"), "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText");
-      password.addTextNode(password_);
+      password.addTextNode(credentials.getPassword());
 
       // add outer and inner wrappers and then add request body
       SOAPElement outer = body.addChildElement(method, null, "http://tempuri.org/");
@@ -464,10 +459,11 @@ public class AscendantFXService
    */
   protected SOAPMessage sendMessage(String method, SOAPMessage message) {
     SOAPConnection conn = null;
+    AscendantFXCredientials credentials = (AscendantFXCredientials) getX().get("ascendantFXCredientials");
 
     try {
       conn = SOAPConnectionFactory.newInstance().createConnection();
-      return conn.call(message, host_ + "/" + method);
+      return conn.call(message, credentials.getHost() + "/" + method);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
