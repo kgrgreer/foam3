@@ -205,16 +205,10 @@ foam.CLASS({
       this.viewData.agent = this.agent;
       this.title = 'Your business profile';
 
-      this.user.signingOfficers.junctionDAO
-        .where(
-          this.AND(
-            this.EQ(this.BusinessUserJunction.SOURCE_ID, this.agent.id),
-            this.EQ(this.BusinessUserJunction.TARGET_ID, this.user.id)
-          )
-        )
-        .select(this.COUNT())
-        .then((sink) => {
-          this.isSigningOfficer = sink != null && sink.value > 0;
+      this.user.signingOfficers.dao
+        .find(this.agent.id)
+        .then((result) => {
+          this.isSigningOfficer = result != null;
         });
 
       this.saveLabel = 'Close';
