@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   properties: [
+    // TODO: Remove this after migration.
     {
       class: 'Int',
       name: 'ownershipPercent',
@@ -162,6 +163,7 @@ foam.CLASS({
         };
       }
     },
+    // TODO: Remove this after migration.
     {
       class: 'FObjectArray',
       of: 'foam.nanos.auth.User',
@@ -343,6 +345,7 @@ foam.CLASS({
           or Head of an International Organization (HIO), or related to any such person.
       `
     },
+    // TODO: Remove
     {
       class: 'Boolean',
       name: 'signingOfficer',

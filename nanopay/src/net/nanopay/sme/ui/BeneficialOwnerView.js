@@ -35,6 +35,7 @@ foam.CLASS({
   `,
 
   properties: [
+    // TODO: Refactor
     {
       name: 'beneficialOwners',
       factory: function() {
@@ -48,12 +49,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Principal owners' },
+    { name: 'TITLE', message: 'Beneficial owners' },
     { name: 'LEGAL_NAME_LABEL', message: 'Legal name' },
     { name: 'JOB_TITLE_LABEL', message: 'Job title' },
     { name: 'ADDRESS_LABEL', message: 'Residential address' },
     { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of birth' },
-    { name: 'OWNER_COUNT_LABEL', message: 'Principal owner' }
+    { name: 'OWNER_COUNT_LABEL', message: 'Beneficial owner' }
   ],
 
   methods: [

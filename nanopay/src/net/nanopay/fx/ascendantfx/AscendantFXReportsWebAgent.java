@@ -330,6 +330,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String businessName = business.getBusinessName();
     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwners.pdf";
 
+    // TODO: Refactor
     User[] beneficialOwners = business.getPrincipalOwners();
     try {
       Document document = new Document();
