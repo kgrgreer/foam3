@@ -343,7 +343,7 @@ foam.CLASS({
       this.client.auth.getCurrentUser(null).then(function(result) {
         self.loginSuccess = !! result;
         if ( result ) {
-          foam.assert(self.user.id === result.id, `The user that was returned from 'getCurrentUser's id must be the same as the user's id returned from 'loginByEmail'. If this isn't happening, it's possible that one of those methods is returning the wrong user.`);
+          // DOESNT MAKE SENSE FOR A NEW USER signing in. self.user is not assigned. foam.assert(self.user.id === result.id, `The user that was returned from 'getCurrentUser's id must be the same as the user's id returned from 'loginByEmail'. If this isn't happening, it's possible that one of those methods is returning the wrong user.`);
 
           self.user.copyFrom(result);
 

@@ -18,10 +18,7 @@ import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -45,7 +42,19 @@ public class BusinessInvitationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Business business = (Business) x.get("user");
+    User user = (User) x.get("user");
+    Business business = null;
+
+    // Check is user is a business,
+    // Requirement: there was a point where user was not a business and
+    // was incorrectly stopping execution with a cast exception
+    // User was system before binding to user(business)
+    if ( (Business.class).isInstance(user) ) {
+      business = (Business) user;
+    } else {
+      return super.put_(x, obj);
+    }
+
     DAO localUserUserDAO = (DAO) x.get("localUserUserDAO");
 
     // AUTH CHECK

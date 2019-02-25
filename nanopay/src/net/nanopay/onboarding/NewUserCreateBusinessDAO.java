@@ -71,9 +71,11 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       // Check if Token exists
       Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
       user.setEmailVerified(token != null);
+
       if ( token == null ) {
         throw new RuntimeException("Unable to process user registration");
       }
+      
       Map<String, Object> params = (Map) token.getParameters();
 
       try {
@@ -115,7 +117,6 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             }
           } else {
             /* PROCESSING external users */
-            user.setEmailVerified(token != null);
             user = (User) super.put_(sysContext, user);
           }
             // Set up new connection between user and business
