@@ -343,12 +343,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isCanadian',
       expression: function(viewData) {
-        var areYouCAD = false;
-        if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
-          areYouCAD = true;
-        }
-        viewData.isCanadian = areYouCAD;
-        return areYouCAD;
+        return foam.util.equals(viewData.user.businessAddress.countryId, 'CA');
       }
     },
     {
