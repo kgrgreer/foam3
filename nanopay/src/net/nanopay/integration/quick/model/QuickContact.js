@@ -16,7 +16,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'chooseBusiness',
       value: false,
-      documentation: 'set this to true to let use manually select the business of this contact'
+      documentation: 'set this to true to let user manually select the business of this contact'
     },
     {
       class: 'Boolean',
