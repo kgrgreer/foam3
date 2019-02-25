@@ -1,35 +1,43 @@
 #!/usr/bin/env node
 
-require('./../../foam2/src/foam.js');
+var npRoot = __dirname + '/../../';
 
-var outDir = __dirname + '/build/src'
-var srcDirs = [
-  global.FOAM_ROOT,
-  __dirname + '/../../nanopay/src',
-  __dirname + '/../../interac/src',
-  __dirname + '/../../merchant/src',
-];
+global.FOAM_FLAGS = {
+  js: true,
+  web: true,
+  node: true,
+  java: false,
+  swift: false,
+};
 
-// Clear the destination dir.
-var cp = require('child_process');
-cp.execSync('rm -rf ' + outDir)
-cp.execSync('mkdir -p ' + outDir)
+require(npRoot + 'foam2/src/foam.js');
+require(npRoot + 'foam2/src/foam/nanos/nanos.js');
+require(npRoot + 'foam2/src/foam/support/support.js');
+
+var classloader = foam.__context__.classloader;
+[
+  npRoot + 'nanopay/src',
+].forEach(classloader.addClassPath.bind(classloader));
+
+var old = global.FOAM_FLAGS.src;
+var oldRoot = global.FOAM_ROOT;
+global.FOAM_FLAGS.src = npRoot + 'nanopay/src/'; // Hacky
+require(npRoot + 'nanopay/src/net/nanopay/files.js');
+require(npRoot + 'nanopay/src/net/nanopay/iso20022/files.js');
+require(npRoot + 'nanopay/src/net/nanopay/iso8583/files.js');
+require(npRoot + 'nanopay/src/net/nanopay/flinks/utils/files.js');
+global.FOAM_FLAGS.src = old;
+global.FOAM_ROOT = oldRoot;
 
 // TODO: Assets?
 // TODO: Generate the various html files so we don't need to keep them all in
 // sync.
-
-srcDirs.forEach(function(srcDir) {
-  foam.__context__.classloader.addClassPath(srcDir);
-})
-
-foam.__context__.classloader.load('foam.build.Builder').then(function(cls) {
-  cls.create({
-    srcDirs: srcDirs,
-    outDir: outDir,
-    flags: ['js', 'web', 'debug'],
-    required: foam.build.FilesJsGen.NANOS_MODELS.concat(
-      'net.nanopay.ui.Controller',
-    )
+Promise.all([
+  'foam.build.Builder'
+].map(classloader.load.bind(classloader))).then(function() {
+  foam.build.Builder.create({
+    enabledFeatures: ['js', 'web'],
+    targetFile: __dirname + '/foam-bin.js',
+    blacklist: [], // todo
   }).execute();
 });

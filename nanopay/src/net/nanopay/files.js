@@ -130,6 +130,9 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/InvitationTokenService' },
   { name: 'net/nanopay/onboarding/FirebaseInvitationTokenService' },
 
+  // compliance Email notification
+  { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
+
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
   { name: 'net/nanopay/fx/ExchangeRate' },
@@ -431,6 +434,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotification' },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
+  { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
 
   // settings
   { name: 'net/nanopay/settings/AcceptanceDocument' },
