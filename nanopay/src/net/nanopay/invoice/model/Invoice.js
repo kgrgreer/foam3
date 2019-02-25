@@ -41,6 +41,10 @@ foam.CLASS({
     'net.nanopay.contacts.Contact'
   ],
 
+  imports: [
+    'currencyDAO'
+  ],
+
   constants: [
     {
       type: 'long',
@@ -236,10 +240,11 @@ foam.CLASS({
         if ( ! invoice.destinationCurrency ) {
           invoice.destinationCurrency = 'CAD';
         }
-        invoice.destinationCurrency$find.then(function(currency) {
-          this.start()
-            .add(invoice.destinationCurrency + ' ' + currency.format(value))
-          .end();
+        this.__subContext__.currencyDAO.find(invoice.destinationCurrency)
+            .then(function(currency) {
+              this.start()
+                .add(invoice.destinationCurrency + ' ' + currency.format(value))
+              .end();
         }.bind(this));
       }
     },
@@ -255,10 +260,11 @@ foam.CLASS({
         The amount used to pay the invoice, prior to exchange rates & fees.
       `,
       tableCellFormatter: function(value, invoice) {
-        invoice.sourceCurrency$find.then(function(currency) {
-          this.start()
-            .add(invoice.sourceCurrency + ' ' + currency.format(value))
-          .end();
+        this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
+          .then(function(currency) {
+            this.start()
+              .add(invoice.sourceCurrency + ' ' + currency.format(value))
+            .end();
         }.bind(this));
       }
     },
@@ -280,17 +286,17 @@ foam.CLASS({
       documentation: `The state of payment of the invoice.`
     },
     {
-      class: 'Reference',
+      class: 'String',
       name: 'destinationCurrency',
-      of: 'net.nanopay.model.Currency',
+      value: 'CAD',
       documentation: `
         Currency of the account the funds with be deposited into.
       `
     },
     {
-      class: 'Reference',
+      class: 'String',
       name: 'sourceCurrency',
-      of: 'net.nanopay.model.Currency',
+      value: 'CAD',
       documentation: `Currency of the account the funds with be withdran from.`,
     },
     {
@@ -336,7 +342,7 @@ foam.CLASS({
         if ( paymentMethod === this.PaymentStatus.PENDING ) return this.InvoiceStatus.PENDING;
         if ( paymentMethod === this.PaymentStatus.CHEQUE ) return this.InvoiceStatus.PAID;
         if ( paymentMethod === this.PaymentStatus.NANOPAY ) return this.InvoiceStatus.PAID;
-        if ( paymentMethod === this.PaymentStatus.TRANSIT_PAYMENT ) return this.InvoiceStatus.IN_TRANSIT;
+        if ( paymentMethod === this.PaymentStatus.TRANSIT_PAYMENT ) return this.InvoiceStatus.PENDING;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_PAYMENT ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_MONEY ) return this.InvoiceStatus.DEPOSITING_MONEY;
         if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) return this.InvoiceStatus.PENDING_APPROVAL;
@@ -353,7 +359,7 @@ foam.CLASS({
         if ( getPaymentMethod() == PaymentStatus.PENDING ) return InvoiceStatus.PENDING;
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return InvoiceStatus.PAID;
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return InvoiceStatus.PAID;
-        if ( getPaymentMethod() == PaymentStatus.TRANSIT_PAYMENT ) return InvoiceStatus.IN_TRANSIT;
+        if ( getPaymentMethod() == PaymentStatus.TRANSIT_PAYMENT ) return InvoiceStatus.PENDING;
         if ( getPaymentMethod() == PaymentStatus.DEPOSIT_PAYMENT ) return InvoiceStatus.PENDING_ACCEPTANCE;
         if ( getPaymentMethod() == PaymentStatus.DEPOSIT_MONEY ) return InvoiceStatus.DEPOSITING_MONEY;
         if ( getPaymentMethod() == PaymentStatus.PENDING_APPROVAL ) return InvoiceStatus.PENDING_APPROVAL;

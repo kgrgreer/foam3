@@ -10,13 +10,13 @@ import foam.nanos.auth.token.TokenService;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.util.SafetyUtil;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import net.nanopay.auth.PublicUserInfo;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
+import net.nanopay.model.Currency;
 
 import static foam.mlang.MLang.EQ;
 
@@ -28,12 +28,14 @@ public class InvoiceNotificationDAO extends ProxyDAO {
 
   protected DAO bareUserDAO_;
   protected DAO notificationDAO_;
+  protected DAO currencyDAO_;
   protected TokenService externalToken;
 
   public InvoiceNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     bareUserDAO_ = (DAO) x.get("bareUserDAO");
     notificationDAO_ = (DAO) x.get("notificationDAO");
+    currencyDAO_ = (DAO) x.get("currencyDAO");
     externalToken = (TokenService) x.get("externalInvoiceToken");
   }
 
@@ -42,15 +44,12 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
     Invoice existing = (Invoice) super.find(invoice.getId());
 
-    if (existing != null ) {
+    if ( existing != null ) {
       if (
         existing.getStatus() == InvoiceStatus.UNPAID ||
         existing.getStatus() == InvoiceStatus.PENDING_APPROVAL
       ) {
-        if (
-          invoice.getStatus() == InvoiceStatus.PENDING ||
-          invoice.getStatus() == InvoiceStatus.IN_TRANSIT
-        ) {
+        if ( invoice.getStatus() == InvoiceStatus.PENDING ) {
           AppConfig appConfig = (AppConfig) x.get("appConfig");
           User user = invoice.findPayeeId(x);
           String emailTemplate = "invoice-paid";
@@ -61,7 +60,8 @@ public class InvoiceNotificationDAO extends ProxyDAO {
             .build();
 
           PublicUserInfo payer = invoice.getPayer();
-          String amount = invoice.findDestinationCurrency(x)
+
+          String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
             .format(invoice.getAmount());
 
           String currency = invoice.getDestinationCurrency();
@@ -142,7 +142,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     boolean invType = invoice.getPayeeId() == invoice.getCreatedBy();
 
     // Add the currency symbol and currency (CAD/USD, or other valid currency)
-    String amount = invoice.findDestinationCurrency(x)
+    String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
         .format(invoice.getAmount()) + " " + invoice.getDestinationCurrency();
 
     String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();

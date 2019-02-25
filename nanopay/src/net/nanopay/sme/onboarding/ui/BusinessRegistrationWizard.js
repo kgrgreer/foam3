@@ -316,7 +316,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( this.viewData.isCanadian ) {
+      if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
         if ( ! this.viewData.canadianScrollBoxOne ) {
           this.notify(this.ERROR_TERMS_NOT_CHECKED_1, 'error');
           return false;

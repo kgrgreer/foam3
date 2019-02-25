@@ -16,10 +16,13 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.nanos.auth.Region',
     'net.nanopay.model.PersonalIdentification',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.Popup',
+    'net.nanopay.settings.AcceptanceDocumentService',
+    'net.nanopay.settings.AcceptanceDocument'
   ],
 
   imports: [
+    'acceptanceDocumentService',
     'agent',
     'isSigningOfficer',
     'menuDAO',
@@ -123,7 +126,7 @@ foam.CLASS({
     ^ .property-birthdayField {
       width: 100%;
     }
-    
+
     ^ input[type='checkbox']:checked:after {
       width: 16px;
       height: 18px;
@@ -133,6 +136,15 @@ foam.CLASS({
 
     ^ input[type='checkbox']:focus{
       border: solid 2px #5a5a5a;
+    }
+
+    ^terms-link {
+      font-size: 14px !important;
+      margin-left: 5px;
+      text-decoration: none;
+    }
+    ^ .link {
+      margin-right: 5px;
     }
   `,
 
@@ -287,6 +299,9 @@ foam.CLASS({
       name: 'canadianScrollBoxOne',
       postSet: function(o, n) {
         this.viewData.canadianScrollBoxOne = n;
+        if ( this.triPartyAgreementCad ) {
+          this.updateUserAcceptance(this.triPartyAgreementCad.id, n);
+        }
       },
       factory: function() {
         return this.viewData.canadianScrollBoxOne = false;
@@ -297,6 +312,9 @@ foam.CLASS({
       name: 'canadianScrollBoxTwo',
       postSet: function(o, n) {
         this.viewData.canadianScrollBoxTwo = n;
+        if ( this.dualPartyAgreementCad ) {
+            this.updateUserAcceptance(this.dualPartyAgreementCad.id, n);
+        }
       },
       factory: function() {
         return this.viewData.canadianScrollBoxTwo = false;
@@ -307,6 +325,9 @@ foam.CLASS({
       name: 'americanScrollBox',
       postSet: function(o, n) {
         this.viewData.americanScrollBox = n;
+        if ( this.triPartyAgreementUsd ) {
+            this.updateUserAcceptance(this.triPartyAgreementUsd.id, n);
+        }
       },
       factory: function() {
         return this.viewData.americanScrollBox = false;
@@ -316,875 +337,44 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isCanadian',
       expression: function(viewData) {
-        var areYouCAD = false;
-        if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
-          areYouCAD = true;
-        }
-        viewData.isCanadian = areYouCAD;
-        return areYouCAD;
+        return foam.util.equals(viewData.user.businessAddress.countryId, 'CA');
       }
     },
     {
-      class: 'String',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.settings.AcceptanceDocument',
       name: 'triPartyAgreementCad',
       view: function(args, x) {
-        var data = x.data$.dot('triPartyAgreementCad');
+        var data = x.data$.dot('triPartyAgreementCad').dot('body');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
         style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
       },
       displayWidth: 60,
-      value: `
-      <p><strong>TRI-PARTY AGREEMENT FOR ABLII PAYMENTS SERVICE &ndash; CANADA AGREEMENT </strong></p>
-<p><span style="font-weight: 400;">This Agreement is a contract between you, Nanopay Corporation (&ldquo;</span><strong>Nanopay</strong><span style="font-weight: 400;">&rdquo;) and our financial institution partner, AscendantFX Capital, Inc. (&ldquo;</span><strong>AFX</strong><span style="font-weight: 400;">&rdquo;), and applies to your use of Nano pay&rsquo;s payment software platform and any AFX products and services you access via nanopay&rsquo;s payment software platform, such as foreign exchange services (the &ldquo;</span><strong>Foreign Exchange Services</strong><span style="font-weight: 400;">&rdquo;), i.e., the conversion of one currency into another (for example, US dollars into Canadian dollars) and for remittance services (the &ldquo;</span><strong>Remittance Services</strong><span style="font-weight: 400;">&rdquo;) (as defined below). </span></p>
-<p><span style="font-weight: 400;">It is important that you carefully read and understand this Agreement and keep it for your records since its terms and conditions governs your interactions not only with nanopay but also with AFX. Capitalized terms used in this Agreement and not otherwise defined will have the meanings assigned to them by nanopay&rsquo;s Terms of Service located at: </span><span style="font-weight: 400;">
-<a href="https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf" target="_blank"><span style="font-weight: 400;">Click here</span></a></span><span style="font-weight: 400;">. Also, as set forth below, this Agreement contains a binding arbitration provision, which affects your legal rights and may be enforced by the parties. </span></p>
-<ol>
-<li><strong> Definitions. </strong></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>AFX</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in the preamble. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>AFX Custodial Account</em></strong><span style="font-weight: 400;">&rdquo; means a deposit account maintained by AFX at a federally-or- provincially insured depository institution in which it will receive and hold all funds from Customers associated with Remittances (the &ldquo;</span><strong><em>AFX Custodial Account</em></strong><span style="font-weight: 400;">&rdquo;). </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Applicable Law</em></strong><span style="font-weight: 400;">&rdquo; means (a) the Rules, (b) the bylaws, operating rules and/or regulations of any System, and (c) any and all foreign, federal, state or local laws, treaties, rules, regulations, regulatory guidance, directives, policies, orders or determinations of (or agreements with), and mandatory written direction from (or agreements with), a Regulatory Authority, including, without limitation, the Bank Secrecy Act and the regulations promulgated thereunder, as well as the Proceeds of Crime (Money Laundering) and Terrorist Financing Act and the regulations promulgated thereunder, and also all statutes or regulations relating to money transmission, unfair or deceptive trade practices or acts, or privacy or data security, that are applicable to the remittance services (as set forth below), or otherwise applicable to all of the parties to this Agreement, as the same may be amended and in effect from time to time during the Term. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Bank</em></strong><span style="font-weight: 400;">&rdquo; means an entity chartered by a state or federal government which receives demand and time deposits, may pay interest on those deposits and makes loans and invests in securities based on those deposits. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Bank Draft</em></strong><span style="font-weight: 400;">&rdquo; means a check drawn by a Bank on itself authorizing the second Bank to make </span></li>
-</ol>
-<p><span style="font-weight: 400;">payment to the business named in the draft. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Business Day</em></strong><span style="font-weight: 400;">&rdquo; means any day, other than a Saturday, Sunday or any federal banking holiday </span></li>
-</ol>
-<p><span style="font-weight: 400;">observed in Canada. </span></p>
-<ol start="12">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Confidential Information</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section 12. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Customer</em></strong><span style="font-weight: 400;">&rdquo; means a User that has access to and uses the Remittance Service. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Customer Account</em></strong><span style="font-weight: 400;">&rdquo; means the deposit account that you link through the Platform to your </span></li>
-</ol>
-<p><span style="font-weight: 400;">account at AFX for the Remittance Services. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Currency</em></strong><span style="font-weight: 400;">&rdquo; means any form of money, including paper notes and coins, which is issued by a </span></li>
-</ol>
-<p><span style="font-weight: 400;">government and is used in public circulation. </span></p>
-<ol start="11">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Event of Default</em></strong><span style="font-weight: 400;">&rdquo; means an Event of Default as defined in Section 11.04. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>EFT</em></strong><span style="font-weight: 400;">&rdquo; means Electronic Funds Transfer which is a transaction that takes place over a computerized network (i.e. bank wire transfer; ACH, PAD) either between accounts at the same financial institution or between deposit accounts at separate financial institutions. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Financial Institution</em></strong><span style="font-weight: 400;">&rdquo; means an institution that collects funds from the public and places them </span></li>
-</ol>
-<p><span style="font-weight: 400;">into financial assets, such as deposits, loans, and bonds, rather than tangible property. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>FINTRAC</em></strong><span style="font-weight: 400;">&rdquo; means the Financial Transactions and Reports Analysis Centre of Canada. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Foreign Exchange</em></strong><span style="font-weight: 400;">&rdquo; means the trade of one national Currency for another and takes place &ldquo;over </span></li>
-</ol>
-<p><span style="font-weight: 400;">the counter&rdquo; and centrally on an inter-bank system. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Foreign Exchange Rate</em></strong><span style="font-weight: 400;">&rdquo; means the rate at which one Currency may be converted into another </span></li>
-</ol>
-<p><span style="font-weight: 400;">Currency. Also known as rate of exchange or exchange rate or Currency exchange rate. </span></p>
-<ol start="8">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Foreign Exchange Services</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section 8.05. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>nanopay</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in the preamble. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Person</em></strong><span style="font-weight: 400;">&rdquo; means any individual, corporation, limited liability company, partnership, firm, joint </span></li>
-</ol>
-<p><span style="font-weight: 400;">venture, association, trust, unincorporated organization or other entity. </span></p>
-<ol start="2">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Platform</em></strong><span style="font-weight: 400;">&rdquo; has the meaning set forth in Section 2. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Remittance</em></strong><span style="font-weight: 400;">&rdquo; means funds that are remitted electronically from your Customer Account to a </span></li>
-</ol>
-<p><span style="font-weight: 400;">Payee by AFX in accordance with this Agreement. </span></p>
-<ol start="8">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Remittance Instructions</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section 8.03. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Remittance Services</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section 8.01. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Settlement</em></strong><span style="font-weight: 400;">&rdquo; means the finalizing of the sale of a Currency, as its title is transferred from the </span></li>
-</ol>
-<p><span style="font-weight: 400;">seller to the buyer. Also known as closing. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Settlement Date</em></strong><span style="font-weight: 400;">&rdquo; means the date by which an executed Currency transaction must be settled, by </span></li>
-</ol>
-<p><span style="font-weight: 400;">paying for the Currency purchased and delivering the purchased Currency to the buyer. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Transaction</em></strong><span style="font-weight: 400;">&rdquo; means the movement of value using the Platform from payment initiation by a </span></li>
-</ol>
-<p><span style="font-weight: 400;">Payor to settlement, using the Platform and includes Remittances Services. </span></p>
-<ol start="8">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Transaction Confirmation</em></strong><span style="font-weight: 400;">&rdquo; means the transaction confirmation as defined in Section 8.04 of </span></li>
-</ol>
-<p><span style="font-weight: 400;">this Agreement. </span></p>
-<ol start="2">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>User</em></strong><span style="font-weight: 400;">&rdquo; has the meaning set forth in Section 2.</span></li>
-</ol>
-<ol start="2">
-<li><strong> Background. </strong><span style="font-weight: 400;">You understand and agree that nanopay is a technology service provider that offers a payment software platform user interface through which, among other things, nanopay&rsquo;s business customers (each, a &ldquo;</span><strong><em>User</em></strong><span style="font-weight: 400;">&rdquo;) may access certain features and functionality, including the ability to upload and transmit invoices to other businesses for which they act as vendors, and the ability to communicate with third-party payment service providers for the purpose of utilizing payment services offered by such providers (the &ldquo;</span><strong><em>Platform</em></strong><span style="font-weight: 400;">&rdquo;). AFX is a registered as a Money Services Business with the Financial Transactions and Reports Analysis Centre of Canada (</span><strong>FINTRAC</strong><span style="font-weight: 400;">). AFX is engaged in the business of, among other things, providing domestic and cross-border remittance solutions and foreign exchanges services to businesses. </span></li>
-<li><strong> nanopay and AFX Duties. </strong><span style="font-weight: 400;">You understand and agree that all funds transfers are performed by AFX based on instructions received through the Platform. </span><strong>nanopay is solely the Platform provider and does not receive, hold, or transmit funds</strong><span style="font-weight: 400;">. AFX holds the AFX Custodial Account that holds your funds and performs the Foreign Exchange Services and the Remittance Services. </span></li>
-<li><strong> Statutory Trust</strong><span style="font-weight: 400;">. You understand and agree that any funds held for Remittance that are recorded on </span></li>
-</ol>
-<p><span style="font-weight: 400;">the Platform, are held by AFX in the AFX Custodial Account. </span></p>
-<ol start="5">
-<li><strong> Compliance with Applicable Law and Regulation</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">5.01 By accessing and using the Platform and the associated AFX services and products, such as Foreign Exchange Services and Remittance Services, you agree to comply with all applicable laws and regulations and you further agree not to engage in any transaction involving any illegal activity, product or service. Without limiting the foregoing, you agree you will not violate: (i) any applicable domestic or foreign anti-corruption law or regulation, including the United Kingdom Bribery Act of 2010, the United States Foreign Corrupt Practices Act and the Canadian Corruption of Foreign Public Officials Act; (ii) any applicable domestic or foreign laws or regulations related to Anti-Money Laundering and anti-terrorist financing requirements, including the USA Bank Secrecy Act, as amended by the USA Patriot Act and the Financial Conduct Authority&rsquo;s Anti-Money Laundering Regulations, and the Canadian Proceeds of Crime (Money Laundering) and Terrorist Financing Act and Regulations; (iii) the sanctions laws and regulations administered by the U.S. Department of the Treasury&rsquo;s Office of Foreign Assets Control, the Canadian sanctions legislation overseen by Global Affairs; and (iv) applicable data protection and privacy laws such as the Canadian Personal Information Protection and Electronic Documents Act (&ldquo;</span><strong>PIPEDA</strong><span style="font-weight: 400;">&rdquo;) and the European Union&rsquo;s General Data Protection Regulations 2016/679. Furthermore, you and your affiliates and agents shall not utilize the Platform and the associated AFX products and services in a manner that could cause nanopay or AFX to violate any of the foregoing laws and regulations or other applicable laws and regulations to which nanopay and AFX may be subject. </span></p>
-<p><span style="font-weight: 400;">5.02 You understand and agree that if either nanopay or AFX in their sole discretion suspect or believe you are violating or may violate applicable laws or regulations, then either nanopay or AFX may refuse to accept your instructions regarding a Transaction or complete a Remittance already in process. </span></p>
-<ol start="6">
-<li><strong> Your Representations</strong><span style="font-weight: 400;">. To access and use the Platform and the associated AFX products and </span></li>
-</ol>
-<p><span style="font-weight: 400;">services, you represent and warrant that: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> You have full authority to enter into this Agreement and carry out its obligations under the </span></li>
-</ol>
-<p><span style="font-weight: 400;">Agreement; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> This Agreement has been duly authorized by you; </span></li>
-<li><span style="font-weight: 400;"> This Agreement is binding on you and does not conflict with or violate the terms of any </span></li>
-</ol>
-<p><span style="font-weight: 400;">constating documents of yours or of any other agreements pursuant to which you are bound; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> No Event of Default has occurred under the terms of this Agreement; </span></li>
-<li><span style="font-weight: 400;"> You hold a deposit account in your name, over which you exercise legal authority and control </span></li>
-</ol>
-<p><span style="font-weight: 400;">that will be the source of funds for Remittances using the Platform; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> You are not an agent acting for an undisclosed principal or third-party beneficiary; </span></li>
-<li><span style="font-weight: 400;"> All information provided by you as part of your registration and use of the Platform and the associated AFX products and services is accurate and complete, and you undertake to promptly notify nanopay and AFX of changes to such information; </span></li>
-<li><span style="font-weight: 400;"> You will ensure that your contact details provided at your registration remain accurate and up to date. Nanopay and AFX will use those contact details to contact you wherever required under this Agreement or in connection with the Platform and the associated AFX products and services; and </span></li>
-<li><span style="font-weight: 400;"> All representations and warranties made by you shall be true at the time the parties entered into this Agreement and at the time any Remittances are entered into pursuant to the terms of this Agreement. </span></li>
-<li><strong> Prohibited Uses</strong><span style="font-weight: 400;">. For avoidance of doubt, you agree </span><strong>not </strong><span style="font-weight: 400;">to use the Platform and the associated AFX </span></li>
-</ol>
-<p><span style="font-weight: 400;">products and services in the following manner: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of any prohibited or illegal good or service or activity </span></li>
-</ol>
-<p><span style="font-weight: 400;">that requires a government license where you lack such a license; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of marijuana, marijuana paraphernalia, regardless of </span></li>
-</ol>
-<p><span style="font-weight: 400;">whether or not such sale is lawful in your jurisdiction; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of any material that promotes violence or hatred; </span></li>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of adult content; </span></li>
-<li><span style="font-weight: 400;"> In connection with the sale and distribution of goods and services that violate the intellectual </span></li>
-</ol>
-<p><span style="font-weight: 400;">property rights of a third party; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> In connection with the sale or exchange of cryptocurrencies; </span></li>
-<li><span style="font-weight: 400;"> As part of a Ponzi-scheme or pyramid selling </span></li>
-<li><span style="font-weight: 400;"> As part of any gambling or regulated financial services you may provide; or </span></li>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of firearms or weapons, military or semi-military goods, military software or technologies, chemicals, prescription medications, seeds or plants, dietary supplements, alcoholic beverages, tobacco goods, jewels, precious metals or stones.</span></li>
-</ol>
-<ol>
-<li><span style="font-weight: 400;"> For avoidance of doubt, any attempt to use the Platform and the associated AFX products and </span></li>
-</ol>
-<p><span style="font-weight: 400;">services in a prohibited manner shall constitute an Event of Default as defined below. </span></p>
-<ol start="8">
-<li><strong> Services</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">8.01 As a User, you may be eligible for the Foreign Exchange Services and the Remittance </span></p>
-<p><span style="font-weight: 400;">Services as follows: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> Domestic money remittances from one business to another within Canada; </span></li>
-<li><span style="font-weight: 400;"> International EFTs (money remittances) from a business in Canada to a business in </span></li>
-</ol>
-<p><span style="font-weight: 400;">another country; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> Foreign Exchange Services; and </span></li>
-<li><span style="font-weight: 400;"> International Receipt of Funds (the services set out in subsections 8.01(a), 8.01(b) and </span></li>
-</ol>
-<p><span style="font-weight: 400;">8.01(d) are collectively the &ldquo;</span><strong>Remittance Services</strong><span style="font-weight: 400;">&rdquo; referred to in this Agreement). </span></p>
-<p><span style="font-weight: 400;">8.02 You can provide instructions to nanopay and AFX via the Platform according to the process set out below in Section 8.03. AFX (and nanopay) may modify or discontinue the available services set forth above from time to time. AFX and nanopay will not be liable to you for any damages resulting from the discontinuance or modification of any service provided pursuant to this Agreement. </span></p>
-<p><span style="font-weight: 400;">8.03. You will access the Platform and you will send your remittance instructions via the Platform to AFX. Your instructions must include (i) the name, address, financial institution and account number of the payee, (ii) the amount you wish to send, (iii) the applicable transaction currency, (iv) your financial institution, name on the account and account number and, (v) such other information that may be requested by either nanopay or AFX from time to time (collectively, the &ldquo;</span><strong>Remittance Instructions</strong><span style="font-weight: 400;">&rdquo;). </span></p>
-<p><span style="font-weight: 400;">8.04 The Platform will transmit your Remittance Instructions to AFX and AFX will perform the </span></p>
-<p><span style="font-weight: 400;">following actions: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> Provide you with a confirmation of the Remittance Instructions by way of the Platform, including the date of the transaction, the currency and amount of the Remittance, the Payee name, the transaction number and a client ID number, the Foreign Exchange Rate and value date if applicable, any applicable fees or charges, and any relevant disclosure(s) as required by law (collectively, the &ldquo;</span><strong>Transaction Confirmation&rdquo;)</strong><span style="font-weight: 400;">. </span></li>
-<li><span style="font-weight: 400;"> Deem you have accepted the contents of the Transaction Confirmation unless you inform AFX of any errors or omissions upon receiving it and prior to the execution of the transaction by AFX. You shall not thereafter be entitled to dispute the contents of the Transaction Confirmation. </span></li>
-<li><span style="font-weight: 400;"> Receive funds by way of EFT from your Customer Account in an amount equal to the Remittance you are sending to the payee plus any applicable fees, into the AFX Custodial Account once you have authorized and accepted the Transaction Confirmation. </span></li>
-<li><span style="font-weight: 400;"> Funds should be provided to AFX via EFT. If you send funds by wire transfer, AFX will provide you with instructions to send the funds to a CDIC insured AFX</span></li>
-</ol>
-<p><span style="font-weight: 400;">Custodial Account. The instructions will include the bank name and address, ABA routing number, SWIFT code, IBAN, account number and any additional information. For instructions by you to direct debit your account, and AFX consents, you will be required to give AFX written authorization. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> To validate your account information, AFX may rely on one or more of the </span></li>
-</ol>
-<p><span style="font-weight: 400;">following: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> A Void Cheque; </span></li>
-<li><span style="font-weight: 400;"> A bank statement that is no older than ninety (90) days; </span></li>
-<li><span style="font-weight: 400;"> Confirmation of a micro deposit made to your account; and, </span></li>
-<li><span style="font-weight: 400;"> Instant Account Verification by way of an approved 3</span><span style="font-weight: 400;">rd </span><span style="font-weight: 400;">party service provider. </span></li>
-</ol>
-<p><span style="font-weight: 400;">8.05 Effectuate a remittance from the AFX Custodial Account to the relevant payee account in </span></p>
-<p><span style="font-weight: 400;">such amounts and currency, and at such time(s), as set forth in such instructions. </span></p>
-<p><span style="font-weight: 400;">8.06 Transactions Requiring Foreign Exchange. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> For transactions requiring Foreign Exchange Services, the conversion of one Currency into another Currency, the terms of each such transactions will be set out in the Transaction Confirmation. </span></li>
-<li><span style="font-weight: 400;"> Deem you to have accepted the contents of the Transaction Confirmation, unless you inform AFX of any errors or omissions upon receiving it prior to the execution of the Remittance by AFX. You shall not thereafter be entitled to dispute the contents of the Transaction Confirmation. </span></li>
-<li><span style="font-weight: 400;"> Once you have authorized and accepted the Transaction Confirmation, AFX will receive funds by way of EFT from your Customer Account in an amount equal to the Remittance you are sending to the payee </span><strong>[</strong><span style="font-weight: 400;">plus any applicable fee(s) included in the Remittance Instructions, into the AFX Custodial Account. </span></li>
-<li><span style="font-weight: 400;"> AFX reserves the right to correct any quoting error in the rate applicable to each transaction should an obvious error or mistake occur. In the event of an error stipulating the applicable rate for a transaction, the error shall be corrected by AFX with reference to the fair market of the Currency at the time that the error occurred, as determined by AFX acting fairly and reasonably according to the particular circumstances surrounding the transaction in question </span></li>
-</ol>
-<p><span style="font-weight: 400;">8.07 Monies Owing for Services </span></p>
-<ol>
-<li><span style="font-weight: 400;"> Under any circumstances where you owe monies to AFX as a result of Services received pursuant to this Agreement or pursuant to any duly authorized and accepted Transaction Confirmation, AFX will set out in the Transaction Confirmation the sum of money that is outstanding. Upon receipt of the Transaction Confirmation, you shall have until 5:00 p.m. EST on the next business day to provide AFX the amount stipulated in the Transaction Confirmation.</span></li>
-</ol>
-<ol>
-<li><span style="font-weight: 400;"> Any deposits you provide to AFX will be applied by AFX in its sole discretion to any outstanding amounts you owe for completed Transactions, applied to other amounts you owe to AFX or nanopay, or the deposit shall be returned to you. </span></li>
-<li><span style="font-weight: 400;"> AFX will hold such funds on your behalf pursuant to the terms of any instructions you have provided and the terms of the Transaction Confirmation until the Settlement Date or the other closing date. </span></li>
-<li><span style="font-weight: 400;"> AFX will use commercially reasonable efforts to process Transactions on the day in </span></li>
-</ol>
-<p><span style="font-weight: 400;">which they are authorized however, AFX cannot guarantee that this will always be possible. Furthermore, AFX is not responsible for the time it takes any Financial Institution and the payee&rsquo;s Bank and/or Financial Institution to process transactions or any other delays related to international and domestic payment systems to process the Transactions. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> If you wish to cancel, amend or reverse a Transaction for any reason, you may attempt to do so by contacting AFX via the Platform. AFX will use commercially reasonable efforts to try too effect such cancellation, amendment or reversal, all at your cost and account. However, you acknowledge that the requested change to the transaction may not be reasonably possible and that AFX is not required to cancel, amend or reverse any transactions once you have authorized and accepted the Transaction Confirmation. </span></li>
-<li><strong> Eligibility</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">9.01 For purposes of reviewing your eligibility to use the Platform and the associated AFX products and services, you understand and agree that nanopay or AFX may request at any time, and you agree to provide, any information about your business operations and/or financial condition. A primary reason for these requests is to help governments fight the funding of terrorism and money laundering activities. We are therefore required to obtain, verify and record information about each client to whom we provide services, such as names, addresses, email addresses, certificates or articles of incorporation, and, should we deem it necessary, government issued photo identification documents like driver&rsquo;s licenses and passports. </span></p>
-<p><span style="font-weight: 400;">9.02 You agree in particular to providing AFX and nanopay with all necessary banking information, which AFX and nanopay reasonably require to carry out their obligations under this Agreement. In addition, you hereby authorize and consent to AFX and nanopay: </span></p>
-<ol>
-<li><span style="font-weight: 400;">a) Contacting your bank to verify your identity, account information and any other </span></li>
-</ol>
-<p><span style="font-weight: 400;">information that AFX or nanopay may reasonably require from your bank; and </span></p>
-<ol>
-<li><span style="font-weight: 400;">b) Obtaining a credit report about you from a recognized third-party provider to verify relevant information about you, including but not limited to your payment history; and </span></li>
-<li><strong> Continuous Risk Review Process</strong><span style="font-weight: 400;">. Both nanopay and AFX reserve the right to reassess your eligibility for any services and products and based on such reassessment and nanopay&rsquo;s or AFX&rsquo;s risk review processes deny your request to use the Platform and the associated AFX services and products or reassess your eligibility to use them even if your initial request is successful. Nanopay and AFX may modify eligibility standards for the Platform and the associated AFX products and services at any time.</span></li>
-</ol>
-<ol start="11">
-<li><strong> Termination</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">11.01 nanopay and/or AFX may terminate this Agreement at any time without notice. </span></p>
-<p><span style="font-weight: 400;">11.02 You may terminate this Agreement at any time by providing written notice to both nanopay </span></p>
-<p><span style="font-weight: 400;">and AFX (an email to the support functions of both companies will satisfy this obligation). </span></p>
-<p><span style="font-weight: 400;">11.03 Provided that no Event of Default has occurred, all transactions that were entered into prior to the termination of this Agreement shall be carried out to completion and this Agreement shall not terminate until all obligations of the parties to this Agreement have been fully completed. </span></p>
-<p><span style="font-weight: 400;">11.04 The following shall constitute an &ldquo;</span><strong>Event of Default</strong><span style="font-weight: 400;">&rdquo; under the terms of this Agreement: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> You do not perform your obligations under this Agreement on time, including those </span></li>
-</ol>
-<p><span style="font-weight: 400;">obligations set out in Sections 5 and 6; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> You perform one of the prohibited actions set out in Section 7; </span></li>
-<li><span style="font-weight: 400;"> You make a misrepresentation of any of the representations and warranties set out Section 6, or if you make a statement to AFX or nanopay that is untrue or misleading in any material respect, e.g., the source of funds, the identity of the recipient of funds, the purpose of the Transaction; and </span></li>
-<li><span style="font-weight: 400;"> You become bankrupt or insolvent or commit an act of bankruptcy. </span></li>
-</ol>
-<p><span style="font-weight: 400;">11.05. In the event that there is an Event of Default by you, then AFX and nanopay may, at their sole option, either terminate your access to the Platform and withhold all further services and use of products or terminate this Agreement immediately and the parties to it shall be relieved of any further obligations under this Agreement, including obligations pursuant to any Transactions that were entered into prior to the occurrence of the Event of Default. Either AFX or nanopay may terminate this Agreement by providing written notice to the other parties (an email to other the parties will satisfy this obligation). </span></p>
-<ol start="12">
-<li><strong> Confidentiality</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">12.01 nanopay and AFX will use commercially reasonable precautions in order to ensure that any confidential information you provide to nanopay and AFX will be kept private and confidential. </span></p>
-<p><span style="font-weight: 400;">12.02. nanopay and AFX shall maintain and protect all of your confidential information using the same standards of care and affording such confidential information the same treatment that they use to protect their own confidential information, but under no circumstances less than a reasonable standard of care. </span></p>
-<p><span style="font-weight: 400;">12.03 With regard to confidential information that can be considered to be &ldquo;Personally Identifiable Information,&rdquo; both nanopay and AFX employ certain encryption technologies to ensure the upmost protection for such Personally Identifiable Information. </span></p>
-<p><span style="font-weight: 400;">12.04 AFX and nanopay may use your information, whether confidential information, Personally Identifiable Information, or otherwise solely for their own internal business purposes. </span></p>
-<p><span style="font-weight: 400;">12.05 AFX and nanopay may disclose your confidential information, Personally Identifiable Information or otherwise to their employees, agents, officers, or affiliates in the course of providing Services to you pursuant to the Agreement, provided that such employees, agents, officers, or affiliates are subject to confidentiality obligations no less stringent than the terms contained herein. </span></p>
-<p><span style="font-weight: 400;">12.06. AFX and nanopay may disclose your information, whether confidential information, Personally Identifiable Information, or otherwise to any third party service provider, e.g., Amazon World Services (where necessary and only to the minimum extent required), governmental or regulatory body, or agency necessary for you to receive Services pursuant to this Agreement or to comply with any Applicable Laws, requirements, court orders or agency or regulatory body orders, demands or examinations, or otherwise. </span></p>
-<ol start="13">
-<li><strong> Your Security Obligations</strong><span style="font-weight: 400;">. You understand and agree that you are responsible for the security of data in your possession or control and you are responsible for your compliance with all applicable laws and rules in connection with your collection of personal, financial, or transaction information on your website(s). You are also responsible for maintaining adequate security and control over your access to the Platform and the associated AFX products and services, including all credentials, e.g., passwords, and ensuring that your employees, contractors and/or agents comply with these security requirements and all other terms of this Agreement. </span></li>
-<li><strong> Multiple Registrations Are Prohibited</strong><span style="font-weight: 400;">. You understand and agree that multiple registrations are prohibited. You may only register once and each User must maintain a separate registration. If nanopay or AFX detect multiple active registrations for a single User, we reserve the right to merge or terminate the registrations and refuse you all continued use of the Platform and the associated AFX products and services without notification to you. </span></li>
-<li><strong> Right of Set Off. </strong><span style="font-weight: 400;">You agree that nanopay and AFX are authorized at any time to set-off funds deposited with AFX against your debts or liabilities owed to either nanopay and/or AFX. Neither AFX nor nanopay shall be required to provide you prior notice of the exercise of such set off right. </span></li>
-<li><strong> Our Relationship Is One of Electronic Commerce</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">16.01 You understand that the Platform and the associated AFX products and services constitute an electronic commerce relationship. To provide you the Platform and the associated AFX products and services, we must have your consent to provide access to required disclosures in electronic format. If you do not consent to electronic disclosure of these documents, then you may not use the Platform and the associated AFX products and services. Your consent applies to all of the documents we provide to you electronically in connection with the Service, including receipts and notices. </span></p>
-<p><span style="font-weight: 400;">16.02 Access to electronic disclosures will be provided by way of the Internet. Your history of use is available for viewing online from your account on the AFX and nanopay Websites. If you require a printed copy of your full printed copy of your transaction history, you can request this in writing by sending an email communication to: </span><span style="font-weight: 400;">FXDesk@ascendantfx.com</span><span style="font-weight: 400;">. </span></p>
-<p><span style="font-weight: 400;">16.03 We recommend you download or print a copy of this Agreement for your records. You may </span></p>
-<p><span style="font-weight: 400;">download a copy of this Agreement in a pdf format. </span></p>
-<ol start="17">
-<li><strong> Transmission of Information and Instructions. </strong></li>
-</ol>
-<p><span style="font-weight: 400;">17.01. You acknowledge and agree that AFX and nanopay are not liable to you for any loss or damage arising directly or in connection with the transmission of electronic data or electronic instructions through the Platform or through nanopay.net and AscendantFX.com or through any other electronic mean, or for any failure to receive any such electronic data or electronic instructions for any reason whatsoever. </span></p>
-<p><span style="font-weight: 400;">17.02. Any electronic data or electronic instructions you send via the Platform, or to nanopay.net or AscendantFX.com received by nanopay and AFX will be deemed to be duly authorized by you and both AFX and nanopay will be entitled to rely on such electronic data or electronic instructions. The fact that you may not receive confirmation of receipt of such communications from AFX and/or nanopay shall not invalidate any Transactions entered into pursuant to such instructions from you. </span></p>
-<ol start="18">
-<li><strong>No Interest Paid</strong><span style="font-weight: 400;">. From time to time, AFX may receive and hold monies on your behalf in the course of providing services to you. You acknowledge that under such circumstances neither AFX nor nanopay will not pay interest on any such funds. These funds may be held by AFX in accounts maintained by AFX. You may direct the payment or application of funds by AFX but may not request the return of any funds held by AFX, if such funds are being held for an existing Transaction. </span></li>
-<li><strong>Privacy</strong><span style="font-weight: 400;">. Your privacy is very important to both nanopay and AFX. Given the close relationship between nanopay and AFX in providing you Services under this Agreement, you understand and affirmatively consent to allow nanopay and AFX to share information about you, including any Personally Identifiable Information and confidential information that you input into the Platform or otherwise provide to nanopay and AFX. In addition, both AFX and nanopay will share your information, including your Personally Identifiable Information and confidential information, with our agents, contractors and service providers so you can utilize the Platform and the associated AFX products and services, e.g., Amazon World Service, Plaid, and other parties. Please see nanopay&rsquo;s Privacy Policy, available at </span><a href="https://ablii.com/wp-content/uploads/2018/12/nanopay-Privacy-Policy-November-28-2018.pdf" target="_blank"><span style="font-weight: 400;">Click here</span></a><span style="font-weight: 400;">, and AFX&rsquo;s Privacy Policy Notice for Canada, available at: </span><span style="font-weight: 400;"><a href="https://cdn2.hubspot.net/hubfs/1852881/Compliance/20170221_CAD_Privacy%20Policy_V1.2.pdf?__hssc=139176172.1.1549288310862&amp;__hstc=139176172.63b76680650fa01b2beaa5c3bc589b3d.1547559853853.1547559853853.1549288310862.2&amp;__hsfp=2404041554&amp;hsCtaTracking=4c1138c3-1924-4f0a-bf72-d8937815b912%7C07918ab4-1dcf-4148-bf9e-34e300591321" target="_blank"><span style="font-weight: 400;">Click here</span></a></span><span style="font-weight: 400;">, and AFX&rsquo;s Privacy Policy Notice for the United States, available at: </span><span style="font-weight: 400;"><a href="https://cdn2.hubspot.net/hubfs/1852881/Compliance/AFX%20USA%20Privacy%20Notice_Feb%202017.pdf?__hssc=139176172.1.1549288310862&amp;__hstc=139176172.63b76680650fa01b2beaa5c3bc589b3d.1547559853853.1547559853853.1549288310862.2&amp;__hsfp=2404041554&amp;hsCtaTracking=131644d9-6814-43d2-831e-a85a7c89cc43%7C41a60567-e925-48b3-bfe8-713049390377" target="_blank"><span style="font-weight: 400;">Click here</span></a></span><span style="font-weight: 400;">. </span></li>
-<li><strong> Our Records</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">20.01 You understand and agree that nanopay and AFX will retain a record of all the information you provide to us. Both nanopay and AFX will record and track your use of the nanopay Platform and AFX&rsquo;s services and products. You acknowledge and agree that both nanopay and AFX shall be entitled to use this information for their own internal business purposes. </span></p>
-<p><span style="font-weight: 400;">20.02. You understand and agree that the records kept by AFX and nanopay shall be conclusive and binding on you and in the event of a dispute or formal legal action by you or nanopay and AFX. </span></p>
-<ol start="21">
-<li><strong> Limitation of Liability/Indemnity</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">21.01. NEITHER NANOPAY OR AFX NOR THEIR RESPECTIVE AFFILIATES, EMPLOYEES, OFFICERS, DIRECTORS, AGENTS, CONTRACTORS OR AFFILIATES, INCLUDING THEIR SUCCESSORS AND ASSIGNS, SHALL BE LIABLE TO YOU OR YOUR RESPECTIVE AFFILIATES, WHETHER IN CONTRACT, TORT, EQUITY OR OTHERWISE, FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, PUNITIVE OR EXEMPLARY DAMAGES, INCLUDING LOST PROFITS (EVEN IF SUCH DAMAGES ARE FORESEEABLE, AND WHETHER OR NOT ANY PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES), ARISING FROM OR RELATING TO THIS AGREEMENT, INCLUDING, WITHOUT LIMITATION, THE WRONGFUL DEATH OR INJURY OF ANY PERSON. </span></p>
-<p><span style="font-weight: 400;">21.02 The combined liability of AFX and nanopay to you shall at all times be limited to the value of </span></p>
-<p><span style="font-weight: 400;">the transaction from which the Claim arises. </span></p>
-<p><span style="font-weight: 400;">21.03 nanopay and AFX will use all commercially reasonable efforts to ensure that payment of monies as directed by you shall take place in a timely fashion. However, neither AFX nor nanopay will be liable for any losses or damages suffered by you as a result of delays in the monies being received by the designated Payee. </span></p>
-<p><span style="font-weight: 400;">21.04. You acknowledge and agree that the representations and warranties that you have provided in this Agreement will be relied upon by both nanopay and AFX for the purpose of determining whether or not nanopay and AFX will allow you to access and use the Platform and of the associated AFX products and services as a User. You agree to indemnify and hold nanopay and AFX and their respective officers, directors, employees, agents, contractors and security holders, including their successors and assigns, harmless from and against all losses, damages, or liabilities due to or arising out of a breach of any representation or warranty of yours as provided herein, or in any other document you have provided to either nanopay or AFX. </span></p>
-<ol start="22">
-<li><strong> Amendments to This Agreement</strong><span style="font-weight: 400;">. Both nanopay and AFX reserve the right to amend any of the terms and conditions in this Agreement at any time. All such amendments shall be effective immediately upon written notice to you (an email will satisfy this notice obligation) on a going forward basis. </span></li>
-<li><strong> Notice</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">23.01 Any notice or communication in respect of this Agreement may be given in the following </span></p>
-<p><span style="font-weight: 400;">ways: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> By mail or overnight courier (e.g., FedEx, UPS, DHL) to the address provided on the </span></li>
-</ol>
-<p><span style="font-weight: 400;">cover of this Agreement; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> By facsimile to fax number provided on the cover page of this Agreement; </span></li>
-<li><span style="font-weight: 400;"> By electronic mail to the email address provided on the cover page of this Agreement; </span></li>
-</ol>
-<p><span style="font-weight: 400;">and </span></p>
-<ol>
-<li><span style="font-weight: 400;"> By means of a communication set via the Platform. </span></li>
-</ol>
-<p><span style="font-weight: 400;">23.02. Any notice sent by mail or by overnight courier shall be deemed to have been received on the date it is delivered. All notices sent by facsimile or by email shall be deemed to have been received on the date which the notice is sent, provided that no indication of service interruption is received by the notice sender at the time the notice is provided. </span></p>
-<p><span style="font-weight: 400;">23.03 Any of the three parties to this Agreement may provide notice to the other two parties that it wishes to change its address, fax number or email address via the methods set out in Section 21.01 above at any time. </span></p>
-<ol start="24">
-<li><strong> Nanopay&rsquo;s Terms of Service Are Incorporated Into This Agreement</strong><span style="font-weight: 400;">. You understand and agree that nanopay&rsquo;s Terms of Service found at </span><span style="font-weight: 400;"><a href="https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf" target="_blank"><span style="font-weight: 400;">Click here</span></a></span><span style="font-weight: 400;">are incorporated into this Agreement by reference. In plain English, this means that all of the terms and conditions of nanopay&rsquo;s Terms of Service are part of this Agreement and are legally binding on you. </span></li>
-<li><strong> Miscellaneous</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">25.01. Dispute Resolution. Any dispute, controversy or claim arising out of or related to this Agreement, or the interpretation, making, performance, breach, validity or termination thereof, shall be referred to finally resolved by binding arbitration in Toronto, Canada under the Canadian Arbitration Association Arbitration Rules for Arbitration by one or more neutral arbitrators appointed in accordance with said Rules. The language of the arbitration shall be English. At the request of any party, the arbitrator(s) will enter an appropriate protective order to maintain the confidentiality of information produced or exchanged in the course of the arbitration proceedings. Judgment on the award rendered by the arbitrator(s) may be entered in any court having jurisdiction thereof. The arbitrator(s) may also award to the prevailing party, if any, as determined by the arbitrator(s), its reasonable costs and fees incurred in connection with any arbitration or related judicial proceeding hereunder. Costs and fees awarded may include, without limitation, Canadian Arbitration Association administrative fees, arbitrator fees, attorneys' fees, court costs, expert fees, witness fees, travel expenses, and out-of-pocket expenses (including, without limitation, such expenses as copying, telephone, facsimile, postage, and courier fees). The arbitration proceedings contemplated by this Section 25.01 shall be as confidential and private as permitted by Applicable Law. To that end, the parties shall not disclose the existence, content or results of any proceedings conducted in accordance with this Section, and materials submitted in connection with such proceedings shall not be admissible in any other proceeding; provided, however, that this confidentiality provision shall not prevent a petition to vacate or enforce an arbitration award, and shall not bar disclosures required by Applicable Law. </span></p>
-<p><span style="font-weight: 400;">25.02. Force Majeure. No party to this Agreement shall be liable to any other party for any failure or delay on its part to perform, and shall be excused from performing any of its non-monetary obligations hereunder if such failure, delay or non-performance results in whole or in part from any cause beyond the absolute control of the party, including without limitation, any act of God, act of war, riot, actions of terrorists, earthquake, fire, explosion, natural disaster, flooding, embargo, sabotage, government law, ordinance, rule, regulation, order or actions. A party desiring to rely upon any of the foregoing as an excuse for failure, default or delay in performance shall, when the cause arises, give to the other Party prompt notice in writing of the facts which constitute such cause; and, when the cause ceases to exist, give prompt notice thereof to the other Party. This Section 25.02 shall in no way limit the right of the other parties to make any claim against third parties for any damages suffered due to said cause. If the non-performing party&rsquo;s performance under this Agreement is postponed or extended for </span><span style="font-weight: 400;">longer than thirty (30) days, the other two parties may, by written notice to the non- performing party, terminate this Agreement immediately. </span></p>
-<p><span style="font-weight: 400;">25.03. Third Party Beneficiaries. No other Customer or any other third party, other than an affiliate </span></p>
-<p><span style="font-weight: 400;">of a party, is a third-party beneficiary to this Agreement. </span></p>
-<p><span style="font-weight: 400;">25.04. Communications must be in English. All correspondence, agreements and other communications between you and nanopay and AFX shall be in the English language. </span></p>
-<p><span style="font-weight: 400;">25.05. Assignment. You may not assign your interest in this Agreement without the prior written consent of AFX and nanopay. You agree that any transaction whereby the effective control of your business changes, then such change shall be deemed an assignment for purposes of this Agreement. AFX and nanopay may assign this Agreement without prior notice to you and without your consent. This Agreement, including all interest in any transactions shall inure to the benefit of AFX and nanopay, their successors and assigns and shall remain binding on upon you and your respective successors and assigns. </span></p>
-<p><span style="font-weight: 400;">25.06. Governing Law. This Agreement shall be governed by and construed in accordance with the laws of the Province of Ontario without giving effect to the conflict of law principles thereof. Each party agrees that service of process in any action or proceeding hereunder may be made upon such party by certified mail, return receipt requested, to the address for notice set forth herein, as the same may be modified in accordance with the terms hereof. </span></p>
-<p><span style="font-weight: 400;">25.07. Entire Agreement. This Agreement and any schedules, attachments and exhibits hereto set forth the entire agreement and understanding between the parties as to the subject matter hereof and supersedes all prior discussions, agreements and understandings of any kind, and every nature between them. This Agreement shall not be changed, modified or amended except in writing and signed by each of the three parties to this Agreement. </span></p>
-<p><span style="font-weight: 400;">25.08. Construction. Captions contained in this Agreement are for convenience only and do not constitute a limitation of the terms hereof. The singular includes the plural, and the plural includes the singular. All references to &ldquo;herein,&rdquo; &ldquo;hereunder,&rdquo; &ldquo;hereinabove,&rdquo; or like words shall refer to this Agreement as a whole and not to any particular section, subsection, or clause contained in this Agreement. The terms &ldquo;include&rdquo; and &ldquo;including&rdquo; are not limiting. Reference to any agreement or other contract includes any permitted modifications, supplements, amendments, and replacements. </span></p>
-<p><span style="font-weight: 400;">25.09. Severability; Waiver. If any provision of this Agreement (or any portion thereof) is determined to be invalid or unenforceable, the remaining provisions of this Agreement shall not be affected thereby and shall be binding upon the Parties and shall be enforceable, as though said invalid or unenforceable provision (or portion thereof) were not contained in this Agreement. The failure by any party to this Agreement to insist upon strict performance of any of the provisions contained in this Agreement shall in no way constitute a waiver of its rights as set forth in this Agreement, at law or in equity, or a waiver of any other provisions or subsequent default by any other party in the performance of or compliance with any of the terms and conditions set forth in this Agreement. </span></p>
-<p><span style="font-weight: 400;">25.10. Headings. The headings, captions, headers, footers and version numbers contained in this Agreement are inserted for convenience only and shall not affect the meaning or interpretation of this Agreement. </span></p>
-<p><span style="font-weight: 400;">25.11. Drafting. Each of the parties to this Agreement: (a) acknowledges and agrees that they fully participated in the drafting of this Agreement and, in the event that any dispute arises with respect to the interpretation of this Agreement, no presumption shall arise that any one party drafted this Agreement; and (b) represents and warrants to the other party that they have thoroughly reviewed this Agreement, understand and agree to undertake all of their obligations hereunder, and have obtained qualified independent legal advice with respect to the foregoing. </span></p>
-<p><span style="font-weight: 400;">25.12. Survival. The following sections of this Agreement shall survive its termination or expiration </span></p>
-<p><span style="font-weight: 400;">and continue in force: Sections 12, 15, 19, 21and 25. </span></p>
-<p><span style="font-weight: 400;">23.13. Counterparts. This Agreement may be executed and then delivered via facsimile transmission, via the sending of PDF or other copies thereof via email and in one or more counterparts, each of which shall be an original but all of which taken together shall constitute one and the same Agreement. </span></p>
-      `
     },
     {
-      class: 'String',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.settings.AcceptanceDocument',
       name: 'triPartyAgreementUsd',
       view: function(args, x) {
-        var data = x.data$.dot('triPartyAgreementUsd');
+        var data = x.data$.dot('triPartyAgreementUsd').dot('body');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
         style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
       },
       displayWidth: 60,
-      value: `
-      <p><strong>TRI-PARTY AGREEMENT FOR ABLII PAYMENTS SERVICE </strong></p>
-<p><span style="font-weight: 400;">This Agreement is a contract between you, nanopay corporation (&ldquo;</span><strong>nanopay</strong><span style="font-weight: 400;">&rdquo;) and our financial institution partner, AscendantFX Capital USA, Inc. (&ldquo;</span><strong>AFX</strong><span style="font-weight: 400;">&rdquo;), and applies to your use of nanopay&rsquo;s payment software platform and any AFX products and services you access via nanopay&rsquo;s payment software platform, such as foreign exchange services (the &ldquo;</span><strong>Foreign Exchange Services</strong><span style="font-weight: 400;">&rdquo;), i.e., the conversion of one currency into another (for example, US dollars into Canadian dollars) and for remittance services (the &ldquo;</span><strong>Remittance Services</strong><span style="font-weight: 400;">&rdquo;) (as defined below). </span></p>
-<p><span style="font-weight: 400;">It is important that you carefully read and understand this Agreement and keep it for your records since its terms and conditions governs your interactions not only with nanopay but also with AFX. Capitalized terms used in this Agreement and not otherwise defined will have the meanings assigned to them by nanopay&rsquo;s Terms of Service located at: </span><span style="font-weight: 400;"><a href="https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf" target="_blank"><span style="font-weight: 400;">Click here</span></a></span><span style="font-weight: 400;">. Also, as set forth below, this Agreement contains a binding arbitration provision, which affects your legal rights and may be enforced by the parties. </span></p>
-<ol>
-<li><strong> Definitions. </strong></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>AAA Rules</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section 25.01. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>AFX</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in the preamble. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>AFX Custodial Account</em></strong><span style="font-weight: 400;">&rdquo; means a deposit account maintained by AFX at a federally-insured depository institution (e.g., the Federal Deposition Insurance Corporation or the Canadian Deposit Insurance Corporation) for the benefit of Customers in which it will receive and hold all funds from Customers associated with Remittances other than any portion thereof representing fees payable by the Customer. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Applicable Law</em></strong><span style="font-weight: 400;">&rdquo; means (a) the Rules, (b) the bylaws, operating rules and/or regulations of any System, and (c) any and all foreign, federal, state or local laws, treaties, rules, regulations, regulatory guidance, directives, policies, orders or determinations of (or agreements with), and mandatory written direction from (or agreements with), a Regulatory Authority, including, without limitation, the Bank Secrecy Act and the regulations promulgated thereunder, as well as the Proceeds of Crime (Money Laundering) and Terrorist Financing Act and the regulations promulgated thereunder, and also all statutes or regulations relating to money transmission, unfair or deceptive trade practices or acts, or privacy or data security, that are applicable to the remittance services (as set forth below), or otherwise applicable to all of the parties to this Agreement, as the same may be amended and in effect from time to time during the Term. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Bank</em></strong><span style="font-weight: 400;">&rdquo; means an entity chartered by a state or federal government which receives demand and time deposits, may pay interest on those deposits and makes loans and invests in securities based on those deposits. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Bank Draft</em></strong><span style="font-weight: 400;">&rdquo; means a check drawn by a Bank on itself authorizing the second Bank to make </span></li>
-</ol>
-<p><span style="font-weight: 400;">payment to the business named in the draft. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Business Day</em></strong><span style="font-weight: 400;">&rdquo; means any day, other than a Saturday, Sunday or any federal banking holiday </span></li>
-</ol>
-<p><span style="font-weight: 400;">observed in the United States. </span></p>
-<ol start="12">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Confidential Information</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section 12. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Customer</em></strong><span style="font-weight: 400;">&rdquo; means a User that has access to and uses the Remittance Service. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Customer Account</em></strong><span style="font-weight: 400;">&rdquo; means the deposit account that you link through the Platform to your </span></li>
-</ol>
-<p><span style="font-weight: 400;">account at AFX for the Remittance Services. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Currency</em></strong><span style="font-weight: 400;">&rdquo; means any form of money, including paper notes and coins, which is issued by a </span></li>
-</ol>
-<p><span style="font-weight: 400;">government and is used in public circulation. </span></p>
-<ol start="11">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Event of Default</em></strong><span style="font-weight: 400;">&rdquo; means an Event of Default as defined in Section 11.04. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>EFT</em></strong><span style="font-weight: 400;">&rdquo; means Electronic Funds Transfer which is a transaction that takes place over a computerized network (i.e. bank wire transfer; ACH) either between accounts at the same financial institution or between deposit accounts at separate financial institutions. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Financial Institution</em></strong><span style="font-weight: 400;">&rdquo; means an institution that collects funds from the public and places them </span></li>
-</ol>
-<p><span style="font-weight: 400;">into financial assets, such as deposits, loans, and bonds, rather than tangible property. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Foreign Exchange</em></strong><span style="font-weight: 400;">&rdquo; means the trade of one national Currency for another and takes place &ldquo;over </span></li>
-</ol>
-<p><span style="font-weight: 400;">the counter&rdquo; and centrally on an inter-bank system. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Foreign Exchange Rate</em></strong><span style="font-weight: 400;">&rdquo; means the rate at which one Currency may be converted into another </span></li>
-</ol>
-<p><span style="font-weight: 400;">Currency. Also known as rate of exchange or exchange rate or Currency exchange rate. </span></p>
-<ol start="8">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Foreign Exchange Services</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section 8.05. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>nanopay</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in the preamble. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Person</em></strong><span style="font-weight: 400;">&rdquo; means any individual, corporation, limited liability company, partnership, firm, joint </span></li>
-</ol>
-<p><span style="font-weight: 400;">venture, association, trust, unincorporated organization or other entity. </span></p>
-<ol start="2">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Platform</em></strong><span style="font-weight: 400;">&rdquo; has the meaning set forth in Section 2. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Remittance</em></strong><span style="font-weight: 400;">&rdquo; means funds that are remitted electronically from your Customer Account to a </span></li>
-</ol>
-<p><span style="font-weight: 400;">Payee by AFX in accordance with this Agreement. </span></p>
-<ol start="8">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Remittance Instructions</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section 8.03. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Remittance Services</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section 8.01. </span></li>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Settlement</em></strong><span style="font-weight: 400;">&rdquo; means the finalizing of the sale of a Currency, as its title is transferred from the </span></li>
-</ol>
-<p><span style="font-weight: 400;">seller to the buyer. Also known as closing. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Settlement Date</em></strong><span style="font-weight: 400;">&rdquo; means the date by which an executed Currency transaction must be settled, by </span></li>
-</ol>
-<p><span style="font-weight: 400;">paying for the Currency purchased and delivering the purchased Currency to the buyer. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Transaction</em></strong><span style="font-weight: 400;">&rdquo; means the movement of value using the Platform from payment initiation by a </span></li>
-</ol>
-<p><span style="font-weight: 400;">Payor to settlement, using the Platform and includes Remittances Services. </span></p>
-<ol start="8">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>Transaction Confirmation</em></strong><span style="font-weight: 400;">&rdquo; means the transaction confirmation as defined in Section 8.04 of </span></li>
-</ol>
-<p><span style="font-weight: 400;">this Agreement. </span></p>
-<ol start="2">
-<li><span style="font-weight: 400;"> &ldquo;</span><strong><em>User</em></strong><span style="font-weight: 400;">&rdquo; has the meaning set forth in Section 2.</span></li>
-</ol>
-<ol start="2">
-<li><strong> Background. </strong><span style="font-weight: 400;">You understand and agree that nanopay is a technology service provider that offers a payment software platform user interface through which, among other things, nanopay&rsquo;s business customers (each, a &ldquo;</span><strong><em>User</em></strong><span style="font-weight: 400;">&rdquo;) may access certain features and functionality, including the ability to upload and transmit invoices to other businesses for which they act as vendors, and the ability to communicate with third-party payment service providers for the purpose of utilizing payment services offered by such providers (the &ldquo;</span><strong><em>Platform</em></strong><span style="font-weight: 400;">&rdquo;). AFX is a registered with the Financial Crimes Enforcement Network of the United States, as a Money Services Business in the United States and is a state licensed money transmitter (or the statutory equivalent) in the United States. AFX is engaged in the business of, among other things, providing domestic and cross-border remittance solutions and foreign exchanges services to businesses. </span></li>
-<li><strong> nanopay and AFX Duties. </strong><span style="font-weight: 400;">You understand and agree that all funds transfers are performed by AFX based on instructions received through the Platform. </span><strong>nanopay is solely the Platform provider and does not receive, hold, or transmit funds</strong><span style="font-weight: 400;">. AFX holds the AFX Custodial Account that holds your funds and performs the Foreign Exchange Services and the Remittance Services. </span></li>
-<li><strong> Statutory Trust</strong><span style="font-weight: 400;">. You understand and agree that any funds held for Remittance that are recorded on the Platform, are held by AFX and are deemed to be held in a statutory trust for the benefit of the sender of outstanding money received for Remittance in the event of bankruptcy or receivership of AFX, or in the event of an action by a creditor against AFX who is not a beneficiary of the statutory trust. </span></li>
-<li><strong> Compliance with Applicable Law and Regulation</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">5.01 By accessing and using the Platform and the associated AFX services and products, such as Foreign Exchange Services and Remittance Services, you agree to comply with all applicable laws and regulations and you further agree not to engage in any transaction involving any illegal activity, product or service. Without limiting the foregoing, you agree you will not violate: (i) any applicable domestic or foreign anti-corruption law or regulation, including the United Kingdom Bribery Act of 2010, the United States Foreign Corrupt Practices Act and the Canadian Corruption of Foreign Public Officials Act; (ii) any applicable domestic or foreign laws or regulations related to Anti-Money Laundering and anti-terrorist financing requirements, including the USA Bank Secrecy Act, as amended by the USA Patriot Act and the Financial Conduct Authority&rsquo;s Anti-Money Laundering Regulations, and the Canadian Proceeds of Crime (Money Laundering) and Terrorist Financing Act; (iii) the sanctions laws and regulations administered by the U.S. Department of the Treasury&rsquo;s Office of Foreign Assets Control, the Canadian sanctions legislation overseen by Global Affairs; and (iv) applicable data protection and privacy laws such as the Canadian Personal Information Protection and Electronic Documents Act (&ldquo;</span><strong>PIPEDA</strong><span style="font-weight: 400;">&rdquo;) and the European Union&rsquo;s General Data Protection Regulations 2016/679. Furthermore, you and your affiliates and agents shall not utilize the Platform and the associated AFX products and services in a manner that could cause nanopay or AFX to violate any of the foregoing laws and regulations or other applicable laws and regulations to which nanopay and AFX may be subject. </span></p>
-<p><span style="font-weight: 400;">5.02 You understand and agree that if either nanopay or AFX in their sole discretion suspect or believe you are violating or may violate applicable laws or regulations, then either nanopay or AFX may refuse to accept your instructions regarding a Transaction or complete a Remittance already in process. </span></p>
-<ol start="6">
-<li><strong> Your Representations</strong><span style="font-weight: 400;">. To access and use the Platform and the associated AFX products and </span></li>
-</ol>
-<p><span style="font-weight: 400;">services, you represent and warrant that: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> You have full authority to enter into this Agreement and carry out its obligations under the </span></li>
-</ol>
-<p><span style="font-weight: 400;">Agreement; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> This Agreement has been duly authorized by you; </span></li>
-<li><span style="font-weight: 400;"> This Agreement is binding on you and does not conflict with or violate the terms of any </span></li>
-</ol>
-<p><span style="font-weight: 400;">constating documents of yours or of any other agreements pursuant to which you are bound; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> No Event of Default has occurred under the terms of this Agreement; </span></li>
-<li><span style="font-weight: 400;"> You hold a deposit account in your name, over which you exercise legal authority and control </span></li>
-</ol>
-<p><span style="font-weight: 400;">that will be the source of funds for Remittances using the Platform; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> You are not an agent acting for an undisclosed principal or third-party beneficiary; </span></li>
-<li><span style="font-weight: 400;"> All information provided by you as part of your registration and use of the Platform and the associated AFX products and services is accurate and complete, and you undertake to promptly notify nanopay and AFX of changes to such information; </span></li>
-<li><span style="font-weight: 400;"> You will ensure that your contact details provided at your registration remain accurate and up to date. Nanopay and AFX will use those contact details to contact you wherever required under this Agreement or in connection with the Platform and the associated AFX products and services; and </span></li>
-<li><span style="font-weight: 400;"> All representations and warranties made by you shall be true at the time the parties entered into this Agreement and at the time any Remittances are entered into pursuant to the terms of this Agreement. </span></li>
-<li><strong> Prohibited Uses</strong><span style="font-weight: 400;">. For avoidance of doubt, you agree </span><strong>not </strong><span style="font-weight: 400;">to use the Platform and the associated AFX </span></li>
-</ol>
-<p><span style="font-weight: 400;">products and services in the following manner: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of any prohibited or illegal good or service or activity </span></li>
-</ol>
-<p><span style="font-weight: 400;">that requires a government license where you lack such a license; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of marijuana, marijuana paraphernalia, regardless of </span></li>
-</ol>
-<p><span style="font-weight: 400;">whether or not such sale is lawful in your jurisdiction; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of any material that promotes violence or hatred; </span></li>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of adult content; </span></li>
-<li><span style="font-weight: 400;"> In connection with the sale and distribution of goods and services that violate the intellectual </span></li>
-</ol>
-<p><span style="font-weight: 400;">property rights of a third party; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> In connection with the sale or exchange of cryptocurrencies; </span></li>
-<li><span style="font-weight: 400;"> As part of a Ponzi-scheme or pyramid selling </span></li>
-<li><span style="font-weight: 400;"> As part of any gambling or regulated financial services you may provide; or </span></li>
-<li><span style="font-weight: 400;"> In connection with the sale or distribution of firearms or weapons, military or semi-military goods, military software or technologies, chemicals, prescription medications, seeds or plants, dietary supplements, alcoholic beverages, tobacco goods, jewels, precious metals or stones.</span></li>
-</ol>
-<ol>
-<li><span style="font-weight: 400;"> For avoidance of doubt, any attempt to use the Platform and the associated AFX products and </span></li>
-</ol>
-<p><span style="font-weight: 400;">services in a prohibited manner shall constitute an Event of Default as defined below. </span></p>
-<ol start="8">
-<li><strong> Services</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">8.01 As a User, you may be eligible for the Foreign Exchange Services and the Remittance </span></p>
-<p><span style="font-weight: 400;">Services as follows: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> Domestic money remittances from one business to another within the United States; </span></li>
-<li><span style="font-weight: 400;"> International EFTs (money remittances) from a business in the United States to a </span></li>
-</ol>
-<p><span style="font-weight: 400;">business in another country; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> Foreign Exchange Services; and </span></li>
-<li><span style="font-weight: 400;"> International Receipt of Funds (the services set out in subsections 8.01(a), 8.01(b) and </span></li>
-</ol>
-<p><span style="font-weight: 400;">8.01(d) are collectively the &ldquo;</span><strong>Remittance Services</strong><span style="font-weight: 400;">&rdquo; referred to in this Agreement). </span></p>
-<p><span style="font-weight: 400;">8.02 You can provide instructions to nanopay and AFX via the Platform according to the process set out below in Section 8.03. AFX (and nanopay) may modify or discontinue the available services set forth above from time to time. AFX and nanopay will not be liable to you for any damages resulting from the discontinuance or modification of any service provided pursuant to this Agreement. </span></p>
-<p><span style="font-weight: 400;">8.03. You will access the Platform and you will send your remittance instructions via the Platform to AFX. Your instructions must include (i) the name, address, financial institution and account number of the payee, (ii) the amount you wish to send, (iii) the applicable transaction currency, (iv) your financial institution, name on the account and account number and, (v) such other information that may be requested by either nanopay or AFX from time to time (collectively, the &ldquo;</span><strong>Remittance Instructions</strong><span style="font-weight: 400;">&rdquo;). </span></p>
-<p><span style="font-weight: 400;">8.04 The Platform will transmit your Remittance Instructions to AFX and AFX will perform the </span></p>
-<p><span style="font-weight: 400;">following actions: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> Provide you with a confirmation of the Remittance Instructions by way of the Platform, including the date of the transaction, the currency and amount of the Remittance, the Payee name, the transaction number and a client ID number, the Foreign Exchange Rate and value date if applicable, any applicable fees or charges, and any relevant disclosure(s) as required by law (collectively, the &ldquo;</span><strong>Transaction Confirmation&rdquo;)</strong><span style="font-weight: 400;">. </span></li>
-<li><span style="font-weight: 400;"> Deem you have accepted the contents of the Transaction Confirmation unless you inform AFX of any errors or omissions upon receiving it and prior to the execution of the transaction by AFX. You shall not thereafter be entitled to dispute the contents of the Transaction Confirmation. </span></li>
-<li><span style="font-weight: 400;"> Receive funds by way of EFT from your Customer Account in an amount equal to the Remittance you are sending to the payee plus any applicable fees, into the AFX Custodial Account once you have authorized and accepted the Transaction Confirmation. </span></li>
-<li><span style="font-weight: 400;"> Funds should be provided to AFX via EFT. If you send funds by wire transfer, AFX will provide you with instructions to send the funds to a CDIC insured AFX Custodial Account. The instructions will include the bank name and address, ABA</span></li>
-</ol>
-<p><span style="font-weight: 400;">routing number, SWIFT code, IBAN, account number and any additional information. For instructions by you to direct debit your account, and AFX consents, you will be required to give AFX written authorization. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> To validate your account information, AFX may rely on one or more of the </span></li>
-</ol>
-<p><span style="font-weight: 400;">following: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> A Void Check; </span></li>
-<li><span style="font-weight: 400;"> A bank statement that is no older than ninety (90) days; </span></li>
-<li><span style="font-weight: 400;"> Confirmation of a micro deposit made to your account; and, </span></li>
-<li><span style="font-weight: 400;"> Instant Account Verification by way of an approved 3</span><span style="font-weight: 400;">rd </span><span style="font-weight: 400;">party service provider. </span></li>
-</ol>
-<p><span style="font-weight: 400;">8.05 Effectuate a remittance from the AFX Custodial Account to the relevant payee account in </span></p>
-<p><span style="font-weight: 400;">such amounts and currency, and at such time(s), as set forth in such instructions. </span></p>
-<p><span style="font-weight: 400;">8.06 Transactions Requiring Foreign Exchange. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> For transactions requiring Foreign Exchange Services, the conversion of one Currency into another Currency, the terms of each such transactions will be set out in the Transaction Confirmation. </span></li>
-<li><span style="font-weight: 400;"> Deem you to have accepted the contents of the Transaction Confirmation, unless you inform AFX of any errors or omissions upon receiving it prior to the execution of the Remittance by AFX. You shall not thereafter be entitled to dispute the contents of the Transaction Confirmation. </span></li>
-<li><span style="font-weight: 400;"> Once you have authorized and accepted the Transaction Confirmation, AFX will receive funds by way of EFT from your Customer Account in an amount equal to the Remittance you are sending to the payee plus any applicable fee(s) included in the Remittance Instructions, into the AFX Custodial Account. </span></li>
-<li><span style="font-weight: 400;"> AFX reserves the right to correct any quoting error in the rate applicable to each transaction should an obvious error or mistake occur. In the event of an error stipulating the applicable rate for a transaction, the error shall be corrected by AFX with reference to the fair market of the Currency at the time that the error occurred, as determined by AFX acting fairly and reasonably according to the particular circumstances surrounding the transaction in question </span></li>
-</ol>
-<p><span style="font-weight: 400;">8.07 Monies Owing for Services </span></p>
-<ol>
-<li><span style="font-weight: 400;"> Under any circumstances where you owe monies to AFX as a result of Services received pursuant to this Agreement or pursuant to any duly authorized and accepted Transaction Confirmation, AFX will set out in the Transaction Confirmation the sum of money that is outstanding. Upon receipt of the Transaction Confirmation, you shall have until 5:00 p.m. EST on the next business day to provide AFX the amount stipulated in the Transaction Confirmation. </span></li>
-<li><span style="font-weight: 400;"> Any deposits you provide to AFX will be applied by AFX in its sole discretion to any outstanding amounts you owe for completed Transactions, applied to other amounts you owe to AFX or nanopay, or the deposit shall be returned to you.</span></li>
-</ol>
-<ol>
-<li><span style="font-weight: 400;"> AFX will hold such funds on your behalf pursuant to the terms of any instructions you have provided and the terms of the Transaction Confirmation until the Settlement Date or the other closing date. </span></li>
-<li><span style="font-weight: 400;"> AFX will use commercially reasonable efforts to process Transactions on the day in </span></li>
-</ol>
-<p><span style="font-weight: 400;">which they are authorized however, AFX cannot guarantee that this will always be possible. Furthermore, AFX is not responsible for the time it takes any Financial Institution and the payee&rsquo;s Bank and/or Financial Institution to process transactions or any other delays related to international and domestic payment systems to process the Transactions. </span></p>
-<ol>
-<li><span style="font-weight: 400;"> If you wish to cancel, amend or reverse a Transaction for any reason, you may attempt to do so by contacting AFX via the Platform. AFX will use commercially reasonable efforts to try too effect such cancellation, amendment or reversal, all at your cost and account. However, you acknowledge that the requested change to the transaction may not be reasonably possible and that AFX is not required to cancel, amend or reverse any transactions once you have authorized and accepted the Transaction Confirmation. </span></li>
-<li><strong> Eligibility</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">9.01 For purposes of reviewing your eligibility to use the Platform and the associated AFX products and services, you understand and agree that nanopay or AFX may request at any time, and you agree to provide, any information about your business operations and/or financial condition. A primary reason for these requests is to help governments fight the funding of terrorism and money laundering activities. We are therefore required to obtain, verify and record information about each client to whom we provide services, such as names, addresses, email addresses, certificates or articles of incorporation and should we deem it necessary government issued photo identification documents like driver&rsquo;s licenses and passports. </span></p>
-<p><span style="font-weight: 400;">9.02 You agree in particular to providing AFX and nanopay with all necessary banking information that AFX and nanopay reasonably require to carry out their obligations under this Agreement. In addition, you hereby authorize and consent to AFX and nanopay: </span></p>
-<ol>
-<li><span style="font-weight: 400;">a) Contacting your bank to verify your identity, account information and any other </span></li>
-</ol>
-<p><span style="font-weight: 400;">information that AFX or nanopay may reasonably require from your bank; and </span></p>
-<ol>
-<li><span style="font-weight: 400;">b) Obtaining a credit report about you from a recognized third-party provider to verify relevant information about you, including but not limited to your payment history; and </span></li>
-<li><strong> Continuous Risk Review Process</strong><span style="font-weight: 400;">. Both nanopay and AFX reserve the right to reassess your eligibility for any services and products based on such reassessment and nanopay&rsquo;s or AFX&rsquo;s risk review processes. You understand that either nanopay or AFX may deny your request to use the Platform and the associated AFX services and products or reassess your eligibility to use them even if your initial request is successful, nanopay and AFX and may modify eligibility standards for the Platform and the associated AFX products and services at any time. </span></li>
-<li><strong> Termination</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">11.01 nanopay and/or AFX may terminate this Agreement at any time without notice. </span></p>
-<p><span style="font-weight: 400;">11.02 You may terminate this Agreement at any time by providing written notice to both nanopay </span></p>
-<p><span style="font-weight: 400;">and AFX (an email to the support functions of both companies will satisfy this obligation). </span></p>
-<p><span style="font-weight: 400;">11.03 Provided that no Event of Default has occurred, all transactions that were entered into prior to the termination of this Agreement shall be carried out to completion and this Agreement shall not terminate until all obligations of the parties to this Agreement have been fully completed. </span></p>
-<p><span style="font-weight: 400;">11.04 The following shall constitute an &ldquo;</span><strong>Event of Default</strong><span style="font-weight: 400;">&rdquo; under the terms of this Agreement: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> You do not perform your obligations under this Agreement on time, including those </span></li>
-</ol>
-<p><span style="font-weight: 400;">obligations set out in Sections 5 and 6; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> You perform one of the prohibited actions set out in Section 7; </span></li>
-<li><span style="font-weight: 400;"> You make a misrepresentation of any of the representations and warranties set out Section 6, or if you make a statement to AFX or nanopay that is untrue or misleading in any material respect, e.g., the source of funds, the identity of the recipient of funds, the purpose of the Transaction; and </span></li>
-<li><span style="font-weight: 400;"> You become bankrupt or insolvent or commit an act of bankruptcy. </span></li>
-</ol>
-<p><span style="font-weight: 400;">11.05. In the event that there is an Event of Default by you, then AFX and nanopay may, at their sole option, either terminate your access to the Platform and withhold all further services and use of products or terminate this Agreement immediately and the parties to it shall be relieved of any further obligations under this Agreement, including obligations pursuant to any Transactions that were entered into prior to the occurrence of the Event of Default. Either AFX or nanopay may terminate this Agreement by providing written notice to the other parties (an email to other the parties will satisfy this obligation). </span></p>
-<ol start="12">
-<li><strong> Confidentiality</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">12.01 nanopay and AFX will use commercially reasonable precautions in order to ensure that any confidential information you provide to nanopay and AFX will be kept private and confidential. </span></p>
-<p><span style="font-weight: 400;">12.02. Nanopay and AFX shall maintain and protect all of your confidential information using the same standards of care and affording such confidential information the same treatment that they use to protect their own confidential information, but under no circumstances less than a reasonable standard of care. </span></p>
-<p><span style="font-weight: 400;">12.03 With regard to confidential information that can be considered to be &ldquo;Personally Identifiable Information,&rdquo; both nanopay and AFX employ certain encryption technologies to ensure the upmost protection for such Personally Identifiable Information. </span></p>
-<p><span style="font-weight: 400;">12.04 AFX and nanopay may use your information, whether confidential information, Personally Identifiable Information, or otherwise solely for their own internal business purposes. </span></p>
-<p><span style="font-weight: 400;">12.05 AFX and nanopay may disclose your confidential information, Personally Identifiable Information or otherwise to their employees, agents, officers, or affiliates in the course of providing Services to you pursuant to the Agreement, provided that such employees, agents, officers, or affiliates are subject to confidentiality obligations no less stringent than the terms contained herein. </span></p>
-<p><span style="font-weight: 400;">12.06. AFX and nanopay may disclose your information, whether confidential information, Personally Identifiable Information, or otherwise to any third party service provider, e.g., Amazon World Services, Plaid, credit reporting agencies (where necessary and only to the minimum extent required), governmental or regulatory body, or agency necessary for you to receive Services pursuant to this Agreement or to comply with any Applicable Laws, requirements, court orders or agency or regulatory body orders, demands or examinations, or otherwise. </span></p>
-<ol start="13">
-<li><strong> Your Security Obligations</strong><span style="font-weight: 400;">. You understand and agree that you are responsible for the security of data in your possession or control and you are responsible for your compliance with all applicable laws and rules in connection with your collection of personal, financial, or transaction information on your website(s). You are also responsible for maintaining adequate security and control over your access to the Platform and the associated AFX products and services, including all credentials, e.g., passwords, and ensuring that your employees, contractors and/or agents comply with these security requirements and all other terms of this Agreement. </span></li>
-<li><strong> Multiple Registrations Are Prohibited</strong><span style="font-weight: 400;">. You understand and agree that multiple registrations are prohibited. You may only register once and each User must maintain a separate registration. If nanopay or AFX detect multiple active registrations for a single User, we reserve the right to merge or terminate the registrations and refuse you all continued use of the Platform and the associated AFX products and services without notification to you. </span></li>
-<li><strong> Right of Set Off. </strong><span style="font-weight: 400;">You agree that nanopay and AFX are authorized at any time to set-off funds deposited with AFX against your debts or liabilities owed to either nanopay or AFX. Neither AFX nor nanopay shall be required to provide you prior notice of the exercise of such set off right. </span></li>
-<li><strong> Our Relationship Is One of Electronic Commerce</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">16.01 You understand that the Platform and the associated AFX products and services constitute an electronic commerce relationship. To provide you the Platform and the associated AFX products and services, we must have your consent to provide access to required disclosures in electronic format. If you do not consent to electronic disclosure of these documents, then you may not use the Platform and the associated AFX products and services. Your consent applies to all of the documents we provide to you electronically in connection with the Service, including receipts and notices. </span></p>
-<p><span style="font-weight: 400;">16.02 Access to electronic disclosures will be provided by way of the Internet. Your history of use is available for viewing online from your account on the AFX and nanopay Websites. If you require a printed copy of your full printed copy of your transaction history, you can request this in writing by sending an email communication to: </span><span style="font-weight: 400;">FXDesk@ascendantfx.com</span><span style="font-weight: 400;">. </span></p>
-<p><span style="font-weight: 400;">16.03 We recommend you download or print a copy of this Agreement for your records. You may </span></p>
-<p><span style="font-weight: 400;">download a copy of this Agreement in a pdf format. </span></p>
-<ol start="17">
-<li><strong> Transmission of Information and Instructions. </strong></li>
-</ol>
-<p><span style="font-weight: 400;">17.01. You acknowledge and agree that AFX and nanopay are not liable to you for any loss or damage arising directly or in connection with the transmission of electronic data or electronic instructions through the Platform or through nanopay.net and AscendantFX.com or through any other electronic mean, or for any failure to receive any such electronic data or electronic instructions for any reason whatsoever. </span></p>
-<p><span style="font-weight: 400;">17.02. Any electronic data or electronic instructions you send via the Platform, or to nanopay.net or AscendantFX.com received by nanopay and AFX will be deemed to be duly authorized by you and both AFX and nanopay will be entitled to rely on such electronic data or electronic instructions. The fact that you may not receive confirmation of receipt of such communications from AFX and/or nanopay shall not invalidate any Transactions entered into pursuant to such instructions from you. </span></p>
-<ol start="18">
-<li><strong>No Interest Paid</strong><span style="font-weight: 400;">. From time to time, AFX may receive and hold monies on your behalf in the course of providing services to you. You acknowledge that under such circumstances neither AFX nor nanopay will not pay interest on any such funds. These funds may be held by AFX in accounts maintained by AFX. You may direct the payment or application of funds by AFX but may not request the return of any funds held by AFX, if such funds are being held for an existing Transaction. </span></li>
-<li><strong>Privacy</strong><span style="font-weight: 400;">. Your privacy is very important to both nanopay and AFX. Given the close relationship between nanopay and AFX in providing you Services under this Agreement, you understand and affirmatively consent to allow nanopay and AFX to share information about you, including any Personally Identifiable Information and confidential information that you input into the Platform or otherwise provide to nanopay and AFX. In addition, both AFX and nanopay will share your information, including your Personally Identifiable Information and confidential information, with our agents, contractors and service providers so you can utilize the Platform and the associated AFX products and services, e.g., Amazon World Service, Plaid, and other parties. Please see nanopay&rsquo;s Privacy Policy, available at </span><a href="https://ablii.com/wp-content/uploads/2018/12/nanopay-Privacy-Policy-November-28-2018.pdf" target="_blank"><span style="font-weight: 400;">Click here</span></a><span style="font-weight: 400;">, and AFX&rsquo;s Privacy Policy Notice for Canada, available at: </span><span style="font-weight: 400;"><a href="https://cdn2.hubspot.net/hubfs/1852881/Compliance/20170221_CAD_Privacy%20Policy_V1.2.pdf?__hssc=139176172.1.1549288310862&amp;__hstc=139176172.63b76680650fa01b2beaa5c3bc589b3d.1547559853853.1547559853853.1549288310862.2&amp;__hsfp=2404041554&amp;hsCtaTracking=4c1138c3-1924-4f0a-bf72-d8937815b912%7C07918ab4-1dcf-4148-bf9e-34e300591321" target="_blank"><span style="font-weight: 400;">Click here</span></a></span><span style="font-weight: 400;">, and AFX&rsquo;s Privacy Policy Notice for the United States, available at: </span><span style="font-weight: 400;"><a href="https://cdn2.hubspot.net/hubfs/1852881/Compliance/AFX%20USA%20Privacy%20Notice_Feb%202017.pdf?__hssc=139176172.1.1549288310862&amp;__hstc=139176172.63b76680650fa01b2beaa5c3bc589b3d.1547559853853.1547559853853.1549288310862.2&amp;__hsfp=2404041554&amp;hsCtaTracking=131644d9-6814-43d2-831e-a85a7c89cc43%7C41a60567-e925-48b3-bfe8-713049390377" target="_blank"><span style="font-weight: 400;">Click here</span></a></span><span style="font-weight: 400;">. </span></li>
-<li><strong> Our Records</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">20.01 You understand and agree that nanopay and AFX will retain a record of all the information you provide to us. Both nanopay and AFX will record and track your use of the nanopay Platform and AFX&rsquo;s services and products. You acknowledge and agree that both nanopay and AFX shall be entitled to use this information for their own internal business purposes. </span></p>
-<p><span style="font-weight: 400;">20.02. You understand and agree that the records kept by AFX and nanopay shall be conclusive and binding on you and in the event of a dispute or formal legal action by you or nanopay and AFX. </span></p>
-<ol start="21">
-<li><strong> Limitation of Liability/Indemnity</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">21.01. NEITHER NANOPAY OR AFX NOR THEIR RESPECTIVE AFFILIATES, EMPLOYEES, OFFICERS, DIRECTORS, AGENTS, CONTRACTORS OR AFFILIATES, INCLUDING THEIR SUCCESSORS AND ASSIGNS, SHALL BE LIABLE TO YOU OR YOUR RESPECTIVE AFFILIATES, WHETHER IN CONTRACT, TORT, EQUITY OR OTHERWISE, FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, PUNITIVE OR EXEMPLARY </span></p>
-<p><span style="font-weight: 400;">DAMAGES, INCLUDING LOST PROFITS (EVEN IF SUCH DAMAGES ARE FORESEEABLE, AND WHETHER OR NOT ANY PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES), ARISING FROM OR RELATING TO THIS AGREEMENT, INCLUDING, WITHOUT LIMITATION, THE WRONGFUL DEATH OR INJURY OF ANY PERSON. </span></p>
-<p><span style="font-weight: 400;">21.02 The combined liability of AFX and nanopay to you shall at all times be limited to the value of </span></p>
-<p><span style="font-weight: 400;">the Transaction from which the Claim arises. </span></p>
-<p><span style="font-weight: 400;">21.03 Nanopay and AFX will use all commercially reasonable efforts to ensure that payment of monies as directed by you shall take place in a timely fashion. However, neither AFX nor nanopay will be liable for any losses or damages suffered by you as a result of delays in the monies being received by the designated Payee. </span></p>
-<p><span style="font-weight: 400;">21.04. You acknowledge and agree that the representations and warranties that you have provided in this Agreement will be relied upon by both nanopay and AFX for the purpose of determining whether or not nanopay and AFX will allow you to access and use the Platform and of the associated AFX products and services as a User. You agree to indemnify and hold nanopay and AFX and their respective officers, directors, employees, agents, contractors and security holders, including their successors and assigns, harmless from and against all losses, damages, or liabilities due to or arising out of a breach of any representation or warranty of yours as provided herein, or in any other document you have provided to either nanopay or AFX. </span></p>
-<ol start="22">
-<li><strong> Amendments to This Agreement</strong><span style="font-weight: 400;">. Both nanopay and AFX reserve the right to amend any of the terms and conditions in this Agreement at any time. All such amendments shall be effective immediately upon written notice to you (an email will satisfy this notice obligation) on a going forward basis. </span></li>
-<li><strong> Notice</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">23.01 Any notice or communication in respect of this Agreement may be given in the following </span></p>
-<p><span style="font-weight: 400;">ways: </span></p>
-<ol>
-<li><span style="font-weight: 400;"> By mail or overnight courier (e.g., FedEx, UPS, DHL) to the address provided on the </span></li>
-</ol>
-<p><span style="font-weight: 400;">cover of this Agreement; </span></p>
-<ol>
-<li><span style="font-weight: 400;"> By facsimile to fax number provided on the cover page of this Agreement; </span></li>
-<li><span style="font-weight: 400;"> By electronic mail to the email address provided on the cover page of this Agreement; </span></li>
-</ol>
-<p><span style="font-weight: 400;">and </span></p>
-<ol>
-<li><span style="font-weight: 400;"> By means of a communication set via the Platform. </span></li>
-</ol>
-<p><span style="font-weight: 400;">23.02. Any notice sent by mail or by overnight courier shall be deemed to have been received on the date it is delivered. All notices sent by facsimile or by email shall be deemed to have been received on the date which the notice is sent, provided that no indication of service interruption is received by the notice sender at the time the notice is provided. </span></p>
-<p><span style="font-weight: 400;">23.03 Any of the three parties to this Agreement may provide notice to the other two parties that it wishes to change its address, fax number or email address via the methods set out in Section 21.01 above at any time. </span></p>
-<ol start="24">
-<li><strong> Nanopay&rsquo;s Terms of Service Are Incorporated Into This Agreement</strong><span style="font-weight: 400;">. You understand and agree that nanopay&rsquo;s Terms of Service found at </span><span style="font-weight: 400;"><a href="https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf" target="_blank"><span style="font-weight: 400;">Click here</span></a></span><span style="font-weight: 400;">are incorporated into this Agreement by reference. In plain English, this means that all of the terms and conditions of nanopay&rsquo;s Terms of Service are part of this Agreement and are legally binding on you. </span></li>
-<li><strong> Miscellaneous</strong><span style="font-weight: 400;">. </span></li>
-</ol>
-<p><span style="font-weight: 400;">25.01. Dispute Resolution. Any dispute or claim arising out of or related to this Agreement, or the interpretation, making, performance, breach, validity or termination thereof, shall be finally settled by binding arbitration in New York, New York under the American Arbitration Association Commercial Arbitration Rules (&ldquo;</span><strong><em>AAA Rules</em></strong><span style="font-weight: 400;">&rdquo;) by one or more neutral arbitrators appointed in accordance with the AAA Rules. At the request of any party, the arbitrator(s) will enter an appropriate protective order to maintain the confidentiality of information produced or exchanged in the course of the arbitration proceedings. Judgment on the award rendered by the arbitrator(s) may be entered in any court having jurisdiction thereof. The arbitrator(s) may also award to the prevailing party, if any, as determined by the arbitrator(s), its reasonable costs and fees incurred in connection with any arbitration or related judicial proceeding hereunder. Costs and fees awarded may include, without limitation, American Arbitration Association administrative fees, arbitrator fees, attorneys' fees, court costs, expert fees, witness fees, travel expenses, and out-of-pocket expenses (including, without limitation, such expenses as copying, telephone, facsimile, postage, and courier fees). The arbitration proceedings contemplated by this Section 25.01 shall be as confidential and private as permitted by Applicable Law. To that end, the parties shall not disclose the existence, content or results of any proceedings conducted in accordance with this Section, and materials submitted in connection with such proceedings shall not be admissible in any other proceeding; provided, however, that this confidentiality provision shall not prevent a petition to vacate or enforce an arbitration award, and shall not bar disclosures required by Applicable Law. </span></p>
-<p><span style="font-weight: 400;">25.02. Force Majeure. No party to this Agreement shall be liable to any other party for any failure or delay on its part to perform, and shall be excused from performing any of its non-monetary obligations hereunder if such failure, delay or non-performance results in whole or in part from any cause beyond the absolute control of the party, including without limitation, any act of God, act of war, riot, actions of terrorists, earthquake, fire, explosion, natural disaster, flooding, embargo, sabotage, government law, ordinance, rule, regulation, order or actions. A party desiring to rely upon any of the foregoing as an excuse for failure, default or delay in performance shall, when the cause arises, give to the other Party prompt notice in writing of the facts which constitute such cause; and, when the cause ceases to exist, give prompt notice thereof to the other Party. This Section 25.02 shall in no way limit the right of the other parties to make any claim against third parties for any damages suffered due to said cause. If the non-performing party&rsquo;s performance under this Agreement is postponed or extended for longer than thirty (30) days, the other two parties may, by written notice to the non- performing party, terminate this Agreement immediately. </span></p>
-<p><span style="font-weight: 400;">25.03. Third Party Beneficiaries. No other Customer or any other third party, other than an affiliate </span></p>
-<p><span style="font-weight: 400;">of a party, is a third-party beneficiary to this Agreement. </span></p>
-<p><span style="font-weight: 400;">25.04. Communications must be in English. All correspondence, agreements and other communications between you and nanopay and AFX shall be in the English language. </span></p>
-<p><span style="font-weight: 400;">25.05. Assignment. You may not assign your interest in this Agreement without the prior written consent of AFX and nanopay. You agree that any transaction whereby the effective control of your business changes, then such change shall be deemed an assignment for purposes of this Agreement. AFX and nanopay may assign this Agreement without prior notice to you and without your consent. This Agreement, including all interest in any transactions shall inure to the benefit of AFX and nanopay, their successors and assigns and shall remain binding on upon you and your respective successors and assigns. </span></p>
-<p><span style="font-weight: 400;">25.06. Governing Law. This Agreement shall be governed by and construed in accordance with the laws of the State of New York without giving effect to the conflict of law principles thereof. Each party agrees that service of process in any action or proceeding hereunder may be made upon such party by certified mail, return receipt requested, to the address for notice set forth herein, as the same may be modified in accordance with the terms hereof. </span></p>
-<p><span style="font-weight: 400;">25.07. Entire Agreement. This Agreement and any schedules, attachments and exhibits hereto set forth the entire agreement and understanding between the parties as to the subject matter hereof and supersedes all prior discussions, agreements and understandings of any kind, and every nature between them. This Agreement shall not be changed, modified or amended except in writing and signed by each of the three parties to this Agreement. </span></p>
-<p><span style="font-weight: 400;">25.08. Construction. Captions contained in this Agreement are for convenience only and do not constitute a limitation of the terms hereof. The singular includes the plural, and the plural includes the singular. All references to &ldquo;herein,&rdquo; &ldquo;hereunder,&rdquo; &ldquo;hereinabove,&rdquo; or like words shall refer to this Agreement as a whole and not to any particular section, subsection, or clause contained in this Agreement. The terms &ldquo;include&rdquo; and &ldquo;including&rdquo; are not limiting. Reference to any agreement or other contract includes any permitted modifications, supplements, amendments, and replacements. </span></p>
-<p><span style="font-weight: 400;">25.09. Severability; Waiver. If any provision of this Agreement (or any portion thereof) is determined to be invalid or unenforceable, the remaining provisions of this Agreement shall not be affected thereby and shall be binding upon the Parties and shall be enforceable, as though said invalid or unenforceable provision (or portion thereof) were not contained in this Agreement. The failure by any party to this Agreement to insist upon strict performance of any of the provisions contained in this Agreement shall in no way constitute a waiver of its rights as set forth in this Agreement, at law or in equity, or a waiver of any other provisions or subsequent default by any other party in the performance of or compliance with any of the terms and conditions set forth in this Agreement. </span></p>
-<p><span style="font-weight: 400;">25.10. Headings. The headings, captions, headers, footers and version numbers contained in this Agreement are inserted for convenience only and shall not affect the meaning or interpretation of this Agreement. </span></p>
-<p><span style="font-weight: 400;">25.11. Drafting. Each of the parties to this Agreement: (a) acknowledges and agrees that they fully participated in the drafting of this Agreement and, in the event that any dispute arises with respect to the interpretation of this Agreement, no presumption shall arise that any one party drafted this Agreement; and (b) represents and warrants to the other party that they have thoroughly reviewed this Agreement, understand and agree to undertake all of their obligations hereunder, and have obtained qualified independent legal advice with respect to the foregoing. </span></p>
-<p><span style="font-weight: 400;">25.12. Survival. The following sections of this Agreement shall survive its termination or expiration </span></p>
-<p><span style="font-weight: 400;">and continue in force: Sections 12, 15, 19, 21and 25. </span></p>
-<p><span style="font-weight: 400;">25.13. Counterparts. This Agreement may be executed and then delivered via facsimile transmission, via the sending of PDF or other copies thereof via email and in one or more counterparts, each of which shall be an original but all of which taken together shall constitute one and the same Agreement. </span></p>
-      `
     },
     {
-      class: 'String',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.settings.AcceptanceDocument',
       name: 'dualPartyAgreementCad',
       view: function(args, x) {
-        var data = x.data$.dot('dualPartyAgreementCad');
+        var data = x.data$.dot('dualPartyAgreementCad').dot('body');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
         style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
       },
       displayWidth: 60,
-      value: `
-      <p><strong>Dual Party Agreement for Canadian Only Payments</strong></p>
-      <p>&nbsp;</p>
-      <p><span style="font-weight: 400;">This Agreement is a contract between you and nanopay corporation (&ldquo;</span><strong>nanopay</strong><span style="font-weight: 400;">&rdquo;) and applies to your use of nanopay&rsquo;s payment software platform only in Canada and only with regard to payments sent and received in Canadian dollars (the &ldquo;</span><strong>Payment Services</strong><span style="font-weight: 400;">&rdquo;) (as defined below). &nbsp;</span></p>
-      <p><span style="font-weight: 400;">It is important that you carefully read and understand this Agreement and keep it for your records since its terms and conditions govern your interactions with nanopay. &nbsp;Capitalized terms used in this Agreement and not otherwise defined will have the meanings assigned to them by nanopay&rsquo;s Terms of Service located at:</span><a href="https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf" target="_blank"><span style="font-weight: 400;">Click here</span></a><span style="font-weight: 400;">. &nbsp;Also, as set forth below, this Agreement contains a binding arbitration provision, which affects your legal rights and may be enforced by the nanopay and you.</span></p>
-      <ol>
-      <li style="font-weight: 400;"><strong>Definitions. </strong></li>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;"> &ldquo;</span><strong><em>Account</em></strong><span style="font-weight: 400;">&rdquo; means a deposit account maintained by nanopay at a federally-or-provincially insured depository institution in which it will receive and hold all funds from Customers associated with payments (the &ldquo;</span><strong><em>Account</em></strong><span style="font-weight: 400;">&rdquo;). &nbsp;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;"> &ldquo;</span><strong><em>Applicable Law</em></strong><span style="font-weight: 400;">&rdquo; means (a) the Rules, (b) the by-laws, operating rules and/or regulations of any System, and (c) any and all federal, provincial or local laws, treaties, rules, regulations, regulatory guidance, directives, policies, orders or determinations of (or agreements with), and mandatory written direction from (or agreements with), a Regulatory Authority. </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>Bank</em></strong><span style="font-weight: 400;">&rdquo; means an entity, including a treasury branch, credit union, financial services cooperative or league, or caisse populaire, that in each case, is authorized by an enactment of Canada or a jurisdiction of Canada to carry on business in Canada or a jurisdiction of Canada. </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;"> &ldquo;</span><strong><em>Business Day</em></strong><span style="font-weight: 400;">&rdquo; means any day, other than a Saturday, Sunday or any federal banking holiday observed in Canada. </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>Confidential Information</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in Section</span> <span style="font-weight: 400;">12.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>Customer</em></strong><span style="font-weight: 400;">&rdquo; means a User that has access to and uses the Payments Services.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>Customer Account</em></strong><span style="font-weight: 400;">&rdquo; means the deposit account that you link through the Platform to your account to make and receive payments. &nbsp;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>Event of Default</em></strong><span style="font-weight: 400;">&rdquo; means an Event of Default as defined in Section 11.04.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>EFT</em></strong><span style="font-weight: 400;">&rdquo; means Electronic Funds Transfer, which is a transaction that takes place over a computerized network (i.e. bank wire transfer; PAD) either between deposit accounts at the same financial institution or between deposit accounts at separate financial institutions.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>FINTRAC</em></strong><span style="font-weight: 400;">&rdquo; means the Financial Transactions and Reports Analysis Centre of Canada. &nbsp;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;"> &ldquo;</span><strong><em>nanopay</em></strong><span style="font-weight: 400;">&rdquo; shall have the meaning set forth in the preamble. </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>Payee&rdquo;</em></strong> <span style="font-weight: 400;">means a Person to whom a payment is paid or is to be paid. &nbsp;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>Person</em></strong><span style="font-weight: 400;">&rdquo; means any individual, corporation, limited liability company, partnership, firm, joint venture, association, trust, unincorporated organization or other entity. </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>Platform</em></strong><span style="font-weight: 400;">&rdquo; has the meaning set forth in Section 2.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;"> &ldquo;</span><strong><em>Transaction</em></strong><span style="font-weight: 400;">&rdquo; means the movement of value using the Platform from payment initiation by a Payor to settlement, using the Platform (as defined below) and includes Payment Services.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">&ldquo;</span><strong><em>Transaction Confirmation</em></strong><span style="font-weight: 400;">&rdquo; means the transaction confirmation as defined in Section 8.04 of this Agreement.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;"> &ldquo;</span><strong><em>User</em></strong><span style="font-weight: 400;">&rdquo; has the meaning set forth in Section 2.</span></li>
-      </ol>
-      <li style="font-weight: 400;"><strong>Background.</strong><span style="font-weight: 400;"> &nbsp;</span></li>
-      </ol>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You understand and agree that nanopay is payment services provider that offers an online platform through which, among other things, nanopay&rsquo;s business customers (each, a &ldquo;</span><strong><em>User</em></strong><span style="font-weight: 400;">&rdquo;) may access certain features and functionality, including the ability to upload and transmit invoices to other businesses for which they act as vendors, and the ability to facilitate the payment of those invoices (the &ldquo;</span><strong><em>Platform</em></strong><span style="font-weight: 400;">&rdquo;).</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You understand and agree that you will only be permitted to use the Platform to initiate Transactions to other Canadian-domiciled Payees. To initiate payments to Payees domiciled outside of Canada, you must execute an additional agreement, which we can provide you at your request</span></li>
-      </ol>
-      </ol>
-      <ol>
-      <li style="font-weight: 400;"><strong>nanopay Duties.</strong><span style="font-weight: 400;"> You understand and agree that all Transactions are performed by nanopay based on instructions received through the Platform. </span><strong>Nanopay acts solely as the payment service provider through the Platform with regard to all payments made pursuant to this Agreement</strong><span style="font-weight: 400;">. &nbsp;&nbsp;</span></li>
-      <li style="font-weight: 400;"><strong>Compliance with Applicable Law and Regulation</strong><span style="font-weight: 400;">. &nbsp;</span></li>
-      </ol>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">By accessing and using the Platform, you agree to comply with all Applicable Law and you further agree not to engage in any transaction involving any illegal activity, product or service. Without limiting the foregoing, you agree you will not violate: (i) the Canadian Corruption of Foreign Public Officials Act; (ii) any applicable domestic or foreign laws or regulations related to Anti-Money Laundering and anti-terrorist financing requirements, Proceeds of Crime (Money Laundering) and Terrorist Financing Act and Regulations; (iii) the Canadian sanctions legislation overseen by Global Affairs; and (iv) applicable data protection and privacy laws such as the Canadian Personal Information Protection and Electronic Documents Act (&ldquo;</span><strong>PIPEDA</strong><span style="font-weight: 400;">&rdquo;). &nbsp;Furthermore, you and your affiliates and agents shall not utilize the Platform and the associated Payments Service in a manner that could cause nanopay to violate any of the foregoing laws and regulations or other applicable laws and regulations to which nanopay may be subject.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You understand and agree that if nanopay in its sole discretion suspects or believes you are violating or may violate applicable laws or regulations, then nanopay may refuse to accept your instructions regarding a Transaction or complete a Transaction already in process.</span><span style="font-weight: 400;"></span></li>
-      </ol>
-      </ol>
-      <ol>
-      <li style="font-weight: 400;"><strong>Your Representations</strong><span style="font-weight: 400;">.</span> <span style="font-weight: 400;">To access and use the Platform, you represent and warrant that:</span></li>
-      </ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You have full authority to enter into this Agreement and carry out its obligations under the Agreement;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">This Agreement has been duly authorized by you;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">This Agreement is binding on you and does not conflict with or violate the terms of any constating documents of yours or of any other agreements pursuant to which you are bound;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">No Event of Default has occurred under the terms of this Agreement;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You exercise legal authority and control over the deposit account that will be the source of funds for Transaction made using the Platform;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You are not an agent acting for an undisclosed principal or third-party beneficiary; </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">All information provided by you as part of your registration and use of the Platform is accurate and complete, and you undertake to promptly notify nanopay of changes to such information; </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You will ensure that your contact details provided at your registration remain accurate and up to date. Nanopay will use those contact details to contact you wherever required under this Agreement or in connection with the Platform; and</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">All representations and warranties made by you shall be true at the time the parties entered into this Agreement and at the time any Transactions are initiated pursuant to the terms of this Agreement.</span></li>
-      </ol>
-      <ol>
-      <li style="font-weight: 400;"><strong>Prohibited Uses</strong><span style="font-weight: 400;">. &nbsp;For avoidance of doubt, you agree</span><strong> not</strong><span style="font-weight: 400;"> to use the Platform in the following manner:</span></li>
-      </ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">In connection with the sale or distribution of any prohibited or illegal good or service or activity that requires a government license where you lack such a license;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">In connection with the sale or distribution of cannabis, cannabis-related paraphernalia, regardless of whether or not such sale is lawful in your jurisdiction;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">In connection with the sale or distribution of any material that promotes violence or hatred;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">In connection with the sale or distribution of adult content;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">In connection with the sale and distribution of goods and services that violate the intellectual property rights of a third party;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">In connection with the sale or exchange of cryptocurrencies;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">As part of a Ponzi-scheme, pyramid selling, other &ldquo;get rich quick&rdquo; schemes or certain multi-level marketing programs;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">As part of any gambling, gaming or regulated financial services you may provide; or </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">In connection with the sale or distribution of firearms or weapons, military or semi-military goods, military software or technologies, chemicals, prescription medications, seeds or plants, dietary supplements, alcoholic beverages, tobacco goods, jewels, precious metals or stones.</span></li>
-      </ol>
-      <p><span style="font-weight: 400;">For avoidance of doubt, any attempt to use the Platform and the Payments Services in a prohibited manner shall constitute an Event of Default as defined below.</span></p>
-      <ol>
-      <li style="font-weight: 400;"><strong>Payment Services</strong><span style="font-weight: 400;">. &nbsp;</span></li>
-      </ol>
-      <p><span style="font-weight: 400;">7.01. &nbsp;You can access the Platform according to the process set out below in Section 7.03. Nanopay may modify or discontinue the available Payment Services set forth in this Agreement at any time. Nanopay will not be liable to you for any damages resulting from the discontinuance or modification of any Payments Services and any related services provided pursuant to this Agreement.</span></p>
-      <p><span style="font-weight: 400;">7.02. &nbsp;To initiate a transaction, you will access the Platform and include the following information: (i) the name, address, financial institution and account number of the payee, (ii) the amount you wish to send, (iii) your financial institution, name on the account and account number and, (iv) such other information that may be requested by nanopay from time to time (collectively, the &ldquo;</span><strong>Payment Instructions</strong><span style="font-weight: 400;">&rdquo;). &nbsp;</span></p>
-      <p><span style="font-weight: 400;">7.03. Upon you initiating a Transaction, the Platform will perform following actions: &nbsp;</span></p>
-      <ol>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Provide you with the following Transaction-related information by way of the Platform, including Transaction date and amount, the Payee name, and the transaction number, and any applicable fees or charges, and any relevant disclosure(s) as required by law (collectively, the &ldquo;</span><strong>Transaction Confirmation&rdquo;)</strong><span style="font-weight: 400;">. &nbsp;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Deem you have accepted the contents of the Transaction Confirmation unless you inform nanopay via the Platform of any errors or omissions upon receiving it and prior to the execution of the transaction. You shall not thereafter be entitled to dispute the contents of the Transaction Confirmation. &nbsp;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Receive funds by way of EFT from your Customer Account in an amount equal to the payment you are sending to the Payee plus any applicable fees, into the Account once you have authorized and accepted the Transaction Confirmation. </span></li>
-      </ol>
-      </ol>
-      </ol>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;"> Funds should be provided to nanopay via pre-authorized debit to send a payment to the Payee&rsquo;s Customer Account according to the instructions set out in your Transaction Confirmation. To allow us to debit your account directly, you will be required to give us authorization as per the terms of the by Pre-Authorized Debit agreement: </span></li>
-      </ol>
-      </ol>
-      <p>&nbsp;</p>
-      <ol>
-      <li style="font-weight: 400;">
-      <span style="font-weight: 100;">You authorize nanopay or its successors, assigns and agents acting on its behalf to debit your validated bank account (the &ldquo;Bank Account&rdquo;), in the amounts and with the frequency that you authorize from time to time based on this Agreement (your &ldquo;Authorization&rdquo;).YOU WAIVE YOUR RIGHT TO RECEIVE PRE-NOTIFICATION OF THE AMOUNT OF THE WITHDRAWAL AND AGREE THAT YOU DO NOT REQUIRE ADVANCE NOTICE OF THE AMOUNT OF PADS BEFORE THE DEBIT IS PROCESSED.</span>
-      </li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">nanopay is required to obtain authorization from you for each Sporadic PAD. You acknowledge that to subsequently authorize Sporadic PADs, you must confirm your identity by logging into the Services as well as verifying your logging on credentials, which shall constitute valid authorization for each Sporadic PAD.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">In the event the debit made pursuant to this Agreement is not accepted by the Payee within 30 days of initiation, the transaction will expire and the funds will be returned to your account.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You may cancel or revoke this authorizations at any time, either in writing or verbally within 30 days. You may obtain a sample cancellation form, or further information on their right to cancel a PAD Agreement, at your financial institution or by visiting www.payments.ca.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You have certain recourse rights if any debit does not comply with this Authorization. For example, you have the right to receive reimbursement for any debit that you have not authorized or that is not consistent with this Authorization. To obtain more information on your recourse rights, you may contact your financial institution or visit Payments Canada at www.payments.ca.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">nanopay may cancel the PAD immediately without notice if any PAD is not honoured by the Financial Institution because there are insufficient funds in your Bank Account, or for any other reason whatsoever that prevents the transfer of funds.</span></li>
-      </ol>
-      <p>&nbsp;</p>
-      <p><span style="font-weight: 400;">7.05. </span><strong>Monies Owing for Services</strong></p>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Under any circumstances where you owe monies to nanopay as a result of the Payments Services received pursuant to this Agreement or pursuant to any duly authorized and accepted Transaction Confirmation, nanopay will set out in the Transaction Confirmation the sum of money that is outstanding. &nbsp;Upon receipt of the Transaction Confirmation, you shall have until 5:00 p.m. EST on the next business day to provide nanopay the amount stipulated in the Transaction Confirmation.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Any amounts you provide to nanopay will be applied in nanopay&rsquo;s sole discretion to any outstanding amounts you owe for completed Transactions, applied to other amounts you owe to nanopay, or the funds received shall be returned to you.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Nanopay will hold such funds on your behalf pursuant to the terms of any instructions you have provided and the terms of the Transaction Confirmation.</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Nanopay will use commercially reasonable efforts to process Transactions on the day in which they are authorized however, we cannot guarantee that this will always be possible. &nbsp;Furthermore, nanopay is not responsible for the time it takes any Bank, including the Payee&rsquo;s Bank, to process transactions, or any other delays related to payment systems used to process the Transactions.</span></li>
-      </ol>
-      </ol>
-      <p>&nbsp;</p>
-      <ol>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">If you wish to cancel, amend or reverse a Transaction for any reason, you may attempt to do so by contacting nanopay via the Platform. Nanopay will use commercially reasonable efforts to try to effect such cancellation, amendment or reversal, all at your cost and account. However, you acknowledge that the requested change to the transaction may not be reasonably possible and that nanopay is not required to cancel, amend or reverse any transactions once you have authorized and accepted the Transaction Confirmation. </span></li>
-      </ol>
-      </ol>
-      </ol>
-      <ol>
-      <li style="font-weight: 400;"><strong>Eligibility</strong><span style="font-weight: 400;">. &nbsp;</span></li>
-      </ol>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">For purposes of reviewing your eligibility to use the Platform and the Payment Services, you understand and agree that nanopay may request at any time, and you agree to provide, any information about your business operations and/or financial condition. A primary reason for these requests is to help governments fight the funding of terrorism and money laundering activities. We are therefore required to obtain, verify and record information about each client to whom we provide services, such as names, addresses, email addresses, certificates or articles of incorporation, and, should we deem it necessary, government issued photo identification documents like drivers licenses and passports. &nbsp;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You agree in particular to providing nanopay with all necessary banking information, that nanopay reasonably requires to carry out our obligations under this Agreement. &nbsp;In addition, you hereby authorize and consent to nanopay:</span></li>
-      </ol>
-      </ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Contacting your Bank to verify your identity, account information and any other information that nanopay may reasonably require from your Bank; and </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Obtaining a credit report about you from a recognized third-party provider to verify relevant information about you, including but not limited to your identity. </span></li>
-      </ol>
-      <ol>
-      <li style="font-weight: 400;"><strong>Continuous Risk Review Process</strong><span style="font-weight: 400;">. Nanopay reserves the right to reassess your eligibility for any services and products and based on such reassessment and nanopay&rsquo;s risk review processes deny your request to use the Platform and the Payment Services or reassess your eligibility to use them even if your initial request is successful. &nbsp;Nanopay may modify eligibility standards for the Platform and the Payment Services at any time.</span></li>
-      <li style="font-weight: 400;"><strong>Termination</strong><span style="font-weight: 400;">. &nbsp;</span></li>
-      </ol>
-      <p><span style="font-weight: 400;">10.01. Nanopay may terminate this Agreement at any time without notice.</span></p>
-      <p><span style="font-weight: 400;">10.02. You may terminate this Agreement at any time by providing written notice to nanopay (an email to the address provided in this Agreement is sufficient).</span></p>
-      <p><span style="font-weight: 400;">10.03. &nbsp;Provided that no Event of Default has occurred, all Transactions that were initiated prior to the termination of this Agreement shall be carried out to completion and this Agreement shall</span><strong> not</strong><span style="font-weight: 400;"> terminate until all obligations of the parties to this Agreement have been fully completed.</span></p>
-      <p><span style="font-weight: 400;">10.04. The following shall constitute an &ldquo;</span><strong>Event of Default</strong><span style="font-weight: 400;">&rdquo; under the terms of this Agreement:</span></p>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You do not perform your obligations under this Agreement on time, including those obligations set out in Sections 4 and 5;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You perform one of the prohibited actions set out in Section 6;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You make a misrepresentation of any of the representations and warranties set out Section 5, or if you make a statement to nanopay that is untrue or misleading in any material respect, e.g., the source of funds, the identity of the recipient of funds, the purpose of the Transaction; and </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You become bankrupt or insolvent or commit an act of bankruptcy.</span></li>
-      </ol>
-      </ol>
-      <p><span style="font-weight: 400;">10.05. In the event that there is an Event of Default by you, then nanopay may, at its sole option, either terminate your access to the Platform and withhold all further Payment Services and use of products or terminate this Agreement immediately and the parties to it shall be relieved of any further obligations under this Agreement, including obligations pursuant to any Transactions that were entered into prior to the occurrence of the Event of Default. &nbsp;</span></p>
-      <ol>
-      <li style="font-weight: 400;"><strong>Confidentiality</strong><span style="font-weight: 400;">. &nbsp;</span></li>
-      </ol>
-      <p><span style="font-weight: 400;">11.01. Nanopay will use commercially reasonable precautions to ensure that any confidential information you provide to nanopay will be kept private and confidential.</span></p>
-      <p><span style="font-weight: 400;">11.02. &nbsp;Nanopay shall maintain and protect all of your confidential information using the same standards of care and affording such confidential information the same treatment that they use to protect their own confidential information, but under no circumstances less than a reasonable standard of care.</span></p>
-      <p><span style="font-weight: 400;">11.03. With regard to confidential information that can be considered to be &ldquo;Personally Identifiable Information,&rdquo; nanopay employs certain encryption technologies to ensure the upmost protection for such Personally Identifiable Information.</span></p>
-      <p><span style="font-weight: 400;">11.04. Nanopay may use your information, whether confidential information, Personally Identifiable Information, or otherwise solely for their own internal business purposes.</span></p>
-      <p><span style="font-weight: 400;">11.05. Nanopay may disclose your confidential information, Personally Identifiable Information or otherwise to their employees, agents, officers, or affiliates in the course of providing Payment Services to you pursuant to the Agreement, provided that such employees, agents, officers, or affiliates are subject to confidentiality obligations no less stringent than the terms contained herein.</span></p>
-      <p><span style="font-weight: 400;">11.06. Nanopay may disclose your information, whether confidential information, Personally Identifiable Information, or otherwise to any third-party service provider (where necessary and only to the minimum extent required), governmental or regulatory body, or agency necessary for you to use the Platform pursuant to this Agreement or to comply with any Applicable Laws, requirements, court orders or agency or regulatory body orders, demands or examinations, or otherwise.</span></p>
-      <ol>
-      <li style="font-weight: 400;"><strong>Your Security Obligations</strong><span style="font-weight: 400;">. &nbsp;You understand and agree that you are responsible for the security of data in your possession or control and you are responsible for your compliance with all applicable laws and rules in connection with your collection of personal, financial, or transaction information on your website(s). &nbsp;You are also responsible for maintaining adeNquate security and control over your access to the Platform and the related services , including all credentials, e.g., passwords, and ensuring that your employees, contractors and/or agents comply with these security requirements and all other terms of this Agreement.</span></li>
-      <li style="font-weight: 400;"><strong>Multiple Registrations Are Prohibited</strong><span style="font-weight: 400;">. &nbsp;You understand and agree that multiple registrations are prohibited. You may only register once and each User must maintain a separate registration. &nbsp;If nanopay detects multiple active registrations for a single User, we reserve the right to merge or terminate the registrations and refuse you all continued use of the Platform and the Payments Services without notification to you.</span></li>
-      <li style="font-weight: 400;"><strong>Right of Set Off.</strong><span style="font-weight: 400;"> &nbsp;You agree that nanopay is authorized at any time to setoff or recoup any liability for which it determines you are liable to us. Nanopay shall not be required to provide you prior notice of the exercise of such set off right.</span></li>
-      <li style="font-weight: 400;"><strong>Our Relationship Is One of Electronic Commerce</strong><span style="font-weight: 400;">. &nbsp;</span></li>
-      </ol>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You consent to the provision of required disclosures to you in electronic format. &nbsp;If you do not consent to electronic disclosure of these documents, then you may not use the Platform. &nbsp;Your consent applies to all of the documents we provide to you electronically in connection with this Agreement, including receipts and notices. </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">Access to electronic disclosures will be provided by way of the Internet. Your history of use is available for viewing online through the Platform. &nbsp;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">We recommend you download or print a copy of this Agreement for your records. &nbsp;You may download a copy of this Agreement in a pdf format. </span></li>
-      </ol>
-      </ol>
-      <p>&nbsp;</p>
-      <ul>
-      <li><strong><strong>Transmission of Information and Instructions. &nbsp;</strong></strong></li>
-      </ul>
-      <p>&nbsp;</p>
-      <p><span style="font-weight: 400;">16.01. &nbsp;You acknowledge and agree that nanopay is not liable to you for any loss or damage arising directly or in connection with the transmission of electronic data or electronic instructions through the Platform or through nanopay.net or through any other electronic mean, or for any failure to receive any such electronic data or electronic instructions for any reason whatsoever.</span></p>
-      <p><span style="font-weight: 400;">16.02. Any electronic data or electronic instructions you send via the Platform, or to nanopay.net received by nanopay will be deemed to be duly authorized by you and nanopay will be entitled to rely on such electronic data or electronic instructions. The fact that you may not receive confirmation of receipt of such communications from nanopay shall not invalidate any Transactions entered into pursuant to such instructions from you.</span></p>
-      <ol>
-      <li style="font-weight: 400;"><strong>No Interest Paid</strong><span style="font-weight: 400;">. &nbsp;From time to time, nanopay may receive and hold monies on your behalf in the course of providing services to you. &nbsp;You acknowledge that under such circumstances nanopay will not pay interest on any such funds. These funds may be held your Account. You may direct the payment or application of funds by nanopay but may not request the return of any funds in the Account if such funds are being held for an existing Transaction. </span></li>
-      <li style="font-weight: 400;"><strong>Privacy</strong><span style="font-weight: 400;">. &nbsp;Your privacy is very important to us. Please see nanopay&rsquo;s Privacy Policy, available at </span><a href="https://ablii.com/wp-content/uploads/2018/12/nanopay-Privacy-Policy-November-28-2018.pdf" target="_blank"><span style="font-weight: 400;">Click here</span></a></li>
-      <li style="font-weight: 400;"><strong>Our Records</strong><span style="font-weight: 400;">. </span></li>
-      </ol>
-      <p><span style="font-weight: 400;">19.01. You understand and agree that nanopay will retain a record of all the information you provide to us. &nbsp;Nanopay will record and monitor your use of the nanopay Platform and the Payments Services. You acknowledge and agree that nanopay shall be entitled to use any information collected pursuant to this Section 19 for its own internal business purposes.</span></p>
-      <ol>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">You understand and agree that the records kept by nanopay shall be conclusive and binding on you and in the event of a dispute or formal legal action between you and nanopay.</span></li>
-      </ol>
-      </ol>
-      <ol>
-      <li style="font-weight: 400;"><strong>Limitation of Liability/Indemnity</strong><span style="font-weight: 400;">. &nbsp;</span></li>
-      </ol>
-      <p><span style="font-weight: 400;">20.01. </span><span style="font-weight: 400;">NANOPAY ITS AFFILIATES, EMPLOYEES, OFFICERS, DIRECTORS, AGENTS, CONTRACTORS OR AFFILIATES, INCLUDING THEIR SUCCESSORS AND ASSIGNS, SHALL BE LIABLE TO YOU OR YOUR RESPECTIVE AFFILIATES, WHETHER IN CONTRACT, TORT, EQUITY OR OTHERWISE, FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, PUNITIVE OR EXEMPLARY DAMAGES, INCLUDING LOST PROFITS (EVEN IF SUCH DAMAGES ARE FORESEEABLE, AND WHETHER OR NOT ANY PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES), ARISING FROM OR RELATING TO THIS AGREEMENT, INCLUDING, WITHOUT LIMITATION, THE WRONGFUL DEATH OR INJURY OF ANY PERSON.</span></p>
-      <p><span style="font-weight: 400;">20.02. The liability of nanopay to you shall at all times be limited to the value of the Transaction from which the claim arises.</span></p>
-      <p><span style="font-weight: 400;">20.03. Nanopay will use all commercially reasonable efforts to ensure that payment of monies as directed by you shall take place in a timely fashion. &nbsp;However, nanopay will not be liable for any losses or damages suffered by you as a result of delays in the monies being received by the designated Payee.</span></p>
-      <p><span style="font-weight: 400;">20.04. You acknowledge and agree that the representations and warranties that you have provided in this Agreement will be relied upon by nanopay for the purpose of determining whether or not nanopay will allow you to access and use the Platform and the Payments Services as a User. You agree to indemnify and hold nanopay and its respective officers, directors, employees, agents, contractors and security holders, including their successors and assigns, harmless from and against all losses, damages, or liabilities due to or arising out of a breach of any representation or warranty of yours as provided herein, or in any other document you have provided to nanopay.</span></p>
-      <ol start="21">
-      <li><span style="font-weight: 400;"> &nbsp;</span><strong>Amendments To This Agreement</strong><span style="font-weight: 400;">. &nbsp;Nanopay reserves the right to amend any of the terms and conditions in this Agreement at any time. &nbsp;All such amendments shall be effective immediately upon written notice to you (an email will satisfy this notice obligation) on a going forward basis.</span></li>
-      <li><span style="font-weight: 400;"> &nbsp;</span><strong>Notice</strong><span style="font-weight: 400;">. &nbsp;</span></li>
-      </ol>
-      <p><span style="font-weight: 400;">22.01. Any notice or communication in respect of this Agreement may be given in the following ways:</span></p>
-      <ol>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">By mail or overnight courier (e.g., FedEx, UPS, DHL) to the address provided on the cover of this Agreement;</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">By facsimile to fax number provided on the cover page of this Agreement; </span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">By electronic mail to the email address provided on the cover page of this Agreement; and</span></li>
-      <li style="font-weight: 400;"><span style="font-weight: 400;">By means of a communication set via the Platform.</span></li>
-      </ol>
-      <p><span style="font-weight: 400;">22.02. All notices sent by email shall be deemed to have been received on the date which the notice is sent, provided that no indication of service interruption is received by the notice sender at the time the notice is provided.</span></p>
-      <p><span style="font-weight: 400;">22.03. A party may provide notice to the other party that it wishes to change its email address via the methods set out in Section 22.01 above at any time.</span></p>
-      <ol start="23">
-      <li><span style="font-weight: 400;"> &nbsp;</span><strong>Nanopay&rsquo;s Terms of Service Are Incorporated Into This Agreement</strong><span style="font-weight: 400;">. &nbsp;You understand and agree that nanopay&rsquo;s Terms of Service found at </span><a href="https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf" target="_blank"><span style="font-weight: 400;">Click here</span></a><span style="font-weight: 400;"> are incorporated into this Agreement by reference. In plain English, this means that all of the terms and conditions of nanopay&rsquo;s Terms of Service are part of this Agreement and are legally binding on you.</span></li>
-      <li><strong>Miscellaneous</strong><span style="font-weight: 400;">.</span></li>
-      </ol>
-      <p><span style="font-weight: 400;">24.01. &nbsp;</span><strong>Dispute Resolution</strong><span style="font-weight: 400;">. Any dispute, controversy or claim arising out of or related to this Agreement, or the interpretation, making, performance, breach, validity or termination thereof, shall be referred to finally resolved by binding arbitration in Toronto, Canada under the Canadian Arbitration Association Arbitration Rules for Arbitration by one or more neutral arbitrators appointed in accordance with said Rules. The language of the arbitration shall be English</span><span style="font-weight: 400;">. </span><span style="font-weight: 400;">At the request of any party, the arbitrator(s) will enter an appropriate protective order to maintain the confidentiality of information produced or exchanged in the course of the arbitration proceedings. Judgment on the award rendered by the arbitrator(s) may be entered in any court having jurisdiction thereof. The arbitrator(s) may also award to the prevailing party, if any, as determined by the arbitrator(s), its reasonable costs and fees incurred in connection with any arbitration or related judicial proceeding hereunder. Costs and fees awarded may include, without limitation, Canadian Arbitration Association administrative fees, arbitrator fees, attorneys' fees, court costs, expert fees, witness fees, travel expenses, and out-of-pocket expenses (including, without limitation, such expenses as copying, telephone, facsimile, postage, and courier fees). The arbitration proceedings contemplated by this Section 24.01 shall be as confidential and private as permitted by Applicable Law. To that end, the parties shall not disclose the existence, content or results of any proceedings conducted in accordance with this Section, and materials submitted in connection with such proceedings shall not be admissible in any other proceeding; </span><span style="font-weight: 400;">provided</span><span style="font-weight: 400;">, </span><span style="font-weight: 400;">however</span><span style="font-weight: 400;">, that this confidentiality provision shall not prevent a petition to vacate or enforce an arbitration award, and shall not bar disclosures required by Applicable Law. </span></p>
-      <p><span style="font-weight: 400;">24.02. </span><strong>Force Majeure</strong><span style="font-weight: 400;">. No party to this Agreement shall be liable to any other party for any failure or delay on its part to perform, and shall be excused from performing any of its non-monetary obligations hereunder if such failure, delay or non-performance results in whole or in part from any cause beyond the absolute control of the party, including without limitation, any act of God, act of war, riot, actions of terrorists, earthquake, fire, explosion, natural disaster, flooding, embargo, sabotage, government law, ordinance, rule, regulation, order or actions. A party desiring to rely upon any of the foregoing as an excuse for failure, default or delay in performance shall, when the cause arises, give to the other Party prompt notice in writing of the facts which constitute such cause; and, when the cause ceases to exist, give prompt notice thereof to the other Party. This Section 24.02 shall in no way limit the right of the other parties to make any claim against third parties for any damages suffered due to said cause. If the non-performing party&rsquo;s performance under this Agreement is postponed or extended for longer than thirty (30) days, the other two parties may, by written notice to the non-performing party, terminate this Agreement immediately.</span></p>
-      <p><span style="font-weight: 400;">24.03. </span><strong>Third Party Beneficiaries.</strong><span style="font-weight: 400;"> No other Customer or any other third party, other than an affiliate of a party, is a third-party beneficiary to this Agreement.</span></p>
-      <p><span style="font-weight: 400;">24.04. </span><strong>Communications in English</strong><span style="font-weight: 400;">. &nbsp;The parties have expressly requested and required that this Agreement and all other related documents be drawn up in the English language. Les parties conviennent et exigent expressement que ce Contrat et tous les documents qui s'y rapportent soient redig&eacute;s en anglais.</span></p>
-      <p><span style="font-weight: 400;">24.05. &nbsp;</span><strong>Assignment.</strong><span style="font-weight: 400;"> &nbsp;You may not assign your interest in this Agreement without the prior written consent of nanopay. &nbsp;You agree that any transaction whereby the effective control of your business changes, then such change shall be deemed an assignment for purposes of this Agreement. Nanopay may assign this Agreement without prior notice to you and without your consent. &nbsp;This Agreement, including all interest in any transactions shall inure to the benefit of nanopay, its successors and assigns and shall remain binding on upon you and your respective successors and assigns. </span></p>
-      <p><span style="font-weight: 400;">24.06. &nbsp;</span><strong>Governing Law.</strong><span style="font-weight: 400;"> This Agreement shall be governed by and construed in accordance with the laws of the Province of Ontario without giving effect to the conflict of law principles thereof. Each party agrees that service of process in any action or proceeding hereunder may be made upon such party by certified mail, return receipt requested, to the address for notice set forth herein, as the same may be modified in accordance with the terms hereof. </span></p>
-      <p><span style="font-weight: 400;">24.07. &nbsp;</span><strong>Entire Agreement.</strong><span style="font-weight: 400;"> This Agreement and any schedules, attachments and exhibits hereto set forth the entire agreement and understanding between the parties as to the subject matter hereof and supersedes all prior discussions, agreements and understandings of any kind, and every nature between them. This Agreement shall not be changed, modified or amended except in writing and signed by each of the three parties to this Agreement.</span></p>
-      <p><span style="font-weight: 400;">24.08. &nbsp;</span><strong>Construction.</strong><span style="font-weight: 400;"> &nbsp;Captions contained in this Agreement are for convenience only and do not constitute a limitation of the terms hereof. The singular includes the plural, and the plural includes the singular. All references to &ldquo;herein,&rdquo; &ldquo;hereunder,&rdquo; &nbsp;&ldquo;hereinabove,&rdquo; or like words shall refer to this Agreement as a whole and not to any particular section, subsection, or clause contained in this Agreement. The terms &ldquo;include&rdquo; and &ldquo;including&rdquo; are not limiting. Reference to any agreement or other contract includes any permitted modifications, supplements, amendments, and replacements.</span></p>
-      <p><span style="font-weight: 400;">24.09. &nbsp;</span><strong>Severability; Waiver</strong><span style="font-weight: 400;">. If any provision of this Agreement (or any portion thereof) is determined to be invalid or unenforceable, the remaining provisions of this Agreement shall not be affected thereby and shall be binding upon the Parties and shall be enforceable, as though said invalid or unenforceable provision (or portion thereof) were not contained in this Agreement. The failure by any party to this Agreement to insist upon strict performance of any of the provisions contained in this Agreement shall in no way constitute a waiver of its rights as set forth in this Agreement, at law or in equity, or a waiver of any other provisions or subsequent default by any other party in the performance of or compliance with any of the terms and conditions set forth in this Agreement.</span></p>
-      <p><span style="font-weight: 400;">24.10. </span><strong>Headings</strong><span style="font-weight: 400;">. The headings, captions, headers, footers and version numbers contained in this Agreement are inserted for convenience only and shall not affect the meaning or interpretation of this Agreement.</span></p>
-      <p><span style="font-weight: 400;">24.11. &nbsp;</span><strong>Drafting</strong><span style="font-weight: 400;">. Each of the parties to this Agreement: (a) acknowledges and agrees that they fully participated in the drafting of this Agreement and, in the event that any dispute arises with respect to the interpretation of this Agreement, no presumption shall arise that any one party drafted this Agreement; and (b) represents and warrants to the other party that they have thoroughly reviewed this Agreement, understand and agree to undertake all of their obligations hereunder, and have obtained qualified independent legal advice with respect to the foregoing.</span></p>
-      <p><span style="font-weight: 400;">24.12. &nbsp;</span><strong>Survival.</strong><span style="font-weight: 400;"> The following sections of this Agreement shall survive its termination or expiration and continue in force: Sections 11, 14, 18, 20 and 24.</span></p>
-      <p><span style="font-weight: 400;">24.13. </span><strong>Counterparts</strong><span style="font-weight: 400;">. This Agreement may be executed and then delivered via facsimile transmission, via the sending of PDF or other copies thereof via email and in one or more counterparts, each of which shall be an original but all of which taken together shall constitute one and the same Agreement.</span></p>
-      `
     },
   ],
 
@@ -1244,6 +434,9 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.loadAcceptanceDocuments();
+    },
     function initE() {
       this.nextLabel = 'Next';
       this.addClass(this.myClass())
@@ -1294,17 +487,44 @@ foam.CLASS({
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
           // Terms and Services and Compliance stuff
-            .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' }).show(this.isCanadian$).end()
-            .start(this.DUAL_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px' }).show(this.isCanadian$).end()
-            .start(this.TRI_PARTY_AGREEMENT_USD).style({ 'margin-top': '30px' }).hide(this.isCanadian$).end()
+            .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' })
+              .start('a').addClass('sme').addClass('link')
+                .addClass(this.myClass('terms-link'))
+                .add('Download or Print this Agreement Here')
+                .on('click', () => {
+                  var link = this.triPartyAgreementCad ? this.triPartyAgreementCad.link : '';
+                  window.open(link);
+                })
+              .end()
+            .show(this.isCanadian$).end()
+            .start(this.DUAL_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px' })
+              .start('a').addClass('sme').addClass('link')
+                .addClass(this.myClass('terms-link'))
+                .add('Download or Print this Agreement Here')
+                .on('click', () => {
+                  var link = this.dualPartyAgreementCad ? this.dualPartyAgreementCad.link : '';
+                  window.open(link);
+                })
+              .end()
+            .show(this.isCanadian$).end()
+            .start(this.TRI_PARTY_AGREEMENT_USD).style({ 'margin-top': '30px' })
+              .start('a').addClass('sme').addClass('link')
+                .addClass(this.myClass('terms-link'))
+                .add('Download or Print this Agreement Here')
+                .on('click', () => {
+                  var link = this.triPartyAgreementUsd ? this.triPartyAgreementUsd.link : '';
+                  window.open(link);
+                })
+              .end()
+            .hide(this.isCanadian$).end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: this.CANADIAN_BOX_ONE, data$: this.canadianScrollBoxOne$ }).end()
+              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
             .end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: this.CANADIAN_BOX_TWO, data$: this.canadianScrollBoxTwo$ }).end()
+              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxTwo$ }).add(this.dualPartyAgreementCad$.dot('checkboxText')).end()
             .end()
             .start().addClass('checkBoxes').hide(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: this.AMERICAN_BOX, data$: this.americanScrollBox$ }).end()
+              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.americanScrollBox$ }).add(this.triPartyAgreementUsd$.dot('checkboxText')).end()
             .end()
           // End of Terms and Services and Compliance stuff
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
@@ -1335,7 +555,37 @@ foam.CLASS({
         .end()
           .tag(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
       .end();
+    },
+    async function updateUserAcceptance(id, val) {
+      try {
+        this.acceptanceDocumentService
+          .updateUserAcceptanceDocument(this.user.id, id, val);
+      } catch (error) {
+        console.warn('Error updating user accepted document: ', error);
+      }
     }
+  ],
+
+  listeners: [
+    async function loadAcceptanceDocuments() {
+      try {
+        this.triPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementCAD', '');
+      } catch (error) {
+        console.warn('Error occured finding Tri-Party Agreement CAD: ', error);
+      }
+
+      try {
+        this.triPartyAgreementUsd = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementUSD', '');
+      } catch (error) {
+        console.warn('Error occured finding Tri-Party Agreement USD: ', error);
+      }
+
+      try {
+        this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument('dualPartyAgreementCad', '');
+      } catch (error) {
+        console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
+      }
+    },
   ],
 
   actions: [
@@ -1349,6 +599,6 @@ foam.CLASS({
           noChoice: true
         }));
       }
-    }
+    },
   ]
 });

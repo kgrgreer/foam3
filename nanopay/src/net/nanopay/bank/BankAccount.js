@@ -161,7 +161,7 @@ foam.CLASS({
       class: 'Int',
       name: 'verificationAttempts',
       value: 0,
-      visibility: foam.u2.Visibility.RO
+      permissionRequired: true,
     },
     {
       class: 'DateTime',
@@ -343,7 +343,8 @@ foam.CLASS({
                                   EQ(BankAccount.OWNER, user.getId()),
                                   INSTANCE_OF(BankAccount.class),
                                   EQ(Account.DENOMINATION, denomination),
-                                  EQ(Account.IS_DEFAULT, true)
+                                  EQ(Account.IS_DEFAULT, true), 
+                                  NEQ(Account.DELETED, true)
                                 )
                               );
 
