@@ -249,7 +249,7 @@ if (acc == null) {
       Account source = findSourceAccount(x);
       Account destination = findDestinationAccount(x);
       if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) && getStatus() == TransactionStatus.COMPLETED ) {
-        ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION);
+        ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, -getAmount());
       }
       `
     }
