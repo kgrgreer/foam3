@@ -284,6 +284,7 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
   'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
   'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
+  'net.nanopay.fx.ascendantfx.AscendantFXCredientials',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',
