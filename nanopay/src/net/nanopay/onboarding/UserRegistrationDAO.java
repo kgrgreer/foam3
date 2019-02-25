@@ -57,6 +57,10 @@ public class UserRegistrationDAO
       throw new RuntimeException("Email required");
     }
     
+    // Set user SPID and group defined by service.
+    user.setSpid(spid_);
+    user.setGroup(group_);
+
     // We want the system user to be putting the User we're trying to create. If
     // we didn't do this, the user in the context's id would be 0 and many
     // decorators down the line would fail because of authentication checks.
@@ -146,9 +150,6 @@ public class UserRegistrationDAO
     if ( userWithSameEmail != null ) {
       throw new RuntimeException("User with same email address already exists: " + user.getEmail());
     }
-
-    user.setSpid(spid_);
-    user.setGroup(group_);
   }
 
   @Override
