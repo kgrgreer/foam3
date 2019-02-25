@@ -33,7 +33,11 @@ methods: [
     request.setEntityName(business.getBusinessName());
     request.setJurisdiction(business.getAddress().getRegionId());
     request.setCountry("CA");
-      
+    request.setAddress(business.getAddress().getPostalCode());
+    if ( business.getType().equals("Corporation") || business.getType().equals("Sole Proprietorship") || business.getType().equals("Partnership") ) {
+      request.setEntityType(business.getType());
+    }
+
     return request;
     `
   },

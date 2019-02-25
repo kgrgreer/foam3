@@ -23,7 +23,13 @@ foam.CLASS({
     {
       name: 'canValidate',
       javaCode: `
-      return obj instanceof Business;
+      if ( obj instanceof Business ) {
+        Business business = (Business) obj;
+        if (business.getAddress().getCountryId().equals("CA")) {
+          return true;
+        }
+      }
+      return false;
         `
     },
     {
