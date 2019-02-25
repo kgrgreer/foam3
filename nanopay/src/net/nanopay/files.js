@@ -206,6 +206,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/FixedFee' },
   { name: 'net/nanopay/tx/model/InformationalFee' },
   { name: 'net/nanopay/tx/model/LiquiditySettings' },
+  { name: 'net/nanopay/tx/Liquidity' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
