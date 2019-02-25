@@ -39,7 +39,6 @@ foam.CLASS({
 
   exports: [
     'isSigningOfficer',
-    'viewData',
     'beneficialOwnersDAO',
     'validateBeneficialOwner'
   ],
