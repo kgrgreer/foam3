@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.mlang.sink.Count;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
@@ -106,11 +107,11 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
           if ( user.getId() != 0 ) {
             /* PROCESSING internal users */
             // If junction already exists, throw exception.
-            junction = (UserUserJunction) agentJunctionDAO_.find(AND(
+            Count junctionCount = (Count) agentJunctionDAO_.where(AND(
               EQ(UserUserJunction.SOURCE_ID, user.getId()),
               EQ(UserUserJunction.TARGET_ID, business.getId())
-            ));
-            if ( junction != null ) {
+            )).select(new Count());
+            if ( junctionCount.getValue() != 0 ) {
               // don't want to through an error if user is clicking link for the second time
               // instead just return if junction already exists.
               return user;
