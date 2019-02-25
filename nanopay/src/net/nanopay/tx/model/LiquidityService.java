@@ -121,12 +121,12 @@ public class LiquidityService
 
 
     if ( currentBalance > liquidity.getThreshold() ) {
-      if ( liquidity.getNotify() && txnAmount > 0 && currentBalance - liquidity.getThreshold() > txnAmount ) {
+      if ( liquidity.getEnableNotification() && txnAmount > 0 && currentBalance - liquidity.getThreshold() > txnAmount ) {
         //send notification when limit went over
         notifyUser(account, true, ls.getHighLiquidity().getThreshold());
       }
-      if ( liquidity.getEnable() ) {
-        addCICOTransaction(currentBalance - liquidity.getReset(),account.getId(), fundAccount.getId());
+      if ( liquidity.getEnableRebalancing() ) {
+        addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId());
       }
     }
   }
@@ -137,7 +137,7 @@ public class LiquidityService
 
     if ( currentBalance < liquidity.getThreshold() ) {
       Account account = ls.findAccount(x_);
-      if ( liquidity.getNotify() && txnAmount < 0 && currentBalance + txnAmount >  liquidity.getThreshold() ) {
+      if ( liquidity.getEnableNotification() && txnAmount < 0 && currentBalance + txnAmount >  liquidity.getThreshold() ) {
         //send notification when limit went over
         notifyUser(account, false, ls.getLowLiquidity().getThreshold());
       }
@@ -153,8 +153,8 @@ public class LiquidityService
         ((DAO) x_.get("notificationDAO")).put(notification);
         return;
       }
-      if ( liquidity.getEnable() ) {
-        addCICOTransaction(liquidity.getReset() - currentBalance, fundAccount.getId(), account.getId());
+      if ( liquidity.getEnableRebalancing() ) {
+        addCICOTransaction(liquidity.getResetBalance() - currentBalance, fundAccount.getId(), account.getId());
       }
     }
 

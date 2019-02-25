@@ -10,12 +10,12 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'enable',
+      name: 'enableRebalancing',
       documentation: 'Triggeres automatic transaction on accounts.'
     },
     {
       class: 'Boolean',
-      name: 'notify',
+      name: 'enableNotification',
       documentation: 'enables notifications.'
     },
     {
@@ -25,7 +25,7 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      name: 'reset',
+      name: 'resetBalance',
       documentation: 'Account balance must match reset amount after liquidity transaction was generated.'
     },
     {

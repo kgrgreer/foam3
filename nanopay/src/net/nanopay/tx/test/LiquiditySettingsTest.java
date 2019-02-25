@@ -129,13 +129,13 @@ public class LiquiditySettingsTest
     test(balance == balance, "testAffectofCICO: initial balance: " + balance);
 
     Liquidity high = new Liquidity();
-    high.setReset(0L);
+    high.setResetBalance(0L);
     high.setThreshold(0L);
-    high.setEnable(true);
+    high.setEnableRebalancing(true);
 
     Liquidity low = new Liquidity();
-    low.setEnable(true);
-    low.setReset(0L);
+    low.setEnableRebalancing(true);
+    low.setResetBalance(0L);
     low.setThreshold(0L);
 
     ls_.setCashOutFrequency(Frequency.DAILY);
@@ -177,14 +177,14 @@ public class LiquiditySettingsTest
   public LiquiditySettings setupLiquiditySettings(X x, Account account, Account bankAccount, Long minLimit, Long maxLimit, Frequency frequency) {
     LiquiditySettings ls = new LiquiditySettings();
     Liquidity highLiquidity = new Liquidity();
-    highLiquidity.setEnable(true);
-    highLiquidity.setReset(maxLimit);
+    highLiquidity.setEnableRebalancing(true);
+    highLiquidity.setResetBalance(maxLimit);
     highLiquidity.setThreshold(maxLimit + 1);
     highLiquidity.setFundAccount(bankAccount.getId());
     Liquidity lowLiquidity = new Liquidity();
-    lowLiquidity.setEnable(true);
+    lowLiquidity.setEnableRebalancing(true);
     lowLiquidity.setThreshold(minLimit - 1);
-    lowLiquidity.setReset(minLimit);
+    lowLiquidity.setResetBalance(minLimit);
     lowLiquidity.setFundAccount(bankAccount.getId());
 
     ls.setId(account.getId());
