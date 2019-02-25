@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
   ],
 
@@ -23,6 +24,7 @@ foam.CLASS({
     'ctrl',
     'notify',
     'pushMenu',
+    'signingOfficerJunctionDAO',
     'stack',
     'user',
     'userDAO',
@@ -36,6 +38,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'isSigningOfficer',
     'viewData',
     'principalOwnersDAO',
     'validatePrincipalOwner'
@@ -116,6 +119,15 @@ foam.CLASS({
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
+    },
+    {
+      type: 'Boolean',
+      name: 'isSigningOfficer',
+      documentation: `
+        This gets set in the 'init' method below after a promise resolves. It
+        will be set to true if the agent in the context is a signing officer for
+        the business (which is the user in the context).
+      `
     }
   ],
 
@@ -195,6 +207,18 @@ foam.CLASS({
       this.viewData.user = this.user;
       this.viewData.agent = this.agent;
       this.title = 'Your business profile';
+
+      this.user.signingOfficers.junctionDAO
+        .where(
+          this.AND(
+            this.EQ(this.BusinessUserJunction.SOURCE_ID, this.agent.id),
+            this.EQ(this.BusinessUserJunction.TARGET_ID, this.user.id)
+          )
+        )
+        .select(this.COUNT())
+        .then((sink) => {
+          this.isSigningOfficer = sink != null && sink.value > 0;
+        });
 
       this.saveLabel = 'Close';
       this.nextLabel = 'Get started';
@@ -558,7 +582,7 @@ foam.CLASS({
           }
           if ( this.position === 3 ) {
             // validate principal owner or push stack back to complete registration.
-            if ( this.viewData.agent.signingOfficer ) {
+            if ( this.isSigningOfficer ) {
               if ( ! this.validateSigningOfficerInfo() ) return;
               var isAgentSaved = await this.saveAgent();
               if ( ! isAgentSaved ) {

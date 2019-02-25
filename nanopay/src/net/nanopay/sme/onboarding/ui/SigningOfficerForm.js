@@ -20,9 +20,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
+    'agent',
+    'isSigningOfficer',
     'menuDAO',
-    'viewData'
+    'user'
   ],
 
   css: `
@@ -147,13 +148,21 @@ foam.CLASS({
         ]
       },
       factory: function() {
-        this.nextLabel = this.viewData.agent.signingOfficer ? 'Next' : 'Complete';
-        this.hasSaveOption = this.viewData.agent.signingOfficer;
-        return this.viewData.agent.signingOfficer ? 'Yes' : 'No';
+        return this.isSigningOfficer ? 'Yes' : 'No';
+      },
+      adapt: function(_, v) {
+        if ( typeof v === 'boolean' ) return v ? 'Yes' : 'No';
+        return v;
       },
       postSet: function(o, n) {
         this.nextLabel = n === 'Yes' ? 'Next' : 'Complete';
-        this.viewData.agent.signingOfficer = n === 'Yes';
+        if ( n === 'Yes' ) {
+          this.user.signingOfficers.add(this.agent);
+          this.isSigningOfficer = true;
+        } else {
+          this.user.signingOfficers.remove(this.agent);
+          this.isSigningOfficer = false;
+        }
         this.hasSaveOption = n === 'Yes';
       }
     },
