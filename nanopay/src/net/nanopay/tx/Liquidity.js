@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.model',
+  package: 'net.nanopay.tx',
   name: 'Liquidity',
 
   requires: [
@@ -26,7 +26,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'reset',
-      documentation: 'Account balance must much reset amount after liquidity transaction was generated.'
+      documentation: 'Account balance must match reset amount after liquidity transaction was generated.'
     },
     {
       class: 'Reference',

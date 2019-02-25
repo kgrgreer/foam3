@@ -10,6 +10,7 @@ import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.tx.Liquidity;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 
