@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'LoanAccount',
-  extends: 'net.nanopay.account.Account',
+  extends: 'net.nanopay.account.DigitalAccount',
   documentation: 'Base class/model of all LoanAccounts',
 
   javaImports: [
@@ -21,6 +21,12 @@ foam.CLASS({
       documentation: 'The maximum that can be borrowed',
       value: 0
     },
+        {
+          class: 'Long',
+          name: 'accumulatedInterest',
+          documentation: 'The amount of interest accumulated before compounding',
+          value: 0
+        },
     {
       name: 'lenderAccount',
       class: 'Reference',

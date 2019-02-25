@@ -22,8 +22,13 @@ methods: [
         }
       ],
       javaCode: `
-        if ( amount+balance.getBalance() < 0 ) {
-          throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain >= 0. " + this.getClass().getSimpleName()+"."+getName());
+      long bal = balance == null ? 0L : balance.getBalance();
+
+        if ( amount < 0 &&
+            -amount > bal  ) {
+          foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+          logger.debug(this, "amount", amount, "balance", bal);
+          throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain >= 0. "+getName());
         }
       `
     }

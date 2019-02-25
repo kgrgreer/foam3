@@ -19,86 +19,59 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
 
-    if (!(obj instanceof TransactionQuote)) return getDelegate().put_(x, obj);
-
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction txn = quote.getRequestTransaction();
 
-    if (!(txn.findSourceAccount(x) instanceof LoanAccount || txn.findDestinationAccount(x) instanceof LoanAccount))
+    if ( ! ( txn.findSourceAccount(x) instanceof LoanAccount || txn.findDestinationAccount(x) instanceof LoanAccount ) )
       return getDelegate().put_(x, obj);
 
-    DigitalTransaction loanWithdraw = null;
-    DigitalTransaction loanPay = null;
+    TransactionLineItem withdrawLineItem = null;
+    TransactionLineItem depositLineItem = null;
 
-    if (txn.findSourceAccount(x) instanceof LoanAccount) {
+    if ( txn.findSourceAccount(x) instanceof LoanAccount ) {
       DAO accountDAO = (DAO) x.get("accountDAO");
-      LoanAccount sourceAccount = (LoanAccount) txn.findSourceAccount(x);
-      //(LoanAccount) accountDAO.find_(x, txn.getSourceAccount());
+      LoanAccount theLoanAccount = (LoanAccount) txn.findSourceAccount(x);
 
-      // Create loan transaction to reflect movement
-      loanWithdraw = new DigitalTransaction.Builder(x)
-        .setSourceAccount(sourceAccount.getId())
-        .setSourceCurrency(sourceAccount.getDenomination())
-        .setDestinationCurrency(sourceAccount.getDenomination())
-        .setDestinationAccount(((LoanedTotalAccount) accountDAO.find(MLang.AND(MLang.INSTANCE_OF(LoanedTotalAccount.class),MLang.EQ(LoanedTotalAccount.DENOMINATION,sourceAccount.getDenomination())))).getId())//<----------****
-        .setIsQuoted(true)
+      LoanedTotalAccount globalLoanAccount = ((LoanedTotalAccount) accountDAO.find(MLang.AND(MLang.INSTANCE_OF(LoanedTotalAccount.class), MLang.EQ(LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination()))));
+      if( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");
+
+      withdrawLineItem = new TransactionLineItem.Builder(x)
+        .setSourceAccount(theLoanAccount.getId())
+        .setDestinationAccount(globalLoanAccount.getId())
         .setAmount(txn.getAmount())
-        .setName("Withdrawl from Loan Account")
+        .setCurrency( theLoanAccount.getDenomination() )
         .build();
 
-      txn.setSourceAccount(sourceAccount.getLenderAccount());
+      txn.setSourceAccount(theLoanAccount.getLenderAccount());
     }
 
     if (txn.findDestinationAccount(x) instanceof LoanAccount) {
       DAO accountDAO = (DAO) x.get("accountDAO");
-      LoanAccount destinationAccount = (LoanAccount) txn.findDestinationAccount(x);
-      //(LoanAccount) accountDAO.find_(x, txn.getDestinationAccount());
+      LoanAccount theLoanAccount = (LoanAccount) txn.findDestinationAccount(x);
 
+      LoanedTotalAccount globalLoanAccount = ( (LoanedTotalAccount) accountDAO.find( MLang.AND( MLang.INSTANCE_OF( LoanedTotalAccount.class ), MLang.EQ( LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination() ) ) ) );
+      if( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");
 
-      // Create a loan tx from loan account to global loan account
-      loanPay = new DigitalTransaction.Builder(x)
-        .setDestinationAccount(destinationAccount.getId())
-        .setSourceCurrency(destinationAccount.getDenomination())
-        .setDestinationCurrency(destinationAccount.getDenomination())
-        .setSourceAccount(((LoanedTotalAccount) accountDAO.find(MLang.AND(MLang.INSTANCE_OF(LoanedTotalAccount.class), MLang.EQ(LoanedTotalAccount.DENOMINATION,destinationAccount.getDenomination())))).getId()) //<----------****
-        .setIsQuoted(true)
-        .setAmount(txn.getAmount())
-        .setName("Payment to Loan Account")
+      depositLineItem = new TransactionLineItem.Builder(x)
+        .setSourceAccount( theLoanAccount.getId() )
+        .setDestinationAccount( globalLoanAccount.getId() )
+        .setAmount( txn.getAmount() )
+        .setCurrency( theLoanAccount.getDenomination() )
         .build();
 
-      txn.setDestinationAccount(destinationAccount.getLenderAccount());
+      txn.setDestinationAccount(theLoanAccount.getLenderAccount());
     }
 
-    // finish the quote
     quote.setRequestTransaction(txn);
-    quote = (TransactionQuote) getDelegate().put_(x, quote);
+    Transaction plan = ((TransactionQuote) getDelegate().put_(x, quote)).getPlan();
 
-    // add loan txs to best plan
-    Transaction t = quote.getPlan();
-    while (t.getNext() != null) {
-      t = t.getNext();
-    }
-    if (loanPay != null) {
-      t.setNext(loanPay);
+    //if this is a fx transaction
+    if( plan.getDestinationAmount() != 0 && depositLineItem != null ) depositLineItem.setAmount( plan.getDestinationAmount() ) ;
 
-      t = loanPay;
-    }
-    if (loanWithdraw != null) {
-      t.setNext(loanWithdraw);
-    }
+    while(plan.getNext()!=null) plan = plan.getNext();
 
-    // add loan tx to all plans
-    for (Transaction plan : quote.getPlans()) {
-      t = plan;
-      while (t.getNext() != null) {
-        t = t.getNext();
-      }
-      if (loanPay != null) {
-        t.setNext(loanPay);
-        t = loanPay;
-      }
-      if (loanWithdraw != null) t.setNext(loanWithdraw);
-    }
+    if( withdrawLineItem != null ) plan.addLineItems( new TransactionLineItem[] {withdrawLineItem},null );
+    if( depositLineItem != null ) plan.addLineItems( new TransactionLineItem[] {depositLineItem},null );
 
     return quote;
   }
