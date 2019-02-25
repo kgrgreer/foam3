@@ -31,7 +31,8 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      name: 'fundAccount',
+      name: 'pushPullAccount',
+      label: 'push/pull account',
       documentation: 'Account associated to setting.',
       view: function(_, X) {
         return foam.u2.view.RichChoiceView.create({

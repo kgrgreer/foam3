@@ -180,12 +180,12 @@ public class LiquiditySettingsTest
     highLiquidity.setEnableRebalancing(true);
     highLiquidity.setResetBalance(maxLimit);
     highLiquidity.setThreshold(maxLimit + 1);
-    highLiquidity.setFundAccount(bankAccount.getId());
+    highLiquidity.setPushPullAccount(bankAccount.getId());
     Liquidity lowLiquidity = new Liquidity();
     lowLiquidity.setEnableRebalancing(true);
     lowLiquidity.setThreshold(minLimit - 1);
     lowLiquidity.setResetBalance(minLimit);
-    lowLiquidity.setFundAccount(bankAccount.getId());
+    lowLiquidity.setPushPullAccount(bankAccount.getId());
 
     ls.setId(account.getId());
     ls.setCashOutFrequency(frequency);

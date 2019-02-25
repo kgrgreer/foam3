@@ -106,7 +106,7 @@ public class LiquidityService
     Liquidity liquidity = ls.getHighLiquidity();
     Account account = ls.findAccount(x_);
 
-    Account fundAccount = liquidity.findFundAccount(x_);
+    Account fundAccount = liquidity.findPushPullAccount(x_);
     if ( ! ( fundAccount instanceof DigitalAccount ) ) {
       fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
     }
@@ -141,7 +141,7 @@ public class LiquidityService
         //send notification when limit went over
         notifyUser(account, false, ls.getLowLiquidity().getThreshold());
       }
-      Account fundAccount = liquidity.findFundAccount(x_);
+      Account fundAccount = liquidity.findPushPullAccount(x_);
       if ( ! ( fundAccount instanceof DigitalAccount ) ) {
         fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
       }
