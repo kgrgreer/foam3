@@ -69,7 +69,7 @@ foam.CLASS({
             x: 0,
             y: 0,
             relationship: net.nanopay.account.AggregateAccountAccountchildrenRelationship,
-            data: net.nanopay.account.AggregateAccount.create({ id: 0, name: 'Temporal until Kevin fixes it', denomination: 'CAD' })
+            data: net.nanopay.account.AggregateAccount.create({ id: 0, name: ' ', denomination: 'CAD' })
           }},
           'Graph'
         ]

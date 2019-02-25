@@ -69,13 +69,6 @@ foam.CLASS({
     max-width: 300px;
     text-overflow: ellipsis;
   }
-  /* InvoiceOverview Header format length */
-  ^ .x-large-header {
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 600px;
-    text-overflow: ellipsis;
-  }
   /* Side Menu Name format length */
   ^ .net-nanopay-sme-ui-SideNavigationView .account-button-info-detail {
     overflow: hidden;
