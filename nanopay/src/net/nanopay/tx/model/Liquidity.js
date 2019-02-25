@@ -14,6 +14,11 @@ foam.CLASS({
       documentation: 'Triggeres automatic transaction on accounts.'
     },
     {
+      class: 'Boolean',
+      name: 'notify',
+      documentation: 'enables notifications.'
+    },
+    {
       class: 'Currency',
       name: 'threshold',
       documentation: 'The balance when liquidity should be triggered.'
