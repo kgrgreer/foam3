@@ -54,7 +54,7 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
       view: { class: 'foam.nanos.auth.ProfilePictureView' }
-    },
+    }
   ],
   axioms: [
     {
@@ -70,7 +70,7 @@ foam.CLASS({
             setProfilePicture(user.getProfilePicture());
           }
         `);
-      },
-    },
-  ],
+      }
+    }
+  ]
 });
