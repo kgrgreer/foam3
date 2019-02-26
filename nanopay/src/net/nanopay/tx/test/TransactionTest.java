@@ -268,11 +268,6 @@ public class TransactionTest
       bank.setOwner(user.getId());
       ((DAO) x_.get("localAccountDAO")).put_(x_, bank);
     }
-    LiquiditySettings ls = new LiquiditySettings();
-    ls.setId(DigitalAccount.findDefault(x_, user, "CAD").getId());
-    ls.setEnableCashIn(false);
-    ls.setEnableCashOut(false);
-    ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
     return user;
   }
 
