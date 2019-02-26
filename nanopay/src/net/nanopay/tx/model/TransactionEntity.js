@@ -37,13 +37,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'displayName',
-      expression: function(firstName, lastName, businessName) {
-        return typeof this == this.Business ? businessName.trim() :
+      expression: function(firstName, lastName, businessName, userClass) {
+        return userClass == 'net.nanopay.model.Business' ? businessName.trim() :
             `${firstName} ${lastName}`.trim();
       }
     },
     {
-      class: 'FObjectProperty',
+      class: 'String',
       name: 'userClass'
     },
     {
@@ -65,7 +65,7 @@ foam.CLASS({
             setFirstName(user.getFirstName());
             setLastName(user.getLastName());
             setEmail(user.getEmail());
-            setUserClass(user.getClass());
+            setUserClass(user.getClass().getName());
             setBusinessName(user.getBusinessName());
             setProfilePicture(user.getProfilePicture());
           }
