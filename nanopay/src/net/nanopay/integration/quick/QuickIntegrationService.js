@@ -51,6 +51,14 @@ foam.CLASS({
     'java.net.URL',
     'java.net.URLEncoder',
     'static foam.mlang.MLang.*',
+    'com.intuit.ipp.core.Context',
+    'com.intuit.ipp.core.ServiceType',
+    'com.intuit.ipp.data.Customer',
+    'com.intuit.ipp.data.Vendor',
+    'com.intuit.ipp.exception.FMSException',
+    'com.intuit.ipp.security.OAuth2Authorizer',
+    'com.intuit.ipp.services.DataService',
+    'com.intuit.ipp.util.Config'
   ],
 
   methods: [
@@ -376,18 +384,13 @@ try {
     }
 
     // Searches for a previous existing Contact
+    Vendor vendor = getVendorById(x, invoice.getVendorRef().getValue());
+
     QuickContact contact = (QuickContact) contactDAO.find(
       AND(
-        EQ(
-          QuickContact.QUICK_ID,
-          invoice.getVendorRef().getValue()
-        ),
-        EQ(
-          QuickContact.OWNER,
-          user.getId()
-        )
-      )
-    );
+        EQ(QuickContact.QUICK_ID, vendor.getPrimaryEmailAddr().getAddress()),
+        EQ(QuickContact.OWNER, user.getId())
+      ));
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     if ( contact == null ) {
@@ -431,7 +434,7 @@ try {
     } else {
       Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
       double doubleAmount = invoice.getBalance() * Math.pow(10.0, currency.getPrecision());
-      portal.setAmount((new Double(doubleAmount)).longValue());
+      portal.setAmount(Math.round(doubleAmount));
     }
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
     portal.setIssueDate(getDate(invoice.getTxnDate()));
@@ -537,18 +540,13 @@ try {
     }
 
     // Searches for a previous existing Contact
+    Customer customer = getCustomerById(x, invoice.getCustomerRef().getValue());
+        
     QuickContact contact = (QuickContact) contactDAO.find(
       AND(
-        EQ(
-          QuickContact.QUICK_ID,
-          invoice.getCustomerRef().getValue()
-        ),
-        EQ(
-          QuickContact.OWNER,
-          user.getId()
-        )
-      )
-    );
+        EQ(QuickContact.EMAIL, customer.getPrimaryEmailAddr().getAddress()),
+        EQ(QuickContact.OWNER, user.getId())
+      ));
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     if ( contact == null ) {
@@ -591,7 +589,7 @@ try {
     } else {
       Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
       double doubleAmount = invoice.getBalance() * Math.pow(10.0, currency.getPrecision());
-      portal.setAmount((new Double(doubleAmount)).longValue());
+      portal.setAmount(Math.round(doubleAmount));
     }
     portal.setInvoiceNumber(invoice.getDocNumber());
     portal.setQuickId(invoice.getId());
@@ -1177,6 +1175,93 @@ try {
   logger.error(e);
   return banks;
 }`
+    },
+    {
+      name: 'getCustomerById',
+      type: 'Customer',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'id',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+String query = "select * from customer where id = '"+ id +"'";
+
+List<Customer> results = sendRequest(x, query);
+
+if ( results == null ) {
+  throw new RuntimeException("Error when fetching the QuickBook data");
+}
+
+return results.get(0);
+      `
+    },
+    {
+      name: 'getVendorById',
+      type: 'Vendor',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'id',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+String query = "select * from vendor where id = '"+ id +"'";
+
+List<Vendor> results = sendRequest(x, query);
+
+if ( results == null ) {
+  throw new RuntimeException("Error when fetching the QuickBook data");
+}
+
+return results.get(0);
+      `
+    },
+    {
+      name: 'sendRequest',
+      type: 'List',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'query',
+          type: 'String'
+        }
+      ],
+      javaCode:`
+User                        user      = (User) x.get("user");
+DAO                         store     = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+Group                       group     = user.findGroup(x);
+AppConfig                   app       = group.getAppConfig(x);
+DAO                         configDAO = ((DAO) x.get("quickConfigDAO")).inX(x);
+QuickConfig                 config    = (QuickConfig)configDAO.find(app.getUrl());
+QuickTokenStorage  tokenStorage = (QuickTokenStorage) store.find(user.getId());
+
+try {
+  Config.setProperty(Config.BASE_URL_QBO, config.getIntuitAccountingAPIHost() + "/v3/company/");
+
+  OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken());
+  Context context = new Context(oauth, ServiceType.QBO, tokenStorage.getRealmId());
+  DataService service =  new DataService(context);
+
+  return service.executeQuery(query).getEntities();
+} catch (FMSException e) {
+  e.printStackTrace();
+}
+
+return null;
+      `
     }
   ]
 });
