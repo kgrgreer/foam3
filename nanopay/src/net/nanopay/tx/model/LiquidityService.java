@@ -120,7 +120,7 @@ public class LiquidityService
     }
 
 
-    if ( currentBalance > liquidity.getThreshold() ) {
+    if ( currentBalance >= liquidity.getThreshold() ) {
       if ( liquidity.getEnableNotification() && txnAmount > 0 && currentBalance - liquidity.getThreshold() > txnAmount ) {
         //send notification when limit went over
         notifyUser(account, true, ls.getHighLiquidity().getThreshold());
@@ -135,7 +135,7 @@ public class LiquidityService
 
     Liquidity liquidity = ls.getLowLiquidity();
 
-    if ( currentBalance < liquidity.getThreshold() ) {
+    if ( currentBalance <= liquidity.getThreshold() ) {
       Account account = ls.findAccount(x_);
       if ( liquidity.getEnableNotification() && txnAmount < 0 && currentBalance + txnAmount >  liquidity.getThreshold() ) {
         //send notification when limit went over
