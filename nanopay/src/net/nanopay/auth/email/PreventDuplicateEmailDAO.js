@@ -24,32 +24,29 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+  // TODO: Rather than do this, just move this decorator to localUserUserDAO.
   if ( obj instanceof Business || obj instanceof Contact ) {
     return super.put_(x, obj);
   }
 
-  User user = (User) obj;
-  boolean newUser = ( getDelegate().find(user.getId()) == null );
+  User newUser = (User) obj;
+  User oldUser = (User) getDelegate().find(newUser.getId());
+  boolean emailChanged = oldUser == null || ! SafetyUtil.equals(newUser.getEmail(), oldUser.getEmail());
 
-  if ( newUser ) {
-    if ( SafetyUtil.isEmpty(user.getEmail()) ) {
-      throw new RuntimeException("Email required");
-    }
-
-    if ( ! Email.isValid(user.getEmail()) ) {
-      throw new RuntimeException("Invalid Email");
-    }
+  if ( ! emailChanged || SafetyUtil.isEmpty(newUser.getEmail()) ) {
+    return super.put_(x, obj);
   }
 
-  Count count = new Count();
-  count = (Count) ((DAO) getX().get("userUserDAO"))
-      .where(AND(
-        EQ(User.EMAIL, user.getEmail()),
-        NEQ(User.ID,  user.getId())
-      )).limit(1).select(count);
+  DAO userUserDAO = ((DAO) x.get("userUserDAO")).inX(x);
+  Boolean emailIsTaken = userUserDAO.find(
+    AND(
+      EQ(User.EMAIL, newUser.getEmail()),
+      NEQ(User.ID, newUser.getId())
+    )
+  ) != null;
 
-  if ( count.getValue() == 1 ) {
-    throw new RuntimeException("User with same email address already exists: " + user.getEmail());
+  if ( emailIsTaken ) {
+    throw new RuntimeException("User with same email address already exists: " + newUser.getEmail());
   }
 
   return super.put_(x, obj);
