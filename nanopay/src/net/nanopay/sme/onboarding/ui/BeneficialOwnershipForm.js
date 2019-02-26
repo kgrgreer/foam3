@@ -105,11 +105,6 @@ css: `
       margin-top: 30px;
     }
 
-    ^ .net-nanopay-ui-ActionView-addBeneficialOwner:hover {
-      background: none;
-      color: #8e9090;
-    }
-
     ^ .updateButton {
       display: table-row;
       vertical-align: top;
