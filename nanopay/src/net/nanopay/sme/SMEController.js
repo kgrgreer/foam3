@@ -38,7 +38,7 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'privacyUrl',
-    'termsUrl',
+    'termsUrl'
   ],
 
   implements: [
@@ -176,8 +176,14 @@ foam.CLASS({
             } else {
               var hash = location.hash.substr(1);
               if ( hash !== '' ) {
-                self.client.menuDAO.find(hash).then(function(menu) {
-                  menu.launch();
+                self.client.menuDAO.find(hash).then((menu) => {
+                  // Any errors in finding the menu location to redirect
+                  // will result in a redirect to dashboard.
+                  if ( menu ) {
+                    menu.launch();
+                  } else {
+                    self.confirmHashRedirectIfInvitedAndSignedIn();
+                  }
                 });
               }
             }
@@ -248,31 +254,58 @@ foam.CLASS({
       });
     },
 
+    function setPortalView(group) {
+      // Replaces contents of top navigation and footer view with group views
+      this.topNavigation_ && this.topNavigation_.replaceChild(
+        foam.lookup('net.nanopay.sme.ui.SideNavigationView').create(null, this),
+        this.topNavigation_.children[0]
+      );
+    },
+
     function requestLogin() {
       var self = this;
-      // don't go to log in screen if going to reset password screen
-      if ( location.hash != null && location.hash === '#reset' ) {
-        return new Promise(function(resolve, reject) {
-          // TODO SME specific
-          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
-          self.loginSuccess$.sub(resolve);
-        });
-      }
+      var searchParams;
+      var locHash = location.hash;
 
-      // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' && ! self.loginSuccess ) {
-        var searchParams = new URLSearchParams(location.search);
-        return new Promise(function(resolve, reject) {
-          self.stack.push({
-            class: 'net.nanopay.sme.ui.SignUpView',
-            emailField: searchParams.get('email'),
-            disableEmail: true,
-            signUpToken: searchParams.get('token'),
-            companyNameField: searchParams.has('companyName') ? searchParams.get('companyName'): '',
-            disableCompanyName: searchParams.has('companyName')
+      if ( locHash ) {
+        // don't go to log in screen if going to reset password screen
+        if ( locHash === '#reset' ) {
+          return new Promise(function(resolve, reject) {
+            // TODO SME specific
+            self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
+            self.loginSuccess$.sub(resolve);
           });
-          self.loginSuccess$.sub(resolve);
-        });
+        }
+        searchParams = new URLSearchParams(location.search);
+        // don't go to log in screen if going to sign up password screen
+        if ( locHash === '#sign-up' && ! self.loginSuccess ) {
+          return new Promise(function(resolve, reject) {
+            self.stack.push({
+              class: 'net.nanopay.sme.ui.SignUpView',
+              emailField: searchParams.get('email'),
+              disableEmail: true,
+              signUpToken: searchParams.get('token'),
+              companyNameField: searchParams.has('companyName') ? searchParams.get('companyName'): '',
+              disableCompanyName: searchParams.has('companyName')
+            });
+            self.loginSuccess$.sub(resolve);
+          });
+        }
+
+        // Situation where redirect is from adding an existing user to a business
+        if ( locHash === '#invited' ) {
+          if ( ! self.loginSuccess ) {
+            return new Promise(function(resolve, reject) {
+              self.stack.push({
+                class: 'net.nanopay.sme.ui.SignInView',
+                email: searchParams.get('email'),
+                disableEmail: true,
+                signUpToken: searchParams.get('token'),
+              });
+              self.loginSuccess$.sub(resolve);
+            });
+          }
+        }
       }
 
       return new Promise(function(resolve, reject) {
@@ -281,13 +314,37 @@ foam.CLASS({
       });
     },
 
+    function confirmHashRedirectIfInvitedAndSignedIn() {
+      var locHash = location.hash;
+      var searchParams = new URLSearchParams(location.search);
+      if ( locHash === '#invited' && this.loginSuccess ) {
+        var dao = ctrl.__subContext__.smeBusinessRegistrationDAO;
+        if ( dao ) {
+          this.agent.signUpToken = searchParams.get('token');
+          var userr = dao.put(this.agent);
+          if ( userr ) {
+            this.agent.copyFrom(userr);
+            ctrl.notify(`Success you are now apart of a new business: ${searchParams.get('companyName')}`);
+            // replace url parameters with 'ablii' and redirect to dashboard, effectively riding the token of url history
+            history.replaceState({}, '', 'ablii');
+            this.pushMenu('sme.main.dashboard');
+          } else {
+            ctrl.notify(err.message || `The invitation to a business ${searchParams.get('companyName')} was not processed, please try again.`, 'error');
+            // replace url parameters with 'ablii' and redirect to dashboard, effectively riding the token of url history
+            history.replaceState({}, '', 'ablii');
+            this.pushMenu('sme.main.dashboard');
+          }
+        }
+      }
+    },
+
     function getCurrentUser() {
       var self = this;
       // get current user, else show login
       this.client.auth.getCurrentUser(null).then(function(result) {
         self.loginSuccess = !! result;
         if ( result ) {
-          foam.assert(self.user.id === result.id, `The user that was returned from 'getCurrentUser's id must be the same as the user's id returned from 'loginByEmail'. If this isn't happening, it's possible that one of those methods is returning the wrong user.`);
+          // DOESNT MAKE SENSE FOR A NEW USER signing in. self.user is not assigned. foam.assert(self.user.id === result.id, `The user that was returned from 'getCurrentUser's id must be the same as the user's id returned from 'loginByEmail'. If this isn't happening, it's possible that one of those methods is returning the wrong user.`);
 
           self.user.copyFrom(result);
 

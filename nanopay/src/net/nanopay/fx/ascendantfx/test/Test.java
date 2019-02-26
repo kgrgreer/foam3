@@ -10,7 +10,7 @@ import net.nanopay.fx.ascendantfx.model.GetQuoteRequest;
 public class Test {
 
   public static void main(String[] args) {
-    AscendantFXService service = new AscendantFXService(new ProxyX(), "https://afxlink-test.ascendantfx.com/AFXLinkCustom.svc", "BBa kaa2", "Tn nrb.knanckc@ekoit");
+    AscendantFXService service = new AscendantFXService(new ProxyX());
     GetQuoteRequest request = new GetQuoteRequest();
     request.setMethodID("AFXEWSGQ");
     request.setOrgID("5904960");
