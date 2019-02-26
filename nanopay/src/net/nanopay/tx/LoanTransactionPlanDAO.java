@@ -8,6 +8,7 @@ import foam.mlang.MLang;
 import net.nanopay.account.LoanAccount;
 import net.nanopay.account.LoanedTotalAccount;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class LoanTransactionPlanDAO extends ProxyDAO {
 
@@ -22,6 +23,13 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction txn = quote.getRequestTransaction();
 
+    if( txn instanceof InterestTransaction ){
+      txn.setIsQuoted(true);
+      txn.setStatus(TransactionStatus.COMPLETED);
+      quote.setPlan(txn);
+      return quote;
+    }
+
     if ( ! ( txn.findSourceAccount(x) instanceof LoanAccount || txn.findDestinationAccount(x) instanceof LoanAccount ) )
       return getDelegate().put_(x, obj);
 
@@ -31,6 +39,9 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
     if ( txn.findSourceAccount(x) instanceof LoanAccount ) {
       DAO accountDAO = (DAO) x.get("accountDAO");
       LoanAccount theLoanAccount = (LoanAccount) txn.findSourceAccount(x);
+
+      if( theLoanAccount.getPrincipal() < ( txn.getAmount() - ( (long) theLoanAccount.findBalance(x) ) ) )
+        throw new RuntimeException("Transaction Exceeds Loan Account Principal Limit");
 
       LoanedTotalAccount globalLoanAccount = ((LoanedTotalAccount) accountDAO.find(MLang.AND(MLang.INSTANCE_OF(LoanedTotalAccount.class), MLang.EQ(LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination()))));
       if( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");

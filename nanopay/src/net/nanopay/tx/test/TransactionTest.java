@@ -120,8 +120,8 @@ public class TransactionTest
 
     tq = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, tq);
     test(tq.getPlan().getClass()== FXTransaction.class, "best plan is an "+tq.getPlan().getClass());
-    test(tq.getPlan().getCost() !=0,String.valueOf(tq.getPlan().getCost()));
-    //txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, txn).fclone();
+    test(tq.getPlan().getCost() !=0,"Plan cost is not 0, it is: " + String.valueOf(tq.getPlan().getCost()));
+
     test(tq.getPlan().getClass()==FXTransaction.class,"Transaction is of type FXTransaction");
     test(tq.getPlan().getStatus()== COMPLETED,"FXTransaction is in completed status");
     test(tq.getPlan().getNext()==null,"FXTransaction is not chained");

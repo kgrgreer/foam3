@@ -5,16 +5,18 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import net.nanopay.account.LoanAccount;
-import net.nanopay.tx.model.*;
-
+import net.nanopay.account.LoanedTotalAccount;
+import net.nanopay.tx.InterestTransaction;
 import java.util.List;
 
-/**
- Cronjob calculates the interestRate on each account
-**/
-public class InterestCalculation implements ContextAgent {
+import static foam.mlang.MLang.*;
 
-  public InterestCalculation(){
+/**
+ Cronjob applies the amount of interest that each account owes
+**/
+public class compoundInterest implements ContextAgent {
+
+  public compoundInterest(){
   }
 
   @Override
@@ -23,12 +25,11 @@ public class InterestCalculation implements ContextAgent {
     for ( Object obj : Accounts ) {
       if(obj instanceof LoanAccount){
         LoanAccount la = (LoanAccount) ((LoanAccount) obj).fclone();
-        long bal = (long)la.findBalance(x);
-        if(bal < 0) {
-          long amount = (long) ( (-bal)*(la.getRate()/365) );
-          la.addInterest(x,amount);
+        if(la.getAccumulatedInterest()>0){
+          la.compound(x);
           ((DAO) x.get("accountDAO")).put_(x,la);
         }
+
       }
     }
   }
