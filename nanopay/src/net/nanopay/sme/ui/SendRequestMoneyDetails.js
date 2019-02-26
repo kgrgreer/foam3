@@ -73,12 +73,6 @@ foam.CLASS({
     ^ .invoice-h2 {
       margin-top: 0;
     }
-    ^back-tab {
-      margin-bottom: 15px;
-      width: 150px;
-      cursor: pointer;
-      color: #8e9090;
-    }
     ^ .isApproving {
       display: none;
       height: 0;
@@ -90,6 +84,21 @@ foam.CLASS({
     }
     ^ .white-radio {
       width: 244px !important;
+    }
+    ^back-arrow {
+      font-size: 10.7px;
+    }
+    ^back-area {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      color: #8e9090;
+      margin-bottom: 15px;
+      width: 150px;
+    }
+    ^back-tab {
+      margin-left: 6px;
     }
   `,
 
@@ -140,12 +149,20 @@ foam.CLASS({
         A factory is required for a new empty invoice form,
         preventing existing invoice data conflicts.
       `
+    },
+    {
+      name: 'isDraft',
+      expression: function(invoice$status) {
+        return invoice$status === this.InvoiceStatus.DRAFT;
+      }
     }
   ],
 
   messages: [
     { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
-    { name: 'EXISTING_HEADER', message: 'Choose an existing ' }
+    { name: 'EXISTING_HEADER', message: 'Choose an existing ' },
+    { name: 'DETAILS_HEADER', message: 'Details' },
+    { name: 'BACK', message: 'Back to selection' }
   ],
 
   methods: [
@@ -180,7 +197,7 @@ foam.CLASS({
                this.E().start().addClass('block')
                   .show(this.isForm$)
                   .start().addClass('header')
-                    .add('Details')
+                    .add(this.DETAILS_HEADER)
                   .end()
                   .tag({
                     class: 'net.nanopay.sme.ui.NewInvoiceForm',
@@ -218,11 +235,26 @@ foam.CLASS({
               this.E().start()
                 .add(this.slot((invoice) => {
                   var detailView =  this.E().addClass('block')
-                    .start().addClass('header')
+                    .start().hide(this.isDraft$)
+                      .addClass('header')
                       .add(`${this.EXISTING_HEADER} ${this.type}`)
                     .end()
-                    .start().add('← Back to selection')
-                      .addClass(this.myClass('back-tab'))
+                    .start().show(this.isDraft$)
+                      .addClass('header')
+                      .add(this.DETAILS_HEADER)
+                    .end()
+                    .start()
+                      .addClass(this.myClass('back-area'))
+                      .start({
+                        class: 'foam.u2.tag.Image',
+                        data: 'images/ablii/gobackarrow-grey.svg'
+                      })
+                        .addClass(this.myClass('back-arrow'))
+                      .end()
+                      .start()
+                        .addClass(this.myClass('back-tab'))
+                        .add(this.BACK)
+                      .end()
                       .on('click', () => {
                         this.isForm = false;
                         this.isList = true;

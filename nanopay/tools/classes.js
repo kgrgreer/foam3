@@ -136,6 +136,8 @@ var classes = [
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
+  'net.nanopay.invoice.service.InvoicePaymentService',
+  'net.nanopay.invoice.service.ClientInvoicePaymentService',
 
    // integration
    'net.nanopay.integration.ClientIntegrationService',
@@ -220,6 +222,7 @@ var classes = [
   'net.nanopay.tx.model.FixedFee',
   'net.nanopay.tx.model.InformationalFee',
   'net.nanopay.tx.model.LiquiditySettings',
+  'net.nanopay.tx.Liquidity',
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
@@ -283,6 +286,7 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
   'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
   'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
+  'net.nanopay.fx.ascendantfx.AscendantFXCredientials',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',
@@ -479,7 +483,8 @@ var skeletons = [
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
-  'net.nanopay.payment.PaymentService'
+  'net.nanopay.payment.PaymentService',
+  'net.nanopay.invoice.service.InvoicePaymentService',
 ];
 
 var proxies = [

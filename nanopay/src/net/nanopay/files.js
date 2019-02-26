@@ -165,6 +165,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXDisclosure' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -207,6 +208,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/FixedFee' },
   { name: 'net/nanopay/tx/model/InformationalFee' },
   { name: 'net/nanopay/tx/model/LiquiditySettings' },
+  { name: 'net/nanopay/tx/Liquidity' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
@@ -431,6 +433,8 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotification' },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
+  { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
 
   // settings
   { name: 'net/nanopay/settings/AcceptanceDocument' },
