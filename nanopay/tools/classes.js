@@ -122,6 +122,8 @@ var classes = [
 
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+  'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
+  'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 
   // sme compliance banner
   'net.nanopay.sme.ui.banner.ComplianceBannerData',
@@ -220,6 +222,7 @@ var classes = [
   'net.nanopay.tx.model.FixedFee',
   'net.nanopay.tx.model.InformationalFee',
   'net.nanopay.tx.model.LiquiditySettings',
+  'net.nanopay.tx.Liquidity',
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
@@ -283,6 +286,7 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
   'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
   'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
+  'net.nanopay.fx.ascendantfx.AscendantFXCredientials',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',
