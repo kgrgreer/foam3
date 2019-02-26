@@ -45,14 +45,6 @@ foam.CLASS({
     'currencyDAO'
   ],
 
-  constants: [
-    {
-      type: 'long',
-      name: 'ABLII_MAX_AMOUNT',
-      value: 25000 * 100
-    }
-  ],
-
   properties: [
     {
       name: 'search',
@@ -496,10 +488,6 @@ foam.CLASS({
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = (Group) groupDAO.find(user.getGroup());
         boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO);
-
-        if ( isAbliiUser && this.getAmount() > this.ABLII_MAX_AMOUNT  ) {
-          throw new IllegalStateException("Amount exceeds the user's sending limit.");
-        }
 
         if ( this.getAmount() <= 0 ) {
           throw new IllegalStateException("Amount must be a number and greater than zero.");
