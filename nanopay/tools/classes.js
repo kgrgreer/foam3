@@ -454,7 +454,6 @@ var classes = [
   'net.nanopay.meter.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
-  'net.nanopay.meter.UserDisabledEmailNotificationDAO',
   'net.nanopay.meter.compliance.ComplianceHistory',
   'net.nanopay.meter.compliance.ComplianceRule',
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
