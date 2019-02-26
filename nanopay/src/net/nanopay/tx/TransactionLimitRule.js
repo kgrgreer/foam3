@@ -1,12 +1,23 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'TransactionLimit',
+  name: 'TransactionLimitRule',
   extends: 'foam.nanos.ruler.Rule',
 
   documentation: 'Pre-defined limit for transactions.',
 
 
   properties: [
+    {
+      class: 'String',
+      name: 'ruleGroup',
+      value: 'transactionLimits'
+    },
+    {
+      class: 'Enum',
+      of: 'foam.nanos.ruler.Operations',
+      name: 'operation',
+      value: 'CREATE'
+    },
     {
       class: 'Currency',
       name: 'limit',

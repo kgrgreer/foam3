@@ -254,7 +254,7 @@ var classes = [
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
-  'net.nanopay.tx.TransactionLimit',
+  'net.nanopay.tx.TransactionLimitRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
