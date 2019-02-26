@@ -254,6 +254,14 @@ foam.CLASS({
       });
     },
 
+    function setPortalView(group) {
+      // Replaces contents of top navigation and footer view with group views
+      this.topNavigation_ && this.topNavigation_.replaceChild(
+        foam.lookup('net.nanopay.sme.ui.SideNavigationView').create(null, this),
+        this.topNavigation_.children[0]
+      );
+    },
+
     function requestLogin() {
       var self = this;
       var searchParams;
