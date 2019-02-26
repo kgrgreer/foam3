@@ -35,7 +35,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         User newUser = (User) obj;
-        User oldUser = (User) getDelegate().find(newUser.getId());
+        User oldUser = (User) getDelegate().inX(x).find(newUser.getId());
 
         // Send email only when user property onboarded is changed from false to true
         if ( oldUser != null && ! oldUser.getOnboarded() && newUser.getOnboarded() ) {
@@ -85,7 +85,7 @@ foam.CLASS({
           }
         }
 
-        return getDelegate().put_(x, obj);
+        return getDelegate().inX(x).put_(x, obj);
       `
     }
   ]
