@@ -13,14 +13,26 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  requires: [
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.model.Business'
+  ],
+
   imports: [
+    'businessDAO',
     'ctrl',
+    'notify',
     'publicUserDAO',
     'user',
     'validateEmail'
   ],
 
   css: `
+    ^ {
+      height: 593px;
+      overflow-y: scroll;
+    }
     ^ .property-email {
       width: 100%;
     }
@@ -37,25 +49,102 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Add Contact' },
-    { name: 'EMAIL_PLACEHOLDER', message: 'example@email.com' },
-    { name: 'GENERIC_LOOKUP_FAILED', message: `An unexpected problem occurred. Please try again later.` },
-    { name: 'EMAIL_ERR_MSG', message: 'Invalid email address.' },
-    { name: 'ERROR_OWN_EMAIL', message: 'You cannot use your own email address.' }
+    {
+      name: 'TITLE',
+      message: 'Add a Contact'
+    },
+    {
+      name: 'BUSINESS_NAME',
+      message: 'Business name'
+    },
+    {
+      name: 'DESCRIPTION',
+      message: `Search a business on Ablii to add them to your
+        contacts.  For better results, search using their registered
+        business name and location.`
+    },
+    {
+      name: 'BUSINESS_PLACEHOLDER',
+      message: `Matching businesses will appear here`
+    },
+    {
+      name: 'GENERIC_FAILURE',
+      message: `An unexpected problem occurred. Please try again later.`
+    },
+    {
+      name: 'ADD_CONTACT_SUCCESS',
+      message: 'Contact added'
+    },
+    {
+      name: 'NO_MATCH_TEXT',
+      message: 'We couldn’t find a business with that name.'
+    },
+    {
+      name: 'NO_MATCH_TEXT_2',
+      message: 'Create a personal contact named'
+    }
   ],
 
   properties: [
     {
-      class: 'EMail',
-      name: 'email',
-      documentation: `
-        The email address the user is trying to add a contact with.
-      `
+      class: 'String',
+      name: 'filter',
+      view: {
+        class: 'foam.u2.TextField',
+        type: 'search',
+        placeholder: 'Start typing to search',
+        onKey: true
+      }
+    },
+    {
+      type: 'Int',
+      name: 'count',
+      documentation: `The number of items in the list after filtering.`
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'searchBusiness',
+      expression: function(filter) {
+        if ( filter.length < 3 ) {
+          return foam.dao.NullDAO.create({ of: net.nanopay.model.Business });
+        } else {
+          var dao = this.businessDAO
+            .where(
+              this.AND(
+                this.NEQ(this.Business.ID, this.user.id),
+                this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED),
+                this.CONTAINS_IC(this.Business.ORGANIZATION, filter)
+              )
+            );
+          dao
+            .select(foam.mlang.sink.Count.create())
+            .then((sink) => {
+              this.count = sink != null ? sink.value : 0;
+            });
+          return dao;
+        }
+      }
+    },
+    {
+      type: 'Boolean',
+      name: 'showNoMatch',
+      expression: function(filter, count) {
+        return count === 0 && filter.length > 2;
+      }
+    },
+    {
+      type: 'Boolean',
+      name: 'showDefault',
+      expression: function(filter) {
+        return filter.length < 3;
+      }
     }
   ],
 
   methods: [
     function initE() {
+      var self = this;
+
       this
         .addClass(this.myClass())
         .start()
@@ -64,64 +153,76 @@ foam.CLASS({
             .add(this.TITLE)
           .end()
           .start()
-            .addClass('input-label')
-            .add(this.EMAIL.label)
+            .add(this.DESCRIPTION)
           .end()
-          .tag(this.EMAIL, {
-            placeholder: this.EMAIL_PLACEHOLDER,
-            onKey: true // So `isEnabled` on the 'next' action updates properly.
-          })
-        .end()
-        .tag({
-          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
-          back: this.CANCEL,
-          next: this.NEXT
-        });
+          .start()
+            .addClass('input-label')
+            .add(this.BUSINESS_NAME)
+          .end()
+          .start()
+            .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
+              .addClass('searchIcon')
+            .end()
+            .start(this.FILTER).addClass('filter-search').end()
+          .end()
+          .start().style({ 'overflow-y': 'scroll' })
+            .select(this.searchBusiness$proxy, (business) => {
+              return this.E()
+                .start({
+                  class: 'net.nanopay.sme.ui.BusinessRowView2',
+                  data: business
+                })
+                  .on('click', function() {
+                    // Add contact
+                    self.addSelected(business);
+                  })
+                .end();
+            })
+          .end()
+          .start()
+            .show(this.showDefault$)
+            .start().add('Matching businesses will appear here').end()
+            .start(this.CREATE).end()
+
+          .end()
+          .start()
+            .show(this.showNoMatch$)
+            .start().add(this.NO_MATCH_TEXT).end()
+            .start().add(this.slot(function(filter) {
+              return `${this.NO_MATCH_TEXT_2} “${filter}”?`;
+            })).end()
+            .start(this.CREATE).end()
+          .end()
+        .end();
+    },
+
+    async function addSelected(business) {
+      newContact = this.Contact.create({
+        organization: business.organization,
+        businessName: business.organization,
+        businessId: business.id,
+        email: business.email,
+        type: 'Contact',
+        group: 'sme'
+      });
+
+      try {
+        await this.user.contacts.put(newContact);
+        this.ctrl.notify(this.ADD_CONTACT_SUCCESS);
+        this.closeDialog();
+      } catch (err) {
+        this.ctrl.notify(err ? err.message : this.GENERIC_FAILURE, 'error');
+      }
     }
   ],
 
   actions: [
     {
-      name: 'cancel',
+      name: 'create',
       code: function(X) {
-        X.closeDialog();
-      }
-    },
-    {
-      name: 'next',
-      isEnabled: function(email) {
-        return this.validateEmail(email);
-      },
-      code: async function(X) {
-        /**
-         * Check if there's an existing User with the same email address. If so,
-         * go to a view that lets the user pick from a list of existing
-         * Businesses. Otherwise go to a screen that lets them choose to add a
-         * Contact with or without bank account information.
-         */
-        const User = foam.nanos.auth.User;
-
-        // Don't let people use their own email address.
-        if ( this.email === this.user.email ) {
-          this.ctrl.notify(this.ERROR_OWN_EMAIL, 'error');
-          return;
-        }
-
-        try {
-          var count = await X.publicUserDAO
-            .where(this.EQ(User.EMAIL, this.email))
-            .select(this.COUNT());
-          var nextView = count != null && count.value != 0  ? 'selectOption' : 'editContact';
-          // (this.wizard.viewData.isEdit) Used to toggle title in EditContactView,
-          // which is called from here and on Edit from ContactController
-          this.wizard.viewData.isEdit = false;
-          X.pushToId(nextView);
-        } catch (error) {
-          var msg = error != null && typeof error.message === 'string'
-            ? error.message
-            : this.GENERIC_LOOKUP_FAILED;
-          X.notify(msg, 'error');
-        }
+        this.wizard.viewData.isEdit = false;
+        X.viewData.isBankingProvided = true;
+        X.pushToId('information');
       }
     },
   ]
