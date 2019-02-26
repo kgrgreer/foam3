@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'Logger'
+    'logger'
   ],
 
   javaImports: [
@@ -31,7 +31,7 @@ foam.CLASS({
       javaCode: `
         HttpServletRequest request = x.get(HttpServletRequest.class);
         String ipAddress = request.getRemoteAddr();
-        ((Logger) getLogger()).info("New login attempt from IP : " + ipAddress + " and user id : " + userId);
+        ((Logger) getLogger()).info("IPLoggingAuthService :: New login attempt from IP :: " + ipAddress + " and user id :: " + userId);
         return super.login(x, userId, password);
       `
     },
@@ -40,7 +40,7 @@ foam.CLASS({
       javaCode: `
         HttpServletRequest request = x.get(HttpServletRequest.class);
         String ipAddress = request.getRemoteAddr();
-        ((Logger) getLogger()).info("New login attempt from IP : " + ipAddress + " and email id : " + email);
+        ((Logger) getLogger()).info("IPLoggingAuthService :: New login attempt from IP :: " + ipAddress + " and email id :: " + email);
         return super.loginByEmail(x, email, password);
       `
     }
