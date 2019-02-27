@@ -165,11 +165,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
-<<<<<<< HEAD
-=======
-  { name: 'net/nanopay/fx/ascendantfx/AscendantFXDisclosure' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
->>>>>>> 668225ff99e18292ff7b1a42bec3af5ea4de7e0b
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
