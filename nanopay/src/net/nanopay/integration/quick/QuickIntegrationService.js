@@ -15,6 +15,7 @@ foam.CLASS({
   javaImports: [
     'foam.blob.BlobService',
     'foam.dao.DAO',
+    'foam.dao.ArraySink',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
     'foam.nanos.app.AppConfig',
@@ -308,6 +309,8 @@ try {
       ],
       javaCode:
 `Logger logger = (Logger) x.get("logger");
+DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
 //If the request failed
 if ( ! query.getResult() ) {
@@ -332,16 +335,10 @@ try {
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
       AND(
-        EQ(
-          QuickInvoice.QUICK_ID,
-          invoice.getId()
-        ),
-        EQ(
-          QuickInvoice.CREATED_BY,
-          user.getId()
-        )
-      )
-    );
+        EQ(QuickInvoice.QUICK_ID, invoice.getId()),
+        EQ(QuickInvoice.REALM_ID, tokenStorage.getRealmId()),
+        EQ(QuickInvoice.CREATED_BY, user.getId())
+      ));
 
     if ( portal != null ) {
 
@@ -424,6 +421,7 @@ try {
     portal.setPayerId(user.getId());
     portal.setContactId(contact.getId());
     portal.setQuickId(invoice.getId());
+    portal.setRealmId(tokenStorage.getRealmId());
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
 
     // Checks if the invoice was paid on
@@ -475,6 +473,8 @@ try {
       ],
       javaCode:
 `Logger logger = (Logger) x.get("logger");
+DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
 //If the request failed
 if ( ! query.getResult() ) {
@@ -497,16 +497,10 @@ try {
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
       AND(
-        EQ(
-          QuickInvoice.QUICK_ID,
-          invoice.getId()
-        ),
-        EQ(
-          QuickInvoice.CREATED_BY,
-          user.getId()
-        )
-      )
-    );
+        EQ(QuickInvoice.QUICK_ID, invoice.getId()),
+        EQ(QuickInvoice.REALM_ID, tokenStorage.getRealmId()),
+        EQ(QuickInvoice.CREATED_BY, user.getId())
+      ));
 
     if ( portal != null ) {
 
@@ -601,6 +595,7 @@ try {
     }
     portal.setInvoiceNumber(invoice.getDocNumber());
     portal.setQuickId(invoice.getId());
+    portal.setRealmId(tokenStorage.getRealmId());
     portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
     portal.setIssueDate(getDate(invoice.getTxnDate()));
     portal.setDueDate(getDate(invoice.getDueDate()));
@@ -685,13 +680,18 @@ return true;
         },
       ],
       javaCode:
-`Logger         logger         = (Logger) x.get("logger");
+`
+Logger         logger         = (Logger) x.get("logger");
 DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
 DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
 DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
 DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
+DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
 CountryService countryService = (CountryService) x.get("countryService");
 RegionService  regionService  = (RegionService) x.get("regionService");
+
+DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
 try {
   for ( QuickQueryContact customer : contacts ) {
@@ -702,43 +702,77 @@ try {
 
     QuickQueryEMail email  = customer.getPrimaryEmailAddr();
 
-    // 1. if the quick-contact already exist, overwrite
-    QuickContact portal = (QuickContact) contactDAO.find(AND(
-        EQ(QuickContact.QUICK_ID, customer.getId()),
-        EQ(QuickContact.OWNER, user.getId())
-    ));
-    portal =
-      portal == null ? new QuickContact() : (QuickContact) portal.fclone();
-    
-    // 2. if the contact already exist, skip
-    Contact contact = (Contact) contactDAO.find(AND(
+    Contact existContact = (Contact) contactDAO.find(AND(
       EQ(Contact.EMAIL, email.getAddress()),
-      EQ(Contact.OWNER, user.getId()),
-      NOT(INSTANCE_OF(QuickContact.class))
+      EQ(Contact.OWNER, user.getId())
     ));
-    if ( contact != null ) { continue; }
 
-    // 3. If the contact is a existing user,
+    // existing user
     User existUser = (User) userDAO.find(
       EQ(User.EMAIL, email.getAddress())
     );
-    if ( existUser != null ) {
-      Business business = (Business) businessDAO.find(
-        EQ(Business.ORGANIZATION, existUser.getOrganization())
-      );
-      if ( business == null ) {
-        logger.warning("User do not belong to any business.");
+
+    QuickContact newContact = new QuickContact();
+
+    // If the contact is a existing contact
+    if ( existContact != null ) {
+    
+      // existing user
+      if ( existUser != null ) {
         continue;
       }
-      Contact newContact = new Contact();
-      newContact.setOrganization(business.getOrganization());
-      newContact.setBusinessName(business.getBusinessName());
-      newContact.setBusinessId(business.getId());
-      newContact.setEmail(business.getEmail());
-      newContact.setType("Contact");
-      newContact.setGroup("sme");
-      user.getContacts(x).inX(x).put(newContact);
-      continue;
+
+      if ( ! ( existContact instanceof QuickContact ) ) {
+        contactDAO.remove(existContact);
+        if ( existContact.getBankAccount() != 0 ) {
+          newContact.setBankAccount(existContact.getBankAccount());
+        }
+      } else {
+        newContact = (QuickContact) existContact.fclone();
+      }
+
+    }
+
+    // If the contact is not a existing contact
+    if ( existContact == null ) {
+      
+      if ( existUser != null ) {
+  
+        ArraySink sink = (ArraySink) agentJunctionDAO.where(EQ(
+          UserUserJunction.SOURCE_ID, existUser.getId()
+        )).select(new ArraySink());
+  
+        if ( sink.getArray().size() == 0 ) {
+          //
+        }
+  
+        if ( sink.getArray().size() == 1 ) {
+          UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
+          Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
+          newContact.setOrganization(business.getOrganization());
+          newContact.setBusinessName(business.getBusinessName());
+          newContact.setBusinessId(business.getId());
+          newContact.setEmail(business.getEmail());
+        }
+  
+        if ( sink.getArray().size() > 1) {
+          newContact.setChooseBusiness(true);
+          newContact.setEmail(email.getAddress());
+          newContact.setFirstName(existUser.getFirstName());
+          newContact.setLastName(existUser.getLastName());
+          newContact.setOrganization("TBD");
+          newContact.setBusinessName("TBD");
+        }
+  
+        newContact.setType("Contact");
+        newContact.setGroup("sme");
+        newContact.setQuickId(customer.getId());
+        newContact.setRealmId(tokenStorage.getRealmId());
+        newContact.setOwner(user.getId());
+        contactDAO.put(newContact);
+        continue;
+  
+      }
     }
 
     /*
@@ -763,7 +797,7 @@ try {
       portalAddress.setRegionId(country != null ? country.getCode() : null);
       portalAddress.setCountryId(region != null ? region.getCode() : null);
 
-      portal.setBusinessAddress(portalAddress);
+      newContact.setBusinessAddress(portalAddress);
     }
 
     /*
@@ -787,16 +821,17 @@ try {
       .setVerified( ! mobilePhoneNumber.equals("") )
       .build();
 
-    portal.setQuickId(customer.getId());
-    portal.setEmail(email.getAddress());
-    portal.setOrganization(customer.getCompanyName());
-    portal.setFirstName(customer.getGivenName());
-    portal.setLastName(customer.getFamilyName());
-    portal.setOwner(user.getId());
-    portal.setBusinessPhone(businessPhone);
-    portal.setMobile(mobilePhone);
-    portal.setGroup("sme");
-    contactDAO.put(portal);
+    newContact.setEmail(email.getAddress());
+    newContact.setOrganization(customer.getCompanyName());
+    newContact.setFirstName(customer.getGivenName());
+    newContact.setLastName(customer.getFamilyName());
+    newContact.setOwner(user.getId());
+    newContact.setBusinessPhone(businessPhone);
+    newContact.setMobile(mobilePhone);
+    newContact.setGroup("sme");
+    newContact.setQuickId(customer.getId());
+    newContact.setRealmId(tokenStorage.getRealmId());
+    contactDAO.put(newContact);
   }
   return new ResultResponse(true, "Contacts were synchronized");
 } catch ( Throwable e ) {

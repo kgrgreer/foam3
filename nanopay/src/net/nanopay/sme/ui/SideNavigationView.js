@@ -93,16 +93,14 @@ foam.CLASS({
     ^ .accountProfileView-hidden {
       display: none;
     }
-    ^ .net-nanopay-ui-topNavigation-BusinessLogoView {
+    ^ img {
+      padding-top: 0px;
+      height: 24px;
       display: inline-block;
       width: 40px;
       padding-left: 0px;
       padding-top: 0px;
       vertical-align: middle;
-    }
-    ^ .net-nanopay-ui-topNavigation-BusinessLogoView img {
-      padding-top: 0px;
-      height: 24px;
     }
     ^ .account-button {
       border-radius: 3px;
@@ -188,7 +186,7 @@ foam.CLASS({
           .start('a')
             .addClass('account-button')
             .addClass('sme-noselect')
-            .tag({ class: 'net.nanopay.ui.topNavigation.BusinessLogoView' })
+            .tag({ class: 'foam.u2.tag.Image', data: '/images/ablii-logo.svg' })
             .start()
               .addClass('account-button-info-block')
               .start()
