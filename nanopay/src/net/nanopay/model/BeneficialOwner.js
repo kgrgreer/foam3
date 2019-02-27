@@ -21,6 +21,12 @@ foam.CLASS({
     'foam.nanos.auth.User'
   ],
 
+  tableColumns: [
+    'id',
+    'business',
+    'legalName'
+  ],
+
   properties: [
     {
       class: 'Long',
