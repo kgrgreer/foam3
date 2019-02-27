@@ -7,7 +7,8 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.nanos.auth.Authorizable'
+    'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.HumanNameTrait'
   ],
 
   requires: [
@@ -21,14 +22,10 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'String',
-      name: 'firstName'
-    },
-    {
-      class: 'String',
-      name: 'lastName'
-    },
+    'firstName',
+    'middleName',
+    'lastName',
+    'legalName',
     {
       class: 'Int',
       name: 'ownershipPercent',
