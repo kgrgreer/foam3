@@ -827,7 +827,8 @@ actions: [
         await this.user.beneficialOwners.junctionDAO.put(junction);
         this.notify(this.BENEFICIAL_OWNER_SUCCESS);
       } catch (err) {
-        this.notify(err ? err.message : this.BENEFICIAL_OWNER_FAILURE, 'error');
+        console.error(err);
+        this.notify(err && err.message ? err.message : this.BENEFICIAL_OWNER_FAILURE, 'error');
       }
 
       this.editingBeneficialOwner = null;
