@@ -525,7 +525,7 @@ properties: [
 
 messages: [
   { name: 'TITLE', message: 'Beneficial Ownership' },
-  { name: 'OWNER_LABEL', message: 'Adding Owner' },
+  { name: 'OWNER_LABEL', message: 'Owner' },
   { name: 'LEGAL_NAME_LABEL', message: 'Legal Name' },
   { name: 'FIRST_NAME_LABEL', message: 'First Name' },
   { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
