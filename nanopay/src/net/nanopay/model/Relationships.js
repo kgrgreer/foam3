@@ -548,11 +548,10 @@ foam.RELATIONSHIP({
  * the common case at the expense of some duplicated data in uncommon cases.
  */
 foam.RELATIONSHIP({
-  cardinality: '*:*',
+  cardinality: '1:*',
   sourceModel: 'net.nanopay.model.Business',
-  targetModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.model.BeneficialOwner',
   forwardName: 'beneficialOwners',
-  inverseName: 'businessesInWhichThisUserIsABeneficialOwner',
-  targetProperty: { hidden: true },
+  inverseName: 'business',
   junctionDAOKey: 'beneficialOwnerJunctionDAO'
 });
