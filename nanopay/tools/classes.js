@@ -124,6 +124,8 @@ var classes = [
 
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+  'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
+  'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 
   // sme compliance banner
   'net.nanopay.sme.ui.banner.ComplianceBannerData',
@@ -455,7 +457,6 @@ var classes = [
   'net.nanopay.meter.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
-  'net.nanopay.meter.UserDisabledEmailNotificationDAO',
   'net.nanopay.meter.compliance.ComplianceHistory',
   'net.nanopay.meter.compliance.ComplianceRule',
   'net.nanopay.meter.compliance.ComplianceValidationStatus',

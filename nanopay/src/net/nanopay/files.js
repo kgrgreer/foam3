@@ -129,6 +129,8 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/model/Questionnaire' },
   { name: 'net/nanopay/onboarding/InvitationTokenService' },
   { name: 'net/nanopay/onboarding/FirebaseInvitationTokenService' },
+  { name: 'net/nanopay/onboarding/email/NewBankAccountAddedEmailDAO' },
+  { name: 'net/nanopay/onboarding/email/NewUserOnboardedEmailDAO' },
 
   // compliance Email notification
   { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
@@ -789,7 +791,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
-  { name: 'net/nanopay/meter/UserDisabledEmailNotificationDAO' },
   { name: 'net/nanopay/meter/compliance/ComplianceHistory' },
   { name: 'net/nanopay/meter/compliance/ComplianceRule' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
