@@ -770,7 +770,6 @@ methods: [
 
   function deleteBeneficialOwner(obj) {
     var self = this;
-    // TODO: Refactor
     this.beneficialOwnersDAO.remove(obj).then(function(deleted) {
       self.prevDeletedBeneficialOwner = deleted;
     });
@@ -836,10 +835,8 @@ actions: [
 listeners: [
   function onDAOChange() {
     var self = this;
-    // TODO: Refactor
-    this.beneficialOwnersDAO.select().then(function(principalOwners) {
-      self.viewData.user.principalOwners = principalOwners.array;
-      self.beneficialOwnersCount = principalOwners.array.length;
+    this.beneficialOwnersDAO.select().then(function(sink) {
+      self.beneficialOwnersCount = sink.array.length;
     });
   }
 ]
