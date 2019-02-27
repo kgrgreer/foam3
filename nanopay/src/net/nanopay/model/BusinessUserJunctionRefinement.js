@@ -3,21 +3,20 @@ foam.CLASS({
   name: 'BusinessUserJunctionRefinement',
   refines: 'net.nanopay.model.BusinessUserJunction',
 
-  implements: 'foam.nanos.auth.Authorizable',
+  documentation: `
+    A junction between a Business and User means that the user is a signing
+    officer for the business.
+  `,
 
-  javaImports: [
-    'net.nanopay.model.Business'
+  implements: [
+    'foam.nanos.auth.Authorizable'
   ],
 
-  properties: [
-    {
-      class: 'Int',
-      name: 'ownershipPercent',
-      documentation: `
-        Represents the percentage of the business that this beneficial owner
-        owns.
-      `,
-    }
+  javaImports: [
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.User',
+    'net.nanopay.model.Business'
   ],
 
   methods: [
@@ -27,14 +26,11 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       type: 'Void',
-      javaThrows: ['AuthorizationException', 'IllegalStateException'],
+      javaThrows: ['AuthorizationException'],
       javaCode: `
-        User user = (User) x.get("user");
-        if ( user == null ) {
-          throw new AuthenticationException();
-        }
-
         AuthService auth = (AuthService) x.get("auth");
+        User user = (User) x.get("user");
+
         if ( auth.check(x, "*") ) return;
 
         if ( ! (user instanceof Business) ) {
@@ -54,24 +50,20 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        if ( user == null ) {
-          throw new AuthenticationException();
-        }
-
         AuthService auth = (AuthService) x.get("auth");
-        if ( auth.check(x, "*") ) return;
-
         User user = (User) x.get("user");
         User agent = (User) x.get("agent");
+
+        if ( auth.check(x, "*") ) return;
 
         if (
           this.getSourceId() != user.getId() &&
           this.getTargetId() != user.getId() &&
 
-          this.agent != null &&
+          agent != null &&
           (
             this.getSourceId() != agent.getId() &&
-            this.getTargetId() != agent.getId() &&
+            this.getTargetId() != agent.getId()
           )
         ) {
           throw new AuthorizationException();
@@ -85,14 +77,11 @@ foam.CLASS({
         { name: 'oldObj', type: 'foam.core.FObject' }
       ],
       type: 'Void',
-      javaThrows: ['AuthorizationException', 'IllegalStateException'],
+      javaThrows: ['AuthorizationException'],
       javaCode: `
         User user = (User) x.get("user");
-        if ( user == null ) {
-          throw new AuthenticationException();
-        }
-
         AuthService auth = (AuthService) x.get("auth");
+
         if ( auth.check(x, "*") ) return;
 
         if ( ! (user instanceof Business) ) {
@@ -112,24 +101,20 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        if ( user == null ) {
-          throw new AuthenticationException();
-        }
-
         AuthService auth = (AuthService) x.get("auth");
-        if ( auth.check(x, "*") ) return;
-
         User user = (User) x.get("user");
         User agent = (User) x.get("agent");
+
+        if ( auth.check(x, "*") ) return;
 
         if (
           this.getSourceId() != user.getId() &&
           this.getTargetId() != user.getId() &&
 
-          this.agent != null &&
+          agent != null &&
           (
             this.getSourceId() != agent.getId() &&
-            this.getTargetId() != agent.getId() &&
+            this.getTargetId() != agent.getId()
           )
         ) {
           throw new AuthorizationException();
