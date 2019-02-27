@@ -83,12 +83,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     adminGroup.setParent(safeBusinessName + ".approver");
     groupDAO.put(adminGroup);
 
-    Group beneficialOwnerGroup = new Group();
-    beneficialOwnerGroup.setId(safeBusinessName + ".beneficialOwner");
-    beneficialOwnerGroup.setBusiness(business.getId());
-    beneficialOwnerGroup.setParent("sme");
-    groupDAO.put(beneficialOwnerGroup);
-
     // Put the business itself in the admin group for the business.
     business = (Business) business.fclone();
     business.setGroup(safeBusinessName + ".admin");
