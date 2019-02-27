@@ -49,16 +49,17 @@ foam.CLASS({
       name: 'jobTitle'
     },
     {
-      type: 'foam.nanos.auth.Address',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
       name: 'address',
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'net.nanopay.sme.ui.AddressView' }
+      view: { class: 'foam.nanos.auth.AddressDetailView' }
     },
     {
-      type: 'Date',
-      name: 'dateOfBirth'
+      class: 'Date',
+      name: 'birthday'
     }
   ],
 

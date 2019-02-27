@@ -32,7 +32,7 @@ requires: [
   'foam.nanos.auth.Address',
   'foam.nanos.auth.Region',
   'foam.nanos.auth.User',
-  'net.nanopay.model.BusinessUserJunction'
+  'net.nanopay.model.BeneficialOwner'
 ],
 
 css: `
@@ -792,7 +792,6 @@ actions: [
       this.clearFields();
     }
   },
-  // TODO: Refactor this.
   {
     name: 'addBeneficialOwner',
     isEnabled: function(isDisplayMode) {
@@ -804,9 +803,7 @@ actions: [
       if ( this.editingBeneficialOwner ) {
         beneficialOwner = this.editingBeneficialOwner;
       } else {
-        beneficialOwner = this.User.create({
-          id: this.beneficialOwnersCount + 1
-        });
+        beneficialOwner = this.BeneficialOwner.create();
       }
 
       beneficialOwner.ownershipPercent = this.ownershipPercent;
@@ -819,12 +816,7 @@ actions: [
       if ( ! this.validateBeneficialOwner(beneficialOwner) ) return;
 
       try {
-        var junction = this.BusinessUserJunction.create({
-          sourceId: this.user.id,
-          targetId: this.agent.id,
-          ownershipPercent: this.ownershipPercent
-        });
-        await this.user.beneficialOwners.junctionDAO.put(junction);
+        await this.user.beneficialOwners.put(beneficialOwner);
         this.notify(this.BENEFICIAL_OWNER_SUCCESS);
       } catch (err) {
         console.error(err);

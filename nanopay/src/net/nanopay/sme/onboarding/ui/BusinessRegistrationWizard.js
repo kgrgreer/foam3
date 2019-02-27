@@ -110,11 +110,10 @@ foam.CLASS({
   `,
 
   properties: [
-    // TODO: Refactor this away.
     {
       name: 'beneficialOwnersDAO',
       factory: function() {
-        return this.user.beneficialOwners.dao;
+        return this.user.beneficialOwners;
       }
     },
     {
@@ -475,7 +474,7 @@ foam.CLASS({
       return true;
     },
 
-     function validateBeneficialOwners() {
+    function validateBeneficialOwners() {
       var beneficialOwnersCount = this.viewData.user.beneficialOwners.length;
       if ( ! this.viewData.noBeneficialOwners && ! this.viewData.publiclyTradedEntity ) {
         if ( beneficialOwnersCount <= 0 ) {
