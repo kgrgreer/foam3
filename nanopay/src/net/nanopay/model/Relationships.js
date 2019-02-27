@@ -553,5 +553,5 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.model.BeneficialOwner',
   forwardName: 'beneficialOwners',
   inverseName: 'business',
-  junctionDAOKey: 'beneficialOwnerJunctionDAO'
+  targetDAOKey: 'beneficialOwnerDAO'
 });
