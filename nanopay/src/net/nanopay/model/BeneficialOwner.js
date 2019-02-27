@@ -22,6 +22,10 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Long',
+      name: 'id'
+    },
     'firstName',
     'middleName',
     'lastName',
