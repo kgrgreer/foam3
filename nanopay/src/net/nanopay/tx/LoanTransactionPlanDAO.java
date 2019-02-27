@@ -64,8 +64,8 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
       if( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");
 
       depositLineItem = new TransactionLineItem.Builder(x)
-        .setSourceAccount( theLoanAccount.getId() )
-        .setDestinationAccount( globalLoanAccount.getId() )
+        .setSourceAccount( globalLoanAccount.getId() )
+        .setDestinationAccount( theLoanAccount.getId() )
         .setAmount( txn.getAmount() )
         .setCurrency( theLoanAccount.getDenomination() )
         .build();
