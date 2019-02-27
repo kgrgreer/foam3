@@ -818,30 +818,6 @@ actions: [
 
       if ( ! this.validateBeneficialOwner(beneficialOwner) ) return;
 
-      if ( ! this.editingBeneficialOwner ) {
-        // TODO: Refactor to use mlang.
-        var owners = (await this.beneficialOwnersDAO.select()).array;
-        var nameTaken = owners.some((owner) => {
-          var ownerFirst = owner.firstName.toLowerCase();
-          var ownerLast = owner.lastName.toLowerCase();
-          var formFirst = this.firstNameField.toLowerCase();
-          var formLast = this.lastNameField.toLowerCase();
-          return ownerFirst === formFirst && ownerLast === formLast;
-        });
-
-        if ( nameTaken ) {
-          this.notify(this.BENEFICIAL_OWNER_ERROR, 'error');
-          return;
-        }
-
-        // first + last names should be unique
-        var agentNameId = `${this.viewData.agent.firstName.toLowerCase()}${this.viewData.agent.lastName.toLowerCase()}`;
-        var newOwnerNameId = `${this.firstNameField.toLowerCase()}${this.lastNameField.toLowerCase()}`;
-        if ( agentNameId === newOwnerNameId && this.isSameAsAdmin ) {
-          this.showSameAsAdminOption = false;
-        }
-      }
-
       try {
         var junction = this.BusinessUserJunction.create({
           sourceId: this.user.id,
