@@ -37,7 +37,7 @@ foam.CLASS({
           throw new AuthorizationException("Only businesses may assign signing officers.");
         }
 
-        if ( this.getTargetId() != user.getId() ) {
+        if ( this.getSourceId() != user.getId() ) {
           throw new AuthorizationException("Users may not assign themselves as signing officers of businesses. The business must assign the user as a signing officer.");
         }
       `
@@ -88,7 +88,7 @@ foam.CLASS({
           throw new AuthorizationException("Only businesses may assign signing officers.");
         }
 
-        if ( this.getTargetId() != user.getId() ) {
+        if ( this.getSourceId() != user.getId() ) {
           throw new AuthorizationException("Users may not assign themselves as signing officers of businesses. The business must assign the user as a signing officer.");
         }
       `
