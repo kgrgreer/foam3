@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.loan',
+  package: 'net.nanopay.tx',
   name: 'InterestRate',
 
   properties: [

@@ -44,7 +44,8 @@ foam.CLASS({
           [ 'net.nanopay.bank.INBankAccount', 'Indian Bank Account' ],
           [ 'net.nanopay.bank.PKBankAccount', 'Pakistan Bank Account' ],
           [ 'net.nanopay.bank.USBankAccount', 'US Bank Account' ],
-          [ 'net.nanopay.account.TrustAccount', 'Trust' ]
+          [ 'net.nanopay.account.TrustAccount', 'Trust' ],
+          [ 'net.nanopay.account.LoanAccount', 'Loan' ]
         ]
       ]
     ],
