@@ -29,24 +29,7 @@ foam.CLASS({
     ^ .table-content {
       height: 21px;
     }
-    ^ .owner-container {
-      margin-top: 25px;
-    }
   `,
-
-  properties: [
-    // TODO: Refactor
-    {
-      name: 'beneficialOwners',
-      factory: function() {
-        return this.user.principalOwners ? this.user.principalOwners : [];
-      }
-    },
-    {
-      name: 'ownerCount',
-      value: 0
-    }
-  ],
 
   messages: [
     { name: 'TITLE', message: 'Beneficial owners' },
@@ -61,11 +44,9 @@ foam.CLASS({
     function initE() {
       this.addClass(this.myClass()).addClass('card')
         .start().addClass('sub-heading').add(this.TITLE).end()
-        // TODO: Edit Business
-        .forEach(this.beneficialOwners, (owner) => {
-          this.ownerCount++;
-          this.start().addClass('owner-container')
-            .start().add(this.OWNER_COUNT_LABEL, ' ', this.ownerCount).addClass('table-heading').end()
+        // TODO: Allow users to edit the beneficial owners.
+        .select(this.user.beneficialOwners, (owner) => {
+          return this.E().start()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.LEGAL_NAME_LABEL).end()
               .start().addClass('table-content').addClass('subdued-text').add(owner.firstName, ' ', owner.lastName).end()
