@@ -13,6 +13,11 @@ foam.INTERFACE({
         {
           name: 'frequency',
           type: 'net.nanopay.tx.model.Frequency'
+        },
+        {
+          // helps determine if account balance went out of the range for the first time.
+          name: 'txnAmount',
+          type: 'Long'
         }
       ]
     },
