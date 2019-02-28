@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
-  <version>2.4.1</version>
+  <version>2.5.0</version>
 
   <groupId>net.nanopay</groupId>
   <artifactId>nanopay</artifactId>
@@ -306,7 +306,6 @@
             </goals>
             <configuration>
               <outputDirectory>${basedir}/target/classes/webroot/favicon</outputDirectory>
-              <!-- <outputDirectory>${basedir}/target/classes/favicon</outputDirectory> -->
               <resources>
                 <resource>
                   <directory>favicon</directory>
@@ -360,11 +359,24 @@
               <outputDirectory>${basedir}/target/classes</outputDirectory>
               <resources>
                 <resource>
-                  <directory>foam2/src</directory>
+                  <directory>foam2/src/foam/u2</directory>
                   <filtering>true</filtering>
                   <includes>
-                    <include>foam/u2/images/**</include>
-                    <!-- <include>foam/support/images/**</include> -->
+                    <include>images/**</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>foam2/src/foam/nanos</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>images/**</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>foam2/src/foam/support</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>images/**</include>
                   </includes>
                 </resource>
               </resources>
