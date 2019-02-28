@@ -33,6 +33,7 @@ foam.CLASS({
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact',
@@ -416,8 +417,18 @@ try {
         continue;
       }
 
-      if ( xeroInvoice.getStatus() == InvoiceStatus.VOIDED) {
+      //paid on xero but in our system
+      if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.PAID) {
+        xInvoice.setStatus(InvoiceStatus.VOID);
         xInvoice.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
+        xInvoice.setNote("Invoice was marked as paid on Xero");
+        invoiceDAO.put(xInvoice);
+        continue;
+      }
+
+      if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.VOIDED) {
+        xInvoice.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
+        xInvoice.setStatus(InvoiceStatus.VOID);
         invoiceDAO.put(xInvoice);
         continue;
       }
@@ -434,7 +445,7 @@ try {
     } else {
 
       // Checks if the invoice was paid
-      if ( InvoiceStatus.PAID == xeroInvoice.getStatus() || InvoiceStatus.VOIDED == xeroInvoice.getStatus() ) {
+      if ( com.xero.model.InvoiceStatus.PAID == xeroInvoice.getStatus() || com.xero.model.InvoiceStatus.VOIDED == xeroInvoice.getStatus() ) {
         continue;
       }
 
@@ -488,6 +499,7 @@ try {
       xInvoice.setPayerId(user.getId());
       xInvoice.setContactId(contact.getId());
       xInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
+      xInvoice.setInvoiceNumber(xeroInvoice.getInvoiceNumber());
     }
     xInvoice.setXeroId(xeroInvoice.getInvoiceID());
     xInvoice.setIssueDate(xeroInvoice.getDate().getTime());
@@ -601,8 +613,8 @@ try {
   }
   com.xero.model.Account           xeroAccount = client_.getAccount(account.getIntegrationId());
   List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
-  if ( ! (InvoiceStatus.AUTHORISED == xero.getStatus()) ) {
-    xero.setStatus(InvoiceStatus.AUTHORISED);
+  if ( ! (com.xero.model.InvoiceStatus.AUTHORISED == xero.getStatus()) ) {
+    xero.setStatus(com.xero.model.InvoiceStatus.AUTHORISED);
     xeroInvoiceList.add(xero);
     client_.updateInvoice(xeroInvoiceList);
   }
