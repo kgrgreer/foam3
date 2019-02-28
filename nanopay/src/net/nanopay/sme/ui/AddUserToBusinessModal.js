@@ -8,7 +8,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.Invitation'
+    'net.nanopay.auth.AgentJunctionStatus',
+    'net.nanopay.model.ClientUserJunction',
+    'net.nanopay.model.Invitation',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
@@ -80,17 +83,18 @@ foam.CLASS({
       name: 'noChoice',
       value: false,
       documentation: `Set to true to hide the role selector.`
-    }
+    },
+    'dao'
   ],
 
   messages: [
     { name: 'TITLE', message: 'Invite to ' },
     { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'ROLE_LABEL', message: 'Role' },
-    { name: 'INVITATION_INTERNAL_SUCCESS', message: 'User successfully added to business.' },
-    { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'Invitation sent' },
+    { name: 'INVITATION_SUCCESS', message: 'Invitation sent' },
     { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.' }
+    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
+    { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business.' }
   ],
 
   methods: [
@@ -122,10 +126,25 @@ foam.CLASS({
   actions: [
     {
       name: 'addUser',
-      code: function() {
+      code: async function() {
         if ( ! this.validateEmail(this.email) ) {
           this.notify(this.INVALID_EMAIL, 'error');
           return;
+        }
+        // Disallow the adding of a user if they are currently already a user in the business.
+        // dao is populated when this modal is called from UserManagementView.js
+        if ( this.dao ) {
+          var disallowUserAdditionReturnFromAddUser = false;
+          var currentBusUserArray = (await this.dao.where(this.EQ(this.ClientUserJunction.STATUS, this.AgentJunctionStatus.ACTIVE)).select()).array;
+          currentBusUserArray.forEach( (busUser) => {
+            if ( foam.util.equals(busUser.email, this.email) ) {
+              this.notify(this.INVALID_EMAIL2, 'error');
+              disallowUserAdditionReturnFromAddUser = true;
+              // only exits loop with return, due to nesting function
+              return;
+            }
+          });
+          if ( disallowUserAdditionReturnFromAddUser ) return;
         }
         var invitation = this.Invitation.create({
           group: this.role,
@@ -136,10 +155,7 @@ foam.CLASS({
         this.businessInvitationDAO
           .put(invitation)
           .then((resp) => {
-            var message = resp.internal
-              ? this.INVITATION_INTERNAL_SUCCESS
-              : this.INVITATION_EXTERNAL_SUCCESS;
-            this.notify(message);
+            this.notify(this.INVITATION_SUCCESS);
             this.agentJunctionDAO.on.reset.pub();
             this.closeDialog();
           })

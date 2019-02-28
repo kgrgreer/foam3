@@ -10,11 +10,13 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.token.Token;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
+import net.nanopay.model.InvitationStatus;
 
 import java.util.Date;
 import java.util.Map;
@@ -49,25 +51,13 @@ public class UserRegistrationDAO
   @Override
   public FObject put_(X x, FObject obj) {
     User user = (User) obj;
+    Boolean isInternal = false;
 
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }
-
-    User userWithSameEmail = (User) getDelegate()
-      .inX(x)
-      .find(
-        AND(
-          EQ(User.EMAIL, user.getEmail()),
-          NOT(INSTANCE_OF(Business.getOwnClassInfo())),
-          NOT(INSTANCE_OF(Contact.getOwnClassInfo()))
-        )
-      );
-
-    if ( userWithSameEmail != null ) {
-      throw new RuntimeException("User with same email address already exists: " + user.getEmail());
-    }
-
+    
+    // Set user SPID and group defined by service.
     user.setSpid(spid_);
     user.setGroup(group_);
 
@@ -98,8 +88,14 @@ public class UserRegistrationDAO
 
       Map<String, Object> params = (Map) token.getParameters();
 
-      // Make sure the email the user is signing up with matches the email the invite was sent to
+      // Check if user is internal ( already a registered user ), which will happen if adding a user to
+      // a business.
+      isInternal = params.containsKey("internal" ) && ((Boolean) params.get("internal"));
+      if ( ! isInternal ) {
+        checkUserDuplication(x, user);
+      }
 
+      // Make sure the email the user is signing up with matches the email the invite was sent to
       if ( params.containsKey("inviteeEmail") ) {
         if ( ! params.get("inviteeEmail").equals(user.getEmail()) ) {
           throw new RuntimeException(("Email does not match invited email."));
@@ -116,11 +112,44 @@ public class UserRegistrationDAO
           if ( business == null ) {
             throw new RuntimeException("Business doesn't exist.");
           }
+
+          // Get a context with the Business in it
+          X businessContext = Auth.sudo(sysContext, business);
+
+          Invitation invitation = (Invitation) invitationDAO_
+            .inX(businessContext)
+            .find(
+              AND(
+                EQ(Invitation.CREATED_BY, businessId),
+                EQ(Invitation.EMAIL, user.getEmail())
+              )
+            );
+          if ( invitation.getStatus() != InvitationStatus.SENT ) {
+            Logger logger = (Logger) x.get("logger");
+            logger.warning("Business invitation is not in SENT status but is trying to get processed.");
+          }
+          invitation.setStatus(InvitationStatus.ACCEPTED);
+          invitationDAO_.put(invitation);
         }
       }
     }
-
+    if ( ! isInternal ) checkUserDuplication(x, user);
     return super.put_(sysContext, user);
+  }
+
+  public void checkUserDuplication(X x, User user) {
+    User userWithSameEmail = (User) getDelegate()
+        .inX(x)
+        .find(
+          AND(
+            EQ(User.EMAIL, user.getEmail()),
+            NOT(INSTANCE_OF(Business.getOwnClassInfo())),
+            NOT(INSTANCE_OF(Contact.getOwnClassInfo()))
+          )
+        );
+    if ( userWithSameEmail != null ) {
+      throw new RuntimeException("User with same email address already exists: " + user.getEmail());
+    }
   }
 
   @Override

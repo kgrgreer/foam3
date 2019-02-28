@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.settings',
+  package: 'net.nanopay.documents',
   name: 'UserAcceptanceDocument',
 
   documentation: 'Captures acceptance documents accepted by user and date accepted.',
@@ -23,7 +23,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.settings.AcceptanceDocument',
+      of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'acceptedDocument'
     },
     {
