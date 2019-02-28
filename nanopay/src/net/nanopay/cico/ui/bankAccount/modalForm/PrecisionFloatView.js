@@ -4,10 +4,6 @@ foam.CLASS({
   extends: 'foam.u2.FloatView',
   
   documentation: 'Float view that limits input length based on precision.',
-
-  properties: [
-    'precision'
-  ],
   
   methods: [
     function link() {
