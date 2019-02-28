@@ -106,7 +106,15 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
+    if [[ $BUILD_PROD -eq 1 ]]; then
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 2
+    # elif [[ $BUILD_QA -eq 1 ]]; then
+    #     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 1
+    else
+        # IS_AWS will be 1 when building in jenkins which is the
+        # same as staging/qa at the moment.
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
+    fi
 
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
@@ -141,12 +149,13 @@ function clean {
 }
 
 function build_jar {
-    echo "INFO :: Building nanos..."
-    ./gen.sh
+    if [[ $COMPILE_ONLY -eq 0 ]]; then
+        echo "INFO :: Building nanos..."
+        ./gen.sh
 
-    echo "INFO :: Packaging js..."
-    ./tools/js_build/build.js
-
+        echo "INFO :: Packaging js..."
+        ./tools/js_build/build.js
+    fi
     mvn package
 }
 
@@ -236,7 +245,7 @@ function start_nanos {
         JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
     fi
 
-    if [ $MIMIC_PROD -eq 1 ]; then
+    if [ $BUILD_PROD -eq 1 ]; then
         JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
         cd $PROJECT_HOME/target
         JAR=$(ls lib/nanopay-*.jar | awk '{print $1}')
@@ -383,11 +392,13 @@ function usage {
     echo "  -j : Delete runtime journals, build, and run app as usual."
     echo "  -l : Delete runtime log, build, and run app as usual."
     echo "  -m : Run migration scripts."
-    echo "  -p : Mimic production deployment."
+    echo "  -p : build for production deployment."
+    echo "  -q : build for QA/staging deployment."
     echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
     echo "  -t : Run tests."
+    echo "  -v : java compile only (maven), no code generation."
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo ""
     echo "No options implys -b and -s, (build and then start)."
@@ -413,9 +424,11 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
-MIMIC_PROD=0
+COMPILE_ONLY=0
+BUILD_PROD=0
+BUILD_QA=0
 
-while getopts "bcdfghijlmprsStz" opt ; do
+while getopts "bcdfghijlmpqrsStvz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -427,10 +440,12 @@ while getopts "bcdfghijlmprsStz" opt ; do
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
-        p) MIMIC_PROD=1 ;;
+        p) BUILD_PROD=1 ;;
+        q) BUILD_QA=1 ;;
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1 ;;
+        v) COMPILE_ONLY=1 ;;
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         ?) usage ; quit 1 ;;
@@ -445,41 +460,49 @@ if [[ $INSTALL -eq 1 ]]; then
 fi
 
 if [[ $TEST -eq 1 ]]; then
-  echo "INFO :: Running all tests..."
-  shift $((OPTIND - 1))
-  # Remove the opts processed variables.
-  TESTS="$@"
-  # Replacing spaces with commas.
-  TESTS=${TESTS// /,}
-  JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
-
+    echo "INFO :: Running all tests..."
+    shift $((OPTIND - 1))
+    # Remove the opts processed variables.
+    TESTS="$@"
+    # Replacing spaces with commas.
+    TESTS=${TESTS// /,}
+    JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
 fi
 
-if [[ $DIST -eq 1 ]]; then
-    dist
+# if [[ $DIST -eq 1 ]]; then
+#     dist
+#     quit 0
+# fi
+
+clean
+if [ "$STATUS" -eq 1 ]; then
+    status_nanos
+    quit 0
+fi
+if [ "$STOP_ONLY" -eq 1 ]; then
+    stop_nanos
+    quit 0
+fi
+if [ "$BUILD_FOAM" -eq 1 ]; then
+    build_foam
+fi
+if [ "$RUN_MIGRATION" -eq 1 ]; then
+    migrate_journals
     quit 0
 fi
 
-clean
-if [ "$BUILD_FOAM" -eq 1 ]; then
-    build_foam
-elif [ "$BUILD_ONLY" -eq 1 ]; then
-    deploy_journals
-    build_jar
-elif [ "$RUN_MIGRATION" -eq 1 ]; then
-    migrate_journals
-elif [ "$START_ONLY" -eq 1 ]; then
+if [ "$START_ONLY" -eq 1 ]; then
     stop_nanos
     start_nanos
-elif [ "$STOP_ONLY" -eq 1 ]; then
-    stop_nanos
-elif [ "$STATUS" -eq 1 ]; then
-    status_nanos
 else
-    deploy_journals
+    if [ "$COMPILE_ONLY" -eq 0 ]; then
+        deploy_journals
+    fi
     build_jar
-    stop_nanos
-    start_nanos
+    if [ "$BUILD_ONLY" -eq 0 ]; then
+        stop_nanos
+        start_nanos
+    fi
 fi
 
 quit 0

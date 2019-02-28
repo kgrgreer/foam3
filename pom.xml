@@ -306,6 +306,7 @@
             </goals>
             <configuration>
               <outputDirectory>${basedir}/target/classes/webroot/favicon</outputDirectory>
+              <!-- <outputDirectory>${basedir}/target/classes/favicon</outputDirectory> -->
               <resources>
                 <resource>
                   <directory>favicon</directory>
@@ -323,7 +324,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/target/classes/webroot</outputDirectory>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
               <resources>
                 <resource>
                   <directory>nanopay/src/net/nanopay</directory>
@@ -339,11 +340,31 @@
                     <include>images/**</include>
                   </includes>
                 </resource>
+                <!-- <resource> -->
+                <!--   <directory>foam2/src/foam/support</directory> -->
+                <!--   <filtering>false</filtering> -->
+                <!--   <includes> -->
+                <!--     <include>images/**</include> -->
+                <!--   </includes> -->
+                <!-- </resource> -->
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-classes-images</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+              <resources>
                 <resource>
-                  <directory>foam2/src/foam/support</directory>
-                  <filtering>false</filtering>
+                  <directory>foam2/src</directory>
+                  <filtering>true</filtering>
                   <includes>
-                    <include>images/**</include>
+                    <include>foam/u2/images/**</include>
+                    <!-- <include>foam/support/images/**</include> -->
                   </includes>
                 </resource>
               </resources>
