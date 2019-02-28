@@ -11,6 +11,8 @@ import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.documents.AcceptanceDocument;
+import net.nanopay.documents.AcceptanceDocumentType;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
@@ -132,18 +134,19 @@ public class AscendantFXHTMLGenerator {
     // We only show it if the payer's address is in one of the states that
     // requires a specific disclosure. If the payer is a business, this will be
     // the business address.
-    AscendantFXDisclosure disclosure = null;
-    DAO disclosuresDAO = ((DAO) x.get("disclosuresDAO")).inX(x);
+    AcceptanceDocument disclosure = null;
+    DAO acceptanceDocumentDAO = ((DAO) x.get("acceptanceDocumentDAO")).inX(x);
     Address address = (payer instanceof Business)
       ? payer.getBusinessAddress()
       : payer.getAddress();
 
     if ( address != null ) {
-      disclosure = (AscendantFXDisclosure) disclosuresDAO.find(
+      disclosure = (AcceptanceDocument) acceptanceDocumentDAO.find(
         AND(
-          INSTANCE_OF(AscendantFXDisclosure.class),
-          EQ(AscendantFXDisclosure.COUNTRY, address.getCountryId()),
-          EQ(AscendantFXDisclosure.STATE, address.getRegionId())
+          EQ(AcceptanceDocument.TRANSACTION_TYPE, txn.getType()),
+          EQ(AcceptanceDocument.DOCUMENT_TYPE, AcceptanceDocumentType.DISCLOSURE),
+          EQ(AcceptanceDocument.COUNTRY, address.getCountryId()),
+          EQ(AcceptanceDocument.STATE, address.getRegionId())
         )
       );
     }
@@ -293,7 +296,7 @@ public class AscendantFXHTMLGenerator {
     doc.append("</table>");
 
     if ( disclosure != null ) {
-      doc.append(disclosure.getText());
+      doc.append(disclosure.getBody());
     }
 
     doc.append("<footer>");
@@ -306,4 +309,3 @@ public class AscendantFXHTMLGenerator {
     return doc.toString();
   }
 }
-
