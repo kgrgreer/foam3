@@ -1,4 +1,4 @@
-package net.nanopay.settings;
+package net.nanopay.documents;
 
 import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
@@ -68,6 +68,27 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
               EQ(AcceptanceDocument.ENABLED, true)
           ));
     }
+    return acceptanceDocument;
+  }
+
+  public AcceptanceDocument getTransactionRegionDocuments(String transactionType, AcceptanceDocumentType documentType, String country, String state) throws RuntimeException {
+    AcceptanceDocument acceptanceDocument = null;
+
+    ArraySink listSink = (ArraySink) acceptanceDocumentDAO_
+        .where(
+            AND(
+                EQ(AcceptanceDocument.TRANSACTION_TYPE, transactionType),
+                EQ(AcceptanceDocument.DOCUMENT_TYPE, documentType),
+                EQ(AcceptanceDocument.COUNTRY, country),
+                EQ(AcceptanceDocument.STATE, state),
+                EQ(AcceptanceDocument.ENABLED, true)
+              )
+        ).select(new ArraySink());
+
+        if ( listSink.getArray().size() > 0 ) {
+          acceptanceDocument = (AcceptanceDocument) listSink.getArray().get(0);
+        }
+
     return acceptanceDocument;
   }
 
