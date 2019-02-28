@@ -555,7 +555,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     File[] files = new File[signingOfficers.size()];
 
     for ( int i = 0; i < signingOfficers.size(); i++ ) {
-      files[i] = getSigningOfficerID(x, business, signingOfficers.get(0), i + 1);
+      files[i] = getSigningOfficerID(x, business, signingOfficers.get(i), i + 1);
     }
 
     return files;
