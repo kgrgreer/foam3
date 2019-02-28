@@ -15,7 +15,7 @@ foam.INTERFACE({
         },
         {
           name: 'invoiceId',
-          type: 'Long'
+          type: 'String'
         }
       ]
     }
