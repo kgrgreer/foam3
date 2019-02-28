@@ -221,10 +221,11 @@ try {
         continue;
       }
       if ( ! ( existingContact instanceof XeroContact ) ) {
-        contactDAO.remove(existingContact);
-        if ( existingContact.getBankAccount() != 0 ) {
-          newContact.setBankAccount(existingContact.getBankAccount());
-        }
+        Notification notify = new Notification();
+        notify.setUserId(user.getId());
+        notify.setBody("Xero Contact : " + xeroContact.getName() + ", was not synced as there is already a contact with that email address. The existing contact will be used for payments instead of " + xeroContact.getName());
+        notification.put(notify);
+        continue;
       } else {
         newContact = (XeroContact) existingContact.fclone();
       }
@@ -245,12 +246,10 @@ try {
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
         } else {
-          newContact.setChooseBusiness(true);
-          newContact.setEmail(xeroContact.getEmailAddress());
-          newContact.setFirstName(existingUser.getFirstName());
-          newContact.setLastName(existingUser.getLastName());
-          newContact.setOrganization("TBD");
-          newContact.setBusinessName("TBD");
+          Notification notify = new Notification();
+          notify.setUserId(user.getId());
+          notify.setBody("Xero Contact : " + xeroContact.getName() + ", cannot sync as the contact belongs to multiple businesses on Ablii.");
+          notification.put(notify);
         }
         newContact.setType("Contact");
         newContact.setGroup("sme");
@@ -417,12 +416,17 @@ try {
         continue;
       }
 
-      //paid on xero but in our system
+      // Only update invoices that are unpaid or drafts.
+      if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != xInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.DRAFT != xInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.OVERDUE != xInvoice.getStatus()) {
+        // Skip processing this invoice.
+        continue;
+      }
+
+      //paid on xero and invoice is in our system, remove it from our system
       if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.PAID) {
-        xInvoice.setStatus(InvoiceStatus.VOID);
-        xInvoice.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
-        xInvoice.setNote("Invoice was marked as paid on Xero");
+        xInvoice.setDraft(true);
         invoiceDAO.put(xInvoice);
+        invoiceDAO.remove(xInvoice);
         continue;
       }
 
@@ -432,16 +436,6 @@ try {
         invoiceDAO.put(xInvoice);
         continue;
       }
-
-      // Only update invoices that are unpaid or drafts.
-      if (
-        net.nanopay.invoice.model.InvoiceStatus.UNPAID != xInvoice.getStatus() &&
-        net.nanopay.invoice.model.InvoiceStatus.DRAFT != xInvoice.getStatus()
-      ) {
-        // Skip processing this invoice.
-        continue;
-      }
-
     } else {
 
       // Checks if the invoice was paid
@@ -492,11 +486,13 @@ try {
     if ( xeroInvoice.getType() == InvoiceType.ACCREC ) {
       xInvoice.setContactId(contact.getId());
       xInvoice.setPayeeId(user.getId());
+      xInvoice.setPayerId(contact.getId());      
       xInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
       xInvoice.setDraft(true);
       xInvoice.setInvoiceNumber(xeroInvoice.getInvoiceNumber());
     } else {
       xInvoice.setPayerId(user.getId());
+      xInvoice.setPayeeId(contact.getId());
       xInvoice.setContactId(contact.getId());
       xInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
       xInvoice.setInvoiceNumber(xeroInvoice.getInvoiceNumber());
