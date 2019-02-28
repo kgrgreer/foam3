@@ -10,6 +10,7 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.util.SafetyUtil;
 import net.nanopay.admin.model.ComplianceStatus;
+import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.model.PersonalIdentification;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
@@ -44,8 +45,8 @@ public class BusinessOnboardingValidator implements Validator {
       // 3. signing officer
       validateSigningOfficers(x, business);
 
-      // 4. Principal owners
-      validatePrincipalOwners(business);
+      // 4. Beneficial owners
+      validateBeneficialOwners(x, business);
 
     }
   }
@@ -142,15 +143,16 @@ public class BusinessOnboardingValidator implements Validator {
     }
   }
 
-  public void validatePrincipalOwners(Business business) {
+  public void validateBeneficialOwners(X x, Business business) {
 
-    if ( business.getPrincipalOwners().length > 0 ) {
-      Arrays.stream(business.getPrincipalOwners()).forEach( this::validatePrincipalOwner );
+    List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x).select(new ArraySink())).getArray();
+    for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
+      validateBeneficialOwner(beneficialOwner);
     }
 
   }
 
-  public void validatePrincipalOwner(User owner) {
+  public void validateBeneficialOwner(BeneficialOwner owner) {
 
     if ( SafetyUtil.isEmpty(owner.getJobTitle()) ) {
       throw new RuntimeException("Job title required.");
@@ -162,7 +164,7 @@ public class BusinessOnboardingValidator implements Validator {
     }
 
     if ( ! BusinessOnboardingValidator.validateAge(owner.getBirthday()) ) {
-      throw new RuntimeException("Principal owner must be at least 16 years of age.");
+      throw new RuntimeException("Beneficial owner must be at least 16 years of age.");
     }
 
     // address
