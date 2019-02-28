@@ -6,6 +6,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.InterestTransaction',
     'foam.dao.DAO',
     'foam.mlang.MLang'
@@ -25,7 +26,7 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'accumulatedInterest',
+      name: 'accruedInterest',
       documentation: 'The amount of interest accumulated thus far',
       value: 0
     },
@@ -33,7 +34,17 @@ foam.CLASS({
       name: 'lenderAccount',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      documentation: 'The account where the loan $ are lent from'
+      documentation: 'The account where the loan $ are lent from',
+      view: function(_, X) {
+      return foam.u2.view.ChoiceView.create({
+       dao: X.accountDAO,
+       placeholder: '--',
+       objToChoice: function(lenderAccount) {
+       return [lenderAccount.id, lenderAccount.name];
+      }
+
+           });
+           }
     },
   ],
   methods:[
@@ -85,7 +96,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        this.setAccumulatedInterest(amount+this.getAccumulatedInterest());
+        this.setAccruedInterest(amount+this.getAccruedInterest());
       `
       },
             {

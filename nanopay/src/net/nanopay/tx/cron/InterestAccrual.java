@@ -12,9 +12,9 @@ import java.util.List;
 /**
  Cronjob calculates the interestRate on each account
 **/
-public class InterestCalculation implements ContextAgent {
+public class InterestAccrual implements ContextAgent {
 
-  public InterestCalculation(){
+  public InterestAccrual(){
   }
 
   @Override
@@ -25,7 +25,7 @@ public class InterestCalculation implements ContextAgent {
         LoanAccount la = (LoanAccount) ((LoanAccount) obj).fclone();
         long bal = (long)la.findBalance(x);
         if(bal < 0) {
-          long amount = (long) ( (-bal)*(la.getRate()/365) );
+          long amount = (long) ( (-bal)*((la.getRate()/100)/365) );
           la.addInterest(x,amount);
           ((DAO) x.get("accountDAO")).put_(x,la);
         }
