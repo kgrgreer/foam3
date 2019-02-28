@@ -15,6 +15,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business'
   ],
@@ -46,6 +47,45 @@ foam.CLASS({
       border: none;
       box-shadow: none;
     }
+    ^searchIcon {
+      position: absolute;
+      margin-left: 5px;
+      margin-top: 8px;
+    }
+    ^filter-search {
+      height: 40px;
+      border-radius: 2px;
+      border-color: #e2e2e3;
+      background-color: #ffffff;
+      vertical-align: top;
+      box-shadow:none;
+      padding: 10px 10px 10px 31px;
+      font-size: 14px;
+    }
+    ^create-new-block {
+      margin-top: 120px;
+    }
+    ^center {
+      display: flex;
+      justify-content: center;
+    }
+    ^search-result {
+      color: #8e9090;
+      margin-bottom: 16px;
+    }
+    ^instruction {
+      color: #8e9090;
+      line-height: 1.43;
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+    ^ .net-nanopay-contacts-ui-modal-SearchEmailView-search-result span {
+      width: 462px;
+      overflow-wrap: break-word;
+    }
+    ^align-text-center {
+      text-align: center;
+    }
   `,
 
   messages: [
@@ -58,7 +98,7 @@ foam.CLASS({
       message: 'Business name'
     },
     {
-      name: 'DESCRIPTION',
+      name: 'INSTRUCTION',
       message: `Search a business on Ablii to add them to your
         contacts.  For better results, search using their registered
         business name and location.`
@@ -74,6 +114,10 @@ foam.CLASS({
     {
       name: 'ADD_CONTACT_SUCCESS',
       message: 'Contact added'
+    },
+    {
+      name: 'DEFAULT_TEXT',
+      message: 'Matching businesses will appear here'
     },
     {
       name: 'NO_MATCH_TEXT',
@@ -105,7 +149,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'searchBusiness',
       expression: function(filter) {
-        if ( filter.length < 3 ) {
+        if ( filter.length < 2 ) {
           return foam.dao.NullDAO.create({ of: net.nanopay.model.Business });
         } else {
           var dao = this.businessDAO
@@ -113,6 +157,8 @@ foam.CLASS({
               this.AND(
                 this.NEQ(this.Business.ID, this.user.id),
                 this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED),
+                this.EQ(this.Business.COMPLIANCE, this.ComplianceStatus.PASSED),
+                // this.EQ(this.Business.ONBOARDED, true),
                 this.CONTAINS_IC(this.Business.ORGANIZATION, filter)
               )
             );
@@ -129,14 +175,14 @@ foam.CLASS({
       type: 'Boolean',
       name: 'showNoMatch',
       expression: function(filter, count) {
-        return count === 0 && filter.length > 2;
+        return count === 0 && filter.length > 1;
       }
     },
     {
       type: 'Boolean',
       name: 'showDefault',
       expression: function(filter) {
-        return filter.length < 3;
+        return filter.length < 2;
       }
     }
   ],
@@ -149,21 +195,26 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .addClass(this.myClass('container'))
-          .start('h2')
+          .start().addClass('contact-title')
             .add(this.TITLE)
           .end()
-          .start()
-            .add(this.DESCRIPTION)
+          .start().addClass(this.myClass('instruction'))
+            .add(this.INSTRUCTION)
           .end()
           .start()
             .addClass('input-label')
             .add(this.BUSINESS_NAME)
           .end()
-          .start()
+          .start().style({ 'position': 'relative' })
             .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
-              .addClass('searchIcon')
+              .addClass(this.myClass('searchIcon'))
             .end()
-            .start(this.FILTER).addClass('filter-search').end()
+            .start(this.FILTER)
+              .addClass(this.myClass('filter-search'))
+            .end()
+          .end()
+          .start()
+            .addClass('divider')
           .end()
           .start().style({ 'overflow-y': 'scroll' })
             .select(this.searchBusiness$proxy, (business) => {
@@ -179,19 +230,36 @@ foam.CLASS({
                 .end();
             })
           .end()
-          .start()
-            .show(this.showDefault$)
-            .start().add('Matching businesses will appear here').end()
-            .start(this.CREATE).end()
-
+          .start().show(this.showDefault$)
+            .addClass(this.myClass('create-new-block'))
+            .start()
+              .addClass(this.myClass('center'))
+              .addClass(this.myClass('search-result'))
+              .add(this.DEFAULT_TEXT)
+            .end()
+            .start()
+              .addClass(this.myClass('center'))
+              .start(this.CREATE_NEW).end()
+            .end()
           .end()
-          .start()
-            .show(this.showNoMatch$)
-            .start().add(this.NO_MATCH_TEXT).end()
-            .start().add(this.slot(function(filter) {
-              return `${this.NO_MATCH_TEXT_2} “${filter}”?`;
-            })).end()
-            .start(this.CREATE).end()
+          .start().show(this.showNoMatch$)
+            .addClass(this.myClass('create-new-block'))
+            .start()
+              .addClass(this.myClass('center'))
+              .addClass(this.myClass('search-result'))
+              .add(this.NO_MATCH_TEXT)
+            .end()
+            .start()
+              .addClass(this.myClass('center'))
+              .addClass(this.myClass('search-result'))
+              .addClass(this.myClass('align-text-center'))
+              .add(this.slot(function(filter) {
+                return `${this.NO_MATCH_TEXT_2} “${filter}”?`;
+              }))
+            .end()
+            .start().addClass(this.myClass('center'))
+              .start(this.CREATE_NEW_WITH_BUSINESS).end()
+            .end()
           .end()
         .end();
     },
@@ -218,11 +286,22 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'create',
+      name: 'createNew',
+      label: 'Create New',
       code: function(X) {
         this.wizard.viewData.isEdit = false;
-        X.viewData.isBankingProvided = true;
-        X.pushToId('information');
+        X.viewData.isBankingProvided = false;
+        X.pushToId('AddContactStepOne');
+      }
+    },
+    {
+      name: 'createNewWithBusiness',
+      label: 'Create New',
+      code: function(X) {
+        this.wizard.data.organization = this.filter;
+        this.wizard.viewData.isEdit = false;
+        X.viewData.isBankingProvided = false;
+        X.pushToId('AddContactStepOne');
       }
     },
   ]
