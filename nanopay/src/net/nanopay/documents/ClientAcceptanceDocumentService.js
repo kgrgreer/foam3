@@ -1,15 +1,15 @@
 foam.CLASS({
-  package: 'net.nanopay.settings',
+  package: 'net.nanopay.documents',
   name: 'ClientAcceptanceDocumentService',
 
   implements: [
-    'net.nanopay.settings.AcceptanceDocumentService'
+    'net.nanopay.documents.AcceptanceDocumentService'
   ],
 
   properties: [
     {
       class: 'Stub',
-      of: 'net.nanopay.settings.AcceptanceDocumentService',
+      of: 'net.nanopay.documents.AcceptanceDocumentService',
       name: 'delegate'
     }
   ]
