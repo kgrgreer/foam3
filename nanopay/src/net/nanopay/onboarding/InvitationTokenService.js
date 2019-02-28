@@ -61,9 +61,9 @@ return calendar.getTime();`
             .replaceAll("/$", "");
 
         // keep generating a new password until a valid one is generated
-        String password = passgen.generate(8);
+        String password = passgen.generate(18);
         while ( ! Password.isValid(getX(), password) ) {
-          password = passgen.generate(8);
+          password = passgen.generate(18);
         }
         user = (User) user.fclone();
         user.setPassword(Password.hash(password));
