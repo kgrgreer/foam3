@@ -14,8 +14,8 @@ foam.INTERFACE({
           type: 'Context'
         },
         {
-          name: 'invoice',
-          type: 'net.nanopay.invoice.model.Invoice'
+          name: 'invoiceId',
+          type: 'Long'
         }
       ]
     }
