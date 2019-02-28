@@ -330,8 +330,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String businessName = business.getBusinessName();
     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwners.pdf";
 
-    // TODO: Refactor
-    User[] beneficialOwners = business.getPrincipalOwners();
+    java.util.List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x).select(new ArraySink())).getArray();
     try {
       Document document = new Document();
 
@@ -343,14 +342,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
       String reportGeneratedDate = df.format(new Date());
 
-      if ( beneficialOwners.length == 0 ) {
+      if ( beneficialOwners.size() == 0 ) {
         List list = new List(List.UNORDERED);
         list.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
         list.add(new ListItem("Report Generated Date: " + reportGeneratedDate));
         document.add(list);
       } else {
-        for ( int i = 0; i < beneficialOwners.length; i++ ) {
-          User beneficialOwner = beneficialOwners[i];
+        for ( int i = 0; i < beneficialOwners.size(); i++ ) {
+          BeneficialOwner beneficialOwner = beneficialOwners.get(i);
           String firstName = beneficialOwner.getFirstName();
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
