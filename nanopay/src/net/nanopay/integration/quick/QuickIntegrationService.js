@@ -410,15 +410,7 @@ try {
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     if ( contact == null ) {
-      Notification notify = new Notification();
-      notify.setUserId(user.getId());
-      String str = "Quick Bill # " +
-        qInvoice.getId() +
-        " can not be sync'd because Quick Contact # " +
-        qInvoice.getVendorRef().getValue() +
-        " is not in this system";
-      notify.setBody(str);
-      notification.put(notify);
+      // TODO: handle the mismatch
       continue;
     }
 
@@ -581,15 +573,7 @@ try {
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     if ( contact == null ) {
-      Notification notify = new Notification();
-      notify.setUserId(user.getId());
-      String str = "Quick Invoice # " +
-        qInvoice.getId() +
-        " can not be sync'd because Quick Contact # " +
-        qInvoice.getCustomerRef().getValue() +
-        " is not in this system";
-      notify.setBody(str);
-      notification.put(notify);
+      // TODO: handle the mismatch
       continue;
     }
 
@@ -748,7 +732,7 @@ try {
       }
 
       if ( ! ( existContact instanceof QuickContact ) ) {
-        sendNotification(x, "Contact " + existContact.getEmail() + " already exist in system.");
+        // TODO: handle the mismatch
         continue;
       } else {
         newContact = (QuickContact) existContact.fclone();
@@ -779,7 +763,8 @@ try {
         }
   
         if ( sink.getArray().size() > 1) {
-          sendNotification(x, "Contact " + existUser.getEmail() + " belong to more than 1 business.");
+          // TODO: handle the mismatch
+          continue;
         }
   
         newContact.setType("Contact");
