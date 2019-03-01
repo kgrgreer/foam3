@@ -5,8 +5,6 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import net.nanopay.account.LoanAccount;
-import net.nanopay.tx.model.*;
-
 import java.util.List;
 
 /**
@@ -14,8 +12,7 @@ import java.util.List;
 **/
 public class InterestAccrual implements ContextAgent {
 
-  public InterestAccrual(){
-  }
+  public InterestAccrual(){}
 
   @Override
   public void execute(X x) {

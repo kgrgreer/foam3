@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.account.ZeroAccount',
   documentation: 'Represents the total loaned for a specific currency',
 
-methods: [
+  methods: [
     {
       name: 'validateAmount',
       args: [
@@ -32,6 +32,5 @@ methods: [
         }
       `
     }
-]
-
+  ]
 })
