@@ -47,32 +47,32 @@ foam.CLASS({
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Transaction tx = super.executeBeforePut(x, oldTxn);
-      if( ! (tx.findSourceAccount(x) instanceof LoanAccount ) )
+      if( ! ( tx.findSourceAccount(x) instanceof LoanAccount ) )
         throw new RuntimeException("Transaction must include a Loan Account as a Source Account");
-      if( ! (tx.findDestinationAccount(x) instanceof LoanedTotalAccount ) )
+      if( ! ( tx.findDestinationAccount(x) instanceof LoanedTotalAccount ) )
         throw new RuntimeException("Transaction must include a LoanedTotalAccount as a Destination Account");
       return tx;
     `
     },
     {
-          name: 'createTransfers',
-          args: [
-            {
-              name: 'x',
-              type: 'Context'
-            },
-            {
-              name: 'oldTxn',
-              type: 'net.nanopay.tx.model.Transaction'
-            }
-          ],
-          type: 'net.nanopay.tx.Transfer[]',
-          javaCode: `
-          List all = new ArrayList();
-          all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
-          all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
-          return (Transfer[]) all.toArray(new Transfer[0]);
-        `
+      name: 'createTransfers',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'oldTxn',
+          type: 'net.nanopay.tx.model.Transaction'
         }
+      ],
+      type: 'net.nanopay.tx.Transfer[]',
+      javaCode: `
+        List all = new ArrayList();
+        all.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-getTotal()).build());
+        all.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(getTotal()).build());
+        return (Transfer[]) all.toArray(new Transfer[0]);
+      `
+    }
   ]
 });
