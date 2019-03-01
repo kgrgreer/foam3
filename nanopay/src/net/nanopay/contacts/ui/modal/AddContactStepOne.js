@@ -22,7 +22,6 @@ foam.CLASS({
 
   css: `
     ^ {
-      height: 465px;
       max-height: 80vh;
       overflow-y: scroll;
       padding: 24px;
@@ -77,13 +76,16 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var emailDisplayMode = this.isEdit ?
+        foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+
       this.addClass(this.myClass())
         .start()
           .addClass('contact-title')
           .addClass('popUpTitle')
           .add(this.title$)
         .end()
-        .start()
+        .start().hide(this.isEdit$)
           .addClass('instruction')
           .add(this.INSTRUCTION)
         .end()
@@ -102,6 +104,7 @@ foam.CLASS({
           .end()
           .start()
             .tag(this.wizard.data.EMAIL, {
+              mode: emailDisplayMode,
               placeholder: this.EMAIL_PLACEHOLDER,
               onKey: true
             })
@@ -131,18 +134,17 @@ foam.CLASS({
           .end()
         .endContext()
         .startContext({ data: this.wizard })
-          .start().hide(this.slot(function(isEdit, wizard$data$signUpStatus) {
-            return isEdit && wizard$data$signUpStatus === this.ContactStatus.INVITED;
-          }))
-            .addClass(this.myClass('invite'))
-            .addClass('check-box-container')
-            .add(this.wizard.SHOULD_INVITE)
-          .end()
-          .start().hide(this.slot(function(isEdit, wizard$data$signUpStatus) {
-            return isEdit && wizard$data$signUpStatus === this.ContactStatus.INVITED;
-          }))
-            .addClass(this.myClass('invite-explaination'))
-            .add(this.INVITE_EXPLAINATION)
+          .start()
+            .hide(this.isEdit)
+            .start()
+              .addClass(this.myClass('invite'))
+              .addClass('check-box-container')
+              .add(this.wizard.SHOULD_INVITE)
+            .end()
+            .start()
+              .addClass(this.myClass('invite-explaination'))
+              .add(this.INVITE_EXPLAINATION)
+            .end()
           .end()
         .endContext()
         .tag({
