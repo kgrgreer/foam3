@@ -4,27 +4,27 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    This is a view used in the contact wizard that lets the user add or edit a
-    external user's business name and contact information.
+    This is the third step of the adding contact flow to allow user to 
+    add related business address for inviting a contact.
   `,
 
   imports: [
     'accountDAO as bankAccountDAO',
     'addContact',
+    'caAccount',
     'ctrl',
     'closeDialog',
     'isEdit',
+    'isCABank',
     'isConnecting',
     'regionDAO',
     'sendInvite',
+    'usAccount',
     'user',
     'validateAddress',
     'validateCity',
     'validatePostalCode',
-    'validateStreetNumber',
-    'caAccount',
-    'usAccount',
-    'isCABank'
+    'validateStreetNumber'
   ],
 
   css: `

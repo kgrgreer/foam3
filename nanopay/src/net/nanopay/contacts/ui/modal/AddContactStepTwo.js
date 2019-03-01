@@ -5,23 +5,23 @@ foam.CLASS({
 
   documentation: `
     This is the second step of the adding contact flow to allow user to 
-    add banking information of the contact
+    add banking information for inviting a contact,
   `,
 
   imports: [
     'accountDAO as bankAccountDAO',
     'addContact',
     'branchDAO',
+    'caAccount',
     'closeDialog',
     'ctrl',
     'institutionDAO',
+    'isCABank',
     'isConnecting',
     'isEdit',
     'sendInvite',
-    'user',
-    'caAccount',
     'usAccount',
-    'isCABank'
+    'user'
   ],
 
   css: `

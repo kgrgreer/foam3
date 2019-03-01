@@ -5,7 +5,7 @@ foam.CLASS({
 
   documentation: `
     This is the first step of the adding contact flow to allow user to add 
-    contact's business name and related information
+    business name and emails for inviting a contact.
   `,
 
   imports: [
