@@ -593,9 +593,7 @@ foam.CLASS({
             if ( this.isFillingBeneficialOwnerForm(this.viewData.beneficialOwner) ) {
               if ( this.validateBeneficialOwner(this.viewData.beneficialOwner) ) {
                 try {
-                  var newBeneficialOwnerId = this.beneficialOwnersDAO.array.length + 1;
                   var beneficialOwner = this.User.create({
-                    id: newBeneficialOwnerId,
                     firstName: this.viewData.beneficialOwner.firstName,
                     lastName: this.viewData.beneficialOwner.lastName,
                     birthday: this.viewData.beneficialOwner.birthday,
@@ -603,8 +601,6 @@ foam.CLASS({
                     jobTitle: this.viewData.beneficialOwner.jobTitle
                   });
                   await this.beneficialOwnersDAO.put(beneficialOwner);
-                  var beneficialOwnerArray = (await this.beneficialOwnersDAO.select()).array;
-                  this.viewData.user.beneficialOwners = beneficialOwnerArray;
                 } catch (err) {
                   this.notify(err ? err.message : this.BENEFICIAL_OWNER_FAILURE, 'error');
                 }
