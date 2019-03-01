@@ -132,13 +132,15 @@ foam.CLASS({
         .endContext()
         .startContext({ data: this.wizard })
           .start().hide(this.slot(function(isEdit, wizard$data$signUpStatus) {
-            return isEdit && wizard$data$signUpStatus === ContactStatus.INVITED;
+            return isEdit && wizard$data$signUpStatus === this.ContactStatus.INVITED;
           }))
             .addClass(this.myClass('invite'))
             .addClass('check-box-container')
             .add(this.wizard.SHOULD_INVITE)
           .end()
-          .start()
+          .start().hide(this.slot(function(isEdit, wizard$data$signUpStatus) {
+            return isEdit && wizard$data$signUpStatus === this.ContactStatus.INVITED;
+          }))
             .addClass(this.myClass('invite-explaination'))
             .add(this.INVITE_EXPLAINATION)
           .end()
