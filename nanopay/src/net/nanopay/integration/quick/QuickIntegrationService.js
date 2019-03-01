@@ -400,7 +400,6 @@ try {
 
     // Searches for a previous existing Contact
     Vendor vendor = (Vendor) fetchContactById(x, "vendor", qInvoice.getVendorRef().getValue());
-    System.out.println("********" + vendor.getPrimaryEmailAddr().getAddress());
 
     Contact contact = (Contact) contactDAO.find(
       AND(
@@ -563,7 +562,6 @@ try {
 
     // Searches for a previous existing Contact
     Customer customer = (Customer) fetchContactById(x, "customer", qInvoice.getCustomerRef().getValue());
-    System.out.println(customer.getPrimaryEmailAddr().getAddress());
         
     Contact contact = (Contact) contactDAO.find(
       AND(
