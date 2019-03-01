@@ -32,7 +32,9 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
 
 
   @Override
-  public Invoice pay(X x, Invoice invoice) {
+  public Invoice pay(X x, String invoiceId) {
+
+    Invoice invoice = (Invoice) invoiceDAO_.inX(x).find(Long.parseLong(invoiceId));
 
     User user = (User) x.get("user");
 
