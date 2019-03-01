@@ -26,7 +26,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.integration.AccountingBankAccount',
@@ -64,18 +63,8 @@ foam.CLASS({
       ],
       javaCode: `
 
-      DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
       if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) || SafetyUtil.isEmpty(xeroContact.getFirstName()) 
       || SafetyUtil.isEmpty(xeroContact.getLastName()) || SafetyUtil.isEmpty(xeroContact.getName()) ) {
-        Notification notify = new Notification();
-        notify.setUserId(user.getId());
-        notify.setBody(
-          "Xero Contact: " + xeroContact.getName() +
-            " cannot sync due to the following required fields being empty:" +
-            (SafetyUtil.isEmpty(xeroContact.getEmailAddress()) ? "[Email Address]" : "") +
-            (SafetyUtil.isEmpty(xeroContact.getFirstName()) ? "[First Name]" : "") +
-            (SafetyUtil.isEmpty(xeroContact.getLastName()) ? "[LastName]" : "") + ".");
-        notification.put(notify);
         return false;
       }
       return true;
@@ -178,7 +167,6 @@ AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
-DAO              notification = ((DAO) x.get("notificationDAO")).inX(x);
 Logger           logger       = (Logger) x.get("logger");
 DAO              agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
 DAO              userDAO      = ((DAO) x.get("localUserUserDAO")).inX(x);
@@ -221,10 +209,6 @@ try {
         continue;
       }
       if ( ! ( existingContact instanceof XeroContact ) ) {
-        Notification notify = new Notification();
-        notify.setUserId(user.getId());
-        notify.setBody("Xero Contact : " + xeroContact.getName() + ", was not synced as there is already a contact with that email address. The existing contact will be used for payments instead of " + xeroContact.getName());
-        notification.put(notify);
         continue;
       } else {
         newContact = (XeroContact) existingContact.fclone();
@@ -246,10 +230,7 @@ try {
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
         } else {
-          Notification notify = new Notification();
-          notify.setUserId(user.getId());
-          notify.setBody("Xero Contact : " + xeroContact.getName() + ", cannot sync as the contact belongs to multiple businesses on Ablii.");
-          notification.put(notify);
+
         }
         newContact.setType("Contact");
         newContact.setGroup("sme");
@@ -360,7 +341,6 @@ AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
-DAO              notification = ((DAO) x.get("notificationDAO")).inX(x);
 Logger           logger       = (Logger) x.get("logger");
 DAO              currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 
@@ -431,9 +411,7 @@ try {
       }
 
       if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.VOIDED) {
-        xInvoice.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
-        xInvoice.setStatus(InvoiceStatus.VOID);
-        invoiceDAO.put(xInvoice);
+        invoiceDAO.remove(xInvoice);
         continue;
       }
     } else {
@@ -449,12 +427,6 @@ try {
 
     //TODO: Remove this when we accept other currencies
     if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ) {
-      Notification notify = new Notification();
-      notify.setUserId(user.getId());
-      notify.setBody("Xero Invoice # " +
-        xeroInvoice.getInvoiceNumber()+
-        " cannot sync due to portal only accepting CAD and USD");
-      notification.put(notify);
       continue;
     }
 
