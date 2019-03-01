@@ -277,7 +277,7 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.fullName : 'na')
+            .add(value ? value.displayName : 'na')
           .end()
         .end();
       },
@@ -293,11 +293,10 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.fullName : 'na')
+            .add(value ? value.displayName : 'na')
           .end()
         .end();
-      },
-
+      }
     },
     {
       class: 'Reference',

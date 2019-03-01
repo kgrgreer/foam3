@@ -7,6 +7,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
+  { name: 'net/nanopay/payment/PaymentProvider' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
@@ -127,6 +128,8 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/model/Questionnaire' },
   { name: 'net/nanopay/onboarding/InvitationTokenService' },
   { name: 'net/nanopay/onboarding/FirebaseInvitationTokenService' },
+  { name: 'net/nanopay/onboarding/email/NewBankAccountAddedEmailDAO' },
+  { name: 'net/nanopay/onboarding/email/NewUserOnboardedEmailDAO' },
 
   // compliance Email notification
   { name: 'net/nanopay/onboarding/email/UserCompliancePassEmailDAO' },
@@ -162,7 +165,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
-  { name: 'net/nanopay/fx/ascendantfx/AscendantFXDisclosure' },
+  { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -205,6 +208,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/FixedFee' },
   { name: 'net/nanopay/tx/model/InformationalFee' },
   { name: 'net/nanopay/tx/model/LiquiditySettings' },
+  { name: 'net/nanopay/tx/Liquidity' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
@@ -230,8 +234,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
 
   { name: 'net/nanopay/model/Broker' },
-  { name: 'net/nanopay/disclosure/Disclosure' },
-
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionFeesTableView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
@@ -432,11 +434,14 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
 
+  // documents
+  { name: 'net/nanopay/documents/AcceptanceDocument' },
+  { name: 'net/nanopay/documents/UserAcceptanceDocument' },
+  { name: 'net/nanopay/documents/ClientAcceptanceDocumentService' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentService' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentType' },
+
   // settings
-  { name: 'net/nanopay/settings/AcceptanceDocument' },
-  { name: 'net/nanopay/settings/UserAcceptanceDocument' },
-  { name: 'net/nanopay/settings/ClientAcceptanceDocumentService' },
-  { name: 'net/nanopay/settings/AcceptanceDocumentService' },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessHoursView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditPrincipalOwnersView', flags: ['web'] },
@@ -781,7 +786,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
-  { name: 'net/nanopay/meter/UserDisabledEmailNotificationDAO' },
   { name: 'net/nanopay/meter/compliance/ComplianceHistory' },
   { name: 'net/nanopay/meter/compliance/ComplianceRule' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
