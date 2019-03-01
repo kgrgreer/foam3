@@ -249,7 +249,9 @@ foam.CLASS({
           .start()
             .addClass('bankAction')
             .enableClass('selected', this.isCABank$, true)
-            .start('p').add(this.LABEL_US).end()
+            .start('p')
+              .add(this.LABEL_US)
+            .end()
             .on('click', function() {
               self.selectBank('US');
             })

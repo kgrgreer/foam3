@@ -69,6 +69,7 @@ foam.CLASS({
     { name: 'BUSINESS_ADDRESS_TITLE', message: 'Business address' },
     { name: 'ERROR_COUNTRY', message: 'Please select a country.' },
     { name: 'ERROR_REGION', message: 'Please select a state/province.' },
+    { name: 'ERROR_COUNTRY_REGION', message: 'Please select a valid state/province of the country.' },
     { name: 'ERROR_STREET_NUMBER', message: 'Invalid street number.' },
     { name: 'ERROR_STREET_NAME', message: 'Invalid street name.' },
     { name: 'ERROR_CITY', message: 'Invalid city name.' },
@@ -170,7 +171,7 @@ foam.CLASS({
         // changed after a previous region selection has been made.
         var validRegion = await this.regionDAO.find(businessAddress.regionId);
         if ( validRegion.countryId != businessAddress.countryId ) {
-          this.ctrl.notify( this.ERROR_REGION, 'error' );
+          this.ctrl.notify( this.ERROR_COUNTRY_REGION, 'error' );
           return;
         }
         if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
