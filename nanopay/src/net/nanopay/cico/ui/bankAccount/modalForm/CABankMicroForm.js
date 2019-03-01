@@ -17,7 +17,8 @@ foam.CLASS({
     'bank',
     'bankAccountVerification',
     'ctrl',
-    'isConnecting'
+    'isConnecting',
+    'notify'
   ],
 
   css: `
@@ -121,7 +122,7 @@ foam.CLASS({
       }
 
       if ( isVerified ) {
-        this.ctrl.notify(this.SUCCESS);
+        ctrl.notify(this.SUCCESS);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
       }
