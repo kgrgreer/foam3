@@ -28,6 +28,7 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/model/AccountStatementContainerModel' },
   { name: 'net/nanopay/flinks/model/FlinksAccountsDetailResponse' },
   { name: 'net/nanopay/flinks/model/FlinksAccountsSummaryResponse' },
+  { name: 'net/nanopay/flinks/model/FlinksCredentials' },
   // flinks service
   { name: 'net/nanopay/flinks/FlinksAuth' },
   { name: 'net/nanopay/flinks/ClientFlinksAuthService' },

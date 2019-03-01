@@ -165,7 +165,7 @@ foam.CLASS({
       class: 'Int',
       name: 'verificationAttempts',
       value: 0,
-      visibility: foam.u2.Visibility.RO
+      permissionRequired: true,
     },
     {
       class: 'DateTime',
