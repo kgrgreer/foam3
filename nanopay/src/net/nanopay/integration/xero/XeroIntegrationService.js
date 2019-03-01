@@ -404,15 +404,10 @@ try {
         continue;
       }
 
-      //paid on xero and invoice is in our system, remove it from our system
-      if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.PAID) {
+      // Invoice paid or voided on xero, remove it from our system
+      if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.PAID || xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.VOIDED) {
         xInvoice.setDraft(true);
         invoiceDAO.put(xInvoice);
-        invoiceDAO.remove(xInvoice);
-        continue;
-      }
-
-      if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.VOIDED) {
         invoiceDAO.remove(xInvoice);
         continue;
       }
