@@ -219,7 +219,7 @@ foam.CLASS({
             .select(this.searchBusiness$proxy, (business) => {
               return this.E()
                 .start({
-                  class: 'net.nanopay.sme.ui.BusinessRowView2',
+                  class: 'net.nanopay.sme.ui.BusinessRowView',
                   data: business
                 })
                   .on('click', function() {
