@@ -30,14 +30,15 @@ foam.CLASS({
       width: 100%;
     }
 
-    ^ .container{
-      width: 330px;
+    ^ .text-container{
+      width: 545px;
       height: 215px;
       border-radius: 2px;
       padding-top: 5px;
       margin: auto;
       color: #525455;
       font-size: 16px;
+      line-height: 2;
     }
 
     ^ .header{
@@ -175,7 +176,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Verify your email' },
     { name: 'INSTRUCTIONS1', message: `We've sent a verification link to your email. Click on the link to get started!` },
-    { name: 'INSTRUCTIONS2', message: `Don't see the email? ` }
+    { name: 'INSTRUCTIONS2', message: `If the email doesn’t arrive soon, check your spam folder or have us` }
   ],
 
   methods: [
@@ -193,7 +194,7 @@ foam.CLASS({
           .start('img').addClass('icon').attr('src', 'images/mail-icon.svg').end()
           .start().addClass('header').add(this.TITLE).end()
           .start()
-            .addClass('container')
+            .addClass('text-container')
             .start().add(this.INSTRUCTIONS1).end()
             .br()
             .start('span').add(this.INSTRUCTIONS2).end()
@@ -207,7 +208,7 @@ foam.CLASS({
   actions: [
     {
       name: 'resendEmail',
-      label: 'Resend Email',
+      label: 'send it again',
       code: function(X) {
         var self = this;
         this.emailToken.generateToken(null, this.user).then(function(result) {

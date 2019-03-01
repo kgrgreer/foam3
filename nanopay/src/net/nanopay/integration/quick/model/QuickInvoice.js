@@ -9,6 +9,10 @@ foam.CLASS({
       name: 'quickId'
     },
     {
+      class: 'String',
+      name: 'realmId'
+    },
+    {
       class: 'Boolean',
       name: 'desync'
     },
