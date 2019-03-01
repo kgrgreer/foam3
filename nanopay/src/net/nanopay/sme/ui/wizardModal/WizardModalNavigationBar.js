@@ -19,10 +19,20 @@ foam.CLASS({
       background-color: #fafafa;
     }
     ^ .net-nanopay-ui-ActionView-back,
+    ^ .net-nanopay-ui-ActionView-option,
     ^ .net-nanopay-ui-ActionView-next {
       display: table-cell;
       vertical-align: middle;
       height: 40px;
+    }
+    ^ .net-nanopay-ui-ActionView-option {
+      background-color: ffffff;
+      color: #604AFF;
+      border: 1px solid #604aff !important;
+      margin-right: 10px;
+    }
+    ^ .net-nanopay-ui-ActionView-option:hover {
+      background-color: ffffff;
     }
     ^ .net-nanopay-ui-ActionView-back {
       position: relative;
@@ -52,6 +62,11 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.core.Action',
+      name: 'option'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.Action',
       name: 'next'
     }
   ],
@@ -59,13 +74,17 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      // If neither back or next has been provided, DO NOT render
-      if ( ! this.back && ! this.next ) return;
+      // If all of the three options has been provided, DO NOT render
+      if ( ! this.back && ! this.option && ! this.next ) return;
       this.addClass(this.myClass());
       this.start('div').addClass(this.myClass('container'))
         .callIf(this.back, function() {
           // If NEXT exists, render that action
           this.tag(self.back);
+        })
+        .callIf(this.option, function() {
+          // If option exists, render that action
+          this.tag(self.option);
         })
         .callIf(this.next, function() {
           // If BACK exists, render that action

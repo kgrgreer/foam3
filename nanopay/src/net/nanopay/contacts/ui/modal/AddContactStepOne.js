@@ -4,11 +4,14 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    This is a view used in the contact wizard that lets the user add or edit a
-    external user's business name and contact information.
+    This is the first step of the adding contact flow to allow user to add 
+    contact's business name and related information
   `,
 
   imports: [
+    'ctrl',
+    'closeDialog',
+    'isEdit',
     'notify',
     'user'
   ],
@@ -30,44 +33,34 @@ foam.CLASS({
       grid-gap: 16px;
       grid-template-columns: 1fr 1fr;
     }
-    ^instruction {
-      color: #8e9090;
-      line-height: 1.43;
-      margin-top: 8px;
-      margin-bottom: 16px;
-    }
     ^invite {
       margin-top: 16px;
     }
-    ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
-      background-color: #ffffff;
+    ^invite-explaination {
+      color: #525455;
+      font-size: 10px;
+      margin-top: 8px;
     }
-    ^ .net-nanopay-ui-ActionView-back {
-      float: left;
+
+    /* Customized checkbox */
+    .foam-u2-CheckBox-label {
+      margin-left: 8px !important;
+    }
+    .foam-u2-CheckBox {
+      margin-left: 0px !important;
     }
   `,
 
   messages: [
-    { name: 'CREATE_TITLE', message: 'Add a Contact' },
+    { name: 'CREATE_TITLE', message: 'Create a personal contact' },
     { name: 'EDIT_TITLE', message: 'Edit Contact' },
-    { name: 'DISCLAIMER', message: `Added contacts must be businesses, not personal accounts.` },
+    { name: 'INSTRUCTION', message: `Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.` },
     { name: 'COMPANY_PLACEHOLDER', message: 'Enter business name' },
     { name: 'EMAIL_PLACEHOLDER', message: 'Enter the email address' },
-    { name: 'HEADER_BANKING', message: 'Adding Banking information' },
-    { name: 'INSTRUCTION', message: `Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.` }
+    { name: 'INVITE_EXPLAINATION', message: `By checking this box, I acknowledge that I have permission to contact them about Ablii` }
   ],
 
   properties: [
-    {
-      class: 'Boolean',
-      name: 'isEdit',
-      documentation: `
-        The user is editing an existing contact, not creating a new one.
-      `,
-      factory: function() {
-        return ! ! this.wizard.data.id;
-      }
-    },
     {
       class: 'String',
       name: 'title',
@@ -75,24 +68,6 @@ foam.CLASS({
       expression: function(isEdit) {
         return isEdit ? this.EDIT_TITLE : this.CREATE_TITLE;
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'shouldInvite',
-      documentation: `
-        True if the user wants to invite the contact to join Ablii.
-      `,
-      value: false,
-      view: {
-        class: 'foam.u2.CheckBox',
-        label: 'Send an email invitation to this client'
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'isConnecting',
-      documentation: 'True while waiting for a DAO method call to complete.',
-      value: false
     }
   ],
 
@@ -103,7 +78,7 @@ foam.CLASS({
           .addClass('popUpTitle')
           .add(this.title$)
         .end()
-        .start().addClass(this.myClass('instruction'))
+        .start().addClass('instruction')
           .add(this.INSTRUCTION)
         .end()
         .startContext({ data: this.wizard.data })
@@ -116,7 +91,6 @@ foam.CLASS({
             onKey: true
           })
           .start()
-            // .addClass('field-margin')
             .addClass('side-by-side')
             .start()
               .start('p')
@@ -150,9 +124,14 @@ foam.CLASS({
             })
           .end()
         .endContext()
-        .start().addClass(this.myClass('invite'))
-          .addClass('check-box-container')
-          .add(this.SHOULD_INVITE)
+        .startContext({ data: this.wizard })
+          .start().addClass(this.myClass('invite'))
+            .addClass('check-box-container')
+            .add(this.wizard.SHOULD_INVITE)
+          .end()
+        .endContext()
+        .start().addClass(this.myClass('invite-explaination'))
+          .add(this.INVITE_EXPLAINATION)
         .end()
         .tag({
           class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
@@ -181,11 +160,8 @@ foam.CLASS({
     },
     {
       name: 'next',
-      label: 'Continue',
-      isEnabled: function(isConnecting) {
-        return ! isConnecting;
-      },
-      code: async function(X) {
+      label: 'Next',
+      code: function(X) {
         // Validate the contact fields.
         if ( this.wizard.data.errors_ ) {
           this.notify(this.wizard.data.errors_[0][1], 'error');
