@@ -25,25 +25,25 @@ foam.CLASS({
     css: `
       ^ {
         background: white;
-        border-radius: 3px;
-        padding: 0 24px;
-        box-shadow: 0 1px 1px 0 #dae1e9;
-        border: solid 1px #e2e2e3;
         background-color: #ffffff;
-        margin-bottom: 8px;
-        height: 64px;
+        border: solid 1px #e2e2e3;
+        border-radius: 3px;
+        box-shadow: 0 1px 1px 0 #dae1e9;
         box-sizing: border-box;
+        height: 64px;
+        margin-bottom: 8px;
+        padding: 0 24px;
       }
       ^:hover {
         cursor: pointer;
       }
-      ^row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+      ^:hover ^select-icon {
+        background: url(images/ablii/selectcompanyarrow-active.svg);
       }
-      ^:hover ^oval {
-        background-color: #604aff;
+      ^row {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
       }
       ^business-name {
         font-size: 16px;
@@ -59,14 +59,10 @@ foam.CLASS({
         line-height: 1.5;
         color: #8e9090
       }
-      ^oval {
-        width: 32px;
+      ^select-icon {
+        background: url(images/ablii/selectcompanyarrow-resting.svg);
         height: 32px;
-        background-color: #e2e2e3;
-        color: #ffffff;
-        border-radius: 20px;
-        text-align: center;
-        font-size: 25px;
+        width: 32px;
       }
       ^status {
         color: #f91c1c;
@@ -141,8 +137,7 @@ foam.CLASS({
           .start()
             .addClass(this.myClass('row'))
             .start()
-              .addClass(this.myClass('oval'))
-              .add('➔')
+              .addClass(this.myClass('select-icon'))
             .end()
           .end()
         .end();
