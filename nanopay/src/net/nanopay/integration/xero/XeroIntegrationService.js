@@ -16,9 +16,11 @@ foam.CLASS({
     'com.xero.api.XeroClient',
     'com.xero.model.*',
     'foam.blob.BlobService',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
     'static foam.mlang.MLang.*',
+    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'foam.nanos.auth.User',
@@ -31,6 +33,7 @@ foam.CLASS({
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
     'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact',
@@ -61,18 +64,8 @@ foam.CLASS({
       ],
       javaCode: `
 
-      DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
       if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) || SafetyUtil.isEmpty(xeroContact.getFirstName()) 
       || SafetyUtil.isEmpty(xeroContact.getLastName()) || SafetyUtil.isEmpty(xeroContact.getName()) ) {
-        Notification notify = new Notification();
-        notify.setUserId(user.getId());
-        notify.setBody(
-          "Xero Contact: " + xeroContact.getName() +
-            " cannot sync due to the following required fields being empty:" +
-            (SafetyUtil.isEmpty(xeroContact.getEmailAddress()) ? "[Email Address]" : "") +
-            (SafetyUtil.isEmpty(xeroContact.getFirstName()) ? "[First Name]" : "") +
-            (SafetyUtil.isEmpty(xeroContact.getLastName()) ? "[LastName]" : "") + ".");
-        notification.put(notify);
         return false;
       }
       return true;
@@ -175,8 +168,8 @@ AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
-DAO              notification = ((DAO) x.get("notificationDAO")).inX(x);
 Logger           logger       = (Logger) x.get("logger");
+DAO              agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
 DAO              userDAO      = ((DAO) x.get("localUserUserDAO")).inX(x);
 DAO              businessDAO  = ((DAO) x.get("localBusinessDAO")).inX(x);
 
@@ -190,7 +183,7 @@ client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   List <com.xero.model.Contact> updatedContact = new ArrayList<>();
   DAO                           contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
-  XeroContact                   xContact;
+  XeroContact                   newContact;
 
   // Go through each xero Contact and assess what should be done with it
   for ( com.xero.model.Contact xeroContact : client_.getContacts() ) {
@@ -198,47 +191,52 @@ try {
       continue;
     }
 
-    //1: if xero-contact exists, update it
-    xContact = (XeroContact) contactDAO.find(AND(
-        EQ(XeroContact.XERO_ID, xeroContact.getContactID()),
-        EQ(XeroContact.OWNER, user.getId())
-    ));
-
-    if ( xContact == null ) {
-      xContact = new XeroContact();
-    } else {
-      xContact = (XeroContact) xContact.fclone();
-    }
-
-    //2: if user has contact with same email skip
-    Contact contact = (Contact) contactDAO.find(AND(
+    newContact = new XeroContact();
+    
+    Contact existingContact = (Contact) contactDAO.find(AND(
       EQ(Contact.EMAIL, xeroContact.getEmailAddress()),
-      EQ(Contact.OWNER, user.getId()),
-      NOT(INSTANCE_OF(XeroContact.class))
+      EQ(Contact.OWNER, user.getId())
     ));
 
-    if ( contact != null ) {
-      continue;
-    }
-
-    //3: if the contact is already an existing user
     User existingUser = (User) userDAO.find(
       EQ(User.EMAIL, xeroContact.getEmailAddress())
     );
 
-    if ( existingUser != null ) {
-      Business business = (Business) businessDAO.find(
-        EQ(Business.ORGANIZATION, existingUser.getOrganization())
-      );
-      if ( business != null ) {
-      Contact newContact = new Contact();
-        newContact.setOrganization(business.getOrganization());
-        newContact.setBusinessName(business.getBusinessName());
-        newContact.setBusinessId(business.getId());
-        newContact.setEmail(business.getEmail());
+    // check if contact is already exists
+    if ( existingContact != null ) {
+
+      // Do nothing if it is an existing user ( user on our system )
+      if ( existingUser != null ) {
+        continue;
+      }
+      if ( ! ( existingContact instanceof XeroContact ) ) {
+        continue;
+      } else {
+        newContact = (XeroContact) existingContact.fclone();
+      }
+    } else {
+
+      // check if exisiting user
+      if ( existingUser != null ) {
+
+        ArraySink sink = (ArraySink) agentJunctionDAO.where(EQ(
+          UserUserJunction.SOURCE_ID, existingUser.getId()
+        )).select(new ArraySink());
+
+        if ( sink.getArray().size() == 1 ) {
+          UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
+          Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
+          newContact.setOrganization(business.getOrganization());
+          newContact.setBusinessName(business.getBusinessName());
+          newContact.setBusinessId(business.getId());
+          newContact.setEmail(business.getEmail());
+        } else {
+
+        }
         newContact.setType("Contact");
         newContact.setGroup("sme");
-        user.getContacts(x).inX(x).put(newContact);
+        newContact.setOwner(user.getId());
+        contactDAO.put(newContact);
         continue;
       }
     }
@@ -275,7 +273,7 @@ try {
         .setVerified(true)
         .build();
 
-      xContact.setBusinessAddress(nanoAddress);
+      newContact.setBusinessAddress(nanoAddress);
     }
 
     /*
@@ -307,20 +305,20 @@ try {
         .setVerified(!mobileNumber.equals(""))
         .build();
 
-      xContact.setBusinessPhone(nanoPhone);
-      xContact.setMobile(nanoMobilePhone);
-      xContact.setPhoneNumber(phoneNumber);
+      newContact.setBusinessPhone(nanoPhone);
+      newContact.setMobile(nanoMobilePhone);
+      newContact.setPhoneNumber(phoneNumber);
     }
 
-    xContact.setXeroId(xeroContact.getContactID());
-    xContact.setEmail(xeroContact.getEmailAddress());
-    xContact.setOrganization(xeroContact.getName());
-    xContact.setBusinessName(xeroContact.getName());
-    xContact.setFirstName(xeroContact.getFirstName());
-    xContact.setLastName(xeroContact.getLastName());
-    xContact.setOwner(user.getId());
-    xContact.setGroup("sme");
-    contactDAO.put(xContact);
+    newContact.setXeroId(xeroContact.getContactID());
+    newContact.setEmail(xeroContact.getEmailAddress());
+    newContact.setOrganization(xeroContact.getName());
+    newContact.setBusinessName(xeroContact.getName());
+    newContact.setFirstName(xeroContact.getFirstName());
+    newContact.setLastName(xeroContact.getLastName());
+    newContact.setOwner(user.getId());
+    newContact.setGroup("sme");
+    contactDAO.put(newContact);
   }
   return new ResultResponse(true, "All contacts have been synchronized");
 } catch ( Throwable e ) {
@@ -342,9 +340,9 @@ XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
 AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
+DAO              notification = ((DAO) x.get("notificationDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
-DAO              notification = ((DAO) x.get("notificationDAO")).inX(x);
 Logger           logger       = (Logger) x.get("logger");
 DAO              currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 
@@ -400,25 +398,23 @@ try {
         continue;
       }
 
-      if ( xeroInvoice.getStatus() == InvoiceStatus.VOIDED) {
-        xInvoice.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
-        invoiceDAO.put(xInvoice);
-        continue;
-      }
-
       // Only update invoices that are unpaid or drafts.
-      if (
-        net.nanopay.invoice.model.InvoiceStatus.UNPAID != xInvoice.getStatus() &&
-        net.nanopay.invoice.model.InvoiceStatus.DRAFT != xInvoice.getStatus()
-      ) {
+      if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != xInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.DRAFT != xInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.OVERDUE != xInvoice.getStatus()) {
         // Skip processing this invoice.
         continue;
       }
 
+      // Invoice paid or voided on xero, remove it from our system
+      if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.PAID || xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.VOIDED) {
+        xInvoice.setDraft(true);
+        invoiceDAO.put(xInvoice);
+        invoiceDAO.remove(xInvoice);
+        continue;
+      }
     } else {
 
       // Checks if the invoice was paid
-      if ( InvoiceStatus.PAID == xeroInvoice.getStatus() || InvoiceStatus.VOIDED == xeroInvoice.getStatus() ) {
+      if ( com.xero.model.InvoiceStatus.PAID == xeroInvoice.getStatus() || com.xero.model.InvoiceStatus.VOIDED == xeroInvoice.getStatus() ) {
         continue;
       }
 
@@ -438,29 +434,13 @@ try {
     }
 
     // Searches for a previous existing Contact
-    XeroContact contact = (XeroContact) contactDAO.find(
-      AND(
-        EQ(
-          XeroContact.XERO_ID,
-          xeroInvoice.getContact().getContactID()
-        ),
-        EQ(
-          XeroContact.OWNER,
-          user.getId()
-        )
-      )
-    );
+    Contact contact = (Contact) contactDAO.find( AND(
+        EQ( XeroContact.EMAIL, client_.getContact(xeroInvoice.getContact().getContactID()).getEmailAddress() ),
+        EQ( XeroContact.OWNER, user.getId() )
+    ));
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     if ( contact == null ) {
-      Notification notify = new Notification();
-      notify.setUserId(user.getId());
-      notify.setBody(
-        "Xero Invoice # " +
-        xeroInvoice.getInvoiceNumber() +
-        " cannot sync due to an Invalid Contact: " +
-        xeroInvoice.getContact().getName());
-      notification.put(notify);
       continue;
     }
 
@@ -473,13 +453,16 @@ try {
     if ( xeroInvoice.getType() == InvoiceType.ACCREC ) {
       xInvoice.setContactId(contact.getId());
       xInvoice.setPayeeId(user.getId());
+      xInvoice.setPayerId(contact.getId());      
       xInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
       xInvoice.setDraft(true);
       xInvoice.setInvoiceNumber(xeroInvoice.getInvoiceNumber());
     } else {
       xInvoice.setPayerId(user.getId());
+      xInvoice.setPayeeId(contact.getId());
       xInvoice.setContactId(contact.getId());
       xInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
+      xInvoice.setInvoiceNumber(xeroInvoice.getInvoiceNumber());
     }
     xInvoice.setXeroId(xeroInvoice.getInvoiceID());
     xInvoice.setIssueDate(xeroInvoice.getDate().getTime());
@@ -593,8 +576,8 @@ try {
   }
   com.xero.model.Account           xeroAccount = client_.getAccount(account.getIntegrationId());
   List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
-  if ( ! (InvoiceStatus.AUTHORISED == xero.getStatus()) ) {
-    xero.setStatus(InvoiceStatus.AUTHORISED);
+  if ( ! (com.xero.model.InvoiceStatus.AUTHORISED == xero.getStatus()) ) {
+    xero.setStatus(com.xero.model.InvoiceStatus.AUTHORISED);
     xeroInvoiceList.add(xero);
     client_.updateInvoice(xeroInvoiceList);
   }
