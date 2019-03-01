@@ -23,7 +23,6 @@ foam.CLASS({
     'isConnecting',
     'isEdit',
     'sendInvite',
-    'shouldInvite',
     'caAccount',
     'usAccount',
     'isCABank'
@@ -156,13 +155,10 @@ foam.CLASS({
       if ( this.data.id ) {
         if ( this.data.bankAccount ) {
           this.viewData.isBankingProvided = true;
-          this.startAt = 'information';
-        } else {
-          this.startAt = 'editContact';
         }
+        this.startAt = 'AddContactStepOne';
       }
       this.views = {
-        'editContact': { view: { class: 'net.nanopay.contacts.ui.modal.EditContactView' } },
         'selectBusiness': {
           view: {
             class: 'net.nanopay.contacts.ui.modal.SearchBusinessView',
@@ -187,7 +183,7 @@ foam.CLASS({
 
       try {
         this.data = await this.user.contacts.put(this.data);
-        if ( this.isEditing ) {
+        if ( this.isEdit ) {
           this.ctrl.notify(this.CONTACT_UPDATED);
         } else {
           this.ctrl.notify(this.CONTACT_ADDED);

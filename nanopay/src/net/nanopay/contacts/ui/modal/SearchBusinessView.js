@@ -156,9 +156,8 @@ foam.CLASS({
             .where(
               this.AND(
                 this.NEQ(this.Business.ID, this.user.id),
-                this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED),
+                this.EQ(this.Business.STATUS, this.AccountStatus.ACTIVE),
                 this.EQ(this.Business.COMPLIANCE, this.ComplianceStatus.PASSED),
-                // this.EQ(this.Business.ONBOARDED, true),
                 this.CONTAINS_IC(this.Business.ORGANIZATION, filter)
               )
             );

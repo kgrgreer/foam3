@@ -8,6 +8,10 @@ foam.CLASS({
     business name and emails for inviting a contact.
   `,
 
+  requires: [
+    'net.nanopay.contacts.ContactStatus'
+  ],
+
   imports: [
     'ctrl',
     'closeDialog',
@@ -127,16 +131,18 @@ foam.CLASS({
           .end()
         .endContext()
         .startContext({ data: this.wizard })
-          .start()
+          .start().hide(this.slot(function(isEdit, wizard$data$signUpStatus) {
+            return isEdit && wizard$data$signUpStatus === ContactStatus.INVITED;
+          }))
             .addClass(this.myClass('invite'))
             .addClass('check-box-container')
             .add(this.wizard.SHOULD_INVITE)
           .end()
+          .start()
+            .addClass(this.myClass('invite-explaination'))
+            .add(this.INVITE_EXPLAINATION)
+          .end()
         .endContext()
-        .start()
-          .addClass(this.myClass('invite-explaination'))
-          .add(this.INVITE_EXPLAINATION)
-        .end()
         .tag({
           class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
           back: this.BACK,
@@ -149,6 +155,9 @@ foam.CLASS({
     {
       name: 'back',
       label: 'Go back',
+      isAvailable: function(isEdit) {
+        return ! isEdit;
+      },
       code: function(X) {
         if ( X.subStack.depth > 1 ) {
           // Clean up the form if user goes back to the SearchBusinessView

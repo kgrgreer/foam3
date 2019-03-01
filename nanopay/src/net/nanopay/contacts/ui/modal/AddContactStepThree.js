@@ -110,7 +110,7 @@ foam.CLASS({
 
       try {
         var result = await this.bankAccountDAO.put(bankAccount);
-        await this.updateContactBankInfo(contact.id, result.id);
+        await this.updateContactBankInfo(contact, result.id);
       } catch (err) {
         var msg = err != null && err.message
           ? err.message
@@ -124,9 +124,8 @@ foam.CLASS({
     },
 
     /** Sets the reference from the Contact to the Bank Account.  */
-    async function updateContactBankInfo(contactId, bankAccountId) {
+    async function updateContactBankInfo(contact, bankAccountId) {
       try {
-        var contact = this.wizard.data;
         contact.bankAccount = bankAccountId;
         await this.user.contacts.put(contact);
       } catch (err) {
