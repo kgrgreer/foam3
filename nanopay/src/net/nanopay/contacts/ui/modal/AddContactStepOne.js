@@ -96,6 +96,16 @@ foam.CLASS({
             placeholder: this.COMPANY_PLACEHOLDER,
             onKey: true
           })
+          .start('p')
+            .addClass('field-label')
+            .add(this.wizard.data.EMAIL.label)
+          .end()
+          .start()
+            .tag(this.wizard.data.EMAIL, {
+              placeholder: this.EMAIL_PLACEHOLDER,
+              onKey: true
+            })
+          .end()
           .start()
             .addClass('side-by-side')
             .start()
@@ -118,16 +128,6 @@ foam.CLASS({
                 onKey: true
               })
             .end()
-          .end()
-          .start('p')
-            .addClass('field-label')
-            .add(this.wizard.data.EMAIL.label)
-          .end()
-          .start()
-            .tag(this.wizard.data.EMAIL, {
-              placeholder: this.EMAIL_PLACEHOLDER,
-              onKey: true
-            })
           .end()
         .endContext()
         .startContext({ data: this.wizard })
