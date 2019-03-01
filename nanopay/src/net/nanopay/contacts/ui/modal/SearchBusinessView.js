@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
-  name: 'SearchEmailView',
+  name: 'SearchBusinessView',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
@@ -79,7 +79,7 @@ foam.CLASS({
       margin-top: 8px;
       margin-bottom: 16px;
     }
-    ^ .net-nanopay-contacts-ui-modal-SearchEmailView-search-result span {
+    ^ .net-nanopay-contacts-ui-modal-SearchBusinessView-search-result span {
       width: 462px;
       overflow-wrap: break-word;
     }

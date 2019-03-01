@@ -163,9 +163,9 @@ foam.CLASS({
       }
       this.views = {
         'editContact': { view: { class: 'net.nanopay.contacts.ui.modal.EditContactView' } },
-        'emailOption': {
+        'selectBusiness': {
           view: {
-            class: 'net.nanopay.contacts.ui.modal.SearchEmailView',
+            class: 'net.nanopay.contacts.ui.modal.SearchBusinessView',
             email$: this.data.email$
           },
           startPoint: true
