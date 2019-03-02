@@ -4,11 +4,11 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'bankImgs',
     'form',
     'isConnecting',
-    'viewData',
-    'loadingSpinner'
+    'loadingSpinner',
+    'rollBackView',
+    'viewData'
   ],
 
   requires: [
@@ -43,7 +43,7 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;    
+      color: #093649;
     }
     ^ .image {
       float: left;
@@ -101,7 +101,7 @@ foam.CLASS({
       min-width: 136px;
       height: 40px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       font-size: 12px;
       font-weight: lighter;
@@ -127,21 +127,24 @@ foam.CLASS({
     {
       Class: 'Int',
       name: 'tick',
-      value: -10000000
+      value: - 10000000
     }
   ],
 
   messages: [
     { name: 'Step', message: 'Step3: Please response below security challenges' },
-    { name: 'header1', message: 'Please select below images: '}
+    { name: 'header1', message: 'Please select below images: ' }
   ],
 
   methods: [
     function init() {
       this.SUPER();
       this.viewData.questions = new Array(1);
-      this.viewData.questions[0] = this.viewData.SecurityChallenges[0].Prompt;
-      this.imageSelection = new Array(this.viewData.SecurityChallenges[0].Iterables.length).fill(false);
+      this.viewData.questions[0] =
+        this.viewData.SecurityChallenges[0].Prompt;
+      this.imageSelection =
+        new Array(this.viewData.SecurityChallenges[0].Iterables.length)
+          .fill(false);
     },
 
     function initE() {
@@ -154,24 +157,28 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
-          .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
+          .tag({
+            class: 'net.nanopay.flinks.view.form.FlinksSubHeader',
+            secondImg: this.viewData.selectedInstitution.image
+          })
+          .start('p').add(this.header1).addClass('header1').style({ 'margin-left': '20px' }).end()
           .start('div').addClass('qa-block')
-            .forEach(this.viewData.SecurityChallenges[0].Iterables, function(item, index){
-              var image = self.Image.create({data: item});
-              this.start(image).addClass('image').addClass(self.tick$.map(function(){
-                if ( self.imageSelection[index] ) {
-                  return 'image-select';
-                } else {
-                  return 'image-unselect';
-                }
-              }))
-              .on('click', function() {
-                self.imageSelection[index] = ! self.imageSelection[index];
-                self.tick++;
-              }).end()
+            .forEach(this.viewData.SecurityChallenges[0].Iterables,
+              function(item, index) {
+                var image = self.Image.create({ data: item });
+                this.start(image).addClass('image').addClass(self.tick$.map(function() {
+                  if ( self.imageSelection[index] ) {
+                    return 'image-select';
+                  } else {
+                    return 'image-unselect';
+                  }
+                }))
+                .on('click', function() {
+                  self.imageSelection[index] = ! self.imageSelection[index];
+                  self.tick ++;
+                }).end();
             })
-            .start('div').style({'clear' : 'both'}).end()
+            .start('div').style({ 'clear': 'both' }).end()
           .end()
           .start()
             .start(this.loadingSpinner).addClass('loadingSpinner')
@@ -179,11 +186,11 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+        .start('div').style({ 'margin-top': '15px', 'height': '40px' })
           .tag(this.NEXT_BUTTON)
           .tag(this.CLOSE_BUTTON)
         .end()
-        .start('div').style({'clear' : 'both'}).end()
+        .start('div').style({ 'clear': 'both' }).end();
     }
   ],
   actions: [
@@ -191,29 +198,27 @@ foam.CLASS({
       name: 'nextButton',
       label: 'Continue',
       isEnabled: function(isConnecting) {
-        if ( isConnecting === true ) return false;
-        return true;
+        return ! isConnecting;
       },
       code: function(X) {
         this.viewData.answers = new Array(1);
         this.viewData.answers[0] = [];
-        for ( var i = 0 ; i < this.imageSelection.length ; i++ ) {
+        for ( var i = 0; i < this.imageSelection.length; i ++ ) {
           if ( this.imageSelection[i] === true ) {
-            this.viewData.answers[0].push(this.viewData.SecurityChallenges[0].Iterables[i]);
+            this.viewData.answers[0]
+              .push(this.viewData.SecurityChallenges[0].Iterables[i]);
           }
         }
-        console.log(this.viewData.answers);
-        console.log(this.viewData.questions);
         this.isConnecting = true;
-        X.form.goNext();
+        this.viewData.submitChallenge();
       }
     },
     {
       name: 'closeButton',
       label: 'Cancel',
       code: function(X) {
-        X.form.goBack();
+        this.rollBackView();
       }
     }
   ]
-})
+});

@@ -11,7 +11,9 @@ public class ServiceURLs {
     case Localhost = "http://localhost:8080/service/"
     case Staging = "http://portal.staging.nanopay.net/service/"
     case Production = "https://portal.nanopay.net/service/"
-    
+
+    case Integration = "https://integration.nanopay.net/service/"
+
     case CCDemo = "https://foam.demo.nanopay.net/service/"
     case CCStaging = "http://cc.staging.nanopay.net/service/"
     case CCProduction = "https://cc.nanopay.net/service/"
@@ -36,3 +38,5 @@ public class ServiceURLs {
     return hostRoute
   }
 }
+
+extension String: Error {}

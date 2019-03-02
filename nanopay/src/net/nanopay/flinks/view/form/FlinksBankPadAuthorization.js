@@ -3,9 +3,31 @@ foam.CLASS({
   name: 'FlinksBankPadAuthorization',
   extends: 'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
 
+  imports: [
+    'accountDAO as bankAccountDAO',
+    'fail',
+    'form',
+    'isConnecting',
+    'notify',
+    'padCaptureDAO',
+    'pushViews',
+    'validateAddress',
+    'validateCity',
+    'validatePostalCode',
+    'validateStreetNumber'
+  ],
+
+  requires: [
+    'net.nanopay.model.PadCapture'
+  ],
+
+  axioms: [
+    { class: 'net.nanopay.cico.ui.bankAccount.form.BankPADAuthorizationCSSAxiom' },
+  ],
+
   css: `
     ^ .net-nanopay-ui-ActionView-nextButton {
-      margin-left: 264px;
+      float: right;
       box-sizing: border-box;
       background-color: #59a5d5;
       outline: none;
@@ -30,25 +52,89 @@ foam.CLASS({
       min-width: 136px;
       height: 40px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       font-size: 12px;
       font-weight: lighter;
       letter-spacing: 0.2px;
       margin-left: 1px;
     }
+
+    ^ .actionContainer {
+      margin-top: 15px;
+      height: 40px;
+      width: 536px;
+    }
   `,
 
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
       this.
       addClass(this.myClass())
-      .start('div').style({'margin-top' : '15px', 'height' : '40px'})
-        .tag(this.CLOSE_BUTTON)
+      .start('div').addClass('actionContainer')
         .tag(this.NEXT_BUTTON)
-      .end()
+        .tag(this.CLOSE_BUTTON)
+      .end();
+    },
+    function validateInputs() {
+      var user = this.viewData.user;
+
+      if ( user.firstName.length > 70 ) {
+        this.notify('First name cannot exceed 70 characters.', 'error');
+        return false;
+      }
+      if ( user.lastName.length > 70 ) {
+        this.notify('Last name cannot exceed 70 characters.', 'error');
+        return false;
+      }
+      if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateAddress(user.address.streetName) ) {
+        this.notify('Invalid street number.', 'error');
+        return false;
+      }
+      if ( ! this.validateCity(user.address.city) ) {
+        this.notify('Invalid city name.', 'error');
+        return false;
+      }
+      if ( ! this.validatePostalCode(user.address.postalCode, user.address.countryId) ) {
+        this.notify('Invalid postal code.', 'error');
+        return false;
+      }
+      return true;
+    },
+    async function capturePADAndPutBankAccounts() {
+      var user = this.viewData.user;
+      this.isConnecting = true;
+
+      for ( var account of this.viewData.bankAccounts ) {
+        try {
+          await this.padCaptureDAO.put(this.PadCapture.create({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            userId: user.id,
+            address: user.address,
+            agree1: this.viewData.agree1,
+            agree2: this.viewData.agree2,
+            agree3: this.viewData.agree3,
+            institutionNumber: account.institutionNumber,
+            branchId: account.branchId, // branchId = transit number
+            accountNumber: account.accountNumber
+          }));
+          account.address = user.address;
+          account.bankAddress = this.bankAddress;
+          await this.bankAccountDAO.put(account);
+        } catch (error) {
+          this.notify(error.message, 'error');
+          return;
+        } finally {
+          this.isConnecting = false;
+        }
+        this.pushViews('Complete');
+      }
     }
   ],
 
@@ -56,16 +142,20 @@ foam.CLASS({
     {
       name: 'nextButton',
       label: 'I Agree',
+      isEnabled: function(isConnecting) {
+        return ! isConnecting;
+      },
       code: function(X) {
-        X.form.goNext();
+        if ( this.validateInputs() ) {
+          this.capturePADAndPutBankAccounts();
+        }
       }
     },
     {
       name: 'closeButton',
-      label: 'Back',
+      label: 'Cancel',
       code: function(X) {
-        //console.log('close the form');
-        X.form.goBack();
+        X.form.stack.back();
       }
     }
   ]

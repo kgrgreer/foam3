@@ -2,7 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'ExpandContainer',
   extends: 'foam.u2.Element',
-  documentation: 'Provide an expandable div which take content to display inside.',
+  documentation: 'Provide an expandable div' +
+      ' which take content to display inside.',
 
   imports: [
     'stack'
@@ -10,7 +11,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: "expandBox",
+      name: 'expandBox',
       value: false
     },
     'title',
@@ -18,7 +19,7 @@ foam.CLASS({
     'linkView'
   ],
 
-  css:`
+  css: `
     ^ {
       width: 962px;
       min-height: 80px;
@@ -63,7 +64,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       font-family: 2px;
       font-size: 14px;
@@ -79,13 +80,16 @@ foam.CLASS({
       width: 952px;
       height: auto;
       overflow: hidden;
-      transition: max-height 1.2s ease;
+      transition: max-height 1.6s ease-out;
       max-height: 1725px;
       margin: 0 auto;
       margin-right: 0;
+      -webkit-transition: -webkit-transform 1.6s ease-out;
+      -moz-transition: -moz-transform 1.6s ease-out;
+      -ms-transition: -ms-transform 1.6s ease-out;
     }
     ^ .expandTrue{
-      max-height: 0;
+      max-height: 0px;
     }
     ^ .link-tag{
       display: inline-block;
@@ -99,7 +103,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function init(){
+    function init() {
       var self = this;
       this
       .addClass(this.myClass())
@@ -107,26 +111,30 @@ foam.CLASS({
         .start().addClass('boxTitle')
           .add(this.title)
         .end()
-        .callIf(this.link, function(){
+        .callIf(this.link, function() {
           this.start().addClass('link-tag')
-            .add(self.link).on('click', function(){
-              self.stack.push({ class: self.linkView});
+            .add(self.link).on('click', function() {
+              self.stack.push({ class: self.linkView });
             })
-          .end()
+          .end();
         })
         .start()
-          .addClass('expand-BTN').enableClass('close-BTN', this.expandBox$, true)
-          .add(this.expandBox$.map(function(e) { 
-            return e ? "Expand" : "Close"; 
+          .addClass('expand-BTN')
+          .enableClass('close-BTN', this.expandBox$, true)
+          .add(this.expandBox$.map(function(e) {
+            return e ? 'Expand' : 'Close';
           }))
           .enableClass('', self.expandBox = (self.expandBox ? false : true))
-          .on('click', function(){ self.expandBox = ( self.expandBox ? false : true ) })
+          .on('click', function() {
+            self.expandBox = ( self.expandBox ? false : true );
+          })
         .end()
-       .start().addClass('expand-Container').enableClass("expandTrue", self.expandBox$)
+        .start()
+          .addClass('expand-Container')
+          .enableClass('expandTrue', self.expandBox$)
           .start('div', null, this.content$).end()
-       .end()
+        .end()
       .end();
-
     }
   ]
 });

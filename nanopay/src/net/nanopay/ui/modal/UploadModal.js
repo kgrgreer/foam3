@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.fs.File',
     'foam.u2.dialog.NotificationMessage'
   ],
+
   imports: [
     'user',
     'blobService'
@@ -21,11 +22,12 @@ foam.CLASS({
     'as data',
     'onInvoiceFileRemoved'
   ],
+
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
- 
-  css:`
+
+  css: `
     ^ .container{
       height: 600px;
       background-color: #093649;
@@ -91,7 +93,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-modal-ModalHeader {
       width: 100%;
-    } 
+    }
     ^ .net-nanopay-ui-ActionView-submitButton {
       font-family: Roboto;
       width: 136px;
@@ -139,24 +141,24 @@ foam.CLASS({
     },
     {
       class: 'foam.nanos.fs.FileArray',
-      name: 'data',
-      value: this.exportData
+      name: 'data'
     },
     'exportData'
   ],
 
-  messages:[
+  messages: [
     { name: 'BoxText', message: 'Choose files to upload or Drag and Drop them here' },
     { name: 'FileRestrictText', message: '*jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx only, 10MB maximum' },
     { name: 'FileTypeError', message: 'Wrong file format' },
-    { name: 'FileSizeError', message: 'File size exceeds 10MB' },
-    { name: 'NoUploadFile', message: 'Upload a file before submitting' }
+    { name: 'FileSizeError', message: 'File size exceeds 10MB' }
   ],
+
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
       var self = this;
-      this.data = this.exportData
+      this.data = this.exportData;
+
       this
       .on('dragover', this.onDragOver)
       .on('drop', this.onDropOut)
@@ -166,9 +168,9 @@ foam.CLASS({
       .addClass(this.myClass())
       .start()
        .start('div').addClass('box-for-drag-drop')
-          .add(this.slot(function (data) {
+          .add(this.slot(function(data) {
             var e = this.E();
-            for ( var i = 0 ; i < data.length ; i++ ) {
+            for ( var i = 0; i < data.length; i++ ) {
               e.tag({
                 class: 'net.nanopay.invoice.ui.InvoiceFileView',
                 data: data[i],
@@ -177,7 +179,7 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start('div').addClass('dragText').show(this.data$.map(function (data) {
+          .start('div').addClass('dragText').show(this.data$.map(function(data) {
             return data.length === 0;
           }))
             .start({ class: 'foam.u2.tag.Image', data: 'images/ic-created.svg' }).addClass('inputImage').end()
@@ -199,16 +201,18 @@ foam.CLASS({
           .add(this.CANCEL_BUTTON)
           .add(this.SUBMIT_BUTTON)
         .end()
-      .end()
-      
-    } ,
-    function onInvoiceFileRemoved (fileNumber) {
+      .end();
+    },
+
+    function onInvoiceFileRemoved(fileNumber) {
+      var data = Array.from(this.data);
+      data.splice(fileNumber - 1, 1);
+      this.data = data;
       this.document.querySelector('.document-input').value = null;
-      this.data.splice(fileNumber - 1, 1);
-      this.data = Array.from(this.data);
     }
   ],
-  actions:[
+
+  actions: [
     {
       name: 'cancelButton',
       label: 'Cancel',
@@ -219,16 +223,13 @@ foam.CLASS({
     {
       name: 'submitButton',
       label: 'Submit',
-      code: function(X) {
-        if (this.data == "") {
-          this.add(this.NotificationMessage.create({ message: this.NoUploadFile, type: 'error' }));
-        } else {
-          X.closeDialog();
-          this.exportData = this.data;
-        }
+      code: function (X) {
+        this.exportData = this.data;
+        X.closeDialog();
       }
     },
   ],
+
   listeners: [
     function onAddAttachmentClicked(e) {
       if ( typeof e.target != 'undefined' ) {
@@ -243,76 +244,78 @@ foam.CLASS({
       }
     },
     function onDragOver(e) {
-      e.preventDefault();    
+      e.preventDefault();
     },
     function onDropOut(e) {
-      e.preventDefault();  
+      e.preventDefault();
     },
     function onDrop(e) {
-      e.preventDefault();  
-      var files = []; 
+      e.preventDefault();
+      var files = [];
       var inputFile;
       if ( e.dataTransfer.items ) {
-        inputFile = e.dataTransfer.items
+        inputFile = e.dataTransfer.items;
         if ( inputFile ) {
           for ( var i = 0; i < inputFile.length; i++ ) {
             // If dropped items aren't files, reject them
             if ( inputFile[i].kind === 'file' ) {
               var file = inputFile[i].getAsFile();
-              if( this.isImageType(file) ) files.push(file);           
-              else
+              if ( this.isImageType(file) ) {
+                files.push(file);
+              } else {
                 this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+              }
             }
           }
         }
-      } else if( e.dataTransfer.files ) {
-        inputFile = e.dataTransfer.files
-        for (var i = 0; i < inputFile.length; i++) {
+      } else if ( e.dataTransfer.files ) {
+        inputFile = e.dataTransfer.files;
+        for ( var i = 0; i < inputFile.length; i++ ) {
           var file = inputFile[i];
-          if( this.isImageType(file) ) files.push(file);            
-          else{
+          if ( this.isImageType(file) ) files.push(file);
+          else {
             this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
-          }  
+          }
         }
       }
-      this.addFiles(files) 
+      this.addFiles(files);
     },
     function isImageType(file) {
-      if( file.type === "image/jpg" || 
-          file.type === "image/jpeg" || 
-          file.type === "image/png" || 
-          file.type === "application/msword" || 
-          file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || 
-          file.type === "application/vnd.ms-powerpoint" || 
-          file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation" || 
-          file.type === "application/vnd.openxmlformats-officedocument.presentationml.slideshow" || 
-          file.type === "application/vnd.oasis.opendocument.text" || 
-          file.type === "application/vnd.ms-excel" || 
-          file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || 
-          file.type === "application/pdf") return true; 
+      if ( file.type === "image/jpg" ||
+          file.type === "image/jpeg" ||
+          file.type === "image/png" ||
+          file.type === "application/msword" ||
+          file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+          file.type === "application/vnd.ms-powerpoint" ||
+          file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+          file.type === "application/vnd.openxmlformats-officedocument.presentationml.slideshow" ||
+          file.type === "application/vnd.oasis.opendocument.text" ||
+          file.type === "application/vnd.ms-excel" ||
+          file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+          file.type === "application/pdf" ) return true;
       return false;
     },
-    function onChange (e) {   
+    function onChange(e) {
       var files = e.target.files;
-      this.addFiles(files)
+      this.addFiles(files);
     },
-    function addFiles(files){
+    function addFiles(files) {
       var errors = false;
-      for ( var i = 0 ; i < files.length ; i++ ) {
+      for ( var i = 0; i < files.length; i++ ) {
         // skip files that exceed limit
         if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
           this.add(this.NotificationMessage.create({ message: this.FileSizeError, type: 'error' }));
           continue;
         }
-        var isIncluded = false
-        for ( var j = 0 ; j < this.data.length ; j++ ) {
-          if( this.data[j].filename.localeCompare(files[i].name) === 0 ) { 
-            isIncluded = true; 
-            break
+        var isIncluded = false;
+        for ( var j = 0; j < this.data.length; j++ ) {
+          if ( this.data[j].filename.localeCompare(files[i].name) === 0 ) {
+            isIncluded = true;
+            break;
           }
         }
-        if ( isIncluded ) continue ;
+        if ( isIncluded ) continue;
         this.data.push(this.File.create({
           owner: this.user.id,
           filename: files[i].name,
@@ -321,7 +324,7 @@ foam.CLASS({
           data: this.BlobBlob.create({
             blob: files[i]
           })
-        }))
+        }));
       }
       this.data = Array.from(this.data);
     }

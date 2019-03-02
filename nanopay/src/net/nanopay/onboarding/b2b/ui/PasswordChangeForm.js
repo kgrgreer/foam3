@@ -89,20 +89,17 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'noNumbers', message: 'Password must have one numeric character' },
-    { name: 'noSpecial', message: 'Password must not contain: !@#$%^&*()_+' },
-    { name: 'emptyOriginal', message: 'Please enter your original password'},
+    { name: 'emptyOriginal', message: 'Please enter your original password' },
     { name: 'emptyPassword', message: 'Please enter your new password' },
     { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
-    { name: 'invalidLength', message: 'Password must be 7-32 characters long' },
-    { name: 'invalidPassword', message: 'Password requires at least 7 characters up to 32 characters, one uppercase & one numeric value.'},
+    { name: 'invalidPassword', message: 'Password must be at least 6 characters long.' },
     { name: 'passwordMismatch', message: 'Passwords do not match' },
     { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'passwordDescription', message: 'Please change you password before you start using the nanopay platform.'}
   ],
 
   methods: [
-    function initE(){
+    function initE() {
       this
         .addClass(this.myClass())
         .start().addClass('status')
@@ -112,16 +109,16 @@ foam.CLASS({
         .start().addClass('line').end()
         .start().addClass('Container')
           .start('div').addClass('container-1')
-            .start('p').add("Next Step - Change Your Password").end()
+            .start('p').add('Next Step - Change Your Password').end()
             .start('p').add(this.passwordDescription).addClass('description').end()
           .end()
           .start('div')
-            .start('h2').add("Original Password").addClass('label').end()
-            .start(this.ORIGINAL_PASSWORD).attrs({ 'type':'password' }).end()
-            .start('h2').add("New Password").addClass('label').end()
-            .start(this.NEW_PASSWORD).attrs({ 'type':'password' }).end()
-            .start('h2').add("Confirm Password").addClass('label').end()
-            .start(this.CONFIRM_PASSWORD).attrs({ 'type':'password' }).end()
+            .start('h2').add('Original Password').addClass('label').end()
+            .start(this.ORIGINAL_PASSWORD).attrs({ 'type': 'password' }).end()
+            .start('h2').add('New Password').addClass('label').end()
+            .start(this.NEW_PASSWORD).attrs({ 'type': 'password' }).end()
+            .start('h2').add('Confirm Password').addClass('label').end()
+            .start(this.CONFIRM_PASSWORD).attrs({ 'type': 'password' }).end()
           .end()
           .start(this.CHANGE_PASSWORD).addClass('update-BTN').end()
         .end()
@@ -131,7 +128,7 @@ foam.CLASS({
   actions: [
     {
       name: 'changePassword',
-      code: function(){
+      code: function() {
         var self = this;
 
         // check if original password entered
@@ -165,16 +162,16 @@ foam.CLASS({
 
         this.user.createdPwd = true;
         this.user.onboarded = true;
-        this.userDAO.put(this.user).then(function (result) {
-          self.auth.updatePassword(null, self.originalPassword, self.newPassword).then(function(a){
+        this.userDAO.put(this.user).then( function(result) {
+          self.auth.updatePassword(null, self.originalPassword, self.newPassword).then(function(a) {
             self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
             this.window.location.hash = '';
             this.window.location.reload();
-          }).catch(function(err){
+          }).catch(function(err) {
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
         })
-        .catch(function (err) {
+        .catch( function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
         });
       }

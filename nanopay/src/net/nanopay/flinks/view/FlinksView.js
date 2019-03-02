@@ -28,7 +28,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('div')
-          .tag(this.AUTH_FORM, { showLabel: true})
+          .tag(this.AUTH_FORM)
           .tag(this.TEST)
           .tag(this.TACKLE)
           .tag(this.SSLOT)

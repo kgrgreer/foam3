@@ -4,9 +4,11 @@ import foam.core.*;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
+import foam.util.SafetyUtil;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -25,6 +27,7 @@ public class ScheduledEmail
     Calendar dueDate    = Calendar.getInstance();
     DAO      invoiceDAO = (DAO) x.get("invoiceDAO");
     DAO      userDAO    = (DAO) x.get("userDAO");
+    DAO      groupDAO   = (DAO) x.get("groupDAO");
 
     // Get todays date and captures the time period of tomorrow.
     today.setTime(new Date());
@@ -42,29 +45,34 @@ public class ScheduledEmail
     );
     List<Invoice>    invoicesList = (List)((ArraySink)invoiceListDAO.select(new ArraySink())).getArray();
     EmailService     email        = (EmailService) x.get("email");
-    AppConfig        config       = (AppConfig) x.get("appConfig");
     NumberFormat     formatter    = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat   = new SimpleDateFormat("dd-MMM-YYYY");
     EmailMessage            message;
     HashMap<String, Object> args;
     User                    user;
     User                    payee;
+    Group                   group;
+    AppConfig               config;
+    String                  accountVar;
 
     // Goes to each invoice and sends the payer an email about the payment coming
     for (Invoice invoice: invoicesList){
+      accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
       args    = new HashMap<>();
       message = new EmailMessage();
       user    = (User) userDAO.find(invoice.getPayerId());
+      group   = (Group) groupDAO.find(user.getGroup());
+      config  = group.getAppConfig(x);
       payee   = (User) userDAO.find(invoice.getPayeeId());
       message.setTo(new String[]{user.getEmail()});
       dueDate.setTime(invoice.getPaymentDate());
-      args.put("account", invoice.getId());
+      args.put("account", accountVar);
       args.put("amount",  formatter.format(invoice.getAmount()/100.00));
       args.put("date",    dateFormat.format(invoice.getPaymentDate()));
       args.put("link",    config.getUrl());
       args.put("name",    user.getFirstName());
       args.put("toEmail", payee.getEmail());
-      email.sendEmailFromTemplate(user, message, "schedule-paid", args);
+      email.sendEmailFromTemplate(x, user, message, "schedule-paid", args);
       invoice = (Invoice) invoice.fclone();
       invoice.setScheduledEmailSent(true);
       invoiceDAO.put(invoice);

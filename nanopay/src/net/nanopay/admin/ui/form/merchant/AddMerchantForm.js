@@ -16,7 +16,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
+    'balanceDAO',
     'email',
     'formatCurrency',
     'validatePhone',
@@ -35,7 +35,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   methods: [
@@ -65,11 +65,11 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validatePassword(merchantInfo.password) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must contain one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.', type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long', type: 'error' }));
         return false;
       }
-      if ( merchantInfo.password != merchantInfo.confirmPassword ){
-        this.add(this.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+      if ( merchantInfo.password != merchantInfo.confirmPassword ) {
+        this.add(this.NotificationMessage.create({ message: 'Confirmation password does not match.', type: 'error' }));
         return false;
       }
 
@@ -110,7 +110,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePostalCode(merchantInfo.postalCode) ) {
+      if ( ! this.validatePostalCode(merchantInfo.postalCode, merchantInfo.country) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }
@@ -183,9 +183,9 @@ foam.CLASS({
 
         if ( this.position == 2 ) {
           // Send Money
-          this.accountDAO.find(this.user.id).then(function(response){
-            var account = response;
-            if ( merchantInfo.amount > account.balance ){
+          this.balanceDAO.find(this.user.id).then(function(response) {
+            var currentBalance = response;
+            if ( merchantInfo.amount > currentBalance.balance ) {
               self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
               return;
             }
@@ -250,13 +250,13 @@ foam.CLASS({
           this.userDAO.put(newMerchant).then(function(response) {
             merchantInfo.merchant = response;
           }).then(function() {
-            if( merchantInfo.amount > 0 ) {
+            if ( merchantInfo.amount > 0 ) {
               var transaction = self.Transaction.create({
                 payeeId: merchantInfo.merchant.id,
                 payerId: self.user.id,
                 amount: merchantInfo.amount
               });
-              return self.transactionDAO.put(transaction).then(function (response) {
+              return self.transactionDAO.put(transaction).then( function(response) {
                 self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added and value transfer sent.' }));
                 self.subStack.push(self.views[self.subStack.pos + 1].view);
                 self.nextLabel = 'Done';
@@ -265,7 +265,7 @@ foam.CLASS({
               self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added.' }));
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.nextLabel = 'Done';
-              return
+              return;
             }
           }).catch(function(error) {
             self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));

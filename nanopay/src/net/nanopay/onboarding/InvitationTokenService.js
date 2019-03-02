@@ -6,7 +6,6 @@ foam.CLASS({
   imports: [
     'email',
     'localUserDAO',
-    'logger',
     'tokenDAO'
   ],
 
@@ -30,7 +29,7 @@ foam.CLASS({
   axioms: [
     {
       name: 'javaExtras',
-      buildJavaClass: function (cls) {
+      buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data:
 `protected static RandomStringGenerator passgen = new RandomStringGenerator.Builder()
@@ -63,7 +62,7 @@ return calendar.getTime();`
 
         // keep generating a new password until a valid one is generated
         String password = passgen.generate(8);
-        while ( ! Password.isValid(password) ) {
+        while ( ! Password.isValid(getX(), password) ) {
           password = passgen.generate(8);
         }
         user = (User) user.fclone();
@@ -89,13 +88,10 @@ return calendar.getTime();`
         args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
         args.put("password", password);
 
-        email.sendEmailFromTemplate(user, message, "welcome-email", args);
+        email.sendEmailFromTemplate(x, user, message, "welcome-email", args);
 
         user = (User) user.fclone();
-        user.setPortalAdminCreated(false);
-        user.setWelcomeEmailSent(true);
         user.setInviteAttempts(user.getInviteAttempts() + 1);
-
         userDAO.put(user);
         
         return true;

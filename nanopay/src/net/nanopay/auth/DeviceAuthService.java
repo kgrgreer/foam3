@@ -1,21 +1,20 @@
 package net.nanopay.auth;
 
 import foam.core.X;
-import foam.dao.DAO;
 import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.mlang.MLang;
 import foam.nanos.NanoService;
 import foam.nanos.auth.AuthService;
+import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.ProxyAuthService;
 import foam.nanos.auth.User;
 import foam.nanos.session.Session;
-import foam.util.Password;
 import foam.util.SafetyUtil;
 import net.nanopay.retail.model.Device;
 import net.nanopay.retail.model.DeviceStatus;
 
-import javax.naming.AuthenticationException;
 import java.util.List;
 
 public class DeviceAuthService
@@ -35,7 +34,7 @@ public class DeviceAuthService
   public void start() {
     userDAO_ = (DAO) getX().get("localUserDAO");
     deviceDAO_ = (DAO) getX().get("deviceDAO");
-    sessionDAO_ = (DAO) getX().get("sessionDAO");
+    sessionDAO_ = (DAO) getX().get("localSessionDAO");
   }
 
   @Override
@@ -61,7 +60,8 @@ public class DeviceAuthService
     }
 
     Device device = (Device) data.get(0);
-    if ( device == null || device.getOwner() == null ) {
+    device = (Device) device.fclone();
+    if ( device == null ) {
       throw new AuthenticationException("Device not found");
     }
 

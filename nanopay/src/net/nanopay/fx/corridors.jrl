@@ -1,0 +1,2 @@
+//p({"class":"net.nanopay.fx.Corridor","id":1,"sourceCountry":"CA","targetCountry":"IN","currencies":["INR"],"payoutOptions":["3"]})
+p({"class":"net.nanopay.fx.Corridor","id":1,"sourceCountry":"CA","targetCountry":"IN","currencies":["INR"]})

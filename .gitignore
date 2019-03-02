@@ -29,6 +29,12 @@ out/
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
+#Eclipse
+.settings/
+.project
+.classpath
+package-lock.json
+
 # JIRA plugin
 atlassian-ide-plugin.xml
 
@@ -47,6 +53,7 @@ build/
 target/
 root/target/
 nanopay-bin.js
+testindex
 
 # Local Tomcat Server XML
 /server.xml
@@ -55,10 +62,16 @@ nanopay-bin.js
 node_modules/
 
 # xsd generated code
+tools/xsd/iso20022/mapping.json
 nanopay/src/net/nanopay/fx/ascendantfx/model/
+nanopay/src/net/nanopay/kotak/model/
 nanopay/src/net/nanopay/iso20022/*
 !nanopay/src/net/nanopay/iso20022/Document.js
 !nanopay/src/net/nanopay/iso20022/refinements.js
+!nanopay/src/net/nanopay/iso20022/ISODateTest.js
+!nanopay/src/net/nanopay/iso20022/ISODateTimeTest.js
+!nanopay/src/net/nanopay/iso20022/ISOTimeTest.js
+!nanopay/src/net/nanopay/iso20022/README.md
 
 # sha256 folder
 sha256/
@@ -67,13 +80,14 @@ sha256/
 /journals
 
 # Logs
-*.lck
 *nano.log*
+
+# Locks
+*.lck
 
 # githooks
 .githooks/pre-commit.local
 
 # yarn
 yarn-error.log
-
-testindex
+tools/js_build/foam-bin.js

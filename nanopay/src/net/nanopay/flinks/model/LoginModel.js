@@ -8,19 +8,23 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'Username'
+      name: 'Username',
+      hidden: true
     },
     {
       class: 'Boolean',
-      name: 'IsScheduledRefresh'
+      name: 'IsScheduledRefresh',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'LastRefresh'
+      name: 'LastRefresh',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'Id'
+      name: 'Id',
+      visibility: 'RO'
     }
   ]
 });

@@ -5,9 +5,11 @@ foam.CLASS({
 
   documentation: 'model for the Flinks account with detail model',
 
+  imports: [ 'accountDAO as bankAccountDAO' ],
+
   properties: [
     {
-      // javaType: 'net.nanopay.flinks.model.HolderModel',
+      // type: 'net.nanopay.flinks.model.HolderModel',
       // javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       // javaJSONParser: 'new foam.lib.json.FObjectParser(net.nanopay.flinks.model.HolderModel.class)',
       class: 'FObjectProperty',

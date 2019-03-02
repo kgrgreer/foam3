@@ -7,23 +7,19 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'user',
-      value: 'eftcadtest2'
+      name: 'user'
     },
     {
       class: 'String',
-      name: 'password',
-      value: '1a2$3d4f'
+      name: 'password'
     },
     {
       class: 'String',
-      name: 'host',
-      value: ''
+      name: 'host'
     },
     {
       class: 'Int',
-      name: 'port',
-      value: 22
+      name: 'port'
     }
   ]
 });

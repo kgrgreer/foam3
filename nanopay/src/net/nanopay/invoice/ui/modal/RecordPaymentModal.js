@@ -7,6 +7,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus'
   ],
 
@@ -15,7 +16,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'invoiceDAO'
+    'invoiceDAO',
+    'notify'
   ],
 
   properties: [
@@ -32,7 +34,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Title', message: 'Record Payment' }
+    { name: 'TITLE', message: 'Record payment' },
+    { name: 'MSG_1', message: 'Please select a payment date.' },
+    { name: 'MSG_2', message: 'Please enter a valid due date yyyy-mm-dd.' },
+    { name: 'MSG_3', message: 'Invoice payment recorded.' }
   ],
 
   css: `
@@ -65,7 +70,6 @@ foam.CLASS({
       width: 24px;
       height: 24px;
       margin: 0;
-      margin-top: 7px;
       margin-right: 20px;
       display: inline-block;
       float: right;
@@ -88,13 +92,13 @@ foam.CLASS({
       .addClass(this.myClass())
       .start()
         .start().addClass('popUpHeader')
-          .start().add(this.Title).addClass('popUpTitle').end()
+          .start().add(this.TITLE).addClass('popUpTitle').end()
           .add(this.CLOSE_BUTTON)
         .end()
         .start().addClass('key-value-container')
           .start()
             .start().addClass('key').add('Company').end()
-            .start().addClass('value').add(this.invoice.payerName).end()
+            .start().addClass('value').add(this.invoice.payer.label()).end()
           .end()
         .end()
         .start()
@@ -114,6 +118,7 @@ foam.CLASS({
     {
       name: 'closeButton',
       icon: 'images/ic-cancelwhite.svg',
+      label: 'Close',
       code: function(X) {
         X.closeDialog();
       }
@@ -124,25 +129,25 @@ foam.CLASS({
       code: function(X) {
         var paymentDate = X.data.paymentDate;
         if ( ! X.data.paymentDate ) {
-          this.add(this.NotificationMessage.create({ message: 'Please select a payment date.', type: 'error' }));
+          this.add(this.notify(this.MSG_1, 'error'));
           return;
         }
         // By pass for safari & mozilla type='date' on input support
         // Operator checking if dueDate is a date object if not, makes it so or throws notification.
         if ( isNaN(paymentDate) && paymentDate != null ) {
-          this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Due Date yyyy-mm-dd.', type: 'error' }));
+          this.add(this.notify(this.MSG_2, 'error'));
           return;
         }
         
         paymentDate = paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
         
-        this.invoice.status = 'Paid';
+        this.invoice.status = this.InvoiceStatus.PAID;
         this.invoice.paymentDate = paymentDate;
 
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        ctrl.add(this.NotificationMessage.create({ message: 'Invoice payment recorded.', type: '' }));
+        this.notify(this.MSG_3);
         X.closeDialog();
       }
     }

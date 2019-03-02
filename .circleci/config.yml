@@ -6,27 +6,40 @@ version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:7.10
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
+      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/foam:latest
+    working_directory: ~/NANOPAY
     steps:
       - checkout
+      - run: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - run: git submodule sync
+      - run: git submodule update --init
 
       # Download and cache dependencies
       - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          key: node-v1-{{ checksum "package-lock.json" }}
 
-      - run: yarn install
+      - run: npm install
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: node-v1-{{ checksum "package-lock.json" }}
+
+      # cache maven repositories
+      - restore_cache:
+          key: maven-v1-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: maven-v1-{{ checksum "pom.xml" }}
+
+      - run: ./build.sh -t
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build

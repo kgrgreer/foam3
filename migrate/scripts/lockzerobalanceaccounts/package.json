@@ -1,0 +1,15 @@
+{
+  "name": "lockzerobalanceaccounts",
+  "version": "1.0.0",
+  "description": "Locks all accounts withh zero balances",
+  "main": "index.js",
+  "author": "nanopay Corporation",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "dotenv": "^6.1.0",
+    "mintchip-tools": "^1.0.3",
+    "mongodb": "^3.1.9",
+    "mssql": "^3.2.1"
+  }
+}

@@ -1,11 +1,24 @@
 package net.nanopay.cico.service;
 
 import foam.core.ContextAwareSupport;
+import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.AuthService;
+import foam.nanos.auth.AuthorizationException;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import foam.nanos.pm.PM;
-import net.nanopay.model.BankAccount;
-import net.nanopay.model.BankAccountStatus;
+import java.util.Date;
+import java.util.List;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
+import net.nanopay.tx.model.Transaction;
+
+import static foam.mlang.MLang.*;
 
 public class BankAccountVerifierService
     extends    ContextAwareSupport
@@ -13,8 +26,17 @@ public class BankAccountVerifierService
   protected DAO bankAccountDAO;
 
   @Override
-  public boolean verify(long bankAccountId, long randomDepositAmount)
+  public boolean verify(X x, long bankAccountId, long randomDepositAmount)
       throws RuntimeException {
+    // To test auto depoit of the ablii app
+    if ( randomDepositAmount == -1000000 ) {
+      BankAccount bankAccount = (BankAccount) bankAccountDAO.inX(x).find(bankAccountId);
+      bankAccount.setStatus(BankAccountStatus.VERIFIED);
+      bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
+      if ( bankAccount != null) checkPendingAcceptanceInvoices(x, bankAccount);
+      return true;
+    }
+
     PM pm = new PM(this.getClass(), "bankAccountVerify");
 
     try {
@@ -33,10 +55,10 @@ public class BankAccountVerifierService
       if ( ! BankAccountStatus.DISABLED.equals(bankAccount.getStatus()) && bankAccount.getRandomDepositAmount() != randomDepositAmount) {
         verificationAttempts++;
         bankAccount.setVerificationAttempts(verificationAttempts);
-        bankAccountDAO.put(bankAccount);
+        bankAccountDAO.inX(x).put(bankAccount);
         if (bankAccount.getVerificationAttempts() == 3) {
           bankAccount.setStatus(BankAccountStatus.DISABLED);
-          bankAccountDAO.put(bankAccount);
+          bankAccountDAO.inX(x).put(bankAccount);
         }
         if (bankAccount.getVerificationAttempts() == 1) {
           throw new RuntimeException("Invalid amount, 2 attempts left.");
@@ -61,19 +83,68 @@ public class BankAccountVerifierService
 
       if ( ! BankAccountStatus.DISABLED.equals(bankAccount.getStatus()) && bankAccount.getRandomDepositAmount() == randomDepositAmount) {
         bankAccount.setStatus(BankAccountStatus.VERIFIED);
+        bankAccount.setMicroVerificationTimestamp(new Date());
         isVerified = true;
-
-        bankAccountDAO.put(bankAccount);
+        bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
+        checkPendingAcceptanceInvoices(x, bankAccount);
       }
 
       return isVerified;
     } finally {
-      pm.log(getX());
+      pm.log(x);
     }
   }
 
   @Override
   public void start() {
-    bankAccountDAO = (DAO) getX().get("localBankAccountDAO");
+    bankAccountDAO = (DAO) getX().get("localAccountDAO");
+  }
+
+  private void checkPendingAcceptanceInvoices(X x, BankAccount bankAccount) {
+    // Automation of transfer, where invoice payment
+    //  has been in Holding (payer's default digital account)
+    try {
+      AuthService auth = (AuthService) x.get("auth");
+      if ( auth.check(x, "invoice.holdingAccount") ) {
+        DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+        DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+        DAO userDAO = (DAO) x.get("userDAO");
+        User currentUser = null;
+        try {
+          currentUser = (User) userDAO.find(bankAccount.getOwner());
+          if ( currentUser == null ) return;
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+
+        List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
+            EQ(Invoice.DESTINATION_CURRENCY, bankAccount.getDenomination()),
+            EQ(Invoice.PAYEE_ID, currentUser.getId()),
+            EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)
+          )).select(new ArraySink())).getArray();
+        Transaction txn = null;
+        Invoice inv = null;
+
+        for( int i = 0; i < pendAccInvoice.size(); i++ ) {
+          // For each found invoice with the above mlang conditions
+          // make a transaction to Currently verified Bank Account
+          inv = (Invoice) pendAccInvoice.get(i);
+          txn = new Transaction();
+          txn.setPayeeId(inv.getPayeeId());
+          txn.setPayerId(inv.getPayerId());
+          txn.setSourceAccount(inv.getDestinationAccount());
+          txn.setDestinationAccount(bankAccount.getId());
+          txn.setInvoiceId(inv.getId());
+          txn.setAmount(inv.getAmount());
+
+          transactionDAO.put(txn);
+        }
+      }
+    } catch(Exception e) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("AUTO DEPOSIT TO --- FAILED" );
+      e.printStackTrace();
+    }
+
   }
 }

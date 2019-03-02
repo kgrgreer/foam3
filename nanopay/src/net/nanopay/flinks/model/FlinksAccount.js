@@ -5,7 +5,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'accountName'
+      name: 'name'
     },
     {
       class: 'String',

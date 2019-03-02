@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'model for Flinks MFA response',
 
+  javaImports: [
+    'net.nanopay.flinks.model.SecurityChallengeModel'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -14,6 +18,19 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.flinks.model.SecurityChallengeModel',
       name: 'SecurityChallenges'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      type: 'Void',
+      javaThrows: [ 'java.lang.Exception' ],
+      javaCode: `
+        for (SecurityChallengeModel challenge : getSecurityChallenges()) {
+          challenge.validate();
+        }
+      `
     }
   ]
   

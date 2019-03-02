@@ -4,24 +4,26 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'bankImgs',
     'form',
     'isConnecting',
-    'stack',
-    'nSpecDAO'
+    'pushViews',
+    'appConfig'
+  ],
+
+  exports: [
+    'bankInstitutions'
   ],
 
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          width: 520px;
+          overflow-y: scroll;
         }
         ^ .optionSpacer {
           display: inline-block;
-          width: 122px;
-          height: 67px;
-          margin-right: 10px;
+          background-color: white;
+          margin-right: 30px;
           box-sizing: border-box;
           border: solid 1px white;
         }
@@ -29,7 +31,7 @@ foam.CLASS({
           margin-right: 0;
         }
         ^ .institution {
-          margin-bottom: 10px
+          margin-bottom: 30px
         }
         ^ .institution:hover {
           cursor: pointer;
@@ -38,21 +40,21 @@ foam.CLASS({
           border: solid 1px %ACCENTCOLOR%;
         }
         ^ .subContent {
-          width: 528px;
+          display: contents;
           background-color: #edf0f5;
           border: 1px solid #edf0f5;
         }
         ^ .image {
-          width: 120px;
-          height: 65px;
+          width: 170px;
+          height: 115px;
         }
         ^ .net-nanopay-ui-ActionView-nextButton {
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: #59a5d5;
+          background-color: %PRIMARYCOLOR%;
           outline: none;
-          border:none;
+          border: none;
           width: 136px;
           height: 40px;
           border-radius: 2px;
@@ -68,10 +70,11 @@ foam.CLASS({
           float: left;
           margin-left : 2px;
           outline: none;
+          color: black;
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: rgba(164, 179, 184, 0.1);
+          // background-color: rgba(164, 179, 184, 0.1);
           box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           font-size: 12px;
           font-weight: lighter;
@@ -84,88 +87,127 @@ foam.CLASS({
         ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
           cursor: pointer;
         }
+        ^ .net-nanopay-ui-wizard-WizardOverview {
+          display: none;
+        }
+        ^ .linkk{
+          margin: auto;
+          width: max-content;
+        }
       */}
     })
   ],
 
   properties: [
+    'newView',
     {
-      class: 'Int',
-      name: 'selectedOption',
-      value: -1,
-      postSet: function(oldValue, newValue) {
-        this.viewData.selectedOption = newValue;
+      name: 'bankInstitutions',
+      factory: function() {
+        return [
+          { name: 'ATB', description: 'ATB Financial', image: 'images/banks/atb.svg' },
+          { name: 'BMO', description: 'Bank of Montreal', image: 'images/banks/bmo.svg' },
+          { name: 'CIBC', description: 'Canadian Imperial Bank of Commerce', image: 'images/banks/cibc.svg' },
+          { name: 'CoastCapital', description: 'Coast Capital Savings Credit Union', image: 'images/banks/coast.svg' },
+          { name: 'Desjardins', description: 'Desjardins Quebec', image: 'images/banks/desjardins.svg' },
+          { name: 'HSBC', description: 'HSBC Canada', image: 'images/banks/hsbc.svg' },
+          { name: 'Meridian', description: 'Meridian Credit Union', image: 'images/banks/meridian.png' },
+          { name: 'National', description: 'National Bank of Canada', image: 'images/banks/national.svg' },
+          { name: 'Laurentienne', description: 'Banque Laurentienne du Canada', image: 'images/banks/laurentienne.svg' },
+          { name: 'Simplii', description: 'Simplii Financial (Former President’s Choice Financial)', image: 'images/banks/simplii@3x.png' },
+          { name: 'RBC', description: 'Royal Bank of Canada', image: 'images/banks/rbc.svg' },
+          { name: 'Scotia', description: 'The Bank of Nova Scotia', image: 'images/banks/scotia.svg' },
+          { name: 'Tangerine', description: 'Tangerine Bank', image: 'images/banks/tangerine.svg' },
+          { name: 'TD', description: 'Toronto-Dominion Bank', image: 'images/banks/td.svg' },
+          { name: 'Vancity', description: 'Vancouver City Savings Credit Union', image: 'images/banks/vancity.svg' },
+          // { name: 'FlinksCapital', image: 'images/banks/flinks.svg' } this will be added when not in Prod.
+        ];
       }
     },
-    'mode',
-    //It is an Element that refer to subContent
-    'subContent'
+    {
+      class: 'Object',
+      name: 'selectedInstitution',
+      value: null,
+      postSet: function(oldValue, newValue) {
+        if ( this.viewData ) {
+          this.viewData.selectedInstitution = newValue;
+        }
+      }
+    }
   ],
 
   messages: [
-    { name: 'Step', message: 'Step 1: Please choose your institution below.'},
-    { name: 'Error', message: 'Invalid Institution'},
-    { name: 'NameLabel', message: 'Institution *'}
+    { name: 'Step', message: 'Step 1: Please choose your institution below.' },
+    { name: 'Error', message: 'Invalid Institution' },
+    { name: 'NameLabel', message: 'Institution *' },
+    { name: 'OTHER_ACC', message: `Don't see your bank? ` },
+    { name: 'LINK', message: `Click here` }
   ],
 
   methods: [
     function init() {
       this.SUPER();
+      this.subtitle = this.Step;
       this.nextLabel = 'Next';
-      if ( ! this.viewData.selectedOption ) { return; }
-      this.selectedOption = this.viewData.selectedOption;
+      this.selectedInstitution = this.viewData ? (this.viewData.selectedInstitution ?
+        this.viewData.selectedInstitution : null) : null;
     },
 
     function initE() {
       this.SUPER();
       var self = this;
-      this.subContent = this
-        .addClass(this.myClass())
-        .start('div').addClass('subTitleFlinks')
-          .add(this.Step)
-        .end()
-        .start('div').addClass('subContent');
-        this.subContent.forEach(this.bankImgs, function(e) {
-            if ( e.index === self.bankImgs[15].index ) return;
-            this.start('div').addClass('optionSpacer').addClass('institution')
-              .addClass(self.selectedOption$.map(function(o) { return o == e.index ? 'selected' : ''; }))
-              .start({class: 'foam.u2.tag.Image', data: e.image}).addClass('image').end()
-              .on('click', function() {
-                self.selectedOption = e.index;
-              })
-            .end()
-          })
-        .end()
-        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
-          .tag(this.NEXT_BUTTON)
-          .tag(this.CLOSE_BUTTON)
-        .end()
-        .start('p').style({ 'margin-top': '30px', 'text-decoration': 'underline' }).addClass('link')
-          .add("Can't find your institution? Click here.")
-          .on('click', self.otherBank)
-        .end()
-        .start('div').style({'clear' : 'both'}).end();
 
-        //get mode of appConfig, use mode to define if it is in Production, Demo, Test, Development, and Staging.
-        //do not show Flinks demo in Production mode
-        this.nSpecDAO.find("appConfig").then(function(response){
-          self.mode = response.service.mode.label;
-          if ( self.mode && self.mode !== "Production") {
-            self.subContent.start('div').addClass('optionSpacer').addClass('institution')
-            .addClass(self.selectedOption$.map(function(o) { return o == self.bankImgs[15].index ? 'selected' : ''; }))
-            .start({class: 'foam.u2.tag.Image', data: self.bankImgs[15].image}).addClass('image').end()
-            .on('click', function() {
-              self.selectedOption = self.bankImgs[15].index;
+      // get mode of appConfig, use mode to define if it is in Production, Demo, Test, Development, and Staging.
+      // do not show Flinks demo in Production mode
+      if ( ! this.isProduction() ) {
+        this.bankInstitutions.push({
+          name: 'FlinksCapital',
+          image: 'images/banks/flinks.svg'
+        });
+      }
+
+      this
+        .addClass(this.myClass())
+          .start('div').addClass('subTitleFlinks')
+            .add(this.Step)
+          .end()
+          .start('div').addClass('subContent')
+            .forEach(this.bankInstitutions, function(institution, index) {
+              this.start('div').addClass('optionSpacer').addClass('institution')
+                .enableClass('selected', self.selectedInstitution$.map((t) => t === institution))
+                .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass('image').end()
+                .on('click', function() {
+                  self.selectedInstitution = institution;
+                  self.pushViews('FlinksConnectForm');
+                })
+                .end();
             })
           .end()
-          }
-        });
+          .start().addClass('linkk')
+            .start('span').add(this.OTHER_ACC).style({ 'color': 'black' }).end()
+            .start('span').add(this.LINK).style({ 'color': '#604AFF', 'cursor': 'pointer' })
+              .on('click', this.otherBank)
+            .end()
+          .end()
+          .start('div').style({ 'margin-top': '15px', 'height': '40px' })
+            .tag(this.NEXT_BUTTON)
+            .tag(this.CLOSE_BUTTON)
+          .end()
+          .start('div').style({ 'clear': 'both' }).end();
+    },
+
+    function isProduction() {
+      return this.appConfig.mode && this.appConfig.mode.label === 'Production';
     }
   ],
 
   listeners: [
     function otherBank() {
-    this.form.otherBank();
+      this.form.stack.push({
+        class: 'net.nanopay.cico.ui.bankAccount.AddBankView',
+        wizardTitle: 'Add Bank Account',
+        startAtValue: 0,
+        onComplete: this.onComplete
+      }, this.form);
     }
   ],
 
@@ -173,20 +215,18 @@ foam.CLASS({
     {
       name: 'nextButton',
       label: 'Continue',
-      isEnabled: function(isConnecting, selectedOption) {
-        if ( isConnecting === true ) return false;
-        if ( selectedOption === -1 ) return false;
-        return true;
+      isEnabled: function(isConnecting, selectedInstitution) {
+        return ! isConnecting && selectedInstitution;
       },
       code: function(X) {
-        X.form.goNext();
+        this.pushViews('FlinksConnectForm');
       }
     },
     {
       name: 'closeButton',
       label: 'Close',
       code: function(X) {
-        X.form.goBack();
+        X.form.stack.back();
       },
     }
   ]

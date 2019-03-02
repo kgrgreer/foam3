@@ -13,23 +13,37 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.u2.navigation.FooterView',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
+    'net.nanopay.account.Balance',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
-    'net.nanopay.model.Account',
-    'net.nanopay.model.BankAccount',
     'net.nanopay.model.Currency',
+    'net.nanopay.ui.ActionView',
     'net.nanopay.ui.modal.ModalStyling',
-    'net.nanopay.ui.style.AppStyles'
+    'net.nanopay.ui.style.AppStyles',
+    'net.nanopay.ui.NanoConnectStyles'
+  ],
+
+  imports: [
+    'digitalAccount',
+    'accountDAO',
+    'balanceDAO'
   ],
 
   exports: [
-    'account',
     'appConfig',
     'as ctrl',
+    'balance',
+    'currentAccount',
     'findAccount',
+    'findBalance',
     'privacyUrl',
     'termsUrl'
   ],
@@ -38,25 +52,18 @@ foam.CLASS({
     .stack-wrapper {
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;
-      padding: 10px 0;
       margin-bottom: 0 !important;
+      overflow-x: hidden;
     }
-
     .stack-wrapper:after {
       content: "";
       display: block;
     }
-
     .foam-comics-DAOUpdateControllerView .property-transactionLimits .net-nanopay-ui-ActionView-addItem {
       height: auto;
       padding: 3px;
       width: auto;
     }
-
-    .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
-      height: 40px;
-    }
-
     .foam-u2-view-TableView .net-nanopay-ui-ActionView {
       height: auto;
       padding: 8px;
@@ -64,7 +71,7 @@ foam.CLASS({
     }
     .net-nanopay-ui-ActionView-exportButton {
       float: right;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       width: 75px !important;
       height: 40px;
@@ -75,53 +82,152 @@ foam.CLASS({
     .net-nanopay-ui-ActionView-exportButton img {
       margin-right: 5px;
     }
+
+    
+    /*
+     * The following CSS is for styling flow documents because they don't have
+     * much in terms of default styling.
+     * TODO: Consider moving this to a subclass of foam.flow.DocumentView and
+     * using the subclass to render flow documents.
+     */
+    .foam-flow-Document {
+      background-color: #ffffff;
+      color: #4c555a;
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+      line-height: 26px;
+      font-size: 14px;
+      font-weight: 500;
+      -webkit-font-smoothing: antialiased;
+    }
+    .foam-flow-Document h1 {
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 32px;
+    }
+    .foam-flow-Document h2 {
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 26px;
+    }
+    .foam-flow-Document h3 {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 22px;
+    }
+    .foam-flow-Document h1,
+    .foam-flow-Document h2,
+    .foam-flow-Document h3,
+    .foam-flow-Document h4,
+    .foam-flow-Document h5 {
+      margin: 12px 0 0 0;
+      color: #292e31;
+    }
+    .foam-flow-Document p {
+      margin-bottom: 0;
+      margin-top: 20px;
+    }
+    .foam-flow-Document .code {
+      background-color: black;
+      color: white;
+      padding: 20px;
+    }
+    .foam-flow-Document a {
+      color: rgb(0, 153, 229);
+      text-decoration-line: none;
+    }
   `,
+
+  constants: [
+    {
+      type: 'String',
+      name: 'ACCOUNT',
+      value: 'account',
+    }
+  ],
 
   properties: [
     'privacyUrl',
     'termsUrl',
     {
       class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.model.Account',
-      name: 'account',
-      factory: function() { return this.Account.create(); }
+      of: 'net.nanopay.account.Balance',
+      name: 'balance',
+      factory: function() {
+        return this.Balance.create();
+      }
     },
     {
-      name: 'appConfig'
+      name: 'appConfig',
+      factory: function() {
+        return this.AppConfig.create();
+      }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.account.Account',
+      name: 'currentAccount',
+      factory: function() {
+        return this.DigitalAccount.create({
+          owner: this.user,
+          denomination: 'CAD'
+        });
+      }
     }
   ],
 
   methods: [
     function initE() {
+
+      // enable session timer
+      this.sessionTimer.enable = true;
+      this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
+
       var self = this;
       self.clientPromise.then(function() {
-        self.client.nSpecDAO.find('appConfig').then(function(config){
-          self.appConfig = config.service;
+        self.client.nSpecDAO.find('appConfig').then(function(config) {
+          self.appConfig.copyFrom(config.service);
         });
 
         self.AppStyles.create();
+        self.NanoConnectStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 
-        foam.__context__.register(net.nanopay.ui.ActionView, 'foam.u2.ActionView');
+        self.__subContext__.register(self.ActionView, 'foam.u2.ActionView');
 
-        self.findAccount();
-
+        self.findBalance();
         self
           .addClass(self.myClass())
-          .tag({class: 'foam.nanos.u2.navigation.TopNavigation' })
-          .start('div').addClass('stack-wrapper')
-            .tag({class: 'foam.u2.stack.StackView', data: self.stack, showActions: false})
+          .start('div', null, self.topNavigation_$)
+            .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })
           .end()
-          .tag({class: 'net.nanopay.ui.FooterView'});
+          .start()
+            .addClass('stack-wrapper')
+            .tag({
+              class: 'foam.u2.stack.StackView',
+              data: self.stack,
+              showActions: false
+            })
+          .end()
+          .start('div', null, self.footerView_$)
+            .tag({ class: 'foam.nanos.u2.navigation.FooterView' })
+          .end();
       });
+    },
+
+    function onSessionTimeout() {
+      this.add(this.Popup.create( {closeable: false} ).tag({
+        class: 'net.nanopay.ui.modal.SessionTimeoutModal',
+      }));
     },
 
     function getCurrentUser() {
       var self = this;
 
       // get current user, else show login
-      this.client.auth.getCurrentUser(null).then(function (result) {
+      this.client.auth.getCurrentUser(null).then(function(result) {
         self.loginSuccess = !! result;
         if ( result ) {
           self.user.copyFrom(result);
@@ -161,7 +267,7 @@ foam.CLASS({
 
               // show onboarding screen if user hasn't clicked "Go To Portal" button
               case self.AccountStatus.ACTIVE:
-                if ( !self.user.createdPwd ) {
+                if ( ! self.user.createdPwd ) {
                   self.loginSuccess = false;
                   self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 });
                   return;
@@ -188,25 +294,67 @@ foam.CLASS({
           self.onUserUpdate();
         }
       })
-      .catch(function (err) {
-        self.requestLogin().then(function () {
+      .catch(function(err) {
+        self.requestLogin().then(function() {
           self.getCurrentUser();
         });
       });
     },
 
     function findAccount() {
-      var self = this;
-      this.client.accountDAO.find(this.user.id).then(function (a) {
-        return self.account.copyFrom(a);
+      if ( this.currentAccount == null || this.currentAccount.id == 0 ||
+           this.currentAccount.owner != null && this.currentAccount.owner.id != this.user.id ) {
+        return this.client.digitalAccount.findDefault(this.client, null).then(function(account) {
+          this.currentAccount.copyFrom(account);
+          return this.currentAccount;
+        }.bind(this));
+      } else {
+        return this.client.accountDAO.find(this.currentAccount.id).then(function(account) {
+          this.currentAccount.copyFrom(account);
+          return this.currentAccount;
+        }.bind(this));
+      }
+    },
+
+    function findBalance() {
+      return this.findAccount().then(function(account) {
+        if ( account != null ) {
+          account.findBalance(this.client).then(function(balance) {
+          // this.client.balanceDAO.find(account).then(function(balance) {
+            return this.balance.copyFrom(balance);
+          }.bind(this));
+        }
       }.bind(this));
+    },
+
+    function requestLogin() {
+      var self = this;
+
+      // don't go to log in screen if going to reset password screen
+      if ( location.hash != null && location.hash === '#reset' )
+        return new Promise(function(resolve, reject) {
+          self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
+          self.loginSuccess$.sub(resolve);
+        });
+
+      // don't go to log in screen if going to sign up password screen
+      if ( location.hash != null && location.hash === '#sign-up' )
+        return new Promise(function(resolve, reject) {
+          self.stack.push({ class: 'net.nanopay.auth.ui.SignUpView' });
+          self.loginSuccess$.sub(resolve);
+        });
+
+      return new Promise(function(resolve, reject) {
+        self.stack.push({ class: 'net.nanopay.auth.ui.SignInView' });
+        self.loginSuccess$.sub(resolve);
+      });
     }
   ],
 
   listeners: [
     function onUserUpdate() {
       this.SUPER();
-      this.findAccount();
+      this.findBalance();
     }
   ]
 });

@@ -31,7 +31,7 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   methods: [
@@ -68,11 +68,11 @@ foam.CLASS({
         return false;
       }
       if ( ! this.validatePassword(companyInfo.password) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must contain one lowercase letter, one uppercase letter, one digit, and be between 7 and 32 characters in length.', type: 'error' }));
+        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
         return false;
       }
-      if ( companyInfo.password != companyInfo.confirmPassword ){
-        this.add(this.NotificationMessage.create({ message: "Confirmation password does not match.", type: 'error' }));
+      if ( companyInfo.password != companyInfo.confirmPassword ) {
+        this.add(this.NotificationMessage.create({ message: 'Confirmation password does not match.', type: 'error' }));
         return false;
       }
 
@@ -113,7 +113,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePostalCode(companyInfo.postalCode) ) {
+      if ( ! this.validatePostalCode(companyInfo.postalCode, companyInfo.country) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
         return false;
       }
@@ -156,7 +156,7 @@ foam.CLASS({
             return;
           }
 
-          if ( ! this.infoValidations() ) {
+          if ( ! this.infoValidations() ) {
             return;
           }
 
@@ -212,7 +212,7 @@ foam.CLASS({
             issuingAuthority: companyInfo.issuingAuthority,
             department: companyInfo.jobTitle,
             type: 'Business',
-            group: (this.user.group==='s2hAdmin'?'s2hCustomer':'business'),
+            group: 'business',
             phone: businessPhone,
             address: businessAddress,
             desiredPassword: companyInfo.password,
@@ -221,7 +221,7 @@ foam.CLASS({
             website: companyInfo.website,
             businessTypeId: companyInfo.businessType,
             businessSectorId: companyInfo.businessSector,
-            portalAdminCreated:true
+            portalAdminCreated: true
           });
 
           if ( newBusiness.errors_ ) {

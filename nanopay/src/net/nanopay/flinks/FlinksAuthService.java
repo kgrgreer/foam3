@@ -3,9 +3,11 @@ package net.nanopay.flinks;
 import foam.core.*;
 import foam.dao.*;
 import java.util.*;
+
+import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.User;
 import net.nanopay.flinks.model.*;
 import foam.nanos.NanoService;
-import javax.naming.AuthenticationException;
 import org.apache.commons.io.IOUtils;
 import java.util.Base64;
 import java.util.Date;
@@ -24,6 +26,7 @@ public class FlinksAuthService
   protected DAO sessionDAO_;
   protected DAO bankAccountDAO_;
   protected DAO institutionDAO_;
+  protected DAO flinksAccountsDetailResponseDAO_;
   protected FlinksRestService flinksService = new FlinksRestService();
   protected String sep = System.getProperty("file.separator");
   protected String storeRoot_ = System.getProperty("catalina.home") + sep + "webapps" + sep + "ROOT";
@@ -31,13 +34,14 @@ public class FlinksAuthService
   @Override
   public void start() {
     userDAO_        = (DAO) getX().get("localUserDAO");
-    sessionDAO_     = (DAO) getX().get("sessionDAO");
-    bankAccountDAO_ = (DAO) getX().get("bankAccountDAO");
+    sessionDAO_     = (DAO) getX().get("localSessionDAO");
+    bankAccountDAO_ = (DAO) getX().get("accountDAO");
     institutionDAO_ = (DAO) getX().get("institutionDAO");
+    flinksAccountsDetailResponseDAO_ = (DAO) getX().get("flinksAccountsDetailResponseDAO");
     flinksService.setX(getX());
   }
 
-  public FlinksResponse authorize(X x, String institution, String username, String password) throws AuthenticationException {
+  public FlinksResponse authorize(X x, String institution, String username, String password, User currentUser) throws AuthenticationException {
     //TODO: security check
     try {
       ResponseMsg respMsg = null;
@@ -46,17 +50,21 @@ public class FlinksAuthService
       try {
         respMsg = flinksService.serve(reqMsg, FlinksRestService.AUTHORIZE);
       } catch ( Throwable t ) {
-        throw new AuthenticationException("Exception throw when connect to the Flinks");
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Exception [Authorize]: " + t);
+        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
       }
-      
+
       int httpCode = respMsg.getHttpStatusCode();
       FlinksResponse feedback;
       if ( httpCode == 200 ) {
         //forward to fetch account
         FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
-        return getAccountSummary(x, resp.getRequestId());
+        return getAccountSummary(x, resp.getRequestId(), currentUser);
       } else if ( httpCode == 203 ) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
+        resp.validate();
+
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if it is image selection
         if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
@@ -70,12 +78,12 @@ public class FlinksAuthService
       return feedback;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Flinks Authorize: [ " + t.toString() + "]");
-      throw new AuthenticationException("UnknownError");
+      logger.error("Flinks Authorize: [ " + t.toString() + "].", t);
+      throw new AuthenticationException("Bank authorization failed");
     }
   }
 
-  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, java.util.Map map1, String type) throws AuthenticationException {
+  public FlinksResponse challengeQuestion(X x, String institution, String username, String requestId, java.util.Map map1, String type, User currentUser) throws AuthenticationException {
     //TODO: security check
     try {
       ResponseMsg respMsg = null;
@@ -87,22 +95,28 @@ public class FlinksAuthService
       try {
         respMsg = flinksService.serve(reqMsg, FlinksRestService.CHALLENGE);
       } catch ( Throwable t ) {
-        throw new AuthenticationException("Exception throw when connect to the Flinks");
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Exception [MFA]: " + t);
+        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
       }
       FlinksResponse feedback;
       int httpCode = respMsg.getHttpStatusCode();
       if ( httpCode == 200 ) {
         //forward to get account info
         FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
-        return getAccountSummary(x, resp.getRequestId());
+        return getAccountSummary(x, resp.getRequestId(), currentUser);
       } else if ( httpCode == 203 || httpCode == 401) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
+        resp.validate();
+
         feedback = (FlinksMFAResponse) respMsg.getModel();
         //check if MFA is image(Laurentienne)
-        if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
-          decodeMsg((FlinksMFAResponse) feedback);
+        if ( httpCode == 203 ) {
+          if ( "ImageSelection".equals(((FlinksMFAResponse) feedback).getSecurityChallenges()[0].getType()) ) {
+            decodeMsg((FlinksMFAResponse) feedback);
+          }
         }
-      } else {     
+      } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
         logger.error("Flinks MFA: [ HttpStatusCode: " + feedback.getHttpStatusCode() + ", FlinksCode: " + feedback.getFlinksCode() + ", Message: " + feedback.getMessage() + "]");
@@ -110,27 +124,34 @@ public class FlinksAuthService
       return feedback;
     } catch (Throwable t) {
       Logger logger = (Logger) x.get("logger");
-      logger.error("Flinks MFA: [ " + t.toString() + "]");
-      throw new AuthenticationException("UnknownError");
+      logger.error("Flinks MFA: [ " + t.toString() + "].", t);
+      throw new AuthenticationException("Bank authorization failed");
     }
   }
 
-  public FlinksResponse getAccountSummary(X x, String requestId) throws AuthenticationException {
+  public FlinksResponse getAccountSummary(X x, String requestId, User currentUser) throws AuthenticationException {
     try {
       RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailRequest(getX(), requestId);
       ResponseMsg respMsg = null;
       try {
         respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_DETAIL);
       } catch ( Throwable t ) {
-        throw new AuthenticationException("Exception throw when connect to the Flinks");
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Exception [Account Detail]: " + t);
+        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
       }
       int httpCode = respMsg.getHttpStatusCode();
-      FlinksRespMsg front = new FlinksRespMsg();
       FlinksResponse feedback;
       if ( httpCode == 200 ) {
         //send accounts to the client
         FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
-        feedback = (FlinksAccountsDetailResponse) respMsg.getModel();
+
+        resp.setAccounts(filterAccounts(resp.getAccounts()));
+
+        feedback = resp;
+        // save flinks response
+        resp.setUserId(currentUser.getId());
+        flinksAccountsDetailResponseDAO_.put(resp);
       } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
@@ -142,6 +163,52 @@ public class FlinksAuthService
       logger.error("Flinks AccountSummary: [ " + t.toString() + "]");
       throw new AuthenticationException("UnknownError");
     }
+  }
+
+  public FlinksResponse pollAsync(X x, String requestId, User currentUser) throws AuthenticationException {
+    try {
+      RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailAsyncRequest(getX(), requestId);
+      ResponseMsg respMsg = null;
+      try {
+        respMsg = flinksService.serve(reqMsg, FlinksRestService.ACCOUNTS_DETAIL);
+      } catch ( Throwable t ) {
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Exception [Poll Async]: " + t);
+        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
+      }
+      int httpCode = respMsg.getHttpStatusCode();
+      FlinksResponse feedback;
+      if ( httpCode == 200 ) {
+        //send accounts to the client
+        FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
+
+        resp.setAccounts(filterAccounts(resp.getAccounts()));
+
+        feedback = resp;
+        // save flinks response
+        resp.setUserId(currentUser.getId());
+        flinksAccountsDetailResponseDAO_.put(resp);
+      } else {
+        feedback = (FlinksInvalidResponse) respMsg.getModel();
+        Logger logger = (Logger) x.get("logger");
+        logger.error("Flinks AccountSummary: [ HttpStatusCode: " + feedback.getHttpStatusCode() + ", FlinksCode: " + feedback.getFlinksCode() + ", Message: " + feedback.getMessage() + "]");
+      }
+      return feedback;
+    } catch ( Throwable t ) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Flinks AccountSummary: [ " + t.toString() + "]");
+      throw new AuthenticationException("UnknownError");
+    }
+  }
+
+  protected AccountWithDetailModel[] filterAccounts(AccountWithDetailModel[] accounts) {
+    AccountWithDetailModel[] filteredAccounts = accounts;
+    return Arrays.stream(filteredAccounts).filter(
+      account ->
+        ! account.getTransitNumber().isEmpty() &&
+        account.getCategory().equals("Operations") &&
+        account.getCurrency().equals("CAD")
+    ).toArray(AccountWithDetailModel[]::new);
   }
 
   protected void decodeMsg(FlinksMFAResponse response) {

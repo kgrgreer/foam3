@@ -75,8 +75,12 @@ foam.CLASS({
     },
 
     //go to failView
-    function fail() {
+    function fail(callback) {
       this.pushViews(this.errorView);
+
+      if (typeof callback === 'function') {
+        callback();
+      }
     },
 
     function rollBackView() {

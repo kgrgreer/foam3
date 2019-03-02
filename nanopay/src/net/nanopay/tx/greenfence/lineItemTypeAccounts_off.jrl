@@ -1,0 +1,12 @@
+// Modified by admin (1348) at 2019-01-17T00:46:54Z
+p({"class":"net.nanopay.tx.LineItemTypeAccount","id":"44d4aa09-3617-46e5-aec0-00a588f9ade1","user":1014,"type":"54d412fd-a1d8-4fed-b059-9e9961d093d7","account":513,"description":"Deposit Seller Tax"})
+// Modified by admin (1348) at 2019-01-17T00:49:02Z
+p({"class":"net.nanopay.tx.LineItemTypeAccount","id":"6f785107-b75d-4c6f-b080-4253ba371c8c","user":1016,"type":"d8ea31d9-3cce-4c31-b83a-6c21dc184cdb","account":512,"description":"Deposit Reviewer Fees"})
+// Modified by admin (1348) at 2019-01-17T00:49:43Z
+p({"class":"net.nanopay.tx.LineItemTypeAccount","id":"6f761062-72fd-4ce8-a1b6-84ed5608e786","user":1013,"type":"2ad24a93-8a7e-4cdd-95dc-f2c788911521","account":515,"description":"Deposit Governance Fee"})
+// Modified by admin (1348) at 2019-01-17T00:50:13Z
+p({"class":"net.nanopay.tx.LineItemTypeAccount","id":"cbf2efaa-e0c9-4f61-a79c-72bdccf3e64f","user":1013,"type":"5d214d5d-019e-45bc-9493-2cc0ef595d2c","account":514,"description":"Deposit Greenfence Referral Fee"})
+// Modified by admin (1348) at 2019-01-17T00:50:24Z
+p({"class":"net.nanopay.tx.LineItemTypeAccount","id":"cbf2efaa-e0c9-4f61-a79c-72bdccf3e64f","description":"Deposit Referral Fee"})
+// Modified by admin (1348) at 2019-01-17T00:51:01Z
+p({"class":"net.nanopay.tx.LineItemTypeAccount","id":"c9e23104-a3e7-4ffa-9452-b04e1894bfcc","user":1013,"type":"72e6a966-fcc8-424e-ad3e-cdba7f3f411c","account":509,"description":"Deposit Certificate Cost"})

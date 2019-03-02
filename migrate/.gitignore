@@ -1,7 +1,0 @@
-conf/credentials.*.properties
-classpath.txt
-/devices
-/files
-/invoices
-/transactions
-/users

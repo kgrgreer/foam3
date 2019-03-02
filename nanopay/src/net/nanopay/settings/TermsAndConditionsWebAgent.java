@@ -9,6 +9,7 @@ package net.nanopay.settings;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.mlang.sink.Max;
 import foam.nanos.http.WebAgent;
 import foam.nanos.auth.HtmlDoc;
 import foam.util.SafetyUtil;
@@ -33,7 +34,9 @@ public class TermsAndConditionsWebAgent
     String              version  = request.getParameter("version");
     HtmlDoc             terms;
     PrintWriter         out      = null;
-    tcDAO = (DAO) tcDAO.where(EQ(HtmlDoc.NAME,"nanopayTerms"));
+
+    // Query to get latest terms and conditions based on the effective date
+    tcDAO = tcDAO.limit(1).orderBy(HtmlDoc.ISSUED_DATE);
     try {
       out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), StandardCharsets.ISO_8859_1), true);
     } catch (IOException e) {

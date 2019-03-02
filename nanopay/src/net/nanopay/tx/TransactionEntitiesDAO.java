@@ -7,6 +7,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.auth.User;
+import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionEntity;
 import foam.mlang.order.Comparator;
@@ -15,8 +16,9 @@ import foam.nanos.logger.Logger;
 
 public class TransactionEntitiesDAO extends ProxyDAO
 {
-  protected DAO userDAO_;
+  protected DAO accountDAO_;
   protected Logger logger_;
+  protected DAO userDAO_;
   private class DecoratedSink extends foam.dao.ProxySink
   {
     public DecoratedSink(X x, Sink delegate)
@@ -35,8 +37,9 @@ public class TransactionEntitiesDAO extends ProxyDAO
   public TransactionEntitiesDAO(X x, DAO delegate)
   {
     super(x, delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    accountDAO_ = (DAO) x.get("localAccountDAO");
     logger_ = (Logger) x.get("logger");
+    userDAO_ = (DAO) x.get("bareUserDAO");
   }
 
   @Override
@@ -62,26 +65,37 @@ public class TransactionEntitiesDAO extends ProxyDAO
   {
     FObject clone = obj.fclone();
     Transaction tx = (Transaction) clone;
-    User payer = (User) userDAO_.find(tx.getPayerId());
-    User payee = (User) userDAO_.find(tx.getPayeeId());
+    Account sourceAccount = tx.findSourceAccount(x_);
+    Account destinationAccount = tx.findDestinationAccount(x_);
 
-    if (payer == null) {
-      logger_.error(String.format("Transaction: %d Payer with Id: %d not found", tx.getId(), tx.getPayerId()));
-      tx.setPayer(null);
-    }
-    else {
-      TransactionEntity payerEnitity = new TransactionEntity(payer);
-      tx.setPayer(payerEnitity);
+    if ( sourceAccount != null ) {
+      User payer = (User) userDAO_.find(sourceAccount.getOwner());
+
+      if (payer == null) {
+        logger_.error(String.format("Transaction: %d user for source account with Id: %d not found", tx.getId(),
+            sourceAccount.getId()));
+        tx.setPayer(null);
+      }
+      else {
+        TransactionEntity payerEnitity = new TransactionEntity(payer);
+        tx.setPayer(payerEnitity);
+      }
     }
 
-    if (payee == null) {
-      logger_.error(String.format("Transaction: %d Payee with Id: %d not found", tx.getId(), tx.getPayeeId()));
-      tx.setPayee(null);
+    if ( destinationAccount != null ) {
+      User payee = (User) userDAO_.find(destinationAccount.getOwner());
+
+      if (payee == null) {
+        logger_.error(String.format("Transaction: %d user for destination account with Id: %d not found", tx.getId(),
+            destinationAccount.getId()));
+        tx.setPayee(null);
+      }
+      else {
+        TransactionEntity payeeEnitity = new TransactionEntity(payee);
+        tx.setPayee(payeeEnitity);
+      }
     }
-    else {
-      TransactionEntity payeeEnitity = new TransactionEntity(payee);
-      tx.setPayee(payeeEnitity);
-    }
+
     return clone;
   }
 }

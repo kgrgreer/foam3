@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class AmazonS3InputStreamBlob
-    extends InputStreamBlob
+  extends InputStreamBlob
 {
   public S3Object s3Object_;
 

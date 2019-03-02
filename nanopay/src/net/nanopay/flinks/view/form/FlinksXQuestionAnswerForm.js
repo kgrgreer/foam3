@@ -4,12 +4,13 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'bankImgs',
     'form',
     'isConnecting',
-    'viewData',
-    'loadingSpinner'
+    'loadingSpinner',
+    'rollBackView',
+    'viewData'
   ],
+
   requires: [
     'foam.u2.view.StringArrayView',
     'foam.u2.tag.Input',
@@ -106,7 +107,7 @@ foam.CLASS({
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: rgba(164, 179, 184, 0.1);
+          // background-color: rgba(164, 179, 184, 0.1);
           box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           font-size: 12px;
           font-weight: lighter;
@@ -130,30 +131,27 @@ foam.CLASS({
       name: 'answerCheck',
     },
     {
-      Class: 'Array',
-      name: 'questionCheck',
-    },
-    {
       Class: 'Int',
       name: 'tick',
-      value: -10000000
+      value: - 10000000
     }
   ],
 
   messages: [
     { name: 'Step', message: 'Step 3: Please respond to the security challenges below.' },
-    { name: 'header1', message: 'Please answer the security question: '},
-    { name: 'answerError', message: 'Invalid answer'}
+    { name: 'header1', message: 'Please answer the security question: ' },
+    { name: 'answerError', message: 'Invalid answer' }
   ],
 
   methods: [
     function init() {
-      var self = this;
       this.SUPER();
-      this.viewData.questions = new Array(this.viewData.SecurityChallenges.length);
-      this.viewData.answers = new Array(this.viewData.SecurityChallenges.length);
-      this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
-      this.questionCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
+      this.viewData.questions =
+        new Array(this.viewData.securityChallenges.length);
+      this.viewData.answers =
+        new Array(this.viewData.securityChallenges.length);
+      this.answerCheck =
+        new Array(this.viewData.securityChallenges.length).fill(false);
     },
 
     function initE() {
@@ -165,25 +163,29 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
-          .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
+          .tag({
+            class: 'net.nanopay.flinks.view.form.FlinksSubHeader',
+            secondImg: this.viewData.selectedInstitution.image
+          })
+          .start('p').add(this.header1).addClass('header1').style({ 'margin-left': '20px' }).end()
           .start('div').addClass('qa-block')
-            .forEach(this.viewData.SecurityChallenges, function(data, index){
+            .forEach(this.viewData.securityChallenges, function(data, index) {
               self.viewData.questions[index] = data.Prompt;
-              var text = self.StringArrayInput.create({max: 3, isPassword: true});
-              text.data$.sub(function(){
+              var text = self.StringArrayInput.create({
+                max: 3,
+                isPassword: true
+              });
+              text.data$.sub(function() {
                 self.viewData.answers[index] = text.data;
                 if ( text.data[0].trim().length === 0 ) {
-
                   self.answerCheck[index] = false;
                 } else {
                   self.answerCheck[index] = true;
                 }
-                self.tick++;
+                self.tick ++;
               });
               this.start('p').addClass('question').add('Q' + (index+1) + ': ').add(data.Prompt).end();
-              //this.start(text).style({'margin-top':'10px'}).addClass('input').end();
-              this.start(text).style({'margin-top':'10px'}).end();
+              this.start(text).style({ 'margin-top': '10px' }).end();
             })
           .end()
           .start()
@@ -192,35 +194,32 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
-          .tag(this.NEXT_BUTTON, {label: 'Next'})
-          .tag(this.CLOSE_BUTTON, {label: 'Close'})
+        .start('div').style({ 'margin-top': '15px', 'height': '40px' })
+          .tag(this.NEXT_BUTTON, { label: 'Next' })
+          .tag(this.CLOSE_BUTTON, { label: 'Cancel' })
         .end()
-        .start('div').style({'clear' : 'both'}).end()
+        .start('div').style({ 'clear': 'both' }).end();
     }
   ],
-
   actions: [
     {
       name: 'nextButton',
       label: 'Continue',
       isEnabled: function(tick, isConnecting, answerCheck) {
-        for ( var x in answerCheck ) {
-          if ( answerCheck[x] === false ) return false;
-        }
-        if ( isConnecting == true ) return false;
-        return true;
+        var isAllAnswered = answerCheck
+          .reduce((allAnswered, val) => allAnswered && val);
+        return ! isConnecting && isAllAnswered;
       },
       code: function(X) {
         this.isConnecting = true;
-        X.form.goNext();
+        this.viewData.submitChallenge();
       }
     },
     {
       name: 'closeButton',
       label: 'Cancel',
       code: function(X) {
-        X.form.goBack();
+        this.rollBackView();
       }
     }
   ]

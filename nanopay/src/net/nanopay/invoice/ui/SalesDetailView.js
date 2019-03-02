@@ -4,34 +4,36 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'net.nanopay.invoice.model.Invoice',
     'foam.u2.PopupView',
-    'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'foam.u2.dialog.Popup',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   imports: [
-    'stack',
-    'hideReceivableSummary',
+    'ctrl',
+    'hideSummary',
     'invoiceDAO',
-    'user',
-    'ctrl'
+    'stack',
+    'user'
   ],
 
   exports: [
     'as data',
-    'hideReceivableSummary',
+    'hideSummary',
     'openExportModal'
   ],
 
   implements: [
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   css: `
     ^ {
       width: 962px;
+      margin: auto;
     }
     ^ h5{
       opacity: 0.6;
@@ -42,14 +44,25 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-backAction {
       border: 1px solid lightgrey;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
       position: relative;
       z-index: 10;
     }
+    .net-nanopay-ui-ActionView-backAction:hover {
+      background: rgba(164, 179, 184, 0.3);
+    }
+    ^ .net-nanopay-ui-ActionView-recordPayment:hover {
+      background: %SECONDARYHOVERCOLOR%;
+    }
+    ^ .net-nanopay-ui-ActionView-voidDropDown:focus {
+      background: %SECONDARYHOVERCOLOR%;
+    }
+    ^ .net-nanopay-ui-ActionView-voidDropDown:hover {
+      background: %SECONDARYHOVERCOLOR%;
+    }
     ^ .net-nanopay-ui-ActionView-recordPayment {
       background-color: #59A5D5;
-      border: solid 1px #59A5D5;
       color: white;
       float: right;
       margin-right: 1px;
@@ -60,7 +73,6 @@ foam.CLASS({
       width: 30px;
       height: 40px;
       background-color: #59A5D5;
-      border: solid 1px #59A5D5;
       float: right;
     }
     ^ .net-nanopay-ui-ActionView-voidDropDown::after {
@@ -95,6 +107,18 @@ foam.CLASS({
       color: white;
       cursor: pointer;
     }
+    ^ h5 img{
+      margin-left: 20px;
+      position: relative;
+      top: 3px;
+    }
+    ^ .noteMargin {
+      margin-bottom: 0px; 
+      margin-left: 20px; 
+    }
+    ^ .noteFont {
+      font-size: 10px;
+    }
   `,
 
   properties: [
@@ -104,38 +128,81 @@ foam.CLASS({
       name: 'verbTenseMsg',
       documentation: 'Past or present message on invoice status notification',
       expression: function(data) {
-        return data.paymentMethod == this.PaymentStatus.PENDING ? 'Invoice is' : 'Invoice has been';
+        return data.paymentMethod === this.PaymentStatus.PENDING ?
+            'Invoice is' :
+            'Invoice has been';
+      }
+    },
+    {
+      name: 'foreignExchange',
+      factory: function() {
+        if ( this.data.sourceCurrency == null ) return false;
+        return this.data.destinationCurrency !== this.data.sourceCurrency;
       }
     }
+  ],
+
+  messages: [
+    { name: 'name', message: 'Note: ' }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      this.hideReceivableSummary = true;
+      var self = this;
+      this.hideSummary = true;
+      let showVoid = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) ) &&
+                   self.data.createdBy === self.user.id;
+      let showRecPay = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) );
+
+      this.addClass(self.myClass())
+        .start(self.VOID_DROP_DOWN, null, self.voidMenuBtn_$).show(showVoid).end()
+        .start(self.RECORD_PAYMENT).show(showRecPay).end();
 
       this
         .addClass(this.myClass())
-        .start(this.BACK_ACTION).end()
-        .callIf(this.data.createdBy == this.user.id, function() {
-          this.start(this.VOID_DROP_DOWN, null, this.voidMenuBtn_$).end()
-        })
-        .start(this.RECORD_PAYMENT).end()
-        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel: true }).end()
-        .start('h5').add('Bill to ', this.data.payerName).end()
-        .tag({ class: 'net.nanopay.invoice.ui.shared.SingleItemView', data: this.data })
-        .tag({ class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView', id: this.data.id })
-        .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px' })
-          .add('Note:')
+        .startContext({ data: this })
+          .tag(this.BACK_ACTION)
+        .endContext()
+        .tag(this.EXPORT_BUTTON)
+        .start('h5')
+          .add('Bill to ', this.data.payer.label())
+          .callIf(this.foreignExchange, function() {
+            this.start({
+              class: 'foam.u2.tag.Image',
+              data: 'images/ic-crossborder.svg'
+            }).end();
+          })
         .end()
-        .start('br').end()
-        .start('h2').addClass('light-roboto-h2').style({ 'font-size': '14px' })
-          .add(this.data.note)
-        .end();
+        .callIf(this.foreignExchange, function() {
+          this.tag({
+            class: 'net.nanopay.invoice.ui.shared.ForeignSingleItemView',
+            data: self.data
+          });
+        })
+        .callIf(! this.foreignExchange, function() {
+          this.tag({
+            class: 'net.nanopay.invoice.ui.shared.SingleItemView',
+            data: self.data
+          });
+        })
+        .tag({
+          class: 'net.nanopay.invoice.ui.history.InvoiceHistoryView',
+          id: this.data.id
+        })
+      .br()
+      .start().addClass('light-roboto-h2')
+        .start('span').addClass('noteMargin').add(this.name).end()
+        .start('span').addClass('noteFont').add(this.data.note).end()
+      .end()
+      .br();
     },
 
     function openExportModal() {
-      this.add(this.Popup.create().tag({ class: 'net.nanopay.ui.modal.ExportModal', exportObj: this.data }));
+      this.add(this.Popup.create().tag({
+        class: 'net.nanopay.ui.modal.ExportModal',
+        exportObj: this.data
+      }));
     }
   ],
 
@@ -144,12 +211,14 @@ foam.CLASS({
       name: 'backAction',
       label: 'Back',
       code: function(X) {
-        X.stack.push({ class: 'net.nanopay.invoice.ui.SalesView' });
+        this.hideSummary = false;
+        X.stack.back();
       }
     },
     {
       name: 'exportButton',
       label: 'Export',
+      icon: 'images/ic-export.png',
       code: function(X) {
         X.openExportModal();
       }
@@ -160,10 +229,16 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          self.add(self.NotificationMessage.create({ message: this.verbTenseMsg + this.data.paymentMethod.label + '.', type: 'error' }));
+          self.add(self.NotificationMessage.create({
+            message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
+            type: 'error'
+          }));
           return;
         }
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal', invoice: this.data }));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
+          class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
+          invoice: this.data
+        }));
       }
     },
     {
@@ -193,10 +268,16 @@ foam.CLASS({
       var self = this;
       self.voidPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({ message: this.verbTenseMsg + this.data.paymentMethod.label + '.', type: 'error' }));
+        self.add(self.NotificationMessage.create({
+          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
+          type: 'error'
+        }));
         return;
       }
-      this.ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.invoice.ui.modal.DisputeModal', invoice: this.data }));
+      this.ctrl.add(this.Popup.create().tag({
+        class: 'net.nanopay.invoice.ui.modal.DisputeModal',
+        invoice: this.data
+      }));
     }
   ]
 });

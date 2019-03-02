@@ -6,7 +6,7 @@ foam.CLASS({
 
   javaImports: [
     'java.util.Date',
-    'net.nanopay.fx.model.ExchangeRateQuote'
+    'net.nanopay.fx.ExchangeRateQuote'
   ],
 
   properties: [

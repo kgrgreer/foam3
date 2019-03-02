@@ -10,8 +10,8 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import java.util.HashMap;
-import net.nanopay.model.BankAccount;
-import net.nanopay.model.BankAccountStatus;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 
 // Sends an email when a Bank Account is Verified
 public class AccountVerifiedEmailDAO
@@ -22,13 +22,21 @@ public class AccountVerifiedEmailDAO
   public AccountVerifiedEmailDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    userDAO_ = (DAO) x.get("localUserDAO");
+    userDAO_ = (DAO) x.get("bareUserDAO");
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
+    if ( ! ( obj instanceof BankAccount ) ) {
+      return super.put_(x, obj);
+    }
+
     BankAccount account    = (BankAccount) obj;
-    User        owner      = (User) userDAO_.find_(x, account.getOwner());
+    if ( ! account.getEnabled() ) {
+      return super.put_(x, obj);
+    }
+
+    User        owner      = (User) userDAO_.inX(x).find(account.getOwner());
     AppConfig   config     = (AppConfig) x.get("appConfig");
     BankAccount oldAccount = (BankAccount) find_(x, account.getId());
 
@@ -55,7 +63,7 @@ public class AccountVerifiedEmailDAO
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
 
     try {
-      email.sendEmailFromTemplate(owner, message, "verifiedBank", args);
+      email.sendEmailFromTemplate(x, owner, message, "verifiedBank", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
     }

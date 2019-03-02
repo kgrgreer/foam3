@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.kotak.com/schemas/CMS_Generic/Reversal.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.kotak.com/schemas/CMS_Generic/Reversal.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:complexType name="DetailsType">
+    <xs:sequence>
+      <xs:element name="Msg_Id" type="MinChar1_MaxChar20_ST" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="Rev_Detail" type="Rev_DetailType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="HeaderType">
+    <xs:sequence>
+      <xs:element name="Req_Id" type="MinChar1_MaxChar20_ST"/>
+      <xs:element name="Msg_Src" type="MinChar1_MaxChar20_ST"/>
+      <xs:element name="Client_Code" type="MinChar1_MaxChar10_ST"/>
+      <xs:element name="Date_Post" type="MinChar1_MaxChar20_ST"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Rev_DetailType">
+    <xs:sequence>
+      <xs:element name="Msg_Id" type="MinChar1_MaxChar20_ST"/>
+      <xs:element name="Status_Code" type="MinChar1_MaxChar10_ST"/>
+      <xs:element name="Status_Desc" type="xs:string"/>
+      <xs:element name="UTR" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="MinChar1_MaxChar10_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MinChar1_MaxChar20_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="20"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="Reversal">
+    <xs:sequence>
+      <xs:element name="Header" type="HeaderType"/>
+      <xs:element name="Details" type="DetailsType"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

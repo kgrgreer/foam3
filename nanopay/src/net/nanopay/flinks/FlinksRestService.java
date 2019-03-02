@@ -6,6 +6,9 @@ import java.net.URL;
 
 import foam.core.ContextAwareSupport;
 import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.logger.Logger;
+import foam.nanos.notification.Notification;
 import net.nanopay.flinks.model.*;
 
 //apach
@@ -24,7 +27,7 @@ import org.apache.http.client.config.RequestConfig;
 /**
  * The FlinksRestService is used to make a call to the Flinks
  */
-public class FlinksRestService 
+public class FlinksRestService
   extends ContextAwareSupport
 {
   public static final String REST_GET = "GET";
@@ -34,21 +37,9 @@ public class FlinksRestService
   public static final String ACCOUNTS_SUMMARY = "GetAccountsSummary";
   public static final String WAIT_SUMMARY = "WaitSummary";
   public static final String ACCOUNTS_DETAIL = "GetAccountsDetail";
+  public static final String ACCOUNTS_DETAIL_ASYNC = "GetAccountsDetailAsync";
   public static final String ACCOUNTS_STATEMENTS = "GetStatements";
   public static final String CHALLENGE = "Challenge";
-
-  private String address_;
-
-  public FlinksRestService() {
-    this(null, "8bc4718b-3780-46d0-82fd-b217535229f1");
-  }
-  public FlinksRestService(X x, String customerId) {
-    this(x, "https://nanopay-api.private.fin.ag/v3", customerId);
-  }
-  public FlinksRestService(X x, String url, String customerId) {
-    address_ = url + "/" + customerId + "/" + "BankingServices";
-    setX(x);
-  }
 
   public ResponseMsg serve(RequestMsg msg, String RequestInfo) {
     if ( RequestInfo.equals(AUTHORIZE) ) {
@@ -61,7 +52,7 @@ public class FlinksRestService
       return accountsSummaryService(msg);
     } else if ( RequestInfo.equals(ACCOUNTS_STATEMENTS) ) {
       return null;
-    } else if ( RequestInfo.equals(ACCOUNTS_DETAIL) ) {
+    } else if ( RequestInfo.equals(ACCOUNTS_DETAIL) || RequestInfo.equals(ACCOUNTS_DETAIL_ASYNC) ) {
       return accountsDetailService(msg);
     } else if ( RequestInfo.equals(WAIT_SUMMARY) ) {
       return null;
@@ -116,7 +107,7 @@ public class FlinksRestService
 
   public ResponseMsg accountsSummaryService(RequestMsg msg) {
     ResponseMsg resp = request(msg);
-    
+
     if ( resp.getHttpStatusCode() == 200 ) {
       resp.setModelInfo(FlinksAccountsSummaryResponse.getOwnClassInfo());
     } else {
@@ -126,6 +117,21 @@ public class FlinksRestService
   }
 
   private ResponseMsg request(RequestMsg req) {
+    DAO               notificationDAO = (DAO) getX().get("notificationDAO");
+    Logger            logger          = (Logger) getX().get("logger");
+    FlinksCredentials credentials     = (FlinksCredentials) getX().get("flinksCredentials");
+
+    if ( "".equals(credentials.getUrl()) || "".equals(credentials.getCustomerId()) ) {
+      logger.error("Flinks credentials not found");
+      Notification notification = new Notification.Builder(getX())
+        .setTemplate("NOC")
+        .setBody("Flinks credentials not found")
+        .build();
+      notificationDAO.put(notification);
+      return null;
+    }
+    String address_ = credentials.getUrl() + "/" + credentials.getCustomerId() + "/" + "BankingServices";
+
     BufferedReader rd = null;
     HttpEntity responseEntity = null;
     HttpResponse response = null;
@@ -138,12 +144,25 @@ public class FlinksRestService
         .setConnectionRequestTimeout(timeout*1000).build();
       client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
       client = HttpClientBuilder.create().build();
-      HttpPost post = new HttpPost(address_ + "/" + req.getRequestInfo());
-      post.setHeader("Connection","keep-alive");
-      post.setHeader("Content-Type","application/json");
-      HttpEntity entity = new ByteArrayEntity(req.getJson().getBytes("UTF-8"));
-      post.setEntity(entity);
-      response = client.execute(post);
+
+      String urlAddress = "";
+      if ( req.getRequestInfo().equals(ACCOUNTS_DETAIL_ASYNC) ) {
+        String requestId = ((FlinksAccountDetailAsyncRequest) req.getModel()).getRequestId();
+        urlAddress = address_ + "/" + req.getRequestInfo() + "/" + requestId;
+        HttpGet get = new HttpGet(urlAddress);
+        get.setHeader("Connection","keep-alive");
+        get.setHeader("Content-Type","application/json");
+        response = client.execute(get);
+      } else {
+        urlAddress = address_ + "/" + req.getRequestInfo();
+        HttpPost post = new HttpPost(urlAddress);
+        post.setHeader("Connection","keep-alive");
+        post.setHeader("Content-Type","application/json");
+        HttpEntity entity = new ByteArrayEntity(req.getJson().getBytes("UTF-8"));
+        post.setEntity(entity);
+        response = client.execute(post);
+      }
+
       int statusCode =  response.getStatusLine().getStatusCode();
       responseEntity = response.getEntity();
       rd = new BufferedReader(new InputStreamReader(responseEntity.getContent()));

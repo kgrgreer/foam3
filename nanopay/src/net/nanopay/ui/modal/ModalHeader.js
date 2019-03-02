@@ -19,67 +19,54 @@ foam.CLASS({
     'title'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-      ^{
-        width: 448px;
-        margin: auto;
-      }
-      ^ .container{
-        height: 40.8px;
-        background-color: #093649;
-        margin-bottom: 20px;
-      }
-      ^ .title{
-        height: 40px;
-        font-family: Roboto;
-        font-size: 14px;
-        line-height: 2.86;
-        text-align: left;
-        color: #ffffff;
-        margin-left: 19px;
-        display: inline-block;
-      }
-      ^ .close{
-        width: 24px;
-        height: 24px;
-        margin-top: 5px;
-        cursor: pointer;
-        position: relative;
-        top: 4px;
-        right: 20px;
-        float: right;
-      }
-      ^ .net-nanopay-ui-ActionView-closeModal{
-        position: relative;
-        right: 0px;
-        width: 50px;
-        height: 40px;
-        background: transparent;
-        margin-top: 0;
-        top: 0;
-        right: 0;
-      }
-    */}
-    })
-  ],
+  css: `
+    ^ {
+      height: 40.8px;
+      width: 448px;
+      background-color: #093649;
+      border-radius: 2px 2px 0 0;
+      margin: auto;
+    }
+    ^ .title {
+      height: 40px;
+      font-family: Roboto;
+      font-size: 14px;
+      line-height: 2.86;
+      text-align: left;
+      color: #ffffff;
+      margin-left: 19px;
+      display: inline-block;
+    }
+    ^ .close {
+      width: 24px;
+      height: 24px;
+      margin-top: 5px;
+      cursor: pointer;
+      position: relative;
+      top: 4px;
+      right: 20px;
+      float: right;
+    }
+    ^ .net-nanopay-ui-ActionView-closeModal {
+      position: relative;
+      right: 0px;
+      width: 50px;
+      height: 40px;
+      background: transparent;
+      margin-top: 0;
+      top: 0;
+      right: 0;
+    }
+  `,
 
   methods: [
-    function initE(){
-    this.SUPER();
-    var self = this;
+    function initE() {
+      this.SUPER();
 
-    this
-    .addClass(this.myClass())
-      .start()
-        .start()
-          .start().addClass('container')
-            .start().addClass('title').add(this.title).end()
-            .start(this.CLOSE_MODAL).addClass('close').end()
-          .end()
-        .end()
-      .end()
+      this
+        .addClass(this.myClass())
+        .start().addClass('title').add(this.title).end()
+        .start(this.CLOSE_MODAL).addClass('close').end();
     }
   ],
 
@@ -87,8 +74,8 @@ foam.CLASS({
     {
       name: 'closeModal',
       icon: 'images/ic-cancelwhite.svg',
-      code: function(X){
-        X.closeDialog()
+      code: function(X) {
+        X.closeDialog();
       }
     }
   ]

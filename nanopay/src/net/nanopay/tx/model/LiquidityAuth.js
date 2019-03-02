@@ -4,11 +4,29 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'liquifyUser',
+      name: 'liquifyAccount',
       args: [
         {
-          name: 'UserId',
-          javaType: 'long'
+          name: 'account',
+          type: 'Long'
+        },
+        {
+          name: 'frequency',
+          type: 'net.nanopay.tx.model.Frequency'
+        },
+        {
+          // helps determine if account balance went out of the range for the first time.
+          name: 'txnAmount',
+          type: 'Long'
+        }
+      ]
+    },
+    {
+      name: 'liquifyFrequency',
+      args: [
+        {
+          name: 'frequency',
+          type: 'net.nanopay.tx.model.Frequency'
         }
       ]
     }

@@ -5,10 +5,11 @@ foam.CLASS({
   documentation: 'model for Flinks account model',
 
   imports: [ 'bankAccountDAO' ],
-  
+
   javaImports: [
     'foam.dao.DAO',
-    'net.nanopay.model.BankAccount',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
     'java.util.Random'
   ],
 
@@ -35,7 +36,7 @@ foam.CLASS({
     },
     //maybe dangerous if property=null or property={}
     {
-      // javaType: 'net.nanopay.flinks.model.BalanceModel',
+      // type: 'net.nanopay.flinks.model.BalanceModel',
       // javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       // javaJSONParser: 'new foam.lib.json.FObjectParser(net.nanopay.flinks.model.BalanceModel.class)',
       class: 'FObjectProperty',
@@ -47,18 +48,16 @@ foam.CLASS({
   methods: [
     {
       name: 'generateBankAccount',
-      javaReturns: 'net.nanopay.model.BankAccount',
+      type: 'net.nanopay.bank.BankAccount',
       javaCode:
-        `DAO bankAccountDAO = (DAO) getX().get("bankAccountDAO");
-        BankAccount account = new BankAccount();
-        Random rand = new Random();
-        account.setId(rand.nextLong());
+        `DAO accountDAO = (DAO) getX().get("accountDAO");
+        BankAccount account = new CABankAccount();
         account.setX(getX());
         account.setAccountNumber(getAccountNumber());
-        account.setCurrencyCode(getCurrency());
-        account.setAccountName(getTitle());
+        account.setDenomination(getCurrency());
+        account.setName(getTitle());
         try {
-          bankAccountDAO.put(account);
+          account = (CABankAccount) accountDAO.put(account);
         } catch ( Throwable t ) {
           System.out.println("bank account same name");
         }

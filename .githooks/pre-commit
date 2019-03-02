@@ -21,8 +21,17 @@ fi
 function test_branchname {
     # Enforce NANOPAY branch naming conventions
     branch_name=`git rev-parse --abbrev-ref HEAD`
+    # ignore if commiting during REBASE
+    if [[ "$branch_name" =~ "HEAD" ]]; then
+        return;
+    fi
+    # merge state
+    merging=`git rev-parse -q --verify MERGE_HEAD`
+    if [[ -n "$merging" ]]; then
+        return;
+    fi
 
-    REGEX='^([fh]|[b]/[sd])/NP-[0-9]{1,}/[a-zA-Z0-9_\-]*$'
+    REGEX='^([fh]|[b]/[sd])/[A-Z]{1,}-[0-9]{1,}/[a-zA-Z0-9_\-]*$'
     if [[ ! "$branch_name" =~ $REGEX ]]; then
 	cat <<\EOF
 Error: Invalid branch name.

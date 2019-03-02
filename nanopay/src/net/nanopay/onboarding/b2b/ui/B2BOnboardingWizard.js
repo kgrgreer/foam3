@@ -8,10 +8,11 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
-    'net.nanopay.admin.model.AccountStatus',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone'
+    'foam.nanos.auth.Phone',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
@@ -34,14 +35,14 @@ foam.CLASS({
   ],
 
   axioms: [
-    foam.u2.CSS.create({code: net.nanopay.ui.wizard.WizardView.getAxiomsByClass(foam.u2.CSS)[0].code})
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
 
   properties: [
     {
       class: 'String',
       name: 'nextLabel',
-      expression: function (position) {
+      expression: function(position) {
         return ( position < this.views.length - 2 ) ? 'Next' : 'Submit';
       }
     },
@@ -72,7 +73,8 @@ foam.CLASS({
     { name: 'ErrorMiddleNameTooLong', message: 'Middle name cannot exceed 70 characters.' },
     { name: 'ErrorMiddleNameDigits', message: 'Middle name cannot contain numbers.' },
     { name: 'ErrorLastNameTooLong', message: 'Last name cannot exceed 70 characters.' },
-    { name: 'ErrorLastNameDigits', message: 'Last name cannot contain numbers.' }
+    { name: 'ErrorLastNameDigits', message: 'Last name cannot contain numbers.' },
+    { name: 'ErrorTermsAndConditionsMessage', message: 'Please accept the terms and conditions.' }
   ],
 
   methods: [
@@ -89,9 +91,9 @@ foam.CLASS({
         { parent: 'addB2BUser', id: 'form-addB2BUser-confirmAdminInfo', label: 'Confirm Admin Info', view: { class: 'net.nanopay.onboarding.b2b.ui.ConfirmAdminInfoForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-businessProfile', label: 'Business Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.BusinessProfileForm' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-principalOwner', label: 'Principal Owner(s) Profile', view: { class: 'net.nanopay.onboarding.b2b.ui.AddPrincipalOwnersForm' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire',  label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } },
+        { parent: 'addB2BUser', id: 'form-addB2BUser-questionnaire', label: 'Questionnaire', view: { class: 'net.nanopay.onboarding.b2b.ui.QuestionnaireForm', id: 'b2b' } },
         { parent: 'addB2BUser', id: 'form-addB2BUser-reviewAndSubmit', label: 'Review and Submit', view: { class: 'net.nanopay.onboarding.b2b.ui.ReviewAndSubmitForm' } },
-        { parent: 'addB2BUser', id: 'form-addB2BUser-profileSubmitted', label: this.user.status$.map(function (status) {
+        { parent: 'addB2BUser', id: 'form-addB2BUser-profileSubmitted', label: this.user.status$.map(function(status) {
           switch ( status ) {
             case self.AccountStatus.ACTIVE:
               return 'Registration has been approved.';
@@ -107,7 +109,7 @@ foam.CLASS({
     },
 
     function logOutHandler(selection) {
-      switch(selection) {
+      switch ( selection ) {
         case 0:
           this.logOut();
           break;
@@ -128,7 +130,7 @@ foam.CLASS({
         self.user.copyFrom(result);
         self.add(self.NotificationMessage.create({ message: self.SaveSuccessfulMessage }));
         if ( andLogout ) self.logOut();
-      }).catch(function(err){
+      }).catch(function(err) {
         self.add(self.NotificationMessage.create({ message: self.SaveFailureMessage, type: 'error' }));
       });
     },
@@ -138,13 +140,14 @@ foam.CLASS({
 
       this.user = this.viewData.user;
       this.user.status = this.AccountStatus.SUBMITTED;
+      this.user.compliance = this.ComplianceStatus.REQUESTED;
 
-      this.userDAO.put(this.user).then(function (result) {
+      this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SubmitFailureMessage);
         self.user.copyFrom(result);
         self.add(self.NotificationMessage.create({ message: self.SubmitSuccessMessage }));
         // self.subStack.push(self.views[self.subStack.pos + 1].view);
-      }).catch(function (err) {
+      }).catch(function(err) {
         self.add(self.NotificationMessage.create({ message: self.SubmitFailureMessage, type: 'error' }));
       });
     },
@@ -159,7 +162,7 @@ foam.CLASS({
 
     function validateAdminInfo() {
       var editedUser = this.viewData.user;
-      if ( ! editedUser.firstName) {
+      if ( ! editedUser.firstName ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorMissingFields, type: 'error' }));
         return false;
       }
@@ -184,7 +187,7 @@ foam.CLASS({
         }
       }
 
-      if ( ! editedUser.lastName) {
+      if ( ! editedUser.lastName ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorMissingFields, type: 'error' }));
         return false;
       }
@@ -233,12 +236,12 @@ foam.CLASS({
 
       // By pass for safari & mozilla type='date' on input support
       // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-      if( isNaN(businessProfile.businessRegistrationDate) && businessProfile.businessRegistrationDate != null ){
+      if ( isNaN(businessProfile.businessRegistrationDate) && businessProfile.businessRegistrationDate != null ) {
         this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Registration Date yyyy-mm-dd.', type: 'error' }));
         return;
       }
 
-      if ( ! businessProfile.businessRegistrationDate  || businessProfile.businessRegistrationDate > new Date()) {
+      if ( ! businessProfile.businessRegistrationDate || businessProfile.businessRegistrationDate > new Date() ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileRegistrationDateMessage, type: 'error' }));
         return false;
       }
@@ -264,7 +267,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! this.validatePostalCode(businessAddress.postalCode) ) {
+      if ( ! this.validatePostalCode(businessAddress.postalCode, businessAddress.countryId) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePostalCodeMessage, type: 'error' }));
         return false;
       }
@@ -286,6 +289,19 @@ foam.CLASS({
         }
       });
       return valid;
+    },
+
+    function validateTermAndCondition() {
+      var valid = true;
+      var checkBox = document.getElementsByClassName('foam-u2-md-CheckBox')[0];
+      if ( checkBox.checked === false ) {
+        this.add(this.NotificationMessage.create({
+            message: this.ErrorTermsAndConditionsMessage,
+            type: 'error'
+        }));
+        valid = false;
+      }
+      return valid;
     }
   ],
 
@@ -302,7 +318,7 @@ foam.CLASS({
     },
     {
       name: 'save',
-      isAvailable: function (position) {
+      isAvailable: function(position) {
         return ( position < this.views.length - 1 );
       },
       code: function() {
@@ -321,7 +337,7 @@ foam.CLASS({
     },
     {
       name: 'goNext',
-      isAvailable: function (position) {
+      isAvailable: function(position) {
         return ( position < this.views.length - 1 );
       },
       code: function() {
@@ -346,9 +362,13 @@ foam.CLASS({
               this.addPrincipalOwnersForm.addPrincipalOwner();
             }
           }
-          if ( this.position == 3) {
+          if ( this.position === 3 ) {
             // validate Questionnaire
             if ( ! this.validateQuestionnaire() ) return;
+          }
+          // validate checkbox
+          if ( this.position === 4 ) {
+            if ( ! this.validateTermAndCondition() ) return;
           }
 
           this.subStack.push(this.views[this.subStack.pos + 1].view);

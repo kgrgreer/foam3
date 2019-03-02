@@ -5,12 +5,16 @@ foam.CLASS({
   properties: [
     {
       class: 'foam.core.Enum',
-      of: 'net.nanopay.cico.model.PaymentType',
+      of: 'net.nanopay.cico.CICOPaymentType',
       name: 'type'
     },
     {
       class: 'String',
       name: 'token'
+    },
+    {
+      class: 'Currency',
+      name: 'fee'
     },
     {
       class: 'Long',
@@ -29,7 +33,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      targetDAOKey: 'currencyDAO',
+      // targetDAOKey: 'currencyDAO',
       name: 'currencyId',
       of: 'net.nanopay.model.Currency'
     }

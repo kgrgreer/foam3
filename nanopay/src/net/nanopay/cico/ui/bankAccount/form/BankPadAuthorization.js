@@ -4,251 +4,41 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form to input bank account details.',
-  
-  import:[
-    'user',
-    'form',
-    'viewData',
-    'regionDAO',
-    'countryDAO',
-    'window'
+
+  requires: [
+    'foam.nanos.auth.Address'
   ],
-  css: `
-    ^ .col {
-      display: inline-block;
-      width: 357px;
-      vertical-align: top;
-    }
 
-    ^ .colSpacer {
-      margin-left: 30px;
-    }
-
-    ^ input[type=number]::-webkit-inner-spin-button,
-      input[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    ^ .foam-u2-tag-Select {
-      width: 100%;
-      height: 40px;
-      border-radius: 0;
-
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-
-      padding: 0 15px;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      background-color: white;
-      outline: none;
-    }
-
-    ^ .institutionContainer {
-      position: relative;
-    }
-
-    ^ .foam-u2-tag-Select:hover {
-      cursor: pointer;
-    }
-
-    ^ .foam-u2-tag-Select:focus {
-      border: solid 1px #59A5D5;
-    }
-
-    ^ .foam-u2-TextField {
-      outline: none;
-      height: 40px;
-      padding: 10px;
-    }
-
-    ^ .instituteOtherMargin {
-      margin-left: 150px;
-    }
-
-    ^ .headings {
-      font-family: Roboto;
-      font-size: 14px;
-      font-weight: bold;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #093649;
-      padding-bottom: 6px;
-      margin: 14px 0px ;
-
-    }
-    
-    ^ .messageBody {
-      font-size: 12px;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.5;
-      letter-spacing: 0.3px;
-      text-align: left;
-      color: #093649;
-      margin-top:0px
-    }
-    ^ .full-width-input{
-      width: 498px;
-      left: -26px;
-      position: relative;
-      font-size: 14px;
-      margin-top: 8px;
-    }
-    ^ .inputLarge{
-      margin-bottom: 20px;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-    ^ .full-width-input-label{
-      width: 474px;
-      height: 17px;
-      position: relative;
-      font-size: 14px;
-      margin: 8px 0px 20px 0px;
-    }
-    ^ .inputLarge-label{
-      height: 17px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      margin-top: 10px;
-      width: 196px
-    }
-    ^ .regionContainer {
-      position: relative;
-      margin-bottom: 20px;
-    }
-    ^ .countryContainer {
-      position: relative;
-      margin-bottom: 20px;
-    }
-    ^ .caret {
-      position: relative;
-    }
-    ^ .caret:before {
-      content: '';
-      position: absolute;
-      top: -32px;
-      left: 190px;
-      border-top: 7px solid #a4b3b8;
-      border-left: 7px solid transparent;
-      border-right: 7px solid transparent;
-    }
-    ^ .caret:after {
-      content: '';
-      position: absolute;
-      left: 12px;
-      top: 0;
-      border-top: 0px solid #ffffff;
-      border-left: 0px solid transparent;
-      border-right: 0px solid transparent;
-    }
-    ^ .longcaret {
-      position: relative;
-    }
-    ^ .longcaret:before {
-      content: '';
-      position: absolute;
-      top: -32px;
-      left: 472px;
-      border-top: 7px solid #a4b3b8;
-      border-left: 7px solid transparent;
-      border-right: 7px solid transparent;
-    }
-    ^ .longcaret:after {
-      content: '';
-      position: absolute;
-      left: 12px;
-      top: 0;
-      border-top: 0px solid #ffffff;
-      border-left: 0px solid transparent;
-      border-right: 0px solid transparent;
-    }
-    ^ .property-region{
-      padding: 10px 0px;
-      width: 218px;
-    }
-    ^ .property-country{
-      padding: 10px 0px;
-      width: 497px;
-    }
-    ^ .infoContainer-wizard{
-      width: 496px;
-      background: white;
-      border-radius: 2px;
-      overflow-y: scroll;
-      padding: 20px;
-    }
-    ^ .notEditable{
-      font-size: 12px;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.17;
-      letter-spacing: 0.2px;
-      background-color: #ffffff;
-      color: #a4b3b8;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      padding: 10px;
-    }
-    ^ .header{
-      padding-bottom: 10px;
-      font-size: 12px;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.17;
-      letter-spacing: 0.2px;
-      background-color: #ffffff;
-    }
-    ^ .link{
-      color: #59a5d5;
-    }
-    ^ .pDefault{
-      margin-bottom: 14 !important;
-    }
-
-    ^ .address2Hint {
-      height: 14px;
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.17;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #093649;
-      margin-top: -15px;
-      margin-bottom: 15px;
-    }
-  `,
+  axioms: [
+    { class: 'net.nanopay.cico.ui.bankAccount.form.BankPADAuthorizationCSSAxiom' },
+  ],
 
   messages: [
-    { name: 'Step1',                message: 'Step ' },
-    { name: 'Step2',                message: ' :Pre-authorized debit confirmation' },
-    { name: 'LabelFirstName',       message: 'First Name' },
-    { name: 'LabelLastName',        message: 'Last Name' },
-    { name: 'LabelCountry',         message: 'Country' },
-    { name: 'LabelStreetNumber',    message: 'Street Number' },
-    { name: 'LabelStreetName',      message: 'Street Name' },
-    { name: 'LabelAddress2',         message: 'Address 2 (optional)' },
-    { name: 'Address2Hint',          message: 'Apartment, suite, unit, building, floor, etc.' },
-    { name: 'LabelCity',            message: 'City' },
-    { name: 'LabelRegion',          message: 'Region' },
-    { name: 'LabelPostal',          message: 'Postal Code' },
-    { name: 'LabelAccount',         message: 'Account Number' },
-    { name: 'LabelInstitute',       message: 'Institution Number' },
-    { name: 'LabelTransit',         message: 'Transit Number' },    
-    { name: 'TC1',                  message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.'},
-    { name: 'TC2',                  message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit '},
-    { name: 'TC3',                  message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting '},
-    { name: 'link',                 message: 'www.payments.ca.'},
+    { name: 'Step1', message: 'Step ' },
+    { name: 'Step2', message: ' :Pre-authorized debit confirmation' },
+    { name: 'LabelFirstName', message: 'First Name' },
+    { name: 'LabelLastName', message: 'Last Name' },
+    { name: 'LabelCountry', message: 'Country' },
+    { name: 'LabelStreetNumber', message: 'Street Number' },
+    { name: 'LabelStreetName', message: 'Street Name' },
+    { name: 'LabelAddress2', message: 'Address 2 (optional)' },
+    { name: 'Address2Hint', message: 'Apartment, suite, unit, building, floor, etc.' },
+    { name: 'LabelCity', message: 'City' },
+    { name: 'LabelRegion', message: 'Region' },
+    { name: 'LabelPostal', message: 'Postal Code' },
+    { name: 'LabelAccount', message: 'Account Number' },
+    { name: 'LabelInstitute', message: 'Institution Number' },
+    { name: 'LabelTransit', message: 'Transit Number' },
+    { name: 'TC1', message: 'I authorize nanopay Corporation to withdraw from my (debit)account with the financial institution listed above from time to time for the amount that I specify when processing a one-time ("sporadic") pre-authorized debit.' },
+    { name: 'TC2', message: 'I have certain recourse rights if any debit does not comply with this agreement. For example, I have right to receive reimbursement for any debit that is not authorized or is not consistent with the PAD Agreement. To obtain more information on my recourse rights, I may contact my financial institution or visit ' },
+    { name: 'TC3', message: 'This Authorization may be cancelled at any time upon notice being provided by me, either in writing or orally, with proper authorization to verify my identity. I acknowledge that I can obtain a sample cancellation form or further information on my right to cancel this Agreement from nanopay Corporation or by visiting ' },
+    { name: 'link', message: 'www.payments.ca.' },
+    { name: 'Accept', message: 'I Agree' },
+    { name: 'Back', message: 'Back' },
+    { name: 'BANK_ADDRESS_TITLE', message: 'Bank Branch Address' }
 
   ],
-  properties:[
+  properties: [
     {
       class: 'String',
       name: 'firstName',
@@ -313,13 +103,16 @@ foam.CLASS({
       name: 'country',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
-        var choices = X.countryDAO.where(expr.EQ(foam.nanos.auth.Country.CODE, 'CA'));
+
         return foam.u2.view.ChoiceView.create({
-          dao: choices,
-          objToChoice: function(a){
+          dao: X.countryDAO
+            .where(expr.
+              EQ(foam.nanos.auth.Country.CODE, 'CA')
+            ),
+          objToChoice: function(a) {
             return [a.id, a.name];
           }
-        })
+        });
       },
       factory: function() {
         return this.viewData.user.address.countryId;
@@ -332,12 +125,16 @@ foam.CLASS({
       name: 'region',
       view: function(_, X) {
         var expr = foam.mlang.Expressions.create();
+
         return foam.u2.view.ChoiceView.create({
-          dao: X.regionDAO.where(expr.EQ(foam.nanos.auth.Region.COUNTRY_ID, 'CA')),
-          objToChoice: function(a){
+          dao: X.regionDAO
+            .where(expr
+              .EQ(foam.nanos.auth.Region.COUNTRY_ID, 'CA')
+            ),
+          objToChoice: function(a) {
             return [a.id, a.name];
           }
-        })
+        });
       },
       factory: function() {
         return this.viewData.user.address.regionId;
@@ -356,15 +153,29 @@ foam.CLASS({
         this.viewData.user.address.postalCode = newValue;
       }
     },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'bankAddress',
+      documentation: `Bank account address.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      postSet: function(oldValue, newValue) {
+        this.viewData.bankAddress = newValue;
+      }
+    }
   ],
   methods: [
     function initE() {
       this.SUPER();
       var self = this;
+      this.nextLabel = this.Accept;
+      this.backLabel = this.Back;
       this.viewData.agree1 = this.TC1;
       this.viewData.agree2 = this.TC2;
       this.viewData.agree3 = this.TC3;
-
       this
         .addClass(this.myClass())
         .start('div').addClass('row').addClass('rowTopMarginOverride')
@@ -424,23 +235,25 @@ foam.CLASS({
           .end()
 
           .start('p').add('Banking Info').addClass('headings').end()
-          .start('div').forEach( this.viewData.bankAccount, function(data, index){
+          .start('div').forEach( this.viewData.bankAccounts, function(account, index) {
             this
-            .callIf( ! (self.viewData.bankAccount.length === 1), function(){
-              this.start().add('Account '+ (index+1) ).addClass('header').end()
-            }) 
+            .callIf( self.viewData.bankAccounts.length > 1, function() {
+              this.start().add('Account ' + (index + 1)).addClass('header').end();
+            })
             .start().addClass('inline')
               .start().add(self.LabelInstitute).addClass('infoLabel').end()
-              .start().add(data.institutionNumber).addClass('notEditable').addClass('full-width-input-label').end()
+              .start().add(account.institutionNumber).addClass('notEditable').addClass('full-width-input-label').end()
             .end()
             .start().addClass('inline')
               .start().add(self.LabelTransit).addClass('infoLabel').end()
-              .start().add(data.transitNumber).addClass('notEditable').addClass('inputLarge-label').end()
+              .start().add(account.branchId).addClass('notEditable').addClass('inputLarge-label').end()
             .end()
             .start().addClass('inline').addClass('float-right')
               .start().add(self.LabelAccount).addClass('infoLabel').end()
-              .start().add(data.accountNumber).addClass('notEditable').addClass('inputLarge-label').end()
+              .start().add(account.accountNumber).addClass('notEditable').addClass('inputLarge-label').end()
             .end()
+            .start().addClass('headings').add(self.BANK_ADDRESS_TITLE).end()
+            .start().add(self.BANK_ADDRESS).end();
           }).end()
 
           .start('div').addClass('row').addClass('rowTopMarginOverride')
@@ -450,19 +263,19 @@ foam.CLASS({
             .end()
             .start('p')
               .add('Recourse/Reimbursement').addClass('headings')
-              .start('p').addClass('messageBody').add(this.TC2).start('a').addClass('messageBody').addClass('link').add(this.link).on('click',this.goToPayment).end().end()
+              .start('p').addClass('messageBody').add(this.TC2).start('a').addClass('messageBody').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
             .end()
             .start('p')
               .add('Cancellation').addClass('headings')
-              .start('p').addClass('messageBody').add(this.TC3).start('a').addClass('messageBody').addClass('link').add(this.link).on('click',this.goToPayment).end().end()
+              .start('p').addClass('messageBody').add(this.TC3).start('a').addClass('messageBody').addClass('link').add(this.link).on('click', this.goToPayment).end().end()
             .end()
-          .end() 
-        .end()
+          .end()
+        .end();
     }
   ],
   listeners: [
-    function goToPayment () {
-      window.open('https://www.payments.ca','_blank');
+    function goToPayment() {
+      window.open('https://www.payments.ca', '_blank');
     },
  ]
 });

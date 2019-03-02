@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Form for reviewing details of a new user before adding',
 
   imports: [
+    'appConfig',
     'businessTypeDAO',
     'countryDAO',
     'regionDAO',
@@ -57,8 +58,69 @@ foam.CLASS({
       padding: 0;
       height: inherit;
     }
-    ^ .foam-nanos-auth-ProfilePictureView{
+    ^ .foam-nanos-auth-ProfilePictureView {
       width: 150px;
+    }
+    ^ .termAndCondition {
+      width: 354px;
+      height: 16px;
+      font-size: 14px;
+      letter-spacing: 0.2px;
+      color: #093649;
+      margin: 20px;
+    }
+    ^ .termAndConditionBox {
+      background-color: white;
+      width: 540px;
+      height: 400px;
+    }
+    ^ .iframeContainer {
+      width: 540px;
+      height: 320;
+      border-width: 0px;
+    }
+    ^ .checkBoxDiv {
+      float: right;
+      text-align: right;
+      margin-top: 15px;
+      margin-right: 20px;
+      color: #a4b3b8;
+    }
+    ^ .net-nanopay-ui-ActionView-printButton {
+      height: 40px;
+      width: 70px;
+      margin-top: 15px;
+      margin-left: 20px;
+    }
+    ^ .net-nanopay-ui-ActionView-printButton span{
+      margin-left: 5px;
+    }
+    ^ .checkBoxLabel.enabled {
+      color: #093649
+    }
+    ^ .foam-u2-md-CheckBox {
+      width: 14px;
+      height: 14px;
+      margin-bottom: 1px;
+      vertical-align: bottom;
+      border: solid 1px #a4b3b8;
+    }
+    ^ .foam-u2-md-CheckBox.enabled {
+      border: solid 1px #093649;
+    }
+    ^ .foam-u2-md-CheckBox:checked {
+      background-color: #093649;
+    }
+    ^ .foam-u2-md-CheckBox:checked:after {
+      background-image: url("images/check-mark.png");
+      background-size: 12px 13px;
+      display: inline-block;
+      width: 12px; 
+      height: 13px;
+      content:"";
+    }
+    ^ .hint {
+      margin-top: 7px;
     }
   `,
 
@@ -68,22 +130,34 @@ foam.CLASS({
     { name: 'BoxTitle1', message: '1. Business Profile' },
     { name: 'BoxTitle2', message: '2. Principal Owner(s) Profile' },
     { name: 'BoxTitle3', message: '3. Questionaire' },
-    { name: 'EditLabel', message: 'Edit'},
+    { name: 'BoxTitle4', message: '4. Terms & Conditions' },
+    { name: 'EditLabel', message: 'Edit' },
     { name: 'BusiNameLabel', message: 'Registered Business Name' },
     { name: 'BusiPhoneLabel', message: 'Business Phone' },
     { name: 'BusiWebsiteLabel', message: 'Website (optional)' },
     { name: 'BusiTypeLabel', message: 'Business Type' },
     { name: 'BusiRegNumberLabel', message: 'Business Registration Number' },
-    { name: 'BusiRegAuthLabel', message: 'Registration Authority'},
+    { name: 'BusiRegAuthLabel', message: 'Registration Authority' },
     { name: 'BusiRegDateLabel', message: 'Registration Date' },
     { name: 'BusiAddressLabel', message: 'Business Address' },
     { name: 'BusiLogoLabel', message: 'Business Logo (optional)' }
   ],
 
   properties: [
-    'businessTypeName',
+    'businessCountry',
     'businessRegion',
-    'businessCountry'
+    'businessTypeName',
+    'fileHeight',
+    {
+      class: 'Boolean',
+      name: 'checkBox',
+      factory: function() {
+        return this.viewData.checkBox;
+      },
+      postSet: function(o, n) {
+        this.viewData.checkBox = n;
+      }
+    }
   ],
 
   methods: [
@@ -112,7 +186,7 @@ foam.CLASS({
           // Business Profile
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle1).addClass('wizardBoxTitleLabel').end()
-            .start(this.EDIT_BUSINESS_PROFILE, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
+            .start(this.EDIT_BUSINESS_PROFILE).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.businessName).end()
@@ -150,10 +224,10 @@ foam.CLASS({
           // Principal Owner's Profile
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle2).addClass('wizardBoxTitleLabel').end()
-            .start(this.EDIT_PRINCIPAL_OWNER, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
+            .start(this.EDIT_PRINCIPAL_OWNER).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('div')
-            .forEach(this.viewData.user.principalOwners, function (data, index) {
+            .forEach(this.viewData.user.principalOwners, function(data, index) {
               self
               .start('p').add('Principal Owner ' + (index+1).toString()).addClass('principalOwnerLabel').end()
               .start().addClass('principalOwnerContainer')
@@ -168,7 +242,7 @@ foam.CLASS({
                 .start('p').add('Principal Type').addClass('wizardBoldLabel').end()
                 .start('p').add(data.principleType).end()
                 .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
-                .start('p').add(data.birthday.toISOString().substring(0,10)).end()
+                .start('p').add(data.birthday.toISOString().substring(0, 10)).end()
                 .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
                 .start('p').add(
                     (data.address.suite ? data.address.suite + '-' : '')
@@ -176,6 +250,7 @@ foam.CLASS({
                   + data.address.streetName + ', '
                   + data.address.city + ', '
                   + data.address.regionId + ', '
+                  + data.address.countryId + ', '
                   + data.address.postalCode
                 ).addClass('addressDiv').end()
               .end();
@@ -185,15 +260,82 @@ foam.CLASS({
           // Questionaire
           .start().addClass('wizardBoxTitleContainer')
             .start().add(this.BoxTitle3).addClass('wizardBoxTitleLabel').end()
-            .start(this.EDIT_QUESTIONAIRE, { showLabel: true }).addClass('editImage').addClass('editLabel').end()
+            .start(this.EDIT_QUESTIONAIRE).addClass('editImage').addClass('editLabel').end()
           .end()
           .start('div')
-          .forEach(this.viewData.user.questionnaire.questions, function (question) {
+          .forEach(this.viewData.user.questionnaire.questions, function(question) {
             self
               .start('p').add(question.question).addClass('wizardBoldLabel').end()
-              .start('p').add(question.response).end()
+              .start('p').add(question.response).end();
           }).end()
+
+          // Terms and conditions
+          .start().addClass('wizardBoxTitleContainer')
+            .start().add(this.BoxTitle4).addClass('wizardBoxTitleLabel').end()
+          .end()
+          .start().addClass('termAndCondition')
+            .add('Please agree on the Terms & Conditions before submit.')
+          .end()
+          .start()
+            .addClass('termAndConditionBox')
+            .start('iframe').addClass('iframeContainer')
+              .attrs({
+                  src: this.appConfig.url + 'service/terms',
+                  id: 'print-iframe',
+                  name: 'print-iframe',
+              })
+              .on('load', this.getFileHeight)
+            .end()
+            .start(this.PRINT_BUTTON).addClass('plainAction')
+              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-print.svg' })
+              .end()
+            .end()
+            .start().addClass('checkBoxDiv')
+              .start({ class: 'foam.u2.md.CheckBox' },
+                  { mode: foam.u2.DisplayMode.DISABLED,
+                  data$: this.checkBox$ })
+              .end()
+              .start('label').addClass('checkBoxLabel')
+                .add('I agree to the Terms & Conditions')
+              .end()
+              .start().addClass('hint')
+                .add('*Scroll to the bottom to agree.')
+              .end()
+            .end()
+          .end()
         .end();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'getFileHeight',
+      code: function() {
+        var container
+            = document.getElementsByClassName('iframeContainer')[0];
+        this.fileHeight = container.contentDocument.body.scrollHeight;
+        container.contentDocument.onscroll = this.checkScrollPosition;
+      }
+    },
+    {
+      name: 'checkScrollPosition',
+      code: function() {
+        var container
+            = document.getElementsByClassName('iframeContainer')[0];
+        var pos = container.contentDocument.scrollingElement.scrollTop;
+
+        // If user scroll to the bottom of the terms & conditions
+        if ( pos + container.contentWindow.innerHeight >= this.fileHeight ) {
+          var checkBox
+              = document.getElementsByClassName('foam-u2-md-CheckBox')[0];
+          checkBox.removeAttribute('disabled');
+          checkBox.classList.add('enabled');
+
+          var checkBoxLabel
+              = document.getElementsByClassName('checkBoxLabel')[0];
+          checkBoxLabel.classList.add('enabled');
+        }
+      }
     }
   ],
 
@@ -221,8 +363,14 @@ foam.CLASS({
       code: function(X) {
         this.goTo(3);
       }
+    },
+    {
+      name: 'printButton',
+      label: 'Print',
+      code: function(X) {
+        X.window.frames['print-iframe'].focus();
+        X.window.frames['print-iframe'].print();
+      }
     }
-
   ]
-
 });

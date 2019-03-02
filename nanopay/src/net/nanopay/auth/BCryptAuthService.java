@@ -4,13 +4,12 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.auth.AuthService;
+import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.ProxyAuthService;
 import foam.nanos.auth.User;
 import foam.nanos.session.Session;
 import foam.util.Password;
 import org.mindrot.jbcrypt.BCrypt;
-
-import javax.naming.AuthenticationException;
 
 import static foam.mlang.MLang.EQ;
 
@@ -37,7 +36,7 @@ public class BCryptAuthService
   @Override
   public void start() {
     userDAO_ = (DAO) getX().get("localUserDAO");
-    sessionDAO_ = (DAO) getX().get("sessionDAO");
+    sessionDAO_ = (DAO) getX().get("localSessionDAO");
   }
 
   @Override

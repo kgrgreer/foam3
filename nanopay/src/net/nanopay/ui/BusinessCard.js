@@ -125,7 +125,7 @@ foam.CLASS({
             .end()
             .start().addClass('generic-status').addClass('Invoice-Status-Paid')
              .add(this.business$.map(function(a) {
-               if ( ! a.status) return;
+               if( ! a.status ) return;
                return a.status.label;
               }))
             .end()

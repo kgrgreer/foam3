@@ -4,9 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   imports: [
-    'bankImgs',
     'form',
     'isConnecting',
+    'loadingSpinner',
+    'rollBackView',
     'viewData'
   ],
   requires: [
@@ -80,7 +81,7 @@ foam.CLASS({
           min-width: 136px;
           height: 40px;
           border-radius: 2px;
-          background-color: rgba(164, 179, 184, 0.1);
+          // background-color: rgba(164, 179, 184, 0.1);
           box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
           font-size: 12px;
           font-weight: lighter;
@@ -122,30 +123,27 @@ foam.CLASS({
       name: 'answerCheck',
     },
     {
-      Class: 'Array',
-      name: 'questionCheck',
-    },
-    {
       Class: 'Int',
       name: 'tick',
-      value: -10000000
+      value: - 10000000
     }
   ],
 
   messages: [
     { name: 'Step', message: 'Step3: Please response below security challenges' },
-    { name: 'header1', message: 'Please answer below multiple choices(may have multiple answers): '},
-    { name: 'answerError', message: 'Invalid answer'}
+    { name: 'header1', message: 'Please answer below multiple choices(may have multiple answers): ' },
+    { name: 'answerError', message: 'Invalid answer' }
   ],
 
   methods: [
     function init() {
-      var self = this;
       this.SUPER();
-      this.viewData.questions = new Array(this.viewData.SecurityChallenges.length);
-      this.viewData.answers = new Array(this.viewData.SecurityChallenges.length);
-      this.answerCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
-      this.questionCheck = new Array(this.viewData.SecurityChallenges.length).fill(false);
+      this.viewData.questions =
+        new Array(this.viewData.SecurityChallenges.length);
+      this.viewData.answers =
+        new Array(this.viewData.SecurityChallenges.length);
+      this.answerCheck =
+        new Array(this.viewData.SecurityChallenges.length).fill(false);
     },
     function initE() {
       this.SUPER();
@@ -156,45 +154,54 @@ foam.CLASS({
         .add(this.Step)
       .end()
       .start('div').addClass('subTitleFlinks')
-        .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
-        .start('p').add(this.header1).addClass('header1').style({'margin-left':'20px'}).end()
+        .tag({
+          class: 'net.nanopay.flinks.view.form.FlinksSubHeader',
+          secondImg: this.viewData.selectedInstitution.image
+        })
+        .start('p').add(this.header1).addClass('header1').style({ 'margin-left': '20px' }).end()
         .start('div').addClass('qa-block')
-          .forEach(this.viewData.SecurityChallenges, function(item, index){
+          .forEach(this.viewData.SecurityChallenges, function(item, index) {
             self.viewData.questions[index] = item.Prompt;
             var attachElement;
             if ( item.Type === 'MultipleChoice' ) {
-              attachElement = self.RadioView.create({choices : item.Iterables});
-              attachElement.data$.sub(function(){
-                self.viewData.answers[index] = new Array(1).fill(attachElement.data);
-                if ( ! attachElement.data || attachElement.data.trim().length === 0 ) {
+              attachElement = self.RadioView.create({
+                choices: item.Iterables
+              });
+              attachElement.data$.sub(function() {
+                var data = attachElement.data;
+                self.viewData.answers[index] =
+                new Array(1).fill(data);
+                if ( ! data || data.trim().length === 0 ) {
                   self.answerCheck[index] = false;
                 } else {
                   self.answerCheck[index] = true;
                 }
-                self.tick++;
+                self.tick ++;
               });
             } else {
-              attachElement = self.CheckBoxes.create({choices : item.Iterables});
-              attachElement.data$.sub(function(){
+              attachElement = self.CheckBoxes.create({
+                choices: item.Iterables
+              });
+              attachElement.data$.sub(function() {
                 self.viewData.answers[index] = attachElement.data;
                 if ( attachElement.data.length === 0 ) {
                   self.answerCheck[index] = false;
                 } else {
                   self.answerCheck[index] = true;
                 }
-                self.tick++;
-              })
+                self.tick ++;
+              });
             }
             this.start('p').addClass('question').add(self.viewData.questions[index]).end();
-            this.start(attachElement).style({'margin-top':'5px'}).end();
+            this.start(attachElement).style({ 'margin-top': '5px' }).end();
           })
         .end()
       .end()
-      .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+      .start('div').style({ 'margin-top': '15px', 'height': '40px' })
         .tag(this.NEXT_BUTTON)
         .tag(this.CLOSE_BUTTON)
       .end()
-      .start('div').style({'clear' : 'both'}).end();
+      .start('div').style({ 'clear': 'both' }).end();
     }
   ],
 
@@ -203,22 +210,21 @@ foam.CLASS({
       name: 'nextButton',
       label: 'Continue',
       isEnabled: function(tick, isConnecting, answerCheck) {
-        for ( var x in answerCheck ) {
-          if ( answerCheck[x] === false ) return false;
-        }
-        if ( isConnecting == true ) return false;
-        return true;
+        var isAllAnswered = answerCheck
+          .reduce((allAnswered, val) => allAnswered && val);
+
+        return ! isConnecting && isAllAnswered;
       },
       code: function(X) {
         this.isConnecting = true;
-        X.form.goNext();
+        this.viewData.submitChallenge();
       }
     },
     {
       name: 'closeButton',
       label: 'Cancel',
       code: function(X) {
-        X.form.goBack();
+        this.rollBackView();
       }
     }
   ]

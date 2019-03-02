@@ -7,25 +7,24 @@
 foam.INTERFACE({
   package: 'net.nanopay.cico.service',
   name: 'BankAccountVerifier',
-
   methods: [
     {
       name: 'verify',
-      returns: 'Promise',
-      javaReturns: 'boolean',
-      swiftReturns: 'Bool',
+      async: true,
+      type: 'Boolean',
       swiftThrows: true,
-
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'bankAccountId',
-          javaType: 'long',
-          swiftType: 'Int'
+          type: 'Long',
         },
         {
           name: 'randomDepositAmount',
-          javaType: 'long',
-          swiftType: 'Int'
+          type: 'Long',
         }
       ]
     }

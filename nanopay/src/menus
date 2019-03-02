@@ -1,29 +1,65 @@
+// admin
+p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","createControllerView":{"class":"net.nanopay.tx.ui.DAOCreateControllerView"},"editEnabled":false,"toggleEnabled":false,"detailView":"net.nanopay.account.ui.AccountDetailView","summaryView":{"class":"net.nanopay.account.ui.AccountSummaryView"}, "updateView":{"class":"net.nanopay.tx.ui.TransactionsAccountsView"}} ,"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"allUsers","label":"All Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userDAO","summaryView":{"class":"net.nanopay.auth.ui.UserTableView"},"updateView":{"class":"net.nanopay.auth.ui.UserDetailView"}},"order":570,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"All Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","createEnabled":false,"editEnabled":false,"exportEnabled":false,"toggleEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"},"view":{"class":"foam.u2.DetailView"}},"order":580,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"allInvoices","label":"All Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO"},"order":590,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"ascendantFXUsers","label":"AscendantFX Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantFXUserDAO","summaryView":{"class":"net.nanopay.fx.ascendantfx.ui.AscendantFXUserTableView"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"brokers","label":"Brokers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"brokerDAO"},"order":1000,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.InvoiceDashboardView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"banks","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"allInvoices","label":"All Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO"},"order":1000,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"All Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","summaryView":{"class":"net.nanopay.tx.ui.TransactionsView"}} ,"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"GS Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":"admin"})
+
+p({"class":"foam.nanos.menu.Menu","id":"lineItemTypes","label":"LineItem Types","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"lineItemFees","label":"LineItem Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemFeeDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"lineItemTypeAccount","label":"LineItem User Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeAccountDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"lineItemTax","label":"LineItem Taxes","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTaxDAO"},"order":1000,"parent":"admin"})
+
+// accounts
+p({"class":"foam.nanos.menu.Menu","id":"accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","createEnabled":false} ,"order":1000,"parent":""})
+
+// contacts
+p({"class":"foam.nanos.menu.Menu","id":"contacts","label":"Contacts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"contactDAO"},"order":1000,"parent":""})
+
+// dashboard
+p({"class":"foam.nanos.menu.Menu","id":"dashboard","label":"Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.InvoiceDashboardView"}},"order":500,"parent":""})
+
+// devices
+p({"class":"foam.nanos.menu.Menu","id":"devices","label":"Devices","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.retail.ui.devices.DevicesView"}},"order":1000,"parent":""})
+
+// invoices
+p({"class":"foam.nanos.menu.Menu","id":"invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.SubMenu"},"order":501,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"subscription","label":"Subscription","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.SubscriptionView"}},"order":1000,"parent":"invoices"})
 p({"class":"foam.nanos.menu.Menu","id":"sales","label":"Receivable","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.SalesView"}},"order":1000,"parent":"invoices"})
 p({"class":"foam.nanos.menu.Menu","id":"expenses","label":"Payable","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.invoice.ui.ExpensesView"}},"order":1000,"parent":"invoices"})
-p({"class":"foam.nanos.menu.Menu","id":"transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.tx.ui.TransactionsView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"transfer","label":"Transfer","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.TransferView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"cctransfer","label":"Transfer","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.CCTransferView"}},"order":1001,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"members","label":"Members","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.UserView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"devices","label":"Devices","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.retail.ui.devices.DevicesView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.resetPassword.ResetView"}},"order":1000,"parent":"hidden"})
-p({"class":"foam.nanos.menu.Menu","id":"invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.SubMenu"},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"bank-dashboard","label":"CIP/Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.DashboardView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"set-personal","label":"Personal","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.PersonalProfileView"}},"order":30,"parent":"settings"})
-p({"class":"foam.nanos.menu.Menu","id":"set-bus","label":"Business","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.business.BusinessProfileView"}},"order":40,"parent":"settings"})
-p({"class":"foam.nanos.menu.Menu","id":"set-bank","label":"Bank Account","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.bankAccount.BankAccountsView"}},"order":50,"parent":"settings"})
-p({"class":"foam.nanos.menu.Menu","id":"set-preference","label":"Preferences","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.PreferenceView"}},"order":60,"parent":"settings"})
+
+// partners
+p({"class":"foam.nanos.menu.Menu","id":"partners","label":"Partners","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.partners.ui.PartnersView"}},"order":1000,"parent":""})
+
+// settings
+p({"class":"foam.nanos.menu.Menu","id":"set-personal","label":"Personal Settings","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.PersonalProfileView"}},"order":30,"parent":"settings"})
+p({"class":"foam.nanos.menu.Menu","id":"set-bus","label":"Business Settings","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.business.BusinessProfileView"}},"order":40,"parent":"settings"})
+p({"class":"foam.nanos.menu.Menu","id":"set-bank","label":"Bank Accounts","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.bankAccount.BankAccountsView"}},"order":50,"parent":"settings"})
 p({"class":"foam.nanos.menu.Menu","id":"set-multi-user","label":"Multi-User","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.MultiUserManagementView"}},"order":70,"parent":"settings"})
 p({"class":"foam.nanos.menu.Menu","id":"set-integrate","label":"Integration","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.IntegrationView"}},"order":80,"parent":"settings"})
+
+// transactions
+p({"class":"foam.nanos.menu.Menu","id":"transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.tx.ui.TransactionsView"}},"order":502,"parent":""})
+
+// transfers
+p({"class":"foam.nanos.menu.Menu","id":"transfer","label":"Transfer","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.TransferView"}},"order":1000,"parent":""})
 p({"class":"foam.nanos.menu.Menu","id":"regular","label":"Regular","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.transfer.TransferWizard","type":"regular"}},"order":1000,"parent":"transfer"})
 p({"class":"foam.nanos.menu.Menu","id":"foreign","label":"Foreign","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.transfer.TransferWizard","type":"foreign"}},"order":1000,"parent":"transfer"})
-p({"class":"foam.nanos.menu.Menu","id":"bank-dashboard","label":"CIP/Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.DashboardView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"bank-profile","label":"Bank List","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.BankView"}},"order":1000,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"cicoSpids","label":"CICO Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"cicoServiceProviderDAO"},"order":1000,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"api-doc","label":"API Documentation","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ApiBrowser"}},"order":2000,"parent":"integration"})
+
+// users
+p({"class":"foam.nanos.menu.Menu","id":"members","label":"Members","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.UserView"}},"order":1000,"parent":""})
+
+// hidden
+p({"class":"foam.nanos.menu.Menu","id":"intro-to-documentation","label":"Intro","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"intro","daoKey":"nanopayDocumentDAO"},"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"sync-bank","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.integration.BankSyncView"}},"order":503,"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.resetPassword.ResetView"}},"order":1000,"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"sign-up","label":"Sign Up","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.auth.ui.SignUpView"}},"order":1000,"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"order":100,"parent":"hidden"})
+
+// removals
+r({"class":"foam.nanos.menu.Menu","id":"banks","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.CicoView"}},"order":503,"parent":""})
+r({"class":"foam.nanos.menu.Menu","id":"integration"})

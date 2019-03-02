@@ -45,11 +45,11 @@ class swiftfoamTests: XCTestCase {
       if let _ = try client.clientAuthService.getCurrentUser(client.__context__) {}
       else { let _ = try client.clientAuthService.loginByEmail(client.__context__, username, password) }
 
-      try client.clientAuthService.updatePassword(client.__context__, password, "Nanopay123")
-      let _ = try client.clientAuthService.loginByEmail(client.__context__, username, "Nanopay123")
+      try client.clientAuthService.updatePassword(client.__context__, password, "A_new_p4ss")
+      let _ = try client.clientAuthService.loginByEmail(client.__context__, username, "A_new_p4ss")
 
       //reset user back to correct password
-      try client.clientAuthService.updatePassword(client.__context__, "Nanopay123", password)
+      try client.clientAuthService.updatePassword(client.__context__, "A_new_p4ss", password)
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }
@@ -70,12 +70,14 @@ class swiftfoamTests: XCTestCase {
   func testLogoutPart1() {
     do {
       try client.clientAuthService.logout(client.__context__)
-      guard let _ = try client.clientAuthService.getCurrentUser(client.__context__) else {
-        return
-      }
-      XCTFail("Previous User still exists.")
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
+    }
+    do {
+      _ = try client.clientAuthService.getCurrentUser(client.__context__)
+      XCTFail("getCurrentUser should fail after logout.")
+    } catch let e {
+      XCTAssertEqual((((e as! FoamError).obj as! foam_box_RPCErrorMessage).data as! foam_box_RemoteException).message, "Not logged in")
     }
   }
 
@@ -87,25 +89,25 @@ class swiftfoamTests: XCTestCase {
       }
       XCTFail("Previous User still exists.")
     } catch let e {
-      XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
+      XCTAssertEqual((((e as! FoamError).obj as! foam_box_RPCErrorMessage).data as! foam_box_RemoteException).message, "Not logged in")
     }
   }
 
   func testPullAccount() {
     do {
-      var user: User!
+      var user: foam_nanos_auth_User!
       if let prevLoggedInUser = try client.clientAuthService.getCurrentUser(client.__context__) {
         user = prevLoggedInUser
       } else {
         user = try client.clientAuthService.loginByEmail(client.__context__, username, password)
       }
 
-      let pred = client.__context__.create(Eq.self, args: [
-        "arg1": Account.ID(),
+      let pred = client.__context__.create(foam_mlang_predicate_Eq.self, args: [
+        "arg1": net_nanopay_model_Account.ID(),
         "arg2": user.id,
         ])
 
-      let accounts = try (client.accountDAO!.`where`(pred).select() as! ArraySink).array as! [Account]
+      let accounts = try (client.accountDAO!.`where`(pred).select() as! foam_dao_ArraySink).array as! [net_nanopay_model_Account]
       for account in accounts {
         XCTAssert(account.id == user.id, "Owner must match User")
       }
@@ -116,26 +118,26 @@ class swiftfoamTests: XCTestCase {
 
   func testPullTransactions() {
     do {
-      var user: User!
+      var user: foam_nanos_auth_User!
       if let prevLoggedInUser = try client.clientAuthService.getCurrentUser(client.__context__) {
         user = prevLoggedInUser
       } else {
         user = try client.clientAuthService.loginByEmail(client.__context__, username, password)
       }
 
-      let pred = client.__context__.create(Or.self, args: [
+      let pred = client.__context__.create(foam_mlang_predicate_Or.self, args: [
         "args": [
-          client.__context__.create(Eq.self, args: [
-            "arg1": Transaction.PAYER_ID(),
+          client.__context__.create(foam_mlang_predicate_Eq.self, args: [
+            "arg1": net_nanopay_tx_model_Transaction.PAYER_ID(),
             "arg2": user.id
           ]),
-          client.__context__.create(Eq.self, args: [
-            "arg1": Transaction.PAYEE_ID(),
+          client.__context__.create(foam_mlang_predicate_Eq.self, args: [
+            "arg1": net_nanopay_tx_model_Transaction.PAYEE_ID(),
             "arg2": user.id
           ])]
         ])
 
-      let transactions = try (client.transactionDAO!.`where`(pred).select() as! ArraySink).array as! [Transaction]
+      let transactions = try (client.transactionDAO!.`where`(pred).select() as! foam_dao_ArraySink).array as! [net_nanopay_tx_model_Transaction]
       for transaction in transactions {
         XCTAssert(transaction.payerId == user.id || transaction.payeeId == user.id, "User must have participated in the transaction")
       }
@@ -146,20 +148,20 @@ class swiftfoamTests: XCTestCase {
 
   func testPutTransactions() {
     do {
-      var user: User!
+      var user: foam_nanos_auth_User!
       if let prevLoggedInUser = try client.clientAuthService.getCurrentUser(client.__context__) {
         user = prevLoggedInUser
       } else {
         user = try client.clientAuthService.loginByEmail(client.__context__, username, password)
       }
 
-      let newTransaction = client.__context__.create(Transaction.self)!
+      let newTransaction = client.__context__.create(net_nanopay_tx_model_Transaction.self)!
       newTransaction.payerId = user.id
       newTransaction.payeeId = 1
       newTransaction.amount = 1 // cent
       newTransaction.tip = 0 // no tip
 
-      guard let madeTransaction = try client.transactionDAO!.put(newTransaction) as? Transaction else {
+      guard let madeTransaction = try client.transactionDAO!.put(newTransaction) as? net_nanopay_tx_model_Transaction else {
         XCTFail("Could not convert returned value from put()")
         return
       }
@@ -175,7 +177,7 @@ class swiftfoamTests: XCTestCase {
 
   func testTransactionLimits() {
     do {
-      var user: User!
+      var user: foam_nanos_auth_User!
       if let prevLoggedInUser = try client.clientAuthService.getCurrentUser(client.__context__) {
         user = prevLoggedInUser
       } else {
@@ -184,7 +186,7 @@ class swiftfoamTests: XCTestCase {
 
       let service = client.userTransactionLimitService!
       let _ = try service.getLimit(user.id, .DAY, .SEND)
-      let _ = try service.getRemainingLimit(user.id, .DAY, .SEND)
+      let _ = try service.getRemainingLimit(client.__context__, user.id, .DAY, .SEND)
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }
@@ -192,11 +194,11 @@ class swiftfoamTests: XCTestCase {
 
   func testGetBusinessLocations() {
     do {
-      let pred = client.__context__.create(Eq.self, args: [
-        "arg1": User.TYPE(),
+      let pred = client.__context__.create(foam_mlang_predicate_Eq.self, args: [
+        "arg1": foam_nanos_auth_User.TYPE(),
         "arg2": "Merchant"
         ])
-      guard let merchants = try (client.userDAO!.`where`(pred).select() as? ArraySink)?.array as? [User] else {
+      guard let merchants = try (client.userDAO!.`where`(pred).select() as? foam_dao_ArraySink)?.array as? [foam_nanos_auth_User] else {
         XCTFail("Could not convert returned value from select()")
         return
       }
@@ -225,11 +227,11 @@ class swiftfoamTests: XCTestCase {
 
   func testGetRegion() {
     do {
-      let pred = client.__context__.create(Eq.self, args: [
-        "arg1": Region.COUNTRY_ID(),
+      let pred = client.__context__.create(foam_mlang_predicate_Eq.self, args: [
+        "arg1": foam_nanos_auth_Region.COUNTRY_ID(),
         "arg2": "CA"
         ])
-      guard let regions = try (client.regionDAO!.`where`(pred).select() as? ArraySink)?.array as? [Region] else {
+      guard let regions = try (client.regionDAO!.`where`(pred).select() as? foam_dao_ArraySink)?.array as? [foam_nanos_auth_Region] else {
         XCTFail("Could not convert returned value from select()")
         return
       }
@@ -241,7 +243,7 @@ class swiftfoamTests: XCTestCase {
 
   func testGetCountry() {
     do {
-      guard let countries = try (client.countryDAO!.select() as? ArraySink)?.array as? [Country] else {
+      guard let countries = try (client.countryDAO!.select() as? foam_dao_ArraySink)?.array as? [foam_nanos_auth_Country] else {
         XCTFail("Could not convert returned value from select()")
         return
       }
@@ -249,5 +251,18 @@ class swiftfoamTests: XCTestCase {
     } catch let e {
       XCTFail(((e as? FoamError)?.toString()) ?? "Error!")
     }
+  }
+
+  func testTransactionEntity() {
+    let x = Context.GLOBAL
+    let u = x.create(foam_nanos_auth_User.self)!
+    u.firstName = "Mike"
+    u.lastName = "C"
+    u.email = "mike@c.com"
+
+    let t = net_nanopay_tx_model_TransactionEntity.fromUser(u)
+    XCTAssertEqual(t.firstName, u.firstName)
+    XCTAssertEqual(t.lastName, u.lastName)
+    XCTAssertEqual(t.email, u.email)
   }
 }

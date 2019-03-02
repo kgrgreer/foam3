@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.kotak.com/schemas/CMS_Generic/Payment_Request.xsd" elementFormDefault="qualified">
+  <xs:simpleType name="Amount_ST">
+    <xs:restriction base="xs:decimal">
+      <xs:pattern value="\d{0,16}(\.\d{1,4})?"/>
+      <!--<xs:minExclusive value="0.0"/>-->
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Date_ST">
+    <xs:restriction base="xs:date"/>
+  </xs:simpleType>
+  <xs:complexType name="EnrichmentSetType">
+    <xs:sequence>
+      <xs:element name="Enrichment" type="MaxChar4000_ST" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InitiateRequest">
+    <xs:sequence>
+      <xs:element name="RequestHeader" type="RequestHeaderType"/>
+      <xs:element name="InstrumentList" type="InstrumentListType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InstrumentListType">
+    <xs:sequence>
+      <xs:element name="instrument" type="InstrumentType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InstrumentType">
+    <xs:sequence>
+      <xs:element name="InstRefNo" type="MinChar1_MaxChar20_ST"/>
+      <xs:element name="CompanyId" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="CompBatchId" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="ConfidentialInd" type="MaxChar1_ST" minOccurs="0"/>
+      <xs:element name="MyProdCode" type="MinChar1_MaxChar20_ST"/>
+      <xs:element name="CompTransNo" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="PayMode" type="MaxChar10_ST" minOccurs="0"/>
+      <xs:element name="TxnAmnt" type="Amount_ST"/>
+      <xs:element name="AccountNo" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="DrRefNmbr" type="MaxChar14_ST" minOccurs="0"/>
+      <xs:element name="DrDesc" type="MaxChar40_ST" minOccurs="0"/>
+      <xs:element name="PaymentDt" type="Date_ST" minOccurs="0"/>
+      <xs:element name="BankCdInd" type="MaxChar1_ST" minOccurs="0"/>
+      <xs:element name="BeneBnkCd" type="MaxChar10_ST" minOccurs="0"/>
+      <xs:element name="RecBrCd" type="MaxChar11_ST" minOccurs="0"/>
+      <xs:element name="BeneAcctNo" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="BeneName" type="MaxChar40_ST" minOccurs="0"/>
+      <xs:element name="BeneCode" type="MaxChar10_ST" minOccurs="0"/>
+      <xs:element name="BeneEmail" type="MaxChar255_ST" minOccurs="0"/>
+      <xs:element name="BeneFax" type="MaxChar40_ST" minOccurs="0"/>
+      <xs:element name="BeneMb" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="BeneAddr1" type="MaxChar70_ST" minOccurs="0"/>
+      <xs:element name="BeneAddr2" type="MaxChar70_ST" minOccurs="0"/>
+      <xs:element name="BeneAddr3" type="MaxChar70_ST" minOccurs="0"/>
+      <xs:element name="BeneAddr4" type="MaxChar70_ST" minOccurs="0"/>
+      <xs:element name="BeneAddr5" type="MaxChar70_ST" minOccurs="0"/>
+      <xs:element name="city" type="MaxChar60_ST" minOccurs="0"/>
+      <xs:element name="zip" type="ZipCode_ST" minOccurs="0"/>
+      <xs:element name="Country" type="MaxChar60_ST" minOccurs="0"/>
+      <xs:element name="State" type="MaxChar60_ST" minOccurs="0"/>
+      <xs:element name="TelephoneNo" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="BeneId" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="BeneTaxId" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="AuthPerson" type="MaxChar40_ST" minOccurs="0"/>
+      <xs:element name="AuthPersonId" type="MaxChar15_ST" minOccurs="0"/>
+      <xs:element name="DeliveryMode" type="MaxChar2_ST" minOccurs="0"/>
+      <xs:element name="PayoutLoc" type="MaxChar10_ST" minOccurs="0"/>
+      <xs:element name="PickupBr" type="MaxChar10_ST" minOccurs="0"/>
+      <xs:element name="PaymentRef" type="MaxChar45_ST" minOccurs="0"/>
+      <xs:element name="ChgBorneBy" type="MaxChar1_ST" minOccurs="0"/>
+      <xs:element name="InstDt" type="Date_ST" minOccurs="0"/>
+      <xs:element name="MICRNo" type="MaxChar6_ST" minOccurs="0"/>
+      <xs:element name="CreditRefNo" type="MaxChar45_ST" minOccurs="0"/>
+      <xs:element name="PaymentDtl" type="MaxChar140_ST" minOccurs="0"/>
+      <xs:element name="PaymentDtl1" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="PaymentDtl2" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="PaymentDtl3" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="MailToAddr1" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="MailToAddr2" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="MailToAddr3" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="MailToAddr4" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="MailTo" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="ExchDoc" type="MaxChar30_ST" minOccurs="0"/>
+      <xs:element name="InstChecksum" type="MaxChar400_ST" minOccurs="0"/>
+      <xs:element name="InstRF1" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF2" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF3" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF4" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF5" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF6" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF7" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF8" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF9" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF10" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF11" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF12" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF13" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF14" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="InstRF15" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="EnrichmentSet" type="EnrichmentSetType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="MaxChar10_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar11_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="11"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar140_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="140"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar14_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="14"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar15_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="15"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar1_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar200_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="200"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar20_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="20"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar255_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="255"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar2_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar30_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="30"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar4000_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="4000"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar400_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="400"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar40_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="40"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar45_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="45"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar60_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="60"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar6_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="6"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MaxChar70_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="0"/>
+      <xs:maxLength value="70"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MinChar1_MaxChar10_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="MinChar1_MaxChar20_ST">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+      <xs:maxLength value="20"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="RequestHeaderType">
+    <xs:sequence>
+      <xs:element name="MessageId" type="MinChar1_MaxChar20_ST"/>
+      <xs:element name="MsgSource" type="MinChar1_MaxChar20_ST"/>
+      <xs:element name="ClientCode" type="MinChar1_MaxChar10_ST"/>
+      <xs:element name="BatchRefNmbr" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="HeaderChecksum" type="MaxChar400_ST" minOccurs="0"/>
+      <xs:element name="ReqRF1" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="ReqRF2" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="ReqRF3" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="ReqRF4" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="ReqRF5" type="MaxChar200_ST" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="ZipCode_ST">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{0,10}"/>
+      <xs:minLength value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

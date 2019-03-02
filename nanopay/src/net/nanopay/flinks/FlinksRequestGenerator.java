@@ -51,4 +51,13 @@ public class FlinksRequestGenerator {
     msg.setRequestInfo("GetAccountsDetail");
     return msg;
   }
+
+  public static RequestMsg getAccountDetailAsyncRequest(X x, String requestId) {
+    FlinksAccountDetailAsyncRequest request = new FlinksAccountDetailAsyncRequest();
+    request.setRequestId(requestId);
+    RequestMsg msg = new RequestMsg(x, request);
+    msg.setHttpMethod("GET");
+    msg.setRequestInfo("GetAccountsDetailAsync");
+    return msg;
+  }
 }

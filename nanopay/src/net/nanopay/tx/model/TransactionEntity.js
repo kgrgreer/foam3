@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'TransactionEntity',
   documentation: `This model represents the payer/payee of a transaction and is meant to storage transient.`,
 
+  requires: ['net.nanopay.model.Business'],
+
   javaImports: ['foam.nanos.auth.User'],
 
   properties: [
@@ -20,6 +22,29 @@ foam.CLASS({
       class: 'String',
       name: 'lastName',
       visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'fullName',
+      expression: function(firstName, lastName) {
+        return `${firstName} ${lastName}`.trim();
+      }
+    },
+    {
+      class: 'String',
+      name: 'businessName'
+    },
+    {
+      class: 'String',
+      name: 'displayName',
+      expression: function(firstName, lastName, businessName, userClass) {
+        return userClass == 'net.nanopay.model.Business' ? businessName.trim() :
+            `${firstName} ${lastName}`.trim();
+      }
+    },
+    {
+      class: 'String',
+      name: 'userClass'
     },
     {
       class: 'EMail',
@@ -40,10 +65,12 @@ foam.CLASS({
             setFirstName(user.getFirstName());
             setLastName(user.getLastName());
             setEmail(user.getEmail());
+            setUserClass(user.getClass().getName());
+            setBusinessName(user.getBusinessName());
             setProfilePicture(user.getProfilePicture());
           }
         `);
-      },
-    },
-  ],
+      }
+    }
+  ]
 });

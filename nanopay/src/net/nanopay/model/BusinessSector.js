@@ -2,7 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.model',
   name: 'BusinessSector',
 
-  documentation: 'What sector the business is involved with',
+  documentation: 'General section in the economy within' +
+      ' which groups of companies can be categorized.',
 
   properties: [
     {
@@ -11,7 +12,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      documentation: 'Name of business sector.'
+    },
+    {
+      class: 'Long',
+      name: 'parent'
     }
   ]
 });

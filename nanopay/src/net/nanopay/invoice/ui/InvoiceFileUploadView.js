@@ -43,7 +43,7 @@ foam.CLASS({
       height: 100px;
       width: 200px;
     }
-    ^ .inputText{
+    ^ .inputText {
       text-align: center;
       line-height: 60px
     }
@@ -55,15 +55,13 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var self = this;
-
       this
         .addClass(this.myClass())
         .start()
           .add('Attachments')
-          .add(this.slot(function (data) {
+          .add(this.slot(function(data) {
             var e = this.E();
-            for ( var i = 0 ; i < data.length ; i++ ) {
+            for ( var i = 0; i < data.length; i++ ) {
               e.tag({
                 class: 'net.nanopay.invoice.ui.InvoiceFileView',
                 data: data[i],
@@ -72,29 +70,36 @@ foam.CLASS({
             }
             return e;
           }, this.data$))
-          .start(this.UPLOAD_BUTTON, { showLabel:true }).addClass('attachment-btn').addClass('white-blue-button').addClass('btn').end()
+          .start(this.UPLOAD_BUTTON)
+            .addClass('attachment-btn').addClass('white-blue-button').addClass('btn')
           .end()
         .end();
     },
 
-    function onInvoiceFileRemoved (fileNumber) {
-      this.document.querySelector('.attachment-input').value = null;
-      this.data.splice(fileNumber - 1, 1);
-      this.data = Array.from(this.data);
+    function onInvoiceFileRemoved(fileNumber) {
+      var data = Array.from(this.data);
+      data.splice(fileNumber - 1, 1);
+      this.data = data;
     }
   ],
+
   actions: [
     {
       name: 'uploadButton',
       label: 'Choose File',
 
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.UploadModal', exportData$: this.data$}));
+        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X)
+            .tag({
+              class: 'net.nanopay.ui.modal.UploadModal',
+              exportData$: this.data$
+            })
+        );
       }
     },
   ],
   listeners: [
-    function onAddAttachmentClicked (e) {
+    function onAddAttachmentClicked(e) {
       this.document.querySelector('.attachment-input').click();
     },
   ]

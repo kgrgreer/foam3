@@ -30,7 +30,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Phone',
+      of: 'foam.nanos.auth.Phone',
       name:  'phone'
     },
     {
@@ -40,7 +40,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.model.Account',
+      of: 'net.nanopay.account.Account',
       name:  'account'
     }
   ]

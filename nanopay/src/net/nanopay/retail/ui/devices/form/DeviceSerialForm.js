@@ -16,7 +16,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'Step',         message: 'Step 3: Input the device\'s serial number.' },
+    { name: 'Step',         message: 'Step 2: Input the device\'s serial number.' },
     { name: 'Instructions', message: 'Open the Merchant App on your device and enter the 16 alphanumeric serial code displayed on the screen of the device.' },
     { name: 'SerialLabel',  message: 'Serial # *' }
   ],

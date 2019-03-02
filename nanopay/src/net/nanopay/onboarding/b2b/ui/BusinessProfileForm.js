@@ -7,12 +7,7 @@ foam.CLASS({
 
   imports: [
     'countryDAO',
-    'regionDAO',
-    'validatePostalCode',
-    'validatePhone',
-    'validateCity',
-    'validateStreetNumber',
-    'validateAddress'
+    'regionDAO'
   ],
 
   implements: [
@@ -315,7 +310,7 @@ foam.CLASS({
     { name: 'BusinessNameLabel', message: 'Registered Business Name' },
     { name: 'BusinessPhoneLabel', message: 'Business Phone' },
     { name: 'CountryCodeLabel', message: 'Country Code' },
-    { name: 'PhoneNumberLabel', message: 'Phone Number' },
+    { name: 'PhoneNumberLabel', message: 'Business Phone Number' },
     { name: 'WebsiteLabel', message: 'Website (optional)' },
     { name: 'BusinessTypeLabel', message: 'Business Type' },
     { name: 'BusinessRegistrationNumberLabel', message: 'Business Registration Number' },
@@ -594,7 +589,7 @@ foam.CLASS({
 
       var businessTypeInfoSlot = this.businessTypeField$.map(function(value) { return value !== 'Please select' && value !== '' ? true : false; });
       this.scrollToTop();
-      
+
       this
         .addClass(this.myClass())
         .start('div').addClass('widthWrapper')

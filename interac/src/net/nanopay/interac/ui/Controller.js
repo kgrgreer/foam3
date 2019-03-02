@@ -39,7 +39,7 @@ foam.CLASS({
           content: "";
           display: block;
         }
-        .stack-wrapper:after, .net-nanopay-interac-ui-shared-FooterView{
+        .stack-wrapper:after, .foam-nanos-u2-navigation-FooterView {
           height: 10px;
         }
         .foam-u2-ActionView-payNow {
@@ -146,7 +146,7 @@ foam.CLASS({
           .tag({ class: 'foam.u2.stack.StackView', data: this.stack, showActions: false })
         .end()
         .br()
-        .tag({class: 'net.nanopay.interac.ui.shared.FooterView'})
+        .tag({class: 'foam.nanos.u2.navigation.FooterView'})
     }
   ]
 

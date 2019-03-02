@@ -2,16 +2,24 @@ foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
   name: 'FlinksAccountForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
+  implements: [
+    'foam.mlang.Expressions'
+  ],
 
   imports: [
-    'bankImgs',
     'form',
-    'isConnecting'
+    'institutionDAO',
+    'isConnecting',
+    'loadingSpinner',
+    'pushViews',
+    'user'
   ],
 
   requires: [
-    'net.nanopay.model.BankAccount',
-    'net.nanopay.model.Institution'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.payment.Institution'
   ],
 
   css: `
@@ -41,6 +49,9 @@ foam.CLASS({
     }
     ^ .account.selected {
       border: solid 3px #1cc2b7;
+    }
+    ^ .account.selected.net-nanopay-flinks-view-element-AccountCard {
+      padding: 0 38px;
     }
     ^ .Nav {
       margin-top: 20px;
@@ -78,7 +89,7 @@ foam.CLASS({
       min-width: 136px;
       height: 40px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       font-size: 12px;
       font-weight: lighter;
@@ -95,25 +106,33 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Step', message: 'Step 4: Please choose the account you want to connect with nanopay.'}
+    { name: 'Step', message: 'Step 4: Please choose the account you want to connect with nanopay.' }
   ],
 
   properties: [
     {
       class: 'Int',
       name: 'selectTick',
-      value: -1000000,
+      value: - 1000000,
     },
     {
-      Class: 'Array',
-      name: 'selectBank'
+      class: 'Array',
+      name: 'selectedAccounts',
+      value: []
+    },
+    {
+      class: 'Array',
+      name: 'filteredValidAccounts',
+      factory: function() {
+        return this.viewData.accounts
+          .filter((t) => this.isValidAccount(t));
+      }
     }
   ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.selectBank = new Array(this.viewData.accounts.length).fill(false);
     },
 
     function initE() {
@@ -125,41 +144,81 @@ foam.CLASS({
           .add(this.Step)
         .end()
         .start('div').addClass('subContent')
-          .tag({class: 'net.nanopay.flinks.view.form.FlinksSubHeader', secondImg: this.bankImgs[this.viewData.selectedOption].image})
+          .tag({
+            class: 'net.nanopay.flinks.view.form.FlinksSubHeader',
+            secondImg: this.viewData.selectedInstitution.image
+          })
           .start('div').addClass('accountView')
-            .forEach(this.viewData.accounts, function(e, index){
-              if ( (! e.TransitNumber && e.TransitNumber === '') || e.Currency !== 'CAD') return;
-              this.start({class: 'net.nanopay.flinks.view.element.AccountCard', accountName : e.Title, accountNo : e.AccountNumber, balance : e.Balance.Current})
-                .style({'margin-left':'20px'})
+            .forEach(this.filteredValidAccounts, function(account, index) {
+              this.start({
+                class: 'net.nanopay.flinks.view.element.AccountCard',
+                name: account.Title,
+                accountNo: account.AccountNumber,
+                balance: account.Balance.Current
+              }).style({ 'margin-left': '20px' })
                 .addClass('spacer')
                 .addClass('account')
-                .addClass(self.selectTick$.map(function(o) {
-                  if ( ! e.isSelected || e.isSelected == false ) {
-                    return '';
-                  }
-                  return 'selected';
-                }))
-                .on('click', function() {
-                  if ( ! e.isSelected || e.isSelected == false ) {
-                    e.isSelected = true;
-                    self.selectBank[index] = true;
-                    self.selectBank = foam.Array.clone(self.selectBank);
-                  } else {
-                    e.isSelected = false;
-                    self.selectBank[index] = false;
-                    self.selectBank = foam.Array.clone(self.selectBank);
-                  }
-                  self.selectTick++;
+                .enableClass('selected',
+                  self.selectTick$.map((o) => self.isAccountSelected(account)))
+                .on('click', () => {
+                  self.accountOnClick(account);
+                  self.selectTick ++;
                 })
-              .end()
+              .end();
             })
           .end()
         .end()
-        .start('div').style({'margin-top' : '15px', 'height' : '40px'})
+        .start('div').style({ 'margin-top': '15px', 'height': '40px' })
           .tag(this.NEXT_BUTTON)
           .tag(this.CLOSE_BUTTON)
         .end()
-        .start('div').style({'clear' : 'both'}).end();
+        .start('div').style({ 'clear': 'both' }).end();
+    },
+    function isValidAccount(account) {
+      var hasTransitNumber = account.TransitNumber && account.TransitNumber !== '';
+      var isCAD = account.Currency === 'CAD';
+      return hasTransitNumber && isCAD;
+    },
+    function isAccountSelected(account) {
+      return !! this.selectedAccounts.find((t) => t === account);
+    },
+    function accountOnClick(account) {
+      if ( this.isAccountSelected(account) ) {
+        this.selectedAccounts
+          .splice(this.selectedAccounts.indexOf(account), 1);
+      } else {
+        this.selectedAccounts.push(account);
+      }
+    },
+    async function createBankAccounts() {
+      this.isConnecting = true;
+      this.loadingSpinner.show();
+
+      var institutions = await this.institutionDAO.where(
+        this.EQ(this.Institution.NAME, this.viewData.selectedInstitution.name)
+      ).select();
+      var institution = institutions.array[0];
+      for ( var account of this.selectedAccounts ) {
+        var newAccount = this.createBankAccount(
+          account, institution
+        );
+        this.viewData.bankAccounts.push(newAccount);
+      }
+      this.isConnecting = false;
+      this.loadingSpinner.hide();
+      // go to PADScreen
+      this.pushViews('PADAuthorizationForm');
+    },
+    function createBankAccount(account, institution) {
+      return this.CABankAccount.create({
+        name: account.Title,
+        accountNumber: account.AccountNumber,
+        institution: institution,
+        institutionNumber: institution.institutionNumber,
+        branchId: account.TransitNumber, // setting branchId cause branch maybe present or not(the lookup is done on the BE).
+        status: this.BankAccountStatus.VERIFIED,
+        owner: this.user.id
+      });
     }
   ],
 
@@ -167,23 +226,19 @@ foam.CLASS({
     {
       name: 'nextButton',
       label: 'Add Account',
-      isEnabled: function(isConnecting, selectBank) {
-        if ( isConnecting === true ) return false;
-        for ( var x in selectBank ) {
-          if ( selectBank[x] === true ) return true;
-        }
-        return false;
+      isEnabled: function(selectTick, isConnecting, selectedAccounts) {
+        return ! isConnecting && selectedAccounts.length !== 0;
       },
       code: function(X) {
         this.isConnecting = true;
-        X.form.goNext();
+        this.createBankAccounts();
       }
     },
     {
       name: 'closeButton',
       label: 'Cancel',
       code: function(X) {
-        X.form.goBack();
+        X.form.stack.back();
       }
     }
   ]

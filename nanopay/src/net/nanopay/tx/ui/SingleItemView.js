@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'SingleItemView',
   extends: 'foam.u2.View',
 
-  imports: [ 'addCommas' ],
+  imports: ['addCommas'],
 
   properties: [
     'data'
@@ -49,27 +49,33 @@ foam.CLASS({
   `,
 
   methods: [
-    function initE(){
-      var self = this;
-
+    function initE() {
       this
         .addClass(this.myClass())
         .start('div').addClass('invoice-detail')
           .start().addClass(this.myClass('table-header'))
             .start('h3').add('Transaction ID').end()
             .start('h3').add('Date').end()
-            .start('h3').add('Sender ID').end()
+            .start('h3').add('Sender').end()
             .start('h3').add('Amount').end()
-            .start('h3').add('Receiving ID').end()
+            .start('h3').add('Receiver').end()
             .start('h3').add('Status').end()
           .end()
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.id).end()
-            .start('h3').add(this.data.date.toISOString().substring(0,10)).end()
-            .start('h3').add(this.data.payerId).end()
-            .start('h3').add('$', this.addCommas((this.data.total/100).toFixed(2))).end()
-            .start('h3').add(this.data.payeeId).end()
-            .start('h3').add(this.data.status$.map(function (status) {
+            .start('h3').add(this.data.created.toISOString()
+              .substring(0, 10))
+            .end()
+            .start('h3')
+              .add(this.data.payer ? this.data.payer.fullName : '')
+            .end()
+            .start('h3')
+              .add('$', this.addCommas((this.data.total/100).toFixed(2)))
+            .end()
+            .start('h3')
+              .add(this.data.payee ? this.data.payee.fullName : '')
+            .end()
+            .start('h3').add(this.data.status$.map(function(status) {
               return status.label;
             })).end()
           .end()

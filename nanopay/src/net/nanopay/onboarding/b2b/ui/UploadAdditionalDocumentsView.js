@@ -18,6 +18,20 @@ foam.CLASS({
     { name: 'Description', message: 'Upload any additional documents upon request.' }
   ],
 
+  properties: [
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'additionalDocuments',
+      documentation: 'Additional documents for compliance verification.',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+          documents$: X.viewData.user.additionalDocuments$,
+        };
+      }
+    }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -28,7 +42,7 @@ foam.CLASS({
         .start('p').addClass('containerTitle').add(this.Title).end()
         .start().addClass('containerDesc').add(this.Description).end()
         .br()
-        .start(this.user.ADDITIONAL_DOCUMENTS).end()
+        .start(this.ADDITIONAL_DOCUMENTS).end()
     }
   ]
 });

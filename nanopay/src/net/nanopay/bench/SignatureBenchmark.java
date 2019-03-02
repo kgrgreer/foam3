@@ -1,6 +1,7 @@
 package net.nanopay.bench;
 
 import foam.nanos.bench.Benchmark;
+import foam.util.SecurityUtil;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -19,7 +20,7 @@ public abstract class SignatureBenchmark
 
   public SignatureBenchmark(String keypairAlgorithm, String hashingAlgorithm) {
     try {
-      SecureRandom srand = SecureRandom.getInstance("SHA1PRNG");
+      SecureRandom srand = SecurityUtil.GetSecureRandom();
       KeyPairGenerator keygen = KeyPairGenerator.getInstance(keypairAlgorithm);
       AlgorithmParameterSpec spec = null;
 

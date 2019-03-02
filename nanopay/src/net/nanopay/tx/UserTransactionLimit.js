@@ -5,53 +5,47 @@ foam.INTERFACE({
   methods: [
     {
       name: 'start',
-      javaReturns: 'void'
     },
     {
       name: 'getLimit',
-      javaReturns: 'long',
-      swiftReturns: 'Int',
-      returns: 'Promise',
+      type: 'Long',
+      async: true,
       swiftThrows: true,
       args: [
         {
           name: 'userId',
-          javaType: 'long',
-          swiftType: 'Int'
+          type: 'Long',
         },
         {
-          name: 'timeFrame',
-          javaType: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
-          swiftType: 'TransactionLimitTimeFrame'
+          type: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
+          name: 'timeFrame'
         },
         {
-          name: 'type',
-          javaType: 'net.nanopay.tx.model.TransactionLimitType',
-          swiftType: 'TransactionLimitType'
+          type: 'net.nanopay.tx.model.TransactionLimitType',
+          name: 'type'
         }
       ]
     },
     {
       name: 'getRemainingLimit',
-      javaReturns: 'long',
-      swiftReturns: 'Int',
-      returns: 'Promise',
-      swiftThrows: true,
+      type: 'Long',
+      async: true,
       args: [
         {
-          name: 'userId',
-          javaType: 'long',
-          swiftType: 'Int'
+          type: 'Context',
+          name: 'x',
         },
         {
-          name: 'timeFrame',
-          javaType: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
-          swiftType: 'TransactionLimitTimeFrame'
+          name: 'userId',
+          type: 'Long',
+        },
+        {
+          type: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
+          name: 'timeFrame'
         },
         {
           name: 'type',
-          javaType: 'net.nanopay.tx.model.TransactionLimitType',
-          swiftType: 'TransactionLimitType'
+          type: 'net.nanopay.tx.model.TransactionLimitType'
         }
       ]
     }

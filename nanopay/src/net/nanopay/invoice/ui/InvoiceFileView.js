@@ -32,6 +32,8 @@ foam.CLASS({
       padding-left: 10px;
       padding-right: 10px;
       padding-top: 5px;
+      border: 1px solid #d9d9d9;
+      border-radius: 3px;
     }
     ^ .attachment-number {
       float: left;
@@ -49,6 +51,7 @@ foam.CLASS({
       text-overflow: ellipsis;
       white-space: nowrap;
       float: left;
+      color: #59a5d5;
     }
     ^ .attachment-filename a {
       height: 16px;
@@ -68,14 +71,19 @@ foam.CLASS({
       font-size: 6px;
       line-height: 1.33;
       letter-spacing: 0.1px;
-      text-align: left;
+      text-align: center;
       color: #a4b3b8;
       padding-top: 6px;
+      margin-left: 1.5px;
     }
     ^ .net-nanopay-ui-ActionView-remove {
       width: 20px;
       height: 20px;
       object-fit: contain;
+      background: white;
+    }
+    ^ .net-nanopay-ui-ActionView-remove:hover {
+      background: white;
     }
   `,
 
@@ -88,7 +96,7 @@ foam.CLASS({
         .start().addClass('attachment-number')
           .add(this.formatFileNumber())
         .end()
-        .start().addClass('attachment-filename')
+        .start().addClass('attachment-filename').style({'width': '200'})
           .start('a')
             .attrs({
               href: this.data$.map(function (data) {

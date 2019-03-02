@@ -8,6 +8,7 @@ var classes = [
   'net.nanopay.flinks.model.FlinksAccountSummaryRequest',
   'net.nanopay.flinks.model.RefreshDeltaModel',
   'net.nanopay.flinks.model.FlinksAccountDetailRequest',
+  'net.nanopay.flinks.model.FlinksAccountDetailAsyncRequest',
   'net.nanopay.flinks.model.FlinksMulAuthRequest',
   'net.nanopay.flinks.model.FlinksResponse',
   'net.nanopay.flinks.model.SecurityChallengeModel',
@@ -25,12 +26,15 @@ var classes = [
   'net.nanopay.flinks.model.AccountStatementContainerModel',
   'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
   'net.nanopay.flinks.model.FlinksAccountsSummaryResponse',
+  'net.nanopay.flinks.model.FlinksCredentials',
   //flinks frontend request model
   'net.nanopay.flinks.model.FlinksRespMsg',
   'net.nanopay.flinks.model.FlinksAccount',
   //flinks service
   'net.nanopay.flinks.FlinksAuth',
   'net.nanopay.flinks.ClientFlinksAuthService',
+  'net.nanopay.flinks.MaskedFlinksAccountDAO',
+  'net.nanopay.flinks.RefinedFlinksAccountDAO',
 ]
 var abstractClasses = [];
 var skeletons = [

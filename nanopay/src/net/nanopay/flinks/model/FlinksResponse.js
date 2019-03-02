@@ -9,39 +9,46 @@ foam.CLASS({
   properties: [
     {
       class: 'Int',
-      name: 'HttpStatusCode'
+      name: 'HttpStatusCode',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'FlinksCode'
+      name: 'FlinksCode',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'Message'
+      name: 'Message',
+      visibility: 'RO'
     },
     {
-      javaType: 'foam.lib.json.UnknownFObjectArray',
+      type: 'foam.lib.json.UnknownFObjectArray',
       javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       javaJSONParser: 'new foam.lib.json.UnknownFObjectArrayParser()',
-      name: 'Links'
+      name: 'Links',
+      visibility: 'RO'
     },
     {
-      javaType: 'foam.lib.json.UnknownFObject',
+      type: 'foam.lib.json.UnknownFObject',
       javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
-      name: 'ValidationDetails'
+      name: 'ValidationDetails',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'RequestId'
+      name: 'RequestId',
+      visibility: 'RO'
     },
     {
-      //javaType: 'net.nanopay.flinks.model.LoginModel',
+      //type: 'net.nanopay.flinks.model.LoginModel',
       //javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
       //javaJSONParser: 'new foam.lib.json.FObjectParser(net.nanopay.flinks.model.LoginModel.class)',
       class: 'FObjectProperty',
       of: 'net.nanopay.flinks.model.LoginModel',
-      name: 'Login'
+      name: 'Login',
+      visibility: 'RO'
     }
   ]
 });

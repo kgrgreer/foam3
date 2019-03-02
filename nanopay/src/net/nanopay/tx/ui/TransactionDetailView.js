@@ -20,7 +20,7 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-backAction{
       border-radius: 2px;
       border: 1px solid lightgrey;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
     }
     ^ .inline{
       float: right;
@@ -28,14 +28,14 @@ foam.CLASS({
     }
   `,
 
-  methods:[
-    function initE(){
+  methods: [
+    function initE() {
 
       this
       .addClass(this.myClass())
       .start(this.BACK_ACTION).end()
       .start().addClass('inline')
-        .start(this.EXPORT_BUTTON, { icon: 'images/ic-export.png', showLabel:true }).end()
+        .tag(this.EXPORT_BUTTON)
       .end()
       .tag({ class: 'net.nanopay.tx.ui.SingleItemView', data: this.data })
       .start('h2').addClass('light-roboto-h2').style({ 'margin-bottom': '0px'})
@@ -52,13 +52,14 @@ foam.CLASS({
     {
       name: 'backAction',
       label: 'Back',
-      code: function(X){
+      code: function(X) {
         X.stack.back();
       }
     },
     {
       name: 'exportButton',
       label: 'Export',
+      icon: 'images/ic-export.png',
       code: function(X) {
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({class: 'net.nanopay.ui.modal.ExportModal', exportObj: X.data }));
       }

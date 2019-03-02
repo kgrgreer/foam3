@@ -8,6 +8,7 @@ foam.CLASS({
 
   imports: [
     'backLabel',
+    'onComplete',
     'complete',
     'errors',
     'exit',
@@ -20,7 +21,11 @@ foam.CLASS({
     'save',
     'saveLabel',
     'viewData',
-    'wizard'
+    'wizard',
+    'hasSaveOption',
+    'hasNextOption',
+    'hasExitOption',
+    'hasBackOption'
   ],
 
   methods: [
@@ -28,9 +33,10 @@ foam.CLASS({
       this.errors_$.sub(this.errorsUpdate);
       this.errorsUpdate();
     },
-    function scrollToTop(){
-      var subTitleElement = this.document.getElementsByClassName('subTitle')[0];
-      subTitleElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+    function scrollToTop() {
+      if ( ! this.wizard.el() ) return;
+
+      this.wizard.el().scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   ],
 

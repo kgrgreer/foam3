@@ -6,7 +6,12 @@ set -e
 
 function setup_ssh_key {
   local PUBKEY=$(cat ~/.ssh/id_rsa.pub)
-  if ssh $HOST "grep -Fxq \"$PUBKEY\" ~/.ssh/authorized_keys"; then
+
+  if ssh $HOST "[[ ! -d ~/.ssh ]]"; then
+    ssh $HOST "mkdir ~/.ssh"
+  fi
+
+  if ssh $HOST "[[ -f ~/.ssh/authorized_keys ]]" && ssh $HOST "grep -Fxq \"$PUBKEY\" ~/.ssh/authorized_keys"; then
     echo "INFO :: Public key exists in Host's authorized_keys."
   else
     echo $PUBKEY | ssh $HOST "cat >> ~/.ssh/authorized_keys"

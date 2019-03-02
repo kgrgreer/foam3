@@ -8,7 +8,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   imports: [
@@ -52,46 +53,63 @@ foam.CLASS({
 
   methods: [
     function getAttributes(record) {
-      var status = record.updates.find(u => u.name == 'status')
+      var status = record.updates.find((u) => u.name === 'status');
 
-      if ( ! status ) status = { newValue: 'Scheduled' };
+      if ( status === undefined ) return null;
 
       switch ( status.newValue ) {
-        case "Void":
+        case this.InvoiceStatus.VOID:
           return {
             labelText: 'Void',
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
-        case 'Pending':
+        case this.InvoiceStatus.PENDING:
           return {
             labelText: 'Pending',
             labelDecoration: 'Invoice-Status-Pending',
             icon: 'images/ic-pending.svg',
           };
-        case "Paid":
+        case this.InvoiceStatus.PAID:
           return {
             labelText: 'Paid',
             labelDecoration: 'Invoice-Status-Paid',
             icon: 'images/ic-approve.svg'
           };
-        case "Scheduled":
+        case this.InvoiceStatus.SCHEDULED:
           return {
             labelText: 'Scheduled',
             labelDecoration: 'Invoice-Status-Scheduled',
             icon: 'images/ic-scheduled.svg'
           };
-
-        case "Overdue":
+        case this.InvoiceStatus.OVERDUE:
           return {
             labelText: 'Overdue',
             labelDecoration: 'Invoice-Status-Overdue',
             icon: 'images/ic-overdue.svg'
           };
-        case "Due":
+        case this.InvoiceStatus.UNPAID:
           return {
-            labelText: 'Due',
-            labelDecoration: 'Invoice-Status-Due',
+            labelText: 'Unpaid',
+            labelDecoration: 'Invoice-Status-Unpaid',
+            icon: 'images/ic-scheduled.svg'
+          };
+        case this.InvoiceStatus.PENDING_APPROVAL:
+          return {
+            labelText: 'Pending approval',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
+        case this.InvoiceStatus.PENDING_ACCEPTANCE:
+          return {
+            labelText: 'Pending acceptance',
+            labelDecoration: 'Invoice-Status-Pending-approval',
+            icon: 'images/ic-scheduled.svg'
+          };
+        case this.InvoiceStatus.DEPOSITING_MONEY:
+          return {
+            labelText: 'Depositing money',
+            labelDecoration: 'Invoice-Status-Pending-approval',
             icon: 'images/ic-scheduled.svg'
           };
       }
@@ -108,10 +126,12 @@ foam.CLASS({
     function outputRecord(parentView, record) {
       var self = this;
       var attributes = this.getAttributes(record);
-      var hasDisplayDate = record.updates.some(u => u.name === 'paymentDate');
-      var displayDate = hasDisplayDate
-        ? new Date(record.updates.find(u => u.name === 'paymentDate').newValue)
-        : null;
+      var update = record.updates.find((u) => u.name === 'paymentDate');
+      var hasDisplayDate = update && update.newValue != null;
+      var displayDate = hasDisplayDate ? new Date(update.newValue) : null;
+
+      // Only show updates to the status.
+      if ( attributes === null ) return;
 
       return parentView
         .addClass(this.myClass())
@@ -123,11 +143,11 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add("Invoice has been marked as ", )
+              .add('Invoice has been marked as ', )
             .end()
             .start('div').addClass(attributes.labelDecoration)
               .start('span').add(attributes.labelText)
-                .start('span').style({ 'margin-left' : '4px'})
+                .start('span').style({ 'margin-left': '4px' })
                   .callIf(hasDisplayDate && attributes.labelText == 'Scheduled', function() {
                     this.add(self.formatDate(displayDate));
                   })
@@ -141,7 +161,7 @@ foam.CLASS({
               .add(this.formatDate(record.timestamp))
             .end()
           .end()
-        .end()
+        .end();
     }
   ]
 });
