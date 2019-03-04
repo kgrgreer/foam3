@@ -4,9 +4,10 @@ foam.CLASS({
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: `
-    The first step in the ContactWizardModal. Let the user enter an email
-    address. Use the email address to see if an existing user exists or not.
-    The next step in the wizard depends on the result.
+    The initial step in the ContactWizardModal. Let the user search company or
+    organization by the business name. If the business exists, then add the
+    existing directly. If the business does not exist, then invite the contact
+    to join Ablii.
   `,
 
   implements: [
