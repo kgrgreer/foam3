@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.mlang.sink.Count',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
@@ -84,6 +85,13 @@ foam.CLASS({
       overflow-wrap: break-word;
     }
     ^align-text-center {
+      text-align: center;
+    }
+    ^search-count {
+      color: #8e9090;
+      font-size: 14px;
+      font-style: italic;
+      line-height: 1.43;
       text-align: center;
     }
   `,
@@ -162,11 +170,24 @@ foam.CLASS({
               )
             );
           dao
-            .select(foam.mlang.sink.Count.create())
+            .select(this.Count.create())
             .then((sink) => {
               this.count = sink != null ? sink.value : 0;
             });
           return dao;
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'countBusiness',
+      expression: function(filter) {
+        if ( filter.length > 1 ) {
+          if ( this.count > 1 ) {
+            return `Showing ${this.count} of ${this.count} results`;
+          } else {
+            return `Showing ${this.count} of ${this.count} result`;
+          }
         }
       }
     },
@@ -228,6 +249,13 @@ foam.CLASS({
                   })
                 .end();
             })
+          .end()
+          .start()
+            .show(this.slot(function(count) {
+              return count !== 0;
+            }))
+            .addClass(this.myClass('search-count'))
+            .add(this.dot('countBusiness'))
           .end()
           .start().show(this.showDefault$)
             .addClass(this.myClass('create-new-block'))
