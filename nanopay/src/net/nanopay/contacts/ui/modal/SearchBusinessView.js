@@ -50,12 +50,12 @@ foam.CLASS({
     }
     ^searchIcon {
       position: absolute;
-      margin-left: 5px;
-      margin-top: 8px;
+      margin-left: 10px;
+      margin-top: 14px;
     }
     ^filter-search {
       height: 40px;
-      border-radius: 2px;
+      border-radius: 3px;
       border-color: #e2e2e3;
       background-color: #ffffff;
       vertical-align: top;
@@ -224,7 +224,10 @@ foam.CLASS({
             .add(this.BUSINESS_NAME)
           .end()
           .start().style({ 'position': 'relative' })
-            .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' })
+            .start({
+              class: 'foam.u2.tag.Image',
+              data: 'images/ablii/searchicon-resting.svg'
+            })
               .addClass(this.myClass('searchIcon'))
             .end()
             .start(this.FILTER)
