@@ -60,7 +60,8 @@ foam.CLASS({
     { name: 'INSTRUCTION', message: `Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.` },
     { name: 'COMPANY_PLACEHOLDER', message: 'Enter business name' },
     { name: 'EMAIL_PLACEHOLDER', message: 'Enter the email address' },
-    { name: 'INVITE_EXPLAINATION', message: `By checking this box, I acknowledge that I have permission to contact them about Ablii` }
+    { name: 'INVITE_EXPLAINATION', message: `By checking this box, I acknowledge that I have permission to contact them about Ablii` },
+    { name: 'STEP_INDICATOR', message: 'Step 1 of 3' }
   ],
 
   properties: [
@@ -80,10 +81,15 @@ foam.CLASS({
         foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
       this.addClass(this.myClass())
-        .start()
-          .addClass('contact-title')
-          .addClass('popUpTitle')
-          .add(this.title$)
+        .start().addClass('title-block')
+          .start()
+            .addClass('contact-title')
+            .addClass('popUpTitle')
+            .add(this.title$)
+          .end()
+          .start().addClass('step-indicator')
+            .add(this.STEP_INDICATOR)
+          .end()
         .end()
         .start().hide(this.isEdit$)
           .addClass('instruction')

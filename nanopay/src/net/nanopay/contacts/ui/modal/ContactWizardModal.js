@@ -33,13 +33,6 @@ foam.CLASS({
     width: 510px;
     box-sizing: border-box;
   }
-  ^ .instruction {
-    color: #8e9090;
-    font-size: 14px;
-    line-height: 1.5;
-    margin: 0;
-    margin-top: 8px;
-  }
   ^ .foam-u2-tag-Input,
   ^ .foam-u2-TextField {
     width: 100%;
@@ -50,10 +43,25 @@ foam.CLASS({
     -o-transition: all .15s ease-in-out;
     transition: all .15s ease-in-out;
   }
+  ^ .title-block {
+    display: flex;
+    justify-content: space-between;
+  }
   ^ .contact-title {
-    font-size: 24px;
+    font-size: 24px !important;
     line-height: 1.5;
-    font-weight: 900;
+    font-weight: 900 !important;
+    display: inline-block;
+  }
+  ^ .step-indicator {
+    margin-top: 8px;
+  }
+  ^ .instruction {
+    color: #8e9090;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    margin-top: 8px;
   }
   ^ .divider {
     background-color: #e2e2e3;

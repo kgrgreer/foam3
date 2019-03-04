@@ -73,15 +73,21 @@ foam.CLASS({
     { name: 'ERROR_STREET_NUMBER', message: 'Invalid street number.' },
     { name: 'ERROR_STREET_NAME', message: 'Invalid street name.' },
     { name: 'ERROR_CITY', message: 'Invalid city name.' },
-    { name: 'ERROR_POSTAL', message: 'Invalid postal/zip code.' }
+    { name: 'ERROR_POSTAL', message: 'Invalid postal/zip code.' },
+    { name: 'STEP_INDICATOR', message: 'Step 3 of 3' }
   ],
 
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start()
-          .addClass('contact-title')
-          .add(this.BANKING_TITLE)
+        .start().addClass('title-block')
+          .start()
+            .addClass('contact-title')
+            .add(this.BANKING_TITLE)
+          .end()
+          .start().addClass('step-indicator')
+            .add(this.STEP_INDICATOR)
+          .end()
         .end()
         .start('p')
           .addClass('instruction')

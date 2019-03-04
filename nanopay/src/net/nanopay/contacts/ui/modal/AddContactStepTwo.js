@@ -119,7 +119,8 @@ foam.CLASS({
     { name: 'EDIT_BANK_ERR', message: 'Error Editing Bank Account. Please try again.' },
     { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
     { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
-    { name: 'BRANCH_NOT_FOUND', message: `Could not find contact's bank account branch.` }
+    { name: 'BRANCH_NOT_FOUND', message: `Could not find contact's bank account branch.` },
+    { name: 'STEP_INDICATOR', message: 'Step 2 of 3' }
   ],
 
   properties: [
@@ -225,8 +226,14 @@ foam.CLASS({
       var self = this;
 
       this.addClass(this.myClass())
-        .start().addClass('contact-title')
-          .add(this.BANKING_TITLE)
+        .start().addClass('title-block')
+          .start()
+            .addClass('contact-title')
+            .add(this.BANKING_TITLE)
+          .end()
+          .start().addClass('step-indicator')
+            .add(this.STEP_INDICATOR)
+          .end()
         .end()
         .start('p')
           .addClass('instruction')
