@@ -14,12 +14,14 @@ foam.CLASS({
 
   imports: [
     'businessDAO',
+    'contactDAO',
     'user'
   ],
 
   requires: [
     'net.nanopay.auth.AgentJunctionStatus',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
+    'net.nanopay.contacts.Contact'
   ],
 
     css: `
@@ -65,12 +67,12 @@ foam.CLASS({
         width: 32px;
       }
       ^status {
-        color: #f91c1c;
+        color: #07941f;
         margin-right: 27px;
         font-size: 11px;
       }
       ^status-dot {
-        background-color: #f91c1c;
+        background-color: #07941f;
         margin-right: 6px;
         height: 4px;
         width: 4px;
@@ -80,7 +82,7 @@ foam.CLASS({
     `,
 
     messages: [
-      { name: 'DISABLED', message: 'Disabled' }
+      { name: 'CONNECTED', message: 'Connected' }
     ],
 
     properties: [
@@ -93,6 +95,11 @@ foam.CLASS({
         class: 'FObjectProperty',
         of: 'net.nanopay.model.Business',
         name: 'business'
+      },
+      {
+        type: 'Boolean',
+        name: 'isConnected',
+        value: 'false'
       }
     ],
 
@@ -101,6 +108,21 @@ foam.CLASS({
         this.businessDAO
           .find(this.data.id).then((business) => {
             this.business = business;
+
+            this.contactDAO
+              .where(
+                this.AND(
+                  this.EQ(this.Contact.BUSINESS_ID, business.id),
+                  this.NEQ(this.Contact.DELETED, true),
+                )
+              )
+              .select().then((contact) => {
+                if ( contact.array.length !== 0 ) {
+                  this.isConnected = true;
+                } else {
+                  this.isConnected = false;
+                }
+            });
           });
       },
 
@@ -135,6 +157,18 @@ foam.CLASS({
             .end()
           .end()
           .start()
+            .show(this.isConnected$)
+            .addClass(this.myClass('row'))
+            .start()
+              .addClass(this.myClass('status-dot'))
+            .end()
+            .start()
+              .addClass(this.myClass('status'))
+              .add(this.CONNECTED)
+            .end()
+          .end()
+          .start()
+            .hide(this.isConnected$)
             .addClass(this.myClass('row'))
             .start()
               .addClass(this.myClass('select-icon'))
