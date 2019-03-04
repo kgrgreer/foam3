@@ -55,7 +55,7 @@ foam.CLASS({
           typeof organization !== 'string' ||
           organization.trim().length === 0
         ) {
-          return 'Company name required';
+          return 'Business name required';
         }
       }
     },
@@ -77,14 +77,7 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      validateObj: function(firstName) {
-        if (
-          typeof firstName !== 'string' ||
-          firstName.trim().length === 0
-        ) {
-          return 'First name required';
-        }
-      }
+      validateObj: function(firstName) {}
     },
     {
       name: 'middleName',
@@ -92,14 +85,7 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      validateObj: function(lastName) {
-        if (
-          typeof lastName !== 'string' ||
-          lastName.trim().length === 0
-        ) {
-          return 'Last name required';
-        }
-      }
+      validateObj: function(lastName) {}
     },
     {
       class: 'foam.core.Enum',
