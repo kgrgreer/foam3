@@ -405,7 +405,7 @@ try {
       }
 
       // Invoice paid or voided on xero, remove it from our system
-      if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.PAID || xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.VOIDED) {
+      if ( xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.PAID || xeroInvoice.getStatus() == com.xero.model.InvoiceStatus.VOIDED || com.xero.model.InvoiceStatus.DELETED == xeroInvoice.getStatus() ) {
         xInvoice.setDraft(true);
         invoiceDAO.put(xInvoice);
         invoiceDAO.remove(xInvoice);
@@ -414,7 +414,7 @@ try {
     } else {
 
       // Checks if the invoice was paid
-      if ( com.xero.model.InvoiceStatus.PAID == xeroInvoice.getStatus() || com.xero.model.InvoiceStatus.VOIDED == xeroInvoice.getStatus() ) {
+      if ( com.xero.model.InvoiceStatus.PAID == xeroInvoice.getStatus() || com.xero.model.InvoiceStatus.VOIDED == xeroInvoice.getStatus() || com.xero.model.InvoiceStatus.DELETED == xeroInvoice.getStatus() ) {
         continue;
       }
 
