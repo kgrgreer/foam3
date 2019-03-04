@@ -2,6 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.documents.ui',
   name: 'AcceptanceDocumentView',
   extends: 'foam.u2.View',
+
   requires: [
     'foam.flow.Document',
     'foam.u2.tag.TextArea'
@@ -14,15 +15,11 @@ foam.CLASS({
   ],
 
   css: `
-^{
-table-layout: fixed;
-wrap: hard;
-}
-
-^left {
-}
-^right {
-}`,
+    ^{
+      table-layout: fixed;
+      wrap: hard;
+    }
+  `,
 
   methods: [
     function initE() {
@@ -36,7 +33,12 @@ wrap: hard;
             start('td').
               attrs({ valign: 'top' }).
               addClass(this.myClass('left')).
-              start(this.TextArea, { rows: 20, cols: 70, onKey: true, data$: this.data$ }).
+              start(this.TextArea, {
+                rows: 20,
+                cols: 70,
+                onKey: true,
+                data$: this.data$
+              }).
               end().
             end().
             start('td').
