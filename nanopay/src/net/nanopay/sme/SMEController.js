@@ -193,7 +193,7 @@ foam.CLASS({
     },
 
     function onSessionTimeout() {
-      this.add(this.Popup.create({ closeable: false }).tag({
+      this.add(this.SMEModal.create({ closeable: false }).tag({
         class: 'net.nanopay.ui.modal.SessionTimeoutModal',
       }));
     },
