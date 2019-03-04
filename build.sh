@@ -108,8 +108,8 @@ function deploy_journals {
     touch "$JOURNALS"
     if [[ $BUILD_PROD -eq 1 ]]; then
         ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 2
-    # elif [[ $BUILD_QA -eq 1 ]]; then
-    #     ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 1
+    elif [[ $BUILD_QA -eq 1 ]]; then
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 1
     else
         # IS_AWS will be 1 when building in jenkins which is the
         # same as staging/qa at the moment.
@@ -460,6 +460,7 @@ if [[ $INSTALL -eq 1 ]]; then
 fi
 
 if [[ $TEST -eq 1 ]]; then
+    COMPILE_ONLY=0
     echo "INFO :: Running all tests..."
     shift $((OPTIND - 1))
     # Remove the opts processed variables.
