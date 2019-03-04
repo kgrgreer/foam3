@@ -34,6 +34,8 @@ foam.CLASS({
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.quick.model.*',
     'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.contacts.Contact',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.HttpClient',
@@ -51,6 +53,14 @@ foam.CLASS({
     'java.net.URL',
     'java.net.URLEncoder',
     'static foam.mlang.MLang.*',
+    'com.intuit.ipp.core.Context',
+    'com.intuit.ipp.core.ServiceType',
+    'com.intuit.ipp.data.*',
+    'com.intuit.ipp.exception.FMSException',
+    'com.intuit.ipp.security.OAuth2Authorizer',
+    'com.intuit.ipp.services.DataService',
+    'com.intuit.ipp.util.Config',
+    'foam.mlang.sink.Count'
   ],
 
   methods: [
@@ -308,7 +318,8 @@ try {
         }
       ],
       javaCode:
-`Logger logger = (Logger) x.get("logger");
+`
+Logger logger = (Logger) x.get("logger");
 DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
@@ -330,12 +341,12 @@ try {
   QuickQueryBill[]       bills    = billList.getBill();
 
   // Converts the Query Bill to an Invoice
-  for ( QuickQueryBill invoice : bills ) {
+  for ( QuickQueryBill qInvoice : bills ) {
 
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
       AND(
-        EQ(QuickInvoice.QUICK_ID, invoice.getId()),
+        EQ(QuickInvoice.QUICK_ID, qInvoice.getId()),
         EQ(QuickInvoice.REALM_ID, tokenStorage.getRealmId()),
         EQ(QuickInvoice.CREATED_BY, user.getId())
       ));
@@ -357,17 +368,29 @@ try {
         }
         continue;
       }
+      
+      if (! (
+         net.nanopay.invoice.model.InvoiceStatus.UNPAID  == portal.getStatus() || 
+         net.nanopay.invoice.model.InvoiceStatus.DRAFT   == portal.getStatus() || 
+         net.nanopay.invoice.model.InvoiceStatus.OVERDUE == portal.getStatus() )) 
+      {
+        continue;
+      }
 
-      if (
-        ! (net.nanopay.invoice.model.InvoiceStatus.UNPAID == portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT == portal.getStatus())
-      ) {
+      // if paid/void on QuickBook, remove it from Ablii
+      if ( qInvoice.getBalance() == 0.0 && portal.getAmount() != 0 ) {
+        portal.setPaymentMethod(PaymentStatus.VOID);
+        portal.setStatus(InvoiceStatus.VOID);
+        portal.setDraft(true);
+        invoiceDAO.inX(x).put(portal);
+        invoiceDAO.inX(x).remove(portal);
         continue;
       }
 
     } else {
 
       // Checks if the invoice was paid
-      if ( invoice.getBalance() == 0 ) {
+      if ( qInvoice.getBalance() == 0 ) {
         continue;
       }
 
@@ -376,42 +399,29 @@ try {
     }
 
     // Searches for a previous existing Contact
-    QuickContact contact = (QuickContact) contactDAO.find(
+    Vendor vendor = (Vendor) fetchContactById(x, "vendor", qInvoice.getVendorRef().getValue());
+
+    Contact contact = (Contact) contactDAO.find(
       AND(
-        EQ(
-          QuickContact.QUICK_ID,
-          invoice.getVendorRef().getValue()
-        ),
-        EQ(
-          QuickContact.OWNER,
-          user.getId()
-        )
-      )
-    );
+        EQ(QuickContact.EMAIL, vendor.getPrimaryEmailAddr().getAddress()),
+        EQ(QuickContact.OWNER, user.getId())
+      ));
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     if ( contact == null ) {
-      Notification notify = new Notification();
-      notify.setUserId(user.getId());
-      String str = "Quick Bill # " +
-        invoice.getId() +
-        " can not be sync'd because Quick Contact # " +
-        invoice.getVendorRef().getValue() +
-        " is not in this system";
-      notify.setBody(str);
-      notification.put(notify);
+      // TODO: handle the mismatch
       continue;
     }
 
     // TODO change to accept all currencies
     // Only allows CAD and USD
-    if ( ! ("CAD".equals(invoice.getCurrencyRef().getValue()) || "USD".equals(invoice.getCurrencyRef().getValue())) ) {
+    if ( ! ("CAD".equals(qInvoice.getCurrencyRef().getValue()) || "USD".equals(qInvoice.getCurrencyRef().getValue())) ) {
       Notification notify = new Notification();
       notify.setUserId(user.getId());
       String s = "Quick Invoice # " +
-        invoice.getId() +
+        qInvoice.getId() +
         " can not be sync'd because the currency " +
-        invoice.getCurrencyRef().getValue() +
+        qInvoice.getCurrencyRef().getValue() +
         " is not supported in this system ";
       notify.setBody(s);
       notification.put(notify);
@@ -419,27 +429,27 @@ try {
     }
     portal.setDesync(false);
     portal.setPayerId(user.getId());
+    portal.setPayeeId(contact.getId());
     portal.setContactId(contact.getId());
-    portal.setQuickId(invoice.getId());
+    portal.setQuickId(qInvoice.getId());
     portal.setRealmId(tokenStorage.getRealmId());
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
 
-    // Checks if the invoice was paid on
-    if ( invoice.getBalance() == 0 ) {
-      portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
-      portal.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
-    } else {
-      Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
-      double doubleAmount = invoice.getBalance() * Math.pow(10.0, currency.getPrecision());
-      portal.setAmount((new Double(doubleAmount)).longValue());
-    }
-    portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
-    portal.setIssueDate(getDate(invoice.getTxnDate()));
-    portal.setDueDate(getDate(invoice.getDueDate()));
+    Currency currency = (Currency) currencyDAO.find(qInvoice.getCurrencyRef().getValue());
+    double doubleAmount = qInvoice.getBalance() * Math.pow(10.0, currency.getPrecision());
+    portal.setAmount(Math.round(doubleAmount));
+
+    portal.setInvoiceNumber(qInvoice.getDocNumber());
+    portal.setQuickId(qInvoice.getId());
+    portal.setRealmId(tokenStorage.getRealmId());
+    portal.setDestinationCurrency(qInvoice.getCurrencyRef().getValue());
+    portal.setIssueDate(getDate(qInvoice.getTxnDate()));
+    portal.setDueDate(getDate(qInvoice.getDueDate()));
+    portal.setDesync(false);
     portal.setCreatedBy(user.getId());
 
     // Get attachments from invoice
-    foam.nanos.fs.File[] files = getAttachments(x, "bill", invoice.getId());
+    foam.nanos.fs.File[] files = getAttachments(x, "bill", qInvoice.getId());
     if ( files != null && files.length != 0 ) {
       portal.setInvoiceFile(files);
     }
@@ -451,7 +461,8 @@ try {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, "Error has occurred: "+ e);
-}`,
+}
+`,
     },
     {
       name: 'getInvoices',
@@ -472,7 +483,8 @@ try {
         }
       ],
       javaCode:
-`Logger logger = (Logger) x.get("logger");
+`    
+Logger logger = (Logger) x.get("logger");
 DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
@@ -492,12 +504,12 @@ try {
   QuickQueryInvoiceResponse quick       = (QuickQueryInvoiceResponse) parser.parseString(query.getReason(), QuickQueryInvoiceResponse.getOwnClassInfo().getObjClass());
   QuickQueryInvoices        invoiceList = quick.getQueryResponse();
   QuickQueryInvoice[]       invoices    = invoiceList.getInvoice();
-  for ( QuickQueryInvoice invoice: invoices ) {
+  for ( QuickQueryInvoice qInvoice: invoices ) {
 
     // Searches for a previously existing invoice
     QuickInvoice portal = (QuickInvoice) invoiceDAO.find(
       AND(
-        EQ(QuickInvoice.QUICK_ID, invoice.getId()),
+        EQ(QuickInvoice.QUICK_ID, qInvoice.getId()),
         EQ(QuickInvoice.REALM_ID, tokenStorage.getRealmId()),
         EQ(QuickInvoice.CREATED_BY, user.getId())
       ));
@@ -519,16 +531,28 @@ try {
         }
         continue;
       }
+      
+      if (! (
+         net.nanopay.invoice.model.InvoiceStatus.UNPAID  == portal.getStatus() || 
+         net.nanopay.invoice.model.InvoiceStatus.DRAFT   == portal.getStatus() || 
+         net.nanopay.invoice.model.InvoiceStatus.OVERDUE == portal.getStatus() )) 
+      {
+        continue;
+      }
 
-      if (
-        ! (net.nanopay.invoice.model.InvoiceStatus.UNPAID == portal.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT == portal.getStatus())
-      ) {
+      // if paid/void on QuickBook, remove it from Ablii
+      if ( qInvoice.getBalance() == 0.0 && portal.getAmount() != 0 ) {
+        portal.setPaymentMethod(PaymentStatus.VOID);
+        portal.setStatus(InvoiceStatus.VOID);
+        portal.setDraft(true);
+        invoiceDAO.inX(x).put(portal);
+        invoiceDAO.inX(x).remove(portal);
         continue;
       }
 
     } else {
       // Checks if the invoice was paid
-      if ( invoice.getBalance() == 0 ) {
+      if ( qInvoice.getBalance() == 0 ) {
         continue;
       }
 
@@ -537,73 +561,55 @@ try {
     }
 
     // Searches for a previous existing Contact
-    QuickContact contact = (QuickContact) contactDAO.find(
+    Customer customer = (Customer) fetchContactById(x, "customer", qInvoice.getCustomerRef().getValue());
+        
+    Contact contact = (Contact) contactDAO.find(
       AND(
-        EQ(
-          QuickContact.QUICK_ID,
-          invoice.getCustomerRef().getValue()
-        ),
-        EQ(
-          QuickContact.OWNER,
-          user.getId()
-        )
-      )
-    );
+        EQ(QuickContact.EMAIL, customer.getPrimaryEmailAddr().getAddress()),
+        EQ(QuickContact.OWNER, user.getId())
+      ));
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     if ( contact == null ) {
-      Notification notify = new Notification();
-      notify.setUserId(user.getId());
-      String str = "Quick Invoice # " +
-        invoice.getId() +
-        " can not be sync'd because Quick Contact # " +
-        invoice.getCustomerRef().getValue() +
-        " is not in this system";
-      notify.setBody(str);
-      notification.put(notify);
+      // TODO: handle the mismatch
       continue;
     }
 
     // TODO change to accept all currencys
     // Only allows CAD and USD
-    if ( ! ("CAD".equals(invoice.getCurrencyRef().getValue()) || "USD".equals(invoice.getCurrencyRef().getValue())) ) {
+    if ( ! ("CAD".equals(qInvoice.getCurrencyRef().getValue()) || "USD".equals(qInvoice.getCurrencyRef().getValue())) ) {
       Notification notify = new Notification();
       notify.setUserId(user.getId());
       String s = "Quick Invoice # " +
-        invoice.getId() +
+        qInvoice.getId() +
         " can not be sync'd because the currency " +
-        invoice.getCurrencyRef().getValue() +
+        qInvoice.getCurrencyRef().getValue() +
         " is not supported in this system ";
       notify.setBody(s);
       notification.put(notify);
       continue;
     }
+    portal.setPayerId(contact.getId());
     portal.setPayeeId(user.getId());
     portal.setContactId(contact.getId());
     portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
     portal.setDraft(true);
 
-    // Checks if the invoice was paid on
-    if ( invoice.getBalance() == 0 ) {
-      portal.setStatus(net.nanopay.invoice.model.InvoiceStatus.VOID);
-      portal.setDraft(false);
-      portal.setPaymentMethod(net.nanopay.invoice.model.PaymentStatus.VOID);
-    } else {
-      Currency currency = (Currency) currencyDAO.find(invoice.getCurrencyRef().getValue());
-      double doubleAmount = invoice.getBalance() * Math.pow(10.0, currency.getPrecision());
-      portal.setAmount((new Double(doubleAmount)).longValue());
-    }
-    portal.setInvoiceNumber(invoice.getDocNumber());
-    portal.setQuickId(invoice.getId());
+    Currency currency = (Currency) currencyDAO.find(qInvoice.getCurrencyRef().getValue());
+    double doubleAmount = qInvoice.getBalance() * Math.pow(10.0, currency.getPrecision());
+    portal.setAmount(Math.round(doubleAmount));
+
+    portal.setInvoiceNumber(qInvoice.getDocNumber());
+    portal.setQuickId(qInvoice.getId());
     portal.setRealmId(tokenStorage.getRealmId());
-    portal.setDestinationCurrency(invoice.getCurrencyRef().getValue());
-    portal.setIssueDate(getDate(invoice.getTxnDate()));
-    portal.setDueDate(getDate(invoice.getDueDate()));
+    portal.setDestinationCurrency(qInvoice.getCurrencyRef().getValue());
+    portal.setIssueDate(getDate(qInvoice.getTxnDate()));
+    portal.setDueDate(getDate(qInvoice.getDueDate()));
     portal.setDesync(false);
     portal.setCreatedBy(user.getId());
 
     // Get attachments
-    foam.nanos.fs.File[] files = getAttachments(x, "invoice", invoice.getId());
+    foam.nanos.fs.File[] files = getAttachments(x, "invoice", qInvoice.getId());
     if ( files != null && files.length != 0 ) {
       portal.setInvoiceFile(files);
     }
@@ -615,7 +621,8 @@ try {
   e.printStackTrace();
   logger.error(e);
   return new ResultResponse(false, "Error has occurred: "+ e);
-}`,
+}
+`,
     },
     {
       name: 'isValidContact',
@@ -723,10 +730,8 @@ try {
       }
 
       if ( ! ( existContact instanceof QuickContact ) ) {
-        contactDAO.remove(existContact);
-        if ( existContact.getBankAccount() != 0 ) {
-          newContact.setBankAccount(existContact.getBankAccount());
-        }
+        // TODO: handle the mismatch
+        continue;
       } else {
         newContact = (QuickContact) existContact.fclone();
       }
@@ -756,12 +761,8 @@ try {
         }
   
         if ( sink.getArray().size() > 1) {
-          newContact.setChooseBusiness(true);
-          newContact.setEmail(email.getAddress());
-          newContact.setFirstName(existUser.getFirstName());
-          newContact.setLastName(existUser.getLastName());
-          newContact.setOrganization("TBD");
-          newContact.setBusinessName("TBD");
+          // TODO: handle the mismatch
+          continue;
         }
   
         newContact.setType("Contact");
@@ -1177,6 +1178,272 @@ try {
   logger.error(e);
   return banks;
 }`
+    },
+    {
+      name: 'importContact',
+      type: 'void',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'importContact',
+          type: 'NameBase'
+        }
+      ],
+      javaCode: `
+Logger         logger         = (Logger) x.get("logger");
+DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
+User              user         = (User) x.get("user");
+DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
+DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
+DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
+CountryService countryService = (CountryService) x.get("countryService");
+RegionService  regionService  = (RegionService) x.get("regionService");
+
+DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+
+
+EmailAddress email = importContact.getPrimaryEmailAddr();
+
+Contact existContact = (Contact) contactDAO.find(AND(
+  EQ(Contact.EMAIL, email.getAddress()),
+  EQ(Contact.OWNER, user.getId())
+));
+
+// existing user
+User existUser = (User) userDAO.find(
+  EQ(User.EMAIL, email.getAddress())
+);
+
+QuickContact newContact = new QuickContact();
+
+// If the contact is a existing contact
+if ( existContact != null ) {
+
+  // existing user
+  if ( existUser != null ) {
+    return;
+  }
+
+  if ( ! ( existContact instanceof QuickContact ) ) {
+    contactDAO.remove(existContact);
+    if ( existContact.getBankAccount() != 0 ) {
+      newContact.setBankAccount(existContact.getBankAccount());
+    }
+  } else {
+    newContact = (QuickContact) existContact.fclone();
+  }
+
+}
+
+// If the contact is not a existing contact
+if ( existContact == null ) {
+
+  if ( existUser != null ) {
+
+    ArraySink sink = (ArraySink) agentJunctionDAO.where(EQ(
+      UserUserJunction.SOURCE_ID, existUser.getId()
+    )).select(new ArraySink());
+
+    if ( sink.getArray().size() == 0 ) {
+      //
+    }
+
+    if ( sink.getArray().size() == 1 ) {
+      UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
+      Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
+      newContact.setOrganization(business.getOrganization());
+      newContact.setBusinessName(business.getBusinessName());
+      newContact.setBusinessId(business.getId());
+      newContact.setEmail(business.getEmail());
+    }
+
+    if ( sink.getArray().size() > 1) {
+      newContact.setChooseBusiness(true);
+      newContact.setEmail(email.getAddress());
+      newContact.setFirstName(existUser.getFirstName());
+      newContact.setLastName(existUser.getLastName());
+      newContact.setOrganization("TBD");
+      newContact.setBusinessName("TBD");
+    }
+
+    newContact.setType("Contact");
+    newContact.setGroup("sme");
+    newContact.setQuickId(importContact.getId());
+    newContact.setRealmId(tokenStorage.getRealmId());
+    newContact.setOwner(user.getId());
+    contactDAO.put(newContact);
+    return;
+
+  }
+}
+
+/*
+ * Address integration
+ */
+Address           portalAddress   = new Address();
+PhysicalAddress customerAddress = importContact instanceof Customer ?
+  ( (Customer) importContact ).getBillAddr() :
+  ( (Vendor) importContact ).getBillAddr();
+
+if ( customerAddress != null ) {
+  Country country =
+    ! SafetyUtil.isEmpty(customerAddress.getCountry()) ?
+      countryService.getCountry(customerAddress.getCountry()) : null;
+
+  Region region =
+    ! SafetyUtil.isEmpty(customerAddress.getCountrySubDivisionCode()) ?
+      regionService.getRegion(customerAddress.getCountrySubDivisionCode()) : null;
+
+  portalAddress.setAddress1(customerAddress.getLine1());
+  portalAddress.setAddress2(customerAddress.getLine2());
+  portalAddress.setCity(customerAddress.getCity());
+  portalAddress.setPostalCode(customerAddress.getPostalCode());
+  portalAddress.setRegionId(country != null ? country.getCode() : null);
+  portalAddress.setCountryId(region != null ? region.getCode() : null);
+
+  newContact.setBusinessAddress(portalAddress);
+}
+
+/*
+ * Phone integration
+ */
+String busPhoneNumber =
+  importContact.getPrimaryPhone() != null ?
+    importContact.getPrimaryPhone().getFreeFormNumber() : "";
+
+String mobilePhoneNumber =
+  importContact.getMobile() != null ?
+    importContact.getMobile().getFreeFormNumber() : "";
+
+Phone businessPhone = new Phone.Builder(x)
+  .setNumber( busPhoneNumber )
+  .setVerified( ! busPhoneNumber.equals("") )
+  .build();
+
+Phone mobilePhone = new Phone.Builder(x)
+  .setNumber( mobilePhoneNumber )
+  .setVerified( ! mobilePhoneNumber.equals("") )
+  .build();
+
+newContact.setEmail(email.getAddress());
+newContact.setOrganization(importContact.getCompanyName());
+newContact.setFirstName(importContact.getGivenName());
+newContact.setLastName(importContact.getFamilyName());
+newContact.setOwner(user.getId());
+newContact.setBusinessPhone(businessPhone);
+newContact.setMobile(mobilePhone);
+newContact.setGroup("sme");
+newContact.setQuickId(importContact.getId());
+newContact.setRealmId(tokenStorage.getRealmId());
+contactDAO.put(newContact);
+      `
+    },
+    {
+      name: 'fetchContacts',
+      type: 'List',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        }
+      ],
+      javaCode: `
+List result = new ArrayList();
+
+String queryCustomer = "select * from customer";
+String queryVendor   = "select * from vendor";
+
+result.addAll(sendRequest(x, queryCustomer));
+result.addAll(sendRequest(x, queryVendor));
+
+return result;
+      `
+    },
+    {
+      name: 'fetchContactById',
+      type: 'NameBase',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'type',
+          type: 'String'
+        },
+        {
+          name: 'id',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+String query = "select * from "+ type +" where id = '"+ id +"'";
+return (NameBase) sendRequest(x, query).get(0);
+      `
+    },
+    {
+      name: 'sendRequest',
+      type: 'List',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'query',
+          type: 'String'
+        }
+      ],
+      javaCode:`
+User                        user      = (User) x.get("user");
+DAO                         store     = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+Group                       group     = user.findGroup(x);
+AppConfig                   app       = group.getAppConfig(x);
+DAO                         configDAO = ((DAO) x.get("quickConfigDAO")).inX(x);
+QuickConfig                 config    = (QuickConfig)configDAO.find(app.getUrl());
+QuickTokenStorage  tokenStorage = (QuickTokenStorage) store.find(user.getId());
+
+try {
+  Config.setProperty(Config.BASE_URL_QBO, config.getIntuitAccountingAPIHost() + "/v3/company/");
+
+  OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken());
+  Context context = new Context(oauth, ServiceType.QBO, tokenStorage.getRealmId());
+  DataService service =  new DataService(context);
+
+  return service.executeQuery(query).getEntities();
+} catch (FMSException e) {
+  e.printStackTrace();
+}
+
+return null;
+      `
+    },
+    {
+      name: 'sendNotification',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'body',
+          type: 'String'
+        }
+      ],
+      javaCode:`
+User user = (User) x.get("user");
+DAO notification   = ((DAO) x.get("notificationDAO")).inX(x);
+
+Notification notify = new Notification();
+notify.setUserId(user.getId());
+
+notify.setBody(body);
+notification.put(notify);
+      `
     }
   ]
 });

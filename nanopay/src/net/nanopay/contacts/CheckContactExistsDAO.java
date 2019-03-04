@@ -7,6 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.integration.quick.model.QuickContact;
+import net.nanopay.integration.xero.model.XeroContact;
 import net.nanopay.model.Business;
 
 import static foam.mlang.MLang.*;
@@ -33,7 +34,7 @@ public class CheckContactExistsDAO extends ProxyDAO {
     }
 
     // We only want to do this check for newly created Contacts.
-    if ( super.find_(x, obj) != null || contact.getBusinessId() != 0 || obj instanceof QuickContact) {
+    if ( super.find_(x, obj) != null || contact.getBusinessId() != 0 || obj instanceof QuickContact || obj instanceof XeroContact) {
       return super.put_(x, obj);
     }
 
