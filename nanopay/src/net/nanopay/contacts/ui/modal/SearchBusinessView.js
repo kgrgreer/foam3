@@ -72,6 +72,8 @@ foam.CLASS({
     }
     ^search-result {
       color: #8e9090;
+      font-size: 14px;
+      font-style: italic;
       margin-bottom: 16px;
     }
     ^instruction {
@@ -99,7 +101,7 @@ foam.CLASS({
   messages: [
     {
       name: 'TITLE',
-      message: 'Add a Contact'
+      message: 'Add a contact'
     },
     {
       name: 'BUSINESS_NAME',
@@ -110,10 +112,6 @@ foam.CLASS({
       message: `Search a business on Ablii to add them to your
         contacts.  For better results, search using their registered
         business name and location.`
-    },
-    {
-      name: 'BUSINESS_PLACEHOLDER',
-      message: `Matching businesses will appear here`
     },
     {
       name: 'GENERIC_FAILURE',

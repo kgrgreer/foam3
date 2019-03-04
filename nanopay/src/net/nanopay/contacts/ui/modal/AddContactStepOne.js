@@ -56,7 +56,7 @@ foam.CLASS({
 
   messages: [
     { name: 'CREATE_TITLE', message: 'Create a personal contact' },
-    { name: 'EDIT_TITLE', message: 'Edit Contact' },
+    { name: 'EDIT_TITLE', message: 'Edit contact' },
     { name: 'INSTRUCTION', message: `Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.` },
     { name: 'COMPANY_PLACEHOLDER', message: 'Enter business name' },
     { name: 'EMAIL_PLACEHOLDER', message: 'Enter the email address' },
