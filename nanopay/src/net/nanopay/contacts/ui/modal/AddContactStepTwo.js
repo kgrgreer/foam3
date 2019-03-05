@@ -166,9 +166,7 @@ foam.CLASS({
                   });
                 })
                 .catch((err) => {
-                  var msg = err.message
-                    ? err.message
-                    : this.INSTITUTION_NOT_FOUND;
+                  var msg = err.message || this.INSTITUTION_NOT_FOUND;
                   this.ctrl.notify(msg, 'error');
                 });
 
@@ -185,9 +183,7 @@ foam.CLASS({
                   });
                 })
                 .catch((err) => {
-                  var msg = err.message
-                    ? err.message
-                    : this.BRANCH_NOT_FOUND;
+                  var msg = err.message || this.BRANCH_NOT_FOUND;
                   this.ctrl.notify(msg, 'error');
                 });
             } else {
@@ -204,18 +200,14 @@ foam.CLASS({
                   });
                 })
                 .catch((err) => {
-                  var msg = err.message
-                    ? err.message
-                    : this.BRANCH_NOT_FOUND;
+                  var msg = err.message || this.BRANCH_NOT_FOUND;
                   this.ctrl.notify(msg, 'error');
                 });
             }
             this.isConnecting = false;
           })
           .catch((err) => {
-            var msg = err.message
-              ? err.message
-              : this.ACCOUNT_NOT_FOUND;
+            var msg = err.message || this.ACCOUNT_NOT_FOUND;
             this.ctrl.notify(msg, 'error');
             this.isConnecting = false;
           });

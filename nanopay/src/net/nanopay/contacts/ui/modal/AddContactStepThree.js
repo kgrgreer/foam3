@@ -118,9 +118,7 @@ foam.CLASS({
         var result = await this.bankAccountDAO.put(bankAccount);
         await this.updateContactBankInfo(contact, result.id);
       } catch (err) {
-        var msg = err.message
-          ? err.message
-          : this.ACCOUNT_CREATION_ERROR;
+        var msg = err.message || this.ACCOUNT_CREATION_ERROR;
         this.ctrl.notify(msg, 'error');
         return false;
       }
@@ -135,9 +133,7 @@ foam.CLASS({
         contact.bankAccount = bankAccountId;
         await this.user.contacts.put(contact);
       } catch (err) {
-        var msg = err.message
-          ? err.message
-          : this.GENERIC_PUT_FAILED;
+        var msg = err.message || this.GENERIC_PUT_FAILED;
         this.notify(msg, 'error');
       }
     }
