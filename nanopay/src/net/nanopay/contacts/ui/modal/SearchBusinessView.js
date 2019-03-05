@@ -97,6 +97,14 @@ foam.CLASS({
     }
   `,
 
+  constants: [
+    {
+      type: 'String',
+      name: 'SEARCH_ICON',
+      value: 'images/ablii/searchicon-resting.svg'
+    }
+  ],
+
   messages: [
     {
       name: 'TITLE',
@@ -115,10 +123,6 @@ foam.CLASS({
     {
       name: 'GENERIC_FAILURE',
       message: `An unexpected problem occurred. Please try again later.`
-    },
-    {
-      name: 'ADD_CONTACT_SUCCESS',
-      message: 'Contact added'
     },
     {
       name: 'DEFAULT_TEXT',
@@ -304,7 +308,7 @@ foam.CLASS({
           .start().style({ 'position': 'relative' })
             .start({
               class: 'foam.u2.tag.Image',
-              data: 'images/ablii/searchicon-resting.svg'
+              data: this.SEARCH_ICON
             })
               .addClass(this.myClass('searchIcon'))
             .end()

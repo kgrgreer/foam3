@@ -326,11 +326,7 @@ foam.CLASS({
 
     /** Chooses a CA or US bank account. */
     function selectBank(bank) {
-      if ( bank === 'CA' ) {
-        this.isCABank = true;
-      } else if ( bank === 'US' ) {
-        this.isCABank = false;
-      }
+      this.isCABank = bank === 'CA';
     }
   ],
 
