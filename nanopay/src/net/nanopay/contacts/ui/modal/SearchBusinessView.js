@@ -138,6 +138,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filter',
+      documentation: 'This property is the data binding for the search field',
       view: {
         class: 'foam.u2.TextField',
         type: 'search',
@@ -163,6 +164,10 @@ foam.CLASS({
     },
     { type: 'Int',
       name: 'countBusinesses',
+      documentation: `
+        Total number of businesses after filtering
+        including the connected and unconnected businesses.
+      `,
       expression: function(connectedCount, unconnectedCount) {
         return connectedCount + unconnectedCount;
       }
@@ -170,6 +175,10 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'connectedBusinesses',
+      documentation: `
+        This property is to query all connected businesses related to 
+        the current acting business.
+      `,
       expression: function(filter) {
         if ( filter.length < 2 ) {
           return foam.dao.NullDAO.create({ of: net.nanopay.model.Business });
@@ -202,6 +211,10 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'unconnectedBusinesses',
+      documentation: `
+        This property is to query all unconnected businesses related to 
+        the current acting business.
+      `,
       expression: function(filter) {
         if ( filter.length < 2 ) {
           return foam.dao.NullDAO.create({ of: net.nanopay.model.Business });
@@ -234,6 +247,7 @@ foam.CLASS({
     {
       type: 'String',
       name: 'searchBusinessesCount',
+      documentation: `Construct the searching count string.`,
       expression: function(filter, countBusinesses) {
         if ( filter.length > 1 ) {
           if ( this.countBusinesses > 1 ) {
@@ -248,6 +262,10 @@ foam.CLASS({
     {
       type: 'Boolean',
       name: 'showNoMatch',
+      documentation: `
+        Only show no matching text 'We couldn’t find a business with that name'
+        when the searching keyword is longer than 1 char.
+      `,
       expression: function(filter, countBusinesses) {
         return countBusinesses === 0 && filter.length > 1;
       }
@@ -255,6 +273,10 @@ foam.CLASS({
     {
       type: 'Boolean',
       name: 'showDefault',
+      documentation: `
+        Only show the default searching text when the searching keyword 
+        is shorter than 2 chars.
+      `,
       expression: function(filter) {
         return filter.length < 2;
       }
