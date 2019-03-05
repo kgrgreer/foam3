@@ -73,6 +73,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
+      permissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
         var colour = '#545d87';
@@ -198,6 +199,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
+      permissionRequired: true,
       documentation: `User pad authorization address.`,
       factory: function() {
         return this.Address.create();
@@ -208,6 +210,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'bankAddress',
+      permissionRequired: true,
       documentation: `Bank account address.`,
       factory: function() {
         return this.Address.create();
