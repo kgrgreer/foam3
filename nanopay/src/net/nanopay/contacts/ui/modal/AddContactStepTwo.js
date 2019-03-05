@@ -166,7 +166,7 @@ foam.CLASS({
                   });
                 })
                 .catch((err) => {
-                  var msg = err != null && err.message
+                  var msg = err.message
                     ? err.message
                     : this.INSTITUTION_NOT_FOUND;
                   this.ctrl.notify(msg, 'error');
@@ -185,7 +185,7 @@ foam.CLASS({
                   });
                 })
                 .catch((err) => {
-                  var msg = err != null && err.message
+                  var msg = err.message
                     ? err.message
                     : this.BRANCH_NOT_FOUND;
                   this.ctrl.notify(msg, 'error');
@@ -204,7 +204,7 @@ foam.CLASS({
                   });
                 })
                 .catch((err) => {
-                  var msg = err != null && err.message
+                  var msg = err.message
                     ? err.message
                     : this.BRANCH_NOT_FOUND;
                   this.ctrl.notify(msg, 'error');
@@ -213,7 +213,7 @@ foam.CLASS({
             this.isConnecting = false;
           })
           .catch((err) => {
-            var msg = err != null && err.message
+            var msg = err.message
               ? err.message
               : this.ACCOUNT_NOT_FOUND;
             this.ctrl.notify(msg, 'error');
