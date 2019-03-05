@@ -179,14 +179,10 @@ foam.CLASS({
             isValidEmail = false;
           }
 
-          if ( SafetyUtil.isEmpty(this.getFirstName()) ) {
-            throw new IllegalStateException("First name is required.");
-          } else if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
+          if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("First name cannot exceed 70 characters.");
           } else if ( Pattern.matches(containsDigitRegex, this.getFirstName()) ) {
             throw new IllegalStateException("First name cannot contain numbers.");
-          } else if ( SafetyUtil.isEmpty(this.getLastName()) ) {
-            throw new IllegalStateException("Last name is required.");
           } else if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("Last name cannot exceed 70 characters.");
           } else if ( Pattern.matches(containsDigitRegex, this.getLastName()) ) {
