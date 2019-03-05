@@ -461,7 +461,7 @@ fi
 
 if [[ $TEST -eq 1 ]]; then
     COMPILE_ONLY=0
-    echo "INFO :: Running all tests..."
+    echo "INFO :: Running tests..."
     shift $((OPTIND - 1))
     # Remove the opts processed variables.
     TESTS="$@"
