@@ -36,7 +36,7 @@ foam.CLASS({
         margin-bottom: 8px;
         padding: 0 24px;
       }
-      ^:hover {
+      ^on-hover {
         cursor: pointer;
       }
       ^:hover ^select-icon {
@@ -130,6 +130,10 @@ foam.CLASS({
         this.start()
           .addClass(this.myClass())
           .addClass(this.myClass('row'))
+          .enableClass(this.myClass('on-hover'),
+            this.slot(function(isConnected) {
+              return ! isConnected;
+          }))
           .start()
             .start()
               .addClass(this.myClass('business-name'))
