@@ -25,6 +25,7 @@ VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
 
 # Creates an array of the file names
 declare -a arr=(
+  "acceptanceDocuments"
   "accounts"
   "ascendantfxusers"
   "ascendantUserPayeeJunctions"
@@ -38,7 +39,6 @@ declare -a arr=(
   "cronjobs"
   "currencies"
   "currencyfxServices"
-  "disclosures"
   "dugs"
   "emailTemplates"
   "exportDriverRegistrys"

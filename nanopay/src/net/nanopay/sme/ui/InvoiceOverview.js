@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
@@ -28,6 +29,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
     'ctrl',
     'currencyDAO',
@@ -72,8 +74,8 @@ foam.CLASS({
       font-weight: 400;
       width: 120px;
     }
-    ^ .parent {
-      margin-left: 15px;
+    ^go-back-label {
+      margin-left: 12px;
     }
     ^ .payment-content {
       padding: 0px 14px;
@@ -104,21 +106,17 @@ foam.CLASS({
     ^ .invoice-row {
       margin-bottom: 24px;
     }
-    ^ .invoice-text-left {
+    ^ .invoice-text {
       display: inline-block;
       vertical-align: top;
       color: #8e9090;
       width: 50%;
-    }
-    ^ .invoice-text-right {
-      display: inline-block;
-      vertical-align: top;
-      color: #8e9090;
-      width: 50%;
+      line-height: 1.5;
     }
     ^ .subheading {
+      font-size: 16px;
+      font-weight: 900;
       margin-bottom: 16px;
-      font-weight: bold;
     }
     ^ .foam-u2-history-HistoryView {
       background: none;
@@ -137,8 +135,21 @@ foam.CLASS({
       vertical-align: top;
       margin-top: -2px;
     }
-    ^ .align-right {
-      text-align: right;
+    ^header-align-top {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    ^header-align-right {
+      display: inline-block;
+      vertical-align: middle;
+      float: right;
+    }
+    ^annotation {
+      font-size: 10px;
+    }
+    ^primary-disable {
+      background: #bdb4fd !important;
+      cursor: default !important;
     }
   `,
 
@@ -149,7 +160,8 @@ foam.CLASS({
     { name: 'PAYMENT_FEE', message: 'Fee' },
     { name: 'AMOUNT_DUE', message: 'Amount due' },
     { name: 'AMOUNT_PAID', message: 'Amount paid' },
-    { name: 'DATE_PAID', message: 'Date paid' },
+    { name: 'DATE_CREDITED', message: 'Date credited' },
+    { name: 'ESTIMATED_CREDIT_DATE', message: 'Estimated credit date' },
     { name: 'INVOICE_HISTORY', message: 'History' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
     { name: 'VOID_MESSAGE', message: 'Mark as void' },
@@ -158,7 +170,8 @@ foam.CLASS({
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
-    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' }
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' },
+    { name: 'ANNOTATION', message: '* The dates above are estimates and are subject to change.' }
   ],
 
   constants: [
@@ -225,11 +238,10 @@ foam.CLASS({
       name: 'showBankAccount',
       expression: function(invoice) {
         return invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
-          invoice.status === this.InvoiceStatus.IN_TRANSIT ||
           invoice.status === this.InvoiceStatus.PENDING ||
           invoice.status === this.InvoiceStatus.PAID;
       },
-      documentation: `Only show bank accounts when it is requires 
+      documentation: `Only show bank accounts when it is requires
         approval, processing & complete`
     },
     {
@@ -260,10 +272,16 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'isProcess',
+      expression: function(invoice) {
+        return invoice.status === this.InvoiceStatus.PENDING;
+      }
+    },
+    {
+      class: 'Boolean',
       name: 'isProcessOrComplete',
       expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.IN_TRANSIT ||
-          invoice.status === this.InvoiceStatus.PENDING ||
+        return invoice.status === this.InvoiceStatus.PENDING ||
           invoice.status === this.InvoiceStatus.PAID;
       }
     },
@@ -303,18 +321,18 @@ foam.CLASS({
     {
       name: 'formattedAmountPaid',
       value: '--',
-      documentation: `formattedAmountPaid is the amount due 
+      documentation: `formattedAmountPaid is the amount due
         and contains the currency symbol.`
     },
     {
       class: 'String',
       name: 'formattedAmountDue',
-      documentation: `formattedAmountDue is the amount due 
+      documentation: `formattedAmountDue is the amount due
         and contains the currency symbol.`,
       expression: function(invoice, invoice$destinationCurrency, invoice$amount) {
         // Format the amount & add the currency symbol
         if ( invoice$destinationCurrency !== undefined ) {
-          return invoice.destinationCurrency$find.then((currency) => {
+          return this.currencyDAO.find(invoice$destinationCurrency).then((currency) => {
             return currency.format(invoice$amount);
           });
         }
@@ -325,9 +343,6 @@ foam.CLASS({
 
   methods: [
     function init() {
-      // Dynamic create top button based on 'isPayable'
-      this.generateTop(this.isPayable);
-
       this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
         if ( transaction ) {
           this.relatedTransaction = transaction;
@@ -352,14 +367,15 @@ foam.CLASS({
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = `${currency.format(0)} `
-                  + `${currency.alphabeticCode}`;
+                this.fee = `${currency.format(0)} ${currency.alphabeticCode}`;
               });
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
             this.currencyDAO.find(account.denomination).then((currency) => {
-              this.formattedAmountPaid = `${currency.format(transaction.amount)} ${currency.alphabeticCode}`;
+              this.formattedAmountPaid =
+                `${currency.format(transaction.amount)} ` +
+                `${currency.alphabeticCode}`;
             });
 
             if ( this.invoice.destinationCurrency === account.denomination ) {
@@ -377,9 +393,51 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start()
-            .addClass('x-large-header')
-            .add('Invoice #' + this.invoice.invoiceNumber)
+          .start().add(this.slot(function() {
+            return this.E().startContext({ data: this })
+              .start()
+                .addClass(this.myClass('back-area'))
+                .start({
+                  class: 'foam.u2.tag.Image',
+                  data: 'images/ablii/gobackarrow-grey.svg'
+                  })
+                  .addClass(this.myClass('back-arrow'))
+                .end()
+                .start('span')
+                  .addClass(this.myClass('go-back-label'))
+                  .add(this.BACK)
+                .end()
+                .on('click', () => {
+                  var menuId = this.isPayable ? 'sme.main.invoices.payables'
+                    : 'sme.main.invoices.receivables';
+                  this.menuDAO
+                    .find(menuId)
+                    .then((menu) => menu.launch());
+                })
+              .end()
+              .start()
+                .start()
+                  .addClass(this.myClass('header-align-top'))
+                  .addClass('x-large-header')
+                  .add('Invoice #' + this.invoice.invoiceNumber)
+                .end()
+                // Dynamic create the primary action
+                .start()
+                  .addClass(this.myClass('header-align-right'))
+                  .start(this.PAY_NOW)
+                    .addClass('sme').addClass('button').addClass('primary')
+                  .end()
+                  .start(this.EDIT)
+                    .addClass('sme').addClass('button').addClass('primary')
+                  .end()
+                  .start(this.PAID)
+                    .addClass('sme').addClass('button').addClass('primary')
+                    .addClass(this.myClass('primary-disable'))
+                  .end()
+                .end()
+              .end()
+            .endContext();
+          }))
           .end()
         .end()
 
@@ -435,18 +493,18 @@ foam.CLASS({
 
               .start()
                 .start().show(this.showTran$).addClass('invoice-row')
-                  .start().addClass('invoice-text-left').show(this.isCrossBorder$)
+                  .start().addClass('invoice-text').show(this.isCrossBorder$)
                     .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
                     .add(this.exchangeRateInfo$)
                   .end()
                   // Only show fee when it is a payable
-                  .start().addClass('invoice-text-right').show(this.isPayable)
+                  .start().addClass('invoice-text').show(this.isPayable)
                     .start().addClass('table-content').add(this.PAYMENT_FEE).end()
                     .add(this.fee$)
                   .end()
                 .end()
                 .start().addClass('invoice-row')
-                  .start().addClass('invoice-text-left')
+                  .start().addClass('invoice-text')
                     .start().addClass('table-content').add(this.AMOUNT_DUE).end()
                     .add(this.PromiseSlot.create({
                       promise$: this.formattedAmountDue$,
@@ -455,7 +513,7 @@ foam.CLASS({
                     .add(' ')
                     .add(this.invoice$.dot('destinationCurrency'))
                   .end()
-                  .start().addClass('invoice-text-right')
+                  .start().addClass('invoice-text')
                     .start().addClass('table-content').add(this.AMOUNT_PAID).end()
                     .start().show(this.isProcessOrComplete$)
                       .add(this.formattedAmountPaid$)
@@ -464,7 +522,29 @@ foam.CLASS({
                   .end()
                 .end()
                 .start().addClass('invoice-row')
-                  .start().show(this.showBankAccount$).addClass('invoice-text-left')
+                  .start().show(this.isProcessOrComplete$)
+                    .addClass('invoice-text')
+                    .start().show(this.isPaid$)
+                      .addClass('table-content')
+                      .add(this.DATE_CREDITED)
+                    .end()
+                    .start().show(this.isProcess$)
+                      .addClass('table-content')
+                      .add(this.ESTIMATED_CREDIT_DATE)
+                    .end()
+                    .start().show(this.relatedTransaction$)
+                      .add(this.slot(function(invoice$paymentDate) {
+                        if ( invoice$paymentDate ) {
+                          var creditDate =
+                            invoice$paymentDate.toISOString().substring(0, 10);
+                          return this.isPaid ? creditDate : `${creditDate} *`;
+                        } else {
+                          return '--';
+                        }
+                      }))
+                    .end()
+                  .end()
+                  .start().show(this.showBankAccount$).addClass('invoice-text')
                     .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
                       if ( account != null ) {
@@ -476,19 +556,11 @@ foam.CLASS({
                       }
                     }))
                   .end()
-                  .start().show(this.isProcessOrComplete$).addClass('invoice-text-right')
-                    .start().addClass('table-content').add(this.DATE_PAID).end()
-                    .start().show(this.isPaid$)
-                      .add(this.relatedTransaction$.map((transaction) => {
-                        if ( transaction != null && transaction.completionDate ) {
-                          return transaction.completionDate
-                            .toISOString().substring(0, 10);
-                        }
-                      }))
-                    .end()
-                    .start().add('--').hide(this.isPaid$).end()
-                  .end()
                 .end()
+              .end()
+              .start().show(this.isProcess$)
+                .addClass(this.myClass('annotation'))
+                .add(this.ANNOTATION)
               .end()
             .end()
 
@@ -520,35 +592,6 @@ foam.CLASS({
       .end();
     },
 
-    function generateTop(isPayable) {
-      // 'startContext' is required to pass the context to the button
-      this
-        .startContext({ data: this })
-          .start()
-            .addClass(this.myClass('back-area'))
-            .start('span')
-              .addClass(this.myClass('back-arrow'))
-              .add('←')
-            .end()
-            .start('span')
-              .addClass('parent')
-              .add(this.BACK)
-            .end()
-            .on('click', () => {
-              var menuId = this.isPayable ? 'sme.main.invoices.payables'
-                : 'sme.main.invoices.receivables';
-              this.menuDAO
-                .find(menuId)
-                .then((menu) => menu.launch());
-            })
-          .end()
-          .start()
-            .addClass('align-right')
-            .start(this.PAY_NOW).addClass('sme').addClass('button').addClass('primary').end()
-            .start(this.EDIT).addClass('sme').addClass('button').addClass('primary').end()
-          .end()
-        .endContext();
-    },
     function saveAsVoid() {
       if ( ! this.isVoidable ) return;
       this.invoice.paymentMethod = this.PaymentStatus.VOID;
@@ -561,6 +604,7 @@ foam.CLASS({
         this.notify(`${this.PART_ONE_SAVE}${this.invoice.invoiceNumber} ${this.PART_TWO_SAVE_ERROR}`);
       });
     },
+
     function markAsComplete() {
       this.add(this.Popup.create().tag({
         class: 'net.nanopay.invoice.ui.modal.RecordPaymentModal',
@@ -604,22 +648,41 @@ foam.CLASS({
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
+        var self = this;
         this.checkComplianceAndBanking().then((result) => {
           if ( result ) {
-            X.menuDAO.find('sme.quickAction.send').then((menu) => {
-              var clone = menu.clone();
-              Object.assign(clone.handler.view, {
-                isPayable: this.isPayable,
-                isForm: false,
-                isDetailView: true,
-                invoice: this.invoice.clone()
+            // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
+            var request = self.CanReceiveCurrency.create({
+              userId: self.invoice.payeeId,
+              currencyId: self.invoice.destinationCurrency
+            });
+            self.canReceiveCurrencyDAO.put(request).then((responseObj) => {
+              if ( ! responseObj.response ) {
+                self.notify(responseObj.message, 'error');
+                return;
+              }
+              X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                var clone = menu.clone();
+                Object.assign(clone.handler.view, {
+                  isPayable: this.isPayable,
+                  isForm: false,
+                  isDetailView: true,
+                  invoice: this.invoice.clone()
+                });
+                clone.launch(X, X.controllerView);
+              }).catch((err) => {
+                console.warn('Error occured when checking the compliance: ', err);
               });
-              clone.launch(X, X.controllerView);
-            }).catch((err) => {
-              console.warn('Error occured when checking the compliance: ', err);
             });
           }
         });
+      }
+    },
+    {
+      name: 'paid',
+      label: 'Paid',
+      isAvailable: function() {
+        return this.isPayable && this.isProcessOrComplete;
       }
     },
     {
@@ -629,7 +692,7 @@ foam.CLASS({
         // return this.isSendRemindable;
         return false;
       },
-      code: async function(X) {
+      code: function(X) {
         // TODO: need to write a service that would be called by client,
         // for this feature. But need to confirm feature requirements prior
         // to implementation. Some have suggested this action should not exist

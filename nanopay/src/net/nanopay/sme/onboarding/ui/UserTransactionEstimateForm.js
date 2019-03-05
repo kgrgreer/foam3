@@ -49,7 +49,8 @@ foam.CLASS({
     }
     ^ .property-revenueEstimate {
       width: 225px;
-      position: relative;
+      margin-bottom: 30px;
+      height: 35px;
       top: 15px;
       right: 125px;
     }
@@ -70,37 +71,11 @@ foam.CLASS({
     }
     ^ .foam-u2-DateView {
       width: 229px;
+      height: 35px;
     }
   `,
 
   properties: [
-    {
-      name: 'baseCurrency',
-      view: function(_, X) {
-        var expr = foam.mlang.Expressions.create();
-        return foam.u2.view.ChoiceView.create({
-          dao: X.currencyDAO.where(expr.IN(net.nanopay.model.Currency.ID, ['CAD', 'USD'])),
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        });
-      },
-      factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.baseCurrency ) return this.viewData.user.suggestedUserTransactionInfo.baseCurrency;
-      },
-      postSet: function(o, n) {
-        this.viewData.user.suggestedUserTransactionInfo.baseCurrency = n;
-        if ( n == 'USD' ) {
-          this.flag = 'images/flags/cad.png';
-          this.currencyType = this.CA_DOLLAR_LABEL;
-          this.estimatedLabel = this.CA_VOLUME_LABEL;
-        } else if ( n == 'CAD' ) {
-          this.flag = 'images/flags/us.png';
-          this.currencyType = this.US_DOLLAR_LABEL;
-          this.estimatedLabel = this.US_VOLUME_LABEL;
-        }
-      }
-    },
     {
       class: 'String',
       name: 'revenueEstimate',
@@ -110,7 +85,9 @@ foam.CLASS({
         onKey: true
       },
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.annualRevenue ) return this.viewData.user.suggestedUserTransactionInfo.annualRevenue;
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualRevenue ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualRevenue;
+        }
       },
       preSet: function(o, n) {
         if ( n === '' ) return n;
@@ -148,7 +125,9 @@ foam.CLASS({
         maxLength: 150
       },
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.transactionPurpose ) return this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
+        if ( this.viewData.user.suggestedUserTransactionInfo.transactionPurpose ) {
+          return this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
+        }
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.transactionPurpose = n.trim();
@@ -158,7 +137,9 @@ foam.CLASS({
       class: 'String',
       name: 'annualField',
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount ) return this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount;
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount;
+        }
       },
       adapt: function(oldValue, newValue) {
         if ( typeof newValue === 'string' ) {
@@ -174,7 +155,9 @@ foam.CLASS({
       class: 'String',
       name: 'estimatedField',
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.annualVolume ) return this.viewData.user.suggestedUserTransactionInfo.annualVolume;
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualVolume ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualVolume;
+        }
       },
       adapt: function(oldValue, newValue) {
         if ( typeof newValue === 'string' ) {
@@ -190,7 +173,9 @@ foam.CLASS({
       class: 'Date',
       name: 'firstTradeDateField',
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.firstTradeDate ) return this.viewData.user.suggestedUserTransactionInfo.firstTradeDate;
+        if ( this.viewData.user.suggestedUserTransactionInfo.firstTradeDate ) {
+          return this.viewData.user.suggestedUserTransactionInfo.firstTradeDate;
+        }
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.firstTradeDate = n;
@@ -198,26 +183,90 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'flag'
+      name: 'annualFieldDomestic',
+      factory: function() {
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount;
+        }
+      },
+      adapt: function(oldValue, newValue) {
+        if ( typeof newValue === 'string' ) {
+          return newValue.replace(/\D/g, '');
+        }
+        return newValue;
+      },
+      postSet: function(o, n) {
+        if ( n ) this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount = n.trim();
+      }
     },
     {
       class: 'String',
-      name: 'currencyType'
+      name: 'estimatedFieldDomestic',
+      factory: function() {
+        if ( this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume ) {
+          return this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume;
+        }
+      },
+      adapt: function(oldValue, newValue) {
+        if ( typeof newValue === 'string' ) {
+          return newValue.replace(/\D/g, '');
+        }
+        return newValue;
+      },
+      postSet: function(o, n) {
+        this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume = n;
+      }
+    },
+    {
+      class: 'Date',
+      name: 'firstTradeDateFieldDomestic',
+      factory: function() {
+        if ( this.viewData.user.suggestedUserTransactionInfo.firstTradeDateDomestic ) {
+          return this.viewData.user.suggestedUserTransactionInfo.firstTradeDateDomestic;
+        }
+      },
+      postSet: function(o, n) {
+        this.viewData.user.suggestedUserTransactionInfo.firstTradeDateDomestic = n;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isUSABasedCompany',
+      expression: function(viewData) {
+        return foam.util.equals(viewData.user.businessAddress.countryId, 'US');
+      }
     },
     {
       class: 'String',
-      name: 'estimatedLabel'
+      name: 'flag',
+      documentation: `This is set from baseCurrency property.`
+    },
+    {
+      class: 'String',
+      name: 'currencyTypeLabel',
+      documentation: `This is set from baseCurrency property. Toggles message text.`
+    },
+    {
+      class: 'String',
+      name: 'estimatedLabel',
+      documentation: `This is set from baseCurrency property. Toggles message text.`
+    },
+    {
+      class: 'String',
+      name: 'annualLabel',
+      documentation: `This is set from baseCurrency property. Toggles message text.`
     }
   ],
 
   messages: [
     { name: 'TITLE', message: 'Details about your transactions' },
-    { name: 'BASE_CURRENCY_LABEL', message: 'Base Currency' },
-    { name: 'REVENUE_ESTIMATE_LABEL', message: 'Annual Gross Sales in your base currency' },
+    { name: 'REVENUE_ESTIMATE_LABEL_CA', message: 'Annual Gross Sales in CAD' },
+    { name: 'REVENUE_ESTIMATE_LABEL_US', message: 'Annual Gross Sales in USD' },
     { name: 'PURPOSE_LABEL', message: 'Please provide us with the purpose of your transactions.' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
+    { name: 'THIRD_TITLE', message: 'Domestic USD transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
     { name: 'CA_DOLLAR_LABEL', message: 'Canadian Dollar' },
@@ -236,6 +285,7 @@ foam.CLASS({
     function initE() {
       this.hasBackOption = true;
       this.internationalPayments$.sub(this.clearFields);
+      this.setBaseCurrency();
 
       this.addClass(this.myClass())
       .start()
@@ -244,16 +294,31 @@ foam.CLASS({
         .end()
         .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_BOX })
         .start().addClass('label-input')
-          .start().addClass('label').add(this.BASE_CURRENCY_LABEL).end()
-          .start(this.BASE_CURRENCY).end()
-        .end()
-        .start().addClass('label-input')
           .start().addClass('label').add(this.PURPOSE_LABEL).end()
           .start(this.PURPOSE_FIELD).end()
         .end()
         .start().addClass('label-input')
-          .start().addClass('inline').addClass('info-width').add(this.REVENUE_ESTIMATE_LABEL).end()
-          .start().addClass('small-width-input').add(this.REVENUE_ESTIMATE).end()
+          .start().addClass('inline').addClass('info-width').add(this.annualLabel$).end()
+          .start().add(this.REVENUE_ESTIMATE).end()
+        .end()
+        .start().show(this.isUSABasedCompany$)
+          .start().addClass('medium-header').add(this.THIRD_TITLE).end()
+          .start().addClass('label-input')
+            .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' }).addClass('flag-image').end()
+            .start().addClass('inline').addClass('bold-label').add(this.US_DOLLAR_LABEL).end()
+          .end()
+          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
+            .start().addClass('label').add(this.ANNUAL_LABEL).end()
+            .tag(this.ANNUAL_FIELD_DOMESTIC, { onKey: true })
+          .end()
+          .start().addClass('label-input').addClass('half-container')
+            .start().addClass('label').add(this.US_VOLUME_LABEL).end()
+            .tag(this.ESTIMATED_FIELD_DOMESTIC, { onKey: true })
+          .end()
+          .start().addClass('label-input')
+            .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
+            .start(this.FIRST_TRADE_DATE_FIELD_DOMESTIC).end()
+          .end()
         .end()
         .start().addClass('label-input')
           .start().addClass('inline').addClass('info-width').add(this.INTERNATIONAL_PAYMENTS_LABEL).end()
@@ -265,7 +330,7 @@ foam.CLASS({
           .start().addClass('medium-header').add(this.SECOND_TITLE).end()
           .start().addClass('label-input')
             .start({ class: 'foam.u2.tag.Image', data: this.flag$ }).addClass('flag-image').end()
-            .start().addClass('inline').addClass('bold-label').add(this.currencyType$).end()
+            .start().addClass('inline').addClass('bold-label').add(this.currencyTypeLabel$).end()
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.ANNUAL_LABEL).end()
@@ -281,6 +346,23 @@ foam.CLASS({
           .end()
         .end()
       .end();
+    },
+    function setBaseCurrency() {
+      var cur = this.isUSABasedCompany ? 'USD': 'CAD';
+      this.viewData.user.suggestedUserTransactionInfo.baseCurrency = cur;
+      // if business address is US then international payments are CAD,
+      // if business address is CAD then international payments are USD,
+      if ( foam.util.equals('USD', cur) ) {
+        this.flag = 'images/flags/cad.png';
+        this.currencyTypeLabel = this.CA_DOLLAR_LABEL;
+        this.estimatedLabel = this.CA_VOLUME_LABEL;
+        this.annualLabel = this.REVENUE_ESTIMATE_LABEL_US;
+      } else if ( foam.util.equals('CAD', cur) ) {
+        this.flag = 'images/flags/us.png';
+        this.currencyTypeLabel = this.US_DOLLAR_LABEL;
+        this.estimatedLabel = this.US_VOLUME_LABEL;
+        this.annualLabel = this.REVENUE_ESTIMATE_LABEL_CA;
+      }
     }
   ],
 

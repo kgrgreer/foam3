@@ -42,7 +42,7 @@ var classes = [
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.payment.client.ClientPaymentService',
-  'net.nanopay.account.AccountAccountJunction',
+  'net.nanopay.payment.PaymentProvider',
   'net.nanopay.account.Balance',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
@@ -52,6 +52,7 @@ var classes = [
   'net.nanopay.account.DigitalAccountInfo',
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',
+  'net.nanopay.account.AggregateAccount',
   'net.nanopay.account.ZeroAccount',
   'net.nanopay.account.ZeroAccountUserAssociation',
   'net.nanopay.account.TrustAccount',
@@ -78,7 +79,6 @@ var classes = [
   'net.nanopay.model.InvitationStatus',
   'net.nanopay.model.IdentificationType',
   'net.nanopay.model.PersonalIdentification',
-  'net.nanopay.disclosure.Disclosure',
   'net.nanopay.bank.BankHoliday',
 
   // sps
@@ -117,8 +117,13 @@ var classes = [
   'net.nanopay.onboarding.InvitationTokenService',
   'net.nanopay.onboarding.FirebaseInvitationTokenService',
 
+  // compliance Email notification
+  'net.nanopay.onboarding.email.UserCompliancePassEmailDAO',
+
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+  'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
+  'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 
   // sme compliance banner
   'net.nanopay.sme.ui.banner.ComplianceBannerData',
@@ -131,6 +136,8 @@ var classes = [
   'net.nanopay.invoice.model.Invoice',
   'net.nanopay.invoice.notification.NewInvoiceNotification',
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
+  'net.nanopay.invoice.service.InvoicePaymentService',
+  'net.nanopay.invoice.service.ClientInvoicePaymentService',
 
    // integration
    'net.nanopay.integration.ClientIntegrationService',
@@ -215,6 +222,7 @@ var classes = [
   'net.nanopay.tx.model.FixedFee',
   'net.nanopay.tx.model.InformationalFee',
   'net.nanopay.tx.model.LiquiditySettings',
+  'net.nanopay.tx.Liquidity',
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
@@ -276,8 +284,8 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXFeeLineItem',
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
-  'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
   'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
+  'net.nanopay.fx.ascendantfx.AscendantFXCredientials',
   'net.nanopay.fx.lianlianpay.LianLianPay',
   'net.nanopay.fx.lianlianpay.model.ResultCode',
   'net.nanopay.fx.lianlianpay.model.DistributionMode',
@@ -309,6 +317,13 @@ var classes = [
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
+
+  // documents
+  'net.nanopay.documents.AcceptanceDocument',
+  'net.nanopay.documents.UserAcceptanceDocument',
+  'net.nanopay.documents.AcceptanceDocumentService',
+  'net.nanopay.documents.ClientAcceptanceDocumentService',
+  'net.nanopay.documents.AcceptanceDocumentType',
 
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
@@ -422,6 +437,7 @@ var classes = [
   'net.nanopay.auth.BusinessAgentAuthService',
   'net.nanopay.auth.BusinessAuthService',
   'net.nanopay.auth.AgentJunctionStatus',
+  'net.nanopay.auth.email.DoNotSolicit',
   'net.nanopay.auth.email.PreventDuplicateEmailDAO',
   'net.nanopay.auth.email.EmailWhitelistEntry',
 
@@ -439,7 +455,6 @@ var classes = [
   'net.nanopay.meter.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
-  'net.nanopay.meter.UserDisabledEmailNotificationDAO',
   'net.nanopay.meter.compliance.ComplianceHistory',
   'net.nanopay.meter.compliance.ComplianceRule',
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -459,6 +474,7 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
+  'net.nanopay.documents.AcceptanceDocumentService',
   'net.nanopay.integration.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
@@ -467,7 +483,8 @@ var skeletons = [
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
-  'net.nanopay.payment.PaymentService'
+  'net.nanopay.payment.PaymentService',
+  'net.nanopay.invoice.service.InvoicePaymentService',
 ];
 
 var proxies = [

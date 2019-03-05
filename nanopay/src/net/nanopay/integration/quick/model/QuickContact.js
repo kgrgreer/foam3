@@ -9,6 +9,16 @@ foam.CLASS({
       name: 'quickId'
     },
     {
+      class: 'String',
+      name: 'realmId'
+    },
+    {
+      class: 'Boolean',
+      name: 'chooseBusiness',
+      value: false,
+      documentation: 'set this to true to let user manually select the business of this contact'
+    },
+    {
       class: 'Boolean',
       name: 'desync'
     },

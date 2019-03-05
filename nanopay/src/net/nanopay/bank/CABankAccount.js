@@ -37,7 +37,7 @@ foam.CLASS({
     },
     {
       name: 'branchId',
-      label: 'Transit #',
+      label: 'Transit No.',
       visibility: 'FINAL',
       view: {
         class: 'foam.u2.tag.Input',
@@ -54,9 +54,9 @@ foam.CLASS({
           return;
         }
         if ( ! /^\d+$/.test(branchId) ) {
-          return 'Transit # must contain only digits.';
+          return 'Transit number must contain only digits.';
         } else if ( branchId.length !== 5 ) {
-          return 'Transit # must be 5 digits.';
+          return 'Transit number must be 5 digits.';
         }
       }
     },
@@ -137,6 +137,12 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
+      Branch branch = this.findBranch(x);
+      if ( branch != null &&
+          branch.getInstitution() > 0 ) {
+        return;
+      }
+
       Institution institution = this.findInstitution(x);
 
       // no validation when the institution is attached.

@@ -1,0 +1,1 @@
+p({"class":"foam.nanos.menu.Menu","id":"operation.donotsolicit","label":"Do Not Solicit","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"doNotSolicitDAO"},"order":1900,"parent":"operation"})

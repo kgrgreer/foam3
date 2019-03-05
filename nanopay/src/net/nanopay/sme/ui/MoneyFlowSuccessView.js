@@ -14,6 +14,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'currencyDAO',
     'menuDAO',
     'stack',
     'user'
@@ -154,9 +155,9 @@ foam.CLASS({
     { name: 'TITLE_REC1', message: 'Requested' },
     { name: 'TITLE_REC2', message: 'from' },
     { name: 'TITLE_PENDING', message: 'Payment has been submitted for approval' },
-    { name: 'BODY_SEND', message: 'The payment has been successfully sent to your contact' },
-    { name: 'BODY_REC', message: 'Your request has been sent to your contact and is now pending payment' },
-    { name: 'BODY_PENDING', message: 'This payable requires approval before it can be processed' },
+    { name: 'BODY_SEND', message: 'You will see the debit from your bank account in 1-2 business days.' },
+    { name: 'BODY_REC', message: 'Your request has been sent to your contact and is now pending payment.' },
+    { name: 'BODY_PENDING', message: 'This payable requires approval before it can be processed.' },
     { name: 'REF', message: 'Your reference ID ' },
     { name: 'V_PAY', message: 'View this payable' },
     { name: 'V_REC', message: 'View this receivable' },
@@ -165,7 +166,8 @@ foam.CLASS({
 
   methods: [
     function populateVariables() {
-      this.invoice.destinationCurrency$find.then((currency) => {
+      this.currencyDAO.find(this.invoice.destinationCurrency)
+        .then((currency) => {
         this.formattedAmount_ = currency.format(this.invoice.amount) + ' ' +
           currency.alphabeticCode;
       });

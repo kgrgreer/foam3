@@ -9,7 +9,9 @@ foam.CLASS({
 
   requires: [
     'foam.flow.Document',
-    'net.nanopay.disclosure.Disclosure',
+    'net.nanopay.documents.AcceptanceDocumentService',
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentType'
   ],
 
   implements: [
@@ -17,8 +19,8 @@ foam.CLASS({
   ],
 
   imports: [
+    'acceptanceDocumentService',
     'ctrl',
-    'disclosuresDAO',
     'invoice',
     'isPayable',
     'loadingSpin',
@@ -88,18 +90,9 @@ foam.CLASS({
     async function updateDisclosure() {
       if ( ! this.isPayable ) return;
       try {
-        var disclosure = await this.disclosuresDAO.where(
-          this.AND(
-            this.EQ(this.Disclosure.TRANSACTION_TYPE, this.viewData.quote.type),
-            this.EQ(this.Disclosure.COUNTRY, this.user.address.countryId),
-            this.EQ(this.Disclosure.STATE, this.user.address.regionId)
-          )
-        ).select();
-
-        disclosure = disclosure.array ? disclosure.array[0] : null;
+        var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(this.viewData.quote.type, this.AcceptanceDocumentType.DISCLOSURE, this.user.address.countryId, this.user.address.regionId);
         if ( disclosure ) {
-          var text = '<h4>Transaction to be executed by AscendantFX.</h4>' + disclosure.text;
-          this.disclosureView = this.Document.create({ markup: text });
+          this.disclosureView = this.Document.create({ markup: disclosure.body });
         }
       } catch (error) {
         console.error(error.message);
