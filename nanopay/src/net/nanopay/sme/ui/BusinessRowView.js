@@ -68,7 +68,6 @@ foam.CLASS({
       }
       ^status {
         color: #07941f;
-        margin-right: 27px;
         font-size: 11px;
       }
       ^status-dot {
