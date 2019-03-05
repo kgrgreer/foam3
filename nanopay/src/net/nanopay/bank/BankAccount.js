@@ -58,8 +58,7 @@ foam.CLASS({
         onKey: true
       },
       preSet: function(o, n) {
-        if ( n === '' ) return n;
-        return /^\d+$/.test(n) ? n : o;
+        return /^\d*$/.test(n) ? n : o;
       },
       tableCellFormatter: function(str) {
         this.start()
