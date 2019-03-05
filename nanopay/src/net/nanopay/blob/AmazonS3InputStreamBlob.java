@@ -16,9 +16,9 @@ public class AmazonS3InputStreamBlob
     s3Object_ = s3Object;
   }
 
-  //@Override
+  @Override
   public void close() throws IOException {
-    //super.close();
+    super.close();
     s3Object_.close();
   }
 }
