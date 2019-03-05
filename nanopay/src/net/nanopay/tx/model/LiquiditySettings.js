@@ -33,7 +33,12 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.ui.AccountRowView' },
           sections: [
             {
-              dao: X.accountDAO,
+              heading: 'Accounts',
+              dao: X.accountDAO
+            },
+            {
+              heading: 'Other Accounts',
+              dao: X.accountDAO
             }
           ],
         });

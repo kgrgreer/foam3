@@ -7,6 +7,7 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount'
   ],
 
+
   properties: [
     {
       class: 'Boolean',
