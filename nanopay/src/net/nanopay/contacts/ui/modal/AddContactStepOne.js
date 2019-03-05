@@ -13,8 +13,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl',
     'closeDialog',
+    'ctrl',
     'isEdit',
     'notify',
     'user'
@@ -58,7 +58,8 @@ foam.CLASS({
     { name: 'CREATE_TITLE', message: 'Create a personal contact' },
     { name: 'EDIT_TITLE', message: 'Edit contact' },
     { name: 'INSTRUCTION', message: `Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.` },
-    { name: 'COMPANY_PLACEHOLDER', message: 'Enter business name' },
+    { name: 'BUSINESS_LABEL', message: 'Business name' },
+    { name: 'BUSINESS_PLACEHOLDER', message: 'Enter business name' },
     { name: 'EMAIL_PLACEHOLDER', message: 'Enter the email address' },
     { name: 'INVITE_EXPLAINATION', message: `By checking this box, I acknowledge that I have permission to contact them about Ablii` },
     { name: 'STEP_INDICATOR', message: 'Step 1 of 3' }
@@ -98,10 +99,10 @@ foam.CLASS({
         .startContext({ data: this.wizard.data })
           .start('p')
             .addClass('field-label')
-            .add('Business name')
+            .add(this.BUSINESS_LABEL)
           .end()
           .tag(this.wizard.data.ORGANIZATION, {
-            placeholder: this.COMPANY_PLACEHOLDER,
+            placeholder: this.BUSINESS_PLACEHOLDER,
             onKey: true
           })
           .start('p')

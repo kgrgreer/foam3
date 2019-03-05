@@ -74,7 +74,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      // If all of the three options has been provided, DO NOT render
+      // If none of the three options has been provided, DO NOT render
       if ( ! this.back && ! this.option && ! this.next ) return;
       this.addClass(this.myClass());
       this.start('div').addClass(this.myClass('container'))

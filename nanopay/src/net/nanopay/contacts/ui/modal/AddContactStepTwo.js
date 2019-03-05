@@ -112,10 +112,7 @@ foam.CLASS({
     { name: 'BANKING_TITLE', message: 'Add banking information' },
     { name: 'INSTRUCTION', message: 'Enter the banking information for this business.  Please make sure that this is accurate as payments will go directly to the specified account.' },
     { name: 'LABEL_CA', message: 'Canada' },
-    { name: 'LABEL_US', message: 'US' },
-    { name: 'ROUTING', message: 'Routing #' },
-    { name: 'INSTITUTION', message: 'Institution #' },
-    { name: 'ACCOUNT', message: 'Account #' },
+  { name: 'LABEL_US', message: 'US' },
     { name: 'EDIT_BANK_ERR', message: 'Error Editing Bank Account. Please try again.' },
     { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
     { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
@@ -256,12 +253,12 @@ foam.CLASS({
             })
           .end()
         .end()
+        .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath$ })
+          .addClass('check-image')
+        .end()
         .add(this.slot(function(isCABank) {
           if ( isCABank ) {
             return this.E()
-              .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath })
-                .addClass('check-image')
-              .end()
               .startContext({ data: self.caAccount })
                 .start()
                   .addClass('check-margin')
@@ -294,9 +291,6 @@ foam.CLASS({
               .endContext();
           } else {
             return this.E()
-              .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath })
-                .addClass('check-image')
-              .end()
               .startContext({ data: self.usAccount })
                 .start()
                   .addClass('check-margin')
