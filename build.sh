@@ -470,37 +470,32 @@ if [[ $TEST -eq 1 ]]; then
     JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
 fi
 
-# if [[ $DIST -eq 1 ]]; then
-#     dist
-#     quit 0
-# fi
-
 clean
-if [ "$STATUS" -eq 1 ]; then
+if [[ $STATUS -eq 1 ]]; then
     status_nanos
     quit 0
 fi
-if [ "$STOP_ONLY" -eq 1 ]; then
+if [[ $STOP_ONLY -eq 1 ]]; then
     stop_nanos
     quit 0
 fi
-if [ "$BUILD_FOAM" -eq 1 ]; then
+if [[ $BUILD_FOAM -eq 1 ]]; then
     build_foam
 fi
-if [ "$RUN_MIGRATION" -eq 1 ]; then
+if [[ $RUN_MIGRATION -eq 1 ]]; then
     migrate_journals
     quit 0
 fi
 
-if [ "$START_ONLY" -eq 1 ]; then
+if [[ $START_ONLY -eq 1 ]]; then
     stop_nanos
     start_nanos
 else
-    if [ "$COMPILE_ONLY" -eq 0 ]; then
+    if [[ $COMPILE_ONLY -eq 0 ]]; then
         deploy_journals
     fi
     build_jar
-    if [ "$BUILD_ONLY" -eq 0 ]; then
+    if [[ $BUILD_ONLY -eq 0 ]]; then
         stop_nanos
         start_nanos
     fi
