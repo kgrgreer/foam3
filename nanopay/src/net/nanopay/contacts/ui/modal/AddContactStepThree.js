@@ -14,17 +14,11 @@ foam.CLASS({
     'caAccount',
     'ctrl',
     'closeDialog',
-    'isEdit',
     'isCABank',
     'isConnecting',
-    'regionDAO',
     'sendInvite',
     'usAccount',
-    'user',
-    'validateAddress',
-    'validateCity',
-    'validatePostalCode',
-    'validateStreetNumber'
+    'user'
   ],
 
   css: `
@@ -67,13 +61,6 @@ foam.CLASS({
     { name: 'BANKING_TITLE', message: 'Add banking information' },
     { name: 'INSTRUCTION', message: 'In order to send payments to this business, we’ll need you to verify their business address below.' },
     { name: 'BUSINESS_ADDRESS_TITLE', message: 'Business address' },
-    { name: 'ERROR_COUNTRY', message: 'Please select a country.' },
-    { name: 'ERROR_REGION', message: 'Please select a state/province.' },
-    { name: 'ERROR_COUNTRY_REGION', message: 'Please select a valid state/province of the country.' },
-    { name: 'ERROR_STREET_NUMBER', message: 'Invalid street number.' },
-    { name: 'ERROR_STREET_NAME', message: 'Invalid street name.' },
-    { name: 'ERROR_CITY', message: 'Invalid city name.' },
-    { name: 'ERROR_POSTAL', message: 'Invalid postal/zip code.' },
     { name: 'STEP_INDICATOR', message: 'Step 3 of 3' }
   ],
 
@@ -160,39 +147,8 @@ foam.CLASS({
       code: async function(X) {
         // Validate the contact address fields.
         var businessAddress = this.wizard.data.businessAddress;
-        if ( ! businessAddress.countryId ) {
-          this.ctrl.notify( this.ERROR_COUNTRY, 'error' );
-          return;
-        }
-        if ( ! businessAddress.regionId ) {
-          this.ctrl.notify( this.ERROR_REGION, 'error' );
-          return;
-        }
-        // This is to check the region when country selection has
-        // changed after a previous region selection has been made.
-        var validRegion = await this.regionDAO.find(businessAddress.regionId);
-        if ( validRegion.countryId != businessAddress.countryId ) {
-          this.ctrl.notify( this.ERROR_COUNTRY_REGION, 'error' );
-          return;
-        }
-        if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
-          this.ctrl.notify( this.ERROR_STREET_NUMBER, 'error' );
-          return;
-        }
-        if ( ! this.validateAddress(businessAddress.streetName) ) {
-          this.ctrl.notify( this.ERROR_STREET_NAME, 'error' );
-          return;
-        }
-        if ( businessAddress.suite.length > 0 && ! this.validateAddress(businessAddress.suite) ) {
-          this.ctrl.notify( this.ERROR_STREET_NAME, 'error' );
-          return;
-        }
-        if ( ! this.validateCity(businessAddress.city) ) {
-          this.ctrl.notify( this.ERROR_CITY, 'error' );
-          return;
-        }
-        if ( ! this.validatePostalCode(businessAddress.postalCode, businessAddress.countryId) ) {
-          this.ctrl.notify( this.ERROR_POSTAL, 'error' );
+        if ( businessAddress.errors_ ) {
+          this.ctrl.notify(businessAddress.errors_[0][1], 'error');
           return;
         }
 
