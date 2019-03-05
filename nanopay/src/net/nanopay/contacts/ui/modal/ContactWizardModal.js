@@ -168,15 +168,18 @@ foam.CLASS({
       }
       this.views = {
         'selectBusiness': {
-          view: {
-            class: 'net.nanopay.contacts.ui.modal.SearchBusinessView',
-            email$: this.data.email$
-          },
+          view: { class: 'net.nanopay.contacts.ui.modal.SearchBusinessView' },
           startPoint: true
         },
-        'AddContactStepOne': { view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepOne' } },
-        'AddContactStepTwo': { view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepTwo' } },
-        'AddContactStepThree': { view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepThree' } },
+        'AddContactStepOne': {
+          view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepOne' }
+        },
+        'AddContactStepTwo': {
+          view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepTwo' }
+        },
+        'AddContactStepThree': {
+          view: { class: 'net.nanopay.contacts.ui.modal.AddContactStepThree' }
+        },
       };
     },
 
