@@ -245,7 +245,7 @@ function start_nanos {
         JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
     fi
 
-    if [ $BUILD_PROD -eq 1 || $BUILD_QA -eq 1 ]; then
+    if [ $BUILD_PROD -eq 1 ] || [ $BUILD_QA -eq 1 ]; then
         JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
         cd $PROJECT_HOME/target
         JAR=$(ls lib/nanopay-*.jar | awk '{print $1}')
