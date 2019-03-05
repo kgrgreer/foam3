@@ -58,7 +58,6 @@ foam.CLASS({
             rowView: { class: 'net.nanopay.ui.AccountRowView' },
             sections: [
               {
-                heading: 'Accounts',
                 dao: X.accountDAO.where(X.data.EQ(net.nanopay.account.Account.OWNER, pushPullOwner))
               },
               {
