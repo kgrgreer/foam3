@@ -125,7 +125,7 @@ public class QuickService implements WebAgent {
     User                    user         = (User) x.get("user");
     QuickTokenStorage       tokenStorage = (QuickTokenStorage) store.find(user.getId());
     DAO                     notification = ((DAO) x.get("notificationDAO")).inX(x);
-    QuickIntegrationService quickSign    = (QuickIntegrationService) x.get("quickSignIn");
+    NewQuickIntegrationService quickSign    = (NewQuickIntegrationService) x.get("quickSignIn");
 
     try {
 
