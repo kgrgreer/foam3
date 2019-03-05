@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.dao.PromisedDAO',
     'foam.mlang.sink.Count',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -35,9 +36,6 @@ foam.CLASS({
     ^ {
       height: 593px;
       overflow-y: scroll;
-    }
-    ^ .property-email {
-      width: 100%;
     }
     ^container {
       margin: 24px;
@@ -149,52 +147,109 @@ foam.CLASS({
     },
     {
       type: 'Int',
-      name: 'count',
-      documentation: `The number of items in the list after filtering.`
+      name: 'connectedCount',
+      documentation: `
+        The number of connected businesses in the 
+        connctedBusiness dao after filtering.
+      `
+    },
+    {
+      type: 'Int',
+      name: 'unconnectedCount',
+      documentation: `
+        The number of unconnected businesses in the 
+        unconnctedBusiness dao after filtering.
+      `
+    },
+    { type: 'Int',
+      name: 'countBusinesses',
+      expression: function(connectedCount, unconnectedCount) {
+        return connectedCount + unconnectedCount;
+      }
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'searchBusiness',
+      name: 'connectedBusinesses',
       expression: function(filter) {
         if ( filter.length < 2 ) {
           return foam.dao.NullDAO.create({ of: net.nanopay.model.Business });
         } else {
-          var dao = this.businessDAO
-            .where(
-              this.AND(
-                this.NEQ(this.Business.ID, this.user.id),
-                this.EQ(this.Business.STATUS, this.AccountStatus.ACTIVE),
-                this.EQ(this.Business.COMPLIANCE, this.ComplianceStatus.PASSED),
-                this.CONTAINS_IC(this.Business.ORGANIZATION, filter)
-              )
-            );
-          dao
-            .select(this.Count.create())
-            .then((sink) => {
-              this.count = sink != null ? sink.value : 0;
-            });
-          return dao;
+          return this.PromisedDAO.create({
+            promise: this.user.contacts
+              .select(this.MAP(this.Contact.BUSINESS_ID))
+              .then((mapSink) => {
+                var dao = this.businessDAO
+                  .where(
+                    this.AND(
+                      this.NEQ(this.Business.ID, this.user.id),
+                      this.EQ(this.Business.STATUS, this.AccountStatus.ACTIVE),
+                      this.EQ(this.Business.COMPLIANCE, this.ComplianceStatus.PASSED),
+                      this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                      this.IN(this.Business.ID, mapSink.delegate.array)
+                    )
+                  );
+                dao
+                  .select(this.Count.create())
+                  .then((sink) => {
+                    this.connectedCount = sink != null ? sink.value : 0;
+                  });
+                return dao;
+              })
+          });
         }
       }
     },
     {
-      class: 'String',
-      name: 'countBusiness',
+      class: 'foam.dao.DAOProperty',
+      name: 'unconnectedBusinesses',
       expression: function(filter) {
+        if ( filter.length < 2 ) {
+          return foam.dao.NullDAO.create({ of: net.nanopay.model.Business });
+        } else {
+          return this.PromisedDAO.create({
+            promise: this.user.contacts
+              .select(this.MAP(this.Contact.BUSINESS_ID))
+              .then((mapSink) => {
+                var dao = this.businessDAO
+                  .where(
+                    this.AND(
+                      this.NEQ(this.Business.ID, this.user.id),
+                      this.EQ(this.Business.STATUS, this.AccountStatus.ACTIVE),
+                      this.EQ(this.Business.COMPLIANCE, this.ComplianceStatus.PASSED),
+                      this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
+                      this.NOT(this.IN(this.Business.ID, mapSink.delegate.array))
+                    )
+                  );
+                dao
+                  .select(this.Count.create())
+                  .then((sink) => {
+                    this.unconnectedCount = sink != null ? sink.value : 0;
+                  });
+                return dao;
+              })
+          });
+        }
+      }
+    },
+    {
+      type: 'String',
+      name: 'searchBusinessesCount',
+      expression: function(filter, countBusinesses) {
         if ( filter.length > 1 ) {
-          if ( this.count > 1 ) {
-            return `Showing ${this.count} of ${this.count} results`;
+          if ( this.countBusinesses > 1 ) {
+            return `Showing ${countBusinesses} of ${countBusinesses} results`;
           } else {
-            return `Showing ${this.count} of ${this.count} result`;
+            return `Showing ${countBusinesses} of ${countBusinesses} result`;
           }
         }
+        return '';
       }
     },
     {
       type: 'Boolean',
       name: 'showNoMatch',
-      expression: function(filter, count) {
-        return count === 0 && filter.length > 1;
+      expression: function(filter, countBusinesses) {
+        return countBusinesses === 0 && filter.length > 1;
       }
     },
     {
@@ -239,7 +294,7 @@ foam.CLASS({
             .addClass('divider')
           .end()
           .start().style({ 'overflow-y': 'scroll' })
-            .select(this.searchBusiness$proxy, (business) => {
+            .select(this.unconnectedBusinesses$proxy, (business) => {
               return this.E()
                 .start({
                   class: 'net.nanopay.sme.ui.BusinessRowView',
@@ -251,13 +306,20 @@ foam.CLASS({
                   })
                 .end();
             })
+            .select(this.connectedBusinesses$proxy, (business) => {
+              return this.E()
+                .tag({
+                  class: 'net.nanopay.sme.ui.BusinessRowView',
+                  data: business
+                });
+            })
           .end()
           .start()
-            .show(this.slot(function(count) {
-              return count !== 0;
+            .show(this.slot(function(countBusinesses) {
+              return countBusinesses !== 0;
             }))
             .addClass(this.myClass('search-count'))
-            .add(this.dot('countBusiness'))
+            .add(this.dot('searchBusinessesCount'))
           .end()
           .start().show(this.showDefault$)
             .addClass(this.myClass('create-new-block'))
