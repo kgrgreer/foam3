@@ -27,8 +27,8 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-option {
       background-color: ffffff;
-      color: #604AFF;
-      border: 1px solid #604aff !important;
+      color: %SECONDARYCOLOR%;
+      border: 1px solid %SECONDARYCOLOR% !important;
       margin-right: 10px;
     }
     ^ .net-nanopay-ui-ActionView-option:hover {
