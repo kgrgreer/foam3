@@ -108,7 +108,6 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankVoidForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankPADForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankMicroForm', flags: ['web'] },
-  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/PrecisionFloatView', flags: ['web'] },
 
   // onboarding
   { name: 'net/nanopay/onboarding/b2b/ui/B2BOnboardingWizard', flags: ['web'] },
