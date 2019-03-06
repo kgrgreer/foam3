@@ -237,7 +237,7 @@ foam.CLASS({
       if ( this.isPayable ) {
         this.invoice.account$.sub(this.fetchRates);
       } else {
-        this.invoice.destinationAccount$.sub(this.fetchRates);
+        this.invoice.destinationAccount$.sub(this.fetchBankAccount);
       }
 
       // Format the amount & add the currency symbol
@@ -493,6 +493,29 @@ foam.CLASS({
     async function fetchRates() {
       this.loadingSpinner.show();
 
+      try {
+        await this.fetchBankAccount();
+      } catch (err) {
+        var msg = err || this.ACCOUNT_FIND_ERROR;
+        this.notify(msg, 'error');
+      }
+
+      try {
+        this.viewData.isDomestic = ! this.isFx;
+        if ( ! this.isFx ) {
+          this.quote = await this.getDomesticQuote();
+        } else {
+          this.quote = await this.getFXQuote();
+        }
+        this.viewData.quote = this.quote;
+      } catch (error) {
+        this.notify(this.RATE_FETCH_FAILURE + error.message, 'error');
+      }
+
+      this.loadingSpinner.hide();
+    },
+
+    async function fetchBankAccount() {
       // If the user selects the placeholder option in the account dropdown,
       // clear the data.
       var accountId = this.isPayable
@@ -540,20 +563,6 @@ foam.CLASS({
 
       // Update fields on Invoice, based on User choice
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
-
-      try {
-        this.viewData.isDomestic = ! this.isFx;
-        if ( ! this.isFx ) {
-          this.quote = await this.getDomesticQuote();
-        } else {
-          this.quote = await this.getFXQuote();
-        }
-        this.viewData.quote = this.quote;
-      } catch (error) {
-        this.notify(this.RATE_FETCH_FAILURE + error.message, 'error');
-      }
-
-      this.loadingSpinner.hide();
     }
   ]
 });
