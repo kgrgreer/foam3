@@ -6,8 +6,8 @@ import foam.dao.ProxyDAO;
 import static foam.mlang.MLang.*;
 import foam.nanos.auth.User;
 import net.nanopay.bank.BankAccount;
-import net.nanopay.integration.quick.QuickIntegrationService;
-import net.nanopay.integration.xero.XeroIntegrationService;
+import net.nanopay.integration.quick.NewQuickIntegrationService;
+import net.nanopay.integration.xero.XeroIntegrationService2;
 import java.util.List;
 
 /**
@@ -25,8 +25,8 @@ public class BankIntegrationDAO
     DAO                         userDAO    = ((DAO) x.get("userDAO")).inX(x);
     DAO                         accountDAO = ((DAO) x.get("accountDAO")).inX(x);
     User                        user       = (User) userDAO.find(((User) x.get("user")).getId());
-    XeroIntegrationService      xero       = (XeroIntegrationService) x.get("xeroSignIn");
-    QuickIntegrationService     quick      = (QuickIntegrationService) x.get("quickSignIn");
+    XeroIntegrationService2      xero       = (XeroIntegrationService2) x.get("xeroSignIn");
+    NewQuickIntegrationService     quick      = (NewQuickIntegrationService) x.get("quickSignIn");
     List<AccountingBankAccount> bankList;
     BankAccount userBank = (BankAccount) accountDAO.find(
       AND(
