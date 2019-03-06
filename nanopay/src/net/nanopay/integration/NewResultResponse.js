@@ -8,6 +8,16 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.integration.ContactMismatchPair',
       name: 'syncContactsResult'
-    }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'String',
+      name: 'inValidContact'
+    },
+    {
+      class: 'FObjectArray',
+      of: 'String',
+      name: 'inValidInvoice'
+    },
   ]
 });

@@ -14,6 +14,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.*;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.integration.*;
@@ -23,6 +24,8 @@ import net.nanopay.model.Business;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -37,27 +40,27 @@ public class NewQuickIntegrationService implements IntegrationService {
 
   @Override
   public ResultResponse contactSync(X x) {
-
-    System.out.println("good");
+    List<ContactMismatchPair> result = new ArrayList<>();
 
     try {
 
+      // fetch the contacts
       List<NameBase> contacts = fetchContacts(x);
 
-      for ( NameBase contact : contacts) {
-        ContactMismatchPair mismatchPair = importContact(x, contact);
-        if ( mismatchPair != null ) {
-
-        }
-      }
-
+      result = contacts.stream()
+        .filter(this::isValidContact)
+        .map(contact -> importContact(x, contact))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
 
     } catch ( Exception e ) {
-
+      e.printStackTrace();
     }
 
-
-    return new NewResultResponse.Builder(x).;
+    return new NewResultResponse.Builder(x)
+      .setResult(true)
+      .setSyncContactsResult(result.toArray(new ContactMismatchPair[result.size()]))
+      .build();
   }
 
   @Override
@@ -84,6 +87,14 @@ public class NewQuickIntegrationService implements IntegrationService {
     return null;
   }
 
+  public boolean isValidContact(NameBase quickContact) {
+    return ! (
+        quickContact.getPrimaryEmailAddr() == null ||
+        SafetyUtil.isEmpty(quickContact.getGivenName()) ||
+        SafetyUtil.isEmpty(quickContact.getFamilyName()) ||
+        SafetyUtil.isEmpty(quickContact.getCompanyName()) );
+  }
+
   public ContactMismatchPair importContact(foam.core.X x, NameBase importContact) {
     Logger logger         = (Logger) x.get("logger");
     DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
@@ -104,8 +115,6 @@ public class NewQuickIntegrationService implements IntegrationService {
       EQ(User.EMAIL, email.getAddress())
     );
 
-    //QuickContact newContact = new QuickContact();
-
     // If the contact is a existing contact
     if ( existContact != null ) {
 
@@ -114,15 +123,16 @@ public class NewQuickIntegrationService implements IntegrationService {
         return null;
       }
 
-      if ( ! ( existContact instanceof QuickContact ) ) {
+      if ( existContact instanceof  QuickContact &&
+           (( QuickContact ) existContact).getQuickId().equals(importContact.getId()) ) {
+        contactDAO.inX(x).put(
+          updateQuickContact(x, importContact, (QuickContact) existContact.fclone(), false)
+        );
+      } else {
         return new ContactMismatchPair.Builder(x)
           .setExistContact(existContact)
           .setNewContact(createQuickContactFrom(x, importContact, false))
           .build();
-      } else {
-        QuickContact temp = createQuickContactFrom(x, importContact, false);
-        temp.setId(existContact.getId());
-        contactDAO.inX(x).put(temp);
       }
     }
 
@@ -161,12 +171,20 @@ public class NewQuickIntegrationService implements IntegrationService {
           return new ContactMismatchPair(temp, null);
         }
       }
+
+      if ( existUser == null ) {
+        contactDAO.inX(x).put(createQuickContactFrom(x, importContact, false));
+      }
     }
 
     return null;
   }
 
   public QuickContact createQuickContactFrom(foam.core.X x, NameBase importContact, boolean existUser) {
+    return updateQuickContact(x, importContact, new QuickContact(), existUser);
+  }
+
+  public QuickContact updateQuickContact(X x, NameBase importContact, QuickContact existContact, boolean existUser) {
     User            user           = (User) x.get("user");
     CountryService  countryService = (CountryService) x.get("countryService");
     RegionService   regionService  = (RegionService) x.get("regionService");
@@ -175,7 +193,7 @@ public class NewQuickIntegrationService implements IntegrationService {
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
 
-    QuickContact newContact = new QuickContact();
+    QuickContact newContact = existContact;
 
     if ( ! existUser ) {
       /*
@@ -244,6 +262,10 @@ public class NewQuickIntegrationService implements IntegrationService {
     return newContact;
   }
 
+  /**
+   * Networking request section
+   */
+
   public List fetchContacts(foam.core.X x) throws Exception {
 
     List result = new ArrayList();
@@ -260,6 +282,19 @@ public class NewQuickIntegrationService implements IntegrationService {
   public NameBase fetchContactById(foam.core.X x, String type, String id) throws Exception {
     String query = "select * from "+ type +" where id = '"+ id +"'";
     return (NameBase) sendRequest(x, query).get(0);
+  }
+
+  public List fetchInvoices(X x) throws Exception {
+
+    List result = new ArrayList();
+
+    String queryBill    = "select * from bill";
+    String queryInvoice = "select * from invoice";
+
+    result.addAll(sendRequest(x, queryBill));
+    result.addAll(sendRequest(x, queryInvoice));
+
+    return result;
   }
 
 
