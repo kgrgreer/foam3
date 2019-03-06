@@ -159,11 +159,6 @@ function build_jar {
     mvn package
 }
 
-function build_foam {
-    cd "$PROJECT_HOME/foam2"
-    make
-}
-
 function delete_runtime_journals {
   if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
     echo "INFO :: Runtime journals deleted."
@@ -407,7 +402,6 @@ function usage {
 ############################
 
 BUILD_ONLY=0
-BUILD_FOAM=0
 CLEAN_BUILD=0
 DEBUG=0
 DEBUG_PORT=8000
@@ -428,12 +422,11 @@ COMPILE_ONLY=0
 BUILD_PROD=0
 BUILD_QA=0
 
-while getopts "bcdfghijlmpqrsStvz" opt ; do
+while getopts "bcdghijlmpqrsStvz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
-        f) BUILD_FOAM=1 ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
@@ -470,40 +463,28 @@ if [[ $TEST -eq 1 ]]; then
     JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
 fi
 
-# if [[ $DIST -eq 1 ]]; then
-#     dist
-#     quit 0
-# fi
-
 clean
 if [ "$STATUS" -eq 1 ]; then
     status_nanos
     quit 0
-fi
-if [ "$STOP_ONLY" -eq 1 ]; then
-    stop_nanos
-    quit 0
-fi
-if [ "$BUILD_FOAM" -eq 1 ]; then
-    build_foam
 fi
 if [ "$RUN_MIGRATION" -eq 1 ]; then
     migrate_journals
     quit 0
 fi
 
-if [ "$START_ONLY" -eq 1 ]; then
-    stop_nanos
-    start_nanos
-else
-    if [ "$COMPILE_ONLY" -eq 0 ]; then
-        deploy_journals
-    fi
-    build_jar
-    if [ "$BUILD_ONLY" -eq 0 ]; then
-        stop_nanos
-        start_nanos
-    fi
+stop_nanos
+if [ "$STOP_ONLY" -eq 1 ]; then
+    quit 0
 fi
+
+if [ "$COMPILE_ONLY" -eq 0 ] || [ "$BUILD_ONLY" -eq 0 ] || [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
+    deploy_journals
+fi
+
+if [ "$START_ONLY" -eq 0 ]; then
+    build_jar
+fi
+start_nanos
 
 quit 0
