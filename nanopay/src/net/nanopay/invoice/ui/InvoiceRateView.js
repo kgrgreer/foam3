@@ -262,6 +262,12 @@ foam.CLASS({
         ]
       };
 
+      var bankAccountSelection = this.isPayable
+        ? this.Invoice.ACCOUNT
+          .copyFrom({ view: accountSelectionView })
+        : this.Invoice.DESTINATION_ACCOUNT
+          .copyFrom({ view: accountSelectionView });
+
       this
         .start()
           .addClass(this.myClass())
@@ -293,11 +299,7 @@ foam.CLASS({
             .startContext({ data: this })
               .start()
                 .startContext({ data: this.invoice })
-                  .add(this.isPayable
-                    ? this.Invoice.ACCOUNT
-                      .copyFrom({ view: accountSelectionView })
-                    : this.Invoice.DESTINATION_ACCOUNT
-                      .copyFrom({ view: accountSelectionView }))
+                  .add(bankAccountSelection)
                 .endContext()
               .end()
             .endContext()
@@ -316,8 +318,9 @@ foam.CLASS({
                 if ( ! bankAccount ) return;
                 var accountNumber = bankAccount.accountNumber;
                 return bankAccount.name + ' ****'
-                  + accountNumber.substr(accountNumber.length - 5) +
-                  ' - ' + bankAccount.denomination;
+                  + accountNumber.substr(accountNumber.length - 5)
+                  + ' - '
+                  + bankAccount.denomination;
               }))
             .end()
           .end()
