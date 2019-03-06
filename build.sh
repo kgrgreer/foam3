@@ -464,10 +464,11 @@ if [[ $TEST -eq 1 ]]; then
 fi
 
 clean
-if [ "$STATUS" -eq 1 ]; then
+if [[ $STATUS -eq 1 ]]; then
     status_nanos
     quit 0
 fi
+
 if [ "$RUN_MIGRATION" -eq 1 ]; then
     migrate_journals
     quit 0
