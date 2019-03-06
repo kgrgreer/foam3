@@ -15,12 +15,14 @@ import foam.util.SafetyUtil;
 
 import net.nanopay.contacts.Contact;
 import net.nanopay.integration.AccountingBankAccount;
+import net.nanopay.integration.ContactMismatchPair;
 import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.xero.XeroTokenStorage;
 import net.nanopay.integration.xero.XeroConfig;
 import net.nanopay.integration.xero.model.XeroContact;
 import net.nanopay.model.Business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static foam.mlang.MLang.AND;
@@ -81,9 +83,13 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     return new ResultResponse(true,"");
   }
 
-
-  private XeroContact importXeroContact(com.xero.model.Contact xeroContact, User user) {
-    XeroContact newContact = new XeroContact();
+  private XeroContact importXeroContact(com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
+    XeroContact newContact;
+    if ( existingContact != null ) {
+      newContact = (XeroContact) existingContact.fclone();
+    } else {
+      newContact = new XeroContact();
+    }
 
      // Address integration
     if ( xeroContact.getAddresses() != null &&
@@ -163,13 +169,14 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     return newContact;
   }
 
-  private void syncContact(X x, com.xero.model.Contact xeroContact) {
+  private ContactMismatchPair syncContact(X x, com.xero.model.Contact xeroContact) {
     User user = (User) x.get("user");
     DAO agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
     DAO contactDAO  = ((DAO) x.get("contactDAO")).inX(x);
     DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     DAO userDAO = ((DAO) x.get("localUserUserDAO")).inX(x);
     XeroContact newContact = new XeroContact();
+    ContactMismatchPair result = new ContactMismatchPair();
 
     Contact existingContact = (Contact) contactDAO.find(AND(
       EQ(Contact.EMAIL, xeroContact.getEmailAddress()),
@@ -185,14 +192,14 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
       // Do nothing if it is an existing user ( user on our system )
       if ( existingUser != null ) {
-       return;
-      }
-      if ( ! ( existingContact instanceof XeroContact) ) {
-        // missmatch code here
+
       } else {
-        // To do: 2 contacts on xero with same email, mismatch screen
-        newContact = this.importXeroContact(xeroContact, user);
-        newContact.setId(existingContact.getId());
+        if (!(existingContact instanceof XeroContact) || ((XeroContact) existingContact).getXeroId().equals(xeroContact.getContactID())) {
+          result.setExistContact(existingContact);
+          result.setNewContact(importXeroContact(xeroContact, user, null));
+        } else {
+          newContact = importXeroContact(xeroContact, user, (XeroContact) existingContact);
+        }
       }
     } else {
 
@@ -211,17 +218,22 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
         } else {
-          // add business mismatch logic here
-
+          result.setExistContact(importXeroContact(xeroContact,user,null));
         }
         newContact.setType("Contact");
         newContact.setGroup("sme");
         newContact.setOwner(user.getId());
       } else {
-        newContact = importXeroContact(xeroContact,user);
+        newContact = importXeroContact(xeroContact,user,null);
       }
     }
-    contactDAO.put(newContact);
+    if ( ! newContact.getEmail().equals("") ) {
+      contactDAO.put(newContact);
+    }
+    if ( result.getExistContact() == null && result.getNewContact() == null ) {
+      return null;
+    }
+    return result;
   }
 
 
@@ -230,19 +242,30 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     User user = (User) x.get("user");
     Logger logger = (Logger) x.get("logger");
     XeroClient client = this.getClient(x);
+    List<ContactMismatchPair> result = new ArrayList<>();
 
     if ( client == null ) {
       return new ResultResponse(false, "Token is expired");
     }
+
     try {
+
       for (com.xero.model.Contact xeroContact : client.getContacts()) {
         if ( ! this.isValidContact(xeroContact)) {
           continue;
         }
-        syncContact(x,xeroContact);
+        try {
+         ContactMismatchPair mismatchPair = syncContact(x, xeroContact);
+         if ( mismatchPair != null ) {
+           result.add(mismatchPair);
+         }
+        } catch(Exception e) {
+          System.out.println("error in syncContac inner : " +e.getMessage()+" : "+xeroContact.getEmailAddress());
+        }
       }
+
     } catch (Throwable e) {
-      System.out.print("Error SYNC CONTACT"+e.toString());
+      System.out.print("Error in contact sync: "+e.toString());
     }
     return null;
   }
