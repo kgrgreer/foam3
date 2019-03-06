@@ -269,6 +269,7 @@ foam.CLASS({
       of: 'net.nanopay.auth.AgentJunctionStatus',
       name: 'status',
       documentation: 'Describes the active state between agent and entity.',
+      permissionRequired: true,
       value: net.nanopay.auth.AgentJunctionStatus.ACTIVE
     }
   ],
