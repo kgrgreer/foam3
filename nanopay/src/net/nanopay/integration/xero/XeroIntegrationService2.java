@@ -16,6 +16,7 @@ import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.integration.AccountingBankAccount;
 import net.nanopay.integration.ContactMismatchPair;
+import net.nanopay.integration.NewResultResponse;
 import net.nanopay.integration.ResultResponse;
 import net.nanopay.integration.xero.XeroTokenStorage;
 import net.nanopay.integration.xero.XeroConfig;
@@ -67,12 +68,21 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
   }
 
 
-  public Boolean isValidContact(com.xero.model.Contact xeroContact) {  
-    if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) || SafetyUtil.isEmpty(xeroContact.getFirstName()) 
-       || SafetyUtil.isEmpty(xeroContact.getLastName()) || SafetyUtil.isEmpty(xeroContact.getName()) ) {
-      return false;
+  public String isValidContact(com.xero.model.Contact xeroContact) {
+    String error = "";
+    if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) ) {
+      error += "Missing Email Address.";
     }
-    return true;
+    if ( SafetyUtil.isEmpty(xeroContact.getFirstName()) ) {
+      error += " Missing First Name.";
+    }
+    if ( SafetyUtil.isEmpty(xeroContact.getLastName()) ) {
+      error += " Missing Last Name.";
+    }
+    if ( SafetyUtil.isEmpty(xeroContact.getName()) ) {
+      error += " Missing Contact Name.";
+    }
+    return error;
   }
 
 
@@ -86,7 +96,7 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
   private XeroContact importXeroContact(com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
     XeroContact newContact;
     if ( existingContact != null ) {
-      newContact = (XeroContact) existingContact.fclone();
+      newContact = existingContact;
     } else {
       newContact = new XeroContact();
     }
@@ -192,16 +202,15 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
       // Do nothing if it is an existing user ( user on our system )
       if ( existingUser != null ) {
-
-      } else {
-        if (!(existingContact instanceof XeroContact) || ((XeroContact) existingContact).getXeroId().equals(xeroContact.getContactID())) {
-          result.setExistContact(existingContact);
-          result.setNewContact(importXeroContact(xeroContact, user, null));
-        } else {
-          newContact = importXeroContact(xeroContact, user, (XeroContact) existingContact);
-        }
+        return null;
       }
-    } else {
+      if (!(existingContact instanceof XeroContact) || ! ((XeroContact) existingContact).getXeroId().equals(xeroContact.getContactID())) {
+        result.setExistContact(existingContact);
+        result.setNewContact(importXeroContact(xeroContact, user, null));
+      } else {
+        newContact = importXeroContact(xeroContact, user, (XeroContact) existingContact.fclone());
+      }
+    } else { // Contact does not already exist
 
       // check if exisiting user
       if ( existingUser != null ) {
@@ -243,15 +252,21 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     Logger logger = (Logger) x.get("logger");
     XeroClient client = this.getClient(x);
     List<ContactMismatchPair> result = new ArrayList<>();
+    List<String> contactErrors = new ArrayList<>();
 
     if ( client == null ) {
-      return new ResultResponse(false, "Token is expired");
+      return new NewResultResponse.Builder(x)
+        .setResult(false)
+        .setReason("Token has expired")
+        .build();
     }
 
     try {
 
       for (com.xero.model.Contact xeroContact : client.getContacts()) {
-        if ( ! this.isValidContact(xeroContact)) {
+        String inValidContacts = isValidContact(xeroContact);
+        if ( ! inValidContacts.equals("") ) {
+          contactErrors.add(xeroContact.getName() + " cannot be synced. " + inValidContacts);
           continue;
         }
         try {
@@ -261,13 +276,23 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
          }
         } catch(Exception e) {
           System.out.println("error in syncContac inner : " +e.getMessage()+" : "+xeroContact.getEmailAddress());
+          logger.error(e);
         }
       }
 
-    } catch (Throwable e) {
+    } catch (Exception e) {
       System.out.print("Error in contact sync: "+e.toString());
+      logger.error(e);
+      return new NewResultResponse.Builder(x)
+        .setResult(false)
+        .setReason("Token has expired")
+        .build();
     }
-    return null;
+    return new NewResultResponse.Builder(x)
+      .setResult(true)
+      .setSyncContactsResult(result.toArray(new ContactMismatchPair[result.size()]))
+      .setInValidContact(contactErrors.toArray(new String[contactErrors.size()]))
+      .build();
   }
 
 
