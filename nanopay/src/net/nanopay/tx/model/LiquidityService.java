@@ -96,13 +96,13 @@ public class LiquidityService
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
 
 
-    executeHighLiquidity(pendingBalance, ls);
+    executeHighLiquidity(pendingBalance, ls, txnAmount);
 
-    executeLowLiquidity(pendingBalance, ls);
+    executeLowLiquidity(pendingBalance, ls, txnAmount);
 
   }
 
-  public void executeHighLiquidity( Long currentBalance, LiquiditySettings ls ) {
+  public void executeHighLiquidity( Long currentBalance, LiquiditySettings ls, Long txnAmount ) {
 
     Liquidity liquidity = ls.getHighLiquidity();
 
@@ -121,7 +121,7 @@ public class LiquidityService
         return;
       }
 
-      if ( liquidity.getEnableNotification() ) {
+      if ( liquidity.getEnableNotification() && txnAmount >= 0 && currentBalance - txnAmount < liquidity.getThreshold()) {
         //send notification when limit went over
         notifyUser(account, true, ls.getHighLiquidity().getThreshold());
       }
@@ -131,7 +131,7 @@ public class LiquidityService
     }
   }
 
-  public void executeLowLiquidity( Long currentBalance, LiquiditySettings ls ) {
+  public void executeLowLiquidity( Long currentBalance, LiquiditySettings ls, Long txnAmount ) {
 
     Liquidity liquidity = ls.getLowLiquidity();
 
@@ -149,7 +149,7 @@ public class LiquidityService
         ((DAO) x_.get("notificationDAO")).put(notification);
         return;
       }
-      if ( liquidity.getEnableNotification() ) {
+      if ( liquidity.getEnableNotification() && txnAmount <= 0 && currentBalance - txnAmount > liquidity.getThreshold()) {
         //send notification when limit went over
         notifyUser(account, false, ls.getLowLiquidity().getThreshold());
       }
