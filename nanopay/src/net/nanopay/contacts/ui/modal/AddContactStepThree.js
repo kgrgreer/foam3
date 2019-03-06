@@ -26,15 +26,15 @@ foam.CLASS({
       padding: 24px;
     }
 
-    /*Address View overrides*/
+    /* Address View overrides */
     ^ .label {
+      font-family: 'Lato';
       font-size: 12px !important;
       font-weight: 600 !important;
+      line-height: 1 !important;
       margin-top: 16px !important;
       margin-bottom: 8px !important;
-      line-height: 1.5 !important;
       padding-bottom: 0 !important;
-      font-family: 'Lato';
     }
     ^ .left-of-container {
       margin-right: 16px;
@@ -42,8 +42,9 @@ foam.CLASS({
 
     ^ .foam-u2-tag-Select,
     ^ .foam-u2-TextField {
-      margin-bottom: 0 !important;
       border: solid 1px #8e9090 !important;
+      margin-bottom: 0 !important;
+
       -webkit-transition: all .15s ease-in-out;
       -moz-transition: all .15s ease-in-out;
       -ms-transition: all .15s ease-in-out;

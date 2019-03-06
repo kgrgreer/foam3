@@ -43,6 +43,8 @@ foam.CLASS({
       -o-transition: all .15s ease-in-out;
       transition: all .15s ease-in-out;
     }
+
+    /* For contact sub wizard views */
     ^ .title-block {
       display: flex;
       justify-content: space-between;
@@ -77,6 +79,13 @@ foam.CLASS({
       background-color: #ffffff;
       margin-top: 16px;
       padding: 0px !important;
+    }
+    ^ .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+      margin-top: 16px;
+      margin-bottom: 8px;
     }
 `,
 

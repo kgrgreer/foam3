@@ -302,7 +302,7 @@ foam.CLASS({
             .add(this.INSTRUCTION)
           .end()
           .start()
-            .addClass('input-label')
+            .addClass('field-label')
             .add(this.BUSINESS_NAME)
           .end()
           .start().style({ 'position': 'relative' })

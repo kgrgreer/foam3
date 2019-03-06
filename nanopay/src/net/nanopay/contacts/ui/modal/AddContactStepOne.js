@@ -26,11 +26,6 @@ foam.CLASS({
       overflow-y: scroll;
       padding: 24px;
     }
-    ^ .field-label {
-      font-size: 12px;
-      margin-top: 16px;
-      margin-bottom: 8px;
-    }
     ^ .side-by-side {
       display: grid;
       grid-gap: 16px;

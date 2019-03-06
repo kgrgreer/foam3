@@ -29,9 +29,9 @@ foam.CLASS({
       padding: 24px;
     }
     ^ .check-image {
-      width: 100%;
       height: auto;
       margin-top: 24px;
+      width: 100%;
     }
     ^ .check-margin {
       margin-top: 4px;
@@ -50,11 +50,10 @@ foam.CLASS({
       border: 1px solid #8e9090;
       box-shadow: none;
 
-      background-repeat: no-repeat;
+      background-image: url(images/ablii/radio-resting.svg);
       background-position-x: 18px;
       background-position-y: 13px;
-
-      background-image: url(images/ablii/radio-resting.svg);
+      background-repeat: no-repeat;
 
       -webkit-transition: all .15s ease-in-out;
       -moz-transition: all .15s ease-in-out;
@@ -97,11 +96,6 @@ foam.CLASS({
     }
     ^ .flex {
       display: flex;
-    }
-    ^ .field-label {
-      font-size: 12px;
-      margin-top: 8px;
-      margin-bottom: 8px;
     }
     ^adding-account{
       margin-top: 16px;
