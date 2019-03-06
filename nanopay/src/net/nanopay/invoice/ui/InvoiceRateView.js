@@ -18,17 +18,18 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.fx.FXService',
-    'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
     'net.nanopay.fx.ascendantfx.AscendantFXUser',
     'net.nanopay.fx.client.ClientFXService',
+    'net.nanopay.fx.FXService',
+    'net.nanopay.fx.FeesFields',
+    'net.nanopay.invoice.model.Invoice',
     'net.nanopay.ui.LoadingSpinner',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.AbliiTransaction',
-    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.ui.modal.TandCModal',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   implements: [
@@ -36,7 +37,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
     'appConfig',
     'fxService',
     'ascendantFXUserDAO',
@@ -49,7 +49,8 @@ foam.CLASS({
     'localTransactionQuotePlanDAO',
     'notify',
     'user',
-    'viewData'
+    'viewData',
+    'wizard'
   ],
 
   javaImports: [
@@ -122,38 +123,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.bank.BankAccount',
-      name: 'accountChoice',
-      documentation: 'Choice view for displaying and choosing user bank accounts.',
-      factory: function() {
-        return this.isPayable
-          ? this.invoice.account
-          : this.invoice.destinationAccount;
-      },
-      view: function(_, X) {
-        var m = foam.mlang.ExpressionsSingleton.create();
-        var BankAccount = net.nanopay.bank.BankAccount;
-        var BankAccountStatus = net.nanopay.bank.BankAccountStatus;
-        return {
-          class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.bank.ui.BankAccountSelectionView' },
-          rowView: { class: 'net.nanopay.bank.ui.BankAccountCitationView' },
-          sections: [
-            {
-              heading: 'Your bank accounts',
-              dao: X.accountDAO.where(
-                m.AND(
-                  m.EQ(BankAccount.OWNER, X.user.id),
-                  m.EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
-                )
-              )
-            }
-          ]
-        };
-      }
-    },
-    {
       name: 'loadingSpinner',
       factory: function() {
         return this.LoadingSpinner.create();
@@ -192,7 +161,7 @@ foam.CLASS({
         return null;
       },
       documentation: `
-        Stores the chosen bank account from accountChoice view.
+        Stores the chosen bank account from the accountSelectionView.
         Pass a bankAccount as (chosenBankAccount) into view if setting isReadOnly.
         (This will populate values within the view)
       `
@@ -256,14 +225,20 @@ foam.CLASS({
     function init() {
       this.loadingSpinner.hide();
 
-      // Fetch the rates every time we load because we need to make sure that
-      // the quote and chosen account are available when rendering in read-only
+      // Fetch the rates because we need to make sure that the quote and
+      // chosen account are available when rendering in read-only
       // mode in the approval flow.
-      this.fetchRates();
+      if ( this.wizard.isApproving ) {
+        this.fetchRates();
+      }
     },
     function initE() {
       // Update the rates every time the selected account changes.
-      this.accountChoice$.sub(this.fetchRates);
+      if ( this.isPayable ) {
+        this.invoice.account$.sub(this.fetchRates);
+      } else {
+        this.invoice.destinationAccount$.sub(this.fetchRates);
+      }
 
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
@@ -272,6 +247,20 @@ foam.CLASS({
           this.formattedAmount = currency.format(this.invoice.amount);
         });
       }
+
+      var accountSelectionView = {
+        class: 'foam.u2.view.RichChoiceView',
+        selectionView: { class: 'net.nanopay.bank.ui.BankAccountSelectionView' },
+        rowView: { class: 'net.nanopay.bank.ui.BankAccountCitationView' },
+        sections: [
+          {
+            heading: 'Your bank accounts',
+            dao: this.user.accounts.where(
+              this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
+            )
+          }
+        ]
+      };
 
       this
         .start()
@@ -303,7 +292,13 @@ foam.CLASS({
             .end()
             .startContext({ data: this })
               .start()
-                .add(this.ACCOUNT_CHOICE)
+                .startContext({ data: this.invoice })
+                  .add(this.isPayable
+                    ? this.Invoice.ACCOUNT
+                      .copyFrom({ view: accountSelectionView })
+                    : this.Invoice.DESTINATION_ACCOUNT
+                      .copyFrom({ view: accountSelectionView }))
+                .endContext()
               .end()
             .endContext()
           .end()
@@ -500,7 +495,10 @@ foam.CLASS({
 
       // If the user selects the placeholder option in the account dropdown,
       // clear the data.
-      if ( ! this.accountChoice && ! this.isReadOnly ) {
+      var accountId = this.isPayable
+        ? this.invoice.account
+        : this.invoice.destinationAccount;
+      if ( ! accountId && ! this.isReadOnly ) {
         this.viewData.bankAccount = null;
         // Clean the default account choice view
         if ( this.isPayable ) {
@@ -513,7 +511,10 @@ foam.CLASS({
 
       // Fetch chosen bank account.
       try {
-        this.chosenBankAccount = await this.accountDAO.find(this.accountChoice);
+        var accountId = this.isPayable
+          ? this.invoice.account
+          : this.invoice.destinationAccount;
+        this.chosenBankAccount = await this.user.accounts.find(accountId);
         this.viewData.bankAccount = this.chosenBankAccount;
       } catch (error) {
         this.notify(this.ACCOUNT_FIND_ERROR + '\n' + error.message, 'error');
@@ -538,7 +539,6 @@ foam.CLASS({
       }
 
       // Update fields on Invoice, based on User choice
-      this.invoice.account = this.chosenBankAccount.id;
       this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
 
       try {
