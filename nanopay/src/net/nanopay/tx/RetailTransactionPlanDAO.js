@@ -35,10 +35,6 @@ foam.CLASS({
       return getDelegate().put_(x, quote);
     }
     request.setIsQuoted(true);
-    request.add(new Transfer [] {
-      new Transfer.Builder(x).setAccount(request.getSourceAccount()).setAmount(-request.getTotal()).build(),
-      new Transfer.Builder(x).setAccount(request.getDestinationAccount()).setAmount(request.getTotal()).build()
-    });
     quote.addPlan(request);
     quote.setPlan(request);
 

@@ -28,7 +28,9 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      factory: function() { return new Date(); }
+      factory: function() {
+        return new Date();
+      }
     }
   ]
 
