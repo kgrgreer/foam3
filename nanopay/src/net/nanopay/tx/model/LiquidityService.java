@@ -96,51 +96,18 @@ public class LiquidityService
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
 
 
-    executeHighLiquidity(pendingBalance, ls, txnAmount);
+    executeHighLiquidity(pendingBalance, ls);
 
-    executeLowLiquidity(pendingBalance, ls, txnAmount);
+    executeLowLiquidity(pendingBalance, ls);
 
   }
 
-  public void executeHighLiquidity(Long currentBalance, LiquiditySettings ls, long txnAmount) {
+  public void executeHighLiquidity( Long currentBalance, LiquiditySettings ls ) {
+
     Liquidity liquidity = ls.getHighLiquidity();
-    Account account = ls.findAccount(x_);
-
-    Account fundAccount = liquidity.findPushPullAccount(x_);
-    if ( ! ( fundAccount instanceof DigitalAccount ) ) {
-      fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
-    }
-    if ( fundAccount == null ) {
-      Notification notification = new Notification();
-      notification.setNotificationType("No verified bank account for liquidity settings");
-      notification.setBody("You need to add and verify bank account for liquidity settings");
-      notification.setUserId(account.getOwner());
-      ((DAO) x_.get("notificationDAO")).put(notification);
-      return;
-    }
-
 
     if ( currentBalance >= liquidity.getThreshold() ) {
-      if ( liquidity.getEnableNotification() && txnAmount > 0 && currentBalance - liquidity.getThreshold() > txnAmount ) {
-        //send notification when limit went over
-        notifyUser(account, true, ls.getHighLiquidity().getThreshold());
-      }
-      if ( liquidity.getEnableRebalancing() ) {
-        addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId());
-      }
-    }
-  }
-
-  public void executeLowLiquidity(Long currentBalance, LiquiditySettings ls, long txnAmount) {
-
-    Liquidity liquidity = ls.getLowLiquidity();
-
-    if ( currentBalance <= liquidity.getThreshold() ) {
       Account account = ls.findAccount(x_);
-      if ( liquidity.getEnableNotification() && txnAmount < 0 && currentBalance + txnAmount >  liquidity.getThreshold() ) {
-        //send notification when limit went over
-        notifyUser(account, false, ls.getLowLiquidity().getThreshold());
-      }
       Account fundAccount = liquidity.findPushPullAccount(x_);
       if ( ! ( fundAccount instanceof DigitalAccount ) ) {
         fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
@@ -152,6 +119,39 @@ public class LiquidityService
         notification.setUserId(account.getOwner());
         ((DAO) x_.get("notificationDAO")).put(notification);
         return;
+      }
+
+      if ( liquidity.getEnableNotification() ) {
+        //send notification when limit went over
+        notifyUser(account, true, ls.getHighLiquidity().getThreshold());
+      }
+      if ( liquidity.getEnableRebalancing() ) {
+        addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId());
+      }
+    }
+  }
+
+  public void executeLowLiquidity( Long currentBalance, LiquiditySettings ls ) {
+
+    Liquidity liquidity = ls.getLowLiquidity();
+
+    if ( currentBalance <= liquidity.getThreshold() ) {
+      Account account = ls.findAccount(x_);
+      Account fundAccount = liquidity.findPushPullAccount(x_);
+      if ( ! ( fundAccount instanceof DigitalAccount ) ) {
+        fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
+      }
+      if ( fundAccount == null ) {
+        Notification notification = new Notification();
+        notification.setNotificationType("No verified bank account for liquidity settings");
+        notification.setBody("You need to add and verify bank account for liquidity settings");
+        notification.setUserId(account.getOwner());
+        ((DAO) x_.get("notificationDAO")).put(notification);
+        return;
+      }
+      if ( liquidity.getEnableNotification() ) {
+        //send notification when limit went over
+        notifyUser(account, false, ls.getLowLiquidity().getThreshold());
       }
       if ( liquidity.getEnableRebalancing() ) {
         addCICOTransaction(liquidity.getResetBalance() - currentBalance, fundAccount.getId(), account.getId());
