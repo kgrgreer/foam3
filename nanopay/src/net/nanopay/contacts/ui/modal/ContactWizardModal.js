@@ -90,9 +90,10 @@ foam.CLASS({
 `,
 
   messages: [
-    { name: 'CONTACT_ADDED', message: 'Contact added' },
-    { name: 'CONTACT_UPDATED', message: 'Contact updated' },
-    { name: 'INVITE_SUCCESS', message: 'Invitation sent!' },
+    { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
+    { name: 'CONTACT_UPDATED', message: 'Personal contact updated.' },
+    { name: 'INVITE_SUCCESS', message: 'Sent a request to connect.' },
+    { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Personal contact added.  An email invitation was sent.' },
     { name: 'INVITE_FAILURE', message: 'There was a problem sending the invitation.' }
   ],
 
@@ -206,10 +207,20 @@ foam.CLASS({
         if ( this.isEdit ) {
           this.ctrl.notify(this.CONTACT_UPDATED);
         } else {
-          this.ctrl.notify(this.CONTACT_ADDED);
+          if ( this.shouldInvite ) {
+            try {
+              await this.sendInvite(false);
+              this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS);
+            } catch (err) {
+              var msg = err.message || this.GENERIC_PUT_FAILED;
+              this.ctrl.notify(msg, 'error');
+            }
+          } else {
+            this.ctrl.notify(this.CONTACT_ADDED);
+          }
         }
       } catch (e) {
-        var msg = e != null && e.message ? e.message : this.GENERIC_PUT_FAILED;
+        var msg = e.message || this.GENERIC_PUT_FAILED;
         this.ctrl.notify(msg, 'error');
         this.isConnecting = false;
         return false;
@@ -220,7 +231,7 @@ foam.CLASS({
     },
 
     /** Send the Contact an email inviting them to join Ablii. */
-    async function sendInvite() {
+    async function sendInvite(showToastMsg) {
       var invite = this.Invitation.create({
         email: this.data.email,
         createdBy: this.user.id
@@ -228,10 +239,13 @@ foam.CLASS({
 
       try {
         this.invitationDAO.put(invite);
-        this.ctrl.notify(this.INVITE_SUCCESS);
-        this.user.contacts.on.reset.pub(); // Force the view to update.
+        if ( showToastMsg ) {
+          this.ctrl.notify(this.INVITE_SUCCESS);
+        }
+        // Force the view to update.
+        this.user.contacts.on.reset.pub();
       } catch (e) {
-        var msg = e != null && e.message ? e.message : this.INVITE_FAILURE;
+        var msg = e.message || this.INVITE_FAILURE;
         this.ctrl.notify(msg, 'error');
         return false;
       }

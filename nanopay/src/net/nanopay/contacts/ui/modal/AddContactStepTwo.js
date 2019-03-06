@@ -341,9 +341,6 @@ foam.CLASS({
       label: 'Save without banking',
       code: async function(X) {
         if ( ! await this.addContact() ) return;
-        if ( this.wizard.shouldInvite ) {
-          if ( ! await this.sendInvite() ) return;
-        }
         X.closeDialog();
       }
     },

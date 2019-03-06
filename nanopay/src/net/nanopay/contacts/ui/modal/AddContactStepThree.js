@@ -155,10 +155,6 @@ foam.CLASS({
 
         if ( ! await this.addContact() ) return;
         if ( ! await this.addBankAccount() ) return;
-
-        if ( this.wizard.shouldInvite ) {
-          if ( ! await this.sendInvite() ) return;
-        }
         X.closeDialog();
       }
     }
