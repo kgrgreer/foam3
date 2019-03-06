@@ -71,10 +71,10 @@ public class LiquidityService
 
   }
 
-  public void executeLiquidity(LiquiditySettings ls, Long txnAmount) {
+  public void executeLiquidity(LiquiditySettings ls, long txnAmount) {
     DigitalAccount account = ls.findAccount(getX());
     if ( account == null ) return;
-    Long pendingBalance = (Long) account.findBalance(getX());
+    long pendingBalance = (long) account.findBalance(getX());
     pendingBalance += ((Double)((Sum) getLocalTransactionDAO().where(
       AND(
         OR(
@@ -102,7 +102,7 @@ public class LiquidityService
 
   }
 
-  public void executeHighLiquidity( Long currentBalance, LiquiditySettings ls, Long txnAmount ) {
+  public void executeHighLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount ) {
 
     Liquidity liquidity = ls.getHighLiquidity();
 
@@ -131,7 +131,7 @@ public class LiquidityService
     }
   }
 
-  public void executeLowLiquidity( Long currentBalance, LiquiditySettings ls, Long txnAmount ) {
+  public void executeLowLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount ) {
 
     Liquidity liquidity = ls.getLowLiquidity();
 
