@@ -20,8 +20,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.auth.AgentJunctionStatus',
-    'net.nanopay.model.Business',
-    'net.nanopay.contacts.Contact'
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.model.Business'
   ],
 
     css: `
