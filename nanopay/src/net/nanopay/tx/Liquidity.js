@@ -45,14 +45,12 @@ foam.CLASS({
       documentation: 'Account associated to setting.',
       postSet: function(_, acc) {
         if ( ! acc ) return null;
-        this.pushPullAccount$find.then(function(account) {
-          this.pushPullOwner = account.owner;
-        }.bind(this));
       },
       view: function(_, X) {
         return X.data.slot(function(pushPullOwner) {
         if ( ! pushPullOwner ) return 'Choose Account First';
           return foam.u2.view.RichChoiceView.create({
+            data$: X.data.pushPullAccount$,
             search: true,
             selectionView: { class: 'net.nanopay.ui.AccountSelectionView', accountDAO: X.accountDAO  },
             rowView: { class: 'net.nanopay.ui.AccountRowView' },
