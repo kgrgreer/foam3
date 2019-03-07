@@ -46,7 +46,7 @@ public class QuickInvoiceDAO
     DAO                     userDAO         = ((DAO) x.get("localContactDAO")).inX(x);
     Invoice                 invoice         = (Invoice) obj;
     Invoice                 oldInvoice      = (Invoice) getDelegate().find_(x, invoice.getId());
-    QuickIntegrationService quick           = (QuickIntegrationService) x.get("quickSignIn");
+    NewQuickIntegrationService quick           = (NewQuickIntegrationService) x.get("quickSignIn");
     User                    user            = (User) x.get("user");
 
 
