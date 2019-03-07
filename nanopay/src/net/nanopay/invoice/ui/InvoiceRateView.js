@@ -225,10 +225,14 @@ foam.CLASS({
     function init() {
       this.loadingSpinner.hide();
 
-      // Fetch the rates because we need to make sure that the quote and
-      // chosen account are available when rendering in read-only
-      // mode in the approval flow.
-      if ( this.wizard.isApproving ) {
+      /** Fetch the rates because we need to make sure that the quote and
+       * chosen account are available when rendering in read-only
+       * mode in the approval flow.
+       * And fetch the rate when we go back from 3rd to 2nd step
+       * for send payment flow.
+       */
+      if ( this.wizard.isApproving ||
+        ( this.invoice.account !== 0 && ! this.isReadOnly) ) {
         this.fetchRates();
       }
     },
@@ -286,24 +290,6 @@ foam.CLASS({
             .end()
           .end()
 
-          /** Account choice view with label, choice and advisory note. **/
-          .start()
-            .addClass('input-wrapper')
-            .hide(this.isReadOnly)
-            .start()
-            .addClass('form-label')
-              .add( this.isPayable ?
-                this.ACCOUNT_WITHDRAW_LABEL :
-                this.ACCOUNT_DEPOSIT_LABEL )
-            .end()
-            .startContext({ data: this })
-              .start()
-                .startContext({ data: this.invoice })
-                  .add(bankAccountSelection)
-                .endContext()
-              .end()
-            .endContext()
-          .end()
           /** Show chosen bank account from previous step. **/
           .start()
             .addClass(this.myClass('large-margin-row'))
@@ -324,7 +310,26 @@ foam.CLASS({
               }))
             .end()
           .end()
-          //  loading spinner.
+
+          /** Account choice view with label, choice and advisory note. **/
+          .start()
+            .addClass('input-wrapper')
+            .hide(this.isReadOnly)
+            .start()
+            .addClass('form-label')
+              .add( this.isPayable ?
+                this.ACCOUNT_WITHDRAW_LABEL :
+                this.ACCOUNT_DEPOSIT_LABEL )
+            .end()
+            .startContext({ data: this })
+              .start()
+                .startContext({ data: this.invoice })
+                  .add(bankAccountSelection)
+                .endContext()
+              .end()
+            .endContext()
+          .end()
+          /** Loading spinner. **/
           .start().addClass('loading-spinner-container').hide(this.isReadOnly)
             .start().add(this.loadingSpinner).end()
             .start()
@@ -336,7 +341,7 @@ foam.CLASS({
             .end()
           .end()
 
-          /** Exchange rate details **/
+        /** Exchange rate details **/
         .add(this.slot(function(showExchangeRateSection) {
           return ! showExchangeRateSection ? null :
             this.E()
@@ -403,25 +408,49 @@ foam.CLASS({
                 .end()
               .end();
           }))
-          // amount to be paid.
+          /** Fee for none AFX payables **/
+          .start()
+            .show(this.slot(function(chosenBankAccount, isFx, isPayable) {
+              return ! isFx && isPayable && chosenBankAccount;
+            }))
+            .start()
+              .addClass('inline')
+              .add(this.TRANSACTION_FEE_LABEL)
+            .end()
+            .start()
+              .addClass('float-right')
+              .add(`$0.00 `)
+              .add(this.chosenBankAccount$.map((bankAccount) => {
+                if ( ! bankAccount ) return '';
+                return bankAccount.denomination;
+              }))
+            .end()
+          .end()
+
+          /** Amount to be paid. **/
           .add(this.slot(function(quote, loadingSpinner$isHidden) {
             return ! quote || ! loadingSpinner$isHidden ? null :
-            this.E().start().addClass('label-value-row').addClass('amount-container').show(this.loadingSpinner.isHidden$)
-              .start().addClass('inline')
-                .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '').addClass('bold-label')
-              .end()
-              .start().addClass('float-right').addClass('bold-label')
-                .add(
-                  this.quote$.dot('amount').map((amount) => {
-                    if ( Number.isSafeInteger(amount) ) {
-                      return this.sourceCurrency.format(amount);
-                    }
-                  }), ' ',
-                  this.quote$.dot('sourceCurrency'),
-                  this.exchangeRateNotice$.map((value) => value ? '*' : '')
-                )
-              .end()
-            .end();
+              this.E()
+                .start()
+                  .addClass('label-value-row')
+                  .addClass('amount-container')
+                  .show(this.loadingSpinner.isHidden$)
+                  .start().addClass('inline')
+                    .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '')
+                    .addClass('bold-label')
+                  .end()
+                  .start().addClass('float-right').addClass('bold-label')
+                    .add(
+                      this.quote$.dot('amount').map((amount) => {
+                        if ( Number.isSafeInteger(amount) ) {
+                          return this.sourceCurrency.format(amount);
+                        }
+                      }), ' ',
+                      this.quote$.dot('sourceCurrency'),
+                      this.exchangeRateNotice$.map((value) => value ? '*' : '')
+                    )
+                  .end()
+                .end();
           }))
         .end()
         .start().show(this.exchangeRateNotice$)
