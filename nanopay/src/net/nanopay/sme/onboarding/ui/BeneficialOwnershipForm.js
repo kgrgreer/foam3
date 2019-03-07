@@ -572,7 +572,6 @@ messages: [
 methods: [
   function init() {
     this.SUPER();
-    // FIXME
     this.beneficialOwnersDAO.on.sub(this.onDAOChange);
     this.onDAOChange();
     // Gives the onboarding wizard access to the validations
