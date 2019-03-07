@@ -60,7 +60,9 @@ foam.CLASS({
     'com.intuit.ipp.security.OAuth2Authorizer',
     'com.intuit.ipp.services.DataService',
     'com.intuit.ipp.util.Config',
-    'foam.mlang.sink.Count'
+    'foam.mlang.sink.Count',
+    'java.util.regex.Matcher',
+    'java.util.regex.Pattern'
   ],
 
   methods: [
@@ -400,6 +402,10 @@ try {
 
     // Searches for a previous existing Contact
     Vendor vendor = (Vendor) fetchContactById(x, "vendor", qInvoice.getVendorRef().getValue());
+    
+    if ( vendor == null || vendor.getPrimaryEmailAddr() == null ) {
+      continue;
+    }
 
     Contact contact = (Contact) contactDAO.find(
       AND(
@@ -449,10 +455,10 @@ try {
     portal.setCreatedBy(user.getId());
 
     // Get attachments from invoice
-    foam.nanos.fs.File[] files = getAttachments(x, "bill", qInvoice.getId());
-    if ( files != null && files.length != 0 ) {
-      portal.setInvoiceFile(files);
-    }
+    // foam.nanos.fs.File[] files = getAttachments(x, "bill", qInvoice.getId());
+    // if ( files != null && files.length != 0 ) {
+    //   portal.setInvoiceFile(files);
+    // }
 
     invoiceDAO.put(portal);
   }
@@ -562,6 +568,10 @@ try {
 
     // Searches for a previous existing Contact
     Customer customer = (Customer) fetchContactById(x, "customer", qInvoice.getCustomerRef().getValue());
+    
+    if ( customer == null || customer.getPrimaryEmailAddr() == null ) {
+      continue;
+    }
         
     Contact contact = (Contact) contactDAO.find(
       AND(
@@ -609,10 +619,10 @@ try {
     portal.setCreatedBy(user.getId());
 
     // Get attachments
-    foam.nanos.fs.File[] files = getAttachments(x, "invoice", qInvoice.getId());
-    if ( files != null && files.length != 0 ) {
-      portal.setInvoiceFile(files);
-    }
+    // foam.nanos.fs.File[] files = getAttachments(x, "invoice", qInvoice.getId());
+    // if ( files != null && files.length != 0 ) {
+    //   portal.setInvoiceFile(files);
+    // }
 
     invoiceDAO.put(portal);
   }
@@ -643,7 +653,6 @@ try {
       ],
       javaCode:
 `
-DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
 
 if (
   contact.getPrimaryEmailAddr() == null ||
@@ -651,20 +660,15 @@ if (
   SafetyUtil.isEmpty(contact.getFamilyName()) ||
   SafetyUtil.isEmpty(contact.getCompanyName()) )
 {
-  Notification notify = new Notification();
-  notify.setUserId(user.getId());
-  String str = "Quick Contact # " +
-    contact.getId() +
-    " can not be added because the contact is missing: " +
-    (contact.getPrimaryEmailAddr() == null ? "[Email]" : "") +
-    (SafetyUtil.isEmpty(contact.getGivenName()) ? " [Given Name] " : "") +
-    (SafetyUtil.isEmpty(contact.getCompanyName()) ? " [Company Name] " : "") +
-    (SafetyUtil.isEmpty(contact.getFamilyName()) ? " [Family Name] " : "");
-  notify.setBody(str);
-  notification.put(notify);
   return false;
 }
 
+Pattern p = Pattern.compile("[a-zA-Z]*");
+Matcher firstName = p.matcher(contact.getGivenName());
+Matcher lastName = p.matcher(contact.getFamilyName());
+if ( ! firstName.matches() || ! lastName.matches() ) {
+  return false;
+}
 return true;
 `
     },

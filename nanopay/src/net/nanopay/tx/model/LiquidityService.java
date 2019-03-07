@@ -14,6 +14,9 @@ import net.nanopay.tx.Liquidity;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 
+import java.text.NumberFormat;
+import java.util.HashMap;
+
 import static foam.mlang.MLang.*;
 
 public class LiquidityService
@@ -71,10 +74,10 @@ public class LiquidityService
 
   }
 
-  public void executeLiquidity(LiquiditySettings ls, Long txnAmount) {
+  public void executeLiquidity(LiquiditySettings ls, long txnAmount) {
     DigitalAccount account = ls.findAccount(getX());
     if ( account == null ) return;
-    Long pendingBalance = (Long) account.findBalance(getX());
+    long pendingBalance = (long) account.findBalance(getX());
     pendingBalance += ((Double)((Sum) getLocalTransactionDAO().where(
       AND(
         OR(
@@ -102,45 +105,12 @@ public class LiquidityService
 
   }
 
-  public void executeHighLiquidity(Long currentBalance, LiquiditySettings ls, long txnAmount) {
+  public void executeHighLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount ) {
+
     Liquidity liquidity = ls.getHighLiquidity();
-    Account account = ls.findAccount(x_);
-
-    Account fundAccount = liquidity.findPushPullAccount(x_);
-    if ( ! ( fundAccount instanceof DigitalAccount ) ) {
-      fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
-    }
-    if ( fundAccount == null ) {
-      Notification notification = new Notification();
-      notification.setNotificationType("No verified bank account for liquidity settings");
-      notification.setBody("You need to add and verify bank account for liquidity settings");
-      notification.setUserId(account.getOwner());
-      ((DAO) x_.get("notificationDAO")).put(notification);
-      return;
-    }
-
 
     if ( currentBalance >= liquidity.getThreshold() ) {
-      if ( liquidity.getEnableNotification() && txnAmount > 0 && currentBalance - liquidity.getThreshold() > txnAmount ) {
-        //send notification when limit went over
-        notifyUser(account, true, ls.getHighLiquidity().getThreshold());
-      }
-      if ( liquidity.getEnableRebalancing() ) {
-        addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId());
-      }
-    }
-  }
-
-  public void executeLowLiquidity(Long currentBalance, LiquiditySettings ls, long txnAmount) {
-
-    Liquidity liquidity = ls.getLowLiquidity();
-
-    if ( currentBalance <= liquidity.getThreshold() ) {
       Account account = ls.findAccount(x_);
-      if ( liquidity.getEnableNotification() && txnAmount < 0 && currentBalance + txnAmount >  liquidity.getThreshold() ) {
-        //send notification when limit went over
-        notifyUser(account, false, ls.getLowLiquidity().getThreshold());
-      }
       Account fundAccount = liquidity.findPushPullAccount(x_);
       if ( ! ( fundAccount instanceof DigitalAccount ) ) {
         fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
@@ -153,6 +123,39 @@ public class LiquidityService
         ((DAO) x_.get("notificationDAO")).put(notification);
         return;
       }
+
+      if ( liquidity.getEnableNotification() && txnAmount >= 0 && currentBalance - txnAmount <= liquidity.getThreshold()) {
+        //send notification when limit went over
+        notifyUser(account, true, ls.getHighLiquidity().getThreshold());
+      }
+      if ( liquidity.getEnableRebalancing() ) {
+        addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId());
+      }
+    }
+  }
+
+  public void executeLowLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount ) {
+
+    Liquidity liquidity = ls.getLowLiquidity();
+
+    if ( currentBalance <= liquidity.getThreshold() ) {
+      Account account = ls.findAccount(x_);
+      Account fundAccount = liquidity.findPushPullAccount(x_);
+      if ( ! ( fundAccount instanceof DigitalAccount ) ) {
+        fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
+      }
+      if ( fundAccount == null ) {
+        Notification notification = new Notification();
+        notification.setNotificationType("No verified bank account for liquidity settings");
+        notification.setBody("You need to add and verify bank account for liquidity settings");
+        notification.setUserId(account.getOwner());
+        ((DAO) x_.get("notificationDAO")).put(notification);
+        return;
+      }
+      if ( liquidity.getEnableNotification() && txnAmount <= 0 && currentBalance - txnAmount >= liquidity.getThreshold()) {
+        //send notification when limit went over
+        notifyUser(account, false, ls.getLowLiquidity().getThreshold());
+      }
       if ( liquidity.getEnableRebalancing() ) {
         addCICOTransaction(liquidity.getResetBalance() - currentBalance, fundAccount.getId(), account.getId());
       }
@@ -160,15 +163,24 @@ public class LiquidityService
 
   }
 
-  public void notifyUser(Account account, Boolean above, long amount) {
+  public void notifyUser(Account account, boolean above, long threshold) {
     Notification notification = new Notification();
+    notification.setEmailName("liquidityNotification");
+    HashMap<String, Object> args = new HashMap<>();
+    String direction;
     if ( above ) {
-      notification.setNotificationType("Account has gone above");
-      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has gone above maximum value of " + amount);
+      direction = "has gone above ";
     } else {
-      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has fallen below minimum value of " + amount);
-      notification.setNotificationType("fallen below");
+      direction = "has fallen below ";
     }
+    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    args.put("account",     "your account "+account.getName()+",");
+    args.put("greeting",     "Hi");
+    args.put("name",        account.findOwner(x_).getFirstName());
+    args.put("direction",   direction);
+    args.put("threshold",   formatter.format(threshold/100.00));
+
+    notification.setEmailArgs(args);
     notification.setEmailIsEnabled(true);
     notification.setUserId(account.getOwner());
     ((DAO) x_.get("notificationDAO")).put(notification);
