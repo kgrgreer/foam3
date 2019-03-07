@@ -768,10 +768,7 @@ methods: [
   },
 
   function deleteBeneficialOwner(obj) {
-    var self = this;
-    this.beneficialOwnersDAO.remove(obj).then(function(deleted) {
-      self.prevDeletedBeneficialOwner = deleted;
-    });
+    this.beneficialOwnersDAO.remove(obj);
     // if first + last names match the admin. Then reset the sameasAdmin choice.
     var agentNameId = `${this.viewData.agent.firstName.toLowerCase()}${this.viewData.agent.lastName.toLowerCase()}`;
     var newOwnerNameId = `${obj.firstName.toLowerCase()}${obj.lastName.toLowerCase()}`;
