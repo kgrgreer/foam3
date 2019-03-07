@@ -64,7 +64,7 @@ foam.CLASS({
     },
     {
       name: 'INVITE_SUCCESS',
-      message: 'Invitation sent!'
+      message: 'Sent a request to connect.'
     },
     {
       name: 'INVITE_FAILURE',
@@ -163,8 +163,9 @@ foam.CLASS({
             this.ctrl.add(this.NotificationMessage.create({
               message: this.INVITE_SUCCESS,
             }));
+            // Force the view to update.
+            this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
             X.closeDialog();
-            this.user.contacts.on.reset.pub(); // Force the view to update.
           })
           .catch(() => {
             this.ctrl.add(this.NotificationMessage.create({
