@@ -118,7 +118,7 @@ foam.CLASS({
     ^ .disabled {
       filter: grayscale(100%) opacity(60%);
     }
-    ^ .disabled .net-nanopay-sme-ui-BusinessRowView-oval {
+    ^ .disabled .net-nanopay-sme-ui-BusinessJunctionRowView-oval {
       background-color: #e2e2e3 !important;
     }
   `,
@@ -293,10 +293,9 @@ foam.CLASS({
             .select(this.enabledBusinesses_, function(junction) {
               return this.E()
                 .start({
-                  class: 'net.nanopay.sme.ui.BusinessRowView',
+                  class: 'net.nanopay.sme.ui.BusinessJunctionRowView',
                   data: junction
                 })
-                  .addClass('sme-business-row-item')
                   .on('click', () => {
                     if ( junction.status === self.AgentJunctionStatus.DISABLED ) {
                       self.ctrl.notify(self.ERROR_DISABLED, 'error');
@@ -308,10 +307,9 @@ foam.CLASS({
             .select(this.disabledBusinesses_, function(junction) {
               return this.E()
                 .start({
-                  class: 'net.nanopay.sme.ui.BusinessRowView',
+                  class: 'net.nanopay.sme.ui.BusinessJunctionRowView',
                   data: junction
                 })
-                  .addClass('sme-business-row-item')
                   .addClass('disabled')
                   .on('click', () => {
                     self.notify(self.DISABLED_BUSINESS_MSG, 'error');
@@ -336,5 +334,4 @@ foam.CLASS({
       .end();
     }
   ]
-
 });
