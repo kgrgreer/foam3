@@ -42,7 +42,9 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.Calendar',
     'java.util.Date',
-    'java.util.List'
+    'java.util.List',
+    'java.util.regex.Matcher',
+    'java.util.regex.Pattern'
   ],
 
   methods: [
@@ -67,6 +69,12 @@ foam.CLASS({
 
       if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) || SafetyUtil.isEmpty(xeroContact.getFirstName()) 
       || SafetyUtil.isEmpty(xeroContact.getLastName()) || SafetyUtil.isEmpty(xeroContact.getName()) ) {
+        return false;
+      }
+      Pattern p = Pattern.compile("[a-zA-Z]*");
+      Matcher firstName = p.matcher(xeroContact.getFirstName());
+      Matcher lastName = p.matcher(xeroContact.getLastName());
+      if ( ! firstName.matches() || ! lastName.matches() ) {
         return false;
       }
       return true;
@@ -489,53 +497,53 @@ try {
     xInvoice.setCreatedBy(user.getId());
 
     // get invoice attachments
-    if ( ! xeroInvoice.isHasAttachments() ) {
-      invoiceDAO.put(xInvoice);
-      continue;
-    }
+    // if ( ! xeroInvoice.isHasAttachments() ) {
+    //   invoiceDAO.put(xInvoice);
+    //   continue;
+    // }
 
-    // try to get attachments
-    List<Attachment> attachments;
-    try {
-      attachments = client_.getAttachments("Invoices", xeroInvoice.getInvoiceID());
-    } catch ( Throwable ignored ) {
-      invoiceDAO.put(xInvoice);
-      continue;
-    }
+    // // try to get attachments
+    // List<Attachment> attachments;
+    // try {
+    //   attachments = client_.getAttachments("Invoices", xeroInvoice.getInvoiceID());
+    // } catch ( Throwable ignored ) {
+    //   invoiceDAO.put(xInvoice);
+    //   continue;
+    // }
 
-    // return invoice if attachments is null or size is 0
-    if ( attachments == null || attachments.size() == 0 ) {
-      invoiceDAO.put(xInvoice);
-      continue;
-    }
+    // // return invoice if attachments is null or size is 0
+    // if ( attachments == null || attachments.size() == 0 ) {
+    //   invoiceDAO.put(xInvoice);
+    //   continue;
+    // }
 
-    // iterate through all attachments
-    File[] files = new File[attachments.size()];
-    for ( int i = 0; i < attachments.size(); i++ ) {
-      try {
-        Attachment attachment = attachments.get(i);
-        long filesize = attachment.getContentLength().longValue();
+    // // iterate through all attachments
+    // File[] files = new File[attachments.size()];
+    // for ( int i = 0; i < attachments.size(); i++ ) {
+    //   try {
+    //     Attachment attachment = attachments.get(i);
+    //     long filesize = attachment.getContentLength().longValue();
 
-        // get attachment content and create blob
-        java.io.ByteArrayInputStream bais = client_.getAttachmentContent("Invoices",
-          xeroInvoice.getInvoiceID(), attachment.getFileName(), null);
-        foam.blob.Blob data = blobStore.put_(x, new foam.blob.InputStreamBlob(bais, filesize));
+    //     // get attachment content and create blob
+    //     java.io.ByteArrayInputStream bais = client_.getAttachmentContent("Invoices",
+    //       xeroInvoice.getInvoiceID(), attachment.getFileName(), null);
+    //     foam.blob.Blob data = blobStore.put_(x, new foam.blob.InputStreamBlob(bais, filesize));
 
-        // create file
-        files[i] = new File.Builder(x)
-          .setId(attachment.getAttachmentID())
-          .setOwner(user.getId())
-          .setMimeType(attachment.getMimeType())
-          .setFilename(attachment.getFileName())
-          .setFilesize(filesize)
-          .setData(data)
-          .build();
-        fileDAO.inX(x).put(files[i]);
-      } catch ( Throwable ignored ) { }
-    }
+    //     // create file
+    //     files[i] = new File.Builder(x)
+    //       .setId(attachment.getAttachmentID())
+    //       .setOwner(user.getId())
+    //       .setMimeType(attachment.getMimeType())
+    //       .setFilename(attachment.getFileName())
+    //       .setFilesize(filesize)
+    //       .setData(data)
+    //       .build();
+    //     fileDAO.inX(x).put(files[i]);
+    //   } catch ( Throwable ignored ) { }
+    // }
 
-    // set files on nano invoice
-    xInvoice.setInvoiceFile(files);
+    // // set files on nano invoice
+    // xInvoice.setInvoiceFile(files);
     invoiceDAO.put(xInvoice);
     continue;
   }
