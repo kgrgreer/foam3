@@ -619,10 +619,10 @@ try {
     portal.setCreatedBy(user.getId());
 
     // Get attachments
-    foam.nanos.fs.File[] files = getAttachments(x, "invoice", qInvoice.getId());
-    if ( files != null && files.length != 0 ) {
-      portal.setInvoiceFile(files);
-    }
+    // foam.nanos.fs.File[] files = getAttachments(x, "invoice", qInvoice.getId());
+    // if ( files != null && files.length != 0 ) {
+    //   portal.setInvoiceFile(files);
+    // }
 
     invoiceDAO.put(portal);
   }
