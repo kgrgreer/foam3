@@ -135,6 +135,10 @@ foam.CLASS({
     {
       name: 'NO_MATCH_TEXT_2',
       message: 'Create a personal contact named'
+    },
+    {
+      name: 'ADD_CONTACT_SUCCESS',
+      message: 'Personal contact added.'
     }
   ],
 
