@@ -147,6 +147,7 @@ var classes = [
   'net.nanopay.integration.NewResultResponse',
   'net.nanopay.integration.AccountingBankAccount',
   'net.nanopay.integration.ContactMismatchPair',
+  'net.nanopay.integration.AccountingContactEmailCache',
 
   // xero
   'net.nanopay.integration.xero.XeroTokenStorage',
