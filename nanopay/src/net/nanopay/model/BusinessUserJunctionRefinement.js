@@ -56,6 +56,7 @@ foam.CLASS({
 
         if ( auth.check(x, "*") ) return;
 
+        // Checks if either the user or agent is associated with the junction.
         if (
           this.getSourceId() != user.getId() &&
           this.getTargetId() != user.getId() &&
@@ -107,6 +108,7 @@ foam.CLASS({
 
         if ( auth.check(x, "*") ) return;
 
+        // Checks if either the user or agent is associated with the junction.
         if (
           this.getSourceId() != user.getId() &&
           this.getTargetId() != user.getId() &&
@@ -117,7 +119,7 @@ foam.CLASS({
             this.getTargetId() != agent.getId()
           )
         ) {
-          throw new AuthorizationException();
+          throw new AuthorizationException("Permission denied. You are not associated with this junction.");
         }
       `
     }
