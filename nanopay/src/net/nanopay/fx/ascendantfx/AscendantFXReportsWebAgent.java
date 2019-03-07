@@ -318,7 +318,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     java.util.List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
 
     if ( signingOfficers.size() == 0 ) {
-      throw new RuntimeException("All businesses must have at least one signing officer. Business '" + business.getBusinessName() + "' did not have one.");
+      Logger logger = (Logger) x.get("logger");
+      logger.warning("All businesses must have at least one signing officer. Business '" + business.getBusinessName() + "' did not have one.");
     }
 
     return signingOfficers;
