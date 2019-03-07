@@ -14,6 +14,9 @@ import net.nanopay.tx.Liquidity;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 
+import java.text.NumberFormat;
+import java.util.HashMap;
+
 import static foam.mlang.MLang.*;
 
 public class LiquidityService
@@ -160,15 +163,23 @@ public class LiquidityService
 
   }
 
-  public void notifyUser(Account account, Boolean above, long amount) {
+  public void notifyUser(Account account, Boolean above, long threshold) {
     Notification notification = new Notification();
+    notification.setEmailName("liquidityNotification");
+    HashMap<String, Object> args = new HashMap<>();
+    String direction;
     if ( above ) {
-      notification.setNotificationType("Account has gone above");
-      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has gone above maximum value of " + amount);
+      direction = " gone above ";
     } else {
-      notification.setBody("Hi, " + account.findOwner(x_).getFirstName() + ". Account " + account.getName() + " has fallen below minimum value of " + amount);
-      notification.setNotificationType("fallen below");
+      direction = " fallen below ";
     }
+    NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    args.put("account",     account.getName());
+    args.put("name",        account.findOwner(x_).getFirstName());
+    args.put("direction",   direction);
+    args.put("threshold",   formatter.format(threshold/100.00));
+
+    notification.setEmailArgs(args);
     notification.setEmailIsEnabled(true);
     notification.setUserId(account.getOwner());
     ((DAO) x_.get("notificationDAO")).put(notification);
