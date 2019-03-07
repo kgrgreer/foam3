@@ -66,7 +66,7 @@ foam.CLASS({
             this.getTargetId() != agent.getId()
           )
         ) {
-          throw new AuthorizationException();
+          throw new AuthorizationException("Permission denied. You are not associated with this junction.");
         }
       `
     },
