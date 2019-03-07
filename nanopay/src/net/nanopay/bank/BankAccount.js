@@ -57,6 +57,9 @@ foam.CLASS({
         placeholder: '1234567',
         onKey: true
       },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
       tableCellFormatter: function(str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length));
