@@ -21,6 +21,7 @@ import foam.util.SafetyUtil;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.integration.AccountingBankAccount;
+import net.nanopay.integration.AccountingContactEmailCache;
 import net.nanopay.integration.ContactMismatchPair;
 import net.nanopay.integration.NewResultResponse;
 import net.nanopay.integration.ResultResponse;
@@ -69,7 +70,7 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
       }
       client.getContacts();
       return new ResultResponse(true, "User is Signed in");
-    } catch ( Throwable e ) {
+    } catch ( Exception e ) {
       logger.error(e);
       return new ResultResponse(false, "User is not Signed in");
     }
@@ -256,6 +257,7 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
   @Override
   public ResultResponse contactSync(X x) {
+    DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
     Logger logger = (Logger) x.get("logger");
     XeroClient client = this.getClient(x);
     List<ContactMismatchPair> result = new ArrayList<>();
@@ -276,6 +278,13 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
           contactErrors.add(xeroContact.getName() + " cannot be synced. " + inValidContacts);
           continue;
         }
+        cacheDAO.inX(x).put(
+          new net.nanopay.integration.AccountingContactEmailCache.Builder(x)
+            .setXeroId(xeroContact.getContactID())
+            .setEmail(xeroContact.getEmailAddress())
+            .build()
+        );
+
         try {
          ContactMismatchPair mismatchPair = syncContact(x, xeroContact);
          if ( mismatchPair != null ) {
@@ -304,8 +313,10 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
 
   private String syncInvoice(X x, com.xero.model.Invoice xeroInvoice) throws Exception {
-    DAO         contactDAO = ((DAO) x.get("contactDAO")).inX(x);
-    DAO         invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+    DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
+    DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
+
+    DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     Contact contact;
     XeroInvoice updateInvoice;
     User user = (User) x.get("user");
@@ -368,11 +379,18 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
     try {
       // Searches for a previous existing Contact
-      contact = (Contact) contactDAO.find(AND(
-        EQ(XeroContact.EMAIL, client.getContact(xeroInvoice.getContact().getContactID()).getEmailAddress()),
-        EQ(XeroContact.OWNER, user.getId())
-      ));
+      AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.find(
+        EQ(AccountingContactEmailCache.XERO_ID, xeroInvoice.getContact().getContactID())
+      );
 
+      if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
+        return " Contact was not found";
+      }
+
+      contact = (Contact) contactDAO.find( AND(
+        EQ( XeroContact.EMAIL, cache.getEmail() ),
+        EQ( XeroContact.OWNER, user.getId() )
+      ));
       // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
       if ( contact == null ) {
         return " Contact was not found";
@@ -571,12 +589,27 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
   @Override
   public ResultResponse syncSys(X x) {
-    return null;
+    Logger logger = (Logger) x.get("logger");
+    try {
+      contactSync(x);
+      invoiceSync(x);
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error(e);
+      return new NewResultResponse.Builder(x)
+        .setResult(false)
+        .setReason(e.getMessage())
+        .build();
+    }
+    return new NewResultResponse.Builder(x)
+      .setResult(true)
+      .build();
   }
-
+  
 
   @Override
   public ResultResponse removeToken(X x) {
+    User user = (User) x.get("user");
     DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
     XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
     if ( tokenStorage == null ) {
