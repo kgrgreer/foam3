@@ -44,7 +44,7 @@ public class XeroInvoiceDAO
     DAO                    transactionDAO  = ((DAO) x.get("localTransactionDAO")).inX(x);
     Invoice                invoice         = (Invoice) obj;
     Invoice                oldInvoice      = (Invoice) getDelegate().find_(x, invoice.getId());
-    XeroIntegrationService xero            = (XeroIntegrationService) x.get("xeroSignIn");
+    XeroIntegrationService2 xero            = (XeroIntegrationService2) x.get("xeroSignIn");
     User                   user            = (User) x.get("user");
 
     if ( ! (invoice instanceof XeroInvoice) ) {

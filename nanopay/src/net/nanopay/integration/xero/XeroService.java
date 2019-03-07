@@ -138,7 +138,7 @@ public class XeroService
     Group                  group        = user.findGroup(x);
     AppConfig              app          = group.getAppConfig(x);
     DAO                    configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
-    XeroIntegrationService xeroSign     = (XeroIntegrationService) x.get("xeroSignIn");
+    XeroIntegrationService2 xeroSign     = (XeroIntegrationService2) x.get("xeroSignIn");
     XeroConfig             config       = (XeroConfig)configDAO.find(app.getUrl());
 
     try {
