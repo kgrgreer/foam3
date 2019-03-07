@@ -163,7 +163,7 @@ public class LiquidityService
 
   }
 
-  public void notifyUser(Account account, Boolean above, long threshold) {
+  public void notifyUser(Account account, boolean above, long threshold) {
     Notification notification = new Notification();
     notification.setEmailName("liquidityNotification");
     HashMap<String, Object> args = new HashMap<>();
