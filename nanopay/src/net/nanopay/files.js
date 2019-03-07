@@ -228,6 +228,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
+  { name: 'net/nanopay/tx/TransactionLimitState'},
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
