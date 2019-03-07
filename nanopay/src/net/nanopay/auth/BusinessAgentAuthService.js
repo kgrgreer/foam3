@@ -89,6 +89,7 @@ foam.CLASS({
         // Set user and agent objects into the session context and place into sessionDAO.
         Session session = x.get(Session.class);
         session.setUserId(entity.getId());
+        session.setAgentId(agent.getId());
         session.setContext(session.getContext().put("user", entity));
         session.setContext(session.getContext().put("agent", agent));
         DAO sessionDAO = (DAO) getX().get("localSessionDAO");

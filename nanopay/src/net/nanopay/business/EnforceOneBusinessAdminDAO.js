@@ -26,18 +26,23 @@ foam.CLASS({
   imports: [
     'agentJunctionDAO',
     'businessDAO',
-    'groupDAO'
+    'groupDAO',
+    'localSessionDAO'
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'java.util.List',
     'javax.security.auth.AuthPermission',
     'net.nanopay.model.Business',
+    'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -60,17 +65,40 @@ foam.CLASS({
         }
 
         if ( canMakePayments(x, junction.getGroup()) ) {
-          // Loop through the other ones.
+          DAO sessionDAO = ((DAO) getLocalSessionDAO()).inX(x);
           List<UserUserJunction> others = ((ArraySink) agentJunctionDAO
             .where(EQ(UserUserJunction.TARGET_ID, business.getId()))
             .select(new ArraySink())).getArray();
-          
+
           for ( UserUserJunction j : others ) {
             if ( canMakePayments(x, j.getGroup()) ) {
               // Demote to an employee, which can't make payments.
               j = (UserUserJunction) j.fclone();
               j.setGroup(business.getBusinessPermissionId() + ".employee");
               agentJunctionDAO.put(j);
+
+              // Update session so if they are currently logged in, they can't
+              // continue using their admin privileges since we just demoted
+              // them.
+              List<Session> sessions = ((ArraySink) sessionDAO
+                .where(
+                  AND(
+                    EQ(Session.USER_ID, j.getTargetId()),
+                    EQ(Session.AGENT_ID, j.getSourceId())
+                  )
+                )
+                .select(new ArraySink())).getArray();
+
+              for ( Session session : sessions ) {
+                X ctx = session.getContext();
+                User u = (User) ctx.get("user");
+                if ( u != null ) {
+                  u = (User) u.fclone();
+                  u.setGroup(j.getGroup());
+                  session.setContext(ctx.put("user", u));
+                  sessionDAO.put(session);
+                }
+              }
             }
           }
         }
