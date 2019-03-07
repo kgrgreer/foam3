@@ -52,7 +52,7 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     DAO configDAO = ((DAO) x.get("xeroConfigDAO")).inX(x);
     XeroConfig config = (XeroConfig)configDAO.find(app.getUrl());
     XeroClient client = new XeroClient(config);
-    if ( tokenStorage == null ) {
+    if ( tokenStorage == null || tokenStorage.getToken().equals("") ) {
       return null;
     }
     client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
@@ -65,15 +65,12 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     try {
       XeroClient client = this.getClient(x);
       if ( client == null ) {
-        System.out.println("is not connected to xero");
         return new ResultResponse(false, "User has not connected to Xero");
       }
       client.getContacts();
-      System.out.println("is signed in");
       return new ResultResponse(true, "User is Signed in");
     } catch ( Throwable e ) {
       logger.error(e);
-      System.out.println("is not signed in");
       return new ResultResponse(false, "User is not Signed in");
     }
   }
@@ -580,7 +577,18 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
   @Override
   public ResultResponse removeToken(X x) {
-    return null;
+    DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
+    XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
+    if ( tokenStorage == null ) {
+      return new ResultResponse(false, "User has not connected to Xero");
+    }
+
+    // Clears the tokens simulating logout.
+    tokenStorage.setToken("");
+    tokenStorage.setTokenSecret("");
+    tokenStorage.setTokenTimestamp("0");
+    store.put(tokenStorage);
+    return new ResultResponse(true, "User has been Signed out of Xero");
   }
 
 
