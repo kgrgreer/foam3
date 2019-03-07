@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.integration.AccountingBankAccount',
+    'net.nanopay.integration.AccountingContactEmailCache',
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.xero.model.XeroContact',
     'net.nanopay.integration.xero.model.XeroInvoice',
@@ -180,6 +181,7 @@ Logger           logger       = (Logger) x.get("logger");
 DAO              agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
 DAO              userDAO      = ((DAO) x.get("localUserUserDAO")).inX(x);
 DAO              businessDAO  = ((DAO) x.get("localBusinessDAO")).inX(x);
+DAO               cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
 
 // Check that user has accessed xero before
 if ( tokenStorage == null ) {
@@ -198,6 +200,13 @@ try {
     if ( ! this.isValidContact(x, xeroContact, user) ) {
       continue;
     }
+    
+    cacheDAO.inX(x).put(
+      new AccountingContactEmailCache.Builder(x)
+        .setXeroId(xeroContact.getContactID())
+        .setEmail(xeroContact.getEmailAddress())
+        .build()
+    );
 
     newContact = new XeroContact();
     
@@ -353,6 +362,7 @@ XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
 Logger           logger       = (Logger) x.get("logger");
 DAO              currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
+DAO               cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
 
 // Check that user has accessed xero before
 if ( tokenStorage == null ) {
@@ -442,9 +452,17 @@ try {
     }
 
     // Searches for a previous existing Contact
+    AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.find(
+      EQ(AccountingContactEmailCache.XERO_ID, xeroInvoice.getContact().getContactID())
+    );
+
+    if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
+      continue;
+    }
+    
     Contact contact = (Contact) contactDAO.find( AND(
-        EQ( XeroContact.EMAIL, client_.getContact(xeroInvoice.getContact().getContactID()).getEmailAddress() ),
-        EQ( XeroContact.OWNER, user.getId() )
+      EQ( XeroContact.EMAIL, cache.getEmail() ),
+      EQ( XeroContact.OWNER, user.getId() )
     ));
 
     // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
