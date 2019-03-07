@@ -169,12 +169,13 @@ public class LiquidityService
     HashMap<String, Object> args = new HashMap<>();
     String direction;
     if ( above ) {
-      direction = " gone above ";
+      direction = "has gone above ";
     } else {
-      direction = " fallen below ";
+      direction = "has fallen below ";
     }
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-    args.put("account",     account.getName());
+    args.put("account",     "your account "+account.getName()+",");
+    args.put("greeting",     "Hi");
     args.put("name",        account.findOwner(x_).getFirstName());
     args.put("direction",   direction);
     args.put("threshold",   formatter.format(threshold/100.00));
