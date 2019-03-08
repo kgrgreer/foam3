@@ -113,14 +113,22 @@ foam.CLASS({
 
 
         let contactsResult = await service.contactSync(null);
-        let invoicesResult = await service.invoiceSync(null);
+        if ( contactsResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+          X.controllerView.add(self.Popup.create({ closeable: false }).tag({
+            class: 'net.nanopay.integration.AccountingTimeOutModal',
+            data: this
+          }));
+        }
 
-       if ( contactsResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED || invoicesResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-        X.controllerView.add(self.Popup.create({ closeable: false }).tag({
-          class: 'net.nanopay.integration.AccountingTimeOutModal',
-          data: this
-        }));
-       }
+        // run through contact missmatch if any
+
+        let invoicesResult = await service.invoiceSync(null);
+        if ( invoicesResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+          X.controllerView.add(self.Popup.create({ closeable: false }).tag({
+            class: 'net.nanopay.integration.AccountingTimeOutModal',
+            data: this
+          }));
+        }
 
         X.controllerView.removeClass('account-sync-loading-animation');
         this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);

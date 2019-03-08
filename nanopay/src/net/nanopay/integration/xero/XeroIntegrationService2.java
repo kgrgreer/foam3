@@ -543,7 +543,7 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
             } else {
               message = "Payable invoice to " + xeroInvoice.getContact().getName() + " due on " + xeroInvoice.getDueDate().getTime();
             }
-            invoiceErrors.add(message + " cannot be synced " + response);
+            invoiceErrors.add(message + " cannot be synced: " + response);
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -661,17 +661,17 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
   @Override
   public ResultResponse removeToken(X x) {
     User user = (User) x.get("user");
-    DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
+    DAO userDAO = ((DAO) x.get("localUserUserDAO")).inX(x);
+    DAO store = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
     XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
     if ( tokenStorage == null ) {
       return new ResultResponse(false, "User has not connected to Xero");
     }
 
-    // Clears the tokens simulating logout.
-    tokenStorage.setToken("");
-    tokenStorage.setTokenSecret("");
-    tokenStorage.setTokenTimestamp("0");
-    store.put(tokenStorage);
+    store.remove(tokenStorage.fclone());
+    user = (User) user.fclone();
+    user.clearIntegrationCode();
+    userDAO.put(user);
     return new ResultResponse(true, "User has been Signed out of Xero");
   }
 
