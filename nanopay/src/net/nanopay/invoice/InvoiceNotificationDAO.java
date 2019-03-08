@@ -13,6 +13,8 @@ import foam.util.SafetyUtil;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import net.nanopay.auth.PublicUserInfo;
+import net.nanopay.integration.quick.model.QuickInvoice;
+import net.nanopay.integration.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
@@ -43,6 +45,12 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
     Invoice existing = (Invoice) super.find(invoice.getId());
+
+    // if the invoice is imported from accounting software
+    if ( existing == null &&
+         (invoice instanceof QuickInvoice || invoice instanceof XeroInvoice) ) {
+      return super.put_(x, invoice);
+    }
 
     if ( existing != null ) {
       if (
