@@ -67,14 +67,28 @@ public class NewQuickIntegrationService implements IntegrationService {
       // fetch the contacts
       List<NameBase> contacts = fetchContacts(x);
 
-      result = contacts.stream()
-        .filter(contact -> isValidContact(contact, invalidContacts))
-        .map(contact -> importContact(x, contact))
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+      for ( NameBase contact : contacts ) {
+        try {
+          // do validation
+          if ( ! isValidContact(contact, invalidContacts) ) {
+            continue;
+          }
+
+          // import
+          ContactMismatchPair mismatch = importContact(x, contact);
+
+          if ( mismatch != null ) {
+            result.add(mismatch);
+          }
+
+        } catch ( Exception e ) {
+          invalidContacts.add(e.getMessage());
+        }
+
+      }
 
     } catch ( Exception e ) {
-      e.printStackTrace();
+      return errorHandler(e);
     }
 
     return new NewResultResponse.Builder(x)
@@ -92,20 +106,21 @@ public class NewQuickIntegrationService implements IntegrationService {
 
       List<Transaction> list = fetchInvoices(x);
 
-      result = list.stream()
-        .map(invoice -> importInvoice(x, invoice))
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+      for ( Transaction invoice : list ) {
+
+        try {
+          String importResult = importInvoice(x, invoice);
+          if ( importResult != null ) {
+            result.add(importResult);
+          }
+        } catch ( Exception e ) {
+          result.add(e.getMessage());
+        }
+      }
 
     } catch (Exception e) {
 
-      if ( e.getMessage().equals("2") ) {
-        return new NewResultResponse.Builder(x)
-          .setResult(false)
-          .build();
-      }
-
-      e.printStackTrace();
+      errorHandler(e);
     }
 
     return new NewResultResponse.Builder(x)
@@ -122,8 +137,22 @@ public class NewQuickIntegrationService implements IntegrationService {
 
   @Override
   public ResultResponse removeToken(X x) {
+    User              user         = (User) x.get("user");
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+    QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
-    return new ResultResponse.Builder(x).setResult(true).build();
+    if ( tokenStorage == null ) {
+      return new ResultResponse(false, "User has not connected to Quick Books");
+    }
+
+    store.inX(x).remove(tokenStorage.fclone());
+    user = (User) user.fclone();
+    user.clearIntegrationCode();
+    userDAO.inX(x).put(user);
+
+
+    return new ResultResponse(true, "User has been signed out of Quick Books");
   }
 
   @Override
@@ -143,6 +172,23 @@ public class NewQuickIntegrationService implements IntegrationService {
     }
 
     return results;
+  }
+
+  public NewResultResponse errorHandler( Exception e ) {
+    e.printStackTrace();
+
+    NewResultResponse resultResponse = new NewResultResponse();
+
+    if ( e instanceof AuthenticationException ) {
+      resultResponse.setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED);
+      resultResponse.setReason(AccountingErrorCodes.TOKEN_EXPIRED.getLabel());
+    } else {
+      resultResponse.setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR);
+      resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
+    }
+
+    resultResponse.setResult(false);
+    return resultResponse;
   }
 
   public boolean isValidContact(NameBase quickContact, List<String> invalidContacts) {
@@ -173,8 +219,19 @@ public class NewQuickIntegrationService implements IntegrationService {
     DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
     DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
+    DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+    QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+    DAO               cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
+
+    cacheDAO.inX(x).put(
+      new AccountingContactEmailCache.Builder(x)
+        .setQuickId(importContact.getId())
+        .setRealmId(tokenStorage.getRealmId())
+        .setEmail(email.getAddress())
+        .build()
+    );
 
     Contact existContact = (Contact) contactDAO.find(AND(
       EQ(Contact.EMAIL, email.getAddress()),
@@ -340,20 +397,26 @@ public class NewQuickIntegrationService implements IntegrationService {
     DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
     DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
     DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
+    DAO cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
 
     // 1. Check the customer or vendor email
-    NameBase customer = qInvoice instanceof Bill ?
-      fetchContactById(x, "vendor",   ( (Bill) qInvoice )   .getVendorRef().getValue()) :
-      fetchContactById(x, "customer", ( (Invoice) qInvoice ).getCustomerRef().getValue());
+    String id = qInvoice instanceof Bill ?
+      ( (Bill) qInvoice )   .getVendorRef().getValue() :
+      ( (Invoice) qInvoice ).getCustomerRef().getValue();
 
-    if ( customer == null || customer.getPrimaryEmailAddr() == null ) {
-      return "Invoice can not import because contact do not have an email.";
+    AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.find(AND(
+      EQ(AccountingContactEmailCache.QUICK_ID, id),
+      EQ(AccountingContactEmailCache.REALM_ID, tokenStorage.getRealmId())
+    ));
+
+    if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
+      return "Invoice can not import because contact do not exist.";
     }
 
     // 2. If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     Contact contact = (Contact) contactDAO.find(
       AND(
-        EQ(QuickContact.EMAIL, customer.getPrimaryEmailAddr().getAddress()),
+        EQ(QuickContact.EMAIL, cache.getEmail()),
         EQ(QuickContact.OWNER, user.getId())
       ));
     if ( contact == null ) {
@@ -376,7 +439,7 @@ public class NewQuickIntegrationService implements IntegrationService {
 
       // if desync, then sync back
       if ( existInvoice.getDesync() ) {
-
+        invoiceDAO.inX(x).put(reSyncInvoice(x, existInvoice));
       }
 
       if (! (
@@ -474,7 +537,23 @@ public class NewQuickIntegrationService implements IntegrationService {
     return files.toArray(new File[files.size()]);
   }
 
-  public void reSyncInvoice(X x, QuickInvoice quickInvoice) {
+  public QuickInvoice reSyncInvoice(X x, QuickInvoice quickInvoice) {
+    NewResultResponse resultResponse = new NewResultResponse();
+
+    try {
+
+      createPaymentFor(x, quickInvoice);
+      quickInvoice.setDesync(false);
+      quickInvoice.setComplete(true);
+
+      return quickInvoice;
+
+    } catch ( Exception e ) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void createPaymentFor(X x, QuickInvoice quickInvoice) {
     User user        = (User) x.get("user");
     DAO  contactDAO  = ((DAO) x.get("contactDAO")).inX(x);
     DAO  currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
@@ -493,6 +572,10 @@ public class NewQuickIntegrationService implements IntegrationService {
       type = "Bill";
       currency = (Currency) currencyDAO.find(quickInvoice.getDestinationCurrency());
       account = BankAccount.findDefault(x, user, quickInvoice.getDestinationCurrency());
+    }
+
+    if ( SafetyUtil.isEmpty(account.getIntegrationId()) ) {
+      throw new RuntimeException("No bank accounts synchronised to Quick");
     }
 
     BigDecimal amount = new BigDecimal(quickInvoice.getAmount());
@@ -601,16 +684,8 @@ public class NewQuickIntegrationService implements IntegrationService {
 
       return service.executeQuery(query).getEntities();
     } catch ( Exception e ) {
-
-      if ( e instanceof AuthenticationException ) {
-        e.printStackTrace();
-        throw new RuntimeException("2");
-      } else {
-        e.printStackTrace();
-        throw new RuntimeException("Fail to fetch the data from QuickBook.");
-      }
+      throw new RuntimeException("Error fetch QuickBook data.", e);
     }
-
   }
 
   public IEntity create(foam.core.X x, IEntity object) {
@@ -631,15 +706,7 @@ public class NewQuickIntegrationService implements IntegrationService {
 
       return service.add(object);
     } catch ( Exception e ) {
-
-      if ( e instanceof AuthenticationException ) {
-        e.printStackTrace();
-        throw new RuntimeException("2");
-      } else {
-        e.printStackTrace();
-        throw new RuntimeException("Fail to fetch the data from QuickBook.");
-      }
+      throw new RuntimeException("Error fetch QuickBook data.", e);
     }
-
   }
 }
