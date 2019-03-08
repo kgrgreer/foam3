@@ -95,6 +95,12 @@ foam.CLASS({
       line-height: 1.43;
       text-align: center;
     }
+    ^search-field {
+      position: relative;
+    }
+    ^business-list {
+      overflow-y: scroll;
+    }
   `,
 
   constants: [
@@ -135,6 +141,10 @@ foam.CLASS({
     {
       name: 'NO_MATCH_TEXT_2',
       message: 'Create a personal contact named'
+    },
+    {
+      name: 'ADD_CONTACT_SUCCESS',
+      message: 'Personal contact added.'
     }
   ],
 
@@ -305,7 +315,7 @@ foam.CLASS({
             .addClass('field-label')
             .add(this.BUSINESS_NAME)
           .end()
-          .start().style({ 'position': 'relative' })
+          .start().addClass(this.myClass('search-field'))
             .start({
               class: 'foam.u2.tag.Image',
               data: this.SEARCH_ICON
@@ -319,7 +329,7 @@ foam.CLASS({
           .start()
             .addClass('divider')
           .end()
-          .start().style({ 'overflow-y': 'scroll' })
+          .start().addClass(this.myClass('business-list'))
             .select(this.unconnectedBusinesses$proxy, (business) => {
               return this.E()
                 .start({
