@@ -23,7 +23,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount'
+    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   css: `
@@ -128,6 +129,32 @@ foam.CLASS({
       border-bottom-right-radius: 5px;
       text-align: right;
     }
+    ^ .spinner-container {
+      background-color: #ffffff;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
+    }
+    ^ .spinner-container-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      height: 100%;
+    }
+    ^ .spinner-container .net-nanopay-ui-LoadingSpinner img {
+      width: 50px;
+      height: 50px;
+    }
+    ^content {
+      position: relative;
+      padding: 24px;
+      padding-top: 0;
+    }
   `,
 
   messages: [
@@ -185,6 +212,17 @@ foam.CLASS({
           }
         });
       }
+    },
+    {
+      name: 'loadingSpinner',
+      factory: function() {
+        var spinner = this.LoadingSpinner.create();
+        return spinner;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'syncing'
     }
   ],
 
@@ -194,18 +232,38 @@ foam.CLASS({
 
       let service = null;
       let parsedUrl = new URL(window.location.href);
+      this.syncing = true;
 
-      if ( parsedUrl.searchParams.get("accounting") === "xero" ) {
+      if ( parsedUrl.searchParams.get('accounting') === 'xero' ) {
         service = this.xeroSignIn;
+        this.bankMatchingLogo = '/images/xero.png';
       }
 
-      if ( parsedUrl.searchParams.get("accounting") === "quickbook" ) {
+      if ( parsedUrl.searchParams.get('accounting') === 'quickbook' ) {
         service = this.quickSignIn;
+        this.bankMatchingLogo = '/images/quickbooks.png';
       }
+
+      // display loading icon
+      this
+        .addClass(this.myClass())
+        .start('h1').add('Syncing ' + parsedUrl.searchParams.get('accounting') + ' to Ablii').show(this.syncing$)
+          .start().addClass(this.myClass('content'))
+            .start().addClass('spinner-container')
+              .start().addClass('spinner-container-center')
+                .add(this.loadingSpinner)
+              .end()
+            .end()
+          .end()
+        .end();
 
       let contacts = await service.contactSync(null);
       let invoices = await service.invoiceSync(null);
 
+      this.syncing = false;
+
+      console.log(contacts);
+      console.log(invoices);
       // push the user to dashboard
 
       this
@@ -229,19 +287,7 @@ foam.CLASS({
           .end()
         .end()
       .end();
-    },
-    async function isXeroConnected() {
-      var result = await this.xeroSignIn.isSignedIn(null);
-      if ( result.result ) {
-        this.bankMatchingLogo = '/images/xero.png';
-      }
-    },
-    async function isQuickbooksConnected() {
-      var result = await this.quickSignIn.isSignedIn(null);
-      if ( result.result ) {
-        this.bankMatchingLogo = '/images/quickbooks.png';
-      }
-    },
+    }
   ],
 
   actions: [

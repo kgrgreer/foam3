@@ -121,55 +121,11 @@ public class QuickService implements WebAgent {
   }
 
   public void sync(X x, HttpServletResponse response) {
-    DAO                     store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-    User                    user         = (User) x.get("user");
-    QuickTokenStorage       tokenStorage = (QuickTokenStorage) store.find(user.getId());
-    DAO                     notification = ((DAO) x.get("notificationDAO")).inX(x);
-    NewQuickIntegrationService quickSign    = (NewQuickIntegrationService) x.get("quickSignIn");
-
     try {
-
-      // Sync all invoices, contacts, and bank accounts.
-      ResultResponse res = quickSign.syncSys(x);
-      if ( ! res.getResult() ) {
-        throw new Throwable(res.getReason());
-      }
-
-      // Check if the user has any bank accounts. If they do, send them to the
-      // bank account matching screen so they can specify if any accounts they
-      // added in Ablii are the same as any accounts imported from QuickBooks.
-      // If the user doesn't have any bank accounts in Ablii, just redirect to
-      // whatever page they were on before.
-      long count = ((Count) (((DAO) x.get("localAccountDAO")).inX(x))
-        .where(
-          AND(
-            INSTANCE_OF(BankAccount.getOwnClassInfo()),
-            EQ(BankAccount.OWNER, user.getId())
-          )
-        )
-        .select(new Count())).getValue();
       response.sendRedirect("/?accounting=quickbook#sme.bank.matching");
     } catch ( Throwable e ) {
       Logger logger = (Logger) x.get("logger");
       logger.error(e);
-
-      if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-        try {
-          response.sendRedirect("/service/quick");
-        } catch ( IOException e1 ) {
-          e1.printStackTrace();
-        }
-      } else {
-        try {
-          Notification notify = new Notification();
-          notify.setUserId(user.getId());
-          notify.setBody("An error occurred while trying to sync with QuickBooks: " + e.getMessage());
-          notification.put(notify);
-          response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
-        } catch ( IOException e1 ) {
-          logger.error(e1);
-        }
-      }
     }
   }
 }

@@ -130,51 +130,11 @@ public class XeroService
 
 
   public void sync(X x, HttpServletResponse response) {
-    HttpServletResponse    resp         = x.get(HttpServletResponse.class);
-    DAO                    store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
-    DAO                    notification = ((DAO) x.get("notificationDAO")).inX(x);
-    User                   user         = (User) x.get("user");
-    XeroTokenStorage       tokenStorage = (XeroTokenStorage) store.find(user.getId());
-    Group                  group        = user.findGroup(x);
-    AppConfig              app          = group.getAppConfig(x);
-    DAO                    configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
-    XeroIntegrationService2 xeroSign     = (XeroIntegrationService2) x.get("xeroSignIn");
-    XeroConfig             config       = (XeroConfig)configDAO.find(app.getUrl());
-
     try {
-      ResultResponse res = xeroSign.syncSys(x);
-      if ( res.getResult() ) {
-        long count = ((Count) (((DAO) x.get("localAccountDAO")).inX(x)).where(
-          AND(
-            INSTANCE_OF(BankAccount.getOwnClassInfo()),
-            EQ(BankAccount.OWNER,user.getId())
-          )).select(new Count())).getValue();
         response.sendRedirect("/?accounting=xero#sme.bank.matching");
-      }
-      new Throwable(res.getReason());
-
     } catch ( Exception e ) {
       Logger logger =  (Logger) x.get("logger");
       logger.error(e);
-      if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-        try {
-          response.sendRedirect("/service/xero");
-        } catch ( IOException e1 ) {
-          e1.printStackTrace();
-        }
-      } else {
-        try {
-          Notification notify = new Notification();
-          notify.setUserId(user.getId());
-          notify.setBody("An error occured while trying to sync the data: " + e.getMessage());
-          notification.put(notify);
-          response.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
-        } catch ( IOException e1 ) {
-          logger.error(e1);
-        }
-      }
     }
-
-
   }
 }

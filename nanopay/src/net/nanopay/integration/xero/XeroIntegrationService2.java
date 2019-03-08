@@ -275,9 +275,9 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
       for (com.xero.model.Contact xeroContact : client.getContacts()) {
         try {
-          String inValidContacts = isValidContact(xeroContact);
-        if ( ! inValidContacts.equals("") ) {
-          contactErrors.add(xeroContact.getName() + " cannot be synced. " + inValidContacts);
+          String invalidContacts = isValidContact(xeroContact);
+        if ( ! invalidContacts.equals("") ) {
+          contactErrors.add(xeroContact.getName() + " cannot be synced. " + invalidContacts);
           continue;
         }
         cacheDAO.inX(x).put(
