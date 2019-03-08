@@ -10,12 +10,12 @@ foam.CLASS({
       name: 'syncContactsResult'
     },
     {
-      class: 'FObjectArray',
+      class: 'Array',
       of: 'String',
       name: 'inValidContact'
     },
     {
-      class: 'FObjectArray',
+      class: 'Array',
       of: 'String',
       name: 'inValidInvoice'
     },
