@@ -19,5 +19,10 @@ foam.CLASS({
       of: 'String',
       name: 'inValidInvoice'
     },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.integration.AccountingErrorCodes',
+      name: 'errorCode'
+    }
   ]
 });

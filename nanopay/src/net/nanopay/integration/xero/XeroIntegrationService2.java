@@ -1,5 +1,6 @@
 package net.nanopay.integration.xero;
 
+import com.xero.api.XeroApiException;
 import com.xero.api.XeroClient;
 import com.xero.model.Attachment;
 import com.xero.model.CurrencyCode;
@@ -20,8 +21,10 @@ import foam.util.SafetyUtil;
 
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
+import net.nanopay.integration.*;
 import net.nanopay.integration.AccountingBankAccount;
 import net.nanopay.integration.AccountingContactEmailCache;
+import net.nanopay.integration.AccountingErrorCodes;
 import net.nanopay.integration.ContactMismatchPair;
 import net.nanopay.integration.NewResultResponse;
 import net.nanopay.integration.ResultResponse;
@@ -61,19 +64,18 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
   }
 
 
-  public ResultResponse isSignedIn(X x) {
-    Logger logger = (Logger) x.get("logger");
-    try {
-      XeroClient client = this.getClient(x);
-      if ( client == null ) {
-        return new ResultResponse(false, "User has not connected to Xero");
-      }
-      client.getContacts();
-      return new ResultResponse(true, "User is Signed in");
-    } catch ( Exception e ) {
-      logger.error(e);
-      return new ResultResponse(false, "User is not Signed in");
+  public NewResultResponse isSignedIn(X x) {
+    XeroClient client = this.getClient(x);
+    if ( client == null ) {
+      return new NewResultResponse.Builder(x)
+        .setResult(false)
+        .setReason("User not signed in")
+        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+        .build();
     }
+    return new NewResultResponse.Builder(x)
+      .setResult(true)
+      .build();
   }
 
 
@@ -263,17 +265,17 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     List<ContactMismatchPair> result = new ArrayList<>();
     List<String> contactErrors = new ArrayList<>();
 
-    if ( client == null ) {
-      return new NewResultResponse.Builder(x)
-        .setResult(false)
-        .setReason("Token has expired")
-        .build();
+    NewResultResponse isSignedIn = isSignedIn(x);
+    if ( ! isSignedIn.getResult() ) {
+      System.out.print("not signed in");
+      return isSignedIn;
     }
 
     try {
 
       for (com.xero.model.Contact xeroContact : client.getContacts()) {
-        String inValidContacts = isValidContact(xeroContact);
+        try {
+          String inValidContacts = isValidContact(xeroContact);
         if ( ! inValidContacts.equals("") ) {
           contactErrors.add(xeroContact.getName() + " cannot be synced. " + inValidContacts);
           continue;
@@ -285,7 +287,6 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
             .build()
         );
 
-        try {
          ContactMismatchPair mismatchPair = syncContact(x, xeroContact);
          if ( mismatchPair != null ) {
            result.add(mismatchPair);
@@ -293,16 +294,41 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
         } catch(Exception e) {
           e.printStackTrace();
           logger.error(e);
+          contactErrors.add(xeroContact.getName() + " cannot be synced. " + e.getMessage());
         }
       }
 
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e);
-      return new NewResultResponse.Builder(x)
-        .setResult(false)
-        .setReason("Token has expired")
-        .build();
+
+      if ( e instanceof com.xero.api.XeroApiException ){
+        if ( ((XeroApiException) e).getResponseCode() == 503 ){
+          return new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setErrorCode(AccountingErrorCodes.API_LIMIT)
+            .setReason(e.getMessage())
+            .build();
+        } else if ( ((XeroApiException) e).getResponseCode() == 401 ) {
+          return new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED)
+            .setReason(e.getMessage())
+            .build();
+        } else {
+          return new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
+            .setReason(e.getMessage())
+            .build();
+        }
+      } else {
+        return new NewResultResponse.Builder(x)
+          .setResult(false)
+          .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
+          .setReason(e.getMessage())
+          .build();
+      }
     }
     return new NewResultResponse.Builder(x)
       .setResult(true)
@@ -498,11 +524,10 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     List<String> invoiceErrors = new ArrayList<>();
 
     // Check that user has accessed xero before
-    if ( client == null ) {
-      return new NewResultResponse.Builder(x)
-        .setResult(false)
-        .setReason("Token has expired")
-        .build();
+    NewResultResponse isSignedIn = isSignedIn(x);
+    if ( ! isSignedIn.getResult() ) {
+      System.out.print("not signed in");
+      return isSignedIn;
     }
 
     try {
@@ -528,11 +553,35 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
     } catch (Exception e) {
       e.printStackTrace();
-      logger.log(e);
-      return new NewResultResponse.Builder(x)
-        .setResult(false)
-        .setReason("Token has expired")
-        .build();
+      logger.error(e);
+
+      if ( e instanceof com.xero.api.XeroApiException ){
+        if ( ((XeroApiException) e).getResponseCode() == 503 ){
+          return new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setErrorCode(AccountingErrorCodes.API_LIMIT)
+            .setReason(e.getMessage())
+            .build();
+        } else if ( ((XeroApiException) e).getResponseCode() == 401 ) {
+          return new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED)
+            .setReason(e.getMessage())
+            .build();
+        } else {
+          return new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
+            .setReason(e.getMessage())
+            .build();
+        }
+      } else {
+        return new NewResultResponse.Builder(x)
+          .setResult(false)
+          .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
+          .setReason(e.getMessage())
+          .build();
+      }
     }
     return new NewResultResponse.Builder(x)
       .setResult(true)
@@ -554,8 +603,10 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
       account  = BankAccount.findDefault(x, user, nanoInvoice.getSourceCurrency());
     }
     try {
-      if ( client == null ) {
-        throw new Exception("User is not synced with Xero");
+      NewResultResponse isSignedIn = isSignedIn(x);
+      if ( ! isSignedIn.getResult() ) {
+        System.out.print("not signed in");
+        return isSignedIn;
       }
       if ( SafetyUtil.isEmpty(account.getIntegrationId()) ) {
         return new ResultResponse(false, "The follow error has occured: Bank Account not linked to Xero");
@@ -605,7 +656,7 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
       .setResult(true)
       .build();
   }
-  
+
 
   @Override
   public ResultResponse removeToken(X x) {

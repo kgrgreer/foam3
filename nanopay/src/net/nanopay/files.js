@@ -729,6 +729,7 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/NewResultResponse' },
   { name: 'net/nanopay/integration/AccountingBankAccount' },
   { name: 'net/nanopay/integration/AccountingContactEmailCache' },
+  { name: 'net/nanopay/integration/AccountingErrorCodes' },
   { name: 'net/nanopay/integration/IntegrationCode' },
   { name: 'net/nanopay/integration/User' },
   { name: 'net/nanopay/integration/ContactMismatchPair' },
