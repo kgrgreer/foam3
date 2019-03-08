@@ -189,11 +189,24 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       this.SUPER();
 
-      this.isXeroConnected();
-      this.isQuickbooksConnected();
+      let service = null;
+      let parsedUrl = new URL(window.location.href);
+
+      if ( parsedUrl.searchParams.get("accounting") === "xero" ) {
+        service = this.xeroSignIn;
+      }
+
+      if ( parsedUrl.searchParams.get("accounting") === "quickbook" ) {
+        service = this.quickSignIn;
+      }
+
+      let contacts = await service.contactSync(null);
+      let invoices = await service.invoiceSync(null);
+
+      // push the user to dashboard
 
       this
         .addClass(this.myClass())
@@ -256,7 +269,8 @@ foam.CLASS({
       name: 'cancel',
       label: 'Cancel',
       code: function() {
-        this.pushMenu('sme.main.dashboard');
+        // this.pushMenu('sme.main.dashboard');
+        this.quickSignIn.invoiceSync(null);
       }
     }
   ]

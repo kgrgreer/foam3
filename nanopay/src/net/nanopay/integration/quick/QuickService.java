@@ -148,12 +148,7 @@ public class QuickService implements WebAgent {
           )
         )
         .select(new Count())).getValue();
-
-      if ( count != 0 ) {
-        response.sendRedirect("/#sme.bank.matching");
-      } else {
-        response.sendRedirect("/" + (SafetyUtil.isEmpty(tokenStorage.getPortalRedirect()) ? "" : tokenStorage.getPortalRedirect()));
-      }
+      response.sendRedirect("/?accounting=quickbook#sme.bank.matching");
     } catch ( Throwable e ) {
       Logger logger = (Logger) x.get("logger");
       logger.error(e);

@@ -149,11 +149,7 @@ public class XeroService
             INSTANCE_OF(BankAccount.getOwnClassInfo()),
             EQ(BankAccount.OWNER,user.getId())
           )).select(new Count())).getValue();
-        if ( count != 0 ) {
-          response.sendRedirect("/#sme.bank.matching");
-        } else {
-          resp.sendRedirect("/" + ((tokenStorage.getPortalRedirect() == null) ? "" : tokenStorage.getPortalRedirect()));
-        }
+        response.sendRedirect("/?accounting=xero#sme.bank.matching");
       }
       new Throwable(res.getReason());
 
