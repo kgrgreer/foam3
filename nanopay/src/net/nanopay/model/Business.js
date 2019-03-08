@@ -68,11 +68,14 @@ foam.CLASS({
         // Prevent privilege escalation by only allowing a user's group to be
         // set to one that the user doing the put has permission to update.
         
-        // to enable fraud ops to create a business
+        // to allow create authorization for users with permissions
         boolean hasUserCreatePermission = auth.check(x, "business.create." + this.getId());
         
+        // NOTE: anna said that there was a potential the groups would be changed in the future
         boolean hasGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
 
+        // In other words: if the user EITHER has groupUpdatePermisson or userCreatePermission, then they can PROCEED
+        // here we are assuming that a fraud ops can create for any group
         if ( ! hasGroupUpdatePermission && ! hasUserCreatePermission ) {
           throw new AuthorizationException("You do not have permission to set that business's group to '" + this.getGroup() + "'.");
         }
@@ -96,9 +99,10 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         boolean isUpdatingSelf = SafetyUtil.equals(this.getId(), user.getId());
         
-        // this check here takes care of the permission
+        // to allow update authorization for users with permissions
         boolean hasUserEditPermission = auth.check(x, "business.update." + this.getId());
 
+        // In other words: if the user EITHER is updating themselves, has edit authorization or is changing the system (will be handled below)
         if (
           ! isUpdatingSelf &&
           ! hasUserEditPermission &&
