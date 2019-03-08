@@ -67,8 +67,13 @@ foam.CLASS({
 
         // Prevent privilege escalation by only allowing a user's group to be
         // set to one that the user doing the put has permission to update.
+        
+        // to enable fraud ops to create a business
+        boolean hasUserCreatePermission = auth.check(x, "business.create." + this.getId());
+        
         boolean hasGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
-        if ( ! hasGroupUpdatePermission ) {
+
+        if ( ! hasGroupUpdatePermission && ! hasUserCreatePermission ) {
           throw new AuthorizationException("You do not have permission to set that business's group to '" + this.getGroup() + "'.");
         }
 
@@ -90,6 +95,8 @@ foam.CLASS({
         User user = (User) x.get("user");
         AuthService auth = (AuthService) x.get("auth");
         boolean isUpdatingSelf = SafetyUtil.equals(this.getId(), user.getId());
+        
+        // this check here takes care of the permission
         boolean hasUserEditPermission = auth.check(x, "business.update." + this.getId());
 
         if (
