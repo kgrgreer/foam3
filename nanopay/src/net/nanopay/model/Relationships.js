@@ -31,7 +31,7 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.payment.Institution',
-  targetModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.bank.BankAccount',
   forwardName: 'bankAccounts',
   inverseName: 'institution',
   cardinality: '1:*',
@@ -74,6 +74,17 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.model.Branch',
   forwardName: 'branches',
   inverseName: 'institution',
+  cardinality: '1:*',
+  targetProperty: {
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.account.Account',
+  forwardName: 'parent',
+  inverseName: 'children',
   cardinality: '1:*',
   targetProperty: {
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }

@@ -17,8 +17,8 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'net.nanopay.model.PersonalIdentification',
     'foam.u2.dialog.Popup',
-    'net.nanopay.settings.AcceptanceDocumentService',
-    'net.nanopay.settings.AcceptanceDocument'
+    'net.nanopay.documents.AcceptanceDocumentService',
+    'net.nanopay.documents.AcceptanceDocument'
   ],
 
   imports: [
@@ -343,17 +343,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isCanadian',
       expression: function(viewData) {
-        var areYouCAD = false;
-        if ( foam.util.equals(viewData.user.businessAddress.countryId, 'CA') ) {
-          areYouCAD = true;
-        }
-        viewData.isCanadian = areYouCAD;
-        return areYouCAD;
+        return foam.util.equals(viewData.user.businessAddress.countryId, 'CA');
       }
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.settings.AcceptanceDocument',
+      of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'triPartyAgreementCad',
       view: function(args, x) {
         var data = x.data$.dot('triPartyAgreementCad').dot('body');
@@ -365,7 +360,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.settings.AcceptanceDocument',
+      of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'triPartyAgreementUsd',
       view: function(args, x) {
         var data = x.data$.dot('triPartyAgreementUsd').dot('body');
@@ -377,7 +372,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.settings.AcceptanceDocument',
+      of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'dualPartyAgreementCad',
       view: function(args, x) {
         var data = x.data$.dot('dualPartyAgreementCad').dot('body');

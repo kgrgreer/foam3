@@ -57,6 +57,9 @@ foam.CLASS({
         placeholder: '1234567',
         onKey: true
       },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
       tableCellFormatter: function(str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length));
@@ -161,7 +164,7 @@ foam.CLASS({
       class: 'Int',
       name: 'verificationAttempts',
       value: 0,
-      visibility: foam.u2.Visibility.RO
+      permissionRequired: true,
     },
     {
       class: 'DateTime',

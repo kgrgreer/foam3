@@ -1,9 +1,6 @@
 // Main menu
 p({"class":"foam.nanos.menu.Menu","id":"doc","label":"Development Portal","handler":{"class":"foam.nanos.menu.SubMenu"},"order":100})
 
-// Quickstart
-p({"class":"foam.nanos.menu.Menu","id":"doc.quickstart","label":"Quickstart","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"quickstart","daoKey":"nanopayDocumentDAO"},"order":1,"parent":"doc"})
-
 // Overview
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview","label":"Overview","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"order":2,"parent":"doc"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview.intro","label":"Introduction","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO","anchor":"intro"},"order":10,"parent":"doc.overview"})
@@ -11,97 +8,6 @@ p({"class":"foam.nanos.menu.Menu","id":"doc.overview.architecture","label":"Arch
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview.concepts","label":"Key Concepts","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO","anchor":"concepts"},"order":30,"parent":"doc.overview"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview.services","label":"Service Types","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO","anchor":"services"},"order":40,"parent":"doc.overview"})
 p({"class":"foam.nanos.menu.Menu","id":"doc.overview.requests-responses","label":"Requests and Responses","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO","anchor":"requests-responses"},"order":50,"parent":"doc.overview"})
-
-// Use cases
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases","label":"Use Cases","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO"},"order":3,"parent":"doc"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.make-payment","label":"Making a Payment","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO","anchor":"make-payment"},"order":10,"parent":"doc.use-cases"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.make-payment.payable-invoice","label":"Creating a Payable Invoice","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO","anchor":"payable-invoice"},"order":100,"parent":"doc.use-cases.make-payment"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.receive-payment","label":"Receiving a Payment","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO","anchor":"receive-payment"},"order":20,"parent":"doc.use-cases"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.receive-payment.receivable-invoice","label":"Creating and Sending a Receivable Invoice","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO","anchor":"receivable-invoice"},"order":200,"parent":"doc.use-cases.receive-payment"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.case-users-groups","label":"Working with Users and Groups","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO","anchor":"case-users-groups"},"order":30,"parent":"doc.use-cases"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.case-contacts-partners","label":"Working with Contacts and Partners","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO","anchor":"case-contacts-partners"},"order":40,"parent":"doc.use-cases"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.use-cases.case-accounts","label":" Working with Accounts","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"usecases","daoKey":"nanopayDocumentDAO","anchor":"case-accounts"},"order":50,"parent":"doc.use-cases"})
-
-// API Reference
-p({"class":"foam.nanos.menu.Menu","id":"doc.api","label":"API Reference","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-reference","daoKey":"nanopayDocumentDAO"},"order":4,"parent":"doc"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.authentication","label":"Authentication","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-authentication","daoKey":"nanopayDocumentDAO"},"order":10,"parent":"doc.api"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin","label":"Administration","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":20,"parent":"doc.api"})
-
-// API Reference - Admin Users
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user","label":"User","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":100,"parent":"doc.api.admin"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.add-invite-user","label":"Add / invite a user","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1000,"parent":"doc.api.admin.user"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.set-user-limits","label":"Set limits for user","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1100,"parent":"doc.api.admin.user"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.set-user-approver","label":"Set approver for user","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1200,"parent":"doc.api.admin.user"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.list-user","label":"List users","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1300,"parent":"doc.api.admin.user"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.signup-user","label":"Sign up user","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1400,"parent":"doc.api.admin.user"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.signup-invited-user","label":"Sign up invited user","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1500,"parent":"doc.api.admin.user"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.user.password-recovery","label":"Triggering Password recovery","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1600,"parent":"doc.api.admin.user"})
-
-// API Reference - Admin Groups
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group","label":"Group","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":200,"parent":"doc.admin"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group.create-group","label":"Create group","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1000,"parent":"doc.api.admin.group"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group.config-group","label":"Configure group","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1100,"parent":"doc.api.admin.group"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group.assign-user","label":"Assign user to group","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1200,"parent":"doc.api.admin.group"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.group.list-group","label":"List groups","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1300,"parent":"doc.api.admin.group"})
-
-// API Reference - Admin Service Provider
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.service-provider","label":"Service Provider","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":300,"parent":"doc.api.admin"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.service-provider.config-service-provider","label":"Configure service provider","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1000,"parent":"doc.api.admin.service-provider"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.service-provider.edit-service-provider","label":"Edit service provider","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1100,"parent":"doc.api.admin.service-provider"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.service-provider.view-service-provider","label":"View service provider","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1200,"parent":"doc.api.admin.service-provider"})
-
-// API Reference - Accounts
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":400,"parent":"doc.api.admin"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.add-account","label":"Add a bank / digital account","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1000,"parent":"doc.api.admin.accounts"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.edit-account","label":"Edit a bank / digital account","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1200,"parent":"doc.api.admin.accounts"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.link-account","label":"Link a bank account","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1300,"parent":"doc.api.admin.accounts"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.verify-account","label":"Verify a bank account","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1400,"parent":"doc.api.admin.accounts"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.list-account","label":"List bank / digital accounts","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1500,"parent":"doc.api.admin.accounts"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.remove-account","label":"Remove a bank / digital account","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1600,"parent":"doc.api.admin.accounts"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.accounts.retrieve-account","label":"Retrieve default digital account","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1700,"parent":"doc.api.admin.accounts"})
-
-// API Reference - Contacts
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact","label":"Contact","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":500,"parent":"doc.api.admin"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact.add-contact","label":"Add a contact","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1000,"parent":"doc.api.admin.contact"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact.edit-contact","label":"Edit a contact","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1100,"parent":"doc.api.admin.contact"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact.list-contact","label":"List a contact","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1200,"parent":"doc.api.admin.contact"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.contact.remove-contact","label":"Remove a contact","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1300,"parent":"doc.api.admin.contact"})
-
-// API Reference - Partners
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners","label":"Partners","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":600,"parent":"doc.api.admin"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners.resolve-partner","label":"Resolve a partner","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1000,"parent":"doc.api.admin.partners"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners.add-partner","label":"Add a partner","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1200,"parent":"doc.api.admin.partners"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners.list-partner","label":"List a partner","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1300,"parent":"doc.api.admin.partners"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.admin.partners.remove-partner","label":"Remove a partner","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-administration","daoKey":"nanopayDocumentDAO"},"order":1400,"parent":"doc.api.admin.partners"})
-
-// API Reference - Payments
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments","label":"Payments","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-payment","daoKey":"nanopayDocumentDAO"},"order":30,"parent":"doc.api"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.create-payment","label":"Create a payment","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-payment","daoKey":"nanopayDocumentDAO"},"order":100,"parent":"doc.api.payments"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.submit-payment","label":"Submit a payment","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-payment","daoKey":"nanopayDocumentDAO"},"order":110,"parent":"doc.api.payments"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.payment-status","label":"Check the status of a payment","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-payment","daoKey":"nanopayDocumentDAO"},"order":120,"parent":"doc.api.payments"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.list-payments","label":"List payments","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-payment","daoKey":"nanopayDocumentDAO"},"order":130,"parent":"doc.api.payments"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.approve-payment","label":"Approve a payment","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-payment","daoKey":"nanopayDocumentDAO"},"order":140,"parent":"doc.api.payments"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.list-pending-payments","label":"List payments waiting for approval","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-payment","daoKey":"nanopayDocumentDAO"},"order":150,"parent":"doc.api.payments"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.retrieve-payment-limits","label":"Retrieve payment limits for current user","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-payment","daoKey":"nanopayDocumentDAO"},"order":160,"parent":"doc.api.payments"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.payments.cancel-payment","label":"Cancel a payment","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-payment","daoKey":"nanopayDocumentDAO"},"order":170,"parent":"doc.api.payments"})
-
-// API Reference - Invoices
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-invoice","daoKey":"nanopayDocumentDAO"},"order":40,"parent":"doc.api"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.create-payable","label":"Create a payable invoice","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-invoice","daoKey":"nanopayDocumentDAO"},"order":100,"parent":"doc.api.invoices"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.create-receivable","label":"Create a receivable invoice","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-invoice","daoKey":"nanopayDocumentDAO"},"order":110,"parent":"doc.api.invoices"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.send-receivable","label":"Send receivable invoice","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-invoice","daoKey":"nanopayDocumentDAO"},"order":120,"parent":"doc.api.invoices"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.edit-invoice","label":"Edit invoice / Update status","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-invoice","daoKey":"nanopayDocumentDAO"},"order":130,"parent":"doc.api.invoices"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.list-invoices","label":"List invoices","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-invoice","daoKey":"nanopayDocumentDAO"},"order":140,"parent":"doc.api.invoices"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.invoices.remove-invoice","label":"Remove invoice","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-invoice","daoKey":"nanopayDocumentDAO"},"order":150,"parent":"doc.api.invoices"})
-
-// API Reference - Receiving Payments
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.receive-payments","label":"Receiving Payments","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-receive-payment","daoKey":"nanopayDocumentDAO"},"order":50,"parent":"doc.api"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.receive-payments.list-received-payments","label":"List received payments","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-receive-payment","daoKey":"nanopayDocumentDAO"},"order":100,"parent":"doc.api.receive-payments"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.receive-payments.receive-payments-unregistered","label":"Receive payment without signing up","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"api-receive-payment","daoKey":"nanopayDocumentDAO"},"order":110,"parent":"doc.api.receive-payments"})
-
-// API Reference - FX Service
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.fx-service","label":"FX Service","handler":{"class":"foam.nanos.menu.SubMenu"},"order":60,"parent":"doc.api"})
-p({"class":"foam.nanos.menu.Menu","id":"doc.api.fx-service.how-to","label":"How to Use FX Service","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"fx-service","daoKey":"nanopayDocumentDAO"},"order":100,"parent":"doc.api.fx-service"})
 
 // UML Documentation
 p({"class":"foam.nanos.menu.Menu","id":"doc.uml-doc","label":"Full UML Documentation","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"uml-doc","daoKey":"nanopayDocumentDAO"},"order":5,"parent":"doc"})
@@ -114,9 +20,3 @@ p({"class":"foam.nanos.menu.Menu","id":"doc.dug","label":"DUG","handler":{"class
 
 // SUGAR
 p({"class":"foam.nanos.menu.Menu","id":"doc.sugar","label":"SUGAR","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"sugarDAO"},"order":22,"parent":"doc"})
-
-// Sample Request (depricated)
-p({"class":"foam.nanos.menu.Menu","id":"doc.sample-request","label":"Sample Requests (depricated)","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.admin.ui.SampleRequestView"}},"order":50,"parent":"doc"})
-
-// Internal API
-p({"class":"foam.nanos.menu.Menu","id":"doc.model-doc","label":"Internal API Documentation","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.doc.ModelBrowser"}},"order":51,"parent":"doc"})
