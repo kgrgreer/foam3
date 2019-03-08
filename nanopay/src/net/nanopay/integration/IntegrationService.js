@@ -99,5 +99,20 @@ foam.INTERFACE({
         },
       ]
     },
+    {
+      name: 'reSyncInvoice',
+      async: true,
+      type: 'net.nanopay.integration.ResultResponse',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        },
+        {
+          type: 'net.nanopay.invoice.model.Invoice',
+          name: 'invoice'
+        }
+      ]
+    },
   ]
 });
