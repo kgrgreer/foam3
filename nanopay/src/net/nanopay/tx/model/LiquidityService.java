@@ -176,12 +176,13 @@ public class LiquidityService
     }
     AppConfig appConfig = (AppConfig) x_.get("appConfig");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
+    
     args.put("account",     "your account "+account.getName()+",");
     args.put("greeting",     "Hi");
     args.put("name",        account.findOwner(x_).getFirstName());
     args.put("direction",   direction);
     args.put("threshold",   formatter.format(threshold/100.00));
-    args.put("link",   appConfig.getUrl());
+    args.put("link",        appConfig.getUrl());
 
     notification.setEmailArgs(args);
     notification.setEmailIsEnabled(true);
