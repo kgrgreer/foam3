@@ -21,12 +21,12 @@ foam.CLASS({
     'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
     'net.nanopay.fx.ascendantfx.AscendantFXUser',
     'net.nanopay.fx.client.ClientFXService',
-    'net.nanopay.fx.FXService',
     'net.nanopay.fx.FeesFields',
+    'net.nanopay.fx.FXService',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.ui.LoadingSpinner',
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.ui.LoadingSpinner',
     'net.nanopay.ui.modal.TandCModal',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
@@ -38,16 +38,13 @@ foam.CLASS({
 
   imports: [
     'appConfig',
-    'fxService',
-    'ascendantFXUserDAO',
-    'bareUserDAO',
     'ctrl',
     'currencyDAO',
+    'fxService',
     'invoice',
     'invoiceDAO',
-    'transactionQuotePlanDAO',
-    'localTransactionQuotePlanDAO',
     'notify',
+    'transactionQuotePlanDAO',
     'user',
     'viewData',
     'wizard'
