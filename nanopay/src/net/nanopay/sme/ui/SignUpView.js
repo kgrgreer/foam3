@@ -225,10 +225,11 @@ foam.CLASS({
             .end()
 
             .start().addClass('input-wrapper')
-              .tag({ class: 'foam.u2.CheckBox' })
-              .on('click', (event) => {
-                this.termsAndConditions = event.target.checked;
-              })
+              .start({ class: 'foam.u2.CheckBox' })
+                .on('click', (event) => {
+                  this.termsAndConditions = event.target.checked;
+                })
+              .end()
               .start().addClass('inline')
                 .add(this.TERMS_AGREEMENT_LABEL)
               .end()
