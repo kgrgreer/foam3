@@ -5,6 +5,7 @@ import foam.core.Detachable;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.sink.Sum;
+import foam.nanos.app.AppConfig;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
@@ -173,12 +174,14 @@ public class LiquidityService
     } else {
       direction = "has fallen below ";
     }
+    AppConfig appConfig = (AppConfig) x_.get("appConfig");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
     args.put("account",     "your account "+account.getName()+",");
     args.put("greeting",     "Hi");
     args.put("name",        account.findOwner(x_).getFirstName());
     args.put("direction",   direction);
     args.put("threshold",   formatter.format(threshold/100.00));
+    args.put("link",   appConfig.getUrl());
 
     notification.setEmailArgs(args);
     notification.setEmailIsEnabled(true);
