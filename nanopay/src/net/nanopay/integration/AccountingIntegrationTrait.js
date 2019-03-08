@@ -6,7 +6,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.integration.IntegrationCode'
+    'net.nanopay.integration.IntegrationCode',
+    'net.nanopay.integration.AccountingErrorCodes'
   ],
 
   imports: [
@@ -98,45 +99,32 @@ foam.CLASS({
       isAvailable: function(isSignedIn) {
         return isSignedIn;
       },
-      code: function(X) {
+      code: async function(X) {
+        let self = this;
         X.controllerView.addClass('account-sync-loading-animation');
+        let service;
+
         if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-          this.xeroSignIn.syncSys(null, X.user).then((result) => {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: result.reason,
-              type: ( ! result.result ) ? 'error' : ''
-            }));
-            this.isSignedIn = result.result;
-            X.controllerView.removeClass('account-sync-loading-animation');
-            this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
-            this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
-          })
-          .catch((err) => {
-            X.controllerView.removeClass('account-sync-loading-animation');
-            this.ctrl.add(this.NotificationMessage.create({
-              message: err.message,
-              type: 'error'
-            }));
-          });
-        } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
-          this.quickSignIn.syncSys(null, X.user).then((result) => {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: result.reason,
-              type: ( ! result.result ) ? 'error' : ''
-            }));
-            this.isSignedIn = result.result;
-            X.controllerView.removeClass('account-sync-loading-animation');
-            this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
-            this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
-          })
-          .catch((err) => {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: err.message,
-              type: 'error'
-            }));
-            X.controllerView.removeClass('account-sync-loading-animation');
-          });
+          service = this.xeroSignIn;
         }
+        if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+          service = this.quickSignIn;
+        }
+
+
+        let contactsResult = await service.contactSync(null);
+        let invoicesResult = await service.invoiceSync(null);
+
+       if ( contactsResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED || invoicesResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+        X.controllerView.add(self.Popup.create({ closeable: false }).tag({
+          class: 'net.nanopay.integration.AccountingTimeOutModal',
+          data: this
+        }));
+       }
+
+        X.controllerView.removeClass('account-sync-loading-animation');
+        this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
+        this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
       }
     },
   ]

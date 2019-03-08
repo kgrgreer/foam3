@@ -7,6 +7,6 @@ foam.ENUM({
   values: [
     { name: 'NONE',       label: 'None' },
     { name: 'XERO',       label: 'Xero' },
-    { name: 'QUICKBOOKS', label: 'Quick books' }
+    { name: 'QUICKBOOKS', label: 'Quickbooks' }
   ]
 });
