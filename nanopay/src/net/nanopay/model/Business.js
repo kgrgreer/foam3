@@ -75,7 +75,8 @@ foam.CLASS({
         boolean hasGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
 
         // In other words: if the user EITHER has groupUpdatePermisson or userCreatePermission, then they can PROCEED
-        // here we are assuming that a fraud ops can create for any group
+        // here we are assuming that as long as the user has create permissions then can create a business for any group
+        // e.g. a fraud ops member can create a business for any group
         if ( ! hasGroupUpdatePermission && ! hasUserCreatePermission ) {
           throw new AuthorizationException("You do not have permission to set that business's group to '" + this.getGroup() + "'.");
         }
@@ -103,6 +104,7 @@ foam.CLASS({
         boolean hasUserEditPermission = auth.check(x, "business.update." + this.getId());
 
         // In other words: if the user EITHER is updating themselves, has edit authorization or is changing the system (will be handled below)
+        // then they can PROCEED
         if (
           ! isUpdatingSelf &&
           ! hasUserEditPermission &&
