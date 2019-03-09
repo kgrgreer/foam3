@@ -136,7 +136,7 @@ function migrate_journals {
 }
 
 function clean {
-    if [[ "$CLEAN_BUILD" -eq 1 || "$TEST" -eq 1 ]]; then
+    if [ "$CLEAN_BUILD" -eq 1 ]; then
         echo "INFO :: Cleaning Up"
 
         if [ -d "build/" ]; then
@@ -149,13 +149,19 @@ function clean {
 }
 
 function build_jar {
-    if [[ $COMPILE_ONLY -eq 0 ]]; then
+    if [ "$COMPILE_ONLY" -eq 0 ]; then
         echo "INFO :: Building nanos..."
         ./gen.sh
 
         echo "INFO :: Packaging js..."
         ./tools/js_build/build.js
     fi
+
+    if [ "$BUILD_PROD" -eq 1 ] ||
+           [ "$BUILD_QA" -eq 1 ]; then
+        mvn versions:set -DnewVersion=$VERSION
+    fi
+
     mvn package
 }
 
@@ -387,12 +393,12 @@ function usage {
     echo "  -j : Delete runtime journals, build, and run app as usual."
     echo "  -l : Delete runtime log, build, and run app as usual."
     echo "  -m : Run migration scripts."
-    echo "  -p : build for production deployment."
-    echo "  -q : build for QA/staging deployment."
+    echo "  -p version : build for production deployment, version format x.y.z"
+    echo "  -q version : build for QA/staging deployment, version format x.y.z"
     echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
-    echo "  -t : Run tests."
+    echo "  -t [test1,test2] : Run tests."
     echo "  -v : java compile only (maven), no code generation."
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo ""
@@ -422,7 +428,7 @@ COMPILE_ONLY=0
 BUILD_PROD=0
 BUILD_QA=0
 
-while getopts "bcdghijlmpqrsStvz" opt ; do
+while getopts "bcdghijlmp:q:rsSt::vz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -433,11 +439,21 @@ while getopts "bcdghijlmpqrsStvz" opt ; do
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
-        p) BUILD_PROD=1 ;;
-        q) BUILD_QA=1 ;;
+        p) BUILD_PROD=1
+           VERSION=$OPTARG
+           CLEAN_BUILD=1
+
+            ;;
+        q) BUILD_QA=1
+           VERSION=$OPTARG
+           CLEAN_BUILD=1
+            ;;
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
-        t) TEST=1 ;;
+        t) TEST=1
+           TESTS=$OPTARG
+           CLEAN_BUILD=1
+            ;;
         v) COMPILE_ONLY=1 ;;
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
@@ -464,7 +480,7 @@ if [[ $TEST -eq 1 ]]; then
 fi
 
 clean
-if [[ $STATUS -eq 1 ]]; then
+if [ "$STATUS" -eq 1 ]; then
     status_nanos
     quit 0
 fi
@@ -479,13 +495,20 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
-if [ "$COMPILE_ONLY" -eq 0 ] || [ "$BUILD_ONLY" -eq 0 ] || [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
+if [ "$COMPILE_ONLY" -eq 0 ] ||
+       [ "$BUILD_ONLY" -eq 0 ] ||
+       [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
     deploy_journals
 fi
 
 if [ "$START_ONLY" -eq 0 ]; then
     build_jar
 fi
+
+if [ "$BUILD_PROD" -eq 1 ] || [ "$BUILD_QA" -eq 1 ]; then
+    quit 0
+fi
+
 start_nanos
 
 quit 0
