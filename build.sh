@@ -401,7 +401,10 @@ function usage {
     echo "  -v : java compile only (maven), no code generation."
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo ""
-    echo "No options implys -b and -s, (build and then start)."
+    echo "No options implies build and then run:"
+    echo "  ./build.sh -b"
+    echo "  ./build.sh -r"
+    echo ""
 }
 
 ############################
