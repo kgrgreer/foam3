@@ -428,7 +428,7 @@ COMPILE_ONLY=0
 BUILD_PROD=0
 BUILD_QA=0
 
-while getopts "bcdghijlmp:q:rsSt::vz" opt ; do
+while getopts "bcdghijlmp:q:rsStvz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -451,7 +451,6 @@ while getopts "bcdghijlmp:q:rsSt::vz" opt ; do
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
-           TESTS=$OPTARG
            CLEAN_BUILD=1
             ;;
         v) COMPILE_ONLY=1 ;;
@@ -471,8 +470,8 @@ fi
 if [[ $TEST -eq 1 ]]; then
     COMPILE_ONLY=0
     echo "INFO :: Running tests..."
+    # Remove the opts processed variables and assume rest of line as tests names
     shift $((OPTIND - 1))
-    # Remove the opts processed variables.
     TESTS="$@"
     # Replacing spaces with commas.
     TESTS=${TESTS// /,}
