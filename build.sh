@@ -391,7 +391,6 @@ function usage {
     echo "  -h : Print usage information."
     echo "  -i : Install npm and git hooks"
     echo "  -j : Delete runtime journals, build, and run app as usual."
-    echo "  -l : Delete runtime log, build, and run app as usual."
     echo "  -m : Run migration scripts."
     echo "  -p <version> : build for production deployment, version format x.y.z"
     echo "  -q <version> : build for QA/staging deployment, version format x.y.z"
@@ -442,7 +441,6 @@ while getopts "bcdghijlmp:q:rsStvz" opt ; do
         p) BUILD_PROD=1
            VERSION=$OPTARG
            CLEAN_BUILD=1
-
             ;;
         q) BUILD_QA=1
            VERSION=$OPTARG
