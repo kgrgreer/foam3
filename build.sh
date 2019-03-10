@@ -63,7 +63,6 @@ function backup {
       printf "backup\n"
       DATE=$(date +%Y%m%d_%H%M%S)
       mkdir -p "$BACKUP_HOME/$DATE"
-      COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
 
       cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
   fi
@@ -266,13 +265,6 @@ function start_nanos {
     else
         nohup java $JAVA_OPTS -jar ${JAR} &>/dev/null &
         echo $! > "$NANOS_PIDFILE"
-    fi
-}
-
-function testcatalina {
-    if [ -x "$1/bin/catalina.sh" ]; then
-        #printf "found. ( $1 )\n"
-        export CATALINA_HOME="$1"
     fi
 }
 
