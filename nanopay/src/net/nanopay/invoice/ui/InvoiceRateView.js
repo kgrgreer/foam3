@@ -416,10 +416,11 @@ foam.CLASS({
             .end()
             .start()
               .addClass('float-right')
-              .add(`$0.00 `)
               .add(this.chosenBankAccount$.map((bankAccount) => {
                 if ( ! bankAccount ) return '';
-                return bankAccount.denomination;
+                return this.currencyDAO.find(bankAccount.denomination).then((currency) => {
+                  return `${ currency.format(0) } ${ bankAccount.denomination}`;
+                });
               }))
             .end()
           .end()
