@@ -55,7 +55,7 @@ foam.CLASS({
     { name: 'INSTRUCTION', message: `Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.` },
     { name: 'BUSINESS_LABEL', message: 'Business name' },
     { name: 'BUSINESS_PLACEHOLDER', message: 'Enter business name' },
-    { name: 'EMAIL_PLACEHOLDER', message: 'Enter the email address' },
+    { name: 'EMAIL_PLACEHOLDER', message: 'example@domain.com' },
     { name: 'INVITE_EXPLAINATION', message: `By checking this box, I acknowledge that I have permission to contact them about Ablii` },
     { name: 'STEP_INDICATOR', message: 'Step 1 of 3' }
   ],
