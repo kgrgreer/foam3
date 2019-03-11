@@ -82,12 +82,12 @@ foam.CLASS({
           TransactionLimitRule rule = TransactionLimitRule.this;
           Transaction txn = (Transaction) obj;
           HashMap hm = (HashMap)getHm();
-          Account sourceAccount = txn.findSourceAccount(x);
+          Account account = getSend() ? txn.findSourceAccount(x) : txn.findDestinationAccount(x);
 
-          TransactionLimitState limitState = (TransactionLimitState)hm.get(sourceAccount.getId());
+          TransactionLimitState limitState = (TransactionLimitState) hm.get(account.getId());
           if ( limitState == null ) {
             limitState = new TransactionLimitState(rule);
-            hm.put(sourceAccount.getId(), limitState);
+            hm.put(account.getId(), limitState);
           }
           if ( ! limitState.check(rule, txn.getAmount()) ) {
             throw new RuntimeException("LIMIT");
@@ -118,11 +118,7 @@ foam.CLASS({
       ],
       type: 'Double',
       javaCode: `
-      Double returned = Math.floor(amount + msPeriod * amount / getTempPeriod());
-      if ( returned > getLimit() ) {
-        return getLimit();
-      }
-      return returned;
+      return Math.min(amount + msPeriod * amount / getTempPeriod(), getLimit());
       `
     }
   ]
