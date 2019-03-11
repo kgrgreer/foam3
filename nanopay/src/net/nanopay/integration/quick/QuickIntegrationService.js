@@ -31,6 +31,7 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.Currency',
     'net.nanopay.integration.AccountingBankAccount',
+    'net.nanopay.integration.AccountingContactEmailCache',
     'net.nanopay.integration.ResultResponse',
     'net.nanopay.integration.quick.model.*',
     'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
@@ -323,6 +324,7 @@ try {
 `
 Logger logger = (Logger) x.get("logger");
 DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+DAO               cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
 //If the request failed
@@ -401,15 +403,18 @@ try {
     }
 
     // Searches for a previous existing Contact
-    Vendor vendor = (Vendor) fetchContactById(x, "vendor", qInvoice.getVendorRef().getValue());
-    
-    if ( vendor == null || vendor.getPrimaryEmailAddr() == null ) {
+    AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.find(AND(
+      EQ(AccountingContactEmailCache.QUICK_ID, qInvoice.getVendorRef().getValue()),
+      EQ(AccountingContactEmailCache.REALM_ID, tokenStorage.getRealmId())
+    ));
+
+    if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
       continue;
     }
 
     Contact contact = (Contact) contactDAO.find(
       AND(
-        EQ(QuickContact.EMAIL, vendor.getPrimaryEmailAddr().getAddress()),
+        EQ(QuickContact.EMAIL, cache.getEmail()),
         EQ(QuickContact.OWNER, user.getId())
       ));
 
@@ -492,6 +497,7 @@ try {
 `    
 Logger logger = (Logger) x.get("logger");
 DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+DAO               cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
 //If the request failed
@@ -567,15 +573,18 @@ try {
     }
 
     // Searches for a previous existing Contact
-    Customer customer = (Customer) fetchContactById(x, "customer", qInvoice.getCustomerRef().getValue());
-    
-    if ( customer == null || customer.getPrimaryEmailAddr() == null ) {
+    AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.find(AND(
+      EQ(AccountingContactEmailCache.QUICK_ID, qInvoice.getCustomerRef().getValue()),
+      EQ(AccountingContactEmailCache.REALM_ID, tokenStorage.getRealmId())
+    ));
+
+    if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
       continue;
     }
-        
+
     Contact contact = (Contact) contactDAO.find(
       AND(
-        EQ(QuickContact.EMAIL, customer.getPrimaryEmailAddr().getAddress()),
+        EQ(QuickContact.EMAIL, cache.getEmail()),
         EQ(QuickContact.OWNER, user.getId())
       ));
 
@@ -702,6 +711,7 @@ CountryService countryService = (CountryService) x.get("countryService");
 RegionService  regionService  = (RegionService) x.get("regionService");
 
 DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+DAO               cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 
 try {
@@ -712,6 +722,14 @@ try {
     }
 
     QuickQueryEMail email  = customer.getPrimaryEmailAddr();
+    
+    cacheDAO.inX(x).put(
+      new AccountingContactEmailCache.Builder(x)
+        .setQuickId(customer.getId())
+        .setRealmId(tokenStorage.getRealmId())
+        .setEmail(email.getAddress())
+      .build()
+    );
 
     Contact existContact = (Contact) contactDAO.find(AND(
       EQ(Contact.EMAIL, email.getAddress()),
