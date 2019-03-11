@@ -1,3 +1,2 @@
 p({"class":"net.nanopay.meter.test.BlockDisabledUserTransactionTest","id":"BlockDisabledUserTransactionTest"})
 p({"class":"net.nanopay.meter.test.BlockDisabledUserInvoiceTest","id":"BlockDisabledUserInvoiceTest"})
-p({"class":"net.nanopay.meter.compliance.test.CanadianSanctionsListValidatorTest","id":"CanadianSanctionsListValidatorTest"})

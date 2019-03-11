@@ -462,16 +462,15 @@ var classes = [
   'net.nanopay.meter.compliance.ComplianceValidator',
   'net.nanopay.meter.compliance.ComplianceService',
   'net.nanopay.meter.compliance.NanopayComplianceService',
-  'net.nanopay.meter.compliance.validator.CanadianSanctionsListValidator',
   'net.nanopay.meter.compliance.ComplianceValidationDAO',
   'net.nanopay.meter.compliance.CompliancePredicate',
   'net.nanopay.meter.compliance.ExecuteComplianceHistoryDAO',
   'net.nanopay.meter.compliance.canadianSanction.Record',
+  'net.nanopay.meter.compliance.CanadianSanctionValidator',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
-  'net.nanopay.meter.compliance.test.CanadianSanctionsListValidatorTest',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 ];
