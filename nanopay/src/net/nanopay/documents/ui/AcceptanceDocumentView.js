@@ -35,7 +35,7 @@ foam.CLASS({
               addClass(this.myClass('left')).
               start(this.TextArea, {
                 rows: 20,
-                cols: 70,
+                cols: 60,
                 onKey: true,
                 data$: this.data$
               }).
