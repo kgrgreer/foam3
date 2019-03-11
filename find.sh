@@ -123,20 +123,8 @@ do
   fi
 
   # .jrl files - transition
-  # rename the files as you go
   for s in ${sources[*]}
   do
-    for f in $(find $s -name "${file}.jrl")
-    do
-        cat $f >> "$OUT_DIR/$journal_file"
-        if [[ $IS_AWS -ne 1 ]]; then
-          case $f in
-            *.jrl )
-            mv "$f" "$(dirname $f)/$(basename "$f" .jrl).jrl"
-            ;;
-          esac
-        fi
-    done
     for f in $(find $s -name "${file}.jrl")
     do
       cat $f >> "$OUT_DIR/$journal_file"
