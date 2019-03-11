@@ -1,1 +1,0 @@
-p({"class":"net.nanopay.meter.compliance.ComplianceRule","id":"canadian-sanctions-list-validator","description":"Check user and business against Canadian Sanctions List","enabled":false,"validator":{"class":"net.nanopay.meter.compliance.validator.CanadianSanctionsListValidator"}})
