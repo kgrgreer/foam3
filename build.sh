@@ -497,7 +497,7 @@ if [ "$START_ONLY" -eq 0 ]; then
     build_jar
 fi
 
-if [ "$BUILD_PROD" -eq 1 ] || [ "$BUILD_QA" -eq 1 ]; then
+if [ "$BUILD_ONLY" -eq 1 ] || [ "$BUILD_PROD" -eq 1 ] || [ "$BUILD_QA" -eq 1 ]; then
     quit 0
 fi
 
