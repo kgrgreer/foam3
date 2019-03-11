@@ -144,7 +144,7 @@ public class AuthenticatedTransactionDAO
                              )
                           );
 
-    boolean verification = auth.check(x, GLOBAL_TXN_READ);
+    boolean verification = auth.check(x, VERIFICATION_TXN_READ);
 
     dao = verification ? dao : dao.where(NOT(INSTANCE_OF(VerificationTransaction.class)));
 
