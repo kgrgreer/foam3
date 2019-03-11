@@ -799,6 +799,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/CompliancePredicate' },
   { name: 'net/nanopay/meter/compliance/ExecuteComplianceHistoryDAO' },
   { name: 'net/nanopay/meter/compliance/CanadianSanctionValidator' },
+  { name: 'net/nanopay/meter/compliance/UserComplianceRulePredicate' },
 
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
