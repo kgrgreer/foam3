@@ -54,6 +54,10 @@ foam.CLASS({
       top: 15px;
       right: 125px;
     }
+    ^ .property-otherPurposeField {
+      height: 35px;
+      width: 100%;
+    }
     ^ .info-container {
       line-height: 1.5;
     }
@@ -119,14 +123,44 @@ foam.CLASS({
       class: 'String',
       name: 'purposeField',
       view: {
-        class: 'foam.u2.TextField',
-        placeholder: 'Transaction Purpose',
-        onKey: true,
-        maxLength: 150
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          'Payables for products and/or services',
+          'Working capital',
+          'Bill payments',
+          'Intracompany bank transfers',
+          'Government fee and taxes',
+          'Other'
+        ]
       },
       factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.transactionPurpose ) {
-          return this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
+        var info = this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
+        if ( info ) {
+          // Checks if Other was chosen.
+          if ( this.PURPOSE_FIELD.view.choices.indexOf(info) == -1 ) {
+            this.otherPurposeField = info;
+            return 'Other';
+          }
+          return info;
+        }
+      },
+      postSet: function(o, n) {
+        this.viewData.user.suggestedUserTransactionInfo.transactionPurpose = n.trim();
+      }
+    },
+    {
+      class: 'String',
+      name: 'otherPurposeField',
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: '',
+        onKey: true
+      },
+      factory: function() {
+        var info = this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
+        if ( this.PURPOSE_FIELD.view.choices.indexOf(info) == -1 ) {
+          return info;
         }
       },
       postSet: function(o, n) {
@@ -273,6 +307,7 @@ foam.CLASS({
     { name: 'CA_VOLUME_LABEL', message: 'Estimated Annual Volume in CAD' },
     { name: 'US_DOLLAR_LABEL', message: 'U.S. Dollar' },
     { name: 'US_VOLUME_LABEL', message: 'Estimated Annual Volume in USD' },
+    { name: 'OTHER_PURPOSE_LABEL', message: 'Please indicate below.' },
     {
       name: 'INFO_BOX',
       message: `The base currency will be your default currency for sending
@@ -296,6 +331,14 @@ foam.CLASS({
         .start().addClass('label-input')
           .start().addClass('label').add(this.PURPOSE_LABEL).end()
           .start(this.PURPOSE_FIELD).end()
+        .end()
+        .start()
+          .addClass('label-input')
+          .show(this.purposeField$.map((purpose) => {
+            return foam.util.equals(purpose, 'Other');
+          }))
+          .start().addClass('label').add(this.OTHER_PURPOSE_LABEL).end()
+          .start(this.OTHER_PURPOSE_FIELD).end()
         .end()
         .start().addClass('label-input')
           .start().addClass('inline').addClass('info-width').add(this.annualLabel$).end()
