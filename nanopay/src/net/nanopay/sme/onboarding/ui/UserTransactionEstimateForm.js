@@ -271,7 +271,7 @@ foam.CLASS({
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
-    { name: 'THIRD_TITLE', message: 'Domestic USD transfers' },
+    { name: 'THIRD_TITLE', message: 'Domestic transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
     { name: 'CA_DOLLAR_LABEL', message: 'Canadian Dollar' },
@@ -318,7 +318,7 @@ foam.CLASS({
             .tag(this.ANNUAL_FIELD_DOMESTIC, { onKey: true })
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start().addClass('label').add(this.US_VOLUME_LABEL).end()
+            .start().addClass('label').add(this.isUSABasedCompany ? this.US_VOLUME_LABEL : this.CA_VOLUME_LABEL).end()
             .tag(this.ESTIMATED_FIELD_DOMESTIC, { onKey: true })
           .end()
           .start().addClass('label-input')
