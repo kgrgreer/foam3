@@ -63,7 +63,6 @@ function backup {
       printf "backup\n"
       DATE=$(date +%Y%m%d_%H%M%S)
       mkdir -p "$BACKUP_HOME/$DATE"
-      COUNT="$(ls -l $CATALINA_HOME/bin/ | grep -v '.0' | wc -l | sed 's/ //g')"
 
       cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
   fi
@@ -106,7 +105,15 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
+    if [[ $BUILD_PROD -eq 1 ]]; then
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 2
+    elif [[ $BUILD_QA -eq 1 ]]; then
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 1
+    else
+        # IS_AWS will be 1 when building in jenkins which is the
+        # same as staging/qa at the moment.
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
+    fi
 
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
@@ -127,11 +134,10 @@ function migrate_journals {
     fi
 }
 
-function build_jar {
-    echo "INFO :: Building nanos JAR..."
-    cd "$PROJECT_HOME"
+function clean {
+    if [ "$CLEAN_BUILD" -eq 1 ]; then
+        echo "INFO :: Cleaning Up"
 
-    if [[ "$CLEAN_BUILD" -eq 1 || "$TEST" -eq 1 ]]; then
         if [ -d "build/" ]; then
             rm -rf build
             mkdir build
@@ -139,8 +145,22 @@ function build_jar {
 
         mvn clean
     fi
+}
 
-    ./gen.sh
+function build_jar {
+    if [ "$COMPILE_ONLY" -eq 0 ]; then
+        echo "INFO :: Building nanos..."
+        ./gen.sh
+
+        echo "INFO :: Packaging js..."
+        ./tools/js_build/build.js
+    fi
+
+    if [ "$BUILD_PROD" -eq 1 ] ||
+           [ "$BUILD_QA" -eq 1 ]; then
+        mvn versions:set -DnewVersion=$VERSION
+    fi
+
     mvn package
 }
 
@@ -220,30 +240,31 @@ function start_nanos {
     echo "INFO :: Starting nanos..."
 
     cd "$PROJECT_HOME"
-    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT"
-    deploy_journals
 
     if [ $DEBUG -eq 1 ]; then
         JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
     fi
 
-    # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
-    # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
-    # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
-    JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
+    if [ $BUILD_PROD -eq 1 ] || [ $BUILD_QA -eq 1 ]; then
+        JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
+        cd $PROJECT_HOME/target
+        JAR=$(ls lib/nanopay-*.jar | awk '{print $1}')
+    else
+      # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
+      # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
+      # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
+        JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
+        JAR=$(ls target/lib/nanopay-*.jar | awk '{print $1}')
+    fi
+
+    echo JAR=$JAR
+    echo JAVA_OPTS=$JAVA_OPTS
 
     if [ $DAEMONIZE -eq 0 ]; then
-        exec java $JAVA_OPTS -jar target/root-0.0.1.jar
+        exec java $JAVA_OPTS -jar ${JAR}
     else
-        nohup java $JAVA_OPTS -jar target/root-0.0.1.jar &>/dev/null &
+        nohup java $JAVA_OPTS -jar ${JAR} &>/dev/null &
         echo $! > "$NANOS_PIDFILE"
-    fi
-}
-
-function testcatalina {
-    if [ -x "$1/bin/catalina.sh" ]; then
-        #printf "found. ( $1 )\n"
-        export CATALINA_HOME="$1"
     fi
 }
 
@@ -355,21 +376,27 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
+    echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
+    echo "  -d : Run with JDPA debugging enabled."
+    echo "  -f : Build foam."
+    echo "  -g : Output running/notrunning status of daemonized nanos."
+    echo "  -h : Print usage information."
+    echo "  -i : Install npm and git hooks"
+    echo "  -j : Delete runtime journals, build, and run app as usual."
+    echo "  -m : Run migration scripts."
+    echo "  -p <version> : build for production deployment, version format x.y.z"
+    echo "  -q <version> : build for QA/staging deployment, version format x.y.z"
     echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
-    echo "  -g : Output running/notrunning status of daemonized nanos."
-    echo "  -t : Run tests."
-    echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
-    echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
-    echo "  -m : Run migration scripts"
-    echo "  -i : Install npm and git hooks"
-    echo "  -h : Print usage information."
-    echo "  -d : Run with JDPA debugging enabled."
     echo "  -S : When debugging, start suspended."
-    echo "  -j : Delete runtime journals, build, and run app as usual."
-    echo "  -l : Delete runtime log, build, and run app as usual."
+    echo "  -t [test1,test2] : Run tests. Should be last option on command-line for correctness"
+    echo "  -v : java compile only (maven), no code generation."
+    echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo ""
-    echo "No options implys -b and -s, (build and then start)."
+    echo "No options implies build and then run:"
+    echo "  ./build.sh -b"
+    echo "  ./build.sh -r"
+    echo ""
 }
 
 ############################
@@ -391,8 +418,11 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
+COMPILE_ONLY=0
+BUILD_PROD=0
+BUILD_QA=0
 
-while getopts "brsgtozcmidhjSl" opt ; do
+while getopts "bcdghijlmp:q:rsStvz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -403,9 +433,20 @@ while getopts "brsgtozcmidhjSl" opt ; do
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
+        p) BUILD_PROD=1
+           VERSION=$OPTARG
+           CLEAN_BUILD=1
+            ;;
+        q) BUILD_QA=1
+           VERSION=$OPTARG
+           CLEAN_BUILD=1
+            ;;
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
-        t) TEST=1 ;;
+        t) TEST=1
+           CLEAN_BUILD=1
+            ;;
+        v) COMPILE_ONLY=1 ;;
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         ?) usage ; quit 1 ;;
@@ -420,38 +461,46 @@ if [[ $INSTALL -eq 1 ]]; then
 fi
 
 if [[ $TEST -eq 1 ]]; then
-  echo "INFO :: Running all tests..."
-  shift $((OPTIND - 1))
-  # Remove the opts processed variables.
-  TESTS="$@"
-  # Replacing spaces with commas.
-  TESTS=${TESTS// /,}
-  JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
-
+    COMPILE_ONLY=0
+    echo "INFO :: Running tests..."
+    # Remove the opts processed variables and assume rest of line as tests names
+    shift $((OPTIND - 1))
+    TESTS="$@"
+    # Replacing spaces with commas.
+    TESTS=${TESTS// /,}
+    JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
 fi
 
-if [[ $DIST -eq 1 ]]; then
-    dist
+clean
+if [ "$STATUS" -eq 1 ]; then
+    status_nanos
     quit 0
 fi
 
-if [ "$BUILD_ONLY" -eq 1 ]; then
-    build_jar
-    deploy_journals
-elif [ "$RUN_MIGRATION" -eq 1 ]; then
+if [ "$RUN_MIGRATION" -eq 1 ]; then
     migrate_journals
-elif [ "$START_ONLY" -eq 1 ]; then
-    stop_nanos
-    start_nanos
-elif [ "$STOP_ONLY" -eq 1 ]; then
-    stop_nanos
-elif [ "$STATUS" -eq 1 ]; then
-    status_nanos
-else
-    build_jar
-    deploy_journals
-    stop_nanos
-    start_nanos
+    quit 0
 fi
+
+stop_nanos
+if [ "$STOP_ONLY" -eq 1 ]; then
+    quit 0
+fi
+
+if [ "$COMPILE_ONLY" -eq 0 ] ||
+       [ "$BUILD_ONLY" -eq 0 ] ||
+       [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
+    deploy_journals
+fi
+
+if [ "$START_ONLY" -eq 0 ]; then
+    build_jar
+fi
+
+if [ "$BUILD_ONLY" -eq 1 ] || [ "$BUILD_PROD" -eq 1 ] || [ "$BUILD_QA" -eq 1 ]; then
+    quit 0
+fi
+
+start_nanos
 
 quit 0
