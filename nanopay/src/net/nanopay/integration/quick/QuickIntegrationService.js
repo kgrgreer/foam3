@@ -1466,6 +1466,24 @@ notify.setUserId(user.getId());
 notify.setBody(body);
 notification.put(notify);
       `
+    },
+    {
+      name: 'reSyncInvoice',
+      async: true,
+      type: 'net.nanopay.integration.ResultResponse',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        },
+        {
+          type: 'net.nanopay.invoice.model.Invoice',
+          name: 'invoice'
+        }
+      ],
+      javaCode: `
+      return null;
+      `
     }
   ]
 });
