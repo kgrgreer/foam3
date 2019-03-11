@@ -39,8 +39,9 @@ foam.CLASS({
         });
       },
       postSet: function(oldValue, newValue) {
-        this.highLiquidity.pushPullAccount = newValue;
-        this.lowLiquidity.pushPullAccount = newValue;
+        this.account$find.then(function(account) {
+          this.highLiquidity.pushPullOwner = this.lowLiquidity.pushPullOwner = account.owner;
+        }.bind(this));
       },
       documentation: 'Primary key and reference to account that liquidity settings are executed on. Can be instanceof DigitalAccount only.'
     },
