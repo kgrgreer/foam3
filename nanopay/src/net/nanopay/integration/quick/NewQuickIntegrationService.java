@@ -174,7 +174,12 @@ public class NewQuickIntegrationService implements IntegrationService {
     return results;
   }
 
-  public NewResultResponse errorHandler( Exception e ) {
+  @Override
+  public ResultResponse reSyncInvoice(X x, net.nanopay.invoice.model.Invoice invoice) {
+    return null;
+  }
+
+  public NewResultResponse errorHandler(Exception e ) {
     e.printStackTrace();
 
     NewResultResponse resultResponse = new NewResultResponse();

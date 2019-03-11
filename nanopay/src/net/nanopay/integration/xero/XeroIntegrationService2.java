@@ -32,6 +32,7 @@ import net.nanopay.integration.xero.XeroTokenStorage;
 import net.nanopay.integration.xero.XeroConfig;
 import net.nanopay.integration.xero.model.XeroContact;
 import net.nanopay.integration.xero.model.XeroInvoice;
+import net.nanopay.invoice.model.Invoice;
 import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
 
@@ -587,6 +588,11 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
       .setResult(true)
       .setInValidContact(invoiceErrors.toArray(new String[invoiceErrors.size()]))
       .build();
+  }
+
+  @Override
+  public ResultResponse reSyncInvoice(X x, Invoice invoice) {
+    return null;
   }
 
   private ResultResponse reSyncInvoice(X x, XeroInvoice nanoInvoice, com.xero.model.Invoice xeroInvoice) {
