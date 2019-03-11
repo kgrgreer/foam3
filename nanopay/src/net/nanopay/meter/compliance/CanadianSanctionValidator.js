@@ -35,7 +35,7 @@ foam.CLASS({
           : MLang.AND(
               MLang.EQ(Record.LAST_NAME, user.getLastName().toUpperCase()),
               MLang.EQ(Record.GIVEN_NAME, user.getFirstName().toUpperCase())
-          );
+            );
         Count found = (Count) ((DAO) x.get("canadianSanctionDAO"))
           .where(predicate).limit(1).select(new Count());
 
