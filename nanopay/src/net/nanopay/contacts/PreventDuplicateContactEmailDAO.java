@@ -9,7 +9,7 @@ import foam.dao.Sink;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.integration.quick.model.QuickContact;
+import net.nanopay.accounting.quick.model.QuickContact;
 
 import java.util.List;
 

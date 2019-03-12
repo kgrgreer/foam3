@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   implements: [
-    'net.nanopay.integration.AccountingIntegrationTrait'
+    'net.nanopay.accounting.AccountingIntegrationTrait'
   ],
 
   imports: [

@@ -13,14 +13,12 @@ import foam.util.SafetyUtil;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import net.nanopay.auth.PublicUserInfo;
-import net.nanopay.integration.quick.model.QuickInvoice;
-import net.nanopay.integration.xero.model.XeroInvoice;
+import net.nanopay.accounting.quick.model.QuickInvoice;
+import net.nanopay.accounting.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
 import net.nanopay.model.Currency;
-
-import static foam.mlang.MLang.EQ;
 
 /**
  * Invoice decorator for dictating and setting up new invoice notifications and emails.

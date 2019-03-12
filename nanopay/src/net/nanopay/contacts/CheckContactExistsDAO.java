@@ -6,9 +6,8 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.integration.quick.model.QuickContact;
-import net.nanopay.integration.xero.model.XeroContact;
-import net.nanopay.model.Business;
+import net.nanopay.accounting.quick.model.QuickContact;
+import net.nanopay.accounting.xero.model.XeroContact;
 
 import static foam.mlang.MLang.*;
 
