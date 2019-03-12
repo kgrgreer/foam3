@@ -598,7 +598,7 @@ messages: [
   },
   {
     name: 'NO_ADDITIONAL_OWNERS',
-    message: `I acknowledge that the above contains complete details for all beneficial owners of the business.`
+    message: `I confirm that I have listed the details for all beneficial owners who own 25% or more of the business.`
   },
   { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
   { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
