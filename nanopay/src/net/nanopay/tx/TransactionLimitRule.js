@@ -14,7 +14,8 @@ foam.CLASS({
     'foam.core.X',
     'net.nanopay.account.Account',
     'net.nanopay.tx.TransactionLimitState',
-    'foam.nanos.ruler.RuleEngine'
+    'foam.nanos.ruler.RuleEngine',
+    'static foam.mlang.MLang.*'
   ],
 
 
@@ -99,7 +100,7 @@ foam.CLASS({
     {
       name: 'predicate',
       javaFactory: `
-      return foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.model.Transaction.class);
+      return foam.mlang.MLang.EQ(DOT(NEW_OBJ, foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.model.Transaction.class)), true);
       `
     }
   ],
