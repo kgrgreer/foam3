@@ -420,7 +420,6 @@ foam.CLASS({
       of: 'net.nanopay.contacts.Contact',
       name: 'contactId',
       view: function(_, X) {
-        var m = foam.mlang.ExpressionsSingleton.create();
         var dao = X.user.contacts
           .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
         var promisedDAO = function(predicate) {
