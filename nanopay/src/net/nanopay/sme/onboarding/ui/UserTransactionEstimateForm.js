@@ -121,54 +121,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'purposeField',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
-        choices: [
-          'Payables for products and/or services',
-          'Working capital',
-          'Bill payments',
-          'Intracompany bank transfers',
-          'Government fee and taxes',
-          'Other'
-        ]
-      },
-      factory: function() {
-        var info = this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
-        if ( info ) {
-          // Checks if Other was chosen.
-          if ( this.PURPOSE_FIELD.view.choices.indexOf(info) == -1 ) {
-            this.otherPurposeField = info;
-            return 'Other';
-          }
-          return info;
-        }
-      },
-      postSet: function(o, n) {
-        this.viewData.user.suggestedUserTransactionInfo.transactionPurpose = n.trim();
-      }
-    },
-    {
-      class: 'String',
-      name: 'otherPurposeField',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '',
-        onKey: true
-      },
-      factory: function() {
-        var info = this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
-        if ( this.PURPOSE_FIELD.view.choices.indexOf(info) == -1 ) {
-          return info;
-        }
-      },
-      postSet: function(o, n) {
-        this.viewData.user.suggestedUserTransactionInfo.transactionPurpose = n.trim();
-      }
-    },
-    {
-      class: 'String',
       name: 'annualField',
       factory: function() {
         if ( this.viewData.user.suggestedUserTransactionInfo.annualTransactionAmount ) {
@@ -328,6 +280,8 @@ foam.CLASS({
       this.setBaseCurrency();
       var domesticFlag = this.isUSABasedCompany ? this.US_FLAG : this.CAD_FLAG;
 
+      var userTransactionInfo = this.viewData.user.suggestedUserTransactionInfo;
+
       this.addClass(this.myClass())
       .start()
         .start().addClass('medium-header')
@@ -336,15 +290,21 @@ foam.CLASS({
         .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_BOX })
         .start().addClass('label-input')
           .start().addClass('label').add(this.PURPOSE_LABEL).end()
-          .start(this.PURPOSE_FIELD).end()
+          .startContext({ data: userTransactionInfo })
+            .tag(userTransactionInfo.TRANSACTION_PURPOSE)
+          .endContext()
         .end()
         .start()
           .addClass('label-input')
-          .show(this.purposeField$.map((purpose) => {
+          .show(userTransactionInfo.transactionPurpose$.map((purpose) => {
             return foam.util.equals(purpose, 'Other');
           }))
           .start().addClass('label').add(this.OTHER_PURPOSE_LABEL).end()
-          .start(this.OTHER_PURPOSE_FIELD).end()
+          .startContext({ data: userTransactionInfo })
+            .start(userTransactionInfo.OTHER_TRANSACTION_PURPOSE)
+              .addClass('property-otherPurposeField')
+            .end()
+          .endContext()
         .end()
         .start().addClass('label-input')
           .start().addClass('inline').addClass('info-width').add(this.annualLabel$).end()
