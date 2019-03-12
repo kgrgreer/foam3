@@ -16,6 +16,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'xeroUpdate',
       hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'chooseBusiness',
+      value: false,
+      documentation: 'set this to true to let user manually select the business of this contact'
     }
   ]
 });

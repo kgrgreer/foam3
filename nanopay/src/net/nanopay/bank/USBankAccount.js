@@ -22,7 +22,7 @@ foam.CLASS({
     },
     {
       name: 'branchId',
-      label: 'Routing #',
+      label: 'Routing No.',
       visibility: 'FINAL',
       view: {
         class: 'foam.u2.tag.Input',
@@ -46,7 +46,7 @@ foam.CLASS({
     {
       name: 'branch',
       //visibility: 'HIDDEN'
-      label: 'Routing #',
+      label: 'Routing No.',
     },
     {
       name: 'institution',
