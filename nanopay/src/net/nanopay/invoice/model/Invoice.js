@@ -420,18 +420,7 @@ foam.CLASS({
       of: 'net.nanopay.contacts.Contact',
       name: 'contactId',
       view: function(_, X) {
-        var dao = X.user.contacts
-          .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
-        var promisedDAO = function(predicate) {
-          return foam.dao.PromisedDAO.create({
-            promise: dao.select().then(function(db) {
-              return foam.dao.ArrayDAO.create({
-                array: db.array.filter(predicate),
-                of: dao.of
-              });
-            })
-          });
-        };
+        var m = foam.mlang.ExpressionsSingleton.create();
         return {
           class: 'foam.u2.view.RichChoiceView',
           selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
@@ -439,11 +428,34 @@ foam.CLASS({
           sections: [
             {
               heading: 'Contacts',
-              dao: promisedDAO((c) => c.businessStatus !== net.nanopay.admin.model.AccountStatus.DISABLED)
+              dao: foam.dao.PromisedDAO.create({
+                promise: X.businessDAO
+                  .where(m.NEQ(net.nanopay.model.Business.STATUS, net.nanopay.admin.model.AccountStatus.DISABLED))
+                  .select(m.MAP(net.nanopay.model.Business.ID))
+                  .then(function(sink) {
+                    return X.user.contacts
+                      .where(
+                        m.OR(
+                          m.IN(net.nanopay.contacts.Contact.BUSINESS_ID, sink.delegate.array),
+                          m.EQ(net.nanopay.contacts.Contact.BUSINESS_ID, 0)
+                        )
+                      )
+                      .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
+                  })
+              })
             },
             {
               heading: 'Disabled contacts',
-              dao: promisedDAO((c) => c.businessStatus === net.nanopay.admin.model.AccountStatus.DISABLED),
+              dao: foam.dao.PromisedDAO.create({
+                promise: X.businessDAO
+                  .where(m.EQ(net.nanopay.model.Business.STATUS, net.nanopay.admin.model.AccountStatus.DISABLED))
+                  .select(m.MAP(net.nanopay.model.Business.ID))
+                  .then(function(sink) {
+                    return X.user.contacts
+                      .where(m.IN(net.nanopay.contacts.Contact.BUSINESS_ID, sink.delegate.array))
+                      .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
+                  })
+              }),
               disabled: true,
               hideIfEmpty: true
             }
