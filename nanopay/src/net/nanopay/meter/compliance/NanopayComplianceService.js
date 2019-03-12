@@ -17,10 +17,13 @@ foam.CLASS({
     'foam.core.Detachable',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'foam.mlang.MLang',
     'java.time.Duration',
     'java.time.Instant',
-    'java.util.Date'
+    'java.util.Date',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.model.Business'
   ],
 
   properties: [
@@ -88,6 +91,55 @@ foam.CLASS({
           record.setStatus(rule.test(record.getEntity()));
           record.setExpirationDate(expirationDate);
         }
+      `
+    },
+    {
+      name: 'checkUserCompliance',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'Boolean',
+      javaCode: `
+        User user = (User) x.get("user");
+        User agent = (User) x.get("agent");
+        if (user instanceof Business && agent != null) {
+          return agent.getCompliance().equals(ComplianceStatus.PASSED);
+        }
+        return user.getCompliance().equals(ComplianceStatus.PASSED);
+      `
+    },
+    {
+      name: 'checkBusinessCompliance',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'Boolean',
+      javaCode: `
+        User user = (User) x.get("user");
+        if ( user instanceof Business ) {
+          return user.getCompliance().equals(ComplianceStatus.PASSED);
+        }
+        return true;
+      `
+    },
+    {
+      name: 'checkAccountCompliance',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'Boolean',
+      javaCode: `
+        // return true for now until we design a way to retrieve the active account
+        return true;
       `
     }
   ]
