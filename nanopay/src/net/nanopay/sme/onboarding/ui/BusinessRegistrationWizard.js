@@ -150,6 +150,7 @@ foam.CLASS({
     { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Annual revenue required.' },
     { name: 'ERROR_INTERNATIONAL_PAYMENTS_MESSAGE', message: 'International payments required.' },
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
+    { name: 'ERROR_OTHER_TRANSACTION_PURPOSE_MESSAGE', message: 'Please provide additional information for your transaction purpose.' },
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual Number of Transactions is required.' },
     { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Estimated Annual Volume in USD is required.' },
     { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required.' },
@@ -327,6 +328,12 @@ foam.CLASS({
 
       if ( ! transactionInfo.transactionPurpose ) {
         this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, 'error');
+        return false;
+      }
+
+      if ( transactionInfo.transactionPurpose === 'Other' &&
+        ! transactionInfo.otherTransactionPurpose ) {
+        this.notify(this.ERROR_OTHER_TRANSACTION_PURPOSE_MESSAGE, 'error');
         return false;
       }
 
