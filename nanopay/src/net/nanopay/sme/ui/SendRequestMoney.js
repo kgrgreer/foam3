@@ -26,7 +26,8 @@ foam.CLASS({
     'stack',
     'transactionDAO',
     'user',
-    'userDAO'
+    'userDAO',
+    'quickSignIn'
   ],
 
   exports: [
@@ -398,6 +399,9 @@ foam.CLASS({
       try {
         if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
         else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
+
+        this.quickSignIn.reSyncInvoice(null, this.invoice);
+
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
           invoice: this.invoice
