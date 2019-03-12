@@ -13,7 +13,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'foam.core.X',
     'net.nanopay.account.Account',
-    'net.nanopay.tx.TransactionLimitState'
+    'net.nanopay.tx.TransactionLimitState',
+    'foam.nanos.ruler.RuleEngine'
   ],
 
 
@@ -30,7 +31,7 @@ foam.CLASS({
       value: 'CREATE'
     },
     {
-      class: 'Currency',
+      class: 'Double',
       name: 'limit',
       documentation: 'Amount that account balance should not exceed'
     },
@@ -78,7 +79,7 @@ foam.CLASS({
       javaFactory: `
       return new RuleAction() {
         @Override
-        public void applyAction(X x, FObject obj, FObject oldObj) {
+        public void applyAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
           TransactionLimitRule rule = TransactionLimitRule.this;
           Transaction txn = (Transaction) obj;
           HashMap hm = (HashMap)getHm();
@@ -118,7 +119,11 @@ foam.CLASS({
       ],
       type: 'Double',
       javaCode: `
-      return Math.min(amount + msPeriod * amount / getTempPeriod(), getLimit());
+      Double d =  Math.floor(amount + msPeriod * amount / getTempPeriod());
+        if ( d > getLimit() ) {
+        d = getLimit();
+      }
+      return d;
       `
     }
   ]
