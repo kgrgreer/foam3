@@ -45,14 +45,14 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.LoadingSpinner',
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   axioms: [
@@ -353,10 +353,6 @@ foam.CLASS({
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
-        // set destination account for receivables
-        if ( ! this.isPayable ) {
-          this.invoice.destinationAccount = this.viewData.bankAccount;
-        }
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
