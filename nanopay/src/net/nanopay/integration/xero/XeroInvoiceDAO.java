@@ -110,35 +110,7 @@ public class XeroInvoiceDAO
     DAO                 currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
     client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
     try {
-      if ( ((XeroInvoice) invoice).getComplete() || ((XeroInvoice) oldInvoice).getComplete() ) {
-        return getDelegate().put_(x, obj);
-      }
-      com.xero.model.Account           xeroAccount     = client.getAccount(bankAccount.getIntegrationId());
-      com.xero.model.Invoice           xeroInvoice     = client.getInvoice(((XeroInvoice) invoice).getXeroId());
-      List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
-
-      // Checks to see if the xero invoice was set to Authorized before; if not sets it to authorized
-      if ( ! (InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
-        xeroInvoice.setStatus(InvoiceStatus.AUTHORISED);
-        xeroInvoiceList.add(xeroInvoice);
-        client.updateInvoice(xeroInvoiceList);
-      }
-
-      // Creates a payment for the full amount for the invoice and sets it paid to the bank account on Xero
-      Payment payment = new Payment();
-      payment.setInvoice(xeroInvoice);
-      payment.setAccount(xeroAccount);
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(new Date());
-      payment.setDate(cal);
-
-      Currency currency = (Currency) currencyDAO.find(account.getDenomination());
-      payment.setAmount(BigDecimal.valueOf(transaction.getAmount()).movePointLeft(currency.getPrecision()));
-      List<Payment> paymentList = new ArrayList<>();
-      paymentList.add(payment);
-      client.createPayments(paymentList);
-      ((XeroInvoice) invoice).setComplete(true);
-
+      ((XeroInvoice) invoice).setDesync(true);
       return getDelegate().put_(x, obj);
     } catch ( Throwable e ) {
       e.printStackTrace();

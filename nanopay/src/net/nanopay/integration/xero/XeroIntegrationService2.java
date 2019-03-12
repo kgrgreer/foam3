@@ -1,12 +1,11 @@
 package net.nanopay.integration.xero;
 
+import com.stripe.exception.APIConnectionException;
+import com.stripe.exception.APIException;
 import com.xero.api.XeroApiException;
 import com.xero.api.XeroClient;
-import com.xero.model.Attachment;
-import com.xero.model.CurrencyCode;
-import com.xero.model.InvoiceType;
+import com.xero.model.*;
 
-import com.xero.model.Payment;
 import foam.blob.BlobService;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -37,10 +36,9 @@ import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -362,21 +360,6 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
       // Clone the invoice to make changes
       existingInvoice = (XeroInvoice) existingInvoice.fclone();
 
-      // Checks to see if the invoice needs to be updated in Xero
-      if ( existingInvoice.getDesync() ) {
-        ResultResponse isSync = reSyncInvoice(x, existingInvoice, xeroInvoice);
-
-        // Checks if the resync succeeded or completed with error
-        if ( isSync.getResult() || xeroInvoice.getAmountDue().movePointRight(2).equals(BigDecimal.ZERO) ) {
-          existingInvoice.setDesync(false);
-          existingInvoice.setComplete(true);
-          invoiceDAO.put(existingInvoice);
-        } else {
-          throw new Exception(isSync.getReason());
-        }
-        return "";
-      }
-
       // Only update invoices that are unpaid or drafts.
       if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != existingInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.DRAFT != existingInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.OVERDUE != existingInvoice.getStatus()) {
         // Skip processing this invoice.
@@ -415,8 +398,7 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
       }
 
       contact = (Contact) contactDAO.find( AND(
-        EQ( XeroContact.EMAIL, cache.getEmail() ),
-        EQ( XeroContact.OWNER, user.getId() )
+        EQ( XeroContact.EMAIL, cache.getEmail() ), EQ( XeroContact.OWNER, user.getId() )
       ));
       // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
       if ( contact == null ) {
@@ -520,6 +502,7 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
   @Override
   public ResultResponse invoiceSync(foam.core.X x) {
+
     XeroClient client = this.getClient(x);
     Logger logger = (Logger) x.get("logger");
     List<String> invoiceErrors = new ArrayList<>();
@@ -534,6 +517,17 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     try {
 
       for (com.xero.model.Invoice xeroInvoice : client.getInvoices()) {
+
+        if ( xeroInvoice.getStatus() != InvoiceStatus.AUTHORISED ) {
+          String message;
+          if (xeroInvoice.getType() == InvoiceType.ACCREC) {
+            message = "Receivable invoice from " + xeroInvoice.getContact().getName() + " due on " + xeroInvoice.getDueDate().getTime();
+          } else {
+            message = "Payable invoice to " + xeroInvoice.getContact().getName() + " due on " + xeroInvoice.getDueDate().getTime();
+          }
+          invoiceErrors.add(message + " cannot be synced: Invoice is not authorised on Xero.");
+          continue;
+        }
 
         try {
           String response = syncInvoice(x, xeroInvoice);
@@ -551,6 +545,8 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
           logger.error(e);
         }
       }
+
+      reSyncInvoice(x,null);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -592,13 +588,108 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
 
   @Override
   public ResultResponse reSyncInvoice(X x, Invoice invoice) {
-    return null;
-  }
-
-  private ResultResponse reSyncInvoice(X x, XeroInvoice nanoInvoice, com.xero.model.Invoice xeroInvoice) {
-    DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
+    DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     Logger logger = (Logger) x.get("logger");
     List<Payment> paymentList = new ArrayList<>();
+    List<XeroInvoice> invoiceList = new ArrayList<>();
+    XeroClient client = getClient(x);
+
+    if ( invoice != null ) {
+      XeroInvoice nanoInvoice =  (XeroInvoice) invoice;
+
+      //sync single invoice. Set desync to true to sync later if it fails
+      try {
+        com.xero.model.Invoice xeroInvoice = client.getInvoice(nanoInvoice.getXeroId());
+        PaymentResponse payment = reSyncInvoice(x,nanoInvoice,xeroInvoice);
+        if ( payment.response.getResult() ) {
+          paymentList.add(payment.payment);
+          client.createPayments(paymentList);
+          return new NewResultResponse.Builder(x)
+            .setResult(true)
+            .build();
+        } else {
+          return payment.response;
+        }
+      } catch (Exception e) {
+        logger.error(e);
+        nanoInvoice.setDesync(true);
+        invoiceDAO.put(nanoInvoice.fclone());
+        return new NewResultResponse.Builder(x)
+          .setResult(false)
+          .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
+          .setReason(e.getMessage())
+          .build();
+      }
+    } else {
+      //find and sync invoices that have desync == true
+      try {
+        ArraySink sink = (ArraySink) invoiceDAO.where(
+          EQ( XeroInvoice.DESYNC , true )
+        ).select(new ArraySink());
+
+        ArraySink sink2 = (ArraySink) invoiceDAO.select(new ArraySink());
+
+        for ( Object i: sink2.getArray().toArray()) {
+
+          if (i instanceof XeroInvoice) {
+            XeroInvoice nanoInvoice = (XeroInvoice) i;
+
+            if ( nanoInvoice.getDesync() ) {
+              com.xero.model.Invoice xeroInvoice = new com.xero.model.Invoice();
+              xeroInvoice.setInvoiceID(nanoInvoice.getXeroId());
+              PaymentResponse payment = reSyncInvoice(x,nanoInvoice,xeroInvoice);
+              if ( payment.response.getResult() ) {
+                paymentList.add(payment.payment);
+                invoiceList.add(nanoInvoice);
+              }
+            }
+          }
+        }
+
+        client.createPayments(paymentList);
+        return new NewResultResponse.Builder(x)
+          .setResult(true)
+          .build();
+      } catch (Exception e) {
+        logger.error(e);
+        if ( e instanceof  com.xero.api.XeroApiException ) {
+          List<Elements> elements = ((com.xero.api.XeroApiException) e).getApiException().getElements();
+          List<String> result = new ArrayList<>();
+
+          for ( Elements element: elements ) {
+            for (Object o : element.getDataContractBase() ) {
+              if ( o instanceof Payment ) {
+                result.add(((Payment) o).getInvoice().getInvoiceID());
+              }
+            }
+          }
+
+          for ( XeroInvoice nanoInvoice: invoiceList ) {
+            if ( ! result.contains(nanoInvoice.getXeroId()) ) {
+              nanoInvoice.setDesync(false);
+              invoiceDAO.put(nanoInvoice.fclone());
+            }
+          }
+
+          return new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setReason("An Error has occured.")
+            .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
+            .build();
+        }
+      return new NewResultResponse.Builder(x)
+        .setResult(false)
+        .setReason(e.getMessage())
+        .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
+        .build();
+      }
+    }
+  }
+
+  private PaymentResponse reSyncInvoice(X x, XeroInvoice nanoInvoice, com.xero.model.Invoice xeroInvoice) {
+    PaymentResponse response = new PaymentResponse();
+    DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
+    Logger logger = (Logger) x.get("logger");
     User user  = (User) x.get("user");
     XeroClient client = getClient(x);
 
@@ -610,20 +701,18 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
     }
     try {
       NewResultResponse isSignedIn = isSignedIn(x);
-      if ( ! isSignedIn.getResult() ) {
-        System.out.print("not signed in");
-        return isSignedIn;
+      if (!isSignedIn.getResult()) {
+        response.response = isSignedIn;
+        return response;
       }
-      if ( SafetyUtil.isEmpty(account.getIntegrationId()) ) {
-        return new ResultResponse(false, "The follow error has occured: Bank Account not linked to Xero");
+      if (SafetyUtil.isEmpty(account.getIntegrationId())) {
+        response.response = new NewResultResponse.Builder(x)
+          .setResult(false)
+          .setReason("Bank Account not linked to Xero.")
+          .setErrorCode(AccountingErrorCodes.MISSING_BANK)
+          .build();
       }
       com.xero.model.Account xeroAccount = client.getAccount(account.getIntegrationId());
-      List<com.xero.model.Invoice> xeroInvoiceList = new ArrayList<>();
-      if ( ! (com.xero.model.InvoiceStatus.AUTHORISED == xeroInvoice.getStatus()) ) {
-        xeroInvoice.setStatus(com.xero.model.InvoiceStatus.AUTHORISED);
-        xeroInvoiceList.add(xeroInvoice);
-        client.updateInvoice(xeroInvoiceList);
-      }
 
       // Creates a payment for the full amount for the invoice and sets it paid to the bank account on xero
       Payment payment = new Payment();
@@ -632,15 +721,44 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       payment.setDate(cal);
-      Currency currency = (Currency) currencyDAO.find(xeroInvoice.getCurrencyCode().value());
+      Currency currency = (Currency) currencyDAO.find(nanoInvoice.getSourceCurrency());
       payment.setAmount(BigDecimal.valueOf(nanoInvoice.getAmount()).movePointLeft(currency.getPrecision()));
-      paymentList.add(payment);
-      client.createPayments(paymentList);
-      return new ResultResponse(true, " ");
-    } catch ( Throwable e ) {
+      response.payment = payment;
+      response.response = new NewResultResponse.Builder(x)
+                            .setResult(true)
+                            .build();
+      return response;
+    } catch (Exception e) {
       e.printStackTrace();
       logger.error(e);
-      return new ResultResponse(false, "The follow error has occured: " + e.getMessage() + " ");
+      if ( e instanceof com.xero.api.XeroApiException ){
+        if ( ((XeroApiException) e).getResponseCode() == 503 ){
+          response.response = new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setErrorCode(AccountingErrorCodes.API_LIMIT)
+            .setReason(e.getMessage())
+            .build();
+        } else if ( ((XeroApiException) e).getResponseCode() == 401 ) {
+          response.response = new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED)
+            .setReason(e.getMessage())
+            .build();
+        } else {
+          response.response = new NewResultResponse.Builder(x)
+            .setResult(false)
+            .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
+            .setReason(e.getMessage())
+            .build();
+        }
+      } else {
+        response.response = new NewResultResponse.Builder(x)
+          .setResult(false)
+          .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
+          .setReason(e.getMessage())
+          .build();
+      }
+      return response;
     }
   }
 
@@ -712,4 +830,10 @@ public class XeroIntegrationService2 extends foam.core.AbstractFObject implement
       return banksList;
     }
   }
+}
+
+class PaymentResponse {
+  Payment payment;
+  com.xero.model.Invoice xeroInvoice;
+  ResultResponse response;
 }

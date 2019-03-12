@@ -106,7 +106,7 @@ foam.CLASS({
 
       if ( contacts.result === true && invoices.result === true ) {
         ctrl.stack.push({
-          class: 'net.nanopay.integration.IntegrationPopUpView',
+          class: 'net.nanopay.integration.ui.IntegrationPopUpView',
           invoice: this.invoice
         });
       }
