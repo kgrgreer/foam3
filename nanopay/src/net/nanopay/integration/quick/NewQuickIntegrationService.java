@@ -7,12 +7,17 @@ import com.intuit.ipp.data.*;
 import com.intuit.ipp.exception.AuthenticationException;
 import com.intuit.ipp.exception.FMSException;
 import com.intuit.ipp.security.OAuth2Authorizer;
+import com.intuit.ipp.services.BatchOperation;
+import com.intuit.ipp.services.CallbackHandler;
 import com.intuit.ipp.services.DataService;
 import com.intuit.ipp.util.Config;
 import foam.blob.BlobService;
+import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.dao.Sink;
+import foam.nanos.NanoService;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.*;
 import foam.nanos.auth.User;
@@ -33,22 +38,38 @@ import net.nanopay.model.Currency;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-public class NewQuickIntegrationService implements IntegrationService {
+public class NewQuickIntegrationService extends ContextAwareSupport
+  implements IntegrationService, NanoService {
+
+  private DAO tokenDAO;
+  private DAO userDAO;
+  private DAO invoiceDAO;
+  private DAO contactDAO;
+  private DAO cacheDAO;
+  private DAO currencyDAO;
+  private Logger logger;
+
+  @Override
+  public void start() throws Exception {
+    this.tokenDAO = (DAO) getX().get("quickTokenStorageDAO");
+    this.userDAO = (DAO) getX().get("localUserDAO");
+    this.invoiceDAO = (DAO) getX().get("invoiceDAO");
+    this.contactDAO   = (DAO) getX().get("contactDAO");
+    this.cacheDAO     = (DAO) getX().get("AccountingContactEmailCacheDAO");
+    this.currencyDAO = (DAO) getX().get("currencyDAO");
+    this.logger         = (Logger) getX().get("logger");
+  }
 
   @Override
   public ResultResponse isSignedIn(X x) {
-    DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
     User              user         = (User) x.get("user");
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
 
     if ( tokenStorage == null ) {
       return new ResultResponse.Builder(x).setResult(false).build();
@@ -82,7 +103,7 @@ public class NewQuickIntegrationService implements IntegrationService {
           }
 
         } catch ( Exception e ) {
-          invalidContacts.add(e.getMessage());
+          invalidContacts.add("Can not import quick contact # " + contact.getId() + ", " + e.getMessage());
         }
 
       }
@@ -118,6 +139,8 @@ public class NewQuickIntegrationService implements IntegrationService {
         }
       }
 
+      reSyncInvoices(x);
+
     } catch (Exception e) {
 
       errorHandler(e);
@@ -138,19 +161,16 @@ public class NewQuickIntegrationService implements IntegrationService {
   @Override
   public ResultResponse removeToken(X x) {
     User              user         = (User) x.get("user");
-    DAO userDAO = (DAO) x.get("localUserDAO");
-    DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
 
     if ( tokenStorage == null ) {
       return new ResultResponse(false, "User has not connected to Quick Books");
     }
 
-    store.inX(x).remove(tokenStorage.fclone());
+    tokenDAO.inX(x).remove(tokenStorage.fclone());
     user = (User) user.fclone();
     user.clearIntegrationCode();
     userDAO.inX(x).put(user);
-
 
     return new ResultResponse(true, "User has been signed out of Quick Books");
   }
@@ -176,7 +196,63 @@ public class NewQuickIntegrationService implements IntegrationService {
 
   @Override
   public ResultResponse reSyncInvoice(X x, net.nanopay.invoice.model.Invoice invoice) {
-    return null;
+    QuickInvoice quickInvoice = (QuickInvoice) invoice.fclone();
+
+    try {
+
+      Transaction payment = createPaymentFor(x, quickInvoice);
+      create(x, payment);
+      quickInvoice.setDesync(false);
+      quickInvoice.setComplete(true);
+      invoiceDAO.inX(x).put(quickInvoice);
+
+      return new NewResultResponse.Builder(x)
+        .setResult(true).build();
+    } catch ( Exception e ) {
+      quickInvoice.setDesync(true);
+      invoiceDAO.inX(x).put(quickInvoice);
+
+      return new NewResultResponse.Builder(x)
+        .setResult(false)
+        .setReason(e.getMessage())
+        .build();
+    }
+  }
+
+  public void reSyncInvoices(X x) {
+    User            user           = (User) x.get("user");
+    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
+
+    // 1. find all the deSync invoices
+    ArraySink select = (ArraySink) invoiceDAO.inX(x).where(AND(
+      EQ(QuickInvoice.REALM_ID, tokenStorage.getRealmId()),
+      EQ(QuickInvoice.DESYNC, true)
+    )).select(new ArraySink());
+    ArrayList<QuickInvoice> quickInvoices = (ArrayList<QuickInvoice>) select.getArray();
+
+    // 2. prepare the batch request
+    BatchOperation batchOperation = new BatchOperation();
+
+    for ( QuickInvoice quickInvoice : quickInvoices ) {
+      batchOperation.addEntity(createPaymentFor(x, quickInvoice), OperationEnum.CREATE, quickInvoice.getQuickId());
+    }
+
+    batchOperation(x, batchOperation, null);
+
+    // 3. get the result of the batch request
+    Set<String> failedSet = new HashSet<>();
+    for (String batchId : batchOperation.getFaultResult().keySet()) {
+      failedSet.add(batchId);
+    }
+
+    for ( QuickInvoice quickInvoice : quickInvoices ) {
+      if ( ! failedSet.contains(quickInvoice.getQuickId()) ) {
+        quickInvoice.setDesync(false);
+        invoiceDAO.inX(x).put(quickInvoice);
+      } else {
+        System.out.println(quickInvoice.getQuickId());
+      }
+    }
   }
 
   public NewResultResponse errorHandler(Exception e ) {
@@ -218,15 +294,11 @@ public class NewQuickIntegrationService implements IntegrationService {
   }
 
   public ContactMismatchPair importContact(foam.core.X x, NameBase importContact) {
-    Logger logger         = (Logger) x.get("logger");
-    DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
     User              user         = (User) x.get("user");
     DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
     DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
-    DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
-    DAO               cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
+    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
 
@@ -238,7 +310,7 @@ public class NewQuickIntegrationService implements IntegrationService {
         .build()
     );
 
-    Contact existContact = (Contact) contactDAO.find(AND(
+    Contact existContact = (Contact) contactDAO.inX(x).find(AND(
       EQ(Contact.EMAIL, email.getAddress()),
       EQ(Contact.OWNER, user.getId())
     ));
@@ -321,8 +393,7 @@ public class NewQuickIntegrationService implements IntegrationService {
     User            user           = (User) x.get("user");
     CountryService  countryService = (CountryService) x.get("countryService");
     RegionService   regionService  = (RegionService) x.get("regionService");
-    DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
 
@@ -397,19 +468,14 @@ public class NewQuickIntegrationService implements IntegrationService {
 
   public String importInvoice(X x, Transaction qInvoice) {
     User user = (User) x.get("user");
-    DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
-    DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
-    DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
-    DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
-    DAO cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
+    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
 
     // 1. Check the customer or vendor email
     String id = qInvoice instanceof Bill ?
       ( (Bill) qInvoice )   .getVendorRef().getValue() :
       ( (Invoice) qInvoice ).getCustomerRef().getValue();
 
-    AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.find(AND(
+    AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.inX(x).find(AND(
       EQ(AccountingContactEmailCache.QUICK_ID, id),
       EQ(AccountingContactEmailCache.REALM_ID, tokenStorage.getRealmId())
     ));
@@ -419,7 +485,7 @@ public class NewQuickIntegrationService implements IntegrationService {
     }
 
     // 2. If the Contact doesn't exist send a notification as to why the invoice wasn't imported
-    Contact contact = (Contact) contactDAO.find(
+    Contact contact = (Contact) contactDAO.inX(x).find(
       AND(
         EQ(QuickContact.EMAIL, cache.getEmail()),
         EQ(QuickContact.OWNER, user.getId())
@@ -428,7 +494,7 @@ public class NewQuickIntegrationService implements IntegrationService {
       return "Invoice can not import because contact do not exist.";
     }
 
-    QuickInvoice existInvoice = (QuickInvoice) invoiceDAO.find(
+    QuickInvoice existInvoice = (QuickInvoice) invoiceDAO.inX(x).find(
       AND(
         EQ(QuickInvoice.QUICK_ID,   qInvoice.getId()),
         EQ(QuickInvoice.REALM_ID,   tokenStorage.getRealmId()),
@@ -442,9 +508,9 @@ public class NewQuickIntegrationService implements IntegrationService {
 
       existInvoice = (QuickInvoice) existInvoice.fclone();
 
-      // if desync, then sync back
+      // if desync, continue
       if ( existInvoice.getDesync() ) {
-        invoiceDAO.inX(x).put(reSyncInvoice(x, existInvoice));
+        return null;
       }
 
       if (! (
@@ -474,7 +540,7 @@ public class NewQuickIntegrationService implements IntegrationService {
       existInvoice = new QuickInvoice();
     }
 
-    Currency currency = (Currency) currencyDAO.find(qInvoice.getCurrencyRef().getValue());
+    Currency currency = (Currency) currencyDAO.inX(x).find(qInvoice.getCurrencyRef().getValue());
     double doubleAmount = balance.doubleValue() * Math.pow(10.0, currency.getPrecision());
 
     if ( qInvoice instanceof Bill ) {
@@ -542,26 +608,8 @@ public class NewQuickIntegrationService implements IntegrationService {
     return files.toArray(new File[files.size()]);
   }
 
-  public QuickInvoice reSyncInvoice(X x, QuickInvoice quickInvoice) {
-    NewResultResponse resultResponse = new NewResultResponse();
-
-    try {
-
-      createPaymentFor(x, quickInvoice);
-      quickInvoice.setDesync(false);
-      quickInvoice.setComplete(true);
-
-      return quickInvoice;
-
-    } catch ( Exception e ) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public void createPaymentFor(X x, QuickInvoice quickInvoice) {
+  public Transaction createPaymentFor(X x, QuickInvoice quickInvoice) {
     User user        = (User) x.get("user");
-    DAO  contactDAO  = ((DAO) x.get("contactDAO")).inX(x);
-    DAO  currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
 
     String type = "";
     Currency currency = null;
@@ -569,13 +617,13 @@ public class NewQuickIntegrationService implements IntegrationService {
 
     if ( quickInvoice.getPayeeId() == user.getId() ) {
       type = "Invoice";
-      currency = (Currency) currencyDAO.find(quickInvoice.getSourceCurrency());
+      currency = (Currency) currencyDAO.inX(x).find(quickInvoice.getSourceCurrency());
       account = BankAccount.findDefault(x, user, quickInvoice.getSourceCurrency());
     }
 
     if ( quickInvoice.getPayerId() == user.getId() ) {
       type = "Bill";
-      currency = (Currency) currencyDAO.find(quickInvoice.getDestinationCurrency());
+      currency = (Currency) currencyDAO.inX(x).find(quickInvoice.getDestinationCurrency());
       account = BankAccount.findDefault(x, user, quickInvoice.getDestinationCurrency());
     }
 
@@ -594,7 +642,7 @@ public class NewQuickIntegrationService implements IntegrationService {
     linkedTxnList.add(linkedTxn);
 
     // 2. contact ref
-    QuickContact contact = (QuickContact) contactDAO.find(quickInvoice.getContactId());
+    QuickContact contact = (QuickContact) contactDAO.inX(x).find(quickInvoice.getContactId());
     ReferenceType contactRef = new ReferenceType();
     contactRef.setName(contact.getBusinessName());
     contactRef.setValue(contact.getQuickId());
@@ -616,7 +664,7 @@ public class NewQuickIntegrationService implements IntegrationService {
       payment.setLine(lineList);
       payment.setTotalAmt(amount);
       payment.setDepositToAccountRef(bankRef);
-      create(x, payment);
+      return payment;
     }
 
     if ( type.equals("Bill") ) {
@@ -630,9 +678,10 @@ public class NewQuickIntegrationService implements IntegrationService {
 
       payment.setCheckPayment(check);
       payment.setPayType(BillPaymentTypeEnum.CHECK);
-      create(x, payment);
+      return payment;
     }
 
+    return null;
   }
 
   /*******************************
@@ -710,6 +759,28 @@ public class NewQuickIntegrationService implements IntegrationService {
       DataService service =  new DataService(context);
 
       return service.add(object);
+    } catch ( Exception e ) {
+      throw new RuntimeException("Error fetch QuickBook data.", e);
+    }
+  }
+
+  public void batchOperation(X x, BatchOperation operation, CallbackHandler callbackHandler) {
+    User user       = (User) x.get("user");
+    DAO store       = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+    Group group     = user.findGroup(x);
+    AppConfig app   = group.getAppConfig(x);
+    DAO                         configDAO = ((DAO) x.get("quickConfigDAO")).inX(x);
+    QuickConfig                 config    = (QuickConfig)configDAO.find(app.getUrl());
+    QuickTokenStorage  tokenStorage = (QuickTokenStorage) store.find(user.getId());
+
+    try {
+      Config.setProperty(Config.BASE_URL_QBO, config.getIntuitAccountingAPIHost() + "/v3/company/");
+
+      OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken());
+      Context context = new Context(oauth, ServiceType.QBO, tokenStorage.getRealmId());
+      DataService service =  new DataService(context);
+
+      service.executeBatch(operation);
     } catch ( Exception e ) {
       throw new RuntimeException("Error fetch QuickBook data.", e);
     }

@@ -674,7 +674,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/ChangePasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/IntegrationPopUpView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ToastNotification', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
@@ -773,6 +772,8 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/model/QuickQueryInvoices' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryVendorResponse' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryVendors' },
+  { name: 'net/nanopay/integration/ui/AccountingCallbackPage', flags: ['web']},
+  { name: 'net/nanopay/integration/ui/IntegrationPopUpView', flags: ['web'] },
 
 
   // integration stub
