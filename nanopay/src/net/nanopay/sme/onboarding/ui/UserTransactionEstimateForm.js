@@ -292,6 +292,11 @@ foam.CLASS({
     }
   ],
 
+  constants: [
+    { name: 'US_FLAG', value: 'images/flags/us.png' },
+    { name: 'CAD_FLAG', value: 'images/flags/cad.png' }
+  ],
+
   messages: [
     { name: 'TITLE', message: 'Details about your transactions' },
     { name: 'REVENUE_ESTIMATE_LABEL_CA', message: 'Annual Gross Sales in CAD' },
@@ -300,7 +305,7 @@ foam.CLASS({
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
-    { name: 'THIRD_TITLE', message: 'Domestic USD transfers' },
+    { name: 'THIRD_TITLE', message: 'Domestic transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
     { name: 'CA_DOLLAR_LABEL', message: 'Canadian Dollar' },
@@ -321,6 +326,7 @@ foam.CLASS({
       this.hasBackOption = true;
       this.internationalPayments$.sub(this.clearFields);
       this.setBaseCurrency();
+      var domesticFlag = this.isUSABasedCompany ? this.US_FLAG : this.CAD_FLAG;
 
       this.addClass(this.myClass())
       .start()
@@ -344,18 +350,18 @@ foam.CLASS({
           .start().addClass('inline').addClass('info-width').add(this.annualLabel$).end()
           .start().add(this.REVENUE_ESTIMATE).end()
         .end()
-        .start().show(this.isUSABasedCompany$)
+        .start()
           .start().addClass('medium-header').add(this.THIRD_TITLE).end()
           .start().addClass('label-input')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' }).addClass('flag-image').end()
-            .start().addClass('inline').addClass('bold-label').add(this.US_DOLLAR_LABEL).end()
+            .start({ class: 'foam.u2.tag.Image', data: domesticFlag }).addClass('flag-image').end()
+            .start().addClass('inline').addClass('bold-label').add(this.isUSABasedCompany ? this.US_DOLLAR_LABEL : this.CA_DOLLAR_LABEL).end()
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.ANNUAL_LABEL).end()
             .tag(this.ANNUAL_FIELD_DOMESTIC, { onKey: true })
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start().addClass('label').add(this.US_VOLUME_LABEL).end()
+            .start().addClass('label').add(this.isUSABasedCompany ? this.US_VOLUME_LABEL : this.CA_VOLUME_LABEL).end()
             .tag(this.ESTIMATED_FIELD_DOMESTIC, { onKey: true })
           .end()
           .start().addClass('label-input')
@@ -396,12 +402,12 @@ foam.CLASS({
       // if business address is US then international payments are CAD,
       // if business address is CAD then international payments are USD,
       if ( foam.util.equals('USD', cur) ) {
-        this.flag = 'images/flags/cad.png';
+        this.flag = this.CAD_FLAG;
         this.currencyTypeLabel = this.CA_DOLLAR_LABEL;
         this.estimatedLabel = this.CA_VOLUME_LABEL;
         this.annualLabel = this.REVENUE_ESTIMATE_LABEL_US;
       } else if ( foam.util.equals('CAD', cur) ) {
-        this.flag = 'images/flags/us.png';
+        this.flag = this.US_FLAG;
         this.currencyTypeLabel = this.US_DOLLAR_LABEL;
         this.estimatedLabel = this.US_VOLUME_LABEL;
         this.annualLabel = this.REVENUE_ESTIMATE_LABEL_CA;
