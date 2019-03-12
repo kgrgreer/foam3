@@ -14,3 +14,7 @@ fi
 if [ -f "$JOURNAL_HOME/services" ]; then
     perl -p -i -e 's/\/nanopay\/src\/net\/nanopay\/index.html/\/index.html/g; s/\/nanopay\/src\/net\/nanopay\/sme\/index.html/\/ablii.html/g; s/\/nanopay\/src\/net\/nanopay\/merchant\/index.html/\/merchant.html/g;' "$JOURNAL_HOME"/services
 fi
+
+if [ -f "$JOURNAL_HOME/services" ]; then
+    perl -p -i -e 's/serviet\.ImageServlet/servlet\.ResourceImageServlet/g;' "$JOURNAL_HOME"/services
+fi
