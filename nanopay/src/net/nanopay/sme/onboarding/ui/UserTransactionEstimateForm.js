@@ -18,6 +18,8 @@ foam.CLASS({
     ^ .label {
       margin-left: 0px;
       margin-top: 5px;
+      padding-bottom: 0px !important;
+      font-weight: 600 !important;
     }
     ^ .foam-u2-TextField {
       width: 100%;
@@ -47,16 +49,10 @@ foam.CLASS({
       display: inline-block;
       float: right;
     }
-    ^ .property-revenueEstimate {
-      width: 225px;
-      margin-bottom: 30px;
-      height: 35px;
-      top: 15px;
-      right: 125px;
-    }
-    ^ .property-otherPurposeField {
+    ^ .property-field {
       height: 35px;
       width: 100%;
+      margin-bottom: 10px;
     }
     ^ .info-container {
       line-height: 1.5;
@@ -253,7 +249,7 @@ foam.CLASS({
     { name: 'TITLE', message: 'Details about your transactions' },
     { name: 'REVENUE_ESTIMATE_LABEL_CA', message: 'Annual Gross Sales in CAD' },
     { name: 'REVENUE_ESTIMATE_LABEL_US', message: 'Annual Gross Sales in USD' },
-    { name: 'PURPOSE_LABEL', message: 'Please provide us with the purpose of your transactions.' },
+    { name: 'PURPOSE_LABEL', message: 'Please provide us with the purpose of your transactions' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
@@ -264,13 +260,7 @@ foam.CLASS({
     { name: 'CA_VOLUME_LABEL', message: 'Estimated Annual Volume in CAD' },
     { name: 'US_DOLLAR_LABEL', message: 'U.S. Dollar' },
     { name: 'US_VOLUME_LABEL', message: 'Estimated Annual Volume in USD' },
-    { name: 'OTHER_PURPOSE_LABEL', message: 'Please indicate below.' },
-    {
-      name: 'INFO_BOX',
-      message: `The base currency will be your default currency for sending
-          and receiving payments. You can also change this during any transaction.`
-    }
-
+    { name: 'OTHER_PURPOSE_LABEL', message: 'Please indicate below' }
   ],
 
   methods: [
@@ -287,7 +277,6 @@ foam.CLASS({
         .start().addClass('medium-header')
           .add(this.TITLE)
         .end()
-        .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_BOX })
         .start().addClass('label-input')
           .start().addClass('label').add(this.PURPOSE_LABEL).end()
           .startContext({ data: userTransactionInfo })
@@ -302,13 +291,15 @@ foam.CLASS({
           .start().addClass('label').add(this.OTHER_PURPOSE_LABEL).end()
           .startContext({ data: userTransactionInfo })
             .start(userTransactionInfo.OTHER_TRANSACTION_PURPOSE)
-              .addClass('property-otherPurposeField')
+              .addClass('property-field')
             .end()
           .endContext()
         .end()
         .start().addClass('label-input')
-          .start().addClass('inline').addClass('info-width').add(this.annualLabel$).end()
-          .start().add(this.REVENUE_ESTIMATE).end()
+          .start().addClass('label').add(this.annualLabel$).end()
+          .start(this.REVENUE_ESTIMATE)
+            .addClass('property-field')
+          .end()
         .end()
         .start()
           .start().addClass('medium-header').add(this.THIRD_TITLE).end()
@@ -356,6 +347,7 @@ foam.CLASS({
         .end()
       .end();
     },
+
     function setBaseCurrency() {
       var cur = this.isUSABasedCompany ? 'USD': 'CAD';
       this.viewData.user.suggestedUserTransactionInfo.baseCurrency = cur;
