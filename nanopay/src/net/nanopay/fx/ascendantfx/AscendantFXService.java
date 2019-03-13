@@ -463,7 +463,7 @@ public class AscendantFXService
 
     try {
       conn = SOAPConnectionFactory.newInstance().createConnection();
-      return conn.call(message, credentials.getHost() + "/" + method);
+      return conn.call(message, credentials.getUrl() + "/" + method);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     } finally {
