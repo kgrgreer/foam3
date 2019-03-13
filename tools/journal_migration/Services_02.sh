@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # correct paths in services for jar file deployment
+# Enable when deploying from jars.  NOTE: to run again at that time, remove /opt/0
+exit 0
 
 export JOURNAL_HOME=/opt/nanopay/journals
 if [ -f "$JOURNAL_HOME/services" ]; then
@@ -16,5 +18,5 @@ if [ -f "$JOURNAL_HOME/services" ]; then
 fi
 
 if [ -f "$JOURNAL_HOME/services" ]; then
-    perl -p -i -e 's/serviet\.ImageServlet/servlet\.ResourceImageServlet/g;' "$JOURNAL_HOME"/services
+    perl -p -i -e 's/servlet\.ImageServlet/servlet\.ResourceImageServlet/g;' "$JOURNAL_HOME"/services
 fi
