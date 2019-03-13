@@ -23,7 +23,7 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction txn = quote.getRequestTransaction();
 
-    if( txn instanceof InterestTransaction ){
+    if ( txn instanceof InterestTransaction ){
       txn.setIsQuoted(true);
       txn.setStatus(TransactionStatus.COMPLETED);
       quote.setPlan(txn);
@@ -38,12 +38,16 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
     if ( txn.findSourceAccount(x) instanceof LoanAccount ) {
       DAO accountDAO = (DAO) x.get("accountDAO");
       LoanAccount theLoanAccount = (LoanAccount) txn.findSourceAccount(x);
-      if( theLoanAccount.getPrincipal() < ( txn.getAmount() - ( (long) theLoanAccount.findBalance(x) ) ) )
+      if ( theLoanAccount.getPrincipal() < ( txn.getAmount() - ( (long) theLoanAccount.findBalance(x) ) ) )
         throw new RuntimeException("Transaction Exceeds Loan Account Principal Limit");
-      LoanedTotalAccount globalLoanAccount = ((LoanedTotalAccount) accountDAO.find(MLang.AND(MLang.INSTANCE_OF(
-        LoanedTotalAccount.class ), MLang.EQ( LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination()))));
+      LoanedTotalAccount globalLoanAccount = ((LoanedTotalAccount) accountDAO.find(
+        MLang.AND(
+          MLang.INSTANCE_OF( LoanedTotalAccount.class ),
+          MLang.EQ( LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination())
+        )
+      ));
 
-      if( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");
+      if ( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");
       withdrawLineItem = new TransactionLineItem.Builder(x)
         .setSourceAccount( theLoanAccount.getId() )
         .setDestinationAccount( globalLoanAccount.getId() )
@@ -56,10 +60,14 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
     if ( txn.findDestinationAccount(x) instanceof LoanAccount ) {
       DAO accountDAO = (DAO) x.get("accountDAO");
       LoanAccount theLoanAccount = (LoanAccount) txn.findDestinationAccount(x);
-      LoanedTotalAccount globalLoanAccount = ( (LoanedTotalAccount) accountDAO.find( MLang.AND( MLang.INSTANCE_OF(
-        LoanedTotalAccount.class ), MLang.EQ( LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination()))));
+      LoanedTotalAccount globalLoanAccount = ( (LoanedTotalAccount) accountDAO.find(
+        MLang.AND(
+          MLang.INSTANCE_OF( LoanedTotalAccount.class ),
+          MLang.EQ( LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination())
+        )
+      ));
 
-      if( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");
+      if ( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");
       depositLineItem = new TransactionLineItem.Builder(x)
         .setSourceAccount( globalLoanAccount.getId() )
         .setDestinationAccount( theLoanAccount.getId() )
@@ -72,11 +80,11 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
     quote.setRequestTransaction(txn);
     Transaction plan = ((TransactionQuote) getDelegate().put_(x, quote)).getPlan();
     //if this is a fx transaction, destination amount should be in different currency and amount
-    //if( ! ( plan.getDestinationAmount() == 0 ) && ! ( depositLineItem == null ) ) depositLineItem.setAmount( plan.getDestinationAmount() );
+    //if ( ! ( plan.getDestinationAmount() == 0 ) && ! ( depositLineItem == null ) ) depositLineItem.setAmount( plan.getDestinationAmount() );
 
     while(plan.getNext()!=null) plan = plan.getNext();
-    if( withdrawLineItem != null ) plan.addLineItems( new TransactionLineItem[] {withdrawLineItem},null );
-    if( depositLineItem != null ) plan.addLineItems( new TransactionLineItem[] {depositLineItem},null );
+    if ( withdrawLineItem != null ) plan.addLineItems( new TransactionLineItem[] {withdrawLineItem},null );
+    if ( depositLineItem != null ) plan.addLineItems( new TransactionLineItem[] {depositLineItem},null );
     return quote;
   }
 }

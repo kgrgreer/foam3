@@ -47,7 +47,12 @@ foam.CLASS({
       documentation: 'The account where the loan $ are lent from',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.accountDAO.where(X.data.AND(X.data.NOT(X.data.INSTANCE_OF(X.data.LoanAccount)),X.data.NOT(X.data.INSTANCE_OF(X.data.ZeroAccount)))),
+          dao: X.accountDAO.where(
+            X.data.AND(
+              X.data.NOT(X.data.INSTANCE_OF(X.data.LoanAccount)),
+              X.data.NOT(X.data.INSTANCE_OF(X.data.ZeroAccount))
+            )
+          ),
           placeholder: '--',
           objToChoice: function(lenderAccount) {
             return [lenderAccount.id, lenderAccount.name];
@@ -83,7 +88,7 @@ foam.CLASS({
         throw new RuntimeException("Cannot exceed credit limit in account " + this.getId());
       }
       */
-      if( amount+bal > 0 ) {
+      if ( amount+bal > 0 ) {
         foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
         logger.debug(this, "amount", amount, "balance", bal);
         throw new RuntimeException("Cannot over pay account " + this.getId());
@@ -117,8 +122,14 @@ foam.CLASS({
       },
     ],
     javaCode: `
-      if( this.getAccruedInterest() > 0 ) {
-        LoanedTotalAccount globalLoanAccount = (LoanedTotalAccount) ((DAO) x.get("localAccountDAO")).find(MLang.AND(MLang.EQ(LoanedTotalAccount.DENOMINATION,this.getDenomination()),MLang.INSTANCE_OF(LoanedTotalAccount.class)));
+      if ( this.getAccruedInterest() > 0 ) {
+        LoanedTotalAccount globalLoanAccount = (LoanedTotalAccount) ((DAO) x.get("localAccountDAO")).find(
+          MLang.AND(
+            MLang.EQ(LoanedTotalAccount.DENOMINATION,this.getDenomination()),
+            MLang.INSTANCE_OF(LoanedTotalAccount.class)
+          )
+        );
+
         if ( globalLoanAccount == null ) throw new RuntimeException(" LoanedTotalAccount not found!");
         InterestTransaction it = new InterestTransaction.Builder(x)
           .setSourceAccount(this.getId())

@@ -12,15 +12,15 @@ import java.util.List;
 **/
 public class compoundInterest implements ContextAgent {
 
-  public compoundInterest(){}
+  public CompoundInterest(){}
 
   @Override
   public void execute(X x) {
     List Accounts = ((ArraySink) ((DAO) x.get("accountDAO")).select(new ArraySink())).getArray();
     for ( Object obj : Accounts ) {
-      if(obj instanceof LoanAccount){
+      if ( obj instanceof LoanAccount ){
         LoanAccount la = (LoanAccount) ((LoanAccount) obj).fclone();
-        if(la.getAccruedInterest()>0){
+        if (la.getAccruedInterest()>0){
           la.compound(x);
           ((DAO) x.get("accountDAO")).put_(x,la);
         }
