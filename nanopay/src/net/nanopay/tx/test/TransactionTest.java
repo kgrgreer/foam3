@@ -91,6 +91,8 @@ public class TransactionTest
     test((long) benefactorAccount.findBalance(x_) == 200000,"the loan was recorded in the loan account, Balance: " + benefactorAccount.findBalance(x_) );
     test((long) loaneeDepositAcc.findBalance(x_) == 300000,"the loan was recorded in the loan account, Balance: " + loaneeDepositAcc.findBalance(x_) );
 
+
+
   }
 
   public void testFXTransaction(){

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  Cronjob applies the amount of interest that each account owes
 **/
-public class compoundInterest implements ContextAgent {
+public class CompoundInterest implements ContextAgent {
 
   public CompoundInterest(){}
 
