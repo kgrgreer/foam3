@@ -140,10 +140,16 @@ foam.CLASS({
     {
       name: 'exportComplianceDocuments',
       code: async function() {
-        var sDate = new Date(Date.now()-(3600000*24*14));
-        var dDate = new Date(Date.now());
-
-        var url = window.location.origin + "/service/settlementReports?userId=" + this.id+"&startDate="+sDate+"&endDate"+dDate;
+        var url = window.location.origin + "/services/ascendantFXReports?userId=" + this.id;
+        window.location.assign(url);
+      }
+    },
+    {
+      name: 'exportSettlementDocuments',
+      code: async function() {
+        // var sDate = new Date(Date.now()-(3600000*24*14));
+        // var dDate = new Date(Date.now());
+        var url = window.location.origin + "/services/settlementReports?userId=" + this.id+"&startDate=\"\" &endDate=\"\"";
         window.location.assign(url);
       }
     }

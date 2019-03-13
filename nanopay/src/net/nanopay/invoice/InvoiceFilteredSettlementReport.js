@@ -10,42 +10,20 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.http.WebAgent'
-    // 'foam.nanos.NanoService',
-    // 'foam.nanos.notification.email.EmailService'
-  ],
-
-  imports: [
-    'threadPool?', // Only imported in Java
-    'appConfig?'
   ],
 
   javaImports: [
-    // TODO SORT
-    'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.nanos.pool.FixedThreadPool',
-    'foam.util.SafetyUtil',
-    'java.nio.charset.StandardCharsets',
-    'java.util.Date',
-    'java.util.Properties',
-    'javax.mail.*',
-    'javax.mail.internet.InternetAddress',
-    'javax.mail.internet.MimeMessage',
-    'org.apache.commons.lang3.StringUtils',
-    'org.jtwig.environment.EnvironmentConfiguration',
-    'org.jtwig.environment.EnvironmentConfigurationBuilder',
-    'org.jtwig.JtwigModel',
-    'org.jtwig.JtwigTemplate',
-    'org.jtwig.resource.loader.TypedResourceLoader',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
     'foam.nanos.app.AppConfig',
-    'foam.dao.ArraySink',
-    'foam.dao.Sink',
-    'static foam.mlang.MLang.*',
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.model.Business',
+    'java.util.Date',
     'java.util.List',
-    'net.nanopay.invoice.model.InvoiceStatus'
+    'static foam.mlang.MLang.*'
   ],
 
   axioms: [
@@ -55,12 +33,12 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data:
           `
-            public InvoiceFilteredSettlementReport(X x, BlobService delegate) {
-              setX(x);
-              setDelegate(delegate);
-              dated = false;
-              dao_ = null;
-            }
+            // public InvoiceFilteredSettlementReport(X x, BlobService delegate) {
+            //   setX(x);
+            //   setDelegate(delegate);
+            //   dated = false;
+            //   dao_ = null;
+            // }
 
             protected boolean dated;
             protected ArraySink dao_;
