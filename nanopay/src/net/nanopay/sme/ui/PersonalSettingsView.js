@@ -62,7 +62,6 @@ foam.CLASS({
     }
     ^two-factor-link {
       color: #604aff;
-      cursor: pointer;
       display: inline-block;
       margin-top: 8px;
       text-decoration: none;
@@ -298,16 +297,12 @@ foam.CLASS({
                     .br()
                     .start('a').addClass(this.myClass('two-factor-link'))
                       .add(this.IOSName)
-                      .on('click', () => {
-                        window.open(this.IOS_LINK);
-                      })
+                      .attrs({ href: this.IOS_LINK, target: '_blank' })
                     .end()
                     .br()
                     .start('a').addClass(this.myClass('two-factor-link'))
                       .add(this.AndroidName)
-                      .on('click', () => {
-                        window.open(this.ANDROID_LINK);
-                      })
+                      .attrs({ href: this.ANDROID_LINK, target: '_blank' })
                     .end()
                   .end()
                   .start().addClass(this.myClass('step-2'))
