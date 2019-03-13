@@ -4,15 +4,15 @@ foam.CLASS({
 
 javaImports: [
   'foam.lib.json.JSONParser',
-  'org.apache.http.client.methods.HttpPost',
-  'org.apache.http.impl.client.CloseableHttpClient',
-  'org.apache.http.impl.client.HttpClients',
+  'java.util.Base64',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
-  'org.apache.http.entity.StringEntity',
   'org.apache.http.HttpResponse',
+  'org.apache.http.client.methods.HttpPost',
   'org.apache.http.entity.ContentType',
-  'java.util.Base64',
+  'org.apache.http.entity.StringEntity',
+  'org.apache.http.impl.client.CloseableHttpClient',
+  'org.apache.http.impl.client.HttpClients',
   'org.apache.http.util.EntityUtils'
 ],
 
@@ -22,10 +22,10 @@ methods: [
     args: [
       {
         name: 'business',
-        javaType: 'net.nanopay.model.Business'
+        type: 'net.nanopay.model.Business'
       }
     ],
-    javaReturns: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
+    type: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
     javaCode: `
     LEVRequest request = new LEVRequest();
 
@@ -46,10 +46,10 @@ methods: [
     args: [
       {
         name: 'request',
-        javaType: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest'
+        type: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest'
       }
     ],
-    javaReturns: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
+    type: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
     javaCode: `
     // key must end with :" 
     String key = "ODA1NTMyNjA0MTAyNDg2NzIxMzg4NTk0MTQ4ODg0NTI1MDg4NzY4:";

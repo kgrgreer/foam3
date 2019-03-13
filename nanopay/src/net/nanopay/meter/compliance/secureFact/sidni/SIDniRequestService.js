@@ -27,10 +27,10 @@ foam.CLASS({
       args: [
         {
           name: 'user',
-          javaType: 'foam.nanos.auth.User'
+          type: 'foam.nanos.auth.User'
         }
       ],
-      javaReturns: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
+      type: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
       javaCode: `
       SIDniRequest request = new SIDniRequest();
       SIDniCustomer customer = new SIDniCustomer();
@@ -114,10 +114,10 @@ foam.CLASS({
       args: [
         {
           name: 'request',
-          javaType: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest'
+          type: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest'
         }
       ],
-      javaReturns: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
+      type: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
       javaCode: `
       // key must end with :" 
       String key = "NTc5MDk0MDc5OTUyNzMxMDYwNzg1NDgxMTQ3OTkwNDI4MDkwMzY4:";

@@ -59,7 +59,7 @@ foam.CLASS({
   methods: [
     {
       name: 'toJSON',
-      javaReturns: 'String',
+      type: 'String',
       javaCode: `
         Outputter out = new Outputter();
         out.setOutputClassNames(false);
