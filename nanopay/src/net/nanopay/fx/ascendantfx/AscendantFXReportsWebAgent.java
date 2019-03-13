@@ -126,9 +126,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String targetCustomers = business.getTargetCustomers();
     String sourceOfFunds = business.getSourceOfFunds();
     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
-    String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
     String internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
+    String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
+    String annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount();
+    String annualDomesticVolume = business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume();
+    String firstTradeDateDomestic = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic());
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
@@ -163,20 +166,24 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
       list.add(new ListItem("Is this a holding company? " + isHoldingCompany));
-      list.add(new ListItem("Annual gross sales in your base currency: " + annualRevenue));
+      list.add(new ListItem("Transaction purpose: " + purposeOfTransactions));
+      if ( purposeOfTransactions.equals("Other") ) {
+        String otherPurposeOfTransactions = business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose();
+        list.add(new ListItem("Other transaction purpose:" + otherPurposeOfTransactions));
+      }
       list.add(new ListItem("Base currency: " + baseCurrency));
+      list.add(new ListItem("Domestic annual number of transactions: " + annualDomesticVolume));
+      list.add(new ListItem("Domestic estimated annual sales: " + annualDomesticTransactionAmount));
+      list.add(new ListItem("Anticipated first domestic payment date: " + sdf.format(firstTradeDateDomestic)));
+
       list.add(new ListItem("Are you sending or receiving international payments? " + internationalTransactions));
 
       // if user going to do transactions to the USA, we add International transfers report
-      if ( !"".equals(business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount()) ) {
+      if ( internationalTransactions.equals("Yes") ) {
         String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
-        String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
         String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
         String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
-        String firstTradeDate = null;
-        if ( business.getSuggestedUserTransactionInfo().getFirstTradeDate() != null ) {
-          firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
-        }
+        String firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
 
         list.add(new ListItem("International transfers: "));
         List subList = new List(true, false, 20);
@@ -185,7 +192,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         subList.add(new ListItem("Annual Number of Transactions: " + annualTransactionAmount));
         subList.add(new ListItem("Estimated Annual Volume in " + foreignCurrency + ": " + annualVolume));
         subList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDate));
-        subList.add(new ListItem("Industry: " + industry));
         list.add(subList);
       }
 
