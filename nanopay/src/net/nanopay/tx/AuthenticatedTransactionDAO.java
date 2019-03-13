@@ -31,6 +31,7 @@ public class AuthenticatedTransactionDAO
 {
   public final static String GLOBAL_TXN_READ = "transaction.read.*";
   public final static String GLOBAL_TXN_CREATE = "transaction.create.*";
+  public final static String GLOBAL_TXT_UPDATE = "transaction.update";
   public final static String VERIFICATION_TXN_READ = "verificationtransaction.read.*";
 
   public AuthenticatedTransactionDAO(DAO delegate) {
@@ -64,15 +65,19 @@ public class AuthenticatedTransactionDAO
     boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
     boolean isPayee = destinationAccount != null ? destinationAccount.getOwner() == user.getId() : t.getPayeeId() == user.getId();
     boolean isAcceptingPaymentFromPayersDigitalAccount = sourceAccount instanceof DigitalAccount && auth.check(x, "invoice.holdingAccount");
-    boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
+    boolean isCreatePermitted = auth.check(x, GLOBAL_TXN_CREATE);
 
-    if ( ! ( isSourceAccountOwner || isPayer || isPermitted || isAcceptingPaymentFromPayersDigitalAccount
+    // permission only checks if create is permitted
+    // therefore should add in oldTxn == null to check if a creation is being made
+    if ( oldTxn == null && ! ( isSourceAccountOwner || isPayer || isCreatePermitted || isAcceptingPaymentFromPayersDigitalAccount
     || t instanceof CITransaction && isPayee ) ) {
       throw new AuthorizationException();
     }
 
     if ( t.getInvoiceId() != 0 ) {
       Invoice invoice = (Invoice) invoiceDAO.find(t.getInvoiceId());
+
+      boolean isUpdatePermitted = auth.check(x, GLOBAL_TXT_UPDATE);
 
       if ( invoice == null ) {
         throw new RuntimeException("The invoice associated with this transaction could not be found.");
@@ -82,7 +87,7 @@ public class AuthenticatedTransactionDAO
         if ( oldTxn == null ) {
           throw new AuthorizationException("You cannot pay a receivable.");
         }
-        else if ( ! auth.check(x, "transaction.update") ) {
+        else if ( ! isUpdatePermitted ) {
           throw new AuthorizationException("You cannot update a receivable.");
         }
       }
