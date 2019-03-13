@@ -169,15 +169,18 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Transaction purpose: " + purposeOfTransactions));
       if ( purposeOfTransactions.equals("Other") ) {
         String otherPurposeOfTransactions = business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose();
-        list.add(new ListItem("Other transaction purpose:" + otherPurposeOfTransactions));
+        list.add(new ListItem("Other transaction purpose: " + otherPurposeOfTransactions));
       }
-      list.add(new ListItem("Base currency: " + baseCurrency));
-      list.add(new ListItem("Domestic annual number of transactions: " + annualDomesticVolume));
-      list.add(new ListItem("Domestic estimated annual sales: " + annualDomesticTransactionAmount));
-      list.add(new ListItem("Anticipated first domestic payment date: " + sdf.format(firstTradeDateDomestic)));
-
+      list.add(new ListItem("Domestic transfers: "));
+      List domesticSubList = new List(true, false, 20);
+      domesticSubList.add(new ListItem("Currency Name: " + baseCurrency));
+      domesticSubList.add(new ListItem("Domestic Annual Number of Transactions: " + baseCurrency + annualDomesticTransactionAmount));
+      domesticSubList.add(new ListItem("Domestic Estimated Annual Volume in " + baseCurrency + ": " + annualDomesticVolume));
+      domesticSubList.add(new ListItem("Anticipated First Domestic Payment Date: " + firstTradeDateDomestic));
+      list.add(domesticSubList);
+      document.add(Chunk.NEWLINE);
       list.add(new ListItem("Are you sending or receiving international payments? " + internationalTransactions));
-
+      document.add(Chunk.NEWLINE);
       // if user going to do transactions to the USA, we add International transfers report
       if ( internationalTransactions.equals("Yes") ) {
         String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
@@ -188,7 +191,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         list.add(new ListItem("International transfers: "));
         List subList = new List(true, false, 20);
         subList.add(new ListItem("Currency Name: " + foreignCurrency));
-        subList.add(new ListItem("Purpose of Transactions: " + purposeOfTransactions));
         subList.add(new ListItem("Annual Number of Transactions: " + annualTransactionAmount));
         subList.add(new ListItem("Estimated Annual Volume in " + foreignCurrency + ": " + annualVolume));
         subList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDate));
@@ -379,6 +381,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       document.add(new Paragraph("Business ID: " + business.getId()));
       document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
+      document.add(Chunk.NEWLINE);
+      document.add(new Paragraph("The details for all beneficial owners who own 25% or more of the business are listed."));
 
       document.close();
       writer.close();
