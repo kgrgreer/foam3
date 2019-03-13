@@ -127,6 +127,11 @@ public class BusinessOnboardingValidator implements Validator {
       throw new RuntimeException("Transaction purpose required.");
     }
 
+    if ( transactionInfo.getTransactionPurpose().equals("Other") 
+      && SafetyUtil.isEmpty(transactionInfo.getOtherTransactionPurpose()) ) {
+      throw new RuntimeException("Additional information for your transaction purpose required.");
+    }
+
     if ( transactionInfo.getInternationalPayments() ) {
       if ( SafetyUtil.isEmpty(transactionInfo.getAnnualTransactionAmount()) ) {
         throw new RuntimeException("Annual Number of Transactions is required.");
