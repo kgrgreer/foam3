@@ -19,18 +19,19 @@ import net.nanopay.account.DigitalAccount;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.List;
 
-import static foam.mlang.MLang.IN;
-import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.*;
 
 public class AuthenticatedTransactionDAO
   extends ProxyDAO
 {
   public final static String GLOBAL_TXN_READ = "transaction.read.*";
   public final static String GLOBAL_TXN_CREATE = "transaction.create.*";
+  public final static String VERIFICATION_TXN_READ = "verificationtransaction.read.*";
 
   public AuthenticatedTransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -65,7 +66,7 @@ public class AuthenticatedTransactionDAO
     boolean isAcceptingPaymentFromPayersDigitalAccount = sourceAccount instanceof DigitalAccount && auth.check(x, "invoice.holdingAccount");
     boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
 
-    if ( ! ( isSourceAccountOwner || isPayer || isPermitted || isAcceptingPaymentFromPayersDigitalAccount 
+    if ( ! ( isSourceAccountOwner || isPayer || isPermitted || isAcceptingPaymentFromPayersDigitalAccount
     || t instanceof CITransaction && isPayee ) ) {
       throw new AuthorizationException();
     }
@@ -142,6 +143,12 @@ public class AuthenticatedTransactionDAO
                              IN(Transaction.DESTINATION_ACCOUNT, ids)
                              )
                           );
+
+    boolean verification = auth.check(x, VERIFICATION_TXN_READ);
+
+    dao = verification ? dao : dao.where(NOT(INSTANCE_OF(VerificationTransaction.class)));
+
+
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 

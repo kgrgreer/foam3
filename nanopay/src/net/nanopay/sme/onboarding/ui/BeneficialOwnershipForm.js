@@ -545,7 +545,16 @@ properties: [
     expression: function(publiclyTradedEntity, noPrincipalOwners) {
       return ! publiclyTradedEntity && ! noPrincipalOwners;
     }
-  }
+  },
+  {
+    class: 'Boolean',
+    name: 'noAdditionalBeneficialOwners',
+    documentation: `This is displayed as a checkbox, with text acknowledging the form
+    contains details for all beneficial owners.`,
+    postSet: function(o, n) {
+      this.viewData.noAdditionalBeneficialOwners = n;
+    }
+  },
 ],
 
 messages: [
@@ -586,6 +595,10 @@ messages: [
   {
     name: 'PRINCIPAL_OWNER_ERROR',
     message: 'This user is already assigned as a beneficial owner.'
+  },
+  {
+    name: 'NO_ADDITIONAL_OWNERS',
+    message: `I confirm that I have listed the details for all beneficial owners who own 25% or more of the business.`
   },
   { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
   { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
@@ -748,6 +761,9 @@ methods: [
         .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
         .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
         .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
+      .end()
+      .start().addClass('principalOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_ADDITIONAL_OWNERS, data$: this.noAdditionalBeneficialOwners$ }).end()
       .end();
   },
 
