@@ -29,8 +29,13 @@ foam.CLASS({
   `,
 
   properties: [
-    'id',
     {
+      class: 'Int',
+      name: 'id',
+      documentation: `Please use class when defining data type`
+    },
+    {
+      class: 'foam.dao.DAOProperty',
       name: 'data',
       expression: function(id) {
         // Filter the invoice history DAO and only take the records that have
