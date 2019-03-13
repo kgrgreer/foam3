@@ -1,4 +1,4 @@
-package net.nanopay.accounting.quick;
+package net.nanopay.accounting.quickbooks;
 
 import com.intuit.oauth2.client.OAuth2PlatformClient;
 import com.intuit.oauth2.data.BearerTokenResponse;
@@ -18,18 +18,18 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * When the user hits the "Connect" button in Ablii for QuickBooks, they're
- * brought to /services/quick, which calls the execute method defined in this
+ * brought to /services/quickbooks, which calls the execute method defined in this
  * file.
  *
  * The execute method will generate a URL for QuickBooks' website that the user's
  * browser gets redirected to. At that URL they'll be able to sign in and grant
  * Ablii access to their data, such as invoices, contacts, and bank accounts.
  *
- * This is the 'quick' service, which is not served. It is accessed via a web
+ * This is the 'quickbooks' service, which is not served. It is accessed via a web
  * agent. This needs to be a web agent because we need a URL that QuickBooks can
  * redirect to when giving us the API access information.
  */
-public class QuickService implements WebAgent {
+public class QuickbooksWebAgent implements WebAgent {
   public void execute(X x) {
     /*
     Info:   Function to access the QuickBooks API to sign in and valid user information in QuickBooks
@@ -40,15 +40,15 @@ public class QuickService implements WebAgent {
     try {
       HttpServletRequest  req          = x.get(HttpServletRequest.class);
       HttpServletResponse resp         = x.get(HttpServletResponse.class);
-      DAO                 store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+      DAO                 store        = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
       User                user         = (User) x.get("user");
       DAO                 userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
-      QuickOauth          auth         = (QuickOauth) x.get("quickAuth");
+      QuickbooksOauth          auth         = (QuickbooksOauth) x.get("quickbooksAuth");
       Group               group        = user.findGroup(x);
       AppConfig           app          = group.getAppConfig(x);
-      DAO                 configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
-      QuickConfig         config       = (QuickConfig) configDAO.find(app.getUrl());
-      QuickTokenStorage   tokenStorage = (QuickTokenStorage) store.find(user.getId());
+      DAO                 configDAO    = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
+      QuickbooksConfig         config       = (QuickbooksConfig) configDAO.find(app.getUrl());
+      QuickbooksToken   tokenStorage = (QuickbooksToken) store.find(user.getId());
 
       // These come from QuickBooks
       String code  = req.getParameter("code");
@@ -64,11 +64,11 @@ public class QuickService implements WebAgent {
 
         // Create the object we use to store everything we need to access the
         // QuickBooks API.
-        QuickClientFactory factory = new QuickClientFactory();
+        QuickbooksClientFactory factory = new QuickbooksClientFactory();
         factory.init(x);
 
         // Set the portal redirect URL on the object.
-        tokenStorage = (QuickTokenStorage) store.find(user.getId());
+        tokenStorage = (QuickbooksToken) store.find(user.getId());
         tokenStorage.setPortalRedirect("#" + (SafetyUtil.isEmpty(redirect) ? "" : redirect));
         store.put(tokenStorage);
 
@@ -106,7 +106,7 @@ public class QuickService implements WebAgent {
           tokenStorage.setCsrf(" ");
           tokenStorage.setRealmId(" ");
           store.put(tokenStorage);
-          resp.sendRedirect("/service/quick");
+          resp.sendRedirect("/service/quickbooksWebAgent");
         }
       }
     } catch ( Throwable e ) {
@@ -117,7 +117,7 @@ public class QuickService implements WebAgent {
 
   public void sync(X x, HttpServletResponse response) {
     try {
-      response.sendRedirect("/?accounting=quickbook#sme.bank.matching");
+      response.sendRedirect("/?accounting=quickbooks#sme.bank.matching");
     } catch ( Throwable e ) {
       Logger logger = (Logger) x.get("logger");
       logger.error(e);

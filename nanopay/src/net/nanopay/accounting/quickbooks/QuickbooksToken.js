@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.accounting.quick',
-  name: 'QuickTokenStorage',
+  package: 'net.nanopay.accounting.quickbooks',
+  name: 'QuickbooksToken',
 
   documentation: 'Model to hold the token data for QuickBooks users.',
 

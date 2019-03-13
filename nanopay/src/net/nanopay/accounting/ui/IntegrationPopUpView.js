@@ -13,7 +13,7 @@ foam.CLASS({
     'accountDAO',
     'bankIntegrationsDAO',
     'pushMenu',
-    'quickSignIn',
+    'quickbooksService',
     'user',
     'xeroSignIn'
   ],

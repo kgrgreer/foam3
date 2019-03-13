@@ -11,7 +11,7 @@ foam.CLASS({
     'accountDAO',
     'bankIntegrationsDAO',
     'pushMenu',
-    'quickSignIn',
+    'quickbooksService',
     'user',
     'xeroSignIn',
     'ctrl'
@@ -84,8 +84,8 @@ foam.CLASS({
         service = this.xeroSignIn;
       }
 
-      if ( integraition === 'quickbook' ) {
-        service = this.quickSignIn;
+      if ( integraition === 'quickbooks' ) {
+        service = this.quickbooksService;
       }
 
       // display loading icon

@@ -13,7 +13,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'bankIntegrationsDAO',
-    'quickSignIn',
+    'quickbooksService',
     'user',
     'xeroSignIn'
   ],
@@ -299,7 +299,7 @@ foam.CLASS({
       this.checkForConnections();
     },
     async function isQuickbooksConnected() {
-      var result = await this.quickSignIn.isSignedIn(null, this.user);
+      var result = await this.quickbooksService.isSignedIn(null, this.user);
       if ( result.result ) {
         this.qbBtnLabel = this.Disconnect;
         this.qbConnected = this.Connected;
@@ -359,7 +359,7 @@ foam.CLASS({
       code: function() {
         var self = this;
         if ( this.qbBtnLabel == this.Disconnect ) {
-          this.quickSignIn.removeToken(null, this.user).then(function(result) {
+          this.quickbooksService.removeToken(null, this.user).then(function(result) {
             self.qbBtnLabel = this.Connect;
             self.qbConnected = this.NotConnected;
             self.add(self.NotificationMessage.create({ message: 'Intuit quickbooks integration has been disconnected' }));
@@ -369,7 +369,7 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
         } else {
-          var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+          var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
           window.location = this.attachSessionId(url);
         }
       }

@@ -156,11 +156,11 @@ var classes = [
   'net.nanopay.accounting.xero.model.XeroInvoice',
 
   // quick
-  'net.nanopay.accounting.quick.QuickConfig',
-  'net.nanopay.accounting.quick.QuickOauth',
-  'net.nanopay.accounting.quick.QuickTokenStorage',
-  'net.nanopay.accounting.quick.model.QuickContact',
-  'net.nanopay.accounting.quick.model.QuickInvoice',
+  'net.nanopay.accounting.quickbooks.QuickbooksConfig',
+  'net.nanopay.accounting.quickbooks.QuickbooksOauth',
+  'net.nanopay.accounting.quickbooks.QuickbooksToken',
+  'net.nanopay.accounting.quickbooks.model.QuickbooksContact',
+  'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',

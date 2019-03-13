@@ -190,7 +190,7 @@ foam.CLASS({
       window.location = this.attachSessionId(url);
     },
     function signQuickbooks() {
-      var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+      var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
       window.location = this.attachSessionId(url);
     },
   ]

@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.accounting.quick.model',
-  name: 'QuickContact',
+  package: 'net.nanopay.accounting.quickbooks.model',
+  name: 'QuickbooksContact',
   extends: 'net.nanopay.contacts.Contact',
   documentation: 'Class for Contacts imported from Quick Accounting Software',
   properties: [

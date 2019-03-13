@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.accounting.quick.model',
-  name: 'QuickInvoice',
+  package: 'net.nanopay.accounting.quickbooks.model',
+  name: 'QuickbooksInvoice',
   extends: 'net.nanopay.invoice.model.Invoice',
   documentation: 'Class for Invoices imported from Quick Accounting Software',
   properties: [

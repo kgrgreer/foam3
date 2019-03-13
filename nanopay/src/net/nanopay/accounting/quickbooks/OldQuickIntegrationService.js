@@ -5,9 +5,9 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.accounting.quick',
+  package: 'net.nanopay.accounting.quickbooks',
   name: 'QuickIntegrationService',
-  documentation: 'Quick Integration functions to synchronizing with quick and verifying if signed in',
+  documentation: 'Quick Integration functions to synchronizing with quickbooks and verifying if signed in',
   implements: [
     'net.nanopay.accounting.IntegrationService'
   ],
@@ -33,8 +33,8 @@ foam.CLASS({
     'net.nanopay.accounting.AccountingBankAccount',
     'net.nanopay.accounting.AccountingContactEmailCache',
     'net.nanopay.accounting.ResultResponse',
-    'net.nanopay.accounting.quick.model.*',
-    'net.nanopay.accounting.quick.model.QuickQueryCustomerResponse',
+    'net.nanopay.accounting.quickbooks.model.*',
+    'net.nanopay.accounting.quickbooks.model.QuickQueryCustomerResponse',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.contacts.Contact',
@@ -653,7 +653,7 @@ try {
         },
         {
           name: 'contact',
-          type: 'net.nanopay.accounting.quick.model.QuickQueryContact',
+          type: 'net.nanopay.accounting.quickbooks.model.QuickQueryContact',
         },
         {
           name: 'user',
@@ -692,7 +692,7 @@ return true;
         },
         {
           name: 'contacts',
-          type: 'net.nanopay.accounting.quick.model.QuickQueryContact []',
+          type: 'net.nanopay.accounting.quickbooks.model.QuickQueryContact []',
         },
         {
           name: 'user',
@@ -874,11 +874,11 @@ try {
         },
         {
           name: 'ts',
-          type: 'net.nanopay.accounting.quick.QuickTokenStorage',
+          type: 'net.nanopay.accounting.quickbooks.QuickTokenStorage',
         },
         {
           name: 'config',
-          type: 'net.nanopay.accounting.quick.QuickConfig',
+          type: 'net.nanopay.accounting.quickbooks.QuickConfig',
         },
         {
           name: 'query',
@@ -1005,7 +1005,7 @@ return files;`,
         },
         {
           name: 'nano',
-          type: 'net.nanopay.accounting.quick.model.QuickInvoice',
+          type: 'net.nanopay.accounting.quickbooks.model.QuickInvoice',
         },
       ],
       javaCode:

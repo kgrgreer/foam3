@@ -1,4 +1,4 @@
-package net.nanopay.accounting.quick;
+package net.nanopay.accounting.quickbooks;
 
 import com.intuit.ipp.core.Context;
 import com.intuit.ipp.core.IEntity;
@@ -25,8 +25,8 @@ import foam.util.SafetyUtil;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.accounting.*;
-import net.nanopay.accounting.quick.model.QuickContact;
-import net.nanopay.accounting.quick.model.QuickInvoice;
+import net.nanopay.accounting.quickbooks.model.QuickbooksContact;
+import net.nanopay.accounting.quickbooks.model.QuickbooksInvoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Business;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-public class QuickIntegrationService extends ContextAwareSupport
+public class QuickbooksIntegrationService extends ContextAwareSupport
   implements IntegrationService, NanoService {
 
   private DAO tokenDAO;
@@ -53,7 +53,7 @@ public class QuickIntegrationService extends ContextAwareSupport
 
   @Override
   public void start() throws Exception {
-    this.tokenDAO = (DAO) getX().get("quickTokenStorageDAO");
+    this.tokenDAO = (DAO) getX().get("quickbooksTokenDAO");
     this.userDAO = (DAO) getX().get("localUserDAO");
     this.invoiceDAO = (DAO) getX().get("invoiceDAO");
     this.contactDAO   = (DAO) getX().get("contactDAO");
@@ -65,9 +65,9 @@ public class QuickIntegrationService extends ContextAwareSupport
   @Override
   public ResultResponse isSignedIn(X x) {
     User              user         = (User) x.get("user");
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
-    if ( tokenStorage == null ) {
+    if ( token == null ) {
       return new ResultResponse.Builder(x).setResult(false).build();
     }
 
@@ -99,7 +99,7 @@ public class QuickIntegrationService extends ContextAwareSupport
           }
 
         } catch ( Exception e ) {
-          invalidContacts.add("Can not import quick contact # " + contact.getId() + ", " + e.getMessage());
+          invalidContacts.add("Can not import quickbooks contact # " + contact.getId() + ", " + e.getMessage());
         }
 
       }
@@ -138,8 +138,7 @@ public class QuickIntegrationService extends ContextAwareSupport
       reSyncInvoices(x);
 
     } catch (Exception e) {
-
-      errorHandler(e);
+      return errorHandler(e);
     }
 
     return new ResultResponse.Builder(x)
@@ -157,13 +156,13 @@ public class QuickIntegrationService extends ContextAwareSupport
   @Override
   public ResultResponse removeToken(X x) {
     User              user         = (User) x.get("user");
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
-    if ( tokenStorage == null ) {
+    if ( token == null ) {
       return new ResultResponse.Builder(x).setResult(false).setReason("User has not connected to Quick Books").build();
     }
 
-    tokenDAO.inX(x).remove(tokenStorage.fclone());
+    tokenDAO.inX(x).remove(token.fclone());
     user = (User) user.fclone();
     user.clearIntegrationCode();
     userDAO.inX(x).put(user);
@@ -192,17 +191,20 @@ public class QuickIntegrationService extends ContextAwareSupport
 
   @Override
   public ResultResponse reSyncInvoice(X x, net.nanopay.invoice.model.Invoice invoice) {
-    QuickInvoice quickInvoice = (QuickInvoice) invoice.fclone();
+    QuickbooksInvoice quickInvoice = (QuickbooksInvoice) invoice.fclone();
     User user = (User) x.get("user");
 
     try {
 
       // if it's receivable, skip it for now
-      if ( invoice.getPayeeId() == user.getId() ) {
-
+      if ( invoice.getPayeeId() == user.getId() && invoice.getStatus() == InvoiceStatus.PENDING ) {
+        quickInvoice.setDesync(true);
+        invoiceDAO.inX(x).put(quickInvoice);
         return new ResultResponse.Builder(x)
           .setResult(true).build();
       }
+
+      if ( invoice.getStatus() == InvoiceStatus.PAID ) {}
 
       Transaction payment = createPaymentFor(x, quickInvoice);
       create(x, payment);
@@ -216,28 +218,25 @@ public class QuickIntegrationService extends ContextAwareSupport
       quickInvoice.setDesync(true);
       invoiceDAO.inX(x).put(quickInvoice);
 
-      return new ResultResponse.Builder(x)
-        .setResult(false)
-        .setReason(e.getMessage())
-        .build();
+      return errorHandler(e);
     }
   }
 
   public void reSyncInvoices(X x) {
     User            user           = (User) x.get("user");
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
     // 1. find all the deSync invoices
     ArraySink select = (ArraySink) invoiceDAO.inX(x).where(AND(
-      EQ(QuickInvoice.REALM_ID, tokenStorage.getRealmId()),
-      EQ(QuickInvoice.DESYNC, true)
+      EQ(QuickbooksInvoice.REALM_ID, token.getRealmId()),
+      EQ(QuickbooksInvoice.DESYNC, true)
     )).select(new ArraySink());
-    ArrayList<QuickInvoice> quickInvoices = (ArrayList<QuickInvoice>) select.getArray();
+    ArrayList<QuickbooksInvoice> quickInvoices = (ArrayList<QuickbooksInvoice>) select.getArray();
 
     // 2. prepare the batch request
     BatchOperation batchOperation = new BatchOperation();
 
-    for ( QuickInvoice quickInvoice : quickInvoices ) {
+    for ( QuickbooksInvoice quickInvoice : quickInvoices ) {
       batchOperation.addEntity(createPaymentFor(x, quickInvoice), OperationEnum.CREATE, quickInvoice.getQuickId());
     }
 
@@ -249,7 +248,7 @@ public class QuickIntegrationService extends ContextAwareSupport
       failedSet.add(batchId);
     }
 
-    for ( QuickInvoice quickInvoice : quickInvoices ) {
+    for ( QuickbooksInvoice quickInvoice : quickInvoices ) {
       if ( ! failedSet.contains(quickInvoice.getQuickId()) ) {
         quickInvoice.setDesync(false);
         invoiceDAO.inX(x).put(quickInvoice);
@@ -259,20 +258,38 @@ public class QuickIntegrationService extends ContextAwareSupport
     }
   }
 
-  public ResultResponse errorHandler(Exception e ) {
-    e.printStackTrace();
-
+  public ResultResponse errorHandler(Throwable e ) {
     ResultResponse resultResponse = new ResultResponse();
+    resultResponse.setResult(false);
 
-    if ( e instanceof AuthenticationException ) {
-      resultResponse.setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED);
-      resultResponse.setReason(AccountingErrorCodes.TOKEN_EXPIRED.getLabel());
-    } else {
-      resultResponse.setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR);
-      resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
+    if ( e instanceof AccountingException ) {
+      AccountingException accountingException = (AccountingException) e;
+
+      // if error codes has already been set
+      if ( accountingException.getErrorCodes() != null ) {
+        resultResponse.setErrorCode(accountingException.getErrorCodes());
+        resultResponse.setReason(e.getMessage());
+        e.printStackTrace();
+        return resultResponse;
+      }
+
+      if ( accountingException.getCause() != null ) {
+        Throwable temp = accountingException.getCause();
+        if ( temp instanceof AuthenticationException ) {
+          resultResponse.setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED);
+          resultResponse.setReason(AccountingErrorCodes.TOKEN_EXPIRED.getLabel());
+        } else {
+          resultResponse.setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR);
+          resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
+        }
+
+        temp.printStackTrace();
+        return resultResponse;
+      }
     }
 
-    resultResponse.setResult(false);
+    resultResponse.setErrorCode(AccountingErrorCodes.INTERNAL_ERROR);
+    resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
     return resultResponse;
   }
 
@@ -302,14 +319,14 @@ public class QuickIntegrationService extends ContextAwareSupport
     DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
     DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
 
     cacheDAO.inX(x).put(
       new AccountingContactEmailCache.Builder(x)
         .setQuickId(importContact.getId())
-        .setRealmId(tokenStorage.getRealmId())
+        .setRealmId(token.getRealmId())
         .setEmail(email.getAddress())
         .build()
     );
@@ -332,15 +349,15 @@ public class QuickIntegrationService extends ContextAwareSupport
         return null;
       }
 
-      if ( existContact instanceof  QuickContact &&
-           (( QuickContact ) existContact).getQuickId().equals(importContact.getId()) ) {
+      if ( existContact instanceof  QuickbooksContact &&
+           (( QuickbooksContact ) existContact).getQuickId().equals(importContact.getId()) ) {
         contactDAO.inX(x).put(
-          updateQuickContact(x, importContact, (QuickContact) existContact.fclone(), false)
+          updateQuickbooksContact(x, importContact, (QuickbooksContact) existContact.fclone(), false)
         );
       } else {
         return new ContactMismatchPair.Builder(x)
           .setExistContact(existContact)
-          .setNewContact(createQuickContactFrom(x, importContact, false))
+          .setNewContact(createQuickbooksContactFrom(x, importContact, false))
           .build();
       }
     }
@@ -359,7 +376,7 @@ public class QuickIntegrationService extends ContextAwareSupport
         }
 
         if ( sink.getArray().size() == 1 ) {
-          QuickContact temp = createQuickContactFrom(x, importContact, true);
+          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true);
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
           temp.setOrganization(business.getOrganization());
@@ -370,7 +387,7 @@ public class QuickIntegrationService extends ContextAwareSupport
         }
 
         if ( sink.getArray().size() > 1) {
-          QuickContact temp = createQuickContactFrom(x, importContact, true);
+          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true);
           temp.setChooseBusiness(true);
           temp.setEmail(email.getAddress());
           temp.setFirstName(existUser.getFirstName());
@@ -382,26 +399,26 @@ public class QuickIntegrationService extends ContextAwareSupport
       }
 
       if ( existUser == null ) {
-        contactDAO.inX(x).put(createQuickContactFrom(x, importContact, false));
+        contactDAO.inX(x).put(createQuickbooksContactFrom(x, importContact, false));
       }
     }
 
     return null;
   }
 
-  public QuickContact createQuickContactFrom(foam.core.X x, NameBase importContact, boolean existUser) {
-    return updateQuickContact(x, importContact, new QuickContact(), existUser);
+  public QuickbooksContact createQuickbooksContactFrom(foam.core.X x, NameBase importContact, boolean existUser) {
+    return updateQuickbooksContact(x, importContact, new QuickbooksContact(), existUser);
   }
 
-  public QuickContact updateQuickContact(X x, NameBase importContact, QuickContact existContact, boolean existUser) {
+  public QuickbooksContact updateQuickbooksContact(X x, NameBase importContact, QuickbooksContact existContact, boolean existUser) {
     User            user           = (User) x.get("user");
     CountryService  countryService = (CountryService) x.get("countryService");
     RegionService   regionService  = (RegionService) x.get("regionService");
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
 
-    QuickContact newContact = existContact;
+    QuickbooksContact newContact = existContact;
 
     if ( ! existUser ) {
       /*
@@ -464,7 +481,7 @@ public class QuickIntegrationService extends ContextAwareSupport
     newContact.setType("Contact");
     newContact.setGroup("sme");
     newContact.setQuickId(importContact.getId());
-    newContact.setRealmId(tokenStorage.getRealmId());
+    newContact.setRealmId(token.getRealmId());
     newContact.setOwner(user.getId());
 
     return newContact;
@@ -472,13 +489,13 @@ public class QuickIntegrationService extends ContextAwareSupport
 
   public String importInvoice(X x, Transaction qInvoice) {
     User user = (User) x.get("user");
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
-    QuickInvoice existInvoice = (QuickInvoice) invoiceDAO.inX(x).find(
+    QuickbooksInvoice existInvoice = (QuickbooksInvoice) invoiceDAO.inX(x).find(
       AND(
-        EQ(QuickInvoice.QUICK_ID,   qInvoice.getId()),
-        EQ(QuickInvoice.REALM_ID,   tokenStorage.getRealmId()),
-        EQ(QuickInvoice.CREATED_BY, user.getId())
+        EQ(QuickbooksInvoice.QUICK_ID,   qInvoice.getId()),
+        EQ(QuickbooksInvoice.REALM_ID,   token.getRealmId()),
+        EQ(QuickbooksInvoice.CREATED_BY, user.getId())
       ));
 
     BigDecimal balance = qInvoice instanceof Bill ?
@@ -486,7 +503,7 @@ public class QuickIntegrationService extends ContextAwareSupport
 
     if ( existInvoice != null ) {
 
-      existInvoice = (QuickInvoice) existInvoice.fclone();
+      existInvoice = (QuickbooksInvoice) existInvoice.fclone();
 
       // if desync, continue
       if ( existInvoice.getDesync() ) {
@@ -517,7 +534,7 @@ public class QuickIntegrationService extends ContextAwareSupport
         return null;
       }
 
-      existInvoice = new QuickInvoice();
+      existInvoice = new QuickbooksInvoice();
     }
 
     // 1. Check the customer or vendor email
@@ -527,7 +544,7 @@ public class QuickIntegrationService extends ContextAwareSupport
 
     AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.inX(x).find(AND(
       EQ(AccountingContactEmailCache.QUICK_ID, id),
-      EQ(AccountingContactEmailCache.REALM_ID, tokenStorage.getRealmId())
+      EQ(AccountingContactEmailCache.REALM_ID, token.getRealmId())
     ));
 
     if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
@@ -537,8 +554,8 @@ public class QuickIntegrationService extends ContextAwareSupport
     // 2. If the Contact doesn't exist send a notification as to why the invoice wasn't imported
     Contact contact = (Contact) contactDAO.inX(x).find(
       AND(
-        EQ(QuickContact.EMAIL, cache.getEmail()),
-        EQ(QuickContact.OWNER, user.getId())
+        EQ(QuickbooksContact.EMAIL, cache.getEmail()),
+        EQ(QuickbooksContact.OWNER, user.getId())
       ));
     if ( contact == null ) {
       return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
@@ -570,7 +587,7 @@ public class QuickIntegrationService extends ContextAwareSupport
     existInvoice.setDestinationCurrency(qInvoice.getCurrencyRef().getValue());
     existInvoice.setIssueDate(qInvoice.getTxnDate());
     existInvoice.setQuickId(qInvoice.getId());
-    existInvoice.setRealmId(tokenStorage.getRealmId());
+    existInvoice.setRealmId(token.getRealmId());
     existInvoice.setCreatedBy(user.getId());
     existInvoice.setContactId(contact.getId());
 
@@ -604,7 +621,7 @@ public class QuickIntegrationService extends ContextAwareSupport
           .build());
       } catch (Exception e) {
         e.printStackTrace();
-        throw new RuntimeException(e.getMessage());
+        throw new AccountingException(e.getMessage(), AccountingErrorCodes.INTERNAL_ERROR);
       }
     }).filter(Objects::nonNull)
       .collect(Collectors.toList());
@@ -612,7 +629,7 @@ public class QuickIntegrationService extends ContextAwareSupport
     return files.toArray(new File[files.size()]);
   }
 
-  public Transaction createPaymentFor(X x, QuickInvoice quickInvoice) {
+  public Transaction createPaymentFor(X x, QuickbooksInvoice quickInvoice) {
     User user        = (User) x.get("user");
 
     String type = "";
@@ -632,7 +649,7 @@ public class QuickIntegrationService extends ContextAwareSupport
     }
 
     if ( SafetyUtil.isEmpty(account.getIntegrationId()) ) {
-      throw new RuntimeException("No bank accounts synchronised to Quick");
+      throw new AccountingException("No bank accounts synchronised to Quick", AccountingErrorCodes.MISSING_BANK);
     }
 
     BigDecimal amount = new BigDecimal(quickInvoice.getAmount());
@@ -646,7 +663,7 @@ public class QuickIntegrationService extends ContextAwareSupport
     linkedTxnList.add(linkedTxn);
 
     // 2. contact ref
-    QuickContact contact = (QuickContact) contactDAO.inX(x).find(quickInvoice.getContactId());
+    QuickbooksContact contact = (QuickbooksContact) contactDAO.inX(x).find(quickInvoice.getContactId());
     ReferenceType contactRef = new ReferenceType();
     contactRef.setName(contact.getBusinessName());
     contactRef.setValue(contact.getQuickId());
@@ -726,67 +743,67 @@ public class QuickIntegrationService extends ContextAwareSupport
 
   public List sendRequest(foam.core.X x, String query) {
     User user       = (User) x.get("user");
-    DAO store       = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+    DAO store       = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
     Group group     = user.findGroup(x);
     AppConfig app   = group.getAppConfig(x);
-    DAO                         configDAO = ((DAO) x.get("quickConfigDAO")).inX(x);
-    QuickConfig                 config    = (QuickConfig)configDAO.find(app.getUrl());
-    QuickTokenStorage  tokenStorage = (QuickTokenStorage) store.find(user.getId());
+    DAO                 configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
+    QuickbooksConfig    config    = (QuickbooksConfig)configDAO.find(app.getUrl());
+    QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
 
     try {
       Config.setProperty(Config.BASE_URL_QBO, config.getIntuitAccountingAPIHost() + "/v3/company/");
 
-      OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken());
-      Context context = new Context(oauth, ServiceType.QBO, tokenStorage.getRealmId());
+      OAuth2Authorizer oauth = new OAuth2Authorizer(token.getAccessToken());
+      Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
       return service.executeQuery(query).getEntities();
     } catch ( Exception e ) {
-      throw new RuntimeException("Error fetch QuickBook data.", e);
+      throw new AccountingException("Error fetch QuickBook data.", e);
     }
   }
 
   public IEntity create(foam.core.X x, IEntity object) {
     User user       = (User) x.get("user");
-    DAO store       = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+    DAO store       = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
     Group group     = user.findGroup(x);
     AppConfig app   = group.getAppConfig(x);
-    DAO                         configDAO = ((DAO) x.get("quickConfigDAO")).inX(x);
-    QuickConfig                 config    = (QuickConfig)configDAO.find(app.getUrl());
-    QuickTokenStorage  tokenStorage = (QuickTokenStorage) store.find(user.getId());
+    DAO                         configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
+    QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
+    QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
 
     try {
       Config.setProperty(Config.BASE_URL_QBO, config.getIntuitAccountingAPIHost() + "/v3/company/");
 
-      OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken());
-      Context context = new Context(oauth, ServiceType.QBO, tokenStorage.getRealmId());
+      OAuth2Authorizer oauth = new OAuth2Authorizer(token.getAccessToken());
+      Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
       return service.add(object);
     } catch ( Exception e ) {
-      throw new RuntimeException("Error fetch QuickBook data.", e);
+      throw new AccountingException("Error fetch QuickBook data.", e);
     }
   }
 
   public void batchOperation(X x, BatchOperation operation, CallbackHandler callbackHandler) {
     User user       = (User) x.get("user");
-    DAO store       = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+    DAO store       = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
     Group group     = user.findGroup(x);
     AppConfig app   = group.getAppConfig(x);
-    DAO                         configDAO = ((DAO) x.get("quickConfigDAO")).inX(x);
-    QuickConfig                 config    = (QuickConfig)configDAO.find(app.getUrl());
-    QuickTokenStorage  tokenStorage = (QuickTokenStorage) store.find(user.getId());
+    DAO                         configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
+    QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
+    QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
 
     try {
       Config.setProperty(Config.BASE_URL_QBO, config.getIntuitAccountingAPIHost() + "/v3/company/");
 
-      OAuth2Authorizer oauth = new OAuth2Authorizer(tokenStorage.getAccessToken());
-      Context context = new Context(oauth, ServiceType.QBO, tokenStorage.getRealmId());
+      OAuth2Authorizer oauth = new OAuth2Authorizer(token.getAccessToken());
+      Context context = new Context(oauth, ServiceType.QBO, token.getRealmId());
       DataService service =  new DataService(context);
 
       service.executeBatch(operation);
     } catch ( Exception e ) {
-      throw new RuntimeException("Error fetch QuickBook data.", e);
+      throw new AccountingException("Error fetch QuickBook data.", e);
     }
   }
 }

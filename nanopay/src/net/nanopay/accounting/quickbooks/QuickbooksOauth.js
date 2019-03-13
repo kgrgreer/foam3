@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.accounting.quick',
-  name: 'QuickOauth',
+  package: 'net.nanopay.accounting.quickbooks',
+  name: 'QuickbooksOauth',
   documentation: 'Abstract Model for Xero Config',
   properties: [
     {

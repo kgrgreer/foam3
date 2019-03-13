@@ -14,7 +14,7 @@ foam.CLASS({
     'contactDAO',
     'ctrl',
     'invoiceDAO',
-    'quickSignIn',
+    'quickbooksService',
     'userDAO',
     'xeroSignIn'
   ],
@@ -65,7 +65,7 @@ foam.CLASS({
             }));
           });
         } else if ( nUser.integrationCode == self.IntegrationCode.QUICKBOOKS ) {
-          self.quickSignIn.isSignedIn(null, nUser).then((result) => {
+          self.quickbooksService.isSignedIn(null, nUser).then((result) => {
             self.isSignedIn = ! ! result.result;
           })
           .catch((err) => {
@@ -108,7 +108,7 @@ foam.CLASS({
           service = this.xeroSignIn;
         }
         if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
-          service = this.quickSignIn;
+          service = this.quickbooksService;
         }
 
 
@@ -133,6 +133,13 @@ foam.CLASS({
         X.controllerView.removeClass('account-sync-loading-animation');
         this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
         this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
+
+        if ( invoicesResult.result === true && contactsResult.result === true) {
+          this.ctrl.add(this.NotificationMessage.create({
+            message: 'All information has been synchronized',
+            type: 'success'
+          }));
+        }
       }
     },
   ]

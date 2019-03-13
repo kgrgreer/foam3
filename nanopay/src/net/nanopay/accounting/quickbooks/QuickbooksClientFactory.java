@@ -1,4 +1,4 @@
-package net.nanopay.accounting.quick;
+package net.nanopay.accounting.quickbooks;
 
 import com.intuit.oauth2.client.OAuth2PlatformClient;
 import com.intuit.oauth2.config.Environment;
@@ -20,7 +20,7 @@ import java.util.List;
  * API. Each object is associated with a user and contains things like security
  * tokens used to access the API, URLs for redirects, and other things.
  */
-public class QuickClientFactory {
+public class QuickbooksClientFactory {
 
 	OAuth2PlatformClient client;
 	OAuth2Config oauth2Config;
@@ -33,15 +33,15 @@ public class QuickClientFactory {
     User              user         = (User) x.get("user");
     Group             group        = user.findGroup(x);
     AppConfig         app          = group.getAppConfig(x);
-    DAO               configDAO    = (DAO) x.get("quickConfigDAO");
-    QuickConfig       config       = (QuickConfig) configDAO.find(app.getUrl());
-    QuickOauth        auth         = (QuickOauth) x.get("quickAuth");
-    DAO               store        = (DAO)  x.get("quickTokenStorageDAO");
-    QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
+    DAO               configDAO    = (DAO) x.get("quickbooksConfigDAO");
+    QuickbooksConfig  config       = (QuickbooksConfig) configDAO.find(app.getUrl());
+    QuickbooksOauth        auth         = (QuickbooksOauth) x.get("quickbooksAuth");
+    DAO               store        = (DAO)  x.get("quickbooksTokenDAO");
+    QuickbooksToken tokenStorage = (QuickbooksToken) store.find(user.getId());
 
     // If the user has never tried logging in to Xero before
     if ( tokenStorage == null ) {
-      tokenStorage = new QuickTokenStorage();
+      tokenStorage = new QuickbooksToken();
       tokenStorage.setId(user.getId());
       tokenStorage.setAccessToken(" ");
       tokenStorage.setCsrf(" ");
