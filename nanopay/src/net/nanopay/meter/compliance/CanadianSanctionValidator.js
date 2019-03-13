@@ -11,14 +11,14 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.mlang.MLang',
     'foam.mlang.predicate.ContainsIC',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.meter.compliance.canadianSanction.Record',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -28,24 +28,23 @@ foam.CLASS({
         User user = (User) obj;
         Predicate predicate = user instanceof Business
           ? new ContainsIC.Builder(x)
-            .setArg1(MLang.prepare(Record.ENTITY))
-            .setArg2(MLang.prepare(user.getBusinessName()))
+            .setArg1(prepare(Record.ENTITY))
+            .setArg2(prepare(user.getBusinessName()))
             .build()
-          // TODO: Add support for fuzzy string matching for name search
-          : MLang.AND(
-              MLang.EQ(Record.LAST_NAME, user.getLastName().toUpperCase()),
-              MLang.EQ(Record.GIVEN_NAME, user.getFirstName().toUpperCase())
+          : AND(
+              EQ(Record.LAST_NAME, user.getLastName().toUpperCase()),
+              EQ(Record.GIVEN_NAME, user.getFirstName().toUpperCase())
             );
         Count found = (Count) ((DAO) x.get("canadianSanctionDAO"))
           .where(predicate).limit(1).select(new Count());
 
-        if ( found.getValue() == 0 ) {
-          ruler.putResult(ComplianceValidationStatus.VALIDATED);
-          return;
+        if ( found.getValue() == 1 ) {
+          String message = String.format(
+            "%s : Individual or business names was found in the Canadian sanction list."
+            , getClass().getSimpleName());
+          ruler.putResult(message);
+          user.setCompliance(ComplianceStatus.FAILED);
         }
-        user.setCompliance(ComplianceStatus.FAILED);
-        ruler.putResult(ComplianceValidationStatus.REJECTED);
-        ruler.stop();
       `
     }
   ]
