@@ -1,6 +1,7 @@
 package net.nanopay.fx.ascendantfx;
 
 import foam.core.*;
+import foam.util.SafetyUtil;
 import net.nanopay.fx.ascendantfx.model.*;
 
 import javax.xml.bind.DatatypeConverter;
@@ -19,6 +20,19 @@ public class AscendantFXService
   public AscendantFXService(X x) {
     setX(x);
     logger = (Logger) x.get("logger");
+  }
+
+  protected AscendantFXCredientials getCredentials() {
+    AscendantFXCredientials credentials = (AscendantFXCredientials) getX().get("ascendantFXCredientials");
+    if ( credentials == null ||
+         SafetyUtil.isEmpty(credentials.getUser()) ||
+         SafetyUtil.isEmpty(credentials.getPassword()) ||
+         SafetyUtil.isEmpty(credentials.getUrl()) ) {
+      Logger logger = (Logger) getX().get("logger");
+      logger.error(this.getClass().getSimpleName(), "invalid credentials");
+      throw new RuntimeException("AscendantFX invalid credentials");
+    }
+    return credentials;
   }
 
   @Override
@@ -384,7 +398,7 @@ public class AscendantFXService
       SOAPElement security = header.addChildElement("Security", "o", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
       security.addAttribute(new QName("s:mustUnderstand"), "1");
 
-      AscendantFXCredientials credentials = (AscendantFXCredientials) getX().get("ascendantFXCredientials");
+      AscendantFXCredientials credentials = getCredentials();
       // add username
       SOAPElement usernameToken = security.addChildElement("UsernameToken", "o");
       SOAPElement username = usernameToken.addChildElement("Username", "o");
@@ -459,7 +473,7 @@ public class AscendantFXService
    */
   protected SOAPMessage sendMessage(String method, SOAPMessage message) {
     SOAPConnection conn = null;
-    AscendantFXCredientials credentials = (AscendantFXCredientials) getX().get("ascendantFXCredientials");
+    AscendantFXCredientials credentials = getCredentials();
 
     try {
       conn = SOAPConnectionFactory.newInstance().createConnection();
