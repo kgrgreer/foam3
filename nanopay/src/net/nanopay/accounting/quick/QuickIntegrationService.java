@@ -193,8 +193,16 @@ public class QuickIntegrationService extends ContextAwareSupport
   @Override
   public ResultResponse reSyncInvoice(X x, net.nanopay.invoice.model.Invoice invoice) {
     QuickInvoice quickInvoice = (QuickInvoice) invoice.fclone();
+    User user = (User) x.get("user");
 
     try {
+
+      // if it's receivable, skip it for now
+      if ( invoice.getPayeeId() == user.getId() ) {
+
+        return new ResultResponse.Builder(x)
+          .setResult(true).build();
+      }
 
       Transaction payment = createPaymentFor(x, quickInvoice);
       create(x, payment);
@@ -466,30 +474,6 @@ public class QuickIntegrationService extends ContextAwareSupport
     User user = (User) x.get("user");
     QuickTokenStorage tokenStorage = (QuickTokenStorage) tokenDAO.inX(x).find(user.getId());
 
-    // 1. Check the customer or vendor email
-    String id = qInvoice instanceof Bill ?
-      ( (Bill) qInvoice )   .getVendorRef().getValue() :
-      ( (Invoice) qInvoice ).getCustomerRef().getValue();
-
-    AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.inX(x).find(AND(
-      EQ(AccountingContactEmailCache.QUICK_ID, id),
-      EQ(AccountingContactEmailCache.REALM_ID, tokenStorage.getRealmId())
-    ));
-
-    if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
-      return "Invoice can not import because contact do not exist.";
-    }
-
-    // 2. If the Contact doesn't exist send a notification as to why the invoice wasn't imported
-    Contact contact = (Contact) contactDAO.inX(x).find(
-      AND(
-        EQ(QuickContact.EMAIL, cache.getEmail()),
-        EQ(QuickContact.OWNER, user.getId())
-      ));
-    if ( contact == null ) {
-      return "Invoice can not import because contact do not exist.";
-    }
-
     QuickInvoice existInvoice = (QuickInvoice) invoiceDAO.inX(x).find(
       AND(
         EQ(QuickInvoice.QUICK_ID,   qInvoice.getId()),
@@ -534,6 +518,30 @@ public class QuickIntegrationService extends ContextAwareSupport
       }
 
       existInvoice = new QuickInvoice();
+    }
+
+    // 1. Check the customer or vendor email
+    String id = qInvoice instanceof Bill ?
+      ( (Bill) qInvoice )   .getVendorRef().getValue() :
+      ( (Invoice) qInvoice ).getCustomerRef().getValue();
+
+    AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.inX(x).find(AND(
+      EQ(AccountingContactEmailCache.QUICK_ID, id),
+      EQ(AccountingContactEmailCache.REALM_ID, tokenStorage.getRealmId())
+    ));
+
+    if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
+      return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
+    }
+
+    // 2. If the Contact doesn't exist send a notification as to why the invoice wasn't imported
+    Contact contact = (Contact) contactDAO.inX(x).find(
+      AND(
+        EQ(QuickContact.EMAIL, cache.getEmail()),
+        EQ(QuickContact.OWNER, user.getId())
+      ));
+    if ( contact == null ) {
+      return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
     }
 
     Currency currency = (Currency) currencyDAO.inX(x).find(qInvoice.getCurrencyRef().getValue());

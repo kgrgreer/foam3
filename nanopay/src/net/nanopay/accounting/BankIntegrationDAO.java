@@ -47,7 +47,7 @@ public class BankIntegrationDAO
     }
 
     // Checks all bank accounts and grabs ones that match the banks currency
-    if ( bankList != null ) {
+    if ( bankList != null && userBank != null ) {
       for ( AccountingBankAccount bank : bankList ) {
         if ( bank.getCurrencyCode().equals(userBank.getDenomination()) ) {
           sink.put(bank, null);
