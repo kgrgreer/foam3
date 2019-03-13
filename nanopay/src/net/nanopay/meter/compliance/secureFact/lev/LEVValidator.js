@@ -5,35 +5,23 @@ foam.CLASS({
   documentation: `Validates a business using SecureFact LEV api.`,
 
   implements: [
-    'net.nanopay.meter.compliance.ComplianceValidator'
+    'foam.nanos.ruler.RuleAction'
   ],
 
   javaImports: [
     'foam.dao.DAO',
-    'net.nanopay.meter.compliance.ComplianceValidationStatus',
+    'foam.nanos.logger.Logger',
     'net.nanopay.model.Business',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
+    'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.lev.LEVRequestService',
+    'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
     'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
-    'foam.nanos.logger.Logger'
+    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult'
   ],
 
   methods: [
     {
-      name: 'canValidate',
-      javaCode: `
-      if ( obj instanceof Business ) {
-        Business business = (Business) obj;
-        if (business.getAddress().getCountryId().equals("CA")) {
-          return true;
-        }
-      }
-      return false;
-        `
-    },
-    {
-      name: 'validate',
+      name: 'applyAction',
       javaCode: ` 
       Logger logger = (Logger) getX().get("logger");
       Business business = (Business) obj;
@@ -46,30 +34,33 @@ foam.CLASS({
       response.setEntityId(business.getId());
       DAO dao = (DAO) x.get("secureFactLEVDAO");
       dao.put(response);
-      if (response.getHttpCode().equals("200")) {
+      if ( response.getHttpCode().equals("200") ) {
           LEVResult[] result = response.getResults();
           int closeMatchCounter = 0;
-          for (int i=0;i<result.length;i++) {
-            if (result[i].getCloseMatch()) {
+          for ( int i = 0; i < result.length; i++ ) {
+            if ( result[i].getCloseMatch() ) {
               closeMatchCounter++;
             }
           }
           response.setCloseMatches(closeMatchCounter + "/" + result.length);
           dao.put(response);
           if ( closeMatchCounter == result.length ) {
-            return ComplianceValidationStatus.VALIDATED;
+            ruler.putResult(ComplianceValidationStatus.VALIDATED);
           } else {
-            return ComplianceValidationStatus.INVESTIGATING;
+            ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
           }
+          return;
       } else {
-        if (response.getHttpCode().startsWith("4")){
+        ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
+        if ( response.getHttpCode().startsWith("4") ){
           logger.error("LEV request failed with" + response.getHttpCode());
-        } else if (response.getHttpCode().startsWith("5")){
-          logger.error("LEV request failed with" + response.getHttpCode() + ". SecureFact server side error");
-          //throw comliance error and log it
+        } else if ( response.getHttpCode().startsWith("5") ){
+          String message = String.format(
+            "Securefact LEV request failed with %s.", response.getHttpCode());
+          logger.error(message);
+          throw new RuntimeException(message);
         }
       }
-      return ComplianceValidationStatus.INVESTIGATING;
       `
     }
   ]
