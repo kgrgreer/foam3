@@ -23,7 +23,7 @@ foam.CLASS({
       label: 'Entity Name',
       tableCellFormatter: function(value, obj) {
         var self = this;
-        obj.userDAO.find(value).then( function(user) {
+        obj.userDAO.find(value).then(function(user) {
           if ( user ) {
             self.start().add(user.legalName).end();
           }

@@ -1,24 +1,24 @@
 foam.CLASS({
-    package: 'net.nanopay.meter.compliance.secureFact.sidni',
-    name: 'SIDniRequestService',
+  package: 'net.nanopay.meter.compliance.secureFact.sidni',
+  name: 'SIDniRequestService',
 
   javaImports: [
     'foam.lib.json.JSONParser',
+    'java.text.SimpleDateFormat',
+    'java.util.Base64',
+    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAddress',
+    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniCustomer',
+    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniName',
+    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniPhone',
+    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
+    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
+    'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
+    'org.apache.http.entity.ContentType',
+    'org.apache.http.entity.StringEntity',
     'org.apache.http.impl.client.CloseableHttpClient',
     'org.apache.http.impl.client.HttpClients',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAddress',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniName',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniCustomer',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniPhone',
-    'org.apache.http.entity.StringEntity',
-    'org.apache.http.HttpResponse',
-    'org.apache.http.entity.ContentType',
-    'java.util.Base64',
     'org.apache.http.util.EntityUtils',
-    'java.text.SimpleDateFormat',
   ],
 
   methods: [
@@ -40,35 +40,35 @@ foam.CLASS({
       int numberOfPhones = 0;
       Boolean homeAndMobile = false, mobile = false, homePhone = false;
       // We don't know what type of phone number the phone field could be; might be mobile or home phone. Set it to both if only phone field is set.
-      if (!user.getPhone().getNumber().equals("") ) {
+      if ( !user.getPhone().getNumber().equals("") ) {
         numberOfPhones++;
         homePhone = true;
-        if (!user.getMobile().getNumber().equals("") ) {
+        if ( !user.getMobile().getNumber().equals("") ) {
           mobile = true;
           numberOfPhones++;
         } else {
           homeAndMobile = true;
           numberOfPhones++;
         }
-      } else if (!user.getMobile().getNumber().equals("")) {
+      } else if ( !user.getMobile().getNumber().equals("") ) {
         numberOfPhones++;;
         mobile = true;
       }
       SIDniPhone[] phones = new SIDniPhone[numberOfPhones];
 
-      //build customer
+      // build customer
       customer.setUserReference(user.getId()+"");
       customer.setConsentGranted(true);
       customer.setLanguage("en-CA");
 
-      //build name
+      // build name
       name.setFirstName(user.getFirstName());
       name.setLastName(user.getLastName());
-      if ( user.getMiddleName() !=null && user.getMiddleName() !="") {
+      if ( user.getMiddleName() !=null && user.getMiddleName() !="" ) {
         name.setMiddleName(user.getMiddleName());
       }
 
-      //build address
+      // build address
       address.setAddressType("Current");
       address.setAddressLine(user.getAddress().getAddress());
       address.setCity(user.getAddress().getCity());
@@ -76,20 +76,20 @@ foam.CLASS({
       address.setPostalCode(user.getAddress().getPostalCode());
       addresses[0] = address;
 
-      //build phone
-      if (homePhone) {
+      // build phone
+      if ( homePhone ) {
         SIDniPhone phoneNumber = new SIDniPhone();
         phoneNumber.setType("HOME");
         phoneNumber.setNumber(user.getPhone().getNumber());
         phones[--numberOfPhones] = phoneNumber;
       }
-      if (homeAndMobile) {
+      if ( homeAndMobile ) {
         SIDniPhone phoneNumber = new SIDniPhone();
         phoneNumber.setType("MOBILE");
         phoneNumber.setNumber(user.getPhone().getNumber());
         phones[--numberOfPhones] = phoneNumber;
       }
-      if (mobile) {
+      if ( mobile ) {
         SIDniPhone phoneNumber = new SIDniPhone();
         phoneNumber.setType("MOBILE");
         phoneNumber.setNumber(user.getMobile().getNumber());
@@ -99,7 +99,7 @@ foam.CLASS({
       request.setCustomer(customer);
       request.setName(name);
       request.setAddress(addresses);
-      if (homePhone || mobile) {
+      if ( homePhone || mobile ) {
         request.setPhone(phones);
       }
 
@@ -128,20 +128,20 @@ foam.CLASS({
       httpPost.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(key.getBytes()));
 
       StringEntity entity;
-          try {
-            entity = new StringEntity(request.toJSON());
-            entity.setContentType(ContentType.APPLICATION_JSON.getMimeType());
-            httpPost.setEntity(entity);
-            HttpResponse response =  httpClient.execute(httpPost);
-            String responseJson = EntityUtils.toString(response.getEntity());
-            JSONParser parser = new JSONParser();
-              SIDniResponse sidniResponse = (SIDniResponse) parser.parseString(responseJson, SIDniResponse.class);
-              sidniResponse.setHttpCode(response.getStatusLine().getStatusCode()+"");
-              sidniResponse.setUserReference(request.getCustomer().getUserReference());
-              return sidniResponse;
-          } catch(Exception e) {
-            return null;
-          }
+      try {
+        entity = new StringEntity(request.toJSON());
+        entity.setContentType(ContentType.APPLICATION_JSON.getMimeType());
+        httpPost.setEntity(entity);
+        HttpResponse response =  httpClient.execute(httpPost);
+        String responseJson = EntityUtils.toString(response.getEntity());
+        JSONParser parser = new JSONParser();
+        SIDniResponse sidniResponse = (SIDniResponse) parser.parseString(responseJson, SIDniResponse.class);
+        sidniResponse.setHttpCode(response.getStatusLine().getStatusCode() + "");
+        sidniResponse.setUserReference(request.getCustomer().getUserReference());
+        return sidniResponse;
+      } catch(Exception e) {
+        return null;
+      }
       `
     },
   ]

@@ -35,21 +35,21 @@ foam.CLASS({
       DAO dao = (DAO) x.get("secureFactLEVDAO");
       dao.put(response);
       if ( response.getHttpCode().equals("200") ) {
-          LEVResult[] result = response.getResults();
-          int closeMatchCounter = 0;
-          for ( int i = 0; i < result.length; i++ ) {
-            if ( result[i].getCloseMatch() ) {
-              closeMatchCounter++;
-            }
+        LEVResult[] result = response.getResults();
+        int closeMatchCounter = 0;
+        for ( int i = 0; i < result.length; i++ ) {
+          if ( result[i].getCloseMatch() ) {
+            closeMatchCounter++;
           }
-          response.setCloseMatches(closeMatchCounter + "/" + result.length);
-          dao.put(response);
-          if ( closeMatchCounter == result.length ) {
-            ruler.putResult(ComplianceValidationStatus.VALIDATED);
-          } else {
-            ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
-          }
-          return;
+        }
+        response.setCloseMatches(closeMatchCounter + "/" + result.length);
+        dao.put(response);
+        if ( closeMatchCounter == result.length ) {
+          ruler.putResult(ComplianceValidationStatus.VALIDATED);
+        } else {
+          ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
+        }
+        return;
       } else {
         ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
         if ( response.getHttpCode().startsWith("4") ){

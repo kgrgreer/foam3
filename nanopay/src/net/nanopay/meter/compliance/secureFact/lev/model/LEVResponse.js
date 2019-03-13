@@ -22,7 +22,7 @@ foam.CLASS({
       label: 'Entity Name',
       tableCellFormatter: function(value, obj) {
         var self = this;
-        obj.businessDAO.find(value).then( function(business) {
+        obj.businessDAO.find(value).then(function(business) {
           if ( business ) {
             self.start().add(business.businessName).end();
           }
@@ -41,7 +41,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'searchId',
-      documentation: 'SecureFact unique serch id.'
+      documentation: 'Securefact unique search id.'
     },
     {
       class: 'String',

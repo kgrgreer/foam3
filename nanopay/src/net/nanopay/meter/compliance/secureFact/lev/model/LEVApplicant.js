@@ -5,7 +5,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'firtName',
+      name: 'firstName',
       validateObj: function(firstName) {
         if ( firstName.length > 75 ) {
             return 'First name has a max length of 75.';

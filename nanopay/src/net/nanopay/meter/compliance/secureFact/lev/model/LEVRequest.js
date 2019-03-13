@@ -7,7 +7,7 @@ foam.CLASS({
       class: 'String',
       name: 'searchType',
       required: true,
-      documentation: 'Perform search against entityName or entityNumber',
+      documentation: 'Performs search against entityName or entityNumber',
       validateObj: function(searchType) {
         if ( searchType === 'name' || searchType === 'number' ) {
           return;
@@ -95,7 +95,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'address',
-      documentation: 'Reccomended postalcode only.',
+      documentation: 'Reccomended postal code only.',
       validateObj: function(address) {
         if ( address.length > 150 ) {
           return 'Address is over 150 character max length.';

@@ -44,7 +44,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'flinksLoginId',
-      documentation: 'Flink loginId, refer to doc before using.'
+      documentation: 'Flinks loginId, refer to doc before using.'
     },
   ]
 });

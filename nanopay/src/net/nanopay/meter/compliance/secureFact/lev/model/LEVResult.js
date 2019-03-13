@@ -54,8 +54,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'closeMatch',
-      documentation: `This field will have a value of ‘true’ if Securefact determines the entity to
-                      be the closest match to the search criteria and the Profile Report can be ordered.`
+      documentation: `This field will have a value of 'true' if Securefact determines the entity to
+        be the closest match to the search criteria and the Profile Report can be ordered.`
     },
     {
       class: 'String',

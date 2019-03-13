@@ -24,4 +24,4 @@ foam.CLASS({
       name: 'typeScore'
     }
   ]
-  });
+});

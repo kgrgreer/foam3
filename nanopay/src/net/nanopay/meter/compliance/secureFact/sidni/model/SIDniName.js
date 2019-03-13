@@ -39,11 +39,11 @@ foam.CLASS({
       name: 'suffix',
       documentation: `Individual's name suffix`,
       validateObj: function(suffix) {
-        if ( ('JR', 'SR', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VII', 'IX').indexOf(suffix) > -1 ) {
+        if ( ['JR', 'SR', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VII', 'IX'].indexOf(suffix) > -1 ) {
           return;
         }
         return 'Invalid Suffix.';
-        }
+      }
     }
   ]
 });

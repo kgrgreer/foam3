@@ -12,4 +12,4 @@ foam.CLASS({
       name: 'message'
     }
   ]
-  });
+});
