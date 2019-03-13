@@ -44,7 +44,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.Sink',
     'static foam.mlang.MLang.*',
-    'java.util.List'
+    'java.util.List',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   axioms: [
@@ -57,10 +58,12 @@ foam.CLASS({
             public InvoiceFilteredSettlementReport(X x, BlobService delegate) {
               setX(x);
               setDelegate(delegate);
+              dated = false;
+              dao_ = null;
             }
 
-            protected ArraySink payableDAO_;
-            protected ArraySink recievableDAO_;
+            protected boolean dated;
+            protected ArraySink dao_;
           `
         }));
       }
@@ -75,6 +78,10 @@ foam.CLASS({
     {
       type: 'Date',
       name: 'endDate'
+    },
+    {
+      type: 'Boolean',
+      name: 'dated'
     }
   ],
 
@@ -88,42 +95,44 @@ foam.CLASS({
         }
       ],
       javaCode:
-      `
+      `        
         DAO    userDAO           = (DAO) x.get("localUserDAO");
         DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
         Logger logger            = (Logger) x.get("logger");
     
-        HttpServletRequest req     = x.get(HttpServletRequest.class);
-    
-        String id = req.getParameter("userId");
+        // PROPERTY SETTING:
+        HttpServletRequest req   = x.get(HttpServletRequest.class);
+        long id = Integer.parseInt(req.getParameter("userId"));
+
+        if ( id == null || id == 0 ) {
+          // TODO user to print Invoice settelmentReport not found.
+        }
+
+        setStartDate(Integer.parseInt(req.getParameter("startDate")));
+        setEndDate(Integer.parseInt(req.getParameter("endDate")));
+
+        if ( getStartDate() == null || getEndDate() == null || getStartDate() > getEndDate() ) {
+          setDated(false);
+        } else {
+          setDated(true);
+        }
+
         Business business = findUser(id);
     
         try {
           // create a temporary folder to save files before zipping
-          FileUtils.forceMkdir(new File("/opt/nanopay/AFXReportsTemp/"));
+          FileUtils.forceMkdir(new File("/opt/nanopay/SettlementReport/"));
     
-          File companyInfo = generateCompanyInfo(x, business);
-          File signingOfficer = generateSigningOfficer(x, business);
-          File beneficialOwners = generateBeneficialOwners(x, business);
-          File bankInfo = generateBankInfo(x, business);
-          File businessDoc = getBusinessDoc(x, business);
-          File signingOfficerID = getSigningOfficerID(x, business);
-          File beneficialOwnersDoc = getBeneficialOwnersDoc(x, business);
-          File usBankAccountProof = getUSBankAccountProof(x, business);
+          File settlementReport = collectInvoiceDataAndWriteToData(x, business);
     
-          File[] srcFiles = new File[]{companyInfo,
-            signingOfficer,
-            beneficialOwners,
-            bankInfo,
-            usBankAccountProof,
-            businessDoc,
-            signingOfficerID,
-            beneficialOwnersDoc};
+          if ( settlementReport == null ){
+            // TODO: probably just log
+          }
     
-          downloadZipFile(x, business, srcFiles);
+          downloadZipFile(x, business, settlementReport);
     
           // delete the temporary folder. Later if we want to archive those files, we can keep the folder.
-          FileUtils.deleteDirectory(new File("/opt/nanopay/AFXReportsTemp/"));
+          FileUtils.deleteDirectory(new File("/opt/nanopay/SettlementReport/"));
         } catch (IOException e) {
           logger.error(e);
         } catch (Throwable t) {
@@ -142,16 +151,25 @@ foam.CLASS({
       ],
       javaCode:
       `
-        payableDAO_ = (ArraySink) user.expenses.where(
-          AND(
-            GTE(Invoice.ISSUE_DATE, startDate),
-            LTE(Invoice.ISSUE_DATE, endDate)
-          )).select(null);
-        recievableDAO_ = (ArraySink) user.sales.where(
-          AND(
-            GTE(Invoice.ISSUE_DATE, startDate),
-            LTE(Invoice.ISSUE_DATE, endDate)
-          )).select(null);
+        DAO  invoiceDAO = (DAO) x.get("invoiceDAO");
+        if ( getDated() ) {
+          dao_ = (ArraySink) invoiceDAO.where(
+            AND(
+              GTE(Invoice.ISSUE_DATE, startDate),
+              LTE(Invoice.ISSUE_DATE, endDate)
+            ))
+            .orderBy(Desc(Invoice.ISSUE_DATE))
+            .select(new ArraySink);
+        } else {
+          dao_ = (ArraySink) invoiceDAO.where(
+            AND(
+              GTE(Invoice.ISSUE_DATE, startDate),
+              LTE(Invoice.ISSUE_DATE, endDate)
+            ))
+            .orderBy(Desc(Invoice.ISSUE_DATE))
+            .select(new ArraySink);
+        }
+        
       `
     },
     {
@@ -174,13 +192,18 @@ foam.CLASS({
           UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
           business = (Business) userDAO.find(userUserJunction.getTargetId());
         }
+
+        return business;
       `
     },
-    ,
     {
       name: 'collectInvoiceDataAndWriteToData',
       javaType: 'java.io.File',
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           name: 'user',
           type: 'foam.nanos.auth.User'
@@ -188,869 +211,171 @@ foam.CLASS({
       ],
       javaCode:
       `
+        if ( getDated() ) {
+          title = "Invoice Information for " + sdf.format(getStartDate()) + " to " + sdf.format(getEndDate());
+        } else {
+          title = "Invoice Information";
+        }
+    
+        String path = "/opt/nanopay/SettlementReport/[" + business.getOrganization() + "]SettlementReport.pdf";
+    
+        try {
+          Document document = new Document();
+          PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+          document.open();
+
+          document.add(new Paragraph(title));
+    
+          List list = createListForOneInvoice(x, business.getOrganization());
+    
+          document.add(list);
+          document.add(Chunk.NEWLINE);
+          document.add(new Paragraph("Business ID: " + business.getId()));
+          document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
+    
+          document.close();
+          writer.close();
+    
+          return new File(path);
+        } catch (DocumentException | FileNotFoundException e) {
+          Logger logger            = (Logger) x.get("logger");
+          logger.error(e);
+        }
+    
+        return null; 
+      `
+    },
+    {
+      name: 'createListForOneInvoice',
+      javaType: 'List<List>',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'businessName',
+          type: 'String'
+        }
+      ],
+      javaCode:
+      `
+        DAO  userDAO            = (DAO) x.get("localUserDAO");
+        SimpleDateFormat df     = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+        SimpleDateFormat sdf    = new SimpleDateFormat("yyyy-MM-dd");
+        User temp_U             = null;
+        String title            = null;
+        Invoice[] invoiceArray_ = dao_.getArray();
+        List<List> listList     = new ArrayList<List>();
+        List list               = null;
+
+        String transDate = "";
+        String createdBy_S = "";
+        String businessNamePayer = "";
+        String businessNamePayee = "";
+        String srcCurrency = "";
+        String dstCurrency = "";
+        String exRate = "";
+        String inStatus = "";
+        String tanId = "";
+        String inORN = "";
+        String inID = "";
+        String inAmount = "";
         
+        for ( Invoice invoice : invoiceArray_ ) {
+          // Format Information variables for each Invoice
+          businessName = user.getOrganization();
+          transDate = df.format(invoice.getPaymentDate());
+          temp_U = (User) userDAO.find(invoice.getCreatedBy());
+          createdBy_S = temp_U == null ? 'n/a' : temp_U.label();
+          temp_U = (User) userDAO.find(invoice.getPayerId);
+          businessNamePayer = temp_U == null ? 'n/a' : temp_U.getOrganization;
+          temp_U = (User) userDAO.find(invoice.getPayeeId);
+          businessNamePayee = temp_U == null ? 'n/a' : temp_U.getOrganization;
+          srcCurrency = invoice.getSourceCurrency();
+          dstCurrency = invoice.getDestinationCurrency();
+          exRate = invoice.getExchangeRate();
+          inStatus = ((InvoiceStatus)invoice.getStatus()).getLabel();
+          tanId = invoice.getReferenceId();
+          inORN = invoice.getPurchaseOrder();
+          inID = invoice.getId();
+          inAmount = invoice.getAmount() + "";
+
+          // Put all variables with text for each line, for write to doc.pdf(settlementReport) 
+          list = new List(List.UNORDERED);
+          list.add(new ListItem("Invoice ID: " + inID + " PO: " + inORN ));
+          list.add(new ListItem("\tTransaction Date: " + transDate));
+          list.add(new ListItem("\tInvoice was established by: " + createdBy_S));
+          list.add(new ListItem("\tPayer: " + businessNamePayer));
+          list.add(new ListItem("\tPayee: " + businessNamePayee));
+          list.add(new ListItem("\tSource Account Currency Type: " + srcCurrency));
+          list.add(new ListItem("\tDestination Account Currency Type: " + dstCurrency));
+          if ( exRate != null && exRate.length() != 0 ) {
+            list.add(new ListItem(\t"Exchange Rate: " + exRate));
+          }
+          list.add(new ListItem("\tStatus of Payment: " + inStatus));
+          list.add(new ListItem("\tTransaction ID: " + tanId));
+          list.add(new ListItem("\tInvoice Amount: " + inAmount));
+          list.add(new ListItem("\n\n"));
+
+          listList.add(list);
+        }
+        return list;
       `
     },
     {
-      name: 'sendEmail',
+      name: 'downloadZipFile',
       args: [
         {
           name: 'x',
           type: 'Context'
         },
         {
-          name: 'emailMessage',
-          type: 'foam.nanos.notification.email.EmailMessage'
-        }
-      ],
-      javaCode: `
-if ( ! this.getEnabled() ) return;
-
-((FixedThreadPool) getThreadPool()).submit(x, new ContextAgent() {
-  @Override
-  public void execute(X x) {
-    try {
-      MimeMessage message = createMimeMessage(finalizeEmailConfig(x, emailMessage));
-      if ( message == null ) {
-        return;
-      }
-
-      // send message
-      Transport transport = session_.getTransport("smtp");
-      transport.connect();
-      transport.sendMessage(message, message.getAllRecipients());
-      transport.close();
-    } catch (Throwable t) {
-      t.printStackTrace();
-    }
-  }
-});`
-    },
-    {
-      name: 'sendEmailFromTemplate',
-      javaCode: `
-if ( ! this.getEnabled() ) return;
-
-String group = user != null ? (String) user.getGroup() : null;
-EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(getX(), name, group);
-if ( emailMessage == null )
-  return;
-
-for ( String key : templateArgs.keySet() ) {
-  Object value = templateArgs.get(key);
-  if ( value instanceof String ) {
-    String s = (String) value;
-    templateArgs.put(key, new String(s.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
-  }
-}
-
-EnvironmentConfiguration config = getConfig(group);
-JtwigModel model = JtwigModel.newModel(templateArgs);
-emailMessage = (EmailMessage) emailMessage.fclone();
-
-JtwigTemplate templateBody =    JtwigTemplate.inlineTemplate(emailTemplate.getBody(), config);
-emailMessage.setBody(templateBody.render(model));
-
-// If subject has already provided, then we don't want to use template subject.
-if (SafetyUtil.isEmpty(emailMessage.getSubject())) {
-  JtwigTemplate templateSubject = JtwigTemplate.inlineTemplate(emailTemplate.getSubject(), config);
-  emailMessage.setSubject(templateSubject.render(model));
-}
-
-sendEmail(x, emailMessage);`
-    },
-    {
-      name: 'start',
-      javaCode:
-`Properties props = new Properties();
-props.setProperty("mail.smtp.auth", getAuthenticate() ? "true" : "false");
-props.setProperty("mail.smtp.starttls.enable", getStarttls() ? "true" : "false");
-props.setProperty("mail.smtp.host", getHost());
-props.setProperty("mail.smtp.port", getPort());
-if ( getAuthenticate() ) {
-  session_ = Session.getInstance(props, new SMTPAuthenticator(getUsername(), getPassword()));
-} else {
-  session_ = Session.getInstance(props);
-}`
-    },
-    {
-      name: 'finalizeEmailConfig',
-      type: 'foam.nanos.notification.email.EmailMessage',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
+          name: 'business',
+          type: 'net.nanopay.model.Business'
         },
         {
-          name: 'emailMessage',
-          javaType: 'final foam.nanos.notification.email.EmailMessage'
+          name: 'file',
+          type: 'File'
         }
       ],
       javaCode:
-        `
-User user      = findUser(x, emailMessage);
-
-DAO groupDAO   = (DAO) x.get("groupDAO");
-Group group    = (Group) groupDAO.find(user.getGroup());
-
-if ( SafetyUtil.isEmpty(emailMessage.getFrom()) ) {
-  emailMessage.setFrom(
-    ! SafetyUtil.isEmpty(group.getFrom()) ?
-      group.getFrom() : getFrom()
-  );
-}
-
-if ( SafetyUtil.isEmpty(emailMessage.getReplyTo()) ) {
-  emailMessage.setReplyTo(
-    ! SafetyUtil.isEmpty(group.getReplyTo()) ?
-      group.getReplyTo() : getReplyTo()
-  );
-}
-
-if ( SafetyUtil.isEmpty(emailMessage.getDisplayName()) ) {
-  emailMessage.setDisplayName(
-    ! SafetyUtil.isEmpty(group.getDisplayName()) ? group.getDisplayName() : getDisplayName()
-  );
-}
-
-return emailMessage;
       `
-    },
-    {
-      name: 'findUser',
-      type: 'foam.nanos.auth.User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'emailMessage',
-          javaType: 'final foam.nanos.notification.email.EmailMessage'
+        HttpServletResponse response = x.get(HttpServletResponse.class);
+        Logger              logger   = (Logger) x.get("logger");
+    
+        response.setContentType("multipart/form-data");
+    
+        String businessName = business.getBusinessName();
+        String downloadName = "[" + businessName + "]ComplianceDocs.zip";
+    
+        response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
+    
+        DataOutputStream os = null;
+        ZipOutputStream zipos = null;
+        try {
+          zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
+          zipos.setMethod(ZipOutputStream.DEFLATED);
+    
+          zipos.putNextEntry(new ZipEntry(file.getName()));
+          os = new DataOutputStream(zipos);
+          InputStream is = new FileInputStream(file);
+          byte[] b = new byte[100];
+          int length;
+          while((length = is.read(b))!= -1){
+            os.write(b, 0, length);
+          }
+          is.close();
+          zipos.closeEntry();
+          os.flush();
+          
+        } catch (Exception e) {
+          logger.error(e);
+        } finally {
+          IOUtils.closeQuietly(os);
+          IOUtils.closeQuietly(zipos);
         }
-      ],
-      javaCode:
-        `
-foam.nanos.session.Session session = x.get(foam.nanos.session.Session.class);
-
-DAO userDAO         = (DAO) x.get("localUserDAO");
-User user           = (User) userDAO.find(session.getUserId());
-
-// 1. If the user doesn't login at this time, get the user from localUserDao
-// 2. If the user is the system user, get the real user from localUserDao
-if ( user == null || user.getId() == 1 ) {
-
-  Sink sink = new ArraySink();
-  sink = userDAO.where(MLang.EQ(User.EMAIL, emailMessage.getTo()[0]))
-    .limit(1).select(sink);
-
-  List list = ((ArraySink) sink).getArray();
-  if ( list == null || list.size() == 0 ) {
-    throw new RuntimeException("User not found");
-  }
-
-  user = (User) list.get(0);
-  if ( user == null ) {
-    throw new RuntimeException("User not found");
-  }
-}
-
-return user;
       `
     }
   ]
 });
-
-
-
-
-
-// package net.nanopay.invoice.InvoiceFilteredSettlementReport;
-// /Users/anna/Documents/NANOPAY/nanopay/src/net/nanopay/invoice/InvoiceFilteredSettlementReport.js
-
-// import com.itextpdf.text.*;
-// import com.itextpdf.text.pdf.PdfWriter;
-// import foam.blob.Blob;
-// import foam.blob.BlobService;
-// import foam.blob.IdentifiedBlob;
-// import foam.blob.ProxyBlobService;
-// import foam.core.X;
-// import foam.dao.DAO;
-// import foam.nanos.auth.User;
-// import foam.nanos.auth.UserUserJunction;
-// import foam.nanos.http.WebAgent;
-// import foam.nanos.logger.Logger;
-// import net.nanopay.account.Account;
-// import net.nanopay.bank.BankAccount;
-// import net.nanopay.bank.BankAccountStatus;
-// import net.nanopay.bank.CABankAccount;
-// import net.nanopay.bank.USBankAccount;
-// import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
-// import net.nanopay.meter.IpHistory;
-// import net.nanopay.model.*;
-// import net.nanopay.payment.Institution;
-// import org.apache.commons.io.FileUtils;
-// import org.apache.commons.io.IOUtils;
-
-// import javax.servlet.http.HttpServletRequest;
-// import javax.servlet.http.HttpServletResponse;
-// import java.io.*;
-// import java.text.SimpleDateFormat;
-// import java.text.DecimalFormat;
-// import java.util.Date;
-// import java.util.zip.ZipEntry;
-// import java.util.zip.ZipOutputStream;
-
-// import static foam.mlang.MLang.*;
-
-// public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebAgent {
-
-//   protected String name_;
-
-//   public AscendantFXReportsWebAgent(X x, BlobService delegate) {
-//     this(x, "AscendantFXReports", delegate);
-//   }
-
-//   public AscendantFXReportsWebAgent(X x, String name, BlobService delegate) {
-//     setX(x);
-//     setDelegate(delegate);
-//     name_ = name;
-//   }
-
-//   @Override
-//   public void execute(X x) {
-//     DAO    userDAO           = (DAO) x.get("localUserDAO");
-//     DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
-//     Logger logger            = (Logger) x.get("logger");
-
-//     HttpServletRequest req     = x.get(HttpServletRequest.class);
-
-//     String id = req.getParameter("userId");
-//     User user = (User) userDAO.find(id);
-//     Business business;
-
-//     if ( user instanceof Business ) {
-//       business = (Business) user;
-//     } else {
-//       UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
-//       business = (Business) userDAO.find(userUserJunction.getTargetId());
-//     }
-
-//     try {
-//       // create a temporary folder to save files before zipping
-//       FileUtils.forceMkdir(new File("/opt/nanopay/AFXReportsTemp/"));
-
-//       File companyInfo = generateCompanyInfo(x, business);
-//       File signingOfficer = generateSigningOfficer(x, business);
-//       File beneficialOwners = generateBeneficialOwners(x, business);
-//       File bankInfo = generateBankInfo(x, business);
-//       File businessDoc = getBusinessDoc(x, business);
-//       File signingOfficerID = getSigningOfficerID(x, business);
-//       File beneficialOwnersDoc = getBeneficialOwnersDoc(x, business);
-//       File usBankAccountProof = getUSBankAccountProof(x, business);
-
-//       File[] srcFiles = new File[]{companyInfo,
-//         signingOfficer,
-//         beneficialOwners,
-//         bankInfo,
-//         usBankAccountProof,
-//         businessDoc,
-//         signingOfficerID,
-//         beneficialOwnersDoc};
-
-//       downloadZipFile(x, business, srcFiles);
-
-//       // delete the temporary folder. Later if we want to archive those files, we can keep the folder.
-//       FileUtils.deleteDirectory(new File("/opt/nanopay/AFXReportsTemp/"));
-//     } catch (IOException e) {
-//       logger.error(e);
-//     } catch (Throwable t) {
-//       logger.error("Error generating compliance report package: ", t);
-//       throw new RuntimeException(t);
-//     }
-//   }
-
-
-//   private File generateCompanyInfo(X x, Business business) {
-//     DAO    businessTypeDAO   = (DAO) x.get("businessTypeDAO");
-//     DAO    businessSectorDAO = (DAO) x.get("businessSectorDAO");
-//     Logger logger            = (Logger) x.get("logger");
-
-//     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//     BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
-//     String businessType = type.getName();
-//     String businessName = business.getBusinessName();
-//     String operatingName = business.getOperatingBusinessName();
-//     String streetAddress = business.getBusinessAddress().getStreetNumber() + " " + business.getBusinessAddress().getStreetName();
-//     String city = business.getBusinessAddress().getCity();
-//     String province = business.getBusinessAddress().getRegionId();
-//     String country = business.getBusinessAddress().getCountryId();
-//     String postalCode = business.getBusinessAddress().getPostalCode();
-//     String businessPhoneNumber = business.getBusinessPhone().getNumber();
-//     BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
-//     String industry = businessSector.getName();
-//     String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
-//     String isThirdParty = business.getThirdParty() ? "Yes" : "No";
-//     String targetCustomers = business.getTargetCustomers();
-//     String sourceOfFunds = business.getSourceOfFunds();
-//     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
-//     String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
-//     String internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
-//     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
-
-//     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
-//     String reportGeneratedDate = df.format(new Date());
-
-//     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]CompanyInfo.pdf";
-
-//     try {
-//       Document document = new Document();
-//       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-//       document.open();
-//       document.add(new Paragraph("Company Information"));
-
-//       List list = new List(List.UNORDERED);
-//       list.add(new ListItem("Type of Business: " + businessType));
-//       list.add(new ListItem("Legal Name of Business: " + businessName));
-//       if ( operatingName.length() != 0 ) {
-//         list.add(new ListItem("Operating Name: " + operatingName));
-//       }
-//       list.add(new ListItem("Street Address: " + streetAddress));
-//       list.add(new ListItem("City: " + city));
-//       list.add(new ListItem("State/Province: " + province));
-//       list.add(new ListItem("Country: " + country));
-//       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
-//       list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
-//       list.add(new ListItem("Industry: " + industry + " (" + businessSector.getId() + ") - NAICS"));
-//       if ( country.equals("US") ) {
-//         String taxId = business.getTaxIdentificationNumber();
-//         list.add(new ListItem("Tax Identification Number: " + taxId));
-//       }
-//       list.add(new ListItem("Do you operate this business from your residence? " + residenceOperated));
-//       list.add(new ListItem("Are you taking instructions from and/or conducting transactions on behalf of a 3rd party? " + isThirdParty));
-//       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
-//       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
-//       list.add(new ListItem("Is this a holding company? " + isHoldingCompany));
-//       list.add(new ListItem("Annual gross sales in your base currency: " + annualRevenue));
-//       list.add(new ListItem("Base currency: " + baseCurrency));
-//       list.add(new ListItem("Are you sending or receiving international payments? " + internationalTransactions));
-
-//       // if user going to do transactions to the USA, we add International transfers report
-//       if ( !"".equals(business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount()) ) {
-//         String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
-//         String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
-//         String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
-//         String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
-//         String firstTradeDate = null;
-//         if ( business.getSuggestedUserTransactionInfo().getFirstTradeDate() != null ) {
-//           firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
-//         }
-
-//         list.add(new ListItem("International transfers: "));
-//         List subList = new List(true, false, 20);
-//         subList.add(new ListItem("Currency Name: " + foreignCurrency));
-//         subList.add(new ListItem("Purpose of Transactions: " + purposeOfTransactions));
-//         subList.add(new ListItem("Annual Number of Transactions: " + annualTransactionAmount));
-//         subList.add(new ListItem("Estimated Annual Volume in " + foreignCurrency + ": " + annualVolume));
-//         subList.add(new ListItem("Anticipated First Payment Date: " + firstTradeDate));
-//         subList.add(new ListItem("Industry: " + industry));
-//         list.add(subList);
-//       }
-
-//       document.add(list);
-//       document.add(Chunk.NEWLINE);
-//       document.add(new Paragraph("Business ID: " + business.getId()));
-//       document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
-
-//       document.close();
-//       writer.close();
-
-//       return new File(path);
-//     } catch (DocumentException | FileNotFoundException e) {
-//       logger.error(e);
-//     }
-
-//     return null;
-//   }
-
-
-//   private File generateSigningOfficer(X x, Business business) {
-//     DAO  userDAO                = (DAO) x.get("localUserDAO");
-//     DAO  identificationTypeDAO  = (DAO) x.get("identificationTypeDAO");
-//     DAO  ipHistoryDAO           = (DAO) x.get("ipHistoryDAO");
-
-//     Logger logger = (Logger) x.get("logger");
-
-//     String businessName = business.getBusinessName();
-
-//     User signingOfficer = (User) userDAO.find(AND(
-//       EQ(User.ORGANIZATION, businessName),
-//       EQ(User.SIGNING_OFFICER, true)));
-
-//     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//     String name = signingOfficer.getLegalName();
-//     String title = signingOfficer.getJobTitle();
-//     String isDirector = signingOfficer.getSigningOfficer()? "Yes" : "No";
-//     String isPEPHIORelated = signingOfficer.getPEPHIORelated() ? "Yes" : "No";
-
-//     String birthday = null;
-//     if ( signingOfficer.getBirthday() != null ) {
-//       birthday = sdf.format(signingOfficer.getBirthday());
-//     }
-//     String phoneNumber = null;
-//     if ( signingOfficer.getPhone() != null ) {
-//       phoneNumber = signingOfficer.getPhone().getNumber();
-//     }
-//     String email = signingOfficer.getEmail();
-//     String streetAddress = signingOfficer.getAddress().getStreetNumber() + " " + signingOfficer.getAddress().getStreetName();
-//     String city = signingOfficer.getAddress().getCity();
-//     String province = signingOfficer.getAddress().getRegionId();
-//     String country = signingOfficer.getAddress().getCountryId();
-//     String postalCode = signingOfficer.getAddress().getPostalCode();
-//     IdentificationType idType = (IdentificationType) identificationTypeDAO
-//       .find(signingOfficer.getIdentification().getIdentificationTypeId());
-//     String identificationType = idType.getName();
-//     String provinceOfIssue = signingOfficer.getIdentification().getRegionId();
-//     String countryOfIssue = signingOfficer.getIdentification().getCountryId();
-//     String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
-//     String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
-//     String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
-//     String principalType = signingOfficer.getPrincipleType();
-//     IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
-//     String nameOfPerson = ipHistory.findUser(x).getLegalName();
-//     String timestamp = sdf.format(ipHistory.getCreated());
-//     String ipAddress = ipHistory.getIpAddress();
-
-//     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
-//     String reportGeneratedDate = df.format(new Date());
-
-//     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]SigningOfficer.pdf";
-
-//     try {
-//       Document document = new Document();
-//       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-//       document.open();
-//       document.add(new Paragraph("Signing Officer Information"));
-
-//       List list = new List(List.UNORDERED);
-//       list.add(new ListItem("Are you the primary contact? Yes"));
-//       list.add(new ListItem("Are you a signing officer of the company? " + isDirector));
-//       list.add(new ListItem("Are you a domestic or foreign Politically Exposed Person (PEP), " +
-//         "Head of an International Organization (HIO), or a close associate or family member of any such person? " + isPEPHIORelated));
-//       list.add(new ListItem("Name: " + name));
-//       list.add(new ListItem("Title: " + title));
-//       list.add(new ListItem("Principal Type: " + principalType));
-//       list.add(new ListItem("Date of birth: " + birthday));
-//       list.add(new ListItem("Phone number: " + phoneNumber));
-//       list.add(new ListItem("Email address: " + email));
-//       list.add(new ListItem("Residential street address: " + streetAddress));
-//       list.add(new ListItem("City: " + city));
-//       list.add(new ListItem("State/Province: " + province));
-//       list.add(new ListItem("Country: " + country));
-//       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
-//       list.add(new ListItem("Type of identification: " + identificationType));
-//       list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
-//       list.add(new ListItem("Country of issue: " + countryOfIssue));
-//       list.add(new ListItem("Identification number: " + identificationNumber));
-//       list.add(new ListItem("Issue date: " + issueDate));
-//       list.add(new ListItem("Expiration date: " + expirationDate));
-//       list.add(new ListItem("Digital signature_Name of person: " + nameOfPerson));
-//       list.add(new ListItem("Digital signature_Timestamp: " + timestamp));
-//       list.add(new ListItem("Digital signature_Ip address: " + ipAddress));
-
-//       document.add(list);
-//       document.add(Chunk.NEWLINE);
-//       document.add(new Paragraph("Business ID: " + business.getId()));
-//       document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
-
-//       document.close();
-//       writer.close();
-
-//       return new File(path);
-//     } catch (DocumentException | IOException e) {
-//       logger.error(e);
-//     }
-
-//     return null;
-//   }
-
-
-//   public File generateAuthorizedUserInfo(X x, String id) {
-//     // None for now
-//     return null;
-//   }
-
-
-//   private File generateBeneficialOwners(X x, Business business) {
-//     Logger logger = (Logger) x.get("logger");
-
-//     String businessName = business.getBusinessName();
-//     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwners.pdf";
-
-//     User[] beneficialOwners = business.getPrincipalOwners();
-//     try {
-//       Document document = new Document();
-
-//       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-
-//       document.open();
-//       document.add(new Paragraph("Beneficial Owners Information"));
-
-//       SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
-//       String reportGeneratedDate = df.format(new Date());
-
-//       if ( beneficialOwners.length == 0 ) {
-//         List list = new List(List.UNORDERED);
-//         list.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
-//         list.add(new ListItem("Report Generated Date: " + reportGeneratedDate));
-//         document.add(list);
-//       } else {
-//         for ( int i = 0; i < beneficialOwners.length; i++ ) {
-//           User beneficialOwner = beneficialOwners[i];
-//           String firstName = beneficialOwner.getFirstName();
-//           String lastName = beneficialOwner.getLastName();
-//           String jobTitle = beneficialOwner.getJobTitle();
-//           String principalType = beneficialOwner.getPrincipleType();
-//           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
-//           String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
-//           String city = beneficialOwner.getAddress().getCity();
-//           String province = beneficialOwner.getAddress().getRegionId();
-//           String country = beneficialOwner.getAddress().getCountryId();
-//           String postalCode = beneficialOwner.getAddress().getPostalCode();
-//           SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("MMM d, yyyy");
-//           String dateOfBirth = dateOfBirthFormatter.format(beneficialOwner.getBirthday());
-//           // currently we don't store the info for Ownership (direct/indirect), will add later
-
-//           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
-//           List list = new List(List.UNORDERED);
-//           list.add(new ListItem("First name: " + firstName));
-//           list.add(new ListItem("Last name: " + lastName));
-//           list.add(new ListItem("Job title: " + jobTitle));
-//           list.add(new ListItem("Principal type: " + principalType));
-//           list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
-//           list.add(new ListItem("Residential street address: " + streetAddress));
-//           list.add(new ListItem("City: " + city));
-//           list.add(new ListItem("State/Province: " + province));
-//           list.add(new ListItem("Country: " + country));
-//           list.add(new ListItem("ZIP/Postal Code: " + postalCode));
-//           list.add(new ListItem("Date of birth: " + dateOfBirth));
-//           document.add(list);
-//           document.add(Chunk.NEWLINE);
-//         }
-//       }
-
-//       document.add(new Paragraph("Business ID: " + business.getId()));
-//       document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
-
-//       document.close();
-//       writer.close();
-
-//       return new File(path);
-//     } catch (DocumentException | IOException e) {
-//       logger.error(e);
-//     }
-
-//     return null;
-//   }
-
-//   private File generateBankInfo(X x, Business business) {
-//     DAO  userDAO           = (DAO) x.get("localUserDAO");
-//     DAO  accountDAO        = (DAO) x.get("accountDAO");
-//     DAO  branchDAO         = (DAO) x.get("branchDAO");
-//     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
-//     DAO  flinksResponseDAO  = (DAO) x.get("flinksAccountsDetailResponseDAO");
-
-//     Logger logger = (Logger) x.get("logger");
-
-//     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
-
-//     String businessName = business.getBusinessName();
-//     User signingOfficer = (User) userDAO.find(AND(
-//       EQ(User.ORGANIZATION, businessName),
-//       EQ(User.SIGNING_OFFICER, true)));
-
-//     BankAccount bankAccount = (BankAccount) accountDAO
-//       .find(AND(
-//         INSTANCE_OF(BankAccount.getOwnClassInfo()),
-//         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-//         EQ(BankAccount.DELETED, false),
-//         EQ(Account.OWNER, business.getId())));
-
-//     if ( bankAccount == null ) {
-//       return null;
-//     }
-
-//     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BankInfo.pdf";
-
-//     try {
-//       Document document = new Document();
-//       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-//       document.open();
-//       document.add(new Paragraph("Bank Information"));
-
-//       Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
-//       String routingNum = null;
-//       if ( branch != null ) {
-//         routingNum = branch.getBranchId();
-//       }
-
-//       Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
-//       String institutionNum = null;
-//       if ( institution != null ) {
-//         institutionNum = institution.getInstitutionNumber();
-//       }
-
-//       String accountNum = bankAccount.getAccountNumber();
-//       String accountName = bankAccount.getName();
-//       String accountCurrency = bankAccount.getDenomination();
-//       String companyName = business.getBusinessName();
-//       String operatingName = business.getOperatingBusinessName();
-//       String signingOfficerName = signingOfficer.getLegalName();
-//       long randomDepositAmount = bankAccount.getRandomDepositAmount();
-//       Date microVerificationTimestamp = bankAccount.getMicroVerificationTimestamp();
-//       String reportGeneratedDate = sdf.format(new Date());
-
-//       List list = new List(List.UNORDERED);
-//       list.add(new ListItem("Account name: " + accountName));
-//       list.add(new ListItem("Routing number: " + routingNum));
-//       list.add(new ListItem("Institution number: " + institutionNum));
-//       list.add(new ListItem("Account number: " + accountNum));
-//       list.add(new ListItem("Account currency: " + accountCurrency));
-//       list.add(new ListItem("Company name: " + companyName));
-//       if ( operatingName.length() != 0) {
-//         list.add(new ListItem("Operating name: " + operatingName));
-//       }
-//       list.add(new ListItem("Signing officer name: " + signingOfficerName));
-
-//       if ( bankAccount instanceof CABankAccount ) {
-//         CABankAccount caBankAccount = (CABankAccount) bankAccount;
-//         if ( microVerificationTimestamp != null ) { // micro-deposit
-//           DecimalFormat df = new DecimalFormat("0.00");
-//           String depositAmount = df.format((double)randomDepositAmount / 100);
-//           list.add(new ListItem("Amount sent in the micro-deposit: $" + depositAmount));
-//           Date createDate = caBankAccount.getCreated();
-//           String verification = sdf.format(microVerificationTimestamp);
-//           String bankAddedDate = sdf.format(createDate);
-//           list.add(new ListItem("Micro transaction verification date: " + verification));
-//           list.add(new ListItem("PAD agreement date: " + bankAddedDate));
-//         } else { // flinks
-//           FlinksAccountsDetailResponse flinksAccountInformation = (FlinksAccountsDetailResponse) flinksResponseDAO.find(
-//             EQ(FlinksAccountsDetailResponse.USER_ID, business.getId())
-//           );
-//           Date createDate = caBankAccount.getCreated();
-//           String dateOfValidation = sdf.format(createDate);
-//           String flinksRequestId = flinksAccountInformation.getRequestId();
-//           list.add(new ListItem("Validated by Flinks at: " + dateOfValidation));
-//           list.add(new ListItem("Flink response ID: " + flinksRequestId));
-//         }
-//       } else if ( bankAccount instanceof USBankAccount) {
-//         USBankAccount usBankAccount = (USBankAccount) bankAccount;
-//         Date createDate = usBankAccount.getCreated();
-//         String bankAddedDate = sdf.format(createDate);
-//         list.add(new ListItem("PAD agreement date: " + bankAddedDate));
-//       }
-
-//       document.add(list);
-//       document.add(Chunk.NEWLINE);
-//       document.add(new Paragraph("Business ID: " + business.getId()));
-//       document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
-
-//       document.close();
-//       writer.close();
-
-//       return new File(path);
-//     } catch (DocumentException | FileNotFoundException e) {
-//       logger.error(e);
-//     }
-
-//     return null;
-//   }
-
-
-//   private File getBusinessDoc(X x, Business business) {
-//     Logger logger = (Logger) x.get("logger");
-
-//     String businessName = business.getBusinessName();
-//     String path;
-//     Blob blob;
-//     try {
-//       foam.nanos.fs.File[] businessFiles = business.getAdditionalDocuments();
-//       if ( businessFiles != null && businessFiles.length > 0 ) {
-//         foam.nanos.fs.File businessFile = businessFiles[0];
-
-//         String blobId = ((IdentifiedBlob) businessFile.getData()).getId();
-//         blob = getDelegate().find_(x, blobId);
-
-//         long size = businessFile.getFilesize();
-//         String fileName = businessFile.getFilename();
-//         String fileType = fileName.substring(fileName.lastIndexOf("."));
-
-//         path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BusinessDoc" + fileType;
-//         OutputStream os = new FileOutputStream(path);
-
-//         blob.read(os, 0, size);
-
-//         return new File(path);
-//       }
-//     } catch (IOException e) {
-//       logger.error(e);
-//     }
-
-//     return null;
-//   }
-
-
-//   private File getSigningOfficerID(X x, Business business) {
-//     DAO    userDAO = (DAO) x.get("localUserDAO");
-//     Logger logger  = (Logger) x.get("logger");
-
-//     String businessName = business.getBusinessName();
-//     User signingOfficer = (User) userDAO.find(AND(
-//       EQ(User.ORGANIZATION, businessName),
-//       EQ(User.SIGNING_OFFICER, true)));
-
-//     String path;
-//     Blob blob;
-//     try {
-//       foam.nanos.fs.File[] signingOfficerFiles = signingOfficer.getAdditionalDocuments();
-//       if ( signingOfficerFiles != null && signingOfficerFiles.length > 0 ) {
-//         foam.nanos.fs.File signingOfficerFile = signingOfficerFiles[0];
-
-//         String blobId = ((IdentifiedBlob) signingOfficerFile.getData()).getId();
-//         blob = getDelegate().find_(x, blobId);
-
-//         long size = signingOfficerFile.getFilesize();
-//         String fileName = signingOfficerFile.getFilename();
-//         String fileType = fileName.substring(fileName.lastIndexOf("."));
-
-//         path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]SigningOfficerID" + fileType;
-//         OutputStream os = new FileOutputStream(path);
-
-//         blob.read(os, 0, size);
-
-//         return new File(path);
-//       }
-//     } catch (IOException e) {
-//       logger.error(e);
-//     }
-
-//     return null;
-//   }
-
-
-//   private File getBeneficialOwnersDoc(X x, Business business) {
-//     Logger logger = (Logger) x.get("logger");
-
-//     String businessName = business.getBusinessName();
-
-//     String path;
-//     Blob blob;
-//     try {
-//       foam.nanos.fs.File[] beneficialOwnerFiles = business.getBeneficialOwnerDocuments();
-
-//       if ( beneficialOwnerFiles != null && beneficialOwnerFiles.length > 0 ) {
-//         foam.nanos.fs.File beneficialOwnerFile = beneficialOwnerFiles[0];
-
-//         String blobId = ((IdentifiedBlob) beneficialOwnerFile.getData()).getId();
-//         blob = getDelegate().find_(x, blobId);
-
-//         long size = beneficialOwnerFile.getFilesize();
-//         String fileName = beneficialOwnerFile.getFilename();
-//         String fileType = fileName.substring(fileName.lastIndexOf("."));
-
-//         path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwnersDoc" + fileType;
-//         OutputStream os = new FileOutputStream(path);
-
-//         blob.read(os, 0, size);
-
-//         return new File(path);
-//       }
-//     } catch (IOException e) {
-//       logger.error(e);
-//     }
-
-//     return null;
-//   }
-
-
-//   private File getUSBankAccountProof(X x, Business business) {
-//     DAO    accountDAO  = (DAO) x.get("accountDAO");
-//     Logger logger      = (Logger) x.get("logger");
-
-//     BankAccount bankAccount = (BankAccount) accountDAO
-//       .find(AND(
-//         INSTANCE_OF(BankAccount.getOwnClassInfo()),
-//         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-//         EQ(Account.OWNER, business.getId())));
-
-//     String businessName = business.getBusinessName();
-//     String path;
-//     Blob blob;
-//     try {
-//       if ( bankAccount instanceof USBankAccount) {
-//         USBankAccount usBankAccount = (USBankAccount) bankAccount;
-//         foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
-//         String blobId = ((IdentifiedBlob) voidCheckImage.getData()).getId();
-//         blob = getDelegate().find_(x, blobId);
-
-//         long size = voidCheckImage.getFilesize();
-//         String fileName = voidCheckImage.getFilename();
-//         String fileType = fileName.substring(fileName.lastIndexOf("."));
-
-//         path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BankAccountProof" + fileType;
-//         OutputStream os = new FileOutputStream(path);
-
-//         blob.read(os, 0, size);
-
-//         return new File(path);
-//       }
-//     } catch (IOException e) {
-//       logger.error(e);
-//     }
-
-//     return null;
-//   }
-
-
-//   private void downloadZipFile(X x, Business business, File[] srcFiles) {
-//     HttpServletResponse response = x.get(HttpServletResponse.class);
-//     Logger              logger   = (Logger) x.get("logger");
-
-//     response.setContentType("multipart/form-data");
-
-//     String businessName = business.getBusinessName();
-//     String downloadName = "[" + businessName + "]ComplianceDocs.zip";
-
-//     response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
-
-//     DataOutputStream os = null;
-//     ZipOutputStream zipos = null;
-//     try {
-//       zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
-//       zipos.setMethod(ZipOutputStream.DEFLATED);
-
-//       for (File file : srcFiles) {
-//         if ( file == null ) {
-//           continue;
-//         }
-
-//         zipos.putNextEntry(new ZipEntry(file.getName()));
-//         os = new DataOutputStream(zipos);
-//         InputStream is = new FileInputStream(file);
-//         byte[] b = new byte[100];
-//         int length;
-//         while((length = is.read(b))!= -1){
-//           os.write(b, 0, length);
-//         }
-//         is.close();
-//         zipos.closeEntry();
-//         os.flush();
-//       }
-//     } catch (Exception e) {
-//       logger.error(e);
-//     } finally {
-//       IOUtils.closeQuietly(os);
-//       IOUtils.closeQuietly(zipos);
-//     }
-//   }
-// }

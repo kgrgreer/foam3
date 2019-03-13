@@ -140,7 +140,10 @@ foam.CLASS({
     {
       name: 'exportComplianceDocuments',
       code: async function() {
-        var url = window.location.origin + "/service/ascendantFXReports?userId=" + this.id;
+        var sDate = new Date(Date.now()-(3600000*24*14));
+        var dDate = new Date(Date.now());
+
+        var url = window.location.origin + "/service/settlementReports?userId=" + this.id+"&startDate="+sDate+"&endDate"+dDate;
         window.location.assign(url);
       }
     }
