@@ -30,7 +30,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Int',
+      class: 'Long',
       name: 'id',
       documentation: `Please use class when defining data type`
     },
