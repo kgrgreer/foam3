@@ -27,7 +27,7 @@ public class AscendantFXService
     if ( credentials == null ||
          SafetyUtil.isEmpty(credentials.getUser()) ||
          SafetyUtil.isEmpty(credentials.getPassword()) ||
-         SafetyUtil.isEmpty(credentials.getHost()) ) {
+         SafetyUtil.isEmpty(credentials.getUrl()) ) {
       Logger logger = (Logger) getX().get("logger");
       logger.error(this.getClass().getSimpleName(), "invalid credentials");
       throw new RuntimeException("AscendantFX invalid credentials");
