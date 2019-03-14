@@ -3,6 +3,7 @@ package net.nanopay.tx.test;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.account.LoanAccount;
 import net.nanopay.account.LoanedTotalAccount;
@@ -91,6 +92,33 @@ public class TransactionTest
     test((long) benefactorAccount.findBalance(x_) == 200000,"the loan was recorded in the loan account, Balance: " + benefactorAccount.findBalance(x_) );
     test((long) loaneeDepositAcc.findBalance(x_) == 300000,"the loan was recorded in the loan account, Balance: " + loaneeDepositAcc.findBalance(x_) );
 
+    // test trying to borrow more then allowed
+    Transaction finalTxn = new Transaction.Builder(x_)
+      .setSourceAccount(loanAccount.getId())
+      .setDestinationAccount(loaneeDepositAcc.getId())
+      .setAmount(100001)
+      .build();
+    test(TestUtils.testThrows(
+      () -> ((DAO) x_.get("transactionDAO")).put_(x_, finalTxn),
+      "Transaction Exceeds Loan Account Principal Limit",
+      RuntimeException.class), "Exception: try to exceed principal");
+
+    // test trying to repay more then borrowed
+    Transaction payment = new Transaction.Builder(x_)
+      .setSourceAccount(benefactorAccount.getId())
+      .setDestinationAccount(loaneeDepositAcc.getId())
+      .setAmount(100000)
+      .build();
+    ((DAO) x_.get("transactionDAO")).put_(x_, payment);
+     Transaction finalTxn2 = new Transaction.Builder(x_)
+      .setSourceAccount(loaneeDepositAcc.getId())
+      .setDestinationAccount(loanAccount.getId())
+      .setAmount(300001)
+      .build();
+    test(TestUtils.testThrows(
+      () -> ((DAO) x_.get("transactionDAO")).put_(x_, finalTxn2),
+      "Invalid transfer, LoanedTotalAccount account balance must remain >= 0. nanopay Loan Account CAD",
+      RuntimeException.class), "Exception: try to overpay loan");
 
 
   }
