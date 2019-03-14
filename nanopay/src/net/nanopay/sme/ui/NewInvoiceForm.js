@@ -22,6 +22,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'as view',
     'uploadFileData'
   ],
 
@@ -123,6 +124,10 @@ foam.CLASS({
     }
     ^ .foam-u2-view-RichChoiceView-container {
       z-index: 10;
+    }
+    ^ .foam-u2-view-RichChoiceView-action {
+      height: 36px;
+      padding: 8px 13px;
     }
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       background-color: #ffffff;
@@ -272,7 +277,9 @@ foam.CLASS({
             .add(this.contactLabel)
           .end()
           .startContext({ data: this.invoice })
-            .start(this.invoice.CONTACT_ID)
+            .start(this.invoice.CONTACT_ID, {
+              action: this.ADD_CONTACT
+            })
               .enableClass('invalid', this.slot(
                 function(isInvalid, type) {
                   return isInvalid && type === 'payable';
@@ -435,6 +442,18 @@ foam.CLASS({
         });
       }
       this.checkBankAccount();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'addContact',
+      icon: 'images/plus-no-bg.svg',
+      code: function(X, e) {
+        X.view.add(X.view.Popup.create().tag({
+          class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
+        }));
+      }
     }
   ]
 });
