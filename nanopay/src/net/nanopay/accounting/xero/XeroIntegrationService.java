@@ -26,6 +26,7 @@ import net.nanopay.accounting.ResultResponse;
 import net.nanopay.accounting.xero.model.XeroContact;
 import net.nanopay.accounting.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
 
@@ -35,22 +36,22 @@ import java.util.*;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-public class XeroIntegrationService extends foam.core.AbstractFObject implements net.nanopay.accounting.IntegrationService{
+public class XeroIntegrationService implements net.nanopay.accounting.IntegrationService{
 
 
   public XeroClient getClient(X x) {
     User user = (User) x.get("user");
-    DAO store = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
-    XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
     Group group = user.findGroup(x);
     AppConfig app = group.getAppConfig(x);
     DAO configDAO = ((DAO) x.get("xeroConfigDAO")).inX(x);
     XeroConfig config = (XeroConfig)configDAO.find(app.getUrl());
     XeroClient client = new XeroClient(config);
-    if ( tokenStorage == null || tokenStorage.getToken().equals("") ) {
+    if ( token == null || token.getToken().equals("") ) {
       return null;
     }
-    client.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
+    client.setOAuthToken(token.getToken(), token.getTokenSecret());
     return client;
   }
 
@@ -87,15 +88,7 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
     return error;
   }
 
-
-  public ResultResponse isValidInvoice(com.xero.model.Invoice xeroInvoice) {
-    if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ) {
-      return new ResultResponse.Builder(getX()).setResult(false).setReason("We currently only support CAD and USD.").build();
-    }
-    return new ResultResponse.Builder(getX()).setResult(true).build();
-  }
-
-  private XeroContact importXeroContact(com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
+  private XeroContact importXeroContact(X x,com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
     XeroContact newContact;
     if ( existingContact != null ) {
       newContact = existingContact;
@@ -107,9 +100,8 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
     if ( xeroContact.getAddresses() != null &&
       xeroContact.getAddresses().getAddress().size() != 0 ) {
 
-      foam.nanos.auth.CountryService countryService = (foam.nanos.auth.CountryService) getX().get("countryService");
-      foam.nanos.auth.RegionService regionService = (foam.nanos.auth.RegionService) getX().get("regionService");
-
+      foam.nanos.auth.CountryService countryService = (foam.nanos.auth.CountryService) x.get("countryService");
+      foam.nanos.auth.RegionService regionService = (foam.nanos.auth.RegionService) x.get("regionService");
       com.xero.model.Address xeroAddress = xeroContact.getAddresses().getAddress().get(0);
 
       foam.nanos.auth.Country country = null;
@@ -122,7 +114,7 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
         region = regionService.getRegion(xeroAddress.getRegion());
       }
 
-      foam.nanos.auth.Address nanoAddress = new foam.nanos.auth.Address.Builder(getX())
+      foam.nanos.auth.Address nanoAddress = new foam.nanos.auth.Address.Builder(x)
       .setAddress1(xeroAddress.getAddressLine1())
       .setAddress2(xeroAddress.getAddressLine2())
       .setCity(xeroAddress.getCity())
@@ -154,12 +146,12 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
       (xeroMobilePhone.getPhoneAreaCode() != null ? xeroMobilePhone.getPhoneAreaCode() : "") +
       (xeroMobilePhone.getPhoneNumber() != null ? xeroMobilePhone.getPhoneNumber() : "");
 
-      foam.nanos.auth.Phone nanoPhone = new foam.nanos.auth.Phone.Builder(getX())
+      foam.nanos.auth.Phone nanoPhone = new foam.nanos.auth.Phone.Builder(x)
       .setNumber(phoneNumber)
       .setVerified(!phoneNumber.equals(""))
       .build();
 
-      foam.nanos.auth.Phone nanoMobilePhone = new foam.nanos.auth.Phone.Builder(getX())
+      foam.nanos.auth.Phone nanoMobilePhone = new foam.nanos.auth.Phone.Builder(x)
       .setNumber(mobileNumber)
       .setVerified(!mobileNumber.equals(""))
       .build();
@@ -208,9 +200,9 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
       }
       if (!(existingContact instanceof XeroContact) || ! ((XeroContact) existingContact).getXeroId().equals(xeroContact.getContactID())) {
         result.setExistContact(existingContact);
-        result.setNewContact(importXeroContact(xeroContact, user, null));
+        result.setNewContact(importXeroContact(x,xeroContact, user, null));
       } else {
-        newContact = importXeroContact(xeroContact, user, (XeroContact) existingContact.fclone());
+        newContact = importXeroContact(x,xeroContact, user, (XeroContact) existingContact.fclone());
       }
     } else { // Contact does not already exist
 
@@ -229,13 +221,13 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
         } else {
-          result.setExistContact(importXeroContact(xeroContact,user,null));
+          result.setExistContact(importXeroContact(x,xeroContact,user,null));
         }
         newContact.setType("Contact");
         newContact.setGroup("sme");
         newContact.setOwner(user.getId());
       } else {
-        newContact = importXeroContact(xeroContact,user,null);
+        newContact = importXeroContact(x,xeroContact,user,null);
       }
     }
     if ( ! newContact.getEmail().equals("") ) {
@@ -292,34 +284,7 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e);
-
-      if ( e instanceof com.xero.api.XeroApiException ){
-        if ( ((XeroApiException) e).getResponseCode() == 503 ){
-          return new ResultResponse.Builder(x)
-            .setResult(false)
-            .setErrorCode(AccountingErrorCodes.API_LIMIT)
-            .setReason(e.getMessage())
-            .build();
-        } else if ( ((XeroApiException) e).getResponseCode() == 401 ) {
-          return new ResultResponse.Builder(x)
-            .setResult(false)
-            .setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED)
-            .setReason(e.getMessage())
-            .build();
-        } else {
-          return new ResultResponse.Builder(x)
-            .setResult(false)
-            .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
-            .setReason(e.getMessage())
-            .build();
-        }
-      } else {
-        return new ResultResponse.Builder(x)
-          .setResult(false)
-          .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
-          .setReason(e.getMessage())
-          .build();
-      }
+      return getExceptionResponse(x,e);
     }
     return new ResultResponse.Builder(x)
       .setResult(true)
@@ -377,6 +342,11 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
     //TODO: Remove this when we accept other currencies
     if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ) {
       return " Ablii only supports CAD and USD";
+    }
+
+
+    if ( xeroInvoice.getStatus() != com.xero.model.InvoiceStatus.AUTHORISED ) {
+      return " Invoice is not authorised on Xero.";
     }
 
     try {
@@ -509,18 +479,6 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
     try {
 
       for (com.xero.model.Invoice xeroInvoice : client.getInvoices()) {
-
-        if ( xeroInvoice.getStatus() != InvoiceStatus.AUTHORISED ) {
-          String message;
-          if (xeroInvoice.getType() == InvoiceType.ACCREC) {
-            message = "Receivable invoice from " + xeroInvoice.getContact().getName() + " due on " + xeroInvoice.getDueDate().getTime();
-          } else {
-            message = "Payable invoice to " + xeroInvoice.getContact().getName() + " due on " + xeroInvoice.getDueDate().getTime();
-          }
-          invoiceErrors.add(message + " cannot be synced: Invoice is not authorised on Xero.");
-          continue;
-        }
-
         try {
           String response = syncInvoice(x, xeroInvoice);
           if ( ! response.equals("")) {
@@ -543,34 +501,7 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e);
-
-      if ( e instanceof com.xero.api.XeroApiException ){
-        if ( ((XeroApiException) e).getResponseCode() == 503 ){
-          return new ResultResponse.Builder(x)
-            .setResult(false)
-            .setErrorCode(AccountingErrorCodes.API_LIMIT)
-            .setReason(e.getMessage())
-            .build();
-        } else if ( ((XeroApiException) e).getResponseCode() == 401 ) {
-          return new ResultResponse.Builder(x)
-            .setResult(false)
-            .setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED)
-            .setReason(e.getMessage())
-            .build();
-        } else {
-          return new ResultResponse.Builder(x)
-            .setResult(false)
-            .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
-            .setReason(e.getMessage())
-            .build();
-        }
-      } else {
-        return new ResultResponse.Builder(x)
-          .setResult(false)
-          .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
-          .setReason(e.getMessage())
-          .build();
-      }
+      return getExceptionResponse(x,e);
     }
     return new ResultResponse.Builder(x)
       .setResult(true)
@@ -585,10 +516,19 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
     List<Payment> paymentList = new ArrayList<>();
     List<XeroInvoice> invoiceList = new ArrayList<>();
     XeroClient client = getClient(x);
+    User user = (User) x.get("user");
 
     if ( invoice != null ) {
       XeroInvoice nanoInvoice =  (XeroInvoice) invoice;
-
+      if ( user.getId() == invoice.getPayeeId() ) {
+        if ( invoice.getStatus() == InvoiceStatus.PENDING  ) {
+          nanoInvoice.setDesync(true);
+          invoiceDAO.put(nanoInvoice.fclone());
+        }
+        return new ResultResponse.Builder(x)
+          .setResult(true)
+          .build();
+      }
       //sync single invoice. Set desync to true to sync later if it fails
       try {
         com.xero.model.Invoice xeroInvoice = client.getInvoice(nanoInvoice.getXeroId());
@@ -596,6 +536,10 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
         if ( payment.response.getResult() ) {
           paymentList.add(payment.payment);
           client.createPayments(paymentList);
+          if ( nanoInvoice.getDesync() ) {
+            nanoInvoice.setDesync(false);
+            invoiceDAO.put(nanoInvoice.fclone());
+          }
           return new ResultResponse.Builder(x)
             .setResult(true)
             .build();
@@ -619,26 +563,27 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
           EQ( XeroInvoice.DESYNC , true )
         ).select(new ArraySink());
 
-        ArraySink sink2 = (ArraySink) invoiceDAO.select(new ArraySink());
-
-        for ( Object i: sink2.getArray().toArray()) {
+        for ( Object i: sink.getArray().toArray()) {
 
           if (i instanceof XeroInvoice) {
             XeroInvoice nanoInvoice = (XeroInvoice) i;
-
-            if ( nanoInvoice.getDesync() ) {
-              com.xero.model.Invoice xeroInvoice = new com.xero.model.Invoice();
-              xeroInvoice.setInvoiceID(nanoInvoice.getXeroId());
-              PaymentResponse payment = reSyncInvoice(x,nanoInvoice,xeroInvoice);
-              if ( payment.response.getResult() ) {
-                paymentList.add(payment.payment);
-                invoiceList.add(nanoInvoice);
-              }
+            com.xero.model.Invoice xeroInvoice = new com.xero.model.Invoice();
+            xeroInvoice.setInvoiceID(nanoInvoice.getXeroId());
+            PaymentResponse payment = reSyncInvoice(x,nanoInvoice,xeroInvoice);
+            if ( payment.response.getResult() ) {
+              paymentList.add(payment.payment);
+              invoiceList.add(nanoInvoice);
             }
           }
         }
+        if ( paymentList.size() > 0 ) {
+          client.createPayments(paymentList);
+        }
 
-        client.createPayments(paymentList);
+        for ( XeroInvoice nanoInvoice: invoiceList ) {
+            nanoInvoice.setDesync(false);
+            invoiceDAO.put(nanoInvoice.fclone());
+        }
         return new ResultResponse.Builder(x)
           .setResult(true)
           .build();
@@ -678,12 +623,51 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
     }
   }
 
+  private ResultResponse getExceptionResponse(X x,Exception e) {
+
+    if ( e instanceof com.xero.api.XeroApiException ){
+      if ( ((XeroApiException) e).getResponseCode() == 503 ){
+        return new ResultResponse.Builder(x)
+          .setResult(false)
+          .setErrorCode(AccountingErrorCodes.API_LIMIT)
+          .setReason(e.getMessage())
+          .build();
+      } else if ( ((XeroApiException) e).getResponseCode() == 401 ) {
+        return new ResultResponse.Builder(x)
+          .setResult(false)
+          .setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED)
+          .setReason(e.getMessage())
+          .build();
+      } else {
+        return new ResultResponse.Builder(x)
+          .setResult(false)
+          .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
+          .setReason(e.getMessage())
+          .build();
+      }
+    } else {
+      return new ResultResponse.Builder(x)
+        .setResult(false)
+        .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
+        .setReason(e.getMessage())
+        .build();
+    }
+  }
+
   private PaymentResponse reSyncInvoice(X x, XeroInvoice nanoInvoice, com.xero.model.Invoice xeroInvoice) {
     PaymentResponse response = new PaymentResponse();
     DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
     Logger logger = (Logger) x.get("logger");
     User user  = (User) x.get("user");
     XeroClient client = getClient(x);
+
+    if ( client == null ) {
+      response.response = new ResultResponse.Builder(x)
+        .setResult(false)
+        .setReason("User not connected to Xero.")
+        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+        .build();
+    }
 
     BankAccount account;
     if ( user.getId() == nanoInvoice.getPayeeId() ) {
@@ -723,33 +707,7 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e);
-      if ( e instanceof com.xero.api.XeroApiException ){
-        if ( ((XeroApiException) e).getResponseCode() == 503 ){
-          response.response = new ResultResponse.Builder(x)
-            .setResult(false)
-            .setErrorCode(AccountingErrorCodes.API_LIMIT)
-            .setReason(e.getMessage())
-            .build();
-        } else if ( ((XeroApiException) e).getResponseCode() == 401 ) {
-          response.response = new ResultResponse.Builder(x)
-            .setResult(false)
-            .setErrorCode(AccountingErrorCodes.TOKEN_EXPIRED)
-            .setReason(e.getMessage())
-            .build();
-        } else {
-          response.response = new ResultResponse.Builder(x)
-            .setResult(false)
-            .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
-            .setReason(e.getMessage())
-            .build();
-        }
-      } else {
-        response.response = new ResultResponse.Builder(x)
-          .setResult(false)
-          .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
-          .setReason(e.getMessage())
-          .build();
-      }
+      response.response = getExceptionResponse(x,e);
       return response;
     }
   }
@@ -778,16 +736,16 @@ public class XeroIntegrationService extends foam.core.AbstractFObject implements
   public ResultResponse removeToken(X x) {
     User user = (User) x.get("user");
     DAO userDAO = ((DAO) x.get("localUserUserDAO")).inX(x);
-    DAO store = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
-    XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
-    if ( tokenStorage == null ) {
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    if ( token == null ) {
       return new ResultResponse.Builder(x)
         .setResult(false)
         .setReason("User has not connected to Xero.")
         .build();
     }
 
-    store.remove(tokenStorage.fclone());
+    tokenDAO.remove(token.fclone());
     user = (User) user.fclone();
     user.clearIntegrationCode();
     userDAO.put(user);

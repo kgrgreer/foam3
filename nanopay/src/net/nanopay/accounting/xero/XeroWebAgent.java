@@ -29,29 +29,29 @@ import javax.servlet.http.HttpServletResponse;
  * agent. This needs to be a web agent because we need a URL that Xero can
  * redirect to when giving us the API access information.
  */
-public class XeroService
+public class XeroWebAgent
   implements WebAgent {
 
-  private XeroTokenStorage isValidToken(X x) {
+  private XeroToken isValidToken(X x) {
     /*
     Info:   Function to check if the User has used Xero before
-    Input:  x: The context to allow access to the xeroTokenStorageDAO to view if there's an entry for the user
+    Input:  x: The context to allow access to the xeroTokenDAO to view if there's an entry for the user
     Output: Returns the Class that contains the users Tokens to properly access Xero. If using Xero for the first time will create an empty Class to load the data in
     */
-    DAO store = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     User user = (User) x.get("user");
-    XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
 
     // If the user has never tried logging in to Xero before
-    if ( tokenStorage == null ) {
-      tokenStorage = new XeroTokenStorage();
-      tokenStorage.setId(user.getId());
-      tokenStorage.setToken(" ");
-      tokenStorage.setTokenSecret(" ");
-      tokenStorage.setTokenTimestamp("0");
-      tokenStorage.setPortalRedirect(" ");
+    if ( token == null ) {
+      token = new XeroToken();
+      token.setId(user.getId());
+      token.setToken(" ");
+      token.setTokenSecret(" ");
+      token.setTokenTimestamp("0");
+      token.setPortalRedirect(" ");
     }
-    return tokenStorage;
+    return token;
   }
 
   public void execute(X x) {
@@ -63,10 +63,10 @@ public class XeroService
       HttpServletRequest  req          = x.get(HttpServletRequest.class);
       HttpServletResponse resp         = x.get(HttpServletResponse.class);
       String              verifier     = req.getParameter("oauth_verifier");
-      DAO                 store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
+      DAO                 tokenDAO     = ((DAO) x.get("xeroTokenDAO")).inX(x);
       User                user         = (User) x.get("user");
       DAO                 userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
-      XeroTokenStorage    tokenStorage = isValidToken(x);
+      XeroToken           token        = isValidToken(x);
       String              redirect     = req.getParameter("portRedirect");
       Group               group        = user.findGroup(x);
       AppConfig           app          = group.getAppConfig(x);
@@ -78,37 +78,37 @@ public class XeroService
         // Calls xero login for authorization
         OAuthRequestToken requestToken = new OAuthRequestToken(config);
         requestToken.execute();
-        tokenStorage.setToken(requestToken.getTempToken());
-        tokenStorage.setTokenSecret(requestToken.getTempTokenSecret());
+        token.setToken(requestToken.getTempToken());
+        token.setTokenSecret(requestToken.getTempTokenSecret());
         if ( ! SafetyUtil.isEmpty(redirect) ) {
-          tokenStorage.setPortalRedirect("#" + redirect);
+          token.setPortalRedirect("#" + redirect);
         }
         //Build the Authorization URL and redirect User
         OAuthAuthorizeToken authToken = new OAuthAuthorizeToken(config, requestToken.getTempToken());
-        store.put(tokenStorage);
+        tokenDAO.put(token);
         resp.sendRedirect(authToken.getAuthUrl());
       } else {
 
         // Authenticates accessToken
         OAuthAccessToken accessToken = new OAuthAccessToken(config);
-        accessToken.build(verifier, tokenStorage.getToken(), tokenStorage.getTokenSecret()).execute();
+        accessToken.build(verifier, token.getToken(), token.getTokenSecret()).execute();
 
         // Check if your Access Token call successful
         if ( ! accessToken.isSuccess() ) {
 
           //Resets tokens
-          tokenStorage.setToken("");
-          tokenStorage.setTokenSecret("");
-          tokenStorage.setTokenTimestamp("0");
-          store.put(tokenStorage);
+          token.setToken("");
+          token.setTokenSecret("");
+          token.setTokenTimestamp("0");
+          tokenDAO.put(token);
           resp.sendRedirect("/service/xero");
         } else {
 
           //Store access token and move to the synchronizing code
-          tokenStorage.setTokenSecret(accessToken.getTokenSecret());
-          tokenStorage.setToken(accessToken.getToken());
-          tokenStorage.setTokenTimestamp(accessToken.getTokenTimestamp());
-          store.put(tokenStorage);
+          token.setTokenSecret(accessToken.getTokenSecret());
+          token.setToken(accessToken.getToken());
+          token.setTokenTimestamp(accessToken.getTokenTimestamp());
+          tokenDAO.put(token);
           User nUser = (User) userDAO.find(user.getId());
           nUser = (User) nUser.fclone();
           nUser.setHasIntegrated(true);

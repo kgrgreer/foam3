@@ -16,7 +16,7 @@ foam.CLASS({
     'invoiceDAO',
     'quickbooksService',
     'userDAO',
-    'xeroSignIn'
+    'xeroService'
   ],
 
   properties: [
@@ -55,7 +55,7 @@ foam.CLASS({
       */
       this.userDAO.find(this.user.id).then(function(nUser) {
         if ( nUser.integrationCode == self.IntegrationCode.XERO ) {
-          self.xeroSignIn.isSignedIn(null, nUser).then((result) => {
+          self.xeroService.isSignedIn(null, nUser).then((result) => {
             self.isSignedIn = ! ! result.result;
           })
           .catch((err) => {
@@ -105,7 +105,7 @@ foam.CLASS({
         let service;
 
         if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-          service = this.xeroSignIn;
+          service = this.xeroService;
         }
         if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
           service = this.quickbooksService;

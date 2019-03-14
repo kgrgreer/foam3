@@ -30,7 +30,7 @@ foam.CLASS({
     'auth',
     'window',
     'findBalance',
-    'xeroSignIn',
+    'xeroService',
     'quickbooksService'
   ],
 

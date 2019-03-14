@@ -119,9 +119,13 @@ foam.CLASS({
     {
       name: 'sync',
       label: 'Sync',
-      code: async function(X) {
-
-        X.closeDialog();
+      code: async function() {
+        var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+        var sessionId = localStorage['defaultSession'];
+        if ( sessionId ) {
+          url += '&sessionId=' + sessionId;
+        }
+        window.location = url;
       }
     }
   ],

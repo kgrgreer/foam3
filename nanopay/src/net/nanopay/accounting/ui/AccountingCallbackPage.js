@@ -13,7 +13,7 @@ foam.CLASS({
     'pushMenu',
     'quickbooksService',
     'user',
-    'xeroSignIn',
+    'xeroService',
     'ctrl'
   ],
 
@@ -81,7 +81,7 @@ foam.CLASS({
       this.syncing = true;
 
       if ( integraition === 'xero' ) {
-        service = this.xeroSignIn;
+        service = this.xeroService;
       }
 
       if ( integraition === 'quickbooks' ) {

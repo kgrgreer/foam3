@@ -15,7 +15,7 @@ foam.CLASS({
     'pushMenu',
     'quickbooksService',
     'user',
-    'xeroSignIn'
+    'xeroService'
   ],
 
   requires: [

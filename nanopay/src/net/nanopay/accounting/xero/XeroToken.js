@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.accounting.xero',
-  name: 'XeroTokenStorage',
+  name: 'XeroToken',
   documentation: 'Model to hold the token data for the Xero user',
 
   properties: [

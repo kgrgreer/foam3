@@ -25,7 +25,7 @@ public class BankIntegrationDAO
     DAO                         userDAO    = ((DAO) x.get("userDAO")).inX(x);
     DAO                         accountDAO = ((DAO) x.get("accountDAO")).inX(x);
     User                        user       = (User) userDAO.find(((User) x.get("user")).getId());
-    XeroIntegrationService      xero       = (XeroIntegrationService) x.get("xeroSignIn");
+    XeroIntegrationService      xero       = (XeroIntegrationService) x.get("xeroService");
     QuickbooksIntegrationService quick      = (QuickbooksIntegrationService) x.get("quickbooksService");
     List<AccountingBankAccount> bankList;
     BankAccount userBank = (BankAccount) accountDAO.find(

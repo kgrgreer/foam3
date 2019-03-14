@@ -733,7 +733,7 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/IntegrationCode' },
   { name: 'net/nanopay/accounting/User' },
   { name: 'net/nanopay/accounting/ContactMismatchPair' },
-  { name: 'net/nanopay/accounting/xero/XeroTokenStorage' },
+  { name: 'net/nanopay/accounting/xero/XeroToken' },
   { name: 'net/nanopay/accounting/xero/XeroConfig' },
   { name: 'net/nanopay/accounting/xero/model/XeroInvoice' },
   { name: 'net/nanopay/accounting/xero/model/XeroContact' },

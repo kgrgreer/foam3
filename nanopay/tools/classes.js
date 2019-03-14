@@ -150,7 +150,7 @@ var classes = [
   'net.nanopay.accounting.AccountingErrorCodes',
 
   // xero
-  'net.nanopay.accounting.xero.XeroTokenStorage',
+  'net.nanopay.accounting.xero.XeroToken',
   'net.nanopay.accounting.xero.XeroConfig',
   'net.nanopay.accounting.xero.model.XeroContact',
   'net.nanopay.accounting.xero.model.XeroInvoice',
