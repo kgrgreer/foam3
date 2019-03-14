@@ -117,7 +117,7 @@ public class QuickbooksWebAgent implements WebAgent {
 
   public void sync(X x, HttpServletResponse response) {
     try {
-      response.sendRedirect("/?accounting=quickbooks#sme.bank.matching");
+      response.sendRedirect("/?accounting=Quickbooks#sme.bank.matching");
     } catch ( Throwable e ) {
       Logger logger = (Logger) x.get("logger");
       logger.error(e);

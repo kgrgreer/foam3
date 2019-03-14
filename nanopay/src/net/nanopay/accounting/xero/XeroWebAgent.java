@@ -101,7 +101,7 @@ public class XeroWebAgent
           token.setTokenSecret("");
           token.setTokenTimestamp("0");
           tokenDAO.put(token);
-          resp.sendRedirect("/service/xero");
+          resp.sendRedirect("/service/xeroWebAgent");
         } else {
 
           //Store access token and move to the synchronizing code
@@ -126,7 +126,7 @@ public class XeroWebAgent
 
   public void sync(X x, HttpServletResponse response) {
     try {
-        response.sendRedirect("/?accounting=xero#sme.bank.matching");
+        response.sendRedirect("/?accounting=Xero#sme.bank.matching");
     } catch ( Exception e ) {
       Logger logger =  (Logger) x.get("logger");
       logger.error(e);

@@ -15,7 +15,7 @@ foam.CLASS({
     'bankIntegrationsDAO',
     'quickbooksService',
     'user',
-    'xeroSignIn'
+    'xeroService'
   ],
 
   requires: [
@@ -287,7 +287,7 @@ foam.CLASS({
       .end();
     },
     async function isXeroConnected() {
-      var result = await this.xeroSignIn.isSignedIn(null, this.user);
+      var result = await this.xeroService.isSignedIn(null, this.user);
       if ( result.result ) {
         this.xeroBtnLabel = this.Disconnect;
         this.xeroConnected = this.Connected;
@@ -336,7 +336,7 @@ foam.CLASS({
       code: function() {
         var self = this;
         if ( this.xeroBtnLabel == this.Disconnect ) {
-          this.xeroSignIn.removeToken(null, this.user).then(function(result) {
+          this.xeroService.removeToken(null, this.user).then(function(result) {
             self.xeroBtnLabel = this.Connect;
             self.xeroConnected = this.NotConnected;
             self.add(self.NotificationMessage.create({ message: 'Xero integration has been disconnected' }));
@@ -346,7 +346,7 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
         } else {
-          var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+          var url = window.location.origin + '/service/xeroWebAgent?portRedirect=' + window.location.hash.slice(1);
           window.location = this.attachSessionId(url);
         }
       }

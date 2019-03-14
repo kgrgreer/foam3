@@ -186,7 +186,7 @@ foam.CLASS({
   ],
   listeners: [
     function signXero() {
-      var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+      var url = window.location.origin + '/service/xeroWebAgent?portRedirect=' + window.location.hash.slice(1);
       window.location = this.attachSessionId(url);
     },
     function signQuickbooks() {
