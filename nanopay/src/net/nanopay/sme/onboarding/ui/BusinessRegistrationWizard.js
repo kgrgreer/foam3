@@ -150,6 +150,7 @@ foam.CLASS({
     { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Annual revenue required.' },
     { name: 'ERROR_INTERNATIONAL_PAYMENTS_MESSAGE', message: 'International payments required.' },
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
+    { name: 'ERROR_OTHER_TRANSACTION_PURPOSE_MESSAGE', message: 'Please provide additional information for your transaction purpose.' },
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual Number of Transactions is required.' },
     { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Estimated Annual Volume in USD is required.' },
     { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required.' },
@@ -167,6 +168,7 @@ foam.CLASS({
     { name: 'ERROR_MISSING_SOURCE_OF_FUNDS', message: 'You must specify your source of funds.' },
     { name: 'ERROR_MISSING_FIRST_PAYMENT_DATE', message: 'Anticipated First Payment Date is required.' },
     { name: 'ERROR_PHONE_LENGTH', message: 'Phone number cannot exceed 10 digits in length' },
+    { name: 'ERROR_NO_ADDITIONAL_BENEFICIAL_OWNERS', message: 'You must acknowledge that the profile contains details of all beneficial owners of the business.' },
     { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
     { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
     { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
@@ -326,6 +328,12 @@ foam.CLASS({
 
       if ( ! transactionInfo.transactionPurpose ) {
         this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, 'error');
+        return false;
+      }
+
+      if ( transactionInfo.transactionPurpose === 'Other' &&
+        ! transactionInfo.otherTransactionPurpose ) {
+        this.notify(this.ERROR_OTHER_TRANSACTION_PURPOSE_MESSAGE, 'error');
         return false;
       }
 
@@ -601,6 +609,11 @@ foam.CLASS({
 
             if ( ! this.validatePrincipalOwners() ) {
               this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
+              return;
+            }
+
+            if ( ! this.viewData.noAdditionalBeneficialOwners ) {
+              this.notify(this.ERROR_NO_ADDITIONAL_BENEFICIAL_OWNERS, 'error' );
               return;
             }
 
