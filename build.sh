@@ -112,7 +112,7 @@ function deploy_journals {
     else
         # IS_AWS will be 1 when building in jenkins which is the
         # same as staging/qa at the moment.
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 0 #$IS_AWS # force to zero until ready to run from jar
     fi
 
     if [[ ! -f $JOURNALS ]]; then
@@ -389,14 +389,18 @@ function usage {
     echo "  -i : Install npm and git hooks"
     echo "  -j : Delete runtime journals, build, and run app as usual."
     echo "  -m : Run migration scripts."
-    echo "  -n # : instance - start another instance."
-    echo "  -p <version> : build for production deployment, version format x.y.z"
-    echo "  -q <version> : build for QA/staging deployment, version format x.y.z"
+    echo "  -N # : instance - start another instance."
+    echo "  -p : build for production deployment, use version specified in pom.xml."
+    echo "  -P <version> : build for production deployment, override version, format x.y.z"
+    echo "  -q : build for QA/staging deployment, use version specified in pom.xml."
+    echo "  -Q <version> : build for QA/staging deployment, override version, format x.y.z"
     echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
-    echo "  -t [test1,test2] : Run tests. Should be last option on command-line for correctness"
+    echo "  -t : Run All tests."
+    echo "  -T test1,test2 : Run listed tests."
     echo "  -v : java compile only (maven), no code generation."
+    echo "  -W port : HTTP Port"
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo ""
     echo "No options implies: stop, build/compile, deploy, start"
@@ -428,7 +432,7 @@ BUILD_PROD=0
 BUILD_QA=0
 WEB_PORT=
 
-while getopts "bcdghijlmn::p:q:rsSt:vw::z" opt ; do
+while getopts "bcdghijlmN::pP:qQ:rsStT:vW::z" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -439,23 +443,32 @@ while getopts "bcdghijlmn::p:q:rsSt:vw::z" opt ; do
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
-        n) INSTANCE=$OPTARG ;;
+        N) INSTANCE=$OPTARG ;;
         p) BUILD_PROD=1
+           CLEAN_BUILD=1
+           ;;
+        P) BUILD_PROD=1
            VERSION=$OPTARG
            CLEAN_BUILD=1
-            ;;
+           ;;
         q) BUILD_QA=1
+           CLEAN_BUILD=1
+           ;;
+        Q) BUILD_QA=1
            VERSION=$OPTARG
            CLEAN_BUILD=1
-            ;;
+           ;;
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
+           CLEAN_BUILD=1
+           ;;
+        T) TEST=1
            TESTS=$OPTARG
            CLEAN_BUILD=1
-            ;;
+           ;;
         v) COMPILE_ONLY=1 ;;
-        w) WEB_PORT=$OPTARG ;;
+        W) WEB_PORT=$OPTARG ;;
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         ?) usage ; quit 1 ;;
