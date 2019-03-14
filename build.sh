@@ -135,7 +135,8 @@ function migrate_journals {
 }
 
 function clean {
-    if [ "$CLEAN_BUILD" -eq 1 ]; then
+    if [ "$CLEAN_BUILD" -eq 1 ] &&
+           [ "$START_ONLY" -eq 0 ]; then
         echo "INFO :: Cleaning Up"
 
         if [ -d "build/" ]; then
@@ -183,41 +184,36 @@ function delete_runtime_logs {
 function stop_nanos {
     echo "INFO :: Stopping nanos..."
 
+    # TODO: with instances there may be more than one.
     RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
     if [[ -f $NANOS_PIDFILE ]]; then
         PID=$(cat "$NANOS_PIDFILE")
-        if [[ "$PID" != "$RUNNING_PID" ]]; then
+        if [[ "$PID" != "$RUNNING_PID" ]] && [ "$STOP_ONLY" -eq 1 ]; then
             PID=$RUNNING_PID
         fi
-    else
-        PID=$RUNNING_PID
     fi
 
     if [[ -z "$PID" ]]; then
         echo "INFO :: PID and/or file $NANOS_PIDFILE not found, nothing to stop?"
-        delete_runtime_journals
-        delete_runtime_logs
-        return
+    else
+        TRIES=0
+        SIGNAL=TERM
+        set +e
+        while kill -0 $PID &>/dev/null; do
+            kill -$SIGNAL $PID
+            sleep 1
+            TRIES=$(($TRIES + 1))
+            if [ $TRIES -gt 5 ]; then
+                SIGNAL=KILL
+            elif [ $TRIES -gt 10 ]; then
+                echo "ERROR :: Failed to kill nanos!"
+                quit 1
+            fi
+        done
+        set -e
+
+        rmfile "$NANOS_PIDFILE"
     fi
-
-    TRIES=0
-    SIGNAL=TERM
-    set +e
-    while kill -0 $PID &>/dev/null; do
-        kill -$SIGNAL $PID
-        sleep 1
-        TRIES=$(($TRIES + 1))
-        if [ $TRIES -gt 5 ]; then
-            SIGNAL=KILL
-        elif [ $TRIES -gt 10 ]; then
-            echo "ERROR :: Failed to kill nanos!"
-            quit 1
-        fi
-    done
-    set -e
-
-    rmfile "$NANOS_PIDFILE"
-
     backup
     delete_runtime_journals
     delete_runtime_logs
@@ -237,12 +233,16 @@ function status_nanos {
 }
 
 function start_nanos {
-    echo "INFO :: Starting nanos..."
+    MESSAGE="Starting nanos ${INSTANCE}"
+    echo "INFO :: ${MESSAGE}..."
 
     cd "$PROJECT_HOME"
 
-    if [ $DEBUG -eq 1 ]; then
+    if [ "$DEBUG" -eq 1 ]; then
         JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
+    fi
+    if [ ! -z "$WEB_PORT" ]; then
+        JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
     fi
 
     if [ $BUILD_PROD -eq 1 ] || [ $BUILD_QA -eq 1 ]; then
@@ -275,7 +275,15 @@ function beginswith {
 
 function setenv {
     if [ -z "$NANOPAY_HOME" ]; then
-        export NANOPAY_HOME="/opt/nanopay"
+        NANOPAY="nanopay"
+        if [[ ! -z "$INSTANCE" ]]; then
+            NANOPAY="nanopay_${INSTANCE}"
+        fi
+        export NANOPAY_HOME="/opt/${NANOPAY}"
+    fi
+
+    if [ ! -d "$NANOPAY_HOME" ]; then
+        mkdir -p "$NANOPAY_HOME"
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -304,7 +312,11 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
-    export NANOS_PIDFILE="/tmp/nanos.pid"
+    PID_FILE="nanos.pid"
+    if [[ ! -z "$INSTANCE" ]]; then
+        PID_FILE="nanos_${INSTANCE}.pid"
+    fi
+    export NANOS_PIDFILE="/tmp/${PID_FILE}"
 
     if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
         PROJECT_HOME=/pkg/stack/stage/NANOPAY
@@ -313,14 +325,7 @@ function setenv {
         npm install
 
         mkdir -p "$NANOPAY_HOME"
-
-        # Production use S3 mount
-        #if [[ -d "/mnt/journals" ]]; then
-        # FIXME: test and don't create if it exists
-        #   ln -sn "$JOURNAL_HOME" "/mnt/journals"
-        #else
-            mkdir -p "$JOURNAL_HOME"
-        #fi
+        mkdir -p "$JOURNAL_HOME"
 
         CLEAN_BUILD=1
         IS_AWS=1
@@ -384,6 +389,7 @@ function usage {
     echo "  -i : Install npm and git hooks"
     echo "  -j : Delete runtime journals, build, and run app as usual."
     echo "  -m : Run migration scripts."
+    echo "  -n # : instance - start another instance."
     echo "  -p <version> : build for production deployment, version format x.y.z"
     echo "  -q <version> : build for QA/staging deployment, version format x.y.z"
     echo "  -r : Start nanos with whatever was last built."
@@ -393,14 +399,13 @@ function usage {
     echo "  -v : java compile only (maven), no code generation."
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo ""
-    echo "No options implies build and then run:"
-    echo "  ./build.sh -b"
-    echo "  ./build.sh -r"
+    echo "No options implies: stop, build/compile, deploy, start"
     echo ""
 }
 
 ############################
 
+INSTANCE=
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
@@ -421,8 +426,9 @@ DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 BUILD_PROD=0
 BUILD_QA=0
+WEB_PORT=
 
-while getopts "bcdghijlmp:q:rsStvz" opt ; do
+while getopts "bcdghijlmn::p:q:rsSt:vw::z" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -433,6 +439,7 @@ while getopts "bcdghijlmp:q:rsStvz" opt ; do
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
+        n) INSTANCE=$OPTARG ;;
         p) BUILD_PROD=1
            VERSION=$OPTARG
            CLEAN_BUILD=1
@@ -444,9 +451,11 @@ while getopts "bcdghijlmp:q:rsStvz" opt ; do
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
+           TESTS=$OPTARG
            CLEAN_BUILD=1
             ;;
         v) COMPILE_ONLY=1 ;;
+        w) WEB_PORT=$OPTARG ;;
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         ?) usage ; quit 1 ;;
@@ -463,9 +472,9 @@ fi
 if [[ $TEST -eq 1 ]]; then
     COMPILE_ONLY=0
     echo "INFO :: Running tests..."
-    # Remove the opts processed variables and assume rest of line as tests names
-    shift $((OPTIND - 1))
-    TESTS="$@"
+    ## Remove the opts processed variables and assume rest of line as tests names
+    #shift $((OPTIND - 1))
+    #TESTS="$@"
     # Replacing spaces with commas.
     TESTS=${TESTS// /,}
     JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
@@ -487,7 +496,8 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
-if [ "$COMPILE_ONLY" -eq 0 ] ||
+if [ "$START_ONLY" -eq 0 ] ||
+       [ "$COMPILE_ONLY" -eq 0 ] ||
        [ "$BUILD_ONLY" -eq 0 ] ||
        [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
     deploy_journals
@@ -498,7 +508,9 @@ if [ "$START_ONLY" -eq 0 ]; then
 fi
 
 if [ "$BUILD_ONLY" -eq 1 ] || [ "$BUILD_PROD" -eq 1 ] || [ "$BUILD_QA" -eq 1 ]; then
-    quit 0
+    if [ -z "$INSTANCE" ]; then
+        quit 0
+    fi
 fi
 
 start_nanos
