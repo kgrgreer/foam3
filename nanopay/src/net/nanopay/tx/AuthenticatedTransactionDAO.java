@@ -31,7 +31,7 @@ public class AuthenticatedTransactionDAO
 {
   public final static String GLOBAL_TXN_READ = "transaction.read.*";
   public final static String GLOBAL_TXN_CREATE = "transaction.create.*";
-  public final static String GLOBAL_TXT_UPDATE = "transaction.update";
+  public final static String GLOBAL_TXN_UPDATE = "transaction.update";
   public final static String VERIFICATION_TXN_READ = "verificationtransaction.read.*";
 
   public AuthenticatedTransactionDAO(DAO delegate) {
@@ -77,7 +77,7 @@ public class AuthenticatedTransactionDAO
     if ( t.getInvoiceId() != 0 ) {
       Invoice invoice = (Invoice) invoiceDAO.find(t.getInvoiceId());
 
-      boolean isUpdatePermitted = auth.check(x, GLOBAL_TXT_UPDATE);
+      boolean isUpdatePermitted = auth.check(x, GLOBAL_TXN_UPDATE);
 
       if ( invoice == null ) {
         throw new RuntimeException("The invoice associated with this transaction could not be found.");
