@@ -18,7 +18,8 @@ foam.CLASS({
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'validateEmail'
+    'validateEmail',
+    'acceptanceDocumentService',
   ],
 
   requires: [
@@ -163,7 +164,7 @@ foam.CLASS({
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
-//    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' },
+    { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` }
@@ -372,13 +373,6 @@ foam.CLASS({
         });
     },
 
-    async function loadAcceptanceDocument() {
-      try {
-        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument('termsAgreementDocument', '');
-      } catch (error) {
-        console.warn('Error occured finding Terms Agreement: ', error);
-      }
-    }
   ],
 
   actions: [
@@ -409,6 +403,16 @@ foam.CLASS({
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
           });
+      }
+    }
+  ],
+
+  listeners: [
+    async function loadAcceptanceDocument() {
+      try {
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+      } catch (error) {
+            console.warn('Error occured finding Terms Agreement: ', error);
       }
     }
   ]

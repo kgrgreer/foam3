@@ -22,7 +22,8 @@ foam.CLASS({
     'institution',
     'isConnecting',
     'notify',
-    'user'
+    'user',
+    'acceptanceDocumentService'
   ],
 
   css: `
@@ -119,7 +120,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
-      name: 'termsAgreement'
+      name: 'termsAgreementDocument'
     },
   ],
 
@@ -130,8 +131,8 @@ foam.CLASS({
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
     { name: 'LABEL_PASSWORD', message: 'Password' },
     { name: 'LEGAL_1', message: 'I agree to the'},
-    { name: 'LEGAL_2', message: 'and authorize the release of my Bank information to nanopay.' }
-//    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' }
+    { name: 'LEGAL_2', message: 'and authorize the release of my Bank information to nanopay.' },
+    { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' }
   ],
 
   methods: [
@@ -239,6 +240,16 @@ foam.CLASS({
       label: 'terms and conditions',
       code: function(X) {
         window.open(this.termsAgreement.link);
+      }
+    }
+  ],
+
+  listeners: [
+    async function loadAcceptanceDocument() {
+      try {
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+      } catch (error) {
+            console.warn('Error occured finding Terms Agreement: ', error);
       }
     }
   ]
