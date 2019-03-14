@@ -12,6 +12,11 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.contacts.Contact',
       name: 'newContact'
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.accounting.ContactMismatchCode',
+      name: 'resultCode'
     }
   ]
 });

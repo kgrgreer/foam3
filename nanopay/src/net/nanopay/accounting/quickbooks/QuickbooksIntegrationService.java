@@ -394,7 +394,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           temp.setLastName(existUser.getLastName());
           temp.setOrganization("TBD");
           temp.setBusinessName("TBD");
-          return new ContactMismatchPair(temp, null);
+          return new ContactMismatchPair.Builder(x)
+            .setExistContact(temp)
+            .setResultCode(ContactMismatchCode.EXISTING_USER_MULTI)
+            .build();
         }
       }
 

@@ -146,6 +146,7 @@ var classes = [
   'net.nanopay.accounting.ResultResponse',
   'net.nanopay.accounting.AccountingBankAccount',
   'net.nanopay.accounting.ContactMismatchPair',
+  'net.nanopay.accounting.ContactMismatchCode',
   'net.nanopay.accounting.AccountingContactEmailCache',
   'net.nanopay.accounting.AccountingErrorCodes',
 

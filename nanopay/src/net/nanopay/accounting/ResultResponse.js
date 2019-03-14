@@ -30,6 +30,16 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.accounting.AccountingErrorCodes',
       name: 'errorCode'
+    },
+    {
+      class: 'Array',
+      of: 'String',
+      name: 'successContact'
+    },
+    {
+      class: 'Array',
+      of: 'String',
+      name: 'successInvoice'
     }
   ]
 });
