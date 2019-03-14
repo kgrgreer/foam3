@@ -202,14 +202,6 @@ foam.CLASS({
           break;
       }
     },
-
-    async function loadAcceptanceDocument() {
-      try {
-        this.termsAgreement = await this.acceptanceDocumentService.getAcceptanceDocument('termsAgreement', '');
-      } catch (error) {
-        console.warn('Error occured finding Terms Agreement: ', error);
-      }
-    },
   ],
 
   actions: [
@@ -239,7 +231,7 @@ foam.CLASS({
       name: 'goToTerm',
       label: 'terms and conditions',
       code: function(X) {
-        window.open(this.termsAgreement.link);
+        window.open(this.termsAgreementDocument.link);
       }
     }
   ],

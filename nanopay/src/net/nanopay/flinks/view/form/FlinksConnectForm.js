@@ -295,7 +295,7 @@ foam.CLASS({
       name: 'goToTerm',
       label: 'terms and conditions',
       code: function(X) {
-        window.open(this.termsAgreement.link);
+        window.open(this.termsAgreementDocument.link);
       }
     }
   ],
