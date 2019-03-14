@@ -5,7 +5,9 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.Popup',
     'foam.u2.PopupView',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentService'
   ],
   imports: [
     'bankInstitutions',
@@ -165,7 +167,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'version'
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.documents.AcceptanceDocument',
+      name: 'termsAgreement'
+    },
   ],
 
   messages: [
@@ -174,7 +181,7 @@ foam.CLASS({
     { name: 'LoginPassword', message: 'Password' },
     { name: 'errorUsername', message: 'Invalid Username' },
     { name: 'errorPassword', message: 'Invalid Password' },
-    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' }
+    //{ name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' }
   ],
   methods: [
     function init() {
@@ -183,6 +190,7 @@ foam.CLASS({
       this.conditionAgree = false;
       this.loadingSpinner = this.LoadingSpinner.create();
       this.loadingSpinner.hide();
+      this.loadAcceptanceDocument();
     },
 
     function initE() {
@@ -258,7 +266,15 @@ foam.CLASS({
         default:
           break;
       }
-    }
+    },
+
+    async function loadAcceptanceDocument() {
+      try {
+        this.termsAgreement = await this.acceptanceDocumentService.getAcceptanceDocument('termsAgreement', '');
+      } catch (error) {
+        console.warn('Error occured finding Terms Agreement: ', error);
+      }
+    },
   ],
 
   actions: [
@@ -286,7 +302,7 @@ foam.CLASS({
       name: 'goToTerm',
       label: 'terms and conditions',
       code: function(X) {
-        window.open(this.TERMS_AGREEMENT_LINK);
+        window.open(this.termsAgreement.link);
       }
     }
   ]
