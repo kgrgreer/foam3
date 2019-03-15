@@ -13,16 +13,42 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
+    'com.itextpdf.text.*',
+    'com.itextpdf.text.pdf.PdfWriter',
+    'foam.blob.Blob',
+    'foam.blob.BlobService',
+    'foam.blob.IdentifiedBlob',
+    'foam.blob.ProxyBlobService',
+    'foam.core.X ',
+    'foam.dao.DAO ',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Group',
-    'foam.nanos.app.AppConfig',
-    'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.model.Business',
+    'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.http.WebAgent',
+    'foam.nanos.logger.Logger',
+    'foam.dao.ArraySink',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
+    'net.nanopay.meter.IpHistory',
+    'net.nanopay.model.*',
+    'net.nanopay.payment.Institution',
+    'org.apache.commons.io.FileUtils',
+    'org.apache.commons.io.IOUtils',
+    'net.nanopay.invoice.model.Invoice',
+
+    'javax.servlet.http.HttpServletRequest',
+    'javax.servlet.http.HttpServletResponse',
+    'java.io.*',
+    'java.text.SimpleDateFormat',
+    'java.text.DecimalFormat',
     'java.util.Date',
-    'java.util.List',
+    'java.util.zip.ZipEntry',
+    'java.util.zip.ZipOutputStream',
+    'net.nanopay.invoice.model.InvoiceStatus',
+
     'static foam.mlang.MLang.*'
   ],
 
@@ -33,14 +59,6 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data:
           `
-            // public InvoiceFilteredSettlementReport(X x, BlobService delegate) {
-            //   setX(x);
-            //   setDelegate(delegate);
-            //   dated = false;
-            //   dao_ = null;
-            // }
-
-            protected boolean dated;
             protected ArraySink dao_;
           `
         }));
@@ -82,21 +100,21 @@ foam.CLASS({
         HttpServletRequest req   = x.get(HttpServletRequest.class);
         long id = Integer.parseInt(req.getParameter("userId"));
 
-        if ( id == null || id == 0 ) {
+        if ( id <= 0 ) {
           // TODO user to print Invoice settelmentReport not found.
         }
 
-        setStartDate(Integer.parseInt(req.getParameter("startDate")));
-        setEndDate(Integer.parseInt(req.getParameter("endDate")));
+        startDate = req.getParameter("startDate");
+        startDate = req.getParameter("endDate");
 
-        if ( getStartDate() == null || getEndDate() == null || getStartDate() > getEndDate() ) {
-          setDated(false);
+        if ( startDate == null || endDate == null ) {
+          dated = (false);
         } else {
-          setDated(true);
+          dated = (true);
         }
 
-        Business business = findUser(id);
-    
+        User business = findUser(x,id);
+        filterInvoiceDAO(x, business);
         try {
           // create a temporary folder to save files before zipping
           FileUtils.forceMkdir(new File("/opt/nanopay/SettlementReport/"));
@@ -107,7 +125,7 @@ foam.CLASS({
             // TODO: probably just log
           }
     
-          downloadZipFile(x, business, settlementReport);
+          downloadZipFile(x, (Business)business, settlementReport);
     
           // delete the temporary folder. Later if we want to archive those files, we can keep the folder.
           FileUtils.deleteDirectory(new File("/opt/nanopay/SettlementReport/"));
@@ -123,29 +141,33 @@ foam.CLASS({
       name: 'filterInvoiceDAO',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'user',
-          type: 'foam.nanos.auth.User'
+          type: 'User'
         }
       ],
       javaCode:
       `
         DAO  invoiceDAO = (DAO) x.get("invoiceDAO");
-        if ( getDated() ) {
+        if ( dated ) {
           dao_ = (ArraySink) invoiceDAO.where(
             AND(
               GTE(Invoice.ISSUE_DATE, startDate),
               LTE(Invoice.ISSUE_DATE, endDate)
             ))
-            .orderBy(Desc(Invoice.ISSUE_DATE))
-            .select(new ArraySink);
+          // .orderBy(Desc(Invoice.ISSUE_DATE))
+            .select(new ArraySink());
         } else {
           dao_ = (ArraySink) invoiceDAO.where(
-            AND(
-              GTE(Invoice.ISSUE_DATE, startDate),
-              LTE(Invoice.ISSUE_DATE, endDate)
+            OR(
+              EQ(Invoice.PAYER_ID, user.getId()),
+              EQ(Invoice.PAYEE_ID, user.getId())
             ))
-            .orderBy(Desc(Invoice.ISSUE_DATE))
-            .select(new ArraySink);
+            //.orderBy(Desc(Invoice.ISSUE_DATE))
+            .select(new ArraySink());
         }
         
       `
@@ -155,12 +177,19 @@ foam.CLASS({
       javaType: 'foam.nanos.auth.User',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'id',
-          type: 'String'
+          type: 'long'
         }
       ],
       javaCode:
       `
+        DAO  userDAO = (DAO) x.get("userDAO");
+        DAO   agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
+
         User user = (User) userDAO.find(id);
         Business business;
     
@@ -189,13 +218,15 @@ foam.CLASS({
       ],
       javaCode:
       `
-        if ( getDated() ) {
-          title = "Invoice Information for " + sdf.format(getStartDate()) + " to " + sdf.format(getEndDate());
+        SimpleDateFormat sdf    = new SimpleDateFormat("yyyy-MM-dd");
+        String title = "";
+        if ( dated ) {
+          title = "Invoice Information for " + sdf.format(startDate + " to " + sdf.format(endDate));
         } else {
           title = "Invoice Information";
         }
     
-        String path = "/opt/nanopay/SettlementReport/[" + business.getOrganization() + "]SettlementReport.pdf";
+        String path = "/opt/nanopay/SettlementReport/[" + user.getOrganization() + "]SettlementReport.pdf";
     
         try {
           Document document = new Document();
@@ -204,12 +235,11 @@ foam.CLASS({
 
           document.add(new Paragraph(title));
     
-          List list = createListForOneInvoice(x, business.getOrganization());
+          List list = createListForInvoices(x, user.getOrganization());
     
           document.add(list);
           document.add(Chunk.NEWLINE);
-          document.add(new Paragraph("Business ID: " + business.getId()));
-          document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
+          document.add(new Paragraph("Business ID: " + user.getId()));
     
           document.close();
           writer.close();
@@ -224,7 +254,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'createListForOneInvoice',
+      name: 'createListForInvoices',
       javaType: 'List<List>',
       args: [
         {
@@ -243,9 +273,9 @@ foam.CLASS({
         SimpleDateFormat sdf    = new SimpleDateFormat("yyyy-MM-dd");
         User temp_U             = null;
         String title            = null;
-        Invoice[] invoiceArray_ = dao_.getArray();
-        List<List> listList     = new ArrayList<List>();
-        List list               = null;
+        java.util.List invoiceArray_ = dao_.getArray();
+        // List<List> listList     = new ArrayList<List>();
+        List list = new List(List.UNORDERED);
 
         String transDate = "";
         String createdBy_S = "";
@@ -259,28 +289,28 @@ foam.CLASS({
         String inORN = "";
         String inID = "";
         String inAmount = "";
-        
-        for ( Invoice invoice : invoiceArray_ ) {
+        Invoice invoice = null;
+        for ( Object temp : invoiceArray_ ) {
+          invoice = (Invoice)temp;
           // Format Information variables for each Invoice
-          businessName = user.getOrganization();
           transDate = df.format(invoice.getPaymentDate());
           temp_U = (User) userDAO.find(invoice.getCreatedBy());
-          createdBy_S = temp_U == null ? 'n/a' : temp_U.label();
-          temp_U = (User) userDAO.find(invoice.getPayerId);
-          businessNamePayer = temp_U == null ? 'n/a' : temp_U.getOrganization;
-          temp_U = (User) userDAO.find(invoice.getPayeeId);
-          businessNamePayee = temp_U == null ? 'n/a' : temp_U.getOrganization;
+          createdBy_S = temp_U == null ? "n/a" : temp_U.label();
+          temp_U = (User) userDAO.find(invoice.getPayerId());
+          businessNamePayer = temp_U == null ? "n/a" : temp_U.getOrganization();
+          temp_U = (User) userDAO.find(invoice.getPayeeId());
+          businessNamePayee = temp_U == null ? "n/a" : temp_U.getOrganization();
           srcCurrency = invoice.getSourceCurrency();
           dstCurrency = invoice.getDestinationCurrency();
-          exRate = invoice.getExchangeRate();
+          exRate = invoice.getExchangeRate() + "";
           inStatus = ((InvoiceStatus)invoice.getStatus()).getLabel();
           tanId = invoice.getReferenceId();
           inORN = invoice.getPurchaseOrder();
-          inID = invoice.getId();
+          inID = invoice.getId() + "";
           inAmount = invoice.getAmount() + "";
 
           // Put all variables with text for each line, for write to doc.pdf(settlementReport) 
-          list = new List(List.UNORDERED);
+          
           list.add(new ListItem("Invoice ID: " + inID + " PO: " + inORN ));
           list.add(new ListItem("\tTransaction Date: " + transDate));
           list.add(new ListItem("\tInvoice was established by: " + createdBy_S));
@@ -289,14 +319,14 @@ foam.CLASS({
           list.add(new ListItem("\tSource Account Currency Type: " + srcCurrency));
           list.add(new ListItem("\tDestination Account Currency Type: " + dstCurrency));
           if ( exRate != null && exRate.length() != 0 ) {
-            list.add(new ListItem(\t"Exchange Rate: " + exRate));
+            list.add(new ListItem("\tExchange Rate: " + exRate));
           }
           list.add(new ListItem("\tStatus of Payment: " + inStatus));
           list.add(new ListItem("\tTransaction ID: " + tanId));
           list.add(new ListItem("\tInvoice Amount: " + inAmount));
           list.add(new ListItem("\n\n"));
 
-          listList.add(list);
+          // listList.add(list);
         }
         return list;
       `
