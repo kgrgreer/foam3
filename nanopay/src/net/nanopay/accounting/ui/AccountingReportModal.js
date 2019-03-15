@@ -61,18 +61,19 @@ foam.CLASS({
     text-align: center;
   }
   ^ .success {
-    border-color: limegreen;
-    background-color: palegreen;
+    border-color: #03cf1f;
+    background-color: #f6fff2;
   }
   ^ .error {
-    border-color: #DC143C;
-    background-color: #F08080;
+    border-color: #f91c1c;
+    background-color: #fff6f6;
   }
   ^ .warning {
-    border-color: #FF8C00;
-    background-color: #FFA500;
+    border-color: #604aff;
+    background-color: #f5f4ff;
   }
   ^ .result-item {
+    margin-top: 1px;
     border-style: solid;
     padding: 2px;
   }
