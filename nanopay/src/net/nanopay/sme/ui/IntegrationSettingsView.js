@@ -153,6 +153,15 @@ foam.CLASS({
       color: #4d38e1;
       border-color: #4d38e1;
     }
+    ^ .disconnect {
+      border-color: #f91c1c;
+      color: #f91c1c;
+    }
+
+    ^ .disconnect:hover {
+      border-color: #e31313;
+      color: #e31313;
+    }
   `,
 
   messages: [
@@ -236,6 +245,16 @@ foam.CLASS({
           }
         });
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isXeroDisconnected',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'isQuickbooksDisconnected',
+      value: false
     }
   ],
 
@@ -255,7 +274,7 @@ foam.CLASS({
             .start().add('Xero accounting').addClass('integration-box-title').end()
             .start().add(this.xeroConnected$).addClass('account-info').end()
           .end()
-          .start(this.XERO_CONNECT, { label$: this.xeroBtnLabel$ }).end()
+          .start(this.XERO_CONNECT, { label$: this.xeroBtnLabel$ }).enableClass('disconnect', this.isXeroDisconnected$).end()
         .end()
         .start().addClass('integration-box')
           .start({ class: 'foam.u2.tag.Image', data: '/images/quickbooks.png' }).addClass('accounting-logo').end()
@@ -263,7 +282,7 @@ foam.CLASS({
             .start().add('Intuit quickbooks').addClass('integration-box-title').end()
             .start().add(this.qbConnected$).addClass('account-info').end()
           .end()
-          .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).end()
+          .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).enableClass('disconnect', this.isQuickbooksDisconnected$).end()
         .end()
         .start().show(this.connected$)
           .start().add(this.BankMatchingTitle).addClass('title').end()
@@ -287,26 +306,28 @@ foam.CLASS({
       .end();
     },
     async function isXeroConnected() {
-      var result = await this.xeroService.isSignedIn(null, this.user);
-      if ( result.result ) {
+      if ( this.user.integrationCode.name == 'XERO' ) {
         this.xeroBtnLabel = this.Disconnect;
         this.xeroConnected = this.Connected;
         this.bankMatchingLogo = '/images/xero.png';
+        this.isXeroDisconnected = true;
       } else {
         this.xeroBtnLabel = this.Connect;
         this.xeroConnected = this.NotConnected;
+        this.isXeroDisconnected = false;
       }
       this.checkForConnections();
     },
     async function isQuickbooksConnected() {
-      var result = await this.quickbooksService.isSignedIn(null, this.user);
-      if ( result.result ) {
+      if ( this.user.integrationCode == 'QUICKBOOKS' ) {
         this.qbBtnLabel = this.Disconnect;
         this.qbConnected = this.Connected;
         this.bankMatchingLogo = '/images/quickbooks.png';
+        this.isQuickbooksDisconnected = true;
       } else {
         this.qbBtnLabel = this.Connect;
         this.qbConnected = this.NotConnected;
+        this.isQuickbooksDisconnected = false;
       }
       this.checkForConnections();
     },
@@ -330,9 +351,6 @@ foam.CLASS({
   actions: [
     {
       name: 'xeroConnect',
-      isAvailable: function(qbConnected) {
-        return qbConnected == 'Not connected';
-      },
       code: function() {
         var self = this;
         if ( this.xeroBtnLabel == this.Disconnect ) {
@@ -353,9 +371,6 @@ foam.CLASS({
     },
     {
       name: 'quickbooksConnect',
-      isAvailable: function(xeroConnected) {
-        return xeroConnected == 'Not connected';
-      },
       code: function() {
         var self = this;
         if ( this.qbBtnLabel == this.Disconnect ) {

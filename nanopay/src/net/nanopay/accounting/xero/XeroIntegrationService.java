@@ -16,13 +16,9 @@ import foam.nanos.auth.UserUserJunction;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 
+import net.nanopay.accounting.*;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
-import net.nanopay.accounting.AccountingBankAccount;
-import net.nanopay.accounting.AccountingContactEmailCache;
-import net.nanopay.accounting.AccountingErrorCodes;
-import net.nanopay.accounting.ContactMismatchPair;
-import net.nanopay.accounting.ResultResponse;
 import net.nanopay.accounting.xero.model.XeroContact;
 import net.nanopay.accounting.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
@@ -194,15 +190,20 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     // check if contact is already exists
     if ( existingContact != null ) {
 
-      // Do nothing if it is an existing user ( user on our system )
       if ( existingUser != null ) {
-        return null;
+        return new ContactMismatchPair.Builder(x)
+          .setExistContact(importXeroContact(x, xeroContact, user, null))
+          .setResultCode(ContactMismatchCode.EXISTING_USER_CONTACT)
+          .build();
       }
       if (!(existingContact instanceof XeroContact) || ! ((XeroContact) existingContact).getXeroId().equals(xeroContact.getContactID())) {
         result.setExistContact(existingContact);
-        result.setNewContact(importXeroContact(x,xeroContact, user, null));
+        result.setNewContact(existingContact);
+        result.setResultCode(ContactMismatchCode.EXISTING_CONTACT);
       } else {
         newContact = importXeroContact(x,xeroContact, user, (XeroContact) existingContact.fclone());
+        result.setNewContact(newContact);
+        result.setResultCode(ContactMismatchCode.SUCCESS);
       }
     } else { // Contact does not already exist
 
@@ -220,14 +221,18 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
           newContact.setBusinessName(business.getBusinessName());
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
+          newContact.setType("Contact");
+          newContact.setGroup("sme");
+          newContact.setOwner(user.getId());
+          result.setResultCode(ContactMismatchCode.EXISTING_USER);
         } else {
           result.setExistContact(importXeroContact(x,xeroContact,user,null));
+          result.setResultCode(ContactMismatchCode.EXISTING_USER_MULTI);
         }
-        newContact.setType("Contact");
-        newContact.setGroup("sme");
-        newContact.setOwner(user.getId());
       } else {
         newContact = importXeroContact(x,xeroContact,user,null);
+        result.setNewContact(newContact);
+        result.setResultCode(ContactMismatchCode.SUCCESS);
       }
     }
     if ( ! newContact.getEmail().equals("") ) {
@@ -247,6 +252,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     XeroClient client = this.getClient(x);
     List<ContactMismatchPair> result = new ArrayList<>();
     List<String> contactErrors = new ArrayList<>();
+    List<String> contactSuccess = new ArrayList<>();
 
     ResultResponse isSignedIn = isSignedIn(x);
     if ( ! isSignedIn.getResult() ) {
@@ -271,7 +277,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         );
 
          ContactMismatchPair mismatchPair = syncContact(x, xeroContact);
-         if ( mismatchPair != null ) {
+         if ( mismatchPair.getResultCode() == ContactMismatchCode.SUCCESS ) {
+           contactSuccess.add(mismatchPair.getNewContact().getFirstName() + " " + mismatchPair.getNewContact().getLastName() + " with email address of " + mismatchPair.getNewContact().getEmail());
+         }
+         else {
            result.add(mismatchPair);
          }
         } catch(Exception e) {
@@ -290,6 +299,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       .setResult(true)
       .setContactSyncMismatches(result.toArray(new ContactMismatchPair[result.size()]))
       .setContactSyncErrors(contactErrors.toArray(new String[contactErrors.size()]))
+      .setSuccessContact(contactSuccess.toArray(new String[contactSuccess.size()]))
       .build();
   }
 
@@ -320,7 +330,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       // Only update invoices that are unpaid or drafts.
       if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != existingInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.DRAFT != existingInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.OVERDUE != existingInvoice.getStatus()) {
         // Skip processing this invoice.
-        return "";
+        return "skip";
       }
 
       // Invoice paid or voided on xero, remove it from our system
@@ -328,14 +338,14 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         existingInvoice.setDraft(true);
         invoiceDAO.put(existingInvoice);
         invoiceDAO.remove(existingInvoice);
-        return "";
+        return "skip";
       }
 
       updateInvoice = (XeroInvoice) existingInvoice.fclone();
     } else {
       // Checks if the invoice was paid, void or deleted
       if (com.xero.model.InvoiceStatus.PAID == xeroInvoice.getStatus() || com.xero.model.InvoiceStatus.VOIDED == xeroInvoice.getStatus() || com.xero.model.InvoiceStatus.DELETED == xeroInvoice.getStatus()) {
-        return "";
+        return "skip";
       }
       updateInvoice = new XeroInvoice();
     }
@@ -468,6 +478,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     XeroClient client = this.getClient(x);
     Logger logger = (Logger) x.get("logger");
     List<String> invoiceErrors = new ArrayList<>();
+    List<String> successInvoice = new ArrayList<>();
 
     // Check that user has accessed xero before
     ResultResponse isSignedIn = isSignedIn(x);
@@ -481,7 +492,9 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       for (com.xero.model.Invoice xeroInvoice : client.getInvoices()) {
         try {
           String response = syncInvoice(x, xeroInvoice);
-          if ( ! response.equals("")) {
+          if ( response.equals("skip") ) {
+            continue;
+          } else if ( ! response.equals("") ) {
             String message;
             if (xeroInvoice.getType() == InvoiceType.ACCREC) {
               message = "Receivable invoice from " + xeroInvoice.getContact().getName() + " due on " + xeroInvoice.getDueDate().getTime();
@@ -489,6 +502,8 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
               message = "Payable invoice to " + xeroInvoice.getContact().getName() + " due on " + xeroInvoice.getDueDate().getTime();
             }
             invoiceErrors.add(message + " cannot be synced: " + response);
+          } else {
+            successInvoice.add("Invoice to " + xeroInvoice.getContact().getName()+ " due on " + xeroInvoice.getDueDate().getTime());
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -506,6 +521,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     return new ResultResponse.Builder(x)
       .setResult(true)
       .setInvoiceSyncErrors(invoiceErrors.toArray(new String[invoiceErrors.size()]))
+      .setSuccessInvoice(successInvoice.toArray(new String[successInvoice.size()]))
       .build();
   }
 
