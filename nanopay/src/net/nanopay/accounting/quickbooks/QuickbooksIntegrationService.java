@@ -78,6 +78,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse contactSync(X x) {
     List<ContactMismatchPair> result = new ArrayList<>();
     List<String> invalidContacts = new ArrayList<>();
+    List<String> success = new ArrayList<>();
 
     try {
 
@@ -96,6 +97,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
           if ( mismatch != null ) {
             result.add(mismatch);
+          } else {
+            success.add("QuickBooks contact " + contact.getDisplayName() + " import successfully");
           }
 
         } catch ( Exception e ) {
@@ -112,12 +115,14 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       .setResult(true)
       .setContactSyncMismatches(result.toArray(new ContactMismatchPair[result.size()]))
       .setContactSyncErrors(invalidContacts.toArray(new String[invalidContacts.size()]))
+      .setSuccessContact(success.toArray(new String[success.size()]))
       .build();
   }
 
   @Override
   public ResultResponse invoiceSync(X x) {
-    List<String> result = new ArrayList<>();
+    List<String> errorResult = new ArrayList<>();
+    List<String> successResult = new ArrayList<>();
 
     try {
 
@@ -128,10 +133,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         try {
           String importResult = importInvoice(x, invoice);
           if ( importResult != null ) {
-            result.add(importResult);
+            errorResult.add(importResult);
+          } else {
+            successResult.add("QuickBooks invoice " + invoice.getDocNumber() + " import successfully.");
           }
+
         } catch ( Exception e ) {
-          result.add(e.getMessage());
+          errorResult.add(e.getMessage());
         }
       }
 
@@ -143,7 +151,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     return new ResultResponse.Builder(x)
       .setResult(true)
-      .setInvoiceSyncErrors(result.toArray(new String[result.size()]))
+      .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
+      .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
       .build();
   }
 
@@ -346,7 +355,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       // existing user
       if ( existUser != null ) {
-        return null;
+        return new ContactMismatchPair.Builder(x)
+          .setExistContact(existContact)
+          .setResultCode(ContactMismatchCode.EXISTING_USER_CONTACT)
+          .build();
       }
 
       if ( existContact instanceof  QuickbooksContact &&
@@ -356,6 +368,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         );
       } else {
         return new ContactMismatchPair.Builder(x)
+          .setResultCode(ContactMismatchCode.EXISTING_CONTACT)
           .setExistContact(existContact)
           .setNewContact(createQuickbooksContactFrom(x, importContact, false))
           .build();
@@ -383,7 +396,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           temp.setBusinessName(business.getBusinessName());
           temp.setBusinessId(business.getId());
           temp.setEmail(business.getEmail());
-          contactDAO.inX(x).put(temp);
+          return new ContactMismatchPair.Builder(x)
+            .setExistContact(temp)
+            .setResultCode(ContactMismatchCode.EXISTING_USER)
+            .build();
         }
 
         if ( sink.getArray().size() > 1) {

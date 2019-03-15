@@ -15,7 +15,8 @@ foam.CLASS({
     'pushMenu',
     'quickbooksService',
     'user',
-    'xeroService'
+    'xeroService',
+    'bankMatched'
   ],
 
   requires: [
@@ -186,6 +187,11 @@ foam.CLASS({
           }
         });
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isLandingPage',
+      value: false
     }
   ],
 
@@ -238,7 +244,7 @@ foam.CLASS({
     {
       name: 'save',
       label: 'Save',
-      code: async function() {
+      code: async function(X) {
         var self = this;
 
         if ( this.accountingBankList == undefined || this.abliiBankList == undefined ) {
@@ -251,15 +257,20 @@ foam.CLASS({
         this.accountDAO.put(abliiBank).then(function(result) {
           self.add(self.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
           self.accountingBankList = -1;
-          self.pushMenu('sme.main.dashboard');
+          if ( ! self.isLandingPage ) {
+            self.pushMenu('sme.main.dashboard');
+          }
         });
+        this.bankMatched = true;
+        X.closeDialog();
       }
     },
     {
       name: 'cancel',
       label: 'Cancel',
-      code: function() {
-        this.pushMenu('sme.main.dashboard');
+      code: function(X) {
+        this.bankMatched = false;
+        X.closeDialog();
       }
     }
   ]

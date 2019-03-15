@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   imports: [
-    'user'
+    'user',
+    'pushMenu'
   ],
 
   requires: [
@@ -80,7 +81,11 @@ foam.CLASS({
 
   properties: [
     'invoiceResult',
-    'contactResult'
+    'contactResult',
+    {
+      name: 'redirect',
+      type: 'Boolean'
+    }
   ],
 
   methods: [
@@ -175,6 +180,7 @@ foam.CLASS({
       label: 'Continue',
       code: function(X) {
         X.closeDialog();
+        this.pushMenu('sme.main.dashboard')
       }
     },
   ],

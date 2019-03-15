@@ -17,13 +17,18 @@ foam.CLASS({
     'ctrl'
   ],
 
+  exports: [
+    'bankMatched'
+  ],
+
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.dialog.Popup'
   ],
 
   css: `
@@ -38,6 +43,24 @@ foam.CLASS({
       padding: 0 !important;
       background: #f9fbff;
     }
+  .net-nanopay-accounting-ui-AccountingCallbackPage {
+      margin: auto;
+      text-align: center;
+    }
+  ^ .spinner-container {
+      z-index: 1;
+    }
+  ^ .spinner-container-center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+  }
+  ^ .spinner-container .net-nanopay-ui-LoadingSpinner img {
+    width: 200px;
+    height: 200px;
+  }
   `,
 
   properties: [
@@ -66,8 +89,17 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'syncing'
+      name: 'bankMatched',
+      type: 'Boolean',
+      value: false
+    },
+    {
+      name: 'integrationSoftware',
+      type: 'String',
+      factory: function() {
+        let parsedUrl = new URL(window.location.href);
+        return parsedUrl.searchParams.get('accounting');
+      }
     }
   ],
 
@@ -75,41 +107,86 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
 
-      let service = null;
-      let parsedUrl = new URL(window.location.href);
-      let integraition = parsedUrl.searchParams.get('accounting');
-      this.syncing = true;
+      // display loading icon
+      this
+        .start().addClass(this.myClass())
+          .start('h1').addClass('title')
+            .add('Syncing ' + this.integrationSoftware + ' to Ablii')
+          .end()
+          .start().addClass('spinner-container')
+            .start().addClass('spinner-container-center')
+              .add(this.loadingSpinner)
+            .end()
+          .end()
+        .end();
 
-      if ( integraition === 'xero' ) {
-        service = this.xeroService;
+      let connectedBank = await this.user.accounts.where(
+        this.AND(
+          this.OR(
+            this.EQ(this.Account.TYPE, this.BankAccount.name),
+            this.EQ(this.Account.TYPE, this.CABankAccount.name),
+            this.EQ(this.Account.TYPE, this.USBankAccount.name)
+          ),
+          this.NEQ(this.BankAccount.INTEGRATION_ID, '')
+        )
+      ).select(this.COUNT());
+
+      if ( connectedBank.value === 0 ) {
+        this.add(this.Popup.create({
+          closeable: false,
+          onClose: this.sync.bind(this)
+        }).tag({
+          class: 'net.nanopay.accounting.ui.IntegrationPopUpView',
+          data: this,
+          isLandingPage: true
+        }));
+      } else {
+        this.bankMatched = true;
+        this.sync();
+      }
+    },
+
+    async function sync() {
+      // reset the url first
+      window.history.pushState({}, '', '/#sme.bank.matching')
+
+      if ( ! this.bankMatched )  {
+        this.pushMenu('sme.main.dashboard');
+        return;
       }
 
-      if ( integraition === 'quickbooks' ) {
+      let service = null;
+
+      if ( this.integrationSoftware === 'Xero' ) {
+        service = this.xeroService;
+      }
+      if ( this.integrationSoftware === 'quickbooks' ) {
         service = this.quickbooksService;
       }
 
-      // display loading icon
-      this
-        .addClass(this.myClass())
-        .start('h1')
-          .add('Syncing ' + integraition + ' to Ablii')
-        .end()
-        .add(this.loadingSpinner)
+      let contactResult = await service.contactSync(null);
+      let invoiceResult = await service.invoiceSync(null);
 
-      let contacts = await service.contactSync(null);
-      let invoices = await service.invoiceSync(null);
-
-      this.syncing = false;
-
-      console.log(contacts);
-      console.log(invoices);
-
-      if ( contacts.result === true && invoices.result === true ) {
-        ctrl.stack.push({
-          class: 'net.nanopay.accounting.ui.IntegrationPopUpView',
-          invoice: this.invoice
-        });
+      if ( contactResult.result === false ) {
+        this.ctrl.notify(contactResult.reason, 'error');
+        this.pushMenu('sme.main.dashboard');
       }
+
+      if ( invoiceResult.result === false  ) {
+        this.ctrl.notify(invoiceResult.reason, 'error');
+        this.pushMenu('sme.main.dashboard');
+      }
+
+      this.ctrl.notify('All information has been synchronized', 'success');
+
+      this.add(this.Popup.create().tag({
+        class: 'net.nanopay.accounting.ui.AccountingReportModal',
+        invoiceResult: invoiceResult,
+        contactResult: contactResult
+      }));
+
+      console.log(contactResult);
+      console.log(invoiceResult);
     }
   ]
 });

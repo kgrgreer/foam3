@@ -115,9 +115,12 @@ foam.CLASS({
         let contactsResult = await service.contactSync(null);
         if ( contactsResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
           X.controllerView.add(self.Popup.create({ closeable: false }).tag({
-            class: 'net.nanopay.accounting.AccountingTimeOutModal',
-            data: this
+            class: 'net.nanopay.accounting.AccountingTimeOutModal'
           }));
+        }
+
+        if ( contactsResult.result === false ) {
+          this.ctrl.notify(contactsResult.reason, 'error');
         }
 
         // run through contact missmatch if any
@@ -125,9 +128,12 @@ foam.CLASS({
         let invoicesResult = await service.invoiceSync(null);
         if ( invoicesResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
           X.controllerView.add(self.Popup.create({ closeable: false }).tag({
-            class: 'net.nanopay.accounting.AccountingTimeOutModal',
-            data: this
+            class: 'net.nanopay.accounting.AccountingTimeOutModal'
           }));
+        }
+
+        if ( invoicesResult.result === false ) {
+          this.ctrl.notify(contactsResult.reason, 'error');
         }
 
         X.controllerView.removeClass('account-sync-loading-animation');
@@ -135,9 +141,11 @@ foam.CLASS({
         this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
 
         if ( invoicesResult.result === true && contactsResult.result === true) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: 'All information has been synchronized',
-            type: 'success'
+          this.ctrl.notify('All information has been synchronized', 'error');
+          this.add(this.Popup.create().tag({
+            class: 'net.nanopay.accounting.ui.AccountingReportModal',
+            invoiceResult: invoiceResult,
+            contactResult: contactResult
           }));
         }
       }
