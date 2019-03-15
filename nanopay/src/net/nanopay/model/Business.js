@@ -140,7 +140,7 @@ foam.CLASS({
     {
       name: 'exportComplianceDocuments',
       code: async function() {
-        var url = window.location.origin + "/services/ascendantFXReports?userId=" + this.id;
+        var url = window.location.origin + "/service/ascendantFXReports?userId=" + this.id;
         window.location.assign(url);
       }
     },
@@ -149,7 +149,7 @@ foam.CLASS({
       code: async function() {
         // var sDate = new Date(Date.now()-(3600000*24*14));
         // var dDate = new Date(Date.now());
-        var url = window.location.origin + "/services/settlementReports?userId=" + this.id+"&startDate=\"\" &endDate=\"\"";
+        var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate=\"\"&endDate=\"\"";
         window.location.assign(url);
       }
     }

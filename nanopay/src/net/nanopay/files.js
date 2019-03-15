@@ -802,4 +802,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
 
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
+
+  { name: 'net/nanopay/invoice/InvoiceFilteredSettlementReport', flags: ['web'] },
 ]);
