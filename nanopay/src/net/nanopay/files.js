@@ -609,6 +609,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
+    { name: 'net/nanopay/ui/LiquiditySettingsRowView', flags: ['web'] },
+    { name: 'net/nanopay/ui/LiquiditySettingsSelectionView', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },

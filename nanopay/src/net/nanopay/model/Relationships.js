@@ -101,13 +101,14 @@ foam.RELATIONSHIP({
   targetProperty: {
       view: function(_, X) {
         return foam.u2.view.RichChoiceView.create({
-
+          search: true,
+          selectionView: { class: 'net.nanopay.ui.LiquiditySettingsSelectionView', liquiditySettingsDAO: X.liquiditySettingsDAO },
+          rowView: { class: 'net.nanopay.ui.LiquiditySettingsRowView' },
           sections: [
             {
               dao: X.liquiditySettingsDAO,
             }
           ],
-
         });
       },
   },
