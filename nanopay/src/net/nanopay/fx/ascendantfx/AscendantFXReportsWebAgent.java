@@ -131,6 +131,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
     String annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount();
     String annualDomesticVolume = business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume();
+    String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
     String firstTradeDateDomestic = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic());
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
@@ -171,6 +172,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         String otherPurposeOfTransactions = business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose();
         list.add(new ListItem("Other transaction purpose: " + otherPurposeOfTransactions));
       }
+      list.add(new ListItem("Annual gross sales: " + baseCurrency + " " + annualRevenue));
       list.add(new ListItem("Domestic transfers: "));
       List domesticSubList = new List(true, false, 20);
       domesticSubList.add(new ListItem("Currency Name: " + baseCurrency));
