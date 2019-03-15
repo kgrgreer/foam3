@@ -35,8 +35,7 @@ public class CompoundInterest implements ContextAgent {
             accountDAO.put_(x,la);
           }
         }
-      }
-      );
+      });
   }
 }
 
