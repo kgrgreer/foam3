@@ -30,13 +30,10 @@ foam.CLASS({
     'agent',
     'appConfig',
     'as ctrl',
-    'balance',
     'bannerData',
     'bannerizeCompliance',
     'checkComplianceAndBanking',
     'currentAccount',
-    'findAccount',
-    'findBalance',
     'privacyUrl',
     'termsUrl'
   ],
@@ -153,43 +150,34 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      var self = this;
+    async function init() {
+      await this.SUPER();
 
-      // enable session timer
+      // Enable session timer.
       this.sessionTimer.enable = true;
       this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
 
-      self.clientPromise.then(function(client) {
-        self.setPrivate_('__subContext__', client.__subContext__);
-        self.getCurrentUser();
+      window.onpopstate = async (event) => {
+        var menu;
 
-        window.onpopstate = function(event) {
-          if ( location.hash != null ) {
-            // Redirect user to switch business if agent doesn't exist.
-            if ( ! self.agent && location.hash !== '' ) {
-              self.client.menuDAO.find('sme.accountProfile.switch-business')
-                .then(function(menu) {
-                  menu.launch();
-                });
-            } else {
-              var hash = location.hash.substr(1);
-              if ( hash !== '' ) {
-                self.client.menuDAO.find(hash).then((menu) => {
-                  // Any errors in finding the menu location to redirect
-                  // will result in a redirect to dashboard.
-                  if ( menu ) {
-                    menu.launch();
-                  } else {
-                    self.confirmHashRedirectIfInvitedAndSignedIn();
-                  }
-                });
-              }
-            }
-          }
-        };
-      });
+        // Redirect user to switch business if agent doesn't exist.
+        if ( ! this.agent ) {
+          menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
+          menu.launch(this);
+          return;
+        }
+
+        var hash = location.hash.substr(1);
+        menu = await this.client.menuDAO.find(hash);
+
+        // Any errors in finding the menu location to redirect
+        // will result in a redirect to dashboard.
+        if ( menu ) {
+          menu.launch(this);
+        } else {
+          this.confirmHashRedirectIfInvitedAndSignedIn();
+        }
+      };
     },
 
     function onSessionTimeout() {
@@ -205,7 +193,7 @@ foam.CLASS({
         self.client.nSpecDAO.find('appConfig').then(function(config) {
           self.appConfig.copyFrom(config.service);
         });
-        self.getCurrentAgent();
+        self.fetchAgent();
 
         self.AppStyles.create();
         self.SMEStyles.create();
@@ -252,14 +240,6 @@ foam.CLASS({
           self.topNavigation_.add(foam.u2.View.create());
           self.footerView_.hide();
       });
-    },
-
-    function setPortalView(group) {
-      // Replaces contents of top navigation and footer view with group views
-      this.topNavigation_ && this.topNavigation_.replaceChild(
-        foam.lookup('net.nanopay.sme.ui.SideNavigationView').create(null, this),
-        this.topNavigation_.children[0]
-      );
     },
 
     function requestLogin() {
@@ -314,6 +294,7 @@ foam.CLASS({
       });
     },
 
+    // FIXME: This whole thing needs to be looked at.
     function confirmHashRedirectIfInvitedAndSignedIn() {
       var locHash = location.hash;
       var searchParams = new URLSearchParams(location.search);
@@ -357,7 +338,6 @@ foam.CLASS({
           }
 
           self.onUserUpdate();
-          self.bannerizeCompliance();
         }
       })
       .catch(function(err) {
@@ -433,6 +413,17 @@ foam.CLASS({
       } catch (err) {
         console.warn(this.QUERY_BANK_AMOUNT_ERROR, err);
       }
+    }
+  ],
+
+  listeners: [
+    function onUserLoad() {
+      if ( ! this.user.emailVerified ) {
+        this.loginSuccess = false;
+        this.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
+      }
+
+      this.bannerizeCompliance();
     }
   ]
 });

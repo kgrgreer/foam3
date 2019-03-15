@@ -39,6 +39,7 @@ foam.CLASS({
     'accountDAO',
     'appConfig',
     'fxService',
+    'group',
     'ascendantFXUserDAO',
     'bareUserDAO',
     'ctrl',
@@ -217,8 +218,8 @@ foam.CLASS({
     },
     {
       name: 'isEmployee',
-      expression: function(user) {
-        return user.group.includes('.employee');
+      expression: function(group) {
+        return group.includes('.employee');
       }
     },
     {

@@ -36,6 +36,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil'
   ],
@@ -63,6 +64,7 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
         User user = (User) x.get("user");
+        Group group = (Group) x.get("group");
         AuthService auth = (AuthService) x.get("auth");
 
         // Prevent privilege escalation by only allowing a user's group to be
@@ -73,7 +75,7 @@ foam.CLASS({
         }
 
         // Prevent everyone but admins from changing the 'system' property.
-        if ( this.getSystem() && ! user.getGroup().equals("admin") ) {
+        if ( this.getSystem() && ! group.getId().equals("admin") ) {
           throw new AuthorizationException("You do not have permission to create a system user.");
         }
       `
@@ -88,6 +90,7 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode: `
         User user = (User) x.get("user");
+        Group group = (Group) x.get("group");
         AuthService auth = (AuthService) x.get("auth");
         boolean isUpdatingSelf = SafetyUtil.equals(this.getId(), user.getId());
         boolean hasUserEditPermission = auth.check(x, "business.update." + this.getId());
@@ -119,7 +122,7 @@ foam.CLASS({
         // Prevent everyone but admins from changing the 'system' property.
         if (
           ! SafetyUtil.equals(oldBusiness.getSystem(), this.getSystem()) &&
-          ! SafetyUtil.equals(user.getGroup(), "admin")
+          ! SafetyUtil.equals(group.getId(), "admin")
         ) {
           throw new AuthorizationException("You do not have permission to change the 'system' flag.");
         }
@@ -129,7 +132,8 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
         User user = (User) x.get("user");
-        if ( ! SafetyUtil.equals(user.getGroup(), "admin") ) {
+        Group group = (Group) x.get("group");
+        if ( ! SafetyUtil.equals(group.getId(), "admin") ) {
           throw new AuthorizationException("Businesses cannot be deleted.");
         }
       `

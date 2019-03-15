@@ -12,6 +12,8 @@ import net.nanopay.model.Business;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.auth.passwordutil.PasswordEntropy;
 
+// Troy: Why do we have this? Can't we take whatever made this necessary and put
+// it in foam?
 
 public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
@@ -55,7 +57,7 @@ public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
     }
 
     // check if user group enabled
-    Group group = (Group) groupDAO_.find(user.getGroup());
+    Group group = (Group) user.findGroup(x);
     if ( group != null && ! group.getEnabled() ) {
       throw new AuthenticationException("User group disabled");
     }
