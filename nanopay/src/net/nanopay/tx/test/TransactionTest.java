@@ -3,7 +3,10 @@ package net.nanopay.tx.test;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
+import net.nanopay.account.LoanAccount;
+import net.nanopay.account.LoanedTotalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXTransaction;
@@ -19,6 +22,7 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.*;
+import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
 
 public class TransactionTest
   extends foam.nanos.test.Test {
@@ -29,13 +33,94 @@ public class TransactionTest
 
   public void runTest(X x){
     x_ = x;
-    sender_ = addUser("txnTest1@transactiontest.com");
-    receiver_ = addUser("txnTest2@transactiontest.com");
+    sender_ = addUser("txntest1@transactiontest.com");
+    receiver_ = addUser("txntest2@transactiontest.com");
 
     testTransactionMethods();
     testAbliiTransaction();
     testVerificationTransaction();
     testFXTransaction();
+    testLoanTransaction();
+  }
+
+  public void testLoanTransaction(){
+    User loaneeTester = addUser("loantest1@transactiontest.com");
+    User loanerTester = addUser("loantest2@transactiontest.com");
+    // get the actual lending account
+    DigitalAccount benefactorAccount = (DigitalAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(DigitalAccount.OWNER,loanerTester.getId()),INSTANCE_OF(DigitalAccount.class)));
+    // fund the lending account
+    CABankAccount fundAct = (CABankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER,loanerTester.getId()),INSTANCE_OF(CABankAccount.class)));
+    test(! ( fundAct == null ), "funding account exists"  );
+    Transaction fundtxn = new Transaction.Builder(x_)
+      .setSourceAccount(fundAct.getId())
+      .setDestinationAccount(benefactorAccount.getId())
+      .setAmount(500000)
+      .build();
+    fundtxn = (Transaction) ((DAO) x_.get("transactionDAO")).put_(x_, fundtxn).fclone();
+    fundtxn.setStatus(COMPLETED);
+    ((DAO) x_.get("transactionDAO")).put_(x_, fundtxn);
+
+    //create the loan account
+    LoanAccount loanAccount = new LoanAccount.Builder(x_)
+      .setOwner(loaneeTester.getId())
+      .setRate(0.0)
+      .setPrincipal(400000)
+      .setDenomination("CAD")
+      .setLenderAccount(benefactorAccount.getId())
+      .build();
+
+    loanAccount = (LoanAccount) ((DAO) x_.get("accountDAO")).put_(x_,loanAccount);
+    // get the account that will receive the funds
+    DigitalAccount loaneeDepositAcc = (DigitalAccount) (((DAO) x_.get("accountDAO")).find(
+      AND(EQ(DigitalAccount.OWNER, loaneeTester.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class), NOT(INSTANCE_OF(LoanAccount.class)))));
+    // get the global loan account
+    LoanedTotalAccount globalAccount = (LoanedTotalAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(LoanedTotalAccount.DENOMINATION,"CAD"),INSTANCE_OF(LoanedTotalAccount.class)));
+    if( globalAccount == null ) throw new RuntimeException("Global Loan Account not Found");
+    long beforeLoanAmount = (long) globalAccount.findBalance(x_);
+
+    //build the loan txn
+    Transaction txn = new Transaction.Builder(x_)
+      .setSourceAccount(loanAccount.getId())
+      .setDestinationAccount(loaneeDepositAcc.getId())
+      .setAmount(300000)
+      .build();
+    txn = (Transaction) ((DAO) x_.get("transactionDAO")).put_(x_, txn).fclone();
+
+    test(txn.getStatus() == COMPLETED,"Loan Transaction is completed");
+    test((long) globalAccount.findBalance(x_) == beforeLoanAmount + txn.getAmount(),"Global Loan Account " + globalAccount.getId() + " Balance has been updated appropriately");
+    test((long) loanAccount.findBalance(x_) == -300000,"the loan was recorded in the loan account, Balance: " + loanAccount.findBalance(x_) );
+    test((long) benefactorAccount.findBalance(x_) == 200000,"the loan was recorded in the loan account, Balance: " + benefactorAccount.findBalance(x_) );
+    test((long) loaneeDepositAcc.findBalance(x_) == 300000,"the loan was recorded in the loan account, Balance: " + loaneeDepositAcc.findBalance(x_) );
+
+    // test trying to borrow more then allowed
+    Transaction finalTxn = new Transaction.Builder(x_)
+      .setSourceAccount(loanAccount.getId())
+      .setDestinationAccount(loaneeDepositAcc.getId())
+      .setAmount(100001)
+      .build();
+    test(TestUtils.testThrows(
+      () -> ((DAO) x_.get("transactionDAO")).put_(x_, finalTxn),
+      "Transaction Exceeds Loan Account Principal Limit",
+      RuntimeException.class), "Exception: try to exceed principal");
+
+    // test trying to repay more then borrowed
+    Transaction payment = new Transaction.Builder(x_)
+      .setSourceAccount(benefactorAccount.getId())
+      .setDestinationAccount(loaneeDepositAcc.getId())
+      .setAmount(100000)
+      .build();
+    ((DAO) x_.get("transactionDAO")).put_(x_, payment);
+     Transaction finalTxn2 = new Transaction.Builder(x_)
+      .setSourceAccount(loaneeDepositAcc.getId())
+      .setDestinationAccount(loanAccount.getId())
+      .setAmount(300001)
+      .build();
+    test(TestUtils.testThrows(
+      () -> ((DAO) x_.get("transactionDAO")).put_(x_, finalTxn2),
+      "Invalid transfer, LoanedTotalAccount account balance must remain >= 0. nanopay Loan Account CAD",
+      RuntimeException.class), "Exception: try to overpay loan");
+
+
   }
 
   public void testFXTransaction(){
@@ -65,10 +150,10 @@ public class TransactionTest
 
     tq = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, tq);
     test(tq.getPlan().getClass()== FXTransaction.class, "best plan is an "+tq.getPlan().getClass());
-    test(tq.getPlan().getCost() !=0,String.valueOf(tq.getPlan().getCost()));
-    //txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, txn).fclone();
+    test(tq.getPlan().getCost() !=0,"Plan cost is not 0, it is: " + String.valueOf(tq.getPlan().getCost()));
+
     test(tq.getPlan().getClass()==FXTransaction.class,"Transaction is of type FXTransaction");
-    test(tq.getPlan().getStatus()==TransactionStatus.COMPLETED,"FXTransaction is in completed status");
+    test(tq.getPlan().getStatus()== COMPLETED,"FXTransaction is in completed status");
     test(tq.getPlan().getNext()==null,"FXTransaction is not chained");
   }
 
@@ -126,7 +211,7 @@ public class TransactionTest
     test(txn2.getDestinationAccount()==txn3.getSourceAccount(),"CI and CO use same digital account");
     test(txn1.getDestinationAccount()==txn3.getDestinationAccount(), "txn1 and txn3 destination accounts are the same");
     test(txn1.getSourceAccount()==txn2.getSourceAccount(), "txn1 and txn2 source accounts are the same");
-    test(txn1.getStatus() == TransactionStatus.COMPLETED," Ablii transaction is COMPLETED");
+    test(txn1.getStatus() == COMPLETED," Ablii transaction is COMPLETED");
     test(txn2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CI transaction is "+txn2.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
     test(txn3.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CO transaction is "+txn3.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
 
@@ -145,7 +230,7 @@ public class TransactionTest
     txn.setDestinationAccount( ((DigitalAccount) (((DAO) x_.get("localAccountDAO"))
       .find(AND(EQ(DigitalAccount.OWNER, sender_.getId()),EQ(DigitalAccount.DENOMINATION,"CAD"),INSTANCE_OF(DigitalAccount.class))))).getId());
     txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_,txn).fclone();
-    txn.setStatus(TransactionStatus.COMPLETED);
+    txn.setStatus(COMPLETED);
     ((DAO) x_.get("localTransactionDAO")).put_(x_,txn);
 
     txn = new Transaction();
@@ -188,11 +273,11 @@ public class TransactionTest
 
   }
 
-  public User addUser(String Email) {
-    User user = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, Email));
+  public User addUser(String email) {
+    User user = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, email));
     if ( user == null ) {
       user = new User();
-      user.setEmail(Email);
+      user.setEmail(email);
       user.setEmailVerified(true);
       user = (User) (((DAO) x_.get("localUserDAO")).put_(x_, user)).fclone();
     }
