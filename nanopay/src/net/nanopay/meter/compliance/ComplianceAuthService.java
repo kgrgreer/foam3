@@ -12,17 +12,12 @@ import java.security.Permission;
 import javax.security.auth.AuthPermission;
 import net.nanopay.meter.Blacklist;
 import net.nanopay.meter.BlacklistEntityType;
-import net.nanopay.meter.compliance.NanopayComplianceService;
 
 public class ComplianceAuthService extends ProxyAuthService  {
 
   public ComplianceAuthService(X x, AuthService delegate) {
     setX(x);
     setDelegate(delegate);
-  }
-
-  public ComplianceAuthService(X x) {
-    super(x);
   }
 
   @Override

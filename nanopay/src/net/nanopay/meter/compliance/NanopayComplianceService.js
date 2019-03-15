@@ -104,11 +104,14 @@ foam.CLASS({
       type: 'Boolean',
       javaCode: `
         User user = (User) x.get("user");
-        User agent = (User) x.get("agent");
-        if (user instanceof Business && agent != null) {
-          return agent.getCompliance().equals(ComplianceStatus.PASSED);
+        if ( user != null ) {
+          User agent = (User) x.get("agent");
+          if (user instanceof Business && agent != null) {
+            return agent.getCompliance().equals(ComplianceStatus.PASSED);
+          }
+          return user.getCompliance().equals(ComplianceStatus.PASSED);
         }
-        return user.getCompliance().equals(ComplianceStatus.PASSED);
+        return false;
       `
     },
     {
@@ -122,8 +125,11 @@ foam.CLASS({
       type: 'Boolean',
       javaCode: `
         User user = (User) x.get("user");
-        if ( user instanceof Business ) {
-          return user.getCompliance().equals(ComplianceStatus.PASSED);
+        if ( user != null ) {
+          if ( user instanceof Business && user != null ) {
+            return user.getCompliance().equals(ComplianceStatus.PASSED);
+          }
+          return true;
         }
         return true;
       `
