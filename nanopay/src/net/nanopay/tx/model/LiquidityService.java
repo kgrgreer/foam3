@@ -3,6 +3,7 @@ package net.nanopay.tx.model;
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
 import foam.dao.AbstractSink;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.sink.Sum;
 import foam.nanos.app.AppConfig;
@@ -17,6 +18,7 @@ import net.nanopay.tx.cico.COTransaction;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.List;
 
 import static foam.mlang.MLang.*;
 
@@ -58,9 +60,10 @@ public class LiquidityService
   @Override
   public void liquifyAccount(long accountId, Frequency frequency, long txnAmount) {
     LiquiditySettings ls;
-    ls = (LiquiditySettings) getLiquiditySettingsDAO().find(accountId);
+    DigitalAccount account = (DigitalAccount) ((DAO) x_.get("accountDAO")).find(accountId);
+    ls = account.findLiquiditySetting(getX());
     if ( ls == null || ls.getCashOutFrequency() != frequency ) return;
-    executeLiquidity(ls, txnAmount);
+    executeLiquidity(ls, account, txnAmount);
   }
 
   @Override
@@ -75,35 +78,38 @@ public class LiquidityService
 
   }
 
-  public void executeLiquidity(LiquiditySettings ls, long txnAmount) {
-    DigitalAccount account = ls.findAccount(getX());
-    if ( account == null ) return;
-    long pendingBalance = (long) account.findBalance(getX());
-    pendingBalance += ((Double)((Sum) getLocalTransactionDAO().where(
-      AND(
-        OR(
-          EQ(Transaction.STATUS, TransactionStatus.PENDING),
+  public void executeLiquidity(LiquiditySettings ls, DigitalAccount account, long txnAmount) {
+    List accounts = ((ArraySink) ls.getAccounts(getX()).select(new ArraySink())).getArray();
+    if ( accounts == null ) return;
+    for(Object obj : accounts) {
+      Account account;
+      account = (Account) obj;
+      long pendingBalance = (long) account.findBalance(getX());
+      pendingBalance += ((Double) ((Sum) getLocalTransactionDAO().where(
+        AND(
+          OR(
+            EQ(Transaction.STATUS, TransactionStatus.PENDING),
+            EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED),
+            EQ(Transaction.STATUS, TransactionStatus.SENT)
+          ),
+          INSTANCE_OF(CITransaction.class),
+          EQ(Transaction.DESTINATION_ACCOUNT, account.getId())
+        )
+      ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
+
+      pendingBalance -= ((Double) ((Sum) getLocalTransactionDAO().where(
+        AND(
           EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED),
-          EQ(Transaction.STATUS, TransactionStatus.SENT)
-        ),
-        INSTANCE_OF(CITransaction.class),
-        EQ(Transaction.DESTINATION_ACCOUNT, account.getId())
-      )
-    ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
-
-    pendingBalance -= ((Double)((Sum)getLocalTransactionDAO().where(
-      AND(
-        EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED),
-        INSTANCE_OF(COTransaction.class),
-        EQ(Transaction.SOURCE_ACCOUNT, account.getId())
-      )
-    ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
+          INSTANCE_OF(COTransaction.class),
+          EQ(Transaction.SOURCE_ACCOUNT, account.getId())
+        )
+      ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
 
 
-    executeHighLiquidity(pendingBalance, ls, txnAmount);
+      executeHighLiquidity(pendingBalance, ls, txnAmount);
 
-    executeLowLiquidity(pendingBalance, ls, txnAmount);
-
+      executeLowLiquidity(pendingBalance, ls, txnAmount);
+    }
   }
 
   public void executeHighLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount ) {
@@ -192,7 +198,7 @@ public class LiquidityService
 
   /*
   Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
-   */
+
   public void addCICOTransaction(long amount, long source, long destination)
     throws RuntimeException
   {
@@ -211,4 +217,5 @@ public class LiquidityService
       ((DAO) x_.get("notificationDAO")).put(notification);
     }
   }
+  */
 }

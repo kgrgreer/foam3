@@ -187,7 +187,7 @@ public class LiquiditySettingsTest
     lowLiquidity.setResetBalance(minLimit);
     lowLiquidity.setPushPullAccount(bankAccount.getId());
 
-    ls.setId(account.getId());
+    //ls.setId(account.getId());
     ls.setCashOutFrequency(frequency);
     ls.setHighLiquidity(highLiquidity);
     ls.setLowLiquidity(lowLiquidity);

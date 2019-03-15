@@ -91,6 +91,44 @@ foam.RELATIONSHIP({
   }
 });
 
+  foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.LiquiditySettings',
+  targetModel: 'net.nanopay.account.DigitalAccount',
+  inverseName: 'liquiditySetting',
+  forwardName: 'accounts',
+  cardinality: '1:*',
+
+  targetProperty: {
+      view: function(_, X) {
+        return foam.u2.view.RichChoiceView.create({
+
+          sections: [
+            {
+              dao: X.liquiditySettingsDAO,
+            }
+          ],
+
+        });
+      },
+  },
+  sourceProperty: {
+    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+  }
+   /* view: function(_, X) {
+      return foam.u2.view.RichChoiceView.create({
+        search: true,
+       // selectionView: { class: 'net.nanopay.ui.AccountSelectionView', liquiditySettingsDAO: X.liquiditySettingsDAO },
+        //rowView: { class: 'net.nanopay.ui.AccountRowView' },
+        sections: [
+          {
+            dao: X.liquiditySettingsDAO,
+          }
+        ]
+      });
+    },*/
+ // }
+});
+
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.account.Account',

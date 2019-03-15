@@ -10,8 +10,13 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount'
   ],
+  imports: [
+  'liquiditySettingsDAO'
+  ],
 
-  ids: ['account'],
+  //relationship: 1:* LiquiditySettings : DigitalAccount
+
+  //ids: ['account'],
 
   plural: 'Liquidity Settings',
 
@@ -21,7 +26,7 @@ foam.CLASS({
   }
   `,
   properties: [
-    {
+    /*{
       class: 'Reference',
       of: 'net.nanopay.account.DigitalAccount',
       targetDAOKey: 'accountDAO',
@@ -44,7 +49,19 @@ foam.CLASS({
         }.bind(this));
       },
       documentation: 'Primary key and reference to account that liquidity settings are executed on. Can be instanceof DigitalAccount only.'
+    },*/
+    {
+      class: 'Long',
+      name: 'id',
+      label: 'ID',
+      visibility: 'RO',
+      value: 0
     },
+      {
+        class: 'String',
+        name: 'name',
+        value: 'name'
+      }
     {
       class: 'Enum',
       of: 'net.nanopay.tx.model.Frequency',
@@ -60,7 +77,7 @@ foam.CLASS({
           resetBalance: 0,
           threshold: 0,
           enable: false,
-        }, this);
+        });
       }
     },
     {
@@ -68,7 +85,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.Liquidity',
       name: 'lowLiquidity',
       factory: function() {
-        return net.nanopay.tx.Liquidity.create({}, this);
+        return net.nanopay.tx.Liquidity.create({});
       }
     }
   ]
