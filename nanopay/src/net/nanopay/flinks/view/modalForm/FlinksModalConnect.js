@@ -17,13 +17,13 @@ foam.CLASS({
   ],
 
   imports: [
+    'acceptanceDocumentService',
     'connectingMessage',
     'flinksAuth',
     'institution',
     'isConnecting',
     'notify',
-    'user',
-    'acceptanceDocumentService'
+    'user'
   ],
 
   css: `
@@ -241,7 +241,7 @@ foam.CLASS({
       try {
         this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
       } catch (error) {
-            console.warn('Error occured finding Terms Agreement: ', error);
+        console.warn('Error occured finding Terms Agreement: ', error);
       }
     }
   ]

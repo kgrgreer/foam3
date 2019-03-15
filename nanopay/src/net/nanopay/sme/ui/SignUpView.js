@@ -10,6 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'acceptanceDocumentService',
     'auth',
     'groupDAO',
     'loginSuccess',
@@ -18,8 +19,7 @@ foam.CLASS({
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'validateEmail',
-    'acceptanceDocumentService',
+    'validateEmail'
   ],
 
   requires: [
@@ -412,7 +412,7 @@ foam.CLASS({
       try {
         this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
       } catch (error) {
-            console.warn('Error occured finding Terms Agreement: ', error);
+        console.warn('Error occured finding Terms Agreement: ', error);
       }
     }
   ]
