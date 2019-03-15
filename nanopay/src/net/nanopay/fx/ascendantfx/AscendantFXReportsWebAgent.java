@@ -174,7 +174,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Domestic transfers: "));
       List domesticSubList = new List(true, false, 20);
       domesticSubList.add(new ListItem("Currency Name: " + baseCurrency));
-      domesticSubList.add(new ListItem("Domestic Annual Number of Transactions: " + baseCurrency + annualDomesticTransactionAmount));
+      domesticSubList.add(new ListItem("Domestic Annual Number of Transactions: " + baseCurrency + " " + annualDomesticTransactionAmount));
       domesticSubList.add(new ListItem("Domestic Estimated Annual Volume in " + baseCurrency + ": " + annualDomesticVolume));
       domesticSubList.add(new ListItem("Anticipated First Domestic Payment Date: " + firstTradeDateDomestic));
       list.add(domesticSubList);
