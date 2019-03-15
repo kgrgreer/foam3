@@ -3,7 +3,6 @@ package net.nanopay.tx.model;
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
 import foam.dao.AbstractSink;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.sink.Sum;
 import foam.nanos.app.AppConfig;
@@ -18,7 +17,6 @@ import net.nanopay.tx.cico.COTransaction;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.List;
 
 import static foam.mlang.MLang.*;
 
@@ -108,13 +106,14 @@ public class LiquidityService
 
 
   public void executePerLiquiditySetting(LiquiditySettings ls, long txnAmount) {
-    List accounts = ((ArraySink) ls.getAccounts(getX()).select(new ArraySink())).getArray();
-    if ( accounts == null ) return;
-    for(Object obj : accounts) {
-      DigitalAccount account;
-      account = (DigitalAccount) obj;
-      executeLiquidity(ls,account,txnAmount);
-    }
+    ls.getAccounts(getX())
+      .select(new AbstractSink() {
+        @Override
+        public void put(Object o, Detachable d) {
+          DigitalAccount account = (DigitalAccount) ((DigitalAccount) o).fclone();
+          executeLiquidity(ls, account, txnAmount);
+        }
+      });
   }
 
   public void executeHighLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount, DigitalAccount account ) {
