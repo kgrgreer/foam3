@@ -57,11 +57,11 @@ foam.CLASS({
       visibility: 'RO',
       value: 0
     },
-      {
-        class: 'String',
-        name: 'name',
-        value: 'name'
-      }
+    {
+      class: 'String',
+      name: 'name',
+      value: 'name'
+    },
     {
       class: 'Enum',
       of: 'net.nanopay.tx.model.Frequency',
