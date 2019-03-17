@@ -26,7 +26,7 @@ foam.CLASS({
       Logger logger = (Logger) getX().get("logger");
       User user = (User) obj;
       SIDniRequestService service = new SIDniRequestService();
-      SIDniRequest request = service.createRequest(user);
+      SIDniRequest request = service.createRequest(x, user);
       SIDniResponse response = service.sendRequest(request);
       response.setName(user.getLegalName());
       response.setEntityId(user.getId());

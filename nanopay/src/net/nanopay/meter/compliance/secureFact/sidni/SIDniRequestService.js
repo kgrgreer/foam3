@@ -3,15 +3,18 @@ foam.CLASS({
   name: 'SIDniRequestService',
 
   javaImports: [
+    'foam.core.X',
     'foam.lib.json.JSONParser',
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.Phone',
+    'foam.nanos.auth.User',
+    'foam.util.SafetyUtil',
     'java.text.SimpleDateFormat',
+    'java.util.ArrayList',
     'java.util.Base64',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAddress',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniCustomer',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniName',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniPhone',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
+    'java.util.List',
+    'java.util.TimeZone',
+    'net.nanopay.meter.compliance.secureFact.sidni.model.*',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
     'org.apache.http.entity.ContentType',
@@ -26,87 +29,23 @@ foam.CLASS({
       name: 'createRequest',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'user',
           type: 'foam.nanos.auth.User'
         }
       ],
       type: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
       javaCode: `
-      SIDniRequest request = new SIDniRequest();
-      SIDniCustomer customer = new SIDniCustomer();
-      SIDniName name = new SIDniName();
-      SIDniAddress address = new SIDniAddress();
-      SIDniAddress[] addresses = new SIDniAddress[1];
-      int numberOfPhones = 0;
-      Boolean homeAndMobile = false, mobile = false, homePhone = false;
-      // We don't know what type of phone number the phone field could be; might be mobile or home phone. Set it to both if only phone field is set.
-      if ( !user.getPhone().getNumber().equals("") ) {
-        numberOfPhones++;
-        homePhone = true;
-        if ( !user.getMobile().getNumber().equals("") ) {
-          mobile = true;
-          numberOfPhones++;
-        } else {
-          homeAndMobile = true;
-          numberOfPhones++;
-        }
-      } else if ( !user.getMobile().getNumber().equals("") ) {
-        numberOfPhones++;;
-        mobile = true;
-      }
-      SIDniPhone[] phones = new SIDniPhone[numberOfPhones];
-
-      // build customer
-      customer.setUserReference(user.getId()+"");
-      customer.setConsentGranted(true);
-      customer.setLanguage("en-CA");
-
-      // build name
-      name.setFirstName(user.getFirstName());
-      name.setLastName(user.getLastName());
-      if ( user.getMiddleName() !=null && user.getMiddleName() !="" ) {
-        name.setMiddleName(user.getMiddleName());
-      }
-
-      // build address
-      address.setAddressType("Current");
-      address.setAddressLine(user.getAddress().getAddress());
-      address.setCity(user.getAddress().getCity());
-      address.setProvince(user.getAddress().getRegionId());
-      address.setPostalCode(user.getAddress().getPostalCode());
-      addresses[0] = address;
-
-      // build phone
-      if ( homePhone ) {
-        SIDniPhone phoneNumber = new SIDniPhone();
-        phoneNumber.setType("HOME");
-        phoneNumber.setNumber(user.getPhone().getNumber());
-        phones[--numberOfPhones] = phoneNumber;
-      }
-      if ( homeAndMobile ) {
-        SIDniPhone phoneNumber = new SIDniPhone();
-        phoneNumber.setType("MOBILE");
-        phoneNumber.setNumber(user.getPhone().getNumber());
-        phones[--numberOfPhones] = phoneNumber;
-      }
-      if ( mobile ) {
-        SIDniPhone phoneNumber = new SIDniPhone();
-        phoneNumber.setType("MOBILE");
-        phoneNumber.setNumber(user.getMobile().getNumber());
-        phones[--numberOfPhones] = phoneNumber;
-      }
-
-      request.setCustomer(customer);
-      request.setName(name);
-      request.setAddress(addresses);
-      if ( homePhone || mobile ) {
-        request.setPhone(phones);
-      }
-
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-      request.setDateOfBirth(dateFormat.format(user.getBirthday()));
-      return request;
+        return new SIDniRequest.Builder(x)
+          .setCustomer(buildCustomer(x, user))
+          .setName(buildName(x, user))
+          .setAddress(buildAddress(x, user))
+          .setPhone(buildPhone(x, user))
+          .setDateOfBirth(buildDateOfBirth(x, user))
+          .build();
       `
     },
     {
@@ -144,5 +83,97 @@ foam.CLASS({
       }
       `
     },
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          protected SIDniCustomer buildCustomer(X x, User user) {
+            return new SIDniCustomer.Builder(x)
+              .setUserReference(String.valueOf(user.getId()))
+              // TODO: Need record of consent for user personal information to be searched by Securefact
+              .setConsentGranted(true)
+              .build();
+          }
+
+          protected SIDniName buildName(X x, User user) {
+            if ( SafetyUtil.isEmpty(user.getFirstName())
+              || SafetyUtil.isEmpty(user.getLastName())
+            ) {
+              throw new IllegalStateException("User firstName or lastName can't be blank");
+            }
+            SIDniName name = new SIDniName.Builder(x)
+              .setFirstName(user.getFirstName())
+              .setLastName(user.getLastName())
+              .build();
+            if ( ! SafetyUtil.isEmpty(user.getMiddleName()) ) {
+              name.setMiddleName(user.getMiddleName());
+            }
+            return name;
+          }
+
+          protected SIDniAddress[] buildAddress(X x, User user) {
+            Address userAddress = user.getAddress();
+            if ( SafetyUtil.isEmpty(userAddress.getAddress()) ) {
+              throw new IllegalStateException("User address can't be blank");
+            }
+            return new SIDniAddress[] {
+              new SIDniAddress.Builder(x)
+                .setAddressType("Current")
+                .setAddressLine(userAddress.getAddress())
+                .setCity(userAddress.getCity())
+                .setProvince(userAddress.getRegionId())
+                .setPostalCode(userAddress.getPostalCode())
+                .build()
+            };
+          }
+
+          protected SIDniPhone[] buildPhone(X x, User user) {
+            List<SIDniPhone> list = new ArrayList<>();
+            boolean hasMobile = false;
+
+            Phone mobile = user.getMobile();
+            if ( ! SafetyUtil.isEmpty(mobile.getNumber()) ) {
+              list.add(
+                new SIDniPhone.Builder(x)
+                  .setType("MOBILE")
+                  .setNumber(mobile.getNumber())
+                  .build()
+              );
+              hasMobile = true;
+            }
+            Phone phone = user.getPhone();
+            if ( ! SafetyUtil.isEmpty(phone.getNumber()) ) {
+              list.add(
+                new SIDniPhone.Builder(x)
+                  .setType("HOME")
+                  .setNumber(phone.getNumber())
+                  .build()
+              );
+              if ( ! hasMobile ) {
+                list.add(
+                  new SIDniPhone.Builder(x)
+                    .setType("MOBILE")
+                    .setNumber(phone.getNumber())
+                    .build()
+                );
+              }
+            }
+            return list.toArray(new SIDniPhone[0]);
+          }
+
+          protected String buildDateOfBirth(X x, User user) {
+            if ( user.getBirthday() == null ) {
+              throw new IllegalStateException("User birthday can't be null");
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            return dateFormat.format(user.getBirthday());
+          }
+        `);
+      }
+    }
   ]
 });

@@ -37,9 +37,7 @@ foam.CLASS({
       name: 'language',
       required: true,
       documentation: 'Language in which responses will be provided. Currently only supports en-CA',
-      factory: function() {
-        return 'en-CA';
-      }
+      value: 'en-CA'
     },
     {
       class: 'String',
