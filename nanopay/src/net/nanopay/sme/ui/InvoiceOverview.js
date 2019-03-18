@@ -20,6 +20,9 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -547,10 +550,23 @@ foam.CLASS({
                   .start().show(this.showBankAccount$).addClass('invoice-text')
                     .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
-                      if ( account != null ) {
+                      if ( account ) {
                         return `${account.name} ` +
                           `${'*'.repeat(account.accountNumber.length-4)}` +
                           `${account.accountNumber.slice(-4)}`;
+                      } else if ( ! account && ! this.isPayable ) {
+                        return this.user.accounts
+                          .where(this.AND(
+                            this.EQ(this.Account.IS_DEFAULT, true),
+                            this.OR(
+                              this.INSTANCE_OF(this.CABankAccount),
+                              this.INSTANCE_OF(this.USBankAccount)
+                            )
+                          )).select().then((account) => {
+                            return `${account.array[0].name} ` +
+                              `${'*'.repeat(account.array[0].accountNumber.length-4)}` +
+                              `${account.array[0].accountNumber.slice(-4)}`;
+                          });
                       } else {
                         return '--';
                       }
