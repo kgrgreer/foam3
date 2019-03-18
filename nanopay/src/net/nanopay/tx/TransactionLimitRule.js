@@ -67,13 +67,14 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'hm',
+      transient: true,
       javaFactory: `
       return new java.util.HashMap<Long, TransactionLimitState>();
       `
     },
     {
       name: 'daoKey',
-      value: 'transactionDAO'
+      javaFactory: 'return \"transactionDAO\"; '
     },
     {
       name: 'action',
@@ -120,12 +121,29 @@ foam.CLASS({
       ],
       type: 'Double',
       javaCode: `
-      Double d =  Math.floor(amount + msPeriod * amount / getTempPeriod());
-        if ( d > getLimit() ) {
-        d = getLimit();
-      }
-      return d;
+      return Math.min(amount + msPeriod * amount / getTempPeriod(), getLimit());
       `
+    },
+    {
+      name: 'updateRule',
+      type: 'foam.nanos.ruler.Rule',
+      args: [
+        {
+          name: 'rule',
+          type: 'foam.nanos.ruler.Rule'
+        }
+      ],
+      javaCode: `
+      TransactionLimitRule txRule = (TransactionLimitRule) rule;
+      if ( getLimit() != rule.getLimit() ) {
+        Double delta = getLimit() - rule.getLimit();
+        for ( Object key : hm.keySet() ) {
+          TransactionLimitState state = (TransactionLimitState)hm.get(key);
+        }
+      }
+      txRule.setHm(getHm());
+      txRule.setSend(getSend());
+      return txRule;`
     }
   ]
 });

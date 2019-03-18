@@ -1,19 +1,27 @@
 package net.nanopay.tx.test;
 
 
+import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MDAO;
 import foam.dao.SequenceNumberDAO;
+import foam.nanos.ruler.Rule;
+import foam.nanos.ruler.RuleAction;
+import foam.nanos.ruler.RuleEngine;
 import foam.nanos.ruler.RulerDAO;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
+import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.tx.TransactionLimitRule;
+import net.nanopay.tx.TransactionLimitState;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+
+import java.util.HashMap;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -23,17 +31,19 @@ public class TransactionLimitTest extends Test {
 
   DigitalAccount sender_, receiver_;
   CABankAccount senderBank_;
+  TransactionLimitRule rule;
 
   public void runTest(X x) {
     createAccounts(x);
     populateSenderAccount(x);
     DAO ruleDAO = new SequenceNumberDAO(new MDAO(foam.nanos.ruler.Rule.getOwnClassInfo()));
     x = x.put("ruleDAO", ruleDAO);
-    createRule(x);
     DAO txnDAO = (DAO) x.get("localTransactionDAO");
     txnDAO = new RulerDAO(x, txnDAO, "transactionDAO");
+    createRule(x);
     x = x.put("localTransactionDAO", txnDAO);
     testRule(x);
+    testUpdatedRule(x);
   }
 
   public void testRule(X x) {
@@ -62,7 +72,44 @@ public class TransactionLimitTest extends Test {
     tx3.setDestinationAccount(receiver_.getId());
     tx3 = (Transaction) txDAO.put_(x, tx3);
     test(tx3 instanceof Transaction, "tx fro 9990 went though success. Limit is 10000");
+  }
 
+  public void testUpdatedRule(X x) {
+    //TransactionLimitRule r = new TransactionLimitRule();
+    TransactionLimitRule r = (TransactionLimitRule) ((DAO) x.get("ruleDAO")).find(rule).fclone();
+    r.setLimit(2000000L);
+   r.setAction(new RuleAction() {
+     @Override
+     public void applyAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
+       TransactionLimitRule rule = r;
+       Transaction txn = (Transaction) obj;
+       HashMap hm = (HashMap)r.getHm();
+       Account account = r.getSend() ? txn.findSourceAccount(x) : txn.findDestinationAccount(x);
+
+       TransactionLimitState limitState = (TransactionLimitState) hm.get(account.getId());
+       if ( limitState == null ) {
+         limitState = new TransactionLimitState(rule);
+         hm.put(account.getId(), limitState);
+       }
+       if ( ! limitState.check(rule, txn.getAmount()) ) {
+         throw new RuntimeException("LIMIT");
+       }
+     }
+   });
+    //r.setTempPeriod(3600000);
+    //r.setDaoKey("transactionDAO");
+     ((DAO) x.get("ruleDAO")).put(r);
+    DAO txDAO = (DAO) x.get("localTransactionDAO");
+
+    Transaction tx = new Transaction();
+    tx.setAmount(100L);
+    tx.setSourceAccount(sender_.getId());
+    tx.setDestinationAccount(receiver_.getId());
+    test(TestUtils.testThrows(
+      () -> txDAO.put_(x, tx),
+      "LIMIT",
+      RuntimeException.class), "10L throws exception");
+    //test(tx instanceof Transaction, "tx fro 9990 went though success. Limit is 10000");
   }
 
   public void createAccounts(X x) {
@@ -100,9 +147,9 @@ public class TransactionLimitTest extends Test {
 
   public void createRule(X x) {
     TransactionLimitRule limitRule = new TransactionLimitRule();
-    limitRule.setLimit(10000);
+    limitRule.setLimit(10000L);
     limitRule.setTempPeriod(3600000);
     limitRule.setDaoKey("transactionDAO");
-    ((DAO)x.get("ruleDAO")).put(limitRule);
+    rule = (TransactionLimitRule) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
   }
 }
