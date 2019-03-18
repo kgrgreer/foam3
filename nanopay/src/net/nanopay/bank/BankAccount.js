@@ -202,7 +202,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
-      permissionRequired: true,
       documentation: `User pad authorization address.`,
       factory: function() {
         return this.Address.create();
@@ -213,7 +212,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'bankAddress',
-      permissionRequired: true,
       documentation: `Bank account address.`,
       factory: function() {
         return this.Address.create();
