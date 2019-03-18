@@ -28,11 +28,19 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'Country'
+      name: 'Country',
+      javaSetter: `
+        Country_ = sanitize(val);
+        CountryIsSet_ = true;
+      `
     },
     {
       class: 'String',
-      name: 'Entity'
+      name: 'Entity',
+      javaSetter: `
+        Entity_ = sanitize(val);
+        EntityIsSet_ = true;
+      `
     },
     {
       class: 'String',
@@ -42,7 +50,7 @@ foam.CLASS({
       class: 'String',
       name: 'LastName',
       javaSetter: `
-        LastName_ = val.toUpperCase();
+        LastName_ = sanitize(val).toUpperCase();
         LastNameIsSet_ = true;
       `
     },
@@ -50,13 +58,17 @@ foam.CLASS({
       class: 'String',
       name: 'GivenName',
       javaSetter: `
-        GivenName_ = val.toUpperCase();
+        GivenName_ = sanitize(val).toUpperCase();
         GivenNameIsSet_ = true;
       `
     },
     {
       class: 'String',
-      name: 'Aliases'
+      name: 'Aliases',
+      javaSetter: `
+        Aliases_ = sanitize(val);
+        AliasesIsSet_ = true;
+      `
     },
     {
       class: 'String',
@@ -82,6 +94,17 @@ foam.CLASS({
            * running {@code ReloadCanadianSanctionsListCron}.
            */
           public static String datasetChecksum = "";
+
+          /**
+           * Sanitize string
+           */
+          protected String sanitize(String str) {
+            // Get rid of no-break space (\xA0) because it impedes string
+            // comparison against regular space character.
+            return str
+              .replace('\u00A0', ' ')
+              .trim();
+          }
         `);
       },
     },
