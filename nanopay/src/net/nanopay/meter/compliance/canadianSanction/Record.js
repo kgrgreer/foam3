@@ -19,7 +19,7 @@ foam.CLASS({
         <Schedule>..</Schedule>
         <Item>..</Item>
       </record>
-    `,
+  `,
 
   properties: [
     {
