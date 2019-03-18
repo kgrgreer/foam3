@@ -31,7 +31,7 @@ function test_branchname {
         return;
     fi
 
-    REGEX='^([fh]|[b]/[sd])/[A-Z]{1,}-[0-9]{1,}/[a-zA-Z0-9_\-]*$'
+    REGEX='^([fh]|[b]/[sd]/){0,1}[A-Z]{1,}-[0-9]{1,}/[a-zA-Z0-9_\-]*$'
     if [[ ! "$branch_name" =~ $REGEX ]]; then
 	cat <<\EOF
 Error: Invalid branch name.
