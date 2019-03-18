@@ -70,9 +70,12 @@ public class AuthenticatedTransactionDAO
 
     if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentFromPayersDigitalAccount
     || t instanceof CITransaction && isPayee ) ) {
-      // here we are handling two cases:
-      // 1. if an update was made (oldTxn != null), check update perms
-      // 2. if a creation was made (oldTxn == null), check create perms
+
+      /**
+       * here we are handling two cases:
+       * 1. if an update was made (oldTxn != null), check update perms
+       * 2. if a creation was made (oldTxn == null), check creation perms
+       */
       if ( oldTxn != null && ! isUpdatePermitted || oldTxn == null && ! isCreatePermitted  ) {
         throw new AuthorizationException();
       }
