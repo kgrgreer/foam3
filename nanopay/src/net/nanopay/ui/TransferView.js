@@ -256,6 +256,7 @@ foam.CLASS({
           var accountType = this.viewData.payerType;
           var isBankAccount = accountType.substring(accountType.length - 11) == 'BankAccount';
           var isTrustAccount = accountType == 'TrustAccount';
+          var isLoanAccount = accountType == 'LoanAccount';
 
           if ( self.viewData.fromAmount <= 0 ) {
             this.add(this.NotificationMessage.create({
@@ -291,7 +292,7 @@ foam.CLASS({
             // an error message if they don't.
             var fundsInsufficient =
               this.viewData.balance < this.viewData.fromAmount;
-            if ( ! isBankAccount && ! isTrustAccount && fundsInsufficient ) {
+            if ( ! isLoanAccount && ! isBankAccount && ! isTrustAccount && fundsInsufficient ) {
               this.add(this.NotificationMessage.create({
                 message: this.InsuffientDigitalBalance,
                 type: 'error'
