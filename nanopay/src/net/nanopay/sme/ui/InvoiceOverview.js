@@ -225,12 +225,27 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'bankAccount',
       expression: function() {
-        var accountId = this.isPayable ?
-          this.invoice.account :
-          this.invoice.destinationAccount;
-        if ( accountId ) {
-          this.accountDAO.find(accountId).then((account) => {
+        if ( this.isPayable ) {
+          this.user.accounts.find(this.invoice.account).then((account) => {
               this.bankAccount = account;
+            });
+          return null;
+        } else if ( ! this.isPayable && this.invoice.destinationAccount ) {
+          this.user.accounts
+            .find(this.invoice.destinationAccount).then((account) => {
+              this.bankAccount = account;
+            });
+          return null;
+        } else {
+          this.user.accounts
+            .where(this.AND(
+              this.EQ(this.Account.IS_DEFAULT, true),
+              this.OR(
+                this.INSTANCE_OF(this.CABankAccount),
+                this.INSTANCE_OF(this.USBankAccount)
+              )
+            )).select().then((account) => {
+              this.bankAccount = account.array[0];
             });
           return null;
         }
@@ -554,19 +569,6 @@ foam.CLASS({
                         return `${account.name} ` +
                           `${'*'.repeat(account.accountNumber.length-4)}` +
                           `${account.accountNumber.slice(-4)}`;
-                      } else if ( ! account && ! this.isPayable ) {
-                        return this.user.accounts
-                          .where(this.AND(
-                            this.EQ(this.Account.IS_DEFAULT, true),
-                            this.OR(
-                              this.INSTANCE_OF(this.CABankAccount),
-                              this.INSTANCE_OF(this.USBankAccount)
-                            )
-                          )).select().then((account) => {
-                            return `${account.array[0].name} ` +
-                              `${'*'.repeat(account.array[0].accountNumber.length-4)}` +
-                              `${account.array[0].accountNumber.slice(-4)}`;
-                          });
                       } else {
                         return '--';
                       }
