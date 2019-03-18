@@ -40,8 +40,9 @@ foam.CLASS({
 
         if ( found.getValue() == 1 ) {
           String message = String.format(
-            "%s : Individual or business names was found in the Canadian sanction list."
-            , getClass().getSimpleName());
+            "%s : The %s name was found in the Canadian sanction list."
+            , getClass().getSimpleName()
+            , user instanceof Business ? "business" : "individual");
           ruler.putResult(message);
           user.setCompliance(ComplianceStatus.FAILED);
         }
