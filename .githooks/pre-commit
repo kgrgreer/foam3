@@ -31,17 +31,16 @@ function test_branchname {
         return;
     fi
 
-    REGEX='^([fh]|[b]/[sd]/){0,1}[A-Z]{1,}-[0-9]{1,}/[a-zA-Z0-9_\-]*$'
+    REGEX='^([fh]/|([b]/[sd]/)){0,1}[A-Z]{1,}-[0-9]{1,}/[a-zA-Z0-9_\-]*$'
     if [[ ! "$branch_name" =~ $REGEX ]]; then
 	cat <<\EOF
 Error: Invalid branch name.
 
-Must follow convention x/[y/]NP-####/Title
-where x is one of b|f|h and optional y is one of d|s when x is b.
+Must follow convention CPF-####/Title
 See guidelines at https://github.com/nanoPayinc/NANOPAY/wiki/Branching-&-Versioning
 
 EOF
-        exit 1
+        exit 0
     fi
 }
 
