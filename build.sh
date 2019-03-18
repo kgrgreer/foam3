@@ -105,15 +105,7 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    if [[ $BUILD_PROD -eq 1 ]]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 2
-    elif [[ $BUILD_QA -eq 1 ]]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 1
-    else
-        # IS_AWS will be 1 when building in jenkins which is the
-        # same as staging/qa at the moment.
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 0 #$IS_AWS # force to zero until ready to run from jar
-    fi
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$INSTANCE"
 
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
@@ -157,8 +149,7 @@ function build_jar {
         ./tools/js_build/build.js
     fi
 
-    if [ "$BUILD_PROD" -eq 1 ] ||
-           [ "$BUILD_QA" -eq 1 ]; then
+    if [[ ! -z "$VERSION" ]]; then
         mvn versions:set -DnewVersion=$VERSION
     fi
 
@@ -245,7 +236,7 @@ function start_nanos {
         JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
     fi
 
-    if [ $BUILD_PROD -eq 1 ] || [ $BUILD_QA -eq 1 ]; then
+    if [ -z "$MODE" ]; then
         JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
         cd $PROJECT_HOME/target
         JAR=$(ls lib/nanopay-*.jar | awk '{print $1}')
@@ -387,20 +378,20 @@ function usage {
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
     echo "  -i : Install npm and git hooks"
+    echo "  -I NAME : name of machine instance. - start another instance"
     echo "  -j : Delete runtime journals, build, and run app as usual."
+    echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
-    echo "  -N # : instance - start another instance."
-    echo "  -p : build for production deployment, use version specified in pom.xml."
-    echo "  -P <version> : build for production deployment, override version, format x.y.z"
-    echo "  -q : build for QA/staging deployment, use version specified in pom.xml."
-    echo "  -Q <version> : build for QA/staging deployment, override version, format x.y.z"
+    echo "  -p : short cut for setting MODE to PRODUCTION"
+    echo "  -q : short cut for setting MODE to STAGING"
     echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
     echo "  -t : Run All tests."
-    echo "  -T test1,test2 : Run listed tests."
+    echo "  -T testId1,testId2,... : Run listed tests."
     echo "  -v : java compile only (maven), no code generation."
-    echo "  -W port : HTTP Port"
+    echo "  -V VERSION : version in format x.y.z"
+    echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo ""
     echo "No options implies: stop, build/compile, deploy, start"
@@ -410,6 +401,8 @@ function usage {
 ############################
 
 INSTANCE=
+VERSION=
+MODE=
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
@@ -428,11 +421,9 @@ STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
-BUILD_PROD=0
-BUILD_QA=0
 WEB_PORT=
 
-while getopts "bcdghijlmN::pP:qQ:rsStT:vW::z" opt ; do
+while getopts "bcdghiI::jlmM::pqrsStT:vV::W::z" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -440,35 +431,40 @@ while getopts "bcdghijlmN::pP:qQ:rsStT:vW::z" opt ; do
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
+        I) INSTANCE=$OPTARG
+           echo "INSTANCE=${INSTANCE}" ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
-        N) INSTANCE=$OPTARG ;;
-        p) BUILD_PROD=1
+        M) MODE=$OPTARG
            CLEAN_BUILD=1
+           echo "MODE=${MODE}"
            ;;
-        P) BUILD_PROD=1
-           VERSION=$OPTARG
+        p) MODE=PRODUCTION
            CLEAN_BUILD=1
+           echo "MODE=${MODE}"
            ;;
-        q) BUILD_QA=1
+        q) MODE=STAGING
            CLEAN_BUILD=1
-           ;;
-        Q) BUILD_QA=1
-           VERSION=$OPTARG
-           CLEAN_BUILD=1
+           echo "MODE=${MODE}"
            ;;
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
+           MODE=TEST
            CLEAN_BUILD=1
            ;;
         T) TEST=1
            TESTS=$OPTARG
+           MODE=TEST
            CLEAN_BUILD=1
+           echo "$TESTS=${TESTS}"
            ;;
         v) COMPILE_ONLY=1 ;;
-        W) WEB_PORT=$OPTARG ;;
+        V) VERSION=$OPTARG
+           echo "VERSION=${VERSION}";;
+        W) WEB_PORT=$OPTARG
+           echo "WEB_PORT=${WEB_PORT}";;
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         ?) usage ; quit 1 ;;
@@ -520,7 +516,7 @@ if [ "$START_ONLY" -eq 0 ]; then
     build_jar
 fi
 
-if [ "$BUILD_ONLY" -eq 1 ] || [ "$BUILD_PROD" -eq 1 ] || [ "$BUILD_QA" -eq 1 ]; then
+if [ "$BUILD_ONLY" -eq 1 ] || [ ! -z "$MODE" ]; then
     if [ -z "$INSTANCE" ]; then
         quit 0
     fi
