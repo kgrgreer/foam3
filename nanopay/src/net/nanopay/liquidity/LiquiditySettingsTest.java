@@ -1,4 +1,4 @@
-package net.nanopay.tx.test;
+package net.nanopay.liquidity;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -10,8 +10,8 @@ import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.tx.Liquidity;
-import net.nanopay.tx.model.LiquiditySettings;
+import net.nanopay.liquidity.Liquidity;
+import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.tx.cron.LiquiditySettingsCheckCron;
 import net.nanopay.tx.model.*;
 

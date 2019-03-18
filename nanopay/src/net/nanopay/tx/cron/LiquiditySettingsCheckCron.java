@@ -2,7 +2,8 @@ package net.nanopay.tx.cron;
 
 import foam.core.ContextAgent;
 import foam.core.X;
-import net.nanopay.tx.model.*;
+import net.nanopay.liquidity.LiquidityService;
+import net.nanopay.liquidity.Frequency;
 
 /*
     Cronjob checks Liquidity Settings.

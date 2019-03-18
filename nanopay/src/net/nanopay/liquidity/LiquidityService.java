@@ -1,4 +1,4 @@
-package net.nanopay.tx.model;
+package net.nanopay.liquidity;
 
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
@@ -11,9 +11,12 @@ import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
-import net.nanopay.tx.Liquidity;
+import net.nanopay.liquidity.Liquidity;
+import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import java.text.NumberFormat;
 import java.util.HashMap;

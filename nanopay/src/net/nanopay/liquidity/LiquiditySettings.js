@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx.model',
+  package: 'net.nanopay.liquidity',
   name: 'LiquiditySettings',
 
   implements: [
@@ -26,30 +26,6 @@ foam.CLASS({
   }
   `,
   properties: [
-    /*{
-      class: 'Reference',
-      of: 'net.nanopay.account.DigitalAccount',
-      targetDAOKey: 'accountDAO',
-      name: 'account',
-      view: function(_, X) {
-        return foam.u2.view.RichChoiceView.create({
-          search: true,
-          selectionView: { class: 'net.nanopay.ui.AccountSelectionView', accountDAO: X.accountDAO },
-          rowView: { class: 'net.nanopay.ui.AccountRowView' },
-          sections: [
-            {
-              dao: X.accountDAO
-            }
-          ],
-        });
-      },
-      postSet: function(oldValue, newValue) {
-        this.account$find.then(function(account) {
-          this.highLiquidity.pushPullOwner = this.lowLiquidity.pushPullOwner = account.owner;
-        }.bind(this));
-      },
-      documentation: 'Primary key and reference to account that liquidity settings are executed on. Can be instanceof DigitalAccount only.'
-    },*/
     {
       class: 'Long',
       name: 'id',
@@ -64,16 +40,16 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.tx.model.Frequency',
+      of: 'net.nanopay.liquidity.Frequency',
       name: 'cashOutFrequency',
       documentation: 'Determines how often a automatic cash out can occur.'
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.Liquidity',
+      of: 'net.nanopay.liquidity.Liquidity',
       name: 'highLiquidity',
       factory: function() {
-        return net.nanopay.tx.Liquidity.create({
+        return net.nanopay.liquidity.Liquidity.create({
           resetBalance: 0,
           threshold: 0,
           enable: false,
@@ -82,10 +58,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.Liquidity',
+      of: 'net.nanopay.liquidity.Liquidity',
       name: 'lowLiquidity',
       factory: function() {
-        return net.nanopay.tx.Liquidity.create({});
+        return net.nanopay.liquidity.Liquidity.create({});
       }
     }
   ]
@@ -100,8 +76,8 @@ foam.CLASS({
     {
       name: 'liquiditySettings',
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.LiquiditySettings',
-      factory: function() {return net.nanopay.tx.model.LiquiditySettings.create();}
+      of: 'net.nanopay.liquidity.LiquiditySettings',
+      factory: function() {return net.nanopay.liquidity.LiquiditySettings.create();}
     }
   ]
 });

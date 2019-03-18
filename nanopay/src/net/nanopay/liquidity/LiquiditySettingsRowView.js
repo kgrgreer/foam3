@@ -1,5 +1,5 @@
 foam.CLASS({
-    package: 'net.nanopay.ui',
+    package: 'net.nanopay.liquidity',
     name: 'LiquiditySettingsRowView',
     extends: 'foam.u2.View',
 

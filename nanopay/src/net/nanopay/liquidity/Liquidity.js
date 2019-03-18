@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.tx',
+  package: 'net.nanopay.liquidity',
   name: 'Liquidity',
 
   requires: [

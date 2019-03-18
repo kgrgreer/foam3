@@ -22,7 +22,7 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
     'java.util.Arrays',
     'foam.util.SafetyUtil',
-    'net.nanopay.tx.model.LiquidityService'
+    'net.nanopay.liquidity.LiquidityService'
   ],
 
   properties: [
@@ -306,7 +306,7 @@ foam.CLASS({
       Account source = findSourceAccount(x);
       Account destination = findDestinationAccount(x);
       if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) && getStatus() == TransactionStatus.COMPLETED ) {
-        ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, getAmount());
+        ls.liquifyAccount(destination.getId(), net.nanopay.liquidity.Frequency.PER_TRANSACTION, getAmount());
       }
       `
     }
