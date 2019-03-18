@@ -31,7 +31,7 @@ public class AuthenticatedTransactionDAO
 {
   public final static String GLOBAL_TXN_READ = "transaction.read.*";
   public final static String GLOBAL_TXN_CREATE = "transaction.create.*";
-  public final static String GLOBAL_TXN_UPDATE = "transaction.update";
+  public final static String GLOBAL_TXN_UPDATE = "transaction.update.*";
   public final static String VERIFICATION_TXN_READ = "verificationtransaction.read.*";
 
   public AuthenticatedTransactionDAO(DAO delegate) {
@@ -66,18 +66,20 @@ public class AuthenticatedTransactionDAO
     boolean isPayee = destinationAccount != null ? destinationAccount.getOwner() == user.getId() : t.getPayeeId() == user.getId();
     boolean isAcceptingPaymentFromPayersDigitalAccount = sourceAccount instanceof DigitalAccount && auth.check(x, "invoice.holdingAccount");
     boolean isCreatePermitted = auth.check(x, GLOBAL_TXN_CREATE);
+    boolean isUpdatePermitted = auth.check(x, GLOBAL_TXN_UPDATE);
 
-    // permission only checks if create is permitted
-    // therefore should add in oldTxn == null to check if a creation is being made
-    if ( oldTxn == null && ! ( isSourceAccountOwner || isPayer || isCreatePermitted || isAcceptingPaymentFromPayersDigitalAccount
+    if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentFromPayersDigitalAccount
     || t instanceof CITransaction && isPayee ) ) {
-      throw new AuthorizationException();
+      // here we are handling two cases:
+      // 1. if an update was made (oldTxn != null), check update perms
+      // 2. if a creation was made (oldTxn == null), check create perms
+      if ( oldTxn != null && ! isUpdatePermitted || oldTxn == null && ! isCreatePermitted  ) {
+        throw new AuthorizationException();
+      }
     }
 
     if ( t.getInvoiceId() != 0 ) {
       Invoice invoice = (Invoice) invoiceDAO.find(t.getInvoiceId());
-
-      boolean isUpdatePermitted = auth.check(x, GLOBAL_TXN_UPDATE);
 
       if ( invoice == null ) {
         throw new RuntimeException("The invoice associated with this transaction could not be found.");
