@@ -3,4 +3,6 @@ p({"class":"net.nanopay.account.DigitalAccount", "id":2, "owner":101, "denominat
 p({"class":"net.nanopay.account.DigitalAccount", "id":3, "owner":101, "denomination":"CAD", "name":"nanopay Broker Account CAD"})
 p({"class":"net.nanopay.account.DigitalAccount", "id":4, "owner":101, "denomination":"CAD", "isDefault":true, "name":"stripe digital account to mimic payer CAD"})
 p({"class":"net.nanopay.account.TrustAccount", "id":5, "owner":101, "denomination":"INR", "name":"nanopay Trust Account INR"})
+p({"class":"net.nanopay.account.LoanedTotalAccount", "id":171, "owner":101, "denomination":"CAD", "name":"nanopay Loan Account CAD"})
+p({"class":"net.nanopay.account.LoanedTotalAccount", "id":181, "owner":101, "denomination":"USD", "name":"nanopay Loan Account USD"})
 //p({"class":"net.nanopay.account.DigitalAccount", "id":6, "owner":101, "denomination":"CAD", "name":"nanopay Tax Account CAD"})
