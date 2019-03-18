@@ -296,8 +296,8 @@ foam.CLASS({
         this.isList = false;
         this.isDetailView = false;
         // Get the previous temp invoice data
-        if ( this.Invoice.isInstance(this.dataFromNewInvoiceForm) && ! this.dataFromNewInvoiceForm ) {
-          this.invoice = this.dataFromNewInvoiceForm;
+        if ( this.Invoice.isInstance(this.dataFromNewInvoiceForm) ) {
+          this.invoice.copyFrom(this.dataFromNewInvoiceForm);
         }
       }
     },
