@@ -11,7 +11,7 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount'
   ],
   imports: [
-  'liquiditySettingsDAO'
+    'liquiditySettingsDAO'
   ],
 
   //relationship: 1:* LiquiditySettings : DigitalAccount
@@ -30,8 +30,7 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       label: 'ID',
-      visibility: 'RO',
-      value: 0
+      visibility: 'RO'
     },
     {
       class: 'String',

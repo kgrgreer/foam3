@@ -41,7 +41,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.RichChoiceView.create({
           search: true,
-          selectionView: { class: 'net.nanopay.ui.AccountSelectionView', accountDAO: X.accountDAO  },
+          selectionView: { class: 'net.nanopay.ui.AccountSelectionView' },
           rowView: { class: 'net.nanopay.ui.AccountRowView' },
           sections: [
             {

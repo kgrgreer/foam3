@@ -92,7 +92,6 @@ public class LiquiditySettingsTest
     txn1 = (Transaction)txnDAO.put(txn1);
 
     liquidityBalance = liquidityBalance + defaultBalance - maxLimit;
-    test(true,""+senderDigitalDefault.findBalance(x_));
     test(senderDigitalDefault.findBalance(x_).equals(maxLimit), "After test transaction was placed, money cashed out from digital account and balance matches maximum limit");
     test(senderLiquidityDigital.findBalance(x_).equals(liquidityBalance), "Money were cashed out to specified digital account");
     Transaction txn2 = new Transaction();
@@ -194,7 +193,6 @@ public class LiquiditySettingsTest
     ls.setLowLiquidity(lowLiquidity);
     LiquiditySettings ls1 = (LiquiditySettings)((DAO)x.get("liquiditySettingsDAO")).put(ls).fclone();
     senderDigitalDefault.setLiquiditySetting(ls1.getId());
-    test(true, "lsId: "+ls1.getId()+" account "+senderDigitalDefault.getId()+ "and: "+account.getId());
     ((DAO) x_.get("localAccountDAO")).put(senderDigitalDefault);
     return ls1;
   }

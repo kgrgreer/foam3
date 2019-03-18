@@ -1,24 +1,44 @@
 foam.CLASS({
     package: 'net.nanopay.liquidity',
     name: 'LiquiditySettingsSelectionView',
-    extends: 'foam.u2.Element',
+    extends: 'foam.u2.View',
 
     documentation: `The selection view for a RichChoiceView for user to display liquidity settings.`,
 
+    messages: [
+      {
+        name: 'DEFAULT_LABEL',
+        message: 'Choose LiquiditySetting'
+      }
+    ],
+
     properties: [
-      'data', 'liquiditySettingsDAO'
+      {
+        name: 'data'
+      },
+      {
+        name: 'fullObject'
+      }
     ],
 
     methods: [
-      async function initE() {
-        var display = 'Choose LiquiditySetting';
-        if ( this.data && this.liquiditySettingsDAO ) {
-          var ls = await this.liquiditySettingsDAO.find(this.data);
-          if ( ls ) {
-            display = ls.name + ' ' + ls.id;
-          }
-        }
-        return this.add(display);
+      function initE() {
+        return this
+          .addClass(this.myClass())
+            .callIfElse(
+              this.data,
+              function() {
+                this.add(this.fullObject$.map((liquiditySetting) => {
+                  if ( liquiditySetting ) {
+                    return this.E()
+                      .add(`${liquiditySetting.name}, ${liquiditySetting.id}`);
+                  }
+                }));
+              },
+              function() {
+                this.add(this.DEFAULT_LABEL);
+              }
+            );
       }
     ]
 });
