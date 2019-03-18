@@ -141,11 +141,12 @@ foam.CLASS({
         this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
 
         if ( invoicesResult.result === true && contactsResult.result === true) {
-          this.ctrl.notify('All information has been synchronized', 'error');
-          this.add(this.Popup.create().tag({
+          this.ctrl.notify('All information has been synchronized', 'success');
+          X.controllerView.add(this.Popup.create().tag({
             class: 'net.nanopay.accounting.ui.AccountingReportModal',
-            invoiceResult: invoiceResult,
-            contactResult: contactResult
+            invoiceResult: invoicesResult,
+            contactResult: contactsResult,
+            redirect: false
           }));
         }
       }

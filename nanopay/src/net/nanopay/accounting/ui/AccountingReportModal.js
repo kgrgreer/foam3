@@ -85,7 +85,8 @@ foam.CLASS({
     'contactResult',
     {
       name: 'redirect',
-      type: 'Boolean'
+      type: 'Boolean',
+      value: 'true'
     }
   ],
 
@@ -181,7 +182,9 @@ foam.CLASS({
       label: 'Continue',
       code: function(X) {
         X.closeDialog();
-        this.pushMenu('sme.main.dashboard')
+        if (this.redirect) {
+          this.pushMenu('sme.main.dashboard')
+        }
       }
     },
   ],
