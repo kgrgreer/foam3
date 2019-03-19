@@ -140,8 +140,9 @@ foam.CLASS({
       margin-right: 2px;
     }
     ^ .add-banking-information {
-      float: right;
       color: #6a39ff;
+      cursor: pointer;
+      float: right;
       margin-left: 30px;
       text-decoration: underline;
     }
