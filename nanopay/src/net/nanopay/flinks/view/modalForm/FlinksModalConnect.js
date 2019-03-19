@@ -7,7 +7,9 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.ui.LoadingSpinner',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.Popup',
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentService'
   ],
 
   exports: [
@@ -15,6 +17,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'acceptanceDocumentService',
     'connectingMessage',
     'flinksAuth',
     'institution',
@@ -113,7 +116,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isTermsAgreed',
       value: false
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.documents.AcceptanceDocument',
+      name: 'termsAgreementDocument'
+    },
   ],
 
   messages: [
@@ -124,13 +132,14 @@ foam.CLASS({
     { name: 'LABEL_PASSWORD', message: 'Password' },
     { name: 'LEGAL_1', message: 'I agree to the'},
     { name: 'LEGAL_2', message: 'and authorize the release of my Bank information to nanopay.' },
-    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' }
+    { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' }
   ],
 
   methods: [
     function init() {
       this.SUPER();
       this.connectingMessage = this.CONNECTING;
+      this.loadAcceptanceDocument();
     },
 
     function initE() {
@@ -192,7 +201,7 @@ foam.CLASS({
           this.notify(this.ERROR, 'error');
           break;
       }
-    }
+    },
   ],
 
   actions: [
@@ -222,7 +231,17 @@ foam.CLASS({
       name: 'goToTerm',
       label: 'terms and conditions',
       code: function(X) {
-        window.open(this.TERMS_AGREEMENT_LINK);
+        window.open(this.termsAgreementDocument.link);
+      }
+    }
+  ],
+
+  listeners: [
+    async function loadAcceptanceDocument() {
+      try {
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+      } catch (error) {
+        console.warn('Error occured finding Terms Agreement: ', error);
       }
     }
   ]
