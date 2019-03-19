@@ -239,9 +239,9 @@
       <version>1.0.2</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.oltu.oauth2</groupId>
-      <artifactId>org.apache.oltu.oauth2.client</artifactId>
-      <version>0.31</version>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client</artifactId>
+      <version>1.23.0</version>
     </dependency>
   </dependencies>
 
