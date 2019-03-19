@@ -71,7 +71,9 @@ foam.CLASS({
           .start({
             class: 'net.nanopay.invoice.ui.InvoiceRateView',
             isPayable: this.type,
-            isReadOnly: true
+            isReadOnly: true,
+            quote: this.viewData.quote,
+            chosenBankAccount: this.viewData.bankAccount
           })
           .end()
           .start({
@@ -101,3 +103,4 @@ foam.CLASS({
     }
   ]
 });
+
