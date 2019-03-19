@@ -15,8 +15,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id',
-      required: true
+      name: 'id'
     },
     {
       name: 'enabled',
