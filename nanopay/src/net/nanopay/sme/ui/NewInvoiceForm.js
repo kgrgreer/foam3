@@ -406,17 +406,17 @@ foam.CLASS({
         .endContext()
       .end();
     },
+
     function checkBankAccount() {
       var self = this;
       this.userDAO.find(this.invoice.contactId).then(function(contact) {
         if ( contact && contact.businessId ) {
           self.showAddBank = false;
-          return;
         } else if ( contact && contact.bankAccount ) {
           self.showAddBank = false;
-          return;
+        } else {
+          self.showAddBank = self.type === 'payable';
         }
-        self.showAddBank = self.type === 'payable';
       });
     }
   ],
