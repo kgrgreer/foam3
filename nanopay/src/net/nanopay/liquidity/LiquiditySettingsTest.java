@@ -12,7 +12,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.liquidity.Liquidity;
 import net.nanopay.liquidity.LiquiditySettings;
-import net.nanopay.tx.cron.LiquiditySettingsCheckCron;
+import net.nanopay.liquidity.LiquiditySettingsCheckCron;
 import net.nanopay.tx.model.*;
 
 import static foam.mlang.MLang.*;
