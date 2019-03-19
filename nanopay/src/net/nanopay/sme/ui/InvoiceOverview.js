@@ -229,26 +229,26 @@ foam.CLASS({
           this.user.accounts.find(this.invoice.account).then((account) => {
               this.bankAccount = account;
             });
-          return null;
         } else if ( ! this.isPayable && this.invoice.destinationAccount ) {
           this.user.accounts
             .find(this.invoice.destinationAccount).then((account) => {
               this.bankAccount = account;
             });
-          return null;
         } else {
           this.user.accounts
-            .where(this.AND(
-              this.EQ(this.Account.IS_DEFAULT, true),
-              this.OR(
-                this.INSTANCE_OF(this.CABankAccount),
-                this.INSTANCE_OF(this.USBankAccount)
+            .where(
+              this.AND(
+                this.EQ(this.Account.IS_DEFAULT, true),
+                this.OR(
+                  this.INSTANCE_OF(this.CABankAccount),
+                  this.INSTANCE_OF(this.USBankAccount)
+                )
               )
-            )).select().then((account) => {
-              this.bankAccount = account.array[0];
+            ).select().then((account) => {
+              this.bankAccount = account.array.shift();
             });
-          return null;
         }
+        return null;
       }
     },
     {
