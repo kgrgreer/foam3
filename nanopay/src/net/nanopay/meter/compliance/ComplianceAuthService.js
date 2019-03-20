@@ -9,8 +9,11 @@ foam.CLASS({
     'foam.nanos.NanoService'
   ],
 
+  imports: [
+    'blacklistDAO'
+  ],
+
   javaImports: [
-    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.MLang',
@@ -38,12 +41,10 @@ foam.CLASS({
       type: 'Boolean',
       javaCode: `
         NanopayComplianceService complianceService = (NanopayComplianceService) x.get("complianceService");
-        DAO blacklistDAO = (DAO) x.get("blacklistDAO");
-    
         Permission permission_ = new AuthPermission(permission);
     
         if ( ! complianceService.checkUserCompliance(x) ) {
-          ArraySink sink   = (ArraySink) blacklistDAO.where(
+          ArraySink sink   = (ArraySink) ((DAO) getBlacklistDAO()).where(
             MLang.EQ(Blacklist.ENTITY_TYPE, BlacklistEntityType.USER)
           ).select(new ArraySink());
           assert sink.getArray().size() >= 1 : "User compliance blacklist does not exist";
@@ -53,7 +54,7 @@ foam.CLASS({
           }
         }
         if ( ! complianceService.checkBusinessCompliance(x) ) {
-          ArraySink sink = (ArraySink) blacklistDAO.where(
+          ArraySink sink = (ArraySink) ((DAO) getBlacklistDAO()).where(
             MLang.EQ(Blacklist.ENTITY_TYPE, BlacklistEntityType.BUSINESS)
           ).select(new ArraySink());
           assert sink.getArray().size() >= 1 : "Business compliance blacklist does not exist";
@@ -63,7 +64,7 @@ foam.CLASS({
           }
         }
         if ( ! complianceService.checkAccountCompliance(x) ) {
-          ArraySink sink = (ArraySink) blacklistDAO.where(
+          ArraySink sink = (ArraySink) ((DAO) getBlacklistDAO()).where(
             MLang.EQ(Blacklist.ENTITY_TYPE, BlacklistEntityType.ACCOUNT)
           ).select(new ArraySink());
           assert sink.getArray().size() >= 1 : "Account compliance blacklist does not exist";
