@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'blacklistDAO'
+    'blacklistDAO',
+    'complianceService'
   ],
 
   javaImports: [
@@ -40,7 +41,7 @@ foam.CLASS({
       name: 'check',
       type: 'Boolean',
       javaCode: `
-        NanopayComplianceService complianceService = (NanopayComplianceService) x.get("complianceService");
+        NanopayComplianceService complianceService = (NanopayComplianceService) getComplianceService();
         Permission permission_ = new AuthPermission(permission);
     
         if ( ! complianceService.checkUserCompliance(x) ) {
