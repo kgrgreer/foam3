@@ -5,6 +5,9 @@ import foam.core.PropertyInfo;
 import foam.lib.json.OutputterMode;
 import foam.lib.xml.Outputter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class KotakXMLOutputter extends Outputter {
 
   public KotakXMLOutputter(OutputterMode mode) {
@@ -38,5 +41,11 @@ public class KotakXMLOutputter extends Outputter {
     writer_.append("<").append(getPropertyName(prop)).append(">");
     prop.toXML(this, value);
     writer_.append("</").append(getPropertyName(prop)).append(">");
+  }
+
+  @Override
+  protected void outputDate(Date value) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    writer_.append(sdf.format(value));
   }
 }
