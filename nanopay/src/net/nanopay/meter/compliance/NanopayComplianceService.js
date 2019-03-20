@@ -128,7 +128,7 @@ foam.CLASS({
         if ( user instanceof Business && user != null ) {
           return user.getCompliance().equals(ComplianceStatus.PASSED);
         }
-        return false;
+        return true;
       `
     },
     {
