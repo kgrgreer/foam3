@@ -47,13 +47,13 @@ foam.CLASS({
       name: 'jurisdiction',
       required: true,
       documentation: 'Jurisdiction where search should be conducted. CD = Canada federal.',
-      validateObj: function(jurisdiction, entityNumber) {
+      validateObj: function(jurisdiction, entityNumber, entityName) {
         if ( entityNumber ) {
-          if ( ('ON', 'QC', 'AB', 'BC', 'SK', 'MB', 'NB', 'NS', 'NL', 'PE', 'YT', 'NT', 'NU', 'CD').indexOf(jurisdiction) > -1 ) {
+          if ( ['ON', 'QC', 'AB', 'BC', 'SK', 'MB', 'NB', 'NS', 'NL', 'PE', 'YT', 'NT', 'NU', 'CD'].indexOf(jurisdiction) > -1 ) {
             return;
           }
-        } else {
-          if ( ('ON', 'QC', 'AB', 'BC', 'SK', 'MB', 'NB', 'NS', 'NL', 'PE', 'YT', 'NT', 'NU', 'CD', 'ALL').indexOf(jurisdiction) > -1 ) {
+        } else if ( entityName ) {
+          if ( ['ON', 'QC', 'AB', 'BC', 'SK', 'MB', 'NB', 'NS', 'NL', 'PE', 'YT', 'NT', 'NU', 'CD', 'ALL'].indexOf(jurisdiction) > -1 ) {
             return;
           }
         }
