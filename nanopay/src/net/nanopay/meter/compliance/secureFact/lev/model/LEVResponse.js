@@ -19,24 +19,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      label: 'Entity Name',
-      tableCellFormatter: function(value, obj) {
-        var self = this;
-        obj.businessDAO.find(value).then(function(business) {
-          if ( business ) {
-            self.start().add(business.businessName).end();
-          }
-        });
-      }
+      label: 'Entity Name'
     },
     {
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'entityId',
-      label: 'Entity Id',
-      postSet: function(old, nu) {
-        this.name = nu;
-      }
+      label: 'Entity Id'
     },
     {
       class: 'Int',
@@ -65,4 +54,4 @@ foam.CLASS({
       name: 'errors'
     }
   ]
-  });
+});

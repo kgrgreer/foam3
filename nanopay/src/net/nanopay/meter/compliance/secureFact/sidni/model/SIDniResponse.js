@@ -20,24 +20,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      label: 'Entity Name',
-      tableCellFormatter: function(value, obj) {
-        var self = this;
-        obj.userDAO.find(value).then(function(user) {
-          if ( user ) {
-            self.start().add(user.legalName).end();
-          }
-        });
-      }
+      label: 'Entity Name'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'entityId',
-      label: 'Entity Id',
-      postSet: function(old, nu) {
-        this.name = nu;
-      }
+      label: 'Entity Id'
     },
     {
       class: 'String',
@@ -55,14 +44,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'verified',
-      tableCellFormatter: function(verifiedSources) {
-        if ( verifiedSources ) {
-          this.start().add('true').end();
-        } else {
-          this.start().add('false').end();
-        }
-     }
+      name: 'verified'
     },
     {
       class: 'String',
