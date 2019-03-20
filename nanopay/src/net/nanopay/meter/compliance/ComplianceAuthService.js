@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'AuthService Decorator that checks if the user business or account have passed compliance, and if they have any blacklisted permissions',
 
+  implements: [
+    'foam.nanos.NanoService'
+  ],
+
   javaImports: [
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -12,6 +16,7 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Group',
+    'foam.nanos.NanoService',
     'java.security.Permission',
     'javax.security.auth.AuthPermission',
     'net.nanopay.meter.Blacklist',
@@ -20,6 +25,14 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'start',
+      javaCode: `
+        if ( getDelegate() instanceof NanoService ) {
+          ((NanoService) getDelegate()).start();
+        }
+      `
+    },
     {
       name: 'check',
       type: 'Boolean',
