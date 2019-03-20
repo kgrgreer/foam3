@@ -14,7 +14,7 @@
       <xs:element name="Enrichment" type="MaxChar4000_ST" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="InitiateRequest">
+  <xs:complexType name="Payment">
     <xs:sequence>
       <xs:element name="RequestHeader" type="RequestHeaderType"/>
       <xs:element name="InstrumentList" type="InstrumentListType"/>
