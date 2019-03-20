@@ -125,13 +125,10 @@ foam.CLASS({
       type: 'Boolean',
       javaCode: `
         User user = (User) x.get("user");
-        if ( user != null ) {
-          if ( user instanceof Business && user != null ) {
-            return user.getCompliance().equals(ComplianceStatus.PASSED);
-          }
-          return true;
+        if ( user instanceof Business && user != null ) {
+          return user.getCompliance().equals(ComplianceStatus.PASSED);
         }
-        return true;
+        return false;
       `
     },
     {
