@@ -1,16 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.accounting',
   name: 'AccountingBankAccount',
-  ids: ['accountingId'],
+  ids: ['quickBooksBankAccountId', 'realmId', 'xeroBankAccountId', 'xeroOrganizationId'],
   properties: [
-    {
-      class: 'String',
-      name: 'accountingId'
-    },
-    {
-      class: 'String',
-      name: 'accountingName'
-    },
     {
       class: 'String',
       name: 'currencyCode'
@@ -18,6 +10,22 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name'
+    },
+    {
+      class: 'String',
+      name: 'xeroOrganizationId'
+    },
+    {
+      class: 'String',
+      name: 'xeroBankAccountId'
+    },
+    {
+      class: 'String',
+      name: 'realmId'
+    },
+    {
+      class: 'String',
+      name: 'quickBooksBankAccountId'
     }
   ]
   });

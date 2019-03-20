@@ -29,8 +29,7 @@ import net.nanopay.model.Currency;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.*;
 
 public class XeroIntegrationService implements net.nanopay.accounting.IntegrationService{
 
@@ -44,7 +43,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     DAO configDAO = ((DAO) x.get("xeroConfigDAO")).inX(x);
     XeroConfig config = (XeroConfig)configDAO.find(app.getUrl());
     XeroClient client = new XeroClient(config);
-    if ( token == null || token.getToken().equals("") ) {
+    if ( token == null || token.getToken().equals("") || ! (user.getIntegrationCode() == IntegrationCode.XERO)) {
       return null;
     }
     client.setOAuthToken(token.getToken(), token.getTokenSecret());
@@ -753,7 +752,9 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     User user = (User) x.get("user");
     DAO userDAO = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    DAO accountDAO = (DAO) x.get("accountDAO");
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    ArraySink sink = new ArraySink();
     if ( token == null ) {
       return new ResultResponse.Builder(x)
         .setResult(false)
@@ -765,6 +766,19 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     user = (User) user.fclone();
     user.clearIntegrationCode();
     userDAO.put(user);
+
+    //remove bank accounts
+    accountDAO.where(AND(
+      EQ(BankAccount.OWNER, user.getId()),
+      NEQ(BankAccount.INTEGRATION_ID, "")
+    )).select(sink);
+    List<BankAccount> bankAccountList = sink.getArray();
+
+    for ( BankAccount account: bankAccountList ) {
+      account.setIntegrationId("");
+      accountDAO.put(account.fclone());
+    }
+
     return new ResultResponse.Builder(x)
       .setResult(true)
       .setReason("User has been Signed out of Xero")
@@ -773,15 +787,23 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
 
 
   @Override
-  public List<AccountingBankAccount> pullBanks(X x) {
+  public ResultResponse pullBanks(X x) {
+    User user = (User) x.get("user");
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
     List<AccountingBankAccount> banksList = new ArrayList<>();
+    DAO accountingBankDAO = (DAO) x.get("accountingBankAccountCacheDAO");
     Logger logger = (Logger) x.get("logger");
     XeroClient client = getClient(x);
 
     try {
       // Check that user has accessed xero before
       if ( client == null ) {
-        throw new Exception("User is not synced with Xero");
+        return new ResultResponse.Builder(x)
+          .setResult(false)
+          .setReason("User is not connected to xero")
+          .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+          .build();
       }
 
       for ( com.xero.model.Account xeroAccount :  client.getAccounts() ) {
@@ -789,17 +811,28 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         if ( com.xero.model.AccountType.BANK != xeroAccount.getType() ) {
           continue;
         }
-        xeroBankAccounts.setAccountingName("XERO");
-        xeroBankAccounts.setAccountingId(xeroAccount.getAccountID());
+        xeroBankAccounts.setXeroOrganizationId(token.getOrganizationId());
+        xeroBankAccounts.setXeroBankAccountId(xeroAccount.getAccountID());
         xeroBankAccounts.setName(xeroAccount.getName());
         xeroBankAccounts.setCurrencyCode(xeroAccount.getCurrencyCode().value());
         banksList.add(xeroBankAccounts);
+        accountingBankDAO.put(xeroBankAccounts);
       }
-      return banksList;
-    } catch ( Throwable e ) {
+      return new ResultResponse.Builder(x)
+        .setResult(true)
+        .setBankAccountList(banksList.toArray(new AccountingBankAccount[banksList.size()]))
+        .build();
+    } catch ( Exception e ) {
       e.printStackTrace();
       logger.error(e);
-      return banksList;
+      ResultResponse response = getExceptionResponse(x,e);
+      ArraySink sink = new ArraySink();
+      accountingBankDAO.where(
+        EQ(AccountingBankAccount.XERO_ORGANIZATION_ID, token.getOrganizationId())
+      ).select(sink);
+      banksList = sink.getArray();
+      response.setBankAccountList(banksList.toArray(new AccountingBankAccount[banksList.size()]));
+      return response;
     }
   }
 }

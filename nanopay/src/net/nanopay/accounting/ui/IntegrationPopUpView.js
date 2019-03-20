@@ -11,7 +11,6 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
-    'bankIntegrationsDAO',
     'pushMenu',
     'quickbooksService',
     'user',
@@ -137,7 +136,8 @@ foam.CLASS({
     { name: 'AccountingBanksLabel', message: 'Bank accounts in your accounting software' },
     { name: 'BankMatchingDesc1', message: 'Please select which accounts you would like to match between Ablii and Quickbooks/Xero from the drop downs.' },
     { name: 'BankMatchingDesc2', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in QuickBooks/Xero.' },
-    { name: 'BankMatchingTitle', message: 'Bank account matching' }
+    { name: 'BankMatchingTitle', message: 'Bank account matching' },
+    { name: 'TokenExpired', message: 'Your connection to the accounting software has expired. Please sync again.' }
   ],
 
   properties: [
@@ -159,12 +159,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'accountingBankData',
-      factory: function() {
-        return this.bankIntegrationsDAO;
-      }
-    },
-    {
       name: 'abliiBankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
@@ -181,10 +175,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           placeholder: '- Please Select -',
-          dao: X.data.accountingBankData,
-          objToChoice: function(account) {
-            return [account.id, account.name];
-          }
+          choices: X.data.accountingList,
         });
       }
     },
@@ -192,14 +183,35 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isLandingPage',
       value: false
-    }
+    },
+    'accountingBankAccounts',
+    'accountingList'
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       this.SUPER();
 
       this.isConnected();
+      var bankAccountList = [];
+      if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        this.accountingBankAccounts = await this.quickbooksService.pullBanks(null);
+      } else if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+        this.accountingBankAccounts = await this.xeroService.pullBanks(null);
+      }
+      if ( ! this.accountingBankAccounts.result && this.accountingBankAccounts.errorCode.name === 'TOKEN_EXPIRED' ) {
+        this.add(this.NotificationMessage.create({ message: this.TokenExpired, type: 'error' }));
+      } else if ( ! this.accountingBankAccounts.result && ! this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) {
+        this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
+      }
+      for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+          bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
+        } else {
+          bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
+        }
+      }
+      this.accountingList = bankAccountList;
 
       this
         .addClass(this.myClass())
@@ -268,7 +280,12 @@ foam.CLASS({
     {
       name: 'cancel',
       label: 'Cancel',
-      code: function(X) {
+      code: async function(X) {
+        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+          await this.xeroService.removeToken(null);
+        } else if ( this.user.IntegrationCode == this.IntegrationCode.QUICKBOOKS ) {
+          await this.quickbooksService.removeToken(null);
+        }
         this.bankMatched = false;
         X.closeDialog();
       }

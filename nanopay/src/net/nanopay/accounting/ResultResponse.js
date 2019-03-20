@@ -40,6 +40,11 @@ foam.CLASS({
       class: 'Array',
       of: 'String',
       name: 'successInvoice'
-    }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'net.nanopay.accounting.AccountingBankAccount',
+      name: 'bankAccountList'
+    },
   ]
 });

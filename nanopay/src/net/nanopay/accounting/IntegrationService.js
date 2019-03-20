@@ -91,7 +91,7 @@ foam.INTERFACE({
         Gets the list of bank accounts from the accounting software.
       `,
       async: true,
-      javaType: 'java.util.List<net.nanopay.accounting.AccountingBankAccount>',
+      javaType: 'net.nanopay.accounting.ResultResponse',
       args: [
         {
           type: 'Context',

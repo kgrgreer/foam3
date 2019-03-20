@@ -14,6 +14,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'organizationId'
+    },
+    {
+      class: 'String',
       name: 'tokenSecret'
     },
     {

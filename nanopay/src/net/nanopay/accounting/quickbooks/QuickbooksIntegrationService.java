@@ -22,6 +22,7 @@ import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
+import net.nanopay.accounting.xero.XeroToken;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.accounting.*;
@@ -32,6 +33,7 @@ import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
 
+import javax.xml.transform.Result;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.NEQ;
 
 public class QuickbooksIntegrationService extends ContextAwareSupport
   implements IntegrationService, NanoService {
@@ -67,8 +70,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     User              user         = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
-    if ( token == null ) {
-      return new ResultResponse.Builder(x).setResult(false).build();
+    if ( token == null  || ! (user.getIntegrationCode() == IntegrationCode.QUICKBOOKS)) {
+      return new ResultResponse.Builder(x).setResult(false).setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN).build();
     }
 
     return new ResultResponse.Builder(x).setResult(true).build();
@@ -166,9 +169,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse removeToken(X x) {
     User              user         = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-
+    DAO accountDAO = (DAO) x.get("accountDAO");
+    ArraySink sink = new ArraySink();
     if ( token == null ) {
-      return new ResultResponse.Builder(x).setResult(false).setReason("User has not connected to Quick Books").build();
+      return new ResultResponse.Builder(x).setResult(false).setReason("User has not connected to Quick Books").setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN).build();
     }
 
     tokenDAO.inX(x).remove(token.fclone());
@@ -176,26 +180,57 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     user.clearIntegrationCode();
     userDAO.inX(x).put(user);
 
+    //remove bank accounts
+    accountDAO.where(AND(
+      EQ(BankAccount.OWNER, user.getId()),
+      NEQ(BankAccount.INTEGRATION_ID, "")
+    )).select(sink);
+    List<BankAccount> bankAccountList = sink.getArray();
+
+    for ( BankAccount account: bankAccountList ) {
+      account.setIntegrationId("");
+      accountDAO.put(account.fclone());
+    }
+
     return new ResultResponse.Builder(x).setResult(false).setReason("User has been signed out of Quick Books").build();
   }
 
   @Override
-  public List<AccountingBankAccount> pullBanks(X x) {
+  public ResultResponse pullBanks(X x) {
     List<AccountingBankAccount> results = new ArrayList<>();
+    User            user           = (User) x.get("user");
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
+    DAO accountingBankDAO = (DAO) x.get("accountingBankAccountCacheDAO");
 
-    String query = "select * from account where AccountType = 'Bank'";
-    List<Account> accounts = sendRequest(x, query);
+
+    try {
+      String query = "select * from account where AccountType = 'Bank'";
+      List<Account> accounts = sendRequest(x, query);
 
     for ( Account account : accounts ) {
       AccountingBankAccount xBank = new AccountingBankAccount();
-      xBank.setAccountingName("QUICK");
-      xBank.setAccountingId(account.getId());
+      xBank.setRealmId(token.getRealmId());
+      xBank.setQuickBooksBankAccountId(account.getId());
       xBank.setName(account.getName());
       xBank.setCurrencyCode(account.getCurrencyRef().getValue());
       results.add(xBank);
+      accountingBankDAO.put(xBank);
     }
 
-    return results;
+      return new ResultResponse.Builder(x)
+        .setResult(true)
+        .setBankAccountList(accounts.toArray(new AccountingBankAccount[accounts.size()]))
+        .build();
+    } catch ( Exception e ) {
+      ResultResponse response = errorHandler(e);
+      ArraySink sink = new ArraySink();
+      accountingBankDAO.where(
+        EQ(AccountingBankAccount.REALM_ID, token.getRealmId())
+      ).select(sink);
+      results = sink.getArray();
+      response.setBankAccountList(results.toArray(new AccountingBankAccount[results.size()]));
+      return response;
+    }
   }
 
   @Override

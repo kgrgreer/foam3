@@ -3,6 +3,9 @@ package net.nanopay.accounting.xero;
 import com.xero.api.OAuthAccessToken;
 import com.xero.api.OAuthAuthorizeToken;
 import com.xero.api.OAuthRequestToken;
+import com.xero.api.XeroClient;
+import com.xero.model.Organisation;
+import com.xero.models.accounting.Organisations;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
@@ -15,6 +18,7 @@ import net.nanopay.accounting.IntegrationCode;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * When the user hits the "Connect" button in Ablii for Xero, they're
@@ -108,6 +112,9 @@ public class XeroWebAgent
           token.setTokenSecret(accessToken.getTokenSecret());
           token.setToken(accessToken.getToken());
           token.setTokenTimestamp(accessToken.getTokenTimestamp());
+          XeroClient client = getClient(x,accessToken);
+          List<Organisation> organisations = client.getOrganisations();
+          token.setOrganizationId(organisations.get(0).getOrganisationID());
           tokenDAO.put(token);
           User nUser = (User) userDAO.find(user.getId());
           nUser = (User) nUser.fclone();
@@ -123,6 +130,16 @@ public class XeroWebAgent
     }
   }
 
+  public XeroClient getClient(X x, OAuthAccessToken token) {
+    User user = (User) x.get("user");
+    Group group = user.findGroup(x);
+    AppConfig app = group.getAppConfig(x);
+    DAO configDAO = ((DAO) x.get("xeroConfigDAO")).inX(x);
+    XeroConfig config = (XeroConfig)configDAO.find(app.getUrl());
+    XeroClient client = new XeroClient(config);
+    client.setOAuthToken(token.getToken(), token.getTokenSecret());
+    return client;
+  }
 
   public void sync(X x, HttpServletResponse response) {
     try {
