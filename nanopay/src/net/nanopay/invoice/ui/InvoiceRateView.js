@@ -532,7 +532,7 @@ foam.CLASS({
 
       try {
         this.viewData.isDomestic = ! this.isFx;
-        this.quote = this.isFX ? await this.getFXQuote() : await this.getDomesticQuote();
+        this.quote = this.isFx ? await this.getFXQuote() : await this.getDomesticQuote();
         this.viewData.quote = this.quote;
       } catch (error) {
         this.notify(this.RATE_FETCH_FAILURE + error.message, 'error');
