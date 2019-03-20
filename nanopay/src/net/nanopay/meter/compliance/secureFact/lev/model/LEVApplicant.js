@@ -5,21 +5,11 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'firstName',
-      validateObj: function(firstName) {
-        if ( firstName.length > 75 ) {
-            return 'First name has a max length of 75.';
-        }
-      }
+      name: 'firstName'
     },
     {
       class: 'String',
-      name: 'lastName',
-      validateObj: function(lastName) {
-        if ( lastName.length > 75 ) {
-            return 'Last name has a max length of 75.';
-        }
-      }
+      name: 'lastName'
     }
   ]
 });

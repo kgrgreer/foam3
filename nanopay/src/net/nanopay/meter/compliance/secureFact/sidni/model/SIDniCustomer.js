@@ -8,23 +8,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'custTransactionId',
-      documentation: 'Identifier for the transaction, used to check for duplicates, max length of 256.',
-      validateObj: function(custTransactionId) {
-        if ( custTransactionId.length() > 256 ) {
-          return 'custTransactionId is longer than 256 characters';
-        }
-      }
+      documentation: 'Identifier for the transaction, used to check for duplicates, max length of 256.'
     },
     {
       class: 'String',
       name: 'userReference',
       required: true,
-      documentation: 'Identifer for transaction from the customer.',
-      validateObj: function(userReference) {
-        if ( userReference.length() > 30 ) {
-          return 'UserReference is longer than 30 characters';
-        }
-      }
+      documentation: 'Identifer for transaction from the customer.'
     },
     {
       class: 'Boolean',

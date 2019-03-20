@@ -37,23 +37,12 @@ foam.CLASS({
       class: 'String',
       name: 'dateOfBirth',
       required: true,
-      documentation: 'Must be YYYY-MM-DD format.',
-      validateObj: function(dateOfBirth) {
-        var regex = /[0-9]{4}-[0-9]{2}-[0-9]{2}/;
-        if ( ! regex.match(dateOfBirth) ) {
-          return 'Invalid date of birth format.';
-        }
-      }
+      documentation: 'Must be YYYY-MM-DD format.'
     },
     {
       class: 'String',
       name: 'sin',
-      documentation: 'Social insurance number. Must be 9 digits',
-      validateObj: function(sinNumber) {
-        if ( sinNumber.length > 9 ) {
-          return 'Invalid SIN number.';
-        }
-      }
+      documentation: 'Social insurance number. Must be 9 digits'
     }
   ],
   methods: [
