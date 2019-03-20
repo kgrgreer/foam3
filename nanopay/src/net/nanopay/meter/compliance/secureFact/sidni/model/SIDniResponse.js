@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.secureFact.sidni.model',
   name: 'SIDniResponse',
-  extends: 'net.nanopay.meter.compliance.secureFact.sidni.model.BasicResponseObject',
   documentation: `The object for a SIDni response`,
 
   tableColumns: [

@@ -8,6 +8,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.text.SimpleDateFormat',
     'java.util.ArrayList',
@@ -52,35 +53,43 @@ foam.CLASS({
       name: 'sendRequest',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'request',
           type: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest'
         }
       ],
       type: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
       javaCode: `
-      // key must end with :" 
-      String key = "NTc5MDk0MDc5OTUyNzMxMDYwNzg1NDgxMTQ3OTkwNDI4MDkwMzY4:";
-      CloseableHttpClient httpClient = HttpClients.createDefault();
+        // key must end with :" 
+        String key = "NTc5MDk0MDc5OTUyNzMxMDYwNzg1NDgxMTQ3OTkwNDI4MDkwMzY4:";
+        CloseableHttpClient httpClient = HttpClients.createDefault();
 
-      HttpPost httpPost = new HttpPost("https://qa2-sidni.securefact.com/rest/v3/verifyIndividual");
-      httpPost.addHeader("Content-type", "application/json");
-      httpPost.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(key.getBytes()));
+        HttpPost httpPost = new HttpPost("https://qa2-sidni.securefact.com/rest/v3/verifyIndividual");
+        httpPost.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(key.getBytes()));
 
-      StringEntity entity;
-      try {
-        entity = new StringEntity(request.toJSON());
-        entity.setContentType(ContentType.APPLICATION_JSON.getMimeType());
-        httpPost.setEntity(entity);
-        HttpResponse response =  httpClient.execute(httpPost);
-        String responseJson = EntityUtils.toString(response.getEntity());
-        JSONParser parser = new JSONParser();
-        SIDniResponse sidniResponse = (SIDniResponse) parser.parseString(responseJson, SIDniResponse.class);
-        sidniResponse.setHttpCode(response.getStatusLine().getStatusCode() + "");
-        sidniResponse.setUserReference(request.getCustomer().getUserReference());
-        return sidniResponse;
-      } catch(Exception e) {
-        return null;
-      }
+        HttpResponse response = null;
+        try {
+          StringEntity entity = new StringEntity(request.toJSON());
+          entity.setContentType("application/json");
+          httpPost.setEntity(entity);
+          response =  httpClient.execute(httpPost);
+          String responseJson = EntityUtils.toString(response.getEntity());
+          return (SIDniResponse) new JSONParser()
+            .parseString(responseJson, SIDniResponse.class);
+        } catch(Exception e) {
+          StringBuilder sb = new StringBuilder();
+          sb.append("Securefact SIDni request service failed.");
+          if ( response != null ) {
+            sb.append(" HTTP status code: ")
+              .append(response.getStatusLine().getStatusCode())
+              .append(".");
+          }
+          ((Logger) x.get("logger")).error(sb.toString(), e);
+          throw new RuntimeException(sb.toString());
+        }
       `
     },
   ],
