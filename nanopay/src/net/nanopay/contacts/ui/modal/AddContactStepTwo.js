@@ -361,6 +361,9 @@ foam.CLASS({
     {
       name: 'option',
       label: 'Save without banking',
+      isAvailable: function() {
+        return ! this.wizard.data.bankAccount;
+      },
       code: async function(X) {
         if ( ! await this.addContact() ) return;
         X.closeDialog();
