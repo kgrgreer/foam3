@@ -60,7 +60,7 @@ foam.CLASS({
       of: 'net.nanopay.liquidity.Liquidity',
       name: 'lowLiquidity',
       factory: function() {
-        return net.nanopay.liquidity.Liquidity.create({});
+        return net.nanopay.liquidity.Liquidity.create();
       }
     }
   ]
@@ -76,7 +76,9 @@ foam.CLASS({
       name: 'liquiditySettings',
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.LiquiditySettings',
-      factory: function() {return net.nanopay.liquidity.LiquiditySettings.create();}
+      factory: function() {
+        return net.nanopay.liquidity.LiquiditySettings.create();
+      }
     }
   ]
 });

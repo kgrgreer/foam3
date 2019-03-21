@@ -102,9 +102,9 @@ public class LiquidityService
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
 
 
-    executeHighLiquidity(pendingBalance, ls, txnAmount,account);
+    executeHighLiquidity(pendingBalance, ls, txnAmount, account);
 
-    executeLowLiquidity(pendingBalance, ls, txnAmount,account);
+    executeLowLiquidity(pendingBalance, ls, txnAmount, account);
   }
 
 

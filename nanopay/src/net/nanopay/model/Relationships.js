@@ -102,7 +102,7 @@ foam.RELATIONSHIP({
     view: function(_, X) {
       return foam.u2.view.RichChoiceView.create({
         search: true,
-        selectionView: { class: 'net.nanopay.liquidity.LiquiditySettingsSelectionView'},
+        selectionView: { class: 'net.nanopay.liquidity.LiquiditySettingsSelectionView' },
         rowView: { class: 'net.nanopay.liquidity.LiquiditySettingsRowView' },
         sections: [
           {
