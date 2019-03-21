@@ -33,10 +33,15 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.ui.AccountRowView' },
           sections: [
             {
-              dao: X.accountDAO,
+              dao: X.accountDAO
             }
           ],
         });
+      },
+      postSet: function(oldValue, newValue) {
+        this.account$find.then(function(account) {
+          this.highLiquidity.pushPullOwner = this.lowLiquidity.pushPullOwner = account.owner;
+        }.bind(this));
       },
       documentation: 'Primary key and reference to account that liquidity settings are executed on. Can be instanceof DigitalAccount only.'
     },
@@ -52,10 +57,10 @@ foam.CLASS({
       name: 'highLiquidity',
       factory: function() {
         return net.nanopay.tx.Liquidity.create({
-          reset: 0,
+          resetBalance: 0,
           threshold: 0,
-          enable: false
-        });
+          enable: false,
+        }, this);
       }
     },
     {
@@ -63,7 +68,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.Liquidity',
       name: 'lowLiquidity',
       factory: function() {
-        return net.nanopay.tx.Liquidity.create({});
+        return net.nanopay.tx.Liquidity.create({}, this);
       }
     }
   ]
