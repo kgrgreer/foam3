@@ -465,7 +465,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       payee.setOriginatorID(orgId);
       if ( user instanceof Business ) {
         payee.setPayeeName(user.getBusinessName());
-      } else {
+      } else if ( user instanceof Contact && ! SafetyUtil.isEmpty(user.getBusinessName()) ) {
+        payee.setPayeeName(user.getBusinessName());
+      }
+      else {
         payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
       }
       payee.setPayeeEmail(user.getEmail());
