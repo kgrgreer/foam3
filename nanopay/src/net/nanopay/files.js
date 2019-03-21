@@ -26,6 +26,8 @@ FOAM_FILES([
   { name: 'net/nanopay/account/LossesAccount' },
   { name: 'net/nanopay/account/HoldingAccount' },
   { name: 'net/nanopay/account/AuthenticatedAccountDAOTest' },
+  { name: 'net/nanopay/account/LoanAccount' },
+  { name: 'net/nanopay/account/LoanedTotalAccount' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/ClientUserJunction' },
@@ -201,14 +203,11 @@ FOAM_FILES([
 
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
-  { name: 'net/nanopay/tx/model/Frequency' },
   { name: 'net/nanopay/tx/model/Fee' },
   { name: 'net/nanopay/tx/model/FeeInterface' },
   { name: 'net/nanopay/tx/model/FeeType' },
   { name: 'net/nanopay/tx/model/FixedFee' },
   { name: 'net/nanopay/tx/model/InformationalFee' },
-  { name: 'net/nanopay/tx/model/LiquiditySettings' },
-  { name: 'net/nanopay/tx/Liquidity' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
@@ -223,9 +222,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
-  { name: 'net/nanopay/tx/model/LiquidityAuth' },
   { name: 'net/nanopay/tx/PayeeTransactionDAO' },
   { name: 'net/nanopay/tx/AbliiTransaction' },
+  { name: 'net/nanopay/tx/InterestTransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
@@ -610,6 +609,14 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
 
+  // liquidity
+   { name: 'net/nanopay/liquidity/LiquiditySettings' },
+   { name: 'net/nanopay/liquidity/Liquidity' },
+   { name: 'net/nanopay/liquidity/LiquidityAuth' },
+   { name: 'net/nanopay/liquidity/Frequency' },
+   { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
+   { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
+
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
@@ -764,16 +771,20 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
+  { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
+  { name: 'net/nanopay/meter/compliance/ComplianceAware' },
   { name: 'net/nanopay/meter/compliance/ComplianceHistory' },
   { name: 'net/nanopay/meter/compliance/ComplianceRule' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidator' },
   { name: 'net/nanopay/meter/compliance/ComplianceService' },
   { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
+  { name: 'net/nanopay/meter/compliance/refinements' },
 
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
+  { name: 'net/nanopay/meter/test/ComplianceAwareDummy' },
 
-  { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
+  { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' }
 ]);

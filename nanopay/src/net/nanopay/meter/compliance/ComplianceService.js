@@ -28,6 +28,36 @@ foam.INTERFACE({
           javaType: 'net.nanopay.meter.compliance.ComplianceHistory'
         }
       ]
+    },
+    {
+      name: 'checkUserCompliance',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'Boolean'
+    },
+    {
+      name: 'checkBusinessCompliance',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'Boolean'
+    },
+    {
+      name: 'checkAccountCompliance',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'Boolean'
     }
   ]
 });

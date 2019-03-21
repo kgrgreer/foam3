@@ -125,16 +125,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.admin.model.ComplianceStatus',
-      name: 'compliance',
-      documentation: 'Admin user account approval status.',
-      tableCellFormatter: function(status) {
-        return status.label;
-      },
-      permissionRequired: true
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
