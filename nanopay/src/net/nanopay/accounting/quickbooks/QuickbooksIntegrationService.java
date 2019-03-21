@@ -22,7 +22,6 @@ import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-import net.nanopay.accounting.xero.XeroToken;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.accounting.*;
@@ -196,7 +195,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   @Override
-  public ResultResponse pullBanks(X x) {
+  public ResultResponse bankAccountSync(X x) {
     List<AccountingBankAccount> results = new ArrayList<>();
     User            user           = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
@@ -340,18 +339,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public boolean isValidContact(NameBase quickContact, List<String> invalidContacts) {
     if (
       quickContact.getPrimaryEmailAddr() == null ||
-      SafetyUtil.isEmpty(quickContact.getGivenName()) ||
-      SafetyUtil.isEmpty(quickContact.getFamilyName()) ||
       SafetyUtil.isEmpty(quickContact.getCompanyName()) )
     {
       String str = "Quick Contact # " +
         quickContact.getId() +
         " can not be added because the contact is missing: " +
         (quickContact.getPrimaryEmailAddr() == null ? "[Email]" : "") +
-        (SafetyUtil.isEmpty(quickContact.getGivenName()) ? " [Given Name] " : "") +
-        (SafetyUtil.isEmpty(quickContact.getCompanyName()) ? " [Company Name] " : "") +
-        (SafetyUtil.isEmpty(quickContact.getFamilyName()) ? " [Family Name] " : "");
-
+        (SafetyUtil.isEmpty(quickContact.getCompanyName()) ? " [Company Name] " : "");
       invalidContacts.add(str);
       return false;
     }
@@ -837,6 +831,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
     }
+  }
+
+  public ResultResponse singleSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
+    return null;
   }
 
   public void batchOperation(X x, BatchOperation operation, CallbackHandler callbackHandler) {

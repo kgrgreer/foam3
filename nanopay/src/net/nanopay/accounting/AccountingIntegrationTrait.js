@@ -117,6 +117,8 @@ foam.CLASS({
           X.controllerView.add(self.Popup.create({ closeable: false }).tag({
             class: 'net.nanopay.accounting.AccountingTimeOutModal'
           }));
+          X.controllerView.removeClass('account-sync-loading-animation');
+          return;
         }
 
         if ( contactsResult.result === false ) {
@@ -130,6 +132,8 @@ foam.CLASS({
           X.controllerView.add(self.Popup.create({ closeable: false }).tag({
             class: 'net.nanopay.accounting.AccountingTimeOutModal'
           }));
+          X.controllerView.removeClass('account-sync-loading-animation');
+          return;
         }
 
         if ( invoicesResult.result === false ) {
@@ -140,7 +144,7 @@ foam.CLASS({
         this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
         this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
 
-        if ( invoicesResult.result === true && contactsResult.result === true) {
+        if ( invoicesResult.result === true && contactsResult.result === true ) {
           this.ctrl.notify('All information has been synchronized', 'success');
           X.controllerView.add(this.Popup.create().tag({
             class: 'net.nanopay.accounting.ui.AccountingReportModal',

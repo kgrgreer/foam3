@@ -9,6 +9,10 @@ foam.CLASS({
       name: 'xeroId'
     },
     {
+      class: 'String',
+      name: 'xeroOrganizationId'
+    },
+    {
       class: 'Boolean',
       name: 'desync'
     },

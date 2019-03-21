@@ -86,7 +86,7 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'pullBanks',
+      name: 'bankAccountSync',
       documentation: `
         Gets the list of bank accounts from the accounting software.
       `,
@@ -101,6 +101,21 @@ foam.INTERFACE({
     },
     {
       name: 'reSyncInvoice',
+      async: true,
+      type: 'net.nanopay.accounting.ResultResponse',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        },
+        {
+          type: 'net.nanopay.invoice.model.Invoice',
+          name: 'invoice'
+        }
+      ]
+    },
+    {
+      name: 'singleSync',
       async: true,
       type: 'net.nanopay.accounting.ResultResponse',
       args: [

@@ -195,9 +195,9 @@ foam.CLASS({
       this.isConnected();
       var bankAccountList = [];
       if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
-        this.accountingBankAccounts = await this.quickbooksService.pullBanks(null);
+        this.accountingBankAccounts = await this.quickbooksService.bankAccountSync(null);
       } else if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-        this.accountingBankAccounts = await this.xeroService.pullBanks(null);
+        this.accountingBankAccounts = await this.xeroService.bankAccountSync(null);
       }
       if ( ! this.accountingBankAccounts.result && this.accountingBankAccounts.errorCode.name === 'TOKEN_EXPIRED' ) {
         this.add(this.NotificationMessage.create({ message: this.TokenExpired, type: 'error' }));

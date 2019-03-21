@@ -52,23 +52,37 @@ foam.CLASS({
       color: #525455;
     }
     
-    ^ .net-nanopay-ui-ActionView-cancel {
-      width: 96px;
-      height: 36px;
+    ^ .net-nanopay-ui-ActionView-cancelTimeOutModal {
+      width: 96px !important;
+      height: 36px !important;
       color: #525455;
       box-shadow: none;
       background: rgba(0, 0, 0, 0);
       margin-top: 16px;
       margin-left: 120px;  
+      border: none;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancel:hover {
-      background: rgba(0, 0, 0, 0);
+    ^ .net-nanopay-ui-ActionView-cancelTimeOutModal:hover {
+      background: #fafafa !important;
+      border: none;
+      color: #525455;
     }
     
-    ^ .net-nanopay-ui-ActionView-sync {
-      width: 96px;
-      height: 36px;
+    ^ .net-nanopay-ui-ActionView-syncTimeOutModal {
+      width: 96px !important;
+      height: 36px !important;
+      color: white;
+      background-color: #604AFF;
+    }
+
+    .net-nanopay-ui-ActionView.ignoreFloat {
+      float: none !important;
+    }
+
+    ^ .net-nanopay-ui-ActionView-syncTimeOutModal:hover {
+      background-color: #4D38E1 !important;
+      color: white;
     }
     
     ^ .actions {
@@ -99,8 +113,8 @@ foam.CLASS({
             .add(' Sync again with ' + this.user.integrationCode.label  + ' so your data in Ablii remains synced.')
           .end()
           .start().addClass('actions')
-            .add(this.CANCEL).addClass('cancel')
-            .add(this.SYNC).addClass('sync')
+            .start(this.CANCEL_TIME_OUT_MODAL).addClass('cancel').addClass('ignoreFloat').end()
+            .start(this.SYNC_TIME_OUT_MODAL).addClass('sync').addClass('ignoreFloat').end()
           .end()
         .end()
         .end()
@@ -109,15 +123,14 @@ foam.CLASS({
   ],
   actions: [
     {
-      name: 'cancel',
+      name: 'cancelTimeOutModal',
       label: 'Cancel',
       code: function(X) {
-       
         X.closeDialog();
       }
     },
     {
-      name: 'sync',
+      name: 'syncTimeOutModal',
       label: 'Sync',
       code: async function() {
         var url = window.location.origin + '/service/xeroWebAgent?portRedirect=' + window.location.hash.slice(1);

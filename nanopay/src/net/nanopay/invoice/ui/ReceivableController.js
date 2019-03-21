@@ -10,7 +10,11 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice'
   ],
 
   implements: [
@@ -169,7 +173,36 @@ foam.CLASS({
   listeners: [
     {
       name: 'dblclick',
-      code: function(invoice) {
+      code: async function(invoice) {
+        let service = null;
+        if ( this.XeroInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE || invoice.status == this.InvoiceStatus.DRAFT) ) {
+          if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+            service = this.xeroService;
+          } else {
+            this.ctrl.notify(' Cannot sync invoice, Not signed into Xero.', 'error');
+            return;
+          }
+        } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE || invoice.status == this.InvoiceStatus.DRAFT) ) {
+          if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+          service = this.quickbooksService;
+          } else {
+            this.ctrl.notify(' Cannot sync invoice, Not signed into Quickbooks.', 'error');
+            return;
+          }
+        }
+        if ( service != null ) {
+          let result = await service.singleSync(null, invoice);
+          if ( ! result.result ) {
+            if ( result.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+              this.ctrl.add(this.Popup.create({ closeable: false }).tag({
+                class: 'net.nanopay.accounting.AccountingTimeOutModal'
+              }));
+            } else {
+              this.ctrl.notify(result.reason, 'error');
+            }
+            return;
+          }
+        }
         this.stack.push({
           class: 'net.nanopay.sme.ui.InvoiceOverview',
           invoice: invoice,

@@ -20,13 +20,13 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.accounting.AccountingBankAccount',
     'net.nanopay.accounting.IntegrationCode'
-
   ],
 
   css: `
@@ -262,12 +262,14 @@ foam.CLASS({
       this.isQuickbooksConnected();
       var bankAccountList = [];
       if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
-        this.accountingBankAccounts = await this.quickbooksService.pullBanks(null);
+        this.accountingBankAccounts = await this.quickbooksService.bankAccountSync(null);
       } else if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-        this.accountingBankAccounts = await this.xeroService.pullBanks(null);
+        this.accountingBankAccounts = await this.xeroService.bankAccountSync(null);
       }
       if ( ! this.accountingBankAccounts.result && this.accountingBankAccounts.errorCode.name === 'TOKEN_EXPIRED' ) {
-        this.add(this.NotificationMessage.create({ message: 'Your connection to the accounting software has expired. Please sync again.', type: 'error' }));
+        this.add(this.Popup.create({ closeable: false }).tag({
+          class: 'net.nanopay.accounting.AccountingTimeOutModal'
+        }));
       } else if ( ! this.accountingBankAccounts.result && ! this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) {
         this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
       }
