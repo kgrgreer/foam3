@@ -282,6 +282,13 @@ foam.CLASS({
                     .tag(self.caAccount.ACCOUNT_NUMBER)
                   .end()
                 .end()
+                .start()
+                  .addClass('divider')
+                .end()
+                .tag({
+                  class: 'net.nanopay.sme.ui.AddressView',
+                  data: self.caAccount.address
+                })
               .endContext();
           } else {
             return this.E()
@@ -304,6 +311,13 @@ foam.CLASS({
                     .tag(self.usAccount.ACCOUNT_NUMBER)
                   .end()
                 .end()
+                .start()
+                  .addClass('divider')
+                .end()
+                .tag({
+                  class: 'net.nanopay.sme.ui.AddressView',
+                  data: self.usAccount.address
+                })
               .endContext();
           }
         }))
