@@ -4,12 +4,16 @@ foam.CLASS({
 
   javaImports: [
     'foam.lib.json.JSONParser',
+    'foam.lib.json.Outputter',
+    'foam.nanos.auth.Address',
+    'foam.nanos.logger.Logger',
     'java.util.Base64',
+    'net.nanopay.meter.compliance.secureFact.SecurefactCredentials',
     'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
     'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
+    'net.nanopay.model.BusinessType',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
-    'org.apache.http.entity.ContentType',
     'org.apache.http.entity.StringEntity',
     'org.apache.http.impl.client.CloseableHttpClient',
     'org.apache.http.impl.client.HttpClients',
@@ -21,6 +25,10 @@ foam.CLASS({
       name: 'createRequest',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'business',
           type: 'net.nanopay.model.Business'
         }
@@ -28,16 +36,28 @@ foam.CLASS({
       type: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
       javaCode: `
         LEVRequest request = new LEVRequest();
-
         request.setSearchType("name");
         request.setEntityName(business.getBusinessName());
-        request.setJurisdiction(business.getAddress().getRegionId());
-        request.setCountry("CA");
-        request.setAddress(business.getAddress().getPostalCode());
-        if ( business.getType().equals("Corporation") || business.getType().equals("Sole Proprietorship") || business.getType().equals("Partnership") ) {
-          request.setEntityType(business.getType());
-        }
 
+        Address address = business.getAddress();
+        if ( address == null ) {
+          throw new IllegalStateException("Business address can't be null");
+        }
+        request.setCountry(address.getCountryId());
+        request.setJurisdiction(address.getRegionId());
+        request.setAddress(address.getPostalCode());
+
+        BusinessType businessType = business.findBusinessTypeId(x);
+        if ( businessType != null ) {
+          String entityType = businessType.getName();
+          if ( entityType.equals("Corporation")
+            || entityType.equals("Sole Proprietorship")
+            || entityType.equals("Partnership")
+            || entityType.equals("Trade Name")
+          ) {
+            request.setEntityType(business.getType());
+          }
+        }
         return request;
       `
     },
@@ -45,32 +65,50 @@ foam.CLASS({
       name: 'sendRequest',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'request',
           type: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest'
         }
       ],
       type: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
       javaCode: `
-        // key must end with :" 
-        String key = "ODA1NTMyNjA0MTAyNDg2NzIxMzg4NTk0MTQ4ODg0NTI1MDg4NzY4:";
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        SecurefactCredentials credentials = (SecurefactCredentials) x.get("secureFactCredentials");
+        CloseableHttpClient   httpClient = HttpClients.createDefault();
+        HttpPost              httpPost = new HttpPost(credentials.getLevUrl());
+        HttpResponse          response = null;
 
-        HttpPost httpPost = new HttpPost("https://lev3uat.securefact.com/rest/v1/lev/search");
-        httpPost.addHeader("Content-type", "application/json");
-        httpPost.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(key.getBytes()));
-        StringEntity entity;
         try {
-          entity = new StringEntity(request.toJSON());
-          entity.setContentType(ContentType.APPLICATION_JSON.getMimeType());
+          String basicAuth = credentials.getLevApiKey() + ":";
+          StringEntity entity = new StringEntity(
+            new Outputter().setOutputClassNames(false).stringify(request));
+          entity.setContentType("application/json");
+          httpPost.addHeader("Content-type", "application/json");
+          httpPost.setHeader("Authorization", "Basic " +
+            Base64.getEncoder().encodeToString(basicAuth.getBytes()));
           httpPost.setEntity(entity);
-          HttpResponse response =  httpClient.execute(httpPost);
-          String responseJson = EntityUtils.toString(response.getEntity());
-          JSONParser parser = new JSONParser();
-          LEVResponse levResponse = (LEVResponse) parser.parseString(responseJson, LEVResponse.class);
-          levResponse.setHttpCode(response.getStatusLine().getStatusCode()+"");
-          return levResponse;
+
+          response =  httpClient.execute(httpPost);
+          if ( response.getStatusLine().getStatusCode() >= 500 ) {
+            throw new Exception("Securefact server error.");
+          }
+
+          JSONParser jsonParser = new JSONParser();
+          jsonParser.setX(x);
+          return (LEVResponse) jsonParser.parseString(
+            EntityUtils.toString(response.getEntity()), LEVResponse.class);
         } catch(Exception e) {
-          return null;
+          StringBuilder sb = new StringBuilder();
+          sb.append("Securefact LEV request service failed.");
+          if ( response != null ) {
+            sb.append(" HTTP status code: ")
+              .append(response.getStatusLine().getStatusCode())
+              .append(".");
+          }
+          ((Logger) x.get("logger")).error(sb.toString(), e);
+          throw new RuntimeException(sb.toString());
         }
       `
     },
