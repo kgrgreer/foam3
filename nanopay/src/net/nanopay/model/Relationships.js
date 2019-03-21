@@ -92,6 +92,29 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.liquidity.LiquiditySettings',
+  targetModel: 'net.nanopay.account.DigitalAccount',
+  inverseName: 'liquiditySetting',
+  forwardName: 'accounts',
+  cardinality: '1:*',
+  targetDAOKey: 'accountDAO',
+  targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.RichChoiceView.create({
+        search: true,
+        selectionView: { class: 'net.nanopay.liquidity.LiquiditySettingsSelectionView' },
+        rowView: { class: 'net.nanopay.liquidity.LiquiditySettingsRowView' },
+        sections: [
+          {
+            dao: X.liquiditySettingsDAO,
+          }
+        ]
+      });
+    }
+  }
+});
+
+foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.account.Account',
   forwardName: 'accounts',

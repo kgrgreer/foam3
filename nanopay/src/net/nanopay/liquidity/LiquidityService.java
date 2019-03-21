@@ -1,4 +1,4 @@
-package net.nanopay.tx.model;
+package net.nanopay.liquidity;
 
 import foam.core.ContextAwareSupport;
 import foam.core.Detachable;
@@ -11,9 +11,12 @@ import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
-import net.nanopay.tx.Liquidity;
+import net.nanopay.liquidity.Liquidity;
+import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -58,9 +61,10 @@ public class LiquidityService
   @Override
   public void liquifyAccount(long accountId, Frequency frequency, long txnAmount) {
     LiquiditySettings ls;
-    ls = (LiquiditySettings) getLiquiditySettingsDAO().find(accountId);
+    DigitalAccount account = (DigitalAccount) ((DAO) x_.get("localAccountDAO")).find(accountId);
+    ls = account.findLiquiditySetting(getX());
     if ( ls == null || ls.getCashOutFrequency() != frequency ) return;
-    executeLiquidity(ls, txnAmount);
+    executeLiquidity(ls, account, txnAmount);
   }
 
   @Override
@@ -69,17 +73,15 @@ public class LiquidityService
       @Override
       public void put(Object o, Detachable d) {
         LiquiditySettings ls = (LiquiditySettings) o;
-        executeLiquidity(ls, 0L);
+        executePerLiquiditySetting(ls, 0L);
       }
     });
 
   }
 
-  public void executeLiquidity(LiquiditySettings ls, long txnAmount) {
-    DigitalAccount account = ls.findAccount(getX());
-    if ( account == null ) return;
+  public void executeLiquidity(LiquiditySettings ls, DigitalAccount account, long txnAmount) {
     long pendingBalance = (long) account.findBalance(getX());
-    pendingBalance += ((Double)((Sum) getLocalTransactionDAO().where(
+    pendingBalance += ((Double) ((Sum) getLocalTransactionDAO().where(
       AND(
         OR(
           EQ(Transaction.STATUS, TransactionStatus.PENDING),
@@ -91,7 +93,7 @@ public class LiquidityService
       )
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
 
-    pendingBalance -= ((Double)((Sum)getLocalTransactionDAO().where(
+    pendingBalance -= ((Double) ((Sum) getLocalTransactionDAO().where(
       AND(
         EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED),
         INSTANCE_OF(COTransaction.class),
@@ -100,18 +102,28 @@ public class LiquidityService
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
 
 
-    executeHighLiquidity(pendingBalance, ls, txnAmount);
+    executeHighLiquidity(pendingBalance, ls, txnAmount, account);
 
-    executeLowLiquidity(pendingBalance, ls, txnAmount);
-
+    executeLowLiquidity(pendingBalance, ls, txnAmount, account);
   }
 
-  public void executeHighLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount ) {
+
+  public void executePerLiquiditySetting(LiquiditySettings ls, long txnAmount) {
+    ls.getAccounts(getX())
+      .select(new AbstractSink() {
+        @Override
+        public void put(Object o, Detachable d) {
+          DigitalAccount account = (DigitalAccount) ((DigitalAccount) o).fclone();
+          executeLiquidity(ls, account, txnAmount);
+        }
+      });
+  }
+
+  public void executeHighLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount, DigitalAccount account ) {
 
     Liquidity liquidity = ls.getHighLiquidity();
 
     if ( currentBalance >= liquidity.getThreshold() ) {
-      Account account = ls.findAccount(x_);
       Account fundAccount = liquidity.findPushPullAccount(x_);
       if ( ! ( fundAccount instanceof DigitalAccount ) ) {
         fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
@@ -135,12 +147,11 @@ public class LiquidityService
     }
   }
 
-  public void executeLowLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount ) {
+  public void executeLowLiquidity( long currentBalance, LiquiditySettings ls, long txnAmount, DigitalAccount account ) {
 
     Liquidity liquidity = ls.getLowLiquidity();
 
     if ( currentBalance <= liquidity.getThreshold() ) {
-      Account account = ls.findAccount(x_);
       Account fundAccount = liquidity.findPushPullAccount(x_);
       if ( ! ( fundAccount instanceof DigitalAccount ) ) {
         fundAccount = BankAccount.findDefault(x_, account.findOwner(x_), account.getDenomination());
@@ -190,9 +201,8 @@ public class LiquidityService
     ((DAO) x_.get("notificationDAO")).put(notification);
   }
 
-  /*
-  Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
-   */
+  //Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
+
   public void addCICOTransaction(long amount, long source, long destination)
     throws RuntimeException
   {
@@ -211,4 +221,5 @@ public class LiquidityService
       ((DAO) x_.get("notificationDAO")).put(notification);
     }
   }
+
 }

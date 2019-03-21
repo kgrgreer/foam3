@@ -156,6 +156,12 @@ var classes = [
   'net.nanopay.integration.xero.model.XeroContact',
   'net.nanopay.integration.xero.model.XeroInvoice',
 
+  // liquidity
+   'net.nanopay.liquidity.LiquiditySettings',
+   'net.nanopay.liquidity.Liquidity',
+   'net.nanopay.liquidity.LiquidityAuth',
+   'net.nanopay.liquidity.Frequency',
+
   // quick
   'net.nanopay.integration.quick.QuickConfig',
   'net.nanopay.integration.quick.QuickIntegrationService',
@@ -218,15 +224,11 @@ var classes = [
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ExpiryLineItem',
-  'net.nanopay.tx.model.Frequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
   'net.nanopay.tx.model.FeeType',
   'net.nanopay.tx.model.FixedFee',
   'net.nanopay.tx.model.InformationalFee',
-  'net.nanopay.tx.model.LiquiditySettings',
-  'net.nanopay.tx.Liquidity',
-  'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.FeeLineItem',
@@ -485,7 +487,7 @@ var skeletons = [
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.model.LiquidityAuth',
+  'net.nanopay.liquidity.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.invoice.service.InvoicePaymentService',

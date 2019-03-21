@@ -203,14 +203,11 @@ FOAM_FILES([
 
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
-  { name: 'net/nanopay/tx/model/Frequency' },
   { name: 'net/nanopay/tx/model/Fee' },
   { name: 'net/nanopay/tx/model/FeeInterface' },
   { name: 'net/nanopay/tx/model/FeeType' },
   { name: 'net/nanopay/tx/model/FixedFee' },
   { name: 'net/nanopay/tx/model/InformationalFee' },
-  { name: 'net/nanopay/tx/model/LiquiditySettings' },
-  { name: 'net/nanopay/tx/Liquidity' },
   { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
@@ -225,7 +222,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
-  { name: 'net/nanopay/tx/model/LiquidityAuth' },
   { name: 'net/nanopay/tx/PayeeTransactionDAO' },
   { name: 'net/nanopay/tx/AbliiTransaction' },
   { name: 'net/nanopay/tx/InterestTransaction' },
@@ -612,6 +608,14 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
+
+  // liquidity
+   { name: 'net/nanopay/liquidity/LiquiditySettings' },
+   { name: 'net/nanopay/liquidity/Liquidity' },
+   { name: 'net/nanopay/liquidity/LiquidityAuth' },
+   { name: 'net/nanopay/liquidity/Frequency' },
+   { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
+   { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
 
   // partners
   { name: 'net/nanopay/partners/ui/PartnersView', flags: ['web'] },
