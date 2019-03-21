@@ -343,6 +343,17 @@ foam.CLASS({
     /** Chooses a CA or US bank account. */
     function selectBank(bank) {
       this.isCABank = bank === 'CA';
+    },
+
+    function validateBank(bankAccount, countryId) {
+      if ( bankAccount.errors_ ) {
+        this.ctrl.notify(bankAccount.errors_[0][1], 'error');
+        return;
+      }
+      if ( bankAccount.address.countryId === '' ) {
+          bankAccount.address.countryId = countryId;
+      }
+      return bankAccount.address;
     }
   ],
 
@@ -375,18 +386,16 @@ foam.CLASS({
       isEnabled: function(isConnecting) {
         return ! isConnecting;
       },
-      code: async function(X) {
+      code: function(X) {
         // Validate the contact bank account fields.
-        if ( this.isCABank ) {
-          if ( this.caAccount.errors_ ) {
-            this.ctrl.notify(this.caAccount.errors_[0][1], 'error');
-            return;
-          }
-        } else {
-          if ( this.usAccount.errors_ ) {
-            this.ctrl.notify(this.usAccount.errors_[0][1], 'error');
-            return;
-          }
+        var bankAddress = this.isCABank
+          ? this.validateBank(this.caAccount, 'CA')
+          : this.validateBank(this.usAccount, 'US');
+
+        // Validate the contact address fields.
+        if ( bankAddress.errors_ ) {
+          this.ctrl.notify(bankAddress.errors_[0][1], 'error');
+          return;
         }
         X.pushToId('AddContactStepThree');
       }
