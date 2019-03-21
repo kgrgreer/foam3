@@ -4,24 +4,12 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.dao.Sink;
-import foam.mlang.order.Comparator;
-import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import net.nanopay.account.Account;
 import net.nanopay.contacts.Contact;
+import net.nanopay.bank.BankAccountStatus;
 
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
-
-/**
-* ! this class should ONLY have a put override
-* since this decorator is only designed to
-* autoverify bank accounts added as CONTACTS
-*/
-
+// we only need a put_ override in this decorator, since it only deals with the CREATION of contact bank accounts
 public class AbliiContactBankAccountAutoverifyDAO
    extends ProxyDAO
 {
@@ -36,61 +24,39 @@ public class AbliiContactBankAccountAutoverifyDAO
 
  @Override
  public FObject put_(X x, FObject obj) {
-   /**
-    * 1. check if this is an add contact request
-    * 2. the owner must be the contact being added
-    * 3. the created by must be the business that's adding the contact
-    * ! If the above mentioned are all true, then set the bank account to VERIFIED
-    * ! Otherwise just pass through if this is a normal account being added
-    */
-   System.out.println("Hit AbliiContactBankAccountAutoverifyDAO!!!");
-   System.out.println(x);
-   System.out.println(obj);
-   // User user = (User) x.get("user");
-   // Account newAccount = (Account) obj;
-   // AuthService auth = (AuthService) x.get("auth");
-   // DAO userDAO_ = (DAO) x.get("bareUserDAO");
+    /**
+     * In order to check if obj entails a Contact's bank account being added
+     * We will first check if the userId is different from the bankAccountOwnerId
+     * If it is then we can proceed to check if the bankAccountOwner is of type Contact
+     * If the above mentioned checks pass, then we can set the "status" property of obj to VERIFIED
+     * We do this because, we want ablii users to be able to send money to whomever they want so long
+     * as they have their bank account information and email address
+     * NOTE: If someone who has been added as a contact decides to create an ablii account,
+     * this autoverified bank account WILL NOT CARRY OVER to their ablii account, as they will have to still set up an
+     * account and verify it using the micro-deposit even if they are using the same bank information
+     * Contact Bank Accounts are exlusively meant to just RECEIVE money from ablii users
+     */
 
-   // if ( user == null ) {
-   //   throw new AuthenticationException();
-   // }
+   User user = (User) x.get("user");
+   long userId = user.getId();
+   
+   // since the bank account details are included in obj, we can grab the ownerId of the bank account
+   // in the case of a contact bank account, the contact should be the OWNER of the bank account
+   Account bankAccountObj = (Account) obj; 
+   long bankAccountOwnerId = bankAccountObj.getOwner();
 
-   // Account oldAccount = (Account) getDelegate().find_(x, obj);
-   // boolean isUpdate = oldAccount != null;
+   if ( userId != bankAccountOwnerId ) {
 
-   // if ( isUpdate ) {
-   //   boolean ownsAccount = newAccount.getOwner() == user.getId() && oldAccount.getOwner() == user.getId();
+    // grabbing the bankAccountOwner object directly from the userDAO by looking up the bankAccountOwnerId
+    // no need to typecast the bankAccountOwner to User since we just need to check if it is an instanceof Contact
+    DAO userDAO = (DAO) x.get("userDAO");
+    Object bankAccountOwner = userDAO.find(bankAccountOwnerId);
 
-   //   if (
-   //     ! ownsAccount &&
-   //     ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) &&
-   //     ! ownsContactThatOwnsAccount(x, newAccount) &&
-   //     ! ownsContactThatOwnsAccount(x, oldAccount)
-   //   ) {
-   //     throw new AuthorizationException("You do not have permission to update that account.");
-   //   }
-   // } else if (
-   //   newAccount.getOwner() != user.getId() &&
-   //   ! auth.check(x, "account.create") &&
-   //   ! ownsContactThatOwnsAccount(x, newAccount)
-   // ) {
-   //   throw new AuthorizationException("You do not have permission to create an account for another user.");
-   // }
+    if ( bankAccountOwner instanceof Contact ) {
+      obj.setProperty("status", BankAccountStatus.VERIFIED);
+    }
+   }
 
    return super.put_(x, obj);
  }
-
-
- /**
-  * Check if the user in the context owns a contact that owns the given account.
-  * @param x The user context.
-  * @param account The account to check.
-  * @return true if the given account is owned by a contact that the user owns.
-  */
- public boolean ownsContactThatOwnsAccount(X x, Account account) {
-   User user = (User) x.get("user");
-   User owner = account.findOwner(x);
-   return owner instanceof Contact && ((Contact) owner).getOwner() == user.getId();
- }
-
 }
