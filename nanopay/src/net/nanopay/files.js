@@ -807,6 +807,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/refinements' },
   { name: 'net/nanopay/meter/compliance/secureFact/CanadianUserOnboarding' },
   { name: 'net/nanopay/meter/compliance/secureFact/CanadianBusinessOnboarding' },
+  { name: 'net/nanopay/meter/compliance/secureFact/SecurefactCredentials' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniPhone' },

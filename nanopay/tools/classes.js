@@ -470,6 +470,7 @@ var classes = [
   'net.nanopay.meter.compliance.CanadianSanctionValidator',
   'net.nanopay.meter.compliance.secureFact.CanadianUserOnboarding',
   'net.nanopay.meter.compliance.secureFact.CanadianBusinessOnboarding',
+  'net.nanopay.meter.compliance.secureFact.SecurefactCredentials',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniValidator',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniCustomer',
