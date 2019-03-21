@@ -107,9 +107,9 @@ foam.CLASS({
         if ( user != null ) {
           User agent = (User) x.get("agent");
           if (user instanceof Business && agent != null) {
-            return ComplianceStatus.PASSED == user.getCompliance();
+            return ComplianceStatus.PASSED == agent.getCompliance();
           }
-          return user.getCompliance().equals(ComplianceStatus.PASSED);
+          return ComplianceStatus.PASSED == user.getCompliance();
         }
         return true;
       `
