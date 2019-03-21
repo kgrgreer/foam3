@@ -4,10 +4,6 @@ foam.CLASS({
 
   documentation: `The request object for a SIDni validation request.`,
 
-  javaImports: [
-    'foam.lib.json.Outputter'
-  ],
-
   properties: [
     {
       class: 'FObjectProperty',
@@ -43,17 +39,6 @@ foam.CLASS({
       class: 'String',
       name: 'sin',
       documentation: 'Social insurance number. Must be 9 digits'
-    }
-  ],
-  methods: [
-    {
-      name: 'toJSON',
-      type: 'String',
-      javaCode: `
-        Outputter out = new Outputter();
-        out.setOutputClassNames(false);
-        return out.stringify(this);
-      `
     }
   ]
 });

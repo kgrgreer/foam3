@@ -5,6 +5,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.lib.json.JSONParser',
+    'foam.lib.json.Outputter',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
@@ -15,6 +16,7 @@ foam.CLASS({
     'java.util.Base64',
     'java.util.List',
     'java.util.TimeZone',
+    'net.nanopay.meter.compliance.secureFact.SecurefactCredentials',
     'net.nanopay.meter.compliance.secureFact.sidni.model.*',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
@@ -63,22 +65,30 @@ foam.CLASS({
       ],
       type: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
       javaCode: `
-        // key must end with :" 
-        String key = "NTc5MDk0MDc5OTUyNzMxMDYwNzg1NDgxMTQ3OTkwNDI4MDkwMzY4:";
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        SecurefactCredentials credentials = (SecurefactCredentials) x.get("secureFactCredentials");
+        CloseableHttpClient   httpClient = HttpClients.createDefault();
+        HttpPost              httpPost = new HttpPost(credentials.getSidniUrl());
+        HttpResponse          response = null;
 
-        HttpPost httpPost = new HttpPost("https://qa2-sidni.securefact.com/rest/v3/verifyIndividual");
-        httpPost.setHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString(key.getBytes()));
-
-        HttpResponse response = null;
         try {
-          StringEntity entity = new StringEntity(request.toJSON());
+          String basicAuth = credentials.getSidniApiKey() + ":";
+          StringEntity entity = new StringEntity(
+            new Outputter().setOutputClassNames(false).stringify(request));
           entity.setContentType("application/json");
+          httpPost.addHeader("Content-type", "application/json");
+          httpPost.setHeader("Authorization", "Basic " +
+            Base64.getEncoder().encodeToString(basicAuth.getBytes()));
           httpPost.setEntity(entity);
+
           response =  httpClient.execute(httpPost);
-          String responseJson = EntityUtils.toString(response.getEntity());
-          return (SIDniResponse) new JSONParser()
-            .parseString(responseJson, SIDniResponse.class);
+          if ( response.getStatusLine().getStatusCode() >= 500 ) {
+            throw new Exception("Securefact server error.");
+          }
+
+          JSONParser jsonParser = new JSONParser();
+          jsonParser.setX(x);
+          return (SIDniResponse) jsonParser.parseString(
+            EntityUtils.toString(response.getEntity()), SIDniResponse.class);
         } catch(Exception e) {
           StringBuilder sb = new StringBuilder();
           sb.append("Securefact SIDni request service failed.");
