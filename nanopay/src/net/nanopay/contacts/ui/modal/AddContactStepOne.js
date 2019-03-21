@@ -8,7 +8,12 @@ foam.CLASS({
     business name and emails for inviting a contact.
   `,
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
+    'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus'
   ],
 
@@ -180,11 +185,29 @@ foam.CLASS({
     {
       name: 'next',
       label: 'Next',
-      code: function(X) {
+      code: async function(X) {
         // Validate the contact fields.
         if ( this.wizard.data.errors_ ) {
           this.notify(this.wizard.data.errors_[0][1], 'error');
           return;
+        }
+        if ( ! this.isEdit ) {
+          try {
+            var contact = await this.user.contacts.where(
+              this.EQ(this.Contact.EMAIL, this.wizard.data.email)
+            ).select();
+            if ( contact.array.length !== 0 ) {
+              this.ctrl.notify(
+                'Contact with same email address already exists',
+                'warning'
+              );
+              return;
+            }
+          } catch (err) {
+            console
+              .warn('Error when checking the contact email existence: ' + err);
+            return;
+          }
         }
         X.pushToId('AddContactStepTwo');
       }
