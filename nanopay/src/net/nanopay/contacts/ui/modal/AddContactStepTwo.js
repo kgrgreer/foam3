@@ -26,6 +26,8 @@ foam.CLASS({
 
   css: `
     ^{
+      height: 76vh;
+      overflow-y: scroll;
       padding: 24px;
     }
     ^ .check-image {
@@ -285,10 +287,13 @@ foam.CLASS({
                 .start()
                   .addClass('divider')
                 .end()
-                .tag({
-                  class: 'net.nanopay.sme.ui.AddressView',
-                  data: self.caAccount.address
-                })
+                .tag(self.caAccount.ADDRESS.clone().copyFrom({
+                  view: {
+                    class: 'net.nanopay.sme.ui.AddressView',
+                    withoutCountrySelection: true,
+                    defaultCountryId: 'CA'
+                  }
+                }))
               .endContext();
           } else {
             return this.E()
@@ -314,10 +319,13 @@ foam.CLASS({
                 .start()
                   .addClass('divider')
                 .end()
-                .tag({
-                  class: 'net.nanopay.sme.ui.AddressView',
-                  data: self.usAccount.address
-                })
+                .tag(self.usAccount.ADDRESS.clone().copyFrom({
+                  view: {
+                    class: 'net.nanopay.sme.ui.AddressView',
+                    withoutCountrySelection: true,
+                    defaultCountryId: 'US'
+                  }
+                }))
               .endContext();
           }
         }))

@@ -34,12 +34,38 @@ foam.CLASS({
       height: 35px;
       margin-bottom: 10px;
     }
-    ^ .side-by-side {
+    ^ .side-by-side-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
     }
+    ^ .side-by-side-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 16px;
+    }
   `,
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'withoutCountrySelection',
+      value: false,
+      documentation: `
+        If the value of this property is true,
+        then hide country selection dropdown
+      `
+    },
+    {
+      class: 'String',
+      name: 'defaultCountryId',
+      value: false,
+      documentation: `
+        The countryId pass from parent view
+        when the parent view has the default country selection
+      `
+    }
+  ],
 
   messages: [
     { name: 'COUNTRY_LABEL', message: 'Country' },
@@ -56,6 +82,10 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+
+      if ( this.withoutCountrySelection ) {
+        this.data.countryId = this.defaultCountryId;
+      }
 
       // Queried out American states from state/province list that are not supported by AscendantFX
       var choices = this.data$.dot('countryId').map(function(countryId) {
@@ -78,44 +108,52 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start()
-          .addClass('side-by-side')
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.COUNTRY_LABEL).end()
-            .start(this.Address.COUNTRY_ID.clone().copyFrom({
-              view: {
-                class: 'foam.u2.view.ChoiceView',
-                placeholder: '- Please select -',
-                dao: self.countryDAO.where(self.OR(
-                  self.EQ(self.Country.NAME, 'Canada'),
-                  self.EQ(self.Country.NAME, 'USA')
-                )),
-                objToChoice: function(a) {
-                  return [a.id, a.name];
-                },
-                mode$: this.mode$
-              }
-            }))
+        .callIf( ! this.withoutCountrySelection, () => {
+          this.start()
+            .addClass('side-by-side-2')
+            .start().addClass('label-input')
+              .start()
+                .addClass('label')
+                .add(this.COUNTRY_LABEL)
+              .end()
+              .start(this.Address.COUNTRY_ID.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: '- Please select -',
+                  dao: self.countryDAO.where(self.OR(
+                    self.EQ(self.Country.NAME, 'Canada'),
+                    self.EQ(self.Country.NAME, 'USA')
+                  )),
+                  objToChoice: function(a) {
+                    return [a.id, a.name];
+                  },
+                  mode$: this.mode$
+                }
+              }))
+              .end()
             .end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PROVINCE_LABEL).end()
-            .start(this.Address.REGION_ID.clone().copyFrom({
-              view: {
-                class: 'foam.u2.view.ChoiceView',
-                placeholder: '- Please select -',
-                objToChoice: function(region) {
-                  return [region.id, region.name];
-                },
-                dao$: choices,
-                mode$: this.mode$
-              }
-            }))
+            .start().addClass('label-input')
+              .start()
+                .addClass('label')
+                .add(this.PROVINCE_LABEL)
+              .end()
+              .start(this.Address.REGION_ID.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: '- Please select -',
+                  objToChoice: function(region) {
+                    return [region.id, region.name];
+                  },
+                  dao$: choices,
+                  mode$: this.mode$
+                }
+              }))
+              .end()
             .end()
-          .end()
-        .end()
+          .end();
+        })
         .start()
-          .addClass('side-by-side')
+          .addClass('side-by-side-2')
           .start().addClass('label-input')
             .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
             .start(this.Address.STREET_NUMBER, { mode$: this.mode$ })
@@ -137,7 +175,8 @@ foam.CLASS({
           .end()
         .end()
         .start()
-          .addClass('side-by-side')
+          .enableClass('side-by-side-3', this.withoutCountrySelection)
+          .enableClass('side-by-side-2', ! this.withoutCountrySelection)
           .start().addClass('label-input')
             .start().addClass('label').add(this.CITY_LABEL).end()
             .start(this.Address.CITY, { mode$: this.mode$ })
@@ -150,6 +189,27 @@ foam.CLASS({
               .addClass('input-field')
             .end()
           .end()
+          .callIf(this.withoutCountrySelection, function() {
+            this.start()
+              .addClass('label-input')
+              .start()
+                .addClass('label')
+                .add(self.PROVINCE_LABEL)
+              .end()
+              .start(self.Address.REGION_ID.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: '- Please select -',
+                  objToChoice: function(region) {
+                    return [region.id, region.name];
+                  },
+                  dao$: choices,
+                  mode$: self.mode$
+                }
+              }))
+              .end()
+            .end();
+          })
         .end();
     }
   ]
