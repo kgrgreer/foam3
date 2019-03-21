@@ -15,7 +15,9 @@ foam.CLASS({
     'java.util.List',
     'java.util.ArrayList',
     'foam.util.SafetyUtil',
-    'net.nanopay.tx.model.LiquidityService',
+    'net.nanopay.liquidity.LiquidityService',
+    'net.nanopay.liquidity.LiquiditySettings',
+    'net.nanopay.liquidity.Frequency',
     'net.nanopay.account.Account'
 ],
 
@@ -154,8 +156,8 @@ foam.CLASS({
       LiquidityService ls = (LiquidityService) x.get("liquidityService");
       Account source = findSourceAccount(x);
       Account destination = findDestinationAccount(x);
-      ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, -getAmount());
-      ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, getAmount());
+      ls.liquifyAccount(source.getId(), Frequency.PER_TRANSACTION, -getAmount());
+      ls.liquifyAccount(destination.getId(), Frequency.PER_TRANSACTION, getAmount());
       `
     }
   ]

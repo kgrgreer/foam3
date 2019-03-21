@@ -68,6 +68,7 @@ foam.CLASS({
         // Prevent privilege escalation by only allowing a user's group to be
         // set to one that the user doing the put has permission to update.
         boolean hasGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
+
         if ( ! hasGroupUpdatePermission ) {
           throw new AuthorizationException("You do not have permission to set that business's group to '" + this.getGroup() + "'.");
         }
@@ -90,8 +91,12 @@ foam.CLASS({
         User user = (User) x.get("user");
         AuthService auth = (AuthService) x.get("auth");
         boolean isUpdatingSelf = SafetyUtil.equals(this.getId(), user.getId());
+        
+        // to allow update authorization for users with permissions
         boolean hasUserEditPermission = auth.check(x, "business.update." + this.getId());
 
+        // In other words: if the user EITHER is updating themselves, has edit authorization or is changing the system (will be handled below)
+        // then they can PROCEED
         if (
           ! isUpdatingSelf &&
           ! hasUserEditPermission &&
