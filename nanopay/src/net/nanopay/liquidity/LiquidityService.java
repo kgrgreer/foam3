@@ -137,7 +137,7 @@ public class LiquidityService
         return;
       }
 
-      if ( liquidity.getEnableNotification() && txnAmount >= 0 && currentBalance - txnAmount <= liquidity.getThreshold()) {
+      if ( txnAmount >= 0 && currentBalance - txnAmount <= liquidity.getThreshold() ) {
         //send notification when limit went over
         notifyUser(account, true, ls.getHighLiquidity().getThreshold());
       }
@@ -164,7 +164,7 @@ public class LiquidityService
         ((DAO) x_.get("notificationDAO")).put(notification);
         return;
       }
-      if ( liquidity.getEnableNotification() && txnAmount <= 0 && currentBalance - txnAmount >= liquidity.getThreshold()) {
+      if ( txnAmount <= 0 && currentBalance - txnAmount >= liquidity.getThreshold() ) {
         //send notification when limit went over
         notifyUser(account, false, ls.getLowLiquidity().getThreshold());
       }
@@ -175,7 +175,7 @@ public class LiquidityService
 
   }
 
-  public void notifyUser(Account account, boolean above, long threshold) {
+  public void notifyUser( Account account, boolean above, long threshold ) {
     Notification notification = new Notification();
     notification.setEmailName("liquidityNotification");
     HashMap<String, Object> args = new HashMap<>();
