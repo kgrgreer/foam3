@@ -134,11 +134,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      Map hm = getHm();
       TransactionLimitRule txRule = (TransactionLimitRule) rule;
-      if ( getLimit() != rule.getLimit() ) {
-        Double delta = getLimit() - rule.getLimit();
+      if ( getLimit() != txRule.getLimit() ) {
+        Double delta = getLimit() - txRule.getLimit();
         for ( Object key : hm.keySet() ) {
-          TransactionLimitState state = (TransactionLimitState)hm.get(key);
+          TransactionLimitState state = (TransactionLimitState) hm.get(key);
         }
       }
       txRule.setHm(getHm());
