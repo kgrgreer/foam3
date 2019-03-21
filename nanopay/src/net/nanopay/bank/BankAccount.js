@@ -76,6 +76,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
+      permissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
         var colour = '#545d87';
