@@ -11,7 +11,7 @@ public class KotakEncryption {
 
   public static String encrypt(String message, String key) throws GeneralSecurityException {
 
-    if(message == null || key == null){
+    if( message == null || key == null ){
       throw new IllegalArgumentException("text to be encrypted and key should not be null");
     }
 
@@ -36,7 +36,7 @@ public class KotakEncryption {
   }
 
   public static String decrypt(String encryptedStr, String key) throws GeneralSecurityException {
-    if(encryptedStr == null || key == null){
+    if( encryptedStr == null || key == null ){
       throw new IllegalArgumentException("text to be decrypted and key should not be null");
     }
 

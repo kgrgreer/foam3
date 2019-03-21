@@ -1,34 +1,186 @@
 package net.nanopay.kotak;
 
+import com.google.api.client.auth.oauth2.ClientCredentialsTokenRequest;
+import com.google.api.client.auth.oauth2.TokenResponse;
+import com.google.api.client.auth.oauth2.TokenResponseException;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import foam.core.*;
+import foam.lib.json.OutputterMode;
 import foam.nanos.logger.Logger;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
 import net.nanopay.kotak.model.reversal.Reversal;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.soap.*;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class KotakService
-  extends ContextAwareSupport
-  implements Kotak
-{
+import static org.apache.xml.serialize.OutputFormat.Defaults.Encoding;
+
+public class KotakService extends ContextAwareSupport implements Kotak {
   protected final String host;
   protected Logger logger = (Logger) getX().get("logger");
+
+  public final String clientId = "l7xx9aff4c89f1fb4b26b8bf1d9961479558";
+  public final String clientSecret = "25dd555a98e24a0ba0a5a94aa37d1555";
+  public final String accessTokenUrl="https://apigwuat.kotak.com:8443/auth/oauth/v2/token";
+  public final String key = "f21b637173f39e3059464da061a57f46";
+  public final String paymentUrl = "https://apigwuat.kotak.com:8443/LastMileEnc/pay";
+  public final String reversaltUrl = "https://apigwuat.kotak.com:8443/LastMileEnc/rev";
+
+  public KotakService(X x) {
+    setX(x);
+    this.host = null;
+  }
 
   public KotakService(X x, String host) {
     setX(x);
     this.host = host;
   }
 
+
+  public String getAccessToken() {
+    String token = null;
+    try {
+      TokenResponse response = new ClientCredentialsTokenRequest(new NetHttpTransport(), new JacksonFactory(),
+        new GenericUrl(accessTokenUrl))
+        .set("client_id", clientId)
+        .set("client_secret", clientSecret)
+        .execute();
+
+      token = response.getAccessToken();
+
+      System.out.println("Access token: " + token);
+    } catch (TokenResponseException e) {
+      if (e.getDetails() != null) {
+        System.err.println("Error: " + e.getDetails().getError());
+        if (e.getDetails().getErrorDescription() != null) {
+          System.err.println(e.getDetails().getErrorDescription());
+        }
+        if (e.getDetails().getErrorUri() != null) {
+          System.err.println(e.getDetails().getErrorUri());
+        }
+      } else {
+        System.err.println(e.getMessage());
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return token;
+  }
+
   @Override
   public AcknowledgementType submitPayment(FObject request) {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    String token = getAccessToken();
+
+    HttpPost post = new HttpPost(paymentUrl);
+    post.addHeader("Authorization", "Bearer " + token);
+
+    KotakXMLOutputter xmlOutputter = new KotakXMLOutputter(OutputterMode.NETWORK);
+    xmlOutputter.output(request);
+
+    String xmlData = xmlOutputter.toString();
+    System.out.println("xml: " + xmlData);
+
+    String response;
+    try {
+      String encryptedData = KotakEncryption.encrypt(xmlData, key);
+      System.out.println("encryptedData: " + encryptedData);
+
+      post.setEntity(new StringEntity(encryptedData, Encoding));
+
+      CloseableHttpResponse httpResponse = httpClient.execute(post);
+
+      try {
+        BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ( (line = rd.readLine()) != null ) {
+          sb.append(line);
+        }
+        response = sb.toString();
+
+        System.out.println("payment response: " + response);
+      } finally {
+        httpResponse.close();
+      }
+    } catch (IOException | GeneralSecurityException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        httpClient.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return null;
+  }
+
+  @Override
+  public Reversal submitReversal(Reversal request) {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    String token = getAccessToken();
+
+    HttpPost post = new HttpPost(reversaltUrl);
+    post.addHeader("Authorization", "Bearer " + token);
+
+    KotakXMLOutputter xmlOutputter = new KotakXMLOutputter(OutputterMode.NETWORK);
+    xmlOutputter.output(request);
+
+    String xmlData = xmlOutputter.toString();
+    System.out.println("xml: " + xmlData);
+
+    String response;
+    try {
+      String encryptedData = KotakEncryption.encrypt(xmlData, key);
+      System.out.println("encryptedData: " + encryptedData);
+
+      post.setEntity(new StringEntity(encryptedData, Encoding));
+
+      CloseableHttpResponse httpResponse = httpClient.execute(post);
+
+      try {
+        BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ( (line = rd.readLine()) != null ) {
+          sb.append(line);
+        }
+        response = sb.toString();
+
+        System.out.println("reversal response: " + response);
+      } finally {
+        httpResponse.close();
+      }
+    } catch (IOException | GeneralSecurityException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        httpClient.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return null;
+  }
+
+  @Override
+  public AcknowledgementType submitSOAPPayment(FObject request) {
     // initialize soap message
     SOAPMessage message = createPaymentSOAPMessage(request);
 
@@ -54,7 +206,7 @@ public class KotakService
 
 
   @Override
-  public Reversal submitReversal(Reversal request) {
+  public Reversal submitSOAPReversal(Reversal request) {
     // initialize soap message
     SOAPMessage message = createReversalSOAPMessage(request);
 
