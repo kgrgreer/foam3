@@ -25,7 +25,7 @@ foam.CLASS({
     'javax.security.auth.AuthPermission',
     'net.nanopay.meter.Blacklist',
     'net.nanopay.meter.BlacklistEntityType',
-    'net.nanopay.meter.compliance.NanopayComplianceService'
+    'net.nanopay.meter.compliance.ComplianceService'
   ],
 
   methods: [
@@ -41,7 +41,7 @@ foam.CLASS({
       name: 'check',
       type: 'Boolean',
       javaCode: `
-        NanopayComplianceService complianceService = (NanopayComplianceService) getComplianceService();
+        ComplianceService complianceService = (ComplianceService) getComplianceService();
         Permission permission_ = new AuthPermission(permission);
     
         if ( ! complianceService.checkUserCompliance(x) ) {

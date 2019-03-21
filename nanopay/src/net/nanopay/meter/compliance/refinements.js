@@ -3,11 +3,11 @@ foam.CLASS({
   name: 'UserComplianceRefine',
   refines: 'foam.nanos.auth.User',
 
-   implements: [
+  implements: [
     'net.nanopay.meter.compliance.ComplianceAware'
   ],
 
-   properties: [
+  properties: [
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
@@ -26,11 +26,11 @@ foam.CLASS({
   name: 'AccountComplianceRefine',
   refines: 'net.nanopay.bank.BankAccount',
 
-   implements: [
+  implements: [
     'net.nanopay.meter.compliance.ComplianceAware'
   ],
 
-   properties: [
+  properties: [
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
