@@ -17,7 +17,7 @@ import net.nanopay.tx.Transfer;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.alterna.AlternaVerificationTransaction;
-import net.nanopay.tx.model.LiquiditySettings;
+import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 

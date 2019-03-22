@@ -49,13 +49,6 @@ foam.CLASS({
         throw new RuntimeException("An invoice for this transaction was not provided.");
       }
 
-      if ( oldTxn == null ) {
-        Transaction nxtTx = tx.getNext();
-        while(nxtTx != null) {
-          nxtTx.setInvoiceId(tx.getInvoiceId());
-          nxtTx = nxtTx.getNext();
-        }
-      }
       return tx;
     `
     }
