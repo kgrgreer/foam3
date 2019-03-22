@@ -40,13 +40,14 @@ foam.CLASS({
       margin-top: 16px;
     }
     ^invite-explaination {
-      color: #525455;
-      font-size: 10px;
-      margin-top: 8px;
+      color: #2b2b2b;
+      font-size: 12px;
+      margin-top: 16px;
     }
 
     /* Customized checkbox */
     .foam-u2-CheckBox-label {
+      color: #2b2b2b !important;
       margin-left: 8px !important;
     }
     .foam-u2-CheckBox {
@@ -61,7 +62,7 @@ foam.CLASS({
     { name: 'BUSINESS_LABEL', message: 'Business name' },
     { name: 'BUSINESS_PLACEHOLDER', message: 'Enter business name' },
     { name: 'EMAIL_PLACEHOLDER', message: 'example@domain.com' },
-    { name: 'INVITE_EXPLAINATION', message: `By checking this box, I acknowledge that I have permission to contact them about Ablii` },
+    { name: 'INVITE_EXPLAINATION', message: `You confirm you have a business relationship with this contact and acknowledge that notifications for the Ablii service will be sent to the email address provided above.` },
     { name: 'STEP_INDICATOR', message: 'Step 1 of 3' }
   ],
 
@@ -145,7 +146,6 @@ foam.CLASS({
             .hide(this.isEdit)
             .start()
               .addClass(this.myClass('invite'))
-              .addClass('check-box-container')
               .add(this.wizard.SHOULD_INVITE)
             .end()
             .start()
