@@ -45,38 +45,22 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     if ( transaction.getInvoiceId() != 0 ) {
       DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
       TransactionStatus status = transaction.getState(getX());
-      if ( SafetyUtil.isEmpty(invoice.getPaymentId()) && SafetyUtil.isEmpty(transaction.getParent()) ) {
+
+      if ( ! SafetyUtil.isEmpty(transaction.getParent()) ) {
+        return ret;
+      }
+
+      if ( SafetyUtil.isEmpty(invoice.getPaymentId()) ) {
         invoice.setPaymentId(transaction.getId());
         invoiceDAO.put(invoice);
       }
-      if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) &&
-          sourceAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() && ! ( transaction instanceof AscendantFXTransaction )) {
-        // User accepting a payment that was sent to a Contact or User with no BankAccount.
-        invoice.setPaymentMethod(PaymentStatus.DEPOSIT_MONEY);
-        invoiceDAO.put(invoice);
-      } else if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) &&
-          destinationAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() &&
-          destinationAccount.getOwner() == invoice.getPayerId()) {
-        // Existing user sending money to a contact or user with no BankAccount.
-        invoice.setPaymentDate(transaction.getLastModified());
-        invoice.setPaymentMethod(PaymentStatus.TRANSIT_PAYMENT);
-        invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.COMPLETED && destinationAccount instanceof DigitalAccount &&
-          sourceAccount.getOwner() == invoice.getPayerId() && destinationAccount.getOwner() == invoice.getPayerId()) {
-        // Existing user sending money to a contact or user with no BankAccount.
-        invoice.setPaymentDate(transaction.getLastModified());
-        invoice.setPaymentMethod(PaymentStatus.DEPOSIT_PAYMENT);
-        invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.SENT  && transaction instanceof AscendantFXTransaction) {
-        invoice.setPaymentDate(transaction.getCompletionDate());
-        invoice.setPaymentMethod(PaymentStatus.TRANSIT_PAYMENT);
-        invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.COMPLETED ) {
+
+      if ( status == TransactionStatus.COMPLETED ) {
         Calendar curDate = Calendar.getInstance();
         invoice.setPaymentDate(curDate.getTime());
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
         invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.PENDING ) {
+      } else if ( status == TransactionStatus.PENDING_PARENT_COMPLETED ) {
         invoice.setPaymentDate(generateEstimatedCreditDate());
         invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoiceDAO.put(invoice);
