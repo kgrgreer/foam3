@@ -4,30 +4,34 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'validate',
+      name: 'checkUserCompliance',
       args: [
         {
           name: 'x',
           type: 'Context'
-        },
-        {
-          name: 'entity',
-          type: 'foam.core.FObject'
         }
-      ]
+      ],
+      type: 'Boolean'
     },
     {
-      name: 'execute',
+      name: 'checkBusinessCompliance',
       args: [
         {
           name: 'x',
           type: 'Context'
-        },
-        {
-          name: 'record',
-          javaType: 'net.nanopay.meter.compliance.ComplianceHistory'
         }
-      ]
+      ],
+      type: 'Boolean'
+    },
+    {
+      name: 'checkAccountCompliance',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'Boolean'
     }
   ]
 });
