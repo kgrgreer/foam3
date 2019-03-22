@@ -66,7 +66,6 @@ import static foam.mlang.MLang.*;
       if ( id <= 0 ) {
         logger.warning("Error generating settlementReport - business/user Id invalid.");
       }
-
       try {
         long sT = Long.parseLong(req.getParameter("startDate"));
         long eT = Long.parseLong(req.getParameter("endDate"));
@@ -76,13 +75,9 @@ import static foam.mlang.MLang.*;
         startDate.setTimeInMillis(sT);
         endDate.setTimeInMillis(eT);
         dated = true;
-      } catch ( NumberFormatException e ) { 
+      } catch ( Exception e ) { 
         // Integer.parseInt throws java.lang.NumberFormatException
         logger.warning("Error generating settlementReport - passed in date filter error: ", e); 
-        dated = false;
-      } catch (Exception ee) {
-        // Felt in case - we should be doing a catch all
-        logger.warning("Error generating settlementReport - passed in date filter error: ", ee);
         dated = false;
       }
 
