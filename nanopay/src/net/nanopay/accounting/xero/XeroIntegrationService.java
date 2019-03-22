@@ -156,8 +156,12 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     newContact.setEmail(xeroContact.getEmailAddress());
     newContact.setOrganization(xeroContact.getName());
     newContact.setBusinessName(xeroContact.getName());
-    newContact.setFirstName(xeroContact.getFirstName());
-    newContact.setLastName(xeroContact.getLastName());
+    if ( xeroContact.getFirstName() != null ) {
+      newContact.setFirstName(xeroContact.getFirstName());
+    }
+    if ( xeroContact.getLastName() != null ) {
+      newContact.setLastName(xeroContact.getLastName());
+    }
     newContact.setOwner(user.getId());
     newContact.setGroup("sme");
     newContact.setXeroOrganizationId(token.getOrganizationId());

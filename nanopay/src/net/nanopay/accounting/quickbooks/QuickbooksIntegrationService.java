@@ -518,8 +518,12 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         .build();
 
       newContact.setOrganization(importContact.getCompanyName());
-      newContact.setFirstName(importContact.getGivenName());
-      newContact.setLastName(importContact.getFamilyName());
+      if ( importContact.getGivenName() != null ) {
+        newContact.setFirstName(importContact.getGivenName());
+      }
+      if ( importContact.getGivenName() != null ) {
+        newContact.setLastName(importContact.getFamilyName());
+      }
       newContact.setBusinessPhone(businessPhone);
       newContact.setMobile(mobilePhone);
     }
