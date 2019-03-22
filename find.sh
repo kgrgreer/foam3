@@ -31,6 +31,7 @@ declare -a arr=(
   "accounts"
   "ascendantfxusers"
   "ascendantUserPayeeJunctions"
+  "blacklists"
   "branches"
   "brokers"
   "businessSectors"

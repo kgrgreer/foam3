@@ -140,8 +140,9 @@ foam.CLASS({
       margin-right: 2px;
     }
     ^ .add-banking-information {
-      float: right;
       color: #6a39ff;
+      cursor: pointer;
+      float: right;
       margin-left: 30px;
       text-decoration: underline;
     }
@@ -281,8 +282,8 @@ foam.CLASS({
               action: this.ADD_CONTACT
             })
               .enableClass('invalid', this.slot(
-                function(isInvalid, type) {
-                  return isInvalid && type === 'payable';
+                function(isInvalid, type, showAddBank) {
+                  return isInvalid && type === 'payable' && showAddBank;
                 }))
             .end()
           .endContext()
@@ -313,8 +314,8 @@ foam.CLASS({
             .start().addClass('input-label').add('Amount').end()
               .startContext({ data: this })
                 .start(this.CURRENCY_TYPE).enableClass('error-box-outline', this.slot(
-                  function(isInvalid, type) {
-                    return isInvalid && type === 'payable';
+                  function(isInvalid, type, showAddBank) {
+                    return isInvalid && type === 'payable' && ! showAddBank;
                   }))
                   .on('click', () => {
                     this.invoice.destinationCurrency
@@ -324,13 +325,16 @@ foam.CLASS({
               .endContext()
               .start().addClass('invoice-amount-input')
                 .start(this.Invoice.AMOUNT).enableClass('error-box', this.slot(
-                  function(isInvalid, type) {
-                    return isInvalid && type === 'payable';
+                  function(isInvalid, type, showAddBank) {
+                    return isInvalid && type === 'payable' && ! showAddBank;
                   }))
                   .addClass('invoice-input-box')
                 .end()
               .end()
-              .start().show(this.isInvalid$)
+              .start().show(this.slot(
+                function(isInvalid, showAddBank) {
+                  return isInvalid && ! showAddBank;
+                }))
                 .start().show(this.type === 'payable').addClass('validation-failure-container')
                   .start('img')
                     .addClass('small-error-icon')
@@ -403,17 +407,17 @@ foam.CLASS({
         .endContext()
       .end();
     },
+
     function checkBankAccount() {
       var self = this;
       this.userDAO.find(this.invoice.contactId).then(function(contact) {
         if ( contact && contact.businessId ) {
           self.showAddBank = false;
-          return;
         } else if ( contact && contact.bankAccount ) {
           self.showAddBank = false;
-          return;
+        } else {
+          self.showAddBank = self.type === 'payable';
         }
-        self.showAddBank = self.type === 'payable';
       });
     }
   ],

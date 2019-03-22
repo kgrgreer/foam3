@@ -9,7 +9,6 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
-    'bankIntegrationsDAO',
     'pushMenu',
     'quickbooksService',
     'user',

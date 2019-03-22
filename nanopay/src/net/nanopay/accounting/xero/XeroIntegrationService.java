@@ -29,8 +29,7 @@ import net.nanopay.model.Currency;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.*;
 
 public class XeroIntegrationService implements net.nanopay.accounting.IntegrationService{
 
@@ -44,7 +43,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     DAO configDAO = ((DAO) x.get("xeroConfigDAO")).inX(x);
     XeroConfig config = (XeroConfig)configDAO.find(app.getUrl());
     XeroClient client = new XeroClient(config);
-    if ( token == null || token.getToken().equals("") ) {
+    if ( token == null || token.getToken().equals("") || ! (user.getIntegrationCode() == IntegrationCode.XERO)) {
       return null;
     }
     client.setOAuthToken(token.getToken(), token.getTokenSecret());
@@ -72,12 +71,6 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) ) {
       error += "Missing Email Address.";
     }
-    if ( SafetyUtil.isEmpty(xeroContact.getFirstName()) ) {
-      error += " Missing First Name.";
-    }
-    if ( SafetyUtil.isEmpty(xeroContact.getLastName()) ) {
-      error += " Missing Last Name.";
-    }
     if ( SafetyUtil.isEmpty(xeroContact.getName()) ) {
       error += " Missing Contact Name.";
     }
@@ -85,6 +78,8 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
   private XeroContact importXeroContact(X x,com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
     XeroContact newContact;
     if ( existingContact != null ) {
       newContact = existingContact;
@@ -161,10 +156,15 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     newContact.setEmail(xeroContact.getEmailAddress());
     newContact.setOrganization(xeroContact.getName());
     newContact.setBusinessName(xeroContact.getName());
-    newContact.setFirstName(xeroContact.getFirstName());
-    newContact.setLastName(xeroContact.getLastName());
+    if ( xeroContact.getFirstName() != null ) {
+      newContact.setFirstName(xeroContact.getFirstName());
+    }
+    if ( xeroContact.getLastName() != null ) {
+      newContact.setLastName(xeroContact.getLastName());
+    }
     newContact.setOwner(user.getId());
     newContact.setGroup("sme");
+    newContact.setXeroOrganizationId(token.getOrganizationId());
 
     return newContact;
   }
@@ -254,10 +254,12 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     List<String> contactErrors = new ArrayList<>();
     List<String> contactSuccess = new ArrayList<>();
 
-    ResultResponse isSignedIn = isSignedIn(x);
-    if ( ! isSignedIn.getResult() ) {
-      System.out.print("not signed in");
-      return isSignedIn;
+    if ( client == null ) {
+      return new ResultResponse.Builder(x)
+        .setResult(false)
+        .setReason("User not signed in")
+        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+        .build();
     }
 
     try {
@@ -307,12 +309,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   private String syncInvoice(X x, com.xero.model.Invoice xeroInvoice) throws Exception {
     DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
     DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
-
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     Contact contact;
     XeroInvoice updateInvoice;
     User user = (User) x.get("user");
-    XeroClient client = this.getClient(x);
 
     XeroInvoice existingInvoice;
 
@@ -327,6 +327,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       // Clone the invoice to make changes
       existingInvoice = (XeroInvoice) existingInvoice.fclone();
 
+      //skip desync invoices as they have been paid already
+      if ( existingInvoice.getDesync() ){
+        return "skip";
+      }
       // Only update invoices that are unpaid or drafts.
       if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != existingInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.DRAFT != existingInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.OVERDUE != existingInvoice.getStatus()) {
         // Skip processing this invoice.
@@ -387,12 +391,14 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
   public XeroInvoice importInvoice(X x,com.xero.model.Invoice xeroInvoice, Contact contact, XeroInvoice newInvoice) {
+    User user = (User) x.get("user");
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
     DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
     DAO fileDAO = ((DAO) x.get("fileDAO")).inX(x);
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     BlobService blobStore  = (BlobService) x.get("blobStore");
-    User user = (User) x.get("user");
-    XeroClient client = getClient(x);
+//    XeroClient client = getClient(x);
 
     newInvoice.setDestinationCurrency(xeroInvoice.getCurrencyCode().value());
     Currency currency = (Currency) currencyDAO.find(xeroInvoice.getCurrencyCode().value());
@@ -418,55 +424,56 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     newInvoice.setDueDate(xeroInvoice.getDueDate().getTime());
     newInvoice.setDesync(false);
     newInvoice.setCreatedBy(user.getId());
+    newInvoice.setXeroOrganizationId(token.getOrganizationId());
 
-    // get invoice attachments
-    if ( ! xeroInvoice.isHasAttachments() ) {
-      invoiceDAO.put(newInvoice);
-      return newInvoice;
-    }
+//    // get invoice attachments
+//    if ( ! xeroInvoice.isHasAttachments() ) {
+//      invoiceDAO.put(newInvoice);
+//      return newInvoice;
+//    }
 
     // try to get attachments
-    List<Attachment> attachments;
-    try {
-      attachments = client.getAttachments("Invoices", xeroInvoice.getInvoiceID());
-    } catch ( Throwable ignored ) {
-      invoiceDAO.put(newInvoice);
-      return newInvoice;
-    }
-
-    // return invoice if attachments is null or size is 0
-    if ( attachments == null || attachments.size() == 0 ) {
-      invoiceDAO.put(newInvoice);
-      return newInvoice;
-    }
-
-    // iterate through all attachments
-    File[] files = new File[attachments.size()];
-    for ( int i = 0; i < attachments.size(); i++ ) {
-      try {
-        Attachment attachment = attachments.get(i);
-        long filesize = attachment.getContentLength().longValue();
-
-        // get attachment content and create blob
-        java.io.ByteArrayInputStream bais = client.getAttachmentContent("Invoices",
-          xeroInvoice.getInvoiceID(), attachment.getFileName(), null);
-        foam.blob.Blob data = blobStore.put_(x, new foam.blob.InputStreamBlob(bais, filesize));
-
-        // create file
-        files[i] = new File.Builder(x)
-          .setId(attachment.getAttachmentID())
-          .setOwner(user.getId())
-          .setMimeType(attachment.getMimeType())
-          .setFilename(attachment.getFileName())
-          .setFilesize(filesize)
-          .setData(data)
-          .build();
-        fileDAO.inX(x).put(files[i]);
-      } catch ( Throwable ignored ) { }
-    }
-
-    // set files on nano invoice
-    newInvoice.setInvoiceFile(files);
+//    List<Attachment> attachments;
+//    try {
+//      attachments = client.getAttachments("Invoices", xeroInvoice.getInvoiceID());
+//    } catch ( Throwable ignored ) {
+//      invoiceDAO.put(newInvoice);
+//      return newInvoice;
+//    }
+//
+//    // return invoice if attachments is null or size is 0
+//    if ( attachments == null || attachments.size() == 0 ) {
+//      invoiceDAO.put(newInvoice);
+//      return newInvoice;
+//    }
+//
+//    // iterate through all attachments
+//    File[] files = new File[attachments.size()];
+//    for ( int i = 0; i < attachments.size(); i++ ) {
+//      try {
+//        Attachment attachment = attachments.get(i);
+//        long filesize = attachment.getContentLength().longValue();
+//
+//        // get attachment content and create blob
+//        java.io.ByteArrayInputStream bais = client.getAttachmentContent("Invoices",
+//          xeroInvoice.getInvoiceID(), attachment.getFileName(), null);
+//        foam.blob.Blob data = blobStore.put_(x, new foam.blob.InputStreamBlob(bais, filesize));
+//
+//        // create file
+//        files[i] = new File.Builder(x)
+//          .setId(attachment.getAttachmentID())
+//          .setOwner(user.getId())
+//          .setMimeType(attachment.getMimeType())
+//          .setFilename(attachment.getFileName())
+//          .setFilesize(filesize)
+//          .setData(data)
+//          .build();
+//        fileDAO.inX(x).put(files[i]);
+//      } catch ( Throwable ignored ) { }
+//    }
+//
+//    // set files on nano invoice
+//    newInvoice.setInvoiceFile(files);
     invoiceDAO.put(newInvoice);
     return  newInvoice;
   }
@@ -481,10 +488,12 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     List<String> successInvoice = new ArrayList<>();
 
     // Check that user has accessed xero before
-    ResultResponse isSignedIn = isSignedIn(x);
-    if ( ! isSignedIn.getResult() ) {
-      System.out.print("not signed in");
-      return isSignedIn;
+    if ( client == null ) {
+      return new ResultResponse.Builder(x)
+        .setResult(false)
+        .setReason("User not signed in")
+        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+        .build();
     }
 
     try {
@@ -511,7 +520,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         }
       }
 
-      reSyncInvoice(x,null);
+      invoiceResync(x,null);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -526,13 +535,21 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
   @Override
-  public ResultResponse reSyncInvoice(X x, Invoice invoice) {
+  public ResultResponse invoiceResync(X x, Invoice invoice) {
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     Logger logger = (Logger) x.get("logger");
     List<Payment> paymentList = new ArrayList<>();
     List<XeroInvoice> invoiceList = new ArrayList<>();
     XeroClient client = getClient(x);
     User user = (User) x.get("user");
+
+    if ( client == null ) {
+      return new ResultResponse.Builder(x)
+        .setResult(false)
+        .setReason("User not signed in")
+        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+        .build();
+    }
 
     if ( invoice != null ) {
       XeroInvoice nanoInvoice =  (XeroInvoice) invoice;
@@ -609,6 +626,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
           List<Elements> elements = ((com.xero.api.XeroApiException) e).getApiException().getElements();
           List<String> result = new ArrayList<>();
 
+          // set desync false for one the synced successfully
           for ( Elements element: elements ) {
             for (Object o : element.getDataContractBase() ) {
               if ( o instanceof Payment ) {
@@ -753,7 +771,9 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     User user = (User) x.get("user");
     DAO userDAO = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    DAO accountDAO = (DAO) x.get("accountDAO");
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    ArraySink sink = new ArraySink();
     if ( token == null ) {
       return new ResultResponse.Builder(x)
         .setResult(false)
@@ -765,6 +785,19 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     user = (User) user.fclone();
     user.clearIntegrationCode();
     userDAO.put(user);
+
+    //remove bank accounts
+    accountDAO.where(AND(
+      EQ(BankAccount.OWNER, user.getId()),
+      NEQ(BankAccount.INTEGRATION_ID, "")
+    )).select(sink);
+    List<BankAccount> bankAccountList = sink.getArray();
+
+    for ( BankAccount account: bankAccountList ) {
+      account.setIntegrationId("");
+      accountDAO.put(account.fclone());
+    }
+
     return new ResultResponse.Builder(x)
       .setResult(true)
       .setReason("User has been Signed out of Xero")
@@ -773,15 +806,23 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
 
 
   @Override
-  public List<AccountingBankAccount> pullBanks(X x) {
+  public ResultResponse bankAccountSync(X x) {
+    User user = (User) x.get("user");
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
     List<AccountingBankAccount> banksList = new ArrayList<>();
+    DAO accountingBankDAO = (DAO) x.get("accountingBankAccountCacheDAO");
     Logger logger = (Logger) x.get("logger");
     XeroClient client = getClient(x);
 
     try {
       // Check that user has accessed xero before
       if ( client == null ) {
-        throw new Exception("User is not synced with Xero");
+        return new ResultResponse.Builder(x)
+          .setResult(false)
+          .setReason("User is not connected to xero")
+          .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+          .build();
       }
 
       for ( com.xero.model.Account xeroAccount :  client.getAccounts() ) {
@@ -789,19 +830,87 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         if ( com.xero.model.AccountType.BANK != xeroAccount.getType() ) {
           continue;
         }
-        xeroBankAccounts.setAccountingName("XERO");
-        xeroBankAccounts.setAccountingId(xeroAccount.getAccountID());
+        xeroBankAccounts.setXeroOrganizationId(token.getOrganizationId());
+        xeroBankAccounts.setXeroBankAccountId(xeroAccount.getAccountID());
         xeroBankAccounts.setName(xeroAccount.getName());
         xeroBankAccounts.setCurrencyCode(xeroAccount.getCurrencyCode().value());
         banksList.add(xeroBankAccounts);
+        accountingBankDAO.put(xeroBankAccounts);
       }
-      return banksList;
-    } catch ( Throwable e ) {
+      return new ResultResponse.Builder(x)
+        .setResult(true)
+        .setBankAccountList(banksList.toArray(new AccountingBankAccount[banksList.size()]))
+        .build();
+    } catch ( Exception e ) {
       e.printStackTrace();
       logger.error(e);
-      return banksList;
+      ResultResponse response = getExceptionResponse(x,e);
+      ArraySink sink = new ArraySink();
+      accountingBankDAO.where(
+        EQ(AccountingBankAccount.XERO_ORGANIZATION_ID, token.getOrganizationId())
+      ).select(sink);
+      banksList = sink.getArray();
+      response.setBankAccountList(banksList.toArray(new AccountingBankAccount[banksList.size()]));
+      return response;
     }
   }
+
+  public ResultResponse singleSync(X x, Invoice nanoInvoice) {
+    User user = (User) x.get("user");
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+    XeroInvoice invoice = (XeroInvoice) nanoInvoice;
+    XeroClient client = getClient(x);
+    Logger logger = (Logger) x.get("logger");
+    DAO contactDAO  = ((DAO) x.get("contactDAO")).inX(x);
+    DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
+    ContactMismatchPair[] contactMismatchPair = new ContactMismatchPair[1];
+    String[] result = new String[1];
+    String error = "";
+    if ( !  invoice.getXeroOrganizationId().equals(token.getOrganizationId()) ) {
+      return new ResultResponse.Builder(x)
+        .setResult(false)
+        .setReason(" Not signed into the Xero organization this invoice belongs to.")
+        .build();
+    }
+    try {
+      Contact contact = (Contact) contactDAO.find(invoice.getContactId());
+      AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.find(AND(
+        EQ(AccountingContactEmailCache.EMAIL, contact.getEmail()),
+        NEQ(AccountingContactEmailCache.XERO_ID, "")
+      ));
+      if ( cache == null ) {
+        return new ResultResponse.Builder(x)
+          .setResult(false)
+          .setReason("Could not find contact")
+          .build();
+      }
+      com.xero.model.Contact xeroContact = client.getContact(cache.getXeroId());
+      contactMismatchPair[0] = syncContact(x, xeroContact);
+      if ( contactMismatchPair[0].getResultCode() == ContactMismatchCode.SUCCESS ) {
+        com.xero.model.Invoice xeroInvoice = client.getInvoice(invoice.getXeroId());
+        result[0] = syncInvoice(x, xeroInvoice);
+        if ( result[0].equals("") ) {
+          return new ResultResponse.Builder(x)
+            .setResult(true)
+            .build();
+        }
+        error = " Invoice has failed to sync, :" + result;
+      } else {
+        error = " Contact has failed to sync, error code: " + contactMismatchPair[0].getResultCode();
+      }
+      return new ResultResponse.Builder(x)
+        .setResult(false)
+        .setReason(error)
+        .setContactSyncMismatches(contactMismatchPair)
+        .setInvoiceSyncErrors(result)
+        .build();
+    } catch (Exception e){
+      logger.error(e);
+      return getExceptionResponse(x,e);
+    }
+  }
+
 }
 
 class PaymentResponse {

@@ -32,6 +32,7 @@ import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
 
+import javax.xml.transform.Result;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.NEQ;
 
 public class QuickbooksIntegrationService extends ContextAwareSupport
   implements IntegrationService, NanoService {
@@ -67,8 +69,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     User              user         = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
-    if ( token == null ) {
-      return new ResultResponse.Builder(x).setResult(false).build();
+    if ( token == null  || ! (user.getIntegrationCode() == IntegrationCode.QUICKBOOKS)) {
+      return new ResultResponse.Builder(x).setResult(false).setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN).build();
     }
 
     return new ResultResponse.Builder(x).setResult(true).build();
@@ -166,9 +168,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse removeToken(X x) {
     User              user         = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-
+    DAO accountDAO = (DAO) x.get("accountDAO");
+    ArraySink sink = new ArraySink();
     if ( token == null ) {
-      return new ResultResponse.Builder(x).setResult(false).setReason("User has not connected to Quick Books").build();
+      return new ResultResponse.Builder(x).setResult(false).setReason("User has not connected to Quick Books").setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN).build();
     }
 
     tokenDAO.inX(x).remove(token.fclone());
@@ -176,30 +179,61 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     user.clearIntegrationCode();
     userDAO.inX(x).put(user);
 
+    //remove bank accounts
+    accountDAO.where(AND(
+      EQ(BankAccount.OWNER, user.getId()),
+      NEQ(BankAccount.INTEGRATION_ID, "")
+    )).select(sink);
+    List<BankAccount> bankAccountList = sink.getArray();
+
+    for ( BankAccount account: bankAccountList ) {
+      account.setIntegrationId("");
+      accountDAO.put(account.fclone());
+    }
+
     return new ResultResponse.Builder(x).setResult(false).setReason("User has been signed out of Quick Books").build();
   }
 
   @Override
-  public List<AccountingBankAccount> pullBanks(X x) {
+  public ResultResponse bankAccountSync(X x) {
     List<AccountingBankAccount> results = new ArrayList<>();
+    User            user           = (User) x.get("user");
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
+    DAO accountingBankDAO = (DAO) x.get("accountingBankAccountCacheDAO");
 
-    String query = "select * from account where AccountType = 'Bank'";
-    List<Account> accounts = sendRequest(x, query);
+
+    try {
+      String query = "select * from account where AccountType = 'Bank'";
+      List<Account> accounts = sendRequest(x, query);
 
     for ( Account account : accounts ) {
       AccountingBankAccount xBank = new AccountingBankAccount();
-      xBank.setAccountingName("QUICK");
-      xBank.setAccountingId(account.getId());
+      xBank.setRealmId(token.getRealmId());
+      xBank.setQuickBooksBankAccountId(account.getId());
       xBank.setName(account.getName());
       xBank.setCurrencyCode(account.getCurrencyRef().getValue());
       results.add(xBank);
+      accountingBankDAO.put(xBank);
     }
 
-    return results;
+      return new ResultResponse.Builder(x)
+        .setResult(true)
+        .setBankAccountList(accounts.toArray(new AccountingBankAccount[accounts.size()]))
+        .build();
+    } catch ( Exception e ) {
+      ResultResponse response = errorHandler(e);
+      ArraySink sink = new ArraySink();
+      accountingBankDAO.where(
+        EQ(AccountingBankAccount.REALM_ID, token.getRealmId())
+      ).select(sink);
+      results = sink.getArray();
+      response.setBankAccountList(results.toArray(new AccountingBankAccount[results.size()]));
+      return response;
+    }
   }
 
   @Override
-  public ResultResponse reSyncInvoice(X x, net.nanopay.invoice.model.Invoice invoice) {
+  public ResultResponse invoiceResync(X x, net.nanopay.invoice.model.Invoice invoice) {
     QuickbooksInvoice quickInvoice = (QuickbooksInvoice) invoice.fclone();
     User user = (User) x.get("user");
 
@@ -305,18 +339,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public boolean isValidContact(NameBase quickContact, List<String> invalidContacts) {
     if (
       quickContact.getPrimaryEmailAddr() == null ||
-      SafetyUtil.isEmpty(quickContact.getGivenName()) ||
-      SafetyUtil.isEmpty(quickContact.getFamilyName()) ||
       SafetyUtil.isEmpty(quickContact.getCompanyName()) )
     {
       String str = "Quick Contact # " +
         quickContact.getId() +
         " can not be added because the contact is missing: " +
         (quickContact.getPrimaryEmailAddr() == null ? "[Email]" : "") +
-        (SafetyUtil.isEmpty(quickContact.getGivenName()) ? " [Given Name] " : "") +
-        (SafetyUtil.isEmpty(quickContact.getCompanyName()) ? " [Company Name] " : "") +
-        (SafetyUtil.isEmpty(quickContact.getFamilyName()) ? " [Family Name] " : "");
-
+        (SafetyUtil.isEmpty(quickContact.getCompanyName()) ? " [Company Name] " : "");
       invalidContacts.add(str);
       return false;
     }
@@ -489,8 +518,12 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         .build();
 
       newContact.setOrganization(importContact.getCompanyName());
-      newContact.setFirstName(importContact.getGivenName());
-      newContact.setLastName(importContact.getFamilyName());
+      if ( importContact.getGivenName() != null ) {
+        newContact.setFirstName(importContact.getGivenName());
+      }
+      if ( importContact.getGivenName() != null ) {
+        newContact.setLastName(importContact.getFamilyName());
+      }
       newContact.setBusinessPhone(businessPhone);
       newContact.setMobile(mobilePhone);
     }
@@ -802,6 +835,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
     }
+  }
+
+  public ResultResponse singleSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
+    return null;
   }
 
   public void batchOperation(X x, BatchOperation operation, CallbackHandler callbackHandler) {

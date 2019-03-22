@@ -12,18 +12,21 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
-    'bankIntegrationsDAO',
     'quickbooksService',
     'user',
+    'userDAO',
     'xeroService'
   ],
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount'
+    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.accounting.AccountingBankAccount',
+    'net.nanopay.accounting.IntegrationCode'
   ],
 
   css: `
@@ -217,12 +220,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'accountingBankData',
-      factory: function() {
-        return this.bankIntegrationsDAO;
-      }
-    },
-    {
       name: 'abliiBankList',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
@@ -239,32 +236,53 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           placeholder: '- Please Select -',
-          dao: X.data.accountingBankData,
-          objToChoice: function(account) {
-            return [account.id, account.name];
-          }
+          choices: X.data.accountingList
         });
       }
     },
     {
       class: 'Boolean',
-      name: 'isXeroDisconnected',
+      name: 'showXeroDisconected',
       value: false
     },
     {
       class: 'Boolean',
-      name: 'isQuickbooksDisconnected',
+      name: 'showQuickBooksDisconected',
       value: false
-    }
+    },
+   'accountingBankAccounts',
+   'accountingList'
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       this.SUPER();
-
+      this.user = await this.userDAO.find(this.user.id);
       this.isXeroConnected();
       this.isQuickbooksConnected();
-
+      var bankAccountList = [];
+      if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        this.accountingBankAccounts = await this.quickbooksService.bankAccountSync(null);
+      } else if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+        this.accountingBankAccounts = await this.xeroService.bankAccountSync(null);
+      }
+      if ( this.accountingBankAccounts ) {
+        if ( ! this.accountingBankAccounts.result && this.accountingBankAccounts.errorCode.name === 'TOKEN_EXPIRED' ) {
+          this.add(this.Popup.create({ closeable: false }).tag({
+            class: 'net.nanopay.accounting.AccountingTimeOutModal'
+          }));
+        } else if ( ! this.accountingBankAccounts.result && ! this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) {
+          this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
+        }
+        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+          if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+            bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
+          } else {
+            bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
+          }
+        }
+        this.accountingList = bankAccountList;
+        }
       this
         .addClass(this.myClass())
         .start().add(this.IntegrationsTitle).addClass('title').end()
@@ -274,7 +292,7 @@ foam.CLASS({
             .start().add('Xero accounting').addClass('integration-box-title').end()
             .start().add(this.xeroConnected$).addClass('account-info').end()
           .end()
-          .start(this.XERO_CONNECT, { label$: this.xeroBtnLabel$ }).enableClass('disconnect', this.isXeroDisconnected$).end()
+          .start(this.XERO_CONNECT, { label$: this.xeroBtnLabel$ }).enableClass('disconnect', this.showXeroDisconected$).end()
         .end()
         .start().addClass('integration-box')
           .start({ class: 'foam.u2.tag.Image', data: '/images/quickbooks.png' }).addClass('accounting-logo').end()
@@ -282,7 +300,7 @@ foam.CLASS({
             .start().add('Intuit quickbooks').addClass('integration-box-title').end()
             .start().add(this.qbConnected$).addClass('account-info').end()
           .end()
-          .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).enableClass('disconnect', this.isQuickbooksDisconnected$).end()
+          .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).enableClass('disconnect', this.showQuickBooksDisconected$).end()
         .end()
         .start().show(this.connected$)
           .start().add(this.BankMatchingTitle).addClass('title').end()
@@ -306,28 +324,28 @@ foam.CLASS({
       .end();
     },
     async function isXeroConnected() {
-      if ( this.user.integrationCode.name == 'XERO' ) {
+      if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
         this.xeroBtnLabel = this.Disconnect;
         this.xeroConnected = this.Connected;
         this.bankMatchingLogo = '/images/xero.png';
-        this.isXeroDisconnected = true;
+        this.showXeroDisconected = true;
       } else {
         this.xeroBtnLabel = this.Connect;
         this.xeroConnected = this.NotConnected;
-        this.isXeroDisconnected = false;
+        this.showXeroDisconected = false;
       }
       this.checkForConnections();
     },
     async function isQuickbooksConnected() {
-      if ( this.user.integrationCode == 'QUICKBOOKS' ) {
+      if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS  ) {
         this.qbBtnLabel = this.Disconnect;
         this.qbConnected = this.Connected;
         this.bankMatchingLogo = '/images/quickbooks.png';
-        this.isQuickbooksDisconnected = true;
+        this.showQuickBooksDisconected = true;
       } else {
         this.qbBtnLabel = this.Connect;
         this.qbConnected = this.NotConnected;
-        this.isQuickbooksDisconnected = false;
+        this.showQuickBooksDisconected = false;
       }
       this.checkForConnections();
     },
@@ -359,11 +377,15 @@ foam.CLASS({
             self.xeroConnected = this.NotConnected;
             self.add(self.NotificationMessage.create({ message: 'Xero integration has been disconnected' }));
             self.connected = false;
+            self.showXeroDisconected = false;
           })
           .catch(function(err) {
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
         } else {
+          if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+            this.quickbooksService.removeToken(null);
+          }
           var url = window.location.origin + '/service/xeroWebAgent?portRedirect=' + window.location.hash.slice(1);
           window.location = this.attachSessionId(url);
         }
@@ -379,11 +401,15 @@ foam.CLASS({
             self.qbConnected = this.NotConnected;
             self.add(self.NotificationMessage.create({ message: 'Intuit quickbooks integration has been disconnected' }));
             self.connected = false;
+            self.showQuickBooksDisconected = false;
           })
           .catch(function(err) {
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
         } else {
+          if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+            this.xeroService.removeToken(null);
+          }
           var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
           window.location = this.attachSessionId(url);
         }

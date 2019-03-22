@@ -143,7 +143,6 @@ foam.CLASS({
       documentation: `The contact's bank account if they choose CA.`,
       factory: function() {
         return this.CABankAccount.create({
-          status: this.BankAccountStatus.VERIFIED,
           denomination: 'CAD'
         });
       }
@@ -154,7 +153,6 @@ foam.CLASS({
       documentation: `The contact's bank account if they choose US.`,
       factory: function() {
         return this.USBankAccount.create({
-          status: this.BankAccountStatus.VERIFIED,
           denomination: 'USD'
         });
       }
