@@ -238,15 +238,12 @@ function start_nanos {
 
     if [ -z "$MODE" ]; then
         JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
-        cd $PROJECT_HOME/target
-        JAR=$(ls lib/nanopay-*.jar | awk '{print $1}')
-    else
-      # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
-      # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
-      # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
+        # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
+        # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
+        # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
         JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
-        JAR=$(ls target/lib/nanopay-*.jar | awk '{print $1}')
     fi
+    JAR=$(ls target/lib/nanopay-*.jar | awk '{print $1}')
 
     echo JAR=$JAR
     echo JAVA_OPTS=$JAVA_OPTS
