@@ -468,6 +468,7 @@ var classes = [
   'net.nanopay.meter.compliance.NanopayComplianceService',
   'net.nanopay.meter.compliance.canadianSanction.Record',
   'net.nanopay.meter.compliance.CanadianSanctionValidator',
+  'net.nanopay.meter.compliance.dowJones.NameSearch',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',

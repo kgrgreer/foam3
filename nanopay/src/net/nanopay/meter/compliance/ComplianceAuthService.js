@@ -3,7 +3,8 @@ foam.CLASS({
   name: 'ComplianceAuthService',
   extends: 'foam.nanos.auth.ProxyAuthService',
 
-  documentation: 'AuthService Decorator that checks if the user business or account have passed compliance, and if they have any blacklisted permissions',
+  documentation: `AuthService Decorator that checks if the user business or account 
+                  have passed compliance, and if they have any blacklisted permissions.`,
 
   implements: [
     'foam.nanos.NanoService'
