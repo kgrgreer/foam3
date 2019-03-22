@@ -37,7 +37,9 @@ foam.CLASS({
         for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
           Transaction child = (Transaction) o;
           child.setStatus(child.getInitialStatus());
-          children.put(child);
+
+          // need to use the put_ override because of the newly added transaction.status permissionRequired: true property
+          children.put_(getX(), child);
         }
       }
       return txn;
