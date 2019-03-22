@@ -701,7 +701,11 @@ foam.CLASS({
       label: 'Paid',
       isAvailable: function() {
         return this.isPayable && this.isProcessOrComplete;
-      }
+      },
+      isEnabled: function() {
+        // Always disabled the paid button
+        return false;
+      },
     },
     {
       name: 'sendReminder',
