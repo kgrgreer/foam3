@@ -100,7 +100,7 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'reSyncInvoice',
+      name: 'invoiceResync',
       async: true,
       type: 'net.nanopay.accounting.ResultResponse',
       args: [

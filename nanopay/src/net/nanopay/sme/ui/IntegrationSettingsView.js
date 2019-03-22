@@ -266,22 +266,23 @@ foam.CLASS({
       } else if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
         this.accountingBankAccounts = await this.xeroService.bankAccountSync(null);
       }
-      if ( ! this.accountingBankAccounts.result && this.accountingBankAccounts.errorCode.name === 'TOKEN_EXPIRED' ) {
-        this.add(this.Popup.create({ closeable: false }).tag({
-          class: 'net.nanopay.accounting.AccountingTimeOutModal'
-        }));
-      } else if ( ! this.accountingBankAccounts.result && ! this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) {
-        this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
-      }
-      for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
-        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-          bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
-        } else {
-          bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
+      if ( this.accountingBankAccounts ) {
+        if ( ! this.accountingBankAccounts.result && this.accountingBankAccounts.errorCode.name === 'TOKEN_EXPIRED' ) {
+          this.add(this.Popup.create({ closeable: false }).tag({
+            class: 'net.nanopay.accounting.AccountingTimeOutModal'
+          }));
+        } else if ( ! this.accountingBankAccounts.result && ! this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) {
+          this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
         }
-      }
-      this.accountingList = bankAccountList;
- 
+        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+          if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+            bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
+          } else {
+            bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
+          }
+        }
+        this.accountingList = bankAccountList;
+        }
       this
         .addClass(this.myClass())
         .start().add(this.IntegrationsTitle).addClass('title').end()
@@ -383,7 +384,7 @@ foam.CLASS({
           });
         } else {
           if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
-            this.xeroService.removeToken(null);
+            this.quickbooksService.removeToken(null);
           }
           var url = window.location.origin + '/service/xeroWebAgent?portRedirect=' + window.location.hash.slice(1);
           window.location = this.attachSessionId(url);
@@ -406,7 +407,7 @@ foam.CLASS({
             self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
           });
         } else {
-          if ( this.user.integrationCode == 'XERO' ) {
+          if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
             this.xeroService.removeToken(null);
           }
           var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);

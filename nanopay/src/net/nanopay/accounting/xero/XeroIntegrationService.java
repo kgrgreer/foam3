@@ -520,7 +520,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         }
       }
 
-      reSyncInvoice(x,null);
+      invoiceResync(x,null);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -535,7 +535,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
   @Override
-  public ResultResponse reSyncInvoice(X x, Invoice invoice) {
+  public ResultResponse invoiceResync(X x, Invoice invoice) {
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     Logger logger = (Logger) x.get("logger");
     List<Payment> paymentList = new ArrayList<>();
@@ -626,6 +626,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
           List<Elements> elements = ((com.xero.api.XeroApiException) e).getApiException().getElements();
           List<String> result = new ArrayList<>();
 
+          // set desync false for one the synced successfully
           for ( Elements element: elements ) {
             for (Object o : element.getDataContractBase() ) {
               if ( o instanceof Payment ) {

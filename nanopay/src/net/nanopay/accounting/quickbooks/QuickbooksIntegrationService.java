@@ -233,7 +233,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   @Override
-  public ResultResponse reSyncInvoice(X x, net.nanopay.invoice.model.Invoice invoice) {
+  public ResultResponse invoiceResync(X x, net.nanopay.invoice.model.Invoice invoice) {
     QuickbooksInvoice quickInvoice = (QuickbooksInvoice) invoice.fclone();
     User user = (User) x.get("user");
 

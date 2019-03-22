@@ -283,7 +283,7 @@ foam.CLASS({
       code: async function(X) {
         if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
           await this.xeroService.removeToken(null);
-        } else if ( this.user.IntegrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
           await this.quickbooksService.removeToken(null);
         }
         this.bankMatched = false;

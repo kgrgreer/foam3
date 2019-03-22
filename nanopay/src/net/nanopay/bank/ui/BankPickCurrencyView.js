@@ -245,25 +245,11 @@ foam.CLASS({
             .start().tag({
               class: 'net.nanopay.flinks.view.FlinksInstitutionsView',
               filterFor$: this.filterFor$,
-              isSingleSelection: true,
-              onComplete: this.createOnComplete()
+              isSingleSelection: true
             }).end()
           .end()
         .end()
       .end();
-    },
-
-    function createOnComplete() {
-      var self = this;
-      return function() {
-        if ( ! self.hasCompletedIntegration ) {
-          var menuLocation = 'sme.main.banking';
-          window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
-          return;
-        }
-        self.pushMenu('sme.bank.matching');
-        return;
-      };
     },
 
     function createOnDismiss() {
