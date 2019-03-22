@@ -799,12 +799,11 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
-  { name: 'net/nanopay/meter/compliance/ComplianceHistory' },
-  { name: 'net/nanopay/meter/compliance/ComplianceRule' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
-  { name: 'net/nanopay/meter/compliance/ComplianceValidator' },
   { name: 'net/nanopay/meter/compliance/ComplianceService' },
   { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
+  { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
+  { name: 'net/nanopay/meter/compliance/CanadianSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/refinements' },
 
   // meter tests

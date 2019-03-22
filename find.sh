@@ -64,6 +64,7 @@ declare -a arr=(
   "quickToken"
   "regions"
   "reports"
+  "rules"
   "scripts"
   "services"
   "spids"
