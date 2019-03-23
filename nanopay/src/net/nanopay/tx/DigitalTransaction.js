@@ -84,7 +84,7 @@ foam.CLASS({
       super.validate(x);
 
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-      if ( ! SafetyUtil.isEmpty(getId()) && oldTxn.getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED && oldTxn.getStatus() != TransactionStatus.PENDING  ) {
+      if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
       }
       `

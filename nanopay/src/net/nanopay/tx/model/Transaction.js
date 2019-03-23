@@ -5,6 +5,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
   ],
@@ -464,8 +465,7 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-        if ( oldTxn == null || 
-          getStatus() == TransactionStatus.SCHEDULED && oldTxn.getStatus() == TransactionStatus.SCHEDULED ) return this;
+        if ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.SCHEDULED ) return this;
         Transaction newTx = (Transaction) oldTxn.fclone();
         newTx.limitedCopyFrom(this);
         return newTx;
@@ -486,6 +486,13 @@ foam.CLASS({
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      value: false,
+      permissionRequired: true,
+      visibility: 'hidden'
     },
     {
       name: 'isActive',
@@ -649,6 +656,10 @@ foam.CLASS({
         if ( getTotal() > 10000000 ) {
           throw new AuthorizationException("Transaction limit exceeded.");
         }
+      }
+      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+      if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.SCHEDULED && getStatus() == TransactionStatus.SCHEDULED ) {
+        throw new RuntimeException("Only new transaction can be scheduled");
       }
       `
     },

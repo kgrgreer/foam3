@@ -4,9 +4,11 @@ import foam.core.ContextAgent;
 import foam.dao.DAO;
 import foam.core.X;
 import foam.core.Detachable;
+import foam.nanos.notification.Notification;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.model.Transaction;
 import foam.dao.AbstractSink;
+
 import java.util.Date;
 
 import static foam.mlang.MLang.*;
@@ -22,9 +24,17 @@ public class ScheduledTransactionCron implements ContextAgent {
     )).select( new AbstractSink() {
       @Override
       public void put(Object o, Detachable d) {
-        Transaction tx = (Transaction) o;
+        Transaction tx = (Transaction) ((Transaction) o).fclone();
         tx.setStatus(tx.getInitialStatus());
-        transactionDAO.put_(x, tx);
+        try {
+          transactionDAO.put_(x, tx);
+        } catch (Exception e) {
+          Notification notification = new Notification();
+          notification.setNotificationType("Scheduled transaction failed");
+          notification.setBody("Your scheduled transaction for $" + tx.getAmount() + " failed. Reason: " + e.getMessage());
+          notification.setUserId(tx.findSourceAccount(x).getOwner());
+          ((DAO) x_.get("notificationDAO")).put(notification);
+        }
       }
     });
   }
