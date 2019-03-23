@@ -445,8 +445,7 @@ foam.CLASS({
    {
       class: 'DateTime',
       name: 'scheduledTime',
-      documentation: `The scheduled date when transaction should be processed.`,
-      visibility: 'RO'
+      documentation: `The scheduled date when transaction should be processed.`
     }
   ],
 

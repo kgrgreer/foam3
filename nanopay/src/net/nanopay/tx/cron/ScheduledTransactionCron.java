@@ -20,7 +20,7 @@ public class ScheduledTransactionCron implements ContextAgent {
     Date now = new Date();
     transactionDAO.where(AND(
       EQ(Transaction.STATUS, TransactionStatus.SCHEDULED),
-      LT(Transaction.SCHEDULED_TIME, now)
+      LTE(Transaction.SCHEDULED_TIME, now)
     )).select( new AbstractSink() {
       @Override
       public void put(Object o, Detachable d) {
