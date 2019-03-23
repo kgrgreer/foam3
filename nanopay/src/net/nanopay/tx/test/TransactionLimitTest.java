@@ -131,13 +131,11 @@ public class TransactionLimitTest extends Test {
 
 //    TransactionLimitAccountRule limitRule2 = new TransactionLimitAccountRule();
 //    limitRule2.setLimit(100L);
-//    limitRule2.setTempPeriod(3600000);
 //    limitRule2.setDaoKey("transactionDAO");
 //    rule2 = (TransactionLimitAccountRule) ((DAO)x.get("ruleDAO")).put(limitRule2).fclone();
 
      TransactionLimitAccountRule limitRule = new TransactionLimitAccountRule();
      limitRule.setLimit(10000L);
-     limitRule.setTempPeriod(3600000);
      limitRule.setDaoKey("transactionDAO");
      rule = (TransactionLimitAccountRule) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
 

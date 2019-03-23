@@ -46,24 +46,20 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.Frequency',
       name: 'period',
+      value: 'DAILY',
       documentation: 'Transaction limit time frame. (Day, Week etc.)'
-    },
-    {
-      class: 'Long',
-      name: 'tempPeriod',
-      documentation: 'ms'
     },
     {
       class: 'Map',
       name: 'hm',
       transient: true,
       javaFactory: `
-      return new java.util.HashMap<Long, TransactionLimitState>();
+      return new java.util.HashMap<Object, TransactionLimitState>();
       `
     },
     {
       name: 'daoKey',
-      javaFactory: 'return "transactionDAO";'
+      value: 'transactionDAO'
     },
     {
       name: 'action',
@@ -74,7 +70,7 @@ foam.CLASS({
           TransactionLimitRule rule = TransactionLimitRule.this;
           Transaction txn = (Transaction) obj;
           HashMap hm = (HashMap) getHm();
-          long id = getMappedId(txn, x);
+          Object id = getObjectToMap(txn, x);
 
           TransactionLimitState limitState = (TransactionLimitState) hm.get(id);
           if ( limitState == null ) {
@@ -111,7 +107,7 @@ foam.CLASS({
       ],
       type: 'Double',
       javaCode: `
-      return Math.max(amount - msPeriod * getLimit() / getTempPeriod(), 0);
+      return Math.max(amount - msPeriod * getLimit() / getPeriod().getMs(), 0);
       `
     },
     {
@@ -138,7 +134,7 @@ foam.CLASS({
       Transaction txn = (Transaction) obj;
       HashMap hm = (HashMap)getHm();
 
-      long id = getMappedId(txn, x);
+      Object id = getObjectToMap(txn, x);
 
       TransactionLimitState limitState = (TransactionLimitState) hm.get(id);
       if ( ! limitState.check(this, -txn.getAmount()) ) {
@@ -156,9 +152,9 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-        // finds an id to map. E.g., if limit is set per account, the method will return source/destination account'
-        //when set per business, will return business id.
-        public abstract long getMappedId(net.nanopay.tx.model.Transaction txn, foam.core.X x);
+        // finds an object to map. E.g., if limit is set per account, the method will return source/destination account'
+        //when set per business, will return business.
+        public abstract Object getObjectToMap(net.nanopay.tx.model.Transaction txn, foam.core.X x);
         `);
       }
     }

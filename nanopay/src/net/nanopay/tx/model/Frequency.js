@@ -10,8 +10,16 @@ foam.ENUM({
       label: 'Daily',
       ms: 24 * 60 * 60 * 1000
     },
-    { name: 'WEEKLY',          label: 'Weekly' },
-    { name: 'PER_TRANSACTION', label: 'Per Transaction' }
+    {
+      name: 'WEEKLY',
+      label: 'Weekly',
+      ms: 7* 24 * 60 * 60 * 1000
+    },
+    {
+      name: 'PER_TRANSACTION',
+      label: 'Per Transaction',
+      ms: 1
+    }
   ],
 
   properties: [

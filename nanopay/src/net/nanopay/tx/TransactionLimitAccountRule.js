@@ -5,7 +5,8 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getMappedId',
+      name: 'getObjectToMap',
+      type: 'Object',
       args: [
         {
           name: 'txn',
@@ -16,7 +17,6 @@ foam.CLASS({
           type: 'foam.core.X'
         }
       ],
-      type: 'long',
       javaCode: 'return getSend() ? txn.findSourceAccount(x).getId() : txn.findDestinationAccount(x).getId();'
     }
   ]
