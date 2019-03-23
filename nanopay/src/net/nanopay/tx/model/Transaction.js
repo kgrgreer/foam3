@@ -36,7 +36,7 @@ foam.CLASS({
     'net.nanopay.tx.alterna.AlternaVerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.tx.model.LiquidityService',
+    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
@@ -236,6 +236,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
       value: 'COMPLETED',
+      permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       view: function(args, x) {
         self = this;

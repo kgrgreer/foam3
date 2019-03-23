@@ -22,7 +22,8 @@ Stores all Exchange Rate info.`,
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FeesFields',
-    'net.nanopay.tx.model.LiquidityService',
+    'net.nanopay.liquidity.LiquidityService',
+    'net.nanopay.liquidity.Frequency',
     'net.nanopay.account.Account',
     'java.util.Arrays',
   ],
@@ -89,23 +90,6 @@ Stores all Exchange Rate info.`,
   type: 'net.nanopay.tx.Transfer[]',
   javaCode: `
     return getTransfers();
-  `
-},
-{
-  documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
-  name: 'checkLiquidity',
-  args: [
-    {
-      name: 'x',
-      type: 'Context'
-    }
-  ],
-  javaCode: `
-  LiquidityService ls = (LiquidityService) x.get("liquidityService");
-  Account source = findSourceAccount(x);
-  Account destination = findDestinationAccount(x);
-  ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, -getAmount());
-  ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, getAmount());
   `
 }
   ]
