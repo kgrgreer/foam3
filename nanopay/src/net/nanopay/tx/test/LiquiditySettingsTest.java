@@ -10,6 +10,7 @@ import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.model.Frequency;
 import net.nanopay.tx.Liquidity;
 import net.nanopay.tx.cron.LiquiditySettingsCheckCron;
 import net.nanopay.tx.model.*;

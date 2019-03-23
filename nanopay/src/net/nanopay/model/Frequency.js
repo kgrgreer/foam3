@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.tx.model',
+  package: 'net.nanopay.model',
   name: 'Frequency',
 
   documentation: 'Frequency.',

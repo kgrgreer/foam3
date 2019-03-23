@@ -2,6 +2,7 @@ package net.nanopay.tx.cron;
 
 import foam.core.ContextAgent;
 import foam.core.X;
+import net.nanopay.model.Frequency;
 import net.nanopay.tx.model.*;
 
 /*

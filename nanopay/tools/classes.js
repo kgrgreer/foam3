@@ -217,7 +217,7 @@ var classes = [
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ExpiryLineItem',
-  'net.nanopay.tx.model.Frequency',
+  'net.nanopay.model.Frequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
   'net.nanopay.tx.model.FeeType',

@@ -154,8 +154,8 @@ foam.CLASS({
       LiquidityService ls = (LiquidityService) x.get("liquidityService");
       Account source = findSourceAccount(x);
       Account destination = findDestinationAccount(x);
-      ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, -getAmount());
-      ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, getAmount());
+      ls.liquifyAccount(source.getId(), net.nanopay.model.Frequency.PER_TRANSACTION, -getAmount());
+      ls.liquifyAccount(destination.getId(), net.nanopay.model.Frequency.PER_TRANSACTION, getAmount());
       `
     }
   ]

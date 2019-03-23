@@ -11,6 +11,7 @@ import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.model.Frequency;
 import net.nanopay.tx.Liquidity;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
@@ -176,7 +177,7 @@ public class LiquidityService
     }
     AppConfig appConfig = (AppConfig) x_.get("appConfig");
     NumberFormat formatter = NumberFormat.getCurrencyInstance();
-    
+
     args.put("account",     "your account "+account.getName()+",");
     args.put("greeting",     "Hi");
     args.put("name",        account.findOwner(x_).getFirstName());
