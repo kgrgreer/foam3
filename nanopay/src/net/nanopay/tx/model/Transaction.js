@@ -447,7 +447,14 @@ foam.CLASS({
       class: 'DateTime',
       name: 'scheduledTime',
       documentation: `The scheduled date when transaction should be processed.`
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      value: false,
+      permissionRequired: true,
+      visibility: 'hidden'
+    },
   ],
 
   methods: [
@@ -486,13 +493,6 @@ foam.CLASS({
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
       `
-    },
-    {
-      class: 'Boolean',
-      name: 'deleted',
-      value: false,
-      permissionRequired: true,
-      visibility: 'hidden'
     },
     {
       name: 'isActive',
