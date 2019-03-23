@@ -16,7 +16,7 @@ import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.tx.TransactionLimitRule;
+import net.nanopay.tx.TransactionLimitAccountRule;
 import net.nanopay.tx.TransactionLimitState;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -31,7 +31,7 @@ public class TransactionLimitTest extends Test {
 
   DigitalAccount sender_, receiver_;
   CABankAccount senderBank_;
-  TransactionLimitRule rule;
+  TransactionLimitAccountRule rule, rule2;
 
   public void runTest(X x) {
     createAccounts(x);
@@ -57,7 +57,7 @@ public class TransactionLimitTest extends Test {
     System.out.println(tx);
 
     Transaction tx2 = new Transaction();
-    tx2.setAmount(11L);
+    tx2.setAmount(20L);
     tx2.setSourceAccount(sender_.getId());
     tx2.setDestinationAccount(receiver_.getId());
     test(TestUtils.testThrows(
@@ -75,41 +75,23 @@ public class TransactionLimitTest extends Test {
   }
 
   public void testUpdatedRule(X x) {
-    //TransactionLimitRule r = new TransactionLimitRule();
-    TransactionLimitRule r = (TransactionLimitRule) ((DAO) x.get("ruleDAO")).find(rule).fclone();
-    r.setLimit(2000000L);
-   r.setAction(new RuleAction() {
-     @Override
-     public void applyAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
-       TransactionLimitRule rule = r;
-       Transaction txn = (Transaction) obj;
-       HashMap hm = (HashMap)r.getHm();
-       Account account = r.getSend() ? txn.findSourceAccount(x) : txn.findDestinationAccount(x);
-
-       TransactionLimitState limitState = (TransactionLimitState) hm.get(account.getId());
-       if ( limitState == null ) {
-         limitState = new TransactionLimitState(rule);
-         hm.put(account.getId(), limitState);
-       }
-       if ( ! limitState.check(rule, txn.getAmount()) ) {
-         throw new RuntimeException("LIMIT");
-       }
-     }
-   });
-    //r.setTempPeriod(3600000);
-    //r.setDaoKey("transactionDAO");
-     ((DAO) x.get("ruleDAO")).put(r);
+    TransactionLimitAccountRule r = (TransactionLimitAccountRule) ((DAO) x.get("ruleDAO")).find(rule);
+    r.setLimit(20000L);
+    r = (TransactionLimitAccountRule) ((DAO) x.get("ruleDAO")).put(r);
     DAO txDAO = (DAO) x.get("localTransactionDAO");
 
     Transaction tx = new Transaction();
-    tx.setAmount(100L);
+    tx.setAmount(10000L);
     tx.setSourceAccount(sender_.getId());
     tx.setDestinationAccount(receiver_.getId());
-    test(TestUtils.testThrows(
-      () -> txDAO.put_(x, tx),
-      "LIMIT",
-      RuntimeException.class), "10L throws exception");
-    //test(tx instanceof Transaction, "tx fro 9990 went though success. Limit is 10000");
+    txDAO.put_(x, tx);
+    test(tx instanceof Transaction, "tx fro 9990 went though success. Limit is 10000");
+
+    r = (TransactionLimitAccountRule) ((DAO) x.get("ruleDAO")).find(rule);
+    r.setLimit(666L);
+    r = (TransactionLimitAccountRule) ((DAO) x.get("ruleDAO")).put(r);
+    System.out.print(r);
+
   }
 
   public void createAccounts(X x) {
@@ -146,10 +128,18 @@ public class TransactionLimitTest extends Test {
   }
 
   public void createRule(X x) {
-    TransactionLimitRule limitRule = new TransactionLimitRule();
-    limitRule.setLimit(10000L);
-    limitRule.setTempPeriod(3600000);
-    limitRule.setDaoKey("transactionDAO");
-    rule = (TransactionLimitRule) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
+
+//    TransactionLimitAccountRule limitRule2 = new TransactionLimitAccountRule();
+//    limitRule2.setLimit(100L);
+//    limitRule2.setTempPeriod(3600000);
+//    limitRule2.setDaoKey("transactionDAO");
+//    rule2 = (TransactionLimitAccountRule) ((DAO)x.get("ruleDAO")).put(limitRule2).fclone();
+
+     TransactionLimitAccountRule limitRule = new TransactionLimitAccountRule();
+     limitRule.setLimit(10000L);
+     limitRule.setTempPeriod(3600000);
+     limitRule.setDaoKey("transactionDAO");
+     rule = (TransactionLimitAccountRule) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
+
   }
 }

@@ -2,19 +2,19 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'TransactionLimitRule',
   extends: 'foam.nanos.ruler.Rule',
+  abstract: true,
 
   documentation: 'Pre-defined limit for transactions.',
 
   javaImports: [
-    'java.util.HashMap',
-    'java.util.Map',
-    'foam.nanos.ruler.RuleAction',
     'foam.core.FObject',
-    'net.nanopay.tx.model.Transaction',
     'foam.core.X',
-    'net.nanopay.account.Account',
-    'net.nanopay.tx.TransactionLimitState',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.ruler.RuleAction',
     'foam.nanos.ruler.RuleEngine',
+    'java.util.HashMap',
+    'net.nanopay.account.Account',
+    'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
 
@@ -34,7 +34,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'limit',
-      documentation: 'Amount that account balance should not exceed'
+      documentation: 'Amount that running balance should not exceed'
     },
     {
       class: 'Boolean',
@@ -54,17 +54,6 @@ foam.CLASS({
       documentation: 'ms'
     },
     {
-      class: 'Date',
-      name: 'expiry',
-      documentation: 'Date when running balance should be reset.'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.ServiceProvider',
-      name: 'spid',
-      documentation: 'Spid to configure transaction limit.'
-    },
-    {
       class: 'Map',
       name: 'hm',
       transient: true,
@@ -74,7 +63,7 @@ foam.CLASS({
     },
     {
       name: 'daoKey',
-      javaFactory: 'return \"transactionDAO\"; '
+      javaFactory: 'return "transactionDAO";'
     },
     {
       name: 'action',
@@ -84,13 +73,13 @@ foam.CLASS({
         public void applyAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
           TransactionLimitRule rule = TransactionLimitRule.this;
           Transaction txn = (Transaction) obj;
-          HashMap hm = (HashMap)getHm();
-          Account account = getSend() ? txn.findSourceAccount(x) : txn.findDestinationAccount(x);
+          HashMap hm = (HashMap) getHm();
+          long id = getMappedId(txn, x);
 
-          TransactionLimitState limitState = (TransactionLimitState) hm.get(account.getId());
+          TransactionLimitState limitState = (TransactionLimitState) hm.get(id);
           if ( limitState == null ) {
-            limitState = new TransactionLimitState(rule);
-            hm.put(account.getId(), limitState);
+            limitState = new TransactionLimitState();
+            hm.put(id, limitState);
           }
           if ( ! limitState.check(rule, txn.getAmount()) ) {
             throw new RuntimeException("LIMIT");
@@ -101,6 +90,7 @@ foam.CLASS({
     {
       name: 'predicate',
       javaFactory: `
+      //temporary until Mlang.REF is added
       return foam.mlang.MLang.EQ(DOT(NEW_OBJ, foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.model.Transaction.class)), true);
       `
     }
@@ -121,7 +111,7 @@ foam.CLASS({
       ],
       type: 'Double',
       javaCode: `
-      return Math.min(amount + msPeriod * amount / getTempPeriod(), getLimit());
+      return Math.max(amount - msPeriod * getLimit() / getTempPeriod(), 0);
       `
     },
     {
@@ -134,17 +124,43 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      Map hm = getHm();
-      TransactionLimitRule txRule = (TransactionLimitRule) rule;
-      if ( getLimit() != txRule.getLimit() ) {
-        Double delta = getLimit() - txRule.getLimit();
-        for ( Object key : hm.keySet() ) {
-          TransactionLimitState state = (TransactionLimitState) hm.get(key);
-        }
+      TransactionLimitRule ret = (TransactionLimitRule) rule.fclone();
+      if ( ret.getSend() != getSend() ) {
+        throw new RuntimeException("send property cannot be changed");
       }
-      txRule.setHm(getHm());
-      txRule.setSend(getSend());
-      return txRule;`
+      ret.clearAction();
+      ret.setHm(getHm());
+      return ret;`
+    },
+    {
+      name: 'reverseAction',
+      javaCode: `
+      Transaction txn = (Transaction) obj;
+      HashMap hm = (HashMap)getHm();
+
+      long id = getMappedId(txn, x);
+
+      TransactionLimitState limitState = (TransactionLimitState) hm.get(id);
+      if ( ! limitState.check(this, -txn.getAmount()) ) {
+        Logger logger = (Logger) x.get("logger");
+        logger.error("was unable to update transaction limit for account " +
+        id + ", transaction id: " + txn.getId() + 
+        ", rule id: " + getId());
+      }
+      `
+    }
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+        // finds an id to map. E.g., if limit is set per account, the method will return source/destination account'
+        //when set per business, will return business id.
+        public abstract long getMappedId(net.nanopay.tx.model.Transaction txn, foam.core.X x);
+        `);
+      }
     }
   ]
 });
