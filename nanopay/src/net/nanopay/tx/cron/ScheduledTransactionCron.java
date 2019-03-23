@@ -16,14 +16,15 @@ public class ScheduledTransactionCron implements ContextAgent {
   public void execute(X x){
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     Date now = new Date();
-    transactionDAO.where(EQ(Transaction.STATUS, TransactionStatus.SCHEDULED)).select( new AbstractSink() {
+    transactionDAO.where(AND(
+      EQ(Transaction.STATUS, TransactionStatus.SCHEDULED),
+      LT(Transaction.SCHEDULED_TIME, now)
+    )).select( new AbstractSink() {
       @Override
       public void put(Object o, Detachable d) {
         Transaction tx = (Transaction) o;
-        if ( tx.getScheduledTime().compareTo(now) <= 0 ) {
-          tx.setStatus(tx.getInitialStatus());
-          transactionDAO.put_(x, tx);
-        }
+        tx.setStatus(tx.getInitialStatus());
+        transactionDAO.put_(x, tx);
       }
     });
   }

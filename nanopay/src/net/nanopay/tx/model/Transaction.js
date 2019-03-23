@@ -464,7 +464,8 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-        if ( oldTxn == null ) return this;
+        if ( oldTxn == null || 
+          getStatus() == TransactionStatus.SCHEDULED && oldTxn.getStatus() == TransactionStatus.SCHEDULED ) return this;
         Transaction newTx = (Transaction) oldTxn.fclone();
         newTx.limitedCopyFrom(this);
         return newTx;
