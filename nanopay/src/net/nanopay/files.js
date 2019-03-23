@@ -219,8 +219,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/RefundTransaction' },
   { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
-  { name: 'net/nanopay/tx/TransactionLimitRule' },
-  { name: 'net/nanopay/tx/TransactionLimitAccountRule' },
+  { name: 'net/nanopay/tx/ruler/AbstractTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/BusinessTransactionLimitRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
@@ -231,7 +233,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
-  { name: 'net/nanopay/tx/TransactionLimitState'},
+  { name: 'net/nanopay/tx/ruler/TransactionLimitState' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
