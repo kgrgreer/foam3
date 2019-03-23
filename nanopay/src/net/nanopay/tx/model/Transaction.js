@@ -514,7 +514,7 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
+      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
       name: 'canTransfer',
       args: [
         {
@@ -528,13 +528,11 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        if ( getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED &&
-             ( oldTxn == null ||
-               ( oldTxn != null &&
-                 oldTxn.getStatus() != getStatus() ) ) ) {
-          return true;
-        }
-        return false;
+      if ( getStatus() == TransactionStatus.COMPLETED &&  
+      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
+   return true;
+ }
+ return false;
       `
     },
     {

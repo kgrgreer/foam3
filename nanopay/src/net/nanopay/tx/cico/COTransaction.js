@@ -137,7 +137,8 @@ foam.CLASS({
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED && oldTxn == null ||
       getStatus() == TransactionStatus.PENDING &&
-       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || oldTxn.getStatus() == TransactionStatus.PAUSED ) ) {
+       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || 
+       oldTxn.getStatus() == TransactionStatus.PAUSED || oldTxn.getStatus() == TransactionStatus.SCHEDULED ) ) {
         return true;
       }
       return false;

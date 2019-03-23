@@ -184,30 +184,6 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
-      name: 'canTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&
-      ( oldTxn == null ||
-        ( oldTxn != null &&
-          oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) ) {
-   return true;
- }
- return false;
-      `
-    },
-    {
       documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
       name: 'canReverseTransfer',
       args: [
