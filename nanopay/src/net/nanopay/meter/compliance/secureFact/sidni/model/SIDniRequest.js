@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.secureFact.sidni.model',
   name: 'SIDniRequest',
+  extends: 'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
 
   documentation: `The request object for a SIDni validation request.`,
 

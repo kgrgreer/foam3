@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.secureFact.lev.model',
   name: 'LEVRequest',
+  extends: 'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
 
   properties: [
     {

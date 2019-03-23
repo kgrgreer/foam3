@@ -9,13 +9,10 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.DAO',
-    'java.util.Arrays',
-    'net.nanopay.model.Business',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
+    'net.nanopay.meter.compliance.secureFact.SecurefactService',
     'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult'
+    'net.nanopay.model.Business'
   ],
 
   methods: [
@@ -23,20 +20,10 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         Business business = (Business) obj;
-        LEVRequestService service = new LEVRequestService();
-        LEVRequest request = service.createRequest(x, business);
-        LEVResponse response = service.sendRequest(x, request);
-        response.setName(business.getBusinessName());
-        response.setEntityId(business.getId());
-        // Aggregate close matches
-        LEVResult[] results = response.getResults();
-        long closeMatchCounter = Arrays.stream(results).filter(
-          o -> o.getCloseMatch()
-        ).count();
-        response.setCloseMatches(closeMatchCounter + " / " + results.length);
-        ((DAO) x.get("secureFactLEVDAO")).put(response);
+        SecurefactService securefactService = (SecurefactService) x.get("securefactService");
+        LEVResponse response = securefactService.levSearch(x, business);
         ruler.putResult(
-          closeMatchCounter == results.length
+          response.hasCloseMatches()
             ? ComplianceValidationStatus.VALIDATED
             : ComplianceValidationStatus.INVESTIGATING
         );

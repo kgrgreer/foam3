@@ -1,32 +1,17 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.secureFact.lev.model',
   name: 'LEVResponse',
-  extends: 'net.nanopay.meter.compliance.secureFact.sidni.model.BasicResponseObject',
+  extends: 'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
+
+  javaImports: [
+    'foam.util.SafetyUtil'
+  ],
 
   tableColumns: [
     'id', 'name', 'entityId', 'closeMatches', 'searchId'
   ],
 
-  imports: [
-    'businessDAO'
-  ],
-
   properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name',
-      label: 'Entity Name'
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.Business',
-      name: 'entityId',
-      label: 'Entity Id'
-    },
     {
       class: 'Int',
       name: 'searchId',
@@ -47,11 +32,20 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
       name: 'results'
-    },
+    }
+  ],
+
+  methods: [
     {
-      class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVError',
-      name: 'errors'
+      type: 'Boolean',
+      name: 'hasCloseMatches',
+      javaCode: `
+        if ( ! SafetyUtil.isEmpty(getCloseMatches()) ) {
+          int count = Integer.parseInt(getCloseMatches().split("/")[0]);
+          return count > 0;
+        }
+        return false;
+      `
     }
   ]
 });

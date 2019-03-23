@@ -1,32 +1,15 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.secureFact.sidni.model',
   name: 'SIDniResponse',
+  extends: 'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
+
   documentation: `The object for a SIDni response`,
 
   tableColumns: [
     'id', 'name', 'entityId', 'verified', 'reason'
   ],
 
-  imports: [
-    'userDAO'
-  ],
-
   properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'name',
-      label: 'Entity Name'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'entityId',
-      label: 'Entity Id'
-    },
     {
       class: 'String',
       name: 'userReference',
@@ -63,11 +46,6 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAdditionalMatchInfo',
       name: 'additionalMatchInfo'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniErrorComponent',
-      name: 'errors'
-    },
+    }
   ]
 });
