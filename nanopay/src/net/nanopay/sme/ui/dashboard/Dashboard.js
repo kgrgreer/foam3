@@ -5,10 +5,16 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.notification.Notification',
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
+    'net.nanopay.accounting.AccountingErrorCodes',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.account.Account',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
@@ -17,7 +23,9 @@ foam.CLASS({
     'notificationDAO',
     'pushMenu',
     'stack',
-    'user'
+    'user',
+    'xeroService',
+    'quickbooksService'
   ],
 
   exports: [
@@ -154,13 +162,49 @@ foam.CLASS({
           .select(this.myDAOPayables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',
-              data: invoice
+              data: invoice,
+              notificationDiv: this
+
             })
-              .on('click', () => {
+              .on('click', async () => {
+                // check if invoice is in sync with accounting software
+                let service = null;
+                if ( this.XeroInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
+                  if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+                    service = this.xeroService;
+                  } else {
+                    this.add(this.NotificationMessage.create({ message: ' Cannot sync invoice, Not signed into Xero.', type: 'error' }));
+                    return;
+                  }
+                } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
+                  if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+                  service = this.quickbooksService;
+                  } else {
+                    this.add(this.NotificationMessage.create({ message: ' Cannot sync invoice, Not signed into Quickbooks.', type: 'error' }));
+                    return;
+                  }
+                }
+                if ( service != null ) {
+                  let result = await service.singleSync(null, invoice);
+                  if ( ! result.result ) {
+                    if ( result.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+                      this.ctrl.add(this.Popup.create({ closeable: false }).tag({
+                        class: 'net.nanopay.accounting.AccountingTimeOutModal'
+                      }));
+                    } else {
+                      this.add(this.NotificationMessage.create({
+                        message: result.reason,
+                        type: 'error'
+                     }));
+                    }
+                    return;
+                  }
+                }
+
                 this.stack.push({
                   class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: invoice,
-                  isPayable: true
+                  isPayable: true,
                 });
               })
             .end();

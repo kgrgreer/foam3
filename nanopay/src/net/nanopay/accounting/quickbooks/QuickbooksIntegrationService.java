@@ -32,7 +32,6 @@ import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
 
-import javax.xml.transform.Result;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
