@@ -25,7 +25,8 @@ foam.CLASS({
     'stack',
     'user',
     'xeroService',
-    'quickbooksService'
+    'quickbooksService',
+    'accountingIntegrationUtil'
   ],
 
   exports: [
@@ -167,43 +168,11 @@ foam.CLASS({
 
             })
               .on('click', async () => {
-                // check if invoice is in sync with accounting software
-                let service = null;
-                if ( this.XeroInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
-                  if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-                    service = this.xeroService;
-                  } else {
-                    this.add(this.NotificationMessage.create({ message: ' Cannot sync invoice, Not signed into Xero.', type: 'error' }));
-                    return;
-                  }
-                } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
-                  if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
-                  service = this.quickbooksService;
-                  } else {
-                    this.add(this.NotificationMessage.create({ message: ' Cannot sync invoice, Not signed into Quickbooks.', type: 'error' }));
-                    return;
-                  }
-                }
-                if ( service != null ) {
-                  let result = await service.singleSync(null, invoice);
-                  if ( ! result.result ) {
-                    if ( result.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-                      this.ctrl.add(this.Popup.create({ closeable: false }).tag({
-                        class: 'net.nanopay.accounting.AccountingTimeOutModal'
-                      }));
-                    } else {
-                      this.add(this.NotificationMessage.create({
-                        message: result.reason,
-                        type: 'error'
-                     }));
-                    }
-                    return;
-                  }
-                }
-
+                let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+                if ( updatedInvoice === null ) return;
                 this.stack.push({
                   class: 'net.nanopay.sme.ui.InvoiceOverview',
-                  invoice: invoice,
+                  invoice: updatedInvoice,
                   isPayable: true,
                 });
               })

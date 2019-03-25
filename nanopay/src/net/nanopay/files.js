@@ -760,6 +760,7 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/IntegrationService' },
   { name: 'net/nanopay/accounting/AccountingIntegrationTrait' },
   { name: 'net/nanopay/accounting/BankSyncView', flags: ['web'] },
+  { name: 'net/nanopay/accounting/AccountingIntegrationUtil', flags: ['web'] },
 
 
   // meter

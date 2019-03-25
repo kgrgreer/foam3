@@ -23,7 +23,8 @@ foam.CLASS({
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
-    'net.nanopay.sme.ui.VerifyEmail'
+    'net.nanopay.sme.ui.VerifyEmail',
+    'net.nanopay.accounting.AccountingIntegrationUtil'
   ],
 
   exports: [
@@ -38,7 +39,8 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'privacyUrl',
-    'termsUrl'
+    'termsUrl',
+    'accountingIntegrationUtil'
   ],
 
   implements: [
@@ -148,6 +150,14 @@ foam.CLASS({
         return this.ComplianceBannerData.create({
           isDismissed: true
         });
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.accounting.AccountingIntegrationUtil',
+      name: 'accountingIntegrationUtil',
+      factory: function() {
+        return this.AccountingIntegrationUtil.create();
       }
     }
   ],

@@ -25,7 +25,8 @@ foam.CLASS({
     'checkComplianceAndBanking',
     'currencyDAO',
     'stack',
-    'user'
+    'user',
+    'accountingIntegrationUtil'
   ],
 
   properties: [
@@ -72,10 +73,11 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'viewDetails',
               label: 'View details',
-              code: function(X) {
+              code: async function(X) {
+                let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
                 X.stack.push({
                   class: 'net.nanopay.sme.ui.InvoiceOverview',
-                  invoice: this,
+                  invoice: updatedInvoice,
                   isPayable: true
                 });
               }
@@ -88,7 +90,9 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: async function(X) {
-                if ( ! await self.checkAccountingSync(this) ) {
+                let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+
+                if (! updatedInvoice) {
                   return;
                 }
                 self.checkComplianceAndBanking().then((result) => {
@@ -96,7 +100,7 @@ foam.CLASS({
                     X.menuDAO.find('sme.quickAction.send').then((menu) => {
                       var clone = menu.clone();
                       Object.assign(clone.handler.view, {
-                        invoice: this,
+                        invoice: updatedInvoice,
                         isForm: false,
                         isList: false,
                         isDetailView: true,
@@ -175,51 +179,15 @@ foam.CLASS({
     }
   ],
 
-  methods: [
-    async function checkAccountingSync(invoice) {
-      let service = null;
-      if ( this.XeroInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
-        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-          service = this.xeroService;
-        } else {
-          this.ctrl.notify(' Cannot sync invoice, Not signed into Xero.', 'error');
-          return false;
-        }
-      } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
-        if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
-        service = this.quickbooksService;
-        } else {
-          this.ctrl.notify(' Cannot sync invoice, Not signed into Quickbooks.', 'error');
-          return false;
-        }
-      }
-      if ( service != null ) {
-        let result = await service.singleSync(null, invoice);
-        if ( ! result.result ) {
-          if ( result.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-            this.ctrl.add(this.Popup.create({ closeable: false }).tag({
-              class: 'net.nanopay.accounting.AccountingTimeOutModal'
-            }));
-          } else {
-            this.ctrl.notify(result.reason, 'error');
-          }
-          return false;
-        }
-      }
-      return true;
-    }
-  ],
-
   listeners: [
     {
       name: 'dblclick',
       code: async function(invoice, X) {
-        if ( ! await this.checkAccountingSync(invoice) ) {
-          return;
-        }
+        let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+        if ( updatedInvoice === null ) return;
         this.stack.push({
           class: 'net.nanopay.sme.ui.InvoiceOverview',
-          invoice: invoice,
+          invoice: updatedInvoice,
           isPayable: true
         });
       }
