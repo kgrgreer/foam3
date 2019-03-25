@@ -53,8 +53,7 @@ foam.CLASS({
             MLang.AND(
               MLang.INSTANCE_OF(BankAccount.class),
               MLang.EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-              MLang.EQ(BankAccount.ENABLED, true),
-              MLang.EQ(BankAccount.DELETED, false)
+              MLang.EQ(BankAccount.ENABLED, true)
             ))
             .limit(1).select(new ArraySink())).getArray();
 
