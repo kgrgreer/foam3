@@ -38,7 +38,12 @@ foam.CLASS({
           Transaction child = (Transaction) o;
           child.setStatus(child.getInitialStatus());
 
-          // need to use the put_ override because of the newly added transaction.status permissionRequired: true property
+          /**
+           * need to use the put_ override because of the newly added transaction.status permissionRequired: true property
+           * we call put_ with the DAO context rather than the calling context instead
+           * this is because the user in the calling context may not have permission to update
+           * all neccessary properties
+           */
           children.put_(getX(), child);
         }
       }
