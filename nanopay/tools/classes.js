@@ -475,6 +475,9 @@ var classes = [
   'net.nanopay.meter.test.ComplianceAwareDummy',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
+
+  // sett
+  'net.nanopay.invoice.InvoiceFilteredSettlementReport',
 ];
 
 var abstractClasses = [

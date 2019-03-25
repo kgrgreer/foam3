@@ -2,9 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.invoice',
   name: 'InvoiceFilteredSettlementReport',
 
-  extends: [
-    'foam.blob.ProxyBlobService'
-  ],
+  extends: 'foam.blob.ProxyBlobService',
 
   implements: [
     'foam.nanos.http.WebAgent'
@@ -23,7 +21,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.dao.ArraySink',
     'foam.dao.Sink',
-    'foam.util.SafetyUtil',
     'javax.servlet.http.HttpServletRequest',
     'javax.servlet.http.HttpServletResponse',
     'java.io.*',
@@ -55,26 +52,21 @@ foam.CLASS({
 
   properties: [
     {
-      type: 'foam.dao.Sink',
-      javaType: 'foam.dao.ArraySink',
+      class: 'FObjectProperty',
+      of: 'foam.dao.ArraySink',
       name: 'dao_'
     },
     {
-      type: 'Date',
+      class: 'Date',
       name: 'endDate'
     },
     {
-      type: 'Date',
+      class: 'Date',
       name: 'startDate'
     },
     {
-      type: 'Boolean',
+      class: 'Boolean',
       name: 'dated'
-    },
-    {
-      class: 'Proxy',
-      of: 'foam.nanos.http.WebAgent',
-      name: 'delegate'
     }
 
   ],
@@ -86,6 +78,7 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data:
             `
+
             protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
             @Override
             protected StringBuilder initialValue() {
@@ -109,6 +102,10 @@ foam.CLASS({
       name: 'checkAndSetCalendarFields',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'start',
           type: 'String'
         },
@@ -119,18 +116,18 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          long sT = Long.parseLong(start);
-          long eT = Long.parseLong(end);
-          startDate  = Calendar.getInstance();
-          endDate    = Calendar.getInstance();
+          // long sT = Long.parseLong(start);
+          // long eT = Long.parseLong(end);
 
-          startDate.setTimeInMillis(sT);
-          endDate.setTimeInMillis(eT);
-          dated = true;
+          setStartDate(new Date(start));
+          setEndDate(new Date(end));
+
+          setDated(true);
         } catch (Exception e ) { 
           // Integer.parseInt throws java.lang.NumberFormatException
+          Logger logger = (Logger) x.get("logger");
           logger.warning("Error generating settlementReport - passed in date filter error: ", e); 
-          dated = false;
+          setDated(false);
         }
       `
     },
@@ -157,7 +154,7 @@ foam.CLASS({
         }
 
         // Confirm Calendar search fields
-        checkAndSetCalendarFields(req.getParameter("startDate"),req.getParameter("endDate"));
+        checkAndSetCalendarFields(x, req.getParameter("startDate"), req.getParameter("endDate"));
 
         // User check:
         User business = findUser(x,id);
@@ -208,12 +205,12 @@ foam.CLASS({
       javaCode:
       `
         DAO  invoiceDAO = (DAO) x.get("invoiceDAO");
-        if ( dated ) {
-          dao_ = (ArraySink) invoiceDAO.where(
+        if ( getDated() ) {
+          setDao_((ArraySink) invoiceDAO.where(
             AND(
               NEQ(Invoice.PAYMENT_DATE, null),
-              GTE(Invoice.PAYMENT_DATE, startDate.getTime()),
-              LTE(Invoice.PAYMENT_DATE, endDate.getTime()),
+              GTE(Invoice.PAYMENT_DATE, getStartDate().getTime()),
+              LTE(Invoice.PAYMENT_DATE, getEndDate().getTime()),
               OR(
                 EQ(Invoice.PAYER_ID, user.getId()),
                 EQ(Invoice.PAYEE_ID, user.getId()),
@@ -221,10 +218,10 @@ foam.CLASS({
               )
             ))
             .orderBy(new foam.mlang.order.Desc(Invoice.PAYMENT_DATE))
-            .select(new ArraySink());
+            .select(new ArraySink()));
 
         } else {
-          dao_ = (ArraySink) invoiceDAO.orderBy(new foam.mlang.order.Desc(Invoice.PAYMENT_DATE))
+          setDao_((ArraySink) invoiceDAO.orderBy(new foam.mlang.order.Desc(Invoice.PAYMENT_DATE))
             .where(
               AND(
                 NEQ(Invoice.PAYMENT_DATE, null),
@@ -234,29 +231,8 @@ foam.CLASS({
                   EQ(Invoice.CREATED_BY, user.getId())
                 )
               ))
-            .select(new ArraySink());  
+            .select(new ArraySink()));
         }
-      `
-    },
-    {
-      name: 'getMonthName',
-      javaType: 'String',
-      args: [
-        {
-          name: 'num',
-          type: 'int'
-        }
-      ],
-      javaCode:
-      `
-        String month;
-        String[] months = (new DateFormatSymbols()).getMonths();
-        if (num >= 0 && num <= 11 ) {
-            month = months[num];
-        } else {
-          throw new IllegalStateException("Month not defined.");
-        }
-        return month;
       `
     },
     {
@@ -279,7 +255,7 @@ foam.CLASS({
 
         User user = (User) userDAO.find(id);
     
-        if ( ! user instanceof Business ) {
+        if ( ! (user instanceof Business) ) {
           UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO
             .find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
           user = (User) userDAO
@@ -307,25 +283,21 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         StringBuilder title = sb.get();
 
-        if ( dated ) {
+        if ( getDated() ) {
           try {
             title.append("Settlement report for ")
-              .append(startDate.get(Calendar.YEAR))
-              .append(getMonthName(startDate.get(Calendar.MONTH)))
-              .append("-").append(startDate.get(Calendar.DAY_OF_MONTH))
+              .append(getStartDate())
               .append(" to ")
-              .append(endDate.get(Calendar.YEAR)).append("-")
-              .append(getMonthName(endDate.get(Calendar.MONTH)))
-              .append("-").append(endDate.get(Calendar.DAY_OF_MONTH)))
-              .append("\n for Business ID: ")
+              .append(getEndDate())
+              .append("\\n for Business ID: ")
               .append(user.getId())
-              .append("\n\n");
+              .append("\\n\\n");
           } catch (Exception e) {
             logger.warning("Error generating settlementReport - Error in title", e);
-            return;
+            return null;
           }
         } else {
-          title.append("Settlement report\n for Business ID: ").append(user.getId()).append("\n\n");
+          title.append("Settlement report\\n for Business ID: ").append(user.getId()).append("\\n\\n");
         }
     
         String path = "/opt/nanopay/SettlementReport/[" + user.getOrganization() + "]SettlementReport.pdf";
@@ -335,9 +307,9 @@ foam.CLASS({
           PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
           document.open();
 
-          document.add(new Paragraph(title));
+          document.add(new Paragraph(title.toString()));
     
-          List list = createListForOneInvoice(x, user.getOrganization());
+          List list = createListForInvoices(x, user.getOrganization());
     
           document.add(list);
           document.add(Chunk.NEWLINE);
@@ -354,7 +326,7 @@ foam.CLASS({
     },
     {
       name: 'createListForInvoices',
-      javaType: 'List<List>',
+      javaType: 'List',
       args: [
         {
           name: 'x',
@@ -371,7 +343,7 @@ foam.CLASS({
         SimpleDateFormat df     = new SimpleDateFormat("yyyy/dd/MM, HH:mm:ss");
         User tempUser           = null;
         String title            = null;
-        java.util.List<Invoice> invoiceArray_ = dao_.getArray();
+        java.util.List<Invoice> invoiceArray_ = getDao_().getArray();
         List list = new List(List.UNORDERED);
 
         String transDate = "";
@@ -381,44 +353,44 @@ foam.CLASS({
         String srcCurrency = "";
         String dstCurrency = "";
         String exRate = "";
-        String inStatus = "";
-        String tanId = "";
-        String inORN = "";
-        String inID = "";
-        String inAmount = "";
+        String invoiceStatus = "";
+        String transactionID = "";
+        String invoicePurchaseOrder = "";
+        String invoiceID = "";
+        String invoiceAmount = "";
 
         for (Invoice invoice : invoiceArray_ ) {
           // Format Information variables for each Invoice
           transDate         = df.format(invoice.getPaymentDate());
           tempUser          = (User) userDAO.find(invoice.getCreatedBy());
-          createdBy_String  = SafetyUtil.isEmpty(tempUser) ? "n/a" : tempUser.label();
+          createdBy_String  = tempUser == null ? "n/a" : tempUser.label();
           tempUser          = (User) userDAO.find(invoice.getPayerId());
-          businessNamePayer = SafetyUtil.isEmpty(tempUser) ? "n/a" : tempUser.getOrganization();
+          businessNamePayer = tempUser == null ? "n/a" : tempUser.getOrganization();
           tempUser          = (User) userDAO.find(invoice.getPayeeId());
-          businessNamePayee = SafetyUtil.isEmpty(tempUser) ? "n/a" : tempUser.getOrganization();
+          businessNamePayee = tempUser == null ? "n/a" : tempUser.getOrganization();
           srcCurrency       = invoice.getSourceCurrency();
           dstCurrency       = invoice.getDestinationCurrency();
-          exRate            = invoice.getExchangeRate().toString();
-          inStatus          = invoice.getStatus().getLabel();
-          tanId             = invoice.getReferenceId();
-          inORN             = invoice.getPurchaseOrder();
-          inID              = invoice.getId().toString();
-          inAmount          = invoice.getAmount().toString();
+          exRate            = invoice.getExchangeRate() != 1 ? Long.toString(invoice.getExchangeRate()) : null;
+          invoiceStatus          = invoice.getStatus().getLabel();
+          transactionID             = invoice.getReferenceId();
+          invoicePurchaseOrder             = invoice.getPurchaseOrder();
+          invoiceID              = Long.toString(invoice.getId());
+          invoiceAmount          = Long.toString(invoice.getAmount());
 
           // Put all variables with text for each line, for write to doc.pdf(settlementReport) 
-          list.add(new ListItem("Invoice ID: " + inID + " PO: " + inORN ));
+          list.add(new ListItem("Invoice ID: " + invoiceID + " PO: " + invoicePurchaseOrder ));
           list.add(new ListItem("\tTransaction Date: " + transDate));
           list.add(new ListItem("\tInvoice was established by: " + createdBy_String));
           list.add(new ListItem("\tPayer: " + businessNamePayer));
           list.add(new ListItem("\tPayee: " + businessNamePayee));
           list.add(new ListItem("\tSource Account Currency Type: " + srcCurrency));
           list.add(new ListItem("\tDestination Account Currency Type: " + dstCurrency));
-          if ( exRate != null && exRate.length() != 0 && exRate != 1 ) {
+          if ( exRate != null && exRate.length() != 0 ) {
             list.add(new ListItem("\tExchange Rate: " + exRate));
           }
-          list.add(new ListItem("\tStatus of Payment: " + inStatus));
-          list.add(new ListItem("\tTransaction ID: " + tanId));
-          list.add(new ListItem("\tInvoice Amount: " + inAmount + "\n\n"));
+          list.add(new ListItem("\tStatus of Payment: " + invoiceStatus));
+          list.add(new ListItem("\tTransaction ID: " + transactionID));
+          list.add(new ListItem("\tInvoice Amount: " + invoiceAmount + "\\n\\n"));
         }
         return list;
       `
@@ -448,7 +420,7 @@ foam.CLASS({
         String businessName = business.getBusinessName();
         String downloadName = "[" + businessName + "]SettlementReport.zip";
     
-        response.setHeader("Content-Disposition", "attachment;fileName=\"" + downloadName + "\"");
+        response.setHeader("Content-Disposition", "attachment;fileName=\\"" + downloadName + "\\"");
     
         DataOutputStream os = null;
         ZipOutputStream zipos = null;
