@@ -9,6 +9,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.SecurefactService',
     'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
@@ -21,12 +22,17 @@ foam.CLASS({
       javaCode: `
         Business business = (Business) obj;
         SecurefactService securefactService = (SecurefactService) x.get("securefactService");
-        LEVResponse response = securefactService.levSearch(x, business);
-        ruler.putResult(
-          response.hasCloseMatches()
-            ? ComplianceValidationStatus.VALIDATED
-            : ComplianceValidationStatus.INVESTIGATING
-        );
+        try {
+          LEVResponse response = securefactService.levSearch(x, business);
+          ruler.putResult(
+            response.hasCloseMatches()
+              ? ComplianceValidationStatus.VALIDATED
+              : ComplianceValidationStatus.INVESTIGATING
+          );
+        } catch (IllegalStateException e) {
+          ((Logger) x.get("logger")).warning("LEVValidator failed.", e);
+          ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
+        }
       `
     }
   ]

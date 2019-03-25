@@ -10,6 +10,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.SecurefactService',
     'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse'
@@ -21,12 +22,17 @@ foam.CLASS({
       javaCode: `
         User user = (User) obj;
         SecurefactService securefactService = (SecurefactService) x.get("securefactService");
-        SIDniResponse response = securefactService.sidniVerify(x, user);
-        ruler.putResult(
-          response.getVerified()
-            ? ComplianceValidationStatus.VALIDATED
-            : ComplianceValidationStatus.INVESTIGATING
-        );
+        try {
+          SIDniResponse response = securefactService.sidniVerify(x, user);
+          ruler.putResult(
+            response.getVerified()
+              ? ComplianceValidationStatus.VALIDATED
+              : ComplianceValidationStatus.INVESTIGATING
+          );
+        } catch (IllegalStateException e) {
+          ((Logger) x.get("logger")).warning("SIDniValidator failed.", e);
+          ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
+        }
       `
     }
   ]
