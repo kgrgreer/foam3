@@ -32,6 +32,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'auth',
     'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
     'ctrl',
@@ -305,6 +306,13 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'isPendingApproval',
+      expression: function(invoice) {
+        return invoice.status === this.InvoiceStatus.PENDING_APPROVAL;
+      }
+    },
+    {
+      class: 'Boolean',
       name: 'isMarkCompletable',
       documentation: `This boolean is a check for receivable invoices that are completed from a user's perspective but money is yet to be fully transfered.
       Depspite the current requirements requiring this, the current(Jan 2019) implementation does not have this scenerio possible.`,
@@ -451,6 +459,9 @@ foam.CLASS({
                   .start(this.PAID)
                     .addClass('sme').addClass('button').addClass('primary')
                     .addClass(this.myClass('primary-disable'))
+                  .end()
+                  .start(this.APPROVE)
+                    .addClass('sme').addClass('button').addClass('primary')
                   .end()
                 .end()
               .end()
@@ -706,6 +717,28 @@ foam.CLASS({
         // Always disabled the paid button
         return false;
       },
+    },
+    {
+      name: 'approve',
+      label: 'Approve',
+      isAvailable: async function() {
+        var isAdmin = await this.auth.check(null, 'invoice.pay');
+        return isAdmin && this.isPayable && this.isPendingApproval;
+      },
+      code: function(X) {
+        X.menuDAO.find('sme.quickAction.send').then((menu) => {
+          var clone = menu.clone();
+          Object.assign(clone.handler.view, {
+            isApproving: true,
+            isForm: false,
+            isDetailView: true,
+            invoice: this.invoice.clone()
+          });
+          clone.launch(X, X.controllerView);
+        }).catch((err) => {
+          console.warn('Error occured when checking the compliance: ', err);
+        });
+      }
     },
     {
       name: 'sendReminder',
