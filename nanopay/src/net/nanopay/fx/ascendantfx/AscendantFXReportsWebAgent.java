@@ -417,7 +417,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       .find(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-        EQ(BankAccount.DELETED, false),
         EQ(Account.OWNER, business.getId())));
 
     if ( bankAccount == null ) {
