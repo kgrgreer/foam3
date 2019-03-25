@@ -468,7 +468,26 @@ var classes = [
   'net.nanopay.meter.compliance.NanopayComplianceService',
   'net.nanopay.meter.compliance.canadianSanction.Record',
   'net.nanopay.meter.compliance.CanadianSanctionValidator',
-  'net.nanopay.meter.compliance.dowJones.NameSearch',
+
+  // dow jones
+  'net.nanopay.meter.compliance.dowJones.enums.ContentSet',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterAMC',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterOEL',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterOOL',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterPEP',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterRegion',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterRegionKeys',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterSIC',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterSL',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterSOC',
+  'net.nanopay.meter.compliance.dowJones.enums.IDTypeKey',
+  'net.nanopay.meter.compliance.dowJones.enums.RecordType',
+  'net.nanopay.meter.compliance.dowJones.enums.SearchType',
+  'net.nanopay.meter.compliance.dowJones.models.BaseSearch',
+  'net.nanopay.meter.compliance.dowJones.models.EntityNameSearch',
+  'net.nanopay.meter.compliance.dowJones.models.IDTypeSearch',
+  'net.nanopay.meter.compliance.dowJones.models.NameSearch',
+  'net.nanopay.meter.compliance.dowJones.models.PersonNameSearch',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',

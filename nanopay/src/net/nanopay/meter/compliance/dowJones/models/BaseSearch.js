@@ -1,44 +1,15 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.dowjones',
-  name: 'NameSearch',
+  package: 'net.nanopay.meter.compliance.dowJones.models',
+  name: 'BaseSearch',
 
-  documentation: `Model for a basic name search in the Dow Jones Risk Database.`,
+  documentation: `Base class model for searching the Dow Jones Risk Database.`,
 
   properties: [
     {
-      class: 'String',
-      name: 'name',
-      documentation: 'The search text to search the Name field.'
-    },
-    {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.ContentSet',
       name: 'contentSet',
       documentation: 'The content sets included in the search.'
-    },
-    {
-      class: 'Enum',
-      name: 'recordType',
-      documentation: 'The record types included in the search.'
-    },
-    {
-      class: 'Enum',
-      name: 'searchType',
-      documentation: 'The desired tolerance for the search.'
-    },
-    {
-      class: 'Date',
-      name: 'dateOfBirth',
-      documentation: 'The date of birth for the search. Only applicable if recordType=P in the query.'
-    },
-    {
-      class: 'Boolean',
-      name: 'dateOfBirthStrict',
-      documentation: 'Indicates whether or not the dateOfBirth should be strictly matched.'
-    },
-    {
-      class: 'Boolean',
-      name: 'excludeDeceased',
-      documentation: 'Indicates whether or not to exclude deceased Person records.'
     },
     {
       class: 'Int',
@@ -52,6 +23,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterRegionKeys',
       name: 'filterRegionKeys',
       documentation: 'Filter to restrict the search results by region types.'
     },
@@ -63,6 +35,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterRegion',
       name: 'filterRegion',
       documentation: 'Filter to restrict the search results by region.'
     },
@@ -74,6 +47,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterPEP',
       name: 'filterPEP',
       documentation: 'Filter to restrict the search results by PEP category.'
     },
@@ -90,6 +64,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterSIC',
       name: 'filterSIC',
       documentation: 'Filter to restrict the search results by Special Interest Category.'
     },
@@ -101,6 +76,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterAMC',
       name: 'filterAMC',
       documentation: 'Filter to restrict the search results by Adverse Media Category.'
     },
@@ -112,6 +88,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterSL',
       name: 'filterSL',
       documentation: 'Filter to restrict the search results by Sanctions Lists.'
     },
@@ -138,6 +115,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterOOL',
       name: 'filterOOL',
       documentation: 'Filter to restrict the search results by Other Official Lists.'
     },
@@ -164,6 +142,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterOEL',
       name: 'filterOEL',
       documentation: 'Filter to restrict the search results by Other Exclusion Lists.'
     },
@@ -190,6 +169,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterSOC',
       name: 'filterSOC',
       documentation: 'Filter to restrict the search results by State Ownership.'
     },
@@ -197,11 +177,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'filterSOCIncludeUnknown',
       documentation: 'Indicates whether or not to include unknown State Ownership Level values in the State Ownership filter.'
-    },
-    {
-      class: 'Date',
-      name: 'filterLRDFrom',
-      documentation: 'The From Date (date inclusive) of the revision date range filter.'
     },
     {
       class: 'Date',

@@ -778,7 +778,6 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/quick/model/QuickQueryVendorResponse' },
   { name: 'net/nanopay/integration/quick/model/QuickQueryVendors' },
 
-
   // integration stub
   { name: 'net/nanopay/integration/ClientIntegrationService' },
   { name: 'net/nanopay/integration/IntegrationService' },
@@ -786,7 +785,6 @@ FOAM_FILES([
   { name: 'net/nanopay/integration/xero/XeroIntegrationService' },
   { name: 'net/nanopay/integration/AccountingIntegrationTrait' },
   { name: 'net/nanopay/integration/BankSyncView', flags: ['web'] },
-
 
   // meter
   { name: 'net/nanopay/meter/Blacklist' },
@@ -805,6 +803,26 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
   { name: 'net/nanopay/meter/compliance/CanadianSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/refinements' },
+
+  // dow jones
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/ContentSet' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterAMC' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterOEL' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterOOL' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterPEP' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterRegion' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterRegionKeys' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterSIC' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterSL' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterSOC' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/IDTypeKey' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/RecordType' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/SearchType' },
+  { name: 'net/nanopay/meter/compliance/dowJones/models/BaseSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/models/EntityNameSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/models/IdTypeSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/models/NameSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/models/PersonNameSearch' },
 
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
