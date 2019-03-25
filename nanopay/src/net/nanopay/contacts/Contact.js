@@ -55,8 +55,11 @@ foam.CLASS({
           typeof organization !== 'string' ||
           organization.trim().length === 0
         ) {
-          return 'Company name required';
+          return 'Business name required';
         }
+      },
+      postSet: function(_,n) {
+        this.businessName = n;
       }
     },
     {
@@ -77,14 +80,7 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      validateObj: function(firstName) {
-        if (
-          typeof firstName !== 'string' ||
-          firstName.trim().length === 0
-        ) {
-          return 'First name required';
-        }
-      }
+      validateObj: function(firstName) {}
     },
     {
       name: 'middleName',
@@ -92,14 +88,7 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      validateObj: function(lastName) {
-        if (
-          typeof lastName !== 'string' ||
-          lastName.trim().length === 0
-        ) {
-          return 'Last name required';
-        }
-      }
+      validateObj: function(lastName) {}
     },
     {
       class: 'foam.core.Enum',
@@ -193,14 +182,10 @@ foam.CLASS({
             isValidEmail = false;
           }
 
-          if ( SafetyUtil.isEmpty(this.getFirstName()) ) {
-            throw new IllegalStateException("First name is required.");
-          } else if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
+          if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("First name cannot exceed 70 characters.");
           } else if ( Pattern.matches(containsDigitRegex, this.getFirstName()) ) {
             throw new IllegalStateException("First name cannot contain numbers.");
-          } else if ( SafetyUtil.isEmpty(this.getLastName()) ) {
-            throw new IllegalStateException("Last name is required.");
           } else if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("Last name cannot exceed 70 characters.");
           } else if ( Pattern.matches(containsDigitRegex, this.getLastName()) ) {

@@ -20,6 +20,9 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -222,15 +225,30 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'bankAccount',
       expression: function() {
-        var accountId = this.isPayable ?
-          this.invoice.account :
-          this.invoice.destinationAccount;
-        if ( accountId ) {
-          this.accountDAO.find(accountId).then((account) => {
+        if ( this.isPayable ) {
+          this.user.accounts.find(this.invoice.account).then((account) => {
               this.bankAccount = account;
             });
-          return null;
+        } else if ( ! this.isPayable && this.invoice.destinationAccount ) {
+          this.user.accounts
+            .find(this.invoice.destinationAccount).then((account) => {
+              this.bankAccount = account;
+            });
+        } else {
+          this.user.accounts
+            .where(
+              this.AND(
+                this.EQ(this.Account.IS_DEFAULT, true),
+                this.OR(
+                  this.INSTANCE_OF(this.CABankAccount),
+                  this.INSTANCE_OF(this.USBankAccount)
+                )
+              )
+            ).select().then((account) => {
+              this.bankAccount = account.array.shift();
+            });
         }
+        return null;
       }
     },
     {
@@ -547,7 +565,7 @@ foam.CLASS({
                   .start().show(this.showBankAccount$).addClass('invoice-text')
                     .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
-                      if ( account != null ) {
+                      if ( account ) {
                         return `${account.name} ` +
                           `${'*'.repeat(account.accountNumber.length-4)}` +
                           `${account.accountNumber.slice(-4)}`;
