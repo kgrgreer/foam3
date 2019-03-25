@@ -61,7 +61,7 @@ declare -a arr=(
   "permissions"
   "questionnaires"
   "quickbooksConfig"
-  "quickbookToken"
+  "quickbooksToken"
   "regions"
   "reports"
   "scripts"

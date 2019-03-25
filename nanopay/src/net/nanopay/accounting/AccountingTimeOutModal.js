@@ -8,6 +8,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.accounting.IntegrationCode'
   ],
 
   implements: [
@@ -133,7 +134,11 @@ foam.CLASS({
       name: 'syncTimeOutModal',
       label: 'Sync',
       code: async function() {
-        var url = window.location.origin + '/service/xeroWebAgent?portRedirect=' + window.location.hash.slice(1);
+
+        let webAgent =
+          this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ? 'quickbooksWebAgent' : 'xeroWebAgent';
+
+        var url = window.location.origin + '/service/' + webAgent + '?portRedirect=' + window.location.hash.slice(1);
         var sessionId = localStorage['defaultSession'];
         if ( sessionId ) {
           url += '&sessionId=' + sessionId;

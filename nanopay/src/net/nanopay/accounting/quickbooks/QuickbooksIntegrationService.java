@@ -159,6 +159,36 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   @Override
+  public ResultResponse singleSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
+    User user = (User) x.get("user");
+    List<String> errorResult = new ArrayList<>();
+    List<String> successResult = new ArrayList<>();
+
+    try {
+      QuickbooksInvoice qInvoice = (QuickbooksInvoice) nanoInvoice;
+      String type = user.getId() == qInvoice.getPayeeId() ?
+        "Invoice" : "bill";
+      Transaction invoice = fetchInvoiceById(x, type, qInvoice.getQuickId());
+
+      String importResult = importInvoice(x, invoice);
+      if ( importResult != null ) {
+        errorResult.add(importResult);
+      } else {
+        successResult.add("QuickBooks invoice " + invoice.getDocNumber() + " import successfully.");
+      }
+
+    } catch ( Exception e ) {
+      return errorHandler(e);
+    }
+
+    return new ResultResponse.Builder(x)
+      .setResult(true)
+      .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
+      .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
+      .build();
+  }
+
+  @Override
   public ResultResponse syncSys(X x) {
 
     return new ResultResponse.Builder(x).setResult(true).build();
@@ -779,6 +809,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return (NameBase) sendRequest(x, query).get(0);
   }
 
+  public Transaction fetchInvoiceById(X x, String type, String id) {
+    String query = "select * from "+ type +" where id = '"+ id +"'";
+    return (Transaction) sendRequest(x, query).get(0);
+  }
+
   public List fetchInvoices(X x) throws Exception {
 
     List result = new ArrayList();
@@ -800,7 +835,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     AppConfig app   = group.getAppConfig(x);
     DAO                 configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig    config    = (QuickbooksConfig)configDAO.find(app.getUrl());
-    QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
+    QuickbooksToken  token = (QuickbooksToken) store.inX(x).find(user.getId());
+
+    if ( token == null ) {
+      throw new AccountingException(AccountingErrorCodes.TOKEN_EXPIRED.getLabel(), AccountingErrorCodes.TOKEN_EXPIRED);
+    }
 
     try {
       Config.setProperty(Config.BASE_URL_QBO, config.getIntuitAccountingAPIHost() + "/v3/company/");
@@ -824,6 +863,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
 
+    if ( token == null ) {
+      throw new AccountingException(AccountingErrorCodes.TOKEN_EXPIRED.getLabel(), AccountingErrorCodes.TOKEN_EXPIRED);
+    }
+
     try {
       Config.setProperty(Config.BASE_URL_QBO, config.getIntuitAccountingAPIHost() + "/v3/company/");
 
@@ -837,10 +880,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     }
   }
 
-  public ResultResponse singleSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
-    return null;
-  }
-
   public void batchOperation(X x, BatchOperation operation, CallbackHandler callbackHandler) {
     User user       = (User) x.get("user");
     DAO store       = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
@@ -849,6 +888,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO                         configDAO = ((DAO) x.get("quickbooksConfigDAO")).inX(x);
     QuickbooksConfig                 config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.find(user.getId());
+
+    if ( token == null ) {
+      throw new AccountingException(AccountingErrorCodes.TOKEN_EXPIRED.getLabel(), AccountingErrorCodes.TOKEN_EXPIRED);
+    }
 
     try {
       Config.setProperty(Config.BASE_URL_QBO, config.getIntuitAccountingAPIHost() + "/v3/company/");
