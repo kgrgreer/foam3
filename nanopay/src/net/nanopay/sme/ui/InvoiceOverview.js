@@ -151,7 +151,7 @@ foam.CLASS({
     ^annotation {
       font-size: 10px;
     }
-    ^ .primary-disable {
+    ^primary-disable {
       background: #bdb4fd !important;
       cursor: default !important;
     }
@@ -468,15 +468,16 @@ foam.CLASS({
                   .end()
                   .start(this.PAID)
                     .addClass('sme').addClass('button').addClass('primary')
-                    .addClass('primary-disable')
+                    .addClass(this.myClass('primary-disable'))
                   .end()
                   .start(this.APPROVE)
                     .addClass('sme').addClass('button').addClass('primary')
-                    .enableClass('primary-disable', this.slot(
-                      function(canApproveInvoice) {
+                    .enableClass(
+                      this.myClass('primary-disable'),
+                      this.slot(function(canApproveInvoice) {
                         return ! canApproveInvoice;
-                      }
-                    ))
+                      })
+                    )
                   .end()
                 .end()
               .end()
