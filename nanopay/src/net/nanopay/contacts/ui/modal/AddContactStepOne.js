@@ -63,6 +63,7 @@ foam.CLASS({
     { name: 'BUSINESS_PLACEHOLDER', message: 'Enter business name' },
     { name: 'EMAIL_PLACEHOLDER', message: 'example@domain.com' },
     { name: 'INVITE_EXPLAINATION', message: `You confirm you have a business relationship with this contact and acknowledge that notifications for the Ablii service will be sent to the email address provided above.` },
+    { name: 'CONTACT_EXIST', message: 'Contact with same email address already exists.' },
     { name: 'STEP_INDICATOR', message: 'Step 1 of 3' }
   ],
 
@@ -197,10 +198,7 @@ foam.CLASS({
               this.EQ(this.Contact.EMAIL, this.wizard.data.email)
             ).select();
             if ( contact.array.length !== 0 ) {
-              this.ctrl.notify(
-                'Contact with same email address already exists',
-                'warning'
-              );
+              this.ctrl.notify(this.CONTACT_EXIST, 'warning');
               return;
             }
           } catch (err) {
