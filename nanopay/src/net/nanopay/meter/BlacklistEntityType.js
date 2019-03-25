@@ -9,6 +9,10 @@ foam.ENUM({
     {
       name: 'BUSINESS',
       label: 'Business'
+    },
+    {
+      name: 'ACCOUNT',
+      label: 'Account'
     }
   ]
 });

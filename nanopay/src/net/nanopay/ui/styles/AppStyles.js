@@ -20,7 +20,6 @@ foam.CLASS({
     table {
       border-collapse: collapse;
       margin: auto;
-      width: 962px;
     }
     thead > tr > th {
       font-family: 'Roboto';
