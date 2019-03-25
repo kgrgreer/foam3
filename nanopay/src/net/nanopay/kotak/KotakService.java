@@ -16,8 +16,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.*;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -93,7 +99,8 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     xmlOutputter.output(request);
 
     String xmlData = xmlOutputter.toString();
-    System.out.println("xml: " + xmlData);
+    System.out.println("payment xml: ");
+    System.out.println(xmlData);
 
     String response;
     try {
@@ -113,7 +120,33 @@ public class KotakService extends ContextAwareSupport implements Kotak {
         }
         response = sb.toString();
 
-        System.out.println("payment response: " + response);
+        // System.out.println("payment response: " + response);
+
+        String testResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        "<Payment xmlns=\"http://www.kotak.com/schemas/CMS_Generic/Payment_Response.xsd\">\n" +
+        "    <AckHeader>\n" +
+        "        <MessageId>apiErrorCodes2</MessageId>\n" +
+        "        <StatusCd>VAL_ERR</StatusCd>\n" +
+        "        <StatusRem>VAL_ERR_46-Duplicate MessageId.</StatusRem>\n" +
+        "    </AckHeader>\n" +
+        "</Payment>";
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document document = db.parse(new ByteArrayInputStream(response.getBytes()));
+
+        Element ackHeader = (Element) document.getElementsByTagName("AckHeader").item(0);
+
+        String messageId = ackHeader.getElementsByTagName("MessageId").item(0).getFirstChild().getNodeValue();
+        System.out.println("messageId: " + messageId);
+
+        String statusCd = ackHeader.getElementsByTagName("StatusCd").item(0).getFirstChild().getNodeValue();
+        System.out.println("statusCd: " + statusCd);
+
+        String statusRem = ackHeader.getElementsByTagName("StatusRem").item(0).getFirstChild().getNodeValue();
+        System.out.println("statusRem: " + statusRem);
+      } catch (ParserConfigurationException | SAXException e) {
+        e.printStackTrace();
       } finally {
         httpResponse.close();
       }
@@ -142,7 +175,8 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     xmlOutputter.output(request);
 
     String xmlData = xmlOutputter.toString();
-    System.out.println("xml: " + xmlData);
+    System.out.println("reversal xml: ");
+    System.out.println(xmlData);
 
     String response;
     try {
@@ -201,7 +235,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       logger.error(e);
     }
     // parse response
-    return (AcknowledgementType) parseMessage(testResponse, AcknowledgementType.class);
+    return (AcknowledgementType) parseSOAPMessage(testResponse, AcknowledgementType.class);
   }
 
 
@@ -231,7 +265,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     }
 
     // parse response
-    return (Reversal) parseMessage(testResponse, Reversal.class);
+    return (Reversal) parseSOAPMessage(testResponse, Reversal.class);
   }
 
 
@@ -407,7 +441,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
    * @param clazz the class
    * @return the parsed response
    */
-  protected FObject parseMessage(SOAPMessage message, Class clazz) {
+  protected FObject parseSOAPMessage(SOAPMessage message, Class clazz) {
     try {
       SOAPBody body = message.getSOAPBody();
 
@@ -415,7 +449,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       SOAPBodyElement child = (SOAPBodyElement) iterator.next();
 
       FObject obj = (FObject) getX().create(clazz);
-      parseBody(child, obj);
+      parseSOAPBody(child, obj);
       return obj;
     } catch (SOAPException e) {
       logger.error(e);
@@ -430,7 +464,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
    * @param element the current SOAP element
    * @param obj the current FOBject
    */
-  protected void parseBody(SOAPElement element, FObject obj) {
+  protected void parseSOAPBody(SOAPElement element, FObject obj) {
     if ( obj == null ) return;
 
     try {
@@ -455,7 +489,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
               if ( prop instanceof AbstractFObjectPropertyInfo ) {
                 // parse FObjectProperty
                 FObject value = (FObject) getX().create(prop.getValueClass());
-                parseBody(child, value);
+                parseSOAPBody(child, value);
                 prop.set(obj, value);
               } else if ( prop instanceof AbstractFObjectArrayPropertyInfo ) {
                 // parse FObjectArrayProperty
@@ -465,7 +499,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
                 Iterator array = child.getChildElements();
                 while ( array.hasNext() ) {
                   SOAPElement arrayChild = (SOAPElement) array.next();
-                  parseBody(arrayChild, value);
+                  parseSOAPBody(arrayChild, value);
                 }
                 list.add(value);
                 prop.set(obj, list.toArray());
