@@ -485,8 +485,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           ! SafetyUtil.isEmpty(customerAddress.getCountrySubDivisionCode()) ?
             regionService.getRegion(customerAddress.getCountrySubDivisionCode()) : null;
 
-        portalAddress.setAddress1(customerAddress.getLine1());
-        portalAddress.setAddress2(customerAddress.getLine2());
+        portalAddress.setSuite(customerAddress.getLine1());
         portalAddress.setCity(customerAddress.getCity());
         portalAddress.setPostalCode(customerAddress.getPostalCode());
         portalAddress.setRegionId(country != null ? country.getCode() : null);
@@ -620,7 +619,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       existInvoice.setPayeeId(contact.getId());
       existInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.UNPAID);
       existInvoice.setDueDate(( (Bill) qInvoice ).getDueDate());
-      existInvoice.setInvoiceFile(getAttachments(x, "bill", qInvoice.getId()));
+      //existInvoice.setInvoiceFile(getAttachments(x, "bill", qInvoice.getId()));
     }
 
     if ( qInvoice instanceof Invoice) {
@@ -629,7 +628,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       existInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
       existInvoice.setDraft(true);
       existInvoice.setDueDate(( (Invoice) qInvoice ).getDueDate());
-      existInvoice.setInvoiceFile(getAttachments(x, "invoice", qInvoice.getId()));
+     // existInvoice.setInvoiceFile(getAttachments(x, "invoice", qInvoice.getId()));
     }
 
     existInvoice.setAmount(Math.round(doubleAmount));

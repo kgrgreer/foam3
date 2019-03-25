@@ -106,15 +106,14 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       }
 
       foam.nanos.auth.Address nanoAddress = new foam.nanos.auth.Address.Builder(x)
-      .setAddress1(xeroAddress.getAddressLine1())
-      .setAddress2(xeroAddress.getAddressLine2())
-      .setCity(xeroAddress.getCity())
-      .setPostalCode(xeroAddress.getPostalCode() != null ? xeroAddress.getPostalCode() : "")
-      .setCountryId(country != null ? country.getCode() : null)
-      .setRegionId(region != null ? region.getCode() : null)
-      .setType(xeroAddress.getAddressType().value())
-      .setVerified(true)
-      .build();
+        .setSuite(xeroAddress.getAddressLine1())
+        .setCity(xeroAddress.getCity())
+        .setPostalCode(xeroAddress.getPostalCode() != null ? xeroAddress.getPostalCode() : "")
+        .setCountryId(country != null ? country.getCode() : null)
+        .setRegionId(region != null ? region.getCode() : null)
+        .setType(xeroAddress.getAddressType().value())
+        .setVerified(true)
+        .build();
 
       newContact.setBusinessAddress(nanoAddress);
     }
