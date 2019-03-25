@@ -59,8 +59,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
         EQ(BankAccount.DENOMINATION, request.getCurrencyId()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-        EQ(Account.OWNER, user.getId()),
-        NEQ(Account.DELETED, true)))
+        EQ(Account.OWNER, user.getId())))
       .select(new Count());
 
      // if the user is a business then the compliance should be passed
