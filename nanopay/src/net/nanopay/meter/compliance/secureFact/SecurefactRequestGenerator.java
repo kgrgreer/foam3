@@ -47,7 +47,7 @@ public class SecurefactRequestGenerator {
         || entityType.equals("Partnership")
         || entityType.equals("Trade Name")
       ) {
-        request.setEntityType(business.getType());
+        request.setEntityType(entityType);
       }
     }
     return request;
