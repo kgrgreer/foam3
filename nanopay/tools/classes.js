@@ -350,7 +350,6 @@ var classes = [
   'net.nanopay.auth.LoginAttempt',
   'net.nanopay.auth.NanopayUserAndGroupAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
-  'net.nanopay.security.auth.FailedIPLoggingAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
 
   // PII

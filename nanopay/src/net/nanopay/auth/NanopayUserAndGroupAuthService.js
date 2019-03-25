@@ -100,12 +100,12 @@ foam.CLASS({
     {
       name: 'validatePassword',
       javaCode: `
-        PasswordEntropy passwordEntropy   = (PasswordEntropy) getX().get("passwordEntropyService");
+        PasswordEntropy passwordEntropy = (PasswordEntropy) getX().get("passwordEntropyService");
 
-        if ( SafetyUtil.isEmpty(newPassword) ) {
+        if ( SafetyUtil.isEmpty(potentialPassword) ) {
           throw new RuntimeException("Password is required");
         }
-        if ( passwordEntropy.getPasswordStrength(newPassword) < 3 ) {
+        if ( passwordEntropy.getPasswordStrength(potentialPassword) < 3 ) {
           throw new RuntimeException("Password is not strong enough.");
         }
       `
@@ -113,7 +113,7 @@ foam.CLASS({
     {
       name: 'login',
       javaCode: `
-        return login_(x, userID, password);
+        return login_(x, userId, password);
       `
     },
     {
