@@ -156,7 +156,7 @@ foam.CLASS({
           throw new foam.nanos.auth.AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
         }
 
-        return (id instanceof String) ?
+        return id instanceof String ?
           super.loginByEmail(x, (String) id, password) :
           super.login(x, (long) id, password);
       `
