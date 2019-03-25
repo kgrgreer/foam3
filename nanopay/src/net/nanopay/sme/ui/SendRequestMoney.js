@@ -56,7 +56,8 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   axioms: [
@@ -400,9 +401,8 @@ foam.CLASS({
         else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
 
         let service = null;
-
-        if ( this.invoice.xeroId )  service = this.xeroService;
-        if ( this.invoice.quickId ) service = this.quickbooksService;
+        if ( this.invoice.xeroId && this.invoice.status == this.InvoiceStatus.PENDING )  service = this.xeroService;
+        if ( this.invoice.quickId && this.invoice.status == this.InvoiceStatus.PENDING ) service = this.quickbooksService;
 
         if ( service != null ) service.invoiceResync(null, this.invoice);
 
