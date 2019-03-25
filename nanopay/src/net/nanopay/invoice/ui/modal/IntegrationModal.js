@@ -6,6 +6,20 @@ foam.CLASS({
   implements: [
     'net.nanopay.ui.modal.ModalStyling'
   ],
+
+  requires: [
+    'net.nanopay.accounting.AccountingErrorCodes',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
+  ],
+
+  imports: [
+    'xeroService',
+    'quickbooksService',
+    'user'
+  ],
+
   css: `
   ^{
     margin: auto;
@@ -186,10 +200,28 @@ foam.CLASS({
   ],
   listeners: [
     function signXero() {
+      let service = null;
+      if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+        service = this.xeroService;
+      } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        service = this.quickbooksService;
+      }
+      if ( service != null ) {
+        service.removeToken(null);
+      }
       var url = window.location.origin + '/service/xeroWebAgent?portRedirect=' + window.location.hash.slice(1);
       window.location = this.attachSessionId(url);
     },
     function signQuickbooks() {
+      let service = null;
+      if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+        service = this.xeroService;
+      } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        service = this.quickbooksService;
+      }
+      if ( service != null ) {
+        service.removeToken(null);
+      }
       var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
       window.location = this.attachSessionId(url);
     },
