@@ -106,7 +106,9 @@ foam.CLASS({
     { name: 'BANKING_TITLE', message: 'Add banking information' },
     { name: 'INSTRUCTION', message: 'Enter the banking information for this business.  Please make sure that this is accurate as payments will go directly to the specified account.' },
     { name: 'LABEL_CA', message: 'Canada' },
-  { name: 'LABEL_US', message: 'US' },
+    { name: 'LABEL_US', message: 'US' },
+    { name: 'LABEL_ACH_ROUTING_LABEL', message: 'ACH Routing No.'},
+    { name: 'LABEL_ACH_ACCOUNT_LABEL', message: 'ACH Account No.'},
     { name: 'EDIT_BANK_ERR', message: 'Error Editing Bank Account. Please try again.' },
     { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
     { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
@@ -292,14 +294,14 @@ foam.CLASS({
                   .start()
                     .start()
                       .addClass('field-label')
-                      .add(self.usAccount.BRANCH_ID.label)
+                      .add(self.LABEL_ACH_ROUTING_LABEL)
                     .end()
                     .tag(self.usAccount.BRANCH_ID)
                   .end()
                   .start()
                     .start()
                       .addClass('field-label')
-                      .add(self.usAccount.ACCOUNT_NUMBER.label)
+                      .add(self.LABEL_ACH_ACCOUNT_LABEL)
                     .end()
                     .tag(self.usAccount.ACCOUNT_NUMBER)
                   .end()
