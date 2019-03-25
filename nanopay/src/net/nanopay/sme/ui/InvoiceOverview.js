@@ -151,7 +151,7 @@ foam.CLASS({
     ^annotation {
       font-size: 10px;
     }
-    ^primary-disable {
+    ^ .primary-disable {
       background: #bdb4fd !important;
       cursor: default !important;
     }
@@ -307,8 +307,18 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isPendingApproval',
-      expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.PENDING_APPROVAL;
+      factory: function() {
+        return this.invoice.status === this.InvoiceStatus.PENDING_APPROVAL;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'canApproveInvoice',
+      factory: function() {
+        this.auth.check(null, 'invoice.pay').then((canPay) => {
+          this.canApproveInvoice = canPay;
+        });
+        return false;
       }
     },
     {
@@ -458,10 +468,15 @@ foam.CLASS({
                   .end()
                   .start(this.PAID)
                     .addClass('sme').addClass('button').addClass('primary')
-                    .addClass(this.myClass('primary-disable'))
+                    .addClass('primary-disable')
                   .end()
                   .start(this.APPROVE)
                     .addClass('sme').addClass('button').addClass('primary')
+                    .enableClass('primary-disable', this.slot(
+                      function(canApproveInvoice) {
+                        return ! canApproveInvoice;
+                      }
+                    ))
                   .end()
                 .end()
               .end()
@@ -721,9 +736,11 @@ foam.CLASS({
     {
       name: 'approve',
       label: 'Approve',
-      isAvailable: async function() {
-        var isAdmin = await this.auth.check(null, 'invoice.pay');
-        return isAdmin && this.isPayable && this.isPendingApproval;
+      isAvailable: function(isPendingApproval) {
+        return this.isPayable && isPendingApproval;
+      },
+      isEnabled: function(canApproveInvoice) {
+        return canApproveInvoice;
       },
       code: function(X) {
         X.menuDAO.find('sme.quickAction.send').then((menu) => {
