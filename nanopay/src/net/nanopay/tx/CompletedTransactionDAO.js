@@ -37,7 +37,7 @@ foam.CLASS({
         for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
           Transaction child = (Transaction) o;
           child.setStatus(child.getInitialStatus());
-          children.put(child);
+          children.put_(getX(), child);
         }
       }
       return txn;
