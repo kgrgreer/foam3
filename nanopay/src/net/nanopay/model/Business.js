@@ -155,17 +155,13 @@ foam.CLASS({
     },
     {
       name: 'exportSettlementDocuments',
-      code: async function(x) {
-        // Example of Client Side Code to get this service call:
-        // Let us assume that we want to search for invoices with a field 3 days before and 3 days after a specified invoice
-          // var inv = await this.invoiceDAO.find(1);
-          // var sDate = inv.paymentDate.getTime() - (1000*60*60*24*3);
-          // var dDate = inv.paymentDate.getTime() + (1000*60*60*24);
-          // console.log('sDate = '+sDate+ ' eDate = ' + dDate);
-          // var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate="+sDate+"&endDate="+dDate;
-        
-        // below url does not filter on a date, just outputs all related invoices into settlementReport
-        var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate=&endDate=";
+      code: function() {
+        // Let us assume that we want to search for invoices with a field 3 days before and 3 days after today.
+        var sDate = new Date(Date.now() - (1000*60*60*24*3));
+        var dDate = new Date(Date.now() + (1000*60*60*24*3));
+        var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate="+sDate+"&endDate="+dDate;
+
+        // var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate=&endDate=";
         window.location.assign(url);
       }
     }
