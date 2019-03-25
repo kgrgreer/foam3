@@ -257,7 +257,8 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.SUPER();
-      this.user = await this.userDAO.find(this.user.id);
+      let updatedUser = await this.userDAO.find(this.user.id);
+      this.user.integrationCode = updatedUser.integrationCode;
       this.isXeroConnected();
       this.isQuickbooksConnected();
       var bankAccountList = [];
