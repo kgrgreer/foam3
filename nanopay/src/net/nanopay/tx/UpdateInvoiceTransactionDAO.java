@@ -29,10 +29,9 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
     Transaction parent = (Transaction) obj;
-    FObject ret = super.put_(x, obj);
 
     while ( ! SafetyUtil.isEmpty(parent.getParent()) ) {
-      parent = (Transaction) super.find(parent.getParent());
+      parent = (Transaction) super.find_(x, parent.getParent());
     }
 
     Invoice invoice = parent.findInvoiceId(x);
@@ -43,9 +42,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       } else if ( invoice.getStatus() == InvoiceStatus.PAID && parent.getStatus() != TransactionStatus.DECLINED ) {
         throw new RuntimeException("Invoice already paid.");
       }
-    }
 
-    if ( parent.getInvoiceId() != 0 ) {
       DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
       TransactionStatus status = transaction.getState(getX());
 
@@ -73,13 +70,9 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentMethod(PaymentStatus.NONE);
         invoiceDAO.put(invoice);
       }
-
-      if ( ! SafetyUtil.isEmpty(transaction.getParent()) ) {
-        return ret;
-      }
     }
 
-    return ret;
+    return super.put_(x, obj);
   }
 
   private Date generateEstimatedCreditDate() {
