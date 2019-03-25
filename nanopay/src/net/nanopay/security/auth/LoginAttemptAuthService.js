@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Decorator that prevents a user from exceeding their maximum allotted login attempts',
 
   implements: [
+    'foam.core.ContextAware',
     'foam.nanos.NanoService'
   ],
 
@@ -89,7 +90,7 @@ foam.CLASS({
         foam.nanos.auth.User user = ( id instanceof String ) ?
           getUserByEmail(x, (String) id) : getUserById(x, (long) id);
 
-        if ( isLoginAttemptsExceeded(user) ) {
+        if ( user != null && isLoginAttemptsExceeded(user) ) {
           if ( isAdminUser(user) ) {
             if ( ! loginFreezeWindowReached(user) ) {
               throw new foam.nanos.auth.AuthenticationException("Account temporarily locked. You can attempt to login after " + getDateFormat().format(user.getNextLoginAttemptAllowedAt()));

@@ -3,19 +3,21 @@ foam.CLASS({
   name: 'IPLoggingAuthService',
   extends: 'foam.nanos.auth.ProxyAuthService',
 
-  documentation: 'Service that records IP addresses when a login is attempted.',
+  documentation: 'Service that records request IP adresses when login is attempted',
 
   implements: [
     'foam.nanos.NanoService'
   ],
 
   imports: [
-    'logger'
+    'loginAttemptDAO'
   ],
 
   javaImports: [
-    'foam.nanos.logger.Logger',
+    'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'javax.servlet.http.HttpServletRequest',
+    'net.nanopay.auth.LoginAttempt'
   ],
 
   methods: [
@@ -29,19 +31,45 @@ foam.CLASS({
     {
       name: 'login',
       javaCode: `
+        LoginAttempt loginAttempt = new LoginAttempt();
         HttpServletRequest request = x.get(HttpServletRequest.class);
         String ipAddress = request.getRemoteAddr();
-        ((Logger) getLogger()).info("IPLoggingAuthService :: New login attempt from IP :: " + ipAddress + " and user id :: " + userId);
-        return super.login(x, userId, password);
+        loginAttempt.setIpAddress(ipAddress);
+        loginAttempt.setLoginAttemptedFor(userId);
+
+        try {
+          User user = super.login(x, userId, password);
+          loginAttempt.setEmail(user.getEmail());
+          loginAttempt.setLoginSuccessful(true);
+          ((DAO) getLoginAttemptDAO()).inX(x).put(loginAttempt);
+          return user;
+        } catch (Throwable t) {
+          loginAttempt.setLoginSuccessful(false);
+          ((DAO) getLoginAttemptDAO()).put(loginAttempt);
+          throw t;
+        }
       `
     },
     {
       name: 'loginByEmail',
       javaCode: `
+        LoginAttempt loginAttempt = new LoginAttempt();
         HttpServletRequest request = x.get(HttpServletRequest.class);
         String ipAddress = request.getRemoteAddr();
-        ((Logger) getLogger()).info("IPLoggingAuthService :: New login attempt from IP :: " + ipAddress + " and email id :: " + email);
-        return super.loginByEmail(x, email, password);
+        loginAttempt.setIpAddress(ipAddress);
+        loginAttempt.setEmail(email);
+
+        try {
+          User user = super.loginByEmail(x, email, password);
+          loginAttempt.setLoginAttemptedFor(user.getId());
+          loginAttempt.setLoginSuccessful(true);
+          ((DAO) getLoginAttemptDAO()).inX(getX()).put(loginAttempt);
+          return user;
+        } catch (Throwable t) {
+          loginAttempt.setLoginSuccessful(false);
+          ((DAO) getLoginAttemptDAO()).put(loginAttempt);
+          throw t;
+        }
       `
     }
   ]
