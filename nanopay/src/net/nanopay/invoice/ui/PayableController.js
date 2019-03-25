@@ -40,7 +40,6 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
-          fitInScreen: true,
           columns: [
             this.Invoice.PAYEE.clone().copyFrom({
               label: 'Company',
