@@ -37,12 +37,18 @@ foam.CLASS({
     'currencyDAO',
     'notificationDAO',
     'stack',
-    'user'
+    'user',
+    'xeroService',
+    'quickbooksService'
   ],
 
   requires: [
     'foam.nanos.notification.Notification',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.accounting.AccountingErrorCodes',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
@@ -178,9 +184,41 @@ foam.CLASS({
         .end();
     },
 
-    function payNow(event) {
+    async function payNow(event) {
       event.preventDefault();
       event.stopPropagation();
+      let service = null;
+      if ( this.XeroInvoice.isInstance(this.data) && this.user.id == this.data.createdBy &&(this.data.status == this.InvoiceStatus.UNPAID || this.data.status == this.InvoiceStatus.OVERDUE) ) {
+        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+          service = this.xeroService;
+        } else {
+          this.add(this.NotificationMessage.create({ message: ' Cannot sync invoice, Not signed into Xero.', type: 'error' }));
+          return;
+        }
+      } else if ( this.QuickbooksInvoice.isInstance(this.data) && this.user.id == this.data.createdBy &&(this.data.status == this.InvoiceStatus.UNPAID || this.data.status == this.InvoiceStatus.OVERDUE) ) {
+        if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        service = this.quickbooksService;
+        } else {
+          this.add(this.NotificationMessage.create({ message: ' Cannot sync invoice, Not signed into Quickbooks.', type: 'error' }));
+          return;
+        }
+      }
+      if ( service != null ) {
+        let result = await service.singleSync(null, this.data);
+        if ( ! result.result ) {
+          if ( result.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+            this.ctrl.add(this.Popup.create({ closeable: false }).tag({
+              class: 'net.nanopay.accounting.AccountingTimeOutModal'
+            }));
+          } else {
+            this.add(this.NotificationMessage.create({
+              message: result.reason,
+              type: 'error'
+           }));
+          }
+          return;
+        }
+      }
       this.stack.push({
         class: 'net.nanopay.sme.ui.SendRequestMoney',
         isPayable: this.isPayable,

@@ -404,7 +404,7 @@ foam.CLASS({
         if ( this.invoice.xeroId )  service = this.xeroService;
         if ( this.invoice.quickId ) service = this.quickbooksService;
 
-        if ( service != null ) service.reSyncInvoice(null, this.invoice);
+        if ( service != null ) service.invoiceResync(null, this.invoice);
 
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
@@ -476,15 +476,15 @@ foam.CLASS({
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
-            if ( ! this.agent.twoFactorEnabled && this.isPayable && this.permitToPay ) {
-              if ( this.appConfig.mode === this.Mode.TEST ) {
-                // report but don't fail/error
-                this.notify(this.TWO_FACTOR_REQUIRED, 'warning');
-              } else {
-                this.notify(this.TWO_FACTOR_REQUIRED, 'error');
-                return;
-              }
-            }
+            // if ( ! this.agent.twoFactorEnabled && this.isPayable && this.permitToPay ) {
+            //   if ( this.appConfig.mode === this.Mode.TEST ) {
+            //     // report but don't fail/error
+            //     this.notify(this.TWO_FACTOR_REQUIRED, 'warning');
+            //   } else {
+            //     this.notify(this.TWO_FACTOR_REQUIRED, 'error');
+            //     return;
+            //   }
+           // }
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);
             });
