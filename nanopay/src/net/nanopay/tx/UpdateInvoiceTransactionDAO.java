@@ -31,7 +31,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Transaction parent = (Transaction) obj;
 
     while ( ! SafetyUtil.isEmpty(parent.getParent()) ) {
-      parent = (Transaction) super.find_(x, parent.getParent());
+      parent = (Transaction) parent.findParent(x);
     }
 
     Invoice invoice = parent.findInvoiceId(x);
