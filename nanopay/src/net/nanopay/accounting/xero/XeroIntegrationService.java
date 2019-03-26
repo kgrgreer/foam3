@@ -424,6 +424,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     newInvoice.setDesync(false);
     newInvoice.setCreatedBy(user.getId());
     newInvoice.setXeroOrganizationId(token.getOrganizationId());
+    newInvoice.setBusinessName(token.getBusinessName());
 
 //    // get invoice attachments
 //    if ( ! xeroInvoice.isHasAttachments() ) {
@@ -486,6 +487,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     List<String> invoiceErrors = new ArrayList<>();
     List<String> successInvoice = new ArrayList<>();
 
+    User user = (User) x.get("user");
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+
     // Check that user has accessed xero before
     if ( client == null ) {
       return new ResultResponse.Builder(x)
@@ -496,6 +501,8 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     }
 
     try {
+
+      token.setBusinessName(client.getOrganisations().get(0).getLegalName());
 
       for (com.xero.model.Invoice xeroInvoice : client.getInvoices()) {
         try {
@@ -746,26 +753,6 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
   @Override
-  public ResultResponse syncSys(X x) {
-    Logger logger = (Logger) x.get("logger");
-    try {
-      contactSync(x);
-      invoiceSync(x);
-    } catch (Exception e) {
-      e.printStackTrace();
-      logger.error(e);
-      return new ResultResponse.Builder(x)
-        .setResult(false)
-        .setReason(e.getMessage())
-        .build();
-    }
-    return new ResultResponse.Builder(x)
-      .setResult(true)
-      .build();
-  }
-
-
-  @Override
   public ResultResponse removeToken(X x) {
     User user = (User) x.get("user");
     DAO userDAO = ((DAO) x.get("localUserUserDAO")).inX(x);
@@ -854,7 +841,8 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     }
   }
 
-  public ResultResponse singleSync(X x, Invoice nanoInvoice) {
+  @Override
+  public ResultResponse singleInvoiceSync(X x, Invoice nanoInvoice) {
     User user = (User) x.get("user");
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());

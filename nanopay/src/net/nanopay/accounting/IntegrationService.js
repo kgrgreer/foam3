@@ -56,22 +56,6 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'syncSys',
-      documentation: `
-        Syncs both the given user's invoices and contacts with the accounting
-        software.
-      `,
-      async: true,
-      type: 'net.nanopay.accounting.ResultResponse',
-      swiftThrows: true,
-      args: [
-        {
-          type: 'Context',
-          name: 'x',
-        },
-      ]
-    },
-    {
       name: 'removeToken',
       documentation: `
         Signs the user out of the accounting software.
@@ -115,7 +99,7 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'singleSync',
+      name: 'singleInvoiceSync',
       async: true,
       type: 'net.nanopay.accounting.ResultResponse',
       args: [

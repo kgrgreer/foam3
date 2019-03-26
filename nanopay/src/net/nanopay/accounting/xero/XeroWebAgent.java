@@ -113,8 +113,6 @@ public class XeroWebAgent
           token.setToken(accessToken.getToken());
           token.setTokenTimestamp(accessToken.getTokenTimestamp());
           XeroClient client = getClient(x,accessToken);
-          List<Organisation> organisations = client.getOrganisations();
-          token.setOrganizationId(organisations.get(0).getOrganisationID());
           tokenDAO.put(token);
           User nUser = (User) userDAO.find(user.getId());
           nUser = (User) nUser.fclone();

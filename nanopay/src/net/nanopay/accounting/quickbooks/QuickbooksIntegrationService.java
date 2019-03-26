@@ -103,6 +103,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           }
 
         } catch ( Exception e ) {
+          logger.error(e);
           invalidContacts.add("Can not import quickbooks contact # " + contact.getId() + ", " + e.getMessage());
         }
 
@@ -145,6 +146,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           }
 
         } catch ( Exception e ) {
+          logger.error(e);
           errorResult.add(e.getMessage());
         }
       }
@@ -163,8 +165,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   @Override
-  public ResultResponse singleSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
+  public ResultResponse singleInvoiceSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
     User user = (User) x.get("user");
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     List<String> errorResult = new ArrayList<>();
     List<String> successResult = new ArrayList<>();
 
@@ -172,6 +175,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       QuickbooksInvoice qInvoice = (QuickbooksInvoice) nanoInvoice;
       String type = user.getId() == qInvoice.getPayeeId() ?
         "Invoice" : "bill";
+
+      if ( ! token.getRealmId().equals(((QuickbooksInvoice) nanoInvoice).getRealmId()) ) {
+        // TODO handle sign in as different company
+      }
+
       Transaction invoice = fetchInvoiceById(x, type, qInvoice.getQuickId());
 
       String importResult = importInvoice(x, invoice);
@@ -190,12 +198,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
       .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
       .build();
-  }
-
-  @Override
-  public ResultResponse syncSys(X x) {
-
-    return new ResultResponse.Builder(x).setResult(true).build();
   }
 
   @Override
@@ -255,6 +257,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         .setBankAccountList(accounts.toArray(new AccountingBankAccount[accounts.size()]))
         .build();
     } catch ( Exception e ) {
+      logger.error(e);
       ResultResponse response = errorHandler(e);
       ArraySink sink = new ArraySink();
       accountingBankDAO.where(
@@ -336,6 +339,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public ResultResponse errorHandler(Throwable e ) {
+    this.logger.error(e);
+
     ResultResponse resultResponse = new ResultResponse();
     resultResponse.setResult(false);
 
@@ -366,7 +371,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     }
 
     resultResponse.setErrorCode(AccountingErrorCodes.INTERNAL_ERROR);
-    resultResponse.setReason(AccountingErrorCodes.ACCOUNTING_ERROR.getLabel());
+    resultResponse.setReason(e.getMessage());
     return resultResponse;
   }
 
@@ -592,6 +597,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       // if desync, continue
       if ( existInvoice.getDesync() ) {
+        return null;
+      }
+
+      if ( qInvoice instanceof Invoice && net.nanopay.invoice.model.InvoiceStatus.DRAFT != existInvoice.getStatus() ) {
         return null;
       }
 
