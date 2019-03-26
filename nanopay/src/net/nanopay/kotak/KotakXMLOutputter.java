@@ -22,7 +22,7 @@ public class KotakXMLOutputter extends Outputter {
         .append(" xmlns=\"http://www.kotak.com/schemas/CMS_Generic/Payment_Request.xsd\">");
     } else if ( "Reversal".equals(obj.getClass().getSimpleName()) ) {
       writer_.append("<").append(obj.getClass().getSimpleName())
-        .append(" xmlns=\"http://www.kotak.com/schemas/CMS_Generic/Reversal_Request.xsd\"");
+        .append(" xmlns=\"http://www.kotak.com/schemas/CMS_Generic/Reversal_Request.xsd\">");
     } else {
       writer_.append("<").append(obj.getClass().getSimpleName()).append(">");
     }
