@@ -22,6 +22,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'as view',
     'uploadFileData'
   ],
 
@@ -124,6 +125,10 @@ foam.CLASS({
     ^ .foam-u2-view-RichChoiceView-container {
       z-index: 10;
     }
+    ^ .foam-u2-view-RichChoiceView-action {
+      height: 36px;
+      padding: 8px 13px;
+    }
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       background-color: #ffffff;
       margin-top: 16px;
@@ -135,8 +140,9 @@ foam.CLASS({
       margin-right: 2px;
     }
     ^ .add-banking-information {
-      float: right;
       color: #6a39ff;
+      cursor: pointer;
+      float: right;
       margin-left: 30px;
       text-decoration: underline;
     }
@@ -272,10 +278,12 @@ foam.CLASS({
             .add(this.contactLabel)
           .end()
           .startContext({ data: this.invoice })
-            .start(this.invoice.CONTACT_ID)
+            .start(this.invoice.CONTACT_ID, {
+              action: this.ADD_CONTACT
+            })
               .enableClass('invalid', this.slot(
-                function(isInvalid, type) {
-                  return isInvalid && type === 'payable';
+                function(isInvalid, type, showAddBank) {
+                  return isInvalid && type === 'payable' && showAddBank;
                 }))
             .end()
           .endContext()
@@ -306,8 +314,8 @@ foam.CLASS({
             .start().addClass('input-label').add('Amount').end()
               .startContext({ data: this })
                 .start(this.CURRENCY_TYPE).enableClass('error-box-outline', this.slot(
-                  function(isInvalid, type) {
-                    return isInvalid && type === 'payable';
+                  function(isInvalid, type, showAddBank) {
+                    return isInvalid && type === 'payable' && ! showAddBank;
                   }))
                   .on('click', () => {
                     this.invoice.destinationCurrency
@@ -317,13 +325,16 @@ foam.CLASS({
               .endContext()
               .start().addClass('invoice-amount-input')
                 .start(this.Invoice.AMOUNT).enableClass('error-box', this.slot(
-                  function(isInvalid, type) {
-                    return isInvalid && type === 'payable';
+                  function(isInvalid, type, showAddBank) {
+                    return isInvalid && type === 'payable' && ! showAddBank;
                   }))
                   .addClass('invoice-input-box')
                 .end()
               .end()
-              .start().show(this.isInvalid$)
+              .start().show(this.slot(
+                function(isInvalid, showAddBank) {
+                  return isInvalid && ! showAddBank;
+                }))
                 .start().show(this.type === 'payable').addClass('validation-failure-container')
                   .start('img')
                     .addClass('small-error-icon')
@@ -396,17 +407,17 @@ foam.CLASS({
         .endContext()
       .end();
     },
+
     function checkBankAccount() {
       var self = this;
       this.userDAO.find(this.invoice.contactId).then(function(contact) {
         if ( contact && contact.businessId ) {
           self.showAddBank = false;
-          return;
         } else if ( contact && contact.bankAccount ) {
           self.showAddBank = false;
-          return;
+        } else {
+          self.showAddBank = self.type === 'payable';
         }
-        self.showAddBank = self.type === 'payable';
       });
     }
   ],
@@ -435,6 +446,18 @@ foam.CLASS({
         });
       }
       this.checkBankAccount();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'addContact',
+      icon: 'images/plus-no-bg.svg',
+      code: function(X, e) {
+        X.view.add(X.view.Popup.create().tag({
+          class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
+        }));
+      }
     }
   ]
 });

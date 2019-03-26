@@ -198,3 +198,4 @@ p({"class":"foam.nanos.auth.Permission","id":"beneficialOwner.create.*","descrip
 p({"class":"foam.nanos.auth.Permission","id":"beneficialOwner.read.*","description":"Permission to see every beneficial owner."})
 p({"class":"foam.nanos.auth.Permission","id":"beneficialOwner.update.*","description":"Permission to update every beneficial owner."})
 p({"class":"foam.nanos.auth.Permission","id":"beneficialOwner.delete.*","description":"Permission to delete every beneficial owner."})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.acceptanceDocumentDAO","description":"Permission to read Acceptance Documents."})

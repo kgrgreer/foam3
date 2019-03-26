@@ -57,6 +57,8 @@ var classes = [
   'net.nanopay.account.ZeroAccountUserAssociation',
   'net.nanopay.account.TrustAccount',
   'net.nanopay.account.LossesAccount',
+  'net.nanopay.account.LoanAccount',
+  'net.nanopay.account.LoanedTotalAccount',
   'net.nanopay.account.HoldingAccount',
   'net.nanopay.account.AuthenticatedAccountDAOTest',
   'net.nanopay.bank.BankAccount',
@@ -147,6 +149,7 @@ var classes = [
    'net.nanopay.integration.IntegrationService',
   'net.nanopay.integration.ResultResponse',
   'net.nanopay.integration.AccountingBankAccount',
+  'net.nanopay.integration.AccountingContactEmailCache',
 
   // xero
   'net.nanopay.integration.xero.XeroTokenStorage',
@@ -154,6 +157,12 @@ var classes = [
   'net.nanopay.integration.xero.XeroIntegrationService',
   'net.nanopay.integration.xero.model.XeroContact',
   'net.nanopay.integration.xero.model.XeroInvoice',
+
+  // liquidity
+   'net.nanopay.liquidity.LiquiditySettings',
+   'net.nanopay.liquidity.Liquidity',
+   'net.nanopay.liquidity.LiquidityAuth',
+   'net.nanopay.liquidity.Frequency',
 
   // quick
   'net.nanopay.integration.quick.QuickConfig',
@@ -217,15 +226,11 @@ var classes = [
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ExpiryLineItem',
-  'net.nanopay.tx.model.Frequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
   'net.nanopay.tx.model.FeeType',
   'net.nanopay.tx.model.FixedFee',
   'net.nanopay.tx.model.InformationalFee',
-  'net.nanopay.tx.model.LiquiditySettings',
-  'net.nanopay.tx.Liquidity',
-  'net.nanopay.tx.model.LiquidityAuth',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.FeeLineItem',
@@ -273,6 +278,7 @@ var classes = [
   'net.nanopay.tx.NanopayTransactionFeeDAO',
   'net.nanopay.tx.TestTransaction',
   'net.nanopay.tx.AbliiTransaction',
+  'net.nanopay.tx.InterestTransaction',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -458,16 +464,18 @@ var classes = [
   'net.nanopay.meter.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
-  'net.nanopay.meter.compliance.ComplianceHistory',
-  'net.nanopay.meter.compliance.ComplianceRule',
+  'net.nanopay.meter.compliance.ComplianceAuthService',
+  'net.nanopay.meter.compliance.ComplianceAware',
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
-  'net.nanopay.meter.compliance.ComplianceValidator',
   'net.nanopay.meter.compliance.ComplianceService',
   'net.nanopay.meter.compliance.NanopayComplianceService',
+  'net.nanopay.meter.compliance.canadianSanction.Record',
+  'net.nanopay.meter.compliance.CanadianSanctionValidator',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
+  'net.nanopay.meter.test.ComplianceAwareDummy',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 
@@ -487,7 +495,7 @@ var skeletons = [
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.model.LiquidityAuth',
+  'net.nanopay.liquidity.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.invoice.service.InvoicePaymentService',

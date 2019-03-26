@@ -61,10 +61,10 @@ foam.CLASS({
       color: #8e9090;
     }
     ^two-factor-link {
-      margin-top: 8px;
-      display: inline-block;
-      text-decoration: none;
       color: #604aff;
+      display: inline-block;
+      margin-top: 8px;
+      text-decoration: none;
     }
     ^step-2 {
       margin-top: 32px;
@@ -164,12 +164,12 @@ foam.CLASS({
   constants: [
     {
       type: 'String',
-      name: 'IOSLink',
+      name: 'IOS_LINK',
       value: 'https://itunes.apple.com/ca/app/google-authenticator/id388497605?mt=8'
     },
     {
       type: 'String',
-      name: 'AndroidLink',
+      name: 'ANDROID_LINK',
       value: 'https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en'
     },
   ],
@@ -296,11 +296,13 @@ foam.CLASS({
                     .start('span').add(this.TwoFactorInstr1).end()
                     .br()
                     .start('a').addClass(this.myClass('two-factor-link'))
-                      .attrs({ href: this.IOSLink }).add(this.IOSName)
+                      .add(this.IOSName)
+                      .attrs({ href: this.IOS_LINK, target: '_blank' })
                     .end()
                     .br()
                     .start('a').addClass(this.myClass('two-factor-link'))
-                      .attrs({ href: this.AndroidLink }).add(this.AndroidName)
+                      .add(this.AndroidName)
+                      .attrs({ href: this.ANDROID_LINK, target: '_blank' })
                     .end()
                   .end()
                   .start().addClass(this.myClass('step-2'))

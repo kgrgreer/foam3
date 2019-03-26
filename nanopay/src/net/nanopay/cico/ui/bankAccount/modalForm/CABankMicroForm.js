@@ -95,7 +95,7 @@ foam.CLASS({
           .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS_2).end()
           .start().addClass(this.myClass('field-container'))
             .start('p').addClass('field-label').add(this.MICRO).end()
-            .tag({ class: 'foam.u2.PrecisionFloatView', data$: this.amount$, min: 0.01, max: 0.99, onKey: true, precision: 2, placeholder: this.MICRO_PLACEHOLDER })
+            .tag({ class: 'foam.u2.FloatView', data$: this.amount$, min: 0.01, max: 0.99, precision: 2, onKey: true, placeholder: this.MICRO_PLACEHOLDER })
           .end()
         .end()
         .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();

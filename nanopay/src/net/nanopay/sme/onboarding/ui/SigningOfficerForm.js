@@ -422,14 +422,13 @@ foam.CLASS({
     {
       name: 'INVITE_USERS_EXP',
       message: `Invite a signing officer or other employees in your business.
-              Recipients will receive a link to join your business on Ablii`
+          Recipients will receive a link to join your business on Ablii`
     },
     {
       name: 'SIGNING_OFFICER_UPLOAD_DESC',
-      message: `Please provide a copy of the front of your valid Government
-                issued Driver’s License or Passport. The image must be clear in order
-                to be accepted. If your name has changed since either it was issued
-                you will need to prove your identity, such as a marriage certificate.`
+      message: `Please provide a copy of your government issued drivers license or passport. 
+          The image must be clear, or will require resubmission. If your name differs from what 
+          the ID shows, please provide sufficient documentation (marriage certificate, name change documentation, etc)`
     }
   ],
 

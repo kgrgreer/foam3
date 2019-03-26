@@ -143,7 +143,6 @@ foam.CLASS({
       documentation: `The contact's bank account if they choose CA.`,
       factory: function() {
         return this.CABankAccount.create({
-          status: this.BankAccountStatus.VERIFIED,
           denomination: 'CAD'
         });
       }
@@ -154,7 +153,6 @@ foam.CLASS({
       documentation: `The contact's bank account if they choose US.`,
       factory: function() {
         return this.USBankAccount.create({
-          status: this.BankAccountStatus.VERIFIED,
           denomination: 'USD'
         });
       }
@@ -243,7 +241,7 @@ foam.CLASS({
           this.ctrl.notify(this.INVITE_SUCCESS);
         }
         // Force the view to update.
-        this.user.contacts.on.reset.pub();
+        this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
       } catch (e) {
         var msg = e.message || this.INVITE_FAILURE;
         this.ctrl.notify(msg, 'error');
