@@ -9,7 +9,13 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import foam.core.*;
 import foam.lib.json.OutputterMode;
 import foam.nanos.logger.Logger;
+import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
+import net.nanopay.kotak.model.paymentResponse.FaultListType;
+import net.nanopay.kotak.model.paymentResponse.InstrumentListType;
+import net.nanopay.kotak.model.reversal.DetailsType;
+import net.nanopay.kotak.model.reversal.HeaderType;
+import net.nanopay.kotak.model.reversal.Rev_DetailType;
 import net.nanopay.kotak.model.reversal.Reversal;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -18,6 +24,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.DatatypeConverter;
@@ -55,38 +63,6 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     this.host = host;
   }
 
-
-  public String getAccessToken() {
-    String token = null;
-    try {
-      TokenResponse response = new ClientCredentialsTokenRequest(new NetHttpTransport(), new JacksonFactory(),
-        new GenericUrl(accessTokenUrl))
-        .set("client_id", clientId)
-        .set("client_secret", clientSecret)
-        .execute();
-
-      token = response.getAccessToken();
-
-      System.out.println("Access token: " + token);
-    } catch (TokenResponseException e) {
-      if (e.getDetails() != null) {
-        System.err.println("Error: " + e.getDetails().getError());
-        if (e.getDetails().getErrorDescription() != null) {
-          System.err.println(e.getDetails().getErrorDescription());
-        }
-        if (e.getDetails().getErrorUri() != null) {
-          System.err.println(e.getDetails().getErrorUri());
-        }
-      } else {
-        System.err.println(e.getMessage());
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    return token;
-  }
-
   @Override
   public AcknowledgementType submitPayment(FObject request) {
     CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -101,6 +77,11 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     String xmlData = xmlOutputter.toString();
     System.out.println("payment xml: ");
     System.out.println(xmlData);
+
+    AcknowledgementType acknowledgementType = new AcknowledgementType();
+    acknowledgementType.setAckHeader(new Acknowledgement());
+    acknowledgementType.setInstrumentList(new InstrumentListType());
+    acknowledgementType.setFaultList(new FaultListType());
 
     String response;
     try {
@@ -126,14 +107,15 @@ public class KotakService extends ContextAwareSupport implements Kotak {
 
         Element ackHeader = (Element) document.getElementsByTagName("AckHeader").item(0);
 
-        String messageId = ackHeader.getElementsByTagName("MessageId").item(0).getFirstChild().getNodeValue();
-        System.out.println("messageId: " + messageId);
+        Node messageId = ackHeader.getElementsByTagName("MessageId").item(0).getFirstChild();
+        if ( messageId != null ) acknowledgementType.getAckHeader().setMessageId(messageId.getNodeValue());
 
-        String statusCd = ackHeader.getElementsByTagName("StatusCd").item(0).getFirstChild().getNodeValue();
-        System.out.println("statusCd: " + statusCd);
+        Node statusCd = ackHeader.getElementsByTagName("StatusCd").item(0).getFirstChild();
+        if ( statusCd != null ) acknowledgementType.getAckHeader().setStatusCd(statusCd.getNodeValue());
 
-        String statusRem = ackHeader.getElementsByTagName("StatusRem").item(0).getFirstChild().getNodeValue();
-        System.out.println("statusRem: " + statusRem);
+        Node statusRem = ackHeader.getElementsByTagName("StatusRem").item(0).getFirstChild();
+        if ( statusRem != null ) acknowledgementType.getAckHeader().setStatusRem(statusRem.getNodeValue());
+
       } catch (ParserConfigurationException | SAXException e) {
         e.printStackTrace();
       } finally {
@@ -149,7 +131,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       }
     }
 
-    return null;
+    return acknowledgementType;
   }
 
   @Override
@@ -166,6 +148,9 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     String xmlData = xmlOutputter.toString();
     System.out.println("reversal xml: ");
     System.out.println(xmlData);
+
+    Reversal reversal = new Reversal();
+    reversal.setHeader(new HeaderType());
 
     String response;
     try {
@@ -189,38 +174,46 @@ public class KotakService extends ContextAwareSupport implements Kotak {
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document document = db.parse(new ByteArrayInputStream(response.getBytes()));
 
+        // parse Header
         Element header = (Element) document.getElementsByTagName("Header").item(0);
+        Node reqId = header.getElementsByTagName("Req_Id").item(0).getFirstChild();
+        if ( reqId != null ) reversal.getHeader().setReq_Id(reqId.getNodeValue());
 
-        String reqId = header.getElementsByTagName("Req_Id").item(0).getFirstChild().getNodeValue();
-        System.out.println("reqId: " + reqId);
+        Node msgSrc = header.getElementsByTagName("Msg_Src").item(0).getFirstChild();
+        if ( msgSrc != null ) reversal.getHeader().setMsg_Src(msgSrc.getNodeValue());
 
-        String msgSrc = header.getElementsByTagName("Msg_Src").item(0).getFirstChild().getNodeValue();
-        System.out.println("msgSrc: " + msgSrc);
+        Node clientCode = header.getElementsByTagName("Client_Code").item(0).getFirstChild();
+        if ( clientCode != null ) reversal.getHeader().setClient_Code(clientCode.getNodeValue());
 
-        String clientCode = header.getElementsByTagName("Client_Code").item(0).getFirstChild().getNodeValue();
-        System.out.println("clientCode: " + clientCode);
+        Node datePost = header.getElementsByTagName("Date_Post").item(0).getFirstChild();
+        if ( datePost != null) reversal.getHeader().setDate_Post(datePost.getNodeValue());
 
-        String datePost = header.getElementsByTagName("Date_Post").item(0).getFirstChild().getNodeValue();
-        System.out.println("datePost: " + datePost);
-
-        // ===
-
+        // parse Details
         Element details = (Element) document.getElementsByTagName("Details").item(0);
-        Element revDetail = (Element) details.getElementsByTagName("Rev_Detail").item(0);
+        NodeList revDetails = details.getElementsByTagName("Rev_Detail");
 
-        String msgId = revDetail.getElementsByTagName("Msg_Id").item(0).getFirstChild().getNodeValue();
-        System.out.println("msgId: " + msgId);
+        DetailsType detailsType = new DetailsType();
+        Rev_DetailType[] revDetailsArr = new Rev_DetailType[revDetails.getLength()];
+        for (int i = 0; i < revDetails.getLength(); i++) {
+          revDetailsArr[i] = new Rev_DetailType();
+        }
+        detailsType.setRev_Detail(revDetailsArr);
+        reversal.setDetails(detailsType);
 
-        String statusCode = revDetail.getElementsByTagName("Status_Code").item(0).getFirstChild().getNodeValue();
-        System.out.println("statusCode: " + statusCode);
+        for ( int i = 0; i < revDetails.getLength(); i++ ) {
+          Element revDetail = (Element) revDetails.item(i);
+          Node msgId = revDetail.getElementsByTagName("Msg_Id").item(0).getFirstChild();
+          if ( msgId != null ) reversal.getDetails().getRev_Detail()[i].setMsg_Id(msgId.getNodeValue());
 
-        String statusDesc = revDetail.getElementsByTagName("Status_Desc").item(0).getFirstChild().getNodeValue();
-        System.out.println("statusDesc: " + statusDesc);
+          Node statusCode = revDetail.getElementsByTagName("Status_Code").item(0).getFirstChild();
+          if ( statusCode != null ) reversal.getDetails().getRev_Detail()[i].setStatus_Code(statusCode.getNodeValue());
 
-        String UTR = revDetail.getElementsByTagName("UTR").item(0).getFirstChild().getNodeValue();
-        System.out.println("UTR: " + UTR);
+          Node statusDesc = revDetail.getElementsByTagName("Status_Desc").item(0).getFirstChild();
+          if ( statusDesc != null ) reversal.getDetails().getRev_Detail()[i].setStatus_Desc(statusDesc.getNodeValue());
 
-
+          Node UTR = revDetail.getElementsByTagName("UTR").item(0).getFirstChild();
+          if ( UTR != null ) reversal.getDetails().getRev_Detail()[i].setUTR(UTR.getNodeValue());
+        }
       } catch (ParserConfigurationException | SAXException e) {
         e.printStackTrace();
       } finally {
@@ -236,8 +229,39 @@ public class KotakService extends ContextAwareSupport implements Kotak {
       }
     }
 
-    return null;
+    return reversal;
   }
+
+
+  public String getAccessToken() {
+    String token = null;
+    try {
+      TokenResponse response = new ClientCredentialsTokenRequest(new NetHttpTransport(), new JacksonFactory(),
+        new GenericUrl(accessTokenUrl))
+        .set("client_id", clientId)
+        .set("client_secret", clientSecret)
+        .execute();
+
+      token = response.getAccessToken();
+    } catch (TokenResponseException e) {
+      if (e.getDetails() != null) {
+        System.err.println("Error: " + e.getDetails().getError());
+        if (e.getDetails().getErrorDescription() != null) {
+          System.err.println(e.getDetails().getErrorDescription());
+        }
+        if (e.getDetails().getErrorUri() != null) {
+          System.err.println(e.getDetails().getErrorUri());
+        }
+      } else {
+        System.err.println(e.getMessage());
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return token;
+  }
+
 
   @Override
   public AcknowledgementType submitSOAPPayment(FObject request) {
@@ -505,7 +529,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
 
         // walk the children to find correct element
         while ( children.hasNext() ) {
-          Node node = (Node) children.next();
+          javax.xml.soap.Node node = (javax.xml.soap.Node) children.next();
           if ( node.getNodeType() == Node.TEXT_NODE && element.getLocalName().equals(prop.getName()) ) {
             prop.setFromString(obj, node.getValue());
           } else if ( node.getNodeType() == Node.ELEMENT_NODE ) {
