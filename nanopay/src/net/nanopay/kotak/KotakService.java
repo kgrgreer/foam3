@@ -120,17 +120,6 @@ public class KotakService extends ContextAwareSupport implements Kotak {
         }
         response = sb.toString();
 
-        // System.out.println("payment response: " + response);
-
-        String testResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-        "<Payment xmlns=\"http://www.kotak.com/schemas/CMS_Generic/Payment_Response.xsd\">\n" +
-        "    <AckHeader>\n" +
-        "        <MessageId>apiErrorCodes2</MessageId>\n" +
-        "        <StatusCd>VAL_ERR</StatusCd>\n" +
-        "        <StatusRem>VAL_ERR_46-Duplicate MessageId.</StatusRem>\n" +
-        "    </AckHeader>\n" +
-        "</Payment>";
-
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document document = db.parse(new ByteArrayInputStream(response.getBytes()));
@@ -196,7 +185,44 @@ public class KotakService extends ContextAwareSupport implements Kotak {
         }
         response = sb.toString();
 
-        System.out.println("reversal response: " + response);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document document = db.parse(new ByteArrayInputStream(response.getBytes()));
+
+        Element header = (Element) document.getElementsByTagName("Header").item(0);
+
+        String reqId = header.getElementsByTagName("Req_Id").item(0).getFirstChild().getNodeValue();
+        System.out.println("reqId: " + reqId);
+
+        String msgSrc = header.getElementsByTagName("Msg_Src").item(0).getFirstChild().getNodeValue();
+        System.out.println("msgSrc: " + msgSrc);
+
+        String clientCode = header.getElementsByTagName("Client_Code").item(0).getFirstChild().getNodeValue();
+        System.out.println("clientCode: " + clientCode);
+
+        String datePost = header.getElementsByTagName("Date_Post").item(0).getFirstChild().getNodeValue();
+        System.out.println("datePost: " + datePost);
+
+        // ===
+
+        Element details = (Element) document.getElementsByTagName("Details").item(0);
+        Element revDetail = (Element) details.getElementsByTagName("Rev_Detail").item(0);
+
+        String msgId = revDetail.getElementsByTagName("Msg_Id").item(0).getFirstChild().getNodeValue();
+        System.out.println("msgId: " + msgId);
+
+        String statusCode = revDetail.getElementsByTagName("Status_Code").item(0).getFirstChild().getNodeValue();
+        System.out.println("statusCode: " + statusCode);
+
+        String statusDesc = revDetail.getElementsByTagName("Status_Desc").item(0).getFirstChild().getNodeValue();
+        System.out.println("statusDesc: " + statusDesc);
+
+        String UTR = revDetail.getElementsByTagName("UTR").item(0).getFirstChild().getNodeValue();
+        System.out.println("UTR: " + UTR);
+
+
+      } catch (ParserConfigurationException | SAXException e) {
+        e.printStackTrace();
       } finally {
         httpResponse.close();
       }
