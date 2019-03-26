@@ -119,7 +119,7 @@ foam.CLASS({
               .start(this.Address.COUNTRY_ID.clone().copyFrom({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
-                  placeholder: '- Please select -',
+                  placeholder: 'Select...',
                   dao: self.countryDAO.where(self.OR(
                     self.EQ(self.Country.NAME, 'Canada'),
                     self.EQ(self.Country.NAME, 'USA')
@@ -140,7 +140,7 @@ foam.CLASS({
               .start(this.Address.REGION_ID.clone().copyFrom({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
-                  placeholder: '- Please select -',
+                  placeholder: 'Select...',
                   objToChoice: function(region) {
                     return [region.id, region.name];
                   },
@@ -199,7 +199,7 @@ foam.CLASS({
               .start(self.Address.REGION_ID.clone().copyFrom({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
-                  placeholder: '- Please select -',
+                  placeholder: 'Select ...',
                   objToChoice: function(region) {
                     return [region.id, region.name];
                   },
