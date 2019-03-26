@@ -737,6 +737,7 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/AccountingContactEmailCache' },
   { name: 'net/nanopay/accounting/AccountingErrorCodes' },
   { name: 'net/nanopay/accounting/AccountingTimeOutModal' },
+  { name: 'net/nanopay/accounting/ui/AccountingInvoiceSyncModal' },
   { name: 'net/nanopay/accounting/IntegrationCode' },
   { name: 'net/nanopay/accounting/User' },
   { name: 'net/nanopay/accounting/ContactMismatchPair' },

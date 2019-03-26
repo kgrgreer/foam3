@@ -25,7 +25,8 @@ foam.CLASS({
     'checkComplianceAndBanking',
     'currencyDAO',
     'stack',
-    'user'
+    'user',
+    'accountingIntegrationUtil'
   ],
 
   properties: [
@@ -174,34 +175,9 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: async function(invoice) {
-        let service = null;
-        if ( this.XeroInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE || invoice.status == this.InvoiceStatus.DRAFT) ) {
-          if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-            service = this.xeroService;
-          } else {
-            this.ctrl.notify(' Cannot sync invoice, Not signed into Xero.', 'error');
-            return;
-          }
-        } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE || invoice.status == this.InvoiceStatus.DRAFT) ) {
-          if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
-          service = this.quickbooksService;
-          } else {
-            this.ctrl.notify(' Cannot sync invoice, Not signed into Quickbooks.', 'error');
-            return;
-          }
-        }
-        if ( service != null ) {
-          let result = await service.singleSync(null, invoice);
-          if ( ! result.result ) {
-            if ( result.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-              this.ctrl.add(this.Popup.create({ closeable: false }).tag({
-                class: 'net.nanopay.accounting.AccountingTimeOutModal'
-              }));
-            } else {
-              this.ctrl.notify(result.reason, 'error');
-            }
-            return;
-          }
+        if ( invoice.status == this.InvoiceStatus.DRAFT ) {
+          let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+          if ( updatedInvoice === null ) return;
         }
         this.stack.push({
           class: 'net.nanopay.sme.ui.InvoiceOverview',

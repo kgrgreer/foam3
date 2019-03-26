@@ -10,6 +10,7 @@ foam.ENUM({
     { name: 'API_LIMIT', label: 'Please try again in a minute' },
     { name: 'ACCOUNTING_ERROR', label: 'An unexpected error has occurred.' },
     { name: 'INTERNAL_ERROR', label: 'Internal error has occurred.' },
-    { name: 'MISSING_BANK', label: 'Bank account has not been linked to accounting software.' }
+    { name: 'MISSING_BANK', label: 'Bank account has not been linked to accounting software.' },
+    { name: 'INVALID_ORGANIZATION', label: 'User is not signed into the right organization.' }
   ]
 });

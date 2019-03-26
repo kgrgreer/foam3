@@ -92,8 +92,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      console.log(this.invoiceResult);
-      console.log(this.contactResult);
       var self = this;
       this.SUPER();
       this

@@ -134,7 +134,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       CompanyInfo companyInfo = fetchCompanyInfo(x);
 
       token.setBusinessName(companyInfo.getCompanyName());
-
+      tokenDAO.put(token.fclone());
       for ( Transaction invoice : list ) {
 
         try {
@@ -175,9 +175,21 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       QuickbooksInvoice qInvoice = (QuickbooksInvoice) nanoInvoice;
       String type = user.getId() == qInvoice.getPayeeId() ?
         "Invoice" : "bill";
-
+      if ( token == null ) {
+        return new ResultResponse.Builder(x)
+          .setResult(false)
+          .setReason("User is not synced with Quickbooks")
+          .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+          .setReason(qInvoice.getBusinessName())
+          .build();
+      }
       if ( ! token.getRealmId().equals(((QuickbooksInvoice) nanoInvoice).getRealmId()) ) {
-        // TODO handle sign in as different company
+        return new ResultResponse.Builder(x)
+          .setResult(false)
+          .setReason("User is not synced with the right Quickbooks organization")
+          .setErrorCode(AccountingErrorCodes.INVALID_ORGANIZATION)
+          .setReason(qInvoice.getBusinessName())
+          .build();
       }
 
       Transaction invoice = fetchInvoiceById(x, type, qInvoice.getQuickId());
@@ -254,7 +266,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       return new ResultResponse.Builder(x)
         .setResult(true)
-        .setBankAccountList(accounts.toArray(new AccountingBankAccount[accounts.size()]))
+        .setBankAccountList(results.toArray(new AccountingBankAccount[accounts.size()]))
         .build();
     } catch ( Exception e ) {
       logger.error(e);

@@ -326,12 +326,17 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       // Clone the invoice to make changes
       existingInvoice = (XeroInvoice) existingInvoice.fclone();
 
+      // Only update draft receivables
+      if ( xeroInvoice.getType() == InvoiceType.ACCREC  && ! ( existingInvoice.getStatus() == InvoiceStatus.DRAFT)) {
+        return "skip";
+      }
+
       //skip desync invoices as they have been paid already
       if ( existingInvoice.getDesync() ){
         return "skip";
       }
       // Only update invoices that are unpaid or drafts.
-      if ( net.nanopay.invoice.model.InvoiceStatus.UNPAID != existingInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.DRAFT != existingInvoice.getStatus() && net.nanopay.invoice.model.InvoiceStatus.OVERDUE != existingInvoice.getStatus()) {
+      if ( ! (net.nanopay.invoice.model.InvoiceStatus.UNPAID == existingInvoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.DRAFT == existingInvoice.getStatus() || net.nanopay.invoice.model.InvoiceStatus.OVERDUE == existingInvoice.getStatus()) ) {
         // Skip processing this invoice.
         return "skip";
       }
@@ -501,8 +506,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     }
 
     try {
-
-      token.setBusinessName(client.getOrganisations().get(0).getLegalName());
+      Organisation organisations = client.getOrganisations().get(0);
+      token.setBusinessName(organisations.getLegalName());
+      token.setOrganizationId(organisations.getOrganisationID());
+      tokenDAO.put(token.fclone());
 
       for (com.xero.model.Invoice xeroInvoice : client.getInvoices()) {
         try {
@@ -846,46 +853,40 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     User user = (User) x.get("user");
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());
-    XeroInvoice invoice = (XeroInvoice) nanoInvoice;
     XeroClient client = getClient(x);
     Logger logger = (Logger) x.get("logger");
-    DAO contactDAO  = ((DAO) x.get("contactDAO")).inX(x);
-    DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
     ContactMismatchPair[] contactMismatchPair = new ContactMismatchPair[1];
     String[] result = new String[1];
     String error = "";
-    if ( !  invoice.getXeroOrganizationId().equals(token.getOrganizationId()) ) {
-      return new ResultResponse.Builder(x)
-        .setResult(false)
-        .setReason(" Not signed into the Xero organization this invoice belongs to.")
-        .build();
-    }
+
     try {
-      Contact contact = (Contact) contactDAO.find(invoice.getContactId());
-      AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.find(AND(
-        EQ(AccountingContactEmailCache.EMAIL, contact.getEmail()),
-        NEQ(AccountingContactEmailCache.XERO_ID, "")
-      ));
-      if ( cache == null ) {
+      if ( client == null ) {
         return new ResultResponse.Builder(x)
           .setResult(false)
-          .setReason("Could not find contact")
+          .setReason("User not signed in")
+          .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
           .build();
       }
-      com.xero.model.Contact xeroContact = client.getContact(cache.getXeroId());
-      contactMismatchPair[0] = syncContact(x, xeroContact);
-      if ( contactMismatchPair[0].getResultCode() == ContactMismatchCode.SUCCESS ) {
-        com.xero.model.Invoice xeroInvoice = client.getInvoice(invoice.getXeroId());
-        result[0] = syncInvoice(x, xeroInvoice);
-        if ( result[0].equals("") ) {
-          return new ResultResponse.Builder(x)
-            .setResult(true)
-            .build();
-        }
-        error = " Invoice has failed to sync, :" + result;
-      } else {
-        error = " Contact has failed to sync, error code: " + contactMismatchPair[0].getResultCode();
+
+      XeroInvoice invoice = (XeroInvoice) nanoInvoice;
+      if ( !  invoice.getXeroOrganizationId().equals(token.getOrganizationId()) ) {
+        return new ResultResponse.Builder(x)
+          .setResult(false)
+          .setReason("User is not synced with the right Xero organization")
+          .setErrorCode(AccountingErrorCodes.INVALID_ORGANIZATION)
+          .setReason(invoice.getBusinessName())
+          .build();
       }
+
+      com.xero.model.Invoice xeroInvoice = client.getInvoice(invoice.getXeroId());
+      result[0] = syncInvoice(x, xeroInvoice);
+      if ( result[0].equals("") ) {
+        return new ResultResponse.Builder(x)
+          .setResult(true)
+          .build();
+      }
+      error = " Invoice has failed to sync, :" + result;
+
       return new ResultResponse.Builder(x)
         .setResult(false)
         .setReason(error)

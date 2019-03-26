@@ -183,9 +183,6 @@ foam.CLASS({
         invoiceResult: invoiceResult,
         contactResult: contactResult
       }));
-
-      console.log(contactResult);
-      console.log(invoiceResult);
     }
   ]
 });
