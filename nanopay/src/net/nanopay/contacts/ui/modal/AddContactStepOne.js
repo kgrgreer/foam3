@@ -41,7 +41,8 @@ foam.CLASS({
     }
     ^invite-explaination {
       color: #2b2b2b;
-      font-size: 12px;
+      font-size: 14px;
+      line-height: 1.5;
       margin-top: 16px;
     }
 
