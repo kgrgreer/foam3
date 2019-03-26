@@ -266,7 +266,7 @@ public class TransactionTest
     txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
     test( ! txn.canTransfer(x_,null), "Cannot transfer transaction in PENDING_PARENT_COMPLETED status");
     txn.setStatus(TransactionStatus.PENDING);
-    test(txn.canTransfer(x_, null),"Can transfer transaction if previous transaction is null");
+    test(! txn.canTransfer(x_, null), "Cannot transfer transaction if status is PENDING");
     txnNew.setStatus(TransactionStatus.PENDING);
     test( ! txn.canTransfer(x_,txnNew),"Cannot transfer transaction in same status as old transaction");
     test( ! txn.canReverseTransfer(x_,txn), "canReverseTransfer returns false");

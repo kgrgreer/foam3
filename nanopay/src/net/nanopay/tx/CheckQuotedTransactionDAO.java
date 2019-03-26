@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class CheckQuotedTransactionDAO extends ProxyDAO {
 
@@ -16,7 +17,7 @@ public class CheckQuotedTransactionDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction txn = (Transaction) obj;
-    if ( ! txn.getIsQuoted() ) {
+    if ( ! txn.getIsQuoted() && txn.getStatus() != TransactionStatus.SCHEDULED ) {
       TransactionQuote quote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, new net.nanopay.tx.TransactionQuote.Builder(x).setRequestTransaction(txn).build());
       return getDelegate().put_(x, quote.getPlan());
     }
