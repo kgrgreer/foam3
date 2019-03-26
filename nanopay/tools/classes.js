@@ -476,7 +476,7 @@ var classes = [
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 
-  // sett
+  // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
 ];
 
