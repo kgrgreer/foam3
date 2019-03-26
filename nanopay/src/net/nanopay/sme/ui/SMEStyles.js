@@ -383,7 +383,7 @@ foam.CLASS({
       outline: none;
     }
 
-    .sme.button:active {
+    .sme.button:active:enabled {
       box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
     }
 

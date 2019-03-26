@@ -15,6 +15,7 @@ import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.InvoiceStatus;
 
 import java.util.List;
 
@@ -100,7 +101,8 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     @Override
     public void put(Object obj, foam.core.Detachable sub) {
       Invoice invoice = (Invoice) obj;
-      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) ) {
+      if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) &&
+          ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId()) ) {
         getDelegate().put(obj, sub);
       }
     }
