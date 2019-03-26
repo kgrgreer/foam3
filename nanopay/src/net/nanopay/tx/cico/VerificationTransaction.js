@@ -20,6 +20,13 @@ foam.CLASS({
       javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'initialStatus',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
       name: 'statusChoices',
       hidden: true,
       documentation: 'Returns available statuses for each transaction depending on current status',
