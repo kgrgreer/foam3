@@ -122,12 +122,17 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
   @Override
   public ResultResponse invoiceSync(X x) {
+    User user = (User) x.get("user");
+    QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     List<String> errorResult = new ArrayList<>();
     List<String> successResult = new ArrayList<>();
 
     try {
 
       List<Transaction> list = fetchInvoices(x);
+      CompanyInfo companyInfo = fetchCompanyInfo(x);
+
+      token.setBusinessName(companyInfo.getCompanyName());
 
       for ( Transaction invoice : list ) {
 
@@ -668,6 +673,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     existInvoice.setIssueDate(qInvoice.getTxnDate());
     existInvoice.setQuickId(qInvoice.getId());
     existInvoice.setRealmId(token.getRealmId());
+    existInvoice.setBusinessName(token.getBusinessName());
     existInvoice.setCreatedBy(user.getId());
     existInvoice.setContactId(contact.getId());
 
@@ -823,6 +829,17 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     result.addAll(sendRequest(x, queryInvoice));
 
     return result;
+  }
+
+  public CompanyInfo fetchCompanyInfo(X x) {
+
+    List result = new ArrayList();
+
+    String query = "select * from CompanyInfo";
+
+    result.addAll(sendRequest(x, query));
+
+    return (CompanyInfo) result.get(0);
   }
 
 

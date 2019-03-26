@@ -13,6 +13,10 @@ foam.CLASS({
       name: 'realmId'
     },
     {
+      class: 'String',
+      name: 'businessName'
+    },
+    {
       class: 'Boolean',
       name: 'desync'
     },

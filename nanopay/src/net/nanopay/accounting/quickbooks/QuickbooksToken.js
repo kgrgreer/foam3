@@ -20,6 +20,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'businessName'
+    },
+    {
+      class: 'String',
       name: 'authCode'
     },
     {
