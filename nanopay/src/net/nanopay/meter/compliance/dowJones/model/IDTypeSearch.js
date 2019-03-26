@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.dowJones.models',
+  package: 'net.nanopay.meter.compliance.dowJones.model',
   name: 'IDTypeSearch',
-  extends: 'net.nanopay.meter.compliance.dowJones.models.BaseSearch',
+  extends: 'net.nanopay.meter.compliance.dowJones.model.BaseSearch',
 
   documentation: `Extends BaseSearch to search the Dow Jones Risk Database using the Dow Jones Profile ID
                   which is the unique number Dow Jones allocates to each profile. Searching by profile ID

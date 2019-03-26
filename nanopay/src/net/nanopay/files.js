@@ -818,11 +818,11 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/enums/IDTypeKey' },
   { name: 'net/nanopay/meter/compliance/dowJones/enums/RecordType' },
   { name: 'net/nanopay/meter/compliance/dowJones/enums/SearchType' },
-  { name: 'net/nanopay/meter/compliance/dowJones/models/BaseSearch' },
-  { name: 'net/nanopay/meter/compliance/dowJones/models/EntityNameSearch' },
-  { name: 'net/nanopay/meter/compliance/dowJones/models/IdTypeSearch' },
-  { name: 'net/nanopay/meter/compliance/dowJones/models/NameSearch' },
-  { name: 'net/nanopay/meter/compliance/dowJones/models/PersonNameSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/model/BaseSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/model/EntityNameSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/model/IdTypeSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/model/NameSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/model/PersonNameSearch' },
 
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },

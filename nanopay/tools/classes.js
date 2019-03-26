@@ -483,11 +483,11 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.enums.IDTypeKey',
   'net.nanopay.meter.compliance.dowJones.enums.RecordType',
   'net.nanopay.meter.compliance.dowJones.enums.SearchType',
-  'net.nanopay.meter.compliance.dowJones.models.BaseSearch',
-  'net.nanopay.meter.compliance.dowJones.models.EntityNameSearch',
-  'net.nanopay.meter.compliance.dowJones.models.IDTypeSearch',
-  'net.nanopay.meter.compliance.dowJones.models.NameSearch',
-  'net.nanopay.meter.compliance.dowJones.models.PersonNameSearch',
+  'net.nanopay.meter.compliance.dowJones.model.BaseSearch',
+  'net.nanopay.meter.compliance.dowJones.model.EntityNameSearch',
+  'net.nanopay.meter.compliance.dowJones.model.IDTypeSearch',
+  'net.nanopay.meter.compliance.dowJones.model.NameSearch',
+  'net.nanopay.meter.compliance.dowJones.model.PersonNameSearch',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
