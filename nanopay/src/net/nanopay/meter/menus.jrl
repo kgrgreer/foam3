@@ -27,6 +27,6 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.emailmessage","label":"Email M
 // Extra Menu Items
 p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"serviceProviderDAO"},"order":4000,"parent":"operation"})
 
-//SecureFact Responses
-p({"class":"foam.nanos.menu.Menu","id":"operation.sidni","label":"SIDni Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"secureFactSIDniDAO"},"order":3300,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.lev","label":"LEV Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"secureFactLEVDAO"},"order":3400,"parent":"operation"})
+//Securefact Responses
+p({"class":"foam.nanos.menu.Menu","id":"operation.sidni","label":"SIDni Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"securefactSIDniDAO"},"order":3300,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.lev","label":"LEV Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"securefactLEVDAO"},"order":3400,"parent":"operation"})

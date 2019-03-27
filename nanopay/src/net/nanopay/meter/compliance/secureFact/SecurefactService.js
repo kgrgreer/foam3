@@ -137,7 +137,7 @@ foam.CLASS({
           entity.setContentType("application/json");
 
           httpPost.addHeader("Content-type", "application/json");
-          httpPost.setHeader("Authorization", "Basic " +
+          httpPost.addHeader("Authorization", "Basic " +
             Base64.getEncoder().encodeToString(basicAuth.getBytes()));
           httpPost.setEntity(entity);
           httpResponse =  httpClient.execute(httpPost);
