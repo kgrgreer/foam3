@@ -12,9 +12,6 @@ import net.nanopay.model.Business;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.auth.passwordutil.PasswordEntropy;
 
-// Troy: Why do we have this? Can't we take whatever made this necessary and put
-// it in foam?
-
 public class NanopayUserAndGroupAuthService extends UserAndGroupAuthService {
 
   // pattern used to check if password has only alphanumeric characters
