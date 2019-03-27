@@ -34,9 +34,10 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       parent = parent.findParent(x);
     }
 
-    Invoice invoice = parent.findInvoiceId(x);
-    // AscendFXTransaction needs to generate the id before setting the invoice paymentId
+    // AscendantFXTransaction needs to generate the id before setting the invoice paymentId
     parent = (Transaction) super.put_(x, parent);
+
+    Invoice invoice = parent.findInvoiceId(x);
 
     if ( parent.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
@@ -62,10 +63,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentDate(transaction.getCompletionDate());
         invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoiceDAO.put(invoice);
-      } else if (
-        ( status == TransactionStatus.PENDING_PARENT_COMPLETED || status == TransactionStatus.PENDING )
-          && SafetyUtil.isEmpty(transaction.getParent())
-        ) {
+      } else if ( status == TransactionStatus.PENDING_PARENT_COMPLETED || status == TransactionStatus.PENDING ) {
         invoice.setPaymentDate(generateEstimatedCreditDate());
         invoice.setPaymentMethod(PaymentStatus.PENDING); 
         invoiceDAO.put(invoice);
