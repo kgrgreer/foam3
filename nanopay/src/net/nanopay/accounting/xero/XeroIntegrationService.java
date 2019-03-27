@@ -72,7 +72,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       error += "Missing Email Address.";
     }
     if ( SafetyUtil.isEmpty(xeroContact.getName()) ) {
-      error += " Missing Contact Name.";
+      error += " Missing Business Name.";
     }
     return error;
   }
@@ -223,6 +223,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
           newContact.setType("Contact");
           newContact.setGroup("sme");
           newContact.setOwner(user.getId());
+          result.setExistContact(newContact);
           result.setResultCode(ContactMismatchCode.EXISTING_USER);
         } else {
           result.setExistContact(importXeroContact(x,xeroContact,user,null));
@@ -234,11 +235,8 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         result.setResultCode(ContactMismatchCode.SUCCESS);
       }
     }
-    if ( ! newContact.getEmail().equals("") ) {
+    if ( result.getResultCode() == ContactMismatchCode.SUCCESS ) {
       contactDAO.put(newContact);
-    }
-    if ( result.getExistContact() == null && result.getNewContact() == null ) {
-      return null;
     }
     return result;
   }
@@ -279,7 +277,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
 
          ContactMismatchPair mismatchPair = syncContact(x, xeroContact);
          if ( mismatchPair.getResultCode() == ContactMismatchCode.SUCCESS ) {
-           contactSuccess.add(mismatchPair.getNewContact().getFirstName() + " " + mismatchPair.getNewContact().getLastName() + " with email address of " + mismatchPair.getNewContact().getEmail());
+           contactSuccess.add(mismatchPair.getNewContact().getBusinessName()+ ",  with email address of " + mismatchPair.getNewContact().getEmail());
          }
          else {
            result.add(mismatchPair);
@@ -556,27 +554,27 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     XeroClient client = getClient(x);
     User user = (User) x.get("user");
 
-    if ( client == null ) {
-      return new ResultResponse.Builder(x)
-        .setResult(false)
-        .setReason("User not signed in")
-        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
-        .build();
-    }
 
     if ( invoice != null ) {
       XeroInvoice nanoInvoice =  (XeroInvoice) invoice;
+      if ( invoice.getStatus() == InvoiceStatus.PENDING  ) {
+        nanoInvoice.setDesync(true);
+        invoiceDAO.put(nanoInvoice.fclone());
+      }
       if ( user.getId() == invoice.getPayeeId() ) {
-        if ( invoice.getStatus() == InvoiceStatus.PENDING  ) {
-          nanoInvoice.setDesync(true);
-          invoiceDAO.put(nanoInvoice.fclone());
-        }
         return new ResultResponse.Builder(x)
           .setResult(true)
           .build();
       }
       //sync single invoice. Set desync to true to sync later if it fails
       try {
+        if ( client == null ) {
+          return new ResultResponse.Builder(x)
+            .setResult(false)
+            .setReason("User not signed in")
+            .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+            .build();
+        }
         com.xero.model.Invoice xeroInvoice = client.getInvoice(nanoInvoice.getXeroId());
         PaymentResponse payment = reSyncInvoice(x,nanoInvoice,xeroInvoice);
         if ( payment.response.getResult() ) {
