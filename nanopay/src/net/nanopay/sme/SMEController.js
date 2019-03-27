@@ -150,8 +150,8 @@ foam.CLASS({
   ],
 
   methods: [
-    async function init() {
-      await this.SUPER();
+    function init() {
+      this.SUPER();
 
       // Enable session timer.
       this.sessionTimer.enable = true;
@@ -244,52 +244,45 @@ foam.CLASS({
 
     function requestLogin() {
       var self = this;
-      var searchParams;
       var locHash = location.hash;
+      var view = { class: 'net.nanopay.sme.ui.SignInView' };
 
       if ( locHash ) {
-        // don't go to log in screen if going to reset password screen
+        // Don't go to log in screen if going to reset password screen.
         if ( locHash === '#reset' ) {
-          return new Promise(function(resolve, reject) {
-            // TODO SME specific
-            self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
-            self.loginSuccess$.sub(resolve);
-          });
-        }
-        searchParams = new URLSearchParams(location.search);
-        // don't go to log in screen if going to sign up password screen
-        if ( locHash === '#sign-up' && ! self.loginSuccess ) {
-          return new Promise(function(resolve, reject) {
-            self.stack.push({
-              class: 'net.nanopay.sme.ui.SignUpView',
-              emailField: searchParams.get('email'),
-              disableEmail: true,
-              signUpToken: searchParams.get('token'),
-              companyNameField: searchParams.has('companyName') ? searchParams.get('companyName'): '',
-              disableCompanyName: searchParams.has('companyName')
-            });
-            self.loginSuccess$.sub(resolve);
-          });
+          view = { class: 'foam.nanos.auth.resetPassword.ResetView' };
         }
 
-        // Situation where redirect is from adding an existing user to a business
-        if ( locHash === '#invited' ) {
-          if ( ! self.loginSuccess ) {
-            return new Promise(function(resolve, reject) {
-              self.stack.push({
-                class: 'net.nanopay.sme.ui.SignInView',
-                email: searchParams.get('email'),
-                disableEmail: true,
-                signUpToken: searchParams.get('token'),
-              });
-              self.loginSuccess$.sub(resolve);
-            });
-          }
+        var searchParams = new URLSearchParams(location.search);
+
+        // Don't go to log in screen if going to sign up password screen.
+        if ( locHash === '#sign-up' && ! self.loginSuccess ) {
+          view = {
+            class: 'net.nanopay.sme.ui.SignUpView',
+            emailField: searchParams.get('email'),
+            disableEmail: true,
+            signUpToken: searchParams.get('token'),
+            companyNameField: searchParams.has('companyName')
+              ? searchParams.get('companyName')
+              : '',
+            disableCompanyName: searchParams.has('companyName')
+          };
+        }
+
+        // Situation where redirect is from adding an existing user to a
+        // business.
+        if ( locHash === '#invited' && ! self.loginSuccess ) {
+          view = {
+            class: 'net.nanopay.sme.ui.SignInView',
+            email: searchParams.get('email'),
+            disableEmail: true,
+            signUpToken: searchParams.get('token'),
+          };
         }
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
+        self.stack.push(view);
         self.loginSuccess$.sub(resolve);
       });
     },
@@ -317,50 +310,6 @@ foam.CLASS({
           }
         }
       }
-    },
-
-    function getCurrentUser() {
-      var self = this;
-      // get current user, else show login
-      this.client.auth.getCurrentUser(null).then(function(result) {
-        self.loginSuccess = !! result;
-        if ( result ) {
-          // DOESNT MAKE SENSE FOR A NEW USER signing in. self.user is not assigned. foam.assert(self.user.id === result.id, `The user that was returned from 'getCurrentUser's id must be the same as the user's id returned from 'loginByEmail'. If this isn't happening, it's possible that one of those methods is returning the wrong user.`);
-
-          self.user.copyFrom(result);
-
-          // If the user's email isn't verified, send them to the "verify email"
-          // screen.
-          if ( ! self.user.emailVerified ) {
-            self.loginSuccess = false;
-            self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
-            return;
-          }
-
-          self.onUserUpdate();
-        }
-      })
-      .catch(function(err) {
-        self.requestLogin().then(function() {
-          self.getCurrentUser();
-        });
-      });
-    },
-
-    function getCurrentAgent() {
-      var self = this;
-      // get current user, else show login
-      this.client.agentAuth.getCurrentAgent(this).then(function(result) {
-        if ( result ) {
-          self.agent = result;
-
-          self.onUserUpdate();
-        }
-      }).catch(function(err) {
-        self.requestLogin().then(function() {
-          self.getCurrentUser();
-        });
-      });
     },
 
     function bannerizeCompliance() {
