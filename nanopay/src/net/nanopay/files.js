@@ -733,6 +733,7 @@ FOAM_FILES([
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
+  { name: 'net/nanopay/accounting/ResultResponseWrapper'},
   { name: 'net/nanopay/accounting/AccountingBankAccount' },
   { name: 'net/nanopay/accounting/AccountingContactEmailCache' },
   { name: 'net/nanopay/accounting/AccountingErrorCodes' },

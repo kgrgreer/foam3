@@ -189,7 +189,7 @@ foam.CLASS({
       event.preventDefault();
       event.stopPropagation();
       let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(this.data);
-      if ( updatedInvoice === null ) return;
+      if ( updatedInvoice === null || updatedInvoice === undefined ) return;
       this.stack.push({
         class: 'net.nanopay.sme.ui.SendRequestMoney',
         isPayable: this.isPayable,

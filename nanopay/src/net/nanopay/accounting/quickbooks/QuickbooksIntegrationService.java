@@ -50,6 +50,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   private DAO contactDAO;
   private DAO cacheDAO;
   private DAO currencyDAO;
+  private DAO resultDAO;
   private Logger logger;
 
   @Override
@@ -60,6 +61,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     this.contactDAO   = (DAO) getX().get("contactDAO");
     this.cacheDAO     = (DAO) getX().get("AccountingContactEmailCacheDAO");
     this.currencyDAO = (DAO) getX().get("currencyDAO");
+    this.resultDAO  = (DAO) getX().get("accountingResultDAO");
     this.logger         = (Logger) getX().get("logger");
   }
 
@@ -77,9 +79,16 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
   @Override
   public ResultResponse contactSync(X x) {
+    User user = (User) x.get("user");
     List<ContactMismatchPair> result = new ArrayList<>();
     List<String> invalidContacts = new ArrayList<>();
     List<String> success = new ArrayList<>();
+
+
+    ResultResponse resultResponse = null;
+    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
+    resultWrapper.setMethod("contactSync");
+    resultWrapper.setUserId(user.getId());
 
     try {
 
@@ -110,15 +119,21 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       }
 
     } catch ( Exception e ) {
+      resultResponse = errorHandler(e);
+      resultWrapper.setResultResponse(resultResponse);
+      resultDAO.inX(x).put(resultWrapper);
       return errorHandler(e);
     }
 
-    return new ResultResponse.Builder(x)
+    resultResponse =  new ResultResponse.Builder(x)
       .setResult(true)
       .setContactSyncMismatches(result.toArray(new ContactMismatchPair[result.size()]))
       .setContactSyncErrors(invalidContacts.toArray(new String[invalidContacts.size()]))
       .setSuccessContact(success.toArray(new String[success.size()]))
       .build();
+    resultWrapper.setResultResponse(resultResponse);
+    resultDAO.inX(x).put(resultWrapper);
+    return resultResponse;
   }
 
   @Override
@@ -127,6 +142,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     List<String> errorResult = new ArrayList<>();
     List<String> successResult = new ArrayList<>();
+
+    ResultResponse resultResponse = null;
+    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
+    resultWrapper.setMethod("invoiceSync");
+    resultWrapper.setUserId(user.getId());
 
     try {
 
@@ -154,14 +174,21 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       reSyncInvoices(x);
 
     } catch (Exception e) {
+      resultResponse = errorHandler(e);
+      resultWrapper.setResultResponse(resultResponse);
+      resultDAO.inX(x).put(resultWrapper);
       return errorHandler(e);
     }
 
-    return new ResultResponse.Builder(x)
+    resultResponse =  new ResultResponse.Builder(x)
       .setResult(true)
       .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
       .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
       .build();
+
+    resultWrapper.setResultResponse(resultResponse);
+    resultDAO.inX(x).put(resultWrapper);
+    return resultResponse;
   }
 
   @Override
@@ -170,6 +197,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     List<String> errorResult = new ArrayList<>();
     List<String> successResult = new ArrayList<>();
+
+    ResultResponse resultResponse = null;
+    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
+    resultWrapper.setMethod("singleInvoiceSync");
+    resultWrapper.setUserId(user.getId());
 
     try {
       QuickbooksInvoice qInvoice = (QuickbooksInvoice) nanoInvoice;
@@ -202,14 +234,20 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       }
 
     } catch ( Exception e ) {
+      resultResponse = errorHandler(e);
+      resultWrapper.setResultResponse(resultResponse);
+      resultDAO.inX(x).put(resultWrapper);
       return errorHandler(e);
     }
 
-    return new ResultResponse.Builder(x)
+    resultResponse =  new ResultResponse.Builder(x)
       .setResult(true)
       .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
       .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
       .build();
+    resultWrapper.setResultResponse(resultResponse);
+    resultDAO.inX(x).put(resultWrapper);
+    return resultResponse;
   }
 
   @Override
@@ -249,25 +287,33 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     DAO accountingBankDAO = (DAO) x.get("accountingBankAccountCacheDAO");
 
+    ResultResponse resultResponse = null;
+    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
+    resultWrapper.setMethod("bankAccountSync");
+    resultWrapper.setUserId(user.getId());
 
     try {
       String query = "select * from account where AccountType = 'Bank'";
       List<Account> accounts = sendRequest(x, query);
 
-    for ( Account account : accounts ) {
-      AccountingBankAccount xBank = new AccountingBankAccount();
-      xBank.setRealmId(token.getRealmId());
-      xBank.setQuickBooksBankAccountId(account.getId());
-      xBank.setName(account.getName());
-      xBank.setCurrencyCode(account.getCurrencyRef().getValue());
-      results.add(xBank);
-      accountingBankDAO.put(xBank);
-    }
+      for ( Account account : accounts ) {
+        AccountingBankAccount xBank = new AccountingBankAccount();
+        xBank.setRealmId(token.getRealmId());
+        xBank.setQuickBooksBankAccountId(account.getId());
+        xBank.setName(account.getName());
+        xBank.setCurrencyCode(account.getCurrencyRef().getValue());
+        results.add(xBank);
+        accountingBankDAO.put(xBank);
+      }
 
-      return new ResultResponse.Builder(x)
+      resultResponse =  new ResultResponse.Builder(x)
         .setResult(true)
         .setBankAccountList(results.toArray(new AccountingBankAccount[accounts.size()]))
         .build();
+      resultWrapper.setResultResponse(resultResponse);
+      resultDAO.inX(x).put(resultWrapper);
+      return resultResponse;
+
     } catch ( Exception e ) {
       logger.error(e);
       ResultResponse response = errorHandler(e);
@@ -277,6 +323,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       ).select(sink);
       results = sink.getArray();
       response.setBankAccountList(results.toArray(new AccountingBankAccount[results.size()]));
+      resultWrapper.setResultResponse(resultResponse);
+      resultDAO.inX(x).put(resultWrapper);
       return response;
     }
   }
@@ -285,6 +333,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse invoiceResync(X x, net.nanopay.invoice.model.Invoice invoice) {
     QuickbooksInvoice quickInvoice = (QuickbooksInvoice) invoice.fclone();
     User user = (User) x.get("user");
+
+    ResultResponse resultResponse = null;
+    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
+    resultWrapper.setMethod("invoiceResync");
+    resultWrapper.setUserId(user.getId());
 
     try {
 
@@ -304,13 +357,18 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       quickInvoice.setComplete(true);
       invoiceDAO.inX(x).put(quickInvoice);
 
-      return new ResultResponse.Builder(x)
+      resultResponse = new ResultResponse.Builder(x)
         .setResult(true).build();
+      resultWrapper.setResultResponse(resultResponse);
+      resultDAO.inX(x).put(resultWrapper);
+      return resultResponse;
     } catch ( Exception e ) {
       quickInvoice.setDesync(true);
       invoiceDAO.inX(x).put(quickInvoice);
-
-      return errorHandler(e);
+      resultResponse = errorHandler(e);
+      resultWrapper.setResultResponse(resultResponse);
+      resultDAO.inX(x).put(resultWrapper);
+      return resultResponse;
     }
   }
 

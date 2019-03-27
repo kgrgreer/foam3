@@ -15,8 +15,6 @@ def findString(regex, str):
     else:
         return "";
 
-objectIdSet = set()
-
 def doMigration(filename):
     readFile = open(JOURNAL_HOME + filename, "r");
     writeFile = open(JOURNAL_HOME + filename + '.tmp', "w")
@@ -29,8 +27,6 @@ def doMigration(filename):
             line = line.replace('quick.model.QuickContact', 'quickbooks.model.QuickbooksContact')
             line = line.replace('quick.model.QuickInvoice', 'quickbooks.model.QuickbooksInvoice')
             line = re.sub(r',{\"algorithm\":(.*)}', '', line)
-            if objectId is not None:
-                objectIdSet.add(objectId.group(0));
         writeFile.writelines(line);
 
     readFile.close();
@@ -43,22 +39,5 @@ def doMigration(filename):
 
 if os.path.isfile(JOURNAL_HOME + "users"):
     doMigration('users')
-if os.path.isfile(JOURNAL_HOME + "userHistory"):
-    doMigration('userHistory')
 if os.path.isfile(JOURNAL_HOME + "invoices"):
     doMigration('invoices')
-
-# fix the user history again
-readFile = open(JOURNAL_HOME + "userHistory", "r");
-writeFile = open(JOURNAL_HOME + "userHistory" + '.tmp', "w")
-
-lines = readFile.readlines();
-for line in lines:
-    objectId = re.search(r'\"objectId\":\d*', line)
-    if objectId is not None:
-        if objectId.group(0) in objectIdSet:
-            line = re.sub(r',{\"algorithm\":(.*)}', '', line)
-    writeFile.writelines(line);
-
-shutil.move(JOURNAL_HOME + "userHistory", BACK_UP_PATH + "userHistory" + '_' + str(int(round(time.time()))))
-shutil.move(JOURNAL_HOME + "userHistory" + '.tmp' , JOURNAL_HOME + "userHistory")

@@ -184,7 +184,7 @@ foam.CLASS({
       name: 'dblclick',
       code: async function(invoice, X) {
         let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
-        if ( updatedInvoice === null ) return;
+        if ( updatedInvoice === null || updatedInvoice === undefined ) return;
         this.stack.push({
           class: 'net.nanopay.sme.ui.InvoiceOverview',
           invoice: updatedInvoice,

@@ -229,7 +229,7 @@ foam.CLASS({
                         .on('click', async () => {
                           // check if invoice is in sync with accounting software
                           let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
-                          if ( updatedInvoice === null ) return;
+                          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
                           this.isForm = false;
                           this.isList = false;
                           this.isDetailView = true;
