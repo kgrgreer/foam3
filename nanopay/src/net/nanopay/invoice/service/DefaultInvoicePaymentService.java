@@ -61,6 +61,10 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
     if ( invoice == null )
       throw new RuntimeException("Can't pay a null invoice");
 
+    if ( invoice.getStatus().equals(InvoiceStatus.DRAFT) ) {
+      throw new RuntimeException("Can't pay a draft invoice. Change status and try again."); 
+    }
+
     invoice.validate(x);
 
     if ( user.getId() != invoice.getPayerId() )
