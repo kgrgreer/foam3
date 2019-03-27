@@ -434,12 +434,11 @@ var classes = [
   'net.nanopay.meter.BusinessStatusContactDAO',
   'net.nanopay.meter.compliance.ComplianceAuthService',
   'net.nanopay.meter.compliance.ComplianceAware',
-  'net.nanopay.meter.compliance.ComplianceHistory',
-  'net.nanopay.meter.compliance.ComplianceRule',
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
-  'net.nanopay.meter.compliance.ComplianceValidator',
   'net.nanopay.meter.compliance.ComplianceService',
   'net.nanopay.meter.compliance.NanopayComplianceService',
+  'net.nanopay.meter.compliance.canadianSanction.Record',
+  'net.nanopay.meter.compliance.CanadianSanctionValidator',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
