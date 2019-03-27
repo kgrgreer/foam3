@@ -35,6 +35,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     }
 
     Invoice invoice = parent.findInvoiceId(x);
+    // AscendFXTransaction needs to generate the id before setting the invoice paymentId
     parent = (Transaction) super.put_(x, parent);
 
     if ( parent.getInvoiceId() != 0 ) {
@@ -52,7 +53,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoiceDAO.put(invoice);
       }
 
-      if (status == TransactionStatus.COMPLETED) {
+      if ( status == TransactionStatus.COMPLETED ) {
         Calendar curDate = Calendar.getInstance();
         invoice.setPaymentDate(curDate.getTime());
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
