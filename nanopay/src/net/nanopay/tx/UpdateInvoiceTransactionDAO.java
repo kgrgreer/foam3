@@ -59,15 +59,15 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentDate(curDate.getTime());
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
         invoiceDAO.put(invoice);
-      } else if (status == TransactionStatus.SENT && transaction instanceof AscendantFXTransaction) {
+      } else if ( status == TransactionStatus.SENT && transaction instanceof AscendantFXTransaction ) {
         invoice.setPaymentDate(transaction.getCompletionDate());
         invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoiceDAO.put(invoice);
       } else if ( status == TransactionStatus.PENDING_PARENT_COMPLETED || status == TransactionStatus.PENDING ) {
         invoice.setPaymentDate(generateEstimatedCreditDate());
-        invoice.setPaymentMethod(PaymentStatus.PENDING); 
+        invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoiceDAO.put(invoice);
-      } else if (status == TransactionStatus.DECLINED || status == TransactionStatus.REVERSE || status == TransactionStatus.REVERSE_FAIL) {
+      } else if ( status == TransactionStatus.DECLINED || status == TransactionStatus.REVERSE || status == TransactionStatus.REVERSE_FAIL ) {
         invoice.setPaymentDate(null);
         invoice.setPaymentMethod(PaymentStatus.NONE);
         invoiceDAO.put(invoice);
