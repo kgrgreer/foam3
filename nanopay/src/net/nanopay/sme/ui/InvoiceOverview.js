@@ -20,6 +20,9 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -29,6 +32,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'auth',
     'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
     'ctrl',
@@ -222,15 +226,30 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'bankAccount',
       expression: function() {
-        var accountId = this.isPayable ?
-          this.invoice.account :
-          this.invoice.destinationAccount;
-        if ( accountId ) {
-          this.accountDAO.find(accountId).then((account) => {
+        if ( this.isPayable ) {
+          this.user.accounts.find(this.invoice.account).then((account) => {
               this.bankAccount = account;
             });
-          return null;
+        } else if ( ! this.isPayable && this.invoice.destinationAccount ) {
+          this.user.accounts
+            .find(this.invoice.destinationAccount).then((account) => {
+              this.bankAccount = account;
+            });
+        } else {
+          this.user.accounts
+            .where(
+              this.AND(
+                this.EQ(this.Account.IS_DEFAULT, true),
+                this.OR(
+                  this.INSTANCE_OF(this.CABankAccount),
+                  this.INSTANCE_OF(this.USBankAccount)
+                )
+              )
+            ).select().then((account) => {
+              this.bankAccount = account.array.shift();
+            });
         }
+        return null;
       }
     },
     {
@@ -283,6 +302,23 @@ foam.CLASS({
       expression: function(invoice) {
         return invoice.status === this.InvoiceStatus.PENDING ||
           invoice.status === this.InvoiceStatus.PAID;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isPendingApproval',
+      factory: function() {
+        return this.invoice.status === this.InvoiceStatus.PENDING_APPROVAL;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'canApproveInvoice',
+      factory: function() {
+        this.auth.check(null, 'invoice.pay').then((canPay) => {
+          this.canApproveInvoice = canPay;
+        });
+        return false;
       }
     },
     {
@@ -434,6 +470,15 @@ foam.CLASS({
                     .addClass('sme').addClass('button').addClass('primary')
                     .addClass(this.myClass('primary-disable'))
                   .end()
+                  .start(this.APPROVE)
+                    .addClass('sme').addClass('button').addClass('primary')
+                    .enableClass(
+                      this.myClass('primary-disable'),
+                      this.slot(function(canApproveInvoice) {
+                        return ! canApproveInvoice;
+                      })
+                    )
+                  .end()
                 .end()
               .end()
             .endContext();
@@ -547,7 +592,7 @@ foam.CLASS({
                   .start().show(this.showBankAccount$).addClass('invoice-text')
                     .start().addClass('table-content').add(this.bankAccountLabel).end()
                     .add(this.bankAccount$.map((account) => {
-                      if ( account != null ) {
+                      if ( account ) {
                         return `${account.name} ` +
                           `${'*'.repeat(account.accountNumber.length-4)}` +
                           `${account.accountNumber.slice(-4)}`;
@@ -683,6 +728,34 @@ foam.CLASS({
       label: 'Paid',
       isAvailable: function() {
         return this.isPayable && this.isProcessOrComplete;
+      },
+      isEnabled: function() {
+        // Always disabled the paid button
+        return false;
+      },
+    },
+    {
+      name: 'approve',
+      label: 'Approve',
+      isAvailable: function(isPendingApproval) {
+        return this.isPayable && isPendingApproval;
+      },
+      isEnabled: function(canApproveInvoice) {
+        return canApproveInvoice;
+      },
+      code: function(X) {
+        X.menuDAO.find('sme.quickAction.send').then((menu) => {
+          var clone = menu.clone();
+          Object.assign(clone.handler.view, {
+            isApproving: true,
+            isForm: false,
+            isDetailView: true,
+            invoice: this.invoice.clone()
+          });
+          clone.launch(X, X.controllerView);
+        }).catch((err) => {
+          console.warn('Error occured when checking the compliance: ', err);
+        });
       }
     },
     {

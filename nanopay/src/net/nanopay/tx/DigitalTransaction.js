@@ -15,7 +15,9 @@ foam.CLASS({
     'java.util.List',
     'java.util.ArrayList',
     'foam.util.SafetyUtil',
-    'net.nanopay.tx.model.LiquidityService',
+    'net.nanopay.liquidity.LiquidityService',
+    'net.nanopay.liquidity.LiquiditySettings',
+    'net.nanopay.liquidity.Frequency',
     'net.nanopay.account.Account'
 ],
 
@@ -84,27 +86,9 @@ foam.CLASS({
       super.validate(x);
 
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-      if ( ! SafetyUtil.isEmpty(getId()) && oldTxn.getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED && oldTxn.getStatus() != TransactionStatus.PENDING  ) {
+      if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
       }
-      `
-    },
-    {
-      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
-      name: 'canTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-        return oldTxn == null && getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED;
       `
     },
     {
@@ -154,8 +138,8 @@ foam.CLASS({
       LiquidityService ls = (LiquidityService) x.get("liquidityService");
       Account source = findSourceAccount(x);
       Account destination = findDestinationAccount(x);
-      ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, -getAmount());
-      ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, getAmount());
+      ls.liquifyAccount(source.getId(), Frequency.PER_TRANSACTION, -getAmount());
+      ls.liquifyAccount(destination.getId(), Frequency.PER_TRANSACTION, getAmount());
       `
     }
   ]

@@ -40,7 +40,6 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
-          fitInScreen: true,
           columns: [
             this.Invoice.PAYEE.clone().copyFrom({
               label: 'Company',
@@ -100,6 +99,26 @@ foam.CLASS({
                   }
                 }).catch((err) => {
                   console.warn('Error occured when checking the compliance: ', err);
+                });
+              }
+            }),
+            foam.core.Action.create({
+              name: 'edit',
+              label: 'Edit',
+              confirmationRequired: true,
+              isAvailable: function() {
+                return this.status === self.InvoiceStatus.DRAFT;
+              },
+              code: function(X) {
+                X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                  var clone = menu.clone();
+                  Object.assign(clone.handler.view, {
+                    isPayable: true,
+                    isForm: true,
+                    isDetailView: false,
+                    invoice: this
+                  });
+                  clone.launch(X, X.controllerView);
                 });
               }
             }),

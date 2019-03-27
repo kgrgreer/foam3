@@ -70,13 +70,9 @@ foam.CLASS({
         // Prevent privilege escalation by only allowing a user's group to be
         // set to one that the user doing the put has permission to update.
         boolean hasGroupUpdatePermission = auth.check(x, "group.update." + this.getGroup());
+
         if ( ! hasGroupUpdatePermission ) {
           throw new AuthorizationException("You do not have permission to set that business's group to '" + this.getGroup() + "'.");
-        }
-
-        // Prevent everyone but admins from changing the 'system' property.
-        if ( this.getSystem() && ! group.getId().equals("admin") ) {
-          throw new AuthorizationException("You do not have permission to create a system user.");
         }
       `
     },
@@ -93,12 +89,15 @@ foam.CLASS({
         Group group = (Group) x.get("group");
         AuthService auth = (AuthService) x.get("auth");
         boolean isUpdatingSelf = SafetyUtil.equals(this.getId(), user.getId());
+        
+        // to allow update authorization for users with permissions
         boolean hasUserEditPermission = auth.check(x, "business.update." + this.getId());
 
+        // In other words: if the user EITHER is updating themselves, has edit authorization or is changing the system (will be handled below)
+        // then they can PROCEED
         if (
           ! isUpdatingSelf &&
-          ! hasUserEditPermission &&
-          ! user.getSystem()
+          ! hasUserEditPermission
         ) {
           throw new AuthorizationException();
         }
@@ -117,14 +116,6 @@ foam.CLASS({
           } else if ( ! (hasOldGroupUpdatePermission && hasNewGroupUpdatePermission) ) {
             throw new AuthorizationException("You do not have permission to change that business's group to '" + this.getGroup() + "'.");
           }
-        }
-
-        // Prevent everyone but admins from changing the 'system' property.
-        if (
-          ! SafetyUtil.equals(oldBusiness.getSystem(), this.getSystem()) &&
-          ! SafetyUtil.equals(group.getId(), "admin")
-        ) {
-          throw new AuthorizationException("You do not have permission to change the 'system' flag.");
         }
       `
     },

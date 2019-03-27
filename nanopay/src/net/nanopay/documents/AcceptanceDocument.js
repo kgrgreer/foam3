@@ -8,11 +8,14 @@ foam.CLASS({
     'foam.nanos.auth.EnabledAware'
   ],
 
+  requires: [
+    'net.nanopay.documents.ui.AcceptanceDocumentView'
+  ],
+
   properties: [
     {
       class: 'Long',
-      name: 'id',
-      required: true
+      name: 'id'
     },
     {
       name: 'enabled',
@@ -51,7 +54,7 @@ foam.CLASS({
       class: 'String',
       name: 'body',
       documentation: 'Template body',
-      view: { class: 'foam.u2.tag.TextArea', rows: 40, cols: 150 },
+      view: { class: 'net.nanopay.documents.ui.AcceptanceDocumentView' }
     },
     {
       class: 'String',
