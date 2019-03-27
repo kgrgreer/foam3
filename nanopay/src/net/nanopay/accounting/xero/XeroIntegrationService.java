@@ -245,8 +245,12 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   @Override
   public ResultResponse contactSync(X x) {
     DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
+    User user = (User) x.get("user");
     Logger logger = (Logger) x.get("logger");
     XeroClient client = this.getClient(x);
+    DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
+    XeroToken token = (XeroToken) tokenDAO.find(user.getId());
+
     List<ContactMismatchPair> result = new ArrayList<>();
     List<String> contactErrors = new ArrayList<>();
     List<String> contactSuccess = new ArrayList<>();
@@ -260,6 +264,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     }
 
     try {
+      Organisation organisations = client.getOrganisations().get(0);
+      token.setBusinessName(organisations.getLegalName());
+      token.setOrganizationId(organisations.getOrganisationID());
+      tokenDAO.put(token.fclone());
 
       for (com.xero.model.Contact xeroContact : client.getContacts()) {
         try {
@@ -815,6 +823,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
           .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
           .build();
       }
+      Organisation organisations = client.getOrganisations().get(0);
+      token.setBusinessName(organisations.getLegalName());
+      token.setOrganizationId(organisations.getOrganisationID());
+      tokenDAO.put(token.fclone());
 
       for ( com.xero.model.Account xeroAccount :  client.getAccounts() ) {
         AccountingBankAccount xeroBankAccounts = new AccountingBankAccount();
