@@ -28,55 +28,40 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction transaction = (Transaction) obj;
-    Invoice invoice = transaction.findInvoiceId(x);
+    Transaction parent = (Transaction) obj;
 
-    if ( transaction.getInvoiceId() != 0 ) {
-      if ( invoice == null ) {
-        throw new RuntimeException("Invoice with id " + transaction.getInvoiceId() + " not found.");
-      } else if ( invoice.getStatus() == InvoiceStatus.PAID && transaction.getStatus() != TransactionStatus.DECLINED ) {
-        throw new RuntimeException("Invoice already paid.");
-      }
+    while ( ! SafetyUtil.isEmpty(parent.getParent()) ) {
+      parent = (Transaction) parent.findParent(x);
     }
 
-    FObject ret = super.put_(x, obj);
+    Invoice invoice = parent.findInvoiceId(x);
 
-    Account sourceAccount = transaction.findSourceAccount(x);
-    Account destinationAccount = transaction.findDestinationAccount(x);
-    if ( transaction.getInvoiceId() != 0 ) {
+    if ( parent.getInvoiceId() != 0 ) {
+      if ( invoice == null ) {
+        throw new RuntimeException("Invoice with id " + parent.getInvoiceId() + " not found.");
+      } else if ( invoice.getStatus() == InvoiceStatus.PAID && parent.getStatus() != TransactionStatus.DECLINED ) {
+        throw new RuntimeException("Invoice already paid.");
+      }
+
       DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
       TransactionStatus status = transaction.getState(getX());
-      if ( SafetyUtil.isEmpty(invoice.getPaymentId()) && SafetyUtil.isEmpty(transaction.getParent()) ) {
-        invoice.setPaymentId(transaction.getId());
+
+
+      if ( SafetyUtil.isEmpty(invoice.getPaymentId()) ) {
+        invoice.setPaymentId(parent.getId());
         invoiceDAO.put(invoice);
       }
-      if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) &&
-          sourceAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() && ! ( transaction instanceof AscendantFXTransaction )) {
-        // User accepting a payment that was sent to a Contact or User with no BankAccount.
-        invoice.setPaymentMethod(PaymentStatus.DEPOSIT_MONEY);
-        invoiceDAO.put(invoice);
-      } else if ( (status == TransactionStatus.SENT || status == TransactionStatus.PENDING ) &&
-          destinationAccount instanceof DigitalAccount && sourceAccount.getOwner() == invoice.getPayerId() &&
-          destinationAccount.getOwner() == invoice.getPayerId()) {
-        // Existing user sending money to a contact or user with no BankAccount.
-        invoice.setPaymentDate(transaction.getLastModified());
-        invoice.setPaymentMethod(PaymentStatus.TRANSIT_PAYMENT);
-        invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.COMPLETED && destinationAccount instanceof DigitalAccount &&
-          sourceAccount.getOwner() == invoice.getPayerId() && destinationAccount.getOwner() == invoice.getPayerId()) {
-        // Existing user sending money to a contact or user with no BankAccount.
-        invoice.setPaymentDate(transaction.getLastModified());
-        invoice.setPaymentMethod(PaymentStatus.DEPOSIT_PAYMENT);
-        invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.SENT  && transaction instanceof AscendantFXTransaction) {
-        invoice.setPaymentDate(transaction.getCompletionDate());
-        invoice.setPaymentMethod(PaymentStatus.TRANSIT_PAYMENT);
-        invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.COMPLETED ) {
+
+      if ( status == TransactionStatus.COMPLETED ) {
         Calendar curDate = Calendar.getInstance();
         invoice.setPaymentDate(curDate.getTime());
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
         invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.PENDING ) {
+      } else if ( status == TransactionStatus.SENT  && transaction instanceof AscendantFXTransaction) {
+        invoice.setPaymentDate(transaction.getCompletionDate());
+        invoice.setPaymentMethod(PaymentStatus.PENDING);
+        invoiceDAO.put(invoice);
+      } else if ( status == TransactionStatus.PENDING_PARENT_COMPLETED || status == TransactionStatus.PENDING ) {
         invoice.setPaymentDate(generateEstimatedCreditDate());
         invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoiceDAO.put(invoice);
@@ -87,7 +72,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       }
     }
 
-    return ret;
+    return super.put_(x, obj);
   }
 
   private Date generateEstimatedCreditDate() {
