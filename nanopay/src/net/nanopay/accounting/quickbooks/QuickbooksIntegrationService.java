@@ -79,16 +79,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
   @Override
   public ResultResponse contactSync(X x) {
-    User user = (User) x.get("user");
     List<ContactMismatchPair> result = new ArrayList<>();
     List<String> invalidContacts = new ArrayList<>();
     List<String> success = new ArrayList<>();
-
-
-    ResultResponse resultResponse = null;
-    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
-    resultWrapper.setMethod("contactSync");
-    resultWrapper.setUserId(user.getId());
 
     try {
 
@@ -119,21 +112,15 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       }
 
     } catch ( Exception e ) {
-      resultResponse = errorHandler(e);
-      resultWrapper.setResultResponse(resultResponse);
-      resultDAO.inX(x).put(resultWrapper);
-      return errorHandler(e);
+      return saveResult(x, "contactSync" ,errorHandler(e));
     }
 
-    resultResponse =  new ResultResponse.Builder(x)
+    return saveResult(x, "contactSync", new ResultResponse.Builder(x)
       .setResult(true)
       .setContactSyncMismatches(result.toArray(new ContactMismatchPair[result.size()]))
       .setContactSyncErrors(invalidContacts.toArray(new String[invalidContacts.size()]))
       .setSuccessContact(success.toArray(new String[success.size()]))
-      .build();
-    resultWrapper.setResultResponse(resultResponse);
-    resultDAO.inX(x).put(resultWrapper);
-    return resultResponse;
+      .build());
   }
 
   @Override
@@ -142,11 +129,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     List<String> errorResult = new ArrayList<>();
     List<String> successResult = new ArrayList<>();
-
-    ResultResponse resultResponse = null;
-    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
-    resultWrapper.setMethod("invoiceSync");
-    resultWrapper.setUserId(user.getId());
 
     try {
 
@@ -174,21 +156,14 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       reSyncInvoices(x);
 
     } catch (Exception e) {
-      resultResponse = errorHandler(e);
-      resultWrapper.setResultResponse(resultResponse);
-      resultDAO.inX(x).put(resultWrapper);
-      return errorHandler(e);
+      return saveResult(x, "invoiceSync" ,errorHandler(e));
     }
 
-    resultResponse =  new ResultResponse.Builder(x)
+    return saveResult(x, "invoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
       .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
       .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
-      .build();
-
-    resultWrapper.setResultResponse(resultResponse);
-    resultDAO.inX(x).put(resultWrapper);
-    return resultResponse;
+      .build());
   }
 
   @Override
@@ -198,10 +173,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     List<String> errorResult = new ArrayList<>();
     List<String> successResult = new ArrayList<>();
 
-    ResultResponse resultResponse = null;
-    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
-    resultWrapper.setMethod("singleInvoiceSync");
-    resultWrapper.setUserId(user.getId());
 
     try {
       QuickbooksInvoice qInvoice = (QuickbooksInvoice) nanoInvoice;
@@ -234,20 +205,14 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       }
 
     } catch ( Exception e ) {
-      resultResponse = errorHandler(e);
-      resultWrapper.setResultResponse(resultResponse);
-      resultDAO.inX(x).put(resultWrapper);
-      return errorHandler(e);
+      saveResult(x, "singleInvoiceSync", errorHandler(e));
     }
 
-    resultResponse =  new ResultResponse.Builder(x)
+    return saveResult(x, "singleInvoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
       .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
       .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
-      .build();
-    resultWrapper.setResultResponse(resultResponse);
-    resultDAO.inX(x).put(resultWrapper);
-    return resultResponse;
+      .build());
   }
 
   @Override
@@ -999,5 +964,16 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
     }
+  }
+
+  public ResultResponse saveResult(X x, String method, ResultResponse resultResponse) {
+    User user = (User) x.get("user");
+
+    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
+    resultWrapper.setMethod(method);
+    resultWrapper.setUserId(user.getId());
+    resultWrapper.setResultResponse(resultResponse);
+
+    return resultResponse;
   }
 }

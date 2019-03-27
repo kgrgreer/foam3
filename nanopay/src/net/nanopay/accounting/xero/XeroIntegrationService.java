@@ -292,14 +292,14 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e);
-      return getExceptionResponse(x,e);
+      return saveResult(x, "contactSync", getExceptionResponse(x,e));
     }
-    return new ResultResponse.Builder(x)
+    return saveResult(x, "saveResult", new ResultResponse.Builder(x)
       .setResult(true)
       .setContactSyncMismatches(result.toArray(new ContactMismatchPair[result.size()]))
       .setContactSyncErrors(contactErrors.toArray(new String[contactErrors.size()]))
       .setSuccessContact(contactSuccess.toArray(new String[contactSuccess.size()]))
-      .build();
+      .build());
   }
 
 
@@ -536,13 +536,13 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e);
-      return getExceptionResponse(x,e);
+      return saveResult(x, "invoiceSync", getExceptionResponse(x,e));
     }
-    return new ResultResponse.Builder(x)
+    return saveResult(x, "invoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
       .setInvoiceSyncErrors(invoiceErrors.toArray(new String[invoiceErrors.size()]))
       .setSuccessInvoice(successInvoice.toArray(new String[successInvoice.size()]))
-      .build();
+      .build());
   }
 
   @Override
@@ -594,11 +594,11 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         logger.error(e);
         nanoInvoice.setDesync(true);
         invoiceDAO.put(nanoInvoice.fclone());
-        return new ResultResponse.Builder(x)
+        return saveResult(x, "invoiceResync",new ResultResponse.Builder(x)
           .setResult(false)
           .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
           .setReason(e.getMessage())
-          .build();
+          .build());
       }
     } else {
       //find and sync invoices that have desync == true
@@ -653,17 +653,17 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
             }
           }
 
-          return new ResultResponse.Builder(x)
+          return saveResult(x, "invoiceResync", new ResultResponse.Builder(x)
             .setResult(false)
             .setReason("An Error has occured.")
             .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
-            .build();
+            .build());
         }
-      return new ResultResponse.Builder(x)
+      return saveResult(x, "invoiceResync", new ResultResponse.Builder(x)
         .setResult(false)
         .setReason(e.getMessage())
         .setErrorCode(AccountingErrorCodes.INTERNAL_ERROR)
-        .build();
+        .build());
       }
     }
   }
@@ -828,10 +828,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         banksList.add(xeroBankAccounts);
         accountingBankDAO.put(xeroBankAccounts);
       }
-      return new ResultResponse.Builder(x)
+      return saveResult(x, "bankAccountSync", new ResultResponse.Builder(x)
         .setResult(true)
         .setBankAccountList(banksList.toArray(new AccountingBankAccount[banksList.size()]))
-        .build();
+        .build());
     } catch ( Exception e ) {
       e.printStackTrace();
       logger.error(e);
@@ -842,7 +842,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       ).select(sink);
       banksList = sink.getArray();
       response.setBankAccountList(banksList.toArray(new AccountingBankAccount[banksList.size()]));
-      return response;
+      return saveResult(x, "bankAccountSync", response);
     }
   }
 
@@ -885,16 +885,27 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       }
       error = " Invoice has failed to sync, :" + result;
 
-      return new ResultResponse.Builder(x)
+      return saveResult(x ,"singleInvoiceSync", new ResultResponse.Builder(x)
         .setResult(false)
         .setReason(error)
         .setContactSyncMismatches(contactMismatchPair)
         .setInvoiceSyncErrors(result)
-        .build();
+        .build());
     } catch (Exception e){
       logger.error(e);
-      return getExceptionResponse(x,e);
+      return saveResult(x, "singleInvoiceSync", getExceptionResponse(x,e));
     }
+  }
+
+  public ResultResponse saveResult(X x, String method, ResultResponse resultResponse) {
+    User user = (User) x.get("user");
+
+    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
+    resultWrapper.setMethod(method);
+    resultWrapper.setUserId(user.getId());
+    resultWrapper.setResultResponse(resultResponse);
+
+    return resultResponse;
   }
 
 }
