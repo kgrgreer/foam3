@@ -229,6 +229,20 @@ foam.CLASS({
             return [account.id, account.name];
           }
         });
+      },
+      postSet: async function(old, nu) {
+        let selectedBank = await this.accountDAO.find(nu);
+        var accountList = [];
+        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+          if ( selectedBank.denomination === this.accountingBankAccounts.bankAccountList[i].currencyCode ) {
+            if ( this.user.integrationCode === this.IntegrationCode.XERO ) {
+              accountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
+            } else {
+              accountList.push([this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
+            }
+          }
+        }
+        this.accountingList = accountList;
       }
     },
     {
@@ -236,7 +250,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           placeholder: '- Please Select -',
-          choices: X.data.accountingList
+          choices$: X.data.accountingList$
         });
       }
     },
@@ -261,7 +275,6 @@ foam.CLASS({
       this.user.integrationCode = updatedUser.integrationCode;
       this.isXeroConnected();
       this.isQuickbooksConnected();
-      var bankAccountList = [];
       if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
         this.accountingBankAccounts = await this.quickbooksService.bankAccountSync(null);
       } else if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
@@ -275,14 +288,7 @@ foam.CLASS({
         } else if ( ! this.accountingBankAccounts.result && ! this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) {
           this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
         }
-        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
-          if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-            bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
-          } else {
-            bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
-          }
-        }
-        this.accountingList = bankAccountList;
+        this.accountingList = [];
         }
       this
         .addClass(this.myClass())
