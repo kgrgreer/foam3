@@ -185,7 +185,7 @@ foam.CLASS({
     {
       name: 'isEmployee',
       expression: function(group) {
-        return group.includes('.employee');
+        return group.id.includes('.employee');
       }
     },
     {
