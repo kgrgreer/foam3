@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.dowJones.model',
+  package: 'net.nanopay.meter.compliance.dowjones.model',
   name: 'BaseSearch',
 
   documentation: `Base class model for searching the Dow Jones Risk Database.`,
@@ -7,7 +7,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.ContentSet',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.ContentSet',
       name: 'contentSet',
       documentation: 'The content sets included in the search.'
     },
@@ -23,7 +23,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterRegionKeys',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.FilterRegionKeys',
       name: 'filterRegionKeys',
       documentation: 'Filter to restrict the search results by region types.'
     },
@@ -35,7 +35,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterRegion',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.FilterRegion',
       name: 'filterRegion',
       documentation: 'Filter to restrict the search results by region.'
     },
@@ -47,7 +47,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterPEP',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.FilterPEP',
       name: 'filterPEP',
       documentation: 'Filter to restrict the search results by PEP category.'
     },
@@ -64,7 +64,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterSIC',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.FilterSIC',
       name: 'filterSIC',
       documentation: 'Filter to restrict the search results by Special Interest Category.'
     },
@@ -76,7 +76,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterAMC',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.FilterAMC',
       name: 'filterAMC',
       documentation: 'Filter to restrict the search results by Adverse Media Category.'
     },
@@ -88,7 +88,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterSL',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.FilterSL',
       name: 'filterSL',
       documentation: 'Filter to restrict the search results by Sanctions Lists.'
     },
@@ -115,7 +115,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterOOL',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.FilterOOL',
       name: 'filterOOL',
       documentation: 'Filter to restrict the search results by Other Official Lists.'
     },
@@ -142,7 +142,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterOEL',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.FilterOEL',
       name: 'filterOEL',
       documentation: 'Filter to restrict the search results by Other Exclusion Lists.'
     },
@@ -169,7 +169,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterSOC',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.FilterSOC',
       name: 'filterSOC',
       documentation: 'Filter to restrict the search results by State Ownership.'
     },

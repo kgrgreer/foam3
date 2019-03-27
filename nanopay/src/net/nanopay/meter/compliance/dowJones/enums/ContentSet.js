@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.meter.compliance.dowJones.enums',
+  package: 'net.nanopay.meter.compliance.dowjones.enums',
   name: 'ContentSet',
 
   documentation: `The content sets included in the search.`,

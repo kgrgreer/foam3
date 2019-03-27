@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.meter.compliance.dowJones.enums',
+  package: 'net.nanopay.meter.compliance.dowjones.enums',
   name: 'FilterSOC',
 
   documentation: `Filter to restrict the search results by State Ownership.`,

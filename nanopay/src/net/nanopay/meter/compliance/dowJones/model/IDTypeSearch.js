@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.dowJones.model',
+  package: 'net.nanopay.meter.compliance.dowjones.model',
   name: 'IDTypeSearch',
-  extends: 'net.nanopay.meter.compliance.dowJones.model.BaseSearch',
+  extends: 'net.nanopay.meter.compliance.dowjones.model.BaseSearch',
 
   documentation: `Extends BaseSearch to search the Dow Jones Risk Database using the Dow Jones Profile ID
                   which is the unique number Dow Jones allocates to each profile. Searching by profile ID
@@ -10,7 +10,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.RecordType',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.RecordType',
       name: 'recordType',
       documentation: 'The record types included in the search.'
     },
@@ -21,7 +21,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.IDTypeKey',
+      of: 'net.nanopay.meter.compliance.dowjones.enums.IDTypeKey',
       name: 'idTypeKey',
       documentation: 'the type of ID search.'
     },
