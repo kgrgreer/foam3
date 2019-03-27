@@ -64,7 +64,6 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
         User user = (User) x.get("user");
-        Group group = (Group) x.get("group");
         AuthService auth = (AuthService) x.get("auth");
 
         // Prevent privilege escalation by only allowing a user's group to be
@@ -86,7 +85,6 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode: `
         User user = (User) x.get("user");
-        Group group = (Group) x.get("group");
         AuthService auth = (AuthService) x.get("auth");
         boolean isUpdatingSelf = SafetyUtil.equals(this.getId(), user.getId());
         
