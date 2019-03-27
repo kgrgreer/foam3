@@ -100,27 +100,6 @@ foam.CLASS({
           .start().addClass('headerTitle').addClass('center').add('Sync Report').end()
           .start().addClass('content')
             .call(function() {
-              if ( self.contactResult.successContact.length > 0 || self.invoiceResult.successInvoice.length > 0 ) {
-                this.start('h2').add('Successfuly Sync').addClass('center').end();
-                if ( self.contactResult.successContact.length > 0 ) {
-                  for ( i = 0; i < self.contactResult.successContact.length; i++ ) {
-                    this
-                      .start()
-                        .add(self.contactResult.successContact[i]).addClass('result-item').addClass('success')
-                      .end();
-                  }
-                }
-                if ( self.invoiceResult.successInvoice.length  > 0 ) {
-                  for ( i = 0; i < self.invoiceResult.successInvoice.length; i++ ) {
-                    this
-                      .start()
-                        .add(self.invoiceResult.successInvoice[i]).addClass('result-item').addClass('success')
-                      .end();
-                  }
-                }
-              }
-            })
-            .call(function() {
               if ( self.contactResult.contactSyncErrors.length  > 0 ) {
                 this.start('h2').add('Contact Sync Errors').addClass('center').end();
                 for ( i = 0; i < self.contactResult.contactSyncErrors.length; i++ ) {

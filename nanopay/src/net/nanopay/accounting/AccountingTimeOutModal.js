@@ -100,10 +100,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.timer = setInterval(() => {
-        this.countDownValue--;
-      }, 1000);
-
       this.SUPER();
       this
         .start().addClass(this.myClass())

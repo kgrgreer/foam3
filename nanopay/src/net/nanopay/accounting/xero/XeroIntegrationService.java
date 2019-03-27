@@ -9,7 +9,6 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
-import foam.nanos.fs.File;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
@@ -77,7 +76,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     return error;
   }
 
-  private XeroContact importXeroContact(X x,com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
+  private XeroContact createXeroContact(X x, com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());
     XeroContact newContact;
@@ -168,7 +167,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     return newContact;
   }
 
-  private ContactMismatchPair syncContact(X x, com.xero.model.Contact xeroContact) {
+  private ContactMismatchPair importContact(X x, com.xero.model.Contact xeroContact) {
     User user = (User) x.get("user");
     DAO agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
     DAO contactDAO  = ((DAO) x.get("contactDAO")).inX(x);
@@ -191,7 +190,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
 
       if ( existingUser != null ) {
         return new ContactMismatchPair.Builder(x)
-          .setExistContact(importXeroContact(x, xeroContact, user, null))
+          .setExistContact(createXeroContact(x, xeroContact, user, null))
           .setResultCode(ContactMismatchCode.EXISTING_USER_CONTACT)
           .build();
       }
@@ -200,7 +199,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         result.setNewContact(existingContact);
         result.setResultCode(ContactMismatchCode.EXISTING_CONTACT);
       } else {
-        newContact = importXeroContact(x,xeroContact, user, (XeroContact) existingContact.fclone());
+        newContact = createXeroContact(x,xeroContact, user, (XeroContact) existingContact.fclone());
         result.setNewContact(newContact);
         result.setResultCode(ContactMismatchCode.SUCCESS);
       }
@@ -226,11 +225,11 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
           result.setExistContact(newContact);
           result.setResultCode(ContactMismatchCode.EXISTING_USER);
         } else {
-          result.setExistContact(importXeroContact(x,xeroContact,user,null));
+          result.setExistContact(createXeroContact(x,xeroContact,user,null));
           result.setResultCode(ContactMismatchCode.EXISTING_USER_MULTI);
         }
       } else {
-        newContact = importXeroContact(x,xeroContact,user,null);
+        newContact = createXeroContact(x,xeroContact,user,null);
         result.setNewContact(newContact);
         result.setResultCode(ContactMismatchCode.SUCCESS);
       }
@@ -283,7 +282,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
             .build()
         );
 
-         ContactMismatchPair mismatchPair = syncContact(x, xeroContact);
+         ContactMismatchPair mismatchPair = importContact(x, xeroContact);
          if ( mismatchPair.getResultCode() == ContactMismatchCode.SUCCESS ) {
            contactSuccess.add(mismatchPair.getNewContact().getBusinessName()+ ",  with email address of " + mismatchPair.getNewContact().getEmail());
          }
@@ -311,7 +310,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
 
-  private String syncInvoice(X x, com.xero.model.Invoice xeroInvoice) throws Exception {
+  private String importInvoice(X x, com.xero.model.Invoice xeroInvoice) throws Exception {
     DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
     DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
@@ -396,11 +395,11 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     }
       // Create an invoice
      // existingInvoice = new XeroInvoice();
-    importInvoice(x,xeroInvoice,contact,updateInvoice);
+    createXeroInvoice(x,xeroInvoice,contact,updateInvoice);
     return "";
   }
 
-  public XeroInvoice importInvoice(X x,com.xero.model.Invoice xeroInvoice, Contact contact, XeroInvoice newInvoice) {
+  public XeroInvoice createXeroInvoice(X x, com.xero.model.Invoice xeroInvoice, Contact contact, XeroInvoice newInvoice) {
     User user = (User) x.get("user");
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());
@@ -519,7 +518,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
 
       for (com.xero.model.Invoice xeroInvoice : client.getInvoices()) {
         try {
-          String response = syncInvoice(x, xeroInvoice);
+          String response = importInvoice(x, xeroInvoice);
           if ( response.equals("skip") ) {
             continue;
           } else if ( ! response.equals("") ) {
@@ -584,7 +583,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
             .build();
         }
         com.xero.model.Invoice xeroInvoice = client.getInvoice(nanoInvoice.getXeroId());
-        PaymentResponse payment = reSyncInvoice(x,nanoInvoice,xeroInvoice);
+        PaymentResponse payment = createPayment(x,nanoInvoice,xeroInvoice);
         if ( payment.response.getResult() ) {
           paymentList.add(payment.payment);
           client.createPayments(paymentList);
@@ -621,7 +620,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
             XeroInvoice nanoInvoice = (XeroInvoice) i;
             com.xero.model.Invoice xeroInvoice = new com.xero.model.Invoice();
             xeroInvoice.setInvoiceID(nanoInvoice.getXeroId());
-            PaymentResponse payment = reSyncInvoice(x,nanoInvoice,xeroInvoice);
+            PaymentResponse payment = createPayment(x,nanoInvoice,xeroInvoice);
             if ( payment.response.getResult() ) {
               paymentList.add(payment.payment);
               invoiceList.add(nanoInvoice);
@@ -707,7 +706,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     }
   }
 
-  private PaymentResponse reSyncInvoice(X x, XeroInvoice nanoInvoice, com.xero.model.Invoice xeroInvoice) {
+  private PaymentResponse createPayment(X x, XeroInvoice nanoInvoice, com.xero.model.Invoice xeroInvoice) {
     PaymentResponse response = new PaymentResponse();
     DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
     Logger logger = (Logger) x.get("logger");
@@ -889,7 +888,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       }
 
       com.xero.model.Invoice xeroInvoice = client.getInvoice(invoice.getXeroId());
-      result[0] = syncInvoice(x, xeroInvoice);
+      result[0] = importInvoice(x, xeroInvoice);
       if ( result[0].equals("") ) {
         return new ResultResponse.Builder(x)
           .setResult(true)
