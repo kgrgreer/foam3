@@ -363,6 +363,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       resultDAO.inX(x).put(resultWrapper);
       return resultResponse;
     } catch ( Exception e ) {
+      logger.error(e);
       quickInvoice.setDesync(true);
       invoiceDAO.inX(x).put(quickInvoice);
       resultResponse = errorHandler(e);
