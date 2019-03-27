@@ -495,11 +495,6 @@ foam.CLASS({
           }
         }
 
-        User user = (User) x.get("user");
-        DAO groupDAO = (DAO) x.get("groupDAO");
-        Group group = (Group) groupDAO.find(user.getGroup());
-        boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO);
-
         if ( this.getAmount() <= 0 ) {
           throw new IllegalStateException("Amount must be a number and greater than zero.");
         }
