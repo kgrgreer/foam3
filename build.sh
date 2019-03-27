@@ -229,6 +229,7 @@ function start_nanos {
 
     cd "$PROJECT_HOME"
 
+    JAVA_OPTS="-Dhostname=${HOST_NAME} ${JAVA_OPTS}"
     if [ "$DEBUG" -eq 1 ]; then
         JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
     fi
@@ -370,7 +371,8 @@ function usage {
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
-    echo "  -d : Run with JDPA debugging enabled."
+    echo "  -d : Run with JDPA debugging enabled on port 8000"
+    echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -f : Build foam."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
@@ -398,6 +400,7 @@ function usage {
 ############################
 
 INSTANCE=
+HOST_NAME=`hostname -s`
 VERSION=
 MODE=
 BUILD_ONLY=0
@@ -420,11 +423,14 @@ DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 WEB_PORT=
 
-while getopts "bcdghiI::jlmM::pqrsStT:vV::W::z" opt ; do
+while getopts "bcdD::ghiI::jlmM::N::pqrsStT:vV::W::z" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
+        D) DEBUG=1
+           DEBUG_PORT=$OPTARG
+           ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
@@ -437,6 +443,9 @@ while getopts "bcdghiI::jlmM::pqrsStT:vV::W::z" opt ; do
            CLEAN_BUILD=1
            echo "MODE=${MODE}"
            ;;
+        N) INSTANCE=$OPTARG
+           HOST_NAME=$OPTARG
+           echo "INSTANCE=${INSTANCE}" ;;
         p) MODE=PRODUCTION
            CLEAN_BUILD=1
            echo "MODE=${MODE}"
