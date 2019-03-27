@@ -146,12 +146,16 @@ foam.CLASS({
 
         if ( invoicesResult.result === true && contactsResult.result === true ) {
           this.ctrl.notify('All information has been synchronized', 'success');
-          X.controllerView.add(this.Popup.create().tag({
-            class: 'net.nanopay.accounting.ui.AccountingReportModal',
-            invoiceResult: invoicesResult,
-            contactResult: contactsResult,
-            redirect: false
-          }));
+          if ( contactsResult.contactSyncMismatches.length !== 0 ||
+               contactsResult.contactSyncErrors.length !== 0 ||
+               invoicesResult.invoiceSyncErrors.length !== 0) {
+            X.controllerView.add(this.Popup.create().tag({
+              class: 'net.nanopay.accounting.ui.AccountingReportModal',
+              invoiceResult: invoicesResult,
+              contactResult: contactsResult,
+              redirect: false
+            }));
+          }
         }
       }
     },

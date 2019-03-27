@@ -614,6 +614,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public String importInvoice(X x, Transaction qInvoice) {
+
+    if ( ! qInvoice.getCurrencyRef().getValue().equals("USD") &&
+         ! qInvoice.getCurrencyRef().getValue().equals("CAD") ) {
+      return "Invoice " + qInvoice.getDocNumber() +
+        " can not import because we don't support currency " + qInvoice.getCurrencyRef().getValue();
+    }
+
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 

@@ -178,11 +178,17 @@ foam.CLASS({
 
       this.ctrl.notify('All information has been synchronized', 'success');
 
-      this.add(this.Popup.create().tag({
-        class: 'net.nanopay.accounting.ui.AccountingReportModal',
-        invoiceResult: invoiceResult,
-        contactResult: contactResult
-      }));
+      if ( contactResult.contactSyncMismatches.length !== 0 ||
+           contactResult.contactSyncErrors.length !== 0 ||
+           invoiceResult.invoiceSyncErrors.length !== 0) {
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.accounting.ui.AccountingReportModal',
+          invoiceResult: invoiceResult,
+          contactResult: contactResult
+        }));
+      } else {
+        this.pushMenu('sme.main.dashboard')
+      }
     }
   ]
 });
