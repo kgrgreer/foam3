@@ -31,10 +31,11 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Transaction parent = (Transaction) obj;
 
     while ( ! SafetyUtil.isEmpty(parent.getParent()) ) {
-      parent = (Transaction) parent.findParent(x);
+      parent = parent.findParent(x);
     }
 
     Invoice invoice = parent.findInvoiceId(x);
+    parent = (Transaction) super.put_(x, parent);
 
     if ( parent.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
@@ -46,26 +47,28 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
       TransactionStatus status = transaction.getState(getX());
 
-
       if ( SafetyUtil.isEmpty(invoice.getPaymentId()) ) {
         invoice.setPaymentId(parent.getId());
         invoiceDAO.put(invoice);
       }
 
-      if ( status == TransactionStatus.COMPLETED ) {
+      if (status == TransactionStatus.COMPLETED) {
         Calendar curDate = Calendar.getInstance();
         invoice.setPaymentDate(curDate.getTime());
         invoice.setPaymentMethod(PaymentStatus.NANOPAY);
         invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.SENT  && transaction instanceof AscendantFXTransaction) {
+      } else if (status == TransactionStatus.SENT && transaction instanceof AscendantFXTransaction) {
         invoice.setPaymentDate(transaction.getCompletionDate());
         invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.PENDING_PARENT_COMPLETED || status == TransactionStatus.PENDING ) {
+      } else if (
+        ( status == TransactionStatus.PENDING_PARENT_COMPLETED || status == TransactionStatus.PENDING )
+          && SafetyUtil.isEmpty(transaction.getParent())
+        ) {
         invoice.setPaymentDate(generateEstimatedCreditDate());
-        invoice.setPaymentMethod(PaymentStatus.PENDING);
+        invoice.setPaymentMethod(PaymentStatus.PENDING); 
         invoiceDAO.put(invoice);
-      } else if ( status == TransactionStatus.DECLINED || status == TransactionStatus.REVERSE || status == TransactionStatus.REVERSE_FAIL ) {
+      } else if (status == TransactionStatus.DECLINED || status == TransactionStatus.REVERSE || status == TransactionStatus.REVERSE_FAIL) {
         invoice.setPaymentDate(null);
         invoice.setPaymentMethod(PaymentStatus.NONE);
         invoiceDAO.put(invoice);
