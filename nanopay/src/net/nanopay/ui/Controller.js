@@ -274,7 +274,7 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onUserLoad() {
+    function onUserAgentAndGroupLoaded() {
       // only show B2B onboarding if user is a Business
       if ( this.user.type === 'Business' ) {
         // check account status and show UI accordingly

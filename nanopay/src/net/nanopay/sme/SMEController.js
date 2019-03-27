@@ -366,13 +366,30 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onUserLoad() {
+    function onUserAgentAndGroupLoaded() {
       if ( ! this.user.emailVerified ) {
         this.loginSuccess = false;
         this.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
+        return;
       }
 
       this.bannerizeCompliance();
+
+      this.setPortalView(this.group);
+
+      for ( var i = 0; i < this.MACROS.length; i++ ) {
+        var m = this.MACROS[i];
+        if ( this.group[m] ) this[m] = this.group[m];
+      }
+
+      var hash = this.window.location.hash;
+      if ( hash ) hash = hash.substring(1);
+
+      if ( hash ) {
+        window.onpopstate();
+      } else if ( this.group ) {
+        this.window.location.hash = this.group.defaultMenu;
+      }
     }
   ]
 });
