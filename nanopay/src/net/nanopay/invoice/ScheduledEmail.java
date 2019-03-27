@@ -61,7 +61,7 @@ public class ScheduledEmail
       args    = new HashMap<>();
       message = new EmailMessage();
       user    = (User) userDAO.find(invoice.getPayerId());
-      group   = (Group) groupDAO.find(user.getGroup());
+      group   = (Group) x.get("group");
       config  = group.getAppConfig(x);
       payee   = (User) userDAO.find(invoice.getPayeeId());
       message.setTo(new String[]{user.getEmail()});

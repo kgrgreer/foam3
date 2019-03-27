@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'group',
     'notificationDAO',
     'pushMenu',
     'stack',
@@ -86,7 +87,7 @@ foam.CLASS({
         return this.notificationDAO.where(
           this.OR(
             this.EQ(this.Notification.USER_ID, this.user.id),
-            this.EQ(this.Notification.GROUP_ID, this.user.group),
+            this.EQ(this.Notification.GROUP_ID, this.group),
             this.EQ(this.Notification.BROADCASTED, true)
           )
         );
