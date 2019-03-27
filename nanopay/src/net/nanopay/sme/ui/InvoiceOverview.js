@@ -241,8 +241,8 @@ foam.CLASS({
               this.AND(
                 this.EQ(this.Account.IS_DEFAULT, true),
                 this.OR(
-                  this.INSTANCE_OF(this.CABankAccount),
-                  this.INSTANCE_OF(this.USBankAccount)
+                  this.EQ(this.CABankAccount.TYPE, 'CABankAccount'),
+                  this.EQ(this.USBankAccount.TYPE, 'USBankAccount')
                 )
               )
             ).select().then((account) => {
