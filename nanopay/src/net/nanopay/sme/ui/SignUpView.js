@@ -146,7 +146,7 @@ foam.CLASS({
       name: 'disableCompanyName',
       documentation: `Set this to true to disable the Company Name input field.`
     },
-    'termsAndConditions',
+    'termsAndConditions',   
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
@@ -371,7 +371,7 @@ foam.CLASS({
         .catch((err) => {
           this.notify(err.message || 'There was a problem while signing you in.', 'error');
         });
-    },
+    }, 
 
   ],
 
@@ -392,17 +392,20 @@ foam.CLASS({
           // verification email instead.
           welcomeEmailSent: true,
           group: 'sme'
-        });
+        });      
 
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {
             this.user = user;
-            this.logIn();
+            // update user accepted terms and condition
+            this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(user.id, this.termsAgreementDocument.id, this.termsAndConditions);            
+            this.logIn();             
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
-          });
+          });          
       }
     }
   ],
@@ -417,3 +420,4 @@ foam.CLASS({
     }
   ]
 });
+

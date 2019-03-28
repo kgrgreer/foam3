@@ -163,6 +163,10 @@ foam.CLASS({
       value: false,
       postSet: function(oldValue, newValue) {
         this.viewData.check = newValue;
+        if ( this.termsAgreementDocument ) {
+          this.acceptanceDocumentService.
+            updateUserAcceptanceDocument(this.user.id, this.termsAgreementDocument.id, newValue); 
+        }
       },
     },
     {
@@ -267,7 +271,7 @@ foam.CLASS({
         default:
           break;
       }
-    },
+    },     
   ],
 
   actions: [
@@ -310,3 +314,4 @@ foam.CLASS({
     }
   ]
 });
+

@@ -41,6 +41,7 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'fxService',
+    'group',
     'invoice',
     'invoiceDAO',
     'notify',
@@ -183,8 +184,8 @@ foam.CLASS({
     },
     {
       name: 'isEmployee',
-      expression: function(user) {
-        return user.group.includes('.employee');
+      expression: function(group) {
+        return group.id.includes('.employee');
       }
     },
     {
