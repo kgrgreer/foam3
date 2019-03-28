@@ -173,7 +173,7 @@ foam.CLASS({
           File settlementReport = collectInvoiceDataAndWriteToData(x, business);
     
           if ( settlementReport == null ){
-            logger.warning("Error generating settlementReport - File null: ");
+            logger.warning("Error generating settlementReport - File null.");
             return;
           }
     
@@ -339,7 +339,6 @@ foam.CLASS({
       ],
       javaCode:
       `
-        DAO  userDAO            = (DAO) x.get("localUserDAO");
         SimpleDateFormat df     = new SimpleDateFormat("yyyy/dd/MM, HH:mm:ss");
         User tempUser           = null;
         String title            = null;
@@ -362,11 +361,11 @@ foam.CLASS({
         for (Invoice invoice : invoiceArray_ ) {
           // Format Information variables for each Invoice
           transDate         = df.format(invoice.getPaymentDate());
-          tempUser          = (User) userDAO.find(invoice.getCreatedBy());
+          tempUser          = invoice.findCreatedBy(x);
           createdBy_String  = tempUser == null ? "n/a" : tempUser.label();
-          tempUser          = (User) userDAO.find(invoice.getPayerId());
+          tempUser          = invoice.findPayerId(x);
           businessNamePayer = tempUser == null ? "n/a" : tempUser.getOrganization();
-          tempUser          = (User) userDAO.find(invoice.getPayeeId());
+          tempUser          = invoice.findPayeeId(x);
           businessNamePayee = tempUser == null ? "n/a" : tempUser.getOrganization();
           srcCurrency       = invoice.getSourceCurrency();
           dstCurrency       = invoice.getDestinationCurrency();
