@@ -78,10 +78,8 @@ foam.CLASS({
         ));
         Group actingWithinGroup = (Group) ((DAO) getGroupDAO()).find(permissionJunction.getGroup());
 
-        // Clone user and associate new junction group with user. Clone and
-        // freeze both user and agent.
+        // Clone and freeze both user and agent.
         entity = (User) entity.fclone();
-        entity.setGroup(actingWithinGroup.getId());
         entity.freeze();
         agent = (User) agent.fclone();
         agent.freeze();
@@ -92,6 +90,7 @@ foam.CLASS({
         session.setAgentId(agent.getId());
         session.setContext(session.getContext().put("user", entity));
         session.setContext(session.getContext().put("agent", agent));
+        session.setContext(session.getContext().put("group", actingWithinGroup));
         DAO sessionDAO = (DAO) getX().get("localSessionDAO");
         sessionDAO.put(session);
         return agent;
