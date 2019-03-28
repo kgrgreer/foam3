@@ -60,6 +60,8 @@ public class LiquiditySettingsTest
     }
     sender_ = (User) sender_.fclone();
     sender_.setEmailVerified(true);
+    sender_.setFirstName("Francis");
+    sender_.setLastName("Filth");
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
     senderDigitalDefault = DigitalAccount.findDefault(x_, sender_, "CAD");
     senderLiquidityDigital = new DigitalAccount();
