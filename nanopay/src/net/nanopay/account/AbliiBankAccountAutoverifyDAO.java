@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.contacts.Contact;
@@ -14,6 +15,8 @@ import net.nanopay.bank.BankAccountStatus;
 public class AbliiBankAccountAutoverifyDAO
    extends ProxyDAO
 {
+  public final static Integer FLINKS_INSTITUTION_ID = 16; // this should change later once we add more bank verification clients to ablii
+
  public AbliiBankAccountAutoverifyDAO(DAO delegate) {
    setDelegate(delegate);
  }
@@ -38,11 +41,16 @@ public class AbliiBankAccountAutoverifyDAO
      * account and verify it using the micro-deposit even if they are using the same bank information
      * Contact Bank Accounts are exlusively meant to just RECEIVE money from ablii users
      * 
-     * FOR US BANK ACCOUNTS
+     * 2. FOR US BANK ACCOUNTS
      * Just need to check if the bank account obj is an instance of USBankAccount
      * If it is, then we can automatically verify it
      * This is to account when the user is adding a US Bank Account for themselves
      * As the requirement is to automatically verify US Bank Accounts
+     * 
+     * 3. FOR FLINKS BANK ACCOUNTS
+     * NOTE: MIGHT WANT TO INCLUDE THIS IN THE FUTURE FOR INSTITUTIONS IDS BETWEEN 1 to 23 SINCE THESE WILL ALL REQUIRE TO LOGIN VIA THE CLIENT
+     * Since flinks bank accounts are being verified by logging in from the client, 
+     * we can automatically verify these bank accounts when passing them through this decorator
      */
 
    User user = (User) x.get("user");
@@ -68,6 +76,18 @@ public class AbliiBankAccountAutoverifyDAO
 
    // 2. US BANK ACCOUNTS
    if ( bankAccountObj instanceof USBankAccount ) {
+     obj.setProperty("status", BankAccountStatus.VERIFIED);
+   }
+
+   // 3. FLINKS ACCOUNTS
+   // ! IMPORTANT: Need to update this as needed once more bank account verification via bank clients are added
+   // As recommended above, should later change this to check if the institution id is between 1 and 23 (these are the current institutions on the system)
+   // remember this is INSTITUTION ID and NOT INSTITUTION NUMBER
+   // institution id entails our identifiers of institutions on our system
+   // institution number is the actual legal bank information
+   boolean isFlinksAccount = SafetyUtil.equals(obj.getProperty("institution"), FLINKS_INSTITUTION_ID);
+
+   if ( isFlinksAccount ) {
      obj.setProperty("status", BankAccountStatus.VERIFIED);
    }
 
