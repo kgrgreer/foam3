@@ -155,7 +155,7 @@ foam.CLASS({
           .start().addClass('label').add(this.ADDRESS_LABEL).end()
           .start(this.Address.SUITE, { mode$: this.mode$ })
             .addClass('input-field')
-            .setAttribute('placeholder', 'optional')
+            .setAttribute('placeholder', 'Optional')
           .end()
         .end()
         .start()
