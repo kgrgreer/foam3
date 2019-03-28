@@ -230,6 +230,7 @@ foam.CLASS({
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
+    { name: 'WAITING_FOR_RATE', message: 'Waiting for FX quote.' },
     {
       name: 'TWO_FACTOR_REQUIRED',
       message: `You require two-factor authentication to continue this payment.
@@ -486,6 +487,10 @@ foam.CLASS({
             });
             break;
           case this.REVIEW_VIEW_ID:
+            if ( ! this.viewData.quote && this.isPayable ) {
+              this.notify(this.WAITING_FOR_RATE, 'warning');
+              return;
+            }
             this.submit();
             break;
           /* Redirects users back to dashboard if none
