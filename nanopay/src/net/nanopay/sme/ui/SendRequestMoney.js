@@ -487,7 +487,7 @@ foam.CLASS({
             });
             break;
           case this.REVIEW_VIEW_ID:
-            if ( ! this.viewData.quote ) {
+            if ( ! this.viewData.quote && this.isPayable ) {
               this.notify(this.WAITING_FOR_RATE, 'warning');
               return;
             }
