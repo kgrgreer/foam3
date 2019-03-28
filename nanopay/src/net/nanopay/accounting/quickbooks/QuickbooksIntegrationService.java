@@ -67,7 +67,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
   @Override
   public ResultResponse isSignedIn(X x) {
-    User              user         = (User) x.get("user");
+    User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
     if ( token == null  || ! (user.getIntegrationCode() == IntegrationCode.QUICKBOOKS)) {
