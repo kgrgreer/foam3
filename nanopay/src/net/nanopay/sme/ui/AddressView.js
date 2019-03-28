@@ -34,12 +34,12 @@ foam.CLASS({
       height: 35px;
       margin-bottom: 10px;
     }
-    ^ .side-by-side-2 {
+    ^ .two-column{
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
     }
-    ^ .side-by-side-3 {
+    ^ .three-column{
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-gap: 16px;
@@ -94,7 +94,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .callIf( ! this.withoutCountrySelection, () => {
           this.start()
-            .addClass('side-by-side-2')
+            .addClass('two-column')
             .start().addClass('label-input')
               .start()
                 .addClass('label')
@@ -137,7 +137,7 @@ foam.CLASS({
           .end();
         })
         .start()
-          .addClass('side-by-side-2')
+          .addClass('two-column')
           .start().addClass('label-input')
             .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
             .start(this.Address.STREET_NUMBER, { mode$: this.mode$ })
@@ -159,8 +159,8 @@ foam.CLASS({
           .end()
         .end()
         .start()
-          .enableClass('side-by-side-3', this.withoutCountrySelection)
-          .enableClass('side-by-side-2', ! this.withoutCountrySelection)
+          .enableClass('three-column', this.withoutCountrySelection)
+          .enableClass('two-column', ! this.withoutCountrySelection)
           .start().addClass('label-input')
             .start().addClass('label').add(this.CITY_LABEL).end()
             .start(this.Address.CITY, { mode$: this.mode$ })
