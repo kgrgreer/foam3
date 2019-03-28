@@ -35,7 +35,12 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'org.apache.commons.io.FileUtils',
     'org.apache.commons.io.IOUtils',
-    'static foam.mlang.MLang.*'
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.NEQ',
+    'static foam.mlang.MLang.GTE',
+    'static foam.mlang.MLang.LTE',
+    'static foam.mlang.MLang.OR',
+    'static foam.mlang.MLang.EQ',
   ],
 
   documentation: `
@@ -75,10 +80,8 @@ foam.CLASS({
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data:
+        cls.extras.push(
             `
-
             protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
             @Override
             protected StringBuilder initialValue() {
@@ -92,7 +95,7 @@ foam.CLASS({
               return b;
             }
           };`
-        }));
+        );
       }
     }
   ],
@@ -116,9 +119,6 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          // long sT = Long.parseLong(start);
-          // long eT = Long.parseLong(end);
-
           setStartDate(new Date(start));
           setEndDate(new Date(end));
 
@@ -372,8 +372,8 @@ foam.CLASS({
           dstCurrency       = invoice.getDestinationCurrency();
           exRate            = invoice.getExchangeRate() != 1 ? Long.toString(invoice.getExchangeRate()) : null;
           invoiceStatus          = invoice.getStatus().getLabel();
-          transactionID             = invoice.getReferenceId();
-          invoicePurchaseOrder             = invoice.getPurchaseOrder();
+          transactionID          = invoice.getReferenceId();
+          invoicePurchaseOrder   = invoice.getPurchaseOrder();
           invoiceID              = Long.toString(invoice.getId());
           invoiceAmount          = Long.toString(invoice.getAmount());
 
