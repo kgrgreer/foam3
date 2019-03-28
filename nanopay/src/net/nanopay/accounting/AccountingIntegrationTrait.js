@@ -46,36 +46,39 @@ foam.CLASS({
   `,
 
   methods: [
-    function init() {
+    async function init() {
       this.SUPER();
       var self = this;
       /*
       Retrieves the updated user as session user is only image of user at login.
       Determines which integration is being used at the moment as both integrations can not be simultaneously used.
       */
-      this.userDAO.find(this.user.id).then(function(nUser) {
-        if ( nUser.integrationCode == self.IntegrationCode.XERO ) {
-          self.xeroService.isSignedIn(null, nUser).then((result) => {
-            self.isSignedIn = ! ! result.result;
-          })
-          .catch((err) => {
-            self.ctrl.add(this.NotificationMessage.create({
-              message: err.message,
-              type: 'error'
-            }));
-          });
-        } else if ( nUser.integrationCode == self.IntegrationCode.QUICKBOOKS ) {
-          self.quickbooksService.isSignedIn(null, nUser).then((result) => {
-            self.isSignedIn = ! ! result.result;
-          })
-          .catch((err) => {
-            self.ctrl.add(this.NotificationMessage.create({
-              message: err.message,
-              type: 'error'
-            }));
-          });
+
+      let service = null;
+      let newUser = await this.userDAO.find(this.user.id);
+
+      if ( newUser.integrationCode == self.IntegrationCode.XERO ) {
+        service = self.xeroService;
+      }
+      
+      if ( newUser.integrationCode == self.IntegrationCode.QUICKBOOKS ) {
+        service = self.quickbooksService
+      }
+
+      if ( service !== null ) {
+        try {
+          let result = await service.isSignedIn(null, newUser);
+          self.isSignedIn = result.result;
+        } catch (error) {
+          self.ctrl.add(this.NotificationMessage.create({
+            message: err.message,
+            type: 'error'
+          }));
         }
-      });
+      } else {
+        self.isSignedIn = false;
+      }
+
     }
   ],
 

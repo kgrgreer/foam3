@@ -8,9 +8,6 @@ foam.CLASS({
     'pushMenu'
   ],
 
-  requires: [
-  ],
-
   implements: [
     'net.nanopay.ui.modal.ModalStyling',
     'foam.mlang.Expressions'

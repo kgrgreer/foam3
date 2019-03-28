@@ -131,7 +131,7 @@ foam.CLASS({
     {
       name: 'continue',
       label: 'Continue',
-      code: async function(X) {
+      code: function(X) {
         this.showIntegrationModal = true;
         X.closeDialog();
       }

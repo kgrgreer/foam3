@@ -330,7 +330,7 @@ foam.CLASS({
         .end()
       .end();
     },
-    async function isXeroConnected() {
+    function isXeroConnected() {
       if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
         this.xeroBtnLabel = this.Disconnect;
         this.xeroConnected = this.Connected;
@@ -343,7 +343,7 @@ foam.CLASS({
       }
       this.checkForConnections();
     },
-    async function isQuickbooksConnected() {
+    function isQuickbooksConnected() {
       if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS  ) {
         this.qbBtnLabel = this.Disconnect;
         this.qbConnected = this.Connected;

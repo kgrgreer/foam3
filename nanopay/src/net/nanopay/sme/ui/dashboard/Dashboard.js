@@ -173,7 +173,7 @@ foam.CLASS({
                 this.stack.push({
                   class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: updatedInvoice,
-                  isPayable: true,
+                  isPayable: true
                 });
               })
             .end();

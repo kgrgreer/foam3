@@ -2,6 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.accounting',
   name: 'AccountingIntegrationUtil',
 
+  documentation: 'Manages the front-end common logic for Accounting Integrations',
+
   requires: [
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',

@@ -145,32 +145,32 @@ var classes = [
    'net.nanopay.accounting.ClientIntegrationService',
    'net.nanopay.accounting.IntegrationCode',
    'net.nanopay.accounting.IntegrationService',
-  'net.nanopay.accounting.ResultResponse',
-  'net.nanopay.accounting.ResultResponseWrapper',
-  'net.nanopay.accounting.AccountingBankAccount',
-  'net.nanopay.accounting.ContactMismatchPair',
-  'net.nanopay.accounting.ContactMismatchCode',
-  'net.nanopay.accounting.AccountingContactEmailCache',
-  'net.nanopay.accounting.AccountingErrorCodes',
+   'net.nanopay.accounting.ResultResponse',
+   'net.nanopay.accounting.ResultResponseWrapper',
+   'net.nanopay.accounting.AccountingBankAccount',
+   'net.nanopay.accounting.ContactMismatchPair',
+   'net.nanopay.accounting.ContactMismatchCode',
+   'net.nanopay.accounting.AccountingContactEmailCache',
+   'net.nanopay.accounting.AccountingErrorCodes',
 
-  // xero
-  'net.nanopay.accounting.xero.XeroToken',
-  'net.nanopay.accounting.xero.XeroConfig',
-  'net.nanopay.accounting.xero.model.XeroContact',
-  'net.nanopay.accounting.xero.model.XeroInvoice',
+   // xero
+   'net.nanopay.accounting.xero.XeroToken',
+   'net.nanopay.accounting.xero.XeroConfig',
+   'net.nanopay.accounting.xero.model.XeroContact',
+   'net.nanopay.accounting.xero.model.XeroInvoice',
 
-  // liquidity
+   // liquidity
    'net.nanopay.liquidity.LiquiditySettings',
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
    'net.nanopay.liquidity.Frequency',
 
-  // quick
-  'net.nanopay.accounting.quickbooks.QuickbooksConfig',
-  'net.nanopay.accounting.quickbooks.QuickbooksOauth',
-  'net.nanopay.accounting.quickbooks.QuickbooksToken',
-  'net.nanopay.accounting.quickbooks.model.QuickbooksContact',
-  'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
+   // quick
+   'net.nanopay.accounting.quickbooks.QuickbooksConfig',
+   'net.nanopay.accounting.quickbooks.QuickbooksOauth',
+   'net.nanopay.accounting.quickbooks.QuickbooksToken',
+   'net.nanopay.accounting.quickbooks.model.QuickbooksContact',
+   'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
