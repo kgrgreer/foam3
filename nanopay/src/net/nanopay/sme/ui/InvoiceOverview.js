@@ -32,6 +32,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'auth',
     'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
     'ctrl',
@@ -240,8 +241,8 @@ foam.CLASS({
               this.AND(
                 this.EQ(this.Account.IS_DEFAULT, true),
                 this.OR(
-                  this.INSTANCE_OF(this.CABankAccount),
-                  this.INSTANCE_OF(this.USBankAccount)
+                  this.EQ(this.CABankAccount.TYPE, 'CABankAccount'),
+                  this.EQ(this.USBankAccount.TYPE, 'USBankAccount')
                 )
               )
             ).select().then((account) => {
@@ -301,6 +302,23 @@ foam.CLASS({
       expression: function(invoice) {
         return invoice.status === this.InvoiceStatus.PENDING ||
           invoice.status === this.InvoiceStatus.PAID;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isPendingApproval',
+      factory: function() {
+        return this.invoice.status === this.InvoiceStatus.PENDING_APPROVAL;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'canApproveInvoice',
+      factory: function() {
+        this.auth.check(null, 'invoice.pay').then((canPay) => {
+          this.canApproveInvoice = canPay;
+        });
+        return false;
       }
     },
     {
@@ -451,6 +469,15 @@ foam.CLASS({
                   .start(this.PAID)
                     .addClass('sme').addClass('button').addClass('primary')
                     .addClass(this.myClass('primary-disable'))
+                  .end()
+                  .start(this.APPROVE)
+                    .addClass('sme').addClass('button').addClass('primary')
+                    .enableClass(
+                      this.myClass('primary-disable'),
+                      this.slot(function(canApproveInvoice) {
+                        return ! canApproveInvoice;
+                      })
+                    )
                   .end()
                 .end()
               .end()
@@ -701,6 +728,34 @@ foam.CLASS({
       label: 'Paid',
       isAvailable: function() {
         return this.isPayable && this.isProcessOrComplete;
+      },
+      isEnabled: function() {
+        // Always disabled the paid button
+        return false;
+      },
+    },
+    {
+      name: 'approve',
+      label: 'Approve',
+      isAvailable: function(isPendingApproval) {
+        return this.isPayable && isPendingApproval;
+      },
+      isEnabled: function(canApproveInvoice) {
+        return canApproveInvoice;
+      },
+      code: function(X) {
+        X.menuDAO.find('sme.quickAction.send').then((menu) => {
+          var clone = menu.clone();
+          Object.assign(clone.handler.view, {
+            isApproving: true,
+            isForm: false,
+            isDetailView: true,
+            invoice: this.invoice.clone()
+          });
+          clone.launch(X, X.controllerView);
+        }).catch((err) => {
+          console.warn('Error occured when checking the compliance: ', err);
+        });
       }
     },
     {

@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: `Setting view displaying business information, user management and integration view`,
 
   imports: [
-    'user'
+    'auth'
   ],
 
   requires: [
@@ -54,7 +54,8 @@ foam.CLASS({
     { name: 'TITLE', message: 'Business Settings' },
     { name: 'COMPANY_TAB', message: 'Company profile' },
     { name: 'USER_MANAGEMENT_TAB', message: 'User Management' },
-    { name: 'INTEGRATION_TAB', message: 'Integrations' }
+    { name: 'INTEGRATION_TAB', message: 'Integrations' },
+    { name: 'GENERIC_ERROR', message: 'There was an unexpected error.' }
   ],
 
   properties: [
@@ -64,23 +65,40 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      var tabs = this.UnstyledTabs.create()
-        .start(this.Tab, { label: this.COMPANY_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'COMPANY_TAB' }).add(
-          this.CompanyInformationView.create({}, this)
-        ).end();
-      if ( this.user.group.includes('admin') ) {
-        tabs.start(this.Tab, { label: this.USER_MANAGEMENT_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'USER_MANAGEMENT_TAB' }).add(
-          this.UserManagementView.create({}, this)
-        ).end();
-      }
-      tabs.start(this.Tab, { label: this.INTEGRATION_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB' }).add(
-          this.IntegrationSettingsView.create({}, this)
-          ).end();
 
-      this.addClass(this.myClass())
-      .start('h1').add(this.TITLE).end()
-      .start().addClass('section-line').end()
-      .start(tabs).end();
+      this.auth
+        .check(null, 'menu.read.sme.userManagement')
+        .then((hasPermission) => {
+          var tabs = this.UnstyledTabs.create()
+            .start(this.Tab, {
+              label: this.COMPANY_TAB,
+              selected: this.preSelectedTab && this.preSelectedTab === 'COMPANY_TAB'
+            })
+              .add(this.CompanyInformationView.create({}, this))
+            .end();
+
+          if ( hasPermission ) {
+            tabs.start(this.Tab, { label: this.USER_MANAGEMENT_TAB, selected: this.preSelectedTab && this.preSelectedTab === 'USER_MANAGEMENT_TAB' }).add(
+              this.UserManagementView.create({}, this)
+            ).end();
+          }
+
+          tabs.start(this.Tab, {
+            label: this.INTEGRATION_TAB,
+            selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB'
+          })
+            .add(this.IntegrationSettingsView.create({}, this))
+          .end();
+
+          this.addClass(this.myClass())
+            .start('h1').add(this.TITLE).end()
+            .start().addClass('section-line').end()
+            .tag(tabs);
+        })
+        .catch((err) => {
+          console.error(err);
+          this.ctrl.notify(err.message || this.GENERIC_ERROR, 'error');
+        });
     }
   ]
 
