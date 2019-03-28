@@ -65,7 +65,6 @@ foam.CLASS({
       height: 40px;
       border-radius: 3px;
       box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-      margin-bottom: 16px;
       background-color: #ffffff;
     }
     ^ .bank-matching-desc {
@@ -129,13 +128,35 @@ foam.CLASS({
       border-bottom-right-radius: 5px;
       text-align: right;
     }
+    ^ .validation-failure-container {
+      font-size: 10px;
+      color: #d0021b;
+      margin-bottom: 10px;
+    }
+    ^ .failure-text {
+      float: right;
+      font-size: 12px;
+      margin-top: 4px;
+      margin-right: 40px;
+    }
+    ^ .failure-text2 {
+      float: right;
+      font-size: 12px;
+      margin-top: 4px;
+      margin-right: 95px;
+    }
+    ^ .error-box, foam-u2-tag-Select" {
+      border-color: #f91c1c;
+      background: #fff6f6;
+    }
   `,
 
   messages: [
     { name: 'YourBanksLabel', message: 'Your Ablii bank accounts' },
     { name: 'AccountingBanksLabel', message: 'Bank accounts in your accounting software' },
-    { name: 'BankMatchingDesc1', message: 'Please select which accounts you would like to match between Ablii and Quickbooks/Xero from the drop downs.' },
-    { name: 'BankMatchingDesc2', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in QuickBooks/Xero.' },
+    { name: 'BankMatchingDesc1', message: 'Please select which accounts you would like to match between Ablii and ' },
+    { name: 'BankMatchingDesc2', message: ' from the drop downs.' },
+    { name: 'BankMatchingDesc3', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in ' },
     { name: 'BankMatchingTitle', message: 'Bank account matching' },
     { name: 'TokenExpired', message: 'Your connection to the accounting software has expired. Please sync again.' }
   ],
@@ -165,23 +186,9 @@ foam.CLASS({
           placeholder: '- Please Select -',
           dao: X.data.abliiBankData,
           objToChoice: function(account) {
-            return [account.id, account.name];
+            return [account.id, account.name + '-' + account.denomination];
           }
         });
-      },
-      postSet: async function(old, nu) {
-        let selectedBank = await this.accountDAO.find(nu);
-        var accountList = [];
-        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
-          if ( selectedBank.denomination === this.accountingBankAccounts.bankAccountList[i].currencyCode ) {
-            if ( this.user.integrationCode === this.IntegrationCode.XERO ) {
-              accountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
-            } else {
-              accountList.push([this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId, this.accountingBankAccounts.bankAccountList[i].name]);
-            }
-          }
-        }
-        this.accountingList = accountList;
       }
     },
     {
@@ -199,7 +206,22 @@ foam.CLASS({
       value: false
     },
     'accountingBankAccounts',
-    'accountingList'
+    'accountingList',
+    {
+      class: 'Boolean',
+      name: 'showPickBank',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showPickBankAblii',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showMatchCurrency',
+      value: false
+    }
   ],
 
   methods: [
@@ -207,6 +229,7 @@ foam.CLASS({
       this.SUPER();
 
       this.isConnected();
+      let bankAccountList = [];
       if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
         this.accountingBankAccounts = await this.quickbooksService.bankAccountSync(null);
       } else if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
@@ -217,7 +240,16 @@ foam.CLASS({
       } else if ( ! this.accountingBankAccounts.result && ! this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) {
         this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
       }
-      this.accountingList = [];
+      if ( this.accountingBankAccounts ) {
+        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+          if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+            bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name + '-' + this.accountingBankAccounts.bankAccountList[i].currencyCode]);
+          } else {
+            bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId, this.accountingBankAccounts.bankAccountList[i].name+ '-' + this.accountingBankAccounts.bankAccountList[i].currencyCode]);
+          }
+        }
+      }
+      this.accountingList = bankAccountList;
 
       this
         .addClass(this.myClass())
@@ -227,12 +259,44 @@ foam.CLASS({
             .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
             .start().add('+').addClass('plus-sign').end()
             .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('bank-matching').end()
-            .start().add(this.BankMatchingDesc1).addClass('bank-matching-desc').end()
-            .start().add(this.BankMatchingDesc2).addClass('bank-matching-desc').addClass('marginTop').end()
+            .start().add(this.BankMatchingDesc1 + this.user.integrationCode.label + this.BankMatchingDesc2).addClass('bank-matching-desc').end()
+            .start().add(this.BankMatchingDesc3 + this.user.integrationCode.label ).addClass('bank-matching-desc').addClass('marginTop').end()
             .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
-            .add(this.ABLII_BANK_LIST)
+            .start()
+              .add(this.ABLII_BANK_LIST).enableClass('error-box', this.showPickBankAblii$)
+            .end()
+            .start().show(this.showPickBankAblii$)
+              .addClass('validation-failure-container')
+              .start('img')
+                .addClass('small-error-icon')
+                .attrs({ src: 'images/inline-error-icon.svg' })
+              .end()
+              .start()
+                .add('Please select a bank account in your accounting software before matching.').addClass('failure-text')
+              .end()
+            .end()
             .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
-            .add(this.ACCOUNTING_BANK_LIST)
+            .start()
+              .start()
+                .add(this.ACCOUNTING_BANK_LIST).enableClass('error-box', this.showPickBank$)
+              .end()
+              .start().show(this.slot(
+                function(showMatchCurrency, showPickBank) {
+                  return showMatchCurrency || showPickBank;
+                }))
+                .addClass('validation-failure-container')
+                .start('img')
+                  .addClass('small-error-icon')
+                  .attrs({ src: 'images/inline-error-icon.svg' })
+                .end()
+                .start().show(this.showPickBank$)
+                  .add('Please select a bank account in your accounting software before matching.').addClass('failure-text')
+                .end()
+                .start().show(this.showMatchCurrency$)
+                  .add('Please select an appropriate bank account in the same currency.').addClass('failure-text2')
+                .end()
+              .end()
+            .end()
           .end()
           .start().addClass('bank-matching-action-box')
             .start(this.CANCEL).end()
@@ -266,12 +330,33 @@ foam.CLASS({
         var self = this;
 
         if ( this.accountingBankList == undefined || this.abliiBankList == undefined ) {
-          this.add(this.NotificationMessage.create({ message: 'Please select which accounts you want to link', type: 'error' }));
+          this.showMatchCurrency = false;
+          this.showPickBankAblii = this.abliiBankList == undefined ? true: false;
+          this.showPickBank = this.accountingBankList == undefined ? true: false;
           return;
         }
+        this.showPickBank = false;
+        this.showPickBankAblii = false;
 
         var abliiBank = await this.accountDAO.find(this.abliiBankList);
-        abliiBank.integrationId = this.accountingBankList;
+        let accountingBank = null;
+        for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
+          if ( this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId === this.accountingBankList ) {
+            accountingBank = this.accountingBankAccounts.bankAccountList[i];
+            break;
+          } else if ( this.accountingBankAccounts.bankAccountList[i].quickBooksBankAccountId === this.accountingBankList ) {
+            accountingBank = this.accountingBankAccounts.bankAccountList[i];
+            break;
+          }
+        }
+
+        if ( ! ( abliiBank.denomination === accountingBank.currencyCode ) ) {
+          this.showMatchCurrency = true;
+          return;
+        }
+        this.showMatchCurrency = false;
+
+        abliiBank.integrationId = accountingBank.xeroBankAccountId ? accountingBank.xeroBankAccountId: accountingBank.quickBooksBankAccountId;
         this.accountDAO.put(abliiBank).then(function(result) {
           self.add(self.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
           self.accountingBankList = -1;

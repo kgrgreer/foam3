@@ -56,9 +56,9 @@ foam.CLASS({
       width: 96px !important;
       height: 36px !important;
       color: #525455;
+      margin-top: 24px;
       box-shadow: none;
       background: rgba(0, 0, 0, 0);
-      margin-top: 16px;
       margin-left: 275px;  
       border: none;
     }
@@ -70,6 +70,7 @@ foam.CLASS({
     }
     
     ^ .net-nanopay-ui-ActionView-continue {
+      margin-right: 23px;
       width: 96px !important;
       height: 36px !important;
       color: white;
@@ -107,7 +108,7 @@ foam.CLASS({
           .start().addClass('Container')
             .start().addClass('headerTitle').add('Sync with accounting').end()
               .start().addClass('content')
-                .start().add('This Invoice was imported from your ' + this.accountingSoftwareName + ' profile')
+                .start().add('This invoice was imported from your ' + this.accountingSoftwareName + ' profile')
                   .add( (this.businessName == null ? '.' : ' named ' + this.businessName + '.') + ' Please sync again to ensure this information remains up to date.').end()
               .end()
               .start().addClass('actions')
