@@ -217,7 +217,7 @@ foam.CLASS({
       try {
         var result = await this.agentAuth.actAs(this, business);
         if ( result ) {
-          business.group = junction.group;
+          await this.ctrl.fetchGroup();
           this.user = business;
           this.agent = result;
           this.pushMenu('sme.main.dashboard');
