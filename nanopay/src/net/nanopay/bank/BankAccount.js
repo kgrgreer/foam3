@@ -67,7 +67,9 @@ foam.CLASS({
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{1,30}$/;
 
-        if ( ! accNumberRegex.test(accountNumber) ) {
+        if ( accountNumber === '' ) {
+          return 'Account number required.';
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Invalid account number.';
         }
       }
