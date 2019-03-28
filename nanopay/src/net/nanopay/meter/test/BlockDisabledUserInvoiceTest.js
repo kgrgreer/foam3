@@ -45,8 +45,8 @@ foam.CLASS({
         if ( user == null ) {
           user = new User.Builder(x_)
             .setEmail(email)
-            .setFirstName("Francis");
-            .setLastName("Filth");
+            .setFirstName("Francis")
+            .setLastName("Filth")
             .setEmailVerified(true).build();
         } else {
           user = (User) user.fclone();
@@ -86,7 +86,7 @@ foam.CLASS({
       ],
       javaCode: `
         return new Invoice.Builder(x_)
-          .setPayerId(payer.getId())	
+          .setPayerId(payer.getId())
           .setPayeeId(payee.getId())
           .setAccount(findOrCreateBankAccount(payer).getId())
           .setSourceCurrency("CAD")

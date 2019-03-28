@@ -45,8 +45,8 @@ foam.CLASS({
         if ( user == null ) {
           user = new User.Builder(x_)
             .setEmail(email)
-            .setFirstName("Francis");
-            .setLastName("Filth");
+            .setFirstName("Francis")
+            .setLastName("Filth")
             .setEmailVerified(true).build();
         } else {
           user = (User) user.fclone();

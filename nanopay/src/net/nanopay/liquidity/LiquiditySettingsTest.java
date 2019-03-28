@@ -72,6 +72,8 @@ public class LiquiditySettingsTest
     receiver_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"lstesting2@nanopay.net" ));
     if ( receiver_ == null ) {
       receiver_ = new User();
+      receiver_.setFirstName("Francis");
+      receiver_.setLastName("Filth");
       receiver_.setEmail("lstesting2@nanopay.net");
     }
     receiver_ = (User) receiver_.fclone();
