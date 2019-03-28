@@ -67,5 +67,10 @@ foam.ENUM({
       label: 'Pending Parent Completed',
       documentation: 'Chained transaction: child transactions are in PENDING_PARENT_COMPLETED and being ignored by the system until all parents go to COMPLETED state.'
     },
+    {
+      name: 'SCHEDULED',
+      label: 'Scheduled',
+      documentation: 'Scheduled transaction specifies the time when transaction needs to be processsed.'
+    }
   ]
 });
