@@ -77,8 +77,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
     { name: 'SUCCESS', message: 'Your bank account was successfully added' },
     { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
     { name: 'ERROR_FIRST', message: 'First name cannot be empty.' },
@@ -109,10 +109,10 @@ foam.CLASS({
           .end()
           .start().enableClass(this.myClass('shrink'), this.isConnecting$)
             .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
-            .start({ class: 'net.nanopay.bank.ui.BankPADForm' , viewData$: this.viewData$ }).end()
+            .start({ class: 'net.nanopay.bank.ui.BankPADForm', viewData$: this.viewData$ }).end()
           .end()
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+        .start({ class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT }).end();
     },
 
     function validateInputs() {
