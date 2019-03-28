@@ -366,6 +366,7 @@ public class AscendantFXService
    */
   protected SOAPMessage createSOAPMessage(String method, FObject object) {
     try {
+      AscendantFXCredientials credentials = getCredentials();
       SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL).createMessage();
       SOAPPart part = message.getSOAPPart();
 
@@ -392,13 +393,12 @@ public class AscendantFXService
       // add the "to" child element
       SOAPElement to = header.addChildElement("To", "a");
       to.addAttribute(new QName("s:mustUnderstand"), "1");
-      to.addTextNode("https://afxlink-test.ascendantfx.com/AFXLinkCustom.svc");
+      to.addTextNode(credentials.getUrl());
 
       // add "security" child element
       SOAPElement security = header.addChildElement("Security", "o", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
       security.addAttribute(new QName("s:mustUnderstand"), "1");
 
-      AscendantFXCredientials credentials = getCredentials();
       // add username
       SOAPElement usernameToken = security.addChildElement("UsernameToken", "o");
       SOAPElement username = usernameToken.addChildElement("Username", "o");
