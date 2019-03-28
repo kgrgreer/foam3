@@ -47,7 +47,6 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
-          fitInScreen: true,
           columns: [
             'organization', 'email', 'signUpStatus',
             foam.core.Property.create({

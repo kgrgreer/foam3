@@ -36,6 +36,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil'
   ],
@@ -72,11 +73,6 @@ foam.CLASS({
         if ( ! hasGroupUpdatePermission ) {
           throw new AuthorizationException("You do not have permission to set that business's group to '" + this.getGroup() + "'.");
         }
-
-        // Prevent everyone but admins from changing the 'system' property.
-        if ( this.getSystem() && ! user.getGroup().equals("admin") ) {
-          throw new AuthorizationException("You do not have permission to create a system user.");
-        }
       `
     },
     {
@@ -99,8 +95,7 @@ foam.CLASS({
         // then they can PROCEED
         if (
           ! isUpdatingSelf &&
-          ! hasUserEditPermission &&
-          ! user.getSystem()
+          ! hasUserEditPermission
         ) {
           throw new AuthorizationException();
         }
@@ -120,21 +115,14 @@ foam.CLASS({
             throw new AuthorizationException("You do not have permission to change that business's group to '" + this.getGroup() + "'.");
           }
         }
-
-        // Prevent everyone but admins from changing the 'system' property.
-        if (
-          ! SafetyUtil.equals(oldBusiness.getSystem(), this.getSystem()) &&
-          ! SafetyUtil.equals(user.getGroup(), "admin")
-        ) {
-          throw new AuthorizationException("You do not have permission to change the 'system' flag.");
-        }
       `
     },
     {
       name: 'authorizeOnDelete',
       javaCode: `
         User user = (User) x.get("user");
-        if ( ! SafetyUtil.equals(user.getGroup(), "admin") ) {
+        Group group = (Group) x.get("group");
+        if ( ! SafetyUtil.equals(group.getId(), "admin") ) {
           throw new AuthorizationException("Businesses cannot be deleted.");
         }
       `
