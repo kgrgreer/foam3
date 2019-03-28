@@ -51,19 +51,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'withoutCountrySelection',
       value: false,
-      documentation: `
-        If the value of this property is true,
-        then hide country selection dropdown
-      `
-    },
-    {
-      class: 'String',
-      name: 'defaultCountryId',
-      value: false,
-      documentation: `
-        The countryId pass from parent view
-        when the parent view has the default country selection
-      `
+      documentation: `If the value of this property is true, then hide country selection dropdown.`
     }
   ],
 
@@ -82,10 +70,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-
-      if ( this.withoutCountrySelection ) {
-        this.data.countryId = this.defaultCountryId;
-      }
 
       // Queried out American states from state/province list that are not supported by AscendantFX
       var choices = this.data$.dot('countryId').map(function(countryId) {

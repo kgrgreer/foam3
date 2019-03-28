@@ -40,7 +40,7 @@ foam.CLASS({
       margin-top: 16px;
     }
     ^invite-explaination {
-      color: #2b2b2b;
+      color: %PRIMARYCOLOR%;
       font-size: 14px;
       line-height: 1.5;
       margin-top: 16px;
@@ -48,7 +48,7 @@ foam.CLASS({
 
     /* Customized checkbox */
     .foam-u2-CheckBox-label {
-      color: #2b2b2b !important;
+      color: %PRIMARYCOLOR% !important;
       margin-left: 8px !important;
     }
     .foam-u2-CheckBox {
@@ -203,8 +203,7 @@ foam.CLASS({
               return;
             }
           } catch (err) {
-            console
-              .warn('Error when checking the contact email existence: ' + err);
+            console.warn('Error when checking the contact email existence: ' + err);
             return;
           }
         }

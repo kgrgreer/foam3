@@ -292,8 +292,7 @@ foam.CLASS({
                 .tag(self.caAccount.ADDRESS.clone().copyFrom({
                   view: {
                     class: 'net.nanopay.sme.ui.AddressView',
-                    withoutCountrySelection: true,
-                    defaultCountryId: 'CA'
+                    withoutCountrySelection: true
                   }
                 }))
               .endContext();
@@ -324,9 +323,7 @@ foam.CLASS({
                 .tag(self.usAccount.ADDRESS.clone().copyFrom({
                   view: {
                     class: 'net.nanopay.sme.ui.AddressView',
-                    withoutCountrySelection: true,
-                    defaultCountryId: 'US'
-                  }
+                    withoutCountrySelection: true                  }
                 }))
               .endContext();
           }
@@ -351,9 +348,6 @@ foam.CLASS({
       if ( bankAccount.errors_ ) {
         this.ctrl.notify(bankAccount.errors_[0][1], 'error');
         return;
-      }
-      if ( bankAccount.address.countryId === '' ) {
-          bankAccount.address.countryId = countryId;
       }
       return bankAccount.address;
     }
