@@ -131,12 +131,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CONNECTING', message: 'Securely connecting you to your institution. Please do not close this window.'},
-    { name: 'ERROR', message: 'An unknown error has occurred.'},
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
+    { name: 'CONNECTING', message: 'Securely connecting you to your institution. Please do not close this window.' },
+    { name: 'ERROR', message: 'An unknown error has occurred.' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
+    { name: 'ACCEPT_CONDITIONS', message: 'Please accept the terms and conditions before proceeding.' },
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
     { name: 'LABEL_PASSWORD', message: 'Password' },
-    { name: 'LEGAL_1', message: 'I agree to the'},
+    { name: 'LEGAL_1', message: 'I agree to the' },
     { name: 'LEGAL_2', message: 'and authorize the release of my Bank information to nanopay.' },
     { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' }
   ],
@@ -172,7 +173,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+        .start({ class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT }).end();
     },
 
     async function connectToBank() {
@@ -207,7 +208,7 @@ foam.CLASS({
           this.notify(this.ERROR, 'error');
           break;
       }
-    },    
+    }
   ],
 
   actions: [
@@ -224,13 +225,15 @@ foam.CLASS({
       code: function(X) {
         var model = X.connect;
         if ( model.isConnecting ) return;
-        if ( model.isTermsAgreed &&
-            model.username.trim().length > 0 &&
-            model.password.trim().length > 0 ) {
-          X.connect.connectToBank();
+        if ( ! ( model.username.trim().length > 0 && model.password.trim().length > 0 ) ) {
+          X.notify(model.INVALID_FORM, 'error');
           return;
         }
-        X.notify(model.INVALID_FORM, 'error');
+        if ( ! model.isTermsAgreed ) {
+          X.notify(model.ACCEPT_CONDITIONS, 'error');
+          return;
+        }
+        X.connect.connectToBank();
       }
     },
     {
