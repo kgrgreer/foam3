@@ -44,7 +44,7 @@ foam.CLASS({
       transition: all .15s ease-in-out;
     }
 
-    /* For contact sub wizard views */
+    /* Styles for contact sub wizard views */
     ^ .title-block {
       display: flex;
       justify-content: space-between;
@@ -86,6 +86,11 @@ foam.CLASS({
       line-height: 1;
       margin-top: 16px;
       margin-bottom: 8px;
+    }
+    ^ .two-column {
+      display: grid;
+      grid-gap: 16px;
+      grid-template-columns: 1fr 1fr;
     }
 `,
 

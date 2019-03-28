@@ -91,11 +91,6 @@ foam.CLASS({
     ^ .bank-option-container {
       margin-top: 24px;
     }
-    ^ .side-by-side {
-      display: grid;
-      grid-gap: 16px;
-      grid-template-columns: 1fr 1fr;
-    }
     ^ .flex {
       display: flex;
     }
@@ -228,7 +223,7 @@ foam.CLASS({
         .end()
         .start()
           .addClass('bank-option-container')
-          .addClass('side-by-side')
+          .addClass('two-column')
           .show(! this.wizard.data.bankAccount)
           .start()
             .addClass('bankAction')
@@ -301,7 +296,7 @@ foam.CLASS({
               .startContext({ data: self.usAccount })
                 .start()
                   .addClass('check-margin')
-                  .addClass('side-by-side')
+                  .addClass('two-column')
                   .start()
                     .start()
                       .addClass('field-label')

@@ -31,11 +31,6 @@ foam.CLASS({
       overflow-y: scroll;
       padding: 24px;
     }
-    ^ .side-by-side {
-      display: grid;
-      grid-gap: 16px;
-      grid-template-columns: 1fr 1fr;
-    }
     ^invite {
       margin-top: 16px;
     }
@@ -120,7 +115,7 @@ foam.CLASS({
             })
           .end()
           .start()
-            .addClass('side-by-side')
+            .addClass('two-column')
             .start()
               .start('p')
                 .addClass('field-label')
