@@ -20,7 +20,7 @@ public class DowJonesRequestMsg
     this(x, null);
   }
 
-  public DowJonesRequestMsg(X x, DowJonesApiCall model) {
+  public DowJonesRequestMsg(X x, DowJonesCall model) {
     setX(x);
     setModel(model);
   }
@@ -44,13 +44,13 @@ public class DowJonesRequestMsg
   }
 
   @Override
-  public void setModel(DowJonesApiCall model) {
+  public void setModel(DowJonesCall model) {
     model_ = model;
     isXmlSet_ = false;
   }
 
   @Override
-  public DowJonesApiCall getModel() {
+  public DowJonesCall getModel() {
     return model_;
   }
 

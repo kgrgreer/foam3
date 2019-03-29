@@ -7,7 +7,7 @@ public abstract class DowJonesMsg
   extends ContextAwareSupport
 {
   protected String xml_;
-  protected DowJonesApiCall model_;
+  protected DowJonesCall model_;
   protected ClassInfo modelInfo_;
 
   public void setXml(String xml) {
@@ -22,10 +22,10 @@ public abstract class DowJonesMsg
   public ClassInfo getModelInfo() {
     return modelInfo_;
   }
-  public void setModel(DowJonesApiCall model) {
+  public void setModel(DowJonesCall model) {
     model_ = model;
   }
-  public DowJonesApiCall getModel() {
+  public DowJonesCall getModel() {
     return model_;
   }
 }

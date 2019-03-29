@@ -39,13 +39,13 @@ public class DowJonesResponseMsg
   }
 
   @Override
-  public void setModel(DowJonesApiCall model) {
+  public void setModel(DowJonesCall model) {
     isModelSet_ = true;
     model_ = model;
   }
 
   @Override
-  public DowJonesApiCall getModel() {
+  public DowJonesCall getModel() {
     if ( isModelSet_ == true ) {
       return model_;
     } else {
@@ -72,8 +72,8 @@ public class DowJonesResponseMsg
       if ( obj == null ) {
         throw new RuntimeException("XML Parser Error: " + getXml());
       }
-      setModel((DowJonesApiCall) obj);
-      return (DowJonesApiCall) obj;
+      setModel((DowJonesCall) obj);
+      return (DowJonesCall) obj;
     }
   }
 
