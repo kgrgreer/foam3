@@ -8,7 +8,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.TokenService;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.nanos.notification.email.EmailsUtility;
 import foam.util.SafetyUtil;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -82,7 +82,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
           args.put("fromName", payer.label());
           args.put("senderCompany", payer.label());
 
-          emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
+          EmailsUtility.sendEmailFromTemplate(x, user, message, emailTemplate, args);
         }
       }
     }

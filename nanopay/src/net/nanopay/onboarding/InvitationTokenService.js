@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.nanos.notification.email.EmailsUtility',
     'foam.util.Password',
     'java.util.Calendar',
     'java.util.HashMap',
@@ -88,7 +88,7 @@ return calendar.getTime();`
         args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
         args.put("password", password);
 
-        email.sendEmailFromTemplate(x, user, message, "welcome-email", args);
+        EmailsUtility.sendEmailFromTemplate(x, user, message, "welcome-email", args);
 
         user = (User) user.fclone();
         user.setInviteAttempts(user.getInviteAttempts() + 1);

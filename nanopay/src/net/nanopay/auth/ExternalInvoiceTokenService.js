@@ -33,7 +33,7 @@ foam.CLASS({
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.nanos.notification.email.EmailsUtility',
     'foam.util.Password',
     'foam.util.SafetyUtil',
     'java.lang.Object',
@@ -65,7 +65,6 @@ foam.CLASS({
         DAO invoiceDAO = (DAO) getInvoiceDAO();
         DAO bareUserDAO = (DAO) getBareUserDAO();
         DAO currencyDAO = (DAO) getCurrencyDAO();
-        EmailService emailService = (EmailService) getEmail();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
         String emailTemplate;
@@ -155,7 +154,7 @@ foam.CLASS({
         args.put("fromName", invType ? payee.label() : payer.label());
         args.put("email", user.getEmail());
         args.put("link", urlStringB.toString());
-        emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
+        EmailsUtility.sendEmailFromTemplate(getX(), user, message, emailTemplate, args);
 
         return true;
       } catch (Throwable t) {

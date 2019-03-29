@@ -9,7 +9,7 @@ import foam.nanos.auth.token.Token;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.nanos.notification.email.EmailsUtility;
 import net.nanopay.contacts.Contact;
 import net.nanopay.contacts.ContactStatus;
 import net.nanopay.model.Invitation;
@@ -97,7 +97,6 @@ public class SendInvitationDAO
       User currentUser
   ) {
     AppConfig config = (AppConfig) x.get("appConfig");
-    EmailService email = (EmailService) x.get("email");
     Logger logger = (Logger) getX().get("logger");
     EmailMessage message = new EmailMessage();
     message.setTo(new String[]{invite.getEmail()});
@@ -143,7 +142,7 @@ public class SendInvitationDAO
     args.put("link", url + urlPath);
 
     try {
-      email.sendEmailFromTemplate(x, currentUser, message, template, args);
+      EmailsUtility.sendEmailFromTemplate(x, currentUser, message, template, args);
     } catch(Throwable t) {
       logger.error("Error sending invitation email.", t);
     }

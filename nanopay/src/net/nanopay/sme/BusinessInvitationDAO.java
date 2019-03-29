@@ -10,7 +10,7 @@ import foam.nanos.auth.*;
 import foam.nanos.auth.token.Token;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.nanos.notification.email.EmailsUtility;
 import foam.util.SafetyUtil;
 import net.nanopay.auth.email.EmailWhitelistEntry;
 import net.nanopay.model.Business;
@@ -151,6 +151,6 @@ public class BusinessInvitationDAO
     url += "?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName;
     url += ( internalUserBool ? "#invited" : "#sign-up" ) ;
     args.put("link", url);
-    email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
+    EmailsUtility.sendEmailFromTemplate(x, business, message, "external-business-add", args);
   }
 }

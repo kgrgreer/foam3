@@ -9,7 +9,7 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.nanos.notification.email.EmailsUtility;
 import foam.util.Auth;
 import java.util.HashMap;
 
@@ -84,7 +84,7 @@ public class BankEmailDAO
       args.put("account", accNumber);
       args.put("link",    config.getUrl());
       args.put("business", organization);
-      email.sendEmailFromTemplate(x, user, message, "addBank", args);
+      EmailsUtility.sendEmailFromTemplate(x, user, message, "addBank", args);
     } catch(Throwable t) {
       logger.error("Error sending bank account created email.", t);
     }

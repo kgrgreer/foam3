@@ -8,7 +8,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.nanos.notification.email.EmailsUtility;
 import foam.util.SafetyUtil;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
@@ -43,7 +43,6 @@ public class InvoiceVoidEmailDAO
 
     invoice = (Invoice) super.put_(x , obj);
     AppConfig       config    = (AppConfig) x.get("appConfig");
-    EmailService    email     = (EmailService) x.get("email");
     EmailMessage    message   = new EmailMessage();
     NumberFormat    formatter = NumberFormat.getCurrencyInstance();
 
@@ -57,7 +56,7 @@ public class InvoiceVoidEmailDAO
     args.put("name",    payer.getFirstName());
 
     try{
-      email.sendEmailFromTemplate(x, payer, message, "voidInvoice", args);
+      EmailsUtility.sendEmailFromTemplate(x, payer, message, "voidInvoice", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending invoice voided email.", t);
     }
