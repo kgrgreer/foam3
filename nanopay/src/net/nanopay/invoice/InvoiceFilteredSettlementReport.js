@@ -44,9 +44,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.ArraySink',
-      name: 'dao_'
+      class: 'foam.dao.DAOProperty',
+      name: 'filteredDAO'
     },
     {
       class: 'Date',
@@ -193,7 +192,7 @@ foam.CLASS({
       `
         DAO  invoiceDAO = (DAO) x.get("invoiceDAO");
         if ( getDated() ) {
-          setDao_((ArraySink) invoiceDAO.where(
+          setFilteredDAO(invoiceDAO.where(
             AND(
               NEQ(Invoice.PAYMENT_DATE, null),
               GTE(Invoice.PAYMENT_DATE, getStartDate()),
@@ -203,22 +202,20 @@ foam.CLASS({
                 EQ(Invoice.PAYEE_ID, user.getId()),
                 EQ(Invoice.CREATED_BY, user.getId())
               )
-            ))
-            .orderBy(new foam.mlang.order.Desc(Invoice.PAYMENT_DATE))
-            .select(new ArraySink()));
+            )
+          ).orderBy(new foam.mlang.order.Desc(Invoice.PAYMENT_DATE)));
 
         } else {
-          setDao_((ArraySink) invoiceDAO.orderBy(new foam.mlang.order.Desc(Invoice.PAYMENT_DATE))
-            .where(
-              AND(
-                NEQ(Invoice.PAYMENT_DATE, null),
-                OR(
-                  EQ(Invoice.PAYER_ID, user.getId()),
-                  EQ(Invoice.PAYEE_ID, user.getId()),
-                  EQ(Invoice.CREATED_BY, user.getId())
-                )
-              ))
-            .select(new ArraySink()));
+          setFilteredDAO(invoiceDAO.where(
+            AND(
+              NEQ(Invoice.PAYMENT_DATE, null),
+              OR(
+                EQ(Invoice.PAYER_ID, user.getId()),
+                EQ(Invoice.PAYEE_ID, user.getId()),
+                EQ(Invoice.CREATED_BY, user.getId())
+              )
+            )
+          ).orderBy(new foam.mlang.order.Desc(Invoice.PAYMENT_DATE)));
         }
       `
     },
@@ -329,7 +326,8 @@ foam.CLASS({
         SimpleDateFormat df     = new SimpleDateFormat("yyyy/dd/MM, HH:mm:ss");
         User tempUser           = null;
         String title            = null;
-        java.util.List<Invoice> invoiceArray_ = getDao_().getArray();
+        java.util.List<Invoice> invoiceArray_ = ((ArraySink)
+          getFilteredDAO().select(new ArraySink())).getArray();
         List list = new List(List.UNORDERED);
 
         String transDate = "";
