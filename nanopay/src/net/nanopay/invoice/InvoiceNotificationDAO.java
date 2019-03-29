@@ -62,7 +62,6 @@ public class InvoiceNotificationDAO extends ProxyDAO {
           User user = invoice.findPayeeId(x);
           String emailTemplate = "invoice-paid";
 
-          EmailService emailService = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage.Builder(x)
             .setTo(new String[]{user.getEmail()})
             .build();

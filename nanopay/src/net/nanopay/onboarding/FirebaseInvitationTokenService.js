@@ -11,7 +11,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.EmailMessage',E
+    'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailsUtility',
     'foam.nanos.session.Session',
     'net.nanopay.onboarding.model.ShortLinksRequest',

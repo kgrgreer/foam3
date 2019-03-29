@@ -44,7 +44,6 @@ public class ScheduledEmail
       )
     );
     List<Invoice>    invoicesList = (List)((ArraySink)invoiceListDAO.select(new ArraySink())).getArray();
-    EmailService     email        = (EmailService) x.get("email");
     NumberFormat     formatter    = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat   = new SimpleDateFormat("dd-MMM-YYYY");
     EmailMessage            message;

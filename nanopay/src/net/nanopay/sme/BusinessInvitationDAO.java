@@ -109,7 +109,6 @@ public class BusinessInvitationDAO
    */
   public void sendInvitationEmail(X x, Business business, Invitation invite, boolean internalUserBool) {
     DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
-    EmailService email = (EmailService) x.get("email");
     User agent = (User) x.get("agent");
     Logger logger = (Logger) getX().get("logger");
 

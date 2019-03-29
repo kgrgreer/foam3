@@ -73,7 +73,6 @@ public class BankEmailDAO
 
     organization = user.getOrganization();
     account = (BankAccount) super.put_(x, obj);
-    EmailService email   = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
     AppConfig    config  = (AppConfig) x.get("appConfig");
     message.setTo(new String[]{emailAddress});

@@ -4,7 +4,6 @@ foam.CLASS({
   extends: 'foam.nanos.auth.email.EmailTokenService',
 
   imports: [
-    'email',
     'localUserDAO',
     'tokenDAO'
   ],
@@ -36,7 +35,7 @@ foam.CLASS({
     .filteredBy(CharacterPredicates.LETTERS, CharacterPredicates.DIGITS)
     .withinRange('0', 'z')
     .build();`
-        }))
+        }));
       }
     }
   ],
@@ -54,7 +53,6 @@ return calendar.getTime();`
       javaCode:
       `try {
         AppConfig config = (AppConfig) getX().get("appConfig");
-        EmailService email = (EmailService) getEmail();
         DAO tokenDAO = (DAO) getTokenDAO();
         DAO userDAO = (DAO) getLocalUserDAO();
         String url = config.getUrl()
