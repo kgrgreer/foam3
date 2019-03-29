@@ -259,7 +259,5 @@ foam.CLASS({
   ],
 
   classes: [
-    {
-    }
   ]
 });

@@ -70,14 +70,16 @@ foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'GroupRefine',
   refines: 'foam.nanos.auth.Group',
-
+  requires: [
+    'net.nanopay.liquidity.LiquiditySettings'
+  ],
   properties: [
     {
       name: 'liquiditySettings',
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.LiquiditySettings',
       factory: function() {
-        return net.nanopay.liquidity.LiquiditySettings.create();
+        return this.LiquiditySettings.create();
       }
     }
   ]
