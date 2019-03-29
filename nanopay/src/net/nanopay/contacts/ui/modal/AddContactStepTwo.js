@@ -26,6 +26,8 @@ foam.CLASS({
 
   css: `
     ^{
+      height: 76vh;
+      overflow-y: scroll;
       padding: 24px;
     }
     ^ .check-image {
@@ -88,11 +90,6 @@ foam.CLASS({
     }
     ^ .bank-option-container {
       margin-top: 24px;
-    }
-    ^ .side-by-side {
-      display: grid;
-      grid-gap: 16px;
-      grid-template-columns: 1fr 1fr;
     }
     ^ .flex {
       display: flex;
@@ -226,7 +223,7 @@ foam.CLASS({
         .end()
         .start()
           .addClass('bank-option-container')
-          .addClass('side-by-side')
+          .addClass('two-column')
           .show(! this.wizard.data.bankAccount)
           .start()
             .addClass('bankAction')
@@ -284,13 +281,22 @@ foam.CLASS({
                     .tag(self.caAccount.ACCOUNT_NUMBER)
                   .end()
                 .end()
+                .start()
+                  .addClass('divider')
+                .end()
+                .tag(self.caAccount.ADDRESS.clone().copyFrom({
+                  view: {
+                    class: 'net.nanopay.sme.ui.AddressView',
+                    withoutCountrySelection: true
+                  }
+                }))
               .endContext();
           } else {
             return this.E()
               .startContext({ data: self.usAccount })
                 .start()
                   .addClass('check-margin')
-                  .addClass('side-by-side')
+                  .addClass('two-column')
                   .start()
                     .start()
                       .addClass('field-label')
@@ -306,6 +312,14 @@ foam.CLASS({
                     .tag(self.usAccount.ACCOUNT_NUMBER)
                   .end()
                 .end()
+                .start()
+                  .addClass('divider')
+                .end()
+                .tag(self.usAccount.ADDRESS.clone().copyFrom({
+                  view: {
+                    class: 'net.nanopay.sme.ui.AddressView',
+                    withoutCountrySelection: true                  }
+                }))
               .endContext();
           }
         }))
@@ -323,6 +337,14 @@ foam.CLASS({
     /** Chooses a CA or US bank account. */
     function selectBank(bank) {
       this.isCABank = bank === 'CA';
+    },
+
+    function validateBank(bankAccount, countryId) {
+      if ( bankAccount.errors_ ) {
+        this.ctrl.notify(bankAccount.errors_[0][1], 'error');
+        return;
+      }
+      return bankAccount.address;
     }
   ],
 
@@ -341,6 +363,9 @@ foam.CLASS({
     {
       name: 'option',
       label: 'Save without banking',
+      isAvailable: function() {
+        return ! this.wizard.data.bankAccount;
+      },
       code: async function(X) {
         if ( ! await this.addContact() ) return;
         X.closeDialog();
@@ -352,18 +377,16 @@ foam.CLASS({
       isEnabled: function(isConnecting) {
         return ! isConnecting;
       },
-      code: async function(X) {
+      code: function(X) {
         // Validate the contact bank account fields.
-        if ( this.isCABank ) {
-          if ( this.caAccount.errors_ ) {
-            this.ctrl.notify(this.caAccount.errors_[0][1], 'error');
-            return;
-          }
-        } else {
-          if ( this.usAccount.errors_ ) {
-            this.ctrl.notify(this.usAccount.errors_[0][1], 'error');
-            return;
-          }
+        var bankAddress = this.isCABank
+          ? this.validateBank(this.caAccount, 'CA')
+          : this.validateBank(this.usAccount, 'US');
+
+        // Validate the contact address fields.
+        if ( bankAddress.errors_ ) {
+          this.ctrl.notify(bankAddress.errors_[0][1], 'error');
+          return;
         }
         X.pushToId('AddContactStepThree');
       }

@@ -8,7 +8,12 @@ foam.CLASS({
     business name and emails for inviting a contact.
   `,
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
+    'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus'
   ],
 
@@ -26,22 +31,19 @@ foam.CLASS({
       overflow-y: scroll;
       padding: 24px;
     }
-    ^ .side-by-side {
-      display: grid;
-      grid-gap: 16px;
-      grid-template-columns: 1fr 1fr;
-    }
     ^invite {
       margin-top: 16px;
     }
     ^invite-explaination {
-      color: #525455;
-      font-size: 10px;
-      margin-top: 8px;
+      color: %PRIMARYCOLOR%;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 16px;
     }
 
     /* Customized checkbox */
     .foam-u2-CheckBox-label {
+      color: %PRIMARYCOLOR% !important;
       margin-left: 8px !important;
     }
     .foam-u2-CheckBox {
@@ -56,7 +58,8 @@ foam.CLASS({
     { name: 'BUSINESS_LABEL', message: 'Business name' },
     { name: 'BUSINESS_PLACEHOLDER', message: 'Enter business name' },
     { name: 'EMAIL_PLACEHOLDER', message: 'example@domain.com' },
-    { name: 'INVITE_EXPLAINATION', message: `By checking this box, I acknowledge that I have permission to contact them about Ablii` },
+    { name: 'INVITE_EXPLAINATION', message: `You confirm you have a business relationship with this contact and acknowledge that notifications for the Ablii service will be sent to the email address provided above.` },
+    { name: 'CONTACT_EXIST', message: 'Contact with same email address already exists.' },
     { name: 'STEP_INDICATOR', message: 'Step 1 of 3' }
   ],
 
@@ -112,7 +115,7 @@ foam.CLASS({
             })
           .end()
           .start()
-            .addClass('side-by-side')
+            .addClass('two-column')
             .start()
               .start('p')
                 .addClass('field-label')
@@ -140,7 +143,6 @@ foam.CLASS({
             .hide(this.isEdit)
             .start()
               .addClass(this.myClass('invite'))
-              .addClass('check-box-container')
               .add(this.wizard.SHOULD_INVITE)
             .end()
             .start()
@@ -180,11 +182,25 @@ foam.CLASS({
     {
       name: 'next',
       label: 'Next',
-      code: function(X) {
+      code: async function(X) {
         // Validate the contact fields.
         if ( this.wizard.data.errors_ ) {
           this.notify(this.wizard.data.errors_[0][1], 'error');
           return;
+        }
+        if ( ! this.isEdit ) {
+          try {
+            var contact = await this.user.contacts.where(
+              this.EQ(this.Contact.EMAIL, this.wizard.data.email)
+            ).select();
+            if ( contact.array.length !== 0 ) {
+              this.ctrl.notify(this.CONTACT_EXIST, 'warning');
+              return;
+            }
+          } catch (err) {
+            console.warn('Error when checking the contact email existence: ' + err);
+            return;
+          }
         }
         X.pushToId('AddContactStepTwo');
       }
