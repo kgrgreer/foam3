@@ -2,21 +2,14 @@ package net.nanopay.meter.compliance.dowJones;
 
 import foam.core.*;
 import net.nanopay.meter.compliance.dowJones.model.*;
-import org.w3c.dom.*;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.*;
+import javax.xml.bind.*;
 import java.io.*;
-import java.io.Reader;
-import java.io.StringReader;
 
 public class DowJonesResponseMsg
   extends DowJonesMsg
 {
   private int httpStatusCode_;
-  private XMLSupport xmlSupport_;
-  private XMLStreamReader xmlReader_;
   private boolean isModelSet_ = false;
 
   public DowJonesResponseMsg() {
@@ -30,7 +23,6 @@ public class DowJonesResponseMsg
   public DowJonesResponseMsg(X x, String xml) {
     setXml(xml);
     setX(x);
-    xmlSupport_ = new XMLSupport();
   }
 
   public void setHttpStatusCode(int httpStatusCode) {
@@ -65,7 +57,7 @@ public class DowJonesResponseMsg
       try {
         JAXBContext jaxbContext = JAXBContext.newInstance(obj.getClass());
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        obj = jaxbUnmarshaller.unmarshal(new StringReader(getXml()));
+        obj = (FObject) jaxbUnmarshaller.unmarshal(new StringReader(getXml()));
       } catch ( JAXBException e ) {
         throw new RuntimeException("Could not parse xml string");
       }
