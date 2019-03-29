@@ -196,8 +196,8 @@ foam.CLASS({
           setDao_((ArraySink) invoiceDAO.where(
             AND(
               NEQ(Invoice.PAYMENT_DATE, null),
-              GTE(Invoice.PAYMENT_DATE, getStartDate().getTime()),
-              LTE(Invoice.PAYMENT_DATE, getEndDate().getTime()),
+              GTE(Invoice.PAYMENT_DATE, getStartDate()),
+              LTE(Invoice.PAYMENT_DATE, getEndDate()),
               OR(
                 EQ(Invoice.PAYER_ID, user.getId()),
                 EQ(Invoice.PAYEE_ID, user.getId()),
