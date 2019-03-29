@@ -48,7 +48,6 @@ foam.CLASS({
   methods: [
     async function init() {
       this.SUPER();
-      var self = this;
       /*
       Retrieves the updated user as session user is only image of user at login.
       Determines which integration is being used at the moment as both integrations can not be simultaneously used.
@@ -57,28 +56,27 @@ foam.CLASS({
       let service = null;
       let newUser = await this.userDAO.find(this.user.id);
 
-      if ( newUser.integrationCode == self.IntegrationCode.XERO ) {
-        service = self.xeroService;
+      if ( newUser.integrationCode == this.IntegrationCode.XERO ) {
+        service = this.xeroService;
       }
       
-      if ( newUser.integrationCode == self.IntegrationCode.QUICKBOOKS ) {
-        service = self.quickbooksService
+      if ( newUser.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        service = this.quickbooksService;
       }
 
       if ( service !== null ) {
         try {
           let result = await service.isSignedIn(null, newUser);
-          self.isSignedIn = result.result;
+          this.isSignedIn = result.result;
         } catch (error) {
-          self.ctrl.add(this.NotificationMessage.create({
+          this.ctrl.add(this.NotificationMessage.create({
             message: err.message,
             type: 'error'
           }));
         }
       } else {
-        self.isSignedIn = false;
+        this.isSignedIn = false;
       }
-
     }
   ],
 
@@ -103,7 +101,6 @@ foam.CLASS({
         return isSignedIn;
       },
       code: async function(X) {
-        let self = this;
         X.controllerView.addClass('account-sync-loading-animation');
         let service;
 
@@ -117,14 +114,14 @@ foam.CLASS({
 
         let contactsResult = await service.contactSync(null);
         if ( contactsResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-          X.controllerView.add(self.Popup.create({ closeable: false }).tag({
+          X.controllerView.add(this.Popup.create({ closeable: false }).tag({
             class: 'net.nanopay.accounting.AccountingTimeOutModal'
           }));
           X.controllerView.removeClass('account-sync-loading-animation');
           return;
         }
 
-        if ( contactsResult.result === false ) {
+        if ( ! contactsResult.result ) {
           this.ctrl.notify(contactsResult.reason, 'error');
         }
 
@@ -132,14 +129,14 @@ foam.CLASS({
 
         let invoicesResult = await service.invoiceSync(null);
         if ( invoicesResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-          X.controllerView.add(self.Popup.create({ closeable: false }).tag({
+          X.controllerView.add(this.Popup.create({ closeable: false }).tag({
             class: 'net.nanopay.accounting.AccountingTimeOutModal'
           }));
           X.controllerView.removeClass('account-sync-loading-animation');
           return;
         }
 
-        if ( invoicesResult.result === false ) {
+        if ( ! invoicesResult.result ) {
           this.ctrl.notify(contactsResult.reason, 'error');
         }
 
@@ -147,11 +144,11 @@ foam.CLASS({
         this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
         this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
 
-        if ( invoicesResult.result === true && contactsResult.result === true ) {
+        if ( invoicesResult.result && contactsResult.result ) {
           this.ctrl.notify('All information has been synchronized', 'success');
           if ( contactsResult.contactSyncMismatches.length !== 0 ||
                contactsResult.contactSyncErrors.length !== 0 ||
-               invoicesResult.invoiceSyncErrors.length !== 0) {
+               invoicesResult.invoiceSyncErrors.length !== 0 ) {
             X.controllerView.add(this.Popup.create().tag({
               class: 'net.nanopay.accounting.ui.AccountingReportModal',
               invoiceResult: invoicesResult,
