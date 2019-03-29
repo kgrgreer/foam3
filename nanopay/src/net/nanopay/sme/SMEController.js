@@ -31,13 +31,10 @@ foam.CLASS({
     'agent',
     'appConfig',
     'as ctrl',
-    'balance',
     'bannerData',
     'bannerizeCompliance',
     'checkComplianceAndBanking',
     'currentAccount',
-    'findAccount',
-    'findBalance',
     'privacyUrl',
     'termsUrl',
     'accountingIntegrationUtil'
@@ -165,41 +162,32 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-      var self = this;
 
-      // enable session timer
+      // Enable session timer.
       this.sessionTimer.enable = true;
       this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
 
-      self.clientPromise.then(function(client) {
-        self.setPrivate_('__subContext__', client.__subContext__);
-        self.getCurrentUser();
+      window.onpopstate = async (event) => {
+        var menu;
 
-        window.onpopstate = function(event) {
-          if ( location.hash != null ) {
-            // Redirect user to switch business if agent doesn't exist.
-            if ( ! self.agent && location.hash !== '' ) {
-              self.client.menuDAO.find('sme.accountProfile.switch-business')
-                .then(function(menu) {
-                  menu.launch();
-                });
-            } else {
-              var hash = location.hash.substr(1);
-              if ( hash !== '' ) {
-                self.client.menuDAO.find(hash).then((menu) => {
-                  // Any errors in finding the menu location to redirect
-                  // will result in a redirect to dashboard.
-                  if ( menu ) {
-                    menu.launch();
-                  } else {
-                    self.confirmHashRedirectIfInvitedAndSignedIn();
-                  }
-                });
-              }
-            }
-          }
-        };
-      });
+        // Redirect user to switch business if agent doesn't exist.
+        if ( ! this.agent ) {
+          menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
+          menu.launch(this);
+          return;
+        }
+
+        var hash = location.hash.substr(1);
+        menu = await this.client.menuDAO.find(hash);
+
+        // Any errors in finding the menu location to redirect
+        // will result in a redirect to dashboard.
+        if ( menu ) {
+          menu.launch(this);
+        } else {
+          this.confirmHashRedirectIfInvitedAndSignedIn();
+        }
+      };
     },
 
     function onSessionTimeout() {
@@ -215,7 +203,7 @@ foam.CLASS({
         self.client.nSpecDAO.find('appConfig').then(function(config) {
           self.appConfig.copyFrom(config.service);
         });
-        self.getCurrentAgent();
+        self.fetchAgent();
 
         self.AppStyles.create();
         self.SMEStyles.create();
@@ -264,66 +252,52 @@ foam.CLASS({
       });
     },
 
-    function setPortalView(group) {
-      // Replaces contents of top navigation and footer view with group views
-      this.topNavigation_ && this.topNavigation_.replaceChild(
-        foam.lookup('net.nanopay.sme.ui.SideNavigationView').create(null, this),
-        this.topNavigation_.children[0]
-      );
-    },
-
     function requestLogin() {
       var self = this;
-      var searchParams;
       var locHash = location.hash;
+      var view = { class: 'net.nanopay.sme.ui.SignInView' };
 
       if ( locHash ) {
-        // don't go to log in screen if going to reset password screen
+        // Don't go to log in screen if going to reset password screen.
         if ( locHash === '#reset' ) {
-          return new Promise(function(resolve, reject) {
-            // TODO SME specific
-            self.stack.push({ class: 'foam.nanos.auth.resetPassword.ResetView' });
-            self.loginSuccess$.sub(resolve);
-          });
-        }
-        searchParams = new URLSearchParams(location.search);
-        // don't go to log in screen if going to sign up password screen
-        if ( locHash === '#sign-up' && ! self.loginSuccess ) {
-          return new Promise(function(resolve, reject) {
-            self.stack.push({
-              class: 'net.nanopay.sme.ui.SignUpView',
-              emailField: searchParams.get('email'),
-              disableEmail: true,
-              signUpToken: searchParams.get('token'),
-              companyNameField: searchParams.has('companyName') ? searchParams.get('companyName'): '',
-              disableCompanyName: searchParams.has('companyName')
-            });
-            self.loginSuccess$.sub(resolve);
-          });
+          view = { class: 'foam.nanos.auth.resetPassword.ResetView' };
         }
 
-        // Situation where redirect is from adding an existing user to a business
-        if ( locHash === '#invited' ) {
-          if ( ! self.loginSuccess ) {
-            return new Promise(function(resolve, reject) {
-              self.stack.push({
-                class: 'net.nanopay.sme.ui.SignInView',
-                email: searchParams.get('email'),
-                disableEmail: true,
-                signUpToken: searchParams.get('token'),
-              });
-              self.loginSuccess$.sub(resolve);
-            });
-          }
+        var searchParams = new URLSearchParams(location.search);
+
+        // Don't go to log in screen if going to sign up password screen.
+        if ( locHash === '#sign-up' && ! self.loginSuccess ) {
+          view = {
+            class: 'net.nanopay.sme.ui.SignUpView',
+            emailField: searchParams.get('email'),
+            disableEmail: true,
+            signUpToken: searchParams.get('token'),
+            companyNameField: searchParams.has('companyName')
+              ? searchParams.get('companyName')
+              : '',
+            disableCompanyName: searchParams.has('companyName')
+          };
+        }
+
+        // Situation where redirect is from adding an existing user to a
+        // business.
+        if ( locHash === '#invited' && ! self.loginSuccess ) {
+          view = {
+            class: 'net.nanopay.sme.ui.SignInView',
+            email: searchParams.get('email'),
+            disableEmail: true,
+            signUpToken: searchParams.get('token'),
+          };
         }
       }
 
       return new Promise(function(resolve, reject) {
-        self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
+        self.stack.push(view);
         self.loginSuccess$.sub(resolve);
       });
     },
 
+    // FIXME: This whole thing needs to be looked at.
     function confirmHashRedirectIfInvitedAndSignedIn() {
       var locHash = location.hash;
       var searchParams = new URLSearchParams(location.search);
@@ -346,51 +320,6 @@ foam.CLASS({
           }
         }
       }
-    },
-
-    function getCurrentUser() {
-      var self = this;
-      // get current user, else show login
-      this.client.auth.getCurrentUser(null).then(function(result) {
-        self.loginSuccess = !! result;
-        if ( result ) {
-          // DOESNT MAKE SENSE FOR A NEW USER signing in. self.user is not assigned. foam.assert(self.user.id === result.id, `The user that was returned from 'getCurrentUser's id must be the same as the user's id returned from 'loginByEmail'. If this isn't happening, it's possible that one of those methods is returning the wrong user.`);
-
-          self.user.copyFrom(result);
-
-          // If the user's email isn't verified, send them to the "verify email"
-          // screen.
-          if ( ! self.user.emailVerified ) {
-            self.loginSuccess = false;
-            self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
-            return;
-          }
-
-          self.onUserUpdate();
-          self.bannerizeCompliance();
-        }
-      })
-      .catch(function(err) {
-        self.requestLogin().then(function() {
-          self.getCurrentUser();
-        });
-      });
-    },
-
-    function getCurrentAgent() {
-      var self = this;
-      // get current user, else show login
-      this.client.agentAuth.getCurrentAgent(this).then(function(result) {
-        if ( result ) {
-          self.agent = result;
-
-          self.onUserUpdate();
-        }
-      }).catch(function(err) {
-        self.requestLogin().then(function() {
-          self.getCurrentUser();
-        });
-      });
     },
 
     function bannerizeCompliance() {
@@ -442,6 +371,34 @@ foam.CLASS({
           .select(this.COUNT())).value;
       } catch (err) {
         console.warn(this.QUERY_BANK_AMOUNT_ERROR, err);
+      }
+    }
+  ],
+
+  listeners: [
+    function onUserAgentAndGroupLoaded() {
+      if ( ! this.user.emailVerified ) {
+        this.loginSuccess = false;
+        this.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
+        return;
+      }
+
+      this.bannerizeCompliance();
+
+      this.setPortalView(this.group);
+
+      for ( var i = 0; i < this.MACROS.length; i++ ) {
+        var m = this.MACROS[i];
+        if ( this.group[m] ) this[m] = this.group[m];
+      }
+
+      var hash = this.window.location.hash;
+      if ( hash ) hash = hash.substring(1);
+
+      if ( hash ) {
+        window.onpopstate();
+      } else if ( this.group ) {
+        this.window.location.hash = this.group.defaultMenu;
       }
     }
   ]

@@ -38,7 +38,9 @@ foam.CLASS({
       validateObj: function(branchId) {
         var accNumberRegex = /^[0-9]{9}$/;
 
-        if ( ! accNumberRegex.test(branchId) ) {
+        if ( branchId === '' ) {
+          return 'Routing number required.';
+        } else if ( ! accNumberRegex.test(branchId) ) {
           return 'Invalid routing number.';
         }
       }

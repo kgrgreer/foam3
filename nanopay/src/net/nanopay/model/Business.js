@@ -36,6 +36,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil'
   ],
@@ -120,7 +121,8 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
         User user = (User) x.get("user");
-        if ( ! SafetyUtil.equals(user.getGroup(), "admin") ) {
+        Group group = (Group) x.get("group");
+        if ( ! SafetyUtil.equals(group.getId(), "admin") ) {
           throw new AuthorizationException("Businesses cannot be deleted.");
         }
       `

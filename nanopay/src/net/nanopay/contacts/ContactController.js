@@ -53,7 +53,7 @@ foam.CLASS({
               name: 'warning',
               label: '',
               tableCellFormatter: function(value, obj, axiom) {
-                if ( obj.bankAccount == undefined && obj.businessId == undefined ) {
+                if ( obj.bankAccount === 0 && obj.businessId === 0 ) {
                   this.start()
                     .attrs({ title: 'Missing bank information' } )
                     .start({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON }).end()
