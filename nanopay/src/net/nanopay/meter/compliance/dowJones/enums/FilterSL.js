@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.meter.compliance.dowjones.enums',
+  package: 'net.nanopay.meter.compliance.dowJones.enums',
   name: 'FilterSL',
 
   documentation: `Filter to restrict the search results by Sanctions Lists.`,

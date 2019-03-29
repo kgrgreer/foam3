@@ -1,7 +1,7 @@
-package net.nanopay.meter.compliance.dowjones;
+package net.nanopay.meter.compliance.dowJones;
 
 import foam.core.*;
-import net.nanopay.meter.compliance.dowjones.model.*;
+import net.nanopay.meter.compliance.dowJones.model.*;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -9,23 +9,23 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class ResponseMsg
-  extends Msg
+public class DowJonesResponseMsg
+  extends DowJonesMsg
 {
   private int httpStatusCode_;
   private XMLSupport xmlSupport_;
   private XMLStreamReader xmlReader_;
   private boolean isModelSet_ = false;
 
-  public ResponseMsg() {
+  public DowJonesResponseMsg() {
     this(null);
   }
 
-  public ResponseMsg(X x) {
+  public DowJonesResponseMsg(X x) {
     this(x, null);
   }
 
-  public ResponseMsg(X x, String xml) {
+  public DowJonesResponseMsg(X x, String xml) {
     setXml(xml);
     setX(x);
     xmlSupport_ = new XMLSupport();
@@ -39,13 +39,13 @@ public class ResponseMsg
   }
 
   @Override
-  public void setModel(DowJonesCall model) {
+  public void setModel(DowJonesApiCall model) {
     isModelSet_ = true;
     model_ = model;
   }
 
   @Override
-  public DowJonesCall getModel() {
+  public DowJonesApiCall getModel() {
     if ( isModelSet_ == true ) {
       return model_;
     } else {
@@ -72,8 +72,8 @@ public class ResponseMsg
       if ( obj == null ) {
         throw new RuntimeException("XML Parser Error: " + getXml());
       }
-      setModel((DowJonesCall) obj);
-      return (DowJonesCall) obj;
+      setModel((DowJonesApiCall) obj);
+      return (DowJonesApiCall) obj;
     }
   }
 

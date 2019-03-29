@@ -1,14 +1,14 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.dowjones.model',
+  package: 'net.nanopay.meter.compliance.dowJones.model',
   name: 'PersonNameSearch',
-  extends: 'net.nanopay.meter.compliance.dowjones.model.BaseSearch',
+  extends: 'net.nanopay.meter.compliance.dowJones.model.BaseSearch',
 
   documentation: `Extends BaseSearch for a person name search in the Dow Jones Risk Database`,
 
   properties: [
     {
       class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowjones.enums.SearchType',
+      of: 'net.nanopay.meter.compliance.dowJones.enums.SearchType',
       name: 'searchType',
       documentation: 'The desired tolerance for the search.'
     },

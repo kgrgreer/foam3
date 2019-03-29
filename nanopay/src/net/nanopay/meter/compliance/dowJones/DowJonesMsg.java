@@ -1,13 +1,13 @@
-package net.nanopay.meter.compliance.dowjones;
+package net.nanopay.meter.compliance.dowJones;
 
 import foam.core.*;
-import net.nanopay.meter.compliance.dowjones.model.*;
+import net.nanopay.meter.compliance.dowJones.model.*;
 
-public abstract class Msg
+public abstract class DowJonesMsg
   extends ContextAwareSupport
 {
   protected String xml_;
-  protected DowJonesCall model_;
+  protected DowJonesApiCall model_;
   protected ClassInfo modelInfo_;
 
   public void setXml(String xml) {
@@ -22,10 +22,10 @@ public abstract class Msg
   public ClassInfo getModelInfo() {
     return modelInfo_;
   }
-  public void setModel(DowJonesCall model) {
+  public void setModel(DowJonesApiCall model) {
     model_ = model;
   }
-  public DowJonesCall getModel() {
+  public DowJonesApiCall getModel() {
     return model_;
   }
 }

@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.meter.compliance.dowjones.enums',
+  package: 'net.nanopay.meter.compliance.dowJones.enums',
   name: 'FilterOEL',
 
   documentation: `Filter to restrict the search results by Other Exclusion Lists.`,

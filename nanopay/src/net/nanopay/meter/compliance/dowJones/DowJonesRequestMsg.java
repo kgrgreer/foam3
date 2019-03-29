@@ -1,26 +1,26 @@
-package net.nanopay.meter.compliance.dowjones;
+package net.nanopay.meter.compliance.dowJones;
 
 import foam.core.*;
-import net.nanopay.meter.compliance.dowjones.model.*;
+import net.nanopay.meter.compliance.dowJones.model.*;
 import foam.lib.xml.Outputter;
 
-public class RequestMsg
-  extends Msg
+public class DowJonesRequestMsg
+  extends DowJonesMsg
 {
   private static Outputter xmlOutputter = new Outputter();
   private String requestInfo_;
   private String httpMethod_;
   private boolean isXmlSet_ = false;
 
-  public RequestMsg() {
+  public DowJonesRequestMsg() {
     this(null);
   }
 
-  public RequestMsg(X x) {
+  public DowJonesRequestMsg(X x) {
     this(x, null);
   }
 
-  public RequestMsg(X x, DowJonesCall model) {
+  public DowJonesRequestMsg(X x, DowJonesApiCall model) {
     setX(x);
     setModel(model);
   }
@@ -44,13 +44,13 @@ public class RequestMsg
   }
 
   @Override
-  public void setModel(DowJonesCall model) {
+  public void setModel(DowJonesApiCall model) {
     model_ = model;
     isXmlSet_ = false;
   }
 
   @Override
-  public DowJonesCall getModel() {
+  public DowJonesApiCall getModel() {
     return model_;
   }
 

@@ -1,5 +1,5 @@
 foam.ENUM({
-  package: 'net.nanopay.meter.compliance.dowjones.enums',
+  package: 'net.nanopay.meter.compliance.dowJones.enums',
   name: 'SearchType',
 
   documentation: `The desired tolerance for the search`,
