@@ -235,15 +235,14 @@ foam.CLASS({
       javaCode:
       `
         DAO  userDAO = (DAO) x.get("userDAO");
-        DAO  agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
-
         User user = (User) userDAO.find(id);
     
         if ( ! (user instanceof Business) ) {
+          DAO  agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
           UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO
             .find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
-          user = (User) userDAO
-            .find(userUserJunction.getTargetId());
+
+          return userUserJunction.findTargetId(x);
         }
 
         return user;
