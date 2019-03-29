@@ -846,7 +846,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/model/BaseSearch' },
   { name: 'net/nanopay/meter/compliance/dowJones/model/DowJonesApiCall' },
   { name: 'net/nanopay/meter/compliance/dowJones/model/EntityNameSearch' },
-  { name: 'net/nanopay/meter/compliance/dowJones/model/IdTypeSearch' },
+  { name: 'net/nanopay/meter/compliance/dowJones/model/IDTypeSearch' },
   { name: 'net/nanopay/meter/compliance/dowJones/model/NameSearch' },
   { name: 'net/nanopay/meter/compliance/dowJones/model/PersonNameSearch' },
 
