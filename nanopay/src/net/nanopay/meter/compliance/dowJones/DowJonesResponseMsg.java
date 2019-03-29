@@ -2,12 +2,14 @@ package net.nanopay.meter.compliance.dowJones;
 
 import foam.core.*;
 import net.nanopay.meter.compliance.dowJones.model.*;
+import org.w3c.dom.*;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.*;
+import java.io.*;
 import java.io.Reader;
 import java.io.StringReader;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 public class DowJonesResponseMsg
   extends DowJonesMsg
@@ -61,14 +63,13 @@ public class DowJonesResponseMsg
       FObject obj = null;
 
       try {
-        Reader reader = new StringReader(getXml());
-        XMLInputFactory factory = XMLInputFactory.newInstance();
-        xmlReader_ = factory.createXMLStreamReader(reader);
-      } catch ( XMLStreamException e ) {
-        throw new RuntimeException("Could not read from file with existing XMLStreamReader");
+        JAXBContext jaxbContext = JAXBContext.newInstance(obj.getClass());
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        obj = jaxbUnmarshaller.unmarshal(new StringReader(getXml()));
+      } catch ( JAXBException e ) {
+        throw new RuntimeException("Could not parse xml string");
       }
-      
-      obj = xmlSupport_.createObj(getX(), xmlReader_, modelInfo_.getObjClass());
+
       if ( obj == null ) {
         throw new RuntimeException("XML Parser Error: " + getXml());
       }
