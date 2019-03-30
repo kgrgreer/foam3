@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'Business',
   extends: 'foam.nanos.auth.User',
 
+  imports: [
+    'invoiceDAO'
+  ],
+
   documentation: 'Business extends user class & it is the company user for SME',
 
   properties: [
@@ -134,6 +138,18 @@ foam.CLASS({
       name: 'exportComplianceDocuments',
       code: async function() {
         var url = window.location.origin + "/service/ascendantFXReports?userId=" + this.id;
+        window.location.assign(url);
+      }
+    },
+    {
+      name: 'exportSettlementDocuments',
+      code: function() {
+        // Let us assume that we want to search for invoices with a field 3 days before and 3 days after today.
+        var sDate = new Date(Date.now() - (1000*60*60*24*3));
+        var dDate = new Date(Date.now() + (1000*60*60*24*3));
+        var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate="+sDate+"&endDate="+dDate;
+
+        // var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate=&endDate=";
         window.location.assign(url);
       }
     }
