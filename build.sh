@@ -361,6 +361,10 @@ function setenv {
       fi
     fi
 
+    if [ -z "$MODE" ] || [ "$MODE" == "DEVELOPMENT" ] || [ "$MODE" == "STAGING" ]; then
+        JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
+    fi
+
     # Check if connected to the interwebs
     ping -q -W1 -c1 google.com &>/dev/null && INTERNET=1 || INTERNET=0
 }
@@ -440,14 +444,14 @@ while getopts "bcdD::ghiI::jlmM::N::pqrsStT:vV::W::z" opt ; do
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
         M) MODE=$OPTARG
-           CLEAN_BUILD=1
+           #CLEAN_BUILD=1
            echo "MODE=${MODE}"
            ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
         p) MODE=PRODUCTION
-           CLEAN_BUILD=1
+           #CLEAN_BUILD=1
            echo "MODE=${MODE}"
            ;;
         q) MODE=STAGING
