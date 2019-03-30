@@ -163,7 +163,7 @@ var classes = [
    'net.nanopay.liquidity.LiquiditySettings',
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
-   'net.nanopay.liquidity.Frequency',
+   'net.nanopay.model.Frequency',
 
   // quick
   'net.nanopay.integration.quick.QuickConfig',

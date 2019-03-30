@@ -39,7 +39,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.liquidity.Frequency',
+      of: 'net.nanopay.model.Frequency',
       name: 'cashOutFrequency',
       documentation: 'Determines how often a automatic cash out can occur.'
     },
