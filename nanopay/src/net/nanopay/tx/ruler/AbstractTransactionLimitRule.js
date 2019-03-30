@@ -81,7 +81,26 @@ foam.CLASS({
             throw new RuntimeException("LIMIT");
           }
         }
-      };`,
+
+        @Override
+        public void applyReverseAction(X x, FObject obj) {
+          AbstractTransactionLimitRule rule = AbstractTransactionLimitRule.this;
+          Transaction txn = (Transaction) obj;
+          HashMap hm = (HashMap)getHm();
+
+          Object key = getObjectToMap(txn, x);
+
+          TransactionLimitState limitState = (TransactionLimitState) hm.get(key);
+
+          if ( ! limitState.check(rule, -txn.getAmount()) ) {
+            Logger logger = (Logger) x.get("logger");
+            logger.error("was unable to update transaction limit for key " +
+            key + ", transaction id: " + txn.getId() + 
+            ", rule id: " + getId());
+          }
+        }
+      };
+      `,
     },
     {
       name: 'predicate',
@@ -127,23 +146,6 @@ foam.CLASS({
       ret.clearAction();
       ret.setHm(getHm());
       return ret;`
-    },
-    {
-      name: 'reverseAction',
-      javaCode: `
-      Transaction txn = (Transaction) obj;
-      HashMap hm = (HashMap)getHm();
-
-      Object key = getObjectToMap(txn, x);
-
-      TransactionLimitState limitState = (TransactionLimitState) hm.get(key);
-      if ( ! limitState.check(this, -txn.getAmount()) ) {
-        Logger logger = (Logger) x.get("logger");
-        logger.error("was unable to update transaction limit for key " +
-        key + ", transaction id: " + txn.getId() + 
-        ", rule id: " + getId());
-      }
-      `
     }
   ],
 

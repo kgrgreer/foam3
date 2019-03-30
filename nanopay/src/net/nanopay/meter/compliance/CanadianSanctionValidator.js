@@ -47,6 +47,10 @@ foam.CLASS({
           user.setCompliance(ComplianceStatus.FAILED);
         }
       `
+    },
+    {
+      name: 'applyReverseAction',
+      javaCode: ' '
     }
   ]
 });
