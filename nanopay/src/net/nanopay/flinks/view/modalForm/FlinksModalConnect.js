@@ -115,7 +115,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isTermsAgreed',
-      value: false
+      value: false,
+      postSet: function(oldValue, newValue) {
+        if ( this.termsAgreementDocument ) {
+          this.acceptanceDocumentService.
+            updateUserAcceptanceDocument(this.user.id, this.termsAgreementDocument.id, newValue);
+        }
+      }
     },
     {
       class: 'FObjectProperty',
@@ -201,7 +207,7 @@ foam.CLASS({
           this.notify(this.ERROR, 'error');
           break;
       }
-    },
+    },    
   ],
 
   actions: [
@@ -246,3 +252,4 @@ foam.CLASS({
     }
   ]
 });
+
