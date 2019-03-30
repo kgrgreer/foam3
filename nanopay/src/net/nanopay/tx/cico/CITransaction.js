@@ -22,7 +22,7 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
     'java.util.Arrays',
     'foam.util.SafetyUtil',
-    'net.nanopay.tx.model.LiquidityService'
+    'net.nanopay.liquidity.LiquidityService'
   ],
 
   properties: [
@@ -47,6 +47,13 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
     },
@@ -174,30 +181,6 @@ foam.CLASS({
       notification.setEmailArgs(args);
       notificationDAO.put(notification);
     }
-      `
-    },
-    {
-      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
-      name: 'canTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&
-      ( oldTxn == null ||
-        ( oldTxn != null &&
-          oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) ) {
-   return true;
- }
- return false;
       `
     },
     {

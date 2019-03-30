@@ -41,6 +41,7 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'fxService',
+    'group',
     'invoice',
     'invoiceDAO',
     'notify',
@@ -183,8 +184,8 @@ foam.CLASS({
     },
     {
       name: 'isEmployee',
-      expression: function(user) {
-        return user.group.includes('.employee');
+      expression: function(group) {
+        return group.id.includes('.employee');
       }
     },
     {
@@ -231,6 +232,10 @@ foam.CLASS({
       if ( this.wizard.isApproving ||
         ( this.invoice.account !== 0 && ! this.isReadOnly) ) {
         this.fetchRates();
+      }
+
+      if ( this.chosenBankAccount && ! this.sourceCurrency ) {
+        this.setSourceCurrency();
       }
     },
     function initE() {
@@ -374,12 +379,14 @@ foam.CLASS({
                     .end()
                     .start()
                       .addClass('float-right')
-                      .add(
+                      .add(this.slot(function(sourceCurrency){
                         this.quote$.dot('amount').map((fxAmount) => {
-                          if ( fxAmount ) {
-                            return this.sourceCurrency.format(fxAmount);
+                          if ( fxAmount && sourceCurrency) {
+                            return sourceCurrency.format(fxAmount);
                           }
-                        }), ' ',
+                        })
+                      }),
+                        ' ',
                         this.quote$.dot('sourceCurrency'),
                         this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
@@ -393,13 +400,16 @@ foam.CLASS({
                     .start()
                       .addClass('float-right')
                       .add(
-                        this.quote$.dot('fxFees').dot('totalFees').map((fee) => {
-                          return fee ?
-                            this.sourceCurrency.format(fee) :
-                            this.sourceCurrency.format(0);
-                        }), ' ',
+                        this.slot(function(quote$fxFees$totalFees,sourceCurrency){
+                          if ( ! sourceCurrency ) return;
+                          return quote$fxFees$totalFees ?
+                            sourceCurrency.format(quote$fxFees$totalFees) :
+                            sourceCurrency.format(0);
+                        }),
+                        ' ',
                         this.quote$.dot('fxFees').dot('totalFeesCurrency')
                       )
+
                     .end()
                   .end()
                 .end()
@@ -426,7 +436,7 @@ foam.CLASS({
           .end()
 
           /** Amount to be paid. **/
-          .add(this.slot(function(quote, loadingSpinner$isHidden) {
+          .add(this.slot(function(quote, loadingSpinner$isHidden, sourceCurrency) {
             return ! quote || ! loadingSpinner$isHidden ? null :
               this.E()
                 .start()
@@ -441,6 +451,7 @@ foam.CLASS({
                     .add(
                       this.quote$.dot('amount').map((amount) => {
                         if ( Number.isSafeInteger(amount) ) {
+                          if ( ! sourceCurrency ) return;
                           return this.sourceCurrency.format(amount);
                         }
                       }), ' ',
@@ -532,7 +543,7 @@ foam.CLASS({
 
       try {
         this.viewData.isDomestic = ! this.isFx;
-        this.quote = this.isFX ? await this.getFXQuote() : await this.getDomesticQuote();
+        this.quote = this.isFx ? await this.getFXQuote() : await this.getDomesticQuote();
         this.viewData.quote = this.quote;
       } catch (error) {
         this.notify(this.RATE_FETCH_FAILURE + error.message, 'error');
@@ -574,7 +585,14 @@ foam.CLASS({
         return;
       }
 
-      // Set currency variables
+      // Set Source Currency
+      this.setSourceCurrency();
+
+      // Update fields on Invoice, based on User choice
+      this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
+    },
+
+    async function setSourceCurrency() {
       try {
         // get currency for the selected account
         if ( this.chosenBankAccount.denomination ) {
@@ -586,9 +604,8 @@ foam.CLASS({
         this.loadingSpinner.hide();
         return;
       }
-
-      // Update fields on Invoice, based on User choice
-      this.invoice.sourceCurrency = this.chosenBankAccount.denomination;
-    }
-  ]
+    },
+  ],
 });
+
+

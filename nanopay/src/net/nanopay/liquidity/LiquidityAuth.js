@@ -1,5 +1,5 @@
 foam.INTERFACE({
-  package: 'net.nanopay.tx.model',
+  package: 'net.nanopay.liquidity',
   name: 'LiquidityAuth',
 
   methods: [

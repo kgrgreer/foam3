@@ -1,24 +1,44 @@
 foam.CLASS({
     package: 'net.nanopay.ui',
     name: 'AccountSelectionView',
-    extends: 'foam.u2.Element',
+    extends: 'foam.u2.View',
 
     documentation: `The selection view for a RichChoiceView for account to display id, name and currency.`,
 
     properties: [
-      'data', 'accountDAO',
+      {
+        name: 'data'
+      },
+      {
+        name: 'fullObject'
+      }
+    ],
+
+    messages: [
+      {
+        name: 'DEFAULT_LABEL',
+        message: 'Select an Account'
+      }
     ],
 
     methods: [
-      async function initE() {
-        var display = 'Select an Account';
-        if ( this.data && this.accountDAO ) {
-          var account = await this.accountDAO.find(this.data);
-          if ( account ) {
-            display = account.id + ' ' + account.name + ' ' + account.denomination;
-          }
-        }
-        return this.add(display);
-      }
+         function initE() {
+           return this
+             .addClass(this.myClass())
+               .callIfElse(
+                 this.data,
+                 function() {
+                   this.add(this.fullObject$.map((account) => {
+                     if ( account ) {
+                       return this.E()
+                         .add(`${account.id}, ${account.name} ${account.denomination}`);
+                     }
+                   }));
+                 },
+                 function() {
+                   this.add(this.DEFAULT_LABEL);
+                 }
+               );
+         }
     ]
 });

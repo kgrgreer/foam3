@@ -102,7 +102,7 @@ var classes = [
   'net.nanopay.tx.model.FeeType',
   'net.nanopay.tx.model.FixedFee',
   'net.nanopay.tx.model.InformationalFee',
-  'net.nanopay.tx.model.LiquiditySettings',
+  'net.nanopay.liquidity.LiquiditySettings',
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.Transaction',
   'net.nanopay.tx.model.TransactionEntity',

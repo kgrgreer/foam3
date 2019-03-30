@@ -22,6 +22,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'group',
     'userDAO',
     'user',
     'type',
@@ -613,9 +614,10 @@ foam.CLASS({
         .end();
     },
 
+    // TODO: Use AuthService.checkUserPermission instead.
     function checkPermission() {
       var self = this;
-      this.groupDAO.find(this.user.group).then(function(group) {
+      this.groupDAO.find(this.group).then(function(group) {
         if ( group )  {
           var permissions = group.permissions;
           self.hasContactPermission = permissions.filter(function(p) {

@@ -1,4 +1,4 @@
-package net.nanopay.tx.test;
+package net.nanopay.liquidity;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -11,8 +11,9 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.model.Frequency;
-import net.nanopay.tx.Liquidity;
-import net.nanopay.tx.cron.LiquiditySettingsCheckCron;
+import net.nanopay.liquidity.Liquidity;
+import net.nanopay.liquidity.LiquiditySettings;
+import net.nanopay.liquidity.LiquiditySettingsCheckCron;
 import net.nanopay.tx.model.*;
 
 import static foam.mlang.MLang.*;
@@ -36,7 +37,7 @@ public class LiquiditySettingsTest
     setupAccounts();
     long initialBalance = (Long)senderDigitalDefault.findBalance(x);
     senderBankAccount_ = (BankAccount) setupBankAccount(x, sender_);
-    ls_ = setupLiquiditySettings(x, (Account) senderDigitalDefault, (Account) senderLiquidityDigital, minLimit, maxLimit, Frequency.PER_TRANSACTION);
+    ls_ = setupLiquiditySettings(x, (DigitalAccount) senderDigitalDefault, (Account) senderLiquidityDigital, minLimit, maxLimit, Frequency.PER_TRANSACTION);
     Transaction ci = createCompletedCashIn(x, (Account) senderBankAccount_, (Account) senderDigitalDefault, CASH_IN_AMOUNT);
     // Cash-In to self will not trigger Liquidity
     Long balance = (Long)senderDigitalDefault.findBalance(x);
@@ -175,7 +176,7 @@ public class LiquiditySettingsTest
     return senderBankAccount_;
   }
 
-  public LiquiditySettings setupLiquiditySettings(X x, Account account, Account bankAccount, Long minLimit, Long maxLimit, Frequency frequency) {
+  public LiquiditySettings setupLiquiditySettings(X x, DigitalAccount account, Account bankAccount, Long minLimit, Long maxLimit, Frequency frequency) {
     LiquiditySettings ls = new LiquiditySettings();
     Liquidity highLiquidity = new Liquidity();
     highLiquidity.setEnableRebalancing(true);
@@ -188,11 +189,13 @@ public class LiquiditySettingsTest
     lowLiquidity.setResetBalance(minLimit);
     lowLiquidity.setPushPullAccount(bankAccount.getId());
 
-    ls.setId(account.getId());
     ls.setCashOutFrequency(frequency);
     ls.setHighLiquidity(highLiquidity);
     ls.setLowLiquidity(lowLiquidity);
-    return (LiquiditySettings)((DAO)x.get("liquiditySettingsDAO")).put(ls).fclone();
+    LiquiditySettings ls1 = (LiquiditySettings)((DAO)x.get("liquiditySettingsDAO")).put(ls).fclone();
+    senderDigitalDefault.setLiquiditySetting(ls1.getId());
+    ((DAO) x_.get("localAccountDAO")).put(senderDigitalDefault);
+    return ls1;
   }
 
   public Transaction createCompletedCashIn(X x, Account source, Account destination, Long amount) {
