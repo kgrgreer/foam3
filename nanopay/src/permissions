@@ -268,4 +268,5 @@ p({"class":"foam.nanos.auth.Permission","id":"cabankaccount.ro.verificationattem
 p({"class":"foam.nanos.auth.Permission","id":"usbankaccount.ro.status","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"usbankaccount.ro.verificationattempts","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"digitalaccount.ro.status","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.identificationTypeDAO","description":""})
 
