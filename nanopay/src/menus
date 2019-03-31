@@ -8,6 +8,7 @@ p({"class":"foam.nanos.menu.Menu","id":"ascendantFXUsers","label":"AscendantFX U
 p({"class":"foam.nanos.menu.Menu","id":"brokers","label":"Brokers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"brokerDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"GS Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"acceptanceDocumentDAO","label":"Acceptance Documents","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"acceptanceDocumentDAO"},"order":1000,"parent":"admin"})
 
 p({"class":"foam.nanos.menu.Menu","id":"lineItemTypes","label":"LineItem Types","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"lineItemFees","label":"LineItem Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemFeeDAO"},"order":1000,"parent":"admin"})
@@ -55,7 +56,7 @@ p({"class":"foam.nanos.menu.Menu","id":"members","label":"Members","handler":{"c
 
 // hidden
 p({"class":"foam.nanos.menu.Menu","id":"intro-to-documentation","label":"Intro","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"intro","daoKey":"nanopayDocumentDAO"},"parent":"hidden"})
-p({"class":"foam.nanos.menu.Menu","id":"sync-bank","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.integration.BankSyncView"}},"order":503,"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"sync-bank","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.accounting.BankSyncView"}},"order":503,"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.resetPassword.ResetView"}},"order":1000,"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"sign-up","label":"Sign Up","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.auth.ui.SignUpView"}},"order":1000,"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"order":100,"parent":"hidden"})

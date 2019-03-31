@@ -6,7 +6,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import java.util.List;
-import net.nanopay.tx.model.LiquiditySettings;
+import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.BankAccountStatus;

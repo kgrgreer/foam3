@@ -67,7 +67,9 @@ foam.CLASS({
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{1,30}$/;
 
-        if ( ! accNumberRegex.test(accountNumber) ) {
+        if ( accountNumber === '' ) {
+          return 'Account number required.';
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
           return 'Invalid account number.';
         }
       }
@@ -76,6 +78,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
+      permissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
         var colour = '#545d87';
@@ -346,8 +349,7 @@ foam.CLASS({
                                   EQ(BankAccount.OWNER, user.getId()),
                                   INSTANCE_OF(BankAccount.class),
                                   EQ(Account.DENOMINATION, denomination),
-                                  EQ(Account.IS_DEFAULT, true), 
-                                  NEQ(Account.DELETED, true)
+                                  EQ(Account.IS_DEFAULT, true)
                                 )
                               );
 

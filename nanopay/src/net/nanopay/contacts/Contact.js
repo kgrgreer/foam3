@@ -57,6 +57,9 @@ foam.CLASS({
         ) {
           return 'Business name required';
         }
+      },
+      postSet: function(_,n) {
+        this.businessName = n;
       }
     },
     {

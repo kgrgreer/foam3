@@ -22,7 +22,7 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
     'java.util.Arrays',
     'foam.util.SafetyUtil',
-    'net.nanopay.tx.model.LiquidityService'
+    'net.nanopay.liquidity.LiquidityService'
   ],
 
   properties: [
@@ -47,6 +47,13 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
     },
@@ -177,30 +184,6 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
-      name: 'canTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&
-      ( oldTxn == null ||
-        ( oldTxn != null &&
-          oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) ) {
-   return true;
- }
- return false;
-      `
-    },
-    {
       documentation: `return true when status change is such that reversal Transfers should be executed (applied)`,
       name: 'canReverseTransfer',
       args: [
@@ -306,7 +289,7 @@ foam.CLASS({
       Account source = findSourceAccount(x);
       Account destination = findDestinationAccount(x);
       if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) && getStatus() == TransactionStatus.COMPLETED ) {
-        ls.liquifyAccount(destination.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, getAmount());
+        ls.liquifyAccount(destination.getId(), net.nanopay.liquidity.Frequency.PER_TRANSACTION, getAmount());
       }
       `
     }

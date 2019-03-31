@@ -110,10 +110,7 @@ foam.CLASS({
 
             this.contactDAO
               .where(
-                this.AND(
-                  this.EQ(this.Contact.BUSINESS_ID, business.id),
-                  this.NEQ(this.Contact.DELETED, true),
-                )
+                this.EQ(this.Contact.BUSINESS_ID, business.id)
               )
               .select().then((contact) => {
                 if ( contact.array.length !== 0 ) {
