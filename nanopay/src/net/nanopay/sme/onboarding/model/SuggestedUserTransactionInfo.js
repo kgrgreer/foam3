@@ -36,7 +36,31 @@ foam.CLASS({
     {
       class: 'String',
       name: 'transactionPurpose',
-      documentation: `General transaction purposes.`
+      documentation: `General transaction purposes.`,
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          'Payables for products and/or services',
+          'Working capital',
+          'Bill payments',
+          'Intracompany bank transfers',
+          'Government fee and taxes',
+          'Other'
+        ]
+      }
+    },
+    {
+      class: 'String',
+      name: 'otherTransactionPurpose',
+      documentation: `
+        Field need to fill in when user select other transaction purpose.
+      `,
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: '',
+        onKey: true
+      },
     },
     {
       class: 'String',

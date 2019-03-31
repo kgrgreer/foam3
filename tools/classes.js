@@ -10,17 +10,17 @@ nanopay.abstractClasses = nanopay.abstractClasses.map(function(element) { return
 nanopay.skeletons = nanopay.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
 nanopay.proxies = nanopay.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
 
-// var merchant = require('../merchant/tools/classes.js')
-// merchant.classes = merchant.classes.map(function(element) { return [ 'merchant/src/', element ]; })
-// merchant.abstractClasses = merchant.abstractClasses.map(function(element) { return [ 'merchant/src/', element ]; })
-// merchant.skeletons = merchant.skeletons.map(function(element) { return [ 'merchant/src/', element ]; })
-// merchant.proxies = merchant.proxies.map(function(element) { return [ 'merchant/src/', element ]; })
+var merchant = require('../merchant/tools/classes.js')
+merchant.classes = merchant.classes.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.abstractClasses = merchant.abstractClasses.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.skeletons = merchant.skeletons.map(function(element) { return [ 'merchant/src/', element ]; })
+merchant.proxies = merchant.proxies.map(function(element) { return [ 'merchant/src/', element ]; })
 
-// var interac = require('../interac/tools/classes.js')
-// interac.classes = interac.classes.map(function(element) { return [ 'interac/src/', element ]; })
-// interac.abstractClasses = interac.abstractClasses.map(function(element) { return [ 'interac/src/', element ]; })
-// interac.skeletons = interac.skeletons.map(function(element) { return [ 'interac/src/', element ]; })
-// interac.proxies = interac.proxies.map(function(element) { return [ 'interac/src/', element ]; })
+var interac = require('../interac/tools/classes.js')
+interac.classes = interac.classes.map(function(element) { return [ 'interac/src/', element ]; })
+interac.abstractClasses = interac.abstractClasses.map(function(element) { return [ 'interac/src/', element ]; })
+interac.skeletons = interac.skeletons.map(function(element) { return [ 'interac/src/', element ]; })
+interac.proxies = interac.proxies.map(function(element) { return [ 'interac/src/', element ]; })
 
 var iso20022 = require('../nanopay/src/net/nanopay/iso20022/classes.js');
 iso20022.classes = iso20022.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
@@ -73,6 +73,8 @@ plaid.proxies = plaid.proxies.map(function(element) { return [ 'nanopay/src/', e
 var classes = [];
 classes = classes.concat(
   foam.classes, nanopay.classes,
+  merchant.classes,
+  interac.classes,
   iso20022.classes,
   iso8583.classes,
   afx.classes,
@@ -86,6 +88,8 @@ var abstractClasses = [];
 abstractClasses = abstractClasses.concat(
   foam.abstractClasses,
   nanopay.abstractClasses,
+  merchant.abstractClasses,
+  interac.abstractClasses,
   iso20022.abstractClasses,
   iso8583.abstractClasses,
   afx.abstractClasses,
@@ -99,6 +103,8 @@ var skeletons = [];
 skeletons = skeletons.concat(
   foam.skeletons,
   nanopay.skeletons,
+  merchant.skeletons,
+  interac.skeletons,
   iso20022.skeletons,
   iso8583.skeletons,
   afx.skeletons,
@@ -112,6 +118,8 @@ var proxies = [];
 proxies = proxies.concat(
   foam.proxies,
   nanopay.proxies,
+  merchant.proxies,
+  interac.proxies,
   iso20022.proxies,
   iso8583.proxies,
   afx.proxies,
@@ -125,6 +133,8 @@ var blacklist = [];
 blacklist = blacklist.concat(
   foam.blacklist,
   nanopay.blacklist,
+  merchant.blacklist,
+  interac.blacklist,
   iso20022.blacklist,
   iso8583.blacklist,
   afx.blacklist,

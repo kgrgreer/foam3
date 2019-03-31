@@ -34,12 +34,26 @@ foam.CLASS({
       height: 35px;
       margin-bottom: 10px;
     }
-    ^ .side-by-side {
+    ^ .two-column{
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-gap: 16px;
     }
+    ^ .three-column{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 16px;
+    }
   `,
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'withoutCountrySelection',
+      value: false,
+      documentation: `If the value of this property is true, then hide country selection dropdown.`
+    }
+  ],
 
   messages: [
     { name: 'COUNTRY_LABEL', message: 'Country' },
@@ -78,67 +92,108 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start()
-          .addClass('side-by-side')
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.COUNTRY_LABEL).end()
-            .start(this.Address.COUNTRY_ID.clone().copyFrom({
-              view: {
-                class: 'foam.u2.view.ChoiceView',
-                placeholder: '- Please select -',
-                dao: self.countryDAO.where(self.OR(
-                  self.EQ(self.Country.NAME, 'Canada'),
-                  self.EQ(self.Country.NAME, 'USA')
-                )),
-                objToChoice: function(a) {
-                  return [a.id, a.name];
-                },
-                mode$: this.mode$
-              }
-            }))
+        .callIf( ! this.withoutCountrySelection, () => {
+          this.start()
+            .addClass('two-column')
+            .start().addClass('label-input')
+              .start()
+                .addClass('label')
+                .add(this.COUNTRY_LABEL)
+              .end()
+              .start(this.Address.COUNTRY_ID.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: 'Select...',
+                  dao: self.countryDAO.where(self.OR(
+                    self.EQ(self.Country.NAME, 'Canada'),
+                    self.EQ(self.Country.NAME, 'USA')
+                  )),
+                  objToChoice: function(a) {
+                    return [a.id, a.name];
+                  },
+                  mode$: this.mode$
+                }
+              }))
+              .end()
             .end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PROVINCE_LABEL).end()
-            .start(this.Address.REGION_ID.clone().copyFrom({
-              view: {
-                class: 'foam.u2.view.ChoiceView',
-                placeholder: '- Please select -',
-                objToChoice: function(region) {
-                  return [region.id, region.name];
-                },
-                dao$: choices,
-                mode$: this.mode$
-              }
-            }))
+            .start().addClass('label-input')
+              .start()
+                .addClass('label')
+                .add(this.PROVINCE_LABEL)
+              .end()
+              .start(this.Address.REGION_ID.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: 'Select...',
+                  objToChoice: function(region) {
+                    return [region.id, region.name];
+                  },
+                  dao$: choices,
+                  mode$: this.mode$
+                }
+              }))
+              .end()
             .end()
-          .end()
-        .end()
+          .end();
+        })
         .start()
-          .addClass('side-by-side')
+          .addClass('two-column')
           .start().addClass('label-input')
             .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
-            .start(this.Address.STREET_NUMBER, { mode$: this.mode$ }).addClass('input-field').end()
+            .start(this.Address.STREET_NUMBER, { mode$: this.mode$ })
+              .addClass('input-field')
+            .end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.STREET_NAME_LABEL).end()
-            .start(this.Address.STREET_NAME, { mode$: this.mode$ }).addClass('input-field').end()
+            .start(this.Address.STREET_NAME, { mode$: this.mode$ })
+              .addClass('input-field')
+            .end()
           .end()
         .end()
         .start().addClass('label-input')
           .start().addClass('label').add(this.ADDRESS_LABEL).end()
-          .start(this.Address.SUITE, { mode$: this.mode$ }).addClass('input-field').end()
+          .start(this.Address.SUITE, { mode$: this.mode$ })
+            .addClass('input-field')
+            .setAttribute('placeholder', 'Optional')
+          .end()
         .end()
         .start()
-          .addClass('side-by-side')
+          .enableClass('three-column', this.withoutCountrySelection)
+          .enableClass('two-column', ! this.withoutCountrySelection)
           .start().addClass('label-input')
             .start().addClass('label').add(this.CITY_LABEL).end()
-            .start(this.Address.CITY, { mode$: this.mode$ }).addClass('input-field').end()
+            .start(this.Address.CITY, { mode$: this.mode$ })
+              .addClass('input-field')
+            .end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.POSTAL_CODE_LABEL).end()
-            .start(this.Address.POSTAL_CODE, { mode$: this.mode$ }).addClass('input-field').end()
+            .start(this.Address.POSTAL_CODE, { mode$: this.mode$ })
+              .addClass('input-field')
+            .end()
           .end()
+          .callIf(this.withoutCountrySelection, function() {
+            this.start()
+              .addClass('label-input')
+              .start()
+                .addClass('label')
+                .add(self.PROVINCE_LABEL)
+              .end()
+              .start(self.Address.REGION_ID.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: 'Select ...',
+                  objToChoice: function(region) {
+                    return [region.id, region.name];
+                  },
+                  dao$: choices,
+                  mode$: self.mode$
+                }
+              }))
+              .end()
+            .end();
+          })
         .end();
     }
   ]
