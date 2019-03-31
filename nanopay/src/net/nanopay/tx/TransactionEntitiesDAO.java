@@ -6,13 +6,14 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
+import foam.mlang.predicate.Predicate;
+import foam.mlang.order.Comparator;
+import foam.nanos.logger.Logger;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionEntity;
-import foam.mlang.order.Comparator;
-import foam.mlang.predicate.Predicate;
-import foam.nanos.logger.Logger;
 
 public class TransactionEntitiesDAO extends ProxyDAO
 {
@@ -77,8 +78,16 @@ public class TransactionEntitiesDAO extends ProxyDAO
         tx.setPayer(null);
       }
       else {
-        TransactionEntity payerEnitity = new TransactionEntity(payer);
-        tx.setPayer(payerEnitity);
+        TransactionEntity entity = new TransactionEntity(payer);
+        String businessName = entity.getBusinessName();
+        if ( SafetyUtil.isEmpty(businessName) ) {
+          businessName = payer.getOperatingBusinessName();
+        }
+        if ( SafetyUtil.isEmpty(businessName) ) {
+          businessName = payer.getOrganization();
+        }
+        entity.setBusinessName(businessName);
+        tx.setPayer(entity);
       }
     }
 
@@ -91,8 +100,16 @@ public class TransactionEntitiesDAO extends ProxyDAO
         tx.setPayee(null);
       }
       else {
-        TransactionEntity payeeEnitity = new TransactionEntity(payee);
-        tx.setPayee(payeeEnitity);
+        TransactionEntity entity = new TransactionEntity(payee);
+        String businessName = entity.getBusinessName();
+        if ( SafetyUtil.isEmpty(businessName) ) {
+          businessName = payee.getOperatingBusinessName();
+        }
+        if ( SafetyUtil.isEmpty(businessName) ) {
+          businessName = payee.getOrganization();
+        }
+        entity.setBusinessName(businessName);
+        tx.setPayee(entity);
       }
     }
 
