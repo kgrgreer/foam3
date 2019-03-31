@@ -849,10 +849,6 @@ foam.CLASS({
       margin: 0px;
     }
 
-    table {
-      width: 1024px !important;
-    }
-
     /* user status styles */
 
     .user-status-Active {
