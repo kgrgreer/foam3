@@ -36,7 +36,12 @@ foam.CLASS({
         User user = (User) x.get("user");
         if ( user != null ) {
           User agent = (User) x.get("agent");
-          if ( user instanceof Business ) {
+          if ( agent == null ) {
+            foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+            logger.warning(this.getClass().getSimpleName(), "'agent' not found in context, falling back to compliance check on 'user' rather than 'agent'. ");
+          }
+          if ( agent != null &&
+               user instanceof Business ) {
             return ComplianceStatus.PASSED == agent.getCompliance();
           }
           return ComplianceStatus.PASSED == user.getCompliance();
