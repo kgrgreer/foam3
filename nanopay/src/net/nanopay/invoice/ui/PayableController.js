@@ -73,7 +73,7 @@ foam.CLASS({
               name: 'viewDetails',
               label: 'View details',
               code: async function(X) {
-                let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+                let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
                 X.stack.push({
                   class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: updatedInvoice,
@@ -89,7 +89,7 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: async function(X) {
-                let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+                let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
 
                 if (! updatedInvoice) {
                   return;
