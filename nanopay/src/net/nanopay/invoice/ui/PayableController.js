@@ -89,7 +89,7 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: async function(X) {
-                let updatedInvoice = await await X.accountingIntegrationUtil.forceSyncInvoice(this);
+                let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
 
                 if (! updatedInvoice) {
                   return;
