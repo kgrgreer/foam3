@@ -291,3 +291,4 @@ p({"class":"foam.nanos.auth.Permission","id":"service.fxService","description":"
 p({"class":"foam.nanos.auth.Permission","id":"service.userDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.businessSectorDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.run.dig","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.emailToken","description":""})
