@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class KotakXMLOutputter extends Outputter {
 
-  public KotakXMLOutputter(OutputterMode mode) {
+  KotakXMLOutputter(OutputterMode mode) {
     super(mode);
     super.outputDefaultValues_ = true;
   }

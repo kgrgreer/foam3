@@ -100,6 +100,7 @@ var classes = [
 
   // kotak
   'net.nanopay.kotak.Kotak',
+  'net.nanopay.kotak.KotakCredentials',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',

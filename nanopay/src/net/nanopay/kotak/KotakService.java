@@ -2,7 +2,6 @@ package net.nanopay.kotak;
 
 import com.google.api.client.auth.oauth2.ClientCredentialsTokenRequest;
 import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -46,13 +45,6 @@ public class KotakService extends ContextAwareSupport implements Kotak {
   protected final String host;
   protected Logger logger = (Logger) getX().get("logger");
 
-  public final String clientId = "l7xx9aff4c89f1fb4b26b8bf1d9961479558";
-  public final String clientSecret = "25dd555a98e24a0ba0a5a94aa37d1555";
-  public final String accessTokenUrl="https://apigwuat.kotak.com:8443/auth/oauth/v2/token";
-  public final String key = "f21b637173f39e3059464da061a57f46";
-  public final String paymentUrl = "https://apigwuat.kotak.com:8443/LastMileEnc/pay";
-  public final String reversaltUrl = "https://apigwuat.kotak.com:8443/LastMileEnc/rev";
-
   public KotakService(X x) {
     setX(x);
     this.host = null;
@@ -65,6 +57,10 @@ public class KotakService extends ContextAwareSupport implements Kotak {
 
   @Override
   public AcknowledgementType submitPayment(FObject request) {
+    KotakCredentials credentials = (KotakCredentials) getX().get("kotakCredentials");
+    String encryptionKey = credentials.getEncryptionKey();
+    String paymentUrl = credentials.getPaymentUrl();
+
     CloseableHttpClient httpClient = HttpClients.createDefault();
     String token = getAccessToken();
 
@@ -85,7 +81,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
 
     String response;
     try {
-      String encryptedData = KotakEncryption.encrypt(xmlData, key);
+      String encryptedData = KotakEncryption.encrypt(xmlData, encryptionKey);
       System.out.println("encryptedData: " + encryptedData);
 
       post.setEntity(new StringEntity(encryptedData, Encoding));
@@ -136,6 +132,10 @@ public class KotakService extends ContextAwareSupport implements Kotak {
 
   @Override
   public Reversal submitReversal(Reversal request) {
+    KotakCredentials credentials = (KotakCredentials) getX().get("kotakCredentials");
+    String encryptionKey = credentials.getEncryptionKey();
+    String reversaltUrl = credentials.getReversaltUrl();
+
     CloseableHttpClient httpClient = HttpClients.createDefault();
     String token = getAccessToken();
 
@@ -154,7 +154,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
 
     String response;
     try {
-      String encryptedData = KotakEncryption.encrypt(xmlData, key);
+      String encryptedData = KotakEncryption.encrypt(xmlData, encryptionKey);
       System.out.println("encryptedData: " + encryptedData);
 
       post.setEntity(new StringEntity(encryptedData, Encoding));
@@ -234,6 +234,11 @@ public class KotakService extends ContextAwareSupport implements Kotak {
 
 
   public String getAccessToken() {
+    KotakCredentials credentials = (KotakCredentials) getX().get("kotakCredentials");
+    String accessTokenUrl = credentials.getAccessTokenUrl();
+    String clientId = credentials.getClientId();
+    String clientSecret = credentials.getClientSecret();
+
     String token = null;
     try {
       TokenResponse response = new ClientCredentialsTokenRequest(new NetHttpTransport(), new JacksonFactory(),
@@ -243,20 +248,8 @@ public class KotakService extends ContextAwareSupport implements Kotak {
         .execute();
 
       token = response.getAccessToken();
-    } catch (TokenResponseException e) {
-      if (e.getDetails() != null) {
-        System.err.println("Error: " + e.getDetails().getError());
-        if (e.getDetails().getErrorDescription() != null) {
-          System.err.println(e.getDetails().getErrorDescription());
-        }
-        if (e.getDetails().getErrorUri() != null) {
-          System.err.println(e.getDetails().getErrorUri());
-        }
-      } else {
-        System.err.println(e.getMessage());
-      }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return token;
