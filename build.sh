@@ -122,7 +122,7 @@ function deploy_journals {
 
 function migrate_journals {
     if [ -f "tools/migrate_journals.sh" ]; then
-        ./tools/migrate_journals.sh
+        ./tools/migrate_journals.sh "$JOURNAL_HOME"
     fi
 }
 
