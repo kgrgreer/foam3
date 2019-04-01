@@ -332,6 +332,9 @@ foam.CLASS({
     },
     {
       name: 'exit',
+      isAvailable: function(hasExitOption) {
+        return hasExitOption;
+      },
       code: function(X) {
         X.stack.back();
       }
