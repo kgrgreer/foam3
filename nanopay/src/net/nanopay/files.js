@@ -220,6 +220,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/AbstractTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
   { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/BusinessTransactionLimitRule' },

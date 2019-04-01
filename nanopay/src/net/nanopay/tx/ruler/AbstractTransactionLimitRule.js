@@ -52,7 +52,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'hm',
-      transient: true,
+      //transient: true,
       javaFactory: `
       return new java.util.HashMap<Object, TransactionLimitState>();
       `
@@ -64,49 +64,15 @@ foam.CLASS({
     {
       name: 'action',
       javaFactory: `
-      return new RuleAction() {
-        @Override
-        public void applyAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
-          AbstractTransactionLimitRule rule = AbstractTransactionLimitRule.this;
-          Transaction txn = (Transaction) obj;
-          HashMap hm = (HashMap) getHm();
-          Object id = getObjectToMap(txn, x);
-
-          TransactionLimitState limitState = (TransactionLimitState) hm.get(id);
-          if ( limitState == null ) {
-            limitState = new TransactionLimitState();
-            hm.put(id, limitState);
-          }
-          if ( ! limitState.check(rule, txn.getAmount()) ) {
-            throw new RuntimeException("LIMIT");
-          }
-        }
-
-        @Override
-        public void applyReverseAction(X x, FObject obj) {
-          AbstractTransactionLimitRule rule = AbstractTransactionLimitRule.this;
-          Transaction txn = (Transaction) obj;
-          HashMap hm = (HashMap)getHm();
-
-          Object key = getObjectToMap(txn, x);
-
-          TransactionLimitState limitState = (TransactionLimitState) hm.get(key);
-
-          if ( ! limitState.check(rule, -txn.getAmount()) ) {
-            Logger logger = (Logger) x.get("logger");
-            logger.error("was unable to update transaction limit for key " +
-            key + ", transaction id: " + txn.getId() + 
-            ", rule id: " + getId());
-          }
-        }
-      };
+      return new TransactionLimitRuleAction(this);
       `,
     },
     {
       name: 'predicate',
       javaFactory: `
       //temporary until Mlang.REF is added
-      return foam.mlang.MLang.EQ(DOT(NEW_OBJ, foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.model.Transaction.class)), true);
+      return foam.mlang.MLang.EQ(DOT(NEW_OBJ, net.nanopay.tx.model.Transaction.IS_QUOTED), false);
+      //return EQ("true", "true");
       `
     }
   ],
@@ -145,7 +111,8 @@ foam.CLASS({
       }
       ret.clearAction();
       ret.setHm(getHm());
-      return ret;`
+      return ret;
+      `
     }
   ],
 

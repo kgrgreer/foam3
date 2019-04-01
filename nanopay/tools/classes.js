@@ -265,6 +265,7 @@ var classes = [
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.ruler.AbstractTransactionLimitRule',
+  'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.AccountTransactionLimitRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
