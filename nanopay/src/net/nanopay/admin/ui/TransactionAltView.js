@@ -14,10 +14,6 @@ foam.CLASS({
       display: block;
       overflow-x: auto;
     }
-    .foam-u2-view-TableView {
-      display: block;
-      overflow-x: auto;
-    }
   `,
 
   imports: [
