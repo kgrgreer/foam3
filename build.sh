@@ -393,7 +393,7 @@ function usage {
     echo "  -t : Run All tests."
     echo "  -T testId1,testId2,... : Run listed tests."
     echo "  -v : java compile only (maven), no code generation."
-    echo "  -V VERSION : version in format x.y.z"
+    echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
     echo ""
