@@ -496,7 +496,10 @@ if [[ $TEST -eq 1 ]]; then
     #TESTS="$@"
     # Replacing spaces with commas.
     TESTS=${TESTS// /,}
-    JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
+    JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
+    if [ ! -z "${TESTS}" ]; then
+        JAVA_OPTS="${JAVA_OPTS} -Dfoam.tests=${TESTS}"
+    fi
 fi
 
 clean
@@ -527,7 +530,7 @@ if [ "$START_ONLY" -eq 0 ]; then
 fi
 
 if [ "$BUILD_ONLY" -eq 1 ] || [ ! -z "$MODE" ]; then
-    if [ -z "$INSTANCE" ]; then
+    if [ -z "$INSTANCE" ] && [ -z "$TEST" ]; then
         quit 0
     fi
 fi
