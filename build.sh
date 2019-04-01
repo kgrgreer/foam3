@@ -381,10 +381,10 @@ function usage {
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
     echo "  -i : Install npm and git hooks"
-    echo "  -I NAME : name of machine instance. - start another instance"
     echo "  -j : Delete runtime journals, build, and run app as usual."
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
+    echo "  -N NAME : start another instance with given instance name"
     echo "  -p : short cut for setting MODE to PRODUCTION"
     echo "  -q : short cut for setting MODE to STAGING"
     echo "  -r : Start nanos with whatever was last built."
@@ -438,8 +438,6 @@ while getopts "bcdD::ghiI::jlmM::N::pqrsStT:vV::W::z" opt ; do
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
-        I) INSTANCE=$OPTARG
-           echo "INSTANCE=${INSTANCE}" ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
