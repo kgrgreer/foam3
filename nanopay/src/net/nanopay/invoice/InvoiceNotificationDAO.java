@@ -13,14 +13,12 @@ import foam.util.SafetyUtil;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import net.nanopay.auth.PublicUserInfo;
-import net.nanopay.integration.quick.model.QuickInvoice;
-import net.nanopay.integration.xero.model.XeroInvoice;
+import net.nanopay.accounting.quickbooks.model.QuickbooksInvoice;
+import net.nanopay.accounting.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
 import net.nanopay.model.Currency;
-
-import static foam.mlang.MLang.EQ;
 
 /**
  * Invoice decorator for dictating and setting up new invoice notifications and emails.
@@ -48,7 +46,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
 
     // if the invoice is imported from accounting software
     if ( existing == null &&
-         (invoice instanceof QuickInvoice || invoice instanceof XeroInvoice) ) {
+         (invoice instanceof QuickbooksInvoice || invoice instanceof XeroInvoice) ) {
       return super.put_(x, invoice);
     }
 
