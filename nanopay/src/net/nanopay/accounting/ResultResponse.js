@@ -46,5 +46,15 @@ foam.CLASS({
       of: 'net.nanopay.accounting.AccountingBankAccount',
       name: 'bankAccountList'
     },
+    {
+      class: 'Map',
+      name: 'contactErrors',
+      javaType: 'java.util.Map<String, java.util.List<net.nanopay.accounting.resultresponse.ContactErrorItem>>',
+    },
+    {
+      class: 'Map',
+      name: 'invoiceErrors',
+      javaType: 'java.util.Map<String, java.util.List<net.nanopay.accounting.resultresponse.InvoiceErrorItem>>',
+    }
   ]
 });

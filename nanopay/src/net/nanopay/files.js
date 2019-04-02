@@ -752,6 +752,8 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/quickbooks/QuickbooksToken' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksContact' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksInvoice' },
+  { name: 'net/nanopay/accounting/resultresponse/ContactErrorItem' },
+  { name: 'net/nanopay/accounting/resultresponse/InvoiceErrorItem' },
   { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web']},
   { name: 'net/nanopay/accounting/ui/IntegrationPopUpView', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/AccountingReportModal', flags: ['web'] },

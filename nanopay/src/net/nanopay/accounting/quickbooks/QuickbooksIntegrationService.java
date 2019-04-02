@@ -22,6 +22,7 @@ import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
+import net.nanopay.accounting.resultresponse.ContactErrorItem;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.accounting.*;
@@ -80,8 +81,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   @Override
   public ResultResponse contactSync(X x) {
     List<ContactMismatchPair> result = new ArrayList<>();
-    List<String> invalidContacts = new ArrayList<>();
     List<String> success = new ArrayList<>();
+    HashMap<String, List<ContactErrorItem>> contactErrors = this.initContactErrors();
 
     try {
 
@@ -91,7 +92,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       for ( NameBase contact : contacts ) {
         try {
           // do validation
-          if ( ! isValidContact(contact, invalidContacts) ) {
+          if ( ! isValidContact(contact, contactErrors) ) {
             continue;
           }
 
@@ -106,7 +107,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
         } catch ( Exception e ) {
           logger.error(e);
-          invalidContacts.add("Can not import quickbooks contact # " + contact.getId() + ", " + e.getMessage());
+          ContactErrorItem errorItem = new ContactErrorItem();
+          errorItem.setName(contact.getDisplayName());
+          errorItem.setBusinessName(contact.getCompanyName());
+          contactErrors.get("OTHER").add(errorItem);
         }
 
       }
@@ -118,7 +122,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return saveResult(x, "contactSync", new ResultResponse.Builder(x)
       .setResult(true)
       .setContactSyncMismatches(result.toArray(new ContactMismatchPair[result.size()]))
-      .setContactSyncErrors(invalidContacts.toArray(new String[invalidContacts.size()]))
+      .setContactErrors(contactErrors)
       .setSuccessContact(success.toArray(new String[success.size()]))
       .build());
   }
@@ -411,19 +415,26 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return resultResponse;
   }
 
-  public boolean isValidContact(NameBase quickContact, List<String> invalidContacts) {
-    if (
-      quickContact.getPrimaryEmailAddr() == null ||
-      SafetyUtil.isEmpty(quickContact.getCompanyName()) )
-    {
-      String str = "Quick Contact # " +
-        quickContact.getId() +
-        " can not be added because the contact is missing: " +
-        (quickContact.getPrimaryEmailAddr() == null ? "[Email]" : "") +
-        (SafetyUtil.isEmpty(quickContact.getCompanyName()) ? " [Company Name] " : "");
-      invalidContacts.add(str);
+  public boolean isValidContact(NameBase quickContact, HashMap<String, List<ContactErrorItem>> contactErrors) {
+    ContactErrorItem error = new ContactErrorItem();
+    error.setName(quickContact.getDisplayName());
+
+    if ( quickContact.getPrimaryEmailAddr() == null && SafetyUtil.isEmpty(quickContact.getCompanyName()) ) {
+      contactErrors.get("MISS_BUSINESS_EMAIL").add(error);
       return false;
     }
+
+    if ( SafetyUtil.isEmpty(quickContact.getCompanyName()) ) {
+      contactErrors.get("MISS_BUSINESS").add(error);
+      return false;
+    }
+
+    if ( quickContact.getPrimaryEmailAddr() == null ) {
+      error.setBusinessName(quickContact.getCompanyName());
+      contactErrors.get("MISS_EMAIL").add(error);
+      return false;
+    }
+
     return true;
   }
 
@@ -971,6 +982,17 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
     }
+  }
+
+  public HashMap<String, List<ContactErrorItem>> initContactErrors() {
+    HashMap<String, List<ContactErrorItem>> contactErrors = new HashMap<>();
+
+    contactErrors.put("MISS_BUSINESS_EMAIL", new ArrayList<>());
+    contactErrors.put("MISS_BUSINESS", new ArrayList<>());
+    contactErrors.put("MISS_EMAIL", new ArrayList<>());
+    contactErrors.put("OTHER", new ArrayList<>());
+
+    return contactErrors;
   }
 
   public ResultResponse saveResult(X x, String method, ResultResponse resultResponse) {
