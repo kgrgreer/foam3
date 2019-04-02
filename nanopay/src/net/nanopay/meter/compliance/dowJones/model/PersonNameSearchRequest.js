@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones.model',
-  name: 'PersonNameSearch',
-  extends: 'net.nanopay.meter.compliance.dowJones.model.BaseSearch',
+  name: 'PersonNameSearchRequest',
+  extends: 'net.nanopay.meter.compliance.dowJones.model.BaseSearchRequest',
 
-  documentation: `Extends BaseSearch for a person name search in the Dow Jones Risk Database`,
+  documentation: `Extends BaseSearchRequest for a person name search in the Dow Jones Risk Database`,
 
   properties: [
     {

@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones.model',
-  name: 'BaseSearch',
+  name: 'BaseSearchRequest',
   extends: 'net.nanopay.meter.compliance.dowJones.model.DowJonesCall',
   abstract: 'true',
 

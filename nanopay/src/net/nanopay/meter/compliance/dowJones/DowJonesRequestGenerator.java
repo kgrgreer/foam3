@@ -15,7 +15,7 @@ public class DowJonesRequestGenerator {
   String filterOOLOperator, Date filterOOLLRDFrom, Date filterOOLLRDTo, FilterOEL filterOEL, Boolean filterOELExcludeSuspended, String filterOELOperator, 
   Date filterOELLRDFrom, Date filterOELLRDTo, FilterSOC filterSOC, Boolean filterSOCIncludeUnknown, Date filterLRDFrom, Date filterLRDTo) {
 
-    NameSearch request = new NameSearch();
+    NameSearchRequest request = new NameSearchRequest();
     request.setName(name);
     request.setContentSet(contentSet);
     request.setRecordType(recordType);
@@ -70,7 +70,7 @@ public class DowJonesRequestGenerator {
   String filterOOLOperator, Date filterOOLLRDFrom, Date filterOOLLRDTo, FilterOEL filterOEL, Boolean filterOELExcludeSuspended, String filterOELOperator, 
   Date filterOELLRDFrom, Date filterOELLRDTo, FilterSOC filterSOC, Boolean filterSOCIncludeUnknown, Date filterLRDFrom, Date filterLRDTo) {
 
-    PersonNameSearch request = new PersonNameSearch();
+    PersonNameSearchRequest request = new PersonNameSearchRequest();
     request.setContentSet(contentSet);
     request.setSearchType(searchType);
     request.setFirstName(firstName);
@@ -125,7 +125,7 @@ public class DowJonesRequestGenerator {
   Boolean filterOOLExcludeSuspended, String filterOOLOperator, Date filterOOLLRDFrom, Date filterOOLLRDTo, FilterOEL filterOEL, Boolean filterOELExcludeSuspended, 
   String filterOELOperator, Date filterOELLRDFrom, Date filterOELLRDTo, FilterSOC filterSOC, Boolean filterSOCIncludeUnknown, Date filterLRDFrom, Date filterLRDTo) {
 
-    EntityNameSearch request = new EntityNameSearch();
+    EntityNameSearchRequest request = new EntityNameSearchRequest();
     request.setContentSet(contentSet);
     request.setSearchType(searchType);
     request.setEntityName(entityName);
@@ -175,7 +175,7 @@ public class DowJonesRequestGenerator {
   String filterOOLOperator, Date filterOOLLRDFrom, Date filterOOLLRDTo, FilterOEL filterOEL, Boolean filterOELExcludeSuspended, String filterOELOperator, Date filterOELLRDFrom, 
   Date filterOELLRDTo, FilterSOC filterSOC, Boolean filterSOCIncludeUnknown, Date filterLRDFrom, Date filterLRDTo) {
 
-    IDTypeSearch request = new IDTypeSearch();
+    IDTypeSearchRequest request = new IDTypeSearchRequest();
     request.setContentSet(contentSet);
     request.setRecordType(recordType);
     request.setExcludeDeceased(excludeDeceased);

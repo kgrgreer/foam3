@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones.model',
-  name: 'EntityNameSearch',
-  extends: 'net.nanopay.meter.compliance.dowJones.model.BaseSearch',
+  name: 'EntityNameSearchRequest',
+  extends: 'net.nanopay.meter.compliance.dowJones.model.BaseSearchRequest',
 
-  documentation: `Extends BaseSearch to search Entity profiles in the Risk and Compliance database.`,
+  documentation: `Extends BaseSearchRequest to search Entity profiles in the Risk and Compliance database.`,
 
   properties: [
     {

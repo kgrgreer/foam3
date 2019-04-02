@@ -107,6 +107,26 @@ import org.apache.http.client.config.RequestConfig;
     }
   }
 
+  private void closeSource(InputStream is, OutputStream os, HttpURLConnection connection) {
+    if ( os != null ) {
+      try {
+        os.close();
+      } catch ( IOException e ) {
+        e.printStackTrace();
+      }
+    }
+    if ( is != null ) {
+      try {
+        is.close();
+      } catch ( IOException e ) {
+        e.printStackTrace();
+      }
+    }
+    if ( connection != null ) {
+      connection.disconnect();
+    }
+  }
+
   protected ThreadLocal<StringBuilder> builders = new ThreadLocal<StringBuilder>() {
     @Override
     protected StringBuilder initialValue() {
