@@ -6,7 +6,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = [
-        'typeSelection' : { view: { class: '' }, startPoint: true },
+        'typeSelection' : { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountTypeModal' }, startPoint: true },
         'details': { view: { class: '' } },
         'limits': { view: { class: '' } },
         'thresholds': { view: { class: '' } }

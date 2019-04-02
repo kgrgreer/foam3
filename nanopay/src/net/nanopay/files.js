@@ -15,6 +15,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
   { name: 'net/nanopay/account/ui/AccountDetailView', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/AddAccountModalWizard', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/AccountTypeModal', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/ModalProgressBar', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/ModalTitleBar', flags: ['web'] },
   { name: 'net/nanopay/account/Balance' },
