@@ -23,6 +23,7 @@ import foam.nanos.fs.File;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.accounting.resultresponse.ContactErrorItem;
+import net.nanopay.accounting.resultresponse.InvoiceErrorItem;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.accounting.*;
@@ -131,8 +132,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse invoiceSync(X x) {
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-    List<String> errorResult = new ArrayList<>();
     List<String> successResult = new ArrayList<>();
+    HashMap<String, List<InvoiceErrorItem>> invoiceErrors = this.initInvoiceErrors();
 
     try {
 
@@ -144,16 +145,14 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       for ( Transaction invoice : list ) {
 
         try {
-          String importResult = importInvoice(x, invoice);
-          if ( importResult != null ) {
-            errorResult.add(importResult);
-          } else {
+          String importResult = importInvoice(x, invoice, invoiceErrors);
+          if ( importResult == null ) {
             successResult.add("QuickBooks invoice " + invoice.getDocNumber() + " import successfully.");
           }
 
         } catch ( Exception e ) {
           logger.error(e);
-          errorResult.add(e.getMessage());
+          invoiceErrors.get("OTHER").add(prepareErrorItemFrom(invoice));
         }
       }
 
@@ -165,8 +164,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     return saveResult(x, "invoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
-      .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
       .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
+      .setInvoiceErrors(invoiceErrors)
       .build());
   }
 
@@ -174,7 +173,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse singleInvoiceSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-    List<String> errorResult = new ArrayList<>();
+    HashMap<String, List<InvoiceErrorItem>> contactErrors = this.initInvoiceErrors();
     List<String> successResult = new ArrayList<>();
 
 
@@ -201,10 +200,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       Transaction invoice = fetchInvoiceById(x, type, qInvoice.getQuickId());
 
-      String importResult = importInvoice(x, invoice);
+      String importResult = importInvoice(x, invoice, contactErrors);
       if ( importResult != null ) {
-        errorResult.add(importResult);
-      } else {
         successResult.add("QuickBooks invoice " + invoice.getDocNumber() + " import successfully.");
       }
 
@@ -214,8 +211,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     return saveResult(x, "singleInvoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
-      .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
       .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
+      .setInvoiceErrors(contactErrors)
       .build());
   }
 
@@ -624,16 +621,37 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return newContact;
   }
 
-  public String importInvoice(X x, Transaction qInvoice) {
+  public InvoiceErrorItem prepareErrorItemFrom(Transaction qInvoice) {
+    Date dueDate = getDueDateFrom(qInvoice);
+    BigDecimal amount  = getTotalAmountFrom(qInvoice);
 
-    if ( ! qInvoice.getCurrencyRef().getValue().equals("USD") &&
-         ! qInvoice.getCurrencyRef().getValue().equals("CAD") ) {
-      return "Invoice " + qInvoice.getDocNumber() +
-        " can not import because we don't support currency " + qInvoice.getCurrencyRef().getValue();
-    }
+    InvoiceErrorItem errorItem = new InvoiceErrorItem();
+    errorItem.setDueDate(dueDate);
+    errorItem.setInvoiceNumber(qInvoice.getDocNumber());
+    errorItem.setAmount(amount.toString() + " " + qInvoice.getCurrencyRef().getValue());
+
+    return errorItem;
+  }
+
+  public String importInvoice(X x, Transaction qInvoice, HashMap<String, List<InvoiceErrorItem>> contactErrors) {
+    // get data from invoice
+    Date dueDate = getDueDateFrom(qInvoice);
+    BigDecimal balance = getBalanceFrom(qInvoice);
+    BigDecimal amount  = getTotalAmountFrom(qInvoice);
+
+    // prepare error item
+    InvoiceErrorItem errorItem = prepareErrorItemFrom(qInvoice);
 
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
+
+    // check currency support
+    if ( ! qInvoice.getCurrencyRef().getValue().equals("USD") &&
+         ! qInvoice.getCurrencyRef().getValue().equals("CAD") ) {
+      contactErrors.get("CURRENCY_NOT_SUPPORT").add(errorItem);
+      return "Invoice " + qInvoice.getDocNumber() +
+        " can not import because we don't support currency " + qInvoice.getCurrencyRef().getValue();
+    }
 
     QuickbooksInvoice existInvoice = (QuickbooksInvoice) invoiceDAO.inX(x).find(
       AND(
@@ -641,9 +659,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         EQ(QuickbooksInvoice.REALM_ID,   token.getRealmId()),
         EQ(QuickbooksInvoice.CREATED_BY, user.getId())
       ));
-
-    BigDecimal balance = qInvoice instanceof Bill ?
-      ( (Bill) qInvoice ) .getBalance() : ( (Invoice) qInvoice ) .getBalance();
 
     if ( existInvoice != null ) {
 
@@ -696,6 +711,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     ));
 
     if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
+      contactErrors.get("MISS_CONTACT").add(errorItem);
       return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
     }
 
@@ -743,6 +759,21 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     invoiceDAO.inX(x).put(existInvoice);
 
     return null;
+  }
+
+  public Date getDueDateFrom(Transaction qbsInvoice) {
+    return qbsInvoice instanceof Bill ?
+      ( (Bill) qbsInvoice ) .getDueDate() : ( (Invoice) qbsInvoice ) .getDueDate();
+  }
+
+  public BigDecimal getBalanceFrom(Transaction qbsInvoice) {
+    return qbsInvoice instanceof Bill ?
+      ( (Bill) qbsInvoice ) .getBalance() : ( (Invoice) qbsInvoice ) .getBalance();
+  }
+
+  public BigDecimal getTotalAmountFrom(Transaction qbsInvoice) {
+    return qbsInvoice instanceof Bill ?
+      ( (Bill) qbsInvoice ) .getTotalAmt() : ( (Invoice) qbsInvoice ) .getTotalAmt();
   }
 
   public File[] getAttachments(X x, String type, String id) {
@@ -993,6 +1024,16 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     contactErrors.put("OTHER", new ArrayList<>());
 
     return contactErrors;
+  }
+
+  public HashMap<String, List<InvoiceErrorItem>> initInvoiceErrors() {
+    HashMap<String, List<InvoiceErrorItem>> invoiceErrors = new HashMap<>();
+
+    invoiceErrors.put("MISS_CONTACT", new ArrayList<>());
+    invoiceErrors.put("CURRENCY_NOT_SUPPORT", new ArrayList<>());
+    invoiceErrors.put("OTHER", new ArrayList<>());
+
+    return invoiceErrors;
   }
 
   public ResultResponse saveResult(X x, String method, ResultResponse resultResponse) {
