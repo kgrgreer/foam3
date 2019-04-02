@@ -34,7 +34,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start().addClass(this.myClass(progress)).style({ 'width' : this.percentage$.map(function(v) { return v; }) }).end();
+        .start().addClass(this.myClass(progress)).style({ 'width' : this.percentage$.map(function(v) { return v + '%'; }) }).end();
     }
   ]
 });
