@@ -392,6 +392,7 @@ function usage {
     echo "  -t [test1,test2] : Run tests. Should be last option on command-line for correctness"
     echo "  -v : java compile only (maven), no code generation."
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
+    echo "  -x : Validates added dependencies against list of vulnerable dependencies."
     echo ""
     echo "No options implies build and then run:"
     echo "  ./build.sh -b"
@@ -421,8 +422,9 @@ DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 BUILD_PROD=0
 BUILD_QA=0
+VULNERABILITY_CHECK=0
 
-while getopts "bcdghijlmp:q:rsStvz" opt ; do
+while getopts "bcdghijlmp:q:rsSxtvz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -444,11 +446,11 @@ while getopts "bcdghijlmp:q:rsStvz" opt ; do
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
-           CLEAN_BUILD=1
-            ;;
+           CLEAN_BUILD=1 ;;
         v) COMPILE_ONLY=1 ;;
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
+        x) VULNERABILITY_CHECK=1 ;;
         ?) usage ; quit 1 ;;
     esac
 done
@@ -458,6 +460,13 @@ setenv
 if [[ $INSTALL -eq 1 ]]; then
     install
     quit 0
+fi
+
+if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
+    echo "Checking dependencies for vulnerabilities"
+    mvn com.redhat.victims.maven:security-versions:check
+    quit 0
+
 fi
 
 if [[ $TEST -eq 1 ]]; then
