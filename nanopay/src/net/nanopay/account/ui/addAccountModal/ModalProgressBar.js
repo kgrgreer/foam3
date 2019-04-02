@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'ModalProgressBar',
   extends: 'foam.u2.View',
 
+  documentation: 'Progress bar used in modals that depicts the progress of a user. Progress is custom set.',
+
   css: `
     ^ {
       position: relative;

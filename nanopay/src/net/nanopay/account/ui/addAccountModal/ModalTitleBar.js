@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'ModalTitleBar',
   extends: 'foam.u2.View',
 
+  documentation: 'Modal Title Bar that holds the title along with the back and close actions.',
+
   imports: [
     'subStack',
     'closeDialog'
