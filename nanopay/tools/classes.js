@@ -482,6 +482,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.enums.SearchType',
   'net.nanopay.meter.compliance.dowJones.model.BaseSearch',
   'net.nanopay.meter.compliance.dowJones.model.DowJonesCall',
+  'net.nanopay.meter.compliance.dowJones.model.DowJonesCredentials',
   'net.nanopay.meter.compliance.dowJones.model.EntityNameSearch',
   'net.nanopay.meter.compliance.dowJones.model.IDTypeSearch',
   'net.nanopay.meter.compliance.dowJones.model.NameSearch',

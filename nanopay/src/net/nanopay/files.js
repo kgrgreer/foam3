@@ -823,6 +823,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/enums/SearchType' },
   { name: 'net/nanopay/meter/compliance/dowJones/model/BaseSearch' },
   { name: 'net/nanopay/meter/compliance/dowJones/model/DowJonesCall' },
+  { name: 'net/nanopay/meter/compliance/dowJones/model/DowJonesCredentials' },
   { name: 'net/nanopay/meter/compliance/dowJones/model/EntityNameSearch' },
   { name: 'net/nanopay/meter/compliance/dowJones/model/IDTypeSearch' },
   { name: 'net/nanopay/meter/compliance/dowJones/model/NameSearch' },
