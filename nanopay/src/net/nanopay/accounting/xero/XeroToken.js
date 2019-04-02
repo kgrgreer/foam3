@@ -35,14 +35,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'portalRedirect'
-    },
-    {
-      class: 'Long',
-      name: 'contactLastUpdatedDate'
-    },
-    {
-      class: 'Long',
-      name: 'invoiceLastUpdatedDate'
     }
   ]
 });

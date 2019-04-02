@@ -163,6 +163,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     newContact.setOwner(user.getId());
     newContact.setGroup("sme");
     newContact.setXeroOrganizationId(token.getOrganizationId());
+    newContact.setLastUpdated(xeroContact.getUpdatedDateUTC().getTime().getTime());
 
     return newContact;
   }
@@ -180,6 +181,12 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       EQ(Contact.EMAIL, xeroContact.getEmailAddress()),
       EQ(Contact.OWNER, user.getId())
     ));
+
+    if ( existingContact instanceof XeroContact ) {
+      if ( ((XeroContact) existingContact).getLastUpdated() >= xeroContact.getUpdatedDateUTC().getTime().getTime() ) {
+        return null;
+      }
+    }
 
     User existingUser = (User) userDAO.find(
       EQ(User.EMAIL, xeroContact.getEmailAddress())
@@ -283,7 +290,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
         );
 
          ContactMismatchPair mismatchPair = importContact(x, xeroContact);
-         if ( mismatchPair.getResultCode() == ContactMismatchCode.SUCCESS ) {
+         if ( mismatchPair == null ) {
+           continue;
+         }
+         else if ( mismatchPair.getResultCode() == ContactMismatchCode.SUCCESS ) {
            contactSuccess.add(mismatchPair.getNewContact().getBusinessName()+ ",  with email address of " + mismatchPair.getNewContact().getEmail());
          }
          else {
@@ -328,6 +338,9 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     // Check if Invoice already exists on the portal
     if ( existingInvoice != null ) {
 
+      if ( existingInvoice.getLastUpdated() >= xeroInvoice.getUpdatedDateUTC().getTime().getTime()) {
+        return "skip";
+      }
       // Clone the invoice to make changes
       existingInvoice = (XeroInvoice) existingInvoice.fclone();
 
@@ -393,8 +406,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       e.printStackTrace();
       return e.toString();
     }
-      // Create an invoice
-     // existingInvoice = new XeroInvoice();
+
     createXeroInvoice(x,xeroInvoice,contact,updateInvoice);
     return "";
   }
@@ -435,6 +447,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     newInvoice.setCreatedBy(user.getId());
     newInvoice.setXeroOrganizationId(token.getOrganizationId());
     newInvoice.setBusinessName(token.getBusinessName());
+    newInvoice.setLastUpdated(xeroInvoice.getUpdatedDateUTC().getTime().getTime());
 
 //    // get invoice attachments
 //    if ( ! xeroInvoice.isHasAttachments() ) {

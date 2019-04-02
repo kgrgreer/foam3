@@ -449,6 +449,12 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       EQ(Contact.OWNER, user.getId())
     ));
 
+    if ( existContact instanceof QuickbooksContact ) {
+      if ( ((QuickbooksContact) existContact).getLastUpdated() >= importContact.getMetaData().getLastUpdatedTime().getTime() ) {
+        return null;
+      }
+    }
+
     // existing user
     User existUser = (User) userDAO.find(
       EQ(User.EMAIL, email.getAddress())
@@ -609,6 +615,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     newContact.setQuickId(importContact.getId());
     newContact.setRealmId(token.getRealmId());
     newContact.setOwner(user.getId());
+    newContact.setLastUpdated(importContact.getMetaData().getLastUpdatedTime().getTime());
 
     return newContact;
   }
@@ -636,6 +643,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     if ( existInvoice != null ) {
 
+      if ( existInvoice.getLastUpdated() >= qInvoice.getMetaData().getLastUpdatedTime().getTime() ) {
+        return null;
+      }
       existInvoice = (QuickbooksInvoice) existInvoice.fclone();
 
       // if desync, continue
@@ -728,6 +738,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     existInvoice.setBusinessName(token.getBusinessName());
     existInvoice.setCreatedBy(user.getId());
     existInvoice.setContactId(contact.getId());
+    existInvoice.setLastUpdated(qInvoice.getMetaData().getLastUpdatedTime().getTime());
 
     invoiceDAO.inX(x).put(existInvoice);
 

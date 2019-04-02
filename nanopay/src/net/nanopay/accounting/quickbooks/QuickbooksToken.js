@@ -45,14 +45,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'quickBank',
-    },
-    {
-      class: 'Long',
-      name: 'contactLastUpdatedDate'
-    },
-    {
-      class: 'Long',
-      name: 'invoiceLastUpdatedDate'
     }
   ]
 });
