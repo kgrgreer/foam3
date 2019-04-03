@@ -28,7 +28,7 @@ public class AuthenticationFailureApiTest extends ApiTestBase {
       
       // Execute the call
       int responseCode = connection.getResponseCode();
-      test(401 == responseCode, "Response status should be 401 - actual: " + responseCode);
+      test(401 == responseCode, "[" + digUrl + "] Response status should be 401 - actual: " + responseCode);
     }
     catch (Exception ex)
     {

@@ -28,7 +28,7 @@ public class AuthenticationApiTest extends ApiTestBase {
       
       // Execute the call
       int responseCode = connection.getResponseCode();
-      test(200 == responseCode, "Response status should be 200 - actual: " + responseCode);
+      test(200 == responseCode, "[" + digUrl + "] Response status should be 200 - actual: " + responseCode);
       if (200 != responseCode)
         return;
       
