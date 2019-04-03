@@ -40,7 +40,9 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.account.Balance'
+
   ],
 
   requires: [
@@ -156,6 +158,13 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];',
+      hidden: true
+    },
+    {
+      name: 'balances',
+      class: 'FObjectArray',
+      of: 'net.nanopay.account.Balance',
+      javaFactory: 'return new Balance[0];',
       hidden: true
     },
     {
