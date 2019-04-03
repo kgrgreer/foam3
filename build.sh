@@ -463,7 +463,7 @@ if [[ $INSTALL -eq 1 ]]; then
 fi
 
 if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
-    echo "Checking dependencies for vulnerabilities"
+    echo "INFO :: Checking dependencies for vulnerabilities..."
     mvn com.redhat.victims.maven:security-versions:check
     quit 0
 
