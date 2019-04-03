@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: 'Modal Sub View for account details',
 
   requires: [
+    'foam.u2.DetailView',
+    'net.nanopay.account.ui.addAccountModal.AccountDetailsViewModel',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
   ],
@@ -45,6 +47,9 @@ foam.CLASS({
         .start(this.IS_LIMIT_REQUIRED).end()
         .start(this.IS_LIQUIDITY_REQUIRED).end()
         // TODO: Put view model here
+        .start(this.DetailView, { data: this.AccountDetailsViewModel.create() }).end()
+        .start(this.IS_LIMIT_REQUIRED).end()
+        .start(this.IS_LIQUIDITY_REQUIRED).end()
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
         .end()
