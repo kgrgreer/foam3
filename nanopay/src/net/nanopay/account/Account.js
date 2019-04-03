@@ -32,7 +32,7 @@ foam.CLASS({
         class: 'foam.u2.ReferenceLabelAxiom',
         prop: 'name'
     }
-],
+  ],
 
   properties: [
     {
