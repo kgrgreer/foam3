@@ -291,7 +291,6 @@ foam.CLASS({
     'net.nanopay.model.Branch',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
-    'java.util.Random',
     'static foam.mlang.MLang.EQ',
     'foam.core.FObject',
     'foam.nanos.logger.Logger',
@@ -304,11 +303,13 @@ foam.CLASS({
 
         type: 'net.nanopay.iso20022.Pacs00200109',
         javaCode: `
-          final PrintWriter out = getX().get(PrintWriter.class);
+          PrintWriter out = getX().get(PrintWriter.class);
+          Logger logger   = (Logger) getX().get("logger");
 
-          Logger  logger = (Logger) getX().get("logger");
           Pacs00200109 pacs00200109 = new Pacs00200109();
           pacs00200109.setX(getX());
+
+          String spId = "nanopay";
 
           FIToFIPaymentStatusReportV09 fIToFIPmtStsRpt = new FIToFIPaymentStatusReportV09();
 
@@ -323,9 +324,9 @@ foam.CLASS({
             if ( this.getFIToFICstmrCdtTrf().getGroupHeader().getMessageIdentification() == null ) {
               throw new RuntimeException("Missing field : MessageIdentification");
             }
-            if ( this.getFIToFICstmrCdtTrf().getGroupHeader().getCreationDateTime() == null ) {
-              throw new RuntimeException("Missing field : CreationDateTime");
-            }
+//            if ( this.getFIToFICstmrCdtTrf().getGroupHeader().getCreationDateTime() == null ) {
+//              throw new RuntimeException("Missing field : CreationDateTime");
+//            }
             if ( this.getFIToFICstmrCdtTrf().getGroupHeader().getNumberOfTransactions() == null ) {
               throw new RuntimeException("Missing field : NumberOfTransactions");
             }
@@ -342,12 +343,20 @@ foam.CLASS({
               DAO bankAccountDAO = (DAO) getX().get("accountDAO");
               DAO branchDAO      = (DAO) getX().get("branchDAO");
               DAO institutionDAO = (DAO) getX().get("institutionDAO");
-              String addrLine = "";
-              long senderId =  0 ;
-              long receiverId = 0;
+              DAO txnDAO         = (DAO) getX().get("transactionDAO");
 
-              Random rand = new Random();
               for ( int i = 0 ; i < length_ ; i++ ) {
+                String addrLine   = "";
+                long senderId     = 0 ;
+                long receiverId   = 0;
+                long senderBkId   = 0;
+                long receiverBkId = 0;
+
+                FObject fObjSender       = null;
+                FObject fObjSenderBk     = null;
+                FObject fObjReceiver     = null;
+                FObject fObjReceiverBk   = null;
+                FObject fObjTxn          = null;
 
                  try {
                    if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor() != null ) {
@@ -357,8 +366,6 @@ foam.CLASS({
                      if ( sender == null ) {
                        sender = new User();
 
-                       senderId = rand.nextInt(1000) + 10000;
-                       sender.setId(senderId);
                        sender.setEmail((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getEmailAddress());
 
                        Phone senderPhone = new Phone();
@@ -369,9 +376,10 @@ foam.CLASS({
 
                        sender.setEmailVerified(true);
                        sender.setFirstName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getName());
+                       sender.setLastName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getName());
                        sender.setBirthday((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
                        sender.setGroup("system");
-                       sender.setSpid("iterac");
+                       sender.setSpid(spId);
                        sender.setBusinessTypeId(0);
                        sender.setBusinessSectorId(1);
                        //sender.setStatus("Active");
@@ -399,13 +407,20 @@ foam.CLASS({
 
                        sender.setAddress(senderAddress);
 
-                       FObject fUserDAO = (FObject) userDAO.put(sender);
+                       fObjSender = userDAO.put(sender);
+
+                       if ( fObjSender instanceof FObject )
+                        senderId = ((User)fObjSender).getId();
+                       else
+                        throw new IllegalStateException("Failed To Sign up for a Sender");
 
                       // Create a Sender's BankAccount
                        if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount() != null ) {
                           BankAccount senderBankAcct = new BankAccount();
                           senderBankAcct.setId(senderId);
+                          senderBankAcct.setName(senderId + "Account");
                           senderBankAcct.setX(getX());
+                          senderBankAcct.setOwner(senderId);
                           senderBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
                           senderBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getCcy());
                           senderBankAcct.setName("Default");
@@ -426,9 +441,18 @@ foam.CLASS({
                           senderBankAcct.setStatus(BankAccountStatus.VERIFIED);
                           senderBankAcct.setVerificationAttempts(1);
                           senderBankAcct.setIsDefault(true);
-                          senderBankAcct.setOwner(senderId);
 
-                          bankAccountDAO.put(senderBankAcct);
+                          fObjSenderBk = bankAccountDAO.put(senderBankAcct);
+
+                          if ( fObjSenderBk instanceof FObject )
+                            senderBkId = (BankAccount)fObjSenderBk.getId();
+                          else {
+                            sender = (User) userDAO.find(senderId);
+                            userDAO.remove(sender);
+
+                            throw new IllegalStateException("Failed To Sign up for a Sender Bank Account");
+                          }
+
                       } else {
                           throw new RuntimeException("Missing field : DbtrAcct");
                       }
@@ -447,8 +471,6 @@ foam.CLASS({
                     if ( receiver == null ) {
                       receiver = new User();
 
-                      receiverId = rand.nextInt(1000) + 10000;
-                      receiver.setId(receiverId);
                       receiver.setEmail((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getEmailAddress());
 
                       Phone receiverPhone = new Phone();
@@ -459,9 +481,10 @@ foam.CLASS({
 
                       receiver.setEmailVerified(true);
                       receiver.setFirstName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getName());
+                      receiver.setLastName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getName());
                       receiver.setBirthday((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
                       receiver.setGroup("system");
-                      receiver.setSpid("iterac");
+                      receiver.setSpid(spId);
                       receiver.setBusinessTypeId(0);
                       receiver.setBusinessSectorId(1);
                       //receiver.setStatus("Active");
@@ -489,13 +512,27 @@ foam.CLASS({
 
                       receiver.setAddress(receiverAddress);
 
-                      userDAO.put(receiver);
+                      fObjReceiver = userDAO.put(receiver);
+
+                      if ( fObjReceiver instanceof FObject )
+                        receiverId = (User)fObjReceiver.getId();
+                      else {
+                        sender = (User)userDAO.find(senderId);
+                        userDAO.remove(sender);
+
+                        senderBankAcct = (BankAccount)bankAccountDAO.find(senderBkId);
+                        bankAccountDAO.remove(senderBankAcct);
+
+                        throw new IllegalStateException("Failed To Sign up for a Receiver");
+                      }
 
                       // Create a Receiver's BankAccount
                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAccount() != null ) {
                         BankAccount receiverBankAcct = new BankAccount();
                         receiverBankAcct.setId(receiverId);
                         receiverBankAcct.setX(getX());
+                        receiverBankAcct.setName(receiverId + "Account");
+                        receiverBankAcct.setOwner(receiverId);
                         receiverBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAccount().getIdentification().getOthr().getIdentification());
                         receiverBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInterbankSettlementAmount().getCcy());
                         receiverBankAcct.setName("Default");
@@ -519,9 +556,23 @@ foam.CLASS({
                         receiverBankAcct.setStatus(BankAccountStatus.VERIFIED);
                         receiverBankAcct.setVerificationAttempts(1);
                         receiverBankAcct.setIsDefault(true);
-                        receiverBankAcct.setOwner(receiverId);
 
-                        bankAccountDAO.put(receiverBankAcct);
+                        fObjReceiverBk = bankAccountDAO.put(receiverBankAcct);
+
+                        if ( fObjReceiverBk instanceof FObject )
+                          receiverBkId = (bankAccountDAO)fObjReceiver.getId();
+                        else {
+                          sender = (User)userDAO.find(senderId);
+                          userDAO.remove(sender);
+
+                          senderBankAcct = (BankAccount)bankAccountDAO.find(senderBkId);
+                          bankAccountDAO.remove(senderBankAcct);
+
+                          receiver = (User)userDAO.find(receiverId);
+                          userDAO.remove(receiver);
+
+                          throw new IllegalStateException("Failed To Sign up for a Receiver Bank Account");
+                        }
                       } else {
                         throw new RuntimeException("Missing field : CreditorAccount");
                       }
@@ -546,9 +597,26 @@ foam.CLASS({
                       .setMessageId(this.getFIToFICstmrCdtTrf().getGroupHeader().getMessageIdentification())
                       .setReferenceData(new FObject[]{this})
                       .build();
-                      DAO txnDAO = (DAO) getX().get("transactionDAO");
 
-                      txnDAO.put(transaction);
+                      fObjTxn = txnDAO.put(transaction);
+
+                      if ( fObjTxn instanceof FObject )
+                        fObjTxnId = (Transaction)fObjTxn.getId();
+                      else {
+                        sender = (User)userDAO.find(senderId);
+                        userDAO.remove(sender);
+
+                        senderBankAcct = (BankAccount)bankAccountDAO.find(senderBkId);
+                        bankAccountDAO.remove(senderBankAcct);
+
+                        receiver = (User)userDAO.find(receiverId);
+                        userDAO.remove(receiver);
+
+                        receiverBankAcct = (BankAccount)bankAccountDAO.find(receiverBkId);
+                        bankAccountDAO.remove(receiverBankAcct);
+
+                        throw new IllegalStateException("Failed the Transaction");
+                      }
                   } else {
                     throw new RuntimeException("Missing field : InstdAmt");
                   }
