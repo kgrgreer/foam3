@@ -25,7 +25,10 @@ public class ApiTestBase extends Test {
   protected String getBaseUrl(X x)
   {
     AppConfig appConfig = (AppConfig) x.get("appConfig");
-    return appConfig.getUrl();
+    String url = appConfig.getUrl();
+    return url == null ? null :
+           url.endsWith("/") ? appConfig.getUrl().substring(0, appConfig.getUrl().length() - 1) :
+           url;
   }
 
   protected HttpURLConnection createRequest(String digUrl)
