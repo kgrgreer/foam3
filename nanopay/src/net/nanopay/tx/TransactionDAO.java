@@ -195,9 +195,9 @@ public class TransactionDAO
       writableBalanceDAO_.put(balance);
       referenceArr[i].setBalanceAfter(balance.getBalance());
 
-      Account account = t.findAccount(getX());
+      long account = t.getAccount();
       Balance fb = new Balance.Builder(x)
-        .setAccount(account.getId())
+        .setAccount(account)
         .setBalance(balance.getBalance())
         .build();
       finalBalanceArr[i] = fb;
