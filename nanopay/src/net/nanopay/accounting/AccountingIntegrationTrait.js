@@ -102,61 +102,12 @@ foam.CLASS({
       },
       code: async function(X) {
         X.controllerView.addClass('account-sync-loading-animation');
-        let service;
-
-        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-          service = this.xeroService;
-        }
-        if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
-          service = this.quickbooksService;
-        }
-
-
-        let contactsResult = await service.contactSync(null);
-        if ( contactsResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-          X.controllerView.add(this.Popup.create({ closeable: false }).tag({
-            class: 'net.nanopay.accounting.AccountingTimeOutModal'
-          }));
-          X.controllerView.removeClass('account-sync-loading-animation');
-          return;
-        }
-
-        if ( ! contactsResult.result ) {
-          this.ctrl.notify(contactsResult.reason, 'error');
-        }
-
-        // run through contact missmatch if any
-
-        let invoicesResult = await service.invoiceSync(null);
-        if ( invoicesResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-          X.controllerView.add(this.Popup.create({ closeable: false }).tag({
-            class: 'net.nanopay.accounting.AccountingTimeOutModal'
-          }));
-          X.controllerView.removeClass('account-sync-loading-animation');
-          return;
-        }
-
-        if ( ! invoicesResult.result ) {
-          this.ctrl.notify(contactsResult.reason, 'error');
-        }
-
+        let result = await this.accountingIntegrationUtil.doSync();
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingReportPage1',
+          invoiceResult: result
+        })
         X.controllerView.removeClass('account-sync-loading-animation');
-        this.contactDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
-        this.invoiceDAO.cmd(foam.dao.AbstractDAO.RESET_CMD);
-
-        if ( invoicesResult.result && contactsResult.result ) {
-          this.ctrl.notify('All information has been synchronized', 'success');
-          if ( contactsResult.contactSyncMismatches.length !== 0 ||
-               contactsResult.contactSyncErrors.length !== 0 ||
-               invoicesResult.invoiceSyncErrors.length !== 0 ) {
-            X.controllerView.add(this.Popup.create().tag({
-              class: 'net.nanopay.accounting.ui.AccountingReportModal',
-              invoiceResult: invoicesResult,
-              contactResult: contactsResult,
-              redirect: false
-            }));
-          }
-        }
       }
     },
   ]

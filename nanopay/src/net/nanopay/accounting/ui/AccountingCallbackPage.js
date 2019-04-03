@@ -130,8 +130,10 @@ foam.CLASS({
 
       if ( this.doSync ) {
         let result = await this.accountingIntegrationUtil.doSync();
-        console.log("redirect");
-        console.log(result);
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingReportPage1',
+          invoiceResult: result
+        })
 
         return ;
       }
@@ -143,10 +145,10 @@ foam.CLASS({
         });
       } else {
         let result = await this.accountingIntegrationUtil.doSync();
-        console.log("redirect");
-        console.log(result);
-
-        return ;
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingReportPage1',
+          invoiceResult: result
+        })
       }
     },
 
