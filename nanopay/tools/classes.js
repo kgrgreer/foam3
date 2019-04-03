@@ -249,7 +249,6 @@ var classes = [
   'net.nanopay.tx.TestTransaction',
   'net.nanopay.tx.AbliiTransaction',
   'net.nanopay.tx.InterestTransaction',
-  'net.nanopay.tx.FinalBalance',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',

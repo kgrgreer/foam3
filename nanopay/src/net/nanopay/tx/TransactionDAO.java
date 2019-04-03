@@ -158,6 +158,7 @@ public class TransactionDAO
 
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
+    Balance [] finalBalanceArr = new Balance[ts.length];
     BalanceHistory [] referenceArr = new BalanceHistory[ts.length];
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
@@ -193,9 +194,17 @@ public class TransactionDAO
       t.execute(balance);
       writableBalanceDAO_.put(balance);
       referenceArr[i].setBalanceAfter(balance.getBalance());
+
+      Account account = t.findAccount(getX());
+      Balance fb = new Balance.Builder(x)
+        .setAccount(account.getId())
+        .setBalance(balance.getBalance())
+        .build();
+      finalBalanceArr[i] = fb;
     }
     txn.setReferenceData(referenceArr);
-    
+    txn.setFinalBalances(finalBalanceArr);
+
     return getDelegate().put_(x, txn);
   }
 

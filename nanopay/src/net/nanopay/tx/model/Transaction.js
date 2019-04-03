@@ -41,7 +41,7 @@ foam.CLASS({
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.FinalBalance'
+    'net.nanopay.account.Balance'
 
   ],
 
@@ -163,8 +163,8 @@ foam.CLASS({
     {
       name: 'finalBalances',
       class: 'FObjectArray',
-      of: 'net.nanopay.tx.FinalBalance',
-      javaFactory: 'return new FinalBalance[0];',
+      of: 'net.nanopay.account.Balance',
+      javaFactory: 'return new Balance[0];',
       hidden: true
     },
     {

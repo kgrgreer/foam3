@@ -202,7 +202,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sps/SPSConfig' },
 
   // tx
-  { name: 'net/nanopay/tx/FinalBalance' },
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
   { name: 'net/nanopay/tx/model/Fee' },
   { name: 'net/nanopay/tx/model/FeeInterface' },
