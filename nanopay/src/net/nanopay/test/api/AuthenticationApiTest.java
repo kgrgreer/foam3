@@ -23,7 +23,8 @@ public class AuthenticationApiTest extends ApiTestBase {
     try 
     {
       // Create the request
-      String digUrl = this.getBaseUrl(x) + "/service/dig";
+      String digUrl = this.getBaseUrl(x);
+      digUrl += (digUrl.endsWith("/")) ? "service/dig" :  "/service/dig";
       HttpURLConnection connection = this.createRequest(digUrl);
       
       // Execute the call
