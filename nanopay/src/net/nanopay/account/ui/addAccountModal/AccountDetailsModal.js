@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'foam.u2.DetailView',
     'net.nanopay.account.ui.addAccountModal.AccountSettingsRequirementViewModel',
+    'net.nanopay.account.ui.addAccountModal.AccountDetailsViewModel',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
   ],
