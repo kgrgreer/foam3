@@ -141,64 +141,36 @@ var classes = [
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
 
-   // integration
-   'net.nanopay.integration.ClientIntegrationService',
-   'net.nanopay.integration.IntegrationCode',
-   'net.nanopay.integration.IntegrationService',
-  'net.nanopay.integration.ResultResponse',
-  'net.nanopay.integration.AccountingBankAccount',
-  'net.nanopay.integration.AccountingContactEmailCache',
+   // accounting
+   'net.nanopay.accounting.ClientIntegrationService',
+   'net.nanopay.accounting.IntegrationCode',
+   'net.nanopay.accounting.IntegrationService',
+   'net.nanopay.accounting.ResultResponse',
+   'net.nanopay.accounting.ResultResponseWrapper',
+   'net.nanopay.accounting.AccountingBankAccount',
+   'net.nanopay.accounting.ContactMismatchPair',
+   'net.nanopay.accounting.ContactMismatchCode',
+   'net.nanopay.accounting.AccountingContactEmailCache',
+   'net.nanopay.accounting.AccountingErrorCodes',
 
-  // xero
-  'net.nanopay.integration.xero.XeroTokenStorage',
-  'net.nanopay.integration.xero.XeroConfig',
-  'net.nanopay.integration.xero.XeroIntegrationService',
-  'net.nanopay.integration.xero.model.XeroContact',
-  'net.nanopay.integration.xero.model.XeroInvoice',
+   // xero
+   'net.nanopay.accounting.xero.XeroToken',
+   'net.nanopay.accounting.xero.XeroConfig',
+   'net.nanopay.accounting.xero.model.XeroContact',
+   'net.nanopay.accounting.xero.model.XeroInvoice',
 
-  // liquidity
+   // liquidity
    'net.nanopay.liquidity.LiquiditySettings',
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
    'net.nanopay.liquidity.Frequency',
 
-  // quick
-  'net.nanopay.integration.quick.QuickConfig',
-  'net.nanopay.integration.quick.QuickIntegrationService',
-  'net.nanopay.integration.quick.QuickOauth',
-  'net.nanopay.integration.quick.QuickTokenStorage',
-  'net.nanopay.integration.quick.model.QuickBank',
-  'net.nanopay.integration.quick.model.QuickContact',
-  'net.nanopay.integration.quick.model.QuickInvoice',
-  'net.nanopay.integration.quick.model.QuickLineItem',
-  'net.nanopay.integration.quick.model.QuickLinkTxn',
-  'net.nanopay.integration.quick.model.QuickPostPayment',
-  'net.nanopay.integration.quick.model.QuickPostBillPayment',
-  'net.nanopay.integration.quick.model.QuickPayment',
-  'net.nanopay.integration.quick.model.QuickPutBank',
-  'net.nanopay.integration.quick.model.QuickQueryAddress',
-  'net.nanopay.integration.quick.model.QuickQueryAttachable',
-  'net.nanopay.integration.quick.model.QuickQueryAttachableEntityReference',
-  'net.nanopay.integration.quick.model.QuickQueryAttachableReference',
-  'net.nanopay.integration.quick.model.QuickQueryAttachableResponse',
-  'net.nanopay.integration.quick.model.QuickQueryAttachables',
-  'net.nanopay.integration.quick.model.QuickQueryBankResponse',
-  'net.nanopay.integration.quick.model.QuickQueryBill',
-  'net.nanopay.integration.quick.model.QuickQueryBillResponse',
-  'net.nanopay.integration.quick.model.QuickQueryBills',
-  'net.nanopay.integration.quick.model.QuickQueryContact',
-  'net.nanopay.integration.quick.model.QuickQueryCurrencyReference',
-  'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
-  'net.nanopay.integration.quick.model.QuickQueryCustomers',
-  'net.nanopay.integration.quick.model.QuickQueryEMail',
-  'net.nanopay.integration.quick.model.QuickQueryInvoice',
-  'net.nanopay.integration.quick.model.QuickQueryInvoiceResponse',
-  'net.nanopay.integration.quick.model.QuickQueryInvoices',
-  'net.nanopay.integration.quick.model.QuickQueryMetaData',
-  'net.nanopay.integration.quick.model.QuickQueryNameValue',
-  'net.nanopay.integration.quick.model.QuickQueryPhoneNumber',
-  'net.nanopay.integration.quick.model.QuickQueryVendorResponse',
-  'net.nanopay.integration.quick.model.QuickQueryVendors',
+   // quick
+   'net.nanopay.accounting.quickbooks.QuickbooksConfig',
+   'net.nanopay.accounting.quickbooks.QuickbooksOauth',
+   'net.nanopay.accounting.quickbooks.QuickbooksToken',
+   'net.nanopay.accounting.quickbooks.model.QuickbooksContact',
+   'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
@@ -467,6 +439,31 @@ var classes = [
   'net.nanopay.meter.compliance.NanopayComplianceService',
   'net.nanopay.meter.compliance.canadianSanction.Record',
   'net.nanopay.meter.compliance.CanadianSanctionValidator',
+  'net.nanopay.meter.compliance.secureFact.CanadianUserOnboarding',
+  'net.nanopay.meter.compliance.secureFact.CanadianBusinessOnboarding',
+  'net.nanopay.meter.compliance.secureFact.ResponseError',
+  'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
+  'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
+  'net.nanopay.meter.compliance.secureFact.SecurefactService',
+  'net.nanopay.meter.compliance.secureFact.sidni.SIDniValidator',
+  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
+  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniCustomer',
+  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniName',
+  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAddress',
+  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniPhone',
+  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniErrorComponent',
+  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
+  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAdditionalMatchInfo',
+  'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniDataSources',
+  'net.nanopay.meter.compliance.secureFact.lev.LEVValidator',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVApplicant',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVChange',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVError',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVIndividualScores',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
+  'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
+
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
@@ -474,6 +471,9 @@ var classes = [
   'net.nanopay.meter.test.ComplianceAwareDummy',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
+
+  // settlment Report service
+  'net.nanopay.invoice.InvoiceFilteredSettlementReport',
 ];
 
 var abstractClasses = [
@@ -482,7 +482,7 @@ var abstractClasses = [
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.documents.AcceptanceDocumentService',
-  'net.nanopay.integration.IntegrationService',
+  'net.nanopay.accounting.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',

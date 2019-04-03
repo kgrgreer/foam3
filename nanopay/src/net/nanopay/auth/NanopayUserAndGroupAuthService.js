@@ -61,7 +61,7 @@ foam.CLASS({
         }
 
         // check if user group enabled
-        Group group = (Group) ((DAO) getLocalGroupDAO()).find(user.getGroup());
+        Group group = user.findGroup(x);
         if ( group != null && ! group.getEnabled() ) {
           throw new AuthenticationException("User group disabled");
         }

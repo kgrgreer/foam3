@@ -8,20 +8,25 @@ foam.CLASS({
   requires: [
     'foam.core.Action',
     'foam.u2.dialog.Popup',
+    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice'
   ],
 
   implements: [
-    'net.nanopay.integration.AccountingIntegrationTrait'
+    'net.nanopay.accounting.AccountingIntegrationTrait'
   ],
 
   imports: [
     'checkComplianceAndBanking',
     'currencyDAO',
     'stack',
-    'user'
+    'user',
+    'accountingIntegrationUtil'
   ],
 
   properties: [
@@ -40,7 +45,6 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
-          fitInScreen: true,
           columns: [
             this.Invoice.PAYEE.clone().copyFrom({
               label: 'Company',
@@ -68,10 +72,11 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'viewDetails',
               label: 'View details',
-              code: function(X) {
+              code: async function(X) {
+                let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
                 X.stack.push({
                   class: 'net.nanopay.sme.ui.InvoiceOverview',
-                  invoice: this,
+                  invoice: updatedInvoice,
                   isPayable: true
                 });
               }
@@ -83,13 +88,18 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.UNPAID ||
                   this.status === self.InvoiceStatus.OVERDUE;
               },
-              code: function(X) {
+              code: async function(X) {
+                let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
+
+                if (! updatedInvoice) {
+                  return;
+                }
                 self.checkComplianceAndBanking().then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.send').then((menu) => {
                       var clone = menu.clone();
                       Object.assign(clone.handler.view, {
-                        invoice: this,
+                        invoice: updatedInvoice,
                         isForm: false,
                         isList: false,
                         isDetailView: true,
@@ -191,10 +201,12 @@ foam.CLASS({
   listeners: [
     {
       name: 'dblclick',
-      code: function(invoice) {
+      code: async function(invoice, X) {
+        let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+        if ( updatedInvoice === null || updatedInvoice === undefined ) return;
         this.stack.push({
           class: 'net.nanopay.sme.ui.InvoiceOverview',
-          invoice: invoice,
+          invoice: updatedInvoice,
           isPayable: true
         });
       }

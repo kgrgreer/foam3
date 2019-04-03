@@ -849,10 +849,6 @@ foam.CLASS({
       margin: 0px;
     }
 
-    table {
-      width: 1024px !important;
-    }
-
     /* user status styles */
 
     .user-status-Active {
@@ -1190,7 +1186,7 @@ foam.CLASS({
     }
 
     .net-nanopay-sme-SMEController .foam-u2-md-OverlayDropdown {
-      transform: translate(-88%, 33px);
+      transform: translate(-100%, 16px);
     }
   `
 });

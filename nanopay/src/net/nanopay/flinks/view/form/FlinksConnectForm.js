@@ -25,121 +25,117 @@ foam.CLASS({
     'window'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 490px;
-        }
-        ^ .text {
-          height: 16px;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-          margin: 0px;
-        }
-        ^ .input,
-        ^ .input input {
-          width: 450px;
-          height: 40px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          border-color: rgba(164, 179, 184, 0.5) !important;
-          box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21) !important;
-          outline: none;
-          padding: 10px;
-        }
-        ^ .subContent {
-          height: 285px;
-        }
-        ^ .conditionText {
-          height: 16px;
-          font-family: Roboto;
-          font-size: 11px;
-          line-height: 0.1;
-          letter-spacing: 0.1px;
-          text-align: left;
-          color: #093649;
-          border: 1px solid red;
-        }
-        ^ .net-nanopay-ui-ActionView-nextButton {
-          float: right;
-          margin: 0;
-          box-sizing: border-box;
-          background-color: #59a5d5;
-          outline: none;
-          border:none;
-          width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          color: #FFFFFF;
-        }
+  css: `
+    ^ {
+      width: 490px;
+    }
+    ^ .text {
+      height: 16px;
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #093649;
+      margin: 0px;
+    }
+    ^ .input,
+    ^ .input input {
+      width: 450px;
+      height: 40px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      border-color: rgba(164, 179, 184, 0.5) !important;
+      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21) !important;
+      outline: none;
+      padding: 10px;
+    }
+    ^ .subContent {
+      height: 285px;
+    }
+    ^ .conditionText {
+      height: 16px;
+      font-family: Roboto;
+      font-size: 11px;
+      line-height: 0.1;
+      letter-spacing: 0.1px;
+      text-align: left;
+      color: #093649;
+      border: 1px solid red;
+    }
+    ^ .net-nanopay-ui-ActionView-nextButton {
+      float: right;
+      margin: 0;
+      box-sizing: border-box;
+      background-color: #59a5d5;
+      outline: none;
+      border:none;
+      width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      color: #FFFFFF;
+    }
 
-        ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
-          cursor: pointer;
-        }
+    ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
+      cursor: pointer;
+    }
 
-        ^ .net-nanopay-ui-ActionView-closeButton {
-          float: left;
-          margin: 0;
-          outline: none;
-          min-width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          // background-color: rgba(164, 179, 184, 0.1);
-          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          margin-left: 1px;
-        }
+    ^ .net-nanopay-ui-ActionView-closeButton {
+      float: left;
+      margin: 0;
+      outline: none;
+      min-width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      // background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      margin-left: 1px;
+    }
 
-        ^ .net-nanopay-ui-ActionView-nextButton:disabled {
-          background-color: #7F8C8D;
-        }
+    ^ .net-nanopay-ui-ActionView-nextButton:disabled {
+      background-color: #7F8C8D;
+    }
 
-        ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
-          cursor: pointer;
-        }
+    ^ .net-nanopay-ui-ActionView-nextButton:hover:enabled {
+      cursor: pointer;
+    }
 
-        ^ .net-nanopay-ui-ActionView-goToTerm {
-          text-decoration: underline;
-          background-color: transparent !important;
-          color: #59a5d5;
-          height: 25px;
-        }
+    ^ .net-nanopay-ui-ActionView-goToTerm {
+      text-decoration: underline;
+      background-color: transparent !important;
+      color: #59a5d5;
+      height: 25px;
+    }
 
-        ^ .pStyle {
-          width: 428px;
-          height: 32px;
-          font-family: Roboto;
-          font-size: 12px;
-          font-weight: normal;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: 1.33;
-          letter-spacing: 0.3px;
-          text-align: left;
-          color: #093649;
-          word-wrap: break-word;
-        }
-        ^ .foam-u2-view-PasswordView {
-          padding: 0;
-          border: none;
-        }
-        input[type='checkbox']:checked:after {
-          top: 1px;
-          left: -1px;
-        }
-      */}
-    })
-  ],
+    ^ .pStyle {
+      width: 428px;
+      height: 32px;
+      font-family: Roboto;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.33;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: #093649;
+      word-wrap: break-word;
+    }
+    ^ .foam-u2-view-PasswordView {
+      padding: 0;
+      border: none;
+    }
+    input[type='checkbox']:checked:after {
+      top: 1px;
+      left: -1px;
+    }
+  `,
 
   properties: [
     {
@@ -163,6 +159,10 @@ foam.CLASS({
       value: false,
       postSet: function(oldValue, newValue) {
         this.viewData.check = newValue;
+        if ( this.termsAgreementDocument ) {
+          this.acceptanceDocumentService.
+            updateUserAcceptanceDocument(this.user.id, this.termsAgreementDocument.id, newValue); 
+        }
       },
     },
     {
@@ -267,7 +267,7 @@ foam.CLASS({
         default:
           break;
       }
-    },
+    },     
   ],
 
   actions: [
@@ -310,3 +310,4 @@ foam.CLASS({
     }
   ]
 });
+

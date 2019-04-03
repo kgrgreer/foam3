@@ -5,19 +5,29 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.notification.Notification',
+    'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
+    'net.nanopay.accounting.AccountingErrorCodes',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.account.Account',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
   imports: [
+    'group',
     'notificationDAO',
     'pushMenu',
     'stack',
-    'user'
+    'user',
+    'xeroService',
+    'quickbooksService',
+    'accountingIntegrationUtil'
   ],
 
   exports: [
@@ -86,7 +96,7 @@ foam.CLASS({
         return this.notificationDAO.where(
           this.OR(
             this.EQ(this.Notification.USER_ID, this.user.id),
-            this.EQ(this.Notification.GROUP_ID, this.user.group),
+            this.EQ(this.Notification.GROUP_ID, this.group),
             this.EQ(this.Notification.BROADCASTED, true)
           )
         );
@@ -154,12 +164,16 @@ foam.CLASS({
           .select(this.myDAOPayables$proxy, (invoice) => {
             return this.E().start({
               class: 'net.nanopay.sme.ui.InvoiceRowView',
-              data: invoice
+              data: invoice,
+              notificationDiv: this
+
             })
-              .on('click', () => {
+              .on('click', async () => {
+                let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+                if ( updatedInvoice === null || updatedInvoice === undefined ) return;
                 this.stack.push({
                   class: 'net.nanopay.sme.ui.InvoiceOverview',
-                  invoice: invoice,
+                  invoice: updatedInvoice,
                   isPayable: true
                 });
               })

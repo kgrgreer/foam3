@@ -187,23 +187,6 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
-      name: 'canTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-      return ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) && getStatus() == TransactionStatus.COMPLETED;      `
-    },
-    {
       documentation: `creates another child transaction if job was done partially`,
       name: 'createChild',
       args: [
