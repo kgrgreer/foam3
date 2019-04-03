@@ -427,11 +427,9 @@ DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 WEB_PORT=
-BUILD_PROD=0
-BUILD_QA=0
 VULNERABILITY_CHECK=0
 
-while getopts "bcdD::ghiI::jlmM::N::pqrsStT:vV::W::z" opt ; do
+while getopts "bcdD::ghijlmM::N::pqrsStT:vV::W::xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -446,14 +444,12 @@ while getopts "bcdD::ghiI::jlmM::N::pqrsStT:vV::W::z" opt ; do
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
         M) MODE=$OPTARG
-           #CLEAN_BUILD=1
            echo "MODE=${MODE}"
            ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
         p) MODE=PRODUCTION
-           #CLEAN_BUILD=1
            echo "MODE=${MODE}"
            ;;
         q) MODE=STAGING
