@@ -365,6 +365,10 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
         this.accountingBankList = -1;
         // to report sync loading page
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingCallbackPage',
+          doSync: true
+        })
         
       }
     },

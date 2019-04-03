@@ -14,7 +14,8 @@ foam.CLASS({
     'user',
     'xeroService',
     'ctrl',
-    'stack'
+    'stack',
+    'accountingIntegrationUtil'
   ],
 
   exports: [
@@ -100,12 +101,19 @@ foam.CLASS({
         let parsedUrl = new URL(window.location.href);
         return parsedUrl.searchParams.get('accounting');
       }
+    },
+    {
+      name: 'doSync',
+      type: 'Boolean',
+      value: false
     }
   ],
 
   methods: [
     async function initE() {
       this.SUPER();
+
+      console.log(this.user.integrationCode);
 
       // display loading icon
       this
@@ -120,7 +128,30 @@ foam.CLASS({
           .end()
         .end();
 
-      let connectedBank = await this.user.accounts.where(
+      if ( this.doSync ) {
+        let result = await this.accountingIntegrationUtil.doSync();
+        console.log("redirect");
+        console.log(result);
+
+        return ;
+      }
+
+      let connectedBank = await this.countConnectedBank();
+      if ( connectedBank.value === 0 ) {
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingBankMatching'
+        });
+      } else {
+        let result = await this.accountingIntegrationUtil.doSync();
+        console.log("redirect");
+        console.log(result);
+
+        return ;
+      }
+    },
+
+    async function countConnectedBank() {
+      return await this.user.accounts.where(
         this.AND(
           this.OR(
             this.EQ(this.Account.TYPE, this.BankAccount.name),
@@ -130,16 +161,6 @@ foam.CLASS({
           this.NEQ(this.BankAccount.INTEGRATION_ID, '')
         )
       ).select(this.COUNT());
-
-      if ( connectedBank.value === 0 ) {
-        this.stack.push({
-          class: 'net.nanopay.accounting.ui.AccountingBankMatching'
-        });
-      } else {
-        this.stack.push({
-          class: 'net.nanopay.accounting.ui.AccountingBankMatching'
-        });
-      }
     }
   ]
 });

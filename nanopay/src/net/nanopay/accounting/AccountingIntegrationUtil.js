@@ -39,6 +39,44 @@ foam.CLASS({
   ],
 
   methods: [
+    async function doSync() {
+      // find the service
+      let service = null;
+
+      if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+        service = this.xeroService;
+      }
+      if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        service = this.quickbooksService;
+      }
+
+      // contact sync
+      let contactResult = await service.contactSync(null);
+      if ( contactResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+        X.controllerView.add(this.Popup.create({ closeable: false }).tag({
+          class: 'net.nanopay.accounting.AccountingTimeOutModal'
+        }));
+        return;
+      }
+      if ( ! contactResult.result ) {
+        this.ctrl.notify(contactsResult.reason, 'error');
+      }
+
+      // invoice sync
+      let invoiceResult = await service.invoiceSync(null);
+      if ( ! invoiceResult.result ) {
+        this.ctrl.notify(contactsResult.reason, 'error');
+      }
+
+      // build final result
+      let finalResult = contactResult.clone();
+      finalResult.invoiceErrors = invoiceResult.invoiceErrors;
+      this.ctrl.notify('All information has been synchronized', 'success');
+
+      return finalResult;
+    },
+
+
     async function forceSyncInvoice(invoice) {
       this.showIntegrationModal = false;
       let service = null;
