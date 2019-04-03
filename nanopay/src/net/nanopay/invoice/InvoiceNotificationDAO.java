@@ -44,53 +44,69 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
     Invoice existing = (Invoice) super.find(invoice.getId());
 
-    // if the invoice is imported from accounting software
-    if ( existing == null &&
-         (invoice instanceof QuickbooksInvoice || invoice instanceof XeroInvoice) ) {
+    if ( existing == null ) {
       return super.put_(x, invoice);
     }
 
-    if ( existing != null ) {
-      if (
-        existing.getStatus() == InvoiceStatus.UNPAID ||
-        existing.getStatus() == InvoiceStatus.PENDING_APPROVAL
-      ) {
-        if ( invoice.getStatus() == InvoiceStatus.PENDING ) {
-          AppConfig appConfig = (AppConfig) x.get("appConfig");
-          User user = invoice.findPayeeId(x);
-          String emailTemplate = "invoice-paid";
+    PaymentStatus newStatus = invoice.getPaymentMethod();
+    PaymentStatus oldStatus = existing.getPaymentMethod();
+    InvoiceStatus newInvoiceStatus = invoice.getStatus();
+    InvoiceStatus oldInvoiceStatus = existing.getStatus();
 
-          EmailService emailService = (EmailService) x.get("email");
-          EmailMessage message = new EmailMessage.Builder(x)
-            .setTo(new String[]{user.getEmail()})
-            .build();
+    boolean invoiceIsBeingPaid =
+        (
+          newStatus == PaymentStatus.NANOPAY ||
+          newStatus == PaymentStatus.CHEQUE
+        )
+        &&
+        (
+          oldStatus == PaymentStatus.NONE ||
+          oldStatus == PaymentStatus.PENDING
+        );
 
-          PublicUserInfo payer = invoice.getPayer();
+    // boolean invoiceIsGoingThroughHoldingAccountFlow = 
+    //   newStatus == PaymentStatus.DEPOSIT_MONEY && 
+    //   oldStatus == PaymentStatus.DEPOSIT_PAYMENT; // TODO remove and confirm the usage of the Payment status
+    
+    boolean newStatusChangeToPending = 
+      (oldInvoiceStatus == InvoiceStatus.UNPAID ||
+      oldInvoiceStatus == InvoiceStatus.PENDING_APPROVAL) && 
+      invoice.getStatus() == InvoiceStatus.PENDING;
 
-          String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
-            .format(invoice.getAmount());
+    boolean bob = newInvoiceStatus != InvoiceStatus.DRAFT &&
+      oldInvoiceStatus == InvoiceStatus.DRAFT; // TODO rename bob
 
-          String currency = invoice.getDestinationCurrency();
+    if ( newStatusChangeToPending || invoiceIsBeingPaid ) {
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+        User user = invoice.findPayeeId(x);
+        String emailTemplate = "invoice-paid";
 
-          HashMap<String, Object> args = new HashMap<>();
-          args.put("amount", amount);
-          args.put("currency", currency);
-          args.put("name", invoice.getPayee().label());
-          args.put("link", appConfig.getUrl());
-          args.put("fromName", payer.label());
-          args.put("senderCompany", payer.label());
+        EmailService emailService = (EmailService) x.get("email");
+        EmailMessage message = new EmailMessage.Builder(x)
+          .setTo(new String[]{user.getEmail()})
+          .build();
 
-          emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
-        }
+        PublicUserInfo payer = invoice.getPayer();
+
+        String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
+          .format(invoice.getAmount());
+
+        HashMap<String, Object> args = new HashMap<>();
+        args.put("amount", amount);
+        args.put("currency", invoice.getDestinationCurrency());
+        args.put("name", invoice.findPayeeId(getX()).label()); // TODO? getX() not just x
+        args.put("link", appConfig.getUrl());
+        args.put("fromName", invoice.findPayerId(getX()).getFirstName());
+        args.put("senderCompany", invoice.findPayerId(getX()).label());
+
+        emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
       }
     }
-
+    
     // Only send invoice notification if invoice does not have a status of draft
-    if ( ! InvoiceStatus.DRAFT.equals(invoice.getStatus()) ) {
+    if ( bob ) { // TODO rename bob
       // if no existing invoice has been sent OR the existing invoice was a draft, send an email
-      if ( existing == null || InvoiceStatus.DRAFT.equals(existing.getStatus()) ) {
         sendInvoiceNotification(x, invoice);
-      }
     }
 
     return super.put_(x, invoice);
