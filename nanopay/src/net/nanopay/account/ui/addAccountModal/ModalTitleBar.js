@@ -15,13 +15,21 @@ foam.CLASS({
       padding: 16px 24px;
     }
 
-    ^ .elementAlignment {
+    ^elementAlignment {
       /* Probably change to flexbox during refinement */
       display: inline-block;
     }
   `,
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'isBackEnabled',
+      expression: function(subStack) {
+        console.log('>>>>>>>>>>>>>>>>>>>> ', subStack);
+        return subStack.pos > 0;
+      }
+    },
     {
       class: 'String',
       name: 'title'
@@ -31,24 +39,23 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start(this.BACK).addClass(this.myClass('elementAlignment')).end()
-        .start(this.title).addClass(this.myClass('elementAlignment')).end()
-        .start(this.CLOSE).addClass(this.myClass('elementAlignment')).end();
+        .start(this.PREVIOUS).addClass(this.myClass('elementAlignment')).show(this.isBackEnabled$).end()
+        .start('p').addClass(this.myClass('elementAlignment')).add(this.title).end()
+        .start(this.CLOSE_MODAL).addClass(this.myClass('elementAlignment')).end();
     }
   ],
 
   actions: [
     {
-      name: 'back',
-      isAvailable: function(subStack) {
-        return subStack.pos == 0
-      },
+      name: 'previous',
+      label: 'Back',
       code: function(X) {
-        X.subStack.pop();
+        X.subStack.back();
       }
     },
     {
-      name: 'close',
+      name: 'closeModal',
+      label: 'Close',
       code: function(X) {
         X.closeDialog();
       }

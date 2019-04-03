@@ -5,14 +5,25 @@ foam.CLASS({
 
   documentation: 'Modal Wizard for adding an account',
 
+  css: `
+    ^ {
+      background: white;
+    }
+  `,
+
   methods: [
     function init() {
       this.views = {
         'typeSelection' : { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountTypeModal' }, startPoint: true },
-        'details': { view: { class: '' } },
-        'limits': { view: { class: '' } },
-        'thresholds': { view: { class: '' } }
+        'details': { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountDetailsModal' } },
+        // 'limits': { view: { class: '' } },
+        // 'thresholds': { view: { class: '' } }
       };
+    },
+
+    function initE() {
+      this.addClass(this.myClass());
+      this.SUPER();
     }
   ]
 });

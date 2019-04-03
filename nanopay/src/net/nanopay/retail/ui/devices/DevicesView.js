@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.dialog.Popup',
     'net.nanopay.retail.model.DeviceStatus',
     'net.nanopay.retail.model.Device'
   ],
@@ -151,10 +152,13 @@ foam.CLASS({
   actions: [
     {
       name: 'addDevice',
-      label: 'Add a new device',
+      label: 'ADD A NEW ACCOUNT',
       icon: 'images/ic-plus.svg',
       code: function(X) {
-        X.stack.push({class: 'net.nanopay.retail.ui.devices.form.DeviceForm'});
+        // X.stack.push({class: 'net.nanopay.retail.ui.devices.form.DeviceForm'});
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.account.ui.addAccountModal.AddAccountModalWizard',
+        }));
       }
     }
   ],
