@@ -392,7 +392,7 @@ function usage {
     echo "  -t [test1,test2] : Run tests. Should be last option on command-line for correctness"
     echo "  -v : java compile only (maven), no code generation."
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
-    echo "  -x : Validates added dependencies against list of vulnerable dependencies."
+    echo "  -x : Check dependencies for known vulnerabilities."
     echo ""
     echo "No options implies build and then run:"
     echo "  ./build.sh -b"
