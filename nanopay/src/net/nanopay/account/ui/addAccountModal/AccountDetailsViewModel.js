@@ -1,16 +1,25 @@
 foam.CLASS({
     package: 'net.nanopay.account.ui.addAccountModal',
     name: 'AccountDetailsViewModel',
-    // extends: 'foam.u2.View',
+    implements: [
+        'foam.mlang.Expressions'
+    ],
 
     documentation: `
       A model for the account details on Liquid
     `,
 
+    exports: [
+        'predicatedAccountDAO'
+    ],
     imports: [
         'currencyDAO',
         'accountDAO',
         'countryDAO',
+        'user'
+    ],
+    requires: [
+        'net.nanopay.account.Account'
     ],
 
     properties: [
@@ -26,43 +35,42 @@ foam.CLASS({
         // Country pull from countryDAO
         {
             name: 'countryPicker',
+            class: 'Reference',
+            of: 'foam.nanos.auth.Country',
             documentation: `
                 A picker to choose countries from the countryDAO
             `,
-            view: function (_, X) {
-                return foam.u2.view.ChoiceView.create({
-                    dao: X.countryDAO,
-                    objToChoice: function (a) {
-                        return [a.id, a.name];
-                    },
-                    placeholder: 'Select',
-                    defaultValue: 'Select'
-                });
-            },
         },
 
         // Parent accounts from accountDAO belonging to the owning user
-        // ! IMPORTANT: is this required? What about the first time a user creates an account?
-        // ! first account has to be a shadow account?
+        {
+
+            name: 'predicatedAccountDAO',
+            expression: function (user$id, accountDAO) {
+                return accountDAO.where(this.EQ(this.Account.OWNER, user$id));
+            }
+        },
+        {
+
+            name: 'predicatedAccountDAO',
+            expression: function(user$id, accountDAO) {
+                // accountDAO = this.accountDAO$.get();
+                // user$id = this.user$.id$
+                // dot('id').get();
+                return accountDAO.where(this.EQ(this.Account.OWNER, user$id)); 
+            }
+        },
         {
             name: 'parentAccountPicker',
+            class: 'Reference',
+            of: 'net.nanopay.account.Account',
+            targetDAOKey: 'predicatedAccountDAO',
             documentation: `
                 A picker to choose parent accounts based on the
                 existing accounts of the user by going through the accountDAO
                 and grabbing only the digital accounts owned by the user
             `,
-            view: function (_, X) {
-                return foam.u2.view.ChoiceView.create({
-                    dao: X.accountDAO,
-                    objToChoice: function (a) {
-                        return [a.id, a.name];
-                    },
-                    placeholder: 'Select',
-                    defaultValue: 'Select'
-                });
-            },
         },
-
         // Currency pull from currencyDAO
         {
             name: 'currencyPicker',
@@ -94,17 +102,5 @@ foam.CLASS({
             },
             required: false
         }
-    ],
-
-    // methods: [
-    //     function initE() {
-    //         this
-    //             .add(this.ACCOUNT_NAME)
-    //             .add(this.COUNTRY_PICKER)
-    //             .add(this.PARENT_ACCOUNT_PICKER)
-    //             .add(this.CURRENCY_PICKER)
-    //             .add(this.MEMO)
-    //             .end();
-    //     }
-    // ]
+    ]
 });

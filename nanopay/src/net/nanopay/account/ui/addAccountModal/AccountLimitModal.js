@@ -35,7 +35,7 @@ foam.CLASS({
       name: 'next',
       code: function(X) {
         // Need to do a check if liquidity are required
-        X.viewData.isLiquidityRequired ? X.pushToId('liquidity') : X.closeDialog();
+        X.viewData.accountSettingsOptions.isLiquidityRequired ? X.pushToId('liquidity') : X.closeDialog();
       }
     }
   ]

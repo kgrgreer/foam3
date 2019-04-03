@@ -21,6 +21,11 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      // Clear this when the user goes back into this screen
+      this.viewData.accountSettingsOptions = null;
+    },
     function initE() {
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
