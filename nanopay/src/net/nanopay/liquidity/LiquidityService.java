@@ -140,7 +140,10 @@ public class LiquidityService
 
       if ( txnAmount >= 0 && currentBalance - txnAmount <= liquidity.getThreshold() ) {
         //send notification when limit went over
-        notifyUser(account, true, ls.getHighLiquidity().getThreshold(), ls.getUserToEmail());
+        if ( ls.findUserToEmail(x_) == null )
+          notifyUser(account, false, ls.getHighLiquidity().getThreshold(), account.getOwner());
+        else
+          notifyUser(account, true, ls.getHighLiquidity().getThreshold(), ls.getUserToEmail());
       }
       if ( liquidity.getEnableRebalancing() && currentBalance - liquidity.getResetBalance() != 0 ) {
         addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId());
@@ -167,7 +170,10 @@ public class LiquidityService
       }
       if ( txnAmount <= 0 && currentBalance - txnAmount >= liquidity.getThreshold() ) {
         //send notification when limit went over
-        notifyUser(account, false, ls.getLowLiquidity().getThreshold(), ls.getUserToEmail());
+        if ( ls.findUserToEmail(x_) == null )
+          notifyUser(account, false, ls.getLowLiquidity().getThreshold(), account.getOwner());
+        else
+          notifyUser(account, false, ls.getLowLiquidity().getThreshold(), ls.getUserToEmail());
       }
       if ( liquidity.getEnableRebalancing() && liquidity.getResetBalance() - currentBalance != 0 ) {
         addCICOTransaction(liquidity.getResetBalance() - currentBalance, fundAccount.getId(), account.getId());
