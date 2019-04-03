@@ -173,7 +173,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse singleInvoiceSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-    HashMap<String, List<InvoiceErrorItem>> contactErrors = this.initInvoiceErrors();
+    HashMap<String, List<InvoiceErrorItem>> invoiceErrors = this.initInvoiceErrors();
     List<String> successResult = new ArrayList<>();
 
 
@@ -200,7 +200,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       Transaction invoice = fetchInvoiceById(x, type, qInvoice.getQuickId());
 
-      String importResult = importInvoice(x, invoice, contactErrors);
+      String importResult = importInvoice(x, invoice, invoiceErrors);
       if ( importResult != null ) {
         successResult.add("QuickBooks invoice " + invoice.getDocNumber() + " import successfully.");
       }
@@ -212,7 +212,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return saveResult(x, "singleInvoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
       .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
-      .setInvoiceErrors(contactErrors)
+      .setInvoiceErrors(invoiceErrors)
       .build());
   }
 

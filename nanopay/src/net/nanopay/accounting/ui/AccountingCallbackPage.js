@@ -13,7 +13,8 @@ foam.CLASS({
     'quickbooksService',
     'user',
     'xeroService',
-    'ctrl'
+    'ctrl',
+    'stack'
   ],
 
   exports: [
@@ -131,63 +132,13 @@ foam.CLASS({
       ).select(this.COUNT());
 
       if ( connectedBank.value === 0 ) {
-        this.add(this.Popup.create({
-          closeable: false,
-          onClose: this.sync.bind(this)
-        }).tag({
-          class: 'net.nanopay.accounting.ui.IntegrationPopUpView',
-          data: this,
-          isLandingPage: true
-        }));
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingBankMatching'
+        });
       } else {
-        this.bankMatched = true;
-        this.sync();
-      }
-    },
-
-    async function sync() {
-      // reset the url first
-      window.history.pushState({}, '', '/#sme.bank.matching')
-
-      if ( ! this.bankMatched )  {
-        this.pushMenu('sme.main.dashboard');
-        return;
-      }
-
-      let service = null;
-
-      if ( this.integrationSoftware === 'Xero' ) {
-        service = this.xeroService;
-      }
-      if ( this.integrationSoftware === 'quickbooks' ) {
-        service = this.quickbooksService;
-      }
-
-      let contactResult = await service.contactSync(null);
-      let invoiceResult = await service.invoiceSync(null);
-
-      if ( contactResult.result === false ) {
-        this.ctrl.notify(contactResult.reason, 'error');
-        this.pushMenu('sme.main.dashboard');
-      }
-
-      if ( invoiceResult.result === false  ) {
-        this.ctrl.notify(invoiceResult.reason, 'error');
-        this.pushMenu('sme.main.dashboard');
-      }
-
-      this.ctrl.notify('All information has been synchronized', 'success');
-
-      if ( contactResult.contactSyncMismatches.length !== 0 ||
-           contactResult.contactSyncErrors.length !== 0 ||
-           invoiceResult.invoiceSyncErrors.length !== 0) {
-        this.add(this.Popup.create().tag({
-          class: 'net.nanopay.accounting.ui.AccountingReportModal',
-          invoiceResult: invoiceResult,
-          contactResult: contactResult
-        }));
-      } else {
-        this.pushMenu('sme.main.dashboard')
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingBankMatching'
+        });
       }
     }
   ]
