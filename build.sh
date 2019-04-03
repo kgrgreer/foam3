@@ -396,6 +396,7 @@ function usage {
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
+    echo "  -x : Check dependencies for known vulnerabilities."
     echo ""
     echo "No options implies: stop, build/compile, deploy, start"
     echo ""
@@ -426,6 +427,9 @@ DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 WEB_PORT=
+BUILD_PROD=0
+BUILD_QA=0
+VULNERABILITY_CHECK=0
 
 while getopts "bcdD::ghiI::jlmM::N::pqrsStT:vV::W::z" opt ; do
     case $opt in
@@ -475,6 +479,7 @@ while getopts "bcdD::ghiI::jlmM::N::pqrsStT:vV::W::z" opt ; do
            echo "WEB_PORT=${WEB_PORT}";;
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
+        x) VULNERABILITY_CHECK=1 ;;
         ?) usage ; quit 1 ;;
     esac
 done
@@ -486,12 +491,15 @@ if [[ $INSTALL -eq 1 ]]; then
     quit 0
 fi
 
+if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
+    echo "INFO :: Checking dependencies for vulnerabilities..."
+    mvn com.redhat.victims.maven:security-versions:check
+    quit 0
+fi
+
 if [[ $TEST -eq 1 ]]; then
     COMPILE_ONLY=0
     echo "INFO :: Running tests..."
-    ## Remove the opts processed variables and assume rest of line as tests names
-    #shift $((OPTIND - 1))
-    #TESTS="$@"
     # Replacing spaces with commas.
     TESTS=${TESTS// /,}
     JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
