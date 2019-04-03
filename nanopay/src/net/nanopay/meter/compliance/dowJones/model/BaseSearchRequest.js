@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.meter.compliance.dowJones.model.DowJonesCall',
   abstract: 'true',
 
-  documentation: `Base class model for searching the Dow Jones Risk Database.`,
+  documentation: `Base class model for requesting search data from the Dow Jones Risk Database.`,
 
   properties: [
     {
