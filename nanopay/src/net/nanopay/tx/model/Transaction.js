@@ -161,7 +161,7 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'finalBalances',
+      name: 'balances',
       class: 'FObjectArray',
       of: 'net.nanopay.account.Balance',
       javaFactory: 'return new Balance[0];',

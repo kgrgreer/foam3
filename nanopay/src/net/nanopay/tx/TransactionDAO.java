@@ -203,7 +203,7 @@ public class TransactionDAO
       finalBalanceArr[i] = fb;
     }
     txn.setReferenceData(referenceArr);
-    txn.setFinalBalances(finalBalanceArr);
+    txn.setBalances(finalBalanceArr);
 
     return getDelegate().put_(x, txn);
   }
