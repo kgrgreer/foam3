@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: 'Modal Sub View for account details',
 
   requires: [
+    'foam.u2.DetailView',
+    'net.nanopay.account.ui.addAccountModal.AccountSettingsRequirementViewModel',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
   ],
@@ -16,13 +18,17 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Boolean',
-      name: 'isLimitRequired',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.account.ui.addAccountModal.AccountSettingsRequirementViewModel',
+      name: 'accountSettingsOptions',
       factory: function() {
-        return this.viewData.isLimitRequired ? true : false;
-      },
-      postSet: function( o, n ) {
-        this.viewData.isLimitRequired = n;
+        if ( this.viewData.accountSettingsOptions ) {
+          return this.viewData.accountSettingsOptions;
+        } else {
+          var options = this.AccountSettingsRequirementViewModel.create();
+          this.viewData.accountSettingsOptions = options;
+          return options;
+        }
       }
     },
     {
@@ -42,8 +48,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
         .start(this.ModalProgressBar, { percentage: 50 }).end()
-        .start(this.IS_LIMIT_REQUIRED).end()
-        .start(this.IS_LIQUIDITY_REQUIRED).end()
+        .start(this.DetailView, { data: this.accountSettingsOptions }).end()
         // TODO: Put view model here
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
@@ -56,7 +61,7 @@ foam.CLASS({
       name: 'next',
       code: function(X) {
         // Need to do a check if limits are required
-        X.viewData.isLimitRequired ? X.pushToId('limits') : X.viewData.isLiquidityRequired ? X.pushToId('liquidity') : X.closeDialog();
+        X.viewData.accountSettingsOptions.isLimitRequired ? X.pushToId('limits') : X.viewData.accountSettingsOptions.isLiquidityRequired ? X.pushToId('liquidity') : X.closeDialog();
       }
     }
   ]
