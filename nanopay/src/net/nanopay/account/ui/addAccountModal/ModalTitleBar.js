@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.account.ui.addAccountModal',
   name: 'ModalTitleBar',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
 
   documentation: 'Modal Title Bar that holds the title along with the back and close actions.',
 
@@ -25,9 +25,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isBackEnabled',
-      expression: function(subStack) {
-        console.log('>>>>>>>>>>>>>>>>>>>> ', subStack);
-        return subStack.pos > 0;
+      expression: function(subStack$pos) {
+        return subStack$pos > 0;
       }
     },
     {
@@ -39,8 +38,8 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start(this.PREVIOUS).addClass(this.myClass('elementAlignment')).show(this.isBackEnabled$).end()
-        .start('p').addClass(this.myClass('elementAlignment')).add(this.title).end()
+        .start(this.PREVIOUS, { data: this }).addClass(this.myClass('elementAlignment')).show(this.isBackEnabled$).end()
+        .start('p').addClass(this.myClass('elementAlignment')).add(this.title$).end()
         .start(this.CLOSE_MODAL).addClass(this.myClass('elementAlignment')).end();
     }
   ],

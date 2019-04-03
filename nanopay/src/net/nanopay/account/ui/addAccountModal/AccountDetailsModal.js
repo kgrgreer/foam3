@@ -5,6 +5,11 @@ foam.CLASS({
 
   documentation: 'Modal Sub View for account details',
 
+  requires: [
+    'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
+    'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
+  ],
+
   messages: [
     { name: 'TITLE', message: 'Add details to this account...' }
   ],
@@ -29,11 +34,11 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start({ class: 'net.nanopay.account.ui.addAccountModal.ModalTitleBar', title: this.TITLE }).end()
-        .start({ class: 'net.nanopay.account.ui.addAccountModal.ModalProgressBar', percentage: 50 }).end()
+        .start(this.ModalTitleBar, { title: this.TITLE }).end()
+        .start(this.ModalProgressBar, { percentage: 50 }).end()
         // TODO: Put view model here
         .start() //This is where the next button container is
-          .start(this.NEXT).end()
+          .start(this.NEXT, { data: this }).end()
         .end()
     }
   ],
@@ -42,6 +47,7 @@ foam.CLASS({
     {
       name: 'next',
       code: function(X) {
+        console.log(this.cls_.id);
         // Need to do a check if limits and thresholds are required
         X.viewData.isLimitRequired ? X.pushToId('limits') : X.closeDialog();
       }
