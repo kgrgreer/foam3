@@ -18,6 +18,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isLimitRequired',
+      factory: function() {
+        return this.viewData.isLimitRequired ? true : false;
+      },
       postSet: function( o, n ) {
         this.viewData.isLimitRequired = n;
       }
@@ -25,6 +28,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isLiquidityRequired',
+      factory: function() {
+        return this.viewData.isLiquidityRequired ? true : false;
+      },
       postSet: function( o, n ) {
         this.viewData.isLiquidityRequired = n;
       }
@@ -36,6 +42,8 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
         .start(this.ModalProgressBar, { percentage: 50 }).end()
+        .start(this.IS_LIMIT_REQUIRED).end()
+        .start(this.IS_LIQUIDITY_REQUIRED).end()
         // TODO: Put view model here
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
@@ -47,9 +55,8 @@ foam.CLASS({
     {
       name: 'next',
       code: function(X) {
-        console.log(this.cls_.id);
-        // Need to do a check if limits and thresholds are required
-        X.viewData.isLimitRequired ? X.pushToId('limits') : X.closeDialog();
+        // Need to do a check if limits are required
+        X.viewData.isLimitRequired ? X.pushToId('limits') : X.viewData.isLiquidityRequired ? X.pushToId('liquidity') : X.closeDialog();
       }
     }
   ]

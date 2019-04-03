@@ -16,8 +16,8 @@ foam.CLASS({
       this.views = {
         'typeSelection' : { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountTypeModal' }, startPoint: true },
         'details': { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountDetailsModal' } },
-        // 'limits': { view: { class: '' } },
-        // 'thresholds': { view: { class: '' } }
+        'limits': { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountLimitModal' } },
+        'liquidity': { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountLiquidityModal' } }
       };
     },
 
