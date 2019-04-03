@@ -43,6 +43,9 @@ public class ApiTestBase extends Test {
   protected HttpURLConnection createRequest(String digUrl, String method, String user, String password) 
     throws MalformedURLException, IOException, ProtocolException, UnsupportedEncodingException
   {
+    // Output
+    print("Creating login request for URL: " + digUrl);
+
     // Create the URL
     URL url = new URL(digUrl);
 
@@ -62,6 +65,9 @@ public class ApiTestBase extends Test {
   protected HttpURLConnection createRequest(String digUrl, String method, String sessionId)
     throws MalformedURLException, IOException, ProtocolException, UnsupportedEncodingException
   {
+    // Output
+    print("Creating session request for URL: " + digUrl);
+
     // Create the URL
     URL url = new URL(digUrl);
 
