@@ -184,14 +184,7 @@ public class TransactionDAO
       t.validate();
       Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
       t.execute(balance);
-      writableBalanceDAO_.put(balance);
-
-      long account = t.getAccount();
-      Balance fb = new Balance.Builder(x)
-        .setAccount(account)
-        .setBalance(balance.getBalance())
-        .build();
-      finalBalanceArr[i] = fb;
+      finalBalanceArr[i] = (Balance) writableBalanceDAO_.put(balance).fclone();
     }
     txn.setBalances(finalBalanceArr);
 
