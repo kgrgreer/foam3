@@ -368,7 +368,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXFeeLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantUserPayeeJunction' },
-  { name: 'net/nanopay/tx/BalanceHistory' },
   { name: 'net/nanopay/tx/cico/VerificationTransaction' },
   { name: 'net/nanopay/tx/cico/COTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaFormat' },

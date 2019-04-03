@@ -31,7 +31,6 @@ import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
-import net.nanopay.tx.BalanceHistory;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
@@ -159,7 +158,6 @@ public class TransactionDAO
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
     Balance [] finalBalanceArr = new Balance[ts.length];
-    BalanceHistory [] referenceArr = new BalanceHistory[ts.length];
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
       Account account = t.findAccount(getX());
@@ -169,12 +167,6 @@ public class TransactionDAO
         balance.setId(account.getId());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-      BalanceHistory referenceData = new BalanceHistory.Builder(x)
-        .setAccountId(account.getId())
-        .setUserId(account.getOwner())
-        .setBalanceBefore(balance.getBalance())
-        .build();
-      referenceArr[i] = referenceData;
 
       try {
         account.validateAmount(x, balance, t.getAmount());
@@ -193,7 +185,6 @@ public class TransactionDAO
       Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
       t.execute(balance);
       writableBalanceDAO_.put(balance);
-      referenceArr[i].setBalanceAfter(balance.getBalance());
 
       long account = t.getAccount();
       Balance fb = new Balance.Builder(x)
@@ -202,7 +193,6 @@ public class TransactionDAO
         .build();
       finalBalanceArr[i] = fb;
     }
-    txn.setReferenceData(referenceArr);
     txn.setBalances(finalBalanceArr);
 
     return getDelegate().put_(x, txn);
