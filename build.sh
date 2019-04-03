@@ -466,7 +466,6 @@ if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     echo "INFO :: Checking dependencies for vulnerabilities..."
     mvn com.redhat.victims.maven:security-versions:check
     quit 0
-
 fi
 
 if [[ $TEST -eq 1 ]]; then
