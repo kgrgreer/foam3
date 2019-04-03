@@ -113,6 +113,7 @@ foam.CLASS({
       background-color: #604aff !important;
       font-size: 14px !important;
       font-weight: 400;
+      float: right;
       color: #FFFFFF !important;
     }
     ^ .net-nanopay-ui-ActionView-next:hover {
@@ -122,7 +123,7 @@ foam.CLASS({
       height: 40px;
     }
     ^ .net-nanopay-ui-ActionView-cancel {
-      margin-left: 1200px;
+      float: right;
       background-color: transparent;
       color: #525455;
       border: none;
@@ -278,7 +279,7 @@ foam.CLASS({
                 .attrs({ src: 'images/inline-error-icon.svg' })
               .end()
               .start()
-                .add('Please select a bank account in your accounting software before matching.').addClass('failure-text')
+                .add('Please select a bank account from Ablii before matching.').addClass('failure-text')
               .end()
             .end()
             .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
