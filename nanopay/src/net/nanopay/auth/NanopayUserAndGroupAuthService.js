@@ -7,36 +7,25 @@ foam.CLASS({
   documentation: `This class adds Nanopay specific user and group auth rules.`,
 
   imports: [
-    'localUserDAO'
+    'localUserDAO',
+    'passwordEntropyService'
   ],
 
   javaImports: [
-    'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.UserAndGroupAuthService',
     'foam.nanos.session.Session',
     'foam.util.Password',
     'foam.util.SafetyUtil',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
 
-    'net.nanopay.model.Business',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.auth.passwordutil.PasswordEntropy'
-  ],
+    'net.nanopay.auth.passwordutil.PasswordEntropy',
+    'net.nanopay.model.Business',
 
-  properties: [
-    {
-      javaType: 'java.util.regex.Pattern',
-      name: 'alphanumeric',
-      documentation: `pattern used to check if password has only alphanumeric
-        characters`,
-      javaFactory: `
-        java.util.regex.Pattern.compile("[^a-zA-Z0-9]");
-      `
-    }
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ'
   ],
 
   methods: [
@@ -55,7 +44,7 @@ foam.CLASS({
           throw new AuthenticationException("User not found");
         }
 
-        User user = (User) userDAO_.find(session.getUserId());
+        User user = (User) ((DAO) getLocalUserDAO()).find(session.getUserId());
 
         // This case is for business user of sme
         if ( user instanceof Business) {
@@ -72,7 +61,7 @@ foam.CLASS({
         }
 
         // check if user group enabled
-        Group group = (Group) groupDAO_.find(user.getGroup());
+        Group group = (Group) ((DAO) getLocalGroupDAO()).find(user.getGroup());
         if ( group != null && ! group.getEnabled() ) {
           throw new AuthenticationException("User group disabled");
         }
@@ -92,7 +81,7 @@ foam.CLASS({
         user.setDesiredPassword(newPassword);
         // TODO: modify line to allow actual setting of password expiry in cases where users are required to periodically update their passwords
         user.setPasswordExpiry(null);
-        user = (User) userDAO_.put(user);
+        user = (User) ((DAO) getLocalUserDAO()).put(user);
         session.setContext(session.getContext().put("user", user));
         return user;
       `
@@ -100,7 +89,7 @@ foam.CLASS({
     {
       name: 'validatePassword',
       javaCode: `
-        PasswordEntropy passwordEntropy = (PasswordEntropy) getX().get("passwordEntropyService");
+        PasswordEntropy passwordEntropy = (PasswordEntropy) getPasswordEntropyService();
 
         if ( SafetyUtil.isEmpty(potentialPassword) ) {
           throw new RuntimeException("Password is required");
@@ -141,19 +130,18 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        // check login attempts
-        foam.nanos.auth.User user = ( id instanceof String ) ?
+        User user = ( id instanceof String ) ?
           getUserByEmail(x, (String) id) : getUserById(x, (long) id);
 
         if ( user == null ) {
-          throw new foam.nanos.auth.AuthenticationException("User not found.");
+          throw new AuthenticationException("User not found.");
         }
 
-        Group group = (Group) ((foam.dao.DAO) x.get("groupDAO")).inX(x).find(user.getGroup());
+        Group group = user.findGroup(x);
         String supportEmail = (String) group.getSupportEmail();
 
         if ( ! user.getLoginEnabled() || ! user.getEnabled() ) {
-          throw new foam.nanos.auth.AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
+          throw new AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
         }
 
         return id instanceof String ?
@@ -176,7 +164,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).inX(x).find(id);
+        return (User) ((DAO) getLocalUserDAO()).inX(x).find(id);
       `
     },
     {
@@ -194,13 +182,13 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        foam.dao.DAO localUserDAO = (foam.dao.DAO) getLocalUserDAO();
-        return (foam.nanos.auth.User) localUserDAO
+        DAO localUserDAO = (DAO) getLocalUserDAO();
+        return (User) localUserDAO
           .inX(x)
           .find(
             AND(
-              EQ(foam.nanos.auth.User.EMAIL, email.toLowerCase()),
-              EQ(foam.nanos.auth.User.LOGIN_ENABLED, true)
+              EQ(User.EMAIL, email.toLowerCase()),
+              EQ(User.LOGIN_ENABLED, true)
             )
           );
       `

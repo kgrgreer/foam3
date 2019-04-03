@@ -6,7 +6,6 @@ foam.CLASS({
   documentation: 'Decorator that prevents a user from exceeding their maximum allotted login attempts',
 
   implements: [
-    'foam.core.ContextAware',
     'foam.nanos.NanoService'
   ],
 
