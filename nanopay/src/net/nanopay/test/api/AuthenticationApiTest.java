@@ -1,19 +1,7 @@
 package net.nanopay.api;
 
-import java.util.Map;
-import java.util.List;
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.io.Reader;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Base64;
-
 import foam.core.X;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
-import foam.nanos.app.AppConfig;
-import foam.nanos.test.Test;
 
 // API Authentication tests.
 public class AuthenticationApiTest extends ApiTestBase { 

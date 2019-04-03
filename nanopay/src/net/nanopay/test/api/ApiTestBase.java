@@ -14,8 +14,6 @@ import java.io.InputStreamReader;
 import java.util.Base64;
 
 import foam.core.X;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.test.Test;
 
