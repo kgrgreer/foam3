@@ -3,7 +3,7 @@ foam.CLASS({
     name: 'AccountLimitViewModel',
   
     documentation: `
-      A model for the maximum transaction size for an account being created in Liquid
+      A view model for the maximum transaction size for an account being created in Liquid
     `,
 
     properties: [

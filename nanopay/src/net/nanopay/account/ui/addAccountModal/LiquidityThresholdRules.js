@@ -7,7 +7,7 @@ foam.ENUM({
     `,
 
     values: [
-        { name: false, label: 'Shadow account' },
-        { name: true, label: 'Aggregate account' },
+        { name: "SEND", label: 'Send notifications' },
+        { name: "SEND_AND_AUTO", label: 'Send notifications & automatic transactions' },
     ]
 });
