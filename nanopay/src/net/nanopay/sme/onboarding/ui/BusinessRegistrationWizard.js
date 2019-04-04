@@ -116,6 +116,34 @@ foam.CLASS({
         }
         return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
       }
+    },
+    {
+      type: 'Boolean',
+      name: 'hasExitOption',
+      expression: function(position) {
+        return position === 0;
+      }
+    },
+    {
+      type: 'Boolean',
+      name: 'hasBackOption',
+      expression: function(position) {
+        return position > 1;
+      }
+    },
+    {
+      type: 'Boolean',
+      name: 'hasSaveOption',
+      expression: function(position) {
+        return position > 0;
+      }
+    },
+    {
+      type: 'String',
+      name: 'saveLabel',
+      factory: function() {
+        return 'Save and Close';
+      }
     }
   ],
 
@@ -192,13 +220,11 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.hasSaveOption = true;
-      this.hasBackOption = false;
       this.viewData.user = this.user;
       this.viewData.agent = this.agent;
       this.title = 'Your business profile';
 
-      this.saveLabel = 'Close';
+      this.exitLabel = 'Close';
       this.nextLabel = 'Get started';
 
       this.views = [
