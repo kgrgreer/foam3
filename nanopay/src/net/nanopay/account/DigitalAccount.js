@@ -10,7 +10,10 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.DigitalAccountService',
     'net.nanopay.model.Currency',
-
+    'net.nanopay.tx.model.Transaction',
+    'foam.dao.AbstractSink',
+    'foam.core.Detachable',
+    'foam.util.SafetyUtil',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -24,7 +27,6 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-
     'java.util.List'
   ],
 
@@ -65,7 +67,7 @@ foam.CLASS({
            AND(
              EQ( DigitalAccount.DELETED, false ),
              EQ( DigitalAccount.PARENT, this.getId() ),
-             INSTANCE_OF( DigitalAccount.CLASS )
+             INSTANCE_OF( DigitalAccount.class )
            )
          )
          .select( new AbstractSink() {
@@ -95,8 +97,11 @@ foam.CLASS({
      DAO accountDAO = (DAO) x.get("accountDAO");
      validateBeneficiary(beneficiary);
 
-     if ( this.findLiquiditySetting(x) != null )
-      this.clearLiquiditySetting();
+     if ( this.findLiquiditySetting(x) != null ) {
+       this.clearLiquiditySetting();
+       accountDAO.put(this);
+     }
+
 
      this.closeChildren_(x, this);
 
@@ -111,7 +116,7 @@ foam.CLASS({
        ( (DAO) x.get("transactionDAO") ).put(txn);
 
        this.setDeleted(true);
-       ((DAO) x.get("accountDAO")).put(this);
+       accountDAO.put(this);
      }
      `
    },
@@ -129,7 +134,7 @@ foam.CLASS({
        throw new RuntimeException( "Can only use a beneficiary account in the same currency" );
      if ( beneficiary instanceof AggregateAccount )
        throw new RuntimeException( "Cannot send currency to an Aggregate Account" );
-     if ( ! beneficiary instanceof DigitalAccount.class )
+     if ( ! ( beneficiary instanceof DigitalAccount ) )
        throw new RuntimeException( "Can only use a Digital Account for a beneficiary" );
      `
    },
@@ -150,8 +155,10 @@ foam.CLASS({
        javaCode: `
 
         if ( SafetyUtil.equals( beneficiary.getId(), this.getId() ) )
-          throw new RuntimeException( "Cannot set the beneficiary account equal to the account that is being closed.")
-
+          throw new RuntimeException( "Cannot set the beneficiary account equal to the account that is being closed.");
+        /*TODO Also can not set the beneficiary equal to the account that will be closed as a result of this account being closed.
+         if I can use a beneficiary.isParent(this) function this would be easy to check. instead of walking down tree, walk up tree from beneficiary to search for this.
+        */
          validateBeneficiary(beneficiary);
          close(x,this);
          long balance = (long) this.findBalance(x);
