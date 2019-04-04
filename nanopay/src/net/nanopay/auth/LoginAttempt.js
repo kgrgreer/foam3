@@ -2,8 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'LoginAttempt',
 
-  documentation: `Modelled login attempt.
-    Captures IP address of each attempt.`,
+  documentation: `Record of login attempt, including IP address`,
 
   implements: [
     'foam.nanos.auth.CreatedAware'
