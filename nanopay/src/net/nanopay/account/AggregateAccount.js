@@ -34,6 +34,44 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'close',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'beneficiary',
+          type: 'net.nanopay.account.Account'
+        }
+      ],
+      documentation: 'Aggregate accounts can just be closed as their balance is purely representational',
+      javaCode: `
+
+              long myId = this.getId();
+
+              DAO accountDAO = (DAO) x.get("accountDAO");
+              AggregateAccount thisAccount = (AggregateAccount) accountDAO.find(this).fclone();
+              accountDAO
+                .where(
+                  AND(
+                    EQ( DigitalAccount.DELETED, false ),
+                    EQ( DigitalAccount.PARENT, this.getId() ),
+                    INSTANCE_OF( DigitalAccount.CLASS )
+                  )
+                )
+                .select(new AbstractSink(){
+                  @Override
+                  public void put(Object o, Detachable d ) {
+                    DigitalAccount account = (DigitalAccount) ( (DigitalAccount) o).deepClone();
+                      account.close(x, beneficiary);
+                  }
+                });
+        thisAccount.setDeleted(true);
+        ((DAO) x.get("accountDAO")).put(thisAccount);
+        `
+    },
+    {
       name: 'findBalance',
       javaReturns: 'long',
       returns: 'Promise',

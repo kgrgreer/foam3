@@ -41,6 +41,138 @@ foam.CLASS({
     }
   ],
 
+  methods: [
+   {
+     name: 'closeChildren_',
+     args: [
+       {
+         name: 'x',
+         type: 'Context'
+       },
+       {
+         name: 'beneficiary',
+         type: 'net.nanopay.account.Account'
+       }
+     ],
+     documentation: 'get all children and call close on them',
+     javaCode:`
+
+       Logger logger = (Logger) x.get("logger");
+       String myName = this.getName();
+       DAO accountDAO = (DAO) x.get("accountDAO");
+       accountDAO
+         .where(
+           AND(
+             EQ( DigitalAccount.DELETED, false ),
+             EQ( DigitalAccount.PARENT, this.getId() ),
+             INSTANCE_OF( DigitalAccount.CLASS )
+           )
+         )
+         .select( new AbstractSink() {
+           @Override
+           public void put(Object o, Detachable d ) {
+             DigitalAccount account = (DigitalAccount) ( (DigitalAccount) o).deepClone();
+               account.close(x, beneficiary);
+           }
+         });
+     `
+   },
+   {
+     name: 'close',
+     args: [
+       {
+         name: 'x',
+         type: 'Context'
+       },
+       {
+         name: 'beneficiary',
+         type: 'net.nanopay.account.Account'
+       }
+     ],
+     documentation: 'Close all my children accounts, they send money to beneficiary, I do to and then get closed.',
+     javaCode: `
+
+     DAO accountDAO = (DAO) x.get("accountDAO");
+     validateBeneficiary(beneficiary);
+
+     if ( this.findLiquiditySetting(x) != null )
+      this.clearLiquiditySetting();
+
+     this.closeChildren_(x, this);
+
+     long balance = (long) this.findBalance(x);
+
+     if ( balance > 0 && ! SafetyUtil.equals( this.getId(), beneficiary.getId() ) ) {
+       Transaction txn = new Transaction.Builder(x)
+         .setAmount(balance)
+         .setSourceAccount(this.getId())
+         .setDestinationAccount(beneficiary.getId())
+         .build();
+       ( (DAO) x.get("transactionDAO") ).put(txn);
+
+       this.setDeleted(true);
+       ((DAO) x.get("accountDAO")).put(this);
+     }
+     `
+   },
+   {
+     name: 'validateBeneficiary',
+     args: [
+       {
+         name: 'beneficiary',
+         type: 'net.nanopay.account.Account'
+       }
+     ],
+     documentation: 'Rules which ensure that the beneficiary account is allowed to receive my money when closing account',
+     javaCode: `
+     if ( ! SafetyUtil.equals( beneficiary.getDenomination(),this.getDenomination() ) )
+       throw new RuntimeException( "Can only use a beneficiary account in the same currency" );
+     if ( beneficiary instanceof AggregateAccount )
+       throw new RuntimeException( "Cannot send currency to an Aggregate Account" );
+     if ( ! beneficiary instanceof DigitalAccount.class )
+       throw new RuntimeException( "Can only use a Digital Account for a beneficiary" );
+     `
+   },
+
+  {
+       name: 'closeAccount',
+       args: [
+         {
+           name: 'x',
+           type: 'Context'
+         },
+         {
+           name: 'beneficiary',
+           type: 'net.nanopay.account.Account'
+         }
+       ],
+       documentation: 'close this account and all sub accounts, by moving all money to me, then I send to beneficiary',
+       javaCode: `
+
+        if ( SafetyUtil.equals( beneficiary.getId(), this.getId() ) )
+          throw new RuntimeException( "Cannot set the beneficiary account equal to the account that is being closed.")
+
+         validateBeneficiary(beneficiary);
+         close(x,this);
+         long balance = (long) this.findBalance(x);
+
+         if ( balance > 0 ) {
+           Transaction txn = new Transaction.Builder(x)
+             .setAmount(balance)
+             .setSourceAccount(this.getId())
+             .setDestinationAccount(beneficiary.getId())
+             .build();
+           ((DAO) x.get("transactionDAO")).put(txn);
+         }
+
+         this.setDeleted(true);
+         ((DAO) x.get("accountDAO")).put(this);
+       `
+   }
+
+
+  ],
+
   axioms: [
     {
       buildJavaClass: function(cls) {
