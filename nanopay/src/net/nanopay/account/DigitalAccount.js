@@ -157,7 +157,8 @@ foam.CLASS({
         if ( SafetyUtil.equals( beneficiary.getId(), this.getId() ) )
           throw new RuntimeException( "Cannot set the beneficiary account equal to the account that is being closed.");
         /*TODO Also can not set the beneficiary equal to the account that will be closed as a result of this account being closed.
-         if I can use a beneficiary.isParent(this) function this would be easy to check. instead of walking down tree, walk up tree from beneficiary to search for this.
+         if I can use a beneficiary.isSomeParent(this) function this would be easy to check.
+         Instead of walking down tree, walk up tree from beneficiary to search for 'this'. Could be implemented in 'Account'?
         */
          validateBeneficiary(beneficiary);
          close(x,this);
