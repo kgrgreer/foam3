@@ -235,13 +235,20 @@ foam.CLASS({
           this.start('div').addClass('navigationBar')
             .start('div').addClass('navigationContainer')
               .start('div').addClass('exitContainer')
-                .callIf(this.hasExitOption, function() {
-                  this.start(self.EXIT, { label$: self.exitLabel$ }).addClass('plainAction').end();
-                })
+                .add(self.slot(function(hasExitOption) {
+                  if ( hasExitOption ) {
+                    return this.E()
+                      .start(self.EXIT, { label$: self.exitLabel$ })
+                        .addClass('plainAction')
+                      .end();
+                  }
+                }))
                 .add(self.slot(function(hasSaveOption) {
                   if ( hasSaveOption ) {
-                    return this.E().addClass('inlineDisplay')
-                      .start(self.SAVE, { label$: self.saveLabel$ }).end();
+                    return this.E()
+                      .start(self.SAVE, { label$: self.saveLabel$ })
+                        .addClass('inlineDisplay')
+                      .end();
                   }
                 }))
               .end()
