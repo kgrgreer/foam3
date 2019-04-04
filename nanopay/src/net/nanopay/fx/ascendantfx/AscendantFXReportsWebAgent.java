@@ -56,6 +56,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     Logger logger            = (Logger) x.get("logger");
 
     HttpServletRequest req     = x.get(HttpServletRequest.class);
+    HttpServletResponse response = x.get(HttpServletResponse.class);
 
     String id = req.getParameter("userId");
     User user = (User) userDAO.find(id);
@@ -96,9 +97,20 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       FileUtils.deleteDirectory(new File("/opt/nanopay/AFXReportsTemp/"));
     } catch (IOException e) {
       logger.error(e);
+      try {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR , "Error when generating the compliance documents.");
+      } catch (IOException err) {
+        throw new RuntimeException(err);
+      }
+
     } catch (Throwable t) {
       logger.error("Error generating compliance report package: ", t);
-      throw new RuntimeException(t);
+      logger.log(user.getOrganization() + " might not have all the business registration information.");
+      try {
+        response.sendError(HttpServletResponse.SC_NO_CONTENT , user.getOrganization() + " might not have all the business registration information.");
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 

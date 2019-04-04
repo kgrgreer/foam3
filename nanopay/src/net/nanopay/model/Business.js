@@ -4,7 +4,12 @@ foam.CLASS({
   extends: 'foam.nanos.auth.User',
 
   imports: [
+    'ctrl',
     'invoiceDAO'
+  ],
+
+  requires: [
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   documentation: 'Business extends user class & it is the company user for SME',
@@ -136,8 +141,14 @@ foam.CLASS({
   actions: [
     {
       name: 'exportComplianceDocuments',
-      code: async function() {
-        var url = window.location.origin + "/service/ascendantFXReports?userId=" + this.id;
+      code: function() {
+        if ( this.compliance === this.ComplianceStatus.NOTREQUESTED
+          || ! this.onboarded ) {
+          this.ctrl.notify(this.Organization + ' does not complete the business profile, and cannot generate compliance document.' );
+          return;
+        }
+        var url = window.location.origin
+          + '/service/ascendantFXReports?userId=' + this.id;
         window.location.assign(url);
       }
     },
@@ -147,7 +158,10 @@ foam.CLASS({
         // Let us assume that we want to search for invoices with a field 3 days before and 3 days after today.
         var sDate = new Date(Date.now() - (1000*60*60*24*3));
         var dDate = new Date(Date.now() + (1000*60*60*24*3));
-        var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate="+sDate+"&endDate="+dDate;
+        var url = window.location.origin
+          + '/service/settlementReports?userId='+ this.id
+          + '&startDate='+ sDate
+          + '&endDate='+ dDate;
 
         // var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate=&endDate=";
         window.location.assign(url);
