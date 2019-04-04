@@ -49,9 +49,9 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
         .start(this.ModalProgressBar, { percentage: 50 }).end()
-        .start(this.DetailView, { data: this.accountSettingsOptions }).end()
         // TODO: Put view model here
         .start(this.DetailView, { data: this.AccountDetailsViewModel.create() }).end()
+        .start(this.DetailView, { data: this.accountSettingsOptions }).end()
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
         .end()

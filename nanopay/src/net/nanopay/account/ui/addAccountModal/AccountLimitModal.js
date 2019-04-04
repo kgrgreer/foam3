@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Modal Sub View for setting maximum transaction limit for account',
 
   requires: [
+    'foam.u2.DetailView',
     'net.nanopay.account.ui.addAccountModal.AccountLimitViewModel',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.ModalProgressBar'

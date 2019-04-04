@@ -7,7 +7,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
-    'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
+    'net.nanopay.account.ui.addAccountModal.ModalProgressBar',
+    'foam.u2.DetailView',
   ],
 
   messages: [

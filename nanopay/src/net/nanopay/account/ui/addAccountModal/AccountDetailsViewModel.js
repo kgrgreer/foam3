@@ -80,7 +80,7 @@ foam.CLASS({
             `,
             view: {
                 class: 'foam.u2.tag.TextArea',
-                rows: '8px', cols: '151px'
+                rows: '8px'
             },
             required: false
         }
