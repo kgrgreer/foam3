@@ -121,24 +121,21 @@ foam.CLASS({
       type: 'Boolean',
       name: 'hasExitOption',
       expression: function(position) {
-        if ( position === 0 ) return true;
-        return false;
+        return position === 0;
       }
     },
     {
       type: 'Boolean',
       name: 'hasBackOption',
       expression: function(position) {
-        if ( position > 1 ) return true;
-        return false;
+        return position > 1;
       }
     },
     {
       type: 'Boolean',
       name: 'hasSaveOption',
       expression: function(position) {
-        if ( position > 0 ) return true;
-        return false;
+        return position > 0;
       }
     },
     {
