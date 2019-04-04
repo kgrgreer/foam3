@@ -177,13 +177,6 @@ foam.CLASS({
         name: 'email'
       },
       {
-        class: 'foam.u2.ViewSpec',
-        name: 'signInView',
-        factory: function() {
-          return { class: 'foam.nanos.auth.SignInView'};
-        }
-      },
-      {
         class: 'Boolean',
         name: 'invalidEmail',
         value: false

@@ -34,7 +34,11 @@ foam.CLASS({
 
       // Create Auth Service
       UserAndGroupAuthService newAuthService = new UserAndGroupAuthService(x);
-      newAuthService.start();
+      try {
+        newAuthService.start();
+      } catch ( Throwable t ) {
+        test(false, "User and group auth shouldn't be throwing exceptions.");
+      }
       x = x.put("auth", newAuthService);
 
       // Create mock transactionDAO to test PreventRemoveInvoiceDAO

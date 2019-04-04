@@ -68,7 +68,11 @@ foam.CLASS({
 
         // start auth service
         UserAndGroupAuthService newAuthService = new UserAndGroupAuthService(x);
-        newAuthService.start();
+        try {
+          newAuthService.start();
+        } catch ( Throwable t ){
+          test(false, "User and group auth shouldn't be throwing exceptions.");
+        }
         x = x.put("auth", newAuthService);
 
         // create new admin user and context with them logged in
