@@ -22,7 +22,9 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.accounting.IntegrationCode'
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.resultresponse.ContactErrorItem',
+    'foam.dao.EasyDAO'
   ],
 
   css: `
@@ -38,7 +40,7 @@ foam.CLASS({
       background: #f9fbff;
       text-align: center
     }
-    ^ .container {
+    ^ .report-container {
       display: inline-block;
       width: 100%;
       height: 90vh;
@@ -79,28 +81,54 @@ foam.CLASS({
 
   messages: [
     { name: 'SuccessMessage', message: 'Successfully synced contacts and invoices' },
+    { name: 'EXISTING_CONTACT', message: 'existing contact'},
+    { name: 'EXISTING_USER', message: 'existing user'},
+    { name: 'EXISTING_USER_MULTI', message: 'existing user belong to multiple business'},
+    { name: 'EXISTING_USER_CONTACT', message: 'existing user also contact'},
   ],
 
   properties: [
-    'invoiceResult',
-    'contactResult'
+    'reportResult',
   ],
 
   methods: [
     function initE() {
       this
         .start().addClass(this.myClass())
-          .start().addClass('container')
+
+          .start().addClass('report-container')
+
             .start('img').addClass('checkmark-img')
               .attrs({ src: 'images/checkmark-large-green.svg' })
             .end()
             .start('h1').add(this.SuccessMessage).addClass('title').end()
+
+            .start().tag({ class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initMismatchData(), columns: ['name','businessName', 'message'] }).end()
+
           .end()
+
           .start().addClass('button-bar')
             .start(this.NEXT).end()
           .end()
+
         .end();
-    }
+    },
+
+    function initMismatchData() {
+      let myData = this.reportResult.contactSyncMismatches;
+      let myDAO = foam.dao.MDAO.create( {of: this.ContactErrorItem} );
+
+      for ( x in myData ) {
+        myDAO.put(this.ContactErrorItem.create({
+          id: x,
+          businessName: myData[x].existContact.businessName,
+          name: myData[x].existContact.firstName + " " + myData[x].existContact.lastName,
+          message: this[myData[x].resultCode.name]
+        }))
+      }
+
+      return myDAO;
+    },
   ],
 
   actions: [

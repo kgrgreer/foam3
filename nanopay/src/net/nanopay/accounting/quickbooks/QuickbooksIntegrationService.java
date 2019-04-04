@@ -467,6 +467,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       // existing user
       if ( existUser != null ) {
+        existContact.setFirstName(existUser.getFirstName());
+        existContact.setLastName(existUser.getLastName());
         return new ContactMismatchPair.Builder(x)
           .setExistContact(existContact)
           .setResultCode(ContactMismatchCode.EXISTING_USER_CONTACT)
@@ -504,6 +506,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true);
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
+          temp.setFirstName(existUser.getFirstName());
+          temp.setLastName(existUser.getLastName());
           temp.setOrganization(business.getOrganization());
           temp.setBusinessName(business.getBusinessName());
           temp.setBusinessId(business.getId());
@@ -520,8 +524,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           temp.setEmail(email.getAddress());
           temp.setFirstName(existUser.getFirstName());
           temp.setLastName(existUser.getLastName());
-          temp.setOrganization("TBD");
-          temp.setBusinessName("TBD");
+          temp.setOrganization("MULTI_BUSINESS");
+          temp.setBusinessName("MULTI_BUSINESS");
           return new ContactMismatchPair.Builder(x)
             .setExistContact(temp)
             .setResultCode(ContactMismatchCode.EXISTING_USER_MULTI)

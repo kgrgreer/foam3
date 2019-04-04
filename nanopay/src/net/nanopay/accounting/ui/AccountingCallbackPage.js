@@ -113,8 +113,6 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
 
-      console.log(this.user.integrationCode);
-
       // display loading icon
       this
         .start().addClass(this.myClass())
@@ -132,7 +130,7 @@ foam.CLASS({
         let result = await this.accountingIntegrationUtil.doSync();
         this.stack.push({
           class: 'net.nanopay.accounting.ui.AccountingReportPage1',
-          invoiceResult: result
+          reportResult: result
         })
 
         return ;
@@ -147,7 +145,7 @@ foam.CLASS({
         let result = await this.accountingIntegrationUtil.doSync();
         this.stack.push({
           class: 'net.nanopay.accounting.ui.AccountingReportPage1',
-          invoiceResult: result
+          reportResult: result
         })
       }
     },

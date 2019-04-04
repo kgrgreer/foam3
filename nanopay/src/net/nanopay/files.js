@@ -760,6 +760,7 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/ui/AccountingBankMatching', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/AccountingReportPage1', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/AccountingReportPage2', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/ErrorTable', flags: ['web'] },
 
 
   // accounting stub
