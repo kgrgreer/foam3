@@ -6,6 +6,7 @@ import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.sink.Sum;
 import foam.nanos.app.AppConfig;
+import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
@@ -139,7 +140,10 @@ public class LiquidityService
 
       if ( txnAmount >= 0 && currentBalance - txnAmount <= liquidity.getThreshold() ) {
         //send notification when limit went over
-        notifyUser(account, true, ls.getHighLiquidity().getThreshold());
+        if ( ls.findUserToEmail(x_) == null )
+          notifyUser(account, false, ls.getHighLiquidity().getThreshold(), account.getOwner());
+        else
+          notifyUser(account, true, ls.getHighLiquidity().getThreshold(), ls.getUserToEmail());
       }
       if ( liquidity.getEnableRebalancing() && currentBalance - liquidity.getResetBalance() != 0 ) {
         addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId());
@@ -166,7 +170,10 @@ public class LiquidityService
       }
       if ( txnAmount <= 0 && currentBalance - txnAmount >= liquidity.getThreshold() ) {
         //send notification when limit went over
-        notifyUser(account, false, ls.getLowLiquidity().getThreshold());
+        if ( ls.findUserToEmail(x_) == null )
+          notifyUser(account, false, ls.getLowLiquidity().getThreshold(), account.getOwner());
+        else
+          notifyUser(account, false, ls.getLowLiquidity().getThreshold(), ls.getUserToEmail());
       }
       if ( liquidity.getEnableRebalancing() && liquidity.getResetBalance() - currentBalance != 0 ) {
         addCICOTransaction(liquidity.getResetBalance() - currentBalance, fundAccount.getId(), account.getId());
@@ -175,7 +182,7 @@ public class LiquidityService
 
   }
 
-  public void notifyUser( Account account, boolean above, long threshold ) {
+  public void notifyUser( Account account, boolean above, long threshold, long recipient ) {
     Notification notification = new Notification();
     notification.setEmailName("liquidityNotification");
     HashMap<String, Object> args = new HashMap<>();
@@ -197,7 +204,7 @@ public class LiquidityService
 
     notification.setEmailArgs(args);
     notification.setEmailIsEnabled(true);
-    notification.setUserId(account.getOwner());
+    notification.setUserId(recipient);
     ((DAO) x_.get("notificationDAO")).put(notification);
   }
 
