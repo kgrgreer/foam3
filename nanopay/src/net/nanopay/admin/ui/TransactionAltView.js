@@ -24,27 +24,7 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = [
-        [
-          { class: 'foam.u2.view.ScrollTableView',
-            columns: [
-            'status',
-            'invoiceId',
-            'invoiceNumber',
-            'name',
-            'type',
-            'createdBy',
-            'created',
-            'payer',
-            'payee',
-            'total',
-            'referenceNumber',
-            'id',
-            'processDate',
-            'completionDate'
-            ]
-          },
-          'Table'
-        ],
+        [{ class: 'foam.u2.view.ScrollTableView' }, 'Table'],
         [
           {
             class: 'foam.u2.view.TreeView',
