@@ -40,7 +40,9 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.account.Balance'
+
   ],
 
   requires: [
@@ -63,53 +65,23 @@ foam.CLASS({
 
   searchColumns: [
     'id',
-    'referenceNumber',
-    'name',
     'type',
     'status',
     'sourceAccount',
-    'sourceCurrency',
-    'amount',
-    'payee',
-    'payeeId',
-    'payer',
-    'payerId',
     'destinationAccount',
-    'destinationCurrency',
-    'destinationAmount',
     'created',
-    'createdBy',
-    'lastModified',
-    'lastModifiedBy',
-    'scheduled',
     'total',
-    'completionDate',
-    'processDate',
-    'isQuoted',
-    'invoiceId',
-    'messageId',
-    'transfers',
-    'reverseTransfers'
+    'completionDate'
   ],
 
   tableColumns: [
     'id',
-    'referenceNumber',
-    'name',
     'type',
     'status',
-    'payer',
     'sourceAccount',
-    'sourceCurrency',
-    'amount',
     'total',
-    'payee',
     'destinationAccount',
-    'destinationCurrency',
-    'destinationAmount',
     'created',
-    'lastModified',
-    'scheduled',
     'completionDate'
   ],
 
@@ -156,6 +128,13 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];',
+      hidden: true
+    },
+    {
+      name: 'balances',
+      class: 'FObjectArray',
+      of: 'net.nanopay.account.Balance',
+      javaFactory: 'return new Balance[0];',
       hidden: true
     },
     {
