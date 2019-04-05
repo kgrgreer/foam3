@@ -375,10 +375,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     IdentificationType idType = (IdentificationType) identificationTypeDAO
       .find(signingOfficer.getIdentification().getIdentificationTypeId());
     String identificationType = idType.getName();
-    String provinceOfIssue = "";
-    if ( ! identificationType.equals("Passport") ) {
-      provinceOfIssue = signingOfficer.getIdentification().getRegionId();
-    }
+    String provinceOfIssue = signingOfficer.getIdentification().getRegionId();
     String countryOfIssue = signingOfficer.getIdentification().getCountryId();
     String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
     String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
