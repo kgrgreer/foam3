@@ -5,9 +5,6 @@ foam.RELATIONSHIP({
   inverseName: 'branch',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
-  sourceProperty: {
-    hidden: true
-  },
   targetProperty: {
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
