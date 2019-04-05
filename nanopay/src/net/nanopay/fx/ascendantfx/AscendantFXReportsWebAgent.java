@@ -12,6 +12,7 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -118,21 +119,76 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String province = business.getBusinessAddress().getRegionId();
     String country = business.getBusinessAddress().getCountryId();
     String postalCode = business.getBusinessAddress().getPostalCode();
-    String businessPhoneNumber = business.getBusinessPhone().getNumber();
+
+    String businessPhoneNumber;
+    if ( ! SafetyUtil.isEmpty(business.getBusinessPhone().getNumber()) ) {
+      businessPhoneNumber = business.getBusinessPhone().getNumber();
+    } else {
+      businessPhoneNumber = "N/A";
+    }
+
     BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
     String industry = businessSector.getName();
     String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
     String isThirdParty = business.getThirdParty() ? "Yes" : "No";
-    String targetCustomers = business.getTargetCustomers();
-    String sourceOfFunds = business.getSourceOfFunds();
+
+    String targetCustomers;
+    if ( ! SafetyUtil.isEmpty(business.getTargetCustomers()) ) {
+      targetCustomers = business.getTargetCustomers();
+    } else {
+      targetCustomers = "N/A";
+    }
+
+    String sourceOfFunds;
+    if ( ! SafetyUtil.isEmpty(business.getSourceOfFunds()) ) {
+      sourceOfFunds = business.getSourceOfFunds();
+    } else {
+      sourceOfFunds = "N/A";
+    }
+
     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
-    String internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
+    String internationalTransactions;
+    if ( business.getSuggestedUserTransactionInfo().getInternationalPayments() ) {
+      internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
+    } else {
+      internationalTransactions = "N/A";
+    }
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
-    String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
-    String annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount();
-    String annualDomesticVolume = business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume();
-    String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
-    String firstTradeDateDomestic = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic());
+
+    String purposeOfTransactions;
+    if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
+      purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
+    } else {
+      purposeOfTransactions = "N/A";
+    }
+
+    String annualDomesticTransactionAmount;
+    if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount()) ) {
+      annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount();
+    } else {
+      annualDomesticTransactionAmount = "N/A";
+    }
+
+    String annualDomesticVolume;
+    if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()) ) {
+      annualDomesticVolume = business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume();
+    } else {
+      annualDomesticVolume = "N/A";
+    }
+
+    String annualRevenue;
+    if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualRevenue()) ) {
+      annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
+    } else {
+      annualRevenue = "N/A";
+    }
+
+    String firstTradeDateDomestic;
+    if ( business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic() != null ) {
+      firstTradeDateDomestic = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic());
+    } else {
+      firstTradeDateDomestic = "N/A";
+    }
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
@@ -169,7 +225,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Is this a holding company? " + isHoldingCompany));
       list.add(new ListItem("Transaction purpose: " + purposeOfTransactions));
       if ( purposeOfTransactions.equals("Other") ) {
-        String otherPurposeOfTransactions = business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose();
+        String otherPurposeOfTransactions;
+        if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose()) ) {
+          otherPurposeOfTransactions = business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose();
+        } else {
+          otherPurposeOfTransactions = "N/A";
+        }
         list.add(new ListItem("Other transaction purpose: " + otherPurposeOfTransactions));
       }
       list.add(new ListItem("Annual gross sales: " + baseCurrency + " " + annualRevenue));
@@ -186,9 +247,27 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       // if user going to do transactions to the USA, we add International transfers report
       if ( internationalTransactions.equals("Yes") ) {
         String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
-        String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
-        String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
-        String firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
+
+        String annualTransactionAmount;
+        if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount()) ) {
+          annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
+        } else {
+          annualTransactionAmount = "N/A";
+        }
+
+        String annualVolume;
+        if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualVolume()) ) {
+          annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
+        } else {
+          annualVolume = "N/A";
+        }
+
+        String firstTradeDate;
+        if ( business.getSuggestedUserTransactionInfo().getFirstTradeDate() != null ) {
+          firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
+        } else {
+          firstTradeDate = "N/A";
+        }
 
         list.add(new ListItem("International transfers: "));
         List subList = new List(true, false, 20);
