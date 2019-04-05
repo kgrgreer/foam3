@@ -131,8 +131,24 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       businessPhoneNumber = "N/A";
     }
 
-    BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
-    String industry = businessSector.getName();
+    String industry;
+    String businessSectorId;
+
+    if ( business.getBusinessSectorId() != 0) {
+      BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
+      if ( businessSector != null) {
+        industry = businessSector.getName();
+        businessSectorId = String.valueOf(business.getBusinessSectorId());
+      }
+      else {
+        industry = "N/A";
+        businessSectorId = "N/A";
+      }
+    } else {
+      industry = "N/A";
+      businessSectorId = "N/A";
+    }
+
     String isThirdParty = business.getThirdParty() ? "Yes" : "No";
 
     String targetCustomers;
@@ -230,7 +246,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
-      list.add(new ListItem("Industry: " + industry + " (" + businessSector.getId() + ") - NAICS"));
+      list.add(new ListItem("Industry: " + industry + " (" + businessSectorId + ") - NAICS"));
       if ( country.equals("US") ) {
         String taxId = business.getTaxIdentificationNumber();
         list.add(new ListItem("Tax Identification Number: " + taxId));
