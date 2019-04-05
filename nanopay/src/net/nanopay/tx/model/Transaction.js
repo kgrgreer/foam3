@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'addCommas',
+    'currencyDAO',
     'userDAO'
   ],
 
@@ -64,7 +65,9 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'id',
+    'payeeId',
+    'payerId',
+    'invoiceId',
     'type',
     'status',
     'sourceAccount',
@@ -75,12 +78,9 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id',
     'type',
     'status',
-    'sourceAccount',
-    'total',
-    'destinationAccount',
+    'summary',
     'created',
     'completionDate'
   ],
@@ -109,7 +109,8 @@ foam.CLASS({
       },
       javaGetter: `
     return getClass().getSimpleName();
-      `
+      `,
+      tableWidth: 160
     },
     {
       name: 'isQuoted',
@@ -150,7 +151,8 @@ foam.CLASS({
       class: 'DateTime',
       name: 'created',
       documentation: `The date the transaction was created.`,
-      visibility: 'RO'
+      visibility: 'RO',
+      tableWidth: 140
     },
     {
       class: 'Reference',
@@ -309,13 +311,30 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       label: 'Amount',
-      visibility: 'RO',
-      tableCellFormatter: function(amount, X) {
-        var formattedAmount = amount/100;
-        this
-          .start()
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of Transactions.
+      `,
+      tableCellFormatter: async function(_, obj) {
+        var [srcCurrency, dstCurrency] = await Promise.all([
+          obj.currencyDAO.find(obj.sourceCurrency),
+          obj.currencyDAO.find(obj.destinationCurrency)
+        ]);
+
+        this.add(
+          obj.sourceCurrency + ' ' +
+          srcCurrency.format(obj.amount) + ' → ' +
+          obj.destinationCurrency + ' ' +
+          dstCurrency.format(obj.destinationAmount) + '  |  ' +
+          obj.payer.displayName + ' → ' +
+          obj.payee.displayName
+        );
       }
     },
     {
@@ -363,7 +382,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'completionDate',
-      visibility: 'RO'
+      visibility: 'RO',
+      tableWidth: 145
     },
     {
       documentation: `Defined by ISO 20220 (Pacs008)`,
@@ -374,6 +394,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
+      label: 'Currency',
       visibility: 'RO',
       value: 'CAD'
     },
