@@ -160,13 +160,11 @@ foam.CLASS({
       },
       factory: function() {
         this.nextLabel = this.viewData.agent.signingOfficer ? 'Next' : 'Complete';
-        this.hasSaveOption = this.viewData.agent.signingOfficer;
         return this.viewData.agent.signingOfficer ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
         this.nextLabel = n === 'Yes' ? 'Next' : 'Complete';
         this.viewData.agent.signingOfficer = n === 'Yes';
-        this.hasSaveOption = n === 'Yes';
       }
     },
     {
