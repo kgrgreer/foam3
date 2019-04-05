@@ -31,12 +31,12 @@ foam.CLASS({
       name: 'subsidiary',
       visibility: 'RO'
     },
-    /*{
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.model.MatchedName',
       name: 'matchedName',
       visibility: 'RO'
-    },*/
+    },
     {
       class: 'Date',
       name: 'matchedDateOfBirth',
