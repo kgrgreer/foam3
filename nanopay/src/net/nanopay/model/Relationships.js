@@ -81,15 +81,27 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
+  cardinality: '1:*',
   sourceModel: 'net.nanopay.account.Account',
   targetModel: 'net.nanopay.account.Account',
-  forwardName: 'parent',
-  inverseName: 'children',
-  cardinality: '1:*',
+  forwardName: 'children',
+  inverseName: 'parent',
+  sourceDAOKey: 'accountDAO',
+  sourceProperty: {
+    hidden: true
+  },
   targetProperty: {
-    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+    view: function(_, X) {
+      var E = foam.mlang.Expressions.create();
+      return {
+        class: 'foam.u2.view.ReferenceView',
+        dao: X.accountDAO.where(E.EQ(net.nanopay.account.Account.TYPE, 'Account')).orderBy(net.nanopay.account.Account.NAME),
+        objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
+      };
+    }
   }
 });
+
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.liquidity.LiquiditySettings',

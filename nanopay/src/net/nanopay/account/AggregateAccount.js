@@ -16,7 +16,8 @@ foam.CLASS({
     'net.nanopay.fx.ExchangeRate',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.AND',
-    'java.util.List'
+    'java.util.List',
+    'foam.util.SafetyUtil',
   ],
 
   requires: [
@@ -66,6 +67,15 @@ foam.CLASS({
          ],
          documentation: 'Rules which ensure that the beneficiary account is allowed to receive my money when closing account',
          javaCode: `
+
+          Account account = beneficiary.findParent(x);
+            while ( account != null ) {
+              if ( SafetyUtil.equals(account.getId(), this.getId()) )
+                throw new RuntimeException( "The beneficiary account can not be a descendant of the account that is being closed");
+              account = account.findParent(x);
+
+            }
+
          close(x,beneficiary);
          `
 
@@ -131,26 +141,4 @@ foam.CLASS({
       `
     }
   ]
-});
-
-foam.RELATIONSHIP({
-  cardinality: '1:*',
-  sourceModel: 'net.nanopay.account.AggregateAccount',
-  targetModel: 'net.nanopay.account.Account',
-  forwardName: 'children',
-  inverseName: 'parent',
-  sourceDAOKey: 'accountDAO',
-  sourceProperty: {
-    hidden: true
-  },
-  targetProperty: {
-    view: function(_, X) {
-      var E = foam.mlang.Expressions.create();
-      return {
-        class: 'foam.u2.view.ReferenceView',
-        dao: X.accountDAO.where(E.EQ(net.nanopay.account.Account.TYPE, 'AggregateAccount')).orderBy(net.nanopay.account.Account.NAME),
-        objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
-      };
-    }
-  }
 });

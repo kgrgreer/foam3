@@ -130,12 +130,12 @@ foam.CLASS({
      ],
      documentation: 'Rules which ensure that the beneficiary account is allowed to receive my money when closing account',
      javaCode: `
-     if ( ! SafetyUtil.equals( beneficiary.getDenomination(),this.getDenomination() ) )
-       throw new RuntimeException( "Can only use a beneficiary account in the same currency" );
      if ( beneficiary instanceof AggregateAccount )
        throw new RuntimeException( "Cannot send currency to an Aggregate Account" );
      if ( ! ( beneficiary instanceof DigitalAccount ) )
        throw new RuntimeException( "Can only use a Digital Account for a beneficiary" );
+     if ( ! SafetyUtil.equals( beneficiary.getDenomination(),this.getDenomination() ) )
+       throw new RuntimeException( "Can only use a beneficiary account in the same currency" );
      `
    },
 
@@ -155,11 +155,17 @@ foam.CLASS({
        javaCode: `
 
         if ( SafetyUtil.equals( beneficiary.getId(), this.getId() ) )
-          throw new RuntimeException( "Cannot set the beneficiary account equal to the account that is being closed.");
-        /*TODO Also can not set the beneficiary equal to the account that will be closed as a result of this account being closed.
-         if I can use a beneficiary.isSomeParent(this) function this would be easy to check.
-         Instead of walking down tree, walk up tree from beneficiary to search for 'this'. Could be implemented in 'Account'?
-        */
+          throw new RuntimeException( "Cannot set the beneficiary account equal to the account that is being closed");
+
+        // --- Maybe the idea in this section below could be useful for all relationships? ie. this.isAncestor(beneficiary)
+        Account account = beneficiary.findParent(x);
+        while ( account != null ) {
+          if ( SafetyUtil.equals(account.getId(), this.getId()) )
+            throw new RuntimeException( "The beneficiary account can not be a descendant of the account that is being closed");
+          account = account.findParent(x);
+        }
+        // ---
+
          validateBeneficiary(beneficiary);
          close(x,this);
          long balance = (long) this.findBalance(x);
