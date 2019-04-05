@@ -3,7 +3,7 @@ p({"class":"net.nanopay.security.test.HashedJSONParserTest","id":"Hashed JSON pa
 p({"class":"net.nanopay.security.test.HashingJournalTest","id":"Hashing journal test"})
 p({"class":"net.nanopay.security.test.HashingOutputterTest","id":"Hashing outputter test"})
 p({"class":"net.nanopay.security.test.HashingWriterTest","id":"Hashing writer test"})
-p({"class":"net.nanopay.security.test.LoginAttemptAuthServiceTest","id":"LoginAttemptAuthService Test","description":"Tests the LoginAttemptAuthService class"})
+p({"class":"net.nanopay.security.test.LoginAttemptAuthServiceTest","id":"LoginAttemptAuthServiceTest","description":"Tests the LoginAttemptAuthService class"})
 p({"class":"net.nanopay.security.test.MerkleTreeHelperTest","id":"Testing helper for Merkle trees operations"})
 p({"class":"net.nanopay.security.test.MerkleTreeTest","id":"Testing the generation of Merkle trees"})
 p({"class":"net.nanopay.security.test.PayerAssentTransactionDAOTest","id":"PayerAssentTransactionDAO test"})

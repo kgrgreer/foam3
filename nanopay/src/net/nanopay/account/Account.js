@@ -27,18 +27,30 @@ foam.CLASS({
     'name', 'id', 'denomination', 'type'
   ],
 
+<<<<<<< HEAD
   // axioms: [
   //   {
   //       class: 'foam.u2.ReferenceLabelAxiom',
   //       prop: 'name'
   //   }
   // ],
+=======
+  tableColumns: [
+    'id',
+    'deleted',
+    'name',
+    'type',
+    'denomination',
+    'balance'
+  ],
+>>>>>>> development
 
   properties: [
     {
       class: 'Long',
       name: 'id',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.Visibility.RO,
+      tableWidth: 50
     },
     {
       class: 'Boolean',
@@ -51,7 +63,8 @@ foam.CLASS({
       name: 'deleted',
       value: false,
       permissionRequired: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      tableWidth: 85
     },
     {
       class: 'String',
@@ -83,7 +96,8 @@ foam.CLASS({
           denomination is the currency code, for example.
       `,
       class: 'String',
-      name: 'denomination'
+      name: 'denomination',
+      tableWidth: 127
     },
     {
       class: 'Boolean',
@@ -102,7 +116,8 @@ foam.CLASS({
       },
       javaFactory: `
         return getClass().getSimpleName();
-`
+      `,
+      tableWidth: 125
     },
     {
       class: 'Long',
@@ -115,7 +130,8 @@ foam.CLASS({
             self.add(balance != null ?  curr.format(balance.balance) : 0);
           });
         });
-      }
+      },
+      tableWidth: 100
     },
     {
       class: 'DateTime',
