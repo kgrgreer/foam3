@@ -17,7 +17,8 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'net.nanopay.meter.compliance.dowJones.model.MatchPayload',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.meter.compliance.dowJones.model.MatchPayload',
       name: 'payload',
       visibility: 'RO'
     },

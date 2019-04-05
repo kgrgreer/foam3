@@ -12,7 +12,8 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'net.nanopay.meter.compliance.dowJones.model.MetadataSearchResponse',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.meter.compliance.dowJones.model.MetadataSearchResponse',
       name: 'metadata',
       visibility: 'RO'
     },

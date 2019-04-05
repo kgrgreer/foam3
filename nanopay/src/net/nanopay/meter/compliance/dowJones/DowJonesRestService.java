@@ -31,27 +31,23 @@ import org.apache.http.client.config.RequestConfig;
  public class DowJonesRestService
   extends ContextAwareSupport
 {
-  public static final String NAME_SEARCH = "name?";
-  public static final String PERSON_NAME_SEARCH = "person-name?";
-  public static final String ENTITY_NAME_SEARCH = "entity-name?";
-  public static final String ID_TYPE_SEARCH = "id-type?";
-
   public DowJonesResponseMsg serve(DowJonesRequestMsg msg, String RequestInfo) {
-    if ( RequestInfo.equals(NAME_SEARCH) ) {
-      // return nameSearchService(msg);
-      return null;
-    } else if ( RequestInfo.equals(PERSON_NAME_SEARCH) ) {
-      // return personNameSearchService(msg);
-      return null;
-    } else if ( RequestInfo.equals(ENTITY_NAME_SEARCH) ) {
-      // return entityNameSearchService(msg);
-      return null;
-    } else if ( RequestInfo.equals(ID_TYPE_SEARCH) ) {
-      // return idTypeSearchService(msg);
-      return null;
+    if ( ! RequestInfo.equals("") ) {
+      return baseSearchService(msg);
     } else {
       return null;
     }
+  }
+
+  public DowJonesResponseMsg baseSearchService(DowJonesRequestMsg msg) {
+    DowJonesResponseMsg response = request(msg);
+
+    if ( response.getHttpStatusCode() == 200 ) {
+      response.setModelInfo(BaseSearchResponse.getOwnClassInfo());
+    } else {
+      response.setModelInfo(BaseSearchInvalidResponse.getOwnClassInfo());
+    }
+    return response;
   }
   
   private DowJonesResponseMsg request(DowJonesRequestMsg req) {
