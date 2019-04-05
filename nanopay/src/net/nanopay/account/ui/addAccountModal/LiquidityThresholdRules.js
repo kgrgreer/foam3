@@ -7,7 +7,7 @@ foam.ENUM({
     `,
 
     values: [
-        { name: "PLACEHOLDER", label: 'Select a rule' },
+        { name: "NONE", label: 'Select a rule' },
         { name: "SEND", label: 'Send notifications' },
         { name: "SEND_AND_AUTO", label: 'Send notifications & automatic transactions' },
     ]

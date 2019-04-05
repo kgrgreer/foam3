@@ -27,14 +27,6 @@ foam.CLASS({
     'name', 'id', 'denomination', 'type'
   ],
 
-<<<<<<< HEAD
-  // axioms: [
-  //   {
-  //       class: 'foam.u2.ReferenceLabelAxiom',
-  //       prop: 'name'
-  //   }
-  // ],
-=======
   tableColumns: [
     'id',
     'deleted',
@@ -43,7 +35,6 @@ foam.CLASS({
     'denomination',
     'balance'
   ],
->>>>>>> development
 
   properties: [
     {
