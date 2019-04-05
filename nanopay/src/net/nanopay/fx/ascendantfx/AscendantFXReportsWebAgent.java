@@ -121,15 +121,18 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String postalCode = business.getBusinessAddress().getPostalCode();
 
     String businessPhoneNumber;
-    if ( ! SafetyUtil.isEmpty(business.getBusinessPhone().getNumber()) ) {
-      businessPhoneNumber = business.getBusinessPhone().getNumber();
+    if ( business.getBusinessPhone() != null ) {
+      if ( ! SafetyUtil.isEmpty(business.getBusinessPhone().getNumber()) ) {
+        businessPhoneNumber = business.getBusinessPhone().getNumber();
+      } else {
+        businessPhoneNumber = "N/A";
+      }
     } else {
       businessPhoneNumber = "N/A";
     }
 
     BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
     String industry = businessSector.getName();
-    String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
     String isThirdParty = business.getThirdParty() ? "Yes" : "No";
 
     String targetCustomers;
@@ -147,47 +150,61 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     }
 
     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
+    String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
+    String baseCurrency = "";
     String internationalTransactions;
-    if ( business.getSuggestedUserTransactionInfo().getInternationalPayments() ) {
+    String purposeOfTransactions;
+    String annualDomesticTransactionAmount;
+    String annualDomesticVolume;
+    String annualRevenue;
+    String firstTradeDateDomestic;
+
+    if ( business.getSuggestedUserTransactionInfo() != null ) {
       internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
+      
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
+        baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
+      } else {
+        purposeOfTransactions = "N/A";
+      }
+
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
+        purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
+      } else {
+        purposeOfTransactions = "N/A";
+      }
+
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount()) ) {
+        annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount();
+      } else {
+        annualDomesticTransactionAmount = "N/A";
+      }
+
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()) ) {
+        annualDomesticVolume = business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume();
+      } else {
+        annualDomesticVolume = "N/A";
+      }
+
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualRevenue()) ) {
+        annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
+      } else {
+        annualRevenue = "N/A";
+      }
+
+      if ( business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic() != null ) {
+        firstTradeDateDomestic = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic());
+      } else {
+        firstTradeDateDomestic = "N/A";
+      }
     } else {
       internationalTransactions = "N/A";
-    }
-    String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
-
-    String purposeOfTransactions;
-    if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
-      purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
-    } else {
       purposeOfTransactions = "N/A";
-    }
-
-    String annualDomesticTransactionAmount;
-    if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount()) ) {
-      annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount();
-    } else {
       annualDomesticTransactionAmount = "N/A";
-    }
-
-    String annualDomesticVolume;
-    if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()) ) {
-      annualDomesticVolume = business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume();
-    } else {
       annualDomesticVolume = "N/A";
-    }
-
-    String annualRevenue;
-    if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualRevenue()) ) {
-      annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
-    } else {
       annualRevenue = "N/A";
-    }
-
-    String firstTradeDateDomestic;
-    if ( business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic() != null ) {
-      firstTradeDateDomestic = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic());
-    } else {
       firstTradeDateDomestic = "N/A";
+      baseCurrency = "N/A";
     }
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
@@ -331,7 +348,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     IdentificationType idType = (IdentificationType) identificationTypeDAO
       .find(signingOfficer.getIdentification().getIdentificationTypeId());
     String identificationType = idType.getName();
-    String provinceOfIssue = signingOfficer.getIdentification().getRegionId();
+    String provinceOfIssue = "";
+    if ( ! identificationType.equals("Passport") ) {
+      provinceOfIssue = signingOfficer.getIdentification().getRegionId();
+    }
     String countryOfIssue = signingOfficer.getIdentification().getCountryId();
     String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
     String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
@@ -370,7 +390,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Type of identification: " + identificationType));
-      list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
+      if ( ! identificationType.equals("Passport") && ! SafetyUtil.isEmpty(provinceOfIssue) ) {
+        list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
+      }
       list.add(new ListItem("Country of issue: " + countryOfIssue));
       list.add(new ListItem("Identification number: " + identificationNumber));
       list.add(new ListItem("Issue date: " + issueDate));
