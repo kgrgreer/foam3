@@ -24,7 +24,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/ui/addAccountModal/AccountLimitViewModel', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/AccountLiquidityModal', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/AccountLiquidityViewModel', flags: ['web'] },
-  { name: 'net/nanopay/account/ui/addAccountModal/AccountLiquidityDetailsViewModel', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/AccountSettingsLiquidityRulesViewModel', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/LiquidityThresholdRules', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/AccountSettingsRequirementViewModel', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/ModalProgressBar', flags: ['web'] },

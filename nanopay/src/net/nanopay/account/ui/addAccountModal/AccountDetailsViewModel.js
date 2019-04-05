@@ -50,6 +50,7 @@ foam.CLASS({
                 // accountDAO = this.accountDAO$.get();
                 // user$id = this.user$.id$
                 // dot('id').get();
+                console.log(this.viewData);
                 return accountDAO.where(this.EQ(this.Account.OWNER, user$id)); 
             }
         },

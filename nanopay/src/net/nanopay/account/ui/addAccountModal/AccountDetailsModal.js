@@ -31,21 +31,12 @@ foam.CLASS({
           return options;
         }
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'isLiquidityRequired',
-      factory: function() {
-        return this.viewData.isLiquidityRequired ? true : false;
-      },
-      postSet: function( o, n ) {
-        this.viewData.isLiquidityRequired = n;
-      }
     }
   ],
 
   methods: [
     function initE() {
+      console.log(this.viewData);
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
         .start(this.ModalProgressBar, { percentage: 50 }).end()
