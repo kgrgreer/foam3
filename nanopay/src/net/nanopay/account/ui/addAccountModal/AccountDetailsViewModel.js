@@ -74,6 +74,16 @@ foam.CLASS({
             `,
         },
         {
+            name: 'whoReceivesNotification',
+            class: 'Reference',
+            of: 'foam.nanos.auth.User',
+            // targetDAOKey: 'whoReceivesPredicatedUserDAO',
+            documentation: `
+                A picker to choose who in the organization will
+                receive the notifications
+            `,
+        },
+        {
             name: 'memo',
             class: 'String',
             documentation: `

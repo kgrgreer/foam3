@@ -10,7 +10,8 @@ foam.CLASS({
     `,
 
     exports: [
-        'predicatedAccountDAO'
+        'whoReceivesPredicatedUserDAO',
+        'otherAccountsPredicatedAccountDAO'
     ],
     imports: [
         'currencyDAO',
@@ -33,8 +34,8 @@ foam.CLASS({
             expression: function (user$group, userDAO) {
                 // only return other users in the business group
                 // uncomment the line below once we figure this out
-                // return userDAO.where(this.EQ(this.User.GROUP, user$group));
-                return userDAO
+                // return user.where(this.EQ(this.User.GROUP, user$group));
+                return userDAO; // ! comment this later on
             }
         },
         {
