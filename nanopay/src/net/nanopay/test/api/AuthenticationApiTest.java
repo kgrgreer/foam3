@@ -1,7 +1,10 @@
-package net.nanopay.api;
+package net.nanopay.test.api;
+
+import foam.core.X;
+import foam.util.SafetyUtil;
 
 import java.net.HttpURLConnection;
-import foam.core.X;
+
 
 // API Authentication tests.
 public class AuthenticationApiTest extends ApiTestBase { 
@@ -26,7 +29,7 @@ public class AuthenticationApiTest extends ApiTestBase {
 
       // Print the headers
       String sessionCookie = this.getSessionId(connection, true);
-      test(null != sessionCookie && "" != sessionCookie, "Session cookie should be set. SessionId: " + sessionCookie);
+      test(!SafetyUtil.isEmpty(sessionCookie), "Session cookie should be set. SessionId: " + sessionCookie);
       
       // Attempt to send a request with the session ID
       connection = this.createRequest(digUrl, "GET", sessionCookie);
@@ -37,7 +40,7 @@ public class AuthenticationApiTest extends ApiTestBase {
 
       // Ensure the response data is empty
       String responseData = this.getResponseData(connection);
-      test(null == responseData || "".equals(responseData), "Response data should be empty, not a redirect to the login screen: (" + responseData + ")");
+      test(SafetyUtil.isEmpty(responseData), "Response data should be empty, not a redirect to the login screen: (" + responseData + ")");
     }
     catch (Exception ex)
     {

@@ -1,21 +1,17 @@
-package net.nanopay.api;
-
-import java.util.Map;
-import java.util.List;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Base64;
+package net.nanopay.test.api;
 
 import foam.core.X;
 import foam.nanos.app.AppConfig;
 import foam.nanos.test.Test;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 
 // API Authentication tests.
 public class ApiTestBase extends Test { 
@@ -25,7 +21,7 @@ public class ApiTestBase extends Test {
     AppConfig appConfig = (AppConfig) x.get("appConfig");
     String url = appConfig.getUrl();
     return url == null ? null :
-           url.endsWith("/") ? appConfig.getUrl().substring(0, appConfig.getUrl().length() - 1) :
+           url.endsWith("/") ? url.substring(0, url.length() - 1) :
            url;
   }
 

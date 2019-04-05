@@ -1,7 +1,9 @@
-package net.nanopay.api;
+package net.nanopay.test.api;
+
+import foam.core.X;
+import foam.util.SafetyUtil;
 
 import java.net.HttpURLConnection;
-import foam.core.X;
 
 // API Authentication failure tests.
 public class AuthenticationFailureApiTest extends ApiTestBase { 
