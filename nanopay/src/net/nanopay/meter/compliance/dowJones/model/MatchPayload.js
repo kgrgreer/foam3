@@ -43,14 +43,12 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'FObjectArray',
-      of: 'Date',
+      class: 'Array',
       name: 'datesOfBirth',
       visibility: 'RO'
     },
     {
-      class: 'FObjectArray',
-      of: 'foam.nanos.auth.Country',
+      class: 'Array',
       name: 'countries',
       visibility: 'RO'
     },
