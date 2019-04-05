@@ -7,6 +7,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.ui.addAccountModal.AccountLiquidityViewModel',
+    'net.nanopay.account.ui.addAccountModal.AccountLiquidityDetailsViewModel',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.ModalProgressBar',
     'foam.u2.DetailView',
@@ -27,6 +28,7 @@ foam.CLASS({
         .start(this.ModalProgressBar, { percentage: 90 }).end()
         // DONE: Put view model here
         .start(this.DetailView, { data: this.AccountLiquidityViewModel.create() }).end()
+        .start(this.DetailView, { data: this.AccountLiquidityDetailsViewModel.create() }).end()
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
         .end()

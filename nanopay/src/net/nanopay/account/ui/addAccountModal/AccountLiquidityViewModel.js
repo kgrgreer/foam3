@@ -3,7 +3,7 @@ foam.CLASS({
     name: 'AccountLiquidityViewModel',
 
     documentation: `
-      A view model for the high and low liquidity threshold rules for Liquid
+      A view model to choose the liquidity threshold rules
     `,
 
     properties: [

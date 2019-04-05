@@ -27,12 +27,12 @@ foam.CLASS({
     'name', 'id', 'denomination', 'type'
   ],
 
-  axioms: [
-    {
-        class: 'foam.u2.ReferenceLabelAxiom',
-        prop: 'name'
-    }
-  ],
+  // axioms: [
+  //   {
+  //       class: 'foam.u2.ReferenceLabelAxiom',
+  //       prop: 'name'
+  //   }
+  // ],
 
   properties: [
     {
