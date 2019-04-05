@@ -733,7 +733,7 @@ FOAM_FILES([
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
-  { name: 'net/nanopay/accounting/ResultResponseWrapper'},
+  { name: 'net/nanopay/accounting/ResultResponseWrapper' },
   { name: 'net/nanopay/accounting/AccountingBankAccount' },
   { name: 'net/nanopay/accounting/AccountingContactEmailCache' },
   { name: 'net/nanopay/accounting/AccountingErrorCodes' },
@@ -752,7 +752,7 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/quickbooks/QuickbooksToken' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksContact' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksInvoice' },
-  { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web']},
+  { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/IntegrationPopUpView', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/AccountingReportModal', flags: ['web'] },
 
@@ -773,6 +773,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
+  { name: 'net/nanopay/meter/BusinessDetailView' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },

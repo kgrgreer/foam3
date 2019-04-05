@@ -69,7 +69,8 @@ foam.CLASS({
         'invoice',
         'i'
       ],
-      visibility: foam.u2.Visibility.FINAL
+      visibility: foam.u2.Visibility.FINAL,
+      tableWidth: 110
     },
     {
       class: 'String',
@@ -127,7 +128,8 @@ foam.CLASS({
       aliases: ['dueDate', 'due', 'd', 'issued'],
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0, 10) : '');
-      }
+      },
+      tableWidth: 95
     },
     {
       class: 'DateTime',
@@ -169,6 +171,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       documentation: `The date the invoice was last modified.`,
+      tableWidth: 140
     },
     {
       class: 'Reference',
@@ -238,7 +241,8 @@ foam.CLASS({
                 .add(invoice.destinationCurrency + ' ' + currency.format(value))
               .end();
         }.bind(this));
-      }
+      },
+      tableWidth: 120
     },
     { // How is this used? - display only?
       documentation: `

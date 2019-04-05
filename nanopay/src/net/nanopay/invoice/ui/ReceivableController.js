@@ -46,7 +46,7 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            this.Invoice.PAYER.clone().copyFrom({
+            this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
               tableCellFormatter: function(_, invoice) {
                 var additiveSubField = invoice.payer.businessName ?
