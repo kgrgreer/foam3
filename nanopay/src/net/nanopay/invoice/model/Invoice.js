@@ -58,7 +58,8 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 60
     },
     {
       class: 'String',
@@ -390,7 +391,8 @@ foam.CLASS({
             .add(label)
           .end()
         .end();
-      }
+      },
+      tableWidth: 130
     },
     {
       class: 'foam.nanos.fs.FileArray',
