@@ -50,7 +50,6 @@ foam.CLASS({
         
         // get the most updated user
         User updatedUser = (User) ((DAO) getLocalUserDAO()).find(user.getId());
-        updatedUser.setGroup(user.getGroup());
 
         // check user status is not disabled
         if ( AccountStatus.DISABLED == updatedUser.getStatus() ) {
@@ -58,7 +57,7 @@ foam.CLASS({
         }
 
         // check if user group enabled
-        Group group = (Group) ((DAO) getGroupDAO()).find(updatedUser.getGroup());
+        Group group = (Group) x.get("group");
         if ( group != null && ! group.getEnabled() ) {
           throw new AuthenticationException("User group disabled");
         }

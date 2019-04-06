@@ -18,6 +18,8 @@ foam.CLASS({
     ^ .label {
       margin-left: 0px;
       margin-top: 5px;
+      padding-bottom: 0px !important;
+      font-weight: 600 !important;
     }
     ^ .foam-u2-TextField {
       width: 100%;
@@ -47,12 +49,10 @@ foam.CLASS({
       display: inline-block;
       float: right;
     }
-    ^ .property-revenueEstimate {
-      width: 225px;
-      margin-bottom: 30px;
+    ^ .property-field {
       height: 35px;
-      top: 15px;
-      right: 125px;
+      width: 100%;
+      margin-bottom: 10px;
     }
     ^ .info-container {
       line-height: 1.5;
@@ -113,24 +113,6 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.internationalPayments = n == 'Yes';
-      }
-    },
-    {
-      class: 'String',
-      name: 'purposeField',
-      view: {
-        class: 'foam.u2.TextField',
-        placeholder: 'Transaction Purpose',
-        onKey: true,
-        maxLength: 150
-      },
-      factory: function() {
-        if ( this.viewData.user.suggestedUserTransactionInfo.transactionPurpose ) {
-          return this.viewData.user.suggestedUserTransactionInfo.transactionPurpose;
-        }
-      },
-      postSet: function(o, n) {
-        this.viewData.user.suggestedUserTransactionInfo.transactionPurpose = n.trim();
       }
     },
     {
@@ -258,27 +240,27 @@ foam.CLASS({
     }
   ],
 
+  constants: [
+    { name: 'US_FLAG', value: 'images/flags/us.png' },
+    { name: 'CAD_FLAG', value: 'images/flags/cad.png' }
+  ],
+
   messages: [
     { name: 'TITLE', message: 'Details about your transactions' },
     { name: 'REVENUE_ESTIMATE_LABEL_CA', message: 'Annual Gross Sales in CAD' },
     { name: 'REVENUE_ESTIMATE_LABEL_US', message: 'Annual Gross Sales in USD' },
-    { name: 'PURPOSE_LABEL', message: 'Please provide us with the purpose of your transactions.' },
+    { name: 'PURPOSE_LABEL', message: 'Please provide us with the purpose of your transactions' },
     { name: 'INTERNATIONAL_PAYMENTS_LABEL', message: 'Are you sending or receiving international payments?' },
     { name: 'ANTICIPATED_TRADE_LABEL', message: 'Anticipated First Payment Date' },
     { name: 'SECOND_TITLE', message: 'International transfers' },
-    { name: 'THIRD_TITLE', message: 'Domestic USD transfers' },
+    { name: 'THIRD_TITLE', message: 'Domestic transfers' },
     { name: 'CURRENCY_TYPE', message: 'U.S. Dollars' },
     { name: 'ANNUAL_LABEL', message: 'Annual Number of Transactions' },
     { name: 'CA_DOLLAR_LABEL', message: 'Canadian Dollar' },
     { name: 'CA_VOLUME_LABEL', message: 'Estimated Annual Volume in CAD' },
     { name: 'US_DOLLAR_LABEL', message: 'U.S. Dollar' },
     { name: 'US_VOLUME_LABEL', message: 'Estimated Annual Volume in USD' },
-    {
-      name: 'INFO_BOX',
-      message: `The base currency will be your default currency for sending
-          and receiving payments. You can also change this during any transaction.`
-    }
-
+    { name: 'OTHER_PURPOSE_LABEL', message: 'Please indicate below' }
   ],
 
   methods: [
@@ -286,33 +268,51 @@ foam.CLASS({
       this.hasBackOption = true;
       this.internationalPayments$.sub(this.clearFields);
       this.setBaseCurrency();
+      var domesticFlag = this.isUSABasedCompany ? this.US_FLAG : this.CAD_FLAG;
+
+      var userTransactionInfo = this.viewData.user.suggestedUserTransactionInfo;
 
       this.addClass(this.myClass())
       .start()
         .start().addClass('medium-header')
           .add(this.TITLE)
         .end()
-        .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.INFO_BOX })
         .start().addClass('label-input')
           .start().addClass('label').add(this.PURPOSE_LABEL).end()
-          .start(this.PURPOSE_FIELD).end()
+          .startContext({ data: userTransactionInfo })
+            .tag(userTransactionInfo.TRANSACTION_PURPOSE)
+          .endContext()
+        .end()
+        .start()
+          .addClass('label-input')
+          .show(userTransactionInfo.transactionPurpose$.map((purpose) => {
+            return foam.util.equals(purpose, 'Other');
+          }))
+          .start().addClass('label').add(this.OTHER_PURPOSE_LABEL).end()
+          .startContext({ data: userTransactionInfo })
+            .start(userTransactionInfo.OTHER_TRANSACTION_PURPOSE)
+              .addClass('property-field')
+            .end()
+          .endContext()
         .end()
         .start().addClass('label-input')
-          .start().addClass('inline').addClass('info-width').add(this.annualLabel$).end()
-          .start().add(this.REVENUE_ESTIMATE).end()
+          .start().addClass('label').add(this.annualLabel$).end()
+          .start(this.REVENUE_ESTIMATE)
+            .addClass('property-field')
+          .end()
         .end()
-        .start().show(this.isUSABasedCompany$)
+        .start()
           .start().addClass('medium-header').add(this.THIRD_TITLE).end()
           .start().addClass('label-input')
-            .start({ class: 'foam.u2.tag.Image', data: 'images/flags/us.png' }).addClass('flag-image').end()
-            .start().addClass('inline').addClass('bold-label').add(this.US_DOLLAR_LABEL).end()
+            .start({ class: 'foam.u2.tag.Image', data: domesticFlag }).addClass('flag-image').end()
+            .start().addClass('inline').addClass('bold-label').add(this.isUSABasedCompany ? this.US_DOLLAR_LABEL : this.CA_DOLLAR_LABEL).end()
           .end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.ANNUAL_LABEL).end()
             .tag(this.ANNUAL_FIELD_DOMESTIC, { onKey: true })
           .end()
           .start().addClass('label-input').addClass('half-container')
-            .start().addClass('label').add(this.US_VOLUME_LABEL).end()
+            .start().addClass('label').add(this.isUSABasedCompany ? this.US_VOLUME_LABEL : this.CA_VOLUME_LABEL).end()
             .tag(this.ESTIMATED_FIELD_DOMESTIC, { onKey: true })
           .end()
           .start().addClass('label-input')
@@ -347,18 +347,19 @@ foam.CLASS({
         .end()
       .end();
     },
+
     function setBaseCurrency() {
       var cur = this.isUSABasedCompany ? 'USD': 'CAD';
       this.viewData.user.suggestedUserTransactionInfo.baseCurrency = cur;
       // if business address is US then international payments are CAD,
       // if business address is CAD then international payments are USD,
       if ( foam.util.equals('USD', cur) ) {
-        this.flag = 'images/flags/cad.png';
+        this.flag = this.CAD_FLAG;
         this.currencyTypeLabel = this.CA_DOLLAR_LABEL;
         this.estimatedLabel = this.CA_VOLUME_LABEL;
         this.annualLabel = this.REVENUE_ESTIMATE_LABEL_US;
       } else if ( foam.util.equals('CAD', cur) ) {
-        this.flag = 'images/flags/us.png';
+        this.flag = this.US_FLAG;
         this.currencyTypeLabel = this.US_DOLLAR_LABEL;
         this.estimatedLabel = this.US_VOLUME_LABEL;
         this.annualLabel = this.REVENUE_ESTIMATE_LABEL_CA;

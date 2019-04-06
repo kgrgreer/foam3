@@ -44,7 +44,7 @@ foam.CLASS({
       transition: all .15s ease-in-out;
     }
 
-    /* For contact sub wizard views */
+    /* Styles for contact sub wizard views */
     ^ .title-block {
       display: flex;
       justify-content: space-between;
@@ -86,6 +86,11 @@ foam.CLASS({
       line-height: 1;
       margin-top: 16px;
       margin-bottom: 8px;
+    }
+    ^ .two-column {
+      display: grid;
+      grid-gap: 16px;
+      grid-template-columns: 1fr 1fr;
     }
 `,
 
@@ -142,10 +147,11 @@ foam.CLASS({
       name: 'caAccount',
       documentation: `The contact's bank account if they choose CA.`,
       factory: function() {
-        return this.CABankAccount.create({
-          status: this.BankAccountStatus.VERIFIED,
+        var account = this.CABankAccount.create({
           denomination: 'CAD'
         });
+        account.address.countryId = 'CA';
+        return account;
       }
     },
     {
@@ -153,10 +159,11 @@ foam.CLASS({
       name: 'usAccount',
       documentation: `The contact's bank account if they choose US.`,
       factory: function() {
-        return this.USBankAccount.create({
-          status: this.BankAccountStatus.VERIFIED,
+        var account =  this.USBankAccount.create({
           denomination: 'USD'
         });
+        account.address.countryId = 'US';
+        return account;
       }
     },
     {

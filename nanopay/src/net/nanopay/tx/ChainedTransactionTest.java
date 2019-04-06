@@ -113,6 +113,8 @@ public class ChainedTransactionTest
   public void populateBrokerAccount(X x) {
     User brokerUser = (User) ((DAO) x.get("localUserDAO")).find(1002L);
     brokerUser.setEmailVerified(true);
+    brokerUser.setFirstName("Monopoly");
+    brokerUser.setLastName("Guy");
     brokerUser = (User) (((DAO) x.get("localUserDAO")).put_(x, brokerUser)).fclone();
 
     CABankAccount brokerbank = (CABankAccount) accountDAO.find(AND(EQ(BankAccount.OWNER, 1002L), INSTANCE_OF(BankAccount.class)));
@@ -158,6 +160,8 @@ public class ChainedTransactionTest
     if ( sender == null ) {
       sender = new User();
       sender.setEmail("testUser1@nanopay.net");
+      sender.setFirstName("Francis");
+      sender.setLastName("Filth");
       sender.setEmailVerified(true);
       sender = (User) userDAO.put_(x, sender);
     }
@@ -166,6 +170,8 @@ public class ChainedTransactionTest
     if ( receiver == null ) {
       receiver = new User();
       receiver.setEmail("testUser2@nanopay.net");
+      receiver.setFirstName("Francis");
+      receiver.setLastName("Filth");
       receiver.setEmailVerified(true);
       receiver = (User) userDAO.put_(x, receiver);
     }

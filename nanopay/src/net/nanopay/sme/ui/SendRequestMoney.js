@@ -13,6 +13,7 @@ foam.CLASS({
 
   imports: [
     'agent',
+    'appConfig',
     'auth',
     'canReceiveCurrencyDAO',
     'checkComplianceAndBanking',
@@ -26,7 +27,9 @@ foam.CLASS({
     'stack',
     'transactionDAO',
     'user',
-    'userDAO'
+    'userDAO',
+    'quickbooksService',
+    'xeroService'
   ],
 
   exports: [
@@ -44,6 +47,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.app.Mode',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
@@ -52,7 +56,8 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.LoadingSpinner'
+    'net.nanopay.ui.LoadingSpinner',
+    'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
   axioms: [
@@ -228,6 +233,7 @@ foam.CLASS({
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
+    { name: 'WAITING_FOR_RATE', message: 'Waiting for FX quote.' },
     {
       name: 'TWO_FACTOR_REQUIRED',
       message: `You require two-factor authentication to continue this payment.
@@ -394,6 +400,13 @@ foam.CLASS({
       try {
         if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
         else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
+
+        let service = null;
+        if ( this.invoice.xeroId && this.invoice.status == this.InvoiceStatus.PENDING )  service = this.xeroService;
+        if ( this.invoice.quickId && this.invoice.status == this.InvoiceStatus.PENDING ) service = this.quickbooksService;
+
+        if ( service != null ) service.invoiceResync(null, this.invoice);
+
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
           invoice: this.invoice
@@ -465,9 +478,14 @@ foam.CLASS({
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
             if ( ! this.agent.twoFactorEnabled && this.isPayable && this.permitToPay ) {
-              this.notify(this.TWO_FACTOR_REQUIRED, 'error');
-              return;
-            }
+              if ( this.appConfig.mode === this.Mode.TEST ) {
+                // report but don't fail/error
+                this.notify(this.TWO_FACTOR_REQUIRED, 'warning');
+              } else {
+                this.notify(this.TWO_FACTOR_REQUIRED, 'error');
+                return;
+              }
+           }
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);
             });
@@ -479,6 +497,10 @@ foam.CLASS({
             });
             break;
           case this.REVIEW_VIEW_ID:
+            if ( ! this.viewData.quote && this.isPayable ) {
+              this.notify(this.WAITING_FOR_RATE, 'warning');
+              return;
+            }
             this.submit();
             break;
           /* Redirects users back to dashboard if none

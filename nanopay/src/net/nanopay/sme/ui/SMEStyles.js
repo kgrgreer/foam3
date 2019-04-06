@@ -383,7 +383,7 @@ foam.CLASS({
       outline: none;
     }
 
-    .sme.button:active {
+    .sme.button:active:enabled {
       box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
     }
 
@@ -849,10 +849,6 @@ foam.CLASS({
       margin: 0px;
     }
 
-    table {
-      width: 1024px !important;
-    }
-
     /* user status styles */
 
     .user-status-Active {
@@ -1187,6 +1183,10 @@ foam.CLASS({
 
     .net-nanopay-sme-ui-banner-ComplianceBanner .foam-u2-stack-StackView {
       height: calc(100% - 36px);
+    }
+
+    .net-nanopay-sme-SMEController .foam-u2-md-OverlayDropdown {
+      transform: translate(-100%, 16px);
     }
   `
 });
