@@ -42,6 +42,7 @@ var classes = [
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.payment.client.ClientPaymentService',
+  'net.nanopay.payment.PaymentProvider',
   'net.nanopay.account.Balance',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
@@ -78,7 +79,6 @@ var classes = [
   'net.nanopay.model.InvitationStatus',
   'net.nanopay.model.IdentificationType',
   'net.nanopay.model.PersonalIdentification',
-  'net.nanopay.disclosure.Disclosure',
   'net.nanopay.bank.BankHoliday',
 
   // sps
@@ -145,6 +145,7 @@ var classes = [
    'net.nanopay.integration.IntegrationService',
   'net.nanopay.integration.ResultResponse',
   'net.nanopay.integration.AccountingBankAccount',
+  'net.nanopay.integration.AccountingContactEmailCache',
 
   // xero
   'net.nanopay.integration.xero.XeroTokenStorage',
@@ -284,7 +285,6 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXFeeLineItem',
   'net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction',
   'net.nanopay.fx.ascendantfx.AscendantFXHoldingAccount',
-  'net.nanopay.fx.ascendantfx.AscendantFXDisclosure',
   'net.nanopay.fx.ascendantfx.AscendantFXPaymentMethodType',
   'net.nanopay.fx.ascendantfx.AscendantFXCredientials',
   'net.nanopay.fx.lianlianpay.LianLianPay',
@@ -319,11 +319,13 @@ var classes = [
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
 
-  // settings
-  'net.nanopay.settings.AcceptanceDocument',
-  'net.nanopay.settings.UserAcceptanceDocument',
-  'net.nanopay.settings.AcceptanceDocumentService',
-  'net.nanopay.settings.ClientAcceptanceDocumentService',
+  // documents
+  'net.nanopay.documents.AcceptanceDocument',
+  'net.nanopay.documents.UserAcceptanceDocument',
+  'net.nanopay.documents.AcceptanceDocumentService',
+  'net.nanopay.documents.ClientAcceptanceDocumentService',
+  'net.nanopay.documents.AcceptanceDocumentType',
+
   // tx tests
   'net.nanopay.tx.model.TransactionParseTest',
 
@@ -473,7 +475,7 @@ var abstractClasses = [
 
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
-  'net.nanopay.settings.AcceptanceDocumentService',
+  'net.nanopay.documents.AcceptanceDocumentService',
   'net.nanopay.integration.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',

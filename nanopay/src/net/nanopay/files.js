@@ -7,6 +7,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
+  { name: 'net/nanopay/payment/PaymentProvider' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
@@ -164,7 +165,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCOTransaction' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXHoldingAccount' },
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
-  { name: 'net/nanopay/fx/ascendantfx/AscendantFXDisclosure' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
   // kotak
@@ -234,8 +234,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
 
   { name: 'net/nanopay/model/Broker' },
-  { name: 'net/nanopay/disclosure/Disclosure' },
-
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionFeesTableView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
@@ -436,11 +434,14 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
 
+  // documents
+  { name: 'net/nanopay/documents/AcceptanceDocument' },
+  { name: 'net/nanopay/documents/UserAcceptanceDocument' },
+  { name: 'net/nanopay/documents/ClientAcceptanceDocumentService' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentService' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentType' },
+
   // settings
-  { name: 'net/nanopay/settings/AcceptanceDocument' },
-  { name: 'net/nanopay/settings/UserAcceptanceDocument' },
-  { name: 'net/nanopay/settings/ClientAcceptanceDocumentService' },
-  { name: 'net/nanopay/settings/AcceptanceDocumentService' },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessHoursView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditPrincipalOwnersView', flags: ['web'] },
@@ -621,11 +622,12 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ContactStatus' },
   { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/ContactWizardModal', flags: ['web'] },
-  { name: 'net/nanopay/contacts/ui/modal/SelectContactView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
-  { name: 'net/nanopay/contacts/ui/modal/ContactInformation', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/EditContactView', flags: ['web'] },
-  { name: 'net/nanopay/contacts/ui/modal/SearchEmailView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/SearchBusinessView', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/AddContactStepOne', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/AddContactStepTwo', flags: ['web'] },
+  { name: 'net/nanopay/contacts/ui/modal/AddContactStepThree', flags: ['web'] },
 
   // sme
   { name: 'net/nanopay/model/Business' },
@@ -657,6 +659,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddressView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SwitchBusinessView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/BusinessJunctionRowView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessRowView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CompanyInformationView', flags: ['web'] },
@@ -724,6 +727,7 @@ FOAM_FILES([
   // xero
   { name: 'net/nanopay/integration/ResultResponse' },
   { name: 'net/nanopay/integration/AccountingBankAccount' },
+  { name: 'net/nanopay/integration/AccountingContactEmailCache' },
   { name: 'net/nanopay/integration/IntegrationCode' },
   { name: 'net/nanopay/integration/User' },
   { name: 'net/nanopay/integration/xero/XeroTokenStorage' },
