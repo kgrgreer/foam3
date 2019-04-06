@@ -15,7 +15,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'host'
+      name: 'url'
     }
   ]
 });

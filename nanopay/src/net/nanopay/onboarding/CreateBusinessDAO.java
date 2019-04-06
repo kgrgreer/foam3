@@ -99,7 +99,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     junction.setTargetId(business.getId());
     agentJunctionDAO.put(junction);
 
-    // FIXME: This only makes sense to do for the first Business a user creates.
     updateContacts(user, business);
 
     return business;

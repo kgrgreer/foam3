@@ -11,6 +11,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
+    'net.nanopay.account.LoanAccount',
     'net.nanopay.bank.BankAccount',
     'foam.nanos.auth.User',
     'net.nanopay.ui.transfer.TransferUserCard',
@@ -554,6 +555,20 @@ foam.CLASS({
           choice = account.name + ' ' + '***' + account.accountNumber.substring(numLength - 4, numLength);
           return [account.id, choice];
         });
+      }
+
+      if ( type == 'LoanAccount') {
+        let choices = [];
+        for ( var i = 0; i < length; ++i ) {
+          let account = accounts[i];
+          let balance = await account.findBalance(this);
+          let currency = await this.currencyDAO.find(account.denomination);
+          let name = account.name ? account.name : 'Loan Account';
+          choices.push(
+            [account.id,
+            name + ' Limit Left: ' + currency.format(account.principal + balance)]);
+        }
+        if ( this.types == 'LoanAccount' ) view.choices = choices;
       }
     },
 

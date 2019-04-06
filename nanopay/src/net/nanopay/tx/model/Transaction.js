@@ -5,6 +5,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
   ],
@@ -35,7 +36,7 @@ foam.CLASS({
     'net.nanopay.tx.alterna.AlternaVerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.tx.model.LiquidityService',
+    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
@@ -235,6 +236,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
       value: 'COMPLETED',
+      permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
       view: function(args, x) {
         self = this;
@@ -440,7 +442,19 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
       visibility: 'RO'
-   }
+   },
+   {
+      class: 'DateTime',
+      name: 'scheduledTime',
+      documentation: `The scheduled date when transaction should be processed.`
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      value: false,
+      permissionRequired: true,
+      visibility: 'hidden'
+    },
   ],
 
   methods: [
@@ -458,7 +472,7 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-        if ( oldTxn == null ) return this;
+        if ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.SCHEDULED ) return this;
         Transaction newTx = (Transaction) oldTxn.fclone();
         newTx.limitedCopyFrom(this);
         return newTx;
@@ -508,7 +522,7 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
+      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
       name: 'canTransfer',
       args: [
         {
@@ -522,13 +536,11 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        if ( getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED &&
-             ( oldTxn == null ||
-               ( oldTxn != null &&
-                 oldTxn.getStatus() != getStatus() ) ) ) {
-          return true;
-        }
-        return false;
+      if ( getStatus() == TransactionStatus.COMPLETED &&  
+      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
+   return true;
+ }
+ return false;
       `
     },
     {
@@ -644,6 +656,10 @@ foam.CLASS({
         if ( getTotal() > 10000000 ) {
           throw new AuthorizationException("Transaction limit exceeded.");
         }
+      }
+      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+      if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.SCHEDULED && getStatus() == TransactionStatus.SCHEDULED ) {
+        throw new RuntimeException("Only new transaction can be scheduled");
       }
       `
     },
@@ -781,7 +797,7 @@ foam.CLASS({
           }
         }
         return value;
-`
+        `
     },
     {
       name: 'addNext',

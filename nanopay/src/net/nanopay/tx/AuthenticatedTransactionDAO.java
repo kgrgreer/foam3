@@ -31,6 +31,7 @@ public class AuthenticatedTransactionDAO
 {
   public final static String GLOBAL_TXN_READ = "transaction.read.*";
   public final static String GLOBAL_TXN_CREATE = "transaction.create.*";
+  public final static String GLOBAL_TXN_UPDATE = "transaction.update.*";
   public final static String VERIFICATION_TXN_READ = "verificationtransaction.read.*";
 
   public AuthenticatedTransactionDAO(DAO delegate) {
@@ -64,11 +65,20 @@ public class AuthenticatedTransactionDAO
     boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
     boolean isPayee = destinationAccount != null ? destinationAccount.getOwner() == user.getId() : t.getPayeeId() == user.getId();
     boolean isAcceptingPaymentFromPayersDigitalAccount = sourceAccount instanceof DigitalAccount && auth.check(x, "invoice.holdingAccount");
-    boolean isPermitted = auth.check(x, GLOBAL_TXN_CREATE);
+    boolean isCreatePermitted = auth.check(x, GLOBAL_TXN_CREATE);
+    boolean isUpdatePermitted = auth.check(x, GLOBAL_TXN_UPDATE);
 
-    if ( ! ( isSourceAccountOwner || isPayer || isPermitted || isAcceptingPaymentFromPayersDigitalAccount
+    if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentFromPayersDigitalAccount
     || t instanceof CITransaction && isPayee ) ) {
-      throw new AuthorizationException();
+
+      /**
+       * here we are handling two cases:
+       * 1. if an update was made (oldTxn != null), check update perms
+       * 2. if a creation was made (oldTxn == null), check creation perms
+       */
+      if ( oldTxn != null && ! isUpdatePermitted || oldTxn == null && ! isCreatePermitted  ) {
+        throw new AuthorizationException();
+      }
     }
 
     if ( t.getInvoiceId() != 0 ) {
@@ -82,7 +92,7 @@ public class AuthenticatedTransactionDAO
         if ( oldTxn == null ) {
           throw new AuthorizationException("You cannot pay a receivable.");
         }
-        else if ( ! auth.check(x, "transaction.update") ) {
+        else if ( ! isUpdatePermitted ) {
           throw new AuthorizationException("You cannot update a receivable.");
         }
       }

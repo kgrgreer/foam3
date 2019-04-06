@@ -23,13 +23,20 @@ foam.CLASS({
     'notificationDAO',
     'predicate',
     'stack',
-    'user'
+    'user',
+    'xeroService',
+    'quickbooksService',
+    'accountingIntegrationUtil'
   ],
 
   requires: [
     'foam.u2.Element',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.accounting.AccountingErrorCodes',
+    'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus'
   ],
@@ -219,11 +226,14 @@ foam.CLASS({
                         class: 'net.nanopay.sme.ui.InvoiceRowView',
                         data: invoice
                       })
-                        .on('click', () => {
+                        .on('click', async () => {
+                          // check if invoice is in sync with accounting software
+                          let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+                          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
                           this.isForm = false;
                           this.isList = false;
                           this.isDetailView = true;
-                          this.invoice = invoice;
+                          this.invoice = updatedInvoice;
                         })
                       .end();
                     })
@@ -297,7 +307,7 @@ foam.CLASS({
         this.isDetailView = false;
         // Get the previous temp invoice data
         if ( this.Invoice.isInstance(this.dataFromNewInvoiceForm) ) {
-          this.invoice = this.dataFromNewInvoiceForm;
+          this.invoice.copyFrom(this.dataFromNewInvoiceForm);
         }
       }
     },
