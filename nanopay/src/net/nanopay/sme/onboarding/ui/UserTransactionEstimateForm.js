@@ -265,7 +265,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.hasBackOption = true;
+      this.nextLabel = 'Next';
       this.internationalPayments$.sub(this.clearFields);
       this.setBaseCurrency();
       var domesticFlag = this.isUSABasedCompany ? this.US_FLAG : this.CAD_FLAG;

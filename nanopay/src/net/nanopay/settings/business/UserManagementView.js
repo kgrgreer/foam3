@@ -27,6 +27,10 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      max-width: 1025px;
+    }
+
     ^actions {
       display: flex;
       justify-content: flex-end;
