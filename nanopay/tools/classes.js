@@ -12,7 +12,6 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.plaid.config.PlaidCredential',
   'net.nanopay.tx.Transfer',
-  'net.nanopay.tx.BalanceHistory',
   'net.nanopay.tx.CompletedTransactionDAO',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
@@ -174,7 +173,6 @@ var classes = [
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
-  // 'net.nanopay.fx.interac.model.PayoutOptions',
   'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
   'net.nanopay.fx.interac.model.RequiredAddressFields',
@@ -279,8 +277,6 @@ var classes = [
   'net.nanopay.fx.lianlianpay.model.ReconciliationRecord',
   'net.nanopay.fx.lianlianpay.model.Statement',
   'net.nanopay.fx.lianlianpay.model.StatementRecord',
-  'foam.nanos.auth.UserUserJunction',
-  'net.nanopay.auth.LoginAttempt',
   'net.nanopay.fx.interac.model.ExchangerateApiModel',
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
@@ -322,6 +318,8 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
 
   // auth
+  'net.nanopay.auth.LoginAttempt',
+  'net.nanopay.auth.NanopayUserAndGroupAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
 

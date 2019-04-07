@@ -810,8 +810,8 @@ foam.CLASS({
       background: #fff;
     }
 
-    .foam-u2-view-TableView tbody tr:first-child td {
-      border-top: solid 1px #e2e2e3 !important;
+    .foam-u2-view-TableView thead th {
+      border-bottom: solid 1px #e2e2e3;
     }
 
     .foam-u2-md-overlaydropdown {
