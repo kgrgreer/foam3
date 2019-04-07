@@ -107,23 +107,23 @@ do
   done
 
   if  [[ -f "deployment/$file" ]]; then
-      cat deployment/$file >> "$OUT_DIR/$journal_file"
+      cat "deployment/$file" >> "$OUT_DIR/$journal_file"
   fi
   if [[ ! -z "$MODE" ]]; then
       if  [[ -f "deployment/$MODE/$file" ]]; then
-          cat deployment/$MODE/$file >> "$OUT_DIR/$journal_file"
+          cat "deployment/$MODE/$file" >> "$OUT_DIR/$journal_file"
       fi
       if [[ ! -z "$INSTANCE" ]]; then
           if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
-              cat deployment/$MODE/$INSTANCE/$file >> "$OUT_DIR/$journal_file"
+              cat "deployment/$MODE/$INSTANCE/$file" >> "$OUT_DIR/$journal_file"
           fi
       fi
       if [[ ! -z "$VERSION" ]]; then
           if  [[ -f "deployment/$MODE/$VERSION/$file" ]]; then
-              cat deployment/$MODE/$VERSION/$file >> "$OUT_DIR/$journal_file"
+              cat "deployment/$MODE/$VERSION/$file" >> "$OUT_DIR/$journal_file"
           fi
           if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
-              cat deployment/$MODE/$INSTANCE/$VERSION/$file >> "$OUT_DIR/$journal_file"
+              cat "deployment/$MODE/$INSTANCE/$VERSION/$file" >> "$OUT_DIR/$journal_file"
           fi
       fi
   fi
@@ -133,7 +133,7 @@ do
   do
     for f in $(find $s -name "${file}.jrl")
     do
-      cat $f >> "$OUT_DIR/$journal_file"
+      cat "$f" >> "$OUT_DIR/$journal_file"
     done
   done
 
