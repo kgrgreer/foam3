@@ -10,16 +10,15 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'foam.core.Detachable',
+    'foam.dao.DAO',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'java.util.ArrayList',
+    'java.util.List'
     'net.nanopay.account.Account',
     'net.nanopay.account.AggregateAccount',
     'net.nanopay.fx.ExchangeRate',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.AND',
-    'java.util.ArrayList',
-    'java.util.List'
   ],
 
   requires: [
