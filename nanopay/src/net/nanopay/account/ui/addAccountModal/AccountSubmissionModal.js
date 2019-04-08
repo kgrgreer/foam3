@@ -6,8 +6,15 @@ foam.CLASS({
   documentation: 'Modal Sub View for the submission of a created account',
 
   requires: [
+    'net.nanopay.account.AggregateAccount',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
+  ],
+
+  imports: [
+    'accountDAO',
+    'user'
   ],
 
   messages: [
@@ -37,14 +44,33 @@ foam.CLASS({
           .start(this.NEXT, { data: this }).end()
         .end();
 
-      this.timer();
+
     },
 
-    function timer() {
-      var self = this;
-      setTimeout(function(){
-        self.progressBar.stopAnimation();
-      }, 3500);
+    function createAccount() {
+      var account;
+      switch ( this.viewData.accountTypeForm.accountTypePicker ) {
+        case net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT :
+          // TODO: NOT IN DEV
+          break;
+        case net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT :
+          account = this.AggregateAccount.create();
+          break;
+        case net.nanopay.account.ui.addAccountModal.AccountType.VIRTUAL_ACCOUNT :
+          account = this.DigitalAccount.create();
+          break;
+      }
+
+      // TODO: Please allow user to set the owner of account
+      account.owner = user;
+
+      var accountDetails = this.viewData.accountDetailsForm;
+      account.name = accountDetails.accountName;
+      account.country = accountDetails.countryPicker
+      account.denomination = accountDetails.currencyPicker;
+      // TODO: Add memo to account (currently doesn't currently have the property)
+      account.desc = accountDetails.memo;
+
     }
   ],
 
