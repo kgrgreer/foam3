@@ -47,6 +47,7 @@ var classes = [
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
   'net.nanopay.account.Account',
+  'net.nanopay.account.Accountable',
   'net.nanopay.account.DigitalAccount',
   'net.nanopay.account.DigitalAccountInfo',
   'net.nanopay.account.DigitalAccountServiceInterface',
