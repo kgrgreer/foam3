@@ -12,10 +12,13 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.core.Detachable',
     'net.nanopay.account.Account',
+    'net.nanopay.account.AggregateAccount',
     'net.nanopay.fx.ExchangeRate',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.AND',
+    'java.util.ArrayList',
     'java.util.List'
   ],
 
@@ -40,7 +43,7 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         }
       ],
       code: async function(x) {
@@ -49,6 +52,23 @@ foam.CLASS({
           this.EQ(net.nanopay.account.AggregateAccount.PARENT, this.id)
         ).select();
         var accounts = sink.array;
+        var list1 = accounts;
+        while( list1.size() > 0) {
+          var next = list1.get(0);
+          if (! ( next instanceof net.nanopay.account.AggregateAccount ) ) {
+            var childsSink = await x.accountDAO.where(
+              this.EQ(net.nanopay.account.AggregateAccount.PARENT, next.id)
+            ).select().array;
+            for( var i = 0; i < childsSink.length; i++ ) {
+              if ( ! accounts.contains(childsSink[i]) )
+                list1.add(childsSink[i]);
+            }
+          }
+          if ( ! accounts.contains(next) )
+            accounts.add(next)
+          list1.remove(next);
+        }
+
         for ( var i = 0; i < accounts.length; i++ ) {
           if ( accounts[i].type == 'ShadowBankAccount' ) continue;
           var accBal = await accounts[i].findBalance(x);
@@ -68,9 +88,28 @@ foam.CLASS({
         return balance;
       },
       javaCode: `
-      ArraySink childrenSink = (ArraySink) getChildren(x).select(new ArraySink());
+
+        List<Account> childrenList = new ArrayList();
+        ArraySink childrenSink = (ArraySink) getChildren(x).select(new ArraySink());
+        List<Account> list1 = childrenSink.getArray();
+
+          while( list1.size() > 0 ) {
+            Account next = list1.get(0);
+            if ( ! ( next instanceof AggregateAccount ) ) {
+              ArraySink childsChildrenSink = (ArraySink) next.getChildren(x).select(new ArraySink());
+              for(Object obj: childsChildrenSink.getArray()) {
+                Account childsChild = (Account) obj;
+                if ( ! childrenList.contains(childsChild) ) {
+                  list1.add(childsChild);
+                }
+              }
+            }
+            childrenList.add(next);
+            list1.remove(next);
+          }
+
           long balance = 0;
-          for(Object obj: childrenSink.getArray()) {
+          for(Object obj: childrenList) {
             Account child = (Account) obj;
             long childBalance = (Long) child.findBalance(x);
             if( ! getDenomination().equals(child.getDenomination()) )
