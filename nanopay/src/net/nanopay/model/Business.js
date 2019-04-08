@@ -21,6 +21,10 @@ foam.CLASS({
     'viewAccounts'
   ],
 
+  messages: [
+    { name: 'COMPLIANCE_REPORT_WARNING', message: ' has not completed the business profile, and cannot generate compliance documents.' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -151,7 +155,7 @@ foam.CLASS({
       code: function() {
         if ( this.compliance === this.ComplianceStatus.NOTREQUESTED
           || ! this.onboarded ) {
-          this.ctrl.notify(this.Organization + ' does not complete the business profile, and cannot generate compliance document.' );
+          this.ctrl.notify(this.organization + this.COMPLIANCE_REPORT_WARNING);
           return;
         }
         var url = window.location.origin
