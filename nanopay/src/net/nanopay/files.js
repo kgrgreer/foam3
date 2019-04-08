@@ -808,6 +808,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResult' },
   { name: 'net/nanopay/meter/compliance/identityMind/ConsumerKYCValidator' },
+  { name: 'net/nanopay/meter/compliance/identityMind/EntityLoginValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindRequest' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindResponse' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindService' },

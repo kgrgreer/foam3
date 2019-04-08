@@ -7,6 +7,7 @@ foam.CLASS({
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
     'foam.lib.json.OutputterMode',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'java.util.Base64',
     'org.apache.http.HttpResponse',
@@ -66,6 +67,34 @@ foam.CLASS({
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
           x, request, IdentityMindResponse.class);
         response.setApiName("Consumer KYC");
+        response.setEntityName(user.getLegalName());
+        response.setEntityId(user.getId());
+        return (IdentityMindResponse)
+          ((DAO) getIdentityMindResponseDAO()).put(response);
+      `
+    },
+    {
+      name: 'recordLogin',
+      type: 'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'login',
+          type: 'net.nanopay.auth.LoginAttempt'
+        }
+      ],
+      javaCode: `
+        IdentityMindRequest request = IdentityMindRequestGenerator.getEntityLoginRequest(x, login);
+        request.setUrl(getBaseUrl() + "/account/login");
+        request.setBasicAuth(getApiUser() + ":" + getApiKey());
+
+        IdentityMindResponse response = (IdentityMindResponse) sendRequest(
+          x, request, IdentityMindResponse.class);
+        response.setApiName("Entity Login Record");
+        User user = login.findLoginAttemptedFor(x);
         response.setEntityName(user.getLegalName());
         response.setEntityId(user.getId());
         return (IdentityMindResponse)

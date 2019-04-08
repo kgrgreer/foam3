@@ -2,6 +2,7 @@ package net.nanopay.meter.compliance.identityMind;
 
 import foam.core.X;
 import foam.nanos.auth.User;
+import net.nanopay.auth.LoginAttempt;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -17,6 +18,17 @@ public class IdentityMindRequestGenerator {
       .setBfn(user.getFirstName())
       .setBln(user.getLastName())
       .setAccountCreationTime(formatDate(user.getCreated()))
+      .build();
+  }
+
+  public static IdentityMindRequest getEntityLoginRequest(X x, LoginAttempt login) {
+    User user = login.findLoginAttemptedFor(x);
+    return new IdentityMindRequest.Builder(x)
+      .setMan(String.valueOf(login.getLoginAttemptedFor()))
+      .setTea(login.getEmail())
+      .setIp(login.getIpAddress())
+      .setBfn(user.getFirstName())
+      .setBln(user.getLastName())
       .build();
   }
 
