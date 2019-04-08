@@ -15,9 +15,11 @@ foam.CLASS({
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
+    'net.nanopay.accounting.AccountingResultReport'
   ],
 
   imports: [
+    'accountingReportDAO',
     'contactDAO',
     'ctrl',
     'invoiceDAO',
@@ -53,7 +55,7 @@ foam.CLASS({
       // contact sync
       let contactResult = await service.contactSync(null);
       if ( contactResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-        view.add(this.Popup.create({ closeable: false }).tag({
+        this.ctrl.add(this.Popup.create({ closeable: false }).tag({
           class: 'net.nanopay.accounting.AccountingTimeOutModal'
         }));
         return null;
@@ -71,7 +73,14 @@ foam.CLASS({
       // build final result
       let finalResult = contactResult.clone();
       finalResult.invoiceErrors = invoiceResult.invoiceErrors;
+      finalResult.successInvoice = invoiceResult.successInvoice;
       this.ctrl.notify('All information has been synchronized', 'success');
+      
+      let report = this.AccountingResultReport.create();
+      report.userId = this.user.id;
+      report.time = new Date();
+      report.resultResponse = finalResult;
+      this.accountingReportDAO.put(report);
 
       return finalResult;
     },
