@@ -7,8 +7,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'nameType',
-      visibility: 'RO'
+      name: 'nameType'
     }
   ]
 });

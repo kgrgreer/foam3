@@ -8,54 +8,44 @@ foam.CLASS({
     {
       class: 'Array',
       of: 'String',
-      name: 'riskIcons',
-      visibility: 'RO'
+      name: 'riskIcons'
     },
     {
       class: 'String',
-      name: 'primaryName',
-      visibility: 'RO'
+      name: 'primaryName'
     },
     {
       class: 'String',
-      name: 'countryCode',
-      visibility: 'RO'
+      name: 'countryCode'
     },
     {
       class: 'String',
-      name: 'title',
-      visibility: 'RO'
+      name: 'title'
     },
     {
       class: 'Boolean',
-      name: 'subsidiary',
-      visibility: 'RO'
+      name: 'subsidiary'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.MatchedName',
-      name: 'matchedName',
-      visibility: 'RO'
+      name: 'matchedName'
     },
     {
       class: 'Date',
-      name: 'matchedDateOfBirth',
-      visibility: 'RO'
+      name: 'matchedDateOfBirth'
     },
     {
       class: 'Array',
-      name: 'datesOfBirth',
-      visibility: 'RO'
+      name: 'datesOfBirth'
     },
     {
       class: 'Array',
-      name: 'countries',
-      visibility: 'RO'
+      name: 'countries'
     },
     {
       class: 'String',
-      name: 'gender',
-      visibility: 'RO'
+      name: 'gender'
     }
   ]
 });

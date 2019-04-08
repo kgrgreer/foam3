@@ -7,36 +7,30 @@ foam.CLASS({
   properties: [
     {
       class: 'Float',
-      name: 'score',
-      visibility: 'RO'
+      name: 'score'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.meter.compliance.dowJones.enums.MatchType',
-      name: 'matchType',
-      visibility: 'RO'
+      name: 'matchType'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.MatchPayload',
-      name: 'payload',
-      visibility: 'RO'
+      name: 'payload'
     },
     {
       class: 'String',
-      name: 'peid',
-      visibility: 'RO'
+      name: 'peid'
     },
     {
       class: 'String',
-      name: 'revision',
-      visibility: 'RO'
+      name: 'revision'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.meter.compliance.dowJones.enums.RecordType',
-      name: 'recordType',
-      visibility: 'RO'
+      name: 'recordType'
     }
   ]
 });

@@ -7,38 +7,31 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'apiVersion',
-      visibility: 'RO'
+      name: 'apiVersion'
     },
     {
       class: 'String',
-      name: 'backendVersion',
-      visibility: 'RO'
+      name: 'backendVersion'
     },
     {
       class: 'Int',
-      name: 'totalHits',
-      visibility: 'RO'
+      name: 'totalHits'
     },
     {
       class: 'Int',
-      name: 'hitsFrom',
-      visibility: 'RO'
+      name: 'hitsFrom'
     },
     {
       class: 'Int',
-      name: 'hitsTo',
-      visibility: 'RO'
+      name: 'hitsTo'
     },
     {
       class: 'Boolean',
-      name: 'truncated',
-      visibility: 'RO'
+      name: 'truncated'
     },
     {
       class: 'String',
-      name: 'cachedResultsId',
-      visibility: 'RO'
+      name: 'cachedResultsId'
     }
   ]
 });
