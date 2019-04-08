@@ -462,6 +462,9 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
+  'net.nanopay.meter.compliance.identityMind.ConsumerKYCRequest',
+  'net.nanopay.meter.compliance.identityMind.IdentityMindRequest',
+  'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
 
 
   // meter tests
