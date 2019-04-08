@@ -77,6 +77,37 @@ foam.CLASS({
     ^ .checkmark-img {
       margin-top: 120px;
     }
+    
+    ^ .report-table-container {
+      max-height: 500px;
+      width: 677px;
+      margin-top: 25px;
+      margin-left: auto; margin-right: auto;
+      overflow: hidden;
+    }
+    
+    ^ .report-title-2 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 80px;
+    }
+    
+    ^ .report-title-2 p {
+      font-size: 16px;
+      font-weight: 900;
+      line-weight: 1.5
+    }
+    
+    ^ .report-title-img {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+    
+    ^ .report-title-3 {
+      font-size: 14px;
+    }
   `,
 
   messages: [
@@ -103,7 +134,22 @@ foam.CLASS({
             .end()
             .start('h1').add(this.SuccessMessage).addClass('title').end()
 
-            .start().tag({ class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initMismatchData(), columns: ['name','businessName', 'message'] }).end()
+            .start('div').addClass('report-title-2')
+              .start('img').addClass('report-title-img')
+                .attrs({ src: 'images/ablii-logo.svg' })
+              .end()
+              .start('p').add('Found Ablii users from your synced contacts!').end()
+            .end()
+
+            .start('p').addClass('report-title-3')
+              .add('You can send or request money right away to these contacts')
+            .end()
+
+        .start('div').addClass('report-table-container')
+            .start().tag({
+              class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initMismatchData(), columns: ['name','businessName', 'message'], header:'Ablii users'
+            }).end()
+        .end()
 
           .end()
 
@@ -116,6 +162,7 @@ foam.CLASS({
 
     function initMismatchData() {
       let myData = this.reportResult.contactSyncMismatches;
+      //let myData = this.temp();
       let myDAO = foam.dao.MDAO.create( {of: this.ContactErrorItem} );
 
       for ( x in myData ) {
@@ -129,6 +176,227 @@ foam.CLASS({
 
       return myDAO;
     },
+
+    // TODO remove it
+    function temp() {
+      return [
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
+            "quickId": "86",
+            "realmId": "123146320035089",
+            "organization": "BBB",
+            "email": "siren.b@mailinator.com",
+            "businessId": 8008,
+            "owner": 8006,
+            "type": "QuickbooksContact",
+            "businessName": "BBB",
+            "group": "sme"
+          },
+          "resultCode": 1
+        },
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
+            "quickId": "86",
+            "realmId": "123146320035089",
+            "organization": "BBB",
+            "email": "siren.b@mailinator.com",
+            "businessId": 8008,
+            "owner": 8006,
+            "type": "QuickbooksContact",
+            "businessName": "BBB",
+            "group": "sme"
+          },
+          "resultCode": 1
+        },
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
+            "quickId": "86",
+            "realmId": "123146320035089",
+            "organization": "BBB",
+            "email": "siren.b@mailinator.com",
+            "businessId": 8008,
+            "owner": 8006,
+            "type": "QuickbooksContact",
+            "businessName": "BBB",
+            "group": "sme"
+          },
+          "resultCode": 1
+        },
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
+            "quickId": "86",
+            "realmId": "123146320035089",
+            "organization": "BBB",
+            "email": "siren.b@mailinator.com",
+            "businessId": 8008,
+            "owner": 8006,
+            "type": "QuickbooksContact",
+            "businessName": "BBB",
+            "group": "sme"
+          },
+          "resultCode": 1
+        },
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
+            "quickId": "86",
+            "realmId": "123146320035089",
+            "organization": "BBB",
+            "email": "siren.b@mailinator.com",
+            "businessId": 8008,
+            "owner": 8006,
+            "type": "QuickbooksContact",
+            "businessName": "BBB",
+            "group": "sme"
+          },
+          "resultCode": 1
+        },
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
+            "quickId": "86",
+            "realmId": "123146320035089",
+            "organization": "BBB",
+            "email": "siren.b@mailinator.com",
+            "businessId": 8008,
+            "owner": 8006,
+            "type": "QuickbooksContact",
+            "businessName": "BBB",
+            "group": "sme"
+          },
+          "resultCode": 1
+        },
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
+            "quickId": "86",
+            "realmId": "123146320035089",
+            "organization": "BBB",
+            "email": "siren.b@mailinator.com",
+            "businessId": 8008,
+            "owner": 8006,
+            "type": "QuickbooksContact",
+            "businessName": "BBB",
+            "group": "sme"
+          },
+          "resultCode": 1
+        },
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
+            "quickId": "87",
+            "realmId": "123146320035089",
+            "chooseBusiness": true,
+            "organization": "MULTI_BUSINESS",
+            "email": "siren.c@mailinator.com",
+            "firstName": "SirenCCC",
+            "lastName": "ChenCCC",
+            "owner": 8006,
+            "type": "QuickbooksContact",
+            "businessName": "MULTI_BUSINESS",
+            "group": "sme"
+          },
+          "resultCode": 2
+        },
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.contacts.Contact",
+            "organization": "DDD",
+            "email": "siren.d@mailinator.com",
+            "firstName": "SirenDDD",
+            "lastName": "ChenDDD",
+            "businessAddress": {
+              "class": "foam.nanos.auth.Address"
+            },
+            "owner": 8006,
+            "id": 8010,
+            "phone": {
+              "class": "foam.nanos.auth.Phone"
+            },
+            "mobile": {
+              "class": "foam.nanos.auth.Phone"
+            },
+            "address": {
+              "class": "foam.nanos.auth.Address"
+            },
+            "businessName": "DDD",
+            "nextLoginAttemptAllowedAt": "2019-03-26T19:42:43.308Z",
+            "businessPhone": {
+              "class": "foam.nanos.auth.Phone"
+            },
+            "group": "sme"
+          },
+          "newContact": {
+            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
+            "quickId": "88",
+            "realmId": "123146320035089",
+            "organization": "DDD",
+            "email": "siren.d@mailinator.com",
+            "firstName": "SirenDDD",
+            "lastName": "ChenDDD",
+            "owner": 8006,
+            "mobile": {
+              "class": "foam.nanos.auth.Phone",
+              "verified": false,
+              "number": ""
+            },
+            "type": "QuickbooksContact",
+            "businessPhone": {
+              "class": "foam.nanos.auth.Phone",
+              "verified": false,
+              "number": ""
+            },
+            "group": "sme"
+          },
+          "resultCode": 0
+        },
+        {
+          "class": "net.nanopay.accounting.ContactMismatchPair",
+          "existContact": {
+            "class": "net.nanopay.contacts.Contact",
+            "organization": "EEE",
+            "email": "siren.e@mailinator.com",
+            "signUpStatus": 2,
+            "businessId": 8012,
+            "businessAddress": {
+              "class": "foam.nanos.auth.Address"
+            },
+            "businessStatus": 2,
+            "owner": 8006,
+            "id": 8013,
+            "phone": {
+              "class": "foam.nanos.auth.Phone"
+            },
+            "mobile": {
+              "class": "foam.nanos.auth.Phone"
+            },
+            "address": {
+              "class": "foam.nanos.auth.Address"
+            },
+            "businessName": "EEE",
+            "nextLoginAttemptAllowedAt": "2019-03-26T19:48:18.577Z",
+            "businessPhone": {
+              "class": "foam.nanos.auth.Phone"
+            },
+            "group": "sme"
+          },
+          "resultCode": 3
+        }
+      ]
+    }
   ],
 
   actions: [

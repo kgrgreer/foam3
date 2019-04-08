@@ -38,11 +38,13 @@ foam.CLASS({
       background: #f9fbff;
       text-align: center
     }
-    ^ .container {
+    
+    ^ .report-2-container {
       display: inline-block;
-      width: 100%;       
+      width: 100%;
       height: 90vh;
     }
+    
     ^ .button-bar {
       margin-top:20px;
       height: 48px;
@@ -66,11 +68,14 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-done:hover {
       background-color: #4d38e1 !important;
     }
-    ^ .title {
+    
+    ^ .report-2-container .title {
       font-size: 24px;
-      font-weight: 900;
-      color: black;
       margin-top: 120px;
+    }
+    
+    ^ .report-2-container p {
+      font-size: 14px;
     }
   `,
 
@@ -84,23 +89,27 @@ foam.CLASS({
   ],
 
   properties: [
-    'invoiceResult',
-    'contactResult'
+    'reportResult'
   ],
 
   methods: [
     function initE() {
+
+      console.log(this.user.integrationCode);
       this
         .start().addClass(this.myClass())
-          .start().addClass('container')
+          .start().addClass('report-2-container')
+
             .start('h1').add(this.Title).addClass('title').end()
-            .start()
-              .add(this.Text)
-              .add(this.Text1)
-              .add(this.Text2)
-              .add(this.user.integrationCode.label)
-              .add(this.Text3)
+
+            .start('p')
+              .add('The following invoices and contacts failed to sync due to missing information.')
             .end()
+
+            .start('p')
+              .add('Fix these errors in ' + this.user.integrationCode.label + ' and sync again. Download the report for you convenience.')
+            .end()
+
           .end()
           .start().addClass('button-bar')
             .start(this.DONE).end()

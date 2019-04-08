@@ -102,11 +102,13 @@ foam.CLASS({
       },
       code: async function(X) {
         X.controllerView.addClass('account-sync-loading-animation');
-        let result = await this.accountingIntegrationUtil.doSync();
-        this.stack.push({
-          class: 'net.nanopay.accounting.ui.AccountingReportPage1',
-          invoiceResult: result
-        })
+        let result = await this.accountingIntegrationUtil.doSync(X.controllerView);
+        if ( result !== null ) {
+          this.stack.push({
+            class: 'net.nanopay.accounting.ui.AccountingReportPage1',
+            invoiceResult: result
+          })
+        }
         X.controllerView.removeClass('account-sync-loading-animation');
       }
     },

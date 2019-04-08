@@ -33,13 +33,36 @@ foam.CLASS({
   }
   
   .error-table-title {
-    height: 50px;
-    width: 100%;
-    background-color: aqua !important;
+    height: 48px;
+    background-color: #ffffff;
+    padding-left: 8%;
+    line-height: 48px;
+    text-align: initial;
+    border: solid 1px #e2e2e3;
+    box-shadow: 0 1px 1px 0 #dae1e9;
   }
   
   .error-table-title:hover {
     cursor: pointer;
+  }
+  
+  .error-table-container .foam-u2-view-TableView thead > tr > th {
+    text-align: center;
+  }
+  
+  .error-table-container {
+    height: 300px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+  
+  .error-table-container .foam-u2-view-TableView {
+    width: 677px !important;
+  }
+  
+  .error-table-container .foam-u2-view-TableView tbody > tr {
+    text-align: center;
+    background-color: #f9fbff;
   }
   
   `,
@@ -52,6 +75,10 @@ foam.CLASS({
     'invoiceResult',
     'contactResult',
     'columns',
+    {
+      type: 'String',
+      name: 'header'
+    },
     {
       name: 'data',
     },
@@ -70,12 +97,12 @@ foam.CLASS({
         .start('div').addClass('error-table-container')
 
           .start('div').addClass('error-table-title').on('click', this.toggle)
-            .add('CLICK HERE')
+            .add(this.header)
           .end()
 
         .start().show(this.open$)
           .start({
-            class: 'foam.u2.view.ScrollTableView',
+            class: 'foam.u2.view.TableView',
             data$: this.data$,
             editColumnsEnabled:false,
             selection:false,

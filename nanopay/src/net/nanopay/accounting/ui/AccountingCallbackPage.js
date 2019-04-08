@@ -127,7 +127,7 @@ foam.CLASS({
         .end();
 
       if ( this.doSync ) {
-        let result = await this.accountingIntegrationUtil.doSync();
+        let result = await this.accountingIntegrationUtil.doSync(this);
         this.stack.push({
           class: 'net.nanopay.accounting.ui.AccountingReportPage1',
           reportResult: result
@@ -142,7 +142,7 @@ foam.CLASS({
           class: 'net.nanopay.accounting.ui.AccountingBankMatching'
         });
       } else {
-        let result = await this.accountingIntegrationUtil.doSync();
+        let result = await this.accountingIntegrationUtil.doSync(this);
         this.stack.push({
           class: 'net.nanopay.accounting.ui.AccountingReportPage1',
           reportResult: result
