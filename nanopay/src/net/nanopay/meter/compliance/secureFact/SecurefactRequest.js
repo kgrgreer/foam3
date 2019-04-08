@@ -5,11 +5,13 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'url'
+      name: 'url',
+      transient: true
     },
     {
       class: 'String',
-      name: 'authKey'
+      name: 'authKey',
+      transient: true
     }
   ]
 });
