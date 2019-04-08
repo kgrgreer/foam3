@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailsUtility',
+    'foam.util.Emails.EmailsUtility',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'java.util.HashMap',

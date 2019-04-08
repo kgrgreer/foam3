@@ -8,7 +8,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailsUtility;
+import foam.util.Emails.EmailsUtility;
 import foam.util.SafetyUtil;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;

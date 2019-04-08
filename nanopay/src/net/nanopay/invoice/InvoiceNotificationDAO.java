@@ -8,7 +8,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.TokenService;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailsUtility;
+import foam.util.Emails.EmailsUtility;
 import foam.util.SafetyUtil;
 import java.text.SimpleDateFormat;
 import java.util.*;

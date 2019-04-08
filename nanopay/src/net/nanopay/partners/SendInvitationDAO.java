@@ -9,7 +9,7 @@ import foam.nanos.auth.token.Token;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailsUtility;
+import foam.util.Emails.EmailsUtility;
 import net.nanopay.contacts.Contact;
 import net.nanopay.contacts.ContactStatus;
 import net.nanopay.model.Invitation;

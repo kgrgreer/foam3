@@ -8,7 +8,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailsUtility;
+import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;

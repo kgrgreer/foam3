@@ -9,7 +9,7 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailsUtility;
+import foam.util.Emails.EmailsUtility;
 import foam.util.Auth;
 import java.util.HashMap;
 
