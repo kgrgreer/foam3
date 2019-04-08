@@ -1,6 +1,8 @@
 package net.nanopay.meter.test;
 
 import foam.core.X;
+import net.nanopay.meter.compliance.dowJones.DowJonesCredentials;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -20,13 +22,10 @@ import org.apache.http.client.config.RequestConfig;
 
 public class DowJonesIntegrationTest extends foam.nanos.test.Test {
 
-  String namespace = "18";
-  String username = "nanoAPI";
-  String password = "dowjones";
-
   @Override
   public void runTest(X x) {
-    String authCredentials = namespace + "/" + username + ":" + password;
+    DowJonesCredentials credentials = (DowJonesCredentials) x.get("dowjonesCredentials");
+    String authCredentials = credentials.getNamespace() + "/" + credentials.getUsername() + ":" + credentials.getPassword();
     String encodedCredentials = Base64.getEncoder().encodeToString((authCredentials).getBytes());
 
     BufferedReader rd = null;
