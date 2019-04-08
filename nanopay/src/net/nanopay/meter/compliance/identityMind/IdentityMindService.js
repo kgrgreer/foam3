@@ -58,7 +58,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        ConsumerKYCRequest request = IdentityMindRequestGenerator.getConsumerKYCRequest(x, user);
+        IdentityMindRequest request = IdentityMindRequestGenerator.getConsumerKYCRequest(x, user);
         request.setUrl(getBaseUrl() + "/account/consumer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
         request.setStage(stage);

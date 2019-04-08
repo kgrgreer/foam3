@@ -9,8 +9,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class IdentityMindRequestGenerator {
-  public static ConsumerKYCRequest getConsumerKYCRequest(X x, User user) {
-    return new ConsumerKYCRequest.Builder(x)
+  public static IdentityMindRequest getConsumerKYCRequest(X x, User user) {
+    return new IdentityMindRequest.Builder(x)
       .setMan(String.valueOf(user.getId()))
       .setTea(user.getEmail())
       .setIp(getRemoteAddr(x))
