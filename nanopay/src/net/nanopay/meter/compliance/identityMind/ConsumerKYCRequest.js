@@ -56,11 +56,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'bs',
-      documentation: 'Billing state (source user data).'
-    },
-    {
-      class: 'String',
       name: 'phn',
       documentation: 'Customer primary phone number.'
     },
