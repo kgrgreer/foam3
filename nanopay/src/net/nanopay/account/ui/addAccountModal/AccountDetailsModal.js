@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'foam.u2.DetailView',
     'net.nanopay.account.ui.addAccountModal.AccountSettingsRequirementViewModel',
+    'net.nanopay.account.ui.addAccountModal.AccountDetailsViewModel',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
   ],
@@ -30,26 +31,18 @@ foam.CLASS({
           return options;
         }
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'isLiquidityRequired',
-      factory: function() {
-        return this.viewData.isLiquidityRequired ? true : false;
-      },
-      postSet: function( o, n ) {
-        this.viewData.isLiquidityRequired = n;
-      }
     }
   ],
 
   methods: [
     function initE() {
+      console.log(this.viewData);
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
         .start(this.ModalProgressBar, { percentage: 50 }).end()
-        .start(this.DetailView, { data: this.accountSettingsOptions }).end()
         // TODO: Put view model here
+        .start(this.DetailView, { data: this.AccountDetailsViewModel.create() }).end()
+        .start(this.DetailView, { data: this.accountSettingsOptions }).end()
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
         .end()

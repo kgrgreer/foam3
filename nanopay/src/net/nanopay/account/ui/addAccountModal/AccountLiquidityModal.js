@@ -6,8 +6,10 @@ foam.CLASS({
   documentation: 'Modal Sub View for setting liquidity settings for the account',
 
   requires: [
+    'net.nanopay.account.ui.addAccountModal.AccountSettingsLiquidityRulesViewModel',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
-    'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
+    'net.nanopay.account.ui.addAccountModal.ModalProgressBar',
+    'foam.u2.DetailView',
   ],
 
   messages: [
@@ -15,7 +17,6 @@ foam.CLASS({
   ],
 
   properties: [
-
   ],
 
   methods: [
@@ -23,7 +24,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
         .start(this.ModalProgressBar, { percentage: 90 }).end()
-        // TODO: Put view model here
+        .start(this.DetailView, { data: this.AccountSettingsLiquidityRulesViewModel.create() }).end()
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
         .end()

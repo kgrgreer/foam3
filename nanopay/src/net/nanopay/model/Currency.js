@@ -12,6 +12,13 @@ foam.CLASS({
     'foam.util.SafetyUtil'
   ],
 
+  // axioms: [
+  //   {
+  //       class: 'foam.u2.ReferenceLabelAxiom',
+  //       prop: 'alphabeticCode'
+  //   }
+  // ],
+
   properties: [
     {
       class: 'String',
