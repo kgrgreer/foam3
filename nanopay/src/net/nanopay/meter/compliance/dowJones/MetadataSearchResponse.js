@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.dowJones.model',
+  package: 'net.nanopay.meter.compliance.dowJones',
   name: 'MetadataSearchResponse',
 
   documentation: 'Meta data about the search and results from Dow Jones.',

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.dowJones.model',
+  package: 'net.nanopay.meter.compliance.dowJones',
   name: 'DowJonesCredentials',
 
   axioms: [foam.pattern.Singleton.create()],

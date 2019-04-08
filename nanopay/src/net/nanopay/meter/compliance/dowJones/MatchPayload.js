@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.dowJones.model',
+  package: 'net.nanopay.meter.compliance.dowJones',
   name: 'MatchPayload',
 
   documentation: 'Payload response data for a Match in the Dow Jones Risk Database.',
@@ -33,7 +33,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.meter.compliance.dowJones.model.MatchedName',
+      of: 'net.nanopay.meter.compliance.dowJones.MatchedName',
       name: 'matchedName',
       visibility: 'RO'
     },

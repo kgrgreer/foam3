@@ -1,7 +1,7 @@
 package net.nanopay.meter.compliance.dowJones;
 
 import foam.core.*;
-import net.nanopay.meter.compliance.dowJones.model.*;
+import net.nanopay.meter.compliance.dowJones.*;
 
 public abstract class DowJonesMsg
   extends ContextAwareSupport

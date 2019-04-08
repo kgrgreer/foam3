@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.dowJones.model',
+  package: 'net.nanopay.meter.compliance.dowJones',
   name: 'BaseSearchResponse',
-  extends: 'net.nanopay.meter.compliance.dowJones.model.DowJonesCall',
+  extends: 'net.nanopay.meter.compliance.dowJones.DowJonesCall',
 
   documentation: 'Base class model for a search response from the Dow Jones Risk Database.',
 
@@ -13,7 +13,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.meter.compliance.dowJones.model.MetadataSearchResponse',
+      of: 'net.nanopay.meter.compliance.dowJones.MetadataSearchResponse',
       name: 'metadata',
       visibility: 'RO'
     },
@@ -39,7 +39,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.dowJones.model.Match',
+      of: 'net.nanopay.meter.compliance.dowJones.Match',
       name: 'matchs',
       visibility: 'RO'
     }

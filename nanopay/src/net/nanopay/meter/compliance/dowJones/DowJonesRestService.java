@@ -10,7 +10,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
-import net.nanopay.meter.compliance.dowJones.model.*;
+import net.nanopay.meter.compliance.dowJones.*;
 
 // apache
 import org.apache.http.client.HttpClient;
