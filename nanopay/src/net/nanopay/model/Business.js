@@ -14,6 +14,13 @@ foam.CLASS({
 
   documentation: 'Business extends user class & it is the company user for SME',
 
+  tableColumns: [
+    'id',
+    'businessName',
+    'email',
+    'viewAccounts'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -165,6 +172,21 @@ foam.CLASS({
 
         // var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate=&endDate=";
         window.location.assign(url);
+      }
+    },
+    {
+      name: 'viewAccounts',
+      label: 'View Accounts',
+      tableWidth: 135,
+      code: function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          data: X.accountDAO.where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+        });
       }
     }
   ]

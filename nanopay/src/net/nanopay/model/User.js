@@ -28,10 +28,6 @@ foam.CLASS({
     'net.nanopay.onboarding.model.Questionnaire'
   ],
 
-  tableColumns: [
-    'id', 'deleted', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
-  ],
-
   constants: [
     {
       name: 'NAME_MAX_LENGTH',
@@ -400,6 +396,7 @@ foam.CLASS({
       class: 'String',
       visibility: 'RO',
       storageTransient: true,
+      tableWidth: 75,
       getter: function() {
          return this.cls_.name;
       },
@@ -413,7 +410,8 @@ foam.CLASS({
       documentation: 'Indicates deleted user.',
       value: false,
       permissionRequired: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      tableWidth: 85
     },
     {
       class: 'foam.nanos.fs.FileProperty',
