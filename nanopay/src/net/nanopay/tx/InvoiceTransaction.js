@@ -14,28 +14,6 @@ foam.CLASS({
     'net.nanopay.tx.InfoLineItem'
   ],
 
-  tableColumns: [
-    'id',
-    'referenceNumber',
-    'name',
-    'type',
-    'status',
-    'payer',
-    'sourceAccount',
-    'sourceCurrency',
-    'serviceCompleted',
-    'amount',
-    'total',
-    'payee',
-    'destinationAccount',
-    'destinationCurrency',
-    'destinationAmount',
-    'created',
-    'lastModified',
-    'scheduled',
-    'completionDate'
-  ],
-
   properties: [
     {
       class: 'Boolean',
