@@ -17,21 +17,28 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.account.ui.addAccountModal.AccountTypeViewModel',
+      name: 'accountTypeForm',
+      factory: function() {
+        if ( this.viewData.accountTypeForm ) {
+          return this.viewData.accountTypeForm;
+        }
 
+        var form = this.AccountTypeViewModel.create();
+        this.viewData.accountTypeForm = form;
+        return form;
+      }
+    }
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      // Clear this when the user goes back into this screen
-      this.viewData.accountSettingsOptions = null;
-    },
     function initE() {
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
         .start(this.ModalProgressBar, { percentage: 25 }).end()
-        // TODO: Put view model here
-        .start(this.DetailView, { data: this.AccountTypeViewModel.create() }).end()
+        .start(this.DetailView, { data: this.accountTypeForm }).end()
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
         .end()

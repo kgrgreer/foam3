@@ -17,6 +17,20 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.account.ui.addAccountModal.AccountSettingsLiquidityRulesViewModel',
+      name: 'liquidityForm',
+      factory: function() {
+        if ( this.viewData.liquidityForm ) {
+          return this.viewData.liquidityForm;
+        }
+
+        var form = this.AccountSettingsLiquidityRulesViewModel.create();
+        this.viewData.liquidityForm = form;
+        return form;
+      }
+    }
   ],
 
   methods: [
@@ -24,7 +38,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
         .start(this.ModalProgressBar, { percentage: 90 }).end()
-        .start(this.DetailView, { data: this.AccountSettingsLiquidityRulesViewModel.create() }).end()
+        .start(this.DetailView, { data: this.liquidityForm }).end()
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
         .end()
@@ -34,8 +48,16 @@ foam.CLASS({
   actions: [
     {
       name: 'next',
+      isEnabled: function(liquidityForm$errors_) {
+        // TODO: Proper Form Validation REQUIRED
+        if ( liquidityForm$errors_ ) {
+          console.error(liquidityForm$errors_[0][1]);
+          return false;
+        }
+        return true;
+      },
       code: function(X) {
-        X.closeDialog();
+        X.pushToId('submit');
       }
     }
   ]

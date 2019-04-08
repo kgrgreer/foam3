@@ -12,15 +12,23 @@ foam.CLASS({
       height: 2px;
       /* Might have to change this to be dynamic in the future */
       background: #e7eaec;
+      overflow: hidden;
     }
 
     ^progress {
       position: absolute;
       top: 0;
       left: 0;
+      right: 0;
       height: 2px;
       /* Change this to be dynamic during refinements */
       background: #406dea;
+
+      -webkit-transition: all .10s linear;
+      -moz-transition: all .10s linear;
+      -ms-transition: all .10s linear;
+      -o-transition: all .10s linear;
+      transition: all .10s linear;
     }
   `,
 
@@ -30,13 +38,63 @@ foam.CLASS({
       name: 'percentage',
       value: 0,
       documentation: 'The value should be between 0-100'
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'isIndefinite'
+    },
+    'interval'
   ],
 
   methods: [
+    function init() {
+      var self = this;
+      this.onDetach(function() {
+        if ( self.interval != null ) {
+          self.stopAnimation();
+        }
+      });
+    },
+
     function initE() {
+      var self = this;
       this.addClass(this.myClass())
-        .start().addClass(this.myClass('progress')).style({ 'width' : this.percentage$.map(function(v) { return v + '%'; }) }).end();
+        .start()
+          .addClass(this.myClass('progress'))
+          .style({
+            'width' : this.percentage$.map(function(v) { return v + '%'; }),
+            'margin': this.isIndefinite$.map(function(v) { return self.isIndefinite ? '0 auto' : '0'; })
+          })
+        .end();
+      if ( this.isIndefinite ) {
+        this.startAnimation();
+      }
+    },
+
+    function startAnimation() {
+      var self = this;
+      this.interval = setInterval(function() {
+        if ( self.percentage < 100 ) {
+          self.percentage = self.percentage + 10;
+          if ( self.percentage == 100 ) {
+            clearInterval(self.interval);
+            setTimeout(function() {
+              self.percentage = 0;
+              setTimeout(function() {
+                self.startAnimation();
+              }, 100);
+            }, 200);
+          }
+        }
+      }, 100);
+    },
+
+    function stopAnimation() {
+      if ( this.interval ) {
+        clearInterval(this.interval);
+        this.percentage = 100;
+        this.interval = null;
+      }
     }
   ]
 });
