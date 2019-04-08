@@ -578,8 +578,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Account name: " + accountName));
-      list.add(new ListItem("Routing number: " + routingNum));
-      list.add(new ListItem("Institution number: " + institutionNum));
+      if (accountCurrency == "CAD") {
+        list.add(new ListItem("Routing number: " + routingNum));
+        list.add(new ListItem("Institution number: " + institutionNum));
+      } else if (accountCurrency == "USD")  {
+        list.add(new ListItem("Transit number: " + routingNum));
+      }
       list.add(new ListItem("Account number: " + accountNum));
       list.add(new ListItem("Account currency: " + accountCurrency));
       list.add(new ListItem("Company name: " + companyName));
