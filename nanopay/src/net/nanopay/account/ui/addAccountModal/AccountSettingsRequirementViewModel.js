@@ -7,11 +7,13 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'isLimitRequired'
+      name: 'isLimitRequired',
+      label: 'Add transaction limits to this account?'
     },
     {
       class: 'Boolean',
-      name: 'isLiquidityRequired'
+      name: 'isLiquidityRequired',
+      label: 'Add liquidity threshold limits to this account?'
     }
   ]
 });
