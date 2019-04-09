@@ -31,6 +31,13 @@ import org.apache.http.client.config.RequestConfig;
  public class DowJonesRestService
   extends ContextAwareSupport
 {
+  public static final String REST_GET = "GET";
+  public static final String NAME_SEARCH = "name?";
+  public static final String PERSON_NAME_SEARCH = "person-name?";
+  public static final String ENTITY_NAME_SEARCH = "entity-name?";
+  public static final String ID_TYPE_SEARCH = "id-type?";
+
+
   public DowJonesResponseMsg serve(DowJonesRequestMsg msg, String RequestInfo) {
     if ( ! RequestInfo.equals("") ) {
       return baseSearchService(msg);
