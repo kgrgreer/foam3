@@ -63,7 +63,7 @@ foam.CLASS({
         if ( this.viewData.accountSettingsOptions ) {
           return this.viewData.accountSettingsOptions;
         }
-        
+
         var options = this.AccountSettingsRequirementViewModel.create();
         this.viewData.accountSettingsOptions = options;
         return options;
@@ -99,7 +99,6 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        console.log(X.viewData.accountDetailsForm);
         if ( X.viewData.accountDetailsForm.accountName.length === 0 || !X.viewData.accountDetailsForm.accountName.trim() ) {
           // TODO: Error Message
           console.error('Account name required to proceed.');

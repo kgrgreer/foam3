@@ -30,6 +30,10 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'forceBackHidden'
+    },
+    {
       class: 'String',
       name: 'title'
     }
@@ -38,7 +42,10 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start(this.PREVIOUS, { data: this }).addClass(this.myClass('elementAlignment')).show(this.isBackEnabled$).end()
+        .start(this.PREVIOUS, { data: this }).addClass(this.myClass('elementAlignment'))
+          .show(this.isBackEnabled$)
+          .hide(this.forceBackHidden$)
+        .end()
         .start('p').addClass(this.myClass('elementAlignment')).add(this.title$).end()
         .start(this.CLOSE_MODAL).addClass(this.myClass('elementAlignment')).end();
     }
@@ -48,6 +55,10 @@ foam.CLASS({
     {
       name: 'previous',
       label: 'Back',
+      // TODO: There is a bug with this where the action does not hide itself.
+      // isAvailable: function(forceBackHidden) {
+      //   return ! forceBackHidden;
+      // },
       code: function(X) {
         X.subStack.back();
       }
