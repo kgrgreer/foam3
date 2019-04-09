@@ -8,6 +8,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.AggregateAccount',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.ShadowAccount',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
   ],
@@ -92,7 +93,7 @@ foam.CLASS({
       var account;
       switch ( this.viewData.accountTypeForm.accountTypePicker ) {
         case net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT :
-          // TODO: NOT IN DEV
+          account = this.ShadowAccount.create();
           break;
         case net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT :
           account = this.AggregateAccount.create();
@@ -114,7 +115,7 @@ foam.CLASS({
 
       if ( accountType != net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT) {
         // In Liquid, no shadow should have a parent
-        // account.parent = accountDetails.parentAccountPicker;
+        account.parent = accountDetails.parentAccountPicker;
       }
 
       if ( accountType != net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT) {
@@ -126,7 +127,7 @@ foam.CLASS({
 
       if ( accountType == net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT) {
         // Shadow has an associated bank account
-        // account.bank = accountDetails.bankAccountPicker;
+        account.bank = accountDetails.bankAccountPicker;
       }
 
       return account;
