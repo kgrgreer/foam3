@@ -12,6 +12,7 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -118,21 +119,109 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String province = business.getBusinessAddress().getRegionId();
     String country = business.getBusinessAddress().getCountryId();
     String postalCode = business.getBusinessAddress().getPostalCode();
-    String businessPhoneNumber = business.getBusinessPhone().getNumber();
-    BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
-    String industry = businessSector.getName();
-    String baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
+
+    String businessPhoneNumber;
+    if ( business.getBusinessPhone() != null ) {
+      if ( ! SafetyUtil.isEmpty(business.getBusinessPhone().getNumber()) ) {
+        businessPhoneNumber = business.getBusinessPhone().getNumber();
+      } else {
+        businessPhoneNumber = "N/A";
+      }
+    } else {
+      businessPhoneNumber = "N/A";
+    }
+
+    String industry;
+    String businessSectorId;
+
+    if ( business.getBusinessSectorId() != 0) {
+      BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
+      if ( businessSector != null) {
+        industry = businessSector.getName();
+        businessSectorId = String.valueOf(business.getBusinessSectorId());
+      }
+      else {
+        industry = "N/A";
+        businessSectorId = "N/A";
+      }
+    } else {
+      industry = "N/A";
+      businessSectorId = "N/A";
+    }
+
     String isThirdParty = business.getThirdParty() ? "Yes" : "No";
-    String targetCustomers = business.getTargetCustomers();
-    String sourceOfFunds = business.getSourceOfFunds();
+
+    String targetCustomers;
+    if ( ! SafetyUtil.isEmpty(business.getTargetCustomers()) ) {
+      targetCustomers = business.getTargetCustomers();
+    } else {
+      targetCustomers = "N/A";
+    }
+
+    String sourceOfFunds;
+    if ( ! SafetyUtil.isEmpty(business.getSourceOfFunds()) ) {
+      sourceOfFunds = business.getSourceOfFunds();
+    } else {
+      sourceOfFunds = "N/A";
+    }
+
     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
-    String internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
-    String purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
-    String annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount();
-    String annualDomesticVolume = business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume();
-    String annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
-    String firstTradeDateDomestic = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic());
+    String baseCurrency = "";
+    String internationalTransactions;
+    String purposeOfTransactions;
+    String annualDomesticTransactionAmount;
+    String annualDomesticVolume;
+    String annualRevenue;
+    String firstTradeDateDomestic;
+
+    if ( business.getSuggestedUserTransactionInfo() != null ) {
+      internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
+      
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
+        baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
+      } else {
+        purposeOfTransactions = "N/A";
+      }
+
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
+        purposeOfTransactions = business.getSuggestedUserTransactionInfo().getTransactionPurpose();
+      } else {
+        purposeOfTransactions = "N/A";
+      }
+
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount()) ) {
+        annualDomesticTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount();
+      } else {
+        annualDomesticTransactionAmount = "N/A";
+      }
+
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()) ) {
+        annualDomesticVolume = business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume();
+      } else {
+        annualDomesticVolume = "N/A";
+      }
+
+      if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualRevenue()) ) {
+        annualRevenue = business.getSuggestedUserTransactionInfo().getAnnualRevenue();
+      } else {
+        annualRevenue = "N/A";
+      }
+
+      if ( business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic() != null ) {
+        firstTradeDateDomestic = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDateDomestic());
+      } else {
+        firstTradeDateDomestic = "N/A";
+      }
+    } else {
+      internationalTransactions = "N/A";
+      purposeOfTransactions = "N/A";
+      annualDomesticTransactionAmount = "N/A";
+      annualDomesticVolume = "N/A";
+      annualRevenue = "N/A";
+      firstTradeDateDomestic = "N/A";
+      baseCurrency = "N/A";
+    }
 
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
@@ -157,7 +246,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Business Phone Number: " + businessPhoneNumber));
-      list.add(new ListItem("Industry: " + industry + " (" + businessSector.getId() + ") - NAICS"));
+      list.add(new ListItem("Industry: " + industry + " (" + businessSectorId + ") - NAICS"));
       if ( country.equals("US") ) {
         String taxId = business.getTaxIdentificationNumber();
         list.add(new ListItem("Tax Identification Number: " + taxId));
@@ -169,7 +258,16 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Is this a holding company? " + isHoldingCompany));
       list.add(new ListItem("Transaction purpose: " + purposeOfTransactions));
       if ( purposeOfTransactions.equals("Other") ) {
-        String otherPurposeOfTransactions = business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose();
+        String otherPurposeOfTransactions;
+        if ( business.getSuggestedUserTransactionInfo() != null ) {
+          if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose()) ) {
+            otherPurposeOfTransactions = business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose();
+          } else {
+            otherPurposeOfTransactions = "N/A";
+          }
+        } else {
+          otherPurposeOfTransactions = "N/A";
+        }
         list.add(new ListItem("Other transaction purpose: " + otherPurposeOfTransactions));
       }
       list.add(new ListItem("Annual gross sales: " + baseCurrency + " " + annualRevenue));
@@ -186,9 +284,34 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       // if user going to do transactions to the USA, we add International transfers report
       if ( internationalTransactions.equals("Yes") ) {
         String foreignCurrency = baseCurrency.equals("CAD") ? "USD" : "CAD";
-        String annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
-        String annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
-        String firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
+        String annualTransactionAmount;
+        String annualVolume;
+        String firstTradeDate;
+
+        if ( business.getSuggestedUserTransactionInfo() != null ) {
+          if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount()) ) {
+            annualTransactionAmount = business.getSuggestedUserTransactionInfo().getAnnualTransactionAmount();
+          } else {
+            annualTransactionAmount = "N/A";
+          }
+
+          if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getAnnualVolume()) ) {
+            annualVolume = business.getSuggestedUserTransactionInfo().getAnnualVolume();
+          } else {
+            annualVolume = "N/A";
+          }
+
+          if ( business.getSuggestedUserTransactionInfo().getFirstTradeDate() != null ) {
+            firstTradeDate = sdf.format(business.getSuggestedUserTransactionInfo().getFirstTradeDate());
+          } else {
+            firstTradeDate = "N/A";
+          }
+
+        } else {
+          annualTransactionAmount = "N/A";
+          annualVolume = "N/A";
+          firstTradeDate = "N/A";
+        }
 
         list.add(new ListItem("International transfers: "));
         List subList = new List(true, false, 20);
@@ -291,7 +414,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
       list.add(new ListItem("Type of identification: " + identificationType));
-      list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
+      if ( ! identificationType.equals("Passport") && ! SafetyUtil.isEmpty(provinceOfIssue) ) {
+        list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
+      }
       list.add(new ListItem("Country of issue: " + countryOfIssue));
       list.add(new ListItem("Identification number: " + identificationNumber));
       list.add(new ListItem("Issue date: " + issueDate));
