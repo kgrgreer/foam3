@@ -15,7 +15,7 @@ foam.CLASS({
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'java.util.ArrayList',
-    'java.util.List'
+    'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.account.AggregateAccount',
     'net.nanopay.fx.ExchangeRate',
@@ -50,8 +50,8 @@ foam.CLASS({
         var sink = await x.accountDAO.where(
           this.EQ(net.nanopay.account.AggregateAccount.PARENT, this.id)
         ).select();
-        var accounts = sink.array;
-        var list1 = accounts;
+        var accounts = [];
+        var list1 = sink.array;
         while( list1.size() > 0) {
           var next = list1.get(0);
           if (! ( next instanceof net.nanopay.account.AggregateAccount ) ) {
@@ -60,7 +60,7 @@ foam.CLASS({
             ).select().array;
             for( var i = 0; i < childsSink.length; i++ ) {
               if ( ! accounts.contains(childsSink[i]) )
-                list1.add(childsSink[i]);
+                list1.push(childsSink[i]);
             }
           }
           if ( ! accounts.contains(next) )
