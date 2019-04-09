@@ -18,15 +18,20 @@ foam.CLASS({
   ],
   requires: [
     'foam.nanos.auth.User',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoCeilingRule',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoFloorRule'
+    'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRule'
   ],
 
   properties: [
     {
+      class: 'Enum',
+      of: 'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules',
+      name: 'chosenLiquidityThresholdRule',
+      hidden: true
+    },
+    {
       name: 'predicatedLiquiditySettingsDAO',
       hidden: true,
-      // ! ask mike how to grab the 
+      // ! ask how to grab the id from liquiditySettings relationship acount
       expression: function(liquiditySettings$id, liquiditySettingsDAO) {
         // only return other accounts in the business group
         // ! uncomment the line below once we figure this out

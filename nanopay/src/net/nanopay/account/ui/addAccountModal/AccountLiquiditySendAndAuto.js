@@ -20,12 +20,12 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.User',
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoCeilingRule',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoFloorRule'
+    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoFloorRule',
+    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySaveRuleTemplate'
   ],
 
 
   properties: [
-    // ! NEED TO FILTER OUT THE ACCOUNTDAO FOR WITH ONLY USER ID
     {
 
       name: 'whoReceivesPredicatedUserDAO',
@@ -61,6 +61,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'ceilingRuleDetails',
+      label: "",
       expression: function (includeCeilingRule) {
         return includeCeilingRule ? this.AccountLiquiditySendAndAutoCeilingRule.create()  : null;
       },
@@ -73,9 +74,23 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'floorRuleDetails',
+      label: "",
       expression: function (includeFloorRule) {
         return includeFloorRule ? this.AccountLiquiditySendAndAutoFloorRule.create()  : null;
       },
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'isSavedAsTemplate',
+      label: 'Save this threshold rule as a template',
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'saveRuleAsTemplate',
+      label: "",
+      expression: function (isSavedAsTemplate) {
+        return isSavedAsTemplate ? this.AccountLiquiditySaveRuleTemplate.create()  : null;
+      },
+    },
   ]
 });

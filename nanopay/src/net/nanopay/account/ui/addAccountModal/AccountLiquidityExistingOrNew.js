@@ -28,7 +28,6 @@ foam.CLASS({
 
 
   properties: [
-    // ! NEED TO FILTER OUT THE ACCOUNTDAO FOR WITH ONLY USER ID
     {
 
       name: 'whoReceivesPredicatedUserDAO',
@@ -73,7 +72,12 @@ foam.CLASS({
       label: 'Create a new threshold rule for this account',
       documentation: `
         A boolean to indicate if the user is creating a new threshold rule for this account
-      `
+      `,
+      postSet: function(_, n) {
+        if ( n ) {
+          this.isExistingSelected = false;
+        }
+      }
     },
     {
       class: 'Boolean',
@@ -81,7 +85,12 @@ foam.CLASS({
       label: 'Use an existing threshold rule for this account',
       documentation: `
         A boolean to indicate if the user is creating a new threshold rule for this account
-      `
+      `,
+      postSet: function(_, n) {
+        if ( n ) {
+          this.isNewSelected = false;
+        }
+      }
     },
     {
       class: 'FObjectProperty',
@@ -110,26 +119,13 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      name: 'newRuleDetails',
-      expression: function (isNewSelected, chosenLiquidityThresholdRule) {
+      name: 'existingRuleDetails',
+      label: "",
+      expression: function (isExistingSelected, chosenLiquidityThresholdRule) {
         // make a switch here
-        if (!isNewSelected) return null;
-        var view;
-        switch(chosenLiquidityThresholdRule) {
-          case this.LiquidityThresholdRules.NONE:
-            view = null;
-            break;
-          case this.LiquidityThresholdRules.NOTIFY:
-            view = this.AccountLiquiditySendOnly.create();
-            break;
-          case this.LiquidityThresholdRules.NOTIFY_AND_AUTO:
-            view = this.AccountLiquiditySendAndAuto.create();
-            break;
-          default:
-            view = null;
-            break;
-        }
-        return view;
+        return isExistingSelected 
+        ? this.AccountLiquidityExistingRule.create({ chosenLiquidityThresholdRule })
+        : null;
       },
     }
   ]
