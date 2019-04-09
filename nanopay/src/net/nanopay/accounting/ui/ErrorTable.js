@@ -51,7 +51,6 @@ foam.CLASS({
   }
   
   .error-table-container {
-    height: 300px;
     overflow-x: hidden;
     overflow-y: scroll;
   }

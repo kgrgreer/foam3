@@ -4,6 +4,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Long',
+      name: 'id'
+    },
+    {
       class: 'String',
       name: 'invoiceNumber'
     },
@@ -12,7 +16,7 @@ foam.CLASS({
       name: 'Amount'
     },
     {
-      class: 'Date',
+      class: 'String',
       name: 'dueDate'
     }
   ]

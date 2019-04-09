@@ -28,6 +28,7 @@ import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static foam.mlang.MLang.*;
@@ -943,8 +944,10 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
   public InvoiceErrorItem prepareErrorItemFrom(com.xero.model.Invoice invoice) {
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
     InvoiceErrorItem errorItem = new InvoiceErrorItem();
-    errorItem.setDueDate(invoice.getDueDate().getTime());
+    errorItem.setDueDate(format.format(invoice.getDueDate().getTime()));
     errorItem.setInvoiceNumber(invoice.getInvoiceNumber());
     errorItem.setAmount(invoice.getAmountDue() + " " + invoice.getCurrencyCode().value());
 

@@ -36,6 +36,7 @@ import net.nanopay.model.Currency;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -629,8 +630,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     Date dueDate = getDueDateFrom(qInvoice);
     BigDecimal amount  = getTotalAmountFrom(qInvoice);
 
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
     InvoiceErrorItem errorItem = new InvoiceErrorItem();
-    errorItem.setDueDate(dueDate);
+    errorItem.setDueDate(format.format(dueDate));
     errorItem.setInvoiceNumber(qInvoice.getDocNumber());
     errorItem.setAmount(amount.toString() + " " + qInvoice.getCurrencyRef().getValue());
 

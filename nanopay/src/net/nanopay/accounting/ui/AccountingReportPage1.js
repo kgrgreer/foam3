@@ -406,7 +406,8 @@ foam.CLASS({
       code: function() {
         this.stack.push({
           class: 'net.nanopay.accounting.ui.AccountingReportPage2',
-          doSync: true
+          doSync: true,
+          reportResult: this.reportResult
         });
       }
     }
