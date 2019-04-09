@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLiquidityViewModel',
+  name: 'AccountLiquiditySendAndAutoViewModel',
   implements: [
     'foam.mlang.Expressions'
   ],
