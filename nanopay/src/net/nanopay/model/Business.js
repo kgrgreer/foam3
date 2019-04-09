@@ -4,7 +4,12 @@ foam.CLASS({
   extends: 'foam.nanos.auth.User',
 
   imports: [
+    'ctrl',
     'invoiceDAO'
+  ],
+
+  requires: [
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   documentation: 'Business extends user class & it is the company user for SME',
@@ -14,6 +19,10 @@ foam.CLASS({
     'businessName',
     'email',
     'viewAccounts'
+  ],
+
+  messages: [
+    { name: 'COMPLIANCE_REPORT_WARNING', message: ' has not completed the business profile, and cannot generate compliance documents.' }
   ],
 
   properties: [
@@ -143,8 +152,14 @@ foam.CLASS({
   actions: [
     {
       name: 'exportComplianceDocuments',
-      code: async function() {
-        var url = window.location.origin + "/service/ascendantFXReports?userId=" + this.id;
+      code: function() {
+        if ( this.compliance === this.ComplianceStatus.NOTREQUESTED
+          || ! this.onboarded ) {
+          this.ctrl.notify(this.organization + this.COMPLIANCE_REPORT_WARNING);
+          return;
+        }
+        var url = window.location.origin
+          + '/service/ascendantFXReports?userId=' + this.id;
         window.location.assign(url);
       }
     },
@@ -154,25 +169,13 @@ foam.CLASS({
         // Let us assume that we want to search for invoices with a field 3 days before and 3 days after today.
         var sDate = new Date(Date.now() - (1000*60*60*24*3));
         var dDate = new Date(Date.now() + (1000*60*60*24*3));
-        var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate="+sDate+"&endDate="+dDate;
+        var url = window.location.origin
+          + '/service/settlementReports?userId='+ this.id
+          + '&startDate='+ sDate
+          + '&endDate='+ dDate;
 
         // var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate=&endDate=";
         window.location.assign(url);
-      }
-    },
-    {
-      name: 'viewAccounts',
-      label: 'View Accounts',
-      tableWidth: 135,
-      code: function(X) {
-        var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          data: X.accountDAO.where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
-        });
       }
     }
   ]

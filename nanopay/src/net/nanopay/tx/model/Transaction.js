@@ -43,7 +43,6 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.account.Balance'
-
   ],
 
   requires: [
@@ -219,6 +218,7 @@ foam.CLASS({
       value: 'COMPLETED',
       permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
+      tableWidth: 130,
       view: function(args, x) {
         self = this;
         return {
