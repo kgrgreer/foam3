@@ -65,7 +65,6 @@ foam.CLASS({
               }
             }),
             'dueDate',
-            'lastModified',
             'status'
           ],
           contextMenuActions: [
