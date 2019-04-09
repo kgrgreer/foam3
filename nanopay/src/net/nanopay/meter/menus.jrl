@@ -2,7 +2,7 @@ p({"class":"foam.nanos.menu.Menu","id":"operation","label":"Operations","handler
 
 // Payment Operation Views
 p({"class":"foam.nanos.menu.Menu","id":"operation.users","label":"Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userDAO"},"order":1100,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO"},"order":1200,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO","detailView":"net.nanopay.meter.BusinessDetailView"},"order":1200,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.accounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO"},"order":1300,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","createEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":1400,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO"},"order":1500,"parent":"operation"})

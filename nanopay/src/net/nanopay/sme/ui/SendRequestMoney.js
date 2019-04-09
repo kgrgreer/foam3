@@ -56,8 +56,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.ui.LoadingSpinner',
-    'net.nanopay.invoice.model.InvoiceStatus'
+    'net.nanopay.ui.LoadingSpinner'
   ],
 
   axioms: [
@@ -478,12 +477,13 @@ foam.CLASS({
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
             if ( ! this.agent.twoFactorEnabled && this.isPayable && this.permitToPay ) {
-              if ( this.appConfig.mode === this.Mode.TEST ) {
-                // report but don't fail/error
-                this.notify(this.TWO_FACTOR_REQUIRED, 'warning');
-              } else {
+              if ( this.appConfig.mode === this.Mode.PRODUCTION ||
+                   this.appConfig.mode === this.Mode.DEMO ) {
                 this.notify(this.TWO_FACTOR_REQUIRED, 'error');
                 return;
+              } else {
+                // report but don't fail/error - facilitates automated testing
+                this.notify(this.TWO_FACTOR_REQUIRED, 'warning');
               }
            }
             this.populatePayerIdOrPayeeId().then(() => {

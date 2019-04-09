@@ -38,6 +38,12 @@ foam.CLASS({
       value: 'name'
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'userToEmail',
+      documentation: 'The user that is supposed to receive emails for this liquidity Setting'
+    },
+    {
       class: 'Enum',
       of: 'net.nanopay.liquidity.Frequency',
       name: 'cashOutFrequency',
