@@ -56,14 +56,7 @@ foam.CLASS({
               }
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({ label: 'Invoice No.' }),
-            this.Invoice.AMOUNT.clone().copyFrom({
-              tableCellFormatter: function(_, invoice) {
-                self.currencyDAO.find(invoice.destinationCurrency)
-                  .then((currency) => {
-                    this.add(`- ${currency.format(invoice.amount)}`);
-                });
-              }
-            }),
+            'amount',
             'dueDate',
             'status'
           ],

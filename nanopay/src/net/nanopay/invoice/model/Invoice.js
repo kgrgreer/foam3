@@ -234,14 +234,15 @@ foam.CLASS({
       tableCellFormatter: function(value, invoice) {
         // Needed to show amount value for old invoices that don't have destination currency set
         if ( ! invoice.destinationCurrency ) {
-          invoice.destinationCurrency = 'CAD';
+          this.add(value);
         }
-        this.__subContext__.currencyDAO.find(invoice.destinationCurrency)
-            .then(function(currency) {
-              this.start()
-                .add(invoice.destinationCurrency + ' ' + currency.format(value))
-              .end();
-        }.bind(this));
+        this.__subContext__.currencyDAO
+          .find(invoice.destinationCurrency)
+          .then((currency) => {
+            this.start()
+              .add(currency.format(value) + ' ' + invoice.destinationCurrency)
+            .end();
+          });
       },
       tableWidth: 120
     },
