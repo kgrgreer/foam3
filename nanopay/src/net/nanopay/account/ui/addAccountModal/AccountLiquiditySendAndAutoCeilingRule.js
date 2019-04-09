@@ -24,12 +24,13 @@ foam.CLASS({
   
   properties: [
     {
-
       name: 'otherAccountsPredicatedAccountDAO',
       hidden: true,
       expression: function(user$id, accountDAO) {
-        // the owner will be the business
-        return accountDAO.where(this.EQ(this.Account.OWNER, user$id));
+        // only return other accounts in the business group
+        // ! uncomment the line below once we figure this out
+        // return accountDAO.where(this.EQ(this.Account.OWNER, user$id));
+        return accountDAO // ! comment this later on
       }
     },
     {

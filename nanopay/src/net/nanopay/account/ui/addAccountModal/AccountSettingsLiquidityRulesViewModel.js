@@ -8,8 +8,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnly',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAuto'
+    'net.nanopay.account.ui.addAccountModal.AccountLiquidityExistingOrNew',
   ],
 
   properties: [
@@ -31,22 +30,9 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'liquidityThresholdDetails',
       expression: function (liquidityThresholdRules) {
-        let viewModel;
-        switch(liquidityThresholdRules) {
-          case this.LiquidityThresholdRules.NONE:
-            viewModel = null;
-            break;
-          case this.liquidityThresholdRules.NOTIFY:
-            viewModel = this.AccountLiquiditySendOnly.create();
-            break;
-          case this.liquidityThresholdRules.NOTIFY_AND_AUTO:
-            viewModel = this.AccountLiquiditySendAndAuto.create();
-            break;
-          default:
-            viewModel = null;
-            break;
-        }
-        return viewModel;
+        return liquidityThresholdRules === this.LiquidityThresholdRules.NONE 
+        ? null 
+        : this.AccountLiquidityExistingOrNew.create({ chosenLiquidityThresholdRule: liquidityThresholdRules });
       },
       validateObj: function(liquidityThresholdDetails$errors_) {
         if ( liquidityThresholdDetails$errors_ ) {

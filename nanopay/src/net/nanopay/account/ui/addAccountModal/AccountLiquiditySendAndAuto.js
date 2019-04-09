@@ -17,7 +17,6 @@ foam.CLASS({
     'userDAO',
     'user'
   ],
-
   requires: [
     'foam.nanos.auth.User',
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoCeilingRule',

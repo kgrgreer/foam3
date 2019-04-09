@@ -52,15 +52,14 @@ foam.CLASS({
         }
       }
     },
-    // ! NEED TO FILTER OUT THE ACCOUNTDAO FOR WITH ONLY USER ID
     {
       name: 'predicatedAccountDAO',
       hidden: true,
       expression: function(user$id, accountDAO) {
-        // accountDAO = this.accountDAO$.get();
-        // user$id = this.user$.id$
-        // dot('id').get();
-        return accountDAO.where(this.EQ(this.Account.OWNER, user$id));
+        // only return other accounts in the business group
+        // ! uncomment the line below once we figure this out
+        // return accountDAO.where(this.EQ(this.Account.OWNER, user$id));
+        return accountDAO // ! comment this later on
       }
     },
     {
