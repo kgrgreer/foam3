@@ -28,6 +28,11 @@ import foam.mlang.predicate.ContainsIC;
 /**
  * Invoice decorator for dictating and setting up new invoice notifications and emails.
  * Responsible for sending notifications to both internal and external users on invoice create.
+ * Triggers on invoices that send emails are as follows:
+ * 1) invoiceIsBeingPaidButNotComplete
+ * 2) invoiceIsANewRecievable
+ * 3) invoiceNeedsApproval
+ * 4) invoiceIsBeingPaidAndCompleted 
  */
 public class InvoiceNotificationDAO extends ProxyDAO {
 
@@ -115,7 +120,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     return super.put_(x, invoice);
   }
 
-  private void sendEmail(X x, boolean isContact, String emailTemplateName, Long invoiceId, User userBeingSentEmail, HashMap<String, Obj> args, String[] sendToList) {
+  private void sendEmail(X x, boolean isContact, String emailTemplateName, Long invoiceId, User userBeingSentEmail, HashMap<String, Object> args, String[] sendToList) {
     if ( isContact ) {
       args.put("template", emailTemplateName);
       args.put("invoiceId", invoiceId);
@@ -133,7 +138,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     }
   }
 
-  private HashMap<String, Object> populateArgsForEmail(HashMap<String, Obj> args, Invoice invoice, String name, String fromName, boolean dated) {
+  private HashMap<String, Object> populateArgsForEmail(HashMap<String, Object> args, Invoice invoice, String name, String fromName, boolean dated) {
     args = new HashMap<>();
 
     args.put("name", name);
@@ -156,12 +161,13 @@ public class InvoiceNotificationDAO extends ProxyDAO {
 
   private String[] findApproversOftheBusiness(X x) {
     // Need to find all approvers and admins in a business
-    User user = (User) x.get("user");
     DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-    DAO userDAO = (DAO) x.get("localUserDAO");
-    int indexCount = 0;
-    User tempUser = null;
+    PublicUserInfo tempUser = null;
     List<String> listOfApprovers = new ArrayList();
+    User user = (User) x.get("user");
+    if ( user == null ) {
+      ((Logger) x.get("logger")).error("@InvoiceNotificationDAO and context user is null", new Exception());
+    }
 
     // currently the only sme group that can not approve an invoice is employees
     List<UserUserJunction> arrayOfUsersRelatedToBusinss = ((ArraySink) agentJunctionDAO
