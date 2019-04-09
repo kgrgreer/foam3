@@ -11,17 +11,14 @@ foam.CLASS({
 
   exports: [
     'whoReceivesPredicatedUserDAO',
-    'otherAccountsPredicatedAccountDAO'
   ],
   imports: [
     'currencyDAO',
-    'accountDAO',
     'userDAO',
     'user'
   ],
 
   requires: [
-    'net.nanopay.account.Account',
     'foam.nanos.auth.User'
   ],
 
@@ -36,15 +33,6 @@ foam.CLASS({
         // uncomment the line below once we figure this out
         // return user.where(this.EQ(this.User.GROUP, user$group));
         return userDAO; // ! comment this later on
-      }
-    },
-    {
-
-      name: 'otherAccountsPredicatedAccountDAO',
-      hidden: true,
-      expression: function(user$id, accountDAO) {
-        // the owner will be the business
-        return accountDAO.where(this.EQ(this.Account.OWNER, user$id));
       }
     },
     {
