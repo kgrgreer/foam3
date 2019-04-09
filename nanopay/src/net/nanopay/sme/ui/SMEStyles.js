@@ -720,6 +720,18 @@ foam.CLASS({
 
     /* DAO controller */
 
+    td .invoice-attachment-icon {
+      background-image: url("/images/attachment.svg");
+      background-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    td .invoice-attachment-icon:hover {
+      background-image: url("/images/attachment-purple.svg");
+      cursor: pointer;
+    }
+
     .foam-comics-DAOControllerView-top-row .net-nanopay-ui-ActionView {
       width: 158px !important;
       height: 48px !important;

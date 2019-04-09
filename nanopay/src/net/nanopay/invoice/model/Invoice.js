@@ -398,8 +398,25 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'invoiceFile',
+      label: '',
+      tableWidth: 70,
       documentation: 'Original invoice file',
-      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
+      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' },
+      tableCellFormatter: function(files) {
+        // TODO: Handle multiple files.
+        if ( Array.isArray(files) && files.length > 0 ) {
+          this
+            .start('a')
+              .attrs({
+                href: files[0].address,
+                target: '_blank'
+              })
+              .start()
+                .addClass('invoice-attachment-icon')
+              .end()
+            .end();
+        }
+      }
     },
     {
       class: 'Boolean',
