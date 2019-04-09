@@ -757,8 +757,8 @@ foam.CLASS({
       filter: hue-rotate(67deg) saturate(100000000) opacity(65%);
     }
 
-    .foam-comics-DAOControllerView-top-row {
-      margin-bottom: 20px !important;
+    .net-nanopay-sme-SMEController .foam-comics-DAOControllerView-top-row {
+      margin-bottom: 36px;
     }
 
     .foam-comics-DAOControllerView-title-container span {
