@@ -109,13 +109,13 @@ public class InvoiceNotificationDAO extends ProxyDAO {
       }
       // THREE  
       if ( invoiceNeedsApproval ) {
-        args = populateArgsForEmail(args, invoice, payerUser.getFirstName(), payeeUser.label(), true);
-        sendEmail(x, false, emailTemplates[2], invoice.getId(),  payerUser, args, findApproversOftheBusiness(x));
+        args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), "", true);
+        sendEmail(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, findApproversOftheBusiness(x));
       }
       // FOUR 
       if ( invoiceIsBeingPaidAndCompleted ) {
-        args = populateArgsForEmail(args, invoice, payerUser.getFirstName(), payeeUser.label(), false);
-        sendEmail(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payerUser, args, (new String[] { payerUser.getEmail() }) );
+        args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), false);
+        sendEmail(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }) );
       }
     }
     return super.put_(x, invoice);

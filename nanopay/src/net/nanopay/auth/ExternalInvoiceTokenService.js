@@ -62,7 +62,7 @@ foam.CLASS({
       Logger logger = (Logger) getLogger();
 
       try {
-        if ( parameters.get("template") instanceof String && ! SafetyUtil.isEmpty((String)parameters.get("template")) ) 
+        if ( ! (parameters.get("template") instanceof String) || SafetyUtil.isEmpty((String)parameters.get("template")) ) 
           throw new RuntimeException("Required hash map parameters: template");
         
         String template = (String) parameters.get("template");
