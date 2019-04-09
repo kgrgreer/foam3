@@ -555,15 +555,11 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.add(new Paragraph("Bank Information"));
 
       Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
-      String routingNum = null;
+      String branchNum;
       if ( branch != null ) {
-        routingNum = branch.getBranchId();
-      }
-
-      Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
-      String institutionNum = null;
-      if ( institution != null ) {
-        institutionNum = institution.getInstitutionNumber();
+        branchNum = branch.getBranchId();
+      } else {
+        branchNum = "N/A";
       }
 
       String accountNum = bankAccount.getAccountNumber();
@@ -578,11 +574,19 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Account name: " + accountName));
-      if (accountCurrency == "CAD") {
-        list.add(new ListItem("Routing number: " + routingNum));
+      // It is unnecessary to show institution number for US bank accounts
+      if ( accountCurrency.equals("USD") ) {
+        list.add(new ListItem("Routing number: " + branchNum));
+      } else {
+        Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+        String institutionNum;
+        if ( institution != null ) {
+          institutionNum = institution.getInstitutionNumber();
+        } else {
+          institutionNum = "N/A";
+        }
+        list.add(new ListItem("Transit number: " + branchNum));
         list.add(new ListItem("Institution number: " + institutionNum));
-      } else if (accountCurrency == "USD")  {
-        list.add(new ListItem("Transit number: " + routingNum));
       }
       list.add(new ListItem("Account number: " + accountNum));
       list.add(new ListItem("Account currency: " + accountCurrency));
