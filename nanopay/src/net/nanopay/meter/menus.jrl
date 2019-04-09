@@ -30,3 +30,6 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Provid
 //Securefact Responses
 p({"class":"foam.nanos.menu.Menu","id":"operation.sidni","label":"SIDni Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"securefactSIDniDAO"},"order":3300,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.lev","label":"LEV Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"securefactLEVDAO"},"order":3400,"parent":"operation"})
+
+// IdentityMind Responses
+p({"class":"foam.nanos.menu.Menu","id":"operation.identitymind","label":"IdentityMind Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"identityMindResponseDAO"},"order":5000,"parent":"operation"})
