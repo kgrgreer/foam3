@@ -167,7 +167,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
-    String baseCurrency = "";
+    String baseCurrency;
     String internationalTransactions;
     String purposeOfTransactions;
     String annualDomesticTransactionAmount;
@@ -181,7 +181,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
         baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
       } else {
-        purposeOfTransactions = "N/A";
+        baseCurrency = "N/A";
       }
 
       if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
