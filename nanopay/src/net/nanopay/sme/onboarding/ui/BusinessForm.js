@@ -408,10 +408,6 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-
-      this.hasCloseOption = false;
-      this.hasSaveOption = true;
-      this.saveLabel = 'Save and Close';
       this.nextLabel = 'Next';
 
       this.addClass(this.myClass())

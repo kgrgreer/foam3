@@ -38,6 +38,12 @@ foam.CLASS({
       value: 'name'
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'userToEmail',
+      documentation: 'The user that is supposed to receive emails for this liquidity Setting'
+    },
+    {
       class: 'Enum',
       of: 'net.nanopay.liquidity.Frequency',
       name: 'cashOutFrequency',
@@ -66,21 +72,3 @@ foam.CLASS({
   ]
 });
 
-foam.CLASS({
-  package: 'net.nanopay.tx.model',
-  name: 'GroupRefine',
-  refines: 'foam.nanos.auth.Group',
-  requires: [
-    'net.nanopay.liquidity.LiquiditySettings'
-  ],
-  properties: [
-    {
-      name: 'liquiditySettings',
-      class: 'FObjectProperty',
-      of: 'net.nanopay.liquidity.LiquiditySettings',
-      factory: function() {
-        return this.LiquiditySettings.create();
-      }
-    }
-  ]
-});

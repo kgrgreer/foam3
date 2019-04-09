@@ -810,8 +810,8 @@ foam.CLASS({
       background: #fff;
     }
 
-    .foam-u2-view-TableView tbody tr:first-child td {
-      border-top: solid 1px #e2e2e3 !important;
+    .foam-u2-view-TableView thead th {
+      border-bottom: solid 1px #e2e2e3;
     }
 
     .foam-u2-md-overlaydropdown {
@@ -847,10 +847,6 @@ foam.CLASS({
     .foam-u2-view-SimpleSearch p {
       opacity: 0;
       margin: 0px;
-    }
-
-    table {
-      width: 1024px !important;
     }
 
     /* user status styles */

@@ -12,7 +12,6 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.plaid.config.PlaidCredential',
   'net.nanopay.tx.Transfer',
-  'net.nanopay.tx.BalanceHistory',
   'net.nanopay.tx.CompletedTransactionDAO',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
@@ -141,68 +140,39 @@ var classes = [
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
 
-   // integration
-   'net.nanopay.integration.ClientIntegrationService',
-   'net.nanopay.integration.IntegrationCode',
-   'net.nanopay.integration.IntegrationService',
-  'net.nanopay.integration.ResultResponse',
-  'net.nanopay.integration.AccountingBankAccount',
-  'net.nanopay.integration.AccountingContactEmailCache',
+   // accounting
+   'net.nanopay.accounting.ClientIntegrationService',
+   'net.nanopay.accounting.IntegrationCode',
+   'net.nanopay.accounting.IntegrationService',
+   'net.nanopay.accounting.ResultResponse',
+   'net.nanopay.accounting.ResultResponseWrapper',
+   'net.nanopay.accounting.AccountingBankAccount',
+   'net.nanopay.accounting.ContactMismatchPair',
+   'net.nanopay.accounting.ContactMismatchCode',
+   'net.nanopay.accounting.AccountingContactEmailCache',
+   'net.nanopay.accounting.AccountingErrorCodes',
 
-  // xero
-  'net.nanopay.integration.xero.XeroTokenStorage',
-  'net.nanopay.integration.xero.XeroConfig',
-  'net.nanopay.integration.xero.XeroIntegrationService',
-  'net.nanopay.integration.xero.model.XeroContact',
-  'net.nanopay.integration.xero.model.XeroInvoice',
+   // xero
+   'net.nanopay.accounting.xero.XeroToken',
+   'net.nanopay.accounting.xero.XeroConfig',
+   'net.nanopay.accounting.xero.model.XeroContact',
+   'net.nanopay.accounting.xero.model.XeroInvoice',
 
-  // liquidity
+   // liquidity
    'net.nanopay.liquidity.LiquiditySettings',
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
    'net.nanopay.liquidity.Frequency',
 
-  // quick
-  'net.nanopay.integration.quick.QuickConfig',
-  'net.nanopay.integration.quick.QuickIntegrationService',
-  'net.nanopay.integration.quick.QuickOauth',
-  'net.nanopay.integration.quick.QuickTokenStorage',
-  'net.nanopay.integration.quick.model.QuickBank',
-  'net.nanopay.integration.quick.model.QuickContact',
-  'net.nanopay.integration.quick.model.QuickInvoice',
-  'net.nanopay.integration.quick.model.QuickLineItem',
-  'net.nanopay.integration.quick.model.QuickLinkTxn',
-  'net.nanopay.integration.quick.model.QuickPostPayment',
-  'net.nanopay.integration.quick.model.QuickPostBillPayment',
-  'net.nanopay.integration.quick.model.QuickPayment',
-  'net.nanopay.integration.quick.model.QuickPutBank',
-  'net.nanopay.integration.quick.model.QuickQueryAddress',
-  'net.nanopay.integration.quick.model.QuickQueryAttachable',
-  'net.nanopay.integration.quick.model.QuickQueryAttachableEntityReference',
-  'net.nanopay.integration.quick.model.QuickQueryAttachableReference',
-  'net.nanopay.integration.quick.model.QuickQueryAttachableResponse',
-  'net.nanopay.integration.quick.model.QuickQueryAttachables',
-  'net.nanopay.integration.quick.model.QuickQueryBankResponse',
-  'net.nanopay.integration.quick.model.QuickQueryBill',
-  'net.nanopay.integration.quick.model.QuickQueryBillResponse',
-  'net.nanopay.integration.quick.model.QuickQueryBills',
-  'net.nanopay.integration.quick.model.QuickQueryContact',
-  'net.nanopay.integration.quick.model.QuickQueryCurrencyReference',
-  'net.nanopay.integration.quick.model.QuickQueryCustomerResponse',
-  'net.nanopay.integration.quick.model.QuickQueryCustomers',
-  'net.nanopay.integration.quick.model.QuickQueryEMail',
-  'net.nanopay.integration.quick.model.QuickQueryInvoice',
-  'net.nanopay.integration.quick.model.QuickQueryInvoiceResponse',
-  'net.nanopay.integration.quick.model.QuickQueryInvoices',
-  'net.nanopay.integration.quick.model.QuickQueryMetaData',
-  'net.nanopay.integration.quick.model.QuickQueryNameValue',
-  'net.nanopay.integration.quick.model.QuickQueryPhoneNumber',
-  'net.nanopay.integration.quick.model.QuickQueryVendorResponse',
-  'net.nanopay.integration.quick.model.QuickQueryVendors',
+   // quick
+   'net.nanopay.accounting.quickbooks.QuickbooksConfig',
+   'net.nanopay.accounting.quickbooks.QuickbooksOauth',
+   'net.nanopay.accounting.quickbooks.QuickbooksToken',
+   'net.nanopay.accounting.quickbooks.model.QuickbooksContact',
+   'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
-  // 'net.nanopay.fx.interac.model.PayoutOptions',
   'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
   'net.nanopay.fx.interac.model.RequiredAddressFields',
@@ -307,8 +277,6 @@ var classes = [
   'net.nanopay.fx.lianlianpay.model.ReconciliationRecord',
   'net.nanopay.fx.lianlianpay.model.Statement',
   'net.nanopay.fx.lianlianpay.model.StatementRecord',
-  'foam.nanos.auth.UserUserJunction',
-  'net.nanopay.auth.LoginAttempt',
   'net.nanopay.fx.interac.model.ExchangerateApiModel',
   'net.nanopay.fx.interac.model.AcceptRateApiModel',
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
@@ -350,6 +318,8 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
 
   // auth
+  'net.nanopay.auth.LoginAttempt',
+  'net.nanopay.auth.NanopayUserAndGroupAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
 
@@ -500,6 +470,9 @@ var classes = [
   'net.nanopay.meter.test.ComplianceAwareDummy',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
+
+  // settlment Report service
+  'net.nanopay.invoice.InvoiceFilteredSettlementReport',
 ];
 
 var abstractClasses = [
@@ -508,7 +481,7 @@ var abstractClasses = [
 var skeletons = [
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.documents.AcceptanceDocumentService',
-  'net.nanopay.integration.IntegrationService',
+  'net.nanopay.accounting.IntegrationService',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.fx.ExchangeRateInterface',
