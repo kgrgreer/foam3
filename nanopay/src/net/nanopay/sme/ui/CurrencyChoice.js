@@ -129,6 +129,10 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-currencyChoice:hover {
       background: transparent !important;
     }
+    ^ .disabled {
+      filter:grayscale(100%) opacity(60%);
+      cursor: default;
+    }
   `,
 
   properties: [
@@ -165,6 +169,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.mode = this.mode == null ? foam.u2.DisplayMode.RW : this.mode;
       var denominationToFind = this.data ? this.data : this.currentAccount.denomination;
       // Get the default currency and set it as chosenCurrency
       this.filteredDAO.find(denominationToFind)
@@ -180,6 +185,7 @@ foam.CLASS({
           }),
           label$: this.chosenCurrency$.dot('alphabeticCode')
         })
+          .enableClass('disabled', this.mode$.map((mode) => mode === foam.u2.DisplayMode.DISABLED))
           .start('div')
             .addClass(this.myClass('carrot'))
           .end()
@@ -192,6 +198,9 @@ foam.CLASS({
     {
     name: 'currencyChoice',
     label: ' ', // Whitespace is required
+    isEnabled: function(mode) {
+      return ! (mode === foam.u2.DisplayMode.DISABLED);
+    },
     code: function() {
         var self = this;
 

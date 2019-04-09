@@ -157,7 +157,6 @@ foam.CLASS({
       border-color: #f91c1c;
     }
     ^ .disabled {
-      pointer-events:none;
       filter:grayscale(100%) opacity(60%);
     }
     ^ .tooltip {
@@ -220,6 +219,21 @@ foam.CLASS({
     {
       name: 'UNSUPPORTED_CURRENCY2',
       message: ' for this contact'
+    },
+    {
+      name: 'TOOLTIP_TITLE',
+      message: `This field can't be edited.`
+    },
+    {
+      name: 'TOOLTIP_BODY',
+      message: 'Please edit this invoice in your accounting software and sync again.'
+    }
+  ],
+
+  constants: [
+    {
+      name: 'TOOLTIP_WIDTH',
+      value: 320
     }
   ],
 
@@ -286,16 +300,19 @@ foam.CLASS({
     },
      {
       class: 'Boolean',
-      name: 'disabled',
-      value: false
+      name: 'disableAccountingInvoiceFields',
+      value: false,
+      doccumention: `
+      Users should not be able to edit invoice pulled from accounting software on Ablii, as this will
+      cause miss matches between the data on Ablii and the data on the accounting software.`
     },
     {
-      class: 'Int',
+      type: 'Int',
       name: 'xPosition',
       value: 0
     },
      {
-      class: 'Int',
+      type: 'Int',
       name: 'yPosition',
       value: 0
     }
@@ -312,34 +329,39 @@ foam.CLASS({
       } else {
         this.invoice.payeeId = this.user.id;
       }
-      if ( (this.XeroInvoice.isInstance(this.invoice) ||  this.QuickbooksInvoice.isInstance(this.invoice)) && ! this.isPayable ) {
-        this.disabled = true;
-      } else {
-        this.disabled = false;
-      }
+      this.disableAccountingInvoiceFields = ( this.XeroInvoice.isInstance(this.invoice) || this.QuickbooksInvoice.isInstance(this.invoice)) && ! this.isPayable;
+      let displayMode = this.disableAccountingInvoiceFields ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+
       // Listeners to check if receiver or payer is valid for transaction.
       this.invoice$.dot('contactId').sub(this.onContactIdChange);
 
       this.currencyType$.sub(this.onCurrencyTypeChange);
 
       this.addClass(this.myClass()).start()
-        .start().addClass('tooltip').style({ top: this.yPosition$, left: this.xPosition$ }).enableClass('showTooltip', this.showTooltip$)
+        .start()
+          .addClass('tooltip')
+          .style({ top: this.yPosition$, left: this.xPosition$ })
+          .enableClass('showTooltip', this.showTooltip$)
           .start().addClass('no-access-icon')
             .start('img').attrs({ src: 'images/no-access.svg' }).end()
           .end()
-          .start('h3').add(`This field can't be edited.`).end()
-          .start('p').add('Please edit this invoice in your accounting software and sync again.').end()
+          .start('h3').add(this.TOOLTIP_TITLE).end()
+          .start('p').add(this.TOOLTIP_BODY).end()
         .end()
         .start().addClass('input-wrapper')
           .start()
             .addClass('input-label')
             .add(this.contactLabel)
           .end()
-          .start().on('mouseover', this.toggleTooltip).on('mouseout', this.toggleTooltip).on('mousemove', this.setCoordinates)
+          .start()
+            .on('mouseenter', this.toggleTooltip)
+            .on('mouseleave', this.toggleTooltip)
+            .on('mousemove', this.setCoordinates)
             .startContext({ data: this.invoice })
               .start(this.invoice.CONTACT_ID, {
-                action: this.ADD_CONTACT
-              }).enableClass('disabled', this.disabled$)
+                action: this.ADD_CONTACT,
+                mode: displayMode
+              })
                 .enableClass('invalid', this.slot(
                   function(isInvalid, type, showAddBank) {
                     return isInvalid && type === 'payable' && showAddBank;
@@ -372,24 +394,27 @@ foam.CLASS({
         .startContext({ data: this.invoice })
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add('Amount').end()
-              .start().on('mouseover', this.toggleTooltip).on('mouseout', this.toggleTooltip).on('mousemove', this.setCoordinates)
+              .start()
+                .on('mouseenter', this.toggleTooltip)
+                .on('mouseleave', this.toggleTooltip)
+                .on('mousemove', this.setCoordinates)
                 .startContext({ data: this })
-                  .start(this.CURRENCY_TYPE).enableClass('disabled', this.disabled$).enableClass('error-box-outline', this.slot(
-                    function(isInvalid, type, showAddBank) {
-                      return isInvalid && type === 'payable' && ! showAddBank;
-                    }))
+                  .start(this.CURRENCY_TYPE, { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .enableClass('error-box-outline', this.slot( function(isInvalid, type, showAddBank) {
+                        return isInvalid && type === 'payable' && ! showAddBank;
+                      }))
                     .on('click', () => {
-                      this.invoice.destinationCurrency
-                        = this.currencyType.alphabeticCode;
+                      this.invoice.destinationCurrency = this.currencyType.alphabeticCode;
                     })
                   .end()
                 .endContext()
                 .start().addClass('invoice-amount-input')
-                  .start(this.Invoice.AMOUNT).enableClass('error-box', this.slot(
-                    function(isInvalid, type, showAddBank) {
-                      return isInvalid && type === 'payable' && ! showAddBank;
+                  .start(this.Invoice.AMOUNT, { mode: displayMode })
+                    .enableClass('error-box', this.slot( function(isInvalid, type, showAddBank) {
+                      return isInvalid && d === 'payable' && ! showAddBank;
                     }))
-                    .enableClass('disabled', this.disabled$)
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .addClass('invoice-input-box')
                   .end()
                 .end()
@@ -413,9 +438,12 @@ foam.CLASS({
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Invoice Number').end()
-                .start().on('mouseover', this.toggleTooltip).on('mouseout', this.toggleTooltip).on('mousemove', this.setCoordinates)
-                  .start(this.Invoice.INVOICE_NUMBER)
-                    .enableClass('disabled', this.disabled$)
+                .start()
+                  .on('mouseenter', this.toggleTooltip)
+                  .on('mouseleave', this.toggleTooltip)
+                  .on('mousemove', this.setCoordinates)
+                  .start(this.Invoice.INVOICE_NUMBER, { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
                     .addClass('input-field')
                   .end()
@@ -424,11 +452,13 @@ foam.CLASS({
 
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Date issued').end()
-                .start().on('mouseover', this.toggleTooltip).on('mouseout', this.toggleTooltip).on('mousemove', this.setCoordinates)
-                  .start(this.Invoice.ISSUE_DATE.clone().copyFrom({
-                    view: 'foam.u2.DateView'
-                  }))
-                    .enableClass('disabled', this.disabled$).addClass('input-field')
+                .start()
+                  .on('mouseenter', this.toggleTooltip)
+                  .on('mouseleave', this.toggleTooltip)
+                  .on('mousemove', this.setCoordinates)
+                  .start(this.Invoice.ISSUE_DATE.clone().copyFrom({ view: 'foam.u2.DateView' }), { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .addClass('input-field')
                   .end()
                 .end()
               .end()
@@ -445,9 +475,12 @@ foam.CLASS({
 
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Date Due').end()
-                  .start().on('mouseover', this.toggleTooltip).on('mouseout', this.toggleTooltip).on('mousemove', this.setCoordinates)
-                    .start(this.Invoice.DUE_DATE)
-                      .enableClass('disabled', this.disabled$)
+                  .start()
+                    .on('mouseenter', this.toggleTooltip)
+                    .on('mouseleave', this.toggleTooltip)
+                    .on('mousemove', this.setCoordinates)
+                    .start(this.Invoice.DUE_DATE, { mode: displayMode })
+                      .enableClass('disabled', this.disableAccountingInvoiceFields$)
                       .addClass('input-field')
                     .end()
                   .end()
@@ -522,12 +555,12 @@ foam.CLASS({
       this.checkBankAccount();
     },
     function toggleTooltip() {
-      if ( this.disabled ) {
+      if ( this.disableAccountingInvoiceFields ) {
         this.showTooltip = ! this.showTooltip;
       }
     },
     function setCoordinates(e) {
-      this.xPosition = e.clientX -320;
+      this.xPosition = e.clientX - this.TOOLTIP_WIDTH;
       this.yPosition = e.clientY;
     }
   ],
