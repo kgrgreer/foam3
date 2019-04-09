@@ -55,10 +55,13 @@ foam.CLASS({
                 this.add(additiveSubField);
               }
             }),
-            this.Invoice.INVOICE_NUMBER.clone().copyFrom({ label: 'Invoice No.' }),
-            'amount',
-            'dueDate',
-            'status'
+            this.Invoice.INVOICE_NUMBER.clone().copyFrom({
+              label: 'Invoice No.',
+              tableWidth: 145
+            }),
+            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 145 }),
+            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 145 }),
+            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 145 }),
           ],
           contextMenuActions: [
             foam.core.Action.create({
