@@ -467,6 +467,78 @@ foam.CLASS({
     }
   ],
 
+  actions: [
+    {
+      name: 'viewAccounts',
+      label: 'View Accounts',
+      tableWidth: 135,
+      code: function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.businessName}'s Accounts`,
+          data: X.accountDAO.where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+        });
+      }
+    },
+    {
+      name: 'viewTransactions',
+      label: 'View Transactions',
+      tableWidth: 160,
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        var ids = await X.accountDAO
+          .where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+          .select(m.MAP(net.nanopay.account.Account.ID))
+          .then((sink) => sink.delegate.array);
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Transactions`,
+          data: X.transactionDAO.where(
+            m.OR(
+              m.IN(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, ids),
+              m.IN(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, ids)
+            )
+          )
+        });
+      }
+    },
+    {
+      name: 'viewPayables',
+      label: 'View Payables',
+      code: async function(X) {
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Payables`,
+          data: this.expenses
+        });
+      }
+    },
+    {
+      name: 'viewReceivables',
+      label: 'View Receivables',
+      code: async function(X) {
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Receivables`,
+          data: this.sales
+        });
+      }
+    }
+  ],
+
   axioms: [
     {
       buildJavaClass: function(cls) {
