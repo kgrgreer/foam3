@@ -130,7 +130,7 @@ foam.CLASS({
       background: transparent !important;
     }
     ^ .disabled {
-      filter:grayscale(100%) opacity(60%);
+      filter: grayscale(100%) opacity(60%);
       cursor: default;
     }
   `,
@@ -169,7 +169,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.mode = this.mode == null ? foam.u2.DisplayMode.RW : this.mode;
       var denominationToFind = this.data ? this.data : this.currentAccount.denomination;
       // Get the default currency and set it as chosenCurrency
       this.filteredDAO.find(denominationToFind)
@@ -199,7 +198,7 @@ foam.CLASS({
     name: 'currencyChoice',
     label: ' ', // Whitespace is required
     isEnabled: function(mode) {
-      return ! (mode === foam.u2.DisplayMode.DISABLED);
+      return mode !== foam.u2.DisplayMode.DISABLED;
     },
     code: function() {
         var self = this;

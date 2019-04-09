@@ -302,9 +302,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'disableAccountingInvoiceFields',
       value: false,
-      doccumention: `
+      documentation: `
       Users should not be able to edit invoice pulled from accounting software on Ablii, as this will
-      cause miss matches between the data on Ablii and the data on the accounting software.`
+      cause mismatches between the data on Ablii and the data on the accounting software.`,
+      expression: function() {
+        return ( this.XeroInvoice.isInstance(this.invoice) || this.QuickbooksInvoice.isInstance(this.invoice)) && ! this.isPayable;
+      }
     },
     {
       type: 'Int',
@@ -329,7 +332,6 @@ foam.CLASS({
       } else {
         this.invoice.payeeId = this.user.id;
       }
-      this.disableAccountingInvoiceFields = ( this.XeroInvoice.isInstance(this.invoice) || this.QuickbooksInvoice.isInstance(this.invoice)) && ! this.isPayable;
       let displayMode = this.disableAccountingInvoiceFields ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
       // Listeners to check if receiver or payer is valid for transaction.
@@ -412,7 +414,7 @@ foam.CLASS({
                 .start().addClass('invoice-amount-input')
                   .start(this.Invoice.AMOUNT, { mode: displayMode })
                     .enableClass('error-box', this.slot( function(isInvalid, type, showAddBank) {
-                      return isInvalid && d === 'payable' && ! showAddBank;
+                      return isInvalid && type === 'payable' && ! showAddBank;
                     }))
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .addClass('invoice-input-box')
