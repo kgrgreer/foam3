@@ -6,7 +6,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'handle',
-      documentation: `Properly handle a transaction, based on whether this account is the source or destination.
+      documentation: `Properly handle a transaction, based on whether this accountified object is the source or destination.
        Case 1: forwarding txns: return the same txn with child txn(s)
        Case 2: funding txns: return the same txn with parent txn(s?) set for this txn.
        Case 3: nothing happens: return the same txn`,
