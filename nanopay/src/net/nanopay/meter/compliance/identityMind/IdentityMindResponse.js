@@ -42,14 +42,6 @@ foam.CLASS({
       label: 'Previous reputation'
     },
     {
-      class: 'Map',
-      name: 'ednaScoreCard',
-      label: 'eDNA score card',
-      view: {
-        class: 'foam.u2.view.AnyView'
-      }
-    },
-    {
       class: 'String',
       name: 'frn',
       documentation: 'Name of the fraud rule that fired.',
@@ -102,6 +94,14 @@ foam.CLASS({
       name: 'rcd',
       documentation: 'The set of result codes from the evaluation of the current transaction.',
       label: 'Result codes'
+    },
+    {
+      class: 'Map',
+      name: 'ednaScoreCard',
+      label: 'eDNA score card',
+      view: {
+        class: 'foam.u2.view.AnyView'
+      }
     }
   ]
 });
