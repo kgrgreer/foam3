@@ -8,7 +8,7 @@ foam.ENUM({
 
     values: [
         { name: "NONE", label: 'Select a rule' },
-        { name: "SEND", label: 'Send notifications' },
-        { name: "SEND_AND_AUTO", label: 'Send notifications & automatic transactions' },
+        { name: "NOTIFY", label: 'Send notifications' },
+        { name: "NOTIFY_AND_AUTO", label: 'Send notifications & automatic transactions' },
     ]
 });

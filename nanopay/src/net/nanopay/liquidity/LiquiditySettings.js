@@ -69,6 +69,19 @@ foam.CLASS({
         return net.nanopay.liquidity.Liquidity.create();
       }
     }
+  ],
+  methods: [
+    {
+      name: 'toSummary',
+      documentation: `
+        When using a reference to the accountDAO, the labels associated to it will show a chosen property
+        rather than the first alphabetical string property. In this case, we are using the account name.
+      `,
+      code: function(x) {
+        var self = this;
+        return this.name;
+      },
+    },
   ]
 });
 
