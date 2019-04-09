@@ -63,7 +63,7 @@ foam.CLASS({
         if ( this.viewData.accountSettingsOptions ) {
           return this.viewData.accountSettingsOptions;
         }
-        
+
         var options = this.AccountSettingsRequirementViewModel.create();
         this.viewData.accountSettingsOptions = options;
         return options;
@@ -99,20 +99,13 @@ foam.CLASS({
         return true;
       },
       code: function(X) {
-        console.log(X.viewData.accountDetailsForm);
-        if ( X.viewData.accountDetailsForm.accountName.length === 0 || !X.viewData.accountDetailsForm.accountName.trim() ) {
-          // TODO: Error Message
-          console.error('Account name required to proceed.');
-          return;
-        }
-
-        if ( !X.viewData.accountDetailsForm.countryPicker ) {
-          console.error('Account Country required to proceed.');
-          return;
-        }
-
         // Need to do a check if limits are required
-        X.viewData.accountSettingsOptions.isLimitRequired ? X.pushToId('limits') : X.viewData.accountSettingsOptions.isLiquidityRequired ? X.pushToId('liquidity') : X.pushToId('submit');
+        var accountSettings = X.viewData.accountSettingsOptions;
+        if ( accountSettings ) {
+          accountSettings.isLimitRequired ? X.pushToId('limits') : accountSettings.isLiquidityRequired ? X.pushToId('liquidity') : X.pushToId('submit');
+          return;
+        }
+        X.pushToId('submit');
       }
     }
   ]

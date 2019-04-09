@@ -25,9 +25,18 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isBackEnabled',
-      expression: function(subStack$pos) {
-        return subStack$pos > 0;
+      expression: function(subStack$pos, forceHideBack) {
+        // If forceHideBack is enforced, hide back button
+        return forceHideBack ? ! forceHideBack : subStack$pos > 0 ;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'forceHideBack'
+    },
+    {
+      class: 'Boolean',
+      name: 'forceHideClose'
     },
     {
       class: 'String',
@@ -38,9 +47,11 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start(this.PREVIOUS, { data: this }).addClass(this.myClass('elementAlignment')).show(this.isBackEnabled$).end()
+        .start(this.PREVIOUS, { data: this }).addClass(this.myClass('elementAlignment'))
+          .show(this.isBackEnabled$)
+        .end()
         .start('p').addClass(this.myClass('elementAlignment')).add(this.title$).end()
-        .start(this.CLOSE_MODAL).addClass(this.myClass('elementAlignment')).end();
+        .start(this.CLOSE_MODAL).addClass(this.myClass('elementAlignment')).hide(this.forceHideClose$).end();
     }
   ],
 
@@ -48,6 +59,10 @@ foam.CLASS({
     {
       name: 'previous',
       label: 'Back',
+      // TODO: There is a bug with this where the action does not hide itself.
+      // isAvailable: function(forceHideBack) {
+      //   return ! forceHideBack;
+      // },
       code: function(X) {
         X.subStack.back();
       }
@@ -55,6 +70,10 @@ foam.CLASS({
     {
       name: 'closeModal',
       label: 'Close',
+      // TODO: There is a bug with this where the action does not hide itself.
+      // isAvailable: function(forceHideClose) {
+      //   return ! forceHideClose;
+      // },
       code: function(X) {
         X.closeDialog();
       }

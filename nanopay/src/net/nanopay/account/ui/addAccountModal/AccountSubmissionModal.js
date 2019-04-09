@@ -18,7 +18,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Creating your account...' }
+    { name: 'TITLE_1', message: 'Creating your account...' },
+    { name: 'TITLE_2', message: 'Your new account has been successfully created!' }
   ],
 
   properties: [
@@ -27,13 +28,35 @@ foam.CLASS({
       name: 'percentage',
       value: 0
     },
+    {
+      class: 'Boolean',
+      name: 'isUploading',
+      value: true
+    },
+    {
+      class: 'String',
+      name: 'title',
+      factory: function() {
+        return this.TITLE_1;
+      }
+    },
     'progressBar'
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+
+      var self = this;
+      this.onDetach(this.isUploading$.sub(function(){
+        // TODO: Make this more robust to handle more situations
+        self.title = self.isUploading ? self.TITLE_1 : self.TITLE_2;
+      }));
+    },
+
     function initE() {
       this.addClass(this.myClass())
-        .start(this.ModalTitleBar, { title: this.TITLE }).end()
+        .start(this.ModalTitleBar, { title$: this.title$, forceHideBack: true, forceHideClose: true }).end()
         .start(this.ModalProgressBar, { isIndefinite: true }, this.progressBar$).end()
         .start().addClass(this.myClass('outer-ring')) // Margin for outer ring + border + padding for inner circle
           .start().addClass(this.myClass('inner-ring')) // Inner circle
@@ -43,8 +66,26 @@ foam.CLASS({
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
         .end();
+      this.submitInformation();
+    },
 
+    async function submitInformation() {
+      var uploadedAccount = await this.uploadAccount();
 
+      if ( this.viewData.accountLimitForm ) {
+        // accountLimits are being specified. Apply.
+        var maximumTransactionLimit = this.viewData.accountLimitForm.maxTransactionSize;
+        // TODO: Apply account transaction limit
+      }
+      // TODO: Put LiquiditySettings into DAO and bind it to this account;
+
+      this.progressBar.stopAnimation();
+      this.isUploading = false;
+    },
+
+    async function uploadAccount() {
+      var uploadedAccount = await this.accountDAO.put(this.createAccount());
+      return uploadAccount;
     },
 
     function createAccount() {
@@ -62,21 +103,43 @@ foam.CLASS({
       }
 
       // TODO: Please allow user to set the owner of account
-      account.owner = user;
+      account.owner = this.user.id;
 
+      var accountType = this.viewData.accountTypeForm.accountTypePicker
       var accountDetails = this.viewData.accountDetailsForm;
+
       account.name = accountDetails.accountName;
-      account.country = accountDetails.countryPicker
-      account.denomination = accountDetails.currencyPicker;
       // TODO: Add memo to account (currently doesn't currently have the property)
       account.desc = accountDetails.memo;
 
+      if ( accountType != net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT) {
+        // In Liquid, no shadow should have a parent
+        // account.parent = accountDetails.parentAccountPicker;
+      }
+
+      if ( accountType != net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT) {
+        // Aggregate accounts do not need country or denomination
+        // but both Shadow and Virtual require them
+        account.country = accountDetails.countryPicker;
+        account.denomination = accountDetails.currencyPicker;
+      }
+
+      if ( accountType == net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT) {
+        // Shadow has an associated bank account
+        // account.bank = accountDetails.bankAccountPicker;
+      }
+
+      return account;
     }
   ],
 
   actions: [
     {
       name: 'next',
+      label: 'Finish',
+      isEnabled: function(isUploading) {
+        return ! isUploading;
+      },
       code: function(X) {
         X.closeDialog();
       }
