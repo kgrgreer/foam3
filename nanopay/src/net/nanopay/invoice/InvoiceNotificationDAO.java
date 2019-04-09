@@ -10,6 +10,7 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.auth.token.TokenService;
 import foam.nanos.auth.UserUserJunction;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.util.SafetyUtil;
