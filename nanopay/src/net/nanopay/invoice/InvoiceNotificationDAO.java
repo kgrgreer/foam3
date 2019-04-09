@@ -47,7 +47,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     // Gathering Variables and checking null objects
-    if ( obj == null ) return obj;
+    if ( obj == null || ((Invoice) obj).getStatus() == null ) return obj;
 
     Invoice invoice  = (Invoice) obj;
     Invoice oldInvoice = (Invoice) super.find(invoice.getId());
@@ -58,9 +58,8 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     InvoiceStatus newInvoiceStatus = invoice.getStatus();
     InvoiceStatus oldInvoiceStatus = oldInvoice != null ? oldInvoice.getStatus() : null;
 
-    if ( newInvoiceStatus == null ) return obj;
-
     // Various condition checks
+    boolean isARecievable = invoice.getCreatedBy() == invoice.getPayeeId();
     boolean invoiceIsBeingPaidButNotComplete = 
       (
         oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PENDING
@@ -69,131 +68,90 @@ public class InvoiceNotificationDAO extends ProxyDAO {
         newInvoiceStatus == InvoiceStatus.PENDING
       ) && 
       invoice.getPaymentDate() != null;
-
     boolean invoiceIsBeingPaidAndCompleted = 
       ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PAID )
       &&
         newInvoiceStatus == InvoiceStatus.PAID
       && 
       invoice.getPaymentDate() != null;
-
     boolean invoiceNeedsApproval = 
         ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PENDING_APPROVAL )
       &&
         newInvoiceStatus == InvoiceStatus.PENDING_APPROVAL;
-
     boolean invoiceIsARecievable = 
       ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.UNPAID ) 
       &&
         newInvoiceStatus == InvoiceStatus.UNPAID
       &&
-      invoice.getCreatedBy() == invoice.getPayeeId();
+      isARecievable;
 
     // Performing Actions based on whats been set to true.
-    if ( invoiceIsBeingPaidButNotComplete || invoiceIsBeingPaidAndCompleted || invoiceNeedsApproval || invoiceIsARecievable ) {
-
-        // AppConfig appConfig = (AppConfig) x.get("appConfig");
-
-        String[] emailTemplate = { "payable", "receivable", "invoice-approval-email", "payment-made-complete-email" };
-        EmailService emailService = (EmailService) x.get("email");
-        EmailMessage message = null;
-        HashMap<String, Object> args = null;
-        boolean invoiceIsToAnExternalUser = invoice.getExternal();
+    if ( invoiceIsBeingPaidButNotComplete || invoiceIsARecievable || invoiceNeedsApproval || invoiceIsBeingPaidAndCompleted ) {
+      String[] emailTemplates = { "payable", "receivable", "invoice-approval-email", "invoice-transaction-completed" };
+      HashMap<String, Object> args = null;
+      boolean invoiceIsToAnExternalUser = invoice.getExternal();
 
       // ONE
       if ( invoiceIsBeingPaidButNotComplete ) {
-        // Email going to the payeeUser
-        Group group = (Group) payeeUser.findGroup(x);
-        AppConfig appConfig = group.getAppConfig(x);
-        
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-      
-        args = new HashMap<>();
-        args.put("name", payeeUser.getFirstName());
-        args.put("fromName", payerUser.label());
-        args.put("account", invoice.getInvoiceNumber());
-        args.put("date", dateFormat.format(invoice.getDueDate()));
-
-        String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
-          .format(invoice.getAmount());
-
-        args.put("currency", invoice.getDestinationCurrency());
-        args.put("amount", amount);
-
-        if ( invoiceIsToAnExternalUser ) {
-          args.put("template", emailTemplate[0]);
-          args.put("invoiceId", invoice.getId());
-          externalToken.generateTokenWithParameters(x, payeeUser, args);
-        } else {
-          args.put("link", appConfig.getUrl().replaceAll("/$", ""));
-          message = new EmailMessage.Builder(x)
-            .setTo(new String[] { payeeUser.getEmail() })
-            .build();
-          emailService.sendEmailFromTemplate(x, payeeUser, message, emailTemplate[0], args);
-        }
+        args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), true);
+        sendEmail(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }) );
       }
-
       // TWO
       if ( invoiceIsARecievable ) {
-        // Email going to the payerUser
-        Group group = (Group) payerUser.findGroup(x);
-        AppConfig appConfig = group.getAppConfig(x);
-        
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-      
-        args = new HashMap<>();
-        args.put("name", payerUser.getFirstName());
-        args.put("fromName", payeeUser.label());
-        args.put("account", invoice.getInvoiceNumber());
-        args.put("date", dateFormat.format(invoice.getDueDate()));
-
-        String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
-          .format(invoice.getAmount());
-
-        args.put("currency", invoice.getDestinationCurrency());
-        args.put("amount", amount);
-
-        if ( invoiceIsToAnExternalUser ) {
-          args.put("template", emailTemplate[1]);
-          args.put("invoiceId", invoice.getId());
-          externalToken.generateTokenWithParameters(x, payerUser, args);
-        } else {
-          args.put("link", appConfig.getUrl().replaceAll("/$", ""));
-          message = new EmailMessage.Builder(x)
-            .setTo(new String[] { payerUser.getEmail() })
-            .build();
-          emailService.sendEmailFromTemplate(x, payerUser, message, emailTemplate[1], args);
-        }
+        args = populateArgsForEmail(args, invoice, payerUser.getFirstName(), payeeUser.label(), true);
+        sendEmail(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, (new String[] { payerUser.getEmail() }) );
       }
-
       // THREE  
       if ( invoiceNeedsApproval ) {
-        // Email going to the Approvers of created by 
-        Group group = (Group) payerUser.findGroup(x);
-        AppConfig appConfig = group.getAppConfig(x);
-        
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-      
-        args = new HashMap<>();
-        args.put("name", payerUser.getFirstName());
-        args.put("fromName", payeeUser.label());
-        args.put("account", invoice.getInvoiceNumber());
-        args.put("date", dateFormat.format(invoice.getDueDate()));
-
-        String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
-          .format(invoice.getAmount());
-
-        args.put("currency", invoice.getDestinationCurrency());
-        args.put("amount", amount);
-        args.put("link", appConfig.getUrl().replaceAll("/$", ""));
-
-        message = new EmailMessage.Builder(x)
-            .setTo(findApproversOftheBusiness(x))
-            .build();
-        emailService.sendEmailFromTemplate(x, payerUser, message, emailTemplate[2], args);
+        args = populateArgsForEmail(args, invoice, payerUser.getFirstName(), payeeUser.label(), true);
+        sendEmail(x, false, emailTemplates[2], invoice.getId(),  payerUser, args, findApproversOftheBusiness(x));
+      }
+      // FOUR 
+      if ( invoiceIsBeingPaidAndCompleted ) {
+        args = populateArgsForEmail(args, invoice, payerUser.getFirstName(), payeeUser.label(), false);
+        sendEmail(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payerUser, args, (new String[] { payerUser.getEmail() }) );
       }
     }
     return super.put_(x, invoice);
+  }
+
+  private void sendEmail(X x, boolean isContact, String emailTemplateName, Long invoiceId, User userBeingSentEmail, HashMap<String, Obj> args, String[] sendToList) {
+    if ( isContact ) {
+      args.put("template", emailTemplateName);
+      args.put("invoiceId", invoiceId);
+      externalToken.generateTokenWithParameters(x, userBeingSentEmail, args);
+    } else {
+      EmailService emailService = (EmailService) x.get("email");
+      Group group = (Group) userBeingSentEmail.findGroup(x);
+      AppConfig appConfig = group.getAppConfig(x);
+
+      args.put("link", appConfig.getUrl().replaceAll("/$", ""));
+      EmailMessage message = new EmailMessage.Builder(x)
+        .setTo(sendToList)
+        .build();
+      emailService.sendEmailFromTemplate(x, userBeingSentEmail, message, emailTemplateName, args);
+    }
+  }
+
+  private HashMap<String, Object> populateArgsForEmail(HashMap<String, Obj> args, Invoice invoice, String name, String fromName, boolean dated) {
+    args = new HashMap<>();
+
+    args.put("name", name);
+    args.put("fromName", fromName);
+    args.put("account", invoice.getInvoiceNumber());
+
+    String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
+      .format(invoice.getAmount());
+
+    args.put("currency", invoice.getDestinationCurrency());
+    args.put("amount", amount);
+
+    if ( dated ) {
+      SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
+      args.put("date", dateFormat.format(invoice.getDueDate()));
+    }
+
+    return args;
   }
 
   private String[] findApproversOftheBusiness(X x) {
@@ -218,7 +176,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
         ).select(new ArraySink())).getArray();
 
     for ( UserUserJunction obj : arrayOfUsersRelatedToBusinss ) {
-      tempUser = (User) userDAO.find(obj.getSourceId());
+      tempUser = (PublicUserInfo) obj.getPartnerInfo();
       listOfApprovers.add((tempUser != null ? tempUser.getEmail() : ""));
     }
 
