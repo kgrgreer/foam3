@@ -397,9 +397,6 @@ foam.CLASS({
     { name: 'ADDRESS_HEADING', message: 'Signing officer contact information' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
-    { name: 'CANADIAN_BOX_ONE', message: 'I acknowledge that I have read and accept the above Tri-Party Agreement for Ablii Payment Services - Canada Agreement' },
-    { name: 'CANADIAN_BOX_TWO', message: 'I acknowledge that I have read and accept the above Dual Party Agreement for Ablii Canadian Only Payment Services Agreement' },
-    { name: 'AMERICAN_BOX', message: 'I acknowledge that I have read and accept the above Tri-Party Agreement for Ablii Payment Services - United States “US” Agreement' },
     {
       name: 'DOMESTIC_QUESTION',
       message: `Are you a domestic or foreign Politically Exposed Person (PEP),
@@ -496,6 +493,7 @@ foam.CLASS({
           .start(this.IDENTIFICATION).end()
           // Terms and Services and Compliance stuff
             .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' })
+              .show(this.isCanadian$)
               .start('a').addClass('sme').addClass('link')
                 .addClass(this.myClass('terms-link'))
                 .add('Download or Print this Agreement Here')
@@ -504,8 +502,9 @@ foam.CLASS({
                   window.open(link);
                 })
               .end()
-            .show(this.isCanadian$).end()
+            .end()
             .start(this.DUAL_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px' })
+              .show(this.isCanadian$)
               .start('a').addClass('sme').addClass('link')
                 .addClass(this.myClass('terms-link'))
                 .add('Download or Print this Agreement Here')
@@ -514,8 +513,9 @@ foam.CLASS({
                   window.open(link);
                 })
               .end()
-            .show(this.isCanadian$).end()
+            .end()
             .start(this.TRI_PARTY_AGREEMENT_USD).style({ 'margin-top': '30px' })
+              .hide(this.isCanadian$)
               .start('a').addClass('sme').addClass('link')
                 .addClass(this.myClass('terms-link'))
                 .add('Download or Print this Agreement Here')
@@ -524,7 +524,7 @@ foam.CLASS({
                   window.open(link);
                 })
               .end()
-            .hide(this.isCanadian$).end()
+            .end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
               .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
             .end()
