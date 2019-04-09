@@ -34,6 +34,19 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.SUPER();
+      var self = this;
+      this.onDetach(this.accountTypeForm$.dot('accountTypePicker').sub(function() {
+        if ( self.accountTypeForm.accountTypePicker !=  self.viewData.previousTypeSelected ) {
+          self.viewData.accountDetailsForm = null;
+          self.viewData.accountSettingsOptions = null;
+        }
+
+        // Purely for UX tracking
+        self.viewData.previousTypeSelected = self.accountTypeForm.accountTypePicker
+      }));
+    },
     function initE() {
       this.addClass(this.myClass())
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
@@ -48,6 +61,15 @@ foam.CLASS({
   actions: [
     {
       name: 'next',
+      isEnabled: function(accountTypeForm$errors_) {
+        // TODO: Proper Form Validation REQUIRED
+        if ( accountTypeForm$errors_ ) {
+          console.error(accountTypeForm$errors_[0][1]);
+          return false;
+        }
+
+        return true;
+      },
       code: function(X) {
         X.pushToId('details');
       }

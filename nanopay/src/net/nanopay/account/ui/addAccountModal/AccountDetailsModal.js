@@ -7,7 +7,9 @@ foam.CLASS({
 
   requires: [
     'foam.u2.DetailView',
-    'net.nanopay.account.ui.addAccountModal.AccountDetailsViewModel',
+    'net.nanopay.account.ui.addAccountModal.ShadowAccountViewModel',
+    'net.nanopay.account.ui.addAccountModal.VirtualAccountViewModel',
+    'net.nanopay.account.ui.addAccountModal.AggregateAccountViewModel',
     'net.nanopay.account.ui.addAccountModal.AccountSettingsRequirementViewModel',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
@@ -19,15 +21,31 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'isAggregate',
+      expression: function(viewData) {
+        return viewData.accountTypeForm.accountTypePicker == net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT;
+      }
+    },
+    {
       class: 'FObjectProperty',
-      of: 'net.nanopay.account.ui.addAccountModal.AccountDetailsViewModel',
       name: 'accountDetailsForm',
       factory: function() {
         if ( this.viewData.accountDetailsForm ) {
           return this.viewData.accountDetailsForm;
         }
-
-        var form = this.AccountDetailsViewModel.create();
+        var form;
+        switch (this.viewData.accountTypeForm.accountTypePicker) {
+          case net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT :
+            form = this.ShadowAccountViewModel.create();
+            break;
+          case net.nanopay.account.ui.addAccountModal.AccountType.VIRTUAL_ACCOUNT :
+            form = this.VirtualAccountViewModel.create();
+            break;
+          case net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT :
+            form = this.AggregateAccountViewModel.create();
+            break;
+        }
         this.viewData.accountDetailsForm = form;
         return form;
       }
@@ -37,10 +55,15 @@ foam.CLASS({
       of: 'net.nanopay.account.ui.addAccountModal.AccountSettingsRequirementViewModel',
       name: 'accountSettingsOptions',
       factory: function() {
+        if ( this.isAggregate ) {
+          this.viewData.accountSettingsOptions = null;
+          return null;
+        }
+
         if ( this.viewData.accountSettingsOptions ) {
           return this.viewData.accountSettingsOptions;
         }
-
+        
         var options = this.AccountSettingsRequirementViewModel.create();
         this.viewData.accountSettingsOptions = options;
         return options;
@@ -54,7 +77,9 @@ foam.CLASS({
         .start(this.ModalTitleBar, { title: this.TITLE }).end()
         .start(this.ModalProgressBar, { percentage: 50 }).end()
         .start(this.DetailView, { data: this.accountDetailsForm }).end()
-        .start(this.DetailView, { data: this.accountSettingsOptions }).end()
+        .callIf(!this.isAggregate, function() {
+          this.start(this.DetailView, { data: this.accountSettingsOptions }).end();
+        })
         .start() //This is where the next button container is
           .start(this.NEXT, { data: this }).end()
         .end()

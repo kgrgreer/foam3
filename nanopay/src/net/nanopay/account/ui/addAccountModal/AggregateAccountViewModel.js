@@ -1,23 +1,22 @@
 foam.CLASS({
   package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountDetailsViewModel',
+  name: 'AggregateAccountViewModel',
+
   implements: [
     'foam.mlang.Expressions'
   ],
 
   documentation: `
-  A view model for the account details on Liquid
+    A view model for the aggregate account details on Liquid
   `,
 
   exports: [
     'predicatedAccountDAO'
   ],
+
   imports: [
-    'currencyDAO',
     'accountDAO',
-    'countryDAO',
-    'user',
-    'viewData'
+    'user'
   ],
 
   requires: [
@@ -37,25 +36,8 @@ foam.CLASS({
         }
       }
     },
-
-    {
-      name: 'countryPicker',
-      class: 'Reference',
-      label: 'Country',
-      of: 'foam.nanos.auth.Country',
-      documentation: `
-        A picker to choose countries from the countryDAO
-      `,
-      validateObj: function(countryPicker) {
-        if ( ! countryPicker ) {
-          return 'Account country required before proceeding.';
-        }
-      }
-    },
-
     // ! NEED TO FILTER OUT THE ACCOUNTDAO FOR WITH ONLY USER ID
     {
-
       name: 'predicatedAccountDAO',
       hidden: true,
       expression: function(user$id, accountDAO) {
@@ -66,9 +48,9 @@ foam.CLASS({
       }
     },
     {
-      name: 'parentAccountPicker',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
+      name: 'parentAccountPicker',
       targetDAOKey: 'predicatedAccountDAO',
       documentation: `
         A picker to choose parent accounts based on the
@@ -78,22 +60,8 @@ foam.CLASS({
       // TODO: REQUIRED DEPENDING ON TYPE OF ACCOUNT
     },
     {
-      name: 'currencyPicker',
-      class: 'Reference',
-      label: 'Currency',
-      of: 'net.nanopay.model.Currency',
-      documentation: `
-        A picker to choose a currency for the account from the currencyDAO
-      `,
-      validateObj: function(currencyPicker) {
-        if ( ! currencyPicker ) {
-          return 'Account currency required before proceeding.';
-        }
-      }
-    },
-    {
-      name: 'memo',
       class: 'String',
+      name: 'memo',
       documentation: `
         A text area for the user to write any notes about the account
       `,
