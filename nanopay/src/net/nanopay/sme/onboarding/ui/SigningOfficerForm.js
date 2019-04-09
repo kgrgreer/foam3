@@ -119,9 +119,13 @@ foam.CLASS({
 
     ^ .checkBoxes {
       padding-top: 30px;
-      padding-bottom: 30px;
     }
-
+    ^ .checkBoxes input{
+      vertical-align: middle;
+    }
+    ^ .checkBoxes span{
+      vertical-align: middle;
+    }
     ^ .property-birthdayField {
       width: 100%;
     }
