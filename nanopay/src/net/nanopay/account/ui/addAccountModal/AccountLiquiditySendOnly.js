@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLiquiditySendOnlyViewModel',
+  name: 'AccountLiquiditySendOnly',
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -19,7 +19,9 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnlyFloorRule',
+    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnlyCeilingRule'
   ],
 
   properties: [
@@ -52,30 +54,28 @@ foam.CLASS({
       }
     },
     {
-      class: 'Currency',
-      name: 'accountBalanceCeiling',
-      label: 'If the balance of this account reaches',
-      documentation: `
-        The upper bound of the rule enforcement for liquidity settings
-      `,
-      validateObj: function(accountBalanceCeiling, accountBalanceFloor) {
-        if ( ( accountBalanceCeiling && accountBalanceFloor ) && accountBalanceFloor > 0  && accountBalanceCeiling <= accountBalanceFloor ) {
-          return 'Please define a maximum balance threshold greater than the minimum balance threshold.';
-        }
-      }
+      class: 'Boolean',
+      name: 'includeCeilingRule',
+      label: 'Include high liquidity threshold rules'
     },
     {
-      class: 'Currency',
-      name: 'accountBalanceFloor',
-      label: 'If the balance of this account falls below',
-      documentation: `
-        The lower bound of the rule enforcement for liquidity settings
-      `,
-      validateObj: function(accountBalanceCeiling, accountBalanceFloor) {
-        if (  ( accountBalanceCeiling && accountBalanceFloor ) && accountBalanceCeiling > 0  && accountBalanceFloor >= accountBalanceCeiling ) {
-          return 'Please define a maximum balance threshold greater than the minimum balance threshold.';
-        }
-      }
+      class: 'FObjectProperty',
+      name: 'ceilingRuleDetails',
+      expression: function (includeCeilingRule) {
+        return includeCeilingRule ? this.AccountLiquiditySendOnlyCeilingRule.create()  : null;
+      },
     },
+    {
+      class: 'Boolean',
+      name: 'includeFloorRule',
+      label: 'Include low liquidity threshold rules',
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'floorRuleDetails',
+      expression: function (includeFloorRule) {
+        return includeFloorRule ? this.AccountLiquiditySendOnlyFloorRule.create()  : null;
+      },
+    }
   ]
 });

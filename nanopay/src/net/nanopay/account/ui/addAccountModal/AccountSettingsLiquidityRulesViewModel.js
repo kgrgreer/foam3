@@ -8,8 +8,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnlyViewModel',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoViewModel'
+    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnly',
+    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAuto'
   ],
 
   properties: [
@@ -37,10 +37,10 @@ foam.CLASS({
             viewModel = null;
             break;
           case this.liquidityThresholdRules.NOTIFY:
-            viewModel = this.AccountLiquiditySendOnlyViewModel.create();
+            viewModel = this.AccountLiquiditySendOnly.create();
             break;
           case this.liquidityThresholdRules.NOTIFY_AND_AUTO:
-            viewModel = this.AccountLiquiditySendAndAutoViewModel.create();
+            viewModel = this.AccountLiquiditySendAndAuto.create();
             break;
           default:
             viewModel = null;
