@@ -67,8 +67,8 @@ foam.CLASS({
         A picker to choose which account to transfer funds from if this account
         hits the lower bound liquidity threshold
       `,
-      validateObj: function(floorMoveFundsTo) {
-        if ( !floorMoveFundsTo ) {
+      validateObj: function(floorMoveFundsFrom) {
+        if ( !floorMoveFundsFrom ) {
           return 'Please select an account extract funds from.';
         }
       }
