@@ -26,7 +26,7 @@ foam.CLASS({
           return this.viewData.accountLimitForm;
         }
 
-        var form = this.AccountLimitViewModel.create();
+        var form = this.AccountTransactionLimit.create();
         this.viewData.accountLimitForm = form;
         return form;
       }

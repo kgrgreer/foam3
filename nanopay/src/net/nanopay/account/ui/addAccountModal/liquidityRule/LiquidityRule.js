@@ -1,88 +1,94 @@
 foam.CLASS({
   package: 'net.nanopay.account.ui.addAccountModal.liquidityRule',
   name: 'LiquidityRule',
+  implements: [
+    'foam.mlang.Expressions'
+  ],
 
   documentation: `
-  A view model to choose the liquidity threshold rules
+    A view model for the high and low liquidity threshold rules for Liquid
   `,
 
-  requires: [
-    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules',
-    'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyAndAuto.NotifyAndAuto',
-    'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyOnly.NotifyOnly'
-  ],
-
-  exports: [
-    'whoReceivesPredicatedUserDAO',
-  ],
-
   imports: [
-    'user',
-    'userDAO'
+    'currencyDAO'
   ],
+
+  requires: [
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRuleSelected',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRuleExisting'
+  ],
+
 
   properties: [
     {
-      class: 'Enum',
-      of: 'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules',
-      name: 'liquidityThresholdRules',
-      label: 'I want this threshold to...',
+      class: 'Boolean',
+      name: 'isRuleTypeSelected',
+      hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isNewSelected',
+      label: 'Create a new threshold rule for this account',
       documentation: `
-        A standard picker based on the LiquidityThresholdRules enum
+        A boolean to indicate if the user is creating a new threshold rule for this account
       `,
-      validateObj: function(liquidityThresholdRules) {
-        if ( ! liquidityThresholdRules || liquidityThresholdRules == net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules.NONE ) {
-          return 'Please select what to do with this threshold';
+      postSet: function(_, n) {
+        if ( n ) {
+          this.isExistingSelected = false;
+        }
+      },
+      validateObj: function(isNewSelected, isExistingSelected) {
+        if ( ! isNewSelected && ! isExistingSelected ) {
+          return 'You need to create a new threshold template or choose an existing one.';
         }
       }
     },
     {
-      name: 'whoReceivesPredicatedUserDAO',
-      hidden: true,
-      expression: function (user$group, userDAO) {
-        // only return other users in the business group
-        // uncomment the line below once we figure this out
-        // return user.where(this.EQ(this.User.GROUP, user$group));
-        return userDAO; // ! comment this later on
-      }
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'whoReceivesNotification',
-      label: 'Who should receive notifications about this threshold',
-      targetDAOKey: 'whoReceivesPredicatedUserDAO',
+      class: 'Boolean',
+      name: 'isExistingSelected',
+      label: 'Use an existing threshold rule for this account',
       documentation: `
-        A picker to choose who in the organization will
-        receive the notifications
+        A boolean to indicate if the user is creating a new threshold rule for this account
       `,
-      validateObj: function(whoReceivesNotification) {
-        if ( ! whoReceivesNotification ) {
-          return 'Please select a person to receive the notifications when thresholds are met.';
+      postSet: function(_, n) {
+        if ( n ) {
+          this.isNewSelected = false;
+        }
+      },
+      validateObj: function(isNewSelected, isExistingSelected) {
+        if ( ! isNewSelected && ! isExistingSelected ) {
+          return 'You need to create a new threshold template or choose an existing one.';
         }
       }
     },
     {
       class: 'FObjectProperty',
-      name: 'liquidityThresholdDetails',
+      name: 'newRuleDetails',
       label: '',
-      expression: function (liquidityThresholdRules) {
-        switch ( liquidityThresholdRules ) {
-          case this.LiquidityThresholdRules.NONE :
-            return null;
-          case this.LiquidityThresholdRules.NOTIFY :
-            return this.NotifyOnly.create();
-          case this.LiquidityThresholdRules.NOTIFY_AND_AUTO :
-            return this.NotifyAndAuto.create();
-          default:
-            return null;
-        }
+      expression: function (isNewSelected) {
+        // make a switch here
+        if (!isNewSelected) return null;
+        return isNewSelected ? this.LiquidityRuleSelected.create() : null;
       },
-      validateObj: function(liquidityThresholdDetails$errors_) {
-        if ( liquidityThresholdDetails$errors_ ) {
-          return liquidityThresholdDetails$errors_ ? liquidityThresholdDetails$errors_ : 'Please select what to do with this threshold';
+      validateObj: function(newRuleDetails$errors_) {
+        if ( newRuleDetails$errors_ ) {
+          return newRuleDetails$errors_[0][1];
+        }
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'existingRuleDetails',
+      label: '',
+      expression: function (isExistingSelected) {
+        // make a switch here
+        return isExistingSelected ? this.LiquidityRuleExisting.create() : null;
+      },
+      validateObj: function(existingRuleDetails$errors_) {
+        if ( existingRuleDetails$errors_ ) {
+          return existingRuleDetails$errors_[0][1];
         }
       }
     }
-  ],
+  ]
 });

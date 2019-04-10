@@ -35,7 +35,7 @@ foam.CLASS({
       name: 'ceilingRuleDetails',
       label: '',
       expression: function (includeCeilingRule) {
-        return includeCeilingRule ? this.AccountLiquiditySendOnlyCeilingRule.create()  : null;
+        return includeCeilingRule ? this.NotifyOnlyCeiling.create()  : null;
       },
       validateObj: function(ceilingRuleDetails$errors_) {
         if ( ceilingRuleDetails$errors_ ) {
@@ -58,7 +58,7 @@ foam.CLASS({
       name: 'floorRuleDetails',
       label: '',
       expression: function (includeFloorRule) {
-        return includeFloorRule ? this.AccountLiquiditySendOnlyFloorRule.create()  : null;
+        return includeFloorRule ? this.NotifyOnlyFloor.create()  : null;
       },
       validateObj: function(floorRuleDetails$errors_) {
         if ( floorRuleDetails$errors_ ) {
@@ -76,7 +76,7 @@ foam.CLASS({
       name: 'saveRuleAsTemplate',
       label: '',
       expression: function (isSavedAsTemplate) {
-        return isSavedAsTemplate ? this.AccountLiquiditySaveRuleTemplate.create()  : null;
+        return isSavedAsTemplate ? this.LiquidityRuleSaveTemplate.create()  : null;
       },
       validateObj: function(isSavedAsTemplate, saveRuleAsTemplate$errors_) {
         if ( isSavedAsTemplate && saveRuleAsTemplate$errors_ ) {

@@ -24,7 +24,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isAggregate',
       expression: function(viewData) {
-        return viewData.accountTypeForm.accountTypePicker == net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT;
+        return viewData.accountTypeForm.accountTypePicker == net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.AGGREGATE_ACCOUNT;
       }
     },
     {
