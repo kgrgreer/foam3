@@ -10,18 +10,23 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice'
   ],
 
   implements: [
-    'net.nanopay.integration.AccountingIntegrationTrait'
+    'net.nanopay.accounting.AccountingIntegrationTrait'
   ],
 
   imports: [
     'checkComplianceAndBanking',
     'currencyDAO',
     'stack',
-    'user'
+    'user',
+    'accountingIntegrationUtil'
   ],
 
   properties: [
@@ -41,7 +46,7 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            this.Invoice.PAYER.clone().copyFrom({
+            this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
               tableCellFormatter: function(_, invoice) {
                 var additiveSubField = invoice.payer.businessName ?
@@ -168,7 +173,11 @@ foam.CLASS({
   listeners: [
     {
       name: 'dblclick',
-      code: function(invoice) {
+      code: async function(invoice) {
+        if ( invoice.status == this.InvoiceStatus.DRAFT ) {
+          let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
+        }
         this.stack.push({
           class: 'net.nanopay.sme.ui.InvoiceOverview',
           invoice: invoice,

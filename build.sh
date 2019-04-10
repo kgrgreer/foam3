@@ -105,15 +105,7 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    if [[ $BUILD_PROD -eq 1 ]]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 2
-    elif [[ $BUILD_QA -eq 1 ]]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" 1
-    else
-        # IS_AWS will be 1 when building in jenkins which is the
-        # same as staging/qa at the moment.
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" $IS_AWS
-    fi
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$INSTANCE"
 
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
@@ -130,12 +122,13 @@ function deploy_journals {
 
 function migrate_journals {
     if [ -f "tools/migrate_journals.sh" ]; then
-        ./tools/migrate_journals.sh
+        ./tools/migrate_journals.sh "$JOURNAL_HOME"
     fi
 }
 
 function clean {
-    if [ "$CLEAN_BUILD" -eq 1 ]; then
+    if [ "$CLEAN_BUILD" -eq 1 ] &&
+           [ "$START_ONLY" -eq 0 ]; then
         echo "INFO :: Cleaning Up"
 
         if [ -d "build/" ]; then
@@ -156,8 +149,7 @@ function build_jar {
         ./tools/js_build/build.js
     fi
 
-    if [ "$BUILD_PROD" -eq 1 ] ||
-           [ "$BUILD_QA" -eq 1 ]; then
+    if [[ ! -z "$VERSION" ]]; then
         mvn versions:set -DnewVersion=$VERSION
     fi
 
@@ -183,41 +175,36 @@ function delete_runtime_logs {
 function stop_nanos {
     echo "INFO :: Stopping nanos..."
 
+    # TODO: with instances there may be more than one.
     RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
     if [[ -f $NANOS_PIDFILE ]]; then
         PID=$(cat "$NANOS_PIDFILE")
-        if [[ "$PID" != "$RUNNING_PID" ]]; then
+        if [[ "$PID" != "$RUNNING_PID" ]] && [ "$STOP_ONLY" -eq 1 ]; then
             PID=$RUNNING_PID
         fi
-    else
-        PID=$RUNNING_PID
     fi
 
     if [[ -z "$PID" ]]; then
         echo "INFO :: PID and/or file $NANOS_PIDFILE not found, nothing to stop?"
-        delete_runtime_journals
-        delete_runtime_logs
-        return
+    else
+        TRIES=0
+        SIGNAL=TERM
+        set +e
+        while kill -0 $PID &>/dev/null; do
+            kill -$SIGNAL $PID
+            sleep 1
+            TRIES=$(($TRIES + 1))
+            if [ $TRIES -gt 5 ]; then
+                SIGNAL=KILL
+            elif [ $TRIES -gt 10 ]; then
+                echo "ERROR :: Failed to kill nanos!"
+                quit 1
+            fi
+        done
+        set -e
+
+        rmfile "$NANOS_PIDFILE"
     fi
-
-    TRIES=0
-    SIGNAL=TERM
-    set +e
-    while kill -0 $PID &>/dev/null; do
-        kill -$SIGNAL $PID
-        sleep 1
-        TRIES=$(($TRIES + 1))
-        if [ $TRIES -gt 5 ]; then
-            SIGNAL=KILL
-        elif [ $TRIES -gt 10 ]; then
-            echo "ERROR :: Failed to kill nanos!"
-            quit 1
-        fi
-    done
-    set -e
-
-    rmfile "$NANOS_PIDFILE"
-
     backup
     delete_runtime_journals
     delete_runtime_logs
@@ -237,25 +224,27 @@ function status_nanos {
 }
 
 function start_nanos {
-    echo "INFO :: Starting nanos..."
+    MESSAGE="Starting nanos ${INSTANCE}"
+    echo "INFO :: ${MESSAGE}..."
 
     cd "$PROJECT_HOME"
 
-    if [ $DEBUG -eq 1 ]; then
+    JAVA_OPTS="-Dhostname=${HOST_NAME} ${JAVA_OPTS}"
+    if [ "$DEBUG" -eq 1 ]; then
         JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
     fi
-
-    if [ $BUILD_PROD -eq 1 ] || [ $BUILD_QA -eq 1 ]; then
-        JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
-        cd $PROJECT_HOME/target
-        JAR=$(ls lib/nanopay-*.jar | awk '{print $1}')
-    else
-      # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
-      # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
-      # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
-        JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
-        JAR=$(ls target/lib/nanopay-*.jar | awk '{print $1}')
+    if [ ! -z "$WEB_PORT" ]; then
+        JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
     fi
+
+    if [ -z "$MODE" ]; then
+        JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
+        # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
+        # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
+        # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
+        JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
+    fi
+    JAR=$(ls target/lib/nanopay-*.jar | awk '{print $1}')
 
     echo JAR=$JAR
     echo JAVA_OPTS=$JAVA_OPTS
@@ -275,7 +264,15 @@ function beginswith {
 
 function setenv {
     if [ -z "$NANOPAY_HOME" ]; then
-        export NANOPAY_HOME="/opt/nanopay"
+        NANOPAY="nanopay"
+        if [[ ! -z "$INSTANCE" ]]; then
+            NANOPAY="nanopay_${INSTANCE}"
+        fi
+        export NANOPAY_HOME="/opt/${NANOPAY}"
+    fi
+
+    if [ ! -d "$NANOPAY_HOME" ]; then
+        mkdir -p "$NANOPAY_HOME"
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -304,7 +301,11 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
-    export NANOS_PIDFILE="/tmp/nanos.pid"
+    PID_FILE="nanos.pid"
+    if [[ ! -z "$INSTANCE" ]]; then
+        PID_FILE="nanos_${INSTANCE}.pid"
+    fi
+    export NANOS_PIDFILE="/tmp/${PID_FILE}"
 
     if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
         PROJECT_HOME=/pkg/stack/stage/NANOPAY
@@ -313,14 +314,7 @@ function setenv {
         npm install
 
         mkdir -p "$NANOPAY_HOME"
-
-        # Production use S3 mount
-        #if [[ -d "/mnt/journals" ]]; then
-        # FIXME: test and don't create if it exists
-        #   ln -sn "$JOURNAL_HOME" "/mnt/journals"
-        #else
-            mkdir -p "$JOURNAL_HOME"
-        #fi
+        mkdir -p "$JOURNAL_HOME"
 
         CLEAN_BUILD=1
         IS_AWS=1
@@ -367,6 +361,10 @@ function setenv {
       fi
     fi
 
+    if [ -z "$MODE" ] || [ "$MODE" == "DEVELOPMENT" ] || [ "$MODE" == "STAGING" ]; then
+        JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
+    fi
+
     # Check if connected to the interwebs
     ping -q -W1 -c1 google.com &>/dev/null && INTERNET=1 || INTERNET=0
 }
@@ -377,30 +375,39 @@ function usage {
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
-    echo "  -d : Run with JDPA debugging enabled."
+    echo "  -d : Run with JDPA debugging enabled on port 8000"
+    echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -f : Build foam."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
     echo "  -i : Install npm and git hooks"
     echo "  -j : Delete runtime journals, build, and run app as usual."
+    echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
-    echo "  -p <version> : build for production deployment, version format x.y.z"
-    echo "  -q <version> : build for QA/staging deployment, version format x.y.z"
+    echo "  -N NAME : start another instance with given instance name"
+    echo "  -p : short cut for setting MODE to PRODUCTION"
+    echo "  -q : short cut for setting MODE to STAGING"
     echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
-    echo "  -t [test1,test2] : Run tests. Should be last option on command-line for correctness"
+    echo "  -t : Run All tests."
+    echo "  -T testId1,testId2,... : Run listed tests."
     echo "  -v : java compile only (maven), no code generation."
+    echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
+    echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
     echo "  -z : Daemonize into the background, will write PID into $PIDFILE environment variable."
+    echo "  -x : Check dependencies for known vulnerabilities."
     echo ""
-    echo "No options implies build and then run:"
-    echo "  ./build.sh -b"
-    echo "  ./build.sh -r"
+    echo "No options implies: stop, build/compile, deploy, start"
     echo ""
 }
 
 ############################
 
+INSTANCE=
+HOST_NAME=`hostname -s`
+VERSION=
+MODE=
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
@@ -419,36 +426,56 @@ STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
-BUILD_PROD=0
-BUILD_QA=0
+WEB_PORT=
+VULNERABILITY_CHECK=0
 
-while getopts "bcdghijlmp:q:rsStvz" opt ; do
+while getopts "bcdD:ghijlmM:N:pqrsStT:vV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
+        D) DEBUG=1
+           DEBUG_PORT=$OPTARG
+           ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
-        p) BUILD_PROD=1
-           VERSION=$OPTARG
+        M) MODE=$OPTARG
+           echo "MODE=${MODE}"
+           ;;
+        N) INSTANCE=$OPTARG
+           HOST_NAME=$OPTARG
+           echo "INSTANCE=${INSTANCE}" ;;
+        p) MODE=PRODUCTION
+           echo "MODE=${MODE}"
+           ;;
+        q) MODE=STAGING
            CLEAN_BUILD=1
-            ;;
-        q) BUILD_QA=1
-           VERSION=$OPTARG
-           CLEAN_BUILD=1
-            ;;
+           echo "MODE=${MODE}"
+           ;;
         r) START_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
+           MODE=TEST
            CLEAN_BUILD=1
-            ;;
+           ;;
+        T) TEST=1
+           TESTS=$OPTARG
+           MODE=TEST
+           CLEAN_BUILD=1
+           echo "$TESTS=${TESTS}"
+           ;;
         v) COMPILE_ONLY=1 ;;
+        V) VERSION=$OPTARG
+           echo "VERSION=${VERSION}";;
+        W) WEB_PORT=$OPTARG
+           echo "WEB_PORT=${WEB_PORT}";;
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
+        x) VULNERABILITY_CHECK=1 ;;
         ?) usage ; quit 1 ;;
     esac
 done
@@ -460,15 +487,21 @@ if [[ $INSTALL -eq 1 ]]; then
     quit 0
 fi
 
+if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
+    echo "INFO :: Checking dependencies for vulnerabilities..."
+    mvn com.redhat.victims.maven:security-versions:check
+    quit 0
+fi
+
 if [[ $TEST -eq 1 ]]; then
     COMPILE_ONLY=0
     echo "INFO :: Running tests..."
-    # Remove the opts processed variables and assume rest of line as tests names
-    shift $((OPTIND - 1))
-    TESTS="$@"
     # Replacing spaces with commas.
     TESTS=${TESTS// /,}
-    JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript -Dfoam.tests=${TESTS}"
+    JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
+    if [ ! -z "${TESTS}" ]; then
+        JAVA_OPTS="${JAVA_OPTS} -Dfoam.tests=${TESTS}"
+    fi
 fi
 
 clean
@@ -487,7 +520,8 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
-if [ "$COMPILE_ONLY" -eq 0 ] ||
+if [ "$START_ONLY" -eq 0 ] ||
+       [ "$COMPILE_ONLY" -eq 0 ] ||
        [ "$BUILD_ONLY" -eq 0 ] ||
        [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
     deploy_journals
@@ -497,8 +531,10 @@ if [ "$START_ONLY" -eq 0 ]; then
     build_jar
 fi
 
-if [ "$BUILD_ONLY" -eq 1 ] || [ "$BUILD_PROD" -eq 1 ] || [ "$BUILD_QA" -eq 1 ]; then
-    quit 0
+if [ "$BUILD_ONLY" -eq 1 ] || [ ! -z "$MODE" ]; then
+    if [ -z "$INSTANCE" ] && [ -z "$TEST" ]; then
+        quit 0
+    fi
 fi
 
 start_nanos

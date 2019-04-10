@@ -38,8 +38,11 @@ foam.CLASS({
       class: 'String',
       name: 'displayName',
       expression: function(firstName, lastName, businessName, userClass) {
-        return userClass == 'net.nanopay.model.Business' ? businessName.trim() :
-            `${firstName} ${lastName}`.trim();
+        var name = this.fullName.trim();
+        if ( ! name ) {
+          name = businessName.trim();
+        }
+        return name;
       }
     },
     {

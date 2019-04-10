@@ -27,7 +27,9 @@ foam.CLASS({
     'stack',
     'transactionDAO',
     'user',
-    'userDAO'
+    'userDAO',
+    'quickbooksService',
+    'xeroService'
   ],
 
   exports: [
@@ -397,6 +399,13 @@ foam.CLASS({
       try {
         if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
         else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
+
+        let service = null;
+        if ( this.invoice.xeroId && this.invoice.status == this.InvoiceStatus.PENDING )  service = this.xeroService;
+        if ( this.invoice.quickId && this.invoice.status == this.InvoiceStatus.PENDING ) service = this.quickbooksService;
+
+        if ( service != null ) service.invoiceResync(null, this.invoice);
+
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
           invoice: this.invoice
@@ -468,14 +477,15 @@ foam.CLASS({
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
             if ( ! this.agent.twoFactorEnabled && this.isPayable && this.permitToPay ) {
-              if ( this.appConfig.mode === this.Mode.TEST ) {
-                // report but don't fail/error
-                this.notify(this.TWO_FACTOR_REQUIRED, 'warning');
-              } else {
+              if ( this.appConfig.mode === this.Mode.PRODUCTION ||
+                   this.appConfig.mode === this.Mode.DEMO ) {
                 this.notify(this.TWO_FACTOR_REQUIRED, 'error');
                 return;
+              } else {
+                // report but don't fail/error - facilitates automated testing
+                this.notify(this.TWO_FACTOR_REQUIRED, 'warning');
               }
-            }
+           }
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);
             });

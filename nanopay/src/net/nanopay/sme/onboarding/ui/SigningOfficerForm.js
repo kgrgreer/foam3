@@ -160,6 +160,7 @@ foam.CLASS({
         ]
       },
       factory: function() {
+        this.nextLabel = this.viewData.agent.signingOfficer ? 'Next' : 'Complete';
         return this.isSigningOfficer ? 'Yes' : 'No';
       },
       adapt: function(_, v) {

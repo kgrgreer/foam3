@@ -124,6 +124,34 @@ foam.CLASS({
         will be set to true if the agent in the context is a signing officer for
         the business (which is the user in the context).
       `
+    },
+    {
+      type: 'Boolean',
+      name: 'hasExitOption',
+      expression: function(position) {
+        return position === 0;
+      }
+    },
+    {
+      type: 'Boolean',
+      name: 'hasBackOption',
+      expression: function(position) {
+        return position > 1;
+      }
+    },
+    {
+      type: 'Boolean',
+      name: 'hasSaveOption',
+      expression: function(position) {
+        return position > 0;
+      }
+    },
+    {
+      type: 'String',
+      name: 'saveLabel',
+      factory: function() {
+        return 'Save and Close';
+      }
     }
   ],
 
@@ -200,8 +228,6 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.hasSaveOption = true;
-      this.hasBackOption = false;
       this.viewData.user = this.user;
       this.viewData.agent = this.agent;
       this.title = 'Your business profile';
@@ -212,7 +238,7 @@ foam.CLASS({
           this.isSigningOfficer = result != null;
         });
 
-      this.saveLabel = 'Close';
+      this.exitLabel = 'Close';
       this.nextLabel = 'Get started';
 
       this.views = [

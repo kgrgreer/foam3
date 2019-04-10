@@ -7,7 +7,8 @@ foam.CLASS({
       ' personal information and permitting certain actions.',
 
   implements: [
-    'foam.nanos.auth.DeletedAware'
+    'foam.nanos.auth.DeletedAware',
+    'foam.core.Validatable'
   ],
 
   javaImports: [
@@ -17,6 +18,9 @@ foam.CLASS({
     'static foam.mlang.MLang.INSTANCE_OF',
     'static foam.mlang.MLang.NOT',
 
+    'java.util.regex.Pattern',
+    'javax.mail.internet.InternetAddress',
+    'javax.mail.internet.AddressException',
     'net.nanopay.contacts.Contact'
   ],
 
@@ -24,8 +28,12 @@ foam.CLASS({
     'net.nanopay.onboarding.model.Questionnaire'
   ],
 
-  tableColumns: [
-    'id', 'deleted', 'type', 'group', 'spid', 'firstName', 'lastName', 'organization', 'email'
+  constants: [
+    {
+      name: 'NAME_MAX_LENGTH',
+      type: 'Integer',
+      value: 70
+    }
   ],
 
   properties: [
@@ -374,6 +382,7 @@ foam.CLASS({
       class: 'String',
       visibility: 'RO',
       storageTransient: true,
+      tableWidth: 75,
       getter: function() {
          return this.cls_.name;
       },
@@ -387,7 +396,8 @@ foam.CLASS({
       documentation: 'Indicates deleted user.',
       value: false,
       permissionRequired: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      tableWidth: 85
     },
     {
       class: 'foam.nanos.fs.FileProperty',
@@ -399,6 +409,122 @@ foam.CLASS({
       }
     }
   ],
+
+  methods: [
+    {
+      name: `validate`,
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaCode: `
+        String containsDigitRegex = ".*\\\\d.*";
+        boolean isValidEmail = true;
+
+        String firstName = this.getFirstName().trim();
+        String lastName = this.getLastName().trim();
+        String email = this.getEmail().trim();
+
+        try {
+          InternetAddress emailAddr = new InternetAddress(email);
+          emailAddr.validate();
+        } catch (AddressException ex) {
+          isValidEmail = false;
+        }
+
+        if ( firstName.length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("First name cannot exceed 70 characters.");
+        } else if ( Pattern.matches(containsDigitRegex, firstName) ) {
+          throw new IllegalStateException("First name cannot contain numbers.");
+        } else if ( lastName.length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("Last name cannot exceed 70 characters.");
+        } else if ( Pattern.matches(containsDigitRegex, lastName) ) {
+          throw new IllegalStateException("Last name cannot contain numbers.");
+        } else  if ( SafetyUtil.isEmpty(email) ) {
+          throw new IllegalStateException("Email is required.");
+        } else if ( SafetyUtil.isEmpty(firstName) ) {
+          throw new IllegalStateException("First name is required.");
+        } else if ( SafetyUtil.isEmpty(lastName) ) {
+          throw new IllegalStateException("Last name is required.");
+        } else if ( ! isValidEmail ) {
+          throw new IllegalStateException("Invalid email address.");
+        }
+      `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'viewAccounts',
+      label: 'View Accounts',
+      tableWidth: 135,
+      code: function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.businessName}'s Accounts`,
+          data: X.accountDAO.where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+        });
+      }
+    },
+    {
+      name: 'viewTransactions',
+      label: 'View Transactions',
+      tableWidth: 160,
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        var ids = await X.accountDAO
+          .where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+          .select(m.MAP(net.nanopay.account.Account.ID))
+          .then((sink) => sink.delegate.array);
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Transactions`,
+          data: X.transactionDAO.where(
+            m.OR(
+              m.IN(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, ids),
+              m.IN(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, ids)
+            )
+          )
+        });
+      }
+    },
+    {
+      name: 'viewPayables',
+      label: 'View Payables',
+      code: async function(X) {
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Payables`,
+          data: this.expenses
+        });
+      }
+    },
+    {
+      name: 'viewReceivables',
+      label: 'View Receivables',
+      code: async function(X) {
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Receivables`,
+          data: this.sales
+        });
+      }
+    }
+  ],
+
   axioms: [
     {
       buildJavaClass: function(cls) {
