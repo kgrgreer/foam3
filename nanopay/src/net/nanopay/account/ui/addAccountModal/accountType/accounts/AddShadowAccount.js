@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal.accountType',
-  name: 'ShadowAccount',
+  package: 'net.nanopay.account.ui.addAccountModal.accountType.accounts',
+  name: 'AddShadowAccount',
 
   implements: [
     'foam.mlang.Expressions'

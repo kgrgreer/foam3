@@ -1,12 +1,12 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLiquiditySendAndAuto',
+  package: 'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyAndAuto',
+  name: 'NotifyAndAuto',
   implements: [
     'foam.mlang.Expressions'
   ],
 
   documentation: `
-  A view model for the high and low liquidity threshold rules for Liquid
+    A view model for the high and low liquidity threshold rules for Liquid
   `,
 
   imports: [

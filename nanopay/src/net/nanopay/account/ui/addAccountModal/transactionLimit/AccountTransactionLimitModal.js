@@ -7,9 +7,9 @@ foam.CLASS({
 
   requires: [
     'foam.u2.DetailView',
-    'net.nanopay.account.ui.addAccountModal.AccountLimitViewModel',
-    'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
-    'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
+    'net.nanopay.account.ui.addAccountModal.transactionLimit.AccountTransactionLimit',
+    'net.nanopay.account.ui.addAccountModal.components.ModalTitleBar',
+    'net.nanopay.account.ui.addAccountModal.components.ModalProgressBar'
   ],
 
   messages: [
@@ -19,7 +19,7 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.account.ui.addAccountModal.AccountLimitViewModel',
+      of: 'net.nanopay.account.ui.addAccountModal.transactionLimit.AccountTransactionLimit',
       name: 'accountLimitForm',
       factory: function() {
         if ( this.viewData.accountLimitForm ) {

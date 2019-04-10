@@ -7,12 +7,12 @@ foam.CLASS({
 
   requires: [
     'foam.u2.DetailView',
-    'net.nanopay.account.ui.addAccountModal.ShadowAccountViewModel',
-    'net.nanopay.account.ui.addAccountModal.VirtualAccountViewModel',
-    'net.nanopay.account.ui.addAccountModal.AggregateAccountViewModel',
-    'net.nanopay.account.ui.addAccountModal.AccountSettingsRequirementViewModel',
-    'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
-    'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
+    'net.nanopay.account.ui.addAccountModal.accountType.accounts.AddShadowAccount',
+    'net.nanopay.account.ui.addAccountModal.accountType.accounts.AddVirtualAccount',
+    'net.nanopay.account.ui.addAccountModal.accountType.accounts.AddAggregateAccount',
+    'net.nanopay.account.ui.addAccountModal.accountDetails.AccountDetailsRequirements',
+    'net.nanopay.account.ui.addAccountModal.components.ModalTitleBar',
+    'net.nanopay.account.ui.addAccountModal.components.ModalProgressBar'
   ],
 
   messages: [
@@ -36,14 +36,14 @@ foam.CLASS({
         }
         var form;
         switch (this.viewData.accountTypeForm.accountTypePicker) {
-          case net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT :
-            form = this.ShadowAccountViewModel.create();
+          case net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.SHADOW_ACCOUNT :
+            form = this.AddShadowAccount.create();
             break;
-          case net.nanopay.account.ui.addAccountModal.AccountType.VIRTUAL_ACCOUNT :
-            form = this.VirtualAccountViewModel.create();
+          case net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.VIRTUAL_ACCOUNT :
+            form = this.AddVirtualAccount.create();
             break;
-          case net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT :
-            form = this.AggregateAccountViewModel.create();
+          case net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.AGGREGATE_ACCOUNT :
+            form = this.AddAggregateAccount.create();
             break;
         }
         this.viewData.accountDetailsForm = form;
@@ -52,7 +52,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.account.ui.addAccountModal.AccountSettingsRequirementViewModel',
+      of: 'net.nanopay.account.ui.addAccountModal.accountDetails.AccountDetailsRequirements',
       name: 'accountSettingsOptions',
       factory: function() {
         if ( this.isAggregate ) {
@@ -64,7 +64,7 @@ foam.CLASS({
           return this.viewData.accountSettingsOptions;
         }
 
-        var options = this.AccountSettingsRequirementViewModel.create();
+        var options = this.AccountDetailsRequirements.create();
         this.viewData.accountSettingsOptions = options;
         return options;
       }

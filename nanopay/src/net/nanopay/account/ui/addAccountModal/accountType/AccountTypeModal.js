@@ -7,9 +7,9 @@ foam.CLASS({
 
   requires: [
     'foam.u2.DetailView',
-    'net.nanopay.account.ui.addAccountModal.AccountTypeViewModel',
-    'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
-    'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
+    'net.nanopay.account.ui.addAccountModal.accountType.AccountType',
+    'net.nanopay.account.ui.addAccountModal.components.ModalTitleBar',
+    'net.nanopay.account.ui.addAccountModal.components.ModalProgressBar'
   ],
 
   messages: [
@@ -19,14 +19,14 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.account.ui.addAccountModal.AccountTypeViewModel',
+      of: 'net.nanopay.account.ui.addAccountModal.accountType.AccountType',
       name: 'accountTypeForm',
       factory: function() {
         if ( this.viewData.accountTypeForm ) {
           return this.viewData.accountTypeForm;
         }
 
-        var form = this.AccountTypeViewModel.create();
+        var form = this.AccountType.create();
         this.viewData.accountTypeForm = form;
         return form;
       }

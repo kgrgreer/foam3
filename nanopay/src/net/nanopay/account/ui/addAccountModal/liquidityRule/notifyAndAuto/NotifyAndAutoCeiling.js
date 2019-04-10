@@ -1,7 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLiquiditySendAndAutoCeilingRule',
-    implements: [
+  package: 'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyAndAuto',
+  name: 'NotifyAndAutoCeiling',
+  implements: [
     'foam.mlang.Expressions'
   ],
 

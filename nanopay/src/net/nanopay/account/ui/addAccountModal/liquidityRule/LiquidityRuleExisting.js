@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLiquidityExistingRule',
+  package: 'net.nanopay.account.ui.addAccountModal.liquidityRule',
+  name: 'LiquidityRuleExisting',
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -19,7 +19,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
-    'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRule',
+    'net.nanopay.account.ui.addAccountModal.LiquidityRules',
     'net.nanopay.liquidity.LiquiditySettings'
   ],
 

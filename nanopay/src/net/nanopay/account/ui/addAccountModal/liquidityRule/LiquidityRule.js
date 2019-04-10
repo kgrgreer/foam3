@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountSettingsLiquidityRulesViewModel',
+  package: 'net.nanopay.account.ui.addAccountModal.liquidityRule',
+  name: 'LiquidityRule',
 
   documentation: `
   A view model to choose the liquidity threshold rules

@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLiquiditySaveRuleTemplate',
+  name: 'LiquidityRuleSaveTemplate',
 
   documentation: `
     A view model for the saving a threshold rule as a template

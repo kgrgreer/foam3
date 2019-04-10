@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLiquiditySendOnlyCeilingRule',
+  package: 'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyOnly',
+  name: 'NotifyOnlyCeiling',
 
   documentation: `
     A view model for the account liquidity send only ceiling rule

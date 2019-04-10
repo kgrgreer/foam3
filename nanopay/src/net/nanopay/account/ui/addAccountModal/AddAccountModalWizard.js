@@ -14,11 +14,11 @@ foam.CLASS({
   methods: [
     function init() {
       this.views = {
-        'typeSelection' : { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountTypeModal' }, startPoint: true },
-        'details': { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountDetailsModal' } },
-        'limits': { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountLimitModal' } },
-        'liquidity': { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountLiquidityModal' } },
-        'submit': { view: { class: 'net.nanopay.account.ui.addAccountModal.AccountSubmissionModal' } }
+        'typeSelection' : { view: { class: 'net.nanopay.account.ui.addAccountModal.accountType.AccountTypeModal' }, startPoint: true },
+        'details': { view: { class: 'net.nanopay.account.ui.addAccountModal.accountDetails.AccountDetailsModal' } },
+        'limits': { view: { class: 'net.nanopay.account.ui.addAccountModal.transactionLimit.AccountTransactionLimitModal' } },
+        'liquidity': { view: { class: 'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRuleModal' } },
+        'submit': { view: { class: 'net.nanopay.account.ui.addAccountModal.AddAccountSubmissionModal' } }
       };
     },
 
