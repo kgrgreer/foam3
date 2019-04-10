@@ -40,9 +40,12 @@ foam.CLASS({
       documentation: `
         The upper bound of the rule enforcement for liquidity settings
       `,
-      validateObj: function(accountBalanceCeiling, accountBalanceFloor) {
-        if ( ( accountBalanceCeiling && accountBalanceFloor ) && accountBalanceFloor > 0  && accountBalanceCeiling <= accountBalanceFloor ) {
-          return 'Please define a maximum balance threshold greater than the minimum balance threshold.';
+      validateObj: function(accountBalanceCeiling, resetAccountBalanceCeiling) {
+        if ( accountBalanceCeiling == 0 ) {
+          return 'Please define a maximum balance threshold.';
+        }
+        if ( accountBalanceCeiling <= resetAccountBalanceCeiling ) {
+          return 'Maximum balance threshold must be higher than the reset value.';
         }
       }
     },
@@ -52,7 +55,15 @@ foam.CLASS({
       label: 'Reset account balance to',
       documentation: `
         The amount to reset the account balance upon hitting the ceiling
-      `
+      `,
+      validateObj: function(accountBalanceCeiling, resetAccountBalanceCeiling) {
+        if ( resetAccountBalanceCeiling == 0 ) {
+          return 'Please define the reset balance.';
+        }
+        if ( resetAccountBalanceCeiling >= accountBalanceCeiling ) {
+          return 'Reset balance must be lower than the maximum balance threshold.';
+        }
+      }
     },
     {
       class: 'Reference',
@@ -64,6 +75,11 @@ foam.CLASS({
         A picker to choose which account will excess funds be moved to
         upon hitting the upper bound liquidity threshold
       `,
+      validateObj: function(ceilingMoveFundsTo) {
+        if ( ! ceilingMoveFundsTo ) {
+          return 'Please select an account to move the excess balance into.';
+        }
+      }
     },
   ]
 });

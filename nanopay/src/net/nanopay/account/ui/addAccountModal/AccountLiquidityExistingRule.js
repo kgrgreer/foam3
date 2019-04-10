@@ -43,7 +43,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.liquidity.LiquiditySettings',
       name: 'existingThresholdRule',
-      label: 'by moving the excess funds into',
+      label: 'Threshold rule name',
       targetDAOKey: 'otherAccountsPredicatedAccountDAO',
       documentation: `
         A picker to choose which account will excess funds be moved to

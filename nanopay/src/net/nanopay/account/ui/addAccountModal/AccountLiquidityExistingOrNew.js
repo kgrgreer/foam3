@@ -77,6 +77,11 @@ foam.CLASS({
         if ( n ) {
           this.isExistingSelected = false;
         }
+      },
+      validateObj: function(isNewSelected, isExistingSelected) {
+        if ( ! isNewSelected && ! isExistingSelected ) {
+          return 'You need to create a new threshold template or choose an existing one.';
+        }
       }
     },
     {
@@ -89,6 +94,11 @@ foam.CLASS({
       postSet: function(_, n) {
         if ( n ) {
           this.isNewSelected = false;
+        }
+      },
+      validateObj: function(isNewSelected, isExistingSelected) {
+        if ( ! isNewSelected && ! isExistingSelected ) {
+          return 'You need to create a new threshold template or choose an existing one.';
         }
       }
     },
@@ -116,6 +126,11 @@ foam.CLASS({
         }
         return view;
       },
+      validateObj: function(newRuleDetails$errors_) {
+        if ( newRuleDetails$errors_ ) {
+          return newRuleDetails$errors_[0][1];
+        }
+      }
     },
     {
       class: 'FObjectProperty',
@@ -127,6 +142,11 @@ foam.CLASS({
         ? this.AccountLiquidityExistingRule.create({ chosenLiquidityThresholdRule })
         : null;
       },
+      validateObj: function(existingRuleDetails$errors_) {
+        if ( existingRuleDetails$errors_ ) {
+          return existingRuleDetails$errors_[0][1];
+        }
+      }
     }
   ]
 });
