@@ -4,11 +4,6 @@ foam.CLASS({
 
   extends: 'foam.dao.ProxyDAO',
 
-  imports: [
-    'currencyDAO',
-    'externalInvoiceToken'
-  ],
-
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
@@ -46,7 +41,7 @@ foam.CLASS({
     * 2) invoiceIsANewRecievable
     * 3) invoiceNeedsApproval
     * 4) invoiceIsBeingPaidAndCompleted 
-    */
+    **/
    `,
 
   methods: [
@@ -95,26 +90,28 @@ foam.CLASS({
           String[] emailTemplates = { "payable", "receivable", "invoice-approval-email", "invoice-transaction-completed" };
           HashMap<String, Object> args = null;
           boolean invoiceIsToAnExternalUser = invoice.getExternal();
-    
+          DAO currencyDAO = (DAO) x.get("currencyDAO");
+          TokenService externalInvoiceToken = (TokenService) x.get("externalInvoiceToken");
+
           // ONE
           if ( invoiceIsBeingPaidButNotComplete ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), true);
-            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }) );
+            args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), payerUser.getEmail(), true, currencyDAO);
+            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }), externalInvoiceToken );
           }
           // TWO
           if ( invoiceIsARecievable ) {
-            args = populateArgsForEmail(args, invoice, payerUser.getFirstName(), payeeUser.label(), true);
-            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, (new String[] { payerUser.getEmail() }) );
+            args = populateArgsForEmail(args, invoice, payerUser.getFirstName(), payeeUser.label(), payeeUser.getEmail(), true, currencyDAO);
+            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, (new String[] { payerUser.getEmail() }),externalInvoiceToken );
           }
           // THREE  
           if ( invoiceNeedsApproval ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), "", true);
-            sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, findApproversOftheBusiness(x));
+            args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), "", "", true, currencyDAO);
+            sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, findApproversOftheBusiness(x), externalInvoiceToken);
           }
           // FOUR 
           if ( invoiceIsBeingPaidAndCompleted ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), false);
-            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }) );
+            args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), payerUser.getEmail(), false, currencyDAO);
+            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }), externalInvoiceToken );
           }
         }
         return super.put_(x, invoice);
@@ -141,22 +138,28 @@ foam.CLASS({
         },
         {
           name: 'userBeingSentEmail',
-          class: 'User'
+          type: 'User'
         },
         {
           name: 'args',
-          class: 'Map'
+          class: 'Map',
+          javaType: 'java.util.HashMap<String, Object>',
         },
         {
           name: 'sendToList',
-          class: 'StringArray'
+          class: 'Array',
+          of: 'String',
+        },
+        {
+          name: 'externalInvoiceToken',
+          type: 'TokenService'
         }
       ],
       javaCode: `
         if ( isContact ) {
           args.put("template", emailTemplateName);
           args.put("invoiceId", invoiceId);
-          getExternalInvoiceToken().generateTokenWithParameters(x, userBeingSentEmail, args);
+          externalInvoiceToken.generateTokenWithParameters(x, userBeingSentEmail, args);
         } else {
           EmailService emailService = (EmailService) x.get("email");
           Group group = (Group) userBeingSentEmail.findGroup(x);
@@ -172,15 +175,16 @@ foam.CLASS({
     },
     {
       name: 'populateArgsForEmail',
-      type: 'Map',
+      javaType: 'java.util.HashMap<String, Object>',
       args: [
         {
           name: 'args',
-          class: 'Map'
+          class: 'Map',
+          javaType: 'java.util.HashMap<String, Object>',
         },
         {
           name: 'invoice',
-          class: 'Invoice'
+          type: 'Invoice'
         },
         {
           name: 'name',
@@ -191,8 +195,16 @@ foam.CLASS({
           class: 'String'
         },
         {
+          name: 'fromEmail',
+          class: 'String'
+        },
+        {
           name: 'dated',
           class: 'Boolean'
+        },
+        {
+          name: 'currencyDAO',
+          type: 'DAO'
         }
       ],
       javaCode: `
@@ -200,9 +212,10 @@ foam.CLASS({
 
         args.put("name", name);
         args.put("fromName", fromName);
+        args.put("fromEmail", fromEmail);
         args.put("account", invoice.getInvoiceNumber());
     
-        String amount = ((Currency) getCurrencyDAO().find(invoice.getDestinationCurrency()))
+        String amount = ((Currency) currencyDAO.find(invoice.getDestinationCurrency()))
           .format(invoice.getAmount());
     
         args.put("currency", invoice.getDestinationCurrency());
@@ -218,7 +231,7 @@ foam.CLASS({
     },
     {
       name: 'findApproversOftheBusiness',
-      type: 'StringArray',
+      type: 'String[]',
       args: [
         {
           name: 'x',
