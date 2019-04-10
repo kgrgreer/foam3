@@ -835,6 +835,13 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResult' },
 
+  { name: 'net/nanopay/liquidity/ui/Dashboard' },
+  { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
+  { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
+  { name: 'net/nanopay/liquidity/ui/account/Overview' },
+  { name: 'net/nanopay/liquidity/ui/account/Balance' },
+  { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
+
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
