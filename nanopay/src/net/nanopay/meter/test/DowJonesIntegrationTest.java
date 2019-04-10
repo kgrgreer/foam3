@@ -7,6 +7,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
 
 // apache
 import org.apache.http.client.HttpClient;
@@ -25,8 +27,12 @@ public class DowJonesIntegrationTest extends foam.nanos.test.Test {
   @Override
   public void runTest(X x) {
     DowJonesCredentials credentials = (DowJonesCredentials) x.get("dowjonesCredentials");
+
     String authCredentials = credentials.getNamespace() + "/" + credentials.getUsername() + ":" + credentials.getPassword();
     String encodedCredentials = Base64.getEncoder().encodeToString((authCredentials).getBytes());
+
+    String firstName = "Blake";
+    String lastName = "Green";
 
     BufferedReader rd = null;
     HttpEntity responseEntity = null;
@@ -40,7 +46,7 @@ public class DowJonesIntegrationTest extends foam.nanos.test.Test {
       client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
       client = HttpClientBuilder.create().build();
 
-      String testUrlAddress = "https://djrc.api.test.dowjones.com/v1/search/name?name=medvedev&record-type=P&search-type=precise&exclude-deceased=true&hits-from=0&hits-to=4";
+      String testUrlAddress = "https://djrc.api.test.dowjones.com/v1/search/person-name?first-name="+firstName+"&surname="+lastName;
       HttpGet get = new HttpGet(testUrlAddress);
       get.setHeader("Authorization", "Basic " + encodedCredentials);
       response = client.execute(get);

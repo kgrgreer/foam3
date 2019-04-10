@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
-  name: 'ClientDowJonesSearchService',
+  name: 'ClientDowJonesService',
 
   implements: [
-    'net.nanopay.meter.compliance.dowJones.DowJonesSearch'
+    'net.nanopay.meter.compliance.dowJones.DowJones'
   ],
 
   javaImports: [
@@ -13,7 +13,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Stub',
-      of: 'net.nanopay.meter.compliance.dowJones.DowJonesSearch',
+      of: 'net.nanopay.meter.compliance.dowJones.DowJones',
       name: 'delegate'
     }
   ]

@@ -1,20 +1,8 @@
 foam.INTERFACE({
   package: 'net.nanopay.meter.compliance.dowJones',
-  name: 'DowJonesSearch',
+  name: 'DowJones',
 
   methods: [
-    {
-      name: 'nameSearch',
-      type: 'net.nanopay.meter.compliance.dowJones.BaseSearchResponse',
-      async: true,
-      javaThrows: ['foam.nanos.auth.AuthenticationException'],
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ]
-    },
     {
       name: 'personNameSearch',
       type: 'net.nanopay.meter.compliance.dowJones.BaseSearchResponse',
@@ -24,6 +12,18 @@ foam.INTERFACE({
         {
           name: 'x',
           type: 'Context'
+        },
+        {
+          name: 'firstName',
+          type: 'String'
+        },
+        {
+          name: 'lastName',
+          type: 'String'
+        },
+        {
+          name: 'filterLRDFrom',
+          type: 'Date'
         }
       ]
     },
@@ -36,18 +36,14 @@ foam.INTERFACE({
         {
           name: 'x',
           type: 'Context'
-        }
-      ]
-    },
-    {
-      name: 'idTypeSearch',
-      type: 'net.nanopay.meter.compliance.dowJones.BaseSearchResponse',
-      async: true,
-      javaThrows: ['foam.nanos.auth.AuthenticationException'],
-      args: [
+        },
         {
-          name: 'x',
-          type: 'Context'
+          name: 'entityName',
+          type: 'String'
+        },
+        {
+          name: 'filterLRDFrom',
+          type: 'Date'
         }
       ]
     }

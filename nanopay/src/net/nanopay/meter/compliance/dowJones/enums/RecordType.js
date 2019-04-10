@@ -6,11 +6,11 @@ foam.ENUM({
 
   values: [
     {
-      name: 'PERSON',
+      name: 'P',
       label: 'Person'
     },
     {
-      name: 'ENTITY',
+      name: 'E',
       label: 'Entity'
     }
   ]

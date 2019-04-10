@@ -32,10 +32,8 @@ import org.apache.http.client.config.RequestConfig;
   extends ContextAwareSupport
 {
   public static final String REST_GET = "GET";
-  public static final String NAME_SEARCH = "name?";
-  public static final String PERSON_NAME_SEARCH = "person-name?";
-  public static final String ENTITY_NAME_SEARCH = "entity-name?";
-  public static final String ID_TYPE_SEARCH = "id-type?";
+  public static final String PERSON_NAME = "person-name?";
+  public static final String ENTITY_NAME = "entity-name?";
 
 
   public DowJonesResponseMsg serve(DowJonesRequestMsg msg, String RequestInfo) {
@@ -77,9 +75,18 @@ import org.apache.http.client.config.RequestConfig;
       client = HttpClientBuilder.create().build();
 
       // still need to append data from request model
+      String baseUrl = "https://djrc.api.test.dowjones.com/v1/search/";
       String urlAddress = "";
-      urlAddress = credentials.getBaseUrl() + req.getRequestInfo();
 
+      if ( req.getRequestInfo().equals(PERSON_NAME) ) {
+        String firstName = ((PersonNameSearchRequest) req.getModel()).getFirstName();
+        String surName = ((PersonNameSearchRequest) req.getModel()).getSurName();
+        urlAddress = baseUrl + req.getRequestInfo() + "first-name=" + firstName + "&surname=" + surName;
+      } else if ( req.getRequestInfo().equals(ENTITY_NAME) ) {
+        String entityName = ((EntityNameSearchRequest) req.getModel()).getEntityName();
+        urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName;
+      }
+      
       HttpGet get = new HttpGet(urlAddress);
       get.setHeader("Authorization", "Basic " + encodedCredentials);
       response = client.execute(get);
