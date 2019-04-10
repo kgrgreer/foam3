@@ -15,7 +15,7 @@ foam.CLASS({
         The upper bound of the rule enforcement for liquidity settings
       `,
       validateObj: function(accountBalanceCeiling) {
-        if ( accountBalanceCeiling ) {
+        if ( accountBalanceCeiling === 0 ) {
           return 'Please define a maximum balance threshold.';
         }
       }

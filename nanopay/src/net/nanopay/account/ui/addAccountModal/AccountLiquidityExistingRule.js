@@ -49,6 +49,11 @@ foam.CLASS({
         A picker to choose which account will excess funds be moved to
         upon hitting the upper bound liquidity threshold
       `,
+      validateObj: function(existingThresholdRule) {
+        if ( existingThresholdRule.length === 0 || ! existingThresholdRule.trim() ) {
+          return 'Please name this threshold rule.';
+        }
+      }
     },
   ],
 });

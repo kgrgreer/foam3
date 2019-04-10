@@ -15,7 +15,7 @@ foam.CLASS({
         The lower bound of the rule enforcement for liquidity settings
       `,
       validateObj: function(accountBalanceFloor) {
-        if ( accountBalanceFloor ) {
+        if ( accountBalanceFloor === 0 ) {
           return 'Please define a minimum balance threshold.';
         }
       }

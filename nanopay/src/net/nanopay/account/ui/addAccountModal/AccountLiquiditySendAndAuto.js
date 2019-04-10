@@ -9,14 +9,12 @@ foam.CLASS({
   A view model for the high and low liquidity threshold rules for Liquid
   `,
 
-  exports: [
-    'whoReceivesPredicatedUserDAO',
-  ],
   imports: [
     'currencyDAO',
     'userDAO',
     'user'
   ],
+
   requires: [
     'foam.nanos.auth.User',
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoCeilingRule',
@@ -24,39 +22,16 @@ foam.CLASS({
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySaveRuleTemplate'
   ],
 
-
   properties: [
-    {
-
-      name: 'whoReceivesPredicatedUserDAO',
-      hidden: true,
-      expression: function (user$group, userDAO) {
-        // only return other users in the business group
-        // uncomment the line below once we figure this out
-        // return user.where(this.EQ(this.User.GROUP, user$group));
-        return userDAO; // ! comment this later on
-      }
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'whoReceivesNotification',
-      label: 'Who should receive notifications',
-      targetDAOKey: 'whoReceivesPredicatedUserDAO',
-      documentation: `
-        A picker to choose who in the organization will
-        receive the notifications
-      `,
-      validateObj: function(whoReceivesNotification) {
-        if ( ! whoReceivesNotification ) {
-          return 'Please select a person to receive the notifications when thresholds are met.';
-        }
-      }
-    },
     {
       class: 'Boolean',
       name: 'includeCeilingRule',
-      label: 'Include high liquidity threshold rules'
+      label: 'Include high liquidity threshold rules',
+      validateObj: function(includeCeilingRule, includeFloorRule) {
+        if ( ! includeCeilingRule && ! includeFloorRule ) {
+          return 'You must at least include either a high or low liquidity threshold.';
+        }
+      }
     },
     {
       class: 'FObjectProperty',
@@ -65,11 +40,21 @@ foam.CLASS({
       expression: function (includeCeilingRule) {
         return includeCeilingRule ? this.AccountLiquiditySendAndAutoCeilingRule.create()  : null;
       },
+      validateObj: function(ceilingRuleDetails$errors_) {
+        if ( ceilingRuleDetails$errors_ ) {
+          return ceilingRuleDetails$errors_[0][1];
+        }
+      }
     },
     {
       class: 'Boolean',
       name: 'includeFloorRule',
       label: 'Include low liquidity threshold rules',
+      validateObj: function(includeCeilingRule, includeFloorRule) {
+        if ( ! includeCeilingRule && ! includeFloorRule ) {
+          return 'You must at least include either a high or low liquidity threshold.';
+        }
+      }
     },
     {
       class: 'FObjectProperty',
@@ -78,6 +63,11 @@ foam.CLASS({
       expression: function (includeFloorRule) {
         return includeFloorRule ? this.AccountLiquiditySendAndAutoFloorRule.create()  : null;
       },
+      validateObj: function(floorRuleDetails$errors_) {
+        if ( floorRuleDetails$errors_ ) {
+          return floorRuleDetails$errors_[0][1];
+        }
+      }
     },
     {
       class: 'Boolean',
@@ -91,6 +81,11 @@ foam.CLASS({
       expression: function (isSavedAsTemplate) {
         return isSavedAsTemplate ? this.AccountLiquiditySaveRuleTemplate.create()  : null;
       },
+      validateObj: function(isSavedAsTemplate, saveRuleAsTemplate$errors_) {
+        if ( isSavedAsTemplate && saveRuleAsTemplate$errors_ ) {
+          return saveRuleAsTemplate$errors_[0][1];
+        }
+      }
     },
   ]
 });

@@ -56,14 +56,6 @@ foam.CLASS({
       documentation: `
         The amount to reset the account balance upon hitting the ceiling
       `,
-      validateObj: function(accountBalanceCeiling, resetAccountBalanceCeiling) {
-        if ( resetAccountBalanceCeiling == 0 ) {
-          return 'Please define the reset balance.';
-        }
-        if ( resetAccountBalanceCeiling >= accountBalanceCeiling ) {
-          return 'Reset balance must be lower than the maximum balance threshold.';
-        }
-      }
     },
     {
       class: 'Reference',
@@ -76,8 +68,8 @@ foam.CLASS({
         upon hitting the upper bound liquidity threshold
       `,
       validateObj: function(ceilingMoveFundsTo) {
-        if ( ! ceilingMoveFundsTo ) {
-          return 'Please select an account to move the excess balance into.';
+        if ( !ceilingMoveFundsTo ) {
+          return 'Please select an account to move excess funds into.';
         }
       }
     },

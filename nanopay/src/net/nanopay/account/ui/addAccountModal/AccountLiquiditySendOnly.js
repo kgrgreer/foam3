@@ -38,25 +38,14 @@ foam.CLASS({
       }
     },
     {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'whoReceivesNotification',
-      label: 'Who should receive notifications',
-      targetDAOKey: 'whoReceivesPredicatedUserDAO',
-      documentation: `
-        A picker to choose who in the organization will
-        receive the notifications
-      `,
-      validateObj: function(whoReceivesNotification) {
-        if ( ! whoReceivesNotification ) {
-          return 'Please select a person to receive the notifications when thresholds are met.';
-        }
-      }
-    },
-    {
       class: 'Boolean',
       name: 'includeCeilingRule',
-      label: 'Include high liquidity threshold rules'
+      label: 'Include high liquidity threshold rules',
+      validateObj: function(includeCeilingRule, includeFloorRule) {
+        if ( ! includeCeilingRule && ! includeFloorRule ) {
+          return 'You must at least include either a high or low liquidity threshold.';
+        }
+      }
     },
     {
       class: 'FObjectProperty',
@@ -65,11 +54,21 @@ foam.CLASS({
       expression: function (includeCeilingRule) {
         return includeCeilingRule ? this.AccountLiquiditySendOnlyCeilingRule.create()  : null;
       },
+      validateObj: function(ceilingRuleDetails$errors_) {
+        if ( ceilingRuleDetails$errors_ ) {
+          return ceilingRuleDetails$errors_[0][1];
+        }
+      }
     },
     {
       class: 'Boolean',
       name: 'includeFloorRule',
       label: 'Include low liquidity threshold rules',
+      validateObj: function(includeCeilingRule, includeFloorRule) {
+        if ( ! includeCeilingRule && ! includeFloorRule ) {
+          return 'You must at least include either a high or low liquidity threshold.';
+        }
+      }
     },
     {
       class: 'FObjectProperty',
@@ -78,6 +77,11 @@ foam.CLASS({
       expression: function (includeFloorRule) {
         return includeFloorRule ? this.AccountLiquiditySendOnlyFloorRule.create()  : null;
       },
+      validateObj: function(floorRuleDetails$errors_) {
+        if ( floorRuleDetails$errors_ ) {
+          return floorRuleDetails$errors_[0][1];
+        }
+      }
     },
     {
       class: 'Boolean',
@@ -91,6 +95,11 @@ foam.CLASS({
       expression: function (isSavedAsTemplate) {
         return isSavedAsTemplate ? this.AccountLiquiditySaveRuleTemplate.create()  : null;
       },
+      validateObj: function(isSavedAsTemplate, saveRuleAsTemplate$errors_) {
+        if ( isSavedAsTemplate && saveRuleAsTemplate$errors_ ) {
+          return saveRuleAsTemplate$errors_[0][1];
+        }
+      }
     },
   ]
 });
