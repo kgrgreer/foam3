@@ -69,7 +69,7 @@ foam.CLASS({
         }
 
         for ( var i = 0; i < accounts.length; i++ ) {
-          if ( accounts[i].type == 'ShadowBankAccount' ) continue;
+          if ( accounts[i].type == 'ShadowAccount' ) continue;
           var accBal = await accounts[i].findBalance(x);
           if ( this.denomination !== accounts[i].denomination ) {
             var exchangeRate = await x.exchangeRateDAO.where(
