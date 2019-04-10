@@ -11,9 +11,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'liquiditySettings',
       factory: function() {
-        debugger;
         this.data.liquiditySetting$find.then(res => {
-          debugger;
           this.liquiditySettings = res;
         })
         return null;
