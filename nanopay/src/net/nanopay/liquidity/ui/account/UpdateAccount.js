@@ -51,6 +51,14 @@ foam.CLASS({
              return this.transactionDAO;
           }
         }
+      ],
+      actions: [
+        {
+          name: 'newTransfer',
+          code: function() {
+            alert('todo');
+          }
+        }
       ]
     }
   ],
