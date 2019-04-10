@@ -85,8 +85,10 @@ foam.CLASS({
       display: flex;
       justify-content: center;
       align-items: center;
-      padding-top :40px;
+      padding-top :20px;
       padding-bottom: 24px;
+      font-size: 16px;
+      font-weight: 900;
     }
     
     ^ .report-2-container-title img {
@@ -97,47 +99,102 @@ foam.CLASS({
     ^ .report-2-container-title p {
       display: inline-box;
     }
+
+    ^ .description {
+      margin-top: 15px;
+      margin-bottom: -15px;
+    }
+    
+    .report-2-container-title .exclamation-mark {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+    
+    .contact-tables .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName {
+      width: 322px;
+    }
+
+    .invoice-tables .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-invoiceNumber, .foam-u2-view-TableView-th-Amount, .foam-u2-view-TableView-th-dueDate {
+      width: 200px;
+    }
+
+    ^ .download-button {
+      float: right;
+      margin-right: 24px;
+      width: 158px;
+      height: 48px;
+      border-radius: 4px;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+      background-color: #ffffff;
+      border: solid 1px #604aff;
+      color: #604aff;
+    }
+
+    ^ .download-button:hover {
+      color: #4d38e1;
+      background-color: #ffffff !important;
+      border-color: #4d38e1;
+    }
+  }
   `,
 
   messages: [
-    { name: 'Title', message: 'Some invoices and contacts failed to sync' },
-    { name: 'Text', message: 'The following invoices and contacts failed to sync due to missing information.' },
-    { name: 'Text2', message: 'Fix these errors in ' },
-    { name: 'Text3', message: ' and sync again.' },
-    { name: 'Invoice_failed', message: 'Invoices failed to sync' },
-    { name: 'Contacts_failed', message: 'Contacts failed to sync ' }
+    { name: 'TITLE', message: 'Some invoices and contacts failed to sync' },
+    { name: 'TEXT', message: 'The following invoices and contacts failed to sync due to missing information.' },
+    { name: 'TEXT2', message: 'Fix these errors in ' },
+    { name: 'TEXT3', message: ' and sync again. Download the report for you convenience.' },
+    { name: 'INVOICES_FAILED', message: 'Invoices failed to sync' },
+    { name: 'CONTACTS_FAILED', message: 'Contacts failed to sync ' },
+    { name: 'MISSING_CONTACT', message: 'Missing Contact' },
+    { name: 'INVALID_CURRENCY', message: 'Invalid Currency'},
+    { name: 'UNAUTHORIZED_INVOICE', message: 'Unauthorized Xero Invoice'},
+    { name: 'MISSING_BUSINESS_EMAIL', message: 'Missing Business Name & Email' },
+    { name: 'MISSING_BUSINESS', message: 'Missing Business Name'},
+    { name: 'MISSING_EMAIL', message: 'Missing Email'},
+    { name: 'OTHER', message: 'Other'}
   ],
 
   properties: [
-    'reportResult'
+    'reportResult',
+    {
+      class: 'Int',
+      name: 'invoiceCount'
+    },
+    {
+      class: 'Int',
+      name: 'contactCount'
+    }
   ],
 
   methods: [
     function initE() {
     let self = this;
-
+console.log(this.reportResult);
       console.log(this.user.integrationCode);
       this
         .start().addClass(this.myClass())
           .start().addClass('report-2-container')
 
-            .start('h1').add(this.Title).addClass('title').end()
+            .start('h1').add(this.TITLE).addClass('title').end()
 
             .start('p')
-              .add('The following invoices and contacts failed to sync due to missing information.')
+              .addClass('description')
+              .add(this.TEXT)
             .end()
 
             .start('p')
-              .add('Fix these errors in ' + this.user.integrationCode.label + ' and sync again. Download the report for you convenience.')
+              .add(this.TEXT2 + this.user.integrationCode.label + this.TEXT3)
             .end()
 
         .start('div').addClass('report-2-container-tables')
 
           .start('div').addClass('report-2-container-title')
-            .start('img')
-              .attrs({ src: 'images/ablii/exclamation-mark.png' })
+            .start()
+              .addClass('exclamation-mark')
+              .start('img').attrs({ src: 'images/ablii/exclamation-mark.png' }).end()
             .end()
-            .start('p').add('Contacts failed to sync').end()
+            .start('p').add(this.CONTACTS_FAILED).end()
           .end()
 
           .call( function() {
@@ -146,20 +203,21 @@ foam.CLASS({
 
             for ( key of Object.keys(contactErrors) ) {
               if ( contactErrors[key].length !== 0 ) {
-                this.start('div').addClass('report-table-container')
+                this.start('div').addClass('report-table-container').addClass('contact-tables')
                   .start().tag({
-                  class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initData(contactErrors[key]), columns: ['name','businessName'], header:'Ablii users'
+                  class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initInvoiceError(contactErrors[key]), columns: ['name', 'businessName'], header: self.getTableName(key) + ' (' + self.invoiceCount + ')'
                   }).end()
-                .end()
+                .end();
               }
             }
           })
 
         .start('div').addClass('report-2-container-title')
-          .start('img')
-            .attrs({ src: 'images/ablii/exclamation-mark.png' })
+          .start()
+            .addClass('exclamation-mark')
+            .start('img').attrs({ src: 'images/ablii/exclamation-mark.png' }).end()
           .end()
-          .start('p').add('Invoices failed to sync').end()
+          .start('p').add(this.INVOICES_FAILED).end()
         .end()
 
           .call( function() {
@@ -168,11 +226,12 @@ foam.CLASS({
 
             for ( key of Object.keys(invoiceErrors) ) {
               if ( invoiceErrors[key].length !== 0 ) {
-                this.start('div').addClass('report-table-container')
+                this.start('div').addClass('report-table-container').addClass('invoice-tables')
                   .start().tag({
-                  class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initContactError(invoiceErrors[key]), columns: ['invoiceNumber','Amount', 'dueDate'], header:'Ablii users'
-                }).end()
+                    class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initContactError(invoiceErrors[key]), columns: ['invoiceNumber', 'Amount', 'dueDate'], header: self.getTableName(key) + ' (' + self.contactCount + ')'
+                  })
                   .end()
+                .end();
               }
             }
           })
@@ -182,12 +241,14 @@ foam.CLASS({
           .end()
           .start().addClass('button-bar')
             .start(this.DONE).end()
+            .start(this.DOWNLOAD).addClass('download-button').end()
           .end()
         .end();
     },
 
-    function initData(arrData) {
-      let myDAO = foam.dao.MDAO.create( {of: this.ContactErrorItem} );
+    function initInvoiceError(arrData) {
+      this.invoiceCount = 0;
+      let myDAO = foam.dao.MDAO.create( { of: this.ContactErrorItem } );
 
       for ( x in arrData ) {
         myDAO.put(this.ContactErrorItem.create({
@@ -195,25 +256,46 @@ foam.CLASS({
           businessName: arrData[x].businessName,
           name: arrData[x].name
         }))
+        this.invoiceCount++;
       }
 
       return myDAO;
     },
 
     function initContactError(arrData) {
-      let myDAO = foam.dao.MDAO.create( {of: this.InvoiceErrorItem} );
+      this.contactCount = 0;
+      let myDAO = foam.dao.MDAO.create( { of: this.InvoiceErrorItem } );
 
       for ( x in arrData ) {
-        console.log(arrData[x].dueDate)
         myDAO.put(this.InvoiceErrorItem.create({
           id: x,
           invoiceNumber: arrData[x].invoiceNumber,
           Amount: arrData[x].Amount,
           dueDate: arrData[x].dueDate
         }))
+        this.contactCount++;
       }
 
       return myDAO;
+    },
+
+    function getTableName(key) {
+      switch ( key ) {
+        case 'MISS_CONTACT':
+          return this.MISSING_CONTACT;
+        case 'CURRENCY_NOT_SUPPORT':
+          return this.INVALID_CURRENCY;
+        case 'UNAUTHORIZED_INVOICE':
+          return this.UNAUTHORIZED_INVOICE;
+        case 'MISS_BUSINESS_EMAIL':
+          return this.MISSING_BUSINESS_EMAIL;
+        case 'MISS_BUSINESS':
+          return this.MISSING_BUSINESS;
+        case 'MISS_EMAIL':
+          return this.MISSING_EMAIL;
+        default:
+          return this.OTHER;
+      }
     },
 
     function temp() {
@@ -275,6 +357,14 @@ foam.CLASS({
       label: 'Done',
       code: function() {
         this.pushMenu('sme.main.dashboard');
+      }
+    },
+    {
+      name: 'download',
+      label: 'Download Report',
+      code: function() {
+
+
       }
     }
   ]

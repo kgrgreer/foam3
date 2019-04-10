@@ -75,6 +75,8 @@ foam.CLASS({
       margin-top: 24px;
     }
     ^ .checkmark-img {
+      width: 53px;
+      height: 53px;
       margin-top: 120px;
     }
     
@@ -84,6 +86,7 @@ foam.CLASS({
       margin-top: 25px;
       margin-left: auto; margin-right: auto;
       overflow: hidden;
+      border: solid 1px #e2e2e3;
     }
     
     ^ .report-title-2 {
@@ -91,6 +94,7 @@ foam.CLASS({
       align-items: center;
       justify-content: center;
       margin-top: 80px;
+      margin-bottom: -14px;
     }
     
     ^ .report-title-2 p {
@@ -108,18 +112,47 @@ foam.CLASS({
     ^ .report-title-3 {
       font-size: 14px;
     }
+
+    .report-table-container .error-table-container .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName, .foam-u2-view-TableView-th-message {
+      width: 200px;
+    }
+
+    ^ .download-button {
+      float: right;
+      margin-right: 24px;
+      width: 158px;
+      height: 48px;
+      border-radius: 4px;
+      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
+      background-color: #ffffff;
+      border: solid 1px #604aff;
+      color: #604aff;
+    }
+
+    ^ .download-button:hover {
+      color: #4d38e1;
+      background-color: #ffffff !important;
+      border-color: #4d38e1;
+    }
   `,
 
   messages: [
-    { name: 'SuccessMessage', message: 'Successfully synced contacts and invoices' },
-    { name: 'EXISTING_CONTACT', message: 'existing contact'},
-    { name: 'EXISTING_USER', message: 'existing user'},
-    { name: 'EXISTING_USER_MULTI', message: 'existing user belong to multiple business'},
-    { name: 'EXISTING_USER_CONTACT', message: 'existing user also contact'},
+    { name: 'SUCCESS_MESSAGE', message: 'Successfully synced contacts and invoices' },
+    { name: 'TITLE', message: 'Found Ablii users from your synced contacts!' },
+    { name: 'DESCRIPTION', message: 'You can send or request money right away to these contacts' },
+    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email.'},
+    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email.'},
+    { name: 'EXISTING_USER', message: 'There is already a user with that email.'},
+    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.'}
   ],
 
   properties: [
     'reportResult',
+    {
+      class: 'Int',
+      name: 'count',
+      value: 0
+    }
   ],
 
   methods: [
@@ -132,22 +165,22 @@ foam.CLASS({
             .start('img').addClass('checkmark-img')
               .attrs({ src: 'images/checkmark-large-green.svg' })
             .end()
-            .start('h1').add(this.SuccessMessage).addClass('title').end()
+            .start('h1').add(this.SUCCESS_MESSAGE).addClass('title').end()
 
             .start('div').addClass('report-title-2')
               .start('img').addClass('report-title-img')
                 .attrs({ src: 'images/ablii-logo.svg' })
               .end()
-              .start('p').add('Found Ablii users from your synced contacts!').end()
+              .start('p').add(this.TITLE).end()
             .end()
 
             .start('p').addClass('report-title-3')
-              .add('You can send or request money right away to these contacts')
+              .add(this.DESCRIPTION)
             .end()
 
         .start('div').addClass('report-table-container')
             .start().tag({
-              class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initMismatchData(), columns: ['name','businessName', 'message'], header:'Ablii users'
+              class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initMismatchData(), columns: ['name', 'businessName', 'message'], header: 'Ablii users (' + this.count + ')'
             }).end()
         .end()
 
@@ -155,14 +188,15 @@ foam.CLASS({
 
           .start().addClass('button-bar')
             .start(this.NEXT).end()
+            .start(this.DOWNLOAD).addClass('download-button').end()
           .end()
 
         .end();
     },
 
     function initMismatchData() {
-      let myData = this.reportResult.contactSyncMismatches;
-      //let myData = this.temp();
+      //let myData = this.reportResult.contactSyncMismatches;
+      let myData = this.temp();
       let myDAO = foam.dao.MDAO.create( {of: this.ContactErrorItem} );
 
       for ( x in myData ) {
@@ -170,11 +204,25 @@ foam.CLASS({
           id: x,
           businessName: myData[x].existContact.businessName,
           name: myData[x].existContact.firstName + " " + myData[x].existContact.lastName,
-          message: this[myData[x].resultCode.name]
+          message: this.getMessage(myData[x].resultCode.name)
         }))
+        this.count++;
       }
 
       return myDAO;
+    },
+
+    function getMessage(key) {
+      switch ( key ) {
+        case 'EXISTING_USER_CONTACT':
+          return this.EXISTING_USER_CONTACT;
+        case 'EXISTING_CONTACT':
+          return this.EXISTING_CONTACT;
+        case 'EXISTING_USER':
+          return this.EXISTING_USER;
+        case 'EXISTING_USER_MULTI':
+          return this.EXISTING_USER_MULTI;
+      }
     },
 
     // TODO remove it
@@ -409,6 +457,14 @@ foam.CLASS({
           doSync: true,
           reportResult: this.reportResult
         });
+      }
+    },
+    {
+      name: 'download',
+      label: 'Download Report',
+      code: function() {
+
+
       }
     }
   ]

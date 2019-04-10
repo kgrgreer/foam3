@@ -149,6 +149,12 @@ foam.CLASS({
       margin-top: 4px;
       margin-right: 40px;
     }
+    ^ .failure-text1 {
+      float: right;
+      font-size: 12px;
+      margin-top: 4px;
+      margin-right: 140px;
+    }
     ^ .failure-text2 {
       float: right;
       font-size: 12px;
@@ -279,7 +285,7 @@ foam.CLASS({
                 .attrs({ src: 'images/inline-error-icon.svg' })
               .end()
               .start()
-                .add('Please select a bank account from Ablii before matching.').addClass('failure-text')
+                .add('Please select a bank account from Ablii before matching.').addClass('failure-text1')
               .end()
             .end()
             .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
