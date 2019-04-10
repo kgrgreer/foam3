@@ -29,7 +29,6 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'liquidityThresholdDetails',
-      label: '',
       expression: function (liquidityThresholdRules) {
         return liquidityThresholdRules === this.LiquidityThresholdRules.NONE 
         ? null 

@@ -36,7 +36,6 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'ceilingRuleDetails',
-      label: "",
       expression: function (includeCeilingRule) {
         return includeCeilingRule ? this.AccountLiquiditySendAndAutoCeilingRule.create()  : null;
       },
@@ -59,7 +58,6 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'floorRuleDetails',
-      label: "",
       expression: function (includeFloorRule) {
         return includeFloorRule ? this.AccountLiquiditySendAndAutoFloorRule.create()  : null;
       },
@@ -77,7 +75,6 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'saveRuleAsTemplate',
-      label: "",
       expression: function (isSavedAsTemplate) {
         return isSavedAsTemplate ? this.AccountLiquiditySaveRuleTemplate.create()  : null;
       },

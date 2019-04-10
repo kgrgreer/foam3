@@ -15,8 +15,8 @@ foam.CLASS({
         The name for the threshold rule
       `,
       validateObj: function(thresholdRuleName) {
-        if ( !thresholdRuleName ) {
-          return 'Please enter a threshold rule name.';
+        if ( thresholdRuleName.length === 0 || ! thresholdRuleName.trim() ) {
+          return 'Please name this threshold rule.';
         }
       }
     }

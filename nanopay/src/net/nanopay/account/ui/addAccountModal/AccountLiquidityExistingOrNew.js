@@ -105,7 +105,6 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'newRuleDetails',
-      label: "",
       expression: function (isNewSelected, chosenLiquidityThresholdRule) {
         // make a switch here
         if (!isNewSelected) return null;
@@ -135,7 +134,6 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'existingRuleDetails',
-      label: "",
       expression: function (isExistingSelected, chosenLiquidityThresholdRule) {
         // make a switch here
         return isExistingSelected 

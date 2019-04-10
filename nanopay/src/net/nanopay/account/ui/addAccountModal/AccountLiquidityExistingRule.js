@@ -50,8 +50,8 @@ foam.CLASS({
         upon hitting the upper bound liquidity threshold
       `,
       validateObj: function(existingThresholdRule) {
-        if ( existingThresholdRule.length === 0 || ! existingThresholdRule.trim() ) {
-          return 'Please name this threshold rule.';
+        if ( ! existingThresholdRule ) {
+          return 'Please select an existing threshold.';
         }
       }
     },
