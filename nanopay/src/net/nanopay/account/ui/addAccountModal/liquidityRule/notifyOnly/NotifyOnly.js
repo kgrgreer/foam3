@@ -14,9 +14,9 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnlyFloorRule',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnlyCeilingRule',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySaveRuleTemplate'
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyOnly.NotifyOnlyCeiling',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyOnly.NotifyOnlyFloor',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRuleSaveTemplate'
   ],
 
   properties: [

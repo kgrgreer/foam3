@@ -14,9 +14,9 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoCeilingRule',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoFloorRule',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySaveRuleTemplate'
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyAndAuto.NotifyAndAutoCeiling',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyAndAuto.NotifyAndAutoFloor',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRuleSaveTemplate'
   ],
 
   properties: [
@@ -35,7 +35,7 @@ foam.CLASS({
       name: 'ceilingRuleDetails',
       label: '',
       expression: function (includeCeilingRule) {
-        return includeCeilingRule ? this.AccountLiquiditySendAndAutoCeilingRule.create()  : null;
+        return includeCeilingRule ? this.NotifyAndAutoCeiling.create()  : null;
       },
       validateObj: function(ceilingRuleDetails$errors_) {
         if ( ceilingRuleDetails$errors_ ) {
@@ -58,7 +58,7 @@ foam.CLASS({
       name: 'floorRuleDetails',
       label: '',
       expression: function (includeFloorRule) {
-        return includeFloorRule ? this.AccountLiquiditySendAndAutoFloorRule.create()  : null;
+        return includeFloorRule ? this.NotifyAndAutoFloor.create()  : null;
       },
       validateObj: function(floorRuleDetails$errors_) {
         if ( floorRuleDetails$errors_ ) {
@@ -76,7 +76,7 @@ foam.CLASS({
       name: 'saveRuleAsTemplate',
       label: '',
       expression: function (isSavedAsTemplate) {
-        return isSavedAsTemplate ? this.AccountLiquiditySaveRuleTemplate.create()  : null;
+        return isSavedAsTemplate ? this.LiquidityRuleSaveTemplate.create()  : null;
       },
       validateObj: function(isSavedAsTemplate, saveRuleAsTemplate$errors_) {
         if ( isSavedAsTemplate && saveRuleAsTemplate$errors_ ) {

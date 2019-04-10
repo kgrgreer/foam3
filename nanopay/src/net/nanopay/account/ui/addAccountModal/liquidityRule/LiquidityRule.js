@@ -7,9 +7,9 @@ foam.CLASS({
   `,
 
   requires: [
-    'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnly',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAuto'
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyAndAuto.NotifyAndAuto',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.notifyOnly.NotifyOnly'
   ],
 
   exports: [
@@ -24,14 +24,14 @@ foam.CLASS({
   properties: [
     {
       class: 'Enum',
-      of: 'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules',
+      of: 'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules',
       name: 'liquidityThresholdRules',
       label: 'I want this threshold to...',
       documentation: `
         A standard picker based on the LiquidityThresholdRules enum
       `,
       validateObj: function(liquidityThresholdRules) {
-        if ( ! liquidityThresholdRules || liquidityThresholdRules == net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules.NONE ) {
+        if ( ! liquidityThresholdRules || liquidityThresholdRules == net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules.NONE ) {
           return 'Please select what to do with this threshold';
         }
       }
@@ -71,9 +71,9 @@ foam.CLASS({
           case this.LiquidityThresholdRules.NONE :
             return null;
           case this.LiquidityThresholdRules.NOTIFY :
-            return this.AccountLiquiditySendOnly.create();
+            return this.NotifyOnly.create();
           case this.LiquidityThresholdRules.NOTIFY_AND_AUTO :
-            return this.AccountLiquiditySendAndAuto.create();
+            return this.NotifyAndAuto.create();
           default:
             return null;
         }

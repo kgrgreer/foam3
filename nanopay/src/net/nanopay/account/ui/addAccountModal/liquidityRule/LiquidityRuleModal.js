@@ -1,14 +1,14 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLiquidityModal',
+  package: 'net.nanopay.account.ui.addAccountModal.liquidityRule',
+  name: 'LiquidityRuleModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: 'Modal Sub View for setting liquidity settings for the account',
 
   requires: [
-    'net.nanopay.account.ui.addAccountModal.AccountLiquidityExistingOrNew',
-    'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
-    'net.nanopay.account.ui.addAccountModal.ModalProgressBar',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRule',
+    'net.nanopay.account.ui.addAccountModal.components.ModalTitleBar',
+    'net.nanopay.account.ui.addAccountModal.components.ModalProgressBar',
     'foam.u2.DetailView',
   ],
 
@@ -19,14 +19,14 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.account.ui.addAccountModal.AccountLiquidityExistingOrNew',
+      of: 'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRule',
       name: 'liquidityForm',
       factory: function() {
         if ( this.viewData.liquidityForm ) {
           return this.viewData.liquidityForm;
         }
 
-        var form = this.AccountLiquidityExistingOrNew.create();
+        var form = this.LiquidityRule.create();
         this.viewData.liquidityForm = form;
         return form;
       }

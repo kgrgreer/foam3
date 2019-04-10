@@ -1,5 +1,5 @@
 foam.ENUM({
-    package: 'net.nanopay.account.ui.addAccountModal',
+    package: 'net.nanopay.account.ui.addAccountModal.liquidityRule',
     name: 'LiquidityRules',
 
     documentation: `

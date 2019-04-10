@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
+  package: 'net.nanopay.account.ui.addAccountModal.liquidityRule',
   name: 'LiquidityRuleSaveTemplate',
 
   documentation: `

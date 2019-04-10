@@ -9,9 +9,9 @@ foam.CLASS({
     'net.nanopay.account.AggregateAccount',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.ShadowAccount',
-    'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
-    'net.nanopay.account.ui.addAccountModal.ModalProgressBar',
-    'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules',
+    'net.nanopay.account.ui.addAccountModal.components.ModalTitleBar',
+    'net.nanopay.account.ui.addAccountModal.components.ModalProgressBar',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules',
     'net.nanopay.liquidity.LiquiditySettings'
   ],
 

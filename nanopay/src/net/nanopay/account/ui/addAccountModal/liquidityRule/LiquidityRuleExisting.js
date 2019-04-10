@@ -19,7 +19,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
-    'net.nanopay.account.ui.addAccountModal.LiquidityRules',
     'net.nanopay.liquidity.LiquiditySettings'
   ],
 

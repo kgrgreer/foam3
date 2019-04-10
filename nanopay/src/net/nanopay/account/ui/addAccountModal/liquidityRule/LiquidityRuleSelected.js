@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLiquidityExistingOrNew',
+  package: 'net.nanopay.account.ui.addAccountModal.liquidityRule',
+  name: 'LiquidityRuleSelected',
   implements: [
     'foam.mlang.Expressions'
   ],
@@ -14,8 +14,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.account.ui.addAccountModal.AccountSettingsLiquidityRulesViewModel',
-    'net.nanopay.account.ui.addAccountModal.AccountLiquidityExistingRule'
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRule',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRuleExisting'
   ],
 
 
@@ -68,7 +68,7 @@ foam.CLASS({
       expression: function (isNewSelected) {
         // make a switch here
         if (!isNewSelected) return null;
-        return isNewSelected ? this.AccountSettingsLiquidityRulesViewModel.create() : null;
+        return isNewSelected ? this.LiquidityRule.create() : null;
       },
       validateObj: function(newRuleDetails$errors_) {
         if ( newRuleDetails$errors_ ) {
@@ -82,7 +82,7 @@ foam.CLASS({
       label: '',
       expression: function (isExistingSelected) {
         // make a switch here
-        return isExistingSelected ? this.AccountLiquidityExistingRule.create() : null;
+        return isExistingSelected ? this.LiquidityRuleExisting.create() : null;
       },
       validateObj: function(existingRuleDetails$errors_) {
         if ( existingRuleDetails$errors_ ) {
