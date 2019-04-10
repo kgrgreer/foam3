@@ -1,6 +1,6 @@
 foam.CLASS({
-    package: 'net.nanopay.account.ui.addAccountModal',
-    name: 'AccountTypeViewModel',
+    package: 'net.nanopay.account.ui.addAccountModal.accountType',
+    name: 'AccountType',
 
     documentation: `
       A view model for the account type on Liquid
@@ -9,7 +9,7 @@ foam.CLASS({
     properties: [
       {
         class: 'Enum',
-        of: 'net.nanopay.account.ui.addAccountModal.AccountType',
+        of: 'net.nanopay.account.ui.addAccountModal.accountType.AccountTypes',
         name: 'accountTypePicker',
         documentation: `
           A standard picker based on the AccountType enum

@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountLimitModal',
+  package: 'net.nanopay.account.ui.addAccountModal.transactionLimit',
+  name: 'AccountTransactionLimitModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: 'Modal Sub View for setting maximum transaction limit for account',

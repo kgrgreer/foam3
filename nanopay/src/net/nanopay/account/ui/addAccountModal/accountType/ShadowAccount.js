@@ -1,13 +1,13 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AggregateAccountViewModel',
+  package: 'net.nanopay.account.ui.addAccountModal.accountType',
+  name: 'ShadowAccount',
 
   implements: [
     'foam.mlang.Expressions'
   ],
 
   documentation: `
-    A view model for the aggregate account details on Liquid
+  A view model for the account details on Liquid
   `,
 
   exports: [
@@ -15,7 +15,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'currencyDAO',
     'accountDAO',
+    'countryDAO',
     'user'
   ],
 
@@ -37,6 +39,20 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'countryPicker',
+      label: 'Country',
+      documentation: `
+        A picker to choose countries from the countryDAO
+      `,
+      validateObj: function(countryPicker) {
+        if ( ! countryPicker ) {
+          return 'Account country required before proceeding.';
+        }
+      }
+    },
+    {
       name: 'predicatedAccountDAO',
       hidden: true,
       expression: function(user$id, accountDAO) {
@@ -49,14 +65,26 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      name: 'parentAccountPicker',
+      name: 'bankAccountPicker',
+      label: 'Associated bank account',
       targetDAOKey: 'predicatedAccountDAO',
       documentation: `
-        A picker to choose parent accounts based on the
-        existing accounts of the user by going through the accountDAO
-        and grabbing only the digital accounts owned by the user
+        A picker to choose an associated bank account to link to this shadow account
+      `
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
+      name: 'currencyPicker',
+      label: 'Currency',
+      documentation: `
+        A picker to choose a currency for the account from the currencyDAO
       `,
-      // TODO: REQUIRED DEPENDING ON TYPE OF ACCOUNT
+      validateObj: function(currencyPicker) {
+        if ( ! currencyPicker ) {
+          return 'Account currency required before proceeding.';
+        }
+      }
     },
     {
       class: 'String',

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
+  package: 'net.nanopay.account.ui.addAccountModal.accountDetails',
   name: 'AccountDetailsModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 

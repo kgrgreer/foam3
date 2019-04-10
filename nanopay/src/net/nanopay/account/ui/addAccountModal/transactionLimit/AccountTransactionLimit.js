@@ -1,6 +1,6 @@
 foam.CLASS({
-    package: 'net.nanopay.account.ui.addAccountModal',
-    name: 'AccountLimitViewModel',
+    package: 'net.nanopay.account.ui.addAccountModal.transactionLimit',
+    name: 'AccountLimit',
 
     documentation: `
       A view model for the maximum transaction size for an account being created in Liquid

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
+  package: 'net.nanopay.account.ui.addAccountModal.components',
   name: 'ModalProgressBar',
   extends: 'foam.u2.View',
 

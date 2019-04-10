@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'VirtualAccountViewModel',
+  name: 'VirtualAccount',
 
   implements: [
     'foam.mlang.Expressions'

@@ -1,6 +1,6 @@
 foam.ENUM({
-    package: 'net.nanopay.account.ui.addAccountModal',
-    name: 'AccountType',
+    package: 'net.nanopay.account.ui.addAccountModal.accountType',
+    name: 'AccountTypes',
 
     documentation: `
         Account types able to be created through Liquid

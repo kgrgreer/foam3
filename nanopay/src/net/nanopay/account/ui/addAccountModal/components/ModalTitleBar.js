@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal',
+  package: 'net.nanopay.account.ui.addAccountModal.components',
   name: 'ModalTitleBar',
   extends: 'foam.u2.Element',
 
