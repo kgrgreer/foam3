@@ -10,11 +10,14 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.ShadowAccount',
     'net.nanopay.account.ui.addAccountModal.ModalTitleBar',
-    'net.nanopay.account.ui.addAccountModal.ModalProgressBar'
+    'net.nanopay.account.ui.addAccountModal.ModalProgressBar',
+    'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules',
+    'net.nanopay.liquidity.LiquiditySettings'
   ],
 
   imports: [
     'accountDAO',
+    'liquiditySettingsDAO',
     'user'
   ],
 
@@ -71,24 +74,24 @@ foam.CLASS({
     },
 
     async function submitInformation() {
-      var uploadedAccount = await this.uploadAccount();
+      var account = this.createAccount();
 
       if ( this.viewData.accountLimitForm ) {
         // accountLimits are being specified. Apply.
         var maximumTransactionLimit = this.viewData.accountLimitForm.maxTransactionSize;
         // TODO: Apply account transaction limit
       }
-      // TODO: Put LiquiditySettings into DAO and bind it to this account;
-      console.log("liquidityForm", this.viewData.liquidityForm);
-      console.log("liquidityThresholdDetails", this.viewData.liquidityForm.liquidityThresholdDetails);
+
+      // If liquidity settings have been specified
+      if ( this.viewData.liquidityForm ) {
+        var uploadedLiquiditySettingsId = await this.uploadLiquiditySettings();
+        account.liquiditySetting = uploadedLiquiditySettingsId;
+      }
+
+      await this.accountDAO.put(account);
 
       this.progressBar.stopAnimation();
       this.isUploading = false;
-    },
-
-    async function uploadAccount() {
-      var uploadedAccount = await this.accountDAO.put(this.createAccount());
-      return uploadAccount;
     },
 
     function createAccount() {
@@ -133,6 +136,27 @@ foam.CLASS({
       }
 
       return account;
+    },
+
+    async function uploadLiquiditySettings() {
+      var form = this.viewData.liquidityForm;
+      var mode = form.liquidityThresholdRules;
+      var thresholdDetails = form.liquidityThresholdDetails;
+
+      if ( thresholdDetails.isExistingSelected ) {
+        // Pre-existing liquidity threshold chosen
+        var existingThreshold = thresholdDetails.existingRuleDetails;
+        return existingThreshold.existingThresholdRule;
+      }
+
+      var liquiditySettings = this.LiquiditySettings.create();
+
+      liquiditySettings.userToEmail = thresholdDetails.whoReceivesNotification;
+
+      //..... MORE
+
+      var uploadedLiquiditySettings = await this.liquiditySettingsDAO.put(liquiditySettings);
+      return uploadedLiquiditySettings.id;
     }
   ],
 
