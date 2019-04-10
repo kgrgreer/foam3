@@ -97,13 +97,13 @@ foam.CLASS({
     function createAccount() {
       var account;
       switch ( this.viewData.accountTypeForm.accountTypePicker ) {
-        case net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT :
+        case net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.SHADOW_ACCOUNT :
           account = this.ShadowAccount.create();
           break;
-        case net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT :
+        case net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.AGGREGATE_ACCOUNT :
           account = this.AggregateAccount.create();
           break;
-        case net.nanopay.account.ui.addAccountModal.AccountType.VIRTUAL_ACCOUNT :
+        case net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.VIRTUAL_ACCOUNT :
           account = this.DigitalAccount.create();
           break;
       }
@@ -118,19 +118,19 @@ foam.CLASS({
       // TODO: Add memo to account (currently doesn't currently have the property)
       account.desc = accountDetails.memo;
 
-      if ( accountType != net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT) {
+      if ( accountType != net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.SHADOW_ACCOUNT) {
         // In Liquid, no shadow should have a parent
         account.parent = accountDetails.parentAccountPicker;
       }
 
-      if ( accountType != net.nanopay.account.ui.addAccountModal.AccountType.AGGREGATE_ACCOUNT) {
+      if ( accountType != net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.AGGREGATE_ACCOUNT) {
         // Aggregate accounts do not need country or denomination
         // but both Shadow and Virtual require them
         account.country = accountDetails.countryPicker;
         account.denomination = accountDetails.currencyPicker;
       }
 
-      if ( accountType == net.nanopay.account.ui.addAccountModal.AccountType.SHADOW_ACCOUNT) {
+      if ( accountType == net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.SHADOW_ACCOUNT) {
         // Shadow has an associated bank account
         account.bank = accountDetails.bankAccountPicker;
       }
@@ -170,7 +170,7 @@ foam.CLASS({
         var ceilingRules = ruleDetails.ceilingRuleDetails;
         liquiditySettings.highLiquidity.threshold = ceilingRules.accountBalanceCeiling;
         // If automatic rebalancing is needed
-        if ( mode === net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules.NOTIFY_AND_AUTO ) {
+        if ( mode === net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules.NOTIFY_AND_AUTO ) {
           liquiditySettings.highLiquidity.enableRebalancing = true;
           liquiditySettings.highLiquidity.resetBalance = ceilingRules.resetAccountBalanceCeiling;
           liquiditySettings.highLiquidity.pushPullAccount = ceilingRules.ceilingMoveFundsTo;
@@ -182,7 +182,7 @@ foam.CLASS({
         var floorRules = ruleDetails.floorRuleDetails;
         liquiditySettings.lowLiquidity.threshold = floorRules.accountBalanceFloor;
         // If automatic rebalancing is needed
-        if ( mode === net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules.NOTIFY_AND_AUTO ) {
+        if ( mode === net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules.NOTIFY_AND_AUTO ) {
           liquiditySettings.lowLiquidity.enableRebalancing = true;
           liquiditySettings.lowLiquidity.resetBalance = floorRules.resetAccountBalanceFloor;
           liquiditySettings.lowLiquidity.pushPullAccount = floorRules.floorMoveFundsFrom;
