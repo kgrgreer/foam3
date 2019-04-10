@@ -158,7 +158,7 @@ foam.CLASS({
 
       // If liquidity settings should be saved under a name
       if ( ruleDetails.saveRuleAsTemplate ) {
-        liquiditySettings.name = ruleDetails.saveRuleAsTemplate.thresholdRuleName;
+        liquiditySettings.name = ruleDetails.saveRuleAsTemplate.thresholdRuleName ? ruleDetails.saveRuleAsTemplate.thresholdRuleName : '';
       }
 
       // If high threshold liquidity settings exist
@@ -167,9 +167,9 @@ foam.CLASS({
         liquiditySettings.highLiquidity.threshold = ceilingRules.accountBalanceCeiling;
         // If automatic rebalancing is needed
         if ( mode === net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules.NOTIFY_AND_AUTO ) {
-          liquiditySetting.highLiquidity.enableRebalancing = true;
-          liquiditySetting.highLiquidity.resetBalance = ceilingRules.resetAccountBalanceCeiling;
-          liquiditySetting.highLiquidity.pushPullAccount = ceilingRules.ceilingMoveFundsTo;
+          liquiditySettings.highLiquidity.enableRebalancing = true;
+          liquiditySettings.highLiquidity.resetBalance = ceilingRules.resetAccountBalanceCeiling;
+          liquiditySettings.highLiquidity.pushPullAccount = ceilingRules.ceilingMoveFundsTo;
         }
       }
 
@@ -179,9 +179,9 @@ foam.CLASS({
         liquiditySettings.lowLiquidity.threshold = floorRules.accountBalanceFloor;
         // If automatic rebalancing is needed
         if ( mode === net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules.NOTIFY_AND_AUTO ) {
-          liquiditySetting.lowLiquidity.enableRebalancing = true;
-          liquiditySetting.lowLiquidity.resetBalance = floorRules.resetAccountBalanceFloor;
-          liquiditySetting.lowLiquidity.pushPullAccount = floorRules.floorMoveFundsFrom;
+          liquiditySettings.lowLiquidity.enableRebalancing = true;
+          liquiditySettings.lowLiquidity.resetBalance = floorRules.resetAccountBalanceFloor;
+          liquiditySettings.lowLiquidity.pushPullAccount = floorRules.floorMoveFundsFrom;
         }
       }
 

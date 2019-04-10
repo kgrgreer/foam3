@@ -34,8 +34,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name',
-      value: 'name'
+      name: 'name'
     },
     {
       class: 'Reference',
@@ -84,4 +83,3 @@ foam.CLASS({
     },
   ]
 });
-

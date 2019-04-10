@@ -12,13 +12,16 @@ foam.CLASS({
   exports: [
     'predicatedLiquiditySettingsDAO',
   ],
+
   imports: [
     'liquiditySettingsDAO',
     'liquiditySettings'
   ],
+
   requires: [
     'foam.nanos.auth.User',
-    'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRule'
+    'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRule',
+    'net.nanopay.liquidity.LiquiditySettings'
   ],
 
   properties: [
@@ -32,11 +35,11 @@ foam.CLASS({
       name: 'predicatedLiquiditySettingsDAO',
       hidden: true,
       // ! ask how to grab the id from liquiditySettings relationship acount
-      expression: function(liquiditySettings$id, liquiditySettingsDAO) {
+      expression: function(liquiditySettingsDAO) {
         // only return other accounts in the business group
         // ! uncomment the line below once we figure this out
         // return liquiditySettingsDAO.where(this.EQ(this.User.GROUP, user$id));
-        return liquiditySettingsDAO // ! comment this later on
+        return liquiditySettingsDAO.where(this.NEQ(this.LiquiditySettings.NAME, '')); // ! comment this later on
       }
     },
     {
@@ -44,7 +47,7 @@ foam.CLASS({
       of: 'net.nanopay.liquidity.LiquiditySettings',
       name: 'existingThresholdRule',
       label: 'Threshold rule name',
-      targetDAOKey: 'otherAccountsPredicatedAccountDAO',
+      targetDAOKey: 'predicatedLiquiditySettingsDAO',
       documentation: `
         A picker to choose which account will excess funds be moved to
         upon hitting the upper bound liquidity threshold
