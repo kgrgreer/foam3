@@ -100,28 +100,28 @@ public class InvoiceNotificationDAO extends ProxyDAO {
       // ONE
       if ( invoiceIsBeingPaidButNotComplete ) {
         args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), true);
-        sendEmail(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }) );
+        sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }) );
       }
       // TWO
       if ( invoiceIsARecievable ) {
         args = populateArgsForEmail(args, invoice, payerUser.getFirstName(), payeeUser.label(), true);
-        sendEmail(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, (new String[] { payerUser.getEmail() }) );
+        sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, (new String[] { payerUser.getEmail() }) );
       }
       // THREE  
       if ( invoiceNeedsApproval ) {
         args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), "", true);
-        sendEmail(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, findApproversOftheBusiness(x));
+        sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, findApproversOftheBusiness(x));
       }
       // FOUR 
       if ( invoiceIsBeingPaidAndCompleted ) {
         args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), false);
-        sendEmail(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }) );
+        sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }) );
       }
     }
     return super.put_(x, invoice);
   }
 
-  private void sendEmail(X x, boolean isContact, String emailTemplateName, Long invoiceId, User userBeingSentEmail, HashMap<String, Object> args, String[] sendToList) {
+  private void sendEmailFunction(X x, boolean isContact, String emailTemplateName, Long invoiceId, User userBeingSentEmail, HashMap<String, Object> args, String[] sendToList) {
     if ( isContact ) {
       args.put("template", emailTemplateName);
       args.put("invoiceId", invoiceId);
