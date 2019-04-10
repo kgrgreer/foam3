@@ -60,7 +60,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      name: 'floorMoveFundsTo',
+      name: 'floorMoveFundsFrom',
       label: 'by adding new funds from',
       targetDAOKey: 'otherAccountsPredicatedAccountDAO',
       documentation: `
