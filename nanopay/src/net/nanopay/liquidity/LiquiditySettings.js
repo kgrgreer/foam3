@@ -53,11 +53,7 @@ foam.CLASS({
       of: 'net.nanopay.liquidity.Liquidity',
       name: 'highLiquidity',
       factory: function() {
-        return net.nanopay.liquidity.Liquidity.create({
-          resetBalance: 0,
-          threshold: 0,
-          enable: false,
-        });
+        return net.nanopay.liquidity.Liquidity.create();
       }
     },
     {

@@ -140,21 +140,25 @@ foam.CLASS({
 
     async function uploadLiquiditySettings() {
       var form = this.viewData.liquidityForm;
-      var mode = form.liquidityThresholdRules;
-      var thresholdDetails = form.liquidityThresholdDetails;
 
       // Pre-existing liquidity threshold chosen
-      if ( thresholdDetails.isExistingSelected ) {
-        var existingThreshold = thresholdDetails.existingRuleDetails;
+      if ( form.isExistingSelected ) {
+        var existingThreshold = form.existingRuleDetails;
         return existingThreshold.existingThresholdRule;
       }
 
+      // New Liquidity Settings
       var liquiditySettings = this.LiquiditySettings.create();
 
-      // Person to receive notification
-      liquiditySettings.userToEmail = thresholdDetails.whoReceivesNotification;
+      var newRuleDetails = form.newRuleDetails;
 
-      var ruleDetails = thresholdDetails.newRuleDetails
+      // Notifications only or with auto transaction
+      var mode = newRuleDetails.liquidityThresholdRules;
+
+      // Person to receive notification
+      liquiditySettings.userToEmail = newRuleDetails.whoReceivesNotification;
+
+      var ruleDetails = newRuleDetails.liquidityThresholdDetails;
 
       // If liquidity settings should be saved under a name
       if ( ruleDetails.saveRuleAsTemplate ) {
