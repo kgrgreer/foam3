@@ -64,6 +64,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'newRuleDetails',
+      label: '',
       expression: function (isNewSelected) {
         // make a switch here
         if (!isNewSelected) return null;
@@ -78,6 +79,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'existingRuleDetails',
+      label: '',
       expression: function (isExistingSelected) {
         // make a switch here
         return isExistingSelected ? this.AccountLiquidityExistingRule.create() : null;

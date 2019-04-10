@@ -65,6 +65,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'liquidityThresholdDetails',
+      label: '',
       expression: function (liquidityThresholdRules) {
         switch ( liquidityThresholdRules ) {
           case this.LiquidityThresholdRules.NONE :
