@@ -10,13 +10,10 @@ foam.CLASS({
   `,
 
   imports: [
-    'currencyDAO',
-    'userDAO',
-    'user'
+    'currencyDAO'
   ],
 
   requires: [
-    'foam.nanos.auth.User',
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoCeilingRule',
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendAndAutoFloorRule',
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySaveRuleTemplate'

@@ -14,8 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'liquiditySettingsDAO',
-    'liquiditySettings'
+    'liquiditySettingsDAO'
   ],
 
   requires: [
@@ -25,12 +24,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'Enum',
-      of: 'net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules',
-      name: 'chosenLiquidityThresholdRule',
-      hidden: true
-    },
     {
       name: 'predicatedLiquiditySettingsDAO',
       hidden: true,

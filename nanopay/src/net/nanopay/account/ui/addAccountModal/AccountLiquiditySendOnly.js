@@ -6,37 +6,20 @@ foam.CLASS({
   ],
 
   documentation: `
-  A view model for the high and low liquidity threshold rules for Liquid
+    A view model for the high and low liquidity threshold rules for Liquid
   `,
 
-  exports: [
-    'whoReceivesPredicatedUserDAO',
-  ],
   imports: [
-    'currencyDAO',
-    'userDAO',
-    'user'
+    'currencyDAO'
   ],
 
   requires: [
-    'foam.nanos.auth.User',
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnlyFloorRule',
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySendOnlyCeilingRule',
     'net.nanopay.account.ui.addAccountModal.AccountLiquiditySaveRuleTemplate'
   ],
 
   properties: [
-    {
-
-      name: 'whoReceivesPredicatedUserDAO',
-      hidden: true,
-      expression: function (user$group, userDAO) {
-        // only return other users in the business group
-        // uncomment the line below once we figure this out
-        // return user.where(this.EQ(this.User.GROUP, user$group));
-        return userDAO; // ! comment this later on
-      }
-    },
     {
       class: 'Boolean',
       name: 'includeCeilingRule',
