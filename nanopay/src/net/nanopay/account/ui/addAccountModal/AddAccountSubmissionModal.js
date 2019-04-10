@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.account.ui.addAccountModal',
-  name: 'AccountSubmissionModal',
+  name: 'AddAccountSubmissionModal',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: 'Modal Sub View for the submission of a created account',

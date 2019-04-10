@@ -7,7 +7,7 @@ foam.CLASS({
   ],
 
   documentation: `
-  A view model for the account details on Liquid
+    A view model for the account details on Liquid
   `,
 
   exports: [

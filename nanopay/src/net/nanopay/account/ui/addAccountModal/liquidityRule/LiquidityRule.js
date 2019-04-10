@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRuleSelected',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRuleNew',
     'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRuleExisting'
   ],
 
@@ -68,7 +68,7 @@ foam.CLASS({
       expression: function (isNewSelected) {
         // make a switch here
         if (!isNewSelected) return null;
-        return isNewSelected ? this.LiquidityRuleSelected.create() : null;
+        return isNewSelected ? this.LiquidityRuleNew.create() : null;
       },
       validateObj: function(newRuleDetails$errors_) {
         if ( newRuleDetails$errors_ ) {
