@@ -6,8 +6,8 @@ global.FOAM_FLAGS = {
   js: true,
   web: true,
   node: true,
-  java: false,
-  swift: false,
+  java: true,
+  swift: true,
 };
 
 require(npRoot + 'foam2/src/foam.js');
