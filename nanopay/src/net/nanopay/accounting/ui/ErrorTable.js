@@ -48,11 +48,11 @@ foam.CLASS({
   
   .error-table-container .foam-u2-view-TableView thead > tr > th {
     text-align: center;
+    color: #8e9090;
   }
-  
+
   .error-table-container {
-    overflow-x: hidden;
-    overflow-y: scroll;
+    max-hieght: 238x;
   }
   
   .error-table-container .foam-u2-view-TableView {
@@ -64,6 +64,32 @@ foam.CLASS({
     background-color: #f9fbff;
   }
   
+  .error-table-container .arrow-icon {
+    margin-right: 8px;
+    margin-left: -24px;
+  }
+
+  .error-table-container .foam-u2-view-TableView {
+    border: 1px solid #e2e2e3 !important;
+    box-shadow: 0 1px 1px 0 #dae1e9;
+    white-space: unset;
+    table-layout: fixed;
+  }
+
+  .error-table-container .foam-u2-view-TableView tbody > tr > td {
+    white-space: unset;
+    word-wrap: break-word;
+  }
+
+  .error-table-container .foam-u2-view-TableView tbody {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  .error-table-container .table-container {
+    max-height: 180px;
+    overflow: scroll;
+  }
   `,
 
   messages: [
@@ -96,10 +122,15 @@ foam.CLASS({
         .start('div').addClass('error-table-container')
 
           .start('div').addClass('error-table-title').on('click', this.toggle)
+            .start('img').addClass('arrow-icon').attrs({ src: 'images/active.svg' }).show(this.open$).end()
+            .start('img').addClass('arrow-icon').attrs({ src: 'images/resting.svg' }).show(this.slot(
+              function(open) {
+                return ! open;
+              })).end()
             .add(this.header)
           .end()
 
-        .start().show(this.open$)
+        .start().addClass('table-container').show(this.open$)
           .start({
             class: 'foam.u2.view.TableView',
             data$: this.data$,
