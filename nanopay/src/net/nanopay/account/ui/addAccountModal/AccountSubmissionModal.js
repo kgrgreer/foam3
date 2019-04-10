@@ -80,7 +80,7 @@ foam.CLASS({
       }
       // TODO: Put LiquiditySettings into DAO and bind it to this account;
       console.log("liquidityForm", this.viewData.liquidityForm);
-      console.log("liquidityThresholdDetails", this.viewData.liquidityForm.liquidityThresholdDetails.);
+      console.log("liquidityThresholdDetails", this.viewData.liquidityForm.liquidityThresholdDetails);
 
       this.progressBar.stopAnimation();
       this.isUploading = false;
