@@ -85,6 +85,9 @@ foam.CLASS({
     ^ .navigationContainer {
       width: 100%;
     }
+    ^ .exitContainer {
+      display: flex;
+    }
     ^ .plainAction:last-child {
       margin-right: 25px !important;
     }
