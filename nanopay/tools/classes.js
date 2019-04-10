@@ -467,7 +467,6 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
 
-
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
@@ -475,13 +474,11 @@ var classes = [
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 
-<<<<<<< HEAD
   // business
-  'net.nanopay.business.EnforceOneBusinessAdminDAO'
-=======
+  'net.nanopay.business.EnforceOneBusinessAdminDAO',
+
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
->>>>>>> development
 ];
 
 var abstractClasses = [
