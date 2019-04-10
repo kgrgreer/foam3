@@ -122,6 +122,88 @@ foam.CLASS({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
       }
+    },
+
+    function genPdfReport(reportResult) {
+      let doc = new jsPDF();
+      doc.myY = 20;
+
+      this.createContactMismatchTable(reportResult.contactSyncMismatches, doc);
+      this.createContactErrorsTables(reportResult.contactErrors, doc);
+      this.createInvoiceErrorsTables(reportResult.invoiceErrors, doc);
+
+      doc.save('table.pdf')
+    },
+
+    function createContactMismatchTable(mismatch, doc) {
+      let columns = [
+        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Name', dataKey: 'name' },
+        { header: 'Message' , dataKey: 'message'}
+      ];
+
+      let data = [];
+
+      for ( item of mismatch ) {
+        data.push({
+          businessName: item.existContact.businessName,
+          name: item.existContact.firstName + " " + item.existContact.lastName,
+          message: 'Hello Message'
+        })
+      }
+
+      doc.text('Ablii User', 14, doc.myY);
+      doc.autoTable({
+        columns: columns,
+        body: data,
+        startY: doc.myY + 3
+      });
+
+      doc.myY = doc.autoTable.previous.finalY + 20;
+
+    },
+
+    function createContactErrorsTables(contactErrors, doc) {
+      let columns = [
+        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Name', dataKey: 'name' }
+      ];
+
+      for ( key of Object.keys(contactErrors) ) {
+        if ( contactErrors[key].length !== 0 ) {
+          doc.text(key, 14, doc.myY);
+          doc.autoTable({
+            columns: columns,
+            body: contactErrors[key],
+            startY: doc.myY + 3
+          });
+
+          doc.myY = doc.autoTable.previous.finalY + 20;
+        }
+      }
+
+    },
+
+    function createInvoiceErrorsTables(invoiceErrors, doc) {
+      let columns = [
+        { header: 'Invoice No.', dataKey: 'invoiceNumber'},
+        { header: 'Amount', dataKey: 'Amount'},
+        { header: 'Due date', dataKey: 'dueDate'}
+      ];
+
+      for ( key of Object.keys(invoiceErrors) ) {
+        if ( invoiceErrors[key].length !== 0 ) {
+          doc.text(key, 14, doc.myY);
+          doc.autoTable({
+            columns: columns,
+            body: invoiceErrors[key],
+            startY: doc.myY + 3
+          });
+
+          doc.myY = doc.autoTable.previous.finalY + 20;
+        }
+      }
+
     }
   ]
 });
