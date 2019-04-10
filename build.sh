@@ -429,7 +429,7 @@ COMPILE_ONLY=0
 WEB_PORT=
 VULNERABILITY_CHECK=0
 
-while getopts "bcdD::ghijlmM::N::pqrsStT:vV::W::xz" opt ; do
+while getopts "bcdD:ghijlmM:N:pqrsStT:vV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
