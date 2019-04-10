@@ -1,9 +1,15 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.account',
   name: 'UpdateAccount',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
   requires: [
     'foam.u2.DetailView'
+  ],
+  imports: [
+    'selection as data'
+  ],
+  exports: [
+    'data'
   ],
   classes: [
     {

@@ -1,8 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.account',
   name: 'Overview',
+  requires: [
+    'foam.mlang.ExpressionsSingleton',
+    'net.nanopay.tx.model.Transaction'
+  ],
   imports: [
-    'data'
+    'data',
+    'transactionDAO'
   ],
   properties: [
     {
@@ -31,15 +36,37 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Date',
       name: 'lastTransaction',
       visibility: 'RO',
-      value: 'TODO'
+      factory: function() {
+        var self = this;
+        self.transactionDAO
+          .limit(1)
+          // where completed?
+          // orderBy completion date?
+          .select()
+          .then(function(t) {
+            t = t.array[0];
+            self.lastTransaction = t ? t.created : null;
+          });
+        return null;
+      }
     },
     {
       class: 'Float',
       name: 'averageTransactionSize',
-      visibility: 'RO'
+      visibility: 'RO',
+      factory: function() {
+        var self = this;
+        var E = self.ExpressionsSingleton.create();
+        self.transactionDAO
+          .select(E.AVG(self.Transaction.AMOUNT))
+          .then(function(t) {
+            self.averageTransactionSize = t.value;
+          });
+        return 0;
+      }
     },
     {
       class: 'String',
