@@ -143,17 +143,47 @@ foam.CLASS({
       var mode = form.liquidityThresholdRules;
       var thresholdDetails = form.liquidityThresholdDetails;
 
+      // Pre-existing liquidity threshold chosen
       if ( thresholdDetails.isExistingSelected ) {
-        // Pre-existing liquidity threshold chosen
         var existingThreshold = thresholdDetails.existingRuleDetails;
         return existingThreshold.existingThresholdRule;
       }
 
       var liquiditySettings = this.LiquiditySettings.create();
 
+      // Person to receive notification
       liquiditySettings.userToEmail = thresholdDetails.whoReceivesNotification;
 
-      //..... MORE
+      var ruleDetails = thresholdDetails.newRuleDetails
+
+      // If liquidity settings should be saved under a name
+      if ( ruleDetails.saveRuleAsTemplate ) {
+        liquiditySettings.name = ruleDetails.saveRuleAsTemplate.thresholdRuleName;
+      }
+
+      // If high threshold liquidity settings exist
+      if ( ruleDetails.ceilingRuleDetails ) {
+        var ceilingRules = ruleDetails.ceilingRuleDetails;
+        liquiditySettings.highLiquidity.threshold = ceilingRules.accountBalanceCeiling;
+        // If automatic rebalancing is needed
+        if ( mode === net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules.NOTIFY_AND_AUTO ) {
+          liquiditySetting.highLiquidity.enableRebalancing = true;
+          liquiditySetting.highLiquidity.resetBalance = ceilingRules.resetAccountBalanceCeiling;
+          liquiditySetting.highLiquidity.pushPullAccount = ceilingRules.ceilingMoveFundsTo;
+        }
+      }
+
+      // If low threshold liquidity settings exist
+      if ( ruleDetails.floorRuleDetails ) {
+        var floorRules = ruleDetails.floorRuleDetails;
+        liquiditySettings.lowLiquidity.threshold = floorRules.accountBalanceFloor;
+        // If automatic rebalancing is needed
+        if ( mode === net.nanopay.account.ui.addAccountModal.LiquidityThresholdRules.NOTIFY_AND_AUTO ) {
+          liquiditySetting.lowLiquidity.enableRebalancing = true;
+          liquiditySetting.lowLiquidity.resetBalance = floorRules.resetAccountBalanceFloor;
+          liquiditySetting.lowLiquidity.pushPullAccount = floorRules.floorMoveFundsFrom;
+        }
+      }
 
       var uploadedLiquiditySettings = await this.liquiditySettingsDAO.put(liquiditySettings);
       return uploadedLiquiditySettings.id;
