@@ -179,7 +179,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
-    String baseCurrency = "";
+    String baseCurrency;
     String internationalTransactions;
     String purposeOfTransactions;
     String annualDomesticTransactionAmount;
@@ -193,7 +193,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
         baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
       } else {
-        purposeOfTransactions = "N/A";
+        baseCurrency = "N/A";
       }
 
       if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
@@ -469,21 +469,21 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     User[] beneficialOwners = business.getPrincipalOwners();
     try {
       Document document = new Document();
-
       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+      SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+      String reportGeneratedDate = df.format(new Date());
+      List list = new List(List.UNORDERED);
 
       document.open();
       document.add(new Paragraph("Beneficial Owners Information"));
-
-      SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
-      String reportGeneratedDate = df.format(new Date());
+      document.add(Chunk.NEWLINE);
 
       if ( beneficialOwners.length == 0 ) {
-        List list = new List(List.UNORDERED);
         list.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
-        list.add(new ListItem("Report Generated Date: " + reportGeneratedDate));
         document.add(list);
       } else {
+        document.add(new Paragraph("The details for all beneficial owners who own 25% or more of the business are listed."));
+        document.add(Chunk.NEWLINE);
         for ( int i = 0; i < beneficialOwners.length; i++ ) {
           User beneficialOwner = beneficialOwners[i];
           String firstName = beneficialOwner.getFirstName();
@@ -501,7 +501,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
-          List list = new List(List.UNORDERED);
           list.add(new ListItem("First name: " + firstName));
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
@@ -518,10 +517,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
       }
 
+      document.add(Chunk.NEWLINE);
       document.add(new Paragraph("Business ID: " + business.getId()));
       document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
-      document.add(Chunk.NEWLINE);
-      document.add(new Paragraph("The details for all beneficial owners who own 25% or more of the business are listed."));
 
       document.close();
       writer.close();
@@ -569,15 +567,11 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.add(new Paragraph("Bank Information"));
 
       Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
-      String routingNum = null;
+      String branchNum;
       if ( branch != null ) {
-        routingNum = branch.getBranchId();
-      }
-
-      Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
-      String institutionNum = null;
-      if ( institution != null ) {
-        institutionNum = institution.getInstitutionNumber();
+        branchNum = branch.getBranchId();
+      } else {
+        branchNum = "N/A";
       }
 
       String accountNum = bankAccount.getAccountNumber();
@@ -592,8 +586,20 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Account name: " + accountName));
-      list.add(new ListItem("Routing number: " + routingNum));
-      list.add(new ListItem("Institution number: " + institutionNum));
+      // It is unnecessary to show institution number for US bank accounts
+      if ( accountCurrency.equals("USD") ) {
+        list.add(new ListItem("Routing number: " + branchNum));
+      } else {
+        Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+        String institutionNum;
+        if ( institution != null ) {
+          institutionNum = institution.getInstitutionNumber();
+        } else {
+          institutionNum = "N/A";
+        }
+        list.add(new ListItem("Transit number: " + branchNum));
+        list.add(new ListItem("Institution number: " + institutionNum));
+      }
       list.add(new ListItem("Account number: " + accountNum));
       list.add(new ListItem("Account currency: " + accountCurrency));
       list.add(new ListItem("Company name: " + companyName));
