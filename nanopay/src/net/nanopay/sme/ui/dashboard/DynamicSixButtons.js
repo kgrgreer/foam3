@@ -156,11 +156,14 @@ foam.CLASS({
         this.user.accounts
           .where(
             this.AND(
-            this.OR(
-              this.EQ(this.Account.TYPE, this.BankAccount.name),
-              this.EQ(this.Account.TYPE, this.CABankAccount.name),
-              this.EQ(this.Account.TYPE, this.USBankAccount.name)),
-            this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)))
+              this.OR(
+                this.EQ(this.Account.TYPE, this.BankAccount.name),
+                this.EQ(this.Account.TYPE, this.CABankAccount.name),
+                this.EQ(this.Account.TYPE, this.USBankAccount.name)
+              ),
+              this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
+            )
+          )
           .select(this.COUNT()).then(({ value }) => value > 0),
         this.userDAO.find(this.user.id).then((use) => use.hasIntegrated),
         this.user.onboarded
