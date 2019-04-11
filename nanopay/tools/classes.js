@@ -140,6 +140,7 @@ var classes = [
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
+  'net.nanopay.invoice.InvoiceNotificationDAO',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
