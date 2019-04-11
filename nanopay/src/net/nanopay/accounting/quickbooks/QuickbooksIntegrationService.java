@@ -112,6 +112,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           ContactErrorItem errorItem = new ContactErrorItem();
           errorItem.setName(contact.getDisplayName());
           errorItem.setBusinessName(contact.getCompanyName());
+          errorItem.setMessage(e.getMessage());
           contactErrors.get("OTHER").add(errorItem);
         }
 

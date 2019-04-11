@@ -9,6 +9,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'accountingIntegrationUtil',
     'pushMenu',
     'quickbooksService',
     'stack',
@@ -139,11 +140,7 @@ foam.CLASS({
   messages: [
     { name: 'SUCCESS_MESSAGE', message: 'Successfully synced contacts and invoices' },
     { name: 'TITLE', message: 'Found Ablii users from your synced contacts!' },
-    { name: 'DESCRIPTION', message: 'You can send or request money right away to these contacts' },
-    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email.'},
-    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email.'},
-    { name: 'EXISTING_USER', message: 'There is already a user with that email.'},
-    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.'}
+    { name: 'DESCRIPTION', message: 'You can send or request money right away to these contacts' }
   ],
 
   properties: [
@@ -195,34 +192,21 @@ foam.CLASS({
     },
 
     function initMismatchData() {
-      //let myData = this.reportResult.contactSyncMismatches;
-      let myData = this.temp();
-      let myDAO = foam.dao.MDAO.create( {of: this.ContactErrorItem} );
+      let myData = this.reportResult.contactSyncMismatches;
+      //let myData = this.temp();
+      let myDAO = foam.dao.MDAO.create( { of: this.ContactErrorItem } );
 
       for ( x in myData ) {
         myDAO.put(this.ContactErrorItem.create({
           id: x,
           businessName: myData[x].existContact.businessName,
           name: myData[x].existContact.firstName + " " + myData[x].existContact.lastName,
-          message: this.getMessage(myData[x].resultCode.name)
+          message: this.accountingIntegrationUtil.getMessage(myData[x].resultCode.name)
         }))
         this.count++;
       }
 
       return myDAO;
-    },
-
-    function getMessage(key) {
-      switch ( key ) {
-        case 'EXISTING_USER_CONTACT':
-          return this.EXISTING_USER_CONTACT;
-        case 'EXISTING_CONTACT':
-          return this.EXISTING_CONTACT;
-        case 'EXISTING_USER':
-          return this.EXISTING_USER;
-        case 'EXISTING_USER_MULTI':
-          return this.EXISTING_USER_MULTI;
-      }
     },
 
     // TODO remove it
@@ -463,8 +447,7 @@ foam.CLASS({
       name: 'download',
       label: 'Download Report',
       code: function() {
-
-
+        this.accountingIntegrationUtil.genPdfReport(this.reportResult);
       }
     }
   ]

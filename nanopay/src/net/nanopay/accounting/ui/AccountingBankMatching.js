@@ -104,34 +104,35 @@ foam.CLASS({
       font-weight: 900;
       color: #2b2b2b;
     }
-    ^ .net-nanopay-ui-ActionView-next {
+    ^ .net-nanopay-ui-ActionView-save {
       width: 158px;
       height: 48px !important;
       border-radius: 4px;
       border: 1px solid #4a33f4;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       background-color: #604aff !important;
-      font-size: 14px !important;
+      font-size: 16x !important;
+      margin-right: 24px;
       font-weight: 400;
       float: right;
       color: #FFFFFF !important;
     }
-    ^ .net-nanopay-ui-ActionView-next:hover {
+    ^ .net-nanopay-ui-ActionView-save:hover {
       background-color: #4d38e1 !important;
     }
     ^ .bank-matching{
       height: 40px;
     }
     ^ .net-nanopay-ui-ActionView-cancel {
-      float: right;
+      float: left;
       background-color: transparent;
       color: #525455;
       border: none;
       box-shadow: none;
       width: 158;
       height: 48;
-      margin-right: 24px;
-      font-size: 14px;
+      margin-left: 128px;
+      font-size: 16px;
       font-weight: lighter;
     }
     ^ .net-nanopay-ui-ActionView-cancel:hover {
@@ -314,7 +315,7 @@ foam.CLASS({
         .end()
         .start().addClass('button-bar')
           .start(this.CANCEL).end()
-          .start(this.NEXT).end()
+          .start(this.SAVE).end()
         .end()
       .end();
     },
@@ -337,8 +338,8 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'next',
-      label: 'Next',
+      name: 'save',
+      label: 'Save',
       code: async function(X) {
         if ( this.accountingBankList == undefined || this.abliiBankList == undefined ) {
           this.showMatchCurrency = false;

@@ -131,9 +131,8 @@ foam.CLASS({
         this.stack.push({
           class: 'net.nanopay.accounting.ui.AccountingReportPage1',
           reportResult: result
-        })
-
-        return ;
+        });
+        return;
       }
 
       let connectedBank = await this.countConnectedBank();
@@ -146,7 +145,7 @@ foam.CLASS({
         this.stack.push({
           class: 'net.nanopay.accounting.ui.AccountingReportPage1',
           reportResult: result
-        })
+        });
       }
     },
 

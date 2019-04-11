@@ -88,7 +88,8 @@ foam.CLASS({
 
   .error-table-container .table-container {
     max-height: 180px;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
   }
   `,
 
@@ -116,7 +117,11 @@ foam.CLASS({
 
   methods: [
     function initE() {
-
+      let other = false;
+      if ( this.header.startsWith('Other') ) {
+        this.columns.push('message');
+        other = true;
+      }
       this
         .start()
         .start('div').addClass('error-table-container')
@@ -130,7 +135,7 @@ foam.CLASS({
             .add(this.header)
           .end()
 
-        .start().addClass('table-container').show(this.open$)
+        .start().addClass('table-container').enableClass('other', other).show(this.open$)
           .start({
             class: 'foam.u2.view.TableView',
             data$: this.data$,

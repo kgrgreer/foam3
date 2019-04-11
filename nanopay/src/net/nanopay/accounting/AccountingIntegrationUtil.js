@@ -33,6 +33,20 @@ foam.CLASS({
     'showIntegrationModal'
   ],
 
+  messages: [
+    { name: 'MISSING_CONTACT', message: 'Missing Contact' },
+    { name: 'INVALID_CURRENCY', message: 'Invalid Currency' },
+    { name: 'UNAUTHORIZED_INVOICE', message: 'Unauthorized Xero Invoice' },
+    { name: 'MISSING_BUSINESS_EMAIL', message: 'Missing Business Name & Email' },
+    { name: 'MISSING_BUSINESS', message: 'Missing Business Name' },
+    { name: 'MISSING_EMAIL', message: 'Missing Email' },
+    { name: 'OTHER', message: 'Other' },
+    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email.'},
+    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email.'},
+    { name: 'EXISTING_USER', message: 'There is already a user with that email.'},
+    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.'}
+  ],
+
   properties: [
     {
       class: 'Boolean',
@@ -136,10 +150,14 @@ foam.CLASS({
     },
 
     function createContactMismatchTable(mismatch, doc) {
+      if ( mismatch.length == 0 ) {
+        return;
+      }
+
       let columns = [
         { header: 'Business', dataKey: 'businessName' },
         { header: 'Name', dataKey: 'name' },
-        { header: 'Message' , dataKey: 'message'}
+        { header: 'Message', dataKey: 'message' }
       ];
 
       let data = [];
@@ -147,9 +165,9 @@ foam.CLASS({
       for ( item of mismatch ) {
         data.push({
           businessName: item.existContact.businessName,
-          name: item.existContact.firstName + " " + item.existContact.lastName,
-          message: 'Hello Message'
-        })
+          name: item.existContact.firstName + ' ' + item.existContact.lastName,
+          message: this.getMessage(item.resultCode.name)
+        });
       }
 
       doc.text('Ablii User', 14, doc.myY);
@@ -160,31 +178,43 @@ foam.CLASS({
       });
 
       doc.myY = doc.autoTable.previous.finalY + 20;
-
     },
 
     function createContactErrorsTables(contactErrors, doc) {
+      let printTitle = true;
+      let removeLastItem = false;
       let columns = [
         { header: 'Business', dataKey: 'businessName' },
         { header: 'Name', dataKey: 'name' }
       ];
-
       for ( key of Object.keys(contactErrors) ) {
+        if ( key === 'OTHER' ) {
+          removeLastItem = true;
+          columns.push({ header: 'Message', dataKey: 'message' });
+        }
         if ( contactErrors[key].length !== 0 ) {
-          doc.text(key, 14, doc.myY);
+          if ( printTitle ) {
+            doc.text('Contact Sync Errors', 16, doc.myY);
+            doc.myY = doc.myY + 10;
+            printTitle = false;
+          }
+          doc.text(this.getTableName(key), 14, doc.myY);
           doc.autoTable({
             columns: columns,
             body: contactErrors[key],
             startY: doc.myY + 3
           });
-
-          doc.myY = doc.autoTable.previous.finalY + 20;
+          doc.myY = doc.autoTable.previous.finalY + 10;
+        }
+        if ( removeLastItem ) {
+          columns.pop();
+          removeLastItem = false;
         }
       }
-
     },
 
     function createInvoiceErrorsTables(invoiceErrors, doc) {
+      let printTitle = true;
       let columns = [
         { header: 'Invoice No.', dataKey: 'invoiceNumber'},
         { header: 'Amount', dataKey: 'Amount'},
@@ -193,17 +223,52 @@ foam.CLASS({
 
       for ( key of Object.keys(invoiceErrors) ) {
         if ( invoiceErrors[key].length !== 0 ) {
-          doc.text(key, 14, doc.myY);
+          if ( printTitle ) {
+            doc.text('Invoice Sync Errors', 16, doc.myY);
+            doc.myY = doc.myY + 10;
+            printTitle = false;
+          }
+          doc.text(this.getTableName(key), 14, doc.myY);
           doc.autoTable({
             columns: columns,
             body: invoiceErrors[key],
             startY: doc.myY + 3
           });
-
-          doc.myY = doc.autoTable.previous.finalY + 20;
+          doc.myY = doc.autoTable.previous.finalY + 10;
         }
       }
+    },
 
+    function getTableName(key) {
+      switch ( key ) {
+        case 'MISS_CONTACT':
+          return this.MISSING_CONTACT;
+        case 'CURRENCY_NOT_SUPPORT':
+          return this.INVALID_CURRENCY;
+        case 'UNAUTHORIZED_INVOICE':
+          return this.UNAUTHORIZED_INVOICE;
+        case 'MISS_BUSINESS_EMAIL':
+          return this.MISSING_BUSINESS_EMAIL;
+        case 'MISS_BUSINESS':
+          return this.MISSING_BUSINESS;
+        case 'MISS_EMAIL':
+          return this.MISSING_EMAIL;
+        default:
+          return this.OTHER;
+      }
+    },
+
+    function getMessage(key) {
+      switch ( key ) {
+        case 'EXISTING_USER_CONTACT':
+          return this.EXISTING_USER_CONTACT;
+        case 'EXISTING_CONTACT':
+          return this.EXISTING_CONTACT;
+        case 'EXISTING_USER':
+          return this.EXISTING_USER;
+        case 'EXISTING_USER_MULTI':
+          return this.EXISTING_USER_MULTI;
+      }
     }
   ]
 });

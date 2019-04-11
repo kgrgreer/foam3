@@ -301,6 +301,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
           logger.error(e);
           ContactErrorItem errorItem = new ContactErrorItem();
           errorItem.setBusinessName(xeroContact.getName());
+          errorItem.setMessage(e.getMessage());
           contactErrors.get("OTHER").add(errorItem);
         }
       }
@@ -319,7 +320,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
 
-  private Boolean importInvoice(X x, com.xero.model.Invoice xeroInvoice, HashMap<String, List<InvoiceErrorItem>> contactErrors) throws Exception {
+  private Boolean importInvoice(X x, com.xero.model.Invoice xeroInvoice, HashMap<String, List<InvoiceErrorItem>> invoiceErrors) throws Exception {
     DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
     DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
@@ -373,13 +374,13 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     }
     //TODO: Remove this when we accept other currencies
     if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ) {
-      contactErrors.get("CURRENCY_NOT_SUPPORT").add(errorItem);
+      invoiceErrors.get("CURRENCY_NOT_SUPPORT").add(errorItem);
       return false;
     }
 
 
     if ( xeroInvoice.getStatus() != com.xero.model.InvoiceStatus.AUTHORISED ) {
-      contactErrors.get("UNAUTHORIZED_INVOICE").add(errorItem);
+      invoiceErrors.get("UNAUTHORIZED_INVOICE").add(errorItem);
       return false;
     }
 
@@ -390,7 +391,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       );
 
       if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
-        contactErrors.get("MISS_CONTACT").add(errorItem);
+        invoiceErrors.get("MISS_CONTACT").add(errorItem);
         return false;
       }
 
@@ -399,12 +400,12 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       ));
       // If the Contact doesn't exist send a notification as to why the invoice wasn't imported
       if ( contact == null ) {
-        contactErrors.get("MISS_CONTACT").add(errorItem);
+        invoiceErrors.get("MISS_CONTACT").add(errorItem);
         return false;
       }
     } catch (Exception e) {
       e.printStackTrace();
-      contactErrors.get("OTHER").add(errorItem);
+      invoiceErrors.get("OTHER").add(errorItem);
       return false;
     }
       // Create an invoice

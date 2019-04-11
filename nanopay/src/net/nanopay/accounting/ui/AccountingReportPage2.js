@@ -9,6 +9,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'accountingIntegrationUtil',
     'pushMenu',
     'quickbooksService',
     'stack',
@@ -57,7 +58,7 @@ foam.CLASS({
       border: 1px solid #4a33f4;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       background-color: #604aff !important;
-      font-size: 14px !important;
+      font-size: 16px !important;
       font-weight: 400;
       float:right;
       color: #FFFFFF !important;
@@ -112,9 +113,11 @@ foam.CLASS({
     }
     
     .contact-tables .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName {
-      width: 322px;
+      width: 320px;
     }
-
+    .contact-tables .error-table-container .other .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName {
+      width: 200px;
+    }
     .invoice-tables .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-invoiceNumber, .foam-u2-view-TableView-th-Amount, .foam-u2-view-TableView-th-dueDate {
       width: 200px;
     }
@@ -146,13 +149,6 @@ foam.CLASS({
     { name: 'TEXT3', message: ' and sync again. Download the report for you convenience.' },
     { name: 'INVOICES_FAILED', message: 'Invoices failed to sync' },
     { name: 'CONTACTS_FAILED', message: 'Contacts failed to sync ' },
-    { name: 'MISSING_CONTACT', message: 'Missing Contact' },
-    { name: 'INVALID_CURRENCY', message: 'Invalid Currency'},
-    { name: 'UNAUTHORIZED_INVOICE', message: 'Unauthorized Xero Invoice'},
-    { name: 'MISSING_BUSINESS_EMAIL', message: 'Missing Business Name & Email' },
-    { name: 'MISSING_BUSINESS', message: 'Missing Business Name'},
-    { name: 'MISSING_EMAIL', message: 'Missing Email'},
-    { name: 'OTHER', message: 'Other'}
   ],
 
   properties: [
@@ -164,6 +160,16 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'contactCount'
+    },
+    {
+      class: 'Boolean',
+      name: 'showContactError',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showInvoiceError',
+      value: false
     }
   ],
 
@@ -171,90 +177,100 @@ foam.CLASS({
     function initE() {
     let self = this;
 console.log(this.reportResult);
-      console.log(this.user.integrationCode);
-      this
-        .start().addClass(this.myClass())
-          .start().addClass('report-2-container')
+    console.log(this.user.integrationCode);
 
-            .start('h1').add(this.TITLE).addClass('title').end()
+    this.showContactError = this.showtable(this.reportResult.contactErrors);
+    this.showInvoiceError = this.showtable(this.reportResult.invoiceErrors);
 
-            .start('p')
-              .addClass('description')
-              .add(this.TEXT)
-            .end()
+    this
+      .start().addClass(this.myClass())
+        .start().addClass('report-2-container')
 
-            .start('p')
-              .add(this.TEXT2 + this.user.integrationCode.label + this.TEXT3)
-            .end()
+          .start('h1').add(this.TITLE).addClass('title').end()
 
-        .start('div').addClass('report-2-container-tables')
-
-          .start('div').addClass('report-2-container-title')
-            .start()
-              .addClass('exclamation-mark')
-              .start('img').attrs({ src: 'images/ablii/exclamation-mark.png' }).end()
-            .end()
-            .start('p').add(this.CONTACTS_FAILED).end()
+          .start('p')
+            .addClass('description')
+            .add(this.TEXT)
           .end()
 
-          .call( function() {
-            let contactErrors = self.reportResult.contactErrors;
-            //let contactErrors = self.temp();
+          .start('p')
+            .add(this.TEXT2 + this.user.integrationCode.label + this.TEXT3)
+          .end()
 
-            for ( key of Object.keys(contactErrors) ) {
-              if ( contactErrors[key].length !== 0 ) {
-                this.start('div').addClass('report-table-container').addClass('contact-tables')
-                  .start().tag({
-                  class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initInvoiceError(contactErrors[key]), columns: ['name', 'businessName'], header: self.getTableName(key) + ' (' + self.invoiceCount + ')'
-                  }).end()
-                .end();
+          .start('div').addClass('report-2-container-tables').show(this.showContactError$)
+
+            .start('div').addClass('report-2-container-title')
+              .start()
+                .addClass('exclamation-mark')
+                .start('img').attrs({ src: 'images/ablii/exclamation-mark.png' }).end()
+              .end()
+              .start('p').add(this.CONTACTS_FAILED).end()
+            .end()
+
+            .call( function() {
+              let contactErrors = self.reportResult.contactErrors;
+              //let contactErrors = self.temp();
+
+              for ( key of Object.keys(contactErrors) ) {
+                if ( contactErrors[key].length !== 0 ) {
+                  this.showContactError = true;
+                  this.start('div').addClass('report-table-container').addClass('contact-tables')
+                    .start().tag({
+                    class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initContactError(contactErrors[key]), columns: ['name', 'businessName'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.invoiceCount + ')'
+                    }).end()
+                  .end();
+                }
               }
-            }
-          })
+            })
 
-        .start('div').addClass('report-2-container-title')
-          .start()
-            .addClass('exclamation-mark')
-            .start('img').attrs({ src: 'images/ablii/exclamation-mark.png' }).end()
-          .end()
-          .start('p').add(this.INVOICES_FAILED).end()
-        .end()
+            .start('div').addClass('report-2-container-title').show(this.showInvoiceError$)
+              .start()
+                .addClass('exclamation-mark')
+                .start('img').attrs({ src: 'images/ablii/exclamation-mark.png' }).end()
+              .end()
+              .start('p').add(this.INVOICES_FAILED).end()
+            .end()
 
-          .call( function() {
-            let invoiceErrors = self.reportResult.invoiceErrors;
-            //let invoiceErrors = self.temp2();
+            .call( function() {
+              let invoiceErrors = self.reportResult.invoiceErrors;
+              //let invoiceErrors = self.temp2();
 
-            for ( key of Object.keys(invoiceErrors) ) {
-              if ( invoiceErrors[key].length !== 0 ) {
-                this.start('div').addClass('report-table-container').addClass('invoice-tables')
-                  .start().tag({
-                    class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initContactError(invoiceErrors[key]), columns: ['invoiceNumber', 'Amount', 'dueDate'], header: self.getTableName(key) + ' (' + self.contactCount + ')'
-                  })
-                  .end()
-                .end();
+              for ( key of Object.keys(invoiceErrors) ) {
+                if ( invoiceErrors[key].length !== 0 ) {
+                  this.showInvoiceError = true;
+                  this.start('div').addClass('report-table-container').addClass('invoice-tables')
+                    .start().tag({
+                      class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initInvoiceError(invoiceErrors[key]), columns: ['invoiceNumber', 'Amount', 'dueDate'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.contactCount + ')'
+                    })
+                    .end()
+                  .end();
+                }
               }
-            }
-          })
+            })
+
+          .end()
 
         .end()
+        .start().addClass('button-bar')
+          .start(this.DONE).end()
+          .start(this.DOWNLOAD).addClass('download-button').end()
+        .end()
+      .end();
 
-          .end()
-          .start().addClass('button-bar')
-            .start(this.DONE).end()
-            .start(this.DOWNLOAD).addClass('download-button').end()
-          .end()
-        .end();
+      if ( ! this.showContactError && ! this.showInvoiceError ) {
+        this.pushMenu('sme.main.dashboard');
+      }
     },
 
-    function initInvoiceError(arrData) {
+    function initContactError(arrData) {
       this.invoiceCount = 0;
       let myDAO = foam.dao.MDAO.create( { of: this.ContactErrorItem } );
-
       for ( x in arrData ) {
         myDAO.put(this.ContactErrorItem.create({
           id: x,
           businessName: arrData[x].businessName,
-          name: arrData[x].name
+          name: arrData[x].name,
+          message: arrData[x].message != null ? arrData[x].message : null
         }))
         this.invoiceCount++;
       }
@@ -262,7 +278,7 @@ console.log(this.reportResult);
       return myDAO;
     },
 
-    function initContactError(arrData) {
+    function initInvoiceError(arrData) {
       this.contactCount = 0;
       let myDAO = foam.dao.MDAO.create( { of: this.InvoiceErrorItem } );
 
@@ -279,23 +295,13 @@ console.log(this.reportResult);
       return myDAO;
     },
 
-    function getTableName(key) {
-      switch ( key ) {
-        case 'MISS_CONTACT':
-          return this.MISSING_CONTACT;
-        case 'CURRENCY_NOT_SUPPORT':
-          return this.INVALID_CURRENCY;
-        case 'UNAUTHORIZED_INVOICE':
-          return this.UNAUTHORIZED_INVOICE;
-        case 'MISS_BUSINESS_EMAIL':
-          return this.MISSING_BUSINESS_EMAIL;
-        case 'MISS_BUSINESS':
-          return this.MISSING_BUSINESS;
-        case 'MISS_EMAIL':
-          return this.MISSING_EMAIL;
-        default:
-          return this.OTHER;
+    function showtable(tableErrors) {
+      for ( key of Object.keys(tableErrors) ) {
+        if ( tableErrors[key].length !== 0 ) {
+          return true;
+        }
       }
+      return false;
     },
 
     function temp() {
@@ -363,8 +369,7 @@ console.log(this.reportResult);
       name: 'download',
       label: 'Download Report',
       code: function() {
-
-
+        this.accountingIntegrationUtil.genPdfReport(this.reportResult);
       }
     }
   ]
