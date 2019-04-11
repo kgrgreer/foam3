@@ -532,7 +532,7 @@ if [ "$START_ONLY" -eq 0 ]; then
 fi
 
 if [ "$BUILD_ONLY" -eq 1 ] || [ ! -z "$MODE" ]; then
-    if [ -z "$INSTANCE" ] && [ -z "$TEST" ]; then
+    if [ -z "$INSTANCE" ] && [ "$TEST" -eq 0 ]; then
         quit 0
     fi
 fi
