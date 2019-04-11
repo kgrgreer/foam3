@@ -3,7 +3,7 @@ foam.ENUM({
     name: 'AccountTypes',
 
     documentation: `
-        Account types able to be created through Liquid
+        The account types available to be created with Liquid
     `,
 
     values: [

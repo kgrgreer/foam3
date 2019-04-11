@@ -6,7 +6,7 @@ foam.CLASS({
   ],
 
   documentation: `
-    A view model for the high and low liquidity threshold rules for Liquid
+    A view for the user to choose between existing and new liquidity rules
   `,
 
   imports: [
@@ -22,17 +22,13 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'isRuleTypeSelected',
-      hidden: true
-    },
-    {
-      class: 'Boolean',
       name: 'isNewSelected',
       label: 'Create a new threshold rule for this account',
       documentation: `
         A boolean to indicate if the user is creating a new threshold rule for this account
       `,
       postSet: function(_, n) {
+        // here we are automatically making the existing button false if new is selected
         if ( n ) {
           this.isExistingSelected = false;
         }
@@ -51,6 +47,7 @@ foam.CLASS({
         A boolean to indicate if the user is creating a new threshold rule for this account
       `,
       postSet: function(_, n) {
+        // here we are automatically making the new button false if existing is selected
         if ( n ) {
           this.isNewSelected = false;
         }
@@ -65,9 +62,11 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'newRuleDetails',
       label: '',
+      documentation: `
+        To show or hide the liquidity rule new view depending on whether
+        LiquidityRuleNew is selected or not
+      `,
       expression: function (isNewSelected) {
-        // make a switch here
-        if (!isNewSelected) return null;
         return isNewSelected ? this.LiquidityRuleNew.create() : null;
       },
       validateObj: function(newRuleDetails$errors_) {
@@ -80,8 +79,12 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'existingRuleDetails',
       label: '',
+      documentation: `
+        To show or hide the liquidity rule existing view depending on whether
+        LiquidityRuleExisting is selected or not
+      `,
+      label: '',
       expression: function (isExistingSelected) {
-        // make a switch here
         return isExistingSelected ? this.LiquidityRuleExisting.create() : null;
       },
       validateObj: function(existingRuleDetails$errors_) {

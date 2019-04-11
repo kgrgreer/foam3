@@ -21,6 +21,9 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.account.ui.addAccountModal.accountType.AccountType',
       name: 'accountTypeForm',
+      documentation: `
+        To create the account type form if the user has not already done so previously
+      `,
       factory: function() {
         if ( this.viewData.accountTypeForm ) {
           return this.viewData.accountTypeForm;
@@ -37,6 +40,9 @@ foam.CLASS({
     function init() {
       this.SUPER();
       var self = this;
+      
+      // settings up a listener for the account type and either saving or resetting data
+      // if the user decides to change the account type
       this.onDetach(this.accountTypeForm$.dot('accountTypePicker').sub(function() {
         if ( self.accountTypeForm.accountTypePicker !=  self.viewData.previousTypeSelected ) {
           self.viewData.accountDetailsForm = null;

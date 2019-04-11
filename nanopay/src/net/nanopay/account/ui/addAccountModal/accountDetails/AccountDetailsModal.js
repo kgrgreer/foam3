@@ -23,6 +23,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isAggregate',
+      documentation: `
+        A boolean check if the account type selected is an Aggregate account
+      `,
       expression: function(viewData) {
         return viewData.accountTypeForm.accountTypePicker == net.nanopay.account.ui.addAccountModal.accountType.AccountTypes.AGGREGATE_ACCOUNT;
       }
@@ -30,6 +33,10 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'accountDetailsForm',
+      documentation: `
+        The account details form to render a different add details form depending on what
+        account type was selected
+      `,
       factory: function() {
         if ( this.viewData.accountDetailsForm ) {
           return this.viewData.accountDetailsForm;
@@ -54,6 +61,10 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.account.ui.addAccountModal.accountDetails.AccountDetailsRequirements',
       name: 'accountSettingsOptions',
+      documentation: `
+        To create account settings option if not an aggregate account so that we can
+        later on set transactions limits and liquidity threshold rules.
+      `,
       factory: function() {
         if ( this.isAggregate ) {
           this.viewData.accountSettingsOptions = null;

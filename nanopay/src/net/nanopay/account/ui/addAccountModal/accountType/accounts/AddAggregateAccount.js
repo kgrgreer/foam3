@@ -7,7 +7,7 @@ foam.CLASS({
   ],
 
   documentation: `
-    A view model for the aggregate account details on Liquid
+    A view for the user to enter the details required to add an Aggregate Account on Liquid
   `,
 
   exports: [
@@ -39,6 +39,10 @@ foam.CLASS({
     {
       name: 'predicatedAccountDAO',
       hidden: true,
+      documentation: `
+        A predicatedAccountDAO which only pulls the accounts from a user's
+        business group
+      `,
       expression: function(user$id, accountDAO) {
         // only return other accounts in the business group
         // ! uncomment the line below once we figure this out

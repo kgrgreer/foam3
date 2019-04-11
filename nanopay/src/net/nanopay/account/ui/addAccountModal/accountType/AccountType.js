@@ -3,7 +3,7 @@ foam.CLASS({
     name: 'AccountType',
 
     documentation: `
-      A view model for the account type on Liquid
+      A view for the user to select between Liquid account types
     `,
 
     properties: [
