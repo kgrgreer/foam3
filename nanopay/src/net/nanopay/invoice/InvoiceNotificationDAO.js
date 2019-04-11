@@ -223,7 +223,7 @@ foam.CLASS({
     
         if ( dated ) {
           SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-          args.put("date", dateFormat.format(invoice.getDueDate()));
+          args.put("date", invoice.getDueDate() != null ? dateFormat.format(invoice.getDueDate()) : "n/a");
         }
     
         return args;
