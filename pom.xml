@@ -428,6 +428,7 @@
               <mainClass>foam.nanos.boot.Boot</mainClass>
               <addClasspath>true</addClasspath>
               <classpathPrefix></classpathPrefix>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
           </archive>
           <outputDirectory>${project.build.directory}/lib</outputDirectory>
