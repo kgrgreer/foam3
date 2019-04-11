@@ -8,7 +8,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'name', 'entityId', 'closeMatches', 'searchId'
+    'id', 'entityName', 'entityId', 'closeMatches', 'searchId'
   ],
 
   properties: [

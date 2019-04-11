@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: `The object for a SIDni response`,
 
   tableColumns: [
-    'id', 'name', 'entityId', 'verified', 'reason'
+    'id', 'entityName', 'entityId', 'verified', 'reason'
   ],
 
   properties: [
