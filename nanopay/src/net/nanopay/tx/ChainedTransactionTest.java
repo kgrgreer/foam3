@@ -39,7 +39,6 @@ public class ChainedTransactionTest
     ExchangeRatesCron cron = new ExchangeRatesCron();
     cron.execute(x);
     createAccounts(x);
-    setupAscendantUser(x);
     populateBrokerAccount(x);
     testCADBankINBankTxn(x);
   }
@@ -200,17 +199,6 @@ public class ChainedTransactionTest
     destinationAccount.setStatus(BankAccountStatus.VERIFIED);
     destinationAccount = (INBankAccount) accountDAO.put_(x, destinationAccount).fclone();
 
-  }
-
-  public void setupAscendantUser(X x){
-    DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
-    AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(EQ(AscendantFXUser.USER, sender.getId()));
-    if ( null == ascendantFXUser ) ascendantFXUser = new AscendantFXUser.Builder(x).build();
-    ascendantFXUser.setName(sender.getLegalName());
-    ascendantFXUser.setUser(sender.getId());
-    ascendantFXUser.setUserStatus(FXUserStatus.ACTIVE);
-    ascendantFXUser.setOrgId("5904960");
-    ascendantFXUserDAO.put_(x, ascendantFXUser);
   }
 
 }
