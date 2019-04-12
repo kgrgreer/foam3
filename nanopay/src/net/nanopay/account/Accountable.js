@@ -23,7 +23,7 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'findBalance',
+      name: 'balance',
       documentation: 'report a balance',
       type: 'net.nanopay.account.Balance',
       args: [
