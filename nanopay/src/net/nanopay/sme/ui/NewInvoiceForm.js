@@ -158,7 +158,8 @@ foam.CLASS({
       border-color: #f91c1c;
     }
     ^ .disabled {
-      filter:grayscale(100%) opacity(60%);
+      pointer-events: none;
+      filter: grayscale(100%) opacity(60%);
     }
     ^tooltip {
       display: none;
