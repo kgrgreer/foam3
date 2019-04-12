@@ -78,11 +78,7 @@ foam.CLASS({
             return null;
         }
       },
-      validateObj: function (liquidityThresholdDetails$errors_, liquidityThresholdDetails$ceilingRuleDetails$accountBalanceCeiling, liquidityThresholdDetails$floorRuleDetails$accountBalanceFloor) {
-        // extracting 
-        const accountBalanceCeiling = liquidityThresholdDetails$ceilingRuleDetails$accountBalanceCeiling;
-
-        const accountBalanceFloor = liquidityThresholdDetails$floorRuleDetails$accountBalanceFloor;
+      validateObj: function (liquidityThresholdDetails$errors_) {
 
         if (liquidityThresholdDetails$errors_) {
           return liquidityThresholdDetails$errors_ ? liquidityThresholdDetails$errors_ : 'Please select what to do with this threshold';

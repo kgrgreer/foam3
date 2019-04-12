@@ -42,9 +42,9 @@ foam.CLASS({
       `,
       validateObj: function(accountBalanceFloor, resetAccountBalanceFloor) {
         // ! People should be able to set the floor to zero
-        // if ( accountBalanceFloor == 0 ) {
-        //   return 'Please define a minimum balance threshold.';
-        // }
+        if ( accountBalanceFloor < 0 ) {
+          return 'Minimum balance threshold cannot be negative.';
+        }
         if ( accountBalanceFloor >= resetAccountBalanceFloor ) {
           return 'Minimum balance threshold must be lower than the reset value.';
         }
