@@ -8,7 +8,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.liquidity.Frequency'
   ],
   imports: [
     'liquiditySettingsDAO'
@@ -46,7 +47,10 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.liquidity.Frequency',
       name: 'cashOutFrequency',
-      documentation: 'Determines how often a automatic cash out can occur.'
+      documentation: 'Determines how often a automatic cash out can occur.',
+      factory: function() {
+        return net.nanopay.liquidity.Frequency.PER_TRANSACTION;
+      }
     },
     {
       class: 'FObjectProperty',
