@@ -5,7 +5,7 @@ foam.INTERFACE({
   from specified accounts. Accountable objects can be thought of as decorators for other accounts.`,
   methods: [
     {
-      name: 'handle',
+      name: 'plan',
       documentation: `Properly handle a transaction, based on whether this accountified object is the source or destination.
        Case 1: forwarding txns: return the same txn with child txn(s)
        Case 2: funding txns: return the same txn with parent txn(s?) set for this txn.
@@ -24,7 +24,7 @@ foam.INTERFACE({
     },
     {
       name: 'findBalance',
-      documentation: 'report balance',
+      documentation: 'report a balance',
       type: 'net.nanopay.account.Balance',
       args: [
         {
@@ -34,18 +34,15 @@ foam.INTERFACE({
       ]
     },
     {
-    // TODO: decide if findTrust Account makes sense in Interface. What is the trust account of User/Invoice?
-    // the trust account of final ending account of accountification chain?
-      name: 'findTrust',
-      type: 'net.nanopay.account.TrustAccount',
+      name: 'canAccept',
+      documentation: 'can the accountable object accept this denomination?'
+      type: 'Boolean',
       args: [
         {
-          name: 'x',
-          type: 'Context'
+          name: 'denomination',
+          type: 'String'
         }
-      ],
-      documentation: `There are three ways to find an accounts trustAccount. 1. Explicit reference,
-       2. Walking the tree of accounts upwards to the top parent, 3. get the default based on currency.`
+      ]
     }
   ]
 })
