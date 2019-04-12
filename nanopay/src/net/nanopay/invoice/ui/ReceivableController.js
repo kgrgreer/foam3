@@ -11,7 +11,6 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice'
