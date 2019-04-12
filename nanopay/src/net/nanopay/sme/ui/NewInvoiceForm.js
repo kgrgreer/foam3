@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'canReceiveCurrencyDAO',
+    'ctrl',
     'errors',
     'invoice',
     'notificationDAO',
@@ -159,8 +160,8 @@ foam.CLASS({
     ^ .disabled {
       filter:grayscale(100%) opacity(60%);
     }
-    ^ .tooltip {
-      visibility: hidden;
+    ^tooltip {
+      display: none;
       padding: 10px;
       padding-bottom: 30px;
       position: absolute;
@@ -170,12 +171,12 @@ foam.CLASS({
       box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
       border: solid 1px #e2e2e3;
       background-color: #ffffff;
-      z-index: 100;
+      z-index: 1000;
     }
-    ^ .showTooltip {
-      visibility: visible;
+    ^showTooltip {
+      display: block;
     }
-    ^ .no-access-icon {
+    ^no-access-icon {
       margin-top: 13px;
       float: left;
       height: 100%;
@@ -232,8 +233,8 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'TOOLTIP_WIDTH',
-      value: 320
+      name: 'TOOLTIP_OFFSET',
+      value: 5
     }
   ],
 
@@ -339,17 +340,19 @@ foam.CLASS({
 
       this.currencyType$.sub(this.onCurrencyTypeChange);
 
-      this.addClass(this.myClass()).start()
+      this.ctrl
         .start()
-          .addClass('tooltip')
+          .addClass(this.myClass('tooltip'))
           .style({ top: this.yPosition$, left: this.xPosition$ })
-          .enableClass('showTooltip', this.showTooltip$)
-          .start().addClass('no-access-icon')
+          .enableClass(this.myClass('showTooltip'), this.showTooltip$)
+          .start().addClass(this.myClass('no-access-icon'))
             .start('img').attrs({ src: 'images/no-access.svg' }).end()
           .end()
           .start('h3').add(this.TOOLTIP_TITLE).end()
           .start('p').add(this.TOOLTIP_BODY).end()
-        .end()
+        .end();
+
+      this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
           .start()
             .addClass('input-label')
@@ -562,8 +565,8 @@ foam.CLASS({
       }
     },
     function setCoordinates(e) {
-      this.xPosition = e.clientX - this.TOOLTIP_WIDTH;
-      this.yPosition = e.clientY;
+      this.xPosition = e.x + this.TOOLTIP_OFFSET;
+      this.yPosition = e.y + this.TOOLTIP_OFFSET;
     }
   ],
 
