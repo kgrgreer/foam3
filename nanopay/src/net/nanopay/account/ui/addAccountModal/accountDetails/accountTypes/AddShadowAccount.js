@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal.accountType.accounts',
+  package: 'net.nanopay.account.ui.addAccountModal.accountDetails.accountTypes',
   name: 'AddShadowAccount',
 
   implements: [

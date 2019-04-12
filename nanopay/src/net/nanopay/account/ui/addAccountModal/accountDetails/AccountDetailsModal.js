@@ -7,9 +7,9 @@ foam.CLASS({
 
   requires: [
     'foam.u2.DetailView',
-    'net.nanopay.account.ui.addAccountModal.accountType.accounts.AddShadowAccount',
-    'net.nanopay.account.ui.addAccountModal.accountType.accounts.AddVirtualAccount',
-    'net.nanopay.account.ui.addAccountModal.accountType.accounts.AddAggregateAccount',
+    'net.nanopay.account.ui.addAccountModal.accountDetails.accountTypes.AddShadowAccount',
+    'net.nanopay.account.ui.addAccountModal.accountDetails.accountTypes.AddVirtualAccount',
+    'net.nanopay.account.ui.addAccountModal.accountDetails.accountTypes.AddAggregateAccount',
     'net.nanopay.account.ui.addAccountModal.accountDetails.AccountDetailsRequirements',
     'net.nanopay.account.ui.addAccountModal.components.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.components.ModalProgressBar'

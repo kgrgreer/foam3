@@ -1,6 +1,6 @@
 foam.ENUM({
     package: 'net.nanopay.account.ui.addAccountModal.liquidityRule',
-    name: 'LiquidityRules',
+    name: 'LiquidityMode',
 
     documentation: `
         Liquidity threshold rules for when creating an account in Liquid

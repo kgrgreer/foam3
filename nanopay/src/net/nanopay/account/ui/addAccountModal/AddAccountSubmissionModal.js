@@ -11,7 +11,7 @@ foam.CLASS({
     'net.nanopay.account.ShadowAccount',
     'net.nanopay.account.ui.addAccountModal.components.ModalTitleBar',
     'net.nanopay.account.ui.addAccountModal.components.ModalProgressBar',
-    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules',
+    'net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityMode',
     'net.nanopay.liquidity.LiquiditySettings'
   ],
 
@@ -170,7 +170,7 @@ foam.CLASS({
         var ceilingRules = ruleDetails.ceilingRuleDetails;
         liquiditySettings.highLiquidity.threshold = ceilingRules.accountBalanceCeiling;
         // If automatic rebalancing is needed
-        if ( mode === net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules.NOTIFY_AND_AUTO ) {
+        if ( mode === net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityMode.NOTIFY_AND_AUTO ) {
           liquiditySettings.highLiquidity.enableRebalancing = true;
           liquiditySettings.highLiquidity.resetBalance = ceilingRules.resetAccountBalanceCeiling;
           liquiditySettings.highLiquidity.pushPullAccount = ceilingRules.ceilingMoveFundsTo;
@@ -182,7 +182,7 @@ foam.CLASS({
         var floorRules = ruleDetails.floorRuleDetails;
         liquiditySettings.lowLiquidity.threshold = floorRules.accountBalanceFloor;
         // If automatic rebalancing is needed
-        if ( mode === net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityRules.NOTIFY_AND_AUTO ) {
+        if ( mode === net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityMode.NOTIFY_AND_AUTO ) {
           liquiditySettings.lowLiquidity.enableRebalancing = true;
           liquiditySettings.lowLiquidity.resetBalance = floorRules.resetAccountBalanceFloor;
           liquiditySettings.lowLiquidity.pushPullAccount = floorRules.floorMoveFundsFrom;

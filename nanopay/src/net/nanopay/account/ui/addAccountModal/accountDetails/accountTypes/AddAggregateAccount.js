@@ -1,13 +1,13 @@
 foam.CLASS({
-  package: 'net.nanopay.account.ui.addAccountModal.accountType.accounts',
-  name: 'AddVirtualAccount',
+  package: 'net.nanopay.account.ui.addAccountModal.accountDetails.accountTypes',
+  name: 'AddAggregateAccount',
 
   implements: [
     'foam.mlang.Expressions'
   ],
 
   documentation: `
-    A view for the user to enter the details required to add a Virtual Account on Liquid
+    A view for the user to enter the details required to add an Aggregate Account on Liquid
   `,
 
   exports: [
@@ -15,9 +15,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'currencyDAO',
     'accountDAO',
-    'countryDAO',
     'user'
   ],
 
@@ -39,20 +37,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Country',
-      name: 'countryPicker',
-      label: 'Country',
-      documentation: `
-        A picker to choose countries from the countryDAO
-      `,
-      validateObj: function(countryPicker) {
-        if ( ! countryPicker ) {
-          return 'Account country required before proceeding.';
-        }
-      }
-    },
-    {
       name: 'predicatedAccountDAO',
       hidden: true,
       documentation: `
@@ -70,27 +54,13 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'parentAccountPicker',
-      label: 'Parent account',
       targetDAOKey: 'predicatedAccountDAO',
       documentation: `
         A picker to choose parent accounts based on the
         existing accounts of the user by going through the accountDAO
         and grabbing only the digital accounts owned by the user
-      `
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.Currency',
-      name: 'currencyPicker',
-      label: 'Currency',
-      documentation: `
-        A picker to choose a currency for the account from the currencyDAO
       `,
-      validateObj: function(currencyPicker) {
-        if ( ! currencyPicker ) {
-          return 'Account currency required before proceeding.';
-        }
-      }
+      // TODO: REQUIRED DEPENDING ON TYPE OF ACCOUNT
     },
     {
       class: 'String',
