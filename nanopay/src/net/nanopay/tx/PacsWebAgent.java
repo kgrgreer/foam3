@@ -79,7 +79,7 @@ public class PacsWebAgent
           if ( "008".equals(msg) ) {
             Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
 
-            if (pacs00800106 == null) {
+            if ( pacs00800106 == null ) {
               String message = getParsingError(x, buffer_.toString());
               logger.error(message + ", input: " + buffer_.toString());
               resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
@@ -95,7 +95,7 @@ public class PacsWebAgent
           } else if ( "028".equals(msg) ) {
             Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
 
-            if (pacs02800101 == null) {
+            if ( pacs02800101 == null ) {
               String message = getParsingError(x, data);
               logger.error(message + ", input: " + data);
               resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
