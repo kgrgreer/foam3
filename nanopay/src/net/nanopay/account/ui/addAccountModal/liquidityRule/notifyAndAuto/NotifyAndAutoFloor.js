@@ -41,9 +41,10 @@ foam.CLASS({
         The lower bound of the rule enforcement for liquidity settings
       `,
       validateObj: function(accountBalanceFloor, resetAccountBalanceFloor) {
-        if ( accountBalanceFloor == 0 ) {
-          return 'Please define a minimum balance threshold.';
-        }
+        // ! People should be able to set the floor to zero
+        // if ( accountBalanceFloor == 0 ) {
+        //   return 'Please define a minimum balance threshold.';
+        // }
         if ( accountBalanceFloor >= resetAccountBalanceFloor ) {
           return 'Minimum balance threshold must be lower than the reset value.';
         }

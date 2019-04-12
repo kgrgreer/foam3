@@ -30,8 +30,8 @@ foam.CLASS({
       documentation: `
         A standard picker based on the LiquidityThresholdRules enum
       `,
-      validateObj: function(liquidityThresholdRules) {
-        if ( ! liquidityThresholdRules || liquidityThresholdRules == net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityMode.NONE ) {
+      validateObj: function (liquidityThresholdRules) {
+        if (!liquidityThresholdRules || liquidityThresholdRules == net.nanopay.account.ui.addAccountModal.liquidityRule.LiquidityMode.NONE) {
           return 'Please select what to do with this threshold';
         }
       }
@@ -56,8 +56,8 @@ foam.CLASS({
         A picker to choose who in the organization will
         receive the notifications
       `,
-      validateObj: function(whoReceivesNotification) {
-        if ( ! whoReceivesNotification ) {
+      validateObj: function (whoReceivesNotification) {
+        if (!whoReceivesNotification) {
           return 'Please select a person to receive the notifications when thresholds are met.';
         }
       }
@@ -67,19 +67,24 @@ foam.CLASS({
       name: 'liquidityThresholdDetails',
       label: '',
       expression: function (liquidityThresholdRules) {
-        switch ( liquidityThresholdRules ) {
-          case this.LiquidityMode.NONE :
+        switch (liquidityThresholdRules) {
+          case this.LiquidityMode.NONE:
             return null;
-          case this.LiquidityMode.NOTIFY :
+          case this.LiquidityMode.NOTIFY:
             return this.NotifyOnly.create();
-          case this.LiquidityMode.NOTIFY_AND_AUTO :
+          case this.LiquidityMode.NOTIFY_AND_AUTO:
             return this.NotifyAndAuto.create();
           default:
             return null;
         }
       },
-      validateObj: function(liquidityThresholdDetails$errors_) {
-        if ( liquidityThresholdDetails$errors_ ) {
+      validateObj: function (liquidityThresholdDetails$errors_, liquidityThresholdDetails$ceilingRuleDetails$accountBalanceCeiling, liquidityThresholdDetails$floorRuleDetails$accountBalanceFloor) {
+        // extracting 
+        const accountBalanceCeiling = liquidityThresholdDetails$ceilingRuleDetails$accountBalanceCeiling;
+
+        const accountBalanceFloor = liquidityThresholdDetails$floorRuleDetails$accountBalanceFloor;
+
+        if (liquidityThresholdDetails$errors_) {
           return liquidityThresholdDetails$errors_ ? liquidityThresholdDetails$errors_ : 'Please select what to do with this threshold';
         }
       }
