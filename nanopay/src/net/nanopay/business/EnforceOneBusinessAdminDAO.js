@@ -91,13 +91,8 @@ foam.CLASS({
 
               for ( Session session : sessions ) {
                 X ctx = session.getContext();
-                User u = (User) ctx.get("user");
-                if ( u != null ) {
-                  u = (User) u.fclone();
-                  u.setGroup(j.getGroup());
-                  session.setContext(ctx.put("user", u));
-                  sessionDAO.put(session);
-                }
+                session.setContext(ctx.put("group", j.findGroup(x)));
+                sessionDAO.put(session);
               }
             }
           }
