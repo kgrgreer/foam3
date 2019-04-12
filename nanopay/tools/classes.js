@@ -56,6 +56,7 @@ var classes = [
   'net.nanopay.account.ZeroAccount',
   'net.nanopay.account.ZeroAccountUserAssociation',
   'net.nanopay.account.TrustAccount',
+  'net.nanopay.account.ShadowAccount',
   'net.nanopay.account.LossesAccount',
   'net.nanopay.account.LoanAccount',
   'net.nanopay.account.LoanedTotalAccount',
