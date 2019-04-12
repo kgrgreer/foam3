@@ -234,14 +234,15 @@ foam.CLASS({
       tableCellFormatter: function(value, invoice) {
         // Needed to show amount value for old invoices that don't have destination currency set
         if ( ! invoice.destinationCurrency ) {
-          invoice.destinationCurrency = 'CAD';
+          this.add(value);
         }
-        this.__subContext__.currencyDAO.find(invoice.destinationCurrency)
-            .then(function(currency) {
-              this.start()
-                .add(invoice.destinationCurrency + ' ' + currency.format(value))
-              .end();
-        }.bind(this));
+        this.__subContext__.currencyDAO
+          .find(invoice.destinationCurrency)
+          .then((currency) => {
+            this.start()
+              .add(currency.format(value) + ' ' + invoice.destinationCurrency)
+            .end();
+          });
       },
       tableWidth: 120
     },
@@ -397,8 +398,25 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'invoiceFile',
+      label: '',
+      tableWidth: 70,
       documentation: 'Original invoice file',
-      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
+      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' },
+      tableCellFormatter: function(files) {
+        // TODO: Handle multiple files.
+        if ( Array.isArray(files) && files.length > 0 ) {
+          this
+            .start('a')
+              .attrs({
+                href: files[0].address,
+                target: '_blank'
+              })
+              .start()
+                .addClass('invoice-attachment-icon')
+              .end()
+            .end();
+        }
+      }
     },
     {
       class: 'Boolean',
