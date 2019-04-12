@@ -31,7 +31,6 @@ import org.apache.http.client.config.RequestConfig;
  public class DowJonesRestService
   extends ContextAwareSupport
 {
-  public static final String REST_GET = "GET";
   public static final String PERSON_NAME = "person-name?";
   public static final String ENTITY_NAME = "entity-name?";
 
@@ -57,6 +56,10 @@ import org.apache.http.client.config.RequestConfig;
   
   private DowJonesResponseMsg request(DowJonesRequestMsg req) {
     DowJonesCredentials credentials = (DowJonesCredentials) getX().get("dowjonesCredentials");
+
+    credentials.setNamespace("18");
+    credentials.setUsername("nanoAPI");
+    credentials.setPassword("dowjones");
 
     String authCredentials = credentials.getNamespace() + "/" + credentials.getUsername() + ":" + credentials.getPassword();
     String encodedCredentials = Base64.getEncoder().encodeToString((authCredentials).getBytes());
@@ -108,26 +111,6 @@ import org.apache.http.client.config.RequestConfig;
       HttpClientUtils.closeQuietly(response);
       HttpClientUtils.closeQuietly(client);
       return msg;
-    }
-  }
-
-  private void closeSource(InputStream is, OutputStream os, HttpURLConnection connection) {
-    if ( os != null ) {
-      try {
-        os.close();
-      } catch ( IOException e ) {
-        e.printStackTrace();
-      }
-    }
-    if ( is != null ) {
-      try {
-        is.close();
-      } catch ( IOException e ) {
-        e.printStackTrace();
-      }
-    }
-    if ( connection != null ) {
-      connection.disconnect();
     }
   }
 

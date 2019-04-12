@@ -21,8 +21,6 @@ public class DowJonesService
   implements DowJones, NanoService
 {
   protected DowJonesRestService dowJonesService = new DowJonesRestService();
-  protected String sep = System.getProperty("file.separator");
-  protected String storeRoot_ = System.getProperty("catalina.home") + sep + "webapps" + sep + "ROOT";
 
   @Override
   public void start() {
@@ -47,7 +45,8 @@ public class DowJonesService
       BaseSearchResponse feedback;
       if ( httpCode == 200 ) {
         BaseSearchResponse resp = (BaseSearchResponse) respMsg.getModel();
-        resp.setMatchs(resp.getMatchs());
+        BaseSearchResponseBody responseBody = resp.getResponseBody();
+        responseBody.setMatchs(responseBody.getMatchs());
         feedback = resp;
       } else {
         feedback = (BaseSearchInvalidResponse) respMsg.getModel();
@@ -80,7 +79,8 @@ public class DowJonesService
       BaseSearchResponse feedback;
       if ( httpCode == 200 ) {
         BaseSearchResponse resp = (BaseSearchResponse) respMsg.getModel();
-        resp.setMatchs(resp.getMatchs());
+        BaseSearchResponseBody responseBody = resp.getResponseBody();
+        responseBody.setMatchs(responseBody.getMatchs());
         feedback = resp;
       } else {
         feedback = (BaseSearchInvalidResponse) respMsg.getModel();

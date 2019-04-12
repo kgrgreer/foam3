@@ -1,7 +1,9 @@
 package net.nanopay.meter.test;
 
 import foam.core.X;
+import foam.nanos.test.Test;
 import net.nanopay.meter.compliance.dowJones.DowJonesCredentials;
+import net.nanopay.meter.compliance.dowJones.DowJonesService;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -22,11 +24,12 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.client.config.RequestConfig;
 
-public class DowJonesIntegrationTest extends foam.nanos.test.Test {
+public class DowJonesIntegrationTest extends Test {
 
   @Override
   public void runTest(X x) {
     DowJonesCredentials credentials = (DowJonesCredentials) x.get("dowjonesCredentials");
+    DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
 
     String authCredentials = credentials.getNamespace() + "/" + credentials.getUsername() + ":" + credentials.getPassword();
     String encodedCredentials = Base64.getEncoder().encodeToString((authCredentials).getBytes());
@@ -34,7 +37,9 @@ public class DowJonesIntegrationTest extends foam.nanos.test.Test {
     String firstName = "Blake";
     String lastName = "Green";
 
-    BufferedReader rd = null;
+    System.out.println(dowJonesService.personNameSearch(x, firstName, lastName, null));
+
+    /*BufferedReader rd = null;
     HttpEntity responseEntity = null;
     HttpResponse response = null;
     HttpClient client = null;
@@ -61,7 +66,7 @@ public class DowJonesIntegrationTest extends foam.nanos.test.Test {
       IOUtils.closeQuietly(rd);
       HttpClientUtils.closeQuietly(response);
       HttpClientUtils.closeQuietly(client);
-    }
+    }*/
   }
   
 }

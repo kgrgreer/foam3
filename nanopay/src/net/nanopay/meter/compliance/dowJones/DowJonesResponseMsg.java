@@ -55,9 +55,10 @@ public class DowJonesResponseMsg
       FObject obj = null;
 
       try {
-        JAXBContext jaxbContext = JAXBContext.newInstance(obj.getClass());
+        JAXBContext jaxbContext = JAXBContext.newInstance(modelInfo_.getObjClass());
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        obj = (FObject) jaxbUnmarshaller.unmarshal(new StringReader(getXml()));
+        StringReader reader = new StringReader(getXml());
+        obj = (FObject) jaxbUnmarshaller.unmarshal(reader);
       } catch ( JAXBException e ) {
         throw new RuntimeException("Could not parse xml string");
       }

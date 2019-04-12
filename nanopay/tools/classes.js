@@ -482,6 +482,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.BaseSearchInvalidResponse',
   'net.nanopay.meter.compliance.dowJones.BaseSearchRequest',
   'net.nanopay.meter.compliance.dowJones.BaseSearchResponse',
+  'net.nanopay.meter.compliance.dowJones.BaseSearchResponseBody',
   'net.nanopay.meter.compliance.dowJones.ClientDowJonesService',
   'net.nanopay.meter.compliance.dowJones.DowJonesCall',
   'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',

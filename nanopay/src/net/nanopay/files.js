@@ -826,6 +826,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchInvalidResponse' },
   { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchRequest' },
   { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchResponse' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchResponseBody' },
   { name: 'net/nanopay/meter/compliance/dowJones/ClientDowJonesService' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCall' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCredentials' },
