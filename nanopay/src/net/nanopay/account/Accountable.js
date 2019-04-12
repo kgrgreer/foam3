@@ -35,7 +35,7 @@ foam.INTERFACE({
     },
     {
       name: 'canAccept',
-      documentation: 'can the accountable object accept this denomination?'
+      documentation: 'can the accountable object accept this denomination?',
       type: 'Boolean',
       args: [
         {
