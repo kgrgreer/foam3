@@ -305,10 +305,15 @@ foam.CLASS({
       name: 'disableAccountingInvoiceFields',
       value: false,
       documentation: `
-      Users should not be able to edit invoice pulled from accounting software on Ablii, as this will
-      cause mismatches between the data on Ablii and the data on the accounting software.`,
-      expression: function() {
-        return ( this.XeroInvoice.isInstance(this.invoice) || this.QuickbooksInvoice.isInstance(this.invoice)) && ! this.isPayable;
+        Users should not be able to edit invoice pulled from accounting software
+        on Ablii, as this will cause mismatches between the data on Ablii and
+        the data on the accounting software.
+      `,
+      expression: function(invoice, type) {
+        return (
+          this.XeroInvoice.isInstance(invoice) ||
+          this.QuickbooksInvoice.isInstance(invoice)
+        ) && type !== 'payable';
       }
     },
     {
