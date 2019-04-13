@@ -84,12 +84,17 @@ foam.CLASS({
         {
           name: 'login',
           type: 'net.nanopay.auth.LoginAttempt'
+        },
+        {
+          name: 'stage',
+          type: 'Integer'
         }
       ],
       javaCode: `
         IdentityMindRequest request = IdentityMindRequestGenerator.getEntityLoginRequest(x, login);
         request.setUrl(getBaseUrl() + "/account/login");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
+        request.setStage(stage);
 
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
           x, request, IdentityMindResponse.class);
