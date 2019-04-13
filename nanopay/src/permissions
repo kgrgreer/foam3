@@ -298,3 +298,4 @@ p({"class":"foam.nanos.auth.Permission","id":"service.liquiditySettingsDAO","des
 p({"class":"foam.nanos.auth.Permission","id":"service.securefactLEVDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.securefactSIDniDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.run.sugar","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.run.pacsMsg","description":""})
