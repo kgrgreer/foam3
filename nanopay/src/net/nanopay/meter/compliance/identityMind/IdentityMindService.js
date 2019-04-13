@@ -107,6 +107,38 @@ foam.CLASS({
       `
     },
     {
+      name: 'evaluateMerchant',
+      type: 'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'business',
+          type: 'net.nanopay.model.Business'
+        },
+        {
+          name: 'stage',
+          type: 'Integer'
+        }
+      ],
+      javaCode: `
+        IdentityMindRequest request = IdentityMindRequestGenerator.getMerchantKYCRequest(x, business);
+        request.setUrl(getBaseUrl() + "/account/merchant");
+        request.setBasicAuth(getApiUser() + ":" + getApiKey());
+        request.setStage(stage);
+
+        IdentityMindResponse response = (IdentityMindResponse) sendRequest(
+          x, request, IdentityMindResponse.class);
+        response.setApiName("Merchant KYC");
+        response.setEntityName(business.getBusinessName());
+        response.setEntityId(business.getId());
+        return (IdentityMindResponse)
+          ((DAO) getIdentityMindResponseDAO()).put(response);
+      `
+    },
+    {
       name: 'sendRequest',
       type: 'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
       args: [

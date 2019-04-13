@@ -105,6 +105,61 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'amn',
+      documentation: 'Legal name of the business.'
+    },
+    {
+      class: 'String',
+      name: 'afn',
+      documentation: 'The first name of the contact person for the business.'
+    },
+    {
+      class: 'String',
+      name: 'aln',
+      documentation: 'The last name of the contact person for the business.'
+    },
+    {
+      class: 'String',
+      name: 'asn',
+      documentation: 'The street address of the business.'
+    },
+    {
+      class: 'String',
+      name: 'ac',
+      documentation: 'The city of the business.'
+    },
+    {
+      class: 'String',
+      name: 'aco',
+      documentation: 'The country of the business.'
+    },
+    {
+      class: 'String',
+      name: 'as',
+      documentation: 'The state of the business.'
+    },
+    {
+      class: 'String',
+      name: 'az',
+      documentation: 'The zip of the business.'
+    },
+    {
+      class: 'String',
+      name: 'aph',
+      documentation: 'The primary phone number of the business.'
+    },
+    {
+      class: 'String',
+      name: 'website',
+      documentation: 'The URL of the company website.'
+    },
+    {
+      class: 'String',
+      name: 'businesstype',
+      documentation: 'The type of business.'
+    },
+    {
+      class: 'String',
       name: 'profile',
       documentation: 'Policy profile to be used to evaluate this transaction.'
     },
