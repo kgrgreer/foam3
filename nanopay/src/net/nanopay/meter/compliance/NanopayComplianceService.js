@@ -10,6 +10,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
+    'foam.nanos.session.Session',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business'
   ],

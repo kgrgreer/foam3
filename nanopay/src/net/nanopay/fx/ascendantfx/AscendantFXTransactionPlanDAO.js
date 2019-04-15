@@ -98,8 +98,13 @@ foam.CLASS({
       request.getDestinationCurrency(), ASCENDANTFX_SERVICE_NSPEC_ID);
     if ( fxService instanceof AscendantFXServiceProvider  ) {
 
-      // Validate that Payer is provisioned for AFX before proceeding
-      AscendantFXUser.getUserAscendantFXOrgId(x, sourceAccount.getOwner());
+      try {
+        // Validate that Payer is provisioned for AFX before proceeding
+        AscendantFXUser.getUserAscendantFXOrgId(x, sourceAccount.getOwner());
+      } catch (Exception e) {
+        logger.info(e.getMessage());
+        return getDelegate().put_(x, quote);
+      }
 
       // Add Disclosure line item
       AcceptanceDocument disclosure = null;

@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'addCommas',
+    'currencyDAO',
     'userDAO'
   ],
 
@@ -40,7 +41,8 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.account.Balance'
   ],
 
   requires: [
@@ -62,54 +64,23 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'id',
-    'referenceNumber',
-    'name',
+    'payeeId',
+    'payerId',
+    'invoiceId',
     'type',
     'status',
     'sourceAccount',
-    'sourceCurrency',
-    'amount',
-    'payee',
-    'payeeId',
-    'payer',
-    'payerId',
     'destinationAccount',
-    'destinationCurrency',
-    'destinationAmount',
     'created',
-    'createdBy',
-    'lastModified',
-    'lastModifiedBy',
-    'scheduled',
     'total',
-    'completionDate',
-    'processDate',
-    'isQuoted',
-    'invoiceId',
-    'messageId',
-    'transfers',
-    'reverseTransfers'
+    'completionDate'
   ],
 
   tableColumns: [
-    'id',
-    'referenceNumber',
-    'name',
     'type',
     'status',
-    'payer',
-    'sourceAccount',
-    'sourceCurrency',
-    'amount',
-    'total',
-    'payee',
-    'destinationAccount',
-    'destinationCurrency',
-    'destinationAmount',
+    'summary',
     'created',
-    'lastModified',
-    'scheduled',
     'completionDate'
   ],
 
@@ -137,7 +108,8 @@ foam.CLASS({
       },
       javaGetter: `
     return getClass().getSimpleName();
-      `
+      `,
+      tableWidth: 160
     },
     {
       name: 'isQuoted',
@@ -159,6 +131,13 @@ foam.CLASS({
       hidden: true
     },
     {
+      name: 'balances',
+      class: 'FObjectArray',
+      of: 'net.nanopay.account.Balance',
+      javaFactory: 'return new Balance[0];',
+      hidden: true
+    },
+    {
       class: 'String',
       name: 'id',
       label: 'ID',
@@ -171,7 +150,8 @@ foam.CLASS({
       class: 'DateTime',
       name: 'created',
       documentation: `The date the transaction was created.`,
-      visibility: 'RO'
+      visibility: 'RO',
+      tableWidth: 140
     },
     {
       class: 'Reference',
@@ -238,6 +218,7 @@ foam.CLASS({
       value: 'COMPLETED',
       permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
+      tableWidth: 130,
       view: function(args, x) {
         self = this;
         return {
@@ -330,13 +311,30 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       label: 'Amount',
-      visibility: 'RO',
-      tableCellFormatter: function(amount, X) {
-        var formattedAmount = amount/100;
-        this
-          .start()
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of Transactions.
+      `,
+      tableCellFormatter: async function(_, obj) {
+        var [srcCurrency, dstCurrency] = await Promise.all([
+          obj.currencyDAO.find(obj.sourceCurrency),
+          obj.currencyDAO.find(obj.destinationCurrency)
+        ]);
+
+        this.add(
+          obj.sourceCurrency + ' ' +
+          srcCurrency.format(obj.amount) + ' → ' +
+          obj.destinationCurrency + ' ' +
+          dstCurrency.format(obj.destinationAmount) + '  |  ' +
+          obj.payer.displayName + ' → ' +
+          obj.payee.displayName
+        );
       }
     },
     {
@@ -384,7 +382,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'completionDate',
-      visibility: 'RO'
+      visibility: 'RO',
+      tableWidth: 145
     },
     {
       documentation: `Defined by ISO 20220 (Pacs008)`,
@@ -395,6 +394,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
+      label: 'Currency',
       visibility: 'RO',
       value: 'CAD'
     },
