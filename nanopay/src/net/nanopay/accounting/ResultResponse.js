@@ -17,28 +17,18 @@ foam.CLASS({
       name: 'contactSyncMismatches'
     },
     {
-      class: 'Array',
-      of: 'String',
-      name: 'contactSyncErrors'
-    },
-    {
-      class: 'Array',
-      of: 'String',
-      name: 'invoiceSyncErrors'
-    },
-    {
       class: 'Enum',
       of: 'net.nanopay.accounting.AccountingErrorCodes',
       name: 'errorCode'
     },
     {
-      class: 'Array',
-      of: 'String',
+      class: 'FObjectArray',
+      of: 'net.nanopay.accounting.resultresponse.ContactResponseItem',
       name: 'successContact'
     },
     {
-      class: 'Array',
-      of: 'String',
+      class: 'FObjectArray',
+      of: 'net.nanopay.accounting.resultresponse.InvoiceResponseItem',
       name: 'successInvoice'
     },
     {
@@ -49,12 +39,12 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'contactErrors',
-      javaType: 'java.util.Map<String, java.util.List<net.nanopay.accounting.resultresponse.ContactErrorItem>>',
+      javaType: 'java.util.Map<String, java.util.List<net.nanopay.accounting.resultresponse.ContactResponseItem>>',
     },
     {
       class: 'Map',
       name: 'invoiceErrors',
-      javaType: 'java.util.Map<String, java.util.List<net.nanopay.accounting.resultresponse.InvoiceErrorItem>>',
+      javaType: 'java.util.Map<String, java.util.List<net.nanopay.accounting.resultresponse.InvoiceResponseItem>>',
     }
   ]
 });

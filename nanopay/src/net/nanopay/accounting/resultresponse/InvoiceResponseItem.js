@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.accounting.resultresponse',
-  name: 'ContactErrorItem',
+  name: 'InvoiceResponseItem',
 
   properties: [
     {
@@ -9,15 +9,15 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'businessName'
+      name: 'invoiceNumber'
     },
     {
       class: 'String',
-      name: 'name'
+      name: 'Amount'
     },
     {
       class: 'String',
-      name: 'message'
+      name: 'dueDate'
     }
   ]
 });

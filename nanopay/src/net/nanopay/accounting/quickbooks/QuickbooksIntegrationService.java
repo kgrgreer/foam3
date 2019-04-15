@@ -22,8 +22,8 @@ import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-import net.nanopay.accounting.resultresponse.ContactErrorItem;
-import net.nanopay.accounting.resultresponse.InvoiceErrorItem;
+import net.nanopay.accounting.resultresponse.ContactResponseItem;
+import net.nanopay.accounting.resultresponse.InvoiceResponseItem;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.accounting.*;
@@ -83,8 +83,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   @Override
   public ResultResponse contactSync(X x) {
     List<ContactMismatchPair> result = new ArrayList<>();
-    List<String> success = new ArrayList<>();
-    HashMap<String, List<ContactErrorItem>> contactErrors = this.initContactErrors();
+    List<ContactResponseItem> success = new ArrayList<>();
+    HashMap<String, List<ContactResponseItem>> contactErrors = this.initContactErrors();
 
     try {
 
@@ -104,12 +104,12 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           if ( mismatch != null ) {
             result.add(mismatch);
           } else {
-            success.add("QuickBooks contact " + contact.getDisplayName() + " import successfully");
+            success.add(prepareContactResponseItem(contact));
           }
 
         } catch ( Exception e ) {
           logger.error(e);
-          ContactErrorItem errorItem = new ContactErrorItem();
+          ContactResponseItem errorItem = new ContactResponseItem();
           errorItem.setName(contact.getDisplayName());
           errorItem.setBusinessName(contact.getCompanyName());
           errorItem.setMessage(e.getMessage());
@@ -126,7 +126,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       .setResult(true)
       .setContactSyncMismatches(result.toArray(new ContactMismatchPair[result.size()]))
       .setContactErrors(contactErrors)
-      .setSuccessContact(success.toArray(new String[success.size()]))
+      .setSuccessContact(success.toArray(new ContactResponseItem[success.size()]))
       .build());
   }
 
@@ -134,8 +134,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse invoiceSync(X x) {
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-    List<String> successResult = new ArrayList<>();
-    HashMap<String, List<InvoiceErrorItem>> invoiceErrors = this.initInvoiceErrors();
+    List<InvoiceResponseItem> successResult = new ArrayList<>();
+    HashMap<String, List<InvoiceResponseItem>> invoiceErrors = this.initInvoiceErrors();
 
     try {
 
@@ -149,7 +149,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         try {
           String importResult = importInvoice(x, invoice, invoiceErrors);
           if ( importResult == null ) {
-            successResult.add("QuickBooks invoice " + invoice.getDocNumber() + " import successfully.");
+            successResult.add(prepareErrorItemFrom(invoice));
           }
 
         } catch ( Exception e ) {
@@ -166,7 +166,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     return saveResult(x, "invoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
-      .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
+      .setSuccessInvoice(successResult.toArray(new InvoiceResponseItem[successResult.size()]))
       .setInvoiceErrors(invoiceErrors)
       .build());
   }
@@ -175,8 +175,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse singleInvoiceSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-    HashMap<String, List<InvoiceErrorItem>> invoiceErrors = this.initInvoiceErrors();
-    List<String> successResult = new ArrayList<>();
+    HashMap<String, List<InvoiceResponseItem>> invoiceErrors = this.initInvoiceErrors();
+    List<InvoiceResponseItem> successResult = new ArrayList<>();
 
 
     try {
@@ -204,7 +204,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       String importResult = importInvoice(x, invoice, invoiceErrors);
       if ( importResult != null ) {
-        successResult.add("QuickBooks invoice " + invoice.getDocNumber() + " import successfully.");
+        successResult.add(prepareErrorItemFrom(invoice));
       }
 
     } catch ( Exception e ) {
@@ -213,7 +213,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     return saveResult(x, "singleInvoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
-      .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
+      .setSuccessInvoice(successResult.toArray(new InvoiceResponseItem[successResult.size()]))
       .setInvoiceErrors(invoiceErrors)
       .build());
   }
@@ -414,8 +414,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return resultResponse;
   }
 
-  public boolean isValidContact(NameBase quickContact, HashMap<String, List<ContactErrorItem>> contactErrors) {
-    ContactErrorItem error = new ContactErrorItem();
+  public boolean isValidContact(NameBase quickContact, HashMap<String, List<ContactResponseItem>> contactErrors) {
+    ContactResponseItem error = new ContactResponseItem();
     error.setName(quickContact.getDisplayName());
 
     if ( quickContact.getPrimaryEmailAddr() == null && SafetyUtil.isEmpty(quickContact.getCompanyName()) ) {
@@ -627,13 +627,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return newContact;
   }
 
-  public InvoiceErrorItem prepareErrorItemFrom(Transaction qInvoice) {
+  public InvoiceResponseItem prepareErrorItemFrom(Transaction qInvoice) {
     Date dueDate = getDueDateFrom(qInvoice);
     BigDecimal amount  = getTotalAmountFrom(qInvoice);
 
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-    InvoiceErrorItem errorItem = new InvoiceErrorItem();
+    InvoiceResponseItem errorItem = new InvoiceResponseItem();
     errorItem.setDueDate(format.format(dueDate));
     errorItem.setInvoiceNumber(qInvoice.getDocNumber());
     errorItem.setAmount(amount.toString() + " " + qInvoice.getCurrencyRef().getValue());
@@ -641,14 +641,21 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return errorItem;
   }
 
-  public String importInvoice(X x, Transaction qInvoice, HashMap<String, List<InvoiceErrorItem>> contactErrors) {
+  public ContactResponseItem prepareContactResponseItem(NameBase contact) {
+    ContactResponseItem responseItem = new ContactResponseItem();
+    responseItem.setName(contact.getDisplayName());
+    responseItem.setBusinessName(contact.getCompanyName());
+    return responseItem;
+  }
+
+  public String importInvoice(X x, Transaction qInvoice, HashMap<String, List<InvoiceResponseItem>> contactErrors) {
     // get data from invoice
     Date dueDate = getDueDateFrom(qInvoice);
     BigDecimal balance = getBalanceFrom(qInvoice);
     BigDecimal amount  = getTotalAmountFrom(qInvoice);
 
     // prepare error item
-    InvoiceErrorItem errorItem = prepareErrorItemFrom(qInvoice);
+    InvoiceResponseItem errorItem = prepareErrorItemFrom(qInvoice);
 
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
@@ -1023,8 +1030,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     }
   }
 
-  public HashMap<String, List<ContactErrorItem>> initContactErrors() {
-    HashMap<String, List<ContactErrorItem>> contactErrors = new HashMap<>();
+  public HashMap<String, List<ContactResponseItem>> initContactErrors() {
+    HashMap<String, List<ContactResponseItem>> contactErrors = new HashMap<>();
 
     contactErrors.put("MISS_BUSINESS_EMAIL", new ArrayList<>());
     contactErrors.put("MISS_BUSINESS", new ArrayList<>());
@@ -1034,8 +1041,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return contactErrors;
   }
 
-  public HashMap<String, List<InvoiceErrorItem>> initInvoiceErrors() {
-    HashMap<String, List<InvoiceErrorItem>> invoiceErrors = new HashMap<>();
+  public HashMap<String, List<InvoiceResponseItem>> initInvoiceErrors() {
+    HashMap<String, List<InvoiceResponseItem>> invoiceErrors = new HashMap<>();
 
     invoiceErrors.put("MISS_CONTACT", new ArrayList<>());
     invoiceErrors.put("CURRENCY_NOT_SUPPORT", new ArrayList<>());

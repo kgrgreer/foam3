@@ -142,9 +142,9 @@ foam.CLASS({
       let doc = new jsPDF();
       doc.myY = 20;
 
-      this.createContactMismatchTable(reportResult.contactSyncMismatches, doc);
       this.createContactErrorsTables(reportResult.contactErrors, doc);
       this.createInvoiceErrorsTables(reportResult.invoiceErrors, doc);
+      this.createContactMismatchTable(reportResult.contactSyncMismatches, doc);
 
       doc.save('table.pdf')
     },
@@ -170,7 +170,7 @@ foam.CLASS({
         });
       }
 
-      doc.text('Ablii User', 14, doc.myY);
+      doc.text(`Contacts that currently can't be synced`, 14, doc.myY);
       doc.autoTable({
         columns: columns,
         body: data,
@@ -194,7 +194,7 @@ foam.CLASS({
         }
         if ( contactErrors[key].length !== 0 ) {
           if ( printTitle ) {
-            doc.text('Contact Sync Errors', 16, doc.myY);
+            doc.text('Contact Sync Errors', 14, doc.myY);
             doc.myY = doc.myY + 10;
             printTitle = false;
           }
@@ -224,7 +224,7 @@ foam.CLASS({
       for ( key of Object.keys(invoiceErrors) ) {
         if ( invoiceErrors[key].length !== 0 ) {
           if ( printTitle ) {
-            doc.text('Invoice Sync Errors', 16, doc.myY);
+            doc.text('Invoice Sync Errors', 14, doc.myY);
             doc.myY = doc.myY + 10;
             printTitle = false;
           }

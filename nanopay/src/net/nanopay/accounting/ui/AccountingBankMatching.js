@@ -148,13 +148,13 @@ foam.CLASS({
       float: right;
       font-size: 12px;
       margin-top: 4px;
-      margin-right: 40px;
+      margin-right: 57px;
     }
     ^ .failure-text1 {
       float: right;
       font-size: 12px;
       margin-top: 4px;
-      margin-right: 140px;
+      margin-right: 154px;
     }
     ^ .failure-text2 {
       float: right;
@@ -162,10 +162,12 @@ foam.CLASS({
       margin-top: 4px;
       margin-right: 95px;
     }
-    ^ .error-box, foam-u2-tag-Select" {
+    ^ .error-box .foam-u2-tag-Select {
       border-color: #f91c1c;
       background: #fff6f6;
     }
+
+    ^ error
   `,
 
   messages: [

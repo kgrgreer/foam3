@@ -24,7 +24,8 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.accounting.IntegrationCode',
-    'net.nanopay.accounting.resultresponse.ContactErrorItem',
+    'net.nanopay.accounting.resultresponse.ContactResponseItem',
+    'net.nanopay.accounting.resultresponse.InvoiceResponseItem',
     'foam.dao.EasyDAO'
   ],
 
@@ -61,7 +62,7 @@ foam.CLASS({
       border: 1px solid #4a33f4;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       background-color: #604aff !important;
-      font-size: 14px !important;
+      font-size: 16px !important;
       font-weight: 400;
       float:right;
       color: #FFFFFF !important;
@@ -114,10 +115,6 @@ foam.CLASS({
       font-size: 14px;
     }
 
-    .report-table-container .error-table-container .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName, .foam-u2-view-TableView-th-message {
-      width: 200px;
-    }
-
     ^ .download-button {
       float: right;
       margin-right: 24px;
@@ -127,6 +124,7 @@ foam.CLASS({
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       background-color: #ffffff;
       border: solid 1px #604aff;
+      font-size: 16px;
       color: #604aff;
     }
 
@@ -135,19 +133,30 @@ foam.CLASS({
       background-color: #ffffff !important;
       border-color: #4d38e1;
     }
+
+    .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName {
+      width: 320px;
+    }
+
+    .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-invoiceNumber, .foam-u2-view-TableView-th-Amount, .foam-u2-view-TableView-th-dueDate {
+      width: 200px;
+    }
   `,
 
   messages: [
-    { name: 'SUCCESS_MESSAGE', message: 'Successfully synced contacts and invoices' },
-    { name: 'TITLE', message: 'Found Ablii users from your synced contacts!' },
-    { name: 'DESCRIPTION', message: 'You can send or request money right away to these contacts' }
+    { name: 'SUCCESS_MESSAGE', message: 'Successfully synced contacts and invoices' }
   ],
 
   properties: [
     'reportResult',
     {
       class: 'Int',
-      name: 'count',
+      name: 'contactCount',
+      value: 0
+    },
+    {
+      class: 'Int',
+      name: 'invoiceCount',
       value: 0
     }
   ],
@@ -164,271 +173,58 @@ foam.CLASS({
             .end()
             .start('h1').add(this.SUCCESS_MESSAGE).addClass('title').end()
 
-            .start('div').addClass('report-title-2')
-              .start('img').addClass('report-title-img')
-                .attrs({ src: 'images/ablii-logo.svg' })
-              .end()
-              .start('p').add(this.TITLE).end()
+            .start('div').addClass('report-table-container')
+              .start().tag({
+                class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initSuccessContact(), columns: ['businessName', 'name'], header: 'Contacts (' + this.contactCount + ')'
+              }).end()
+              .start().tag({
+                class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initSuccessInvoice(), columns: ['invoiceNumber', 'Amount', 'dueDate'], header: 'Invoices (' + this.invoiceCount + ')'
+              }).end()
             .end()
-
-            .start('p').addClass('report-title-3')
-              .add(this.DESCRIPTION)
-            .end()
-
-        .start('div').addClass('report-table-container')
-            .start().tag({
-              class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initMismatchData(), columns: ['name', 'businessName', 'message'], header: 'Ablii users (' + this.count + ')'
-            }).end()
-        .end()
 
           .end()
 
           .start().addClass('button-bar')
             .start(this.NEXT).end()
-            .start(this.DOWNLOAD).addClass('download-button').end()
           .end()
 
         .end();
     },
 
-    function initMismatchData() {
-      let myData = this.reportResult.contactSyncMismatches;
+    function initSuccessContact() {
+      let myData = this.reportResult.successContact;
       //let myData = this.temp();
-      let myDAO = foam.dao.MDAO.create( { of: this.ContactErrorItem } );
+      let myDAO = foam.dao.MDAO.create( { of: this.ContactResponseItem } );
 
       for ( x in myData ) {
-        myDAO.put(this.ContactErrorItem.create({
+        myDAO.put(this.ContactResponseItem.create({
           id: x,
-          businessName: myData[x].existContact.businessName,
-          name: myData[x].existContact.firstName + " " + myData[x].existContact.lastName,
-          message: this.accountingIntegrationUtil.getMessage(myData[x].resultCode.name)
+          businessName: myData[x].businessName,
+          name: myData[x].name
         }))
-        this.count++;
+        this.contactCount++;
       }
 
       return myDAO;
     },
 
-    // TODO remove it
-    function temp() {
-      return [
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
-            "quickId": "86",
-            "realmId": "123146320035089",
-            "organization": "BBB",
-            "email": "siren.b@mailinator.com",
-            "businessId": 8008,
-            "owner": 8006,
-            "type": "QuickbooksContact",
-            "businessName": "BBB",
-            "group": "sme"
-          },
-          "resultCode": 1
-        },
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
-            "quickId": "86",
-            "realmId": "123146320035089",
-            "organization": "BBB",
-            "email": "siren.b@mailinator.com",
-            "businessId": 8008,
-            "owner": 8006,
-            "type": "QuickbooksContact",
-            "businessName": "BBB",
-            "group": "sme"
-          },
-          "resultCode": 1
-        },
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
-            "quickId": "86",
-            "realmId": "123146320035089",
-            "organization": "BBB",
-            "email": "siren.b@mailinator.com",
-            "businessId": 8008,
-            "owner": 8006,
-            "type": "QuickbooksContact",
-            "businessName": "BBB",
-            "group": "sme"
-          },
-          "resultCode": 1
-        },
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
-            "quickId": "86",
-            "realmId": "123146320035089",
-            "organization": "BBB",
-            "email": "siren.b@mailinator.com",
-            "businessId": 8008,
-            "owner": 8006,
-            "type": "QuickbooksContact",
-            "businessName": "BBB",
-            "group": "sme"
-          },
-          "resultCode": 1
-        },
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
-            "quickId": "86",
-            "realmId": "123146320035089",
-            "organization": "BBB",
-            "email": "siren.b@mailinator.com",
-            "businessId": 8008,
-            "owner": 8006,
-            "type": "QuickbooksContact",
-            "businessName": "BBB",
-            "group": "sme"
-          },
-          "resultCode": 1
-        },
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
-            "quickId": "86",
-            "realmId": "123146320035089",
-            "organization": "BBB",
-            "email": "siren.b@mailinator.com",
-            "businessId": 8008,
-            "owner": 8006,
-            "type": "QuickbooksContact",
-            "businessName": "BBB",
-            "group": "sme"
-          },
-          "resultCode": 1
-        },
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
-            "quickId": "86",
-            "realmId": "123146320035089",
-            "organization": "BBB",
-            "email": "siren.b@mailinator.com",
-            "businessId": 8008,
-            "owner": 8006,
-            "type": "QuickbooksContact",
-            "businessName": "BBB",
-            "group": "sme"
-          },
-          "resultCode": 1
-        },
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
-            "quickId": "87",
-            "realmId": "123146320035089",
-            "chooseBusiness": true,
-            "organization": "MULTI_BUSINESS",
-            "email": "siren.c@mailinator.com",
-            "firstName": "SirenCCC",
-            "lastName": "ChenCCC",
-            "owner": 8006,
-            "type": "QuickbooksContact",
-            "businessName": "MULTI_BUSINESS",
-            "group": "sme"
-          },
-          "resultCode": 2
-        },
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.contacts.Contact",
-            "organization": "DDD",
-            "email": "siren.d@mailinator.com",
-            "firstName": "SirenDDD",
-            "lastName": "ChenDDD",
-            "businessAddress": {
-              "class": "foam.nanos.auth.Address"
-            },
-            "owner": 8006,
-            "id": 8010,
-            "phone": {
-              "class": "foam.nanos.auth.Phone"
-            },
-            "mobile": {
-              "class": "foam.nanos.auth.Phone"
-            },
-            "address": {
-              "class": "foam.nanos.auth.Address"
-            },
-            "businessName": "DDD",
-            "nextLoginAttemptAllowedAt": "2019-03-26T19:42:43.308Z",
-            "businessPhone": {
-              "class": "foam.nanos.auth.Phone"
-            },
-            "group": "sme"
-          },
-          "newContact": {
-            "class": "net.nanopay.accounting.quickbooks.model.QuickbooksContact",
-            "quickId": "88",
-            "realmId": "123146320035089",
-            "organization": "DDD",
-            "email": "siren.d@mailinator.com",
-            "firstName": "SirenDDD",
-            "lastName": "ChenDDD",
-            "owner": 8006,
-            "mobile": {
-              "class": "foam.nanos.auth.Phone",
-              "verified": false,
-              "number": ""
-            },
-            "type": "QuickbooksContact",
-            "businessPhone": {
-              "class": "foam.nanos.auth.Phone",
-              "verified": false,
-              "number": ""
-            },
-            "group": "sme"
-          },
-          "resultCode": 0
-        },
-        {
-          "class": "net.nanopay.accounting.ContactMismatchPair",
-          "existContact": {
-            "class": "net.nanopay.contacts.Contact",
-            "organization": "EEE",
-            "email": "siren.e@mailinator.com",
-            "signUpStatus": 2,
-            "businessId": 8012,
-            "businessAddress": {
-              "class": "foam.nanos.auth.Address"
-            },
-            "businessStatus": 2,
-            "owner": 8006,
-            "id": 8013,
-            "phone": {
-              "class": "foam.nanos.auth.Phone"
-            },
-            "mobile": {
-              "class": "foam.nanos.auth.Phone"
-            },
-            "address": {
-              "class": "foam.nanos.auth.Address"
-            },
-            "businessName": "EEE",
-            "nextLoginAttemptAllowedAt": "2019-03-26T19:48:18.577Z",
-            "businessPhone": {
-              "class": "foam.nanos.auth.Phone"
-            },
-            "group": "sme"
-          },
-          "resultCode": 3
-        }
-      ]
-    }
+    function initSuccessInvoice() {
+      let myData = this.reportResult.successInvoice;
+      //let myData = this.temp();
+      let myDAO = foam.dao.MDAO.create( { of: this.InvoiceResponseItem } );
+
+      for ( x in myData ) {
+        myDAO.put(this.InvoiceResponseItem.create({
+          id: x,
+          invoiceNumber: myData[x].invoiceNumber,
+          Amount: myData[x].Amount,
+          dueDate: myData.dueDate
+        }))
+        this.invoiceCount++;
+      }
+
+      return myDAO;
+    },
   ],
 
   actions: [
@@ -441,13 +237,6 @@ foam.CLASS({
           doSync: true,
           reportResult: this.reportResult
         });
-      }
-    },
-    {
-      name: 'download',
-      label: 'Download Report',
-      code: function() {
-        this.accountingIntegrationUtil.genPdfReport(this.reportResult);
       }
     }
   ]

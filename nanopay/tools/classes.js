@@ -172,8 +172,8 @@ var classes = [
    'net.nanopay.accounting.quickbooks.QuickbooksToken',
    'net.nanopay.accounting.quickbooks.model.QuickbooksContact',
    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
-   'net.nanopay.accounting.resultresponse.ContactErrorItem',
-   'net.nanopay.accounting.resultresponse.InvoiceErrorItem',
+   'net.nanopay.accounting.resultresponse.ContactResponseItem',
+   'net.nanopay.accounting.resultresponse.InvoiceResponseItem',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',

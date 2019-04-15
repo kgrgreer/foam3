@@ -24,8 +24,8 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.accounting.IntegrationCode',
-    'net.nanopay.accounting.resultresponse.ContactErrorItem',
-    'net.nanopay.accounting.resultresponse.InvoiceErrorItem'
+    'net.nanopay.accounting.resultresponse.ContactResponseItem',
+    'net.nanopay.accounting.resultresponse.InvoiceResponseItem'
   ],
 
   css: `
@@ -78,18 +78,18 @@ foam.CLASS({
       margin-top: 120px;
     }
     
-    ^ .report-2-container p {
-      font-size: 14px;
-    }
-    
     ^ .report-2-container-title {
       display: flex;
-      justify-content: center;
       align-items: center;
-      padding-top :20px;
-      padding-bottom: 24px;
+      padding-top :40px;
       font-size: 16px;
       font-weight: 900;
+    }
+
+    ^ .report-2-description {
+      font-size: 14px;
+      text-align: left;
+      padding-bottom: 16px;
     }
     
     ^ .report-2-container-title img {
@@ -111,14 +111,18 @@ foam.CLASS({
       height: 24px;
       margin-right: 8px;
     }
-    
-    .contact-tables .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName {
+
+    .contact-tables .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName, .foam-u2-view-TableView-th-message {
       width: 320px;
     }
     .contact-tables .error-table-container .other .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName {
       width: 200px;
     }
     .invoice-tables .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-invoiceNumber, .foam-u2-view-TableView-th-Amount, .foam-u2-view-TableView-th-dueDate {
+      width: 200px;
+    }
+
+    .contact-mismatch-table .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName, .foam-u2-view-TableView-th-message {
       width: 200px;
     }
 
@@ -130,6 +134,7 @@ foam.CLASS({
       border-radius: 4px;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       background-color: #ffffff;
+      font-size: 16px;
       border: solid 1px #604aff;
       color: #604aff;
     }
@@ -144,9 +149,12 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Some invoices and contacts failed to sync' },
-    { name: 'TEXT', message: 'The following invoices and contacts failed to sync due to missing information.' },
-    { name: 'TEXT2', message: 'Fix these errors in ' },
-    { name: 'TEXT3', message: ' and sync again. Download the report for you convenience.' },
+    { name: 'TEXT', message: 'Fix these errors in ' },
+    { name: 'TEXT2', message: ' and sync again. Download the report for you convenience.' },
+    { name: 'CONTACT_TEXT', message: 'The following contacts failed to sync due to missing information.' },
+    { name: 'INVOICE_TEXT', message: 'The following invoices failed to sync due to missing information.' },
+    { name: 'MISMATCH_TEXT', message: 'The following contacts and invoices failed to sync due to technical difficulties. We apologize for your inconvenience. Please contact our support team for more details.' },
+    { name: 'MISMATCH', message: `Contacts and Invoices that currently can't be synced` },
     { name: 'INVOICES_FAILED', message: 'Invoices failed to sync' },
     { name: 'CONTACTS_FAILED', message: 'Contacts failed to sync ' },
   ],
@@ -162,6 +170,10 @@ foam.CLASS({
       name: 'contactCount'
     },
     {
+      class: 'Int',
+      name: 'mismatchCount'
+    },
+    {
       class: 'Boolean',
       name: 'showContactError',
       value: false
@@ -170,17 +182,21 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showInvoiceError',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showMismatch',
+      value: false
     }
   ],
 
   methods: [
     function initE() {
     let self = this;
-console.log(this.reportResult);
-    console.log(this.user.integrationCode);
-
+    console.log(this.reportResult);
     this.showContactError = this.showtable(this.reportResult.contactErrors);
     this.showInvoiceError = this.showtable(this.reportResult.invoiceErrors);
+    this.showMismatch = this.showtable(this.reportResult.contactSyncMismatches);
 
     this
       .start().addClass(this.myClass())
@@ -188,35 +204,27 @@ console.log(this.reportResult);
 
           .start('h1').add(this.TITLE).addClass('title').end()
 
-          .start('p')
-            .addClass('description')
-            .add(this.TEXT)
-          .end()
-
-          .start('p')
-            .add(this.TEXT2 + this.user.integrationCode.label + this.TEXT3)
-          .end()
-
           .start('div').addClass('report-2-container-tables').show(this.showContactError$)
 
             .start('div').addClass('report-2-container-title')
               .start()
                 .addClass('exclamation-mark')
-                .start('img').attrs({ src: 'images/ablii/exclamation-mark.png' }).end()
+                .start('img').attrs({ src: 'images/ablii/warning-triangle.svg' }).end()
               .end()
               .start('p').add(this.CONTACTS_FAILED).end()
             .end()
-
+            .start()
+              .add(this.CONTACT_TEXT + this.TEXT + this.user.integrationCode + this.TEXT2)
+              .addClass('report-2-description')
+            .end()
             .call( function() {
               let contactErrors = self.reportResult.contactErrors;
-              //let contactErrors = self.temp();
-
               for ( key of Object.keys(contactErrors) ) {
                 if ( contactErrors[key].length !== 0 ) {
                   this.showContactError = true;
                   this.start('div').addClass('report-table-container').addClass('contact-tables')
                     .start().tag({
-                    class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initContactError(contactErrors[key]), columns: ['name', 'businessName'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.invoiceCount + ')'
+                    class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initContactError(contactErrors[key]), columns: ['name', 'businessName'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.contactCount + ')'
                     }).end()
                   .end();
                 }
@@ -226,21 +234,22 @@ console.log(this.reportResult);
             .start('div').addClass('report-2-container-title').show(this.showInvoiceError$)
               .start()
                 .addClass('exclamation-mark')
-                .start('img').attrs({ src: 'images/ablii/exclamation-mark.png' }).end()
+                .start('img').attrs({ src: 'images/ablii/warning-triangle.svg' }).end()
               .end()
               .start('p').add(this.INVOICES_FAILED).end()
             .end()
-
+            .start()
+              .add(this.INVOICE_TEXT + this.TEXT + this.user.integrationCode + this.TEXT2)
+              .addClass('report-2-description')
+            .end()
             .call( function() {
               let invoiceErrors = self.reportResult.invoiceErrors;
-              //let invoiceErrors = self.temp2();
-
               for ( key of Object.keys(invoiceErrors) ) {
                 if ( invoiceErrors[key].length !== 0 ) {
                   this.showInvoiceError = true;
                   this.start('div').addClass('report-table-container').addClass('invoice-tables')
                     .start().tag({
-                      class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initInvoiceError(invoiceErrors[key]), columns: ['invoiceNumber', 'Amount', 'dueDate'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.contactCount + ')'
+                      class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initInvoiceError(invoiceErrors[key]), columns: ['invoiceNumber', 'Amount', 'dueDate'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.invoiceCount + ')'
                     })
                     .end()
                   .end();
@@ -248,6 +257,25 @@ console.log(this.reportResult);
               }
             })
 
+            .start().show(this.showMismatch$)
+              .start('div').addClass('report-2-container-title')
+                .start()
+                  .addClass('exclamation-mark')
+                  .start('img').attrs({ src: 'images/ablii/error.svg' }).end()
+                .end()
+                .start('p').add(this.MISMATCH).end()
+              .end()
+              .start()
+                .add(this.MISMATCH_TEXT)
+                .addClass('report-2-description')
+              .end()
+
+              .start('div').addClass('report-table-container').addClass('contact-mismatch-table')
+                .start().tag({
+                  class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initMismatchData(), columns: ['name', 'businessName', 'message'], header: 'Contacts (' + self.mismatchCount + ')'
+                }).end()
+              .end()
+            .end()
           .end()
 
         .end()
@@ -263,33 +291,33 @@ console.log(this.reportResult);
     },
 
     function initContactError(arrData) {
-      this.invoiceCount = 0;
-      let myDAO = foam.dao.MDAO.create( { of: this.ContactErrorItem } );
+      this.contactCount = 0;
+      let myDAO = foam.dao.MDAO.create( { of: this.ContactResponseItem } );
       for ( x in arrData ) {
-        myDAO.put(this.ContactErrorItem.create({
+        myDAO.put(this.ContactResponseItem.create({
           id: x,
           businessName: arrData[x].businessName,
           name: arrData[x].name,
           message: arrData[x].message != null ? arrData[x].message : null
         }))
-        this.invoiceCount++;
+        this.contactCount++;
       }
 
       return myDAO;
     },
 
     function initInvoiceError(arrData) {
-      this.contactCount = 0;
-      let myDAO = foam.dao.MDAO.create( { of: this.InvoiceErrorItem } );
+      this.invoiceCount = 0;
+      let myDAO = foam.dao.MDAO.create( { of: this.InvoiceResponseItem } );
 
       for ( x in arrData ) {
-        myDAO.put(this.InvoiceErrorItem.create({
+        myDAO.put(this.InvoiceResponseItem.create({
           id: x,
           invoiceNumber: arrData[x].invoiceNumber,
           Amount: arrData[x].Amount,
           dueDate: arrData[x].dueDate
         }))
-        this.contactCount++;
+        this.invoiceCount++;
       }
 
       return myDAO;
@@ -304,56 +332,21 @@ console.log(this.reportResult);
       return false;
     },
 
-    function temp() {
-      return {
-        "OTHER": [
-          {
-            "class": "net.nanopay.accounting.resultresponse.ContactErrorItem",
-            "businessName": "NNN",
-            "name": "SirenNNN123 ChenNNN"
-          },
-          {
-            "class": "net.nanopay.accounting.resultresponse.ContactErrorItem",
-            "businessName": "CCC",
-            "name": "CCC EEE"
-          }
-        ],
-        "MISS_BUSINESS": [
-          {
-            "class": "net.nanopay.accounting.resultresponse.ContactErrorItem",
-            "name": "SirenABC ChenABC"
-          }
-        ],
-        "MISS_BUSINESS_EMAIL": [],
-        "MISS_EMAIL": []
-      }
-    },
+    function initMismatchData() {
+      let myData = this.reportResult.contactSyncMismatches;
+      let myDAO = foam.dao.MDAO.create( { of: this.ContactResponseItem } );
 
-    function  temp2() {
-      return {
-        "OTHER": [],
-        "CURRENCY_NOT_SUPPORT": [
-          {
-            "class": "net.nanopay.accounting.resultresponse.InvoiceErrorItem",
-            "invoiceNumber": "0092",
-            "Amount": "11.0 EUR",
-            "dueDate": "2019-03-27T04:00:00.000Z"
-          },
-          {
-            "class": "net.nanopay.accounting.resultresponse.InvoiceErrorItem",
-            "invoiceNumber": "0092",
-            "Amount": "11.0 EUR",
-            "dueDate": "2019-03-27T04:00:00.000Z"
-          },
-          {
-            "class": "net.nanopay.accounting.resultresponse.InvoiceErrorItem",
-            "invoiceNumber": "0092",
-            "Amount": "11.0 EUR",
-            "dueDate": "2019-03-27T04:00:00.000Z"
-          }
-        ],
-        "MISS_CONTACT": []
+      for ( x in myData ) {
+        myDAO.put(this.ContactResponseItem.create({
+          id: x,
+          businessName: myData[x].existContact.businessName,
+          name: myData[x].existContact.firstName + " " + myData[x].existContact.lastName,
+          message: this.accountingIntegrationUtil.getMessage(myData[x].resultCode.name)
+        }))
+        this.mismatchCount++;
       }
+
+      return myDAO;
     }
   ],
 
