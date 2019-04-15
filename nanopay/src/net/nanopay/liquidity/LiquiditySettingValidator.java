@@ -9,7 +9,7 @@ public class LiquiditySettingValidator implements Validator {
   @Override
   public void validate(X x, FObject obj) {
 
-    if ( ! (obj instanceof LiquiditySettings) ) {
+    if ( ! ( obj instanceof LiquiditySettings ) ) {
       throw new RuntimeException("you can only put instanceof LiquiditySettings to LiquiditySettingsDAO");
     }
 
@@ -35,10 +35,10 @@ public class LiquiditySettingValidator implements Validator {
 
       if ( low.getEnableRebalancing() == true && high.getEnableRebalancing() == true ) {
 
-        if (high.getResetBalance() <= low.getThreshold())
+        if ( high.getResetBalance() <= low.getThreshold() )
           throw new RuntimeException("The low liquidity threshold must be below the high liquidity reset balance");
 
-        if (low.getResetBalance() >= high.getThreshold())
+        if ( low.getResetBalance() >= high.getThreshold() )
           throw new RuntimeException("The high liquidity threshold must be above the low liquidity reset balance");
       }
     }
