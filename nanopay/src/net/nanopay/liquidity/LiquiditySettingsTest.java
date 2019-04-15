@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.nanos.auth.User;
+import foam.test.TestUtils;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
@@ -50,6 +51,7 @@ public class LiquiditySettingsTest
     testLsCronjob();
 
     testAffectOfCICO(x);
+    testLsValidity();
   }
 
   public void setupAccounts() {
@@ -134,14 +136,14 @@ public class LiquiditySettingsTest
     test(balance == balance, "testAffectofCICO: initial balance: " + balance);
 
     Liquidity high = new Liquidity();
-    high.setResetBalance(0L);
-    high.setThreshold(0L);
+    high.setResetBalance(3L);
+    high.setThreshold(4L);
     high.setEnableRebalancing(true);
 
     Liquidity low = new Liquidity();
     low.setEnableRebalancing(true);
-    low.setResetBalance(0L);
-    low.setThreshold(0L);
+    low.setResetBalance(2L);
+    low.setThreshold(1L);
 
     ls_.setCashOutFrequency(Frequency.DAILY);
     ls_.setHighLiquidity(high);
@@ -150,13 +152,13 @@ public class LiquiditySettingsTest
     LiquiditySettingsCheckCron cron = new LiquiditySettingsCheckCron(Frequency.DAILY);
     cron.execute(x_);
     balance = (Long) senderDigitalDefault.findBalance(x);
-    test(SafetyUtil.equals(balance, 0L), "testAffectOfCICO: Cron Cash-Out reset balance, expecting: 0, found: "+balance);
+    test(SafetyUtil.equals(balance, 3L), "testAffectOfCICO: Cron Cash-Out reset balance, expecting: "+high.getResetBalance()+", found: "+balance);
     Transaction ci = createCompletedCashIn(x, (Account) senderBankAccount_, (Account) senderDigitalDefault, CASH_IN_AMOUNT);
     balance = (Long) senderDigitalDefault.findBalance(x);
-    test(SafetyUtil.equals(balance, CASH_IN_AMOUNT), "testAffectOfCICO: Cash-In, expecting: "+CASH_IN_AMOUNT+", found: "+balance);
+    test(SafetyUtil.equals(balance, CASH_IN_AMOUNT+high.getResetBalance()), "testAffectOfCICO: Cash-In, expecting: "+CASH_IN_AMOUNT+high.getResetBalance()+", found: "+balance);
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
     balance = (Long) senderDigitalDefault.findBalance(x);
-    test(SafetyUtil.equals(balance, CASH_IN_AMOUNT - CASH_OUT_AMOUNT), "testAffectOfCICO: PENDING Cash-Out, expecting: "+(CASH_IN_AMOUNT - CASH_OUT_AMOUNT)+", found: "+balance);
+    test(SafetyUtil.equals(balance, CASH_IN_AMOUNT - CASH_OUT_AMOUNT+high.getResetBalance()), "testAffectOfCICO: PENDING Cash-Out, expecting: "+(CASH_IN_AMOUNT - CASH_OUT_AMOUNT)+high.getResetBalance()+", found: "+balance);
 
     DAO d = (DAO) x.get("localTransactionDAO");
     // TODO: how to create comparator for order to order by CREATED property
@@ -217,5 +219,72 @@ public class LiquiditySettingsTest
     txn.setSourceAccount(source.getId());
     txn.setDestinationAccount(destination.getId());
     return (Transaction) (((DAO) x.get("localTransactionDAO")).put_(x, txn));
+  }
+
+  public void testLsValidity() {
+    DAO lsDAO = (DAO) x_.get("liquiditySettingsDAO");
+    LiquiditySettings ls = new LiquiditySettings();
+    Liquidity high = new Liquidity();
+    Liquidity low = new Liquidity();
+    low.setEnableRebalancing(true);
+    high.setEnableRebalancing(true);
+
+    low.setThreshold(5);
+    low.setResetBalance(3);
+
+    ls.setLowLiquidity(low);
+
+
+    test(TestUtils.testThrows(
+      () -> lsDAO.put_(x_, high),
+      "you can only put instanceof LiquiditySettings to LiquiditySettingsDAO",
+      RuntimeException.class), "Exception: you can only put instanceof LiquiditySettings to LiquiditySettingsDAO");
+
+    test(TestUtils.testThrows(
+      () -> lsDAO.put_(x_, ls),
+      "The low liquidity reset balance must be more then the threshold balance",
+      RuntimeException.class), "Exception: The low liquidity reset balance must be more then the threshold balance");
+
+    high.setResetBalance(4);
+    high.setThreshold(3);
+    ls.setHighLiquidity(high);
+
+    test(TestUtils.testThrows(
+      () -> lsDAO.put_(x_, ls),
+      "The high liquidity reset balance must be less then the threshold balance",
+      RuntimeException.class), "Exception: The high liquidity reset balance must be less then the threshold balance");
+
+    low.setThreshold(10);
+    low.setResetBalance(11);
+    high.setThreshold(2);
+    high.setResetBalance(1);
+    ls.setHighLiquidity(high);
+    ls.setLowLiquidity(low);
+
+    test(TestUtils.testThrows(
+      () -> lsDAO.put_(x_, ls),
+      "The high liquidity threshold must be above the low liquidity threshold",
+      RuntimeException.class), "Exception: The high liquidity threshold must be above the low liquidity threshold");
+
+    high.setThreshold(10);
+    high.setResetBalance(2);
+    low.setThreshold(3);
+    low.setResetBalance(5);
+    ls.setHighLiquidity(high);
+    ls.setLowLiquidity(low);
+
+    test(TestUtils.testThrows(
+      () -> lsDAO.put_(x_, ls),
+      "The low liquidity threshold must be below the high liquidity reset balance",
+      RuntimeException.class), "Exception: The low liquidity threshold must be below the high liquidity reset balance");
+
+    low.setThreshold(1);
+    low.setResetBalance(11);
+    ls.setLowLiquidity(low);
+
+    test(TestUtils.testThrows(
+      () -> lsDAO.put_(x_, ls),
+      "The high liquidity threshold must be above the low liquidity reset balance",
+      RuntimeException.class), "Exception: The high liquidity threshold must be above the low liquidity reset balance");
   }
 }
