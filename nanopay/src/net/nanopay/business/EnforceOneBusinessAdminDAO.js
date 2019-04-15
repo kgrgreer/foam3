@@ -35,7 +35,6 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.Group',
-    'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
