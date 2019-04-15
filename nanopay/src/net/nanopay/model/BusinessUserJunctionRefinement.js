@@ -37,7 +37,7 @@ foam.CLASS({
           throw new AuthorizationException("Only businesses may assign signing officers.");
         }
 
-        if ( this.getSourceId() != user.getId() ) {
+        if ( getSourceId() != user.getId() ) {
           throw new AuthorizationException("Users may not assign themselves as signing officers of businesses. The business must assign the user as a signing officer.");
         }
       `
@@ -58,13 +58,13 @@ foam.CLASS({
 
         // Checks if either the user or agent is associated with the junction.
         if (
-          this.getSourceId() != user.getId() &&
-          this.getTargetId() != user.getId() &&
+          getSourceId() != user.getId() &&
+          getTargetId() != user.getId() &&
 
           agent != null &&
           (
-            this.getSourceId() != agent.getId() &&
-            this.getTargetId() != agent.getId()
+            getSourceId() != agent.getId() &&
+            getTargetId() != agent.getId()
           )
         ) {
           throw new AuthorizationException("Permission denied. You are not associated with this junction.");
@@ -89,7 +89,7 @@ foam.CLASS({
           throw new AuthorizationException("Only businesses may assign signing officers.");
         }
 
-        if ( this.getSourceId() != user.getId() ) {
+        if ( getSourceId() != user.getId() ) {
           throw new AuthorizationException("Users may not assign themselves as signing officers of businesses. The business must assign the user as a signing officer.");
         }
       `
@@ -110,13 +110,13 @@ foam.CLASS({
 
         // Checks if either the user or agent is associated with the junction.
         if (
-          this.getSourceId() != user.getId() &&
-          this.getTargetId() != user.getId() &&
+          getSourceId() != user.getId() &&
+          getTargetId() != user.getId() &&
 
           agent != null &&
           (
-            this.getSourceId() != agent.getId() &&
-            this.getTargetId() != agent.getId()
+            getSourceId() != agent.getId() &&
+            getTargetId() != agent.getId()
           )
         ) {
           throw new AuthorizationException("Permission denied. You are not associated with this junction.");

@@ -108,9 +108,9 @@ foam.CLASS({
         { name: 'groupId', type: 'String' }
       ],
       javaCode: `
-        DAO groupDAO = ((DAO) getGroupDAO()).inX(x);
-
         if ( SafetyUtil.isEmpty(groupId) ) return false;
+
+        DAO groupDAO = ((DAO) getGroupDAO()).inX(x);
 
         while ( ! SafetyUtil.isEmpty(groupId) ) {
           Group group = (Group) groupDAO.find(groupId);
