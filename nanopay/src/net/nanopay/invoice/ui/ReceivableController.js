@@ -11,7 +11,6 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice'
@@ -46,7 +45,7 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            this.Invoice.PAYER.clone().copyFrom({
+            this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
               tableCellFormatter: function(_, invoice) {
                 var additiveSubField = invoice.payer.businessName ?
@@ -56,19 +55,13 @@ foam.CLASS({
               }
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({
-              label: 'Invoice No.'
+              label: 'Invoice No.',
+              tableWidth: 145
             }),
-            this.Invoice.AMOUNT.clone().copyFrom({
-              tableCellFormatter: function(_, invoice) {
-                self.currencyDAO.find(invoice.destinationCurrency)
-                  .then((currency) => {
-                  this.add(`+ ${currency.format(invoice.amount)}`);
-                });
-              }
-            }),
-            'dueDate',
-            'lastModified',
-            'status'
+            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 145 }),
+            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 145 }),
+            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 145 }),
+            'invoiceFile'
           ],
           contextMenuActions: [
             foam.core.Action.create({

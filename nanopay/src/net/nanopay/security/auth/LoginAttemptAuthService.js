@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Group',
     'foam.nanos.logger.Logger',
+    'net.nanopay.admin.model.AccountStatus',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
 
@@ -89,18 +90,7 @@ foam.CLASS({
         foam.nanos.auth.User user = ( id instanceof String ) ?
           getUserByEmail(x, (String) id) : getUserById(x, (long) id);
 
-        if ( user == null ) {
-          throw new foam.nanos.auth.AuthenticationException("User not found.");
-        }
-
-        Group group = (Group) ((DAO) x.get("groupDAO")).inX(x).find(user.getGroup());
-        String supportEmail = (String) group.getSupportEmail();
-
-        if ( ! user.getLoginEnabled() || ! user.getEnabled() ) {
-          throw new foam.nanos.auth.AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
-        }
-
-        if ( isLoginAttemptsExceeded(user) ) {
+        if ( user != null && isLoginAttemptsExceeded(user) ) {
           if ( isAdminUser(user) ) {
             if ( ! loginFreezeWindowReached(user) ) {
               throw new foam.nanos.auth.AuthenticationException("Account temporarily locked. You can attempt to login after " + getDateFormat().format(user.getNextLoginAttemptAllowedAt()));
@@ -116,6 +106,14 @@ foam.CLASS({
             super.loginByEmail(x, (String) id, password) :
             super.login(x, (long) id, password));
         } catch ( Throwable t ) {
+          if ( user == null ) {
+            /*
+              We check for invalid users in NanopayUserAndGroupAuthService.
+              This gets caught here, hence the rethrow.
+            */
+            throw t;
+          }
+
           // increment login attempts by 1
           user = incrementLoginAttempts(x, user);
           if ( isAdminUser(user) ) incrementNextLoginAttemptAllowedAt(x, user);
@@ -204,7 +202,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
-
+        if ( AccountStatus.DISABLED == user.getStatus() ) {
+          return reason;
+        }
         int remaining = getMaxAttempts() - user.getLoginAttempts();
         if ( remaining > 0 ) {
           return "Login failed (" + reason + "). " + ( remaining ) + " attempts remaining.";
