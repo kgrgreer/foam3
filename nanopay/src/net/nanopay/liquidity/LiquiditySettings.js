@@ -48,9 +48,6 @@ foam.CLASS({
       of: 'net.nanopay.liquidity.Frequency',
       name: 'cashOutFrequency',
       documentation: 'Determines how often a automatic cash out can occur.',
-      factory: function() {
-        return net.nanopay.liquidity.Frequency.PER_TRANSACTION;
-      }
     },
     {
       class: 'FObjectProperty',
