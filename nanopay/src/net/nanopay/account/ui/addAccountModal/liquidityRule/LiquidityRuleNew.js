@@ -78,9 +78,19 @@ foam.CLASS({
             return null;
         }
       },
-      validateObj: function (liquidityThresholdDetails$errors_) {
+      validateObj: function (liquidityThresholdDetails$errors_, liquidityThresholdDetails$ceilingRuleDetails$accountBalanceCeiling, liquidityThresholdDetails$floorRuleDetails$accountBalanceFloor) {
 
-        if (liquidityThresholdDetails$errors_) {
+        // extracting the accountBalanceCeiling and accountBalanceFloor to check for validation
+        const accountBalanceCeiling = liquidityThresholdDetails$ceilingRuleDetails$accountBalanceCeiling;
+
+        const accountBalanceFloor = liquidityThresholdDetails$floorRuleDetails$accountBalanceFloor;
+
+        // handling the conflict case when the floor is higher than the ceiling
+        if ( ( accountBalanceCeiling && accountBalanceFloor ) && ( accountBalanceCeiling < accountBalanceFloor ) ) {
+          return  'The maximum balance threshold must be greater than the minimum balance threshold' ;
+        }
+
+        if ( liquidityThresholdDetails$errors_ ) {
           return liquidityThresholdDetails$errors_ ? liquidityThresholdDetails$errors_ : 'Please select what to do with this threshold';
         }
       }
