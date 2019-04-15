@@ -39,6 +39,10 @@ foam.INTERFACE({
       type: 'Boolean',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'denomination',
           type: 'String'
         }
