@@ -76,7 +76,12 @@ foam.CLASS({
         A picker to choose parent accounts based on the
         existing accounts of the user by going through the accountDAO
         and grabbing only the digital accounts owned by the user
-      `
+      `,
+      validateObj: function(parentAccountPicker) {
+        if ( ! parentAccountPicker ) {
+          return 'Please select a parent for this Virtual Account';
+        }
+      }
     },
     {
       class: 'Reference',
