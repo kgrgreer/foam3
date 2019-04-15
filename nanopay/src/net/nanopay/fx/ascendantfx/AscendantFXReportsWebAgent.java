@@ -32,6 +32,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -117,6 +118,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     Logger logger            = (Logger) x.get("logger");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
     String businessType = type.getName();
     String businessName = business.getBusinessName();
@@ -184,7 +186,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     if ( business.getSuggestedUserTransactionInfo() != null ) {
       internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
-      
+
       if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
         baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
       } else {
@@ -376,6 +378,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     Logger logger = (Logger) x.get("logger");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     String name = signingOfficer.getLegalName();
     String title = signingOfficer.getJobTitle();
     String isPEPHIORelated = signingOfficer.getPEPHIORelated() ? "Yes" : "No";
@@ -510,6 +513,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String country = beneficialOwner.getAddress().getCountryId();
           String postalCode = beneficialOwner.getAddress().getPostalCode();
           SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("MMM d, yyyy");
+          dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
           String dateOfBirth = dateOfBirthFormatter.format(beneficialOwner.getBirthday());
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
@@ -553,6 +557,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     Logger logger = (Logger) x.get("logger");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
     String businessName = business.getBusinessName();
 
@@ -599,7 +604,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       long randomDepositAmount = bankAccount.getRandomDepositAmount();
       Date microVerificationTimestamp = bankAccount.getMicroVerificationTimestamp();
-      String reportGeneratedDate = sdf.format(new Date());
+      SimpleDateFormat rgdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+      String reportGeneratedDate = rgdf.format(new Date());
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Account name: " + accountName));
