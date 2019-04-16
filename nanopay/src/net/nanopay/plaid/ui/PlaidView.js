@@ -31,6 +31,7 @@ foam.CLASS({
     ^ .plaid-header {
       font-size: 16px;
       line-height: 24px;
+      margin-bottom: 0px; margin-top: 60px;
     }
     
     .plaid-logo-container {
@@ -54,6 +55,16 @@ foam.CLASS({
     
     .plaid-logo-plus {
       width: 10px; height: 19px;
+    }
+    
+    ^ .plaid-loading {
+      width: 52px; height: 52px;
+    }
+    
+    ^ .plaid-loading-container {
+      display: flex;
+      align-items: center;
+      height: 117px;
     }
     
     ^ .container .net-nanopay-ui-ActionView {
@@ -122,10 +133,10 @@ foam.CLASS({
             .add('Connect to your account with Plaid')
           .end()
 
-          .start().show(self.isLoading$.map(v => v === true))
+          .start().show(self.isLoading$.map(v => v === true)).addClass('plaid-loading-container')
             .start({class: 'foam.u2.tag.Image', data: 'images/ic-loading.svg'})
-              .addClass('plaid-logo').addClass('plaid-loading')
-              .end()
+              .addClass('plaid-loading')
+            .end()
           .end()
 
           .start().show(self.isLoading$.map(v => v === false))
