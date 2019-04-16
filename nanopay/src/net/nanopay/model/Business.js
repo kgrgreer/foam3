@@ -50,6 +50,17 @@ foam.CLASS({
       class: 'Boolean',
       name: 'residenceOperated',
       documentation: 'Details whether business is operated in the owners residence.'
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'beneficialOwnerDocuments',
+      documentation: 'Additional documents for beneficial owners verification.',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+          documents$: X.data.beneficialOwnerDocuments$
+        };
+      }
     }
   ],
 
