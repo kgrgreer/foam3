@@ -37,6 +37,7 @@ foam.CLASS({
   ],
 
   properties: [
+    // TODO: Remove this after migration.
     {
       class: 'Int',
       name: 'ownershipPercent',
@@ -149,17 +150,7 @@ foam.CLASS({
         };
       }
     },
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'beneficialOwnerDocuments',
-      documentation: 'Additional documents for beneficial owners verification.',
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-          documents$: X.data.beneficialOwnerDocuments$
-        };
-      }
-    },
+    // TODO: Remove this after migration.
     {
       class: 'FObjectArray',
       of: 'foam.nanos.auth.User',
@@ -177,12 +168,6 @@ foam.CLASS({
           return 'Invalid job title.';
         }
       }
-    },
-    {
-      class: 'String',
-      name: 'principleType',
-      label: 'Principal Type',
-      documentation: 'Type of principal owner. (shareholder, owner etc...)'
     },
     {
       class: 'Boolean',
@@ -347,6 +332,7 @@ foam.CLASS({
           or Head of an International Organization (HIO), or related to any such person.
       `
     },
+    // TODO: Remove
     {
       class: 'Boolean',
       name: 'signingOfficer',
@@ -464,6 +450,82 @@ foam.CLASS({
           throw new IllegalStateException("Invalid email address.");
         }
       `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'viewAccounts',
+      label: 'View Accounts',
+      tableWidth: 135,
+      permissionRequired: true,
+      code: function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.businessName}'s Accounts`,
+          data: X.accountDAO.where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+        });
+      }
+    },
+    {
+      name: 'viewTransactions',
+      label: 'View Transactions',
+      tableWidth: 160,
+      permissionRequired: true,
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        var ids = await X.accountDAO
+          .where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+          .select(m.MAP(net.nanopay.account.Account.ID))
+          .then((sink) => sink.delegate.array);
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Transactions`,
+          data: X.transactionDAO.where(
+            m.OR(
+              m.IN(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, ids),
+              m.IN(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, ids)
+            )
+          )
+        });
+      }
+    },
+    {
+      name: 'viewPayables',
+      label: 'View Payables',
+      permissionRequired: true,
+      code: async function(X) {
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Payables`,
+          data: this.expenses
+        });
+      }
+    },
+    {
+      name: 'viewReceivables',
+      label: 'View Receivables',
+      permissionRequired: true,
+      code: async function(X) {
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Receivables`,
+          data: this.sales
+        });
+      }
     }
   ],
 

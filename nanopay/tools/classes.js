@@ -46,6 +46,7 @@ var classes = [
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
+  'net.nanopay.model.BusinessUserJunction',
   'net.nanopay.account.Account',
   'net.nanopay.account.DigitalAccount',
   'net.nanopay.account.DigitalAccountInfo',
@@ -55,6 +56,7 @@ var classes = [
   'net.nanopay.account.ZeroAccount',
   'net.nanopay.account.ZeroAccountUserAssociation',
   'net.nanopay.account.TrustAccount',
+  'net.nanopay.account.ShadowAccount',
   'net.nanopay.account.LossesAccount',
   'net.nanopay.account.LoanAccount',
   'net.nanopay.account.LoanedTotalAccount',
@@ -69,6 +71,8 @@ var classes = [
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
+  'net.nanopay.model.BusinessUserJunctionRefinement',
+  'net.nanopay.model.BeneficialOwner',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.Currency',
@@ -463,7 +467,6 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
 
-
   // dow jones
   'net.nanopay.meter.compliance.dowJones.enums.ContentSet',
   'net.nanopay.meter.compliance.dowJones.enums.FilterAMC',
@@ -502,6 +505,9 @@ var classes = [
   'net.nanopay.meter.test.ComplianceAwareDummy',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
+
+  // business
+  'net.nanopay.business.EnforceOneBusinessAdminDAO',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
