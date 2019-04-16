@@ -24,8 +24,14 @@ public class AccountAmountLimitationDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
     Group userGroup = (Group) x.get("group");
+    Account newBankAccount = (Account) obj;
 
     if ( ! userGroup.isDescendantOf("sme", (DAO) x.get("groupDAO")) ) {
+      return super.put_(x, obj);
+    }
+
+    // When the user adding a bank account for the contact
+    if ( user.getId() != newBankAccount.getOwner() ) {
       return super.put_(x, obj);
     }
 
