@@ -193,7 +193,6 @@ foam.CLASS({
   methods: [
     function initE() {
     let self = this;
-    console.log(this.reportResult);
     this.showContactError = this.showtable(this.reportResult.contactErrors);
     this.showInvoiceError = this.showtable(this.reportResult.invoiceErrors);
     this.showMismatch = this.showtable(this.reportResult.contactSyncMismatches);

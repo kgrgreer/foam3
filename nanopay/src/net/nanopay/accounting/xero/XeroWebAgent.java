@@ -141,7 +141,7 @@ public class XeroWebAgent
 
   public void sync(X x, HttpServletResponse response) {
     try {
-        response.sendRedirect("/?accounting=Xero#sme.bank.matching");
+        response.sendRedirect("/#sme.bank.matching");
     } catch ( Exception e ) {
       Logger logger =  (Logger) x.get("logger");
       logger.error(e);

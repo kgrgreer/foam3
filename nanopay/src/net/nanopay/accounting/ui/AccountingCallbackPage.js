@@ -95,14 +95,6 @@ foam.CLASS({
       value: false
     },
     {
-      name: 'integrationSoftware',
-      type: 'String',
-      factory: function() {
-        let parsedUrl = new URL(window.location.href);
-        return parsedUrl.searchParams.get('accounting');
-      }
-    },
-    {
       name: 'doSync',
       type: 'Boolean',
       value: false
@@ -117,7 +109,7 @@ foam.CLASS({
       this
         .start().addClass(this.myClass())
           .start('h1').addClass('title')
-            .add('Syncing ' + this.integrationSoftware + ' to Ablii')
+            .add('Syncing ' + this.user.integrationCode.label + ' to Ablii')
           .end()
           .start().addClass('spinner-container')
             .start().addClass('spinner-container-center')

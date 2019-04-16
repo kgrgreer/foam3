@@ -88,7 +88,6 @@ foam.CLASS({
       margin-top: 25px;
       margin-left: auto; margin-right: auto;
       overflow: hidden;
-      border: solid 1px #e2e2e3;
     }
     
     ^ .report-title-2 {
@@ -176,12 +175,19 @@ foam.CLASS({
             .start('div').addClass('report-table-container')
               .start().tag({
                 class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initSuccessContact(), columns: ['businessName', 'name'], header: 'Contacts (' + this.contactCount + ')'
-              }).end()
+              }).show(this.slot(function(contactCount) {
+                return contactCount > 0 ? true : false;
+              }))
+              .end()
               .start().tag({
                 class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initSuccessInvoice(), columns: ['invoiceNumber', 'Amount', 'dueDate'], header: 'Invoices (' + this.invoiceCount + ')'
-              }).end()
-            .end()
+              }).show(this.slot(function(invoiceCount) {
+                return invoiceCount > 0 ? true : false;
+              }))
+              .end()
+              .addClass('aaaaa')
 
+            .end()
           .end()
 
           .start().addClass('button-bar')

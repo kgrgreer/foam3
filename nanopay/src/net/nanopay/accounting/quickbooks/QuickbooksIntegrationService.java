@@ -108,12 +108,16 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           }
 
         } catch ( Exception e ) {
-          logger.error(e);
-          ContactResponseItem errorItem = new ContactResponseItem();
-          errorItem.setName(contact.getDisplayName());
-          errorItem.setBusinessName(contact.getCompanyName());
-          errorItem.setMessage(e.getMessage());
-          contactErrors.get("OTHER").add(errorItem);
+          if ( e.getMessage().equals("skip")) {
+
+          } else {
+            logger.error(e);
+            ContactResponseItem errorItem = new ContactResponseItem();
+            errorItem.setName(contact.getDisplayName());
+            errorItem.setBusinessName(contact.getCompanyName());
+            errorItem.setMessage(e.getMessage());
+            contactErrors.get("OTHER").add(errorItem);
+          }
         }
 
       }
@@ -461,7 +465,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     if ( existContact instanceof QuickbooksContact ) {
       if ( ((QuickbooksContact) existContact).getLastUpdated() >= importContact.getMetaData().getLastUpdatedTime().getTime() ) {
-        return null;
+        throw new RuntimeException("skip");
       }
     }
 
@@ -655,7 +659,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return responseItem;
   }
 
-  public String importInvoice(X x, Transaction qInvoice, HashMap<String, List<InvoiceResponseItem>> contactErrors) {
+  public String importInvoice(X x, Transaction qInvoice, HashMap<String, List<InvoiceResponseItem>> invoiceErrors) {
     // get data from invoice
     Date dueDate = getDueDateFrom(qInvoice);
     BigDecimal balance = getBalanceFrom(qInvoice);
@@ -670,7 +674,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     // check currency support
     if ( ! qInvoice.getCurrencyRef().getValue().equals("USD") &&
          ! qInvoice.getCurrencyRef().getValue().equals("CAD") ) {
-      contactErrors.get("CURRENCY_NOT_SUPPORT").add(errorItem);
+      invoiceErrors.get("CURRENCY_NOT_SUPPORT").add(errorItem);
       return "Invoice " + qInvoice.getDocNumber() +
         " can not import because we don't support currency " + qInvoice.getCurrencyRef().getValue();
     }
@@ -685,17 +689,17 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     if ( existInvoice != null ) {
 
       if ( existInvoice.getLastUpdated() >= qInvoice.getMetaData().getLastUpdatedTime().getTime() ) {
-        return null;
+        return "skip";
       }
       existInvoice = (QuickbooksInvoice) existInvoice.fclone();
 
       // if desync, continue
       if ( existInvoice.getDesync() ) {
-        return null;
+        return "skip";
       }
 
       if ( qInvoice instanceof Invoice && net.nanopay.invoice.model.InvoiceStatus.DRAFT != existInvoice.getStatus() ) {
-        return null;
+        return "skip";
       }
 
       if (! (
@@ -703,7 +707,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           net.nanopay.invoice.model.InvoiceStatus.DRAFT   == existInvoice.getStatus() ||
           net.nanopay.invoice.model.InvoiceStatus.OVERDUE == existInvoice.getStatus() ))
       {
-        return null;
+        return "skip";
       }
 
       if ( balance.doubleValue() == 0.0 && existInvoice.getAmount() != 0 ) {
@@ -712,14 +716,14 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         existInvoice.setDraft(true);
         invoiceDAO.inX(x).put(existInvoice);
         invoiceDAO.inX(x).remove(existInvoice);
-        return null;
+        return "skip";
       }
     }
 
     if ( existInvoice == null ) {
 
       if ( balance.doubleValue() == 0.0 ) {
-        return null;
+        return "skip";
       }
 
       existInvoice = new QuickbooksInvoice();
@@ -736,7 +740,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     ));
 
     if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
-      contactErrors.get("MISS_CONTACT").add(errorItem);
+      invoiceErrors.get("MISS_CONTACT").add(errorItem);
       return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
     }
 

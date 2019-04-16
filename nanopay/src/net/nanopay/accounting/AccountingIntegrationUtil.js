@@ -36,7 +36,7 @@ foam.CLASS({
   messages: [
     { name: 'MISSING_CONTACT', message: 'Missing Contact' },
     { name: 'INVALID_CURRENCY', message: 'Invalid Currency' },
-    { name: 'UNAUTHORIZED_INVOICE', message: 'Unauthorized Xero Invoice' },
+    { name: 'UNAUTHORIZED_INVOICE', message: 'Draft Xero Invoice' },
     { name: 'MISSING_BUSINESS_EMAIL', message: 'Missing Business Name & Email' },
     { name: 'MISSING_BUSINESS', message: 'Missing Business Name' },
     { name: 'MISSING_EMAIL', message: 'Missing Email' },
@@ -146,7 +146,7 @@ foam.CLASS({
       this.createInvoiceErrorsTables(reportResult.invoiceErrors, doc);
       this.createContactMismatchTable(reportResult.contactSyncMismatches, doc);
 
-      doc.save('table.pdf')
+      doc.save(this.user.integrationCode.label + ' sync report.pdf');
     },
 
     function createContactMismatchTable(mismatch, doc) {
