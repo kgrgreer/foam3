@@ -7,6 +7,10 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: 'name'
+    },
+    {
+      class: 'String',
       name: 'nameType'
     }
   ]

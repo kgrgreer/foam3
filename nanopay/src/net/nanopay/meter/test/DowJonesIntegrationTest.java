@@ -31,6 +31,10 @@ public class DowJonesIntegrationTest extends Test {
     DowJonesCredentials credentials = (DowJonesCredentials) x.get("dowjonesCredentials");
     DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
 
+    credentials.setNamespace("18");
+    credentials.setUsername("nanoAPI");
+    credentials.setPassword("dowjones");
+
     String authCredentials = credentials.getNamespace() + "/" + credentials.getUsername() + ":" + credentials.getPassword();
     String encodedCredentials = Base64.getEncoder().encodeToString((authCredentials).getBytes());
 

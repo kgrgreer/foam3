@@ -32,15 +32,17 @@ foam.CLASS({
       name: 'matchedName'
     },
     {
-      class: 'Date',
+      class: 'String',
       name: 'matchedDateOfBirth'
     },
     {
       class: 'Array',
+      of: 'String',
       name: 'datesOfBirth'
     },
     {
       class: 'Array',
+      of: 'String',
       name: 'countries'
     },
     {

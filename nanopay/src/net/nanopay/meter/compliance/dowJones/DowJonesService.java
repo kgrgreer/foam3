@@ -30,6 +30,7 @@ public class DowJonesService
   // Add missing parameters for person name search when finalized
   public BaseSearchResponse personNameSearch(X x, String firstName, String surName, Date filterLRDFrom) {
     try {
+      DAO dowJonesResponseDAO = (DAO) x.get("dowJonesResponseDAO");
       DowJonesResponseMsg respMsg = null;
       DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, firstName, surName, filterLRDFrom);
 
@@ -45,9 +46,8 @@ public class DowJonesService
       BaseSearchResponse feedback;
       if ( httpCode == 200 ) {
         BaseSearchResponse resp = (BaseSearchResponse) respMsg.getModel();
-        BaseSearchResponseBody responseBody = resp.getResponseBody();
-        responseBody.setMatchs(responseBody.getMatchs());
         feedback = resp;
+        dowJonesResponseDAO.put(resp);
       } else {
         feedback = (BaseSearchInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");

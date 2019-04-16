@@ -10,8 +10,7 @@ foam.CLASS({
       name: 'score'
     },
     {
-      class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.MatchType',
+      class: 'String',
       name: 'matchType'
     },
     {
@@ -28,8 +27,7 @@ foam.CLASS({
       name: 'revision'
     },
     {
-      class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.RecordType',
+      class: 'String',
       name: 'recordType'
     }
   ]

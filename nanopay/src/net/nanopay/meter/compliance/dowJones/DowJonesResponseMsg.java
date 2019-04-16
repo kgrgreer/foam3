@@ -2,9 +2,24 @@ package net.nanopay.meter.compliance.dowJones;
 
 import foam.core.*;
 import net.nanopay.meter.compliance.dowJones.*;
+import net.nanopay.meter.compliance.dowJones.enums.*;
+
+import java.io.*;
+import java.lang.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.*;
-import java.io.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class DowJonesResponseMsg
   extends DowJonesMsg
@@ -52,14 +67,128 @@ public class DowJonesResponseMsg
       if ( getXml() == null ) {
         throw new RuntimeException("No XML Found");
       }
-      FObject obj = null;
+      BaseSearchResponse obj = new BaseSearchResponse();
+      MetadataSearchResponse metadata = new MetadataSearchResponse();
+      BaseSearchResponseBody responseBody = new BaseSearchResponseBody();
+      List<Match> matchArrList = new ArrayList<Match>();
 
       try {
-        JAXBContext jaxbContext = JAXBContext.newInstance(modelInfo_.getObjClass());
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        StringReader reader = new StringReader(getXml());
-        obj = (FObject) jaxbUnmarshaller.unmarshal(reader);
-      } catch ( JAXBException e ) {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document document = db.parse(new ByteArrayInputStream(getXml().getBytes()));
+
+        Element head = (Element) document.getElementsByTagName("head").item(0);
+        Element body = (Element) document.getElementsByTagName("body").item(0);
+
+        // head response data
+        Node apiVersion = head.getElementsByTagName("api-version").item(0).getFirstChild();
+        Node backendVersion = head.getElementsByTagName("backend-version").item(0).getFirstChild();
+        Node totalHits = head.getElementsByTagName("total-hits").item(0).getFirstChild();
+        Node hitsFrom = head.getElementsByTagName("hits-from").item(0).getFirstChild();
+        Node hitsTo = head.getElementsByTagName("hits-to").item(0).getFirstChild();
+        Node truncated = head.getElementsByTagName("truncated").item(0).getFirstChild();
+        Node cachedResultsId = head.getElementsByTagName("cached-results-id").item(0).getFirstChild();
+
+        // body response data
+        NodeList matchList = body.getElementsByTagName("match");
+        
+        for ( int i = 0; i < matchList.getLength(); i++ ) {
+          List<String> riskIconsArrList = new ArrayList<String>();
+          List<String> datesOfBirthArrList = new ArrayList<String>();
+          List<String> countryArrList = new ArrayList<String>();
+
+          Element matchElement = (Element) matchList.item(i);
+          Node peid = matchElement.getElementsByTagName("peid").item(0).getFirstChild();
+          Node revision = matchElement.getElementsByTagName("revision").item(0).getFirstChild();
+          Node recordType = matchElement.getElementsByTagName("record-type").item(0).getFirstChild();
+          Node score = matchElement.getElementsByTagName("score").item(0).getFirstChild();
+          Node matchType = matchElement.getElementsByTagName("match-type").item(0).getFirstChild();
+          Element payload = (Element) matchElement.getElementsByTagName("payload").item(0);
+          Element riskIcons = (Element) payload.getElementsByTagName("risk-icons").item(0);
+          NodeList riskIconList = riskIcons.getElementsByTagName("risk-icon");
+          for ( int e = 0; e < riskIconList.getLength(); e++ ) {
+            Element riskIconElement = (Element) riskIconList.item(e);
+            Node riskIcon = riskIconElement.getFirstChild();
+            riskIconsArrList.add(riskIcon.getNodeValue());
+          }
+          Node primaryName = payload.getElementsByTagName("primary-name").item(0).getFirstChild();
+          Node countryCode = payload.getElementsByTagName("country-code").item(0).getFirstChild();
+          Node title = payload.getElementsByTagName("title").item(0).getFirstChild();
+          Node subsidiary = payload.getElementsByTagName("subsidiary").item(0).getFirstChild();
+          Element matchedName = (Element) payload.getElementsByTagName("matched-name").item(0);
+          Node nameType = matchedName.getElementsByTagName("name-type").item(0).getFirstChild();
+          Node matchedDateOfBirth = payload.getElementsByTagName("matched-date-of-birth").item(0).getFirstChild();
+          Element datesOfBirth = (Element) payload.getElementsByTagName("dates-of-birth").item(0);
+          NodeList dateOfBirthList = datesOfBirth.getElementsByTagName("date-of-birth");
+          for ( int o = 0; o < dateOfBirthList.getLength(); o++ ) {
+            Element dateOfBirthElement = (Element) dateOfBirthList.item(o);
+            Node birthYear = dateOfBirthElement.getElementsByTagName("year").item(0).getFirstChild();
+            Node birthMonth = dateOfBirthElement.getElementsByTagName("month").item(0).getFirstChild();
+            Node birthDate = dateOfBirthElement.getElementsByTagName("day").item(0).getFirstChild();
+            String formattedDate = birthMonth.getNodeValue() + "/" + birthDate.getNodeValue() + "/" + birthYear.getNodeValue();
+            datesOfBirthArrList.add(formattedDate);
+          }
+          Element countries = (Element) payload.getElementsByTagName("countries").item(0);
+          NodeList countriesList = countries.getElementsByTagName("country");
+          for ( int a = 0; a < countriesList.getLength(); a++ ) {
+            Element countryElement = (Element) countriesList.item(a);
+            Node countryType = countryElement.getElementsByTagName("country-type").item(0).getFirstChild();
+            Node countryCode2 = countryElement.getElementsByTagName("country-code").item(0).getFirstChild(); 
+          }
+          Node gender = payload.getElementsByTagName("gender").item(0).getFirstChild();
+
+          // set match data from body response
+          Match match = new Match();
+          MatchPayload matchPayload = new MatchPayload();
+
+          MatchedName matchedNameObj = new MatchedName();
+          matchedNameObj.setName(matchedName.getNodeValue());
+          matchedNameObj.setNameType(nameType.getNodeValue());
+
+          String[] riskIconsArray = new String[ riskIconsArrList.size() ];
+          matchPayload.setRiskIcons(riskIconsArrList.toArray(riskIconsArray));
+          matchPayload.setPrimaryName(primaryName.getNodeValue());
+          matchPayload.setCountryCode(countryCode.getNodeValue());
+          matchPayload.setTitle(title.getNodeValue());
+          matchPayload.setSubsidiary(Boolean.valueOf(subsidiary.getNodeValue()));
+          matchPayload.setMatchedName(matchedNameObj);
+          matchPayload.setMatchedDateOfBirth(matchedDateOfBirth.getNodeValue());
+
+          String[] datesOfBirthArray = new String [ datesOfBirthArrList.size() ];
+          matchPayload.setDatesOfBirth(datesOfBirthArrList.toArray(datesOfBirthArray));
+
+          // TODO: Finish adding country data to array list
+          String[] countriesArray = new String[ countryArrList.size() ];
+          matchPayload.setCountries(countryArrList.toArray(countriesArray));
+          matchPayload.setGender(gender.getNodeValue()); 
+
+          match.setScore(Float.parseFloat(score.getNodeValue()));
+          match.setMatchType(matchType.getNodeValue());
+          match.setPayload(matchPayload);
+          match.setPeid(peid.getNodeValue());
+          match.setRevision(revision.getNodeValue());
+          match.setRecordType(recordType.getNodeValue());
+
+          matchArrList.add(match);
+        }
+        // set metadata from head response 
+        metadata.setApiVersion(apiVersion.getNodeValue());
+        metadata.setBackendVersion(backendVersion.getNodeValue());
+        metadata.setTotalHits(Integer.parseInt(totalHits.getNodeValue()));
+        metadata.setHitsFrom(Integer.parseInt(hitsFrom.getNodeValue()));
+        metadata.setHitsTo(Integer.parseInt(hitsTo.getNodeValue()));
+        metadata.setTruncated(Boolean.valueOf(truncated.getNodeValue()));
+        metadata.setCachedResultsId(cachedResultsId.getNodeValue());
+
+        Match[] matchArray = new Match[ matchArrList.size() ];
+        responseBody.setMatchs(matchArrList.toArray(matchArray));
+
+        // set metadata and response data
+        obj.setMetadata(metadata);
+        obj.setResponseBody(responseBody);
+
+      } catch ( ParserConfigurationException | SAXException | IOException e ) {
+        e.printStackTrace();
         throw new RuntimeException("Could not parse xml string");
       }
 

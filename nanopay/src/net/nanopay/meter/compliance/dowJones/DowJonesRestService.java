@@ -77,7 +77,6 @@ import org.apache.http.client.config.RequestConfig;
       client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
       client = HttpClientBuilder.create().build();
 
-      // still need to append data from request model
       String baseUrl = "https://djrc.api.test.dowjones.com/v1/search/";
       String urlAddress = "";
 
