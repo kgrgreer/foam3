@@ -17,12 +17,13 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.sme.ui.dashboard.ActionObject',
+    'net.nanopay.sme.ui.dashboard.ActionObject'
   ],
 
   imports: [
@@ -154,10 +155,15 @@ foam.CLASS({
         this.user.emailVerified,
         this.user.accounts
           .where(
-            this.OR(
-              this.EQ(this.Account.TYPE, this.BankAccount.name),
-              this.EQ(this.Account.TYPE, this.CABankAccount.name),
-              this.EQ(this.Account.TYPE, this.USBankAccount.name)))
+            this.AND(
+              this.OR(
+                this.EQ(this.Account.TYPE, this.BankAccount.name),
+                this.EQ(this.Account.TYPE, this.CABankAccount.name),
+                this.EQ(this.Account.TYPE, this.USBankAccount.name)
+              ),
+              this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
+            )
+          )
           .select(this.COUNT()).then(({ value }) => value > 0),
         this.userDAO.find(this.user.id).then((use) => use.hasIntegrated),
         this.user.onboarded
