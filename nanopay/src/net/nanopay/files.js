@@ -329,6 +329,11 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
   { name: 'net/nanopay/plaid/ClientPlaidService' },
+  { name: 'net/nanopay/plaid/model/PlaidAccountDetail' },
+  { name: 'net/nanopay/plaid/model/PlaidBalances' },
+  { name: 'net/nanopay/plaid/model/ACH' },
+  { name: 'net/nanopay/plaid/model/EFT' },
+  { name: 'net/nanopay/plaid/PlaidResultReport' },
   { name: 'net/nanopay/plaid/PlaidService' },
   { name: 'net/nanopay/plaid/config/PlaidCredential' },
   { name: 'net/nanopay/plaid/model/PlaidPublicToken' },

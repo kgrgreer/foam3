@@ -96,7 +96,7 @@ foam.CLASS({
       });
       this.views = {
         'voidCheck'  : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankVoidForm' }, startPoint: true },
-        'pad'        : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankPADForm' } }
+        'pad'        : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankPADForm', onComplete: self.onComplete } }
       };
     },
 
