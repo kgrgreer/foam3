@@ -6,37 +6,21 @@
 
 package net.nanopay.tx;
 
-import foam.core.ClassInfo;
-import foam.core.Detachable;
-import foam.core.FObject;
-import foam.core.PropertyInfo;
 import foam.core.ProxyX;
 import foam.core.X;
-import foam.core.XMLSupport;
-import foam.dao.AbstractSink;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
 import foam.lib.json.*;
 import foam.lib.parse.*;
-import foam.nanos.boot.NSpec;
-import foam.nanos.http.Command;
 import foam.nanos.http.Format;
-import foam.nanos.http.WebAgent;
 import foam.nanos.http.HttpParameters;
+import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.pm.PM;
 import foam.util.SafetyUtil;
 import java.io.*;
 import java.nio.CharBuffer;
-import java.util.*;
-import java.util.Iterator;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
+import javax.servlet.http.HttpServletRequest;
 import net.nanopay.iso20022.Pacs00800106;
 import net.nanopay.iso20022.Pacs00200109;
 import net.nanopay.iso20022.Pacs02800101;
@@ -54,7 +38,6 @@ public class PacsWebAgent
     final PrintWriter   out        = x.get(PrintWriter.class);
     CharBuffer          buffer_     = CharBuffer.allocate(65535);
     String              contentType = req.getHeader("Content-Type");
-    Command             command    = (Command) p.get("cmd");
     Format              format     = (Format) p.get("format");
     String              msg        = p.getParameter("msg");
     String              data       = p.getParameter("data");
@@ -92,38 +75,45 @@ public class PacsWebAgent
         outputterJson.setOutputShortNames(true);
         outputterJson.setOutputClassNames(false);
 
-        if ( "008".equals(msg) ) {
-          Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
+        if ( ! SafetyUtil.isEmpty(msg) ) {
+          if ( "008".equals(msg) ) {
+            Pacs00800106 pacs00800106 = (Pacs00800106) jsonParser.parseString(data, Pacs00800106.class);
 
-          if ( pacs00800106 == null ) {
-            String message = getParsingError(x, buffer_.toString());
-            logger.error(message + ", input: " + buffer_.toString());
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
+            if ( pacs00800106 == null ) {
+              String message = getParsingError(x, buffer_.toString());
+              logger.error(message + ", input: " + buffer_.toString());
+              resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+              return;
+            }
+
+            Pacs00200109 pacs00200109 = pacs00800106.generatePacs002Msgby008Msg();
+
+            outputterJson.output(pacs00200109);
+
+            out.println(outputterJson.toString());
+            resp.setStatus(HttpServletResponse.SC_OK);
+          } else if ( "028".equals(msg) ) {
+            Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
+
+            if ( pacs02800101 == null ) {
+              String message = getParsingError(x, data);
+              logger.error(message + ", input: " + data);
+              resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+              return;
+            }
+
+            Pacs00200109 pacs00200109 = pacs02800101.generatePacs002Msgby028Msg();
+
+            outputterJson.output(pacs00200109);
+
+            out.println(outputterJson.toString());
+            resp.setStatus(HttpServletResponse.SC_OK);
+          } else {
+            out.println("Unsupported message type.");
           }
-
-          Pacs00200109 pacs00200109 = pacs00800106.generatePacs002Msgby008Msg();
-
-          outputterJson.output(pacs00200109);
         } else {
-          Pacs02800101 pacs02800101 = (Pacs02800101) jsonParser.parseString(data, Pacs02800101.class);
-
-          if ( pacs02800101 == null ) {
-            String message = getParsingError(x, data);
-            logger.error(message + ", input: " + data);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            return;
-          }
-
-          Pacs00200109 pacs00200109 = pacs02800101.generatePacs002Msgby028Msg();
-
-          outputterJson.output(pacs00200109);
+          resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, format.toString());
         }
-
-        out.println(outputterJson.toString());
-        resp.setStatus(HttpServletResponse.SC_OK);
-      } else {
-        resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, format.toString());
       }
     } catch (Throwable t) {
       out.println("Error " + t);
