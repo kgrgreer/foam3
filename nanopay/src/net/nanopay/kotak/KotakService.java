@@ -71,8 +71,6 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     xmlOutputter.output(request);
 
     String xmlData = xmlOutputter.toString();
-    System.out.println("payment xml: ");
-    System.out.println(xmlData);
 
     AcknowledgementType acknowledgementType = new AcknowledgementType();
     acknowledgementType.setAckHeader(new Acknowledgement());
@@ -82,10 +80,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     String response;
     try {
       String encryptedData = KotakEncryption.encrypt(xmlData, encryptionKey);
-      System.out.println("encryptedData: " + encryptedData);
-
       post.setEntity(new StringEntity(encryptedData, Encoding));
-
       CloseableHttpResponse httpResponse = httpClient.execute(post);
 
       try {
@@ -113,17 +108,17 @@ public class KotakService extends ContextAwareSupport implements Kotak {
         if ( statusRem != null ) acknowledgementType.getAckHeader().setStatusRem(statusRem.getNodeValue());
 
       } catch (ParserConfigurationException | SAXException e) {
-        e.printStackTrace();
+        logger.error(e);
       } finally {
         httpResponse.close();
       }
     } catch (IOException | GeneralSecurityException e) {
-      e.printStackTrace();
+      logger.error(e);
     } finally {
       try {
         httpClient.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        logger.error(e);
       }
     }
 
@@ -146,8 +141,6 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     xmlOutputter.output(request);
 
     String xmlData = xmlOutputter.toString();
-    System.out.println("reversal xml: ");
-    System.out.println(xmlData);
 
     Reversal reversal = new Reversal();
     reversal.setHeader(new HeaderType());
@@ -155,10 +148,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
     String response;
     try {
       String encryptedData = KotakEncryption.encrypt(xmlData, encryptionKey);
-      System.out.println("encryptedData: " + encryptedData);
-
       post.setEntity(new StringEntity(encryptedData, Encoding));
-
       CloseableHttpResponse httpResponse = httpClient.execute(post);
 
       try {
@@ -215,17 +205,17 @@ public class KotakService extends ContextAwareSupport implements Kotak {
           if ( UTR != null ) reversal.getDetails().getRev_Detail()[i].setUTR(UTR.getNodeValue());
         }
       } catch (ParserConfigurationException | SAXException e) {
-        e.printStackTrace();
+        logger.error(e);
       } finally {
         httpResponse.close();
       }
     } catch (IOException | GeneralSecurityException e) {
-      e.printStackTrace();
+      logger.error(e);
     } finally {
       try {
         httpClient.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        logger.error(e);
       }
     }
 
