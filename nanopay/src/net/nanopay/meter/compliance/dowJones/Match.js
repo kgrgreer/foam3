@@ -6,7 +6,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Float',
+      class: 'String',
       name: 'score'
     },
     {
