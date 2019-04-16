@@ -37,6 +37,7 @@ foam.CLASS({
   ],
 
   properties: [
+    // TODO: Remove this after migration.
     {
       class: 'Int',
       name: 'ownershipPercent',
@@ -149,17 +150,7 @@ foam.CLASS({
         };
       }
     },
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'beneficialOwnerDocuments',
-      documentation: 'Additional documents for beneficial owners verification.',
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-          documents$: X.data.beneficialOwnerDocuments$
-        };
-      }
-    },
+    // TODO: Remove this after migration.
     {
       class: 'FObjectArray',
       of: 'foam.nanos.auth.User',
@@ -177,12 +168,6 @@ foam.CLASS({
           return 'Invalid job title.';
         }
       }
-    },
-    {
-      class: 'String',
-      name: 'principleType',
-      label: 'Principal Type',
-      documentation: 'Type of principal owner. (shareholder, owner etc...)'
     },
     {
       class: 'Boolean',
@@ -347,6 +332,7 @@ foam.CLASS({
           or Head of an International Organization (HIO), or related to any such person.
       `
     },
+    // TODO: Remove
     {
       class: 'Boolean',
       name: 'signingOfficer',
