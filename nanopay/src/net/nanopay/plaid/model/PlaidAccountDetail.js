@@ -7,19 +7,22 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'userId'
+      name: 'userId',
+      hidden: true
     },
     {
       class: 'String',
-      name: 'itemId'
+      name: 'itemId',
+      hidden: true
     },
     {
       class: 'String',
-      name: 'institutionName'
+      name: 'institutionName',
     },
     {
       class: 'String',
-      name: 'institutionId'
+      name: 'institutionId',
+      hidden: true
     },
     {
       class: 'String',
@@ -27,7 +30,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'mask'
+      name: 'mask',
+      hidden: true
     },
     {
       class: 'String',
@@ -39,7 +43,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'subtype'
+      name: 'subtype',
+      hidden: true
     },
     {
       class: 'String',
@@ -58,7 +63,8 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.plaid.model.EFT',
-      name: 'EFT'
+      name: 'EFT',
+      hidden: true
     }
   ]
 });

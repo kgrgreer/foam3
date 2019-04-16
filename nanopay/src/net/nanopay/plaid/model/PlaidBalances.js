@@ -21,7 +21,8 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'unofficialCurrencyCode'
+      name: 'unofficialCurrencyCode',
+      hidden: true
     }
   ]
 });

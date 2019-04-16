@@ -16,35 +16,62 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.plaid.model.PlaidPublicToken',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.u2.dialog.Popup'
   ],
 
   css: `
-    .container {
+    ^ .plaid-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
     }
     
+    ^ .plaid-header {
+      font-size: 16px;
+      line-height: 24px;
+    }
+    
     .plaid-logo-container {
       display: flex;
       justify-content: space-around;
       align-items: center;
+      height: 117px;
     }
     
     .plaid-logo {
-      width: 100pt;
-      height: 100pt;
+      width: 52px;
+      height: 52px;
+      margin-right: 17px;
     }
     
     .plaid-log-right {
-      width: 100pt;
-      height: 150pt;
+      width: 44px;
+      height: 69px;
+      margin-left: 17px;
     }
     
     .plaid-logo-plus {
-      width: 100pt; height: 30pt;
+      width: 10px; height: 19px;
+    }
+    
+    ^ .container .net-nanopay-ui-ActionView {
+      width: 96px;
+      height: 36px;
+      font-size: 14px;
+    }
+    
+    ^ .otherbank-container p {
+      display: inline !important;
+    }
+    
+    ^ .otherbank-container {
+      margin-top: 54px;
+    }
+    
+     ^ .otherbank-container .link-text {
+      color: #604aff;
     }
     
     .plaid-loading {
@@ -59,6 +86,7 @@ foam.CLASS({
   `,
 
   properties: [
+    'onComplete',
     {
       name: 'isLoading',
       class: 'Boolean',
@@ -88,23 +116,45 @@ foam.CLASS({
 
       this
         .start().addClass(this.myClass())
-        .start('div').addClass('container')
+        .start('div').addClass('plaid-container')
+
+          .start("p").addClass('plaid-header')
+            .add('Connect to your account with Plaid')
+          .end()
+
           .start().show(self.isLoading$.map(v => v === true))
             .start({class: 'foam.u2.tag.Image', data: 'images/ic-loading.svg'})
               .addClass('plaid-logo').addClass('plaid-loading')
               .end()
           .end()
+
           .start().show(self.isLoading$.map(v => v === false))
             .start('div').addClass('plaid-logo-container')
               .start({class: 'foam.u2.tag.Image', data: this.logoPath}).addClass('plaid-logo').end()
-              .start({class: 'foam.u2.tag.Image', data: 'images/plus.svg'}).addClass('plaid-logo-plus').end()
-              .start({class: 'foam.u2.tag.Image', data: 'images/plaid-logo.png'}).addClass('plaid-log-right').end()
+              .start({class: 'foam.u2.tag.Image', data: 'images/plus-no-bg-black.svg'}).addClass('plaid-logo-plus').end()
+              .start({class: 'foam.u2.tag.Image', data: 'images/plaid-logo-black.png'}).addClass('plaid-log-right').end()
             .end()
           .end()
-        .start("p")
-        .add(this.hint$)
-        .end()
-          .add(this.CONNECT).end()
+
+          .start("p").show(false)
+            .add(this.hint$)
+          .end()
+
+          .add(this.CONNECT)
+
+          .start('div').addClass('otherbank-container')
+            .start('p').add('Don\'t see your bank here? ').end()
+            .start('p').addClass('link-text')
+              .add('Connect with a void check')
+              .on('click', function() {
+                self.ctrl.add(self.Popup.create().tag({
+                  class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
+                  onComplete: self.onComplete
+                }));
+              })
+            .end()
+          .end()
+
         .end()
         .end();
     },
@@ -126,7 +176,7 @@ foam.CLASS({
         env: credential.env,
         key: credential.publicKey,
         webhook: credential.webhook,
-        product: ['auth', 'transactions'],
+        product: ['auth', 'transactions', 'identity'],
         onSuccess: this.onSuccess.bind(this),
         onExit: this.onExit.bind(this)
       };

@@ -232,7 +232,7 @@ foam.CLASS({
                 .style({ 'margin-left': '5px', 'margin-right': '5px' })
               .end()
             .endContext()
-            .start().addClass('institutionSearchContainer').show(this.selection$.map(function(v) { return v === 1; }))
+            .start().addClass('institutionSearchContainer')
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
               .start(this.FILTER_FOR)
                 .addClass('institutionSearch')
@@ -249,6 +249,15 @@ foam.CLASS({
               onComplete: this.createOnComplete()
             }).end()
           .end()
+
+          .start().show(this.selection$.map((v) => { return v === 2 && this.usdAvailable; }))
+            .start().tag({
+              class: 'net.nanopay.plaid.ui.PlaidView',
+              logoPath: 'images/ablii-logo.svg',
+              onComplete: this.createOnComplete()
+            }).end()
+          .end()
+
         .end()
       .end();
     },
@@ -288,11 +297,6 @@ foam.CLASS({
       label: 'US',
       code: function() {
         this.selection = 2;
-        this.add(this.Popup.create().tag({
-          class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
-          onDismiss: this.createOnDismiss(),
-          onComplete: this.createOnComplete()
-        }));
       }
     },
   ]
