@@ -20,5 +20,9 @@ foam.CLASS({
       of: 'net.nanopay.accounting.ResultResponse',
       name: 'resultResponse'
     },
+    {
+      class: 'Long',
+      name: 'timeStamp'
+    }
   ]
 });

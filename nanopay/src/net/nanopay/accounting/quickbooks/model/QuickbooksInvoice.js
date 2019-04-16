@@ -30,6 +30,10 @@ foam.CLASS({
       name: 'complete',
       hidden: true,
       value: false,
+    },
+    {
+      class: 'Long',
+      name: 'lastUpdated'
     }
   ]
 });
