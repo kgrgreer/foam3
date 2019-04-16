@@ -98,9 +98,9 @@ public class DowJonesResponseMsg
           List<String> countryArrList = new ArrayList<String>();
 
           Element matchElement = (Element) matchList.item(i);
-          Node peid = matchElement.getElementsByTagName("peid").item(0);
-          Node revision = matchElement.getElementsByTagName("revision").item(0);
-          Node recordType = matchElement.getElementsByTagName("record-type").item(0);
+          String peid = matchElement.getAttribute("peid");
+          String revision = matchElement.getAttribute("revision");
+          String recordType = matchElement.getAttribute("record-type");
           Node score = matchElement.getElementsByTagName("score").item(0);
           Node matchType = matchElement.getElementsByTagName("match-type").item(0);
           Element payload = (Element) matchElement.getElementsByTagName("payload").item(0);
@@ -116,7 +116,7 @@ public class DowJonesResponseMsg
           Node title = payload.getElementsByTagName("title").item(0);
           Node subsidiary = payload.getElementsByTagName("subsidiary").item(0).getFirstChild();
           Element matchedName = (Element) payload.getElementsByTagName("matched-name").item(0);
-          Node nameType = matchedName.getElementsByTagName("name-type").item(0);
+          String nameType = matchedName.getAttribute("name-type");
           Node matchedDateOfBirth = payload.getElementsByTagName("matched-date-of-birth").item(0);
           Element datesOfBirth = (Element) payload.getElementsByTagName("dates-of-birth").item(0);
           NodeList dateOfBirthList = datesOfBirth.getElementsByTagName("date-of-birth");
@@ -152,7 +152,7 @@ public class DowJonesResponseMsg
 
           MatchedName matchedNameObj = new MatchedName();
           matchedNameObj.setName(matchedName != null ? matchedName.getFirstChild().getNodeValue() : "");
-          matchedNameObj.setNameType(nameType != null ? nameType.getFirstChild().getNodeValue() : "");
+          matchedNameObj.setNameType(nameType);
 
           String[] riskIconsArray = new String[ riskIconsArrList.size() ];
           matchPayload.setRiskIcons(riskIconsArrList.toArray(riskIconsArray));
@@ -171,12 +171,12 @@ public class DowJonesResponseMsg
           matchPayload.setCountries(countryArrList.toArray(countriesArray));
           matchPayload.setGender(gender != null ? gender.getFirstChild().getNodeValue() : ""); 
 
-          match.setScore(score.getNodeValue());
+          match.setScore(score != null ? score.getFirstChild().getNodeValue() : "");
           match.setMatchType(matchType != null ? matchType.getFirstChild().getNodeValue() : "");
           match.setPayload(matchPayload);
-          match.setPeid(peid != null ? peid.getFirstChild().getNodeValue() : "");
-          match.setRevision(revision != null ? revision.getFirstChild().getNodeValue() : "");
-          match.setRecordType(recordType != null ? recordType.getFirstChild().getNodeValue() : "");
+          match.setPeid(peid);
+          match.setRevision(revision);
+          match.setRecordType(recordType);
 
           matchArrList.add(match);
         }
