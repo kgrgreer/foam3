@@ -98,7 +98,7 @@ public class KotakPaymentProcessor implements ContextAgent {
           } else if ( paymentResponseStatusCode.equals("VAL_ERR") ) {
             kotakCOTxn.setStatus(TransactionStatus.FAILED);
             sendNotification(x, "Kotak payment initialization failed. TransactionId: " + kotakCOTxn.getId() +
-              ". Reason: " + kotakCOTxn.getPaymentStatusRem());
+              ". Reason: " + kotakCOTxn.getPaymentStatusRem() + ".");
           }
 
           transactionDAO.put(kotakCOTxn);
