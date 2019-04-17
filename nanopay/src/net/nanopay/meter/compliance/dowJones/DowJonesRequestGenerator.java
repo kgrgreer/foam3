@@ -2,7 +2,6 @@ package net.nanopay.meter.compliance.dowJones;
 
 import foam.core.X;
 import net.nanopay.meter.compliance.dowJones.*;
-import net.nanopay.meter.compliance.dowJones.enums.*;
 import java.util.Date;
 
 public class DowJonesRequestGenerator {

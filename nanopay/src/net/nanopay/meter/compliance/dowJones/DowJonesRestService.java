@@ -57,10 +57,6 @@ import org.apache.http.client.config.RequestConfig;
   private DowJonesResponseMsg request(DowJonesRequestMsg req) {
     DowJonesCredentials credentials = (DowJonesCredentials) getX().get("dowjonesCredentials");
 
-    credentials.setNamespace("18");
-    credentials.setUsername("nanoAPI");
-    credentials.setPassword("dowjones");
-
     String authCredentials = credentials.getNamespace() + "/" + credentials.getUsername() + ":" + credentials.getPassword();
     String encodedCredentials = Base64.getEncoder().encodeToString((authCredentials).getBytes());
 
