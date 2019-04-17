@@ -3,7 +3,9 @@
 
 IN_DIR=$1
 OUT_DIR=$2
-IS_AWS=$3
+MODE=$3
+VERSION=$4
+INSTANCE=$5
 
 if [[ -d $IN_DIR ]]; then
     cd $IN_DIR
@@ -14,16 +16,12 @@ if [[ ! -d $OUT_DIR ]]; then
 fi
 mkdir -p "$OUT_DIR"
 
-MODE=${IS_AWS}
-INSTANCE=1
-VERSION=1
-
 # Sets varuables to lowercase
 MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
-INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
 VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
+INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
 
-echo MODE=${MODE}
+echo "$0 MODE=${MODE} INSTANCE=${INSTANCE} VERSION=${VERSION}"
 
 # Creates an array of the file names
 declare -a arr=(
@@ -83,7 +81,7 @@ declare -a arr=(
 declare -a sources=(
   "foam2/src"
   "nanopay/src"
-  "interac/src"
+ # "interac/src"
 )
 
 # Go through the array and check each location for the file and concatenate into one JDAO
@@ -98,6 +96,7 @@ do
   # Emptys the file
   > "$OUT_DIR/$journal_file"
 
+  # non .jrl files
   # Recursively go through the directory and find if the files exists.
   # If they do, then concatenate the files into one.
   for s in ${sources[*]}
@@ -106,98 +105,49 @@ do
     do
         cat $f >> "$OUT_DIR/$journal_file"
     done
-  done
-
-  if  [[ -f "deployment/$file" ]]; then
-      cat deployment/$file >> "$OUT_DIR/$journal_file"
-  fi
-  if  [[ -f "deployment/$MODE/$file" ]]; then
-      cat deployment/$MODE/$file >> "$OUT_DIR/$journal_file"
-  fi
-  if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
-      cat deployment/$MODE/$INSTANCE/$file >> "$OUT_DIR/$journal_file"
-  fi
-  if  [[ -f "deployment/$MODE/$VERSION/$file" ]]; then
-      cat deployment/$MODE/$VERSION/$file >> "$OUT_DIR/$journal_file"
-  fi
-  if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
-      cat deployment/$MODE/$INSTANCE/$VERSION/$file >> "$OUT_DIR/$journal_file"
-  fi
-
-  # .jrl files - transition
-  for s in ${sources[*]}
-  do
     for f in $(find $s -name "${file}.jrl")
     do
-      cat $f >> "$OUT_DIR/$journal_file"
+      cat "$f" >> "$OUT_DIR/$journal_file"
     done
   done
 
+  if  [[ -f "deployment/$file" ]]; then
+      cat "deployment/$file" >> "$OUT_DIR/$journal_file"
+  fi
   if  [[ -f "deployment/${file}.jrl" ]]; then
       cat "deployment/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      if [[ $IS_AWS -ne 1 ]]; then
-        case $f in
-          *.jrl )
-          mv "deployment/${file}.jrl" "deployment/${file}.jrl"
-          ;;
-        esac
-      fi
-  elif [[ -f "deployment/${file}.jrl" ]]; then
-    cat "deployment/${file}.jrl" >> "$OUT_DIR/$journal_file"
   fi
-
-  if  [[ -f "deployment/$MODE/${file}.jrl" ]]; then
-      cat "deployment/$MODE/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      if [[ $IS_AWS -ne 1 ]]; then
-        case $f in
-          *.jrl )
-          mv "deployment/$MODE/${file}.jrl" "deployment/$MODE/${file}.jrl"
-          ;;
-        esac
+  if [[ ! -z "$MODE" ]]; then
+      if  [[ -f "deployment/$MODE/$file" ]]; then
+          cat "deployment/$MODE/$file" >> "$OUT_DIR/$journal_file"
       fi
-  elif [[ -f "deployment/$MODE/${file}.jrl" ]]; then
-      cat "deployment/$MODE/${file}.jrl" >> "$OUT_DIR/$journal_file"
-  fi
-
-  if  [[ -f "deployment/$MODE/$INSTANCE/${file}.jrl" ]]; then
-      cat "deployment/$MODE/$INSTANCE/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      if [[ $IS_AWS -ne 1 ]]; then
-        case $f in
-          *.jrl )
-          mv "deployment/$MODE/$INSTANCE/${file}.jrl" "deployment/$MODE/$INSTANCE/${file}.jrl"
-          ;;
-        esac
+      if  [[ -f "deployment/$MODE/${file}.jrl" ]]; then
+          cat "deployment/$MODE/${file}.jrl" >> "$OUT_DIR/$journal_file"
       fi
-  elif [[ -f "deployment/$MODE/$INSTANCE/${file}.jrl" ]]; then
-    cat "deployment/$MODE/$INSTANCE/${file}.jrl" >> "$OUT_DIR/$journal_file"
   fi
-
-  if  [[ -f "deployment/$MODE/$VERSION/${file}.jrl" ]]; then
-      cat "deployment/$MODE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      if [[ $IS_AWS -ne 1 ]]; then
-        case $f in
-          *.jrl )
-          mv "deployment/$MODE/$VERSION/${file}.jrl" "deployment/$MODE/$VERSION/${file}.jrl"
-          ;;
-        esac
+  if [[ ! -z "$INSTANCE" ]]; then
+      if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
+          cat "deployment/$MODE/$INSTANCE/$file" >> "$OUT_DIR/$journal_file"
       fi
-  elif [[ -f "deployment/$MODE/$VERSION/${file}.jrl" ]]; then
-      cat "deployment/$MODE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
-  fi
-
-  if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" ]]; then
-      cat "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      if [[ $IS_AWS -ne 1 ]]; then
-        case $f in
-          *.jrl )
-          mv "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl"
-          ;;
-        esac
+      if  [[ -f "deployment/$MODE/$INSTANCE/${file}.jrl" ]]; then
+          cat "deployment/$MODE/$INSTANCE/${file}.jrl" >> "$OUT_DIR/$journal_file"
       fi
-  elif [[ -f "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" ]]; then
-    cat "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
   fi
+  if [[ ! -z "$VERSION" ]]; then
+      if  [[ -f "deployment/$MODE/$VERSION/$file" ]]; then
+          cat "deployment/$MODE/$VERSION/$file" >> "$OUT_DIR/$journal_file"
+      fi
+      if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
+          cat "deployment/$MODE/$INSTANCE/$VERSION/$file" >> "$OUT_DIR/$journal_file"
+      fi
+      if  [[ -f "deployment/$MODE/$VERSION/${file}.jrl" ]]; then
+          cat "deployment/$MODE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
+      fi
 
+      if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" ]]; then
+          cat "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
+      fi
+  fi
 done
 
 exit 0

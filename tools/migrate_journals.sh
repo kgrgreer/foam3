@@ -6,8 +6,13 @@
 # with Users_01.sh before Users_02.sh
 # for file in * will list in alphabetical sorted order.
 #
-#printf "migrating $0\n"
-export JOURNAL_HOME="/opt/nanopay/journals"
+printf "migrating $0 $1\n"
+JOURNAL_HOME=$1
+if [ -z "$JOURNAL_HOME" ]; then
+    JOURNAL_HOME="/opt/nanopay/journals"
+fi
+export JOURNAL_HOME
+
 MIGRATE="tools/journal_migration"
 MIGRATED="$JOURNAL_HOME/migrated"
 
