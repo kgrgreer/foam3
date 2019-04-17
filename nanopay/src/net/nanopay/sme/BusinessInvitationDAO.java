@@ -4,7 +4,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.mlang.predicate.In;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.*;
 import foam.nanos.auth.token.Token;
@@ -12,6 +11,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.util.SafetyUtil;
+import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.auth.email.EmailWhitelistEntry;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
@@ -20,16 +20,15 @@ import net.nanopay.model.InvitationStatus;
 import java.net.URLEncoder;
 import java.util.*;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.*;
 
 /**
-  * Business invitation DAO is responsible for checking if the invitation is sent to an external
-  * or internal user. Internal Users will receive a notification & email allowing them to join the business
-  * External Users will receive an email which will redirect them to the sign up portal and take them through
-  * the necessary steps to join a business.
-*/
+ * Business invitation DAO is responsible for checking if the invitation is sent
+ * to an external or internal user. Internal Users will receive a notification &
+ * email allowing them to join the business. External Users will receive an
+ * email which will redirect them to the sign up portal and take them through
+ * the necessary steps to join a business.
+ */
 public class BusinessInvitationDAO
   extends ProxyDAO
 {
@@ -55,8 +54,6 @@ public class BusinessInvitationDAO
       return super.put_(x, obj);
     }
 
-    DAO localUserUserDAO = (DAO) x.get("localUserUserDAO");
-
     // AUTH CHECK
     AuthService auth = (AuthService) x.get("auth");
     String addBusinessPermission = "business.add." + business.getBusinessPermissionId() + ".*";
@@ -65,6 +62,29 @@ public class BusinessInvitationDAO
     }
 
     Invitation invite = (Invitation) obj.fclone();
+
+    // A legal requirement is that we need to do a compliance check on any
+    // user that can make payments, which includes admins and approvers.
+    // However, we only do compliance checks on the company right now, not
+    // every user that can act as it. Therefore in the short term we'll
+    // only allow users to invite employees, because employees can't pay
+    // invoices, only submit them for approval.
+
+    // However, one of our use cases is when an employee of a company signs up,
+    // partially fills out the business profile and then invites the company
+    // signing officer to sign up and finish the business profile. For that
+    // reason we include the compliance condition below. We need to allow people
+    // to add an admin to their business before finishing the business profile
+    // so that the company signing officer can sign up and finish the business
+    // profile.
+    if (
+      business.getCompliance() != ComplianceStatus.NOTREQUESTED &&
+      ! SafetyUtil.equals(invite.getGroup(), "employee")
+    ) {
+      throw new AuthorizationException("Only employees can be added for the time being."); // TODO: Come up with a better message.
+    }
+
+    DAO localUserUserDAO = (DAO) x.get("localUserUserDAO");
 
     Invitation existingInvite = (Invitation) getDelegate().inX(getX()).find(
       OR(
@@ -137,8 +157,8 @@ public class BusinessInvitationDAO
     HashMap<String, Object> args = new HashMap<>();
     args.put("inviterName", agent.getFirstName());
     args.put("business", business.getBusinessName());
-    
-    // encoding business name and email to handle specail characters.
+
+    // Encoding business name and email to handle special characters.
     String encodedBusinessName, encodedEmail;
     try {
       encodedEmail =  URLEncoder.encode(invite.getEmail(), "UTF-8");
