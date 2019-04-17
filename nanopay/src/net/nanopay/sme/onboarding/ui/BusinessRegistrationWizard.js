@@ -290,7 +290,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! editedUser.jobTitle ) {
+      if ( ! editedUser.jobTitle || ! editedUser.jobTitle.trim() ) {
         this.notify(this.ERROR_ADMIN_JOB_TITLE_MESSAGE, 'error');
         return false;
       }
@@ -434,17 +434,20 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! businessProfile.organization ) {
+      if ( ! businessProfile.organization
+        || ! businessProfile.organization.trim() ) {
         this.notify(this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, 'error');
         return false;
       }
 
-      if ( ! businessProfile.targetCustomers ) {
+      if ( ! businessProfile.targetCustomers
+        || ! businessProfile.targetCustomers.trim() ) {
         this.notify(this.ERROR_MISSING_TARGET_CUSTOMERS, 'error');
         return false;
       }
 
-      if ( ! businessProfile.sourceOfFunds ) {
+      if ( ! businessProfile.sourceOfFunds
+        || ! businessProfile.sourceOfFunds.trim() ) {
         this.notify(this.ERROR_MISSING_SOURCE_OF_FUNDS, 'error');
         return false;
       }
@@ -484,7 +487,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! beneficialOwner.jobTitle ) {
+      if ( ! beneficialOwner.jobTitle || ! beneficialOwner.jobTitle.trim() ) {
         this.notify(this.JOB_TITLE_ERROR, 'error');
         return false;
       }
