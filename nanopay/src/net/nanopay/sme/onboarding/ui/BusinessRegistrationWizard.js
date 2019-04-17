@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
   ],
 
@@ -23,6 +24,7 @@ foam.CLASS({
     'ctrl',
     'notify',
     'pushMenu',
+    'signingOfficerJunctionDAO',
     'stack',
     'user',
     'userDAO',
@@ -36,9 +38,9 @@ foam.CLASS({
   ],
 
   exports: [
-    'viewData',
-    'principalOwnersDAO',
-    'validatePrincipalOwner'
+    'beneficialOwnersDAO',
+    'isSigningOfficer',
+    'validateBeneficialOwner'
   ],
 
   axioms: [
@@ -109,13 +111,19 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'principalOwnersDAO',
+      name: 'beneficialOwnersDAO',
       factory: function() {
-        if ( this.viewData.user.principalOwners ) {
-          return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
-        }
-        return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
+        return this.user.beneficialOwners;
       }
+    },
+    {
+      type: 'Boolean',
+      name: 'isSigningOfficer',
+      documentation: `
+        This gets set in the 'init' method below after a promise resolves. It
+        will be set to true if the agent in the context is a signing officer for
+        the business (which is the user in the context).
+      `
     },
     {
       type: 'Boolean',
@@ -200,7 +208,7 @@ foam.CLASS({
     { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
     { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
     { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
-    { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
+    { name: 'BIRTHDAY_ERROR_2', message: 'Beneficial owner must be at least 16 years of age.' },
     { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
     { name: 'ADDRESS_STREET_NAME_ERROR', message: 'Invalid street name.' },
     { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
@@ -223,6 +231,12 @@ foam.CLASS({
       this.viewData.user = this.user;
       this.viewData.agent = this.agent;
       this.title = 'Your business profile';
+
+      this.user.signingOfficers.dao
+        .find(this.agent.id)
+        .then((result) => {
+          this.isSigningOfficer = result != null;
+        });
 
       this.exitLabel = 'Close';
       this.nextLabel = 'Get started';
@@ -457,7 +471,7 @@ foam.CLASS({
     /**
      * Validation for the fourth step of the wizard.
      */
-    function validatePrincipalOwner(beneficialOwner) {
+    function validateBeneficialOwner(beneficialOwner) {
       if ( ! beneficialOwner.ownershipPercent ||
         beneficialOwner.ownershipPercent <= 0 ||
         beneficialOwner.ownershipPercent > 100 ) {
@@ -494,17 +508,17 @@ foam.CLASS({
       return true;
     },
 
-     function validatePrincipalOwners() {
-      var principalOwnersCount = this.viewData.user.principalOwners.length;
-      if ( ! this.viewData.noPrincipalOwners && ! this.viewData.publiclyTradedEntity ) {
-        if ( principalOwnersCount <= 0 ) {
+    function validateBeneficialOwners() {
+      var beneficialOwnersCount = this.viewData.user.beneficialOwners.length;
+      if ( ! this.viewData.noBeneficialOwners && ! this.viewData.publiclyTradedEntity ) {
+        if ( beneficialOwnersCount <= 0 ) {
           return false;
         }
       }
       return true;
     },
 
-    function isFillingPrincipalOwnerForm(beneficialOwner) {
+    function isFillingBeneficialOwnerForm(beneficialOwner) {
       return beneficialOwner.firstName ||
            beneficialOwner.lastName ||
            beneficialOwner.jobTitle ||
@@ -518,7 +532,8 @@ foam.CLASS({
         var result = await this.businessDAO.put(this.user);
         this.user.copyFrom(result);
         this.viewData.user = this.user;
-      } catch (exp) {
+      } catch (err) {
+        console.error(err);
         this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
         return false;
       }
@@ -590,8 +605,8 @@ foam.CLASS({
             }
           }
           if ( this.position === 3 ) {
-            // validate principal owner or push stack back to complete registration.
-            if ( this.viewData.agent.signingOfficer ) {
+            // validate beneficial owner or push stack back to complete registration.
+            if ( this.isSigningOfficer ) {
               if ( ! this.validateSigningOfficerInfo() ) return;
               var isAgentSaved = await this.saveAgent();
               if ( ! isAgentSaved ) {
@@ -608,32 +623,27 @@ foam.CLASS({
             }
           }
           if ( this.position === 4 ) {
-            // validate principal owners info
-            if ( this.isFillingPrincipalOwnerForm(this.viewData.beneficialOwner) ) {
-              if ( this.validatePrincipalOwner(this.viewData.beneficialOwner) ) {
+            // validate beneficial owners info
+            if ( this.isFillingBeneficialOwnerForm(this.viewData.beneficialOwner) ) {
+              if ( this.validateBeneficialOwner(this.viewData.beneficialOwner) ) {
                 try {
-                  var newPrincipalOwnerId = this.principalOwnersDAO.array.length + 1;
                   var beneficialOwner = this.User.create({
-                    id: newPrincipalOwnerId,
                     firstName: this.viewData.beneficialOwner.firstName,
                     lastName: this.viewData.beneficialOwner.lastName,
                     birthday: this.viewData.beneficialOwner.birthday,
                     address: this.viewData.beneficialOwner.address,
-                    jobTitle: this.viewData.beneficialOwner.jobTitle,
-                    principleType: this.viewData.beneficialOwner.principleType
+                    jobTitle: this.viewData.beneficialOwner.jobTitle
                   });
-                  await this.principalOwnersDAO.put(beneficialOwner);
-                  var beneficialOwnerArray = (await this.principalOwnersDAO.select()).array;
-                  this.viewData.user.principalOwners = beneficialOwnerArray;
+                  await this.beneficialOwnersDAO.put(beneficialOwner);
                 } catch (err) {
-                  this.notify(err ? err.message : this.PRINCIPAL_OWNER_FAILURE, 'error');
+                  this.notify(err ? err.message : this.BENEFICIAL_OWNER_FAILURE, 'error');
                 }
               } else {
                 return;
               }
             }
 
-            if ( ! this.validatePrincipalOwners() ) {
+            if ( ! this.validateBeneficialOwners() ) {
               this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
               return;
             }
