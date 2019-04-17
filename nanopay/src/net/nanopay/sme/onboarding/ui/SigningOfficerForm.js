@@ -585,7 +585,7 @@ foam.CLASS({
       }
 
       try {
-        this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'dualPartyAgreementCad', '');
+        this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'dualPartyAgreementCAD', '');
       } catch (error) {
         console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
       }
