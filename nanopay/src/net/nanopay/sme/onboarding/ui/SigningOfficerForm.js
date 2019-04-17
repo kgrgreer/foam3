@@ -567,7 +567,7 @@ foam.CLASS({
     async function updateUserAcceptance(id, val) {
       try {
         this.acceptanceDocumentService
-          .updateUserAcceptanceDocument(this.user.id, id, val);
+          .updateUserAcceptanceDocument(this.__context__, this.user.id, id, val);
       } catch (error) {
         console.warn('Error updating user accepted document: ', error);
       }
@@ -577,19 +577,19 @@ foam.CLASS({
   listeners: [
     async function loadAcceptanceDocuments() {
       try {
-        this.triPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementCAD', '');
+        this.triPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementCAD', '');
       } catch (error) {
         console.warn('Error occured finding Tri-Party Agreement CAD: ', error);
       }
 
       try {
-        this.triPartyAgreementUsd = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementUSD', '');
+        this.triPartyAgreementUsd = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementUSD', '');
       } catch (error) {
         console.warn('Error occured finding Tri-Party Agreement USD: ', error);
       }
 
       try {
-        this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument('dualPartyAgreementCad', '');
+        this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'dualPartyAgreementCad', '');
       } catch (error) {
         console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
       }

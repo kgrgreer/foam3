@@ -277,7 +277,6 @@ p({"class":"foam.nanos.auth.Permission","id":"service.run.quickbooksWebAgent","d
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.bank.matching","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.transactionQuotePlanDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.canReceiveCurrencyDAO","description":""})
-p({"class":"foam.nanos.auth.Permission","id":"service.acceptanceDocumentService","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.businessDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.contactDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.smeBusinessRegistrationDAO","description":""})
