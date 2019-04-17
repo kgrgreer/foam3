@@ -44,7 +44,7 @@ foam.CLASS({
       name: 'identificationNumber',
       documentation: `Number associated to identification.`,
       validateObj: function(identificationNumber) {
-        if ( ! identificationNumber.trim() ) {
+        if ( ! identificationNumber || ! identificationNumber.trim() ) {
           return 'Identification number is required';
         }
       }
