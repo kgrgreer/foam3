@@ -96,7 +96,8 @@ foam.CLASS({
     { name: 'ERROR_STREET_NUMBER', message: 'Invalid street name.' },
     { name: 'ERROR_CITY', message: 'Invalid city name.' },
     { name: 'ERROR_POSTAL', message: 'Invalid postal code.' },
-    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' }
+    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' },
+    { name: 'SUCCESS', message: 'Your bank account was successfully added. Please verify your bank account.' }
   ],
 
   methods: [
@@ -241,6 +242,9 @@ foam.CLASS({
 
         if ( ! model.validateInputs() ) return;
         model.capturePADAndPutBankAccounts();
+        this.ctrl.stack.back();
+        this.ctrl.notify(this.SUCCESS);
+        X.closeDialog();
       }
     }
   ]

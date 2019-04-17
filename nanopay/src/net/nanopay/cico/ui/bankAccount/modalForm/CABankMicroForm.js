@@ -14,11 +14,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'bank',
     'bankAccountVerification',
     'ctrl',
-    'isConnecting',
-    'notify'
   ],
 
   css: `
@@ -40,7 +37,6 @@ foam.CLASS({
       font-size: 16px;
       line-height: 1.5;
       color: #8e9090;
-
       margin: 0;
       margin-bottom: 24px;
     }
@@ -65,6 +61,16 @@ foam.CLASS({
       class: 'Double',
       name: 'amount',
       value: 0.01
+    },
+    {
+      class: 'Boolean',
+      name: 'isConnecting',
+      value: false
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.bank.CABankAccount',
+      name: 'bank'
     }
   ],
 
