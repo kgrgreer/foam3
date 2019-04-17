@@ -11,14 +11,16 @@ foam.ENUM({
       documentation: 'CICO: as soon as cico transaction is created it takes PENDING status until it is sent to EFT.'
     },
     {
+      // deprecated
       name: 'REVERSE',
       label: 'Reverse',
-      documentation: 'CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE status occurs when balance reverted successfully. Should never be set manully, the status is calculated.'
+      documentation: 'DEPRECATED. CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE status occurs when balance reverted successfully. Should never be set manully, the status is calculated.'
     },
     {
+      // deprecated
       name: 'REVERSE_FAIL',
       label: 'ReverseFail',
-      documentation: 'CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE_FAIL status occurs when balance failed to revert. Should never be set manully, the status is calculated.'
+      documentation: 'DEPRECATED. CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE_FAIL status occurs when balance failed to revert. Should never be set manully, the status is calculated.'
     },
     {
       name: 'SENT',
@@ -36,19 +38,22 @@ foam.ENUM({
       documentation: 'Base transaction: status indicating that transaction was successfully proccessed. CICO: after waiting period(2days), we assume transaction was successfully proccessed.'
     },
     {
+      // deprecated
       name: 'REFUNDED',
       label: 'Refunded',
-      documentation: 'Retail transaction: status of a transaction that was refunded.'
+      documentation: 'DEPRECATED. Retail transaction: status of a transaction that was refunded.'
     },
     {
+      // deprecated
       name: 'ACSP',
       label: 'ACSP',
-      documentation: 'Accepted, Settlement Pending: The transaction has been received by nanopay and is sent to the partner bank for credit. (PacsMessage)'
+      documentation: 'DEPRECATED. Accepted, Settlement Pending: The transaction has been received by nanopay and is sent to the partner bank for credit. (PacsMessage)'
     },
     {
+      // deprecated
       name: 'ACSC',
       label: 'ACSC',
-      documentation: 'Accepted, Settlement Complete: The transaction has been successfully completed within the ecosystem and the funds are credited to the beneficiary account. (PacsMessage)'
+      documentation: ' DEPRECATED. Accepted, Settlement Complete: The transaction has been successfully completed within the ecosystem and the funds are credited to the beneficiary account. (PacsMessage)'
     },
     {
       name: 'FAILED',

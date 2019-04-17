@@ -161,7 +161,7 @@ foam.CLASS({
         this.viewData.check = newValue;
         if ( this.termsAgreementDocument ) {
           this.acceptanceDocumentService.
-            updateUserAcceptanceDocument(this.user.id, this.termsAgreementDocument.id, newValue); 
+            updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, newValue); 
         }
       },
     },
@@ -303,7 +303,7 @@ foam.CLASS({
   listeners: [
     async function loadAcceptanceDocument() {
       try {
-        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
       } catch (error) {
         console.warn('Error occured finding Terms Agreement: ', error);
       }

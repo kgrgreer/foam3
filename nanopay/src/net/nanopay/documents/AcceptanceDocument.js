@@ -5,7 +5,13 @@ foam.CLASS({
   documentation: 'Captures information for acceptance documents like terms and conditions.',
 
   implements: [
-    'foam.nanos.auth.EnabledAware'
+    'foam.nanos.auth.EnabledAware',
+    'foam.nanos.auth.Authorizable'
+  ],
+
+  javaImports: [
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.User'
   ],
 
   requires: [
@@ -73,6 +79,12 @@ foam.CLASS({
       value: false,
     },
     {
+      class: 'Boolean',
+      name: 'authenticated',
+      documentation: 'Determines user should be logged-in before accepting or seeing document.',
+      value: false,
+    },
+    {
       class: 'String',
       name: 'transactionType',
       documentation: 'Type of transaction that acceptance document applies to. This also identifies the Payment Provider',
@@ -101,5 +113,62 @@ foam.CLASS({
       name: 'paymentProvider',
       documentation: 'Identifies payment provider related to document'
     },
+  ],
+
+  methods: [
+    {
+      name: 'authorizeOnCreate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+      authenticateUser(x);
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+      authenticateUser(x);
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+      authenticateUser(x);
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+      authenticateUser(x);
+      `
+    },
+    {
+      name: 'authenticateUser',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
+      if ( getAuthenticated() ) {
+        User user = (User) x.get("user");
+        if ( user == null ) throw new AuthorizationException("You need to be logged in to access document.");
+      }
+      `
+    }
   ]
 });
