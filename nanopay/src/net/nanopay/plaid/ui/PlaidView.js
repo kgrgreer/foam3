@@ -215,6 +215,12 @@ foam.CLASS({
           (pValue, cValue) => { pValue[cValue.mask] = cValue.name; return pValue }, {}
         );
 
+      if ( Object.keys(selectedAccount).length > 1 ) {
+        this.showNotification('Only 1 bank account can be added during the beta.', 'warning');
+        this.isLoading = false;
+        return;
+      }
+
       try {
         let error = await this.plaidService.startIntegration
           ( null,
