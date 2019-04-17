@@ -408,7 +408,7 @@ public class PlaidServiceImpl implements PlaidService {
       credential.setToken(createPublicToken(x, reLoginItem));
     }
 
-    credential.setWebhook(appConfig.getUrl() + "/plaidWebAgent");
+    credential.setWebhook(appConfig.getUrl() + "/service/plaidWebAgent");
     credential.setClientId("****");
     credential.setSecret("****");
 
