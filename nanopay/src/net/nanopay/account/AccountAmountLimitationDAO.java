@@ -30,19 +30,19 @@ public class AccountAmountLimitationDAO extends ProxyDAO {
       return super.put_(x, obj);
     }
 
-    // When the user adding a bank account for the contact
+    // When the user adding a bank account for one of their contacts
     if ( user.getId() != newBankAccount.getOwner() ) {
       return super.put_(x, obj);
     }
 
-    Count numberOfAccount = (Count) getDelegate().where(
+    Count numberOfAccounts = (Count) getDelegate().where(
       MLang.AND(
         MLang.INSTANCE_OF(BankAccount.class),
         MLang.EQ(Account.OWNER, user.getId())
       )
     ).select(MLang.COUNT());
 
-    if ( numberOfAccount.getValue() == 0 ) {
+    if ( numberOfAccounts.getValue() == 0 ) {
       return super.put_(x, obj);
     } else {
       throw new RuntimeException("Only 1 bank account can be added.");
