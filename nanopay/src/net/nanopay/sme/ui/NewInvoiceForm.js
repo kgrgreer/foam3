@@ -183,6 +183,20 @@ foam.CLASS({
       height: 100%;
       margin-right: 10px;
     }
+    ^ .date-input-field .date-display-box{
+      width: 99%;
+      font-size: 14px !important;
+      height: 40px !important;
+      border: solid 1px #8e9090 !important;
+      background: #fff !important;
+      border-radius: 3px !important;
+      font-weight: 400 !important;
+      box-shadow: none !important;
+      padding-top: 2px;
+    }
+    ^ .date-input-field .date-display-text{
+      color: #2b2b2b;
+    }
   `,
 
   messages: [
@@ -467,9 +481,9 @@ foam.CLASS({
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
                   .on('mousemove', this.setCoordinates)
-                  .start(this.Invoice.ISSUE_DATE.clone().copyFrom({ view: 'foam.u2.DateView' }), { mode: displayMode })
+                  .start(this.Invoice.ISSUE_DATE.clone().copyFrom({ view: 'foam.u2.view.date.DateTimePicker' }), { mode: displayMode })
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
-                    .addClass('input-field')
+                    .addClass('date-input-field')
                   .end()
                 .end()
               .end()
@@ -492,7 +506,7 @@ foam.CLASS({
                   .on('mousemove', this.setCoordinates)
                   .start(this.Invoice.DUE_DATE, { mode: displayMode })
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
-                    .addClass('input-field')
+                    .addClass('date-input-field')
                   .end()
                 .end()
               .end()
