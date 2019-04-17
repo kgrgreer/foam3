@@ -14,28 +14,6 @@ foam.CLASS({
     'net.nanopay.tx.InfoLineItem'
   ],
 
-  tableColumns: [
-    'id',
-    'referenceNumber',
-    'name',
-    'type',
-    'status',
-    'payer',
-    'sourceAccount',
-    'sourceCurrency',
-    'serviceCompleted',
-    'amount',
-    'total',
-    'payee',
-    'destinationAccount',
-    'destinationCurrency',
-    'destinationAmount',
-    'created',
-    'lastModified',
-    'scheduled',
-    'completionDate'
-  ],
-
   properties: [
     {
       class: 'Boolean',
@@ -185,23 +163,6 @@ foam.CLASS({
       setReferenceNumber(other.getReferenceNumber());
       setServiceCompleted(((InvoiceTransaction)other).getServiceCompleted());
       `
-    },
-    {
-      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
-      name: 'canTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-      return ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) && getStatus() == TransactionStatus.COMPLETED;      `
     },
     {
       documentation: `creates another child transaction if job was done partially`,

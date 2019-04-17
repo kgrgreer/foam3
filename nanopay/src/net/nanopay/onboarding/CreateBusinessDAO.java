@@ -55,8 +55,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     Business business = (Business) super.put_(x, obj);
     String safeBusinessName = business.getBusinessPermissionId();
 
-    // When creating a business, 3 groups are also created that are associated
-    // with the business.
     Group adminTemplateGroup = (Group) groupDAO.find("smeBusinessAdmin");
     Group approverTemplateGroup = (Group) groupDAO.find("smeBusinessApprover");
     Group employeeTemplateGroup = (Group) groupDAO.find("smeBusinessEmployee");
@@ -99,7 +97,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     junction.setTargetId(business.getId());
     agentJunctionDAO.put(junction);
 
-    // FIXME: This only makes sense to do for the first Business a user creates.
     updateContacts(user, business);
 
     return business;

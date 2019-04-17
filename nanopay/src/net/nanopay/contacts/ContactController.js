@@ -16,7 +16,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'net.nanopay.integration.AccountingIntegrationTrait'
+    'net.nanopay.accounting.AccountingIntegrationTrait'
   ],
 
   imports: [
@@ -47,14 +47,18 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
-          fitInScreen: true,
           columns: [
-            'organization', 'email', 'signUpStatus',
+            this.Contact.ORGANIZATION.clone().copyFrom({
+              tableWidth: undefined
+            }),
+            'email',
+            'signUpStatus',
             foam.core.Property.create({
               name: 'warning',
               label: '',
+              tableWidth: 55,
               tableCellFormatter: function(value, obj, axiom) {
-                if ( obj.bankAccount == undefined && obj.businessId == undefined ) {
+                if ( obj.bankAccount === 0 && obj.businessId === 0 ) {
                   this.start()
                     .attrs({ title: 'Missing bank information' } )
                     .start({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON }).end()

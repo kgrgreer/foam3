@@ -42,11 +42,13 @@ foam.ENUM({
     },
     {
       name: 'ACSP',
-      label: 'ACSP'
+      label: 'ACSP',
+      documentation: 'Accepted, Settlement Pending: The transaction has been received by nanopay and is sent to the partner bank for credit. (PacsMessage)'
     },
     {
       name: 'ACSC',
-      label: 'ACSC'
+      label: 'ACSC',
+      documentation: 'Accepted, Settlement Complete: The transaction has been successfully completed within the ecosystem and the funds are credited to the beneficiary account. (PacsMessage)'
     },
     {
       name: 'FAILED',
@@ -67,5 +69,10 @@ foam.ENUM({
       label: 'Pending Parent Completed',
       documentation: 'Chained transaction: child transactions are in PENDING_PARENT_COMPLETED and being ignored by the system until all parents go to COMPLETED state.'
     },
+    {
+      name: 'SCHEDULED',
+      label: 'Scheduled',
+      documentation: 'Scheduled transaction specifies the time when transaction needs to be processsed.'
+    }
   ]
 });

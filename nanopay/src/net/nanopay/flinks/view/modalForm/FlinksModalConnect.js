@@ -7,7 +7,9 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.ui.LoadingSpinner',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.Popup',
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentService'
   ],
 
   exports: [
@@ -15,6 +17,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'acceptanceDocumentService',
     'connectingMessage',
     'flinksAuth',
     'institution',
@@ -112,25 +115,38 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isTermsAgreed',
-      value: false
-    }
+      value: false,
+      postSet: function(oldValue, newValue) {
+        if ( this.termsAgreementDocument ) {
+          this.acceptanceDocumentService.
+            updateUserAcceptanceDocument(this.user.id, this.termsAgreementDocument.id, newValue);
+        }
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.documents.AcceptanceDocument',
+      name: 'termsAgreementDocument'
+    },
   ],
 
   messages: [
-    { name: 'CONNECTING', message: 'Securely connecting you to your institution. Please do not close this window.'},
-    { name: 'ERROR', message: 'An unknown error has occurred.'},
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
+    { name: 'CONNECTING', message: 'Securely connecting you to your institution. Please do not close this window.' },
+    { name: 'ERROR', message: 'An unknown error has occurred.' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
+    { name: 'ACCEPT_CONDITIONS', message: 'Please accept the terms and conditions before proceeding.' },
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
     { name: 'LABEL_PASSWORD', message: 'Password' },
-    { name: 'LEGAL_1', message: 'I agree to the'},
+    { name: 'LEGAL_1', message: 'I agree to the' },
     { name: 'LEGAL_2', message: 'and authorize the release of my Bank information to nanopay.' },
-    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' }
+    { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' }
   ],
 
   methods: [
     function init() {
       this.SUPER();
       this.connectingMessage = this.CONNECTING;
+      this.loadAcceptanceDocument();
     },
 
     function initE() {
@@ -157,7 +173,7 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+        .start({ class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT }).end();
     },
 
     async function connectToBank() {
@@ -209,21 +225,34 @@ foam.CLASS({
       code: function(X) {
         var model = X.connect;
         if ( model.isConnecting ) return;
-        if ( model.isTermsAgreed &&
-            model.username.trim().length > 0 &&
-            model.password.trim().length > 0 ) {
-          X.connect.connectToBank();
+        if ( ! ( model.username.trim().length > 0 && model.password.trim().length > 0 ) ) {
+          X.notify(model.INVALID_FORM, 'error');
           return;
         }
-        X.notify(model.INVALID_FORM, 'error');
+        if ( ! model.isTermsAgreed ) {
+          X.notify(model.ACCEPT_CONDITIONS, 'error');
+          return;
+        }
+        X.connect.connectToBank();
       }
     },
     {
       name: 'goToTerm',
       label: 'terms and conditions',
       code: function(X) {
-        window.open(this.TERMS_AGREEMENT_LINK);
+        window.open(this.termsAgreementDocument.link);
+      }
+    }
+  ],
+
+  listeners: [
+    async function loadAcceptanceDocument() {
+      try {
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+      } catch (error) {
+        console.warn('Error occured finding Terms Agreement: ', error);
       }
     }
   ]
 });
+

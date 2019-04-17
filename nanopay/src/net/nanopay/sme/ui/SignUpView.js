@@ -10,6 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'acceptanceDocumentService',
     'auth',
     'groupDAO',
     'loginSuccess',
@@ -28,6 +29,8 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
     'net.nanopay.ui.NewPasswordView',
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentService'
   ],
 
   css: `
@@ -143,7 +146,12 @@ foam.CLASS({
       name: 'disableCompanyName',
       documentation: `Set this to true to disable the Company Name input field.`
     },
-    'termsAndConditions'
+    'termsAndConditions',   
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.documents.AcceptanceDocument',
+      name: 'termsAgreementDocument'
+    },
   ],
 
   messages: [
@@ -156,13 +164,18 @@ foam.CLASS({
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
-    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2019/02/nanopay-Terms-of-Service-Agreement-Dec-7-2018.pdf' },
+    { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` }
   ],
 
   methods: [
+     function init() {
+       this.SUPER();
+       this.loadAcceptanceDocument();
+     },
+
     function initE() {
       this.SUPER();
 
@@ -237,7 +250,7 @@ foam.CLASS({
                 .addClass(this.myClass('terms-link'))
                 .add(this.TERMS_AGREEMENT_LABEL_2)
                 .on('click', () => {
-                  window.open(this.TERMS_AGREEMENT_LINK);
+                  window.open(this.termsAgreementDocument.link);
                 })
               .end()
             .end()
@@ -358,7 +371,8 @@ foam.CLASS({
         .catch((err) => {
           this.notify(err.message || 'There was a problem while signing you in.', 'error');
         });
-    }
+    }, 
+
   ],
 
   actions: [
@@ -378,18 +392,32 @@ foam.CLASS({
           // verification email instead.
           welcomeEmailSent: true,
           group: 'sme'
-        });
+        });      
 
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {
             this.user = user;
-            this.logIn();
+            // update user accepted terms and condition
+            this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(user.id, this.termsAgreementDocument.id, this.termsAndConditions);            
+            this.logIn();             
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
-          });
+          });          
+      }
+    }
+  ],
+
+  listeners: [
+    async function loadAcceptanceDocument() {
+      try {
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+      } catch (error) {
+        console.warn('Error occured finding Terms Agreement: ', error);
       }
     }
   ]
 });
+

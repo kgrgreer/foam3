@@ -57,6 +57,9 @@ foam.CLASS({
         ) {
           return 'Business name required';
         }
+      },
+      postSet: function(_,n) {
+        this.businessName = n;
       }
     },
     {
@@ -92,6 +95,7 @@ foam.CLASS({
       of: 'net.nanopay.contacts.ContactStatus',
       name: 'signUpStatus',
       label: 'Status',
+      tableWidth: 170,
       documentation: `
         Keeps track of the different states a contact can be in with respect to
         whether the real user has signed up yet or not.

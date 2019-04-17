@@ -22,7 +22,9 @@ Stores all Exchange Rate info.`,
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FeesFields',
-
+    'net.nanopay.liquidity.LiquidityService',
+    'net.nanopay.liquidity.Frequency',
+    'net.nanopay.account.Account',
     'java.util.Arrays',
   ],
 
@@ -89,6 +91,6 @@ Stores all Exchange Rate info.`,
   javaCode: `
     return getTransfers();
   `
-},
+}
   ]
 });

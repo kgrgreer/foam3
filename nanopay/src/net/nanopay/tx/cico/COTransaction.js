@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.util.List',
     'java.util.ArrayList',
-    'net.nanopay.tx.model.LiquidityService',
+    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.account.Account'
   ],
 
@@ -33,6 +33,13 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
     },
@@ -102,14 +109,11 @@ foam.CLASS({
       if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
         throw new RuntimeException("Bank account must be verified");
       }
-
-      if ( ! SafetyUtil.isEmpty(getId()) ) {
-        Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-        if ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) ||
-             oldTxn.getStatus().equals(TransactionStatus.COMPLETED) &&
-             ! getStatus().equals(TransactionStatus.DECLINED) ) {
-          throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-        }
+      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+      if ( oldTxn != null && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) ||
+            oldTxn.getStatus().equals(TransactionStatus.COMPLETED) ) &&
+            ! getStatus().equals(TransactionStatus.DECLINED) ) {
+        throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
       }
       `
     },
@@ -130,7 +134,8 @@ foam.CLASS({
       javaCode: `
       if ( getStatus() == TransactionStatus.COMPLETED && oldTxn == null ||
       getStatus() == TransactionStatus.PENDING &&
-       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || oldTxn.getStatus() == TransactionStatus.PAUSED ) ) {
+       ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED || 
+       oldTxn.getStatus() == TransactionStatus.PAUSED || oldTxn.getStatus() == TransactionStatus.SCHEDULED ) ) {
         return true;
       }
       return false;
@@ -249,7 +254,7 @@ if (acc == null) {
       Account source = findSourceAccount(x);
       Account destination = findDestinationAccount(x);
       if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) && getStatus() == TransactionStatus.COMPLETED ) {
-        ls.liquifyAccount(source.getId(), net.nanopay.tx.model.Frequency.PER_TRANSACTION, -getAmount());
+        ls.liquifyAccount(source.getId(), net.nanopay.liquidity.Frequency.PER_TRANSACTION, -getAmount());
       }
       `
     }

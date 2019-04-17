@@ -22,10 +22,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
-    'menuDAO',
-    'viewData',
     'acceptanceDocumentService',
+    'agent',
+    'isSigningOfficer',
+    'menuDAO',
+    'user'
   ],
 
   css: `
@@ -160,12 +161,21 @@ foam.CLASS({
       },
       factory: function() {
         this.nextLabel = this.viewData.agent.signingOfficer ? 'Next' : 'Complete';
-        this.hasSaveOption = this.viewData.agent.signingOfficer;
-        return this.viewData.agent.signingOfficer ? 'Yes' : 'No';
+        return this.isSigningOfficer ? 'Yes' : 'No';
+      },
+      adapt: function(_, v) {
+        if ( typeof v === 'boolean' ) return v ? 'Yes' : 'No';
+        return v;
       },
       postSet: function(o, n) {
         this.nextLabel = n === 'Yes' ? 'Next' : 'Complete';
-        this.viewData.agent.signingOfficer = n === 'Yes';
+        if ( n === 'Yes' ) {
+          this.user.signingOfficers.add(this.agent);
+          this.isSigningOfficer = true;
+        } else {
+          this.user.signingOfficers.remove(this.agent);
+          this.isSigningOfficer = false;
+        }
         this.hasSaveOption = n === 'Yes';
       }
     },
@@ -252,21 +262,6 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.agent.additionalDocuments = n;
       }
-    },
-    {
-      name: 'principalTypeField',
-      value: 'Shareholder',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: ['Shareholder', 'Owner', 'Officer']
-      },
-      postSet: function(o, n) {
-        this.viewData.agent.principleType = n;
-      },
-      factory: function() {
-        return this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
-          'Shareholder';
-      },
     },
     {
       class: 'FObjectProperty',
@@ -391,7 +386,6 @@ foam.CLASS({
     { name: 'INVITE_TITLE', message: 'Invite users to your business' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
     { name: 'LAST_NAME_LABEL', message: 'Last Name' },
-    { name: 'PRINCIPAL_LABEL', message: 'Principal Type' },
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
@@ -429,14 +423,13 @@ foam.CLASS({
     {
       name: 'INVITE_USERS_EXP',
       message: `Invite a signing officer or other employees in your business.
-              Recipients will receive a link to join your business on Ablii`
+          Recipients will receive a link to join your business on Ablii`
     },
     {
       name: 'SIGNING_OFFICER_UPLOAD_DESC',
-      message: `Please provide a copy of the front of your valid Government
-                issued Driver’s License or Passport. The image must be clear in order
-                to be accepted. If your name has changed since either it was issued
-                you will need to prove your identity, such as a marriage certificate.`
+      message: `Please provide a copy of your government issued drivers license or passport. 
+          The image must be clear, or will require resubmission. If your name differs from what 
+          the ID shows, please provide sufficient documentation (marriage certificate, name change documentation, etc)`
     }
   ],
 
@@ -464,10 +457,6 @@ foam.CLASS({
           .start().addClass('label-input')
             .start().addClass('label').add(this.LAST_NAME_LABEL).end()
             .start(this.LAST_NAME_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.PRINCIPAL_LABEL).end()
-            .start(this.PRINCIPAL_TYPE_FIELD).end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.JOB_LABEL).end()
@@ -604,7 +593,11 @@ foam.CLASS({
       name: 'addUsers',
       isEnabled: (signingOfficer) => signingOfficer === 'No',
       code: function() {
-        this.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.sme.ui.AddUserToBusinessModal',
+          role: 'admin',
+          noChoice: true
+        }));
       }
     },
   ]

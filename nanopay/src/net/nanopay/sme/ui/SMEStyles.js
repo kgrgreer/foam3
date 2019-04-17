@@ -383,7 +383,7 @@ foam.CLASS({
       outline: none;
     }
 
-    .sme.button:active {
+    .sme.button:active:enabled {
       box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
     }
 
@@ -720,6 +720,18 @@ foam.CLASS({
 
     /* DAO controller */
 
+    td .invoice-attachment-icon {
+      background-image: url("/images/attachment.svg");
+      background-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    td .invoice-attachment-icon:hover {
+      background-image: url("/images/attachment-purple.svg");
+      cursor: pointer;
+    }
+
     .foam-comics-DAOControllerView-top-row .net-nanopay-ui-ActionView {
       width: 158px !important;
       height: 48px !important;
@@ -757,8 +769,8 @@ foam.CLASS({
       filter: hue-rotate(67deg) saturate(100000000) opacity(65%);
     }
 
-    .foam-comics-DAOControllerView-top-row {
-      margin-bottom: 20px !important;
+    .net-nanopay-sme-SMEController .foam-comics-DAOControllerView-top-row {
+      margin-bottom: 36px;
     }
 
     .foam-comics-DAOControllerView-title-container span {
@@ -810,8 +822,8 @@ foam.CLASS({
       background: #fff;
     }
 
-    .foam-u2-view-TableView tbody tr:first-child td {
-      border-top: solid 1px #e2e2e3 !important;
+    .foam-u2-view-TableView thead th {
+      border-bottom: solid 1px #e2e2e3;
     }
 
     .foam-u2-md-overlaydropdown {
@@ -847,10 +859,6 @@ foam.CLASS({
     .foam-u2-view-SimpleSearch p {
       opacity: 0;
       margin: 0px;
-    }
-
-    table {
-      width: 1024px !important;
     }
 
     /* user status styles */
@@ -1187,6 +1195,10 @@ foam.CLASS({
 
     .net-nanopay-sme-ui-banner-ComplianceBanner .foam-u2-stack-StackView {
       height: calc(100% - 36px);
+    }
+
+    .net-nanopay-sme-SMEController .foam-u2-md-OverlayDropdown {
+      transform: translate(-100%, 16px);
     }
   `
 });
