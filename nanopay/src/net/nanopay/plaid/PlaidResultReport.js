@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.plaid',
   name: 'PlaidResultReport',
 
-  tableColumns: ['nanopayUserId', 'companyName', 'plaidId'],
+  tableColumns: ['nanopayUserId', 'accountHolderName', 'companyName', 'plaidId'],
 
   properties: [
     {
