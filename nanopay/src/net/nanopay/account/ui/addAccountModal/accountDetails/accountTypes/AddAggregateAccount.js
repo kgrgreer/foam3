@@ -60,7 +60,11 @@ foam.CLASS({
         existing accounts of the user by going through the accountDAO
         and grabbing only the digital accounts owned by the user
       `,
-      // TODO: REQUIRED DEPENDING ON TYPE OF ACCOUNT
+      validateObj: function(parentAccountPicker) {
+        if ( ! parentAccountPicker ) {
+          return 'Please select a parent for this Aggregate Account';
+        }
+      }
     },
     {
       class: 'String',
