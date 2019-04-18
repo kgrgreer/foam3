@@ -183,7 +183,7 @@ foam.CLASS({
       height: 100%;
       margin-right: 10px;
     }
-    ^ .date-input-field .date-display-box{
+    ^ .date-input-field .date-display-box {
       width: 99%;
       font-size: 14px !important;
       height: 40px !important;
@@ -194,7 +194,7 @@ foam.CLASS({
       box-shadow: none !important;
       padding-top: 2px;
     }
-    ^ .date-input-field .date-display-text{
+    ^ .date-input-field .date-display-text {
       color: #2b2b2b;
     }
   `,

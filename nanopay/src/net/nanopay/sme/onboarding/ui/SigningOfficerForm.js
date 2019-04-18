@@ -146,6 +146,34 @@ foam.CLASS({
     ^ .link {
       margin-right: 5px;
     }
+
+    ^ .date-display-box {
+      width: 218px !important;
+      font-size: 14px !important;
+      height: 35px !important;
+      border: solid 1px #8e9090 !important;
+      background: #fff !important;
+      border-radius: 3px !important;
+      font-weight: 400 !important;
+      box-shadow: none !important;
+      padding-top: 2px;
+    }
+
+    ^ .date-display-text {
+    color: #2b2b2b !important;
+    }
+
+    ^ .property-birthdayField .date-display-box {
+      width: 485.5px !important;
+      font-size: 14px !important;
+      height: 35px !important;
+      border: solid 1px #8e9090 !important;
+      background: #fff !important;
+      border-radius: 3px !important;
+      font-weight: 400 !important;
+      box-shadow: none !important;
+      padding-top: 2px;
+    }
   `,
 
   properties: [

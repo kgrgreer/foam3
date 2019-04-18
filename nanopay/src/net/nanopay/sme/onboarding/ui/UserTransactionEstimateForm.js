@@ -73,6 +73,20 @@ foam.CLASS({
       width: 229px;
       height: 35px;
     }
+    ^ .date-display-box {
+      width: 227px !important;
+      font-size: 14px !important;
+      height: 35px !important;
+      border: solid 1px #8e9090 !important;
+      background: #fff !important;
+      border-radius: 3px !important;
+      font-weight: 400 !important;
+      box-shadow: none !important;
+      padding-top: 2px;
+    }
+    ^ .date-display-text {
+      color: #2b2b2b !important;
+    }
   `,
 
   properties: [
