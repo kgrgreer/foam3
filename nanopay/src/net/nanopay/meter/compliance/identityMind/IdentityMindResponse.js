@@ -8,13 +8,8 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'String',
-      name: 'entityName'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'entityId'
+      class: 'FObjectProperty',
+      name: 'entity'
     },
     {
       class: 'Int',

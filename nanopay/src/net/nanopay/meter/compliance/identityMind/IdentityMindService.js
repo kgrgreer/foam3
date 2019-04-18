@@ -50,8 +50,8 @@ foam.CLASS({
           type: 'Context'
         },
         {
-          name: 'user',
-          type: 'foam.nanos.auth.User'
+          name: 'consumer',
+          type: 'foam.core.FObject'
         },
         {
           name: 'stage',
@@ -59,7 +59,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        IdentityMindRequest request = IdentityMindRequestGenerator.getConsumerKYCRequest(x, user);
+        IdentityMindRequest request = IdentityMindRequestGenerator.getConsumerKYCRequest(x, consumer);
         request.setUrl(getBaseUrl() + "/account/consumer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
         request.setStage(stage);
@@ -67,8 +67,7 @@ foam.CLASS({
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
           x, request, IdentityMindResponse.class);
         response.setApiName("Consumer KYC");
-        response.setEntityName(user.getLegalName());
-        response.setEntityId(user.getId());
+        response.setEntity(request.getEntity());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -100,8 +99,7 @@ foam.CLASS({
           x, request, IdentityMindResponse.class);
         response.setApiName("Entity Login Record");
         User user = login.findLoginAttemptedFor(x);
-        response.setEntityName(user.getLegalName());
-        response.setEntityId(user.getId());
+        response.setEntity(request.getEntity());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -132,8 +130,7 @@ foam.CLASS({
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
           x, request, IdentityMindResponse.class);
         response.setApiName("Merchant KYC");
-        response.setEntityName(business.getBusinessName());
-        response.setEntityId(business.getId());
+        response.setEntity(request.getEntity());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `

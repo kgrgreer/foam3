@@ -8,10 +8,6 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  javaImports: [
-    'foam.nanos.auth.User'
-  ],
-
   properties: [
     {
       class: 'Int',
@@ -24,10 +20,9 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        User user = (User) obj;
         IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
         IdentityMindResponse response = identityMindService.evaluateConsumer(
-          x, user, getStage());
+          x, obj, getStage());
         ruler.putResult(response.getStatusCode() == 200
           ? response.getFrp()
           : "Error");

@@ -473,6 +473,7 @@ var classes = [
   'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
   'net.nanopay.meter.compliance.identityMind.IdentityMindService',
   'net.nanopay.meter.compliance.identityMind.predicate.ConsumerKYCStage1',
+  'net.nanopay.meter.compliance.identityMind.predicate.ConsumerKYCStage3',
   'net.nanopay.meter.compliance.identityMind.predicate.EntityLoginStage2',
   'net.nanopay.meter.compliance.identityMind.predicate.MerchantKYCStage3',
 

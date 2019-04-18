@@ -14,6 +14,11 @@ foam.CLASS({
       transient: true
     },
     {
+      class: 'FObjectProperty',
+      name: 'entity',
+      transient: true
+    },
+    {
       class: 'String',
       name: 'man',
       documentation: 'Account name for the user. Must be unique.'
