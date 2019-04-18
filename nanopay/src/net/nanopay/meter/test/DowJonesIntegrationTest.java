@@ -39,10 +39,8 @@ public class DowJonesIntegrationTest extends Test {
 
     String entityName = "Apothecary";
 
-
-    // Prints out response data of personNameSearch and entityNameSearch from DowJonesService
-    System.out.println(dowJonesService.personNameSearch(x, firstName, lastName, null));
-    System.out.println(dowJonesService.entityNameSearch(x, entityName, null));
+    dowJonesService.personNameSearch(x, firstName, lastName, null);
+    dowJonesService.entityNameSearch(x, entityName, null);
   }
   
 }
