@@ -102,6 +102,7 @@ var classes = [
   'net.nanopay.sps.SPSConfig',
   'net.nanopay.sps.SPSTransaction',
   'net.nanopay.sps.SPSRejectFileRecord',
+  'net.nanopay.sps.SPSSettlementFileRecord',
 
   // kotak
   'net.nanopay.kotak.Kotak',
