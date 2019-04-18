@@ -10,8 +10,7 @@ foam.CLASS({
       width: 100%;
     }
     ^ .styleHolder_NameField {
-    }
-    ^ .styleHolder_EmailField {
+      margin-right: 8px;
     }
   `,
 
