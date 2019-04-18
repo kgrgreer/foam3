@@ -11,6 +11,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'acct',
+      value: 'C',
       documentation: 'C - Checking, S - Saving'
     },
     {
