@@ -14,8 +14,13 @@ foam.CLASS({
       transient: true
     },
     {
-      class: 'FObjectProperty',
-      name: 'entity',
+      class: 'String',
+      name: 'entityType',
+      transient: true
+    },
+    {
+      class: 'Long',
+      name: 'entityId',
       transient: true
     },
     {

@@ -36,7 +36,8 @@ public class IdentityMindRequestGenerator {
   public static IdentityMindRequest getEntityLoginRequest(X x, LoginAttempt login) {
     User user = login.findLoginAttemptedFor(x);
     return new IdentityMindRequest.Builder(x)
-      .setEntity(user)
+      .setEntityType(user.getClass().getName())
+      .setEntityId(user.getId())
       .setMan(String.valueOf(login.getLoginAttemptedFor()))
       .setTea(login.getEmail())
       .setIp(login.getIpAddress())
@@ -47,7 +48,8 @@ public class IdentityMindRequestGenerator {
 
   public static IdentityMindRequest getMerchantKYCRequest(X x, Business business) {
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
-      .setEntity(business)
+      .setEntityType(business.getClass().getName())
+      .setEntityId(business.getId())
       .setMan(String.valueOf(business.getId()))
       .setTid(getUUID(business))
       .setTea(business.getEmail())
@@ -97,7 +99,8 @@ public class IdentityMindRequestGenerator {
 
   private static IdentityMindRequest getConsumerKYCRequest(X x, User user) {
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
-      .setEntity(user)
+      .setEntityType(user.getClass().getName())
+      .setEntityId(user.getId())
       .setMan(String.valueOf(user.getId()))
       .setTid(getUUID(user))
       .setTea(user.getEmail())
@@ -135,7 +138,8 @@ public class IdentityMindRequestGenerator {
 
   private static IdentityMindRequest getConsumerKYCRequest(X x, BeneficialOwner owner) {
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
-      .setEntity(owner)
+      .setEntityType(owner.getClass().getName())
+      .setEntityId(owner.getId())
       .setMan("owner." + owner.getId())
       .setIp(getRemoteAddr(x))
       .setBfn(prepareString(owner.getFirstName()))

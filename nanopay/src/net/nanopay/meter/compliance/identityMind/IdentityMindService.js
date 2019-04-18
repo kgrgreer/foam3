@@ -66,8 +66,9 @@ foam.CLASS({
 
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
           x, request, IdentityMindResponse.class);
-        response.setApiName("Consumer KYC");
-        response.setEntity(request.getEntity());
+        response.setApiName("Consumer KYC Evaluation");
+        response.setEntityType(request.getEntityType());
+        response.setEntityId(request.getEntityId());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -99,7 +100,8 @@ foam.CLASS({
           x, request, IdentityMindResponse.class);
         response.setApiName("Entity Login Record");
         User user = login.findLoginAttemptedFor(x);
-        response.setEntity(request.getEntity());
+        response.setEntityType(request.getEntityType());
+        response.setEntityId(request.getEntityId());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -129,8 +131,9 @@ foam.CLASS({
 
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
           x, request, IdentityMindResponse.class);
-        response.setApiName("Merchant KYC");
-        response.setEntity(request.getEntity());
+        response.setApiName("Merchant KYC Evaluation");
+        response.setEntityType(request.getEntityType());
+        response.setEntityId(request.getEntityId());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `

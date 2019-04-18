@@ -8,8 +8,12 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'FObjectProperty',
-      name: 'entity'
+      class: 'String',
+      name: 'entityType'
+    },
+    {
+      class: 'Long',
+      name: 'entityId'
     },
     {
       class: 'Int',
