@@ -16,6 +16,7 @@ foam.CLASS({
   imports: [
     'bankAccountVerification',
     'ctrl',
+    'user'
   ],
 
   css: `
@@ -132,6 +133,9 @@ foam.CLASS({
         var accountNumber = '***' + this.bank.accountNumber.slice(-4);
         ctrl.notify(this.SUCCESS_ONE + ` ${accountNumber} ` + this.SUCCESS_TWO);
         if ( this.onComplete ) this.onComplete();
+
+        // Force the view to update.
+        this.user.accounts.cmd(foam.dao.AbstractDAO.RESET_CMD);
         this.closeDialog();
       }
     }
