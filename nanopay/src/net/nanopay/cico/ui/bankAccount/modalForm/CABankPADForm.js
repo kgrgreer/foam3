@@ -97,7 +97,7 @@ foam.CLASS({
     { name: 'ERROR_CITY', message: 'Invalid city name.' },
     { name: 'ERROR_POSTAL', message: 'Invalid postal code.' },
     { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' },
-    { name: 'SUCCESS', message: 'Your bank account was successfully added. Please verify your bank account.' }
+    { name: 'SUCCESS', message: 'Your bank account has been added, please verify the deposited amount. It should appear in this account in 2-3 business days.' }
   ],
 
   methods: [
