@@ -1,0 +1,1 @@
+p({"class":"foam.nanos.ruler.Rule","id":2000,"name":"No Duplicate Accounts","priority":100,"ruleGroup":"DuplicateAccount","documentation":"Ensure that added accounts are not duplicates","daoKey":"localAccountDAO","operation":3,"after":false,"action":{"class":"net.nanopay.account.DuplicateDigitalAccountRule"},"enabled":true,"saveHistory":true})
