@@ -7,11 +7,13 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      documentation: 'The exact name that was matched in the search'
     },
     {
       class: 'String',
-      name: 'nameType'
+      name: 'nameType',
+      documentation: 'the type of name field that was matched'
     }
   ]
 });

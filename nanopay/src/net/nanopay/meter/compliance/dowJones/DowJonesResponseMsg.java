@@ -53,6 +53,9 @@ public class DowJonesResponseMsg
     model_ = model;
   }
 
+  /*
+  * Method to fetch the XML response from Dow Jones and parse the data into the BaseSearchResponse model
+  */
   @Override
   public DowJonesCall getModel() {
     if ( isModelSet_ == true ) {

@@ -8,46 +8,56 @@ foam.CLASS({
     {
       class: 'Array',
       of: 'String',
-      name: 'riskIcons'
+      name: 'riskIcons',
+      documentation: 'Array containing one or more risk indicators for the profile'
     },
     {
       class: 'String',
-      name: 'primaryName'
+      name: 'primaryName',
+      documentation: 'The primary name of the profile'
     },
     {
       class: 'String',
-      name: 'countryCode'
+      name: 'countryCode',
+      documentation: 'The country code associated with the profile'
     },
     {
       class: 'String',
-      name: 'title'
+      name: 'title',
+      documentation: 'Text for the title column'
     },
     {
       class: 'Boolean',
-      name: 'subsidiary'
+      name: 'subsidiary',
+      documentation: 'Indicates whether or not the matched profile is a subsidiary'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.MatchedName',
-      name: 'matchedName'
+      name: 'matchedName',
+      documentation: 'The exact name that was matched in the search'
     },
     {
       class: 'String',
-      name: 'matchedDateOfBirth'
+      name: 'matchedDateOfBirth',
+      documentation: 'The date of birth value that matched with the highest score (if any)'
     },
     {
       class: 'Array',
       of: 'String',
-      name: 'datesOfBirth'
+      name: 'datesOfBirth',
+      documentation: 'Array for one or more dates of birth associated with the profile'
     },
     {
       class: 'Array',
       of: 'String',
-      name: 'countries'
+      name: 'countries',
+      documentation: 'Array for one or more countries associated with the matched profile'
     },
     {
       class: 'String',
-      name: 'gender'
+      name: 'gender',
+      documentation: 'Indicates the gender of the profile'
     }
   ]
 });

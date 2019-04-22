@@ -8,7 +8,8 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.dowJones.Match',
-      name: 'matchs'
+      name: 'matchs',
+      documentation: 'Array of match records returned from the request'
     }
   ]
 });
