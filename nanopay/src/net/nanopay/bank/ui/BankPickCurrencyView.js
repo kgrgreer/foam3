@@ -168,7 +168,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Add a new bank' },
     { name: 'SUB_TITLE', message: 'Choose your banking provider below to get started' },
-    { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
+    { name: 'BANK_ADDED', message: 'Your bank account was successfully added.' },
   ],
 
   properties: [
