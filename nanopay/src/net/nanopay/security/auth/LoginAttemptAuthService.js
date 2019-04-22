@@ -19,6 +19,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Group',
     'foam.nanos.logger.Logger',
+    'net.nanopay.admin.model.AccountStatus',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
 
@@ -201,7 +202,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
-
+        if ( AccountStatus.DISABLED == user.getStatus() ) {
+          return reason;
+        }
         int remaining = getMaxAttempts() - user.getLoginAttempts();
         if ( remaining > 0 ) {
           return "Login failed (" + reason + "). " + ( remaining ) + " attempts remaining.";
