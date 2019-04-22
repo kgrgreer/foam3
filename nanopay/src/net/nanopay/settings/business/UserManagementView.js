@@ -27,6 +27,10 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      max-width: 1025px;
+    }
+
     ^actions {
       display: flex;
       justify-content: flex-end;
@@ -177,7 +181,9 @@ foam.CLASS({
         // Add add user flow
         ctrl.add(this.Popup.create().tag({ 
           class: 'net.nanopay.sme.ui.AddUserToBusinessModal',
-          dao: this.clientJunctionDAO
+          dao: this.clientJunctionDAO,
+          role: 'employee',
+          noChoice: true
         }));
       }
     }

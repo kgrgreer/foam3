@@ -398,10 +398,16 @@ foam.CLASS({
           .put(newUser)
           .then((user) => {
             this.user = user;
-            // update user accepted terms and condition
-            this.acceptanceDocumentService.
-              updateUserAcceptanceDocument(user.id, this.termsAgreementDocument.id, this.termsAndConditions);            
-            this.logIn();             
+            this.logIn(); 
+            // update user accepted terms and condition. We should do this after login because we need CreatedByDAO
+            try {
+              this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(this.__context__, user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
+            } catch (err) {
+              console.warn('Error updateing acceptance document: ', err);
+              this.notify(err.message || 'There was a problem updating terms and condition status.', 'error');
+              return;
+            }                        
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
@@ -413,7 +419,7 @@ foam.CLASS({
   listeners: [
     async function loadAcceptanceDocument() {
       try {
-        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
       } catch (error) {
         console.warn('Error occured finding Terms Agreement: ', error);
       }

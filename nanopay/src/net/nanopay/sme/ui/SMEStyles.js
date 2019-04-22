@@ -720,6 +720,18 @@ foam.CLASS({
 
     /* DAO controller */
 
+    td .invoice-attachment-icon {
+      background-image: url("/images/attachment.svg");
+      background-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    td .invoice-attachment-icon:hover {
+      background-image: url("/images/attachment-purple.svg");
+      cursor: pointer;
+    }
+
     .foam-comics-DAOControllerView-top-row .net-nanopay-ui-ActionView {
       width: 158px !important;
       height: 48px !important;
@@ -757,8 +769,8 @@ foam.CLASS({
       filter: hue-rotate(67deg) saturate(100000000) opacity(65%);
     }
 
-    .foam-comics-DAOControllerView-top-row {
-      margin-bottom: 20px !important;
+    .net-nanopay-sme-SMEController .foam-comics-DAOControllerView-top-row {
+      margin-bottom: 36px;
     }
 
     .foam-comics-DAOControllerView-title-container span {
@@ -810,8 +822,8 @@ foam.CLASS({
       background: #fff;
     }
 
-    .foam-u2-view-TableView tbody tr:first-child td {
-      border-top: solid 1px #e2e2e3 !important;
+    .foam-u2-view-TableView thead th {
+      border-bottom: solid 1px #e2e2e3;
     }
 
     .foam-u2-md-overlaydropdown {

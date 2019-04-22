@@ -8,6 +8,7 @@ import foam.blob.IdentifiedBlob;
 import foam.blob.ProxyBlobService;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.dao.ArraySink;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.http.WebAgent;
@@ -31,6 +32,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -57,6 +59,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     Logger logger            = (Logger) x.get("logger");
 
     HttpServletRequest req     = x.get(HttpServletRequest.class);
+    HttpServletResponse response = x.get(HttpServletResponse.class);
 
     String id = req.getParameter("userId");
     User user = (User) userDAO.find(id);
@@ -73,23 +76,17 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       // create a temporary folder to save files before zipping
       FileUtils.forceMkdir(new File("/opt/nanopay/AFXReportsTemp/"));
 
-      File companyInfo = generateCompanyInfo(x, business);
-      File signingOfficer = generateSigningOfficer(x, business);
-      File beneficialOwners = generateBeneficialOwners(x, business);
-      File bankInfo = generateBankInfo(x, business);
-      File businessDoc = getBusinessDoc(x, business);
-      File signingOfficerID = getSigningOfficerID(x, business);
-      File beneficialOwnersDoc = getBeneficialOwnersDoc(x, business);
-      File usBankAccountProof = getUSBankAccountProof(x, business);
-
-      File[] srcFiles = new File[]{companyInfo,
-        signingOfficer,
-        beneficialOwners,
-        bankInfo,
-        usBankAccountProof,
-        businessDoc,
-        signingOfficerID,
-        beneficialOwnersDoc};
+      File[] signingOfficerReports = generateSigningOfficersReports(x, business);
+      File[] signingOfficerIDs = getSigningOfficerIDs(x, business);
+      File[] srcFiles = new File[6 + signingOfficerReports.length + signingOfficerIDs.length];
+      srcFiles[0] = generateCompanyInfo(x, business);
+      srcFiles[1] = generateBeneficialOwners(x, business);
+      srcFiles[2] = generateBankInfo(x, business);
+      srcFiles[3] = getBusinessDoc(x, business);
+      srcFiles[4] = getUSBankAccountProof(x, business);
+      srcFiles[5] = getBeneficialOwnersDoc(x, business);
+      System.arraycopy(signingOfficerReports, 0, srcFiles, 6, signingOfficerReports.length);
+      System.arraycopy(signingOfficerIDs, 0, srcFiles, 6 + signingOfficerReports.length, signingOfficerIDs.length);
 
       downloadZipFile(x, business, srcFiles);
 
@@ -97,9 +94,20 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       FileUtils.deleteDirectory(new File("/opt/nanopay/AFXReportsTemp/"));
     } catch (IOException e) {
       logger.error(e);
+      try {
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR , "Error when generating the compliance documents.");
+      } catch (IOException err) {
+        throw new RuntimeException(err);
+      }
+
     } catch (Throwable t) {
       logger.error("Error generating compliance report package: ", t);
-      throw new RuntimeException(t);
+      logger.log(user.getOrganization() + " might not have all the business registration information.");
+      try {
+        response.sendError(HttpServletResponse.SC_NO_CONTENT , user.getOrganization() + " might not have all the business registration information.");
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
@@ -110,6 +118,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     Logger logger            = (Logger) x.get("logger");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     BusinessType type = (BusinessType) businessTypeDAO.find(business.getBusinessTypeId());
     String businessType = type.getName();
     String businessName = business.getBusinessName();
@@ -167,7 +176,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     String isHoldingCompany = business.getHoldingCompany() ? "Yes" : "No";
     String residenceOperated = business.getResidenceOperated() ? "Yes" : "No";
-    String baseCurrency = "";
+    String baseCurrency;
     String internationalTransactions;
     String purposeOfTransactions;
     String annualDomesticTransactionAmount;
@@ -177,11 +186,11 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     if ( business.getSuggestedUserTransactionInfo() != null ) {
       internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
-      
+
       if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
         baseCurrency = business.getSuggestedUserTransactionInfo().getBaseCurrency();
       } else {
-        purposeOfTransactions = "N/A";
+        baseCurrency = "N/A";
       }
 
       if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getTransactionPurpose()) ) {
@@ -338,24 +347,40 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     return null;
   }
 
+  /**
+   * Generate a report for each signing officer in the given business.
+   * @param x A context.
+   * @param business A business to generate the reports for.
+   * @return An array of PDFs.
+   */
+  private File[] generateSigningOfficersReports(X x, Business business) {
+    java.util.List<User> signingOfficers = getSigningOfficers(x, business);
+    File[] reports = new File[signingOfficers.size()];
 
-  private File generateSigningOfficer(X x, Business business) {
-    DAO  userDAO                = (DAO) x.get("localUserDAO");
+    for ( int i = 0; i < signingOfficers.size(); i++ ) {
+      reports[i] = generateSigningOfficer(x, business, signingOfficers.get(i), i + 1);
+    }
+
+    return reports;
+  }
+
+  /**
+   * Generate a report for the given signing officer.
+   * @param x A context.
+   * @param business The business the given user is a signing officer for.
+   * @param signingOfficer A signing officer.
+   * @return A PDF report for the given signing officer.
+   */
+  private File generateSigningOfficer(X x, Business business, User signingOfficer, long number) {
     DAO  identificationTypeDAO  = (DAO) x.get("identificationTypeDAO");
     DAO  ipHistoryDAO           = (DAO) x.get("ipHistoryDAO");
 
     Logger logger = (Logger) x.get("logger");
 
-    String businessName = business.getBusinessName();
-
-    User signingOfficer = (User) userDAO.find(AND(
-      EQ(User.ORGANIZATION, businessName),
-      EQ(User.SIGNING_OFFICER, true)));
-
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     String name = signingOfficer.getLegalName();
     String title = signingOfficer.getJobTitle();
-    String isDirector = signingOfficer.getSigningOfficer()? "Yes" : "No";
     String isPEPHIORelated = signingOfficer.getPEPHIORelated() ? "Yes" : "No";
 
     String birthday = null;
@@ -380,7 +405,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
     String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
     String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
-    String principalType = signingOfficer.getPrincipleType();
     IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
     String nameOfPerson = ipHistory.findUser(x).getLegalName();
     String timestamp = sdf.format(ipHistory.getCreated());
@@ -389,7 +413,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
 
-    String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]SigningOfficer.pdf";
+    String path = "/opt/nanopay/AFXReportsTemp/[" + business.getBusinessName() + "]SigningOfficer" + Long.toString(number) + ".pdf";
 
     try {
       Document document = new Document();
@@ -399,12 +423,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Are you the primary contact? Yes"));
-      list.add(new ListItem("Are you a signing officer of the company? " + isDirector));
       list.add(new ListItem("Are you a domestic or foreign Politically Exposed Person (PEP), " +
         "Head of an International Organization (HIO), or a close associate or family member of any such person? " + isPEPHIORelated));
       list.add(new ListItem("Name: " + name));
       list.add(new ListItem("Title: " + title));
-      list.add(new ListItem("Principal Type: " + principalType));
       list.add(new ListItem("Date of birth: " + birthday));
       list.add(new ListItem("Phone number: " + phoneNumber));
       list.add(new ListItem("Email address: " + email));
@@ -441,12 +463,17 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     return null;
   }
 
+  /** Returns a list of signing officers for a given business. */
+  private java.util.List<User> getSigningOfficers(X x, Business business) {
+    java.util.List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
 
-  public File generateAuthorizedUserInfo(X x, String id) {
-    // None for now
-    return null;
+    if ( signingOfficers.size() == 0 ) {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning("All businesses must have at least one signing officer. Business '" + business.getBusinessName() + "' did not have one.");
+    }
+
+    return signingOfficers;
   }
-
 
   private File generateBeneficialOwners(X x, Business business) {
     Logger logger = (Logger) x.get("logger");
@@ -454,30 +481,31 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String businessName = business.getBusinessName();
     String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwners.pdf";
 
-    User[] beneficialOwners = business.getPrincipalOwners();
+    java.util.List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x).select(new ArraySink())).getArray();
     try {
       Document document = new Document();
-
       PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-
-      document.open();
-      document.add(new Paragraph("Beneficial Owners Information"));
-
       SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
       String reportGeneratedDate = df.format(new Date());
 
-      if ( beneficialOwners.length == 0 ) {
+      document.open();
+      document.add(new Paragraph("Beneficial Owners Information"));
+      document.add(Chunk.NEWLINE);
+
+      if ( beneficialOwners.size() == 0 ) {
         List list = new List(List.UNORDERED);
         list.add(new ListItem("No individuals own 25% or more / Owned by a publicly traded entity"));
-        list.add(new ListItem("Report Generated Date: " + reportGeneratedDate));
         document.add(list);
       } else {
-        for ( int i = 0; i < beneficialOwners.length; i++ ) {
-          User beneficialOwner = beneficialOwners[i];
+        document.add(new Paragraph("The details for all beneficial owners who own 25% or more of the business are listed."));
+        document.add(Chunk.NEWLINE);
+
+        for ( int i = 0; i < beneficialOwners.size(); i++ ) {
+          List list = new List(List.UNORDERED);
+          BeneficialOwner beneficialOwner = beneficialOwners.get(i);
           String firstName = beneficialOwner.getFirstName();
           String lastName = beneficialOwner.getLastName();
           String jobTitle = beneficialOwner.getJobTitle();
-          String principalType = beneficialOwner.getPrincipleType();
           String percentOwnership = Integer.toString(beneficialOwner.getOwnershipPercent());
           String streetAddress = beneficialOwner.getAddress().getStreetNumber() + " " + beneficialOwner.getAddress().getStreetName();
           String city = beneficialOwner.getAddress().getCity();
@@ -485,15 +513,14 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String country = beneficialOwner.getAddress().getCountryId();
           String postalCode = beneficialOwner.getAddress().getPostalCode();
           SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("MMM d, yyyy");
+          dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
           String dateOfBirth = dateOfBirthFormatter.format(beneficialOwner.getBirthday());
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
-          List list = new List(List.UNORDERED);
           list.add(new ListItem("First name: " + firstName));
           list.add(new ListItem("Last name: " + lastName));
           list.add(new ListItem("Job title: " + jobTitle));
-          list.add(new ListItem("Principal type: " + principalType));
           list.add(new ListItem("Percent ownership: " + percentOwnership + "%"));
           list.add(new ListItem("Residential street address: " + streetAddress));
           list.add(new ListItem("City: " + city));
@@ -506,10 +533,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         }
       }
 
+      document.add(Chunk.NEWLINE);
       document.add(new Paragraph("Business ID: " + business.getId()));
       document.add(new Paragraph("Report Generated Date: " + reportGeneratedDate));
-      document.add(Chunk.NEWLINE);
-      document.add(new Paragraph("The details for all beneficial owners who own 25% or more of the business are listed."));
 
       document.close();
       writer.close();
@@ -523,20 +549,17 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   }
 
   private File generateBankInfo(X x, Business business) {
-    DAO  userDAO           = (DAO) x.get("localUserDAO");
     DAO  accountDAO        = (DAO) x.get("accountDAO");
     DAO  branchDAO         = (DAO) x.get("branchDAO");
     DAO  institutionDAO    = (DAO) x.get("institutionDAO");
-    DAO  flinksResponseDAO  = (DAO) x.get("flinksAccountsDetailResponseDAO");
+    DAO  flinksResponseDAO = (DAO) x.get("flinksAccountsDetailResponseDAO");
 
     Logger logger = (Logger) x.get("logger");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
     String businessName = business.getBusinessName();
-    User signingOfficer = (User) userDAO.find(AND(
-      EQ(User.ORGANIZATION, businessName),
-      EQ(User.SIGNING_OFFICER, true)));
 
     BankAccount bankAccount = (BankAccount) accountDAO
       .find(AND(
@@ -557,15 +580,11 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.add(new Paragraph("Bank Information"));
 
       Branch branch = (Branch) branchDAO.find(bankAccount.getBranch());
-      String routingNum = null;
+      String branchNum;
       if ( branch != null ) {
-        routingNum = branch.getBranchId();
-      }
-
-      Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
-      String institutionNum = null;
-      if ( institution != null ) {
-        institutionNum = institution.getInstitutionNumber();
+        branchNum = branch.getBranchId();
+      } else {
+        branchNum = "N/A";
       }
 
       String accountNum = bankAccount.getAccountNumber();
@@ -573,22 +592,44 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       String accountCurrency = bankAccount.getDenomination();
       String companyName = business.getBusinessName();
       String operatingName = business.getOperatingBusinessName();
-      String signingOfficerName = signingOfficer.getLegalName();
+
+      java.util.List<User> signingOfficers = getSigningOfficers(x, business);
+      StringBuilder signingOfficerNames = new StringBuilder();
+      for ( int i = 0; i < signingOfficers.size(); i++ ) {
+        signingOfficerNames.append(signingOfficers.get(i).getLegalName());
+        if ( i + 1 < signingOfficers.size() ) {
+          signingOfficerNames.append(", ");
+        }
+      }
+
       long randomDepositAmount = bankAccount.getRandomDepositAmount();
       Date microVerificationTimestamp = bankAccount.getMicroVerificationTimestamp();
-      String reportGeneratedDate = sdf.format(new Date());
+      SimpleDateFormat rgdf = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
+      String reportGeneratedDate = rgdf.format(new Date());
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Account name: " + accountName));
-      list.add(new ListItem("Routing number: " + routingNum));
-      list.add(new ListItem("Institution number: " + institutionNum));
+      // It is unnecessary to show institution number for US bank accounts
+      if ( accountCurrency.equals("USD") ) {
+        list.add(new ListItem("Routing number: " + branchNum));
+      } else {
+        Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
+        String institutionNum;
+        if ( institution != null ) {
+          institutionNum = institution.getInstitutionNumber();
+        } else {
+          institutionNum = "N/A";
+        }
+        list.add(new ListItem("Transit number: " + branchNum));
+        list.add(new ListItem("Institution number: " + institutionNum));
+      }
       list.add(new ListItem("Account number: " + accountNum));
       list.add(new ListItem("Account currency: " + accountCurrency));
       list.add(new ListItem("Company name: " + companyName));
       if ( operatingName.length() != 0) {
         list.add(new ListItem("Operating name: " + operatingName));
       }
-      list.add(new ListItem("Signing officer name: " + signingOfficerName));
+      list.add(new ListItem("Signing officer names: " + signingOfficerNames));
 
       if ( bankAccount instanceof CABankAccount ) {
         CABankAccount caBankAccount = (CABankAccount) bankAccount;
@@ -667,20 +708,29 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     return null;
   }
 
+  /**
+   * Returns the identification files uploaded for the signing officers in the
+   * given business.
+   */
+  private File[] getSigningOfficerIDs(X x, Business business) {
+    java.util.List<User> signingOfficers = getSigningOfficers(x, business);
+    File[] files = new File[signingOfficers.size()];
 
-  private File getSigningOfficerID(X x, Business business) {
-    DAO    userDAO = (DAO) x.get("localUserDAO");
+    for ( int i = 0; i < signingOfficers.size(); i++ ) {
+      files[i] = getSigningOfficerID(x, business, signingOfficers.get(i), i + 1);
+    }
+
+    return files;
+  }
+
+  private File getSigningOfficerID(X x, Business business, User so, int number) {
     Logger logger  = (Logger) x.get("logger");
-
     String businessName = business.getBusinessName();
-    User signingOfficer = (User) userDAO.find(AND(
-      EQ(User.ORGANIZATION, businessName),
-      EQ(User.SIGNING_OFFICER, true)));
-
     String path;
     Blob blob;
+
     try {
-      foam.nanos.fs.File[] signingOfficerFiles = signingOfficer.getAdditionalDocuments();
+      foam.nanos.fs.File[] signingOfficerFiles = so.getAdditionalDocuments();
       if ( signingOfficerFiles != null && signingOfficerFiles.length > 0 ) {
         foam.nanos.fs.File signingOfficerFile = signingOfficerFiles[0];
 
@@ -691,7 +741,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         String fileName = signingOfficerFile.getFilename();
         String fileType = fileName.substring(fileName.lastIndexOf("."));
 
-        path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]SigningOfficerID" + fileType;
+        path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]SigningOfficer" + Long.toString(number) + "ID" + fileType;
         OutputStream os = new FileOutputStream(path);
 
         blob.read(os, 0, size);

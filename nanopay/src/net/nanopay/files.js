@@ -21,6 +21,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
   { name: 'net/nanopay/account/AggregateAccount' },
   { name: 'net/nanopay/account/ZeroAccount' },
+  { name: 'net/nanopay/account/ShadowAccount' },
   { name: 'net/nanopay/account/ZeroAccountUserAssociation' },
   { name: 'net/nanopay/account/TrustAccount' },
   { name: 'net/nanopay/account/LossesAccount' },
@@ -76,6 +77,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView2', flags: ['web'] },
   { name: 'net/nanopay/auth/AgentJunctionStatus' },
   { name: 'net/nanopay/auth/AuthServiceClientBox', flags: ['web'] },
+  { name: 'net/nanopay/auth/NanopayUserAndGroupAuthService' },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
   { name: 'net/nanopay/auth/email/PreventDuplicateEmailDAO' },
   { name: 'net/nanopay/auth/email/EmailWhitelistEntry' },
@@ -368,7 +370,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXFeeLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantUserPayeeJunction' },
-  { name: 'net/nanopay/tx/BalanceHistory' },
   { name: 'net/nanopay/tx/cico/VerificationTransaction' },
   { name: 'net/nanopay/tx/cico/COTransaction' },
   { name: 'net/nanopay/tx/alterna/AlternaFormat' },
@@ -639,6 +640,7 @@ FOAM_FILES([
 
   // sme
   { name: 'net/nanopay/model/Business' },
+  { name: 'net/nanopay/model/BeneficialOwner' },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/ActionObject' },
   { name: 'net/nanopay/sme/ui/dashboard/Dashboard', flags: ['web'] },
@@ -774,6 +776,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
+  { name: 'net/nanopay/meter/BusinessDetailView' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
@@ -807,11 +810,13 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResult' },
 
-
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
   { name: 'net/nanopay/meter/test/ComplianceAwareDummy' },
 
-  { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' }
+  { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
+
+  // business
+  { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
 ]);
