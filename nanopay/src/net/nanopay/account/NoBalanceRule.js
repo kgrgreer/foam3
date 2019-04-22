@@ -14,9 +14,11 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-      //if ( obj instanceof DigitalAccount )
-       // if ( (long) ( (DigitalAccount) obj ).findBalance(x) > 0 )
-         //throw new  RuntimeException("Cannot delete this account as it's balance is not 0.");
+      if ( obj instanceof DigitalAccount ) {
+        if ( (long) ( (DigitalAccount) obj ).findBalance(x) > 0 ) {
+          throw new  RuntimeException("Cannot delete this account as it's balance is not 0");
+        }
+      }
       `
     }
   ]
