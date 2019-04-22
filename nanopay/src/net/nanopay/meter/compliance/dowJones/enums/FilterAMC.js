@@ -2,7 +2,7 @@ foam.ENUM({
   package: 'net.nanopay.meter.compliance.dowJones.enums',
   name: 'FilterAMC',
 
-  documentation: `Filter to restrict the search results by Adverse Media Category`,
+  documentation: 'Filter to restrict the search results by Adverse Media Category',
 
   values: [
     {

@@ -2,7 +2,7 @@ foam.ENUM({
   package: 'net.nanopay.meter.compliance.dowJones.enums',
   name: 'SearchType',
 
-  documentation: `The desired tolerance for the search`,
+  documentation: 'The desired tolerance for the search',
 
   values: [
     {

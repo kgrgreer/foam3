@@ -2,7 +2,7 @@ foam.ENUM({
   package: 'net.nanopay.meter.compliance.dowJones.enums',
   name: 'FilterSIC',
 
-  documentation: `Filter to restrict the search results by Special Category`,
+  documentation: 'Filter to restrict the search results by Special Category',
 
   values: [
     {

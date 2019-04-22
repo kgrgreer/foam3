@@ -2,7 +2,7 @@ foam.ENUM({
   package: 'net.nanopay.meter.compliance.dowJones.enums',
   name: 'FilterPEP',
 
-  documentation: `Filter to restrict the search results by PEP category`,
+  documentation: 'Filter to restrict the search results by PEP category',
 
   values: [
     {

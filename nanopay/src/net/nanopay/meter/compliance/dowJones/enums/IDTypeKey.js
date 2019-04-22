@@ -2,7 +2,7 @@ foam.ENUM({
   package: 'net.nanopay.meter.compliance.dowJones.enums',
   name: 'IDTypeKey',
 
-  documentation: `The type of ID to search.`,
+  documentation: 'The type of ID to search.',
 
   values: [
     {

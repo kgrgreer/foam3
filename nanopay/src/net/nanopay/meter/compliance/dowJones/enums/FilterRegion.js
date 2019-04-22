@@ -2,7 +2,7 @@ foam.ENUM({
   package: 'net.nanopay.meter.compliance.dowJones.enums',
   name: 'FilterRegion',
 
-  documentation: `Filter to restrict the search results by region.`,
+  documentation: 'Filter to restrict the search results by region.',
 
   values: [
     {

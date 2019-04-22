@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'PersonNameSearchRequest',
   extends: 'net.nanopay.meter.compliance.dowJones.BaseSearchRequest',
 
-  documentation: `Extends BaseSearchRequest for a person name search in the Dow Jones Risk Database`,
+  documentation: 'Extends BaseSearchRequest for a person name search in the Dow Jones Risk Database',
 
   properties: [
     {
