@@ -37,17 +37,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
     // NOTE: for requests such as RetailTransaction, it is
     // the responsibility of, perhaps a RetailTransactionDAO, to
@@ -85,7 +74,7 @@ foam.CLASS({
         Transaction requestTxn = quote.getRequestTransaction();
         String message = String.format("Unable to find a plan for transaction with source currency: %s, destination currency: %s, source account: %d, destination account: %d", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
         sendNOC(x, message);
-        throw new UnsupportedTransactionException(message);
+        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
       }
       logger.debug(this.getClass().getSimpleName(), "put", "setting selected plan.");
       quote.setPlan(plan);
@@ -101,11 +90,11 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'message',
-          javaType: 'String'
+          type: 'String'
         }
       ],
       javaCode: `

@@ -121,8 +121,18 @@ foam.CLASS({
     }
 
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
-      margin-top: 16px;
       background-color: white;
+      margin-top: 16px;
+      min-height: 264px;
+    }
+
+    ^ .split-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    ^ .split-container > div {
+      width: 230px;
     }
  `,
 
@@ -180,10 +190,10 @@ foam.CLASS({
         ]
       },
       factory: function() {
-        return this.viewData.user.primaryResidence ? 'Yes' : 'No';
+        return this.viewData.user.residenceOperated ? 'Yes' : 'No';
       },
       postSet: function(o, n) {
-        this.viewData.user.primaryResidence = n == 'Yes';
+        this.viewData.user.residenceOperated = n == 'Yes';
         if ( n ) {
           this.viewData.user.address = this.viewData.user.businessAddress;
         }
@@ -202,7 +212,7 @@ foam.CLASS({
         });
       },
       factory: function() {
-        if ( this.viewData.user.businessTypeId ) return this.viewData.user.businessTypeId;
+        if ( this.viewData.user.businessTypeId != null ) return this.viewData.user.businessTypeId;
       },
       postSet: function(o, n) {
         this.viewData.user.businessTypeId = n;
@@ -219,22 +229,23 @@ foam.CLASS({
     },
     {
       name: 'industryId',
-      documentation: 'Industry ID taken from industryTopLevel selection.'
-    },
-    {
-      name: 'industryTopLevel',
-      documentation: 'Dropdown detailing and providing choice selection of top level industry/business sectors.',
-      factory: function() {
-        if ( this.viewData.user.businessSectorId ) return this.viewData.user.businessSectorId;
-      },
-      postSet: function(o, n) {
-        this.industryId = n;
-        this.viewData.user.businessSectorId = n;
+      documentation: 'The general industry that the business is a part of.',
+      view: function(args, X) {
+        var BusinessSector = X.lookup('net.nanopay.model.BusinessSector');
+        var m = X.lookup('foam.mlang.ExpressionsSingleton').create();
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+          sections: [
+            {
+              heading: 'Industries',
+              dao: X.businessSectorDAO.where(m.EQ(BusinessSector.PARENT, 0))
+            }
+          ],
+          search: true
+        };
       }
-    },
-    {
-      name: 'industryBottomLevel',
-      documentation: 'Bottom level industries which get populated after industryTopLevel is selected.'
     },
     {
       class: 'String',
@@ -262,8 +273,18 @@ foam.CLASS({
       class: 'String',
       name: 'taxNumberField',
       documentation: 'Tax identification number field.',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: '123456789',
+        onKey: true,
+        maxLength: 9
+      },
       factory: function() {
         if ( this.viewData.user.taxIdentificationNumber ) return this.viewData.user.taxIdentificationNumber;
+      },
+      preSet: function(o, n) {
+        var regEx = /^\d*$/;
+        return regEx.test(n) ? n : o;
       },
       postSet: function(o, n) {
         this.viewData.user.taxIdentificationNumber = n;
@@ -339,6 +360,27 @@ foam.CLASS({
     {
       class: 'String',
       name: 'choiceDescription'
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'choices',
+      documentation: `
+        The specific NAICS industries that populate the second dropdown w.r.t.
+        the nature of the business.
+      `,
+      expression: function(industryId) {
+        return this.businessSectorDAO.where(
+          this.EQ(this.BusinessSector.PARENT, industryId ? industryId.id : '')
+        );
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isUS',
+      expression: function(addressField$countryId) {
+        return addressField$countryId === 'US';
+      },
+      documentation: 'Used to conditionally show the tax id field.'
     }
   ],
 
@@ -366,16 +408,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.hasCloseOption = false;
-      this.hasSaveOption = true;
-      this.saveLabel = 'Save and Close';
       this.nextLabel = 'Next';
-
-      var choices = this.industryId$.map(function(industryId) {
-        return self.businessSectorDAO.where(
-          self.EQ(self.BusinessSector.PARENT, industryId || '')
-        );
-      });
 
       this.addClass(this.myClass())
         .start()
@@ -397,31 +430,37 @@ foam.CLASS({
             .start().addClass('label').add(this.BUSINESS_TYPE_LABEL).end()
             .start(this.BUSINESS_TYPE_FIELD).end()
           .end()
-          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
-            .start().addClass('label').add(this.INDUSTRY_LABEL).end()
-            .start(this.INDUSTRY_TOP_LEVEL.clone().copyFrom({
-              view: {
-                class: 'foam.u2.view.ChoiceView',
-                  dao: self.businessSectorDAO.where(self.EQ(self.BusinessSector.PARENT, 0)),
-                  placeholder: '- Please select -',
-                  objToChoice: function(a) {
-                    return [a.id, a.name];
-                  }
-                }
-              })
-            ).end()
+          .start()
+            .addClass('label')
+            .add(this.INDUSTRY_LABEL)
           .end()
-          .start().addClass('label-input').addClass('half-container')
-            .start(this.INDUSTRY_BOTTOM_LEVEL.clone().copyFrom({
-              view: {
-                class: 'foam.u2.view.ChoiceView',
-                dao$: choices,
-                placeholder: '- Please select -',
-                objToChoice: function(a) {
-                  return [a.id, a.name];
-                }
-              }
-            })).end()
+          .start()
+            .addClass('split-container')
+            .start()
+              .tag(this.INDUSTRY_ID)
+            .end()
+            .start()
+              .add(this.industryId$.map((id) => {
+                return this.E()
+                  .startContext({ data: this.viewData.user })
+                    .tag(self.viewData.user.BUSINESS_SECTOR_ID.clone().copyFrom({
+                      visibility: id != null ? 'RW' : 'DISABLED',
+                      view: {
+                        class: 'foam.u2.view.RichChoiceView',
+                        selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+                        rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+                        sections: [
+                          {
+                            heading: 'Specific industries',
+                            dao: self.choices$proxy
+                          }
+                        ],
+                        search: true
+                      }
+                    }))
+                  .endContext();
+              }))
+            .end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_NAME_LABEL).end()
@@ -444,6 +483,7 @@ foam.CLASS({
             .start(this.SOURCE_OF_FUNDS_FIELD).addClass('input-field').end()
           .end()
           .start().addClass('label-input')
+            .show(this.isUS$)
             .start().addClass('label').add(this.TAX_ID_LABEL).end()
             .start(this.TAX_NUMBER_FIELD).addClass('input-field').end()
           .end()

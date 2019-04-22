@@ -5,12 +5,14 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
   imports: [
     'addCommas',
+    'currencyDAO',
     'userDAO'
   ],
 
@@ -35,10 +37,12 @@ foam.CLASS({
     'net.nanopay.tx.alterna.AlternaVerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.tx.model.LiquidityService',
+    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.account.Balance'
   ],
 
   requires: [
@@ -51,8 +55,8 @@ foam.CLASS({
   constants: [
     {
       name: 'STATUS_BLACKLIST',
-      type: 'Set<TransactionStatus>',
-      value: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
+      javaType: 'Set<TransactionStatus>',
+      javaValue: `Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
         add(TransactionStatus.REFUNDED);
         add(TransactionStatus.PENDING);
       }});`
@@ -60,53 +64,23 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'id',
-    'referenceNumber',
-    'name',
+    'payeeId',
+    'payerId',
+    'invoiceId',
     'type',
     'status',
     'sourceAccount',
-    'sourceCurrency',
-    'amount',
-    'payee',
-    'payeeId',
-    'payer',
-    'payerId',
     'destinationAccount',
-    'destinationCurrency',
-    'destinationAmount',
     'created',
-    'createdBy',
-    'lastModified',
-    'lastModifiedBy',
-    'scheduled',
     'total',
-    'completionDate',
-    'processDate',
-    'isQuoted',
-    'invoiceId',
-    'messageId',
-    'transfers',
-    'reverseTransfers'
+    'completionDate'
   ],
 
   tableColumns: [
-    'id',
-    'referenceNumber',
-    'name',
     'type',
     'status',
-    'payer',
-    'sourceAccount',
-    'sourceCurrency',
-    'amount',
-    'payee',
-    'destinationAccount',
-    'destinationCurrency',
-    'destinationAmount',
+    'summary',
     'created',
-    'lastModified',
-    'scheduled',
     'completionDate'
   ],
 
@@ -134,7 +108,8 @@ foam.CLASS({
       },
       javaGetter: `
     return getClass().getSimpleName();
-      `
+      `,
+      tableWidth: 160
     },
     {
       name: 'isQuoted',
@@ -156,6 +131,13 @@ foam.CLASS({
       hidden: true
     },
     {
+      name: 'balances',
+      class: 'FObjectArray',
+      of: 'net.nanopay.account.Balance',
+      javaFactory: 'return new Balance[0];',
+      hidden: true
+    },
+    {
       class: 'String',
       name: 'id',
       label: 'ID',
@@ -168,7 +150,8 @@ foam.CLASS({
       class: 'DateTime',
       name: 'created',
       documentation: `The date the transaction was created.`,
-      visibility: 'RO'
+      visibility: 'RO',
+      tableWidth: 140
     },
     {
       class: 'Reference',
@@ -213,15 +196,29 @@ foam.CLASS({
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'invoiceId',
       visibility: 'RO',
-      flags: ['js'],
       view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' }
+    },
+     {
+      name: 'invoiceNumber',
+      hidden: true,
+      factory: function() {
+        return this.invoiceId;
+      },
+      tableCellFormatter: function(value, obj) {
+        var self = this;
+        this.__subSubContext__.invoiceDAO.find(value).then( function( invoice ) {
+          if ( invoice ) self.start().add(invoice.invoiceNumber).end();
+        });
+      }
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
       value: 'COMPLETED',
+      permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
+      tableWidth: 130,
       view: function(args, x) {
         self = this;
         return {
@@ -243,7 +240,8 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'initialStatus',
       value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;'
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+      hidden: true
     },
     {
       class: 'String',
@@ -262,7 +260,7 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.fullName : 'na')
+            .add(value ? value.displayName : 'na')
           .end()
         .end();
       },
@@ -278,11 +276,10 @@ foam.CLASS({
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.fullName : 'na')
+            .add(value ? value.displayName : 'na')
           .end()
         .end();
-      },
-
+      }
     },
     {
       class: 'Reference',
@@ -314,13 +311,30 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       label: 'Amount',
-      visibility: 'RO',
-      tableCellFormatter: function(amount, X) {
-        var formattedAmount = amount/100;
-        this
-          .start()
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table
+        views of Transactions.
+      `,
+      tableCellFormatter: async function(_, obj) {
+        var [srcCurrency, dstCurrency] = await Promise.all([
+          obj.currencyDAO.find(obj.sourceCurrency),
+          obj.currencyDAO.find(obj.destinationCurrency)
+        ]);
+
+        this.add(
+          obj.sourceCurrency + ' ' +
+          srcCurrency.format(obj.amount) + ' → ' +
+          obj.destinationCurrency + ' ' +
+          dstCurrency.format(obj.destinationAmount) + '  |  ' +
+          obj.payer.displayName + ' → ' +
+          obj.payee.displayName
+        );
       }
     },
     {
@@ -334,7 +348,7 @@ foam.CLASS({
         return amount;
       },
       javaGetter: `
-        return getAmount();
+        return this.getAmount();
       `,
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
@@ -349,7 +363,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'destinationAmount',
       label: 'Destination Amount',
-      description: 'Amount in Receiver Currency',
+      documentation: 'Amount in Receiver Currency',
       visibility: 'RO',
       tableCellFormatter: function(destinationAmount, X) {
         var formattedAmount = destinationAmount/100;
@@ -368,7 +382,8 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'completionDate',
-      visibility: 'RO'
+      visibility: 'RO',
+      tableWidth: 145
     },
     {
       documentation: `Defined by ISO 20220 (Pacs008)`,
@@ -379,6 +394,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
+      label: 'Currency',
       visibility: 'RO',
       value: 'CAD'
     },
@@ -426,7 +442,19 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
       visibility: 'RO'
-   }
+   },
+   {
+      class: 'DateTime',
+      name: 'scheduledTime',
+      documentation: `The scheduled date when transaction should be processed.`
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      value: false,
+      permissionRequired: true,
+      visibility: 'hidden'
+    },
   ],
 
   methods: [
@@ -435,16 +463,16 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'net.nanopay.tx.model.Transaction',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-        if ( oldTxn == null ) return this;
+        if ( oldTxn == null || oldTxn.getStatus() == TransactionStatus.SCHEDULED ) return this;
         Transaction newTx = (Transaction) oldTxn.fclone();
         newTx.limitedCopyFrom(this);
         return newTx;
@@ -456,7 +484,7 @@ foam.CLASS({
       args: [
         {
           name: 'other',
-          javaType: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
       javaCode: `
@@ -468,7 +496,7 @@ foam.CLASS({
     },
     {
       name: 'isActive',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       javaCode: `
          return false;
       `
@@ -481,7 +509,7 @@ foam.CLASS({
       args: [
         {
           name: 'transferArr',
-          javaType: 'Transfer[]'
+          type: 'net.nanopay.tx.Transfer[]'
         }
       ],
       javaCode: `
@@ -494,27 +522,25 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
+      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
       name: 'canTransfer',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'Boolean',
+      type: 'Boolean',
       javaCode: `
-        if ( getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED &&
-             ( oldTxn == null ||
-               ( oldTxn != null &&
-                 oldTxn.getStatus() != getStatus() ) ) ) {
-          return true;
-        }
-        return false;
+      if ( getStatus() == TransactionStatus.COMPLETED &&  
+      ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
+   return true;
+ }
+ return false;
       `
     },
     {
@@ -523,14 +549,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'Boolean',
+      type: 'Boolean',
       javaCode: `
         return false;
       `
@@ -540,14 +566,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'oldTxn',
-          javaType: 'Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      javaReturns: 'Transfer[]',
+      type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
         List all = new ArrayList();
         TransactionLineItem[] lineItems = getLineItems();
@@ -568,9 +594,9 @@ foam.CLASS({
     {
       name: `validate`,
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaCode: `
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
@@ -587,7 +613,8 @@ foam.CLASS({
         throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( SafetyUtil.equals(sourceOwner.getStatus(), AccountStatus.DISABLED) ) {
+      // TODO: Move user checking to user validation service
+      if ( AccountStatus.DISABLED == sourceOwner.getStatus() ) {
         throw new RuntimeException("Payer user is disabled.");
       }
 
@@ -600,7 +627,8 @@ foam.CLASS({
         throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
       }
 
-      if ( SafetyUtil.equals(destinationOwner.getStatus(), AccountStatus.DISABLED) ) {
+      // TODO: Move user checking to user validation service
+      if ( AccountStatus.DISABLED == destinationOwner.getStatus() ) {
         throw new RuntimeException("Payee user is disabled.");
       }
 
@@ -616,11 +644,6 @@ foam.CLASS({
         throw new RuntimeException("Amount cannot be negative");
       }
 
-      // For FX transactions we want user to be able to only specify destination amount and we can populate transaction amount from FX rate and destination amount
-      if ( getAmount() == 0 && getDestinationAmount() == 0 ) {
-        throw new RuntimeException("Amount cannot be zero");
-      }
-
       if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null ) {
         throw new RuntimeException("Source currency is not supported");
       }
@@ -630,17 +653,21 @@ foam.CLASS({
       }
 
       if ( appConfig.getMode() == Mode.PRODUCTION ) {
-        if ( getTotal() > 7500000 ) {
+        if ( getTotal() > 10000000 ) {
           throw new AuthorizationException("Transaction limit exceeded.");
         }
+      }
+      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+      if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.SCHEDULED && getStatus() == TransactionStatus.SCHEDULED ) {
+        throw new RuntimeException("Only new transaction can be scheduled");
       }
       `
     },
     {
       name: 'sendCompletedNotification',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+        { name: 'x', type: 'Context' },
+        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
       `
@@ -648,8 +675,8 @@ foam.CLASS({
     {
       name: 'sendReverseNotification',
       args: [
-        { name: 'x', javaType: 'foam.core.X' },
-        { name: 'oldTxn', javaType: 'net.nanopay.tx.model.Transaction' }
+        { name: 'x', type: 'Context' },
+        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
       `
@@ -658,9 +685,9 @@ foam.CLASS({
       documentation: 'Returns childrens status.',
       name: 'getState',
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'net.nanopay.tx.model.TransactionStatus',
+      type: 'net.nanopay.tx.model.TransactionStatus',
       javaCode: `
       if ( getStatus() != TransactionStatus.COMPLETED ) {
         return getStatus();
@@ -688,8 +715,8 @@ foam.CLASS({
         }
       },
       args: [
-        { name: 'forward', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
-        { name: 'reverse', javaType: 'net.nanopay.tx.TransactionLineItem[]' }
+        { name: 'forward', type: 'net.nanopay.tx.TransactionLineItem[]' },
+        { name: 'reverse', type: 'net.nanopay.tx.TransactionLineItem[]' }
       ],
       javaCode: `
     if ( forward != null && forward.length > 0 ) {
@@ -709,18 +736,20 @@ foam.CLASS({
         return to;
       },
       args: [
-        { name: 'from', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
-        { name: 'to', javaType: 'net.nanopay.tx.TransactionLineItem[]' },
+        { name: 'from', type: 'net.nanopay.tx.TransactionLineItem[]' },
+        { name: 'to', type: 'net.nanopay.tx.TransactionLineItem[]' },
      ],
-      javaReturns: 'net.nanopay.tx.TransactionLineItem[]',
+      type: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
-      if ( from.length > 0 ) {
-        TransactionLineItem[] replacement = Arrays.copyOf(to, to.length + from.length);
-        System.arraycopy(from, 0, replacement, to.length, from.length);
-        return replacement;
-      }
-      return to;
-    `
+      ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
+      Arrays.asList(from).forEach((item) -> {
+        boolean hasItem = list1.stream().filter(t -> t.getId().equals(item.getId())).toArray().length != 0;
+        if (! hasItem) {
+          list1.add(item);
+        }
+      });
+      return list1.toArray(new TransactionLineItem[list1.size()]);
+      `
     },
     {
       name: 'getCost',
@@ -733,14 +762,14 @@ foam.CLASS({
         }
         return value;
       },
-      javaReturns: 'Long',
+      type: 'Long',
       javaCode: `
         TransactionLineItem[] lineItems = getLineItems();
         Long value = 0L;
         for ( int i = 0; i < lineItems.length; i++ ) {
           TransactionLineItem lineItem = lineItems[i];
           if ( lineItem instanceof FeeLineItem ) {
-            value += (Long) ((FeeLineItem)lineItem).getAmount();
+            value += (Long) ((FeeLineItem) lineItem).getAmount();
           }
         }
         return value;
@@ -757,7 +786,7 @@ foam.CLASS({
         }
         return value;
       },
-      javaReturns: 'Long',
+      type: 'Long',
       javaCode: `
         TransactionLineItem[] lineItems = getLineItems();
         Long value = 0L;
@@ -768,12 +797,12 @@ foam.CLASS({
           }
         }
         return value;
-`
+        `
     },
     {
       name: 'addNext',
       args: [
-        { name: 'txn', javaType: 'net.nanopay.tx.model.Transaction' }
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
       Transaction tx = this;
@@ -791,14 +820,14 @@ foam.CLASS({
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       },
       {
         name: 'oldTxn',
-        javaType: 'Transaction'
+        type: 'net.nanopay.tx.model.Transaction'
       }
     ],
-    javaReturns: 'Transaction',
+    type: 'net.nanopay.tx.model.Transaction',
     javaCode: `
     Transaction ret = limitedClone(x, oldTxn);
     ret.validate(x);
@@ -811,11 +840,11 @@ foam.CLASS({
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       },
       {
         name: 'oldTxn',
-        javaType: 'Transaction'
+        type: 'net.nanopay.tx.model.Transaction'
       }
     ],
     javaCode: `
@@ -830,7 +859,7 @@ foam.CLASS({
     args: [
       {
         name: 'x',
-        javaType: 'foam.core.X'
+        type: 'Context'
       }
     ],
     javaCode: `

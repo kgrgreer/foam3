@@ -4,7 +4,8 @@ foam.CLASS({
     extends: 'foam.u2.View',
   
     requires: [
-      'foam.comics.DAOCreateController'
+      'foam.comics.DAOCreateController',
+      'foam.u2.dialog.NotificationMessage'
     ],
   
     imports: [
@@ -39,7 +40,8 @@ foam.CLASS({
     ],
   
     reactions: [
-      [ 'data', 'finished', 'onFinished' ]
+      [ 'data', 'finished', 'onFinished' ],
+      [ 'data', 'throwError', 'onThrowError' ]
     ],
   
     methods: [
@@ -67,6 +69,13 @@ foam.CLASS({
     listeners: [
       function onFinished() {
         this.stack.back();
+      },
+      function onThrowError() {
+        var self = this;
+        this.add(this.NotificationMessage.create({
+           message: self.data.exception.message,
+           type: 'error'
+        }));
       }
     ]
   });

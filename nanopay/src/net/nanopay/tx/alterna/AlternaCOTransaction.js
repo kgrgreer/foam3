@@ -43,7 +43,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      swiftName: 'description_',
       visibility: foam.u2.Visibility.RO
     },
   ],
@@ -54,17 +53,23 @@ foam.CLASS({
       args: [
         {
           name: 'other',
-          javaType: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         },
       ],
       javaCode: `
         super.limitedCopyFrom(other);
+        setConfirmationLineNumber(((AlternaCOTransaction)other).getConfirmationLineNumber());
+        setReturnCode(((AlternaCOTransaction)other).getReturnCode());
+        setReturnDate(((AlternaCOTransaction)other).getReturnDate());
         setReturnType(((AlternaCOTransaction)other).getReturnType());
+        setPadType(((AlternaCOTransaction)other).getPadType());
+        setTxnCode(((AlternaCOTransaction)other).getTxnCode());
+        setDescription(((AlternaCOTransaction)other).getDescription());
       `
     },
     {
       name: 'isActive',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       javaCode: `
          return
            getStatus().equals(TransactionStatus.PENDING) ||

@@ -20,14 +20,14 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'obj',
-          of: 'foam.core.FObject'
+          type: 'foam.core.FObject'
         }
       ],
-      javaReturns: 'foam.core.FObject',
+      type: 'foam.core.FObject',
       javaCode: `
       Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
       Transaction txn = (Transaction) getDelegate().put_(x, obj);
@@ -37,7 +37,14 @@ foam.CLASS({
         for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
           Transaction child = (Transaction) o;
           child.setStatus(child.getInitialStatus());
-          children.put(child);
+
+          /**
+           * need to use the put_ override because of the newly added transaction.status permissionRequired: true property
+           * we call put_ with the DAO context rather than the calling context instead
+           * this is because the user in the calling context may not have permission to update
+           * all neccessary properties
+           */
+          children.put_(getX(), child);
         }
       }
       return txn;

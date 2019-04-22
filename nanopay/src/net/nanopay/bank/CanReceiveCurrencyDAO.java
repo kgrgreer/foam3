@@ -15,10 +15,7 @@ import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-import static foam.mlang.MLang.NOT;
+import static foam.mlang.MLang.*;
 
 /**
  * A standalone DAO that acts like a service. Put an object to it with a user id

@@ -129,6 +129,10 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-currencyChoice:hover {
       background: transparent !important;
     }
+    ^ .disabled {
+      filter: grayscale(100%) opacity(60%);
+      cursor: default;
+    }
   `,
 
   properties: [
@@ -180,6 +184,7 @@ foam.CLASS({
           }),
           label$: this.chosenCurrency$.dot('alphabeticCode')
         })
+          .enableClass('disabled', this.mode$.map((mode) => mode === foam.u2.DisplayMode.DISABLED))
           .start('div')
             .addClass(this.myClass('carrot'))
           .end()
@@ -191,7 +196,10 @@ foam.CLASS({
   actions: [
     {
     name: 'currencyChoice',
-    label: '',
+    label: ' ', // Whitespace is required
+    isEnabled: function(mode) {
+      return mode !== foam.u2.DisplayMode.DISABLED;
+    },
     code: function() {
         var self = this;
 

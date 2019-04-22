@@ -22,7 +22,9 @@ Stores all Exchange Rate info.`,
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FeesFields',
-
+    'net.nanopay.liquidity.LiquidityService',
+    'net.nanopay.liquidity.Frequency',
+    'net.nanopay.account.Account',
     'java.util.Arrays',
   ],
 
@@ -66,7 +68,7 @@ Stores all Exchange Rate info.`,
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
       ],
       javaCode: `
@@ -78,18 +80,17 @@ Stores all Exchange Rate info.`,
   args: [
     {
       name: 'x',
-      javaType: 'foam.core.X'
+      type: 'Context'
     },
     {
       name: 'oldTxn',
-      javaType: 'Transaction'
+      type: 'net.nanopay.tx.model.Transaction'
     }
   ],
-  javaReturns: 'Transfer[]',
+  type: 'net.nanopay.tx.Transfer[]',
   javaCode: `
     return getTransfers();
-
   `
-},
+}
   ]
 });

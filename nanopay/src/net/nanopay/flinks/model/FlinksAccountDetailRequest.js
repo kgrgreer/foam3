@@ -19,8 +19,7 @@ foam.CLASS({
       name: 'DateTo'
     },
     {
-      class: 'Array',
-      of: 'String',
+      class: 'StringArray',
       name: 'AccountsFilter'
     },
     {

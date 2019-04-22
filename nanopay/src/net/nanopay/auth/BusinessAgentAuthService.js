@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'net.nanopay.contacts.Contact',
     'net.nanopay.auth.AgentJunctionStatus',
+    'net.nanopay.admin.model.AccountStatus',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
@@ -77,10 +78,8 @@ foam.CLASS({
         ));
         Group actingWithinGroup = (Group) ((DAO) getGroupDAO()).find(permissionJunction.getGroup());
 
-        // Clone user and associate new junction group with user. Clone and
-        // freeze both user and agent.
+        // Clone and freeze both user and agent.
         entity = (User) entity.fclone();
-        entity.setGroup(actingWithinGroup.getId());
         entity.freeze();
         agent = (User) agent.fclone();
         agent.freeze();
@@ -88,8 +87,10 @@ foam.CLASS({
         // Set user and agent objects into the session context and place into sessionDAO.
         Session session = x.get(Session.class);
         session.setUserId(entity.getId());
+        session.setAgentId(agent.getId());
         session.setContext(session.getContext().put("user", entity));
         session.setContext(session.getContext().put("agent", agent));
+        session.setContext(session.getContext().put("group", actingWithinGroup));
         DAO sessionDAO = (DAO) getX().get("localSessionDAO");
         sessionDAO.put(session);
         return agent;
@@ -97,23 +98,28 @@ foam.CLASS({
     },
     {
       name: 'canActAs',
-      javaReturns: 'boolean',
+      type: 'Boolean',
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'agent',
-          javaType: 'User'
+          type: 'foam.nanos.auth.User'
         },
         {
           name: 'entity',
-          javaType: 'User',
+          type: 'foam.nanos.auth.User',
         }
       ],
       javaCode: `
       try {
+        // check entity status is not disabled
+        if ( AccountStatus.DISABLED == entity.getStatus() ) {
+          throw new AuthorizationException("Entity is disabled.");
+        }
+
         DAO groupDAO = (DAO) x.get("groupDAO"); 
         Group group = (Group) groupDAO.inX(x).find(entity.getGroup());
         if ( group == null ) {
@@ -125,7 +131,7 @@ foam.CLASS({
         // Finds the UserUserJunction object to see if user can act as the
         // passed in user. Source (agent) users are permitted to act as
         // target (entity) users, not vice versa.
-        DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO"); 
+        DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
         UserUserJunction permissionJunction = (UserUserJunction) agentJunctionDAO.inX(x).find(AND(
           EQ(UserUserJunction.SOURCE_ID, agent.getId()),
           EQ(UserUserJunction.TARGET_ID, entity.getId())

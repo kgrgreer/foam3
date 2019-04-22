@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
-  <version>0.0.1</version>
+  <version>2.8.2</version>
 
   <groupId>net.nanopay</groupId>
-  <artifactId>root</artifactId>
-  <name>nanoPay</name>
+  <artifactId>nanopay</artifactId>
+  <name>nanopay</name>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -36,6 +36,21 @@
       <artifactId>jtwig-core</artifactId>
       <version>5.86.1.RELEASE</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.9.3</version>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.12.0</version>
     </dependency>
     <dependency>
       <groupId>com.authy</groupId>
@@ -228,19 +243,28 @@
       <artifactId>plaid-java</artifactId>
       <version>3.0.5</version>
     </dependency>
+    <dependency>
+      <groupId>com.itextpdf</groupId>
+      <artifactId>itextpdf</artifactId>
+      <version>5.5.12</version>
+    </dependency>
+    <dependency>
+      <groupId>com.itextpdf</groupId>
+      <artifactId>html2pdf</artifactId>
+      <version>1.0.2</version>
+    </dependency>
   </dependencies>
 
   <build>
     <sourceDirectory>.</sourceDirectory>
     <plugins>
-
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
           <execution>
             <id>copy-dependencies</id>
-            <phase>package</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>copy-dependencies</goal>
             </goals>
@@ -249,8 +273,152 @@
               <outputDirectory>${project.build.directory}/lib</outputDirectory>
             </configuration>
           </execution>
+          </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-resources-webroot</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>nanopay/src/resources</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-webroot-js</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/webroot</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>tools/js_build</directory>
+                  <includes>
+                    <include>foam*.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-favicon</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/webroot/favicon</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>favicon</directory>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-images</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>nanopay/src/net/nanopay</directory>
+                  <filtering>false</filtering>
+                  <includes>
+                    <include>images/**</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>foam2/src/foam/u2</directory>
+                  <filtering>false</filtering>
+                  <includes>
+                    <include>images/**</include>
+                  </includes>
+                </resource>
+                <!-- <resource> -->
+                <!--   <directory>foam2/src/foam/support</directory> -->
+                <!--   <filtering>false</filtering> -->
+                <!--   <includes> -->
+                <!--     <include>images/**</include> -->
+                <!--   </includes> -->
+                <!-- </resource> -->
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-classes-images</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>foam2/src/foam/u2</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>images/**</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>foam2/src/foam/nanos</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>images/**</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>foam2/src/foam/support</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>images/**</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-journals</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/journals</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>target/journals</directory>
+                  <includes>
+                    <include>*.0</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
+
+      <!-- NOTE: these copies depend on above setting up classes/ -->
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.1.0</version>
@@ -259,11 +427,14 @@
             <manifest>
               <mainClass>foam.nanos.boot.Boot</mainClass>
               <addClasspath>true</addClasspath>
-              <classpathPrefix>lib/</classpathPrefix>
+              <classpathPrefix></classpathPrefix>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
           </archive>
+          <outputDirectory>${project.build.directory}/lib</outputDirectory>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 
@@ -285,12 +456,12 @@
               <target>${maven.compiler.target}</target>
               <includes>
                 <include>foam2/src/**/*.java</include>
-                <include>interac/src/**/*.java</include>
-                <include>merchant/src/**/*.java</include>
                 <include>nanopay/src/**/*.java</include>
                 <include>build/**/*.java</include>
               </includes>
               <excludes>
+                <exclude>interac/src/**/*.java</exclude>
+                <exclude>merchant/src/**/*.java</exclude>
                 <exclude>foam2/src/com/chrome/**</exclude>
                 <exclude>foam2/src/foam/nanos/tomcat/**</exclude>
                 <exclude>foam2/src/foam/dao/DatastoreDAO.java</exclude>

@@ -10,15 +10,15 @@ import foam.nanos.auth.token.TokenService;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.util.SafetyUtil;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import net.nanopay.auth.PublicUserInfo;
+import net.nanopay.accounting.quickbooks.model.QuickbooksInvoice;
+import net.nanopay.accounting.xero.model.XeroInvoice;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.notification.NewInvoiceNotification;
-
-import static foam.mlang.MLang.EQ;
+import net.nanopay.model.Currency;
 
 /**
  * Invoice decorator for dictating and setting up new invoice notifications and emails.
@@ -28,12 +28,14 @@ public class InvoiceNotificationDAO extends ProxyDAO {
 
   protected DAO bareUserDAO_;
   protected DAO notificationDAO_;
+  protected DAO currencyDAO_;
   protected TokenService externalToken;
 
   public InvoiceNotificationDAO(X x, DAO delegate) {
     super(x, delegate);
     bareUserDAO_ = (DAO) x.get("bareUserDAO");
     notificationDAO_ = (DAO) x.get("notificationDAO");
+    currencyDAO_ = (DAO) x.get("currencyDAO");
     externalToken = (TokenService) x.get("externalInvoiceToken");
   }
 
@@ -42,23 +44,46 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     Invoice invoice = (Invoice) obj;
     Invoice existing = (Invoice) super.find(invoice.getId());
 
-    if (existing != null ) {
-      if ( existing.getStatus() == InvoiceStatus.UNPAID ) {
-        if (invoice.getStatus() == InvoiceStatus.PENDING || invoice.getStatus() == InvoiceStatus.IN_TRANSIT ) {
-          DAO notificationDAO_ = (DAO) x.get("notificationDAO");
-          NewInvoiceNotification notification = (NewInvoiceNotification) notificationDAO_.find(EQ(NewInvoiceNotification.INVOICE_ID, invoice.getId()));    
-          if (notification != null) {
-            User user = invoice.findPayeeId(x);
-            EmailService emailService = (EmailService) getX().get("email");
-            EmailMessage message = new EmailMessage.Builder(x)
-              .setTo(new String[]{user.getEmail()})
-              .build();
-            emailService.sendEmailFromTemplate(x, user, message, notification.getEmailName(), notification.getEmailArgs());
-          }
+    // if the invoice is imported from accounting software
+    if ( existing == null &&
+         (invoice instanceof QuickbooksInvoice || invoice instanceof XeroInvoice) ) {
+      return super.put_(x, invoice);
+    }
+
+    if ( existing != null ) {
+      if (
+        existing.getStatus() == InvoiceStatus.UNPAID ||
+        existing.getStatus() == InvoiceStatus.PENDING_APPROVAL
+      ) {
+        if ( invoice.getStatus() == InvoiceStatus.PENDING ) {
+          AppConfig appConfig = (AppConfig) x.get("appConfig");
+          User user = invoice.findPayeeId(x);
+          String emailTemplate = "invoice-paid";
+
+          EmailService emailService = (EmailService) x.get("email");
+          EmailMessage message = new EmailMessage.Builder(x)
+            .setTo(new String[]{user.getEmail()})
+            .build();
+
+          PublicUserInfo payer = invoice.getPayer();
+
+          String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
+            .format(invoice.getAmount());
+
+          String currency = invoice.getDestinationCurrency();
+
+          HashMap<String, Object> args = new HashMap<>();
+          args.put("amount", amount);
+          args.put("currency", currency);
+          args.put("name", invoice.getPayee().label());
+          args.put("link", appConfig.getUrl());
+          args.put("fromName", payer.label());
+          args.put("senderCompany", payer.label());
+
+          emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
         }
       }
     }
-
 
     // Only send invoice notification if invoice does not have a status of draft
     if ( ! InvoiceStatus.DRAFT.equals(invoice.getStatus()) ) {
@@ -114,7 +139,6 @@ public class InvoiceNotificationDAO extends ProxyDAO {
   }
 
   private NewInvoiceNotification setEmailArgs(X x, Invoice invoice, NewInvoiceNotification notification) {
-    NumberFormat formatter = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
 
     PublicUserInfo payee = invoice.getPayee();
@@ -124,7 +148,7 @@ public class InvoiceNotificationDAO extends ProxyDAO {
     boolean invType = invoice.getPayeeId() == invoice.getCreatedBy();
 
     // Add the currency symbol and currency (CAD/USD, or other valid currency)
-    String amount = invoice.findDestinationCurrency(x)
+    String amount = ((Currency) currencyDAO_.find(invoice.getDestinationCurrency()))
         .format(invoice.getAmount()) + " " + invoice.getDestinationCurrency();
 
     String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();

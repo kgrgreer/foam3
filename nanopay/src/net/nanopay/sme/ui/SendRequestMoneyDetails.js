@@ -23,13 +23,20 @@ foam.CLASS({
     'notificationDAO',
     'predicate',
     'stack',
-    'user'
+    'user',
+    'xeroService',
+    'quickbooksService',
+    'accountingIntegrationUtil'
   ],
 
   requires: [
     'foam.u2.Element',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.accounting.AccountingErrorCodes',
+    'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.auth.PublicUserInfo',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus'
   ],
@@ -73,11 +80,6 @@ foam.CLASS({
     ^ .invoice-h2 {
       margin-top: 0;
     }
-    ^ .back-tab {
-      margin-bottom: 15px;
-      width: 150px;
-      cursor: pointer;
-    }
     ^ .isApproving {
       display: none;
       height: 0;
@@ -86,6 +88,24 @@ foam.CLASS({
     }
     ^ .selectionContainer {
       margin-bottom: 36px;
+    }
+    ^ .white-radio {
+      width: 244px !important;
+    }
+    ^back-arrow {
+      font-size: 10.7px;
+    }
+    ^back-area {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      color: #8e9090;
+      margin-bottom: 15px;
+      width: 150px;
+    }
+    ^back-tab {
+      margin-left: 6px;
     }
   `,
 
@@ -126,18 +146,30 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.invoice.model.Invoice',
       name: 'dataFromNewInvoiceForm',
+      factory: function() {
+        return this.Invoice.create({});
+      },
       documentation: `
         Stores the info that the user has filled out in the "new" tab so if they
         switch to the "existing" tab and back to the "new" tab, the info they
         filled in will still be there.
+        A factory is required for a new empty invoice form,
+        preventing existing invoice data conflicts.
       `
+    },
+    {
+      name: 'isDraft',
+      expression: function(invoice$status) {
+        return invoice$status === this.InvoiceStatus.DRAFT;
+      }
     }
   ],
 
   messages: [
     { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
-    { name: 'EXISTING_LIST_HEADER', message: 'Choose an existing ' },
-    { name: 'EXISTING_HEADER', message: 'Existing ' }
+    { name: 'EXISTING_HEADER', message: 'Choose an existing ' },
+    { name: 'DETAILS_HEADER', message: 'Details' },
+    { name: 'BACK', message: 'Back to selection' }
   ],
 
   methods: [
@@ -145,8 +177,6 @@ foam.CLASS({
       this.SUPER();
       var newButtonLabel = `New`;
       var existingButtonLabel = `Existing`;
-      this.hasSaveOption = true;
-      this.hasNextOption = true;
       this.hasBackOption = false;
       // Update the next button label
       this.nextLabel = 'Next';
@@ -174,7 +204,7 @@ foam.CLASS({
                this.E().start().addClass('block')
                   .show(this.isForm$)
                   .start().addClass('header')
-                    .add('Details')
+                    .add(this.DETAILS_HEADER)
                   .end()
                   .tag({
                     class: 'net.nanopay.sme.ui.NewInvoiceForm',
@@ -186,7 +216,7 @@ foam.CLASS({
               return ! bool ? null :
               this.E().start().addClass('block')
                 .start().addClass('header')
-                  .add(this.EXISTING_LIST_HEADER + this.type)
+                  .add(`${this.EXISTING_HEADER} ${this.type}`)
                 .end()
                 .start()
                   .addClass('invoice-list-wrapper')
@@ -196,11 +226,14 @@ foam.CLASS({
                         class: 'net.nanopay.sme.ui.InvoiceRowView',
                         data: invoice
                       })
-                        .on('click', () => {
+                        .on('click', async () => {
+                          // check if invoice is in sync with accounting software
+                          let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+                          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
                           this.isForm = false;
                           this.isList = false;
                           this.isDetailView = true;
-                          this.invoice = invoice;
+                          this.invoice = updatedInvoice;
                         })
                       .end();
                     })
@@ -211,20 +244,31 @@ foam.CLASS({
               return ! bool ? null :
               this.E().start()
                 .add(this.slot((invoice) => {
-                  // Enable next button
-                  this.hasNextOption = true;
                   var detailView =  this.E().addClass('block')
-                    .start().addClass('header')
-                      .add(this.EXISTING_HEADER + this.type)
+                    .start().hide(this.isDraft$)
+                      .addClass('header')
+                      .add(`${this.EXISTING_HEADER} ${this.type}`)
                     .end()
-                    .start().add('← Back to selection')
-                      .addClass('back-tab')
+                    .start().show(this.isDraft$)
+                      .addClass('header')
+                      .add(this.DETAILS_HEADER)
+                    .end()
+                    .start()
+                      .addClass(this.myClass('back-area'))
+                      .start({
+                        class: 'foam.u2.tag.Image',
+                        data: 'images/ablii/gobackarrow-grey.svg'
+                      })
+                        .addClass(this.myClass('back-arrow'))
+                      .end()
+                      .start()
+                        .addClass(this.myClass('back-tab'))
+                        .add(this.BACK)
+                      .end()
                       .on('click', () => {
                         this.isForm = false;
                         this.isList = true;
                         this.isDetailView = false;
-                        // Disable next button
-                        this.hasNextOption = false;
                       })
                     .end();
 
@@ -237,7 +281,8 @@ foam.CLASS({
                     } else {
                       detailView = detailView.start({
                         class: 'net.nanopay.sme.ui.InvoiceDetails',
-                        invoice: this.invoice
+                        invoice: this.invoice,
+                        showActions: false
                       }).addClass('invoice-details')
                       .end();
                     }
@@ -260,13 +305,9 @@ foam.CLASS({
         this.isForm = true;
         this.isList = false;
         this.isDetailView = false;
-        // Enable the save button
-        this.hasSaveOption = true;
-        // Enable the next button
-        this.hasNextOption = true;
         // Get the previous temp invoice data
         if ( this.Invoice.isInstance(this.dataFromNewInvoiceForm) ) {
-          this.invoice = this.dataFromNewInvoiceForm;
+          this.invoice.copyFrom(this.dataFromNewInvoiceForm);
         }
       }
     },
@@ -278,10 +319,6 @@ foam.CLASS({
         this.isForm = false;
         this.isList = true;
         this.isDetailView = false;
-        // Disable the save button
-        this.hasSaveOption = false;
-        // Disable the next button
-        this.hasNextOption = false;
         // Save the temp invoice data in a property
         if ( this.invoice.id === 0 ) { // only do this for temp invoice.
           this.dataFromNewInvoiceForm = this.invoice;

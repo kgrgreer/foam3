@@ -16,12 +16,20 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'net.nanopay.integration.AccountingIntegrationTrait'
+    'net.nanopay.accounting.AccountingIntegrationTrait'
   ],
 
   imports: [
-    'hasPassedCompliance',
+    'checkComplianceAndBanking',
     'user'
+  ],
+
+  constants: [
+    {
+      type: 'String',
+      name: 'WARNING_ICON',
+      value: 'images/warning.svg'
+    }
   ],
 
   properties: [
@@ -29,7 +37,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.contacts.where(this.EQ(this.Contact.ENABLED, true));
+        return this.user.contacts;
       }
     },
     {
@@ -40,15 +48,20 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            'organization', 'legalName', 'email', 'signUpStatus',
+            this.Contact.ORGANIZATION.clone().copyFrom({
+              tableWidth: undefined
+            }),
+            'email',
+            'signUpStatus',
             foam.core.Property.create({
               name: 'warning',
               label: '',
+              tableWidth: 55,
               tableCellFormatter: function(value, obj, axiom) {
-                if ( obj.bankAccount == undefined ) {
+                if ( obj.bankAccount === 0 && obj.businessId === 0 ) {
                   this.start()
                     .attrs({ title: 'Missing bank information' } )
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+                    .start({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON }).end()
                     .end();
                 }
               }
@@ -89,16 +102,20 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                if ( self.hasPassedCompliance() ) {
-                  X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                    var clone = menu.clone();
-                    Object.assign(clone.handler.view, {
-                      invoice: self.Invoice.create({ contactId: this.id }),
-                      isPayable: false
+                self.checkComplianceAndBanking().then((result) => {
+                  if ( result ) {
+                    X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                      var clone = menu.clone();
+                      Object.assign(clone.handler.view, {
+                        invoice: self.Invoice.create({ contactId: this.id }),
+                        isPayable: false
+                      });
+                      clone.launch(X, X.controllerView);
                     });
-                    clone.launch(X, X.controllerView);
-                  });
-                }
+                  }
+                }).catch((err) => {
+                  console.warn('Error occured when checking the compliance: ', err);
+                });
               }
             }),
             this.Action.create({
@@ -110,16 +127,20 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                if ( self.hasPassedCompliance() ) {
-                  X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                    var clone = menu.clone();
-                    Object.assign(clone.handler.view, {
-                      invoice: self.Invoice.create({ contactId: this.id }),
-                      isPayable: true
+                self.checkComplianceAndBanking().then((result) => {
+                  if ( result ) {
+                    X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                      var clone = menu.clone();
+                      Object.assign(clone.handler.view, {
+                        invoice: self.Invoice.create({ contactId: this.id }),
+                        isPayable: true
+                      });
+                      clone.launch(X, X.controllerView);
                     });
-                    clone.launch(X, X.controllerView);
-                  });
-                }
+                  }
+                }).catch((err) => {
+                  console.warn('Error occured when checking the compliance: ', err);
+                });
               }
             }),
             this.Action.create({

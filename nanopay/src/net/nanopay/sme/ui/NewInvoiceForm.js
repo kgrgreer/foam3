@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'canReceiveCurrencyDAO',
+    'ctrl',
     'errors',
     'invoice',
     'notificationDAO',
@@ -22,6 +23,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'as view',
     'uploadFileData'
   ],
 
@@ -30,7 +32,10 @@ foam.CLASS({
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'foam.u2.dialog.Popup',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
   ],
 
   css: `
@@ -64,8 +69,7 @@ foam.CLASS({
       font-size: 12px;
       width: 100%;
       height: 40px;
-      background: rgb(247, 247, 247, 1);
-      border: solid 1px rgba(164, 179, 184, 0.5);
+      border: solid 1px #8e9090;
       border-radius: 0 4px 4px 0;
       outline: none;
       padding-left: 5px;
@@ -74,17 +78,18 @@ foam.CLASS({
     ^ .invoice-amount-input {
       width: calc(100% - 86px);
       display: inline-block;
+      border-color: #8e9090;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
       width: 80px;
       padding-left: 5px;
-      background: rgb(247, 247, 247, 1);
+      background: #ffffff;
       display: inline-block;
       height: 38px;
       vertical-align: top;
       border-style: solid;
       border-width: 1px 0 1px 1px;
-      border-color: rgba(164, 179, 184, 0.5);
+      border-color: #8e9090;
       border-radius: 4px 0 0 4px;
     }
     ^ .validation-failure-container {
@@ -102,9 +107,9 @@ foam.CLASS({
     ^ .foam-u2-tag-TextArea {
       border-radius: 3px !important;
       border: solid 1px #8e9090 !important;
+      font-size: 14px;
       padding: 12px;
-      width: 500px;
-      background: rgb(247, 247, 247, 1);
+      width: 504px;
     }
     ^ .net-nanopay-ui-ActionView-currencyChoice {
       margin-left: 0px !important;
@@ -123,21 +128,67 @@ foam.CLASS({
     ^ .foam-u2-view-RichChoiceView-container {
       z-index: 10;
     }
-    ^ .foam-u2-view-RichChoiceView-selection-view {
-      background: rgb(247, 247, 247, 1);
-    }
-    ^ .box-for-drag-drop {
-      background: rgb(247, 247, 247, 1) !important;
+    ^ .foam-u2-view-RichChoiceView-action {
+      height: 36px;
+      padding: 8px 13px;
     }
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+      background-color: #ffffff;
       margin-top: 16px;
+      min-height: 264px;
+    }
+    ^ .small-error-icon {
+      height: 10px;
+      margin-top: 2px;
+      margin-right: 2px;
+    }
+    ^ .add-banking-information {
+      color: #6a39ff;
+      cursor: pointer;
+      float: right;
+      margin-left: 30px;
+      text-decoration: underline;
+    }
+    ^ .foam-u2-view-RichChoiceView.invalid .foam-u2-view-RichChoiceView-selection-view, 
+    ^ .error-box {
+      border-color: #f91c1c;
+      background: #fff6f6;
+    }
+    ^ .error-box-outline {
+      border-color: #f91c1c;
+    }
+    ^ .disabled {
+      pointer-events: none;
+      filter: grayscale(100%) opacity(60%);
+    }
+    ^tooltip {
+      display: none;
+      padding: 10px;
+      padding-bottom: 30px;
+      position: absolute;
+      width: 320px;
+      height: 75px;
+      border-radius: 3px;
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      border: solid 1px #e2e2e3;
+      background-color: #ffffff;
+      z-index: 1000;
+    }
+    ^showTooltip {
+      display: block;
+    }
+    ^no-access-icon {
+      margin-top: 13px;
+      float: left;
+      height: 100%;
+      margin-right: 10px;
     }
   `,
 
   messages: [
     {
       name: 'PAYABLE_ERROR_MSG',
-      message: 'The selected contact cannot receive payment in the selected currency.'
+      message: 'Banking information for this contact must be provided'
     },
     {
       name: 'RECEIVABLE_ERROR_MSG',
@@ -153,7 +204,38 @@ foam.CLASS({
     },
     {
       name: 'NOTE_PLACEHOLDER',
-      message: 'Add a note to this request'
+      message: 'Add a note to this'
+    },
+    {
+      name: 'ADD_NOTE',
+      message: 'Note'
+    },
+    {
+      name: 'ADD_BANK',
+      message: 'Add Banking Information'
+    },
+    {
+      name: 'UNSUPPORTED_CURRENCY1',
+      message: `Sorry, we don't support `
+    },
+    {
+      name: 'UNSUPPORTED_CURRENCY2',
+      message: ' for this contact'
+    },
+    {
+      name: 'TOOLTIP_TITLE',
+      message: `This field can't be edited.`
+    },
+    {
+      name: 'TOOLTIP_BODY',
+      message: 'Please edit this invoice in your accounting software and sync again.'
+    }
+  ],
+
+  constants: [
+    {
+      name: 'TOOLTIP_OFFSET',
+      value: 5
     }
   ],
 
@@ -189,90 +271,230 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         this.errors = newValue;
       }
+    },
+    {
+      class: 'String',
+      name: 'notePlaceHolder',
+      factory: function() {
+        return this.type === 'payable' ? 'payment' : 'request';
+      }
+    },
+    {
+      class: 'String',
+      name: 'contactLabel',
+      factory: function() {
+        return this.type === 'payable' ? 'Send to' : 'Request from';
+      }
+    },
+    {
+      class: 'String',
+      name: 'selectedCurrency'
+    },
+    {
+      class: 'Boolean',
+      name: 'showAddBank',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showTooltip',
+      value: false
+    },
+     {
+      class: 'Boolean',
+      name: 'disableAccountingInvoiceFields',
+      value: false,
+      documentation: `
+        Users should not be able to edit invoice pulled from accounting software
+        on Ablii, as this will cause mismatches between the data on Ablii and
+        the data on the accounting software.
+      `,
+      expression: function(invoice, type) {
+        return (
+          this.XeroInvoice.isInstance(invoice) ||
+          this.QuickbooksInvoice.isInstance(invoice)
+        ) && type !== 'payable';
+      }
+    },
+    {
+      type: 'Int',
+      name: 'xPosition',
+      value: 0
+    },
+     {
+      type: 'Int',
+      name: 'yPosition',
+      value: 0
     }
   ],
 
   methods: [
     function initE() {
-      var contactLabel = this.type === 'payable' ? 'Send to' : 'Request from';
-      var addNote = `Note`;
-
+      var self = this;
       // Setup the default destination currency
       this.invoice.destinationCurrency
         = this.currencyType;
-
       if ( this.type === 'payable' ) {
         this.invoice.payerId = this.user.id;
       } else {
         this.invoice.payeeId = this.user.id;
       }
+      let displayMode = this.disableAccountingInvoiceFields ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
       // Listeners to check if receiver or payer is valid for transaction.
       this.invoice$.dot('contactId').sub(this.onContactIdChange);
 
       this.currencyType$.sub(this.onCurrencyTypeChange);
 
+      this.ctrl
+        .start()
+          .addClass(this.myClass('tooltip'))
+          .style({ top: this.yPosition$, left: this.xPosition$ })
+          .enableClass(this.myClass('showTooltip'), this.showTooltip$)
+          .start().addClass(this.myClass('no-access-icon'))
+            .start('img').attrs({ src: 'images/no-access.svg' }).end()
+          .end()
+          .start('h3').add(this.TOOLTIP_TITLE).end()
+          .start('p').add(this.TOOLTIP_BODY).end()
+        .end();
+
       this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
-          .start().addClass('input-label').add(contactLabel).end()
-          .startContext({ data: this.invoice })
-            .tag(this.invoice.CONTACT_ID)
-          .endContext()
+          .start()
+            .addClass('input-label')
+            .add(this.contactLabel)
+          .end()
+          .start()
+            .on('mouseenter', this.toggleTooltip)
+            .on('mouseleave', this.toggleTooltip)
+            .on('mousemove', this.setCoordinates)
+            .startContext({ data: this.invoice })
+              .start(this.invoice.CONTACT_ID, {
+                action: this.ADD_CONTACT,
+                mode: displayMode
+              })
+                .enableClass('invalid', this.slot(
+                  function(isInvalid, type, showAddBank) {
+                    return isInvalid && type === 'payable' && showAddBank;
+                  }))
+              .end()
+            .endContext()
+          .end()
           .start()
             .show(this.isInvalid$)
             .addClass('validation-failure-container')
-            .add(this.type === 'payable' ?
-              this.PAYABLE_ERROR_MSG :
-              this.RECEIVABLE_ERROR_MSG)
+            .start().show(this.showAddBank$)
+              .start('img').addClass('small-error-icon').attrs({ src: 'images/inline-error-icon.svg' }).end()
+              .add(this.PAYABLE_ERROR_MSG)
+              .start().add(this.ADD_BANK).addClass('add-banking-information')
+                .on('click', async function() {
+                  self.userDAO.find(self.invoice.contactId).then((contact)=>{
+                    self.add(self.Popup.create({ onClose: self.checkUser.bind(self) }).tag({
+                      class: 'net.nanopay.contacts.ui.modal.ContactWizardModal',
+                      data: contact
+                    }));
+                  });
+                })
+              .end()
+            .end()
+            .start().show(! (this.type === 'payable'))
+              .add(this.RECEIVABLE_ERROR_MSG)
+            .end()
           .end()
         .end()
         .startContext({ data: this.invoice })
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add('Amount').end()
-              .startContext({ data: this })
-                .start(this.CURRENCY_TYPE)
-                  .on('click', () => {
-                    this.invoice.destinationCurrency
-                      = this.currencyType.alphabeticCode;
-                  })
-                .end()
-              .endContext()
+              .start()
+                .on('mouseenter', this.toggleTooltip)
+                .on('mouseleave', this.toggleTooltip)
+                .on('mousemove', this.setCoordinates)
+                .startContext({ data: this })
+                  .start(this.CURRENCY_TYPE, { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .enableClass('error-box-outline', this.slot( function(isInvalid, type, showAddBank) {
+                        return isInvalid && type === 'payable' && ! showAddBank;
+                      }))
+                    .on('click', () => {
+                      this.invoice.destinationCurrency = this.currencyType.alphabeticCode;
+                    })
+                  .end()
+                .endContext()
                 .start().addClass('invoice-amount-input')
-                  .start(this.Invoice.AMOUNT)
+                  .start(this.Invoice.AMOUNT, { mode: displayMode })
+                    .enableClass('error-box', this.slot( function(isInvalid, type, showAddBank) {
+                      return isInvalid && type === 'payable' && ! showAddBank;
+                    }))
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .addClass('invoice-input-box')
                   .end()
                 .end()
+              .end()
+              .start().show(this.slot(
+                function(isInvalid, showAddBank) {
+                  return isInvalid && ! showAddBank;
+                }))
+                .start().show(this.type === 'payable').addClass('validation-failure-container')
+                  .start('img')
+                    .addClass('small-error-icon')
+                    .attrs({ src: 'images/inline-error-icon.svg' })
+                  .end()
+                  .add(this.UNSUPPORTED_CURRENCY1)
+                  .add(this.selectedCurrency$)
+                  .add(this.UNSUPPORTED_CURRENCY2)
+                .end()
+              .end()
             .end()
 
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('Invoice #').end()
-                .start(this.Invoice.INVOICE_NUMBER)
-                  .attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
-                  .addClass('input-field')
+                .start().addClass('input-label').add('Invoice Number').end()
+                .start()
+                  .on('mouseenter', this.toggleTooltip)
+                  .on('mouseleave', this.toggleTooltip)
+                  .on('mousemove', this.setCoordinates)
+                  .start(this.Invoice.INVOICE_NUMBER, { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
+                    .addClass('input-field')
+                  .end()
                 .end()
               .end()
 
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('PO #').end()
-                .start(this.Invoice.PURCHASE_ORDER)
-                  .attrs({ placeholder: this.PO_PLACEHOLDER })
-                  .addClass('input-field')
+                .start().addClass('input-label').add('Date issued').end()
+                .start()
+                  .on('mouseenter', this.toggleTooltip)
+                  .on('mouseleave', this.toggleTooltip)
+                  .on('mousemove', this.setCoordinates)
+                  .start(this.Invoice.ISSUE_DATE.clone().copyFrom({ view: 'foam.u2.DateView' }), { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .addClass('input-field')
+                  .end()
                 .end()
               .end()
             .end()
 
             .start().addClass('invoice-block-right')
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('Date issued').end()
-                .start(this.Invoice.ISSUE_DATE.clone().copyFrom({
-                  view: 'foam.u2.DateView'
-                })).addClass('input-field').end()
+                .start().addClass('input-label').add('P.O. Number').end()
+                .start(this.Invoice.PURCHASE_ORDER)
+                  .attrs({ placeholder: this.PO_PLACEHOLDER })
+                  .addClass('input-field')
+                .end()
               .end()
 
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Date Due').end()
-                .start(this.Invoice.DUE_DATE).addClass('input-field').end()
+                .start()
+                  .on('mouseenter', this.toggleTooltip)
+                  .on('mouseleave', this.toggleTooltip)
+                  .on('mousemove', this.setCoordinates)
+                  .start(this.Invoice.DUE_DATE, { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .addClass('input-field')
+                  .end()
+                .end()
               .end()
             .end()
             .start({
@@ -288,16 +510,32 @@ foam.CLASS({
               }
             }).end()
             .start().addClass('input-wrapper')
-              .start().addClass('input-label').add(addNote).end()
+              .start().addClass('input-label').add(this.ADD_NOTE).end()
               .start( this.Invoice.NOTE, {
                 class: 'foam.u2.tag.TextArea',
                 rows: 5,
                 cols: 80
-              }).attrs({ placeholder: this.NOTE_PLACEHOLDER }).end()
+              })
+              .attrs({
+                placeholder: `${this.NOTE_PLACEHOLDER} ${this.notePlaceHolder}`
+              }).end()
             .end()
           .end()
         .endContext()
       .end();
+    },
+
+    function checkBankAccount() {
+      var self = this;
+      this.userDAO.find(this.invoice.contactId).then(function(contact) {
+        if ( contact && contact.businessId ) {
+          self.showAddBank = false;
+        } else if ( contact && contact.bankAccount ) {
+          self.showAddBank = false;
+        } else {
+          self.showAddBank = self.type === 'payable';
+        }
+      });
     }
   ],
 
@@ -306,12 +544,15 @@ foam.CLASS({
       this.checkUser(this.invoice.destinationCurrency);
     },
     function onCurrencyTypeChange() {
+      this.selectedCurrency = this.currencyType.alphabeticCode;
       this.checkUser(this.currencyType.alphabeticCode);
     },
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';
       var isPayable = this.type === 'payable';
-      var partyId = isPayable ? this.invoice.contactId : this.user.id;
+      var partyId = isPayable ?
+        ( this.invoice.payeeId ? this.invoice.payeeId : this.invoice.contactId )
+        : this.user.id;
       if ( partyId && destinationCurrency ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
@@ -319,11 +560,31 @@ foam.CLASS({
         });
         this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
           this.isInvalid = ! responseObj.response;
-          if ( this.isInvalid && this.type === 'payable' ) {
-            this.notify(responseObj.message, 'error');
-          }
         });
+      }
+      this.checkBankAccount();
+    },
+    function toggleTooltip() {
+      if ( this.disableAccountingInvoiceFields ) {
+        this.showTooltip = ! this.showTooltip;
+      }
+    },
+    function setCoordinates(e) {
+      this.xPosition = e.x + this.TOOLTIP_OFFSET;
+      this.yPosition = e.y + this.TOOLTIP_OFFSET;
+    }
+  ],
+
+  actions: [
+    {
+      name: 'addContact',
+      icon: 'images/plus-no-bg.svg',
+      code: function(X, e) {
+        X.view.add(X.view.Popup.create().tag({
+          class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
+        }));
       }
     }
   ]
 });
+

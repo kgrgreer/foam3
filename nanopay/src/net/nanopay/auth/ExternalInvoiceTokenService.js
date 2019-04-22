@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'ExternalInvoiceTokenService',
   extends: 'foam.nanos.auth.token.AbstractTokenService',
 
-  description: `The external token service provides two functionalities.
+  documentation: `The external token service provides two functionalities.
     Generating/storing tokens and associating them to the created email templates
     associated to the request. The second feature consists of processing
     tokens, checking validity and registering the users to the platform
@@ -14,6 +14,7 @@ foam.CLASS({
    imports: [
     'appConfig',
     'bareUserDAO',
+    'currencyDAO',
     'email',
     'invoiceDAO',
     'userUserDAO',
@@ -48,6 +49,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.model.Business',
+    'net.nanopay.model.Currency',
     'net.nanopay.contacts.Contact'
   ],
 
@@ -62,10 +64,13 @@ foam.CLASS({
         DAO tokenDAO = (DAO) getTokenDAO();
         DAO invoiceDAO = (DAO) getInvoiceDAO();
         DAO bareUserDAO = (DAO) getBareUserDAO();
+        DAO currencyDAO = (DAO) getCurrencyDAO();
         EmailService emailService = (EmailService) getEmail();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
         String emailTemplate;
+        String inviteEmail;
+        User loginUser = new User();
 
         // Requires hash map with invoice in parameters to redirect user to invoice after registration.
         if ( parameters.get("invoice") == null ) {
@@ -76,8 +81,22 @@ foam.CLASS({
         Invoice invoice = (Invoice) parameters.get("invoice");
         long invoiceId = invoice.getId();
 
+        boolean invType = invoice.getPayeeId() == invoice.getCreatedBy();
+        PublicUserInfo payee = invoice.getPayee();
+        PublicUserInfo payer = invoice.getPayer();
+
+        // Receivable
+        if ( user.getEmail().equals(payee.getEmail()) ) {
+          inviteEmail = payee.getEmail();
+          loginUser = (User) bareUserDAO.find(payer.getId());
+        } else {
+          inviteEmail = payer.getEmail();
+          loginUser = (User) bareUserDAO.find(payee.getId());
+        }
+
         // Create new token and associate passed in external user to token.
         Token token = new Token();
+        parameters.put("inviteeEmail", inviteEmail);
         token.setParameters(parameters);
         token.setUserId(user.getId());
         token.setExpiry(generateExpiryDate());
@@ -102,18 +121,6 @@ foam.CLASS({
           .build();
         HashMap<String, Object> args = new HashMap<>();
 
-        boolean invType = (long) invoice.getPayeeId() == (Long)invoice.getCreatedBy();
-        PublicUserInfo payee = invoice.getPayee();
-        PublicUserInfo payer = invoice.getPayer();
-
-        User loginUser = new User();
-        // Receivable
-        if ( user.getEmail().equals(payee.getEmail()) ) {
-          loginUser = (User) bareUserDAO.find(payer.getId());
-        } else {
-          loginUser = (User) bareUserDAO.find(payee.getId());
-        }
-
         Group group = loginUser.findGroup(x);
         AppConfig appConfig = group.getAppConfig(x);
         String url = appConfig.getUrl().replaceAll("/$", "");
@@ -125,11 +132,7 @@ foam.CLASS({
 
         // If user.getEmail() is equal to payee.getEmail(), then it is a receivable
         try {
-          if ( user.getEmail().equals(payee.getEmail()) ) {
-            urlStringB.append("&email=" + URLEncoder.encode(payee.getEmail(), "UTF-8"));
-          } else {
-            urlStringB.append("&email=" + URLEncoder.encode(payer.getEmail(), "UTF-8"));
-          }
+          urlStringB.append("&email=" + URLEncoder.encode(inviteEmail, "UTF-8"));
         } catch(Exception e) {
           logger.error("Error encoding the email.", e);
           throw new RuntimeException(e);
@@ -143,7 +146,8 @@ foam.CLASS({
         }
 
         args.put("name", user.getFirstName());
-        args.put("amount", invoice.findDestinationCurrency(x).format(invoice.getAmount()) + " " + invoice.getDestinationCurrency());
+        args.put("amount", currencyDAO.find(((Currency) currencyDAO.find(invoice.getDestinationCurrency())).format(
+              invoice.getAmount()) + " " + invoice.getDestinationCurrency()));
         if ( ! SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
           args.put("invoiceNumber", invoice.getInvoiceNumber());
         }
@@ -220,9 +224,9 @@ foam.CLASS({
           user.setPasswordExpiry(null);
           user.setPasswordLastModified(calendar.getTime());
 
-          // Set user email verified & enabled to true to enable log in.
+          // Set user email verified & login enabled to true to enable log in.
           user.setEmailVerified(true);
-          user.setEnabled(true);
+          user.setLoginEnabled(true);
           user.setGroup("sme");
           userUserDAO.put(user);
 

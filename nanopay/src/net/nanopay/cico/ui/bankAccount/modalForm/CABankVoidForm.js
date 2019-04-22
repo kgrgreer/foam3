@@ -73,7 +73,7 @@ foam.CLASS({
       margin-right: 16px;
     }
     ^account-container {
-      width: 220px;
+      flex-grow: 2;
     }
     ^name-container {
       margin-top: 16px;
@@ -89,6 +89,9 @@ foam.CLASS({
       margin: 0;
       margin-top: 8px;
       font-size: 10px;
+    }
+    ^flex {
+      display: flex;
     }
   `,
 
@@ -167,27 +170,6 @@ foam.CLASS({
       postSet: function(_, n) {
         this.bank.accountNumber = n;
       }
-    },
-    {
-      class: 'String',
-      name: 'nickname',
-      view: {
-        class: 'foam.u2.tag.Input',
-        maxLength: 32,
-        placeholder: 'My Bank',
-        onKey: true
-      },
-      factory: function() {
-        return this.bank.name ? this.bank.name : '';
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^[a-z0-9 ]{0,32}$/i; // alphanumerical only
-        return reg.test(n) ? n : o;
-      },
-      postSet: function(_, n) {
-        this.bank.name = n;
-      }
     }
   ],
 
@@ -199,12 +181,12 @@ foam.CLASS({
     { name: 'ACCOUNT', message: 'Account #' },
     { name: 'LABEL_NICKNAME', message: 'Nickname' },
     { name: 'HINT', message: 'Set a nickname to easily identify your account later on.' },
-    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
-    { name: 'INVALID_TRANSIT', message: 'Invalid transit #.'},
-    { name: 'INVALID_INSTITUTION', message: 'Invalid institution #.'},
-    { name: 'INVALID_ACCOUNT', message: 'Invalid account #.'},
-    { name: 'INVALID_NAME', message: 'Invalid nickname. Please use alphanumerical values only.'}
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
+    { name: 'INVALID_TRANSIT', message: 'Invalid transit #.' },
+    { name: 'INVALID_INSTITUTION', message: 'Invalid institution #.' },
+    { name: 'INVALID_ACCOUNT', message: 'Invalid account #.' },
+    { name: 'BANK_NAME_PLACEHOLDER', message: 'My Bank' }
   ],
 
   methods: [
@@ -220,26 +202,35 @@ foam.CLASS({
           .end()
           .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
           .start({ class: 'foam.u2.tag.Image', data: 'images/Canada-Check@2x.png' }).addClass(this.myClass('check-image')).end()
-          .start().addClass(this.myClass('field-container')).addClass(this.myClass('transit-container'))
-            .start('p').addClass('field-label').add(this.TRANSIT).end()
-            .tag(this.TRANSIT_NUMBER)
-          .end()
-          .start().addClass(this.myClass('field-container')).addClass(this.myClass('institution-container'))
-            .start('p').addClass('field-label').add(this.INSTITUTION).end()
-            .tag(this.INSTITUTION_NUMBER)
-          .end()
-          .start().addClass(this.myClass('field-container')).addClass(this.myClass('account-container'))
-            .start('p').addClass('field-label').add(this.ACCOUNT).end()
-            .tag(this.ACCOUNT_NUMBER)
+          .start()
+            .addClass(this.myClass('flex'))
+            .start().addClass(this.myClass('field-container')).addClass(this.myClass('transit-container'))
+              .start('p').addClass('field-label').add(this.TRANSIT).end()
+              .tag(this.TRANSIT_NUMBER)
+            .end()
+            .start().addClass(this.myClass('field-container')).addClass(this.myClass('institution-container'))
+              .start('p').addClass('field-label').add(this.INSTITUTION).end()
+              .tag(this.INSTITUTION_NUMBER)
+            .end()
+            .start().addClass(this.myClass('field-container')).addClass(this.myClass('account-container'))
+              .start('p').addClass('field-label').add(this.ACCOUNT).end()
+              .tag(this.ACCOUNT_NUMBER)
+            .end()
           .end()
           .start().addClass(this.myClass('field-container')).addClass(this.myClass('name-container'))
             .start('p').addClass('field-label').add(this.LABEL_NICKNAME).end()
-            .tag(this.NICKNAME)
+            .startContext({ data: this.bank })
+              .tag(this.bank.NAME, { placeholder: this.BANK_NAME_PLACEHOLDER })
+            .endContext()
             .start('p').addClass(this.myClass('hint')).add(this.HINT).end()
           .end()
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+        .start({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.BACK, next: this.NEXT
+        })
+        .end();
     },
 
     function validateForm() {
@@ -249,24 +240,25 @@ foam.CLASS({
            ! this.bank.institutionNumber ||
            ! this.bank.accountNumber ||
            ! this.bank.name ) {
-        this.notify(this.INVALID_FORM, 'error');
+        ctrl.notify(this.INVALID_FORM, 'error');
         return false;
       }
 
       if ( ! this.validateTransitNumber(this.bank.branchId) ) {
-        this.notify(this.INVALID_TRANSIT, 'error');
+        ctrl.notify(this.INVALID_TRANSIT, 'error');
         return false;
       }
       if ( ! this.validateInstitutionNumber(this.bank.institutionNumber) ) {
-        this.notify(this.INVALID_INSTITUTION, 'error');
+        ctrl.notify(this.INVALID_INSTITUTION, 'error');
         return false;
       }
       if ( ! this.validateAccountNumber(this.bank.accountNumber) ) {
-        this.notify(this.INVALID_ACCOUNT, 'error');
+        ctrl.notify(this.INVALID_ACCOUNT, 'error');
         return false;
       }
-      if ( ! nameRegEx.test(this.bank.name) ) {
-        this.notify(this.INVALID_NAME, 'error');
+
+      if ( this.bank.errors_ ) {
+        ctrl.notify(this.bank.errors_[0][1], 'error');
         return false;
       }
 

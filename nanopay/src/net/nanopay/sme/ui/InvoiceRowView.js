@@ -34,14 +34,22 @@ foam.CLASS({
   `,
 
   imports: [
+    'currencyDAO',
     'notificationDAO',
     'stack',
-    'user'
+    'user',
+    'xeroService',
+    'quickbooksService',
+    'accountingIntegrationUtil'
   ],
 
   requires: [
     'foam.nanos.notification.Notification',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.accounting.AccountingErrorCodes',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
@@ -124,7 +132,7 @@ foam.CLASS({
           .indexOf(data.status) != -1;
       },
       documentation: `Determine when to show the QuickAction in the payables/receivables lists.
-                      Hide the reminder button temporarily. To enable the reminder button for 
+                      Hide the reminder button temporarily. To enable the reminder button for
                       receivables, please remove the 'isPayable' condition in the expression.`
     },
   ],
@@ -142,11 +150,11 @@ foam.CLASS({
       var dueDateFormatted = this.data.dueDate ?
         'Due ' + this.data.dueDate.toISOString().slice(0, 10) :
         '';
-
-      this.data.destinationCurrency$find.then((currency) => {
+      this.currencyDAO.find(this.data.destinationCurrency)
+        .then((currency) => {
         this.currencyFormatted = currency.format(this.data.amount) + ' ' +
           currency.alphabeticCode;
-      });
+     });
 
       this
         .addClass(this.myClass())
@@ -177,16 +185,17 @@ foam.CLASS({
         .end();
     },
 
-    function payNow(event) {
+    async function payNow(event) {
       event.preventDefault();
       event.stopPropagation();
+      let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(this.data);
+      if ( updatedInvoice === null || updatedInvoice === undefined ) return;
       this.stack.push({
         class: 'net.nanopay.sme.ui.SendRequestMoney',
         isPayable: this.isPayable,
         isForm: false,
         isDetailView: true,
-        hasSaveOption: false,
-        invoice: this.data
+        invoice: updatedInvoice
       });
     },
 

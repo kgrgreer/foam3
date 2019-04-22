@@ -8,6 +8,8 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.auth.AgentJunctionStatus',
+    'net.nanopay.model.ClientUserJunction',
     'net.nanopay.model.Invitation',
     'foam.u2.dialog.NotificationMessage'
   ],
@@ -59,31 +61,40 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'email'
+      type: 'EMail',
+      name: 'email',
+      documentation: `The email address of the person to invite.`
     },
     {
-      class: 'String',
-      name: 'userGroup',
+      type: 'String',
+      name: 'role',
+      documentation: `This will determine the invitee's role in the business.`,
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          'Admin',
-          'Approver',
-          'Employee'
+          ['admin', 'Admin'],
+          ['approver', 'Approver'],
+          ['employee', 'Employee']
         ]
       }
-    }
+    },
+    {
+      type: 'Boolean',
+      name: 'noChoice',
+      value: false,
+      documentation: `Set to true to hide the role selector.`
+    },
+    'dao'
   ],
 
   messages: [
     { name: 'TITLE', message: 'Invite to ' },
     { name: 'EMAIL_LABEL', message: 'Email' },
-    { name: 'USER_GROUP_LABEL', message: 'User permission' },
-    { name: 'INVITATION_INTERNAL_SUCCESS', message: 'User successfully added to business.' },
-    { name: 'INVITATION_EXTERNAL_SUCCESS', message: 'Invitation sent' },
+    { name: 'ROLE_LABEL', message: 'Role' },
+    { name: 'INVITATION_SUCCESS', message: 'Invitation sent' },
     { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.'}
+    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
+    { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business.' }
   ],
 
   methods: [
@@ -91,6 +102,11 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('input-container')
           .start('h2').add(this.TITLE, this.user.businessName).addClass('medium-header').end()
+          .start().addClass('input-wrapper')
+            .hide(this.noChoice$)
+            .start().addClass('input-label').add(this.ROLE_LABEL).end()
+            .tag(this.ROLE)
+          .end()
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start(this.EMAIL).addClass('input-field').end()
@@ -110,19 +126,28 @@ foam.CLASS({
   actions: [
     {
       name: 'addUser',
-      code: function() {
+      code: async function() {
         if ( ! this.validateEmail(this.email) ) {
           this.notify(this.INVALID_EMAIL, 'error');
           return;
         }
+        // Disallow the adding of a user if they are currently already a user in the business.
+        // dao is populated when this modal is called from UserManagementView.js
+        if ( this.dao ) {
+          var disallowUserAdditionReturnFromAddUser = false;
+          var currentBusUserArray = (await this.dao.where(this.EQ(this.ClientUserJunction.STATUS, this.AgentJunctionStatus.ACTIVE)).select()).array;
+          currentBusUserArray.forEach( (busUser) => {
+            if ( foam.util.equals(busUser.email, this.email) ) {
+              this.notify(this.INVALID_EMAIL2, 'error');
+              disallowUserAdditionReturnFromAddUser = true;
+              // only exits loop with return, due to nesting function
+              return;
+            }
+          });
+          if ( disallowUserAdditionReturnFromAddUser ) return;
+        }
         var invitation = this.Invitation.create({
-          // A legal requirement is that we need to do a compliance check on any
-          // user that can make payments, which includes admins and approvers.
-          // However, we only do compliance checks on the company right now, not
-          // every user that can act as it. Therefore in the short term we'll
-          // only allow users to invite employees, because employees can't pay
-          // invoices, only submit them for approval.
-          group: 'employee', // TODO: Use this.userGroup.toLowerCase()
+          group: this.role,
           createdBy: this.user.id,
           email: this.email
         });
@@ -130,10 +155,7 @@ foam.CLASS({
         this.businessInvitationDAO
           .put(invitation)
           .then((resp) => {
-            var message = resp.internal
-              ? this.INVITATION_INTERNAL_SUCCESS
-              : this.INVITATION_EXTERNAL_SUCCESS;
-            this.notify(message);
+            this.notify(this.INVITATION_SUCCESS);
             this.agentJunctionDAO.on.reset.pub();
             this.closeDialog();
           })

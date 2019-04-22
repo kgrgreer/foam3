@@ -34,7 +34,7 @@ foam.CLASS({
   constants: [
     {
       name: 'NAME_MAX_LENGTH',
-      type: 'int',
+      type: 'Integer',
       value: 70
     }
   ],
@@ -55,8 +55,11 @@ foam.CLASS({
           typeof organization !== 'string' ||
           organization.trim().length === 0
         ) {
-          return 'Company name required';
+          return 'Business name required';
         }
+      },
+      postSet: function(_,n) {
+        this.businessName = n;
       }
     },
     {
@@ -77,14 +80,7 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      validateObj: function(firstName) {
-        if (
-          typeof firstName !== 'string' ||
-          firstName.trim().length === 0
-        ) {
-          return 'First name required';
-        }
-      }
+      validateObj: function(firstName) {}
     },
     {
       name: 'middleName',
@@ -92,27 +88,25 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      validateObj: function(lastName) {
-        if (
-          typeof lastName !== 'string' ||
-          lastName.trim().length === 0
-        ) {
-          return 'Last name required';
-        }
-      }
+      validateObj: function(lastName) {}
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.contacts.ContactStatus',
       name: 'signUpStatus',
       label: 'Status',
+      tableWidth: 170,
       documentation: `
         Keeps track of the different states a contact can be in with respect to
         whether the real user has signed up yet or not.
       `,
-      tableCellFormatter: function(status) {
-        // TODO: Make sure this is styled correctly.
-        this.start('span').add(status.label).end();
+      tableCellFormatter: function(state, obj) {
+        this.start()
+          .start().addClass('contact-status-circle-' + (state.label).replace(/\s+/g, '')).end()
+          .start().addClass('contact-status-' + (state.label).replace(/\s+/g, ''))
+            .add(state.label)
+          .end()
+        .end();
       }
     },
     {
@@ -166,10 +160,10 @@ foam.CLASS({
       name: 'validate',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String containsDigitRegex = ".*\\\\d.*";
@@ -189,14 +183,10 @@ foam.CLASS({
             isValidEmail = false;
           }
 
-          if ( SafetyUtil.isEmpty(this.getFirstName()) ) {
-            throw new IllegalStateException("First name is required.");
-          } else if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
+          if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("First name cannot exceed 70 characters.");
           } else if ( Pattern.matches(containsDigitRegex, this.getFirstName()) ) {
             throw new IllegalStateException("First name cannot contain numbers.");
-          } else if ( SafetyUtil.isEmpty(this.getLastName()) ) {
-            throw new IllegalStateException("Last name is required.");
           } else if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
             throw new IllegalStateException("Last name cannot exceed 70 characters.");
           } else if ( Pattern.matches(containsDigitRegex, this.getLastName()) ) {

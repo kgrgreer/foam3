@@ -20,7 +20,6 @@ foam.CLASS({
     table {
       border-collapse: collapse;
       margin: auto;
-      width: 962px;
     }
     thead > tr > th {
       font-family: 'Roboto';
@@ -77,7 +76,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       color: black;
     }
@@ -102,13 +101,13 @@ foam.CLASS({
     }
     .net-nanopay-ui-ActionView-backAction {
       border: 1px solid lightgrey;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
       position: relative;
       z-index: 10;
     }
     .net-nanopay-ui-ActionView-deleteDraft {
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px #8C92AC;
       color: #093649;
       font-size: 14px;

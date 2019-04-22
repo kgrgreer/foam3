@@ -11,6 +11,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
+    'net.nanopay.account.LoanAccount',
     'net.nanopay.bank.BankAccount',
     'foam.nanos.auth.User',
     'net.nanopay.ui.transfer.TransferUserCard',
@@ -167,6 +168,11 @@ foam.CLASS({
 
   properties: [
     'payer',
+    {
+      class: 'Boolean',
+      name: 'defaultAccountChosen', 
+      value: false
+    },
 
     // The only scenario for paying from a parner account is for )pentext. Will revisit for Opentext phase II
 
@@ -495,6 +501,23 @@ foam.CLASS({
         var self = this;
         this.balanceDAO.find(this.accounts).then(function(balance) {
           var amount = (balance != null ? balance.balance : 0);
+          if ( ! self.defaultAccountChosen
+            && self.types == 'DigitalAccount'
+            && ( amount == 0 || ( self.invoice && amount < self.invoice.amount ))) {
+              self.accountDAO
+              .where(
+                self.AND(
+                  self.EQ(self.Account.OWNER, self.accountOwner),
+                  self.AND(
+                    self.INSTANCE_OF(self.BankAccount),
+                    self.EQ(self.Account.IS_DEFAULT, true))))
+              .select()
+              .then(function(a) {
+                var accounts = a.array;
+                if ( accounts.length > 0 ) self.types = accounts[0].type;
+              })
+          }
+          self.defaultAccountChosen = true;
           self.viewData.balance = amount;
         });
       }
@@ -532,6 +555,20 @@ foam.CLASS({
           choice = account.name + ' ' + '***' + account.accountNumber.substring(numLength - 4, numLength);
           return [account.id, choice];
         });
+      }
+
+      if ( type == 'LoanAccount') {
+        let choices = [];
+        for ( var i = 0; i < length; ++i ) {
+          let account = accounts[i];
+          let balance = await account.findBalance(this);
+          let currency = await this.currencyDAO.find(account.denomination);
+          let name = account.name ? account.name : 'Loan Account';
+          choices.push(
+            [account.id,
+            name + ' Limit Left: ' + currency.format(account.principal + balance)]);
+        }
+        if ( this.types == 'LoanAccount' ) view.choices = choices;
       }
     },
 

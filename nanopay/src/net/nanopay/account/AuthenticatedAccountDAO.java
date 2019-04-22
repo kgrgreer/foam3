@@ -14,6 +14,7 @@ import foam.nanos.auth.User;
 import net.nanopay.contacts.Contact;
 
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.OR;
 
 public class AuthenticatedAccountDAO
     extends ProxyDAO
@@ -98,7 +99,12 @@ public class AuthenticatedAccountDAO
     }
 
     boolean global = auth.check(x, GLOBAL_ACCOUNT_READ);
-    DAO dao = global ? getDelegate() : getDelegate().where(EQ(Account.OWNER, user.getId()));
+    DAO dao = global ? getDelegate() : getDelegate().where(
+      OR(
+        EQ(Account.OWNER, user.getId()),
+        EQ(Account.CREATED_BY, user.getId())
+      )
+    );
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
 

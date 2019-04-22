@@ -16,8 +16,7 @@ foam.CLASS({
   imports: [
     'stack',
     'xeroService',
-    'xeroSignIn',
-    'quickSignIn',
+    'quickbooksService',
     'quickService'
   ],
 
@@ -56,7 +55,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       font-family: 2px;
       font-size: 14px;
@@ -180,11 +179,11 @@ foam.CLASS({
   listeners: [
 
     function signXero() {
-      var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+      var url = window.location.origin + '/service/WebAgent?portRedirect=' + window.location.hash.slice(1);
       window.location = this.attachSessionId(url);
     },
     function signQuick() {
-      var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+      var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
       window.location = this.attachSessionId(url);
     },
   ]

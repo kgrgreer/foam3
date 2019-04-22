@@ -8,16 +8,19 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.User;
 import foam.nanos.auth.token.Token;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
-import foam.util.Auth;
+import net.nanopay.model.InvitationStatus;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 import static foam.mlang.MLang.*;
 
@@ -47,27 +50,14 @@ public class UserRegistrationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    DAO userUserDAO = (DAO) x.get("userUserDAO");
     User user = (User) obj;
+    Boolean isInternal = false;
 
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }
-
-    User userWithSameEmail = (User) getDelegate()
-      .inX(x)
-      .find(
-        AND(
-          EQ(User.EMAIL, user.getEmail()),
-          NOT(INSTANCE_OF(Business.getOwnClassInfo())),
-          NOT(INSTANCE_OF(Contact.getOwnClassInfo()))
-        )
-      );
-
-    if ( userWithSameEmail != null ) {
-      throw new RuntimeException("User with same email address already exists: " + user.getEmail());
-    }
-
+    
+    // Set user SPID and group defined by service.
     user.setSpid(spid_);
     user.setGroup(group_);
 
@@ -80,16 +70,39 @@ public class UserRegistrationDAO
       .put(HttpServletRequest.class, x.get(HttpServletRequest.class))
       .put("appConfig", x.get("appConfig"));
 
-    // Make sure the email the user is signing up with matches the email the invite was sent to
+    // Check the parameters in the signup token
     if ( ! SafetyUtil.isEmpty(user.getSignUpToken()) ) {
       Token token = (Token) tokenDAO_.find(EQ(Token.DATA, user.getSignUpToken()));
       user.setEmailVerified(token != null);
 
       if ( token == null ) {
-        throw new RuntimeException("Uknown token.");
+        throw new RuntimeException("Unknown token.");
+      }
+
+      Date currentDate = new Date();
+
+      // Compare current date with the expiry date
+      if ( token.getExpiry() != null && token.getExpiry().before(currentDate) ) {
+        throw new RuntimeException("Invitation expired. Please request a new one.");
       }
 
       Map<String, Object> params = (Map) token.getParameters();
+
+      // Check if user is internal ( already a registered user ), which will happen if adding a user to
+      // a business.
+      isInternal = params.containsKey("internal" ) && ((Boolean) params.get("internal"));
+      if ( ! isInternal ) {
+        checkUserDuplication(x, user);
+      }
+
+      // Make sure the email the user is signing up with matches the email the invite was sent to
+      if ( params.containsKey("inviteeEmail") ) {
+        if ( ! params.get("inviteeEmail").equals(user.getEmail()) ) {
+          throw new RuntimeException(("Email does not match invited email."));
+        }
+      } else {
+        throw new RuntimeException("Cannot process without an invited email.");
+      }
 
       if ( params.containsKey("businessId") ) {
         long businessId = (long) params.get("businessId");
@@ -111,19 +124,32 @@ public class UserRegistrationDAO
                 EQ(Invitation.EMAIL, user.getEmail())
               )
             );
-
-          if ( params.containsKey("inviteeEmail") ) {
-            if (invitation == null || params.get("inviteeEmail") != invitation.getEmail()) {
-              throw new RuntimeException(("Email does not match invited email."));
-            }
-          } else {
-            throw new RuntimeException("Invitation is out of date. Please request a new one.");
+          if ( invitation.getStatus() != InvitationStatus.SENT ) {
+            Logger logger = (Logger) x.get("logger");
+            logger.warning("Business invitation is not in SENT status but is trying to get processed.");
           }
+          invitation.setStatus(InvitationStatus.ACCEPTED);
+          invitationDAO_.put(invitation);
         }
       }
     }
-
+    if ( ! isInternal ) checkUserDuplication(x, user);
     return super.put_(sysContext, user);
+  }
+
+  public void checkUserDuplication(X x, User user) {
+    User userWithSameEmail = (User) getDelegate()
+        .inX(x)
+        .find(
+          AND(
+            EQ(User.EMAIL, user.getEmail()),
+            NOT(INSTANCE_OF(Business.getOwnClassInfo())),
+            NOT(INSTANCE_OF(Contact.getOwnClassInfo()))
+          )
+        );
+    if ( userWithSameEmail != null ) {
+      throw new RuntimeException("User with same email address already exists: " + user.getEmail());
+    }
   }
 
   @Override

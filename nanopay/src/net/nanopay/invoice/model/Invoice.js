@@ -20,10 +20,6 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
-  imports: [
-    'currencyDAO'
-  ],
-
   searchColumns: [
     'search', 'payerId', 'payeeId', 'status'
   ],
@@ -45,12 +41,8 @@ foam.CLASS({
     'net.nanopay.contacts.Contact'
   ],
 
-  constants: [
-    {
-      type: 'long',
-      name: 'ABLII_MAX_AMOUNT',
-      value: 25000 * 100
-    }
+  imports: [
+    'currencyDAO'
   ],
 
   properties: [
@@ -66,7 +58,8 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 60
     },
     {
       class: 'String',
@@ -77,7 +70,8 @@ foam.CLASS({
         'invoice',
         'i'
       ],
-      visibility: foam.u2.Visibility.FINAL
+      visibility: foam.u2.Visibility.FINAL,
+      tableWidth: 110
     },
     {
       class: 'String',
@@ -135,7 +129,8 @@ foam.CLASS({
       aliases: ['dueDate', 'due', 'd', 'issued'],
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0, 10) : '');
-      }
+      },
+      tableWidth: 95
     },
     {
       class: 'DateTime',
@@ -177,6 +172,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       documentation: `The date the invoice was last modified.`,
+      tableWidth: 140
     },
     {
       class: 'Reference',
@@ -234,21 +230,21 @@ foam.CLASS({
         'targetAmount',
         'destinationAmount'
       ],
-      precision: 2, // TODO: This should depend on the precision of the currency
       required: true,
       tableCellFormatter: function(value, invoice) {
         // Needed to show amount value for old invoices that don't have destination currency set
         if ( ! invoice.destinationCurrency ) {
-          invoice.destinationCurrency = 'CAD';
+          this.add(value);
         }
-        invoice.currencyDAO
+        this.__subContext__.currencyDAO
           .find(invoice.destinationCurrency)
           .then((currency) => {
             this.start()
-              .add(invoice.destinationCurrency + ' ' + currency.format(value))
+              .add(currency.format(value) + ' ' + invoice.destinationCurrency)
             .end();
           });
-      }
+      },
+      tableWidth: 120
     },
     { // How is this used? - display only?
       documentation: `
@@ -261,15 +257,13 @@ foam.CLASS({
       documentation: `
         The amount used to pay the invoice, prior to exchange rates & fees.
       `,
-      precision: 2, // TODO: This should depend on the precision of the currency
       tableCellFormatter: function(value, invoice) {
-        invoice.currencyDAO
-          .find(invoice.sourceCurrency)
-          .then((currency) => {
+        this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
+          .then(function(currency) {
             this.start()
               .add(invoice.sourceCurrency + ' ' + currency.format(value))
             .end();
-          });
+        }.bind(this));
       }
     },
     {
@@ -280,7 +274,6 @@ foam.CLASS({
     },
     {
       class: 'Currency',
-      precision: 2,
       name: 'exchangeRate',
       documentation: 'Exchange rate captured on time of payment.'
     },
@@ -291,17 +284,17 @@ foam.CLASS({
       documentation: `The state of payment of the invoice.`
     },
     {
-      class: 'Reference',
+      class: 'String',
       name: 'destinationCurrency',
-      of: 'net.nanopay.model.Currency',
+      value: 'CAD',
       documentation: `
         Currency of the account the funds with be deposited into.
       `
     },
     {
-      class: 'Reference',
+      class: 'String',
       name: 'sourceCurrency',
-      of: 'net.nanopay.model.Currency',
+      value: 'CAD',
       documentation: `Currency of the account the funds with be withdran from.`,
     },
     {
@@ -347,7 +340,7 @@ foam.CLASS({
         if ( paymentMethod === this.PaymentStatus.PENDING ) return this.InvoiceStatus.PENDING;
         if ( paymentMethod === this.PaymentStatus.CHEQUE ) return this.InvoiceStatus.PAID;
         if ( paymentMethod === this.PaymentStatus.NANOPAY ) return this.InvoiceStatus.PAID;
-        if ( paymentMethod === this.PaymentStatus.TRANSIT_PAYMENT ) return this.InvoiceStatus.IN_TRANSIT;
+        if ( paymentMethod === this.PaymentStatus.TRANSIT_PAYMENT ) return this.InvoiceStatus.PENDING;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_PAYMENT ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_MONEY ) return this.InvoiceStatus.DEPOSITING_MONEY;
         if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) return this.InvoiceStatus.PENDING_APPROVAL;
@@ -364,7 +357,7 @@ foam.CLASS({
         if ( getPaymentMethod() == PaymentStatus.PENDING ) return InvoiceStatus.PENDING;
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return InvoiceStatus.PAID;
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return InvoiceStatus.PAID;
-        if ( getPaymentMethod() == PaymentStatus.TRANSIT_PAYMENT ) return InvoiceStatus.IN_TRANSIT;
+        if ( getPaymentMethod() == PaymentStatus.TRANSIT_PAYMENT ) return InvoiceStatus.PENDING;
         if ( getPaymentMethod() == PaymentStatus.DEPOSIT_PAYMENT ) return InvoiceStatus.PENDING_ACCEPTANCE;
         if ( getPaymentMethod() == PaymentStatus.DEPOSIT_MONEY ) return InvoiceStatus.DEPOSITING_MONEY;
         if ( getPaymentMethod() == PaymentStatus.PENDING_APPROVAL ) return InvoiceStatus.PENDING_APPROVAL;
@@ -399,13 +392,31 @@ foam.CLASS({
             .add(label)
           .end()
         .end();
-      }
+      },
+      tableWidth: 130
     },
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'invoiceFile',
+      label: '',
+      tableWidth: 70,
       documentation: 'Original invoice file',
-      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
+      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' },
+      tableCellFormatter: function(files) {
+        // TODO: Handle multiple files.
+        if ( Array.isArray(files) && files.length > 0 ) {
+          this
+            .start('a')
+              .attrs({
+                href: files[0].address,
+                target: '_blank'
+              })
+              .start()
+                .addClass('invoice-attachment-icon')
+              .end()
+            .end();
+        }
+      }
     },
     {
       class: 'Boolean',
@@ -434,19 +445,6 @@ foam.CLASS({
       name: 'contactId',
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
-        var dao = X.user.contacts
-          .where(m.EQ(net.nanopay.contacts.Contact.ENABLED, true))
-          .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
-        var promisedDAO = function(predicate) {
-          return foam.dao.PromisedDAO.create({
-            promise: dao.select().then(function(db) {
-              return foam.dao.ArrayDAO.create({
-                array: db.array.filter(predicate),
-                of: dao.of
-              });
-            })
-          });
-        };
         return {
           class: 'foam.u2.view.RichChoiceView',
           selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
@@ -454,17 +452,49 @@ foam.CLASS({
           sections: [
             {
               heading: 'Contacts',
-              dao: promisedDAO((c) => c.businessStatus !== net.nanopay.admin.model.AccountStatus.DISABLED)
+              dao: foam.dao.PromisedDAO.create({
+                promise: X.businessDAO
+                  .where(m.NEQ(net.nanopay.model.Business.STATUS, net.nanopay.admin.model.AccountStatus.DISABLED))
+                  .select(m.MAP(net.nanopay.model.Business.ID))
+                  .then(function(sink) {
+                    return X.user.contacts
+                      .where(
+                        m.OR(
+                          m.IN(net.nanopay.contacts.Contact.BUSINESS_ID, sink.delegate.array),
+                          m.EQ(net.nanopay.contacts.Contact.BUSINESS_ID, 0)
+                        )
+                      )
+                      .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
+                  })
+              })
             },
             {
               heading: 'Disabled contacts',
-              dao: promisedDAO((c) => c.businessStatus === net.nanopay.admin.model.AccountStatus.DISABLED),
+              dao: foam.dao.PromisedDAO.create({
+                promise: X.businessDAO
+                  .where(m.EQ(net.nanopay.model.Business.STATUS, net.nanopay.admin.model.AccountStatus.DISABLED))
+                  .select(m.MAP(net.nanopay.model.Business.ID))
+                  .then(function(sink) {
+                    return X.user.contacts
+                      .where(m.IN(net.nanopay.contacts.Contact.BUSINESS_ID, sink.delegate.array))
+                      .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
+                  })
+              }),
               disabled: true,
               hideIfEmpty: true
             }
           ]
         };
       }
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'AFXConfirmationPDF',
+      documentation: `
+        If this invoice is associated with an AFX transaction, we generate an
+        order confirmation PDF for the payer. The property exists to hold that
+        PDF in such a scenario.
+      `
     }
   ],
 
@@ -472,9 +502,9 @@ foam.CLASS({
     {
       name: `validate`,
       args: [
-        { name: 'x', javaType: 'foam.core.X' }
+        { name: 'x', type: 'Context' }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         DAO bareUserDAO = (DAO) x.get("bareUserDAO");
@@ -487,15 +517,6 @@ foam.CLASS({
           if ( currency == null ) {
             throw new IllegalStateException("Destination currency is not valid.");
           }
-        }
-
-        User user = (User) x.get("user");
-        DAO groupDAO = (DAO) x.get("groupDAO");
-        Group group = (Group) groupDAO.find(user.getGroup());
-        boolean isAbliiUser = group != null && group.isDescendantOf("sme", groupDAO);
-
-        if ( isAbliiUser && this.getAmount() > this.ABLII_MAX_AMOUNT  ) {
-          throw new IllegalStateException("Amount exceeds the user's sending limit.");
         }
 
         if ( this.getAmount() <= 0 ) {
@@ -529,7 +550,8 @@ foam.CLASS({
           if ( payee == null && contact.getBusinessId() != 0 ) {
             throw new IllegalStateException("No user, contact, or business with the provided payeeId exists.");
           }
-          if ( payee != null && SafetyUtil.equals(payee.getStatus(), AccountStatus.DISABLED) ) {
+          // TODO: Move user checking to user validation service
+          if ( payee != null && AccountStatus.DISABLED == payee.getStatus() ) {
             throw new IllegalStateException("Payee user is disabled.");
           }
         }
@@ -542,7 +564,8 @@ foam.CLASS({
           if ( payer == null && contact.getBusinessId() != 0 ) {
             throw new IllegalStateException("No user, contact, or business with the provided payerId exists.");
           }
-          if ( payer != null && SafetyUtil.equals(payer.getStatus(), AccountStatus.DISABLED) ) {
+          // TODO: Move user checking to user validation service
+          if ( payer != null && AccountStatus.DISABLED == payer.getStatus() ) {
             throw new IllegalStateException("Payer user is disabled.");
           }
         }
@@ -576,8 +599,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true,
-    flags: ['js']
+    hidden: true
   },
   targetProperty: {
     label: 'Vendor',
@@ -611,11 +633,8 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payee ? obj.payee.label() : 'N/A');
-    },
-    flags: ['js']
+    }
   },
-  sourceMethod: { flags: ['js', 'java'] },
-  targetMethod: { flags: ['js', 'java'] },
 });
 
 
@@ -627,8 +646,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true,
-    flags: ['js']
+    hidden: true
   },
   targetProperty: {
     label: 'Customer',
@@ -662,9 +680,6 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payer ? obj.payer.label() : 'N/A');
-    },
-    flags: ['js']
+    }
   },
-  sourceMethod: { flags: ['js', 'java'] },
-  targetMethod: { flags: ['js', 'java'] },
 });

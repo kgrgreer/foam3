@@ -3,16 +3,15 @@ package net.nanopay.auth;
 import foam.core.Detachable;
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.DAO;
-import foam.dao.ProxyDAO;
-import foam.dao.ReadOnlyDAO;
 import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.dao.ProxySink;
+import foam.dao.ReadOnlyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import net.nanopay.admin.model.AccountStatus;
 
 public class UserToPublicUserInfoDAO
@@ -53,8 +52,7 @@ public class UserToPublicUserInfoDAO
    */
   public boolean isPublic(User user) {
     return user != null &&
-      user.getEnabled() &&
-      ! user.getSystem() &&
+      ! SafetyUtil.equals(user.getGroup(), "system") &&
       user.getLoginEnabled() &&
       user.getStatus() == AccountStatus.ACTIVE &&
       user.getIsPublic();

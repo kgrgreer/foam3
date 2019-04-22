@@ -167,6 +167,12 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'hasBackOption',
+      expression: function(position) {
+        return ( position !== 0 || this.invoiceMode === true ) && position !== 4;
+      }
+    },
+    {
       name: 'countdownView',
       factory: function() {
         return this.CountdownView.create();
@@ -217,9 +223,6 @@ foam.CLASS({
     {
       name: 'goBack',
       label: 'Back',
-      isAvailable: function(position, invoiceMode, errors) {
-        return ( position !== 0 || invoiceMode === true ) && position !== 4;
-      },
       code: function(X) {
         if ( this.position === 0 ) {
           X.stack.back();
@@ -253,6 +256,7 @@ foam.CLASS({
           var accountType = this.viewData.payerType;
           var isBankAccount = accountType.substring(accountType.length - 11) == 'BankAccount';
           var isTrustAccount = accountType == 'TrustAccount';
+          var isLoanAccount = accountType == 'LoanAccount';
 
           if ( self.viewData.fromAmount <= 0 ) {
             this.add(this.NotificationMessage.create({
@@ -288,7 +292,7 @@ foam.CLASS({
             // an error message if they don't.
             var fundsInsufficient =
               this.viewData.balance < this.viewData.fromAmount;
-            if ( ! isBankAccount && ! isTrustAccount && fundsInsufficient ) {
+            if ( ! isLoanAccount && ! isBankAccount && ! isTrustAccount && fundsInsufficient ) {
               this.add(this.NotificationMessage.create({
                 message: this.InsuffientDigitalBalance,
                 type: 'error'

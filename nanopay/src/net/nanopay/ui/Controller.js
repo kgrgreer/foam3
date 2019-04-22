@@ -13,7 +13,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.u2.navigation.FooterView',
@@ -71,7 +70,7 @@ foam.CLASS({
     }
     .net-nanopay-ui-ActionView-exportButton {
       float: right;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       width: 75px !important;
       height: 40px;
@@ -159,12 +158,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'appConfig',
-      factory: function() {
-        return this.AppConfig.create();
-      }
-    },
-    {
       class: 'foam.core.FObjectProperty',
       of: 'net.nanopay.account.Account',
       name: 'currentAccount',
@@ -179,18 +172,20 @@ foam.CLASS({
 
   methods: [
     function initE() {
+
+      // enable session timer
+      this.sessionTimer.enable = true;
+      this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
+
       var self = this;
       self.clientPromise.then(function() {
-        self.client.nSpecDAO.find('appConfig').then(function(config) {
-          self.appConfig.copyFrom(config.service);
-        });
 
         self.AppStyles.create();
         self.NanoConnectStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
 
-        foam.__context__.register(self.ActionView, 'foam.u2.ActionView');
+        self.__subContext__.register(self.ActionView, 'foam.u2.ActionView');
 
         self.findBalance();
         self
@@ -212,82 +207,10 @@ foam.CLASS({
       });
     },
 
-    function getCurrentUser() {
-      var self = this;
-
-      // get current user, else show login
-      this.client.auth.getCurrentUser(null).then(function(result) {
-        self.loginSuccess = !! result;
-        if ( result ) {
-          self.user.copyFrom(result);
-
-          // only show B2B onboarding if user is a Business
-          if ( self.user.type === 'Business' ) {
-            // check account status and show UI accordingly
-            switch ( self.user.status ) {
-              case self.AccountStatus.PENDING:
-                self.loginSuccess = false;
-                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
-                return;
-
-              case self.AccountStatus.SUBMITTED:
-                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-                self.loginSuccess = false;
-                return;
-
-              case self.AccountStatus.DISABLED:
-
-                // If the user submitted the form before their account was
-                // disabled but before it was activated, they should see page
-                // 5 of the onboarding wizard to be able to review what they
-                // submitted.
-                if ( self.user.previousStatus === self.AccountStatus.SUBMITTED ) {
-                  self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-
-                // Otherwise, if they haven't submitted yet, or were already
-                // activated, they shouldn't need to be able to review their
-                // submission, so they should just see the simple "account
-                // disabled" view.
-                } else {
-                  self.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
-                }
-                self.loginSuccess = false;
-                return;
-
-              // show onboarding screen if user hasn't clicked "Go To Portal" button
-              case self.AccountStatus.ACTIVE:
-                if ( ! self.user.createdPwd ) {
-                  self.loginSuccess = false;
-                  self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 });
-                  return;
-                }
-                if ( self.user.onboarded ) break;
-                self.loginSuccess = false;
-                self.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-                return;
-
-              case self.AccountStatus.REVOKED:
-                self.loginSuccess = false;
-                self.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
-                return;
-            }
-          }
-
-          // check if user email verified
-          if ( ! self.user.emailVerified ) {
-            self.loginSuccess = false;
-            self.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
-            return;
-          }
-
-          self.onUserUpdate();
-        }
-      })
-      .catch(function(err) {
-        self.requestLogin().then(function() {
-          self.getCurrentUser();
-        });
-      });
+    function onSessionTimeout() {
+      this.add(this.Popup.create( {closeable: false} ).tag({
+        class: 'net.nanopay.ui.modal.SessionTimeoutModal',
+      }));
     },
 
     function findAccount() {
@@ -341,7 +264,59 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onUserUpdate() {
+    function onUserAgentAndGroupLoaded() {
+      // only show B2B onboarding if user is a Business
+      if ( this.user.type === 'Business' ) {
+        // check account status and show UI accordingly
+        switch ( this.user.status ) {
+          case this.AccountStatus.PENDING:
+            this.loginSuccess = false;
+            this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
+            return;
+
+          case this.AccountStatus.SUBMITTED:
+            this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+            this.loginSuccess = false;
+            return;
+
+          case this.AccountStatus.DISABLED:
+
+            // If the user submitted the form before their account was
+            // disabled but before it was activated, they should see page
+            // 5 of the onboarding wizard to be able to review what they
+            // submitted.
+            if ( this.user.previousStatus === this.AccountStatus.SUBMITTED ) {
+              this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+
+            // Otherwise, if they haven't submitted yet, or were already
+            // activated, they shouldn't need to be able to review their
+            // submission, so they should just see the simple "account
+            // disabled" view.
+            } else {
+              this.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
+            }
+            this.loginSuccess = false;
+            return;
+
+          // show onboarding screen if user hasn't clicked "Go To Portal" button
+          case this.AccountStatus.ACTIVE:
+            if ( ! this.user.createdPwd ) {
+              this.loginSuccess = false;
+              this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 });
+              return;
+            }
+            if ( this.user.onboarded ) break;
+            this.loginSuccess = false;
+            this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
+            return;
+
+          case this.AccountStatus.REVOKED:
+            this.loginSuccess = false;
+            this.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
+            return;
+        }
+      }
+
       this.SUPER();
       this.findBalance();
     }

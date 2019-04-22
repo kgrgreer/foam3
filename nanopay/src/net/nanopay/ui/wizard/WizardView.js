@@ -235,20 +235,33 @@ foam.CLASS({
           this.start('div').addClass('navigationBar')
             .start('div').addClass('navigationContainer')
               .start('div').addClass('exitContainer')
-                .callIf(this.hasExitOption, function() {
-                  this.start(self.EXIT, { label$: self.exitLabel$ }).addClass('plainAction').end();
-                })
+                .add(self.slot(function(hasExitOption) {
+                  if ( hasExitOption ) {
+                    return this.E()
+                      .start(self.EXIT, { label$: self.exitLabel$ })
+                        .addClass('plainAction')
+                      .end();
+                  }
+                }))
                 .add(self.slot(function(hasSaveOption) {
                   if ( hasSaveOption ) {
-                    return this.E().start(self.SAVE, { label$: self.saveLabel$ }).end().addClass('inlineDisplay');
+                    return this.E()
+                      .start(self.SAVE, { label$: self.saveLabel$ })
+                        .addClass('inlineDisplay')
+                      .end();
                   }
                 }))
               .end()
               .start('div').addClass('backNextContainer')
-                .start(this.GO_BACK, { label$: this.backLabel$ }).addClass('plainAction').end()
-                .callIf(this.hasNextOption, function() {
-                  this.tag(self.GO_NEXT, { label$: self.nextLabel$ });
-                })
+                .add(self.slot(function(hasBackOption) {
+                  if ( hasBackOption ) {
+                    return this.E().addClass('inlineDisplay')
+                      .start(self.GO_BACK, { label$: self.backLabel$ })
+                        .addClass('plainAction')
+                      .end();
+                  }
+                }))
+                .tag(self.GO_NEXT, { label$: self.nextLabel$ })
               .end()
             .end()
           .end();
@@ -311,9 +324,9 @@ foam.CLASS({
     },
     {
       name: 'goNext',
-      isAvailable: function(position, errors) {
+      isAvailable: function(position, errors, hasNextOption) {
         if ( errors ) return false; // Error present
-        return true;
+        return hasNextOption;
       },
       code: function(X) {
         if ( this.position == this.views.length - 1 ) { // If last page
@@ -326,6 +339,9 @@ foam.CLASS({
     },
     {
       name: 'exit',
+      isAvailable: function(hasExitOption) {
+        return hasExitOption;
+      },
       code: function(X) {
         X.stack.back();
       }

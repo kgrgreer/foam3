@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: 'The second step in the send/request payment flow for Ablii',
 
   imports: [
-    'invoice'
+    'invoice',
+    'user'
   ],
 
   css: `
@@ -27,8 +28,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      // Hide save button
-      this.hasSaveOption = false;
       // Show back button
       this.hasBackOption = true;
       // Update the next button label

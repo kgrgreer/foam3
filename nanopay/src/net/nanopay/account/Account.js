@@ -9,6 +9,7 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
@@ -26,11 +27,21 @@ foam.CLASS({
     'name', 'id', 'denomination', 'type'
   ],
 
+  tableColumns: [
+    'id',
+    'deleted',
+    'name',
+    'type',
+    'denomination',
+    'balance'
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id',
-      visibility: foam.u2.Visibility.RO
+      visibility: foam.u2.Visibility.RO,
+      tableWidth: 50
     },
     {
       class: 'Boolean',
@@ -39,8 +50,21 @@ foam.CLASS({
       value: true
     },
     {
+      class: 'Boolean',
+      name: 'deleted',
+      value: false,
+      permissionRequired: true,
+      visibility: 'RO',
+      tableWidth: 85
+    },
+    {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      validateObj: function(name) {
+        if ( /^\s+$/.test(name) ) {
+          return 'Account name may not consist of only whitespace.';
+        }
+      }
     },
     {
       class: 'String',
@@ -63,7 +87,8 @@ foam.CLASS({
           denomination is the currency code, for example.
       `,
       class: 'String',
-      name: 'denomination'
+      name: 'denomination',
+      tableWidth: 127
     },
     {
       class: 'Boolean',
@@ -82,7 +107,8 @@ foam.CLASS({
       },
       javaFactory: `
         return getClass().getSimpleName();
-`
+      `,
+      tableWidth: 125
     },
     {
       class: 'Long',
@@ -95,7 +121,8 @@ foam.CLASS({
             self.add(balance != null ?  curr.format(balance.balance) : 0);
           });
         });
-      }
+      },
+      tableWidth: 100
     },
     {
       class: 'DateTime',
@@ -134,10 +161,10 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         }
       ],
-      javaReturns: 'Object',
+      type: 'Any',
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());
@@ -156,22 +183,19 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'balance',
-          javaType: 'net.nanopay.account.Balance'
+          type: 'net.nanopay.account.Balance'
         },
         {
           name: 'amount',
 
-          javaType: 'Long'
+          type: 'Long'
         }
       ],
       javaCode: `
-        if ( amount == 0 ) {
-          throw new RuntimeException("Zero transfer disallowed.");
-        }
         long bal = balance == null ? 0L : balance.getBalance();
 
         if ( amount < 0 &&

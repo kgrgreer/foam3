@@ -1,3 +1,6 @@
+# Ignore VIM .swp files
+*.swp
+
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
@@ -90,3 +93,4 @@ sha256/
 
 # yarn
 yarn-error.log
+tools/js_build/foam-bin.js

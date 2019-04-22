@@ -42,12 +42,12 @@ foam.CLASS({
       value: 'localFXService'
     },
     {
-      type: 'long',
+      type: 'Long',
       name: 'NANOPAY_FEE_ACCOUNT_ID',
       value: 2
     },
     {
-      type: 'long',
+      type: 'Long',
       name: 'NANOPAY_BROKER_ID',
       value: 1
     },
@@ -59,17 +59,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
 
       Logger logger = (Logger) x.get("logger");
@@ -123,7 +112,7 @@ foam.CLASS({
 
         if ( fxQuote.getFee() > 0 ) {
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();
-          fxTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setFeeAccount(NANOPAY_FEE_ACCOUNT_ID).build()}, null);
+          fxTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()}, null);
         }
         fxTransaction.setIsQuoted(true);
         quote.addPlan(fxTransaction);

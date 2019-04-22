@@ -4,7 +4,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.mlang.predicate.In;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.*;
 import foam.nanos.auth.token.Token;
@@ -12,27 +11,24 @@ import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailService;
 import foam.util.SafetyUtil;
+import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.auth.email.EmailWhitelistEntry;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.OR;
+import static foam.mlang.MLang.*;
 
 /**
-  * Business invitation DAO is responsible for checking if the invitation is sent to an external
-  * or internal user. Internal Users will receive a notification & email allowing them to join the business
-  * External Users will receive an email which will redirect them to the sign up portal and take them through
-  * the necessary steps to join a business.
-*/
+ * Business invitation DAO is responsible for checking if the invitation is sent
+ * to an external or internal user. Internal Users will receive a notification &
+ * email allowing them to join the business. External Users will receive an
+ * email which will redirect them to the sign up portal and take them through
+ * the necessary steps to join a business.
+ */
 public class BusinessInvitationDAO
   extends ProxyDAO
 {
@@ -45,10 +41,50 @@ public class BusinessInvitationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Business business = (Business) x.get("user");
-    DAO localUserDAO = (DAO) x.get("localUserDAO");
+    User user = (User) x.get("user");
+    Business business = null;
+
+    // Check is user is a business,
+    // Requirement: there was a point where user was not a business and
+    // was incorrectly stopping execution with a cast exception
+    // User was system before binding to user(business)
+    if ( (Business.class).isInstance(user) ) {
+      business = (Business) user;
+    } else {
+      return super.put_(x, obj);
+    }
+
+    // AUTH CHECK
+    AuthService auth = (AuthService) x.get("auth");
+    String addBusinessPermission = "business.add." + business.getBusinessPermissionId() + ".*";
+    if ( ! auth.check(x, addBusinessPermission) ) {
+      throw new AuthorizationException("You don't have the ability to add users to this business.");
+    }
 
     Invitation invite = (Invitation) obj.fclone();
+
+    // A legal requirement is that we need to do a compliance check on any
+    // user that can make payments, which includes admins and approvers.
+    // However, we only do compliance checks on the company right now, not
+    // every user that can act as it. Therefore in the short term we'll
+    // only allow users to invite employees, because employees can't pay
+    // invoices, only submit them for approval.
+
+    // However, one of our use cases is when an employee of a company signs up,
+    // partially fills out the business profile and then invites the company
+    // signing officer to sign up and finish the business profile. For that
+    // reason we include the compliance condition below. We need to allow people
+    // to add an admin to their business before finishing the business profile
+    // so that the company signing officer can sign up and finish the business
+    // profile.
+    if (
+      business.getCompliance() != ComplianceStatus.NOTREQUESTED &&
+      ! SafetyUtil.equals(invite.getGroup(), "employee")
+    ) {
+      throw new AuthorizationException("Only employees can be added for the time being."); // TODO: Come up with a better message.
+    }
+
+    DAO localUserUserDAO = (DAO) x.get("localUserUserDAO");
 
     Invitation existingInvite = (Invitation) getDelegate().inX(getX()).find(
       OR(
@@ -67,51 +103,21 @@ public class BusinessInvitationDAO
       return super.put_(x, invite);
     }
 
-    User internalUser = (User) localUserDAO.find(EQ(User.EMAIL, invite.getEmail()));
-    if ( internalUser != null ) {
-      addUserToBusiness(x, business, internalUser, invite);
+    User internalUser = (User) localUserUserDAO.find(EQ(User.EMAIL, invite.getEmail()));
+    boolean internalUserBool;
+    if ( internalUserBool = internalUser != null ) {
       invite.setInternal(true);
-      invite.setStatus(InvitationStatus.COMPLETED);
+      invite.setStatus(InvitationStatus.SENT);
     } else {
       // Add invited user to the email whitelist.
       EmailWhitelistEntry entry = new EmailWhitelistEntry();
       entry.setId(invite.getEmail());
       whitelistedEmailDAO_.inX(getX()).put(entry);
-
-      sendInvitationEmail(x, business, invite);
     }
-
+    // Send email invite
+    sendInvitationEmail(x, business, invite, internalUserBool);
     invite.setTimestamp(new Date());
     return super.put_(x, invite);
-  }
-
-  // Checks to see if user is capable of adding a user to the business.
-  public void addUserToBusiness(X x, Business business, User internalUser, Invitation invite) {
-    DAO agentJunctionDAO = ((DAO) x.get("agentJunctionDAO")).inX(x);
-    AuthService auth = (AuthService) x.get("auth");
-    String addBusinessPermission = "business.add." + business.getBusinessPermissionId() + ".*";
-
-    if ( ! auth.check(x, addBusinessPermission) ) {
-      throw new AuthorizationException("You don't have the ability to add users to this business.");
-    }
-
-    // If junction already exists, throw exception.
-    UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(AND(
-      EQ(UserUserJunction.SOURCE_ID, internalUser.getId()),
-      EQ(UserUserJunction.TARGET_ID, business.getId())
-    ));
-
-    if ( junction != null ) {
-      throw new AuthorizationException("User already exists within the business.");
-    }
-
-    // Create the junction object if user exists.
-    junction = new UserUserJunction();
-    junction.setSourceId(internalUser.getId());
-    junction.setTargetId(business.getId());
-    junction.setGroup(business.getBusinessPermissionId() + '.' + invite.getGroup());
-    agentJunctionDAO.put(junction);
-    // TODO: send email notification to user indicating business has added them.
   }
 
   /**
@@ -119,8 +125,9 @@ public class BusinessInvitationDAO
    * @param x The context.
    * @param business The business they will join.
    * @param invite The invitation object.
+   * @param internalUserBool True is user is already a user, False if user is not.
    */
-  public void sendInvitationEmail(X x, Business business, Invitation invite) {
+  public void sendInvitationEmail(X x, Business business, Invitation invite, boolean internalUserBool) {
     DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
     EmailService email = (EmailService) x.get("email");
     User agent = (User) x.get("agent");
@@ -131,6 +138,7 @@ public class BusinessInvitationDAO
     tokenParams.put("businessId", business.getId());
     tokenParams.put("group", invite.getGroup());
     tokenParams.put("inviteeEmail", invite.getEmail());
+    tokenParams.put("internal", invite.getInternal());
 
     Group group = business.findGroup(x);
     AppConfig appConfig = group.getAppConfig(x);
@@ -149,8 +157,8 @@ public class BusinessInvitationDAO
     HashMap<String, Object> args = new HashMap<>();
     args.put("inviterName", agent.getFirstName());
     args.put("business", business.getBusinessName());
-    
-    // encoding business name and email to handle specail characters.
+
+    // Encoding business name and email to handle special characters.
     String encodedBusinessName, encodedEmail;
     try {
       encodedEmail =  URLEncoder.encode(invite.getEmail(), "UTF-8");
@@ -159,7 +167,10 @@ public class BusinessInvitationDAO
       logger.error("Error encoding the email or business name.", e);
       throw new RuntimeException(e);
     }
-    args.put("link", url +"?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up");
+
+    url += "?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName;
+    url += ( internalUserBool ? "#invited" : "#sign-up" ) ;
+    args.put("link", url);
     email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
   }
 }

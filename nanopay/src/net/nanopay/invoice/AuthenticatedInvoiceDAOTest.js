@@ -26,7 +26,7 @@ foam.CLASS({
 
   methods: [{
     name: 'runTest',
-    javaReturns: 'void',
+    type: 'Void',
     javaCode: `
       // Create mock userDAO as localUserDAO
       x = x.put("localUserDAO", new MDAO(User.getOwnClassInfo()));
@@ -34,7 +34,11 @@ foam.CLASS({
 
       // Create Auth Service
       UserAndGroupAuthService newAuthService = new UserAndGroupAuthService(x);
-      newAuthService.start();
+      try {
+        newAuthService.start();
+      } catch ( Throwable t ) {
+        test(false, "User and group auth shouldn't be throwing exceptions.");
+      }
       x = x.put("auth", newAuthService);
 
       // Create mock transactionDAO to test PreventRemoveInvoiceDAO
@@ -82,10 +86,10 @@ foam.CLASS({
   {
     name: 'AuthenticatedInvoice_AdminUser',
     args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
+      { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+      { name: 'userDAO', type: 'foam.dao.DAO' },
+      { name: 'x', type: 'Context' },
+      { name: 'dao', type: 'foam.dao.DAO' }
     ],
     javaCode: `
       // Test setup
@@ -143,10 +147,10 @@ foam.CLASS({
   {
     name: 'AuthenticatedInvoice_Payee',
     args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
+      { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+      { name: 'userDAO', type: 'foam.dao.DAO' },
+      { name: 'x', type: 'Context' },
+      { name: 'dao', type: 'foam.dao.DAO' }
     ],
     javaCode: `
       // Test setup
@@ -223,10 +227,10 @@ foam.CLASS({
   {
     name: 'AuthenticatedInvoice_Payer',
     args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
+      { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+      { name: 'userDAO', type: 'foam.dao.DAO' },
+      { name: 'x', type: 'Context' },
+      { name: 'dao', type: 'foam.dao.DAO' }
     ],
     javaCode: `
       // Test setup
@@ -302,10 +306,10 @@ foam.CLASS({
   {
     name: 'AuthenticatedInvoice_BusinessUser',
     args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
+      { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+      { name: 'userDAO', type: 'foam.dao.DAO' },
+      { name: 'x', type: 'Context' },
+      { name: 'dao', type: 'foam.dao.DAO' }
     ],
     javaCode: `
       // Test setup
@@ -361,11 +365,11 @@ foam.CLASS({
   {
     name: 'AuthenticatedInvoice_RemoveRelated',
     args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' },
-      { name: 'transactionDAO', javaType: 'DAO' }
+      { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+      { name: 'userDAO', type: 'foam.dao.DAO' },
+      { name: 'x', type: 'Context' },
+      { name: 'dao', type: 'foam.dao.DAO' },
+      { name: 'transactionDAO', type: 'foam.dao.DAO' }
     ],
     javaCode: `
       // Test setup
@@ -424,11 +428,11 @@ foam.CLASS({
   {
     name: 'AuthenticatedInvoice_RemoveTransactionRelatedInvoice',
     args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' },
-      { name: 'transactionDAO', javaType: 'DAO' }
+      { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+      { name: 'userDAO', type: 'foam.dao.DAO' },
+      { name: 'x', type: 'Context' },
+      { name: 'dao', type: 'foam.dao.DAO' },
+      { name: 'transactionDAO', type: 'foam.dao.DAO' }
     ],
     javaCode: `
       // Test setup
@@ -493,10 +497,10 @@ foam.CLASS({
   {
     name: 'AuthenticatedInvoice_RemoveUnrelated',
     args: [
-      { name: 'invoice', javaType: 'Invoice' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'x', javaType: 'X' },
-      { name: 'dao', javaType: 'DAO' }
+      { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+      { name: 'userDAO', type: 'foam.dao.DAO' },
+      { name: 'x', type: 'Context' },
+      { name: 'dao', type: 'foam.dao.DAO' }
     ],
     javaCode: `
       // Test setup
@@ -532,10 +536,10 @@ foam.CLASS({
   {
      name: 'AuthenticatedInvoice_DraftInvoice',
      args: [
-       { name: 'invoice', javaType: 'Invoice' },
-       { name: 'userDAO', javaType: 'DAO' },
-       { name: 'x', javaType: 'X' },
-       { name: 'dao', javaType: 'DAO' }
+       { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' },
+       { name: 'userDAO', type: 'foam.dao.DAO' },
+       { name: 'x', type: 'Context' },
+       { name: 'dao', type: 'foam.dao.DAO' }
      ],
      javaCode: `
       // Test setup
@@ -571,10 +575,10 @@ foam.CLASS({
   {
     name: 'extendedAuthInvoice_DraftInvoice',
     args: [
-      { name: 'x', javaType: 'X' },
-      { name: 'userDAO', javaType: 'DAO' },
-      { name: 'invoiceDAO', javaType: 'DAO' },
-      { name: 'invoice', javaType: 'Invoice' }
+      { name: 'x', type: 'Context' },
+      { name: 'userDAO', type: 'foam.dao.DAO' },
+      { name: 'invoiceDAO', type: 'foam.dao.DAO' },
+      { name: 'invoice', type: 'net.nanopay.invoice.model.Invoice' }
     ],
     documentation: `Testing put, find, select on invoice Drafts, with the intention of testing permission of access.
                     Tests are sub-sectioned into 3 categories {put, find, select}.
@@ -626,7 +630,7 @@ foam.CLASS({
       // Users .put localUserDAO
       userDAO.put(payerUser);
       userDAO.put(regUser);
-      
+
       boolean threw = false;
       String message = "";
       /* CONTEXT TWO: regUserContext */

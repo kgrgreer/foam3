@@ -4,12 +4,16 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
 import net.nanopay.fx.ExchangeRatesCron;
+import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.fx.FXTransaction;
+import net.nanopay.fx.FXUserStatus;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -54,8 +58,8 @@ public class ChainedTransactionTest
     tx2 = (AlternaCITransaction) sink.getArray().get(0);
     test(tx2 instanceof AlternaCITransaction, "tx2: instanceof AlternaCITransaction");
     test(tx2.getStatus() == TransactionStatus.PENDING, "tx2: has status PENDING");
-    test(tx2.getSourceCurrency() == tx2.getDestinationCurrency(), "tx2: sourceCurrency == detstinationCurrency");
-    test(tx2.getDestinationCurrency() == "CAD", "tx2: destinationCurrency == CAD");
+    test(SafetyUtil.equals(tx2.getSourceCurrency(), tx2.getDestinationCurrency()), "tx2: sourceCurrency == detstinationCurrency");
+    test(SafetyUtil.equals(tx2.getDestinationCurrency(), "CAD"), "tx2: destinationCurrency == CAD");
 
     //test CADDigital -> INRDigital
     FXTransaction tx3;
@@ -64,8 +68,8 @@ public class ChainedTransactionTest
     tx3 = (FXTransaction) sink.getArray().get(0);
     test(tx3.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx3: status PENDING_PARENT_COMPLETED");
     test(tx3.getSourceCurrency() != tx3.getDestinationCurrency(), "tx3: sourceCurrency != detstinationCurrency");
-    test(tx3.getDestinationCurrency() == "INR", "tx3: destinationCurrency == INR");
-    test(tx3.getSourceCurrency() == "CAD", "tx3: sourceCurrency == CAD");
+    test(SafetyUtil.equals(tx3.getDestinationCurrency(),"INR"), "tx3: destinationCurrency == INR");
+    test(SafetyUtil.equals(tx3.getSourceCurrency(),"CAD"), "tx3: sourceCurrency == CAD");
     test(tx3.getFxRate() != 0.0, "tx3: fx rate retrieved");
     test(tx3.getDestinationAmount() != 0, "tx3: destinationAmount is set");
 
@@ -108,6 +112,8 @@ public class ChainedTransactionTest
   public void populateBrokerAccount(X x) {
     User brokerUser = (User) ((DAO) x.get("localUserDAO")).find(1002L);
     brokerUser.setEmailVerified(true);
+    brokerUser.setFirstName("Monopoly");
+    brokerUser.setLastName("Guy");
     brokerUser = (User) (((DAO) x.get("localUserDAO")).put_(x, brokerUser)).fclone();
 
     CABankAccount brokerbank = (CABankAccount) accountDAO.find(AND(EQ(BankAccount.OWNER, 1002L), INSTANCE_OF(BankAccount.class)));
@@ -153,6 +159,8 @@ public class ChainedTransactionTest
     if ( sender == null ) {
       sender = new User();
       sender.setEmail("testUser1@nanopay.net");
+      sender.setFirstName("Francis");
+      sender.setLastName("Filth");
       sender.setEmailVerified(true);
       sender = (User) userDAO.put_(x, sender);
     }
@@ -161,6 +169,8 @@ public class ChainedTransactionTest
     if ( receiver == null ) {
       receiver = new User();
       receiver.setEmail("testUser2@nanopay.net");
+      receiver.setFirstName("Francis");
+      receiver.setLastName("Filth");
       receiver.setEmailVerified(true);
       receiver = (User) userDAO.put_(x, receiver);
     }
@@ -190,6 +200,5 @@ public class ChainedTransactionTest
     destinationAccount = (INBankAccount) accountDAO.put_(x, destinationAccount).fclone();
 
   }
-
 
 }

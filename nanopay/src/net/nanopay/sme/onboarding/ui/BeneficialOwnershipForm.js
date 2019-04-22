@@ -8,15 +8,18 @@ foam.CLASS({
 `,
 
 imports: [
+  'agent',
+  'beneficialOwnersDAO',
   'countryDAO',
   'notify',
   'regionDAO',
-  'validatePostalCode',
+  'user',
+  'validateAddress',
   'validateAge',
   'validateCity',
+  'validatePostalCode',
+  'validateBeneficialOwner',
   'validateStreetNumber',
-  'validateAddress',
-  'user',
   'viewData'
 ],
 
@@ -25,24 +28,16 @@ implements: [
 ],
 
 requires: [
+  'foam.dao.ArrayDAO',
+  'foam.nanos.auth.Address',
   'foam.nanos.auth.Region',
   'foam.nanos.auth.User',
-  'foam.nanos.auth.Address',
-  'foam.dao.ArrayDAO'
+  'net.nanopay.model.BeneficialOwner'
 ],
 
 css: `
     ^ {
       width: 550px;
-    }
-    ^ .sectionTitle {
-      line-height: 16px;
-      font-size: 14px;
-      font-weight: bold;
-      display: inline-block;
-      width: 200px;
-      margin-top: 24px;
-      margin-bottom: 20px;
     }
 
     ^ .hideTable {
@@ -105,39 +100,27 @@ css: `
       width: 100%;
     }
 
-    ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
-      height: 40px;
-      width: auto;
-      background: none;
-      color: #8e9090;
-      font-size: 16px;
-      position: relative;
-      bottom: 30px;
-    }
-
-    ^ .net-nanopay-ui-ActionView-addPrincipalOwner:hover {
-      background: none;
-      color: #8e9090;
+    ^ .net-nanopay-ui-ActionView-addBeneficialOwner {
+      margin-left: 160px;
+      margin-top: 30px;
     }
 
     ^ .updateButton {
       display: table-row;
       vertical-align: top;
-
       margin-left: 19px;
-
-      width: 384px !important;
+      width: 140px !important;
+      margin-top: 35px;
     }
 
     ^ .deleteButton, ^ .editButton {
       width: 64px;
       height: 24px;
       border-radius: 2px;
-      background-color: rgba(164, 179, 184, 0.1);
+      // background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px rgba(164, 179, 184, 0.3);
       color: #093649;
       padding: 1px 5px;
-
       box-sizing: border-box;
     }
 
@@ -148,15 +131,11 @@ css: `
 
     ^ .deleteButton .buttonLabel, ^ .editButton .buttonLabel {
       width: 29px;
-
       font-size: 10px;
       color: #093649;
-
       display: inline-block;
       vertical-align: middle;
-
       text-align: center;
-
       margin: 0;
     }
 
@@ -169,15 +148,13 @@ css: `
     ^ .net-nanopay-ui-ActionView-cancelEdit {
       width: 135px;
       height: 40px;
-
       color: black !important;
-
       background-color: rgba(164, 179, 184, 0.1) !important;
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8) !important;
-
       margin-left: 1px;
       display: inline-block;
       margin-bottom: 25px;
+      margin-top: 35px;
     }
 
     ^ .net-nanopay-ui-ActionView-cancelEdit.hidden {
@@ -197,22 +174,19 @@ css: `
     }
 
     ^ .checkBoxContainer {
-      position: relative;
       padding: 13px 0;
       width: 200px;
-      top: 15px;
-      float: right;
     }
 
-    ^ .principalOwnersCheckBox {
+    ^ .beneficialOwnersCheckBox {
       margin-bottom: 16px;
     }
 
-    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox {
+    ^ .beneficialOwnersCheckBox .foam-u2-md-CheckBox {
       vertical-align: middle;
     }
 
-    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox-label {
+    ^ .beneficialOwnersCheckBox .foam-u2-md-CheckBox-label {
       vertical-align: middle;
       margin: 0;
       position: relative;
@@ -271,6 +245,7 @@ css: `
       margin-top: 5px;
       margin-bottom: 0px;
     }
+
     ^ .net-nanopay-sme-ui-AddressView .foam-u2-TextField {
       margin-bottom: 0px;
     }
@@ -279,6 +254,7 @@ css: `
       width: 475px;
       margin: 25px 0px;
     }
+
     ^ .foam-u2-tag-Select,
     ^ .foam-u2-TextField,
     ^ .foam-u2-DateView {
@@ -288,67 +264,126 @@ css: `
     ^ .left-of-container {
       margin-right: 20px;
     }
+
     ^ .label {
       margin-top: 15px;
     }
 
-    input[type='checkbox']:checked:after {
-      top: 0px;
-      left: 0px;
+    ^ .label-beside {
+      margin-top: 15px;
+      display: inline;
+      font-family: 'Lato', sans-serif;
     }
+    ^ .intTextBox {
+      width: 10%;
+      height: 20px;
+      margin-right: 10px;
+    }
+
     ^.flex-container {
       display: flex;
       flex-direction: row;
     }
+
     ^ .upload-info {
       margin-top: 15px;
       margin-bottom: 20px;
     }
+
     ^ .info-message {
       white-space: pre-line;
     }
+
+    ^ .boxedField {
+      border-width: 1px;  
+      border-style: solid;
+      margin-bottom: 20px;
+      padding-left: 25px;
+      padding-top: 16px;
+      border-radius: 5px;
+      width: 91%;
+    }
+
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
-      margin-right: 25px;
       background-color: white;
+      margin-right: 25px;
+      min-height: 264px;
+    }
+
+    ^ .foam-u2-view-TableView {
+      border: none !important;
+      margin-bottom: 35px;
+    }
+
+    ^ .foam-u2-view-TableView tbody > tr > td {
+      max-width: 75px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    ^ .foam-u2-view-TableView td.columnA {
+      max-width: 5px;
+    }
+
+    ^ .side-by-side {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 16px;
+      margin-right: 13px;
+    }
+
+    ^ .extraSpace {
+      margin-bottom: 16px;
+      margin-top: 26px;
+    }
+
+    ^ .pushLeft {
+      margin-left: 180px;
+    }
+
+    ^ .owner-percent-container{
+      margin: 10px 0px;
+    }
+
+    ^ input[type='checkbox']:checked:after {
+      width: 16px;
+      height: 18px;
+      left: -2px;
+      top: -2px;
+    }
+
+    ^ input[type='checkbox']:focus{
+      border: solid 2px #5a5a5a;
+    }
+    ^ .foam-u2-tag-Select:disabled {
+      padding-left: 10px !important;
+
+    ^ .disclosure {
+      color: #525455;
+      font-size: 10px;
+      line-height: 15px;
     }
   `,
 
 properties: [
   {
-    name: 'principalOwnersDAO',
-    factory: function() {
-      if ( this.viewData.user.principalOwners ) {
-        return foam.dao.ArrayDAO.create({ array: this.viewData.user.principalOwners, of: 'foam.nanos.auth.User' });
-      }
-      return foam.dao.ArrayDAO.create({ of: 'foam.nanos.auth.User' });
-    }
-  },
-  {
-    name: 'editingPrincipalOwner',
+    name: 'editingBeneficialOwner',
     postSet: function(oldValue, newValue) {
-      if ( newValue != null ) this.editPrincipalOwner(newValue, true);
+      if ( newValue != null ) this.editBeneficialOwner(newValue, true);
       this.tableViewElement.selection = newValue;
     }
   },
   {
-    name: 'addPrincipalOwnerLabel',
-    expression: function(editingPrincipalOwner) {
-      if ( editingPrincipalOwner ) {
-        return 'Update';
-      } else {
-        return '+ Add This Owner';
-      }
+    name: 'addBeneficialOwnerLabel',
+    expression: function(editingBeneficialOwner) {
+      return editingBeneficialOwner ? 'Update' : 'Save';
     }
   },
   {
-    class: 'Long',
-    name: 'principalOwnersCount',
-    factory: function() {
-      // In case we load from a save state
-      this.principalOwnersDAO.select(foam.mlang.sink.Count.create()).then(function(c) {
-        return c.value;
-      });
-    }
+    class: 'Int',
+    name: 'beneficialOwnersCount',
+    documentation: `The number of beneficial owners of the business.`
   },
   'tableViewElement',
   {
@@ -358,7 +393,6 @@ properties: [
     postSet: function(oldValue, newValue) {
       this.displayedLegalName = '';
       if ( this.firstNameField ) this.displayedLegalName += this.firstNameField;
-      if ( this.middleNameField ) this.displayedLegalName += ' ' + this.middleNameField;
       if ( this.lastNameField ) this.displayedLegalName += ' ' + this.lastNameField;
     }
   },
@@ -367,7 +401,8 @@ properties: [
     name: 'beneficialOwnerDocuments',
     documentation: 'Additional documents for beneficial owner verification.',
     factory: function() {
-      return this.viewData.user.beneficialOwnerDocuments ? this.viewData.user.beneficialOwnerDocuments : [];
+      return this.viewData.user.beneficialOwnerDocuments ?
+        this.viewData.user.beneficialOwnerDocuments : [];
     },
     postSet: function(o, n) {
       this.viewData.user.beneficialOwnerDocuments = n;
@@ -376,35 +411,40 @@ properties: [
   {
     class: 'String',
     name: 'displayedLegalName',
-    value: ''
   },
   {
     class: 'String',
     name: 'firstNameField',
-    value: ''
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.firstName = n;
+    }
   },
   'firstNameFieldElement',
   {
     class: 'String',
-    name: 'middleNameField',
-    value: ''
+    name: 'lastNameField',
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.lastName = n;
+    }
   },
   {
-    class: 'String',
-    name: 'lastNameField',
-    value: ''
+    class: 'Int',
+    documentation: `A field displayed in view, to record the percentage of ownership of currently adding user/owner`,
+    name: 'ownershipPercent',
+    view: {
+      class: 'foam.u2.TextField',
+      onKey: true,
+      maxLength: 3
+    },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.ownershipPercent = n;
+    }
   },
   {
     class: 'String',
     name: 'jobTitleField',
-    value: ''
-  },
-  {
-    name: 'principleTypeField',
-    value: 'Shareholder',
-    view: {
-      class: 'foam.u2.view.ChoiceView',
-      choices: ['Shareholder', 'Owner', 'Officer']
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.jobTitle = n;
     }
   },
   {
@@ -412,6 +452,9 @@ properties: [
     name: 'birthdayField',
     tableCellFormatter: function(date) {
       this.add(date ? date.toISOString().substring(0, 10) : '');
+    },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.birthday = n;
     }
   },
   {
@@ -420,7 +463,10 @@ properties: [
     factory: function() {
       return this.Address.create({});
     },
-    view: { class: 'net.nanopay.sme.ui.AddressView' }
+    view: { class: 'net.nanopay.sme.ui.AddressView' },
+    postSet: function(o, n) {
+      this.viewData.beneficialOwner.address = n;
+    }
   },
   {
     class: 'Boolean',
@@ -432,7 +478,7 @@ properties: [
     name: 'isSameAsAdmin',
     value: false,
     postSet: function(oldValue, newValue) {
-      if ( newValue ) this.editingPrincipalOwner = null;
+      if ( newValue ) this.editingBeneficialOwner = null;
       this.sameAsAdmin(newValue);
     }
   },
@@ -443,20 +489,47 @@ properties: [
   },
   {
     class: 'Boolean',
-    name: 'noPrincipalOwners',
-    value: false,
+    name: 'noBeneficialOwners',
+    documentation: `This is displayed as a checkbox, with text 'No individuals own 25% or more.'
+    This cannot be true at the same time as publiclyTradedEntity. UX requirement`,
     postSet: function(o, n) {
-      this.viewData.noPrincipalOwners = n;
+      this.viewData.noBeneficialOwners = n;
+      if ( n && this.publiclyTradedEntity ) {
+        this.viewData.publiclyTradedEntity = false;
+        this.publiclyTradedEntity = false;
+      }
     }
   },
   {
     class: 'Boolean',
     name: 'publiclyTradedEntity',
-    value: false,
+    documentation: `This is displayed as a checkbox, with text 'Owned by a publicly traded entity'
+    This cannot be true at the same time as noBeneficialOwners. UX requirement`,
     postSet: function(o, n) {
       this.viewData.publiclyTradedEntity = n;
+      if ( n && this.noBeneficialOwners ) {
+        this.viewData.noBeneficialOwners = false;
+        this.noBeneficialOwners = false;
+      }
     }
-  }
+  },
+  {
+    class: 'Boolean',
+    name: 'showAddingBeneficalOwner',
+    documentation: 'Used to toggle the showing of adding the beneficial owner',
+    expression: function(publiclyTradedEntity, noBeneficialOwners) {
+      return ! publiclyTradedEntity && ! noBeneficialOwners;
+    }
+  },
+  {
+    class: 'Boolean',
+    name: 'noAdditionalBeneficialOwners',
+    documentation: `This is displayed as a checkbox, with text acknowledging the form
+    contains details for all beneficial owners.`,
+    postSet: function(o, n) {
+      this.viewData.noAdditionalBeneficialOwners = n;
+    }
+  },
 ],
 
 messages: [
@@ -468,25 +541,17 @@ messages: [
   { name: 'LAST_NAME_LABEL', message: 'Last Name' },
   { name: 'JOB_TITLE_LABEL', message: 'Job Title' },
   { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
-  { name: 'PRINCIPLE_TYPE_LABEL', message: 'Principal Type' },
   { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
   { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
-  { name: 'PRINCIPAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
+  { name: 'BENEFICIAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
   { name: 'DELETE_LABEL', message: 'Delete' },
   { name: 'EDIT_LABEL', message: 'Edit' },
   { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
   { name: 'NO_BENEFICIAL_OWNERS', message: 'No individuals own 25% or more' },
   { name: 'PUBLICLY_TRADED_ENTITY', message: 'Owned by a publicly traded entity' },
-  { name: 'FIRST_NAME_ERROR', message: 'First and last name fields must be populated.' },
-  { name: 'JOB_TITLE_ERROR', message: 'Job title field must be populated.' },
-  { name: 'BIRTHDAY_ERROR', message: 'Please Enter Valid Birthday yyyy-mm-dd.' },
-  { name: 'BIRTHDAY_ERROR_2', message: 'Principal owner must be at least 16 years of age.' },
-  { name: 'ADDRESS_STREET_NUMBER_ERROR', message: 'Invalid street number.' },
-  { name: 'ADDRESS_STREET_NAME_ERROR', message: 'Invalid street name.' },
-  { name: 'ADDRESS_LINE_ERROR', message: 'Invalid address line.' },
-  { name: 'ADDRESS_CITY_ERROR', message: 'Invalid city name.' },
-  { name: 'ADDRESS_POSTAL_CODE_ERROR', message: 'Invalid postal code.' },
   { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
+  { name: 'ADDITIVE_TITLE', message: 'List of Added Owners' },
+  { name: 'OWNER_PERCENT_LABEL', message: `% - Percentage of business ownership (current owner)` },
   {
      name: 'UPLOAD_INFORMATION',
      message: `Please upload a document containing proof of the beneficial ownership
@@ -499,135 +564,153 @@ messages: [
   },
   {
     name: 'ADVISORY_NOTE',
-    message: `If your business has beneficial owners who, directly or indirectly, own 25% or more of the business, please provide the information below for each owner. If you wish to skip this, just click on one of the two checkboxes below.`
+    message: `If your business has beneficial owners who, directly or indirectly, own 25% or more of the business, please provide the information below for each owner.`
   },
   {
-    name: 'PRINCIPAL_OWNER_ERROR',
+    name: 'BENEFICIAL_OWNER_ERROR',
     message: 'This user is already assigned as a beneficial owner.'
   },
-  { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
-  { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' }
+  {
+    name: 'NO_ADDITIONAL_OWNERS',
+    message: `I confirm that I have listed the details for all beneficial owners who own 25% or more of the business.`
+  },
+  { name: 'BENEFICIAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
+  { name: 'BENEFICIAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
+  { name: 'SECUREFACT_DISCLOSURE_1', message: `We have engaged Securefact Transaction Services Inc. ("Securefact") to provide this verification for us.` },
+  { name: 'SECUREFACT_DISCLOSURE_2', message: `To verify your identity, your personal information will be matched with the information contained in your Credit File Report and other third party sources. This is a soft inquiry and will not affect your credit score or be visible to other financial institutions.` },
+  { name: 'SECUREFACT_DISCLOSURE_3', message: `You also consent to your personal information being compared to records maintained by third parties, including telecom and other service providers, and you consent to those third parties providing personal information to us and our third-party suppliers for the purpose of identity verification.` },
+  { name: 'SECUREFACT_DISCLOSURE_4', message: `By clicking “Complete” and submitting the information above, you confirm your consent to Securefact collecting, using, disclosing, and storing your personal information for the purpose of this verification.` },
 ],
 
 methods: [
   function init() {
     this.SUPER();
-    this.principalOwnersDAO.on.sub(this.onDAOChange);
+    this.beneficialOwnersDAO.on.sub(this.onDAOChange);
     this.onDAOChange();
     // Gives the onboarding wizard access to the validations
-    this.wizard.addPrincipalOwnersForm = this;
+    this.wizard.addBeneficialOwnersForm = this;
   },
 
   function initE() {
     var self = this;
     this.nextLabel = 'Complete';
-    this.principleTypeField = 'Shareholder';
     this.scrollToTop();
+
+    var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin) {
+      return isSameAsAdmin ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
+    });
 
     this.addClass(this.myClass())
       .start().addClass('medium-header').add(this.TITLE).end()
       .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
-      .start().addClass('principalOwnersCheckBox')
-        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noPrincipalOwners$ }).end()
+      .start().addClass('beneficialOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noBeneficialOwners$ }).end()
       .end()
-      .start().addClass('principalOwnersCheckBox')
+      .start().addClass('beneficialOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
       .end()
-      .start().hide(this.noPrincipalOwners$).hide(this.publiclyTradedEntity$)
-        .start()
-          .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
-            return c > 0;
-          }), true)
-          .start({
-            class: 'foam.u2.view.TableView',
-            data$: this.principalOwnersDAO$,
-            editColumnsEnabled: false,
-            disableUserSelection: true,
-            columns: [
-              'legalName', 'jobTitle', 'principleType',
-              foam.core.Property.create({
-                name: 'delete',
-                label: '',
-                tableCellFormatter: function(value, obj, axiom) {
-                  this.start().addClass('deleteButton')
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg' }).end()
-                    .start('p').addClass('buttonLabel').add('Delete').end()
-                    .on('click', function(evt) {
-                      evt.stopPropagation();
-                      this.blur();
-                      if ( self.editingPrincipalOwner === obj ) {
-                        self.editingPrincipalOwner = null;
-                        self.clearFields();
-                      }
-                      self.deletePrincipalOwner(obj);
-                    })
-                  .end();
-                }
-              }),
-              foam.core.Property.create({
-                name: 'edit',
-                label: '',
-                factory: function() {
-                  return {};
-                },
-                tableCellFormatter: function(value, obj, axiom) {
-                  this.start().addClass('editButton')
-                    .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
-                    .start('p').addClass('buttonLabel').add('Edit').end()
-                    .on('click', function(evt) {
-                      evt.stopPropagation();
-                      this.blur();
-                      self.editingPrincipalOwner = obj;
-                    })
-                  .end();
-                }
+      .start().show(this.showAddingBeneficalOwner$)
+        .start().addClass('boxedField')
+          .start()
+            .start()
+              .enableClass('hideTable', this.beneficialOwnersCount$.map(function(c) {
+                return c > 0;
+              }), true)
+            .end()
+            .start().add(this.OWNER_LABEL, ' ', this.beneficialOwnersCount$.map(function(p) { return p + 1; })).addClass('medium-header').end()
+            .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
+              .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
+            .end()
+            .start().addClass('owner-percent-container')
+              .start(this.OWNERSHIP_PERCENT).addClass('intTextBox').end()
+              .start().addClass('label-beside').add(this.OWNER_PERCENT_LABEL).end()
+            .end()
+            .start().addClass('flex-container')
+              .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
+                .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
+                .start(this.FIRST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }).end()
+              .end()
+              .start().addClass('label-input').addClass('half-container')
+                .start().addClass('label').add(this.LAST_NAME_LABEL).end()
+                .start(this.LAST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }).end()
+              .end()
+            .end()
+
+            .start()
+              .on('click', function() {
+                self.isEditingName = false;
               })
-            ]
-          }, {}, this.tableViewElement$).end()
-        .end()
+              .start().addClass('label-input')
+                .start().addClass('label').add(this.JOB_TITLE_LABEL).end()
+                .start(this.JOB_TITLE_FIELD, { mode$: modeSlotSameAsAdmin }).end()
+              .end()
+              .start().addClass('label-input')
+                .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
+                .start(this.BIRTHDAY_FIELD, { mode$: modeSlotSameAsAdmin }).end()
+              .end()
 
-        .start().add(this.OWNER_LABEL, ' ', this.principalOwnersCount$.map(function(p) { return p + 1; })).addClass('sectionTitle').end()
-
-        .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
-          .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
-        .end()
-        .start().addClass('flex-container')
-          .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
-            .start().addClass('label').add(this.FIRST_NAME_LABEL).end()
-            .start().add(this.FIRST_NAME_FIELD).end()
+              .start(this.ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
+              .start().addClass('pushLeft')
+                .start(this.CANCEL_EDIT)
+                  .enableClass('hidden', this.editingBeneficialOwner$, true)
+                .end()
+                .start(this.ADD_BENEFICIAL_OWNER, { label$: this.addBeneficialOwnerLabel$ })
+                  .enableClass('updateButton', this.editingBeneficialOwner$)
+                .end()
+              .end()
+            .end()
           .end()
-          .start().addClass('label-input').addClass('half-container')
-            .start().addClass('label').add(this.LAST_NAME_LABEL).end()
-            .start().add(this.LAST_NAME_FIELD).end()
-          .end()
         .end()
-        .start().addClass('label-input')
-          .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
-          .start().add(this.PRINCIPLE_TYPE_FIELD).end()
+        .start().add(this.ADDITIVE_TITLE)
+          .addClass('medium-header').addClass('extraSpace')
         .end()
-
+        .start({
+          class: 'foam.u2.view.TableView',
+          data$: this.beneficialOwnersDAO$, // FIXME
+          editColumnsEnabled: false,
+          disableUserSelection: true,
+          columns: [
+            'legalName', 'jobTitle',
+            foam.core.Property.create({
+              name: 'delete',
+              label: '',
+              tableCellFormatter: function(value, obj, axiom) {
+                this.start().addClass('deleteButton')
+                  .start({ class: 'foam.u2.tag.Image', data: 'images/ic-trash.svg' }).end()
+                  .start('p').addClass('buttonLabel').add('Delete').end()
+                  .on('click', function(evt) {
+                    evt.stopPropagation();
+                    this.blur();
+                    if ( self.editingBeneficialOwner === obj ) {
+                      self.editingBeneficialOwner = null;
+                      self.clearFields();
+                    }
+                    self.deleteBeneficialOwner(obj);
+                  })
+                .end();
+              }
+            }),
+            foam.core.Property.create({
+              name: 'edit',
+              label: '',
+              factory: function() {
+                return {};
+              },
+              tableCellFormatter: function(value, obj, axiom) {
+                this.start().addClass('editButton')
+                  .start({ class: 'foam.u2.tag.Image', data: 'images/ic-edit.svg' }).end()
+                  .start('p').addClass('buttonLabel').add('Edit').end()
+                  .on('click', function(evt) {
+                    evt.stopPropagation();
+                    this.blur();
+                    self.editingBeneficialOwner = obj;
+                  })
+                .end();
+              }
+            })
+          ]
+        }, {}, this.tableViewElement$).end()
         .start()
-          .on('click', function() {
-            self.isEditingName = false;
-          })
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.JOB_TITLE_LABEL).end()
-            .start(this.JOB_TITLE_FIELD).end()
-          .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.DATE_OF_BIRTH_LABEL).end()
-            .start().add(this.BIRTHDAY_FIELD).end()
-          .end()
-
-          .start(this.ADDRESS_FIELD).end()
-          .start().style({ 'margin-top': '50px' })
-            .start(this.CANCEL_EDIT)
-              .enableClass('hidden', this.editingPrincipalOwner$, true)
-            .end()
-            .start(this.ADD_PRINCIPAL_OWNER, { label$: this.addPrincipalOwnerLabel$ })
-              .enableClass('updateButton', this.editingPrincipalOwner$)
-            .end()
-          .end()
           .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
           .start({
@@ -643,16 +726,22 @@ methods: [
             }
           }).end()
         .end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_1).end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
+        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
+      .end()
+      .start().addClass('principalOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_ADDITIONAL_OWNERS, data$: this.noAdditionalBeneficialOwners$ }).end()
       .end();
   },
 
   function clearFields(scrollToTop) {
+    this.ownershipPercent = '';
     this.firstNameField = '';
-    this.middleNameField = '';
     this.lastNameField = '';
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = '';
-    this.principleTypeField = 'Shareholder';
     this.birthdayField = null;
 
     this.addressField = this.Address.create({});
@@ -662,17 +751,15 @@ methods: [
     }
   },
 
-  function editPrincipalOwner(user, editable) {
-    var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
+  function editBeneficialOwner(user, editable) {
+    var formHeaderElement = this.document.getElementsByClassName('boxedField')[0];
     formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     this.isSameAsAdmin = false;
-
+    this.ownershipPercent = user.ownershipPercent;
     this.firstNameField = user.firstName;
-    this.middleNameField = user.middleName;
     this.lastNameField = user.lastName;
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = user.jobTitle;
-    this.principleTypeField = user.principleType;
     this.birthdayField = user.birthday;
 
     this.addressField = user.address;
@@ -683,84 +770,27 @@ methods: [
   function sameAsAdmin(flag) {
     this.clearFields();
     if ( flag ) {
-      var formHeaderElement = this.document.getElementsByClassName('sectionTitle')[0];
+      var formHeaderElement = this.document.getElementsByClassName('boxedField')[0];
       formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       this.firstNameField = this.viewData.agent.firstName;
-      this.middleNameField = this.viewData.agent.middleName;
       this.lastNameField = this.viewData.agent.lastName;
       this.isEditingName = false;
 
       this.jobTitleField = this.viewData.agent.jobTitle;
       this.addressField = this.viewData.agent.address;
       this.birthdayField = this.viewData.agent.birthday;
-      this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
-        'Shareholder';
+      this.ownershipPercent = this.viewData.beneficialOwner.ownershipPercent;
     }
   },
 
-  function isFillingPrincipalOwnerForm() {
-    if ( this.firstNameField ||
-         this.middleNameField ||
-         this.lastNameField ||
-         this.jobTitleField ||
-         this.birthdayField ||
-         this.addressField ) {
-      return true;
+  function deleteBeneficialOwner(obj) {
+    this.beneficialOwnersDAO.remove(obj);
+    // if first + last names match the admin. Then reset the sameasAdmin choice.
+    var agentNameId = `${this.viewData.agent.firstName.toLowerCase()}${this.viewData.agent.lastName.toLowerCase()}`;
+    var newOwnerNameId = `${obj.firstName.toLowerCase()}${obj.lastName.toLowerCase()}`;
+    if ( agentNameId === newOwnerNameId ) {
+      this.showSameAsAdminOption = true;
     }
-    return false;
-  },
-
-  function deletePrincipalOwner(obj) {
-    var self = this;
-    this.principalOwnersDAO.remove(obj).then(function(deleted) {
-      self.prevDeletedPrincipalOwner = deleted;
-    });
-  },
-
-  function validatePrincipalOwner() {
-    if ( ! this.firstNameField || ! this.lastNameField ) {
-      this.notify(this.FIRST_NAME_ERROR, 'error');
-      return false;
-    }
-
-    if ( ! this.jobTitleField ) {
-      this.notify(this.JOB_TITLE_ERROR, 'error');
-      return false;
-    }
-
-    // By pass for safari & mozilla type='date' on input support
-    // Operator checking if dueDate is a date object if not, makes it so or throws notification.
-    if ( isNaN(this.birthdayField) && this.birthdayField != null ) {
-      this.notify(this.BIRTHDAY_ERROR, 'error');
-      return;
-    }
-    if ( ! this.validateAge(this.birthdayField) ) {
-      this.notify(this.BIRTHDAY_ERROR_2, 'error');
-      return false;
-    }
-    var address = this.addressField;
-    if ( ! this.validateStreetNumber(address.streetNumber) ) {
-      this.notify(this.ADDRESS_STREET_NUMBER_ERROR, 'error');
-      return false;
-    }
-    if ( ! this.validateAddress(address.streetName) ) {
-      this.notify(this.ADDRESS_STREET_NAME_ERROR, 'error');
-      return false;
-    }
-    if ( address.suite.length > 0 && ! this.validateAddress(address.suite) ) {
-      this.notify(this.ADDRESS_LINE_ERROR, 'error');
-      return false;
-    }
-    if ( ! this.validateCity(address.city) ) {
-      this.notify(this.ADDRESS_CITY_ERROR, 'error');
-      return false;
-    }
-    if ( ! this.validatePostalCode(address.postalCode, address.countryId) ) {
-      this.notify(this.ADDRESS_POSTAL_CODE_ERROR, 'error');
-      return false;
-    }
-
-    return true;
   }
 ],
 
@@ -769,65 +799,42 @@ actions: [
     name: 'cancelEdit',
     label: 'Cancel',
     code: function() {
-      this.editingPrincipalOwner = null;
+      this.editingBeneficialOwner = null;
       this.clearFields();
     }
   },
   {
-    name: 'addPrincipalOwner',
+    name: 'addBeneficialOwner',
     isEnabled: function(isDisplayMode) {
       return ! isDisplayMode;
     },
     code: async function() {
-      if ( ! this.validatePrincipalOwner() ) return;
+      var beneficialOwner;
 
-      var principalOwner;
-
-      if ( this.editingPrincipalOwner ) {
-        principalOwner = this.editingPrincipalOwner;
+      if ( this.editingBeneficialOwner ) {
+        beneficialOwner = this.editingBeneficialOwner;
       } else {
-        principalOwner = this.User.create({
-          id: this.principalOwnersCount + 1
-        });
+        beneficialOwner = this.BeneficialOwner.create();
       }
 
-      principalOwner.firstName = this.firstNameField;
-      principalOwner.middleName = this.middleNameField;
-      principalOwner.lastName = this.lastNameField;
-      principalOwner.birthday = this.birthdayField;
-      principalOwner.address = this.addressField;
-      principalOwner.jobTitle = this.jobTitleField;
-      principalOwner.principleType = this.principleTypeField;
+      beneficialOwner.ownershipPercent = this.ownershipPercent;
+      beneficialOwner.firstName = this.firstNameField;
+      beneficialOwner.lastName = this.lastNameField;
+      beneficialOwner.birthday = this.birthdayField;
+      beneficialOwner.address = this.addressField;
+      beneficialOwner.jobTitle = this.jobTitleField;
 
-      if ( ! this.editingPrincipalOwner ) {
-        var owners = (await this.principalOwnersDAO.select()).array;
-        var nameTaken = owners.some((owner) => {
-          var ownerFirst = owner.firstName.toLowerCase();
-          var ownerLast = owner.lastName.toLowerCase();
-          var formFirst = this.firstNameField.toLowerCase();
-          var formLast = this.lastNameField.toLowerCase();
-          return ownerFirst === formFirst && ownerLast === formLast;
-        });
-        if ( nameTaken ) {
-          this.notify(this.PRINCIPAL_OWNER_ERROR, 'error');
-          return;
-        }
-        // first + last names should be unique
-        var agentNameId = `${this.viewData.agent.firstName.toLowerCase()}${this.viewData.agent.lastName.toLowerCase()}`;
-        var newOwnerNameId = `${this.firstNameField.toLowerCase()}${this.lastNameField.toLowerCase()}`;
-        if ( agentNameId === newOwnerNameId && this.isSameAsAdmin ) {
-          this.showSameAsAdminOption = false;
-        }
-      }
+      if ( ! this.validateBeneficialOwner(beneficialOwner) ) return;
 
       try {
-        await this.principalOwnersDAO.put(principalOwner);
-        this.notify(this.PRINCIPAL_OWNER_SUCCESS);
+        await this.user.beneficialOwners.put(beneficialOwner);
+        this.notify(this.BENEFICIAL_OWNER_SUCCESS);
       } catch (err) {
-        this.notify(err ? err.message : this.PRINCIPAL_OWNER_FAILURE, 'error');
+        console.error(err);
+        this.notify(err && err.message ? err.message : this.BENEFICIAL_OWNER_FAILURE, 'error');
       }
 
-      this.editingPrincipalOwner = null;
+      this.editingBeneficialOwner = null;
       this.tableViewElement.selection = null;
       this.clearFields(true);
       this.isSameAsAdmin = false;
@@ -840,9 +847,8 @@ actions: [
 listeners: [
   function onDAOChange() {
     var self = this;
-    this.principalOwnersDAO.select().then(function(principalOwners) {
-      self.viewData.user.principalOwners = principalOwners.array;
-      self.principalOwnersCount = principalOwners.array.length;
+    this.beneficialOwnersDAO.select().then(function(sink) {
+      self.beneficialOwnersCount = sink.array.length;
     });
   }
 ]

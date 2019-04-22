@@ -1,21 +1,54 @@
 foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
 
   documentation: 'Base user in the system. Utlized for authentication,' +
       ' personal information and permitting certain actions.',
 
+  implements: [
+    'foam.nanos.auth.DeletedAware',
+    'foam.core.Validatable'
+  ],
+
+  javaImports: [
+    'foam.mlang.MLang',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.NOT',
+
+    'java.util.regex.Pattern',
+    'javax.mail.internet.InternetAddress',
+    'javax.mail.internet.AddressException',
+    'net.nanopay.contacts.Contact'
+  ],
+
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
 
+  constants: [
+    {
+      name: 'NAME_MAX_LENGTH',
+      type: 'Integer',
+      value: 70
+    }
+  ],
+
   properties: [
+    // TODO: Remove this after migration.
+    {
+      class: 'Int',
+      name: 'ownershipPercent',
+      documentation: 'For principal owners. This represents the percentage of ownership.',
+    },
     {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
       documentation: 'Proprietor details for business.',
-      flags: ['js']
     },
     {
       class: 'Reference',
@@ -23,7 +56,20 @@ foam.CLASS({
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'General economic grouping for business.',
-      flags: ['js']
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+          sections: [
+            {
+              heading: 'Industries',
+              dao: X.businessSectorDAO
+            }
+          ],
+          search: true
+        };
+      }
     },
     {
       class: 'Boolean',
@@ -43,6 +89,15 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
       documentation: 'Stores the users previous status.'
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      javaGetter: `
+        return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
+      `,
+      documentation: 'enabled is Deprecated. Use status instead.',
+      hidden: true
     },
     {
       class: 'foam.core.Enum',
@@ -79,16 +134,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.admin.model.ComplianceStatus',
-      name: 'compliance',
-      documentation: 'Admin user account approval status.',
-      tableCellFormatter: function(status) {
-        return status.label;
-      },
-      permissionRequired: true
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
@@ -105,17 +150,7 @@ foam.CLASS({
         };
       }
     },
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'beneficialOwnerDocuments',
-      documentation: 'Additional documents for beneficial owners verification.',
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-          documents$: X.data.beneficialOwnerDocuments$
-        };
-      }
-    },
+    // TODO: Remove this after migration.
     {
       class: 'FObjectArray',
       of: 'foam.nanos.auth.User',
@@ -133,12 +168,6 @@ foam.CLASS({
           return 'Invalid job title.';
         }
       }
-    },
-    {
-      class: 'String',
-      name: 'principleType',
-      label: 'Principal Type',
-      documentation: 'Type of principal owner. (shareholder, owner etc...)'
     },
     {
       class: 'Boolean',
@@ -239,7 +268,10 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
-      view: { class: 'foam.nanos.auth.ProfilePictureView' }
+      view: {
+        class: 'foam.nanos.auth.ProfilePictureView',
+        placeholderImage: 'images/business-placeholder.png'
+      }
     },
     {
       class: 'Boolean',
@@ -300,6 +332,7 @@ foam.CLASS({
           or Head of an International Organization (HIO), or related to any such person.
       `
     },
+    // TODO: Remove
     {
       class: 'Boolean',
       name: 'signingOfficer',
@@ -349,12 +382,184 @@ foam.CLASS({
       class: 'String',
       visibility: 'RO',
       storageTransient: true,
+      tableWidth: 75,
       getter: function() {
          return this.cls_.name;
       },
       javaGetter: `
     return getClass().getSimpleName();
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      documentation: 'Indicates deleted user.',
+      value: false,
+      permissionRequired: true,
+      visibility: 'RO',
+      tableWidth: 85
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'profilePicture',
+      documentation: 'User\' profile picture.',
+      view: {
+        class: 'foam.nanos.auth.ProfilePictureView',
+        placeholderImage: 'images/ic-placeholder.png'
+      }
+    }
+  ],
+
+  methods: [
+    {
+      name: `validate`,
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaCode: `
+        String containsDigitRegex = ".*\\\\d.*";
+        boolean isValidEmail = true;
+
+        String firstName = this.getFirstName().trim();
+        String lastName = this.getLastName().trim();
+        String email = this.getEmail().trim();
+
+        try {
+          InternetAddress emailAddr = new InternetAddress(email);
+          emailAddr.validate();
+        } catch (AddressException ex) {
+          isValidEmail = false;
+        }
+
+        if ( firstName.length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("First name cannot exceed 70 characters.");
+        } else if ( Pattern.matches(containsDigitRegex, firstName) ) {
+          throw new IllegalStateException("First name cannot contain numbers.");
+        } else if ( lastName.length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("Last name cannot exceed 70 characters.");
+        } else if ( Pattern.matches(containsDigitRegex, lastName) ) {
+          throw new IllegalStateException("Last name cannot contain numbers.");
+        } else  if ( SafetyUtil.isEmpty(email) ) {
+          throw new IllegalStateException("Email is required.");
+        } else if ( SafetyUtil.isEmpty(firstName) ) {
+          throw new IllegalStateException("First name is required.");
+        } else if ( SafetyUtil.isEmpty(lastName) ) {
+          throw new IllegalStateException("Last name is required.");
+        } else if ( ! isValidEmail ) {
+          throw new IllegalStateException("Invalid email address.");
+        }
+      `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'viewAccounts',
+      label: 'View Accounts',
+      tableWidth: 135,
+      permissionRequired: true,
+      code: function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.businessName}'s Accounts`,
+          data: X.accountDAO.where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+        });
+      }
+    },
+    {
+      name: 'viewTransactions',
+      label: 'View Transactions',
+      tableWidth: 160,
+      permissionRequired: true,
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        var ids = await X.accountDAO
+          .where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+          .select(m.MAP(net.nanopay.account.Account.ID))
+          .then((sink) => sink.delegate.array);
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Transactions`,
+          data: X.transactionDAO.where(
+            m.OR(
+              m.IN(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, ids),
+              m.IN(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, ids)
+            )
+          )
+        });
+      }
+    },
+    {
+      name: 'viewPayables',
+      label: 'View Payables',
+      permissionRequired: true,
+      code: async function(X) {
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Payables`,
+          data: this.expenses
+        });
+      }
+    },
+    {
+      name: 'viewReceivables',
+      label: 'View Receivables',
+      permissionRequired: true,
+      code: async function(X) {
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Receivables`,
+          data: this.sales
+        });
+      }
+    }
+  ],
+
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          static public User findUser(X x, long userId) {
+              DAO bareUserDAO = (DAO) x.get("bareUserDAO");
+              DAO contactDAO = (DAO) x.get("contactDAO");
+              DAO businessDAO = (DAO) x.get("businessDAO");
+              User user = null;
+              Contact contact = null;
+              try{
+                contact = (Contact) contactDAO.find(userId);
+                if ( contact != null && contact.getBusinessId() == 0 ) {
+                  user = (User) bareUserDAO.find(AND(
+                    EQ(User.EMAIL, contact.getEmail()),
+                    NOT(INSTANCE_OF(Contact.class))));
+                  if ( user == null ) { // when a real user is not present the the transaction is to an external user.
+                    user = contact;
+                  }
+                } else if ( contact != null && contact.getBusinessId() > 0 ){
+                  user = (User) businessDAO.find(contact.getBusinessId());
+                } else {
+                  user = (User) bareUserDAO.find(userId);
+                }
+              } catch(Exception e) {
+                e.printStackTrace();
+              }
+              return user;
+            }
+        `);
+      }
     }
   ]
 });

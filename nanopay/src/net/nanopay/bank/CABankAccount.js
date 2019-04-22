@@ -15,18 +15,18 @@ foam.CLASS({
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{4,30}$")'
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{4,30}$")'
     },
     {
       name: 'BRANCH_ID_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{5}$")'
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{5}$")'
     },
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
-      type: 'Pattern',
-      value: 'Pattern.compile("^[0-9]{3}$")'
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{3}$")'
     }
   ],
 
@@ -37,7 +37,8 @@ foam.CLASS({
     },
     {
       name: 'branchId',
-      label: 'Transit #',
+      label: 'Transit No.',
+      visibility: 'FINAL',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '12345',
@@ -48,11 +49,16 @@ foam.CLASS({
         if ( n === '' ) return n;
         return /^\d+$/.test(n) ? n : o;
       },
-      validateObj: function(branchId) {
-        if ( ! /^\d+$/.test(branchId) ) {
-          return 'Branch id must contain only digits.';
+      validateObj: function(branchId, branch) {
+        if ( branch ) {
+          return;
+        }
+        if ( branchId === '' ) {
+          return 'Transit number required';
+        } else if ( ! /^\d+$/.test(branchId) ) {
+          return 'Transit number must contain only digits.';
         } else if ( branchId.length !== 5 ) {
-          return 'Branch id must be 5 digits.';
+          return 'Transit number must be 5 digits.';
         }
       }
     },
@@ -74,21 +80,35 @@ foam.CLASS({
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
       },
-      validateObj: function(institutionNumber) {
-        if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) return 'Invalid institution number.';
+      validateObj: function(institutionNumber, institution) {
+        if ( institution ) {
+          return;
+        }
+        if ( institutionNumber === '' ) {
+          return 'Institution number required';
+        } else if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) {
+          return 'Invalid institution number.';
+        }
       }
     },
-    ['country', 'images/flags/cad.png']
+    {
+      name: 'country',
+      value: 'CA'
+    },
+    {
+      name: 'flagImage',
+      value: 'images/flags/cad.png'
+    }
   ],
   methods: [
     {
       name: 'validate',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
@@ -99,7 +119,7 @@ foam.CLASS({
     },
     {
       name: 'validateAccountNumber',
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       String accountNumber = this.getAccountNumber();
@@ -117,12 +137,18 @@ foam.CLASS({
       name: 'validateInstitutionNumber',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
+      Branch branch = this.findBranch(x);
+      if ( branch != null &&
+          branch.getInstitution() > 0 ) {
+        return;
+      }
+
       Institution institution = this.findInstitution(x);
 
       // no validation when the institution is attached.
@@ -143,10 +169,10 @@ foam.CLASS({
       name: 'validateBranchId',
       args: [
         {
-          name: 'x', javaType: 'foam.core.X'
+          name: 'x', type: 'Context'
         }
       ],
-      javaReturns: 'void',
+      type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
       Branch branch = this.findBranch(x);

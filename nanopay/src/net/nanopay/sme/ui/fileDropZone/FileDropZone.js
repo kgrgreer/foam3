@@ -9,11 +9,11 @@ foam.CLASS({
     'foam.blob.BlobBlob',
     'foam.nanos.fs.File',
     'foam.nanos.fs.FileArray',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.ui.modal.ModalHeader'
   ],
 
   imports: [
+    'ctrl',
     'user'
   ],
 
@@ -36,11 +36,10 @@ foam.CLASS({
       justify-content: center;
       align-items: center;
       text-align: center;
-
-      height: 151px;
+      height: 228px;
     }
     ^instruction-container.selection {
-      height: 95px;
+      height: 172px;
       margin-bottom: 16px;
     }
     ^input {
@@ -66,6 +65,8 @@ foam.CLASS({
     }
     ^caption-container {
       margin-top: 24px;
+      position: relative;
+      top: 60px;
     }
     ^caption {
       display: inline-block;
@@ -173,7 +174,7 @@ foam.CLASS({
             .on('change', this.onChange)
           .end();
         })
-        .callIf(!this.isMultipleFiles, function() {
+        .callIf(! this.isMultipleFiles, function() {
           this.start('input').addClass(this.myClass('input'))
             .attrs({
               type: 'file',
@@ -181,7 +182,7 @@ foam.CLASS({
             })
             .on('change', this.onChange)
           .end();
-        })
+        });
     },
 
     function getSupportedTypes(readable) {
@@ -212,7 +213,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( this.maxSize * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          this.add(this.NotificationMessage.create({ message: this.ERROR_FILE_SIZE, type: 'error' }));
+          ctrl.notify(this.ERROR_FILE_SIZE, 'error');
           continue;
         }
         var isIncluded = false;
@@ -288,7 +289,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                this.add(this.NotificationMessage.create({ message: this.ERROR_FILE_TYPE, type: 'error' }));
+                ctrl.notify(this.ERROR_FILE_TYPE, 'error');
               }
             }
           }
@@ -299,7 +300,7 @@ foam.CLASS({
           var file = inputFile[i];
           if ( this.isFileType(file) ) files.push(file);
           else {
-            this.add(this.NotificationMessage.create({ message: this.ERROR_FILE_TYPE, type: 'error' }));
+            ctrl.notify(this.ERROR_FILE_TYPE, 'error');
           }
         }
       }

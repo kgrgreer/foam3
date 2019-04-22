@@ -256,12 +256,8 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        if ( ! self.hasCompletedIntegration ) {
-          var menuLocation = 'sme.main.banking';
-          window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
-          return;
-        }
-        self.pushMenu('sme.bank.matching');
+        var menuLocation = 'sme.main.banking';
+        window.location.hash.substr(1) != menuLocation ? self.pushMenu(menuLocation) : self.stack.back();
         return;
       };
     },

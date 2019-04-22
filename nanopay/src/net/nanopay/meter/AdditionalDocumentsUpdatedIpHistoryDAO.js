@@ -38,10 +38,10 @@ foam.CLASS({
     },
     {
       name: 'getUploadAction',
-      javaReturns: 'String',
+      type: 'String',
       args: [
-        { of: 'int', name: 'o' },
-        { of: 'int', name: 'n' }
+        { type: 'Integer', name: 'o' },
+        { type: 'Integer', name: 'n' }
       ],
       javaCode: `
         if (n > o) return "add";

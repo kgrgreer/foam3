@@ -35,7 +35,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      swiftName: 'description_',
       visibility: foam.u2.Visibility.RO
     },
   ],
@@ -45,12 +44,18 @@ foam.CLASS({
       args: [
         {
           name: 'other',
-          javaType: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         },
       ],
       javaCode: `
         super.limitedCopyFrom(other);
+        setConfirmationLineNumber(((AlternaVerificationTransaction)other).getConfirmationLineNumber());
+        setReturnCode(((AlternaVerificationTransaction)other).getReturnCode());
+        setReturnDate(((AlternaVerificationTransaction)other).getReturnDate());
         setReturnType(((AlternaVerificationTransaction)other).getReturnType());
+        setPadType(((AlternaVerificationTransaction)other).getPadType());
+        setTxnCode(((AlternaVerificationTransaction)other).getTxnCode());
+        setDescription(((AlternaVerificationTransaction)other).getDescription());
       `
     },
   ]

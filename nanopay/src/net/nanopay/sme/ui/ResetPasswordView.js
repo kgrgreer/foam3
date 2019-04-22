@@ -177,13 +177,6 @@ foam.CLASS({
         name: 'email'
       },
       {
-        class: 'foam.u2.ViewSpec',
-        name: 'signInView',
-        factory: function() {
-          return { class: 'foam.nanos.auth.SignInView'};
-        }
-      },
-      {
         class: 'Boolean',
         name: 'invalidEmail',
         value: false
@@ -219,7 +212,7 @@ foam.CLASS({
             .enableClass('invalidEmail', this.invalidEmail$).end()
           .start()
             .start('img')
-              .attr('src', 'images/ablii/inline-error-icon.svg')
+              .attr('src', 'images/inline-error-icon.svg')
               .addClass('error-image')
             .end()
             .add(this.INVALID_EMAIL)

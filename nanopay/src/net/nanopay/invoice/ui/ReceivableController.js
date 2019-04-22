@@ -10,17 +10,22 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice'
   ],
 
   implements: [
-    'net.nanopay.integration.AccountingIntegrationTrait'
+    'net.nanopay.accounting.AccountingIntegrationTrait'
   ],
 
   imports: [
-    'hasPassedCompliance',
+    'checkComplianceAndBanking',
+    'currencyDAO',
     'stack',
-    'user'
+    'user',
+    'accountingIntegrationUtil'
   ],
 
   properties: [
@@ -40,7 +45,7 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
           columns: [
-            this.Invoice.PAYER.clone().copyFrom({
+            this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
               tableCellFormatter: function(_, invoice) {
                 var additiveSubField = invoice.payer.businessName ?
@@ -50,18 +55,13 @@ foam.CLASS({
               }
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({
-              label: 'Invoice No.'
+              label: 'Invoice No.',
+              tableWidth: 145
             }),
-            this.Invoice.AMOUNT.clone().copyFrom({
-              tableCellFormatter: function(_, invoice) {
-                invoice.destinationCurrency$find.then((currency) => {
-                  this.add(`+ ${currency.format(invoice.amount)}`);
-                });
-              }
-            }),
-            'dueDate',
-            'lastModified',
-            'status'
+            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 145 }),
+            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 145 }),
+            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 145 }),
+            'invoiceFile'
           ],
           contextMenuActions: [
             foam.core.Action.create({
@@ -72,6 +72,28 @@ foam.CLASS({
                   class: 'net.nanopay.sme.ui.InvoiceOverview',
                   invoice: this,
                   isPayable: false
+                });
+              }
+            }),
+            foam.core.Action.create({
+              name: 'edit',
+              label: 'Edit',
+              isAvailable: function() {
+                return this.status === self.InvoiceStatus.DRAFT;
+              },
+              code: function(X) {
+                self.checkComplianceAndBanking().then((result) => {
+                  if ( ! result ) return;
+                  X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                    var clone = menu.clone();
+                    Object.assign(clone.handler.view, {
+                      isPayable: false,
+                      isForm: true,
+                      isDetailView: false,
+                      invoice: this
+                    });
+                    clone.launch(X, X.controllerView);
+                  });
                 });
               }
             }),
@@ -118,19 +140,23 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            if ( self.hasPassedCompliance() ) {
-              X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                var clone = menu.clone();
-                Object.assign(clone.handler.view, {
-                  invoice: self.Invoice.create({}),
-                  isPayable: false,
-                  isForm: true,
-                  isList: false,
-                  isDetailView: false
+            self.checkComplianceAndBanking().then((result) => {
+              if ( result ) {
+                X.menuDAO.find('sme.quickAction.request').then((menu) => {
+                  var clone = menu.clone();
+                  Object.assign(clone.handler.view, {
+                    invoice: self.Invoice.create({}),
+                    isPayable: false,
+                    isForm: true,
+                    isList: false,
+                    isDetailView: false
+                  });
+                  clone.launch(X, X.controllerView);
                 });
-                clone.launch(X, X.controllerView);
-              });
-            }
+              }
+            }).catch((err) => {
+              console.warn('Error occured when checking the compliance: ', err);
+            });
           }
         });
       }
@@ -140,7 +166,11 @@ foam.CLASS({
   listeners: [
     {
       name: 'dblclick',
-      code: function(invoice) {
+      code: async function(invoice) {
+        if ( invoice.status == this.InvoiceStatus.DRAFT ) {
+          let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
+        }
         this.stack.push({
           class: 'net.nanopay.sme.ui.InvoiceOverview',
           invoice: invoice,

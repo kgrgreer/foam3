@@ -12,7 +12,7 @@ import net.nanopay.bank.CABankAccount;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
-import net.nanopay.tx.model.LiquiditySettings;
+import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.FeeTransfer;
@@ -46,12 +46,9 @@ public class TransactionDAOTest
     if ( sender_ == null ) {
       sender_ = new User();
       sender_.setEmail("testUser1@nanopay.net");
+      sender_.setFirstName("Francis");
+      sender_.setLastName("Filth");
     }
-    LiquiditySettings ls = new LiquiditySettings();
-    ls.setId(DigitalAccount.findDefault(x_, sender_, "CAD").getId());
-    ls.setEnableCashIn(false);
-    ls.setEnableCashOut(false);
-    ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
     sender_ = (User) sender_.fclone();
     sender_.setEmailVerified(true);
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
@@ -61,10 +58,10 @@ public class TransactionDAOTest
       receiver_ = new User();
       receiver_.setEmail("testUser2@nanopay.net");
     }
-    ls.setId(DigitalAccount.findDefault(x_, receiver_, "CAD").getId());
-    ((DAO)x_.get("liquiditySettingsDAO")).put(ls);
     receiver_ = (User) receiver_.fclone();
     receiver_.setEmailVerified(true);
+    receiver_.setFirstName("Francis");
+    receiver_.setLastName("Filth");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
 
     return x_;
@@ -111,12 +108,6 @@ public class TransactionDAOTest
     sender_ = (User) ((DAO) x_.get("localUserDAO")).put_(x_, sender_);
     receiver_ = (User) ((DAO) x_.get("localUserDAO")).put_(x_, receiver_);
 
-
-    // Test amount cannot be zero
-    test(TestUtils.testThrows(
-      () -> txnDAO.put_(x_, txn),
-      "Zero transfer disallowed.",
-      RuntimeException.class), "Exception: Txn amount cannot be zero");
 
     // Test payer user exists
     txn.setAmount(1L);

@@ -177,10 +177,10 @@ foam.CLASS({
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-container {
-      top: 40px; // 36px for height of select input, plus 4px bottom margin
       border: 1px solid #bdbdbd;
       border-radius: 4px;
       width: 100%;
+      z-index: 1;
       -webkit-appearance: none;
     }
 
@@ -195,7 +195,7 @@ foam.CLASS({
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-selection-view {
-      height: 40px;
+      min-height: 40px;
       width: 100%;
       border-radius: 4px;
       border: solid 1px #8e9090;
@@ -383,7 +383,7 @@ foam.CLASS({
       outline: none;
     }
 
-    .sme.button:active {
+    .sme.button:active:enabled {
       box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
     }
 
@@ -514,9 +514,14 @@ foam.CLASS({
     /* Text Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea26293d02ff3d04f8892d */
 
     .x-large-header {
-      font-size: 40px;
-      line-height: 48px;
+      /* InvoiceOverview Header format length */
+      font-size: 32px;
       font-weight: 900;
+      line-height: 1.5;
+      max-width: 600px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .large-header {
@@ -715,6 +720,18 @@ foam.CLASS({
 
     /* DAO controller */
 
+    td .invoice-attachment-icon {
+      background-image: url("/images/attachment.svg");
+      background-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    td .invoice-attachment-icon:hover {
+      background-image: url("/images/attachment-purple.svg");
+      cursor: pointer;
+    }
+
     .foam-comics-DAOControllerView-top-row .net-nanopay-ui-ActionView {
       width: 158px !important;
       height: 48px !important;
@@ -739,6 +756,8 @@ foam.CLASS({
       line-height: 24px;
       width: auto !important;
       height: 40px;
+      margin-left: 28px;
+      display: inline-block;
     }
 
     .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView img + span {
@@ -750,8 +769,8 @@ foam.CLASS({
       filter: hue-rotate(67deg) saturate(100000000) opacity(65%);
     }
 
-    .foam-comics-DAOControllerView-top-row {
-      margin-bottom: 20px !important;
+    .net-nanopay-sme-SMEController .foam-comics-DAOControllerView-top-row {
+      margin-bottom: 36px;
     }
 
     .foam-comics-DAOControllerView-title-container span {
@@ -803,8 +822,8 @@ foam.CLASS({
       background: #fff;
     }
 
-    .foam-u2-view-TableView tbody tr:first-child td {
-      border-top: solid 1px #e2e2e3 !important;
+    .foam-u2-view-TableView thead th {
+      border-bottom: solid 1px #e2e2e3;
     }
 
     .foam-u2-md-overlaydropdown {
@@ -842,9 +861,7 @@ foam.CLASS({
       margin: 0px;
     }
 
-    table {
-      width: 1024px !important;
-    }
+    /* user status styles */
 
     .user-status-Active {
       color: #07941f;
@@ -889,6 +906,45 @@ foam.CLASS({
       background-color: #545d87;
       border-radius: 50%;
       display: inline-block;
+    }
+
+    /* contact status styles */
+
+    [class*="contact-status"] {
+      display: inline-block;
+      font-size: 11px;
+    }
+
+    [class*="contact-status-circle"] {
+      height: 6px;
+      width: 6px;
+      margin-bottom: 1px;
+      margin-right: 4px;
+      border-radius: 50%;
+    }
+
+    .contact-status-Active {
+      color: #07941f;
+    }
+
+    .contact-status-circle-Active {
+      background-color: #07941f;
+    }
+
+    .contact-status-NotInvited {
+      color: #424242;
+    }
+
+    .contact-status-circle-NotInvited {
+      background-color: #424242;
+    }
+
+    .contact-status-Invited {
+      color: #545d87;
+    }
+
+    .contact-status-circle-Invited {
+      background-color: #545d87;
     }
 
     /* Styles for ResetPassword/SigninView/SignupView */
@@ -961,7 +1017,7 @@ foam.CLASS({
       display: inline-block;
     }
 
-    .generic-status-circle.Completed {
+    .generic-status-circle.Complete {
       background: #07941f;
     }
 
@@ -973,15 +1029,15 @@ foam.CLASS({
       color: #cf6f0a !important;
     }
 
-    .Invoice-Status.Funds-in-transit {
+    .Invoice-Status.Processing {
       color: #cf6f0a !important;
     }
 
-    .generic-status-circle.Funds-in-transit {
+    .generic-status-circle.Processing {
       background: #cf6f0a;
     }
 
-    .Invoice-Status.Completed {
+    .Invoice-Status.Complete {
       color: #07941f !important;
     }
 
@@ -1002,7 +1058,11 @@ foam.CLASS({
     }
 
     .generic-status-circle.draft {
-      background: #8b90a6;
+      border-color: #8b90a6;
+      border-style: solid;
+      border-width: 1.5px;
+      height: 4px;
+      width: 4px;
     }
 
     .Invoice-Status.draft {
@@ -1010,11 +1070,15 @@ foam.CLASS({
     }
 
     .generic-status-circle.pending-approval {
-      background: #cf6f0a;
+      border-color: #545d87;
+      border-style: solid;
+      border-width: 1.5px;
+      height: 4px;
+      width: 4px;
     }
 
     .Invoice-Status.pending-approval {
-      color: #cf6f0a !important;
+      color: #545d87 !important;
     }
 
     .generic-status-circle.depositing-money {
@@ -1129,6 +1193,12 @@ foam.CLASS({
       display: none !important;
     }
 
+    .net-nanopay-sme-ui-banner-ComplianceBanner .foam-u2-stack-StackView {
+      height: calc(100% - 36px);
+    }
 
+    .net-nanopay-sme-SMEController .foam-u2-md-OverlayDropdown {
+      transform: translate(-100%, 16px);
+    }
   `
 });

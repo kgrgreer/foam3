@@ -10,6 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'acceptanceDocumentService',
     'auth',
     'groupDAO',
     'loginSuccess',
@@ -28,6 +29,8 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
     'net.nanopay.ui.NewPasswordView',
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentService'
   ],
 
   css: `
@@ -143,7 +146,12 @@ foam.CLASS({
       name: 'disableCompanyName',
       documentation: `Set this to true to disable the Company Name input field.`
     },
-    'termsAndConditions'
+    'termsAndConditions',   
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.documents.AcceptanceDocument',
+      name: 'termsAgreementDocument'
+    },
   ],
 
   messages: [
@@ -156,16 +164,18 @@ foam.CLASS({
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
-    { name: 'AND_LABEL', message: '&' },
-    { name: 'POLICY_LABEL', message: 'Privacy Policy' },
-    { name: 'TERMS_AGREEMENT_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Terms-of-Service-Agreement-Dec-1-2018.pdf' },
-    { name: 'PRIVACY_POLICY_LINK', message: 'https://ablii.com/wp-content/uploads/2018/12/nanopay-Privacy-Policy-November-28-2018.pdf' },
+    { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` }
   ],
 
   methods: [
+     function init() {
+       this.SUPER();
+       this.loadAcceptanceDocument();
+     },
+
     function initE() {
       this.SUPER();
 
@@ -200,7 +210,7 @@ foam.CLASS({
               .start().addClass('input-double-right')
                 .start().add(this.L_NAME).addClass('input-label').end()
                 .start(this.LAST_NAME_FIELD)
-                  .addClass('input-field').attr('placeholder', 'Doe')
+                  .addClass('input-field').attr('placeholder', 'Smith')
                 .end()
               .end()
             .end()
@@ -228,10 +238,11 @@ foam.CLASS({
             .end()
 
             .start().addClass('input-wrapper')
-              .tag({ class: 'foam.u2.CheckBox' })
-              .on('click', (event) => {
-                this.termsAndConditions = event.target.checked;
-              })
+              .start({ class: 'foam.u2.CheckBox' })
+                .on('click', (event) => {
+                  this.termsAndConditions = event.target.checked;
+                })
+              .end()
               .start().addClass('inline')
                 .add(this.TERMS_AGREEMENT_LABEL)
               .end()
@@ -239,15 +250,7 @@ foam.CLASS({
                 .addClass(this.myClass('terms-link'))
                 .add(this.TERMS_AGREEMENT_LABEL_2)
                 .on('click', () => {
-                  window.open(this.TERMS_AGREEMENT_LINK);
-                })
-              .end()
-              .start().addClass('inline').add(this.AND_LABEL).end()
-              .start('a').addClass('sme').addClass('link')
-                .addClass(this.myClass('terms-link'))
-                .add(this.POLICY_LABEL)
-                .on('click', () => {
-                  window.open(this.PRIVACY_POLICY_LINK);
+                  window.open(this.termsAgreementDocument.link);
                 })
               .end()
             .end()
@@ -368,7 +371,8 @@ foam.CLASS({
         .catch((err) => {
           this.notify(err.message || 'There was a problem while signing you in.', 'error');
         });
-    }
+    }, 
+
   ],
 
   actions: [
@@ -387,20 +391,39 @@ foam.CLASS({
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
           welcomeEmailSent: true,
-          group: 'sme',
-          signUpToken: this.signUpToken
-        });
+          group: 'sme'
+        });      
 
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {
             this.user = user;
-            this.logIn();
+            this.logIn(); 
+            // update user accepted terms and condition. We should do this after login because we need CreatedByDAO
+            try {
+              this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(this.__context__, user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
+            } catch (err) {
+              console.warn('Error updateing acceptance document: ', err);
+              this.notify(err.message || 'There was a problem updating terms and condition status.', 'error');
+              return;
+            }                        
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
-          });
+          });          
+      }
+    }
+  ],
+
+  listeners: [
+    async function loadAcceptanceDocument() {
+      try {
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+      } catch (error) {
+        console.warn('Error occured finding Terms Agreement: ', error);
       }
     }
   ]
 });
+

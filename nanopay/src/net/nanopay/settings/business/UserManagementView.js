@@ -28,18 +28,13 @@ foam.CLASS({
 
   css: `
     ^ {
-      margin: auto;
+      max-width: 1025px;
     }
-    ^ .foam-u2-view-TableView-net-nanopay-model-ClientUserJunction {
-      width: 100% !important;
-    }
-    ^ table {
-      width: 100% !important;
-    }
-    ^ .net-nanopay-ui-ActionView-addUser {
-      float: right;
-      margin-bottom: 10px;
-      margin-right: 50px;
+
+    ^actions {
+      display: flex;
+      justify-content: flex-end;
+      padding-bottom: 8px;
     }
   `,
 
@@ -77,9 +72,12 @@ foam.CLASS({
       this.updateDAO();
 
       this.addClass(this.myClass())
-        .startContext({ data: this })
-          .start(this.ADD_USER).end()
-        .endContext()
+        .start()
+          .addClass(this.myClass('actions'))
+          .startContext({ data: this })
+            .start(this.ADD_USER).end()
+          .endContext()
+        .end()
         .tag({
           class: 'foam.u2.view.ScrollTableView',
           data$: this.clientJunctionDAO$,
@@ -133,10 +131,10 @@ foam.CLASS({
   listeners: [
     function updateDAO() {
       var self = this;
-      // Populate the clientJunctionDAO with presentable junction information.
+      // Populate the clientJunctionDAO with all the agents this.user is related to.
       var agentJunctionDAO = this.agentJunctionDAO.where(this.EQ(this.UserUserJunction.TARGET_ID, this.user.id));
       this.clientJunctionDAO.removeAll();
-
+      
       agentJunctionDAO.select({
         put: function(junction) {
           junction = self.ClientUserJunction.create({
@@ -156,7 +154,6 @@ foam.CLASS({
         .where(
           this.AND(
             this.EQ(this.Invitation.CREATED_BY, this.user.id),
-            this.EQ(this.Invitation.INTERNAL, false),
             this.EQ(this.Invitation.STATUS, this.InvitationStatus.SENT)
           )
         )
@@ -182,7 +179,12 @@ foam.CLASS({
       name: 'addUser',
       code: function() {
         // Add add user flow
-        ctrl.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
+        ctrl.add(this.Popup.create().tag({ 
+          class: 'net.nanopay.sme.ui.AddUserToBusinessModal',
+          dao: this.clientJunctionDAO,
+          role: 'employee',
+          noChoice: true
+        }));
       }
     }
   ]

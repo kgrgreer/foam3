@@ -9,6 +9,8 @@ foam.CLASS({
     'auth',
     'loginSuccess',
     'menuDAO',
+    'notify',
+    'smeBusinessRegistrationDAO',
     'stack',
     'user',
     'validateEmail'
@@ -48,8 +50,8 @@ foam.CLASS({
       background: white;
     }
     ^ .login-logo-img {
-        height: 19.4;
-        margin-bottom: 8px;
+      height: 19.4;
+      margin-bottom: 8px;
     }
     ^button {
       margin-top: 56px;
@@ -83,6 +85,17 @@ foam.CLASS({
     ^ .full-width-input-password {
       padding: 12px 34px 12px 12px ! important;
     }
+    ^ .foam-u2-dialog-InlineNotificationMessage {
+      margin-bottom: 20px;
+    }
+    ^ .foam-u2-dialog-InlineNotificationMessage-inner {
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    ^ .foam-u2-dialog-InlineNotificationMessage-message {
+      width: 80%;
+      margin: 10px;
+    }
   `,
 
   properties: [
@@ -94,6 +107,23 @@ foam.CLASS({
       class: 'Password',
       name: 'password',
       view: { class: 'foam.u2.view.PasswordView', passwordIcon: true }
+    },
+    {
+      class: 'String',
+      name: 'errorMessage',
+      value: ''
+    },
+    {
+      class: 'String',
+      name: 'messageType'
+    },
+    {
+      class: 'Boolean',
+      name: 'disableEmail'
+    },
+    {
+      class: 'String',
+      name: 'signUpToken'
     }
   ],
 
@@ -112,6 +142,8 @@ foam.CLASS({
     function initE() {
       var self = this;
       var split = net.nanopay.sme.ui.SplitBorder.create();
+      var emailDisplayMode = this.disableEmail ?
+      foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
       var left = this.Element.create()
         .addClass('cover-img-block')
@@ -122,13 +154,15 @@ foam.CLASS({
 
       var right = this.Element.create()
         .addClass('content-form')
+        .tag({ class: 'foam.u2.dialog.InlineNotificationMessage', type$: this.messageType$, message$: this.errorMessage$ })
         .start('img').addClass('login-logo-img').attr('src', 'images/ablii-wordmark.svg').end()
         .start().addClass('sme-title').add(this.SIGN_IN_TITLE).end()
         .start('form').addClass('signin-container')
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start().addClass('input-field-wrapper')
-              .start(this.EMAIL).addClass('input-field')
+              .start(this.EMAIL, { mode: emailDisplayMode })
+                .addClass('input-field')
                 .attr('placeholder', 'you@example.com')
               .end()
             .end()
@@ -153,8 +187,7 @@ foam.CLASS({
             .add(this.FORGET_PASSWORD_LABEL)
             .on('click', function() {
               self.stack.push({
-                class: 'foam.nanos.auth.resetPassword.EmailView',
-                signInView: { class: 'net.nanopay.sme.ui.SignInView' }
+                class: 'foam.nanos.auth.resetPassword.EmailView'
               });
             })
           .end()
@@ -190,9 +223,7 @@ foam.CLASS({
     {
       name: 'logIn',
       label: 'Sign in',
-      code: function(X, obj) {
-        var self = this;
-
+      code: async function(X, obj) {
         if ( ! this.email ) {
           this.add(this.NotificationMessage.create({
               message: 'Please enter an email address', type: 'error' }));
@@ -211,28 +242,43 @@ foam.CLASS({
           return;
         }
 
-        this.auth.loginByEmail(X, this.email, this.password).then(function(user) {
-          if ( user && user.twoFactorEnabled ) {
-            self.loginSuccess = false;
-            self.user.copyFrom(user);
-            self.stack.push({
+        try {
+          var usr = await this.auth.loginByEmail(X, this.email, this.password);
+          if ( ! usr ) return;
+          usr.signUpToken = this.signUpToken;
+          this.user.copyFrom(usr);
+          await this.invitedTokenProcess();
+          if ( this.user && this.user.twoFactorEnabled ) {
+            this.loginSuccess = false;
+            this.stack.push({
               class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
             });
           } else {
-            self.loginSuccess = user ? true : false;
-            self.user.copyFrom(user);
-            if ( ! self.user.emailVerified ) {
-              self.stack.push({
+            this.loginSuccess = this.user ? true : false;
+            if ( ! this.user.emailVerified ) {
+              this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
               });
             } else {
               // This is required for signin
               window.location.hash = '';
+              window.location.reload();
             }
           }
-        }).catch(function(a) {
-          self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
-        });
+        } catch (error) {
+          this.messageType = 'error';
+          this.errorMessage = error.message;
+        }
+      }
+    },
+
+    async function invitedTokenProcess() {
+      if ( ! this.signUpToken ) return;
+      var returnedTempUser = await this.smeBusinessRegistrationDAO.put(this.user);
+      if ( returnedTempUser ) {
+        this.user.copyFrom(returnedTempUser);
+      } else {
+        this.notify('User was invited to a business however an error has occured during processing.', 'error');
       }
     }
   ]

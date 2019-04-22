@@ -69,7 +69,7 @@ foam.CLASS({
       background-color: #ffffff;
     }
     ^img {
-      width: 456px;
+      width: 100%;
       margin-top: 24px;
       margin-bottom: 4px;
     }
@@ -94,6 +94,9 @@ foam.CLASS({
     ^field-container.routing {
       margin-right: 16px;
     }
+    ^field-container-account {
+      flex-grow: 2;
+    }
     ^field-container input {
       width: 100%;
       height: 40px;
@@ -107,21 +110,21 @@ foam.CLASS({
       margin-top: 8px;
       font-size: 10px;
     }
-
     ^ .net-nanopay-ui-DataSecurityBanner {
       margin-top: 24px;
     }
-
     ^ .divider {
       width: 100%;
       height: 1px;
       margin: 24px 0;
       background-color: #e2e2e3;
     }
-
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
       margin-top: 24px;
       width: 100%;
+    }
+    ^flex{
+      display: flex;
     }
   `,
 
@@ -130,15 +133,16 @@ foam.CLASS({
     { name: 'SUB_TITLE', message: 'Connect to your account without signing in to online banking.' },
     { name: 'SUB_TITLE1', message: 'Please ensure your details are entered correctly.' },
     { name: 'SUB_TITLE2', message: 'Please upload either an image of a void check or a bank statement from within the past 3 months to verify ownership of this bank account.' },
-    { name: 'ROUT', message: 'Routing #' },
-    { name: 'ACC', message: 'Account #' },
+    { name: 'ROUT', message: 'ACH Routing No.' },
+    { name: 'ACC', message: 'ACH Account No.' },
     { name: 'LABEL_NICKNAME', message: 'Nickname' },
     { name: 'HINT', message: 'Set a nickname to easily identify your account later on.' },
     { name: 'DROP_ZONE_TITLE', message: 'DRAG & DROP YOUR VOID CHECK HERE' },
-    { name: 'ERROR_INVALID_ROUTING', message: 'Invalid routing #' },
-    { name: 'ERROR_INVALID_ACCOUNT', message: 'Invalid account #' },
+    { name: 'ERROR_INVALID_ROUTING', message: 'Invalid ACH Routing No.' },
+    { name: 'ERROR_INVALID_ACCOUNT', message: 'Invalid ACH Account No.' },
     { name: 'ERROR_INVALID_NICKNAME', message: 'Invalid nickname' },
-    { name: 'ERROR_MISSING_SAMPLE', message: 'Please attach a void check.' }
+    { name: 'ERROR_MISSING_SAMPLE', message: 'Please attach a void check.' },
+    { name: 'BANK_NAME_PLACEHOLDER', message: 'My Bank' }
   ],
 
   properties: [
@@ -184,27 +188,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'nickname',
-      view: {
-        class: 'foam.u2.tag.Input',
-        maxLength: 32,
-        placeholder: 'My Bank',
-        onKey: true
-      },
-      factory: function() {
-        return this.bank.name ? this.bank.name : '';
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^[a-z0-9 ]{0,32}$/i; // alphanumerical only
-        return reg.test(n) ? n : o;
-      },
-      postSet: function(_, n) {
-        this.bank.name = n;
-      }
-    },
-    {
       class: 'foam.nanos.fs.FileArray',
       name: 'voidCheckFile',
       factory: function() {
@@ -230,17 +213,22 @@ foam.CLASS({
           .start('p').addClass(this.myClass('instructions')).add(this.SUB_TITLE).end()
           .start('p').addClass(this.myClass('instructions')).add(this.SUB_TITLE1).end()
           .start({ class: 'foam.u2.tag.Image', data: 'images/USA-Check@2x.png' }).addClass(this.myClass('img')).end()
-          .start().addClass(this.myClass('field-container')).addClass('routing')
-            .start('p').add(this.ROUT).addClass('fieldTitle').end()
-            .start(this.ROUTING_NUM).addClass('largeInput').end()
-          .end()
-          .start().addClass(this.myClass('field-container'))
-            .start('p').add(this.ACC).addClass('fieldTitle').end()
-            .start(this.ACCOUNT_NUM).addClass('largeInput').end()
+          .start()
+            .addClass(this.myClass('flex'))
+            .start().addClass(this.myClass('field-container')).addClass('routing')
+              .start('p').add(this.ROUT).addClass('fieldTitle').end()
+              .start(this.ROUTING_NUM).addClass('largeInput').end()
+            .end()
+            .start().addClass(this.myClass('field-container-account'))
+              .start('p').add(this.ACC).addClass('fieldTitle').end()
+              .start(this.ACCOUNT_NUM).addClass('largeInput').end()
+            .end()
           .end()
           .start().addClass(this.myClass('field-container')).addClass(this.myClass('name-container'))
             .start('p').addClass('fieldTitle').add(this.LABEL_NICKNAME).end()
-            .tag(this.NICKNAME)
+            .startContext({ data: this.bank })
+              .tag(this.bank.NAME, { placeholder: this.BANK_NAME_PLACEHOLDER })
+            .endContext()
             .start('p').addClass(this.myClass('hint')).add(this.HINT).end()
           .end()
           .start().addClass('divider').end()
@@ -261,27 +249,39 @@ foam.CLASS({
           }).end()
           .start({ class: 'net.nanopay.ui.DataSecurityBanner' }).end()
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+        .start({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.BACK, next: this.NEXT
+        })
+        .end();
     },
 
     function validateInputs() {
       if ( ! this.validateRoutingNumber(this.routingNum) ) {
-        this.notify(this.ERROR_INVALID_ROUTING, 'error');
+        ctrl.notify(this.ERROR_INVALID_ROUTING, 'error');
         return false;
       }
+
       if ( ! this.validateAccountNumber(this.accountNum) ) {
-        this.notify(this.ERROR_INVALID_ACCOUNT, 'error');
+        ctrl.notify(this.ERROR_INVALID_ACCOUNT, 'error');
         return false;
       }
-      var nameRegEx = /^[a-z0-9 ]{1,32}$/i;
-      if ( ! nameRegEx.test(this.nickname) ) {
-        this.notify(this.ERROR_INVALID_NICKNAME, 'error');
+
+      if ( this.bank.name === '' ) {
+        ctrl.notify(this.ERROR_INVALID_NICKNAME, 'error');
         return false;
       }
+
+      if ( this.bank.errors_ ) {
+        ctrl.notify(this.bank.errors_[0][1], 'error');
+        return false;
+      }
+
       if ( this.voidCheckFile.length === 0 ) {
-        this.notify(this.ERROR_MISSING_SAMPLE, 'error');
+        ctrl.notify(this.ERROR_MISSING_SAMPLE, 'error');
         return false;
       }
+
       return true;
     }
   ],

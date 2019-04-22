@@ -12,11 +12,17 @@ foam.CLASS({
   documentation: `Hold Ascendant FX specific properties`,
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
+    'java.util.ArrayList',
+    'java.util.Arrays',
+    'net.nanopay.fx.ascendantfx.AscendantFXHTMLGenerator',
     'net.nanopay.fx.ascendantfx.model.AcceptQuoteRequest',
     'net.nanopay.fx.ascendantfx.model.AcceptQuoteResult',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FXService',
+    'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -26,6 +32,13 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
     },
@@ -47,6 +60,13 @@ foam.CLASS({
             ['DECLINED', 'DECLINED']
           ];
         }
+        if ( this.status == this.TransactionStatus.SENT ) {
+                  return [
+                    'choose status',
+                    ['COMPLETED', 'COMPLETED'],
+                    ['DECLINED', 'DECLINED']
+                  ];
+                }
        return ['No status to choose'];
       }
     }
@@ -58,7 +78,7 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          javaType: 'foam.core.X'
+          type: 'Context'
         }
       ],
       javaCode: `
@@ -70,6 +90,41 @@ foam.CLASS({
         ((Logger) x.get(Logger.class)).error("Error sending Accept Quote Request to AscendantFX.", t);
       }
 
+      `
+    },
+    {
+      name: 'executeAfterPut',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'oldTxn',
+          type: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      javaCode: `
+        super.executeAfterPut(x, oldTxn);
+
+        long invoiceId = this.getInvoiceId();
+
+        if ( invoiceId == 0 ) {
+          return;
+        }
+
+        DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+        Invoice invoice = (Invoice) invoiceDAO.find(invoiceId).fclone();
+
+        if ( invoice == null ) {
+          throw new RuntimeException(String.format("Invoice with id %d not found. Could not save AFX transaction confirmation PDF.", invoiceId));
+        }
+
+        // Generate a transaction confirmation PDF and store it as an attachment
+        // on the invoice associated with this transaction.
+        File pdf = (new AscendantFXHTMLGenerator()).generateTransactionConfirmationPDF(x, this);
+        invoice.setAFXConfirmationPDF(pdf);
+        invoiceDAO.put(invoice);
       `
     }
   ]

@@ -32,17 +32,6 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      args: [
-        {
-          name: 'x',
-          of: 'foam.core.X'
-        },
-        {
-          name: 'obj',
-          of: 'foam.core.FObject'
-        }
-      ],
-      javaReturns: 'foam.core.FObject',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
@@ -58,25 +47,25 @@ foam.CLASS({
       args: [
         {
           name: 'x',
-          of: 'foam.core.X'
+          type: 'Context'
         },
         {
           name: 'transaction',
-          of: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         },
         {
           name: 'applyTo',
-          of: 'net.nanopay.tx.model.Transaction'
+          type: 'net.nanopay.tx.model.Transaction'
         }
      ],
-      javaReturns: 'net.nanopay.tx.model.Transaction',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
       if ( transaction == null ) {
         return transaction;
       }
-        DAO transactionFeesDAO = (DAO) x.get("transactionFeesDAO");
-        List applicableFees = ((ArraySink) transactionFeesDAO
+        DAO transactionFeeDAO = (DAO) x.get("transactionFeeDAO");
+        List applicableFees = ((ArraySink) transactionFeeDAO
             .where(
               MLang.AND(
                 MLang.OR(
@@ -109,8 +98,10 @@ foam.CLASS({
               }
               Long feeAccount = fee.getFeeAccount();
               if ( feeAccount > 0 ) {
+                Long debit = fee.getSourcePaysFees() ? transaction.getSourceAccount() : transaction.getDestinationAccount();
+          
                 FeeLineItem[] forward = new FeeLineItem [] {
-                  new FeeLineItem.Builder(x).setNote(fee.getName()).setFeeAccount(fee.getFeeAccount()).setAmount(fee.getFee().getFee(transaction.getAmount())).build()
+                  new FeeLineItem.Builder(x).setNote(fee.getName()).setDestinationAccount(feeAccount).setAmount(fee.getFee().getFee(transaction.getAmount())).setSourceAccount(debit).build()
                 };
                 InfoLineItem[] reverse = new InfoLineItem [] {
                   new InfoLineItem.Builder(x).setNote(fee.getName()+" - Non-refundable").setAmount(fee.getFee().getFee(transaction.getAmount())).build()

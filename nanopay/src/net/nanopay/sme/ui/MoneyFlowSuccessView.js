@@ -14,6 +14,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'currencyDAO',
     'menuDAO',
     'stack',
     'user'
@@ -29,12 +30,12 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background: #edf0f5;
+      background: #f9fbff;
     }
     ^ .link {
       color: #7404EA;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 16px;
       text-align: center;
     }
     ^ .success-title {
@@ -42,8 +43,8 @@ foam.CLASS({
       text-align: center
     }
     ^ .success-body {
-      font-size: 14px;
-      width: 500px;
+      font-size: 16px;
+      line-height: 24px;
     }
     ^success-img {
       width: 53px;
@@ -154,19 +155,19 @@ foam.CLASS({
     { name: 'TITLE_REC1', message: 'Requested' },
     { name: 'TITLE_REC2', message: 'from' },
     { name: 'TITLE_PENDING', message: 'Payment has been submitted for approval' },
-
-    { name: 'BODY_SEND', message: 'The payment has been successfully sent to your contact' },
-    { name: 'BODY_REC', message: 'Your request has been sent to your contact and is now pending payment' },
-    { name: 'BODY_PENDING', message: 'This payable requires approval before it can be processed' },
-
+    { name: 'BODY_SEND', message: 'You will see the debit from your bank account in 1-2 business days.' },
+    { name: 'BODY_REC', message: 'Your request has been sent to your contact and is now pending payment.' },
+    { name: 'BODY_PENDING', message: 'This payable requires approval before it can be processed.' },
     { name: 'REF', message: 'Your reference ID ' },
     { name: 'V_PAY', message: 'View this payable' },
     { name: 'V_REC', message: 'View this receivable' },
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' }
   ],
 
   methods: [
     function populateVariables() {
-      this.invoice.destinationCurrency$find.then((currency) => {
+      this.currencyDAO.find(this.invoice.destinationCurrency)
+        .then((currency) => {
         this.formattedAmount_ = currency.format(this.invoice.amount) + ' ' +
           currency.alphabeticCode;
       });
@@ -176,6 +177,7 @@ foam.CLASS({
     },
 
     function initE() {
+      var self = this;
       this.populateVariables();
       this.SUPER();
       this
@@ -193,9 +195,9 @@ foam.CLASS({
           .start('p')
             .addClass('success-body').addClass('subdued-text')
             .add(this.body_$)
-            .br()
-            .br()
-            .br()
+          .end()
+          .start('p')
+            .addClass('success-body').addClass('subdued-text')
             .add(this.REF)
             .add(this.invoice.referenceId)
           .end()
@@ -210,6 +212,16 @@ foam.CLASS({
               });
             })
           .end()
+          .callIf(this.invoice.AFXConfirmationPDF != null, function() {
+            this
+              .start()
+                .tag({
+                  class: 'net.nanopay.sme.ui.Link',
+                  data: self.invoice.AFXConfirmationPDF.address,
+                  text: self.TXN_CONFIRMATION_LINK_TEXT
+                })
+              .end();
+          })
         .end()
         .start('div').addClass('navigationContainer')
           .start('div').addClass('buttonContainer')
