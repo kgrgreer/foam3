@@ -22,10 +22,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
-    'menuDAO',
-    'viewData',
     'acceptanceDocumentService',
+    'agent',
+    'isSigningOfficer',
+    'menuDAO',
+    'user'
   ],
 
   css: `
@@ -119,9 +120,13 @@ foam.CLASS({
 
     ^ .checkBoxes {
       padding-top: 30px;
-      padding-bottom: 30px;
     }
-
+    ^ .checkBoxes input{
+      vertical-align: middle;
+    }
+    ^ .checkBoxes span{
+      vertical-align: middle;
+    }
     ^ .property-birthdayField {
       width: 100%;
     }
@@ -160,11 +165,22 @@ foam.CLASS({
       },
       factory: function() {
         this.nextLabel = this.viewData.agent.signingOfficer ? 'Next' : 'Complete';
-        return this.viewData.agent.signingOfficer ? 'Yes' : 'No';
+        return this.isSigningOfficer ? 'Yes' : 'No';
+      },
+      adapt: function(_, v) {
+        if ( typeof v === 'boolean' ) return v ? 'Yes' : 'No';
+        return v;
       },
       postSet: function(o, n) {
         this.nextLabel = n === 'Yes' ? 'Next' : 'Complete';
-        this.viewData.agent.signingOfficer = n === 'Yes';
+        if ( n === 'Yes' ) {
+          this.user.signingOfficers.add(this.agent);
+          this.isSigningOfficer = true;
+        } else {
+          this.user.signingOfficers.remove(this.agent);
+          this.isSigningOfficer = false;
+        }
+        this.hasSaveOption = n === 'Yes';
       }
     },
     {
@@ -250,21 +266,6 @@ foam.CLASS({
       postSet: function(o, n) {
         this.viewData.agent.additionalDocuments = n;
       }
-    },
-    {
-      name: 'principalTypeField',
-      value: 'Shareholder',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: ['Shareholder', 'Owner', 'Officer']
-      },
-      postSet: function(o, n) {
-        this.viewData.agent.principleType = n;
-      },
-      factory: function() {
-        return this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
-          'Shareholder';
-      },
     },
     {
       class: 'FObjectProperty',
@@ -389,7 +390,6 @@ foam.CLASS({
     { name: 'INVITE_TITLE', message: 'Invite users to your business' },
     { name: 'FIRST_NAME_LABEL', message: 'First Name' },
     { name: 'LAST_NAME_LABEL', message: 'Last Name' },
-    { name: 'PRINCIPAL_LABEL', message: 'Principal Type' },
     { name: 'JOB_LABEL', message: 'Job Title' },
     { name: 'PHONE_NUMBER_LABEL', message: 'Phone Number' },
     { name: 'EMAIL_LABEL', message: 'Email Address' },
@@ -397,9 +397,6 @@ foam.CLASS({
     { name: 'ADDRESS_HEADING', message: 'Signing officer contact information' },
     { name: 'IDENTIFICATION_TITLE', message: 'Identification' },
     { name: 'SUPPORTING_TITLE', message: 'Add supporting files' },
-    { name: 'CANADIAN_BOX_ONE', message: 'I acknowledge that I have read and accept the above Tri-Party Agreement for Ablii Payment Services - Canada Agreement' },
-    { name: 'CANADIAN_BOX_TWO', message: 'I acknowledge that I have read and accept the above Dual Party Agreement for Ablii Canadian Only Payment Services Agreement' },
-    { name: 'AMERICAN_BOX', message: 'I acknowledge that I have read and accept the above Tri-Party Agreement for Ablii Payment Services - United States “US” Agreement' },
     {
       name: 'DOMESTIC_QUESTION',
       message: `Are you a domestic or foreign Politically Exposed Person (PEP),
@@ -463,10 +460,6 @@ foam.CLASS({
             .start(this.LAST_NAME_FIELD).end()
           .end()
           .start().addClass('label-input')
-            .start().addClass('label').add(this.PRINCIPAL_LABEL).end()
-            .start(this.PRINCIPAL_TYPE_FIELD).end()
-          .end()
-          .start().addClass('label-input')
             .start().addClass('label').add(this.JOB_LABEL).end()
             .start(this.JOB_TITLE_FIELD).end()
           .end()
@@ -496,6 +489,7 @@ foam.CLASS({
           .start(this.IDENTIFICATION).end()
           // Terms and Services and Compliance stuff
             .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' })
+              .show(this.isCanadian$)
               .start('a').addClass('sme').addClass('link')
                 .addClass(this.myClass('terms-link'))
                 .add('Download or Print this Agreement Here')
@@ -504,8 +498,9 @@ foam.CLASS({
                   window.open(link);
                 })
               .end()
-            .show(this.isCanadian$).end()
+            .end()
             .start(this.DUAL_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px' })
+              .show(this.isCanadian$)
               .start('a').addClass('sme').addClass('link')
                 .addClass(this.myClass('terms-link'))
                 .add('Download or Print this Agreement Here')
@@ -514,8 +509,9 @@ foam.CLASS({
                   window.open(link);
                 })
               .end()
-            .show(this.isCanadian$).end()
+            .end()
             .start(this.TRI_PARTY_AGREEMENT_USD).style({ 'margin-top': '30px' })
+              .hide(this.isCanadian$)
               .start('a').addClass('sme').addClass('link')
                 .addClass(this.myClass('terms-link'))
                 .add('Download or Print this Agreement Here')
@@ -524,7 +520,7 @@ foam.CLASS({
                   window.open(link);
                 })
               .end()
-            .hide(this.isCanadian$).end()
+            .end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
               .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
             .end()
@@ -567,7 +563,7 @@ foam.CLASS({
     async function updateUserAcceptance(id, val) {
       try {
         this.acceptanceDocumentService
-          .updateUserAcceptanceDocument(this.user.id, id, val);
+          .updateUserAcceptanceDocument(this.__context__, this.user.id, id, val);
       } catch (error) {
         console.warn('Error updating user accepted document: ', error);
       }
@@ -577,19 +573,19 @@ foam.CLASS({
   listeners: [
     async function loadAcceptanceDocuments() {
       try {
-        this.triPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementCAD', '');
+        this.triPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementCAD', '');
       } catch (error) {
         console.warn('Error occured finding Tri-Party Agreement CAD: ', error);
       }
 
       try {
-        this.triPartyAgreementUsd = await this.acceptanceDocumentService.getAcceptanceDocument('triPartyAgreementUSD', '');
+        this.triPartyAgreementUsd = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementUSD', '');
       } catch (error) {
         console.warn('Error occured finding Tri-Party Agreement USD: ', error);
       }
 
       try {
-        this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument('dualPartyAgreementCad', '');
+        this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'dualPartyAgreementCAD', '');
       } catch (error) {
         console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
       }
@@ -601,7 +597,11 @@ foam.CLASS({
       name: 'addUsers',
       isEnabled: (signingOfficer) => signingOfficer === 'No',
       code: function() {
-        this.add(this.Popup.create().tag({ class: 'net.nanopay.sme.ui.AddUserToBusinessModal' }));
+        this.add(this.Popup.create().tag({
+          class: 'net.nanopay.sme.ui.AddUserToBusinessModal',
+          role: 'admin',
+          noChoice: true
+        }));
       }
     },
   ]
