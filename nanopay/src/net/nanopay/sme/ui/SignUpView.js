@@ -398,7 +398,8 @@ foam.CLASS({
           .put(newUser)
           .then((user) => {
             this.user = user;
-            // update user accepted terms and condition
+            this.logIn(); 
+            // update user accepted terms and condition. We should do this after login because we need CreatedByDAO
             try {
               this.acceptanceDocumentService.
               updateUserAcceptanceDocument(this.__context__, user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
@@ -406,9 +407,7 @@ foam.CLASS({
               console.warn('Error updateing acceptance document: ', err);
               this.notify(err.message || 'There was a problem updating terms and condition status.', 'error');
               return;
-            }
-           
-            this.logIn();             
+            }                        
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
