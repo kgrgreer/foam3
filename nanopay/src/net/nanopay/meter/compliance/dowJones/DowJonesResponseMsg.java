@@ -157,7 +157,7 @@ public class DowJonesResponseMsg
               formattedCountryBuilder.append("Country Type: " + countryType.getFirstChild().getNodeValue());
             }
             if ( countryCode2 != null ) {
-              formattedCountryBuilder.append(", Country Code : " + countryCode2.getFirstChild().getNodeValue());
+              formattedCountryBuilder.append(", Country Code: " + countryCode2.getFirstChild().getNodeValue());
             }
             countryArrList.add(formattedCountryBuilder.toString());
           }
