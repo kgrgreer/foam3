@@ -42,7 +42,7 @@ public class LimitNumberOfBankAccountsDAO extends ProxyDAO {
       return super.put_(x, obj);
     }
 
-    Count numberOfAccounts = (Count) getDelegate().where(
+    Count numberOfAccounts = (Count) getDelegate().inX(x).where(
       MLang.AND(
         MLang.INSTANCE_OF(BankAccount.class),
         MLang.EQ(Account.OWNER, user.getId())
