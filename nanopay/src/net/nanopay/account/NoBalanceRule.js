@@ -7,6 +7,7 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'net.nanopay.account.DigitalAccount'
   ],
 
@@ -15,8 +16,12 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
       if ( obj instanceof DigitalAccount ) {
-        if ( (long) ( (DigitalAccount) obj ).findBalance(x) > 0 ) {
-          throw new  RuntimeException("Cannot delete this account as it's balance is not 0");
+        DigitalAccount digitalAccount = (DigitalAccount) obj;
+        long balance = (long) digitalAccount.findBalance(x);
+        if ( balance != 0 ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.log("Cannot delete account " + digitalAccount.getId() + " as it has a balance of " + balance);
+          throw new  RuntimeException("Cannot delete this account as its balance is not 0");
         }
       }
       `

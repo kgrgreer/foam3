@@ -9,6 +9,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
+    'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.*',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction',
@@ -40,7 +41,9 @@ foam.CLASS({
             .select(count);
 
           if ( count.getValue() > 0 ) {
-            throw new  RuntimeException("Cannot delete this account as there are still Pending or Scheduled Transactions.");
+            Logger logger = (Logger) x.get("logger");
+            logger.log("Cannot delete account " + digitalAccount.getId() + " as there are still Pending or Scheduled Transactions");
+            throw new  RuntimeException("Cannot delete this account as there are still Pending or Scheduled Transactions");
           }
         }
       `
