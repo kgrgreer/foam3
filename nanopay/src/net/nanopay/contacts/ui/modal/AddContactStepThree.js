@@ -59,7 +59,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'BANKING_TITLE', message: 'Add banking information' },
+    { name: 'BANKING_TITLE', message: 'Add business address' },
     { name: 'INSTRUCTION', message: 'In order to send payments to this business, we’ll need you to verify their business address below.' },
     { name: 'BUSINESS_ADDRESS_TITLE', message: 'Business address' },
     { name: 'STEP_INDICATOR', message: 'Step 3 of 3' }
