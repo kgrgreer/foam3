@@ -139,11 +139,13 @@ public class LiquiditySettingsTest
     high.setResetBalance(3L);
     high.setThreshold(4L);
     high.setEnableRebalancing(true);
+    high.setActive(true);
 
     Liquidity low = new Liquidity();
     low.setEnableRebalancing(true);
     low.setResetBalance(2L);
     low.setThreshold(1L);
+    low.setActive(true);
 
     ls_.setCashOutFrequency(Frequency.DAILY);
     ls_.setHighLiquidity(high);
@@ -188,11 +190,13 @@ public class LiquiditySettingsTest
     highLiquidity.setResetBalance(maxLimit);
     highLiquidity.setThreshold(maxLimit + 1);
     highLiquidity.setPushPullAccount(bankAccount.getId());
+    highLiquidity.setActive(true);
     Liquidity lowLiquidity = new Liquidity();
     lowLiquidity.setEnableRebalancing(true);
     lowLiquidity.setThreshold(minLimit - 1);
     lowLiquidity.setResetBalance(minLimit);
     lowLiquidity.setPushPullAccount(bankAccount.getId());
+    lowLiquidity.setActive(true);
 
     ls.setCashOutFrequency(frequency);
     ls.setHighLiquidity(highLiquidity);
@@ -227,14 +231,16 @@ public class LiquiditySettingsTest
     Liquidity high = new Liquidity();
     Liquidity low = new Liquidity();
     low.setEnableRebalancing(true);
+    low.setActive(true);
     high.setEnableRebalancing(true);
+    high.setActive(false);
 
     low.setThreshold(5);
     low.setResetBalance(3);
 
+    ls.setHighLiquidity(high);
     ls.setLowLiquidity(low);
-
-
+    
     test(TestUtils.testThrows(
       () -> lsDAO.put_(x_, high),
       "you can only put instanceof LiquiditySettings to LiquiditySettingsDAO",
@@ -247,6 +253,7 @@ public class LiquiditySettingsTest
 
     high.setResetBalance(4);
     high.setThreshold(3);
+    high.setActive(true);
     ls.setHighLiquidity(high);
 
     test(TestUtils.testThrows(

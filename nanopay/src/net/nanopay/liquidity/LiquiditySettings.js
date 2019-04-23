@@ -47,17 +47,29 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.liquidity.Frequency',
       name: 'cashOutFrequency',
-      documentation: 'Determines how often a automatic cash out can occur.'
+      documentation: 'Determines how often an automatic cash out can occur.'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
       name: 'highLiquidity',
+      factory: function() {
+        return net.nanopay.liquidity.Liquidity.create({
+          enableRebalancing: false,
+          active: false,
+        });
+      }
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
       name: 'lowLiquidity',
+      factory: function() {
+        return net.nanopay.liquidity.Liquidity.create({
+          enableRebalancing: false,
+          active: false,
+        });
+      }
     }
   ]
 });

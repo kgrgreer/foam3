@@ -14,6 +14,11 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
+      name: 'active',
+      documentation: 'Determines whether Liquidity is active, and notifications and/or re-balancing is to occur',
+    },
+    {
+      class: 'Boolean',
       name: 'enableRebalancing',
       documentation: 'Triggeres automatic transaction on accounts.'
     },
