@@ -181,7 +181,9 @@ foam.CLASS({
         // Add add user flow
         ctrl.add(this.Popup.create().tag({ 
           class: 'net.nanopay.sme.ui.AddUserToBusinessModal',
-          dao: this.clientJunctionDAO
+          dao: this.clientJunctionDAO,
+          role: 'employee',
+          noChoice: true
         }));
       }
     }
