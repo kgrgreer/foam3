@@ -28,8 +28,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'instRefNo',
-      documentation: 'Instruction Reference Number'
+      name: 'IFSCCode'
     },
     {
       class: 'String',
@@ -52,45 +51,15 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'instStatusCd',
-      documentation: 'Instrument Status Code'
+      name: 'queryReqId'
     },
     {
       class: 'String',
-      name: 'instStatusRem',
-      documentation: 'Instrument Status Remarks'
-    },
-    {
-      class: 'StringArray',
-      name: 'errorList'
+      name: 'queryStatusCode'
     },
     {
       class: 'String',
-      name: 'errorCode'
-    },
-    {
-      class: 'String',
-      name: 'errorReason'
-    },
-    {
-      class: 'String',
-      name: 'invalidFieldName'
-    },
-    {
-      class: 'String',
-      name: 'invalidFieldValue'
-    },
-    {
-      class: 'String',
-      name: 'reversalReqId'
-    },
-    {
-      class: 'String',
-      name: 'reversalStatusCode'
-    },
-    {
-      class: 'String',
-      name: 'reversalStatusDesc'
+      name: 'queryStatusDesc'
     },
     {
       class: 'String',
