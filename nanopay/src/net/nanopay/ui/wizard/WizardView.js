@@ -37,6 +37,12 @@ foam.CLASS({
     { class: 'net.nanopay.ui.wizard.WizardCssAxiom' },
   ],
 
+  css: `
+    ^ .wizardBody .foam-u2-stack-StackView {
+      height: auto;
+    }
+  `,
+
   messages: [
     { name: 'ButtonCancel', message: 'Cancel' },
     { name: 'ButtonBack',   message: 'Back' },
