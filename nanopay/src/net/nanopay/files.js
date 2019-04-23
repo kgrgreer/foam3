@@ -173,6 +173,7 @@ FOAM_FILES([
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
+  { name: 'net/nanopay/kotak/KotakCredentials' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
 
   // interac
