@@ -14,6 +14,7 @@ retail/retail.iml
 
 # Visual Studio
 .vscode/
+.history/
 
 # CMake
 cmake-build-debug/

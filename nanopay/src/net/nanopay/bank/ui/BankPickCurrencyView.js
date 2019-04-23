@@ -36,18 +36,15 @@ foam.CLASS({
   }
   ^ .bank-pick-arrow {
     color: #8e9090;
-    display: inline-block;
-    vertical-align: top;
+  }
+  ^bank-pick-back {
+    cursor: pointer;
+    display: inline-flex;
   }
   ^ .bank-pick-back {
-    margin-left: 12px;
-    display: inline-block;
-    vertical-align: top;
     color: #8e9090;
-  }
-  ^ .bank-pick-title {
-    margin: 10px 0;
-    font-weight: 900;
+    font-size: 16px;
+    margin-left: 12px;
   }
   ^ .bank-pick-subtitle {
     margin-bottom: 40px;
@@ -168,7 +165,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Add a new bank' },
     { name: 'SUB_TITLE', message: 'Choose your banking provider below to get started' },
-    { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
+    { name: 'BANK_ADDED', message: 'Your bank account was successfully added.' },
   ],
 
   properties: [
@@ -211,8 +208,13 @@ foam.CLASS({
       .start().addClass('bank-currency-pick-height')
         .start().addClass('bank-pick-margin')
           .start().addClass('top')
-            .start().style({'margin-left': '5px'})
-              .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).addClass('bank-pick-arrow').end()
+            .start().addClass(this.myClass('bank-pick-back'))
+              .start({
+                class: 'foam.u2.tag.Image',
+                data: 'images/ablii/gobackarrow-grey.svg'
+              })
+                .addClass('bank-pick-arrow')
+              .end()
               .start().add('Go back').addClass('bank-pick-back').end()
             .on('click', () => {
               this.stack.back();
