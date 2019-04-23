@@ -26,7 +26,7 @@ public class LimitNumberOfBankAccountsDAO extends ProxyDAO {
     Group userGroup = (Group) x.get("group");
     Account newAccount = (Account) obj;
 
-    Account existingAccount = (Account) getDelegate().find(newAccount.getId());
+    Account existingAccount = (Account) getDelegate().inX(x).find(newAccount.getId());
 
     // If the account exists
     if ( existingAccount != null ) {
