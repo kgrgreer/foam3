@@ -4,6 +4,10 @@ foam.CLASS({
   name: 'FlinksResponse',
   extends: 'net.nanopay.flinks.model.FlinksCall',
 
+  implements: [
+    'foam.nanos.auth.CreatedAware'
+  ],
+
   documentation: 'model for Flinks Response',
 
   properties: [
@@ -49,6 +53,10 @@ foam.CLASS({
       of: 'net.nanopay.flinks.model.LoginModel',
       name: 'Login',
       visibility: 'RO'
+    },
+    {
+      class: 'DateTime',
+      name: 'created'
     }
   ]
 });
