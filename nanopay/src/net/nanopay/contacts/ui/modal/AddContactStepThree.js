@@ -94,12 +94,8 @@ foam.CLASS({
     /** Add the bank account to the Contact. */
     async function addBankAccount() {
       this.isConnecting = true;
-
       var contact = this.wizard.data;
       var bankAccount = this.isCABank ? this.caAccount : this.usAccount;
-
-      bankAccount.name = this.wizard.data.organization + ' Contact' +
-        (this.isCABank ? ' CA ' : ' US ') + 'Bank Account';
       bankAccount.owner = this.wizard.data.id;
 
       try {

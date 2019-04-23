@@ -292,6 +292,13 @@ foam.CLASS({
                 .start()
                   .addClass('divider')
                 .end()
+                .start()
+                  .start()
+                    .addClass('field-label')
+                    .add(self.NAME_LABEL)
+                  .end()
+                  .tag(self.caAccount.NAME)
+                .end()
                 .tag(self.caAccount.ADDRESS.clone().copyFrom({
                   view: {
                     class: 'net.nanopay.sme.ui.AddressView',
@@ -323,10 +330,17 @@ foam.CLASS({
                 .start()
                   .addClass('divider')
                 .end()
+                .start()
+                  .start().addClass('field-label')
+                    .add(self.NAME_LABEL)
+                  .end()
+                  .tag(self.usAccount.NAME)
+                .end()
                 .tag(self.usAccount.ADDRESS.clone().copyFrom({
                   view: {
                     class: 'net.nanopay.sme.ui.AddressView',
-                    withoutCountrySelection: true                  }
+                    withoutCountrySelection: true
+                  }
                 }))
               .endContext();
           }
