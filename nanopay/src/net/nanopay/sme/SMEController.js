@@ -184,8 +184,6 @@ foam.CLASS({
         // will result in a redirect to dashboard.
         if ( menu ) {
           menu.launch(this);
-        } else {
-          this.confirmHashRedirectIfInvitedAndSignedIn();
         }
       };
     },
@@ -300,8 +298,8 @@ foam.CLASS({
     // FIXME: This whole thing needs to be looked at.
     function confirmHashRedirectIfInvitedAndSignedIn() {
       var locHash = location.hash;
-      var searchParams = new URLSearchParams(location.search);
       if ( locHash === '#invited' && this.loginSuccess ) {
+      var searchParams = new URLSearchParams(location.search);
         var dao = ctrl.__subContext__.smeBusinessRegistrationDAO;
         if ( dao ) {
           this.agent.signUpToken = searchParams.get('token');
@@ -383,8 +381,8 @@ foam.CLASS({
         return;
       }
 
+      this.confirmHashRedirectIfInvitedAndSignedIn();
       this.bannerizeCompliance();
-
       this.setPortalView(this.group);
 
       for ( var i = 0; i < this.MACROS.length; i++ ) {
