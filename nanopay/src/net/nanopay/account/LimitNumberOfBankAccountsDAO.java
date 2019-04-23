@@ -24,14 +24,21 @@ public class LimitNumberOfBankAccountsDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     User user = (User) x.get("user");
     Group userGroup = (Group) x.get("group");
-    Account newBankAccount = (Account) obj;
+    Account newAccount = (Account) obj;
+
+    Account existingAccount = (Account) getDelegate().find(newAccount.getId());
+
+    // If the account exists
+    if ( existingAccount != null ) {
+      return super.put_(x, obj);
+    }
 
     if ( ! userGroup.isDescendantOf("sme", (DAO) x.get("groupDAO")) ) {
       return super.put_(x, obj);
     }
 
     // When the user adding a bank account for one of their contacts
-    if ( user.getId() != newBankAccount.getOwner() ) {
+    if ( user.getId() != newAccount.getOwner() ) {
       return super.put_(x, obj);
     }
 
