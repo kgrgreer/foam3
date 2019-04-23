@@ -72,18 +72,23 @@ foam.CLASS({
       text-align: left;
     }
     ^button {
-      margin-top: 56px;
+      color: #8e9090;
       cursor: pointer;
+      display: inline-flex;
       font-size: 16px;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
-      line-height: 1.5;
       letter-spacing: normal;
-      color: #8e9090;
+      line-height: 1.5;
+      margin-top: 56px;
     }
     ^button-red {
       color: #f91c1c
+    }
+    ^back-text {
+      display: inline-block;
+      margin-left: 12px;
     }
     ^header {
       margin-top: 45px;
@@ -100,14 +105,6 @@ foam.CLASS({
       color: #2b2b2b;
       font-size: 16px;
       margin-left: 3px;
-    }
-    ^horizontal-flip {
-      -moz-transform: scale(-1, 1);
-      -webkit-transform: scale(-1, 1);
-      -o-transform: scale(-1, 1);
-      -ms-transform: scale(-1, 1);
-      transform: scale(-1, 1);
-      margin-right: 10px;
     }
     ^inline-block {
       display: inline-block;
@@ -256,20 +253,16 @@ foam.CLASS({
         }))
           .addClass(this.myClass('sme-side-block'))
           .addClass(this.myClass('sme-left-side-block'))
-          .on('click', () => {
-            if ( this.stack.pos > 1 ) {
-              this.stack.back();
-              return;
-            }
-            this.pushMenu('sme.main.dashboard');
-          })
           .start().addClass(this.myClass('button'))
+            .tag({
+              class: 'foam.u2.tag.Image',
+              data: 'images/ablii/gobackarrow-grey.svg'
+              })
             .start()
-              .addClass(this.myClass('horizontal-flip'))
-              .addClass(this.myClass('inline-block'))
-              .add('➔')
+              .addClass(this.myClass('back-text'))
+              .add(this.GO_BACK)
             .end()
-            .add(this.GO_BACK)
+            .on('click', this.goBack)
           .end()
         .end()
 
@@ -332,6 +325,16 @@ foam.CLASS({
           .end()
         .end()
       .end();
+    }
+  ],
+
+  listeners: [
+    function goBack() {
+      if ( this.stack.pos > 1 ) {
+        this.stack.back();
+        return;
+      }
+      this.pushMenu('sme.main.dashboard');
     }
   ]
 });
