@@ -358,6 +358,11 @@ foam.CLASS({
           } else {
             this.loginSuccess = user ? true : false;
             this.user.copyFrom(user);
+            if ( this.loginSuccess ) {
+              // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
+              this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
+            }
             if ( ! this.user.emailVerified ) {
               this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
@@ -398,16 +403,7 @@ foam.CLASS({
           .put(newUser)
           .then((user) => {
             this.user = user;
-            this.logIn(); 
-            // update user accepted terms and condition. We should do this after login because we need CreatedByDAO
-            try {
-              this.acceptanceDocumentService.
-              updateUserAcceptanceDocument(this.__context__, user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
-            } catch (err) {
-              console.warn('Error updateing acceptance document: ', err);
-              this.notify(err.message || 'There was a problem updating terms and condition status.', 'error');
-              return;
-            }                        
+            this.logIn();                        
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
