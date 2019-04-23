@@ -15,6 +15,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.banner.ComplianceBannerData',
     'net.nanopay.sme.ui.banner.ComplianceBannerMode',
     'net.nanopay.sme.ui.ChangePasswordView',
+    'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
     'net.nanopay.sme.ui.SMEModal',
@@ -223,6 +224,7 @@ foam.CLASS({
         self.__subContext__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
         self.__subContext__.register(self.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
         self.__subContext__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
+        self.__subContext__.register(self.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
 
         self.findBalance();
         self.addClass(self.myClass())
