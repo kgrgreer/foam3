@@ -379,12 +379,11 @@ foam.CLASS({
                     .end()
                     .start()
                       .addClass('float-right')
-                      .add(this.slot(function(sourceCurrency){
-                        this.quote$.dot('amount').map((fxAmount) => {
-                          if ( fxAmount && sourceCurrency) {
-                            return sourceCurrency.format(fxAmount);
-                          }
-                        })
+                      .add(this.slot(function(sourceCurrency) {
+                        if ( sourceCurrency && this.quote && this.quote.amount ) {
+                          return sourceCurrency.format(this.quote.amount);
+                        }
+                        return '(-)';
                       }),
                         ' ',
                         this.quote$.dot('sourceCurrency'),
@@ -400,7 +399,7 @@ foam.CLASS({
                     .start()
                       .addClass('float-right')
                       .add(
-                        this.slot(function(quote$fxFees$totalFees,sourceCurrency){
+                        this.slot( function(quote$fxFees$totalFees, sourceCurrency) {
                           if ( ! sourceCurrency ) return;
                           return quote$fxFees$totalFees ?
                             sourceCurrency.format(quote$fxFees$totalFees) :

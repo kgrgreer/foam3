@@ -7,6 +7,7 @@ foam.CLASS({
 
   imports: [
     'loginSuccess',
+    'notify',
     'twofactor',
     'user'
   ],
@@ -118,7 +119,7 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.twoFactorToken ) {
-          this.add(this.NotificationMessage.create({ message: this.TWO_FACTOR_NO_TOKEN, type: 'error' }));
+          this.notify(this.TWO_FACTOR_NO_TOKEN, 'error');
           return;
         }
 
@@ -126,10 +127,10 @@ foam.CLASS({
         .then(function(result) {
           if ( result ) {
             self.loginSuccess = true;
-            self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_SUCCESS }));
+            self.notify(self.TWO_FACTOR_SUCCESS);
           } else {
             self.loginSuccess = false;
-            self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_ERROR, type: 'error' }));
+            self.notify(self.TWO_FACTOR_ERROR, 'error');
           }
         });
       }

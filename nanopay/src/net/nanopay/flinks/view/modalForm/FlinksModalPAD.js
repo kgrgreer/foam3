@@ -79,7 +79,7 @@ foam.CLASS({
   messages: [
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
     { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
-    { name: 'SUCCESS', message: 'Your bank account was successfully added' },
+    { name: 'SUCCESS', message: 'Your bank account was successfully added.' },
     { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
     { name: 'ERROR_FIRST', message: 'First name cannot be empty.' },
     { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
