@@ -92,7 +92,7 @@ foam.RELATIONSHIP({
       var E = foam.mlang.Expressions.create();
       return {
         class: 'foam.u2.view.ReferenceView',
-        dao: X.accountDAO.where(E.EQ(net.nanopay.account.Account.TYPE, 'Account')).orderBy(net.nanopay.account.Account.NAME),
+        dao: X.accountDAO.where(E.INSTANCE_OF(Account.class)).orderBy(net.nanopay.account.Account.NAME),
         objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
       };
     }
