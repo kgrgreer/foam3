@@ -7,6 +7,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Long',
+      name: 'id'
+    },
+    {
       class: 'Int',
       name: 'httpStatusCode',
       documentation: 'HTTP Status Code retrieved from the HTTP GET request to the Dow Jones API'

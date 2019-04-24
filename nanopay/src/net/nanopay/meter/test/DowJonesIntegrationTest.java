@@ -28,11 +28,7 @@ public class DowJonesIntegrationTest extends Test {
 
   @Override
   public void runTest(X x) {
-    DowJonesCredentials credentials = (DowJonesCredentials) x.get("dowjonesCredentials");
     DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
-
-    String authCredentials = credentials.getNamespace() + "/" + credentials.getUsername() + ":" + credentials.getPassword();
-    String encodedCredentials = Base64.getEncoder().encodeToString((authCredentials).getBytes());
 
     String firstName = "Blake";
     String lastName = "Green";
@@ -40,7 +36,7 @@ public class DowJonesIntegrationTest extends Test {
     String entityName = "Apothecary";
 
     dowJonesService.personNameSearch(x, firstName, lastName, null);
-    dowJonesService.entityNameSearch(x, entityName, null);
+    //dowJonesService.entityNameSearch(x, entityName, null);
   }
   
 }

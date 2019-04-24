@@ -20,10 +20,12 @@ public class DowJonesService
   extends ContextAwareSupport
   implements DowJones, NanoService
 {
+  protected DAO dowJonesResponseDAO_;
   protected DowJonesRestService dowJonesService = new DowJonesRestService();
 
   @Override
   public void start() {
+    dowJonesResponseDAO_ = (DAO) getX().get("dowJonesResponseDAO");
     dowJonesService.setX(getX());
   }
 
@@ -45,6 +47,7 @@ public class DowJonesService
       if ( httpCode == 200 ) {
         BaseSearchResponse resp = (BaseSearchResponse) respMsg.getModel();
         feedback = resp;
+        dowJonesResponseDAO_.put(resp);
       } else {
         feedback = (BaseSearchInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
@@ -76,6 +79,7 @@ public class DowJonesService
       if ( httpCode == 200 ) {
         BaseSearchResponse resp = (BaseSearchResponse) respMsg.getModel();
         feedback = resp;
+        dowJonesResponseDAO_.put(resp);
       } else {
         feedback = (BaseSearchInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
