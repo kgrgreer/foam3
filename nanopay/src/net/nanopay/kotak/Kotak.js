@@ -26,6 +26,28 @@ foam.INTERFACE({
           name: 'request'
         }
       ]
+    },
+    {
+      name: 'submitSOAPPayment',
+      async: true,
+      type: 'net.nanopay.kotak.model.paymentResponse.AcknowledgementType',
+      args: [
+        {
+          type: 'FObject',
+          name: 'request'
+        }
+      ]
+    },
+    {
+      name: 'submitSOAPReversal',
+      async: true,
+      type: 'net.nanopay.kotak.model.reversal.Reversal',
+      args: [
+        {
+          type: 'net.nanopay.kotak.model.reversal.Reversal',
+          name: 'request'
+        }
+      ]
     }
   ]
 });

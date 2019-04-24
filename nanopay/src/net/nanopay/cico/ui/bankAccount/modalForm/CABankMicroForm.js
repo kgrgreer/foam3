@@ -14,11 +14,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'bank',
     'bankAccountVerification',
     'ctrl',
-    'isConnecting',
-    'notify'
+    'user'
   ],
 
   css: `
@@ -40,7 +38,6 @@ foam.CLASS({
       font-size: 16px;
       line-height: 1.5;
       color: #8e9090;
-
       margin: 0;
       margin-bottom: 24px;
     }
@@ -65,6 +62,16 @@ foam.CLASS({
       class: 'Double',
       name: 'amount',
       value: 0.01
+    },
+    {
+      class: 'Boolean',
+      name: 'isConnecting',
+      value: false
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.bank.CABankAccount',
+      name: 'bank'
     }
   ],
 
@@ -77,7 +84,8 @@ foam.CLASS({
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
     { name: 'INVALID_FORM', message: 'You have entered an invalid amount. Please try again.' },
     { name: 'DEFAULT_ERROR', message: 'An error occurred while processing your request.' },
-    { name: 'SUCCESS', message: 'You have successfully verified your bank account!' }
+    { name: 'SUCCESS_ONE', message: 'Your bank account' },
+    { name: 'SUCCESS_TWO', message: 'is now verified.' }
   ],
 
   methods: [
@@ -91,14 +99,31 @@ foam.CLASS({
               .start('p').add(this.CONNECTING).addClass('spinner-text').end()
             .end()
           .end()
-          .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS_1).end()
-          .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS_2).end()
+          .start('p').addClass(this.myClass('instructions'))
+            .add(this.INSTRUCTIONS_1)
+          .end()
+          .start('p').addClass(this.myClass('instructions'))
+            .add(this.INSTRUCTIONS_2)
+          .end()
           .start().addClass(this.myClass('field-container'))
             .start('p').addClass('field-label').add(this.MICRO).end()
-            .tag({ class: 'foam.u2.FloatView', data$: this.amount$, min: 0.01, max: 0.99, precision: 2, onKey: true, placeholder: this.MICRO_PLACEHOLDER })
+            .tag({
+              class: 'foam.u2.FloatView',
+              data$: this.amount$,
+              min: 0.01,
+              max: 0.99,
+              precision: 2,
+              onKey: true,
+              placeholder: this.MICRO_PLACEHOLDER
+            })
           .end()
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+        .start({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.BACK,
+          next: this.NEXT
+        })
+        .end();
     },
 
     function validateForm() {
@@ -122,8 +147,12 @@ foam.CLASS({
       }
 
       if ( isVerified ) {
-        ctrl.notify(this.SUCCESS);
+        var accountNumber = '***' + this.bank.accountNumber.slice(-4);
+        ctrl.notify(this.SUCCESS_ONE + ` ${accountNumber} ` + this.SUCCESS_TWO);
         if ( this.onComplete ) this.onComplete();
+
+        // Force the view to update.
+        this.user.accounts.cmd(foam.dao.AbstractDAO.RESET_CMD);
         this.closeDialog();
       }
     }

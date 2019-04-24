@@ -253,6 +253,11 @@
       <artifactId>html2pdf</artifactId>
       <version>1.0.2</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client</artifactId>
+      <version>1.23.0</version>
+    </dependency>
   </dependencies>
 
   <build>
