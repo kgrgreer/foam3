@@ -8,16 +8,17 @@ foam.CLASS({
 `,
 
 imports: [
+  'agent',
+  'beneficialOwnersDAO',
   'countryDAO',
   'notify',
-  'principalOwnersDAO',
   'regionDAO',
   'user',
   'validateAddress',
   'validateAge',
   'validateCity',
   'validatePostalCode',
-  'validatePrincipalOwner',
+  'validateBeneficialOwner',
   'validateStreetNumber',
   'viewData'
 ],
@@ -30,7 +31,8 @@ requires: [
   'foam.dao.ArrayDAO',
   'foam.nanos.auth.Address',
   'foam.nanos.auth.Region',
-  'foam.nanos.auth.User'
+  'foam.nanos.auth.User',
+  'net.nanopay.model.BeneficialOwner'
 ],
 
 css: `
@@ -98,14 +100,9 @@ css: `
       width: 100%;
     }
 
-    ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
+    ^ .net-nanopay-ui-ActionView-addBeneficialOwner {
       margin-left: 160px;
       margin-top: 30px;
-    }
-
-    ^ .net-nanopay-ui-ActionView-addPrincipalOwner:hover {
-      background: none;
-      color: #8e9090;
     }
 
     ^ .updateButton {
@@ -181,15 +178,15 @@ css: `
       width: 200px;
     }
 
-    ^ .principalOwnersCheckBox {
+    ^ .beneficialOwnersCheckBox {
       margin-bottom: 16px;
     }
 
-    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox {
+    ^ .beneficialOwnersCheckBox .foam-u2-md-CheckBox {
       vertical-align: middle;
     }
 
-    ^ .principalOwnersCheckBox .foam-u2-md-CheckBox-label {
+    ^ .beneficialOwnersCheckBox .foam-u2-md-CheckBox-label {
       vertical-align: middle;
       margin: 0;
       position: relative;
@@ -371,33 +368,22 @@ css: `
 
 properties: [
   {
-    name: 'editingPrincipalOwner',
+    name: 'editingBeneficialOwner',
     postSet: function(oldValue, newValue) {
-      if ( newValue != null ) this.editPrincipalOwner(newValue, true);
+      if ( newValue != null ) this.editBeneficialOwner(newValue, true);
       this.tableViewElement.selection = newValue;
     }
   },
   {
-    name: 'addPrincipalOwnerLabel',
-    expression: function(editingPrincipalOwner) {
-      if ( editingPrincipalOwner ) {
-        return 'Update';
-      } else {
-        return 'Save current Owner';
-      }
+    name: 'addBeneficialOwnerLabel',
+    expression: function(editingBeneficialOwner) {
+      return editingBeneficialOwner ? 'Update' : 'Save';
     }
   },
   {
-    class: 'Long',
-    name: 'principalOwnersCount',
-    factory: function() {
-      // In case we load from a save state
-      this.principalOwnersDAO
-        .select(foam.mlang.sink.Count.create())
-        .then(function(c) {
-          return c.value;
-        });
-    }
+    class: 'Int',
+    name: 'beneficialOwnersCount',
+    documentation: `The number of beneficial owners of the business.`
   },
   'tableViewElement',
   {
@@ -462,17 +448,6 @@ properties: [
     }
   },
   {
-    name: 'principleTypeField',
-    value: 'Shareholder',
-    view: {
-      class: 'foam.u2.view.ChoiceView',
-      choices: ['Shareholder', 'Owner', 'Officer']
-    },
-    postSet: function(o, n) {
-      this.viewData.beneficialOwner.principleType = n;
-    }
-  },
-  {
     class: 'Date',
     name: 'birthdayField',
     tableCellFormatter: function(date) {
@@ -503,7 +478,7 @@ properties: [
     name: 'isSameAsAdmin',
     value: false,
     postSet: function(oldValue, newValue) {
-      if ( newValue ) this.editingPrincipalOwner = null;
+      if ( newValue ) this.editingBeneficialOwner = null;
       this.sameAsAdmin(newValue);
     }
   },
@@ -514,11 +489,11 @@ properties: [
   },
   {
     class: 'Boolean',
-    name: 'noPrincipalOwners',
+    name: 'noBeneficialOwners',
     documentation: `This is displayed as a checkbox, with text 'No individuals own 25% or more.'
     This cannot be true at the same time as publiclyTradedEntity. UX requirement`,
     postSet: function(o, n) {
-      this.viewData.noPrincipalOwners = n;
+      this.viewData.noBeneficialOwners = n;
       if ( n && this.publiclyTradedEntity ) {
         this.viewData.publiclyTradedEntity = false;
         this.publiclyTradedEntity = false;
@@ -529,21 +504,21 @@ properties: [
     class: 'Boolean',
     name: 'publiclyTradedEntity',
     documentation: `This is displayed as a checkbox, with text 'Owned by a publicly traded entity'
-    This cannot be true at the same time as noPrincipalOwners. UX requirement`,
+    This cannot be true at the same time as noBeneficialOwners. UX requirement`,
     postSet: function(o, n) {
       this.viewData.publiclyTradedEntity = n;
-      if ( n && this.noPrincipalOwners ) {
-        this.viewData.noPrincipalOwners = false;
-        this.noPrincipalOwners = false;
+      if ( n && this.noBeneficialOwners ) {
+        this.viewData.noBeneficialOwners = false;
+        this.noBeneficialOwners = false;
       }
     }
   },
   {
     class: 'Boolean',
     name: 'showAddingBeneficalOwner',
-    documentation: 'Used to toggle the showing of adding the principal owner',
-    expression: function(publiclyTradedEntity, noPrincipalOwners) {
-      return ! publiclyTradedEntity && ! noPrincipalOwners;
+    documentation: 'Used to toggle the showing of adding the beneficial owner',
+    expression: function(publiclyTradedEntity, noBeneficialOwners) {
+      return ! publiclyTradedEntity && ! noBeneficialOwners;
     }
   },
   {
@@ -559,17 +534,16 @@ properties: [
 
 messages: [
   { name: 'TITLE', message: 'Beneficial Ownership' },
-  { name: 'OWNER_LABEL', message: 'Adding Owner' },
+  { name: 'OWNER_LABEL', message: 'Owner' },
   { name: 'LEGAL_NAME_LABEL', message: 'Legal Name' },
   { name: 'FIRST_NAME_LABEL', message: 'First Name' },
   { name: 'MIDDLE_NAME_LABEL', message: 'Middle Initials (optional)' },
   { name: 'LAST_NAME_LABEL', message: 'Last Name' },
   { name: 'JOB_TITLE_LABEL', message: 'Job Title' },
   { name: 'COUNTRY_CODE_LABEL', message: 'Country Code' },
-  { name: 'PRINCIPLE_TYPE_LABEL', message: 'Principal Type' },
   { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of Birth' },
   { name: 'RESIDENTIAL_ADDRESS_LABEL', message: 'Residential Address' },
-  { name: 'PRINCIPAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
+  { name: 'BENEFICIAL_OWNER_LABEL', message: 'A beneficial owner with that name already exists.' },
   { name: 'DELETE_LABEL', message: 'Delete' },
   { name: 'EDIT_LABEL', message: 'Edit' },
   { name: 'SAME_AS_SIGNING', message: 'Same as Signing Officer' },
@@ -593,15 +567,15 @@ messages: [
     message: `If your business has beneficial owners who, directly or indirectly, own 25% or more of the business, please provide the information below for each owner.`
   },
   {
-    name: 'PRINCIPAL_OWNER_ERROR',
+    name: 'BENEFICIAL_OWNER_ERROR',
     message: 'This user is already assigned as a beneficial owner.'
   },
   {
     name: 'NO_ADDITIONAL_OWNERS',
     message: `I confirm that I have listed the details for all beneficial owners who own 25% or more of the business.`
   },
-  { name: 'PRINCIPAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
-  { name: 'PRINCIPAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
+  { name: 'BENEFICIAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
+  { name: 'BENEFICIAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
   { name: 'SECUREFACT_DISCLOSURE_1', message: `We have engaged Securefact Transaction Services Inc. ("Securefact") to provide this verification for us.` },
   { name: 'SECUREFACT_DISCLOSURE_2', message: `To verify your identity, your personal information will be matched with the information contained in your Credit File Report and other third party sources. This is a soft inquiry and will not affect your credit score or be visible to other financial institutions.` },
   { name: 'SECUREFACT_DISCLOSURE_3', message: `You also consent to your personal information being compared to records maintained by third parties, including telecom and other service providers, and you consent to those third parties providing personal information to us and our third-party suppliers for the purpose of identity verification.` },
@@ -611,16 +585,15 @@ messages: [
 methods: [
   function init() {
     this.SUPER();
-    this.principalOwnersDAO.on.sub(this.onDAOChange);
+    this.beneficialOwnersDAO.on.sub(this.onDAOChange);
     this.onDAOChange();
     // Gives the onboarding wizard access to the validations
-    this.wizard.addPrincipalOwnersForm = this;
+    this.wizard.addBeneficialOwnersForm = this;
   },
 
   function initE() {
     var self = this;
     this.nextLabel = 'Complete';
-    this.principleTypeField = 'Shareholder';
     this.scrollToTop();
 
     var modeSlotSameAsAdmin = this.slot(function(isSameAsAdmin) {
@@ -630,21 +603,21 @@ methods: [
     this.addClass(this.myClass())
       .start().addClass('medium-header').add(this.TITLE).end()
       .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
-      .start().addClass('principalOwnersCheckBox')
-        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noPrincipalOwners$ }).end()
+      .start().addClass('beneficialOwnersCheckBox')
+        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noBeneficialOwners$ }).end()
       .end()
-      .start().addClass('principalOwnersCheckBox')
+      .start().addClass('beneficialOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
       .end()
       .start().show(this.showAddingBeneficalOwner$)
         .start().addClass('boxedField')
           .start()
             .start()
-              .enableClass('hideTable', this.principalOwnersCount$.map(function(c) {
+              .enableClass('hideTable', this.beneficialOwnersCount$.map(function(c) {
                 return c > 0;
               }), true)
             .end()
-            .start().add(this.OWNER_LABEL, ' ', this.principalOwnersCount$.map(function(p) { return p + 1; })).addClass('medium-header').end()
+            .start().add(this.OWNER_LABEL, ' ', this.beneficialOwnersCount$.map(function(p) { return p + 1; })).addClass('medium-header').end()
             .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
               .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
             .end()
@@ -661,10 +634,6 @@ methods: [
                 .start().addClass('label').add(this.LAST_NAME_LABEL).end()
                 .start(this.LAST_NAME_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .end()
-            .end()
-            .start().addClass('label-input')
-              .start().addClass('label').add(this.PRINCIPLE_TYPE_LABEL).end()
-              .start(this.PRINCIPLE_TYPE_FIELD, { mode$: modeSlotSameAsAdmin }).end()
             .end()
 
             .start()
@@ -683,10 +652,10 @@ methods: [
               .start(this.ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .start().addClass('pushLeft')
                 .start(this.CANCEL_EDIT)
-                  .enableClass('hidden', this.editingPrincipalOwner$, true)
+                  .enableClass('hidden', this.editingBeneficialOwner$, true)
                 .end()
-                .start(this.ADD_PRINCIPAL_OWNER, { label$: this.addPrincipalOwnerLabel$ })
-                  .enableClass('updateButton', this.editingPrincipalOwner$)
+                .start(this.ADD_BENEFICIAL_OWNER, { label$: this.addBeneficialOwnerLabel$ })
+                  .enableClass('updateButton', this.editingBeneficialOwner$)
                 .end()
               .end()
             .end()
@@ -697,11 +666,11 @@ methods: [
         .end()
         .start({
           class: 'foam.u2.view.TableView',
-          data$: this.principalOwnersDAO$,
+          data$: this.beneficialOwnersDAO$, // FIXME
           editColumnsEnabled: false,
           disableUserSelection: true,
           columns: [
-            'legalName', 'jobTitle', 'principleType',
+            'legalName', 'jobTitle',
             foam.core.Property.create({
               name: 'delete',
               label: '',
@@ -712,11 +681,11 @@ methods: [
                   .on('click', function(evt) {
                     evt.stopPropagation();
                     this.blur();
-                    if ( self.editingPrincipalOwner === obj ) {
-                      self.editingPrincipalOwner = null;
+                    if ( self.editingBeneficialOwner === obj ) {
+                      self.editingBeneficialOwner = null;
                       self.clearFields();
                     }
-                    self.deletePrincipalOwner(obj);
+                    self.deleteBeneficialOwner(obj);
                   })
                 .end();
               }
@@ -734,7 +703,7 @@ methods: [
                   .on('click', function(evt) {
                     evt.stopPropagation();
                     this.blur();
-                    self.editingPrincipalOwner = obj;
+                    self.editingBeneficialOwner = obj;
                   })
                 .end();
               }
@@ -773,7 +742,6 @@ methods: [
     this.lastNameField = '';
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = '';
-    this.principleTypeField = 'Shareholder';
     this.birthdayField = null;
 
     this.addressField = this.Address.create({});
@@ -783,7 +751,7 @@ methods: [
     }
   },
 
-  function editPrincipalOwner(user, editable) {
+  function editBeneficialOwner(user, editable) {
     var formHeaderElement = this.document.getElementsByClassName('boxedField')[0];
     formHeaderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     this.isSameAsAdmin = false;
@@ -792,7 +760,6 @@ methods: [
     this.lastNameField = user.lastName;
     this.isEditingName = false; // This will change displayedLegalName as well
     this.jobTitleField = user.jobTitle;
-    this.principleTypeField = user.principleType;
     this.birthdayField = user.birthday;
 
     this.addressField = user.address;
@@ -813,16 +780,11 @@ methods: [
       this.addressField = this.viewData.agent.address;
       this.birthdayField = this.viewData.agent.birthday;
       this.ownershipPercent = this.viewData.beneficialOwner.ownershipPercent;
-      this.principleTypeField = this.viewData.agent.principleType.trim() !== '' ? this.viewData.agent.principleType :
-        'Shareholder';
     }
   },
 
-  function deletePrincipalOwner(obj) {
-    var self = this;
-    this.principalOwnersDAO.remove(obj).then(function(deleted) {
-      self.prevDeletedPrincipalOwner = deleted;
-    });
+  function deleteBeneficialOwner(obj) {
+    this.beneficialOwnersDAO.remove(obj);
     // if first + last names match the admin. Then reset the sameasAdmin choice.
     var agentNameId = `${this.viewData.agent.firstName.toLowerCase()}${this.viewData.agent.lastName.toLowerCase()}`;
     var newOwnerNameId = `${obj.firstName.toLowerCase()}${obj.lastName.toLowerCase()}`;
@@ -837,64 +799,42 @@ actions: [
     name: 'cancelEdit',
     label: 'Cancel',
     code: function() {
-      this.editingPrincipalOwner = null;
+      this.editingBeneficialOwner = null;
       this.clearFields();
     }
   },
   {
-    name: 'addPrincipalOwner',
+    name: 'addBeneficialOwner',
     isEnabled: function(isDisplayMode) {
       return ! isDisplayMode;
     },
     code: async function() {
-      var principalOwner;
+      var beneficialOwner;
 
-      if ( this.editingPrincipalOwner ) {
-        principalOwner = this.editingPrincipalOwner;
+      if ( this.editingBeneficialOwner ) {
+        beneficialOwner = this.editingBeneficialOwner;
       } else {
-        principalOwner = this.User.create({
-          id: this.principalOwnersCount + 1
-        });
+        beneficialOwner = this.BeneficialOwner.create();
       }
-      principalOwner.ownershipPercent = this.ownershipPercent;
-      principalOwner.firstName = this.firstNameField;
-      principalOwner.lastName = this.lastNameField;
-      principalOwner.birthday = this.birthdayField;
-      principalOwner.address = this.addressField;
-      principalOwner.jobTitle = this.jobTitleField;
-      principalOwner.principleType = this.principleTypeField;
 
-      if ( ! this.validatePrincipalOwner(principalOwner) ) return;
+      beneficialOwner.ownershipPercent = this.ownershipPercent;
+      beneficialOwner.firstName = this.firstNameField;
+      beneficialOwner.lastName = this.lastNameField;
+      beneficialOwner.birthday = this.birthdayField;
+      beneficialOwner.address = this.addressField;
+      beneficialOwner.jobTitle = this.jobTitleField;
 
-      if ( ! this.editingPrincipalOwner ) {
-        var owners = (await this.principalOwnersDAO.select()).array;
-        var nameTaken = owners.some((owner) => {
-          var ownerFirst = owner.firstName.toLowerCase();
-          var ownerLast = owner.lastName.toLowerCase();
-          var formFirst = this.firstNameField.toLowerCase();
-          var formLast = this.lastNameField.toLowerCase();
-          return ownerFirst === formFirst && ownerLast === formLast;
-        });
-        if ( nameTaken ) {
-          this.notify(this.PRINCIPAL_OWNER_ERROR, 'error');
-          return;
-        }
-        // first + last names should be unique
-        var agentNameId = `${this.viewData.agent.firstName.toLowerCase()}${this.viewData.agent.lastName.toLowerCase()}`;
-        var newOwnerNameId = `${this.firstNameField.toLowerCase()}${this.lastNameField.toLowerCase()}`;
-        if ( agentNameId === newOwnerNameId && this.isSameAsAdmin ) {
-          this.showSameAsAdminOption = false;
-        }
-      }
+      if ( ! this.validateBeneficialOwner(beneficialOwner) ) return;
 
       try {
-        await this.principalOwnersDAO.put(principalOwner);
-        this.notify(this.PRINCIPAL_OWNER_SUCCESS);
+        await this.user.beneficialOwners.put(beneficialOwner);
+        this.notify(this.BENEFICIAL_OWNER_SUCCESS);
       } catch (err) {
-        this.notify(err ? err.message : this.PRINCIPAL_OWNER_FAILURE, 'error');
+        console.error(err);
+        this.notify(err && err.message ? err.message : this.BENEFICIAL_OWNER_FAILURE, 'error');
       }
 
-      this.editingPrincipalOwner = null;
+      this.editingBeneficialOwner = null;
       this.tableViewElement.selection = null;
       this.clearFields(true);
       this.isSameAsAdmin = false;
@@ -907,9 +847,8 @@ actions: [
 listeners: [
   function onDAOChange() {
     var self = this;
-    this.principalOwnersDAO.select().then(function(principalOwners) {
-      self.viewData.user.principalOwners = principalOwners.array;
-      self.principalOwnersCount = principalOwners.array.length;
+    this.beneficialOwnersDAO.select().then(function(sink) {
+      self.beneficialOwnersCount = sink.array.length;
     });
   }
 ]
