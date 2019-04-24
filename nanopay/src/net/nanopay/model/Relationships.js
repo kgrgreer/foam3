@@ -85,7 +85,6 @@ foam.RELATIONSHIP({
   inverseName: 'parent',
   sourceDAOKey: 'accountDAO',
   sourceProperty: {
-    hidden: true
   },
   targetProperty: {
     view: function(_, X) {
