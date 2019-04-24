@@ -182,7 +182,7 @@ public class IdentityMindRequestGenerator {
       request.setPhn(prepareString(phone.getNumber()));
     }
     request.setTitle(prepareString(user.getJobTitle()));
-    request.setDob(formatDate(user.getBirthday()));
+    request.setDob(formatDate(user.getBirthday(), "yyyy-MM-dd"));
     return request;
   }
 
@@ -216,7 +216,7 @@ public class IdentityMindRequestGenerator {
     }
     request.setOwnership(owner.getOwnershipPercent() / 100.0);
     request.setTitle(prepareString(owner.getJobTitle()));
-    request.setDob(formatDate(owner.getBirthday()));
+    request.setDob(formatDate(owner.getBirthday(), "yyyy-MM-dd"));
     return request;
   }
 
@@ -229,8 +229,12 @@ public class IdentityMindRequestGenerator {
   }
 
   private static String formatDate(Date date) {
+    return formatDate(date, "yyyy-MM-dd'T'HH:mm:ss'Z'");
+  }
+
+  private static String formatDate(Date date, String pattern) {
     if ( date != null ) {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
       dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
       return dateFormat.format(date);
     }
