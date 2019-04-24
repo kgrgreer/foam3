@@ -26,6 +26,18 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'requestJson',
+      view: {
+        class: 'io.c9.ace.Editor',
+        config: {
+          width: 600, height: 200,
+          mode: 'JSON',
+          isReadOnly: true
+        }
+      }
+    },
+    {
+      class: 'String',
       name: 'error_message'
     },
     {
