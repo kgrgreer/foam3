@@ -19,7 +19,7 @@ foam.CLASS({
       transient: true
     },
     {
-      class: 'Long',
+      class: 'Object',
       name: 'entityId',
       transient: true
     },
@@ -167,6 +167,76 @@ foam.CLASS({
       class: 'String',
       name: 'businesstype',
       documentation: 'The type of business.'
+    },
+    {
+      class: 'String',
+      name: 'dman',
+      documentation: 'Destination user unique identifier.'
+    },
+    {
+      class: 'String',
+      name: 'demail',
+      documentation: 'Email address for the destination user.',
+    },
+    {
+      class: 'String',
+      name: 'sfn',
+      documentation: 'Shipping first name (destination user data).'
+    },
+    {
+      class: 'String',
+      name: 'sln',
+      documentation: 'Shipping last name (destination user data).'
+    },
+    {
+      class: 'String',
+      name: 'ssn',
+      documentation: 'Shipping street (destination user data).'
+    },
+    {
+      class: 'String',
+      name: 'sco',
+      documentation: 'Shipping country (destination user data).'
+    },
+    {
+      class: 'String',
+      name: 'sz',
+      documentation: 'Shipping zip/postal code (destination user data).'
+    },
+    {
+      class: 'String',
+      name: 'sc',
+      documentation: 'Shipping city (destination user data).'
+    },
+    {
+      class: 'String',
+      name: 'ss',
+      documentation: 'Shipping state (destination user data).'
+    },
+    {
+      class: 'String',
+      name: 'dph',
+      documentation: 'The phone number associated with the destination user.'
+    },
+    {
+      class: 'String',
+      name: 'pach',
+      documentation: 'Source ACH account number (Hash).'
+    },
+    {
+      class: 'String',
+      name: 'dphash',
+      documentation: 'Destination digital account id (Hash).'
+    },
+    {
+      class: 'String',
+      name: 'amt',
+      documentation: 'The amount of the transaction'
+    },
+    {
+      class: 'String',
+      name: 'ccy',
+      documentation: 'The ISO 4217 currency code of the transaction encoded as a String.'
     },
     {
       class: 'String',

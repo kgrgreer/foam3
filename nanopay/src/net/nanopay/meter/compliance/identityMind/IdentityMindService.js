@@ -37,6 +37,11 @@ foam.CLASS({
       class: 'String',
       name: 'apiKey',
       value: '80c264cb0c381fbc995763982b35e965f37347eb'
+    },
+    {
+      class: 'String',
+      name: 'hashingSalt',
+      value: '54l73D47'
     }
   ],
 

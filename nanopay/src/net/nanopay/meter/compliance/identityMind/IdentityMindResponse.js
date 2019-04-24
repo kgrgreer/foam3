@@ -12,7 +12,7 @@ foam.CLASS({
       name: 'entityType'
     },
     {
-      class: 'Long',
+      class: 'Object',
       name: 'entityId'
     },
     {

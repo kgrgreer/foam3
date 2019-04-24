@@ -5,13 +5,20 @@ import foam.core.X;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
+import foam.util.SecurityUtil;
+import net.nanopay.account.Account;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.auth.LoginAttempt;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessUserJunction;
+import net.nanopay.tx.cico.CITransaction;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -83,6 +90,58 @@ public class IdentityMindRequestGenerator {
       request.setPhn(prepareString(phone.getNumber()));
     }
     request.setWebsite(prepareString(business.getWebsite()));
+    return request;
+  }
+
+  public static IdentityMindRequest getFundingRequest(X x, CITransaction transaction) {
+    Account sourceAccount = transaction.findSourceAccount(x);
+    Account destinationAccount = transaction.findDestinationAccount(x);
+    User sender = sourceAccount.findOwner(x);
+    User receiver = destinationAccount.findOwner(x);
+    IdentityMindRequest request = new IdentityMindRequest.Builder(x)
+      .setEntityType(transaction.getClass().getName())
+      .setEntityId(prepareString(transaction.getId()))
+      .setIp(getRemoteAddr(x))
+      .build();
+
+    // Sender information
+    request.setMan(String.valueOf(sender.getId()));
+    request.setTea(sender.getEmail());
+    request.setBfn(prepareString(sender.getFirstName()));
+    request.setBln(prepareString(sender.getLastName()));
+    Address senderAddress = sender.getAddress();
+    if ( senderAddress != null ) {
+      request.setBsn(prepareString(senderAddress.getStreetNumber(), senderAddress.getStreetName(), senderAddress.getSuite()));
+      request.setBc(prepareString(senderAddress.getCity()));
+      request.setBco(prepareString(senderAddress.getCountryId()));
+      request.setBs(prepareString(senderAddress.getRegionId()));
+      request.setBz(prepareString(senderAddress.getPostalCode()));
+    }
+    Phone senderPhone = sender.getPhone();
+    if (senderPhone != null) {
+      request.setPhn(prepareString(senderPhone.getNumber()));
+    }
+    request.setPach(getBankAccountHash(x, (BankAccount) sourceAccount));
+
+    // Receiver information
+    request.setDman(String.valueOf(receiver.getId()));
+    request.setDemail(receiver.getEmail());
+    request.setSfn(prepareString(receiver.getFirstName()));
+    request.setSln(prepareString(receiver.getLastName()));
+    Address receiverAddress = sender.getAddress();
+    if ( receiverAddress != null ) {
+      request.setSsn(prepareString(receiverAddress.getStreetNumber(), receiverAddress.getStreetName(), receiverAddress.getSuite()));
+      request.setSc(prepareString(receiverAddress.getCity()));
+      request.setSco(prepareString(receiverAddress.getCountryId()));
+      request.setSs(prepareString(receiverAddress.getRegionId()));
+      request.setSz(prepareString(receiverAddress.getPostalCode()));
+    }
+    Phone receiverPhone = sender.getPhone();
+    if (receiverPhone != null) {
+      request.setDph(prepareString(receiverPhone.getNumber()));
+    }
+    request.setDphash(getDigitalAccountHash(x, (DigitalAccount) destinationAccount));
+
     return request;
   }
 
@@ -192,5 +251,36 @@ public class IdentityMindRequestGenerator {
       return result;
     }
     return null;
+  }
+
+  private static String getBankAccountHash(X x, BankAccount bankAccount) {
+    try {
+      MessageDigest sha = MessageDigest.getInstance("SHA-1");
+      IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
+
+      sha.update(bankAccount.getAccountNumber().getBytes());
+      sha.update(identityMindService.getHashingSalt().getBytes());
+      sha.update(bankAccount.getRoutingCode(x).getBytes());
+      return SecurityUtil.ByteArrayToHexString(sha.digest());
+    } catch ( Throwable t ) {
+      ((Logger) x.get("logger")).warning(
+        "Cannot generate hash for bank account: ", bankAccount.getId(), "." , t);
+      return null;
+    }
+  }
+
+  private static String getDigitalAccountHash(X x, DigitalAccount digitalAccount) {
+    try {
+      MessageDigest sha = MessageDigest.getInstance("SHA-1");
+      IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
+
+      sha.update(identityMindService.getHashingSalt().getBytes());
+      sha.update(String.valueOf(digitalAccount.getId()).getBytes());
+      return SecurityUtil.ByteArrayToHexString(sha.digest());
+    } catch ( Throwable t ) {
+      ((Logger) x.get("logger")).warning(
+        "Cannot generate hash for digital account: ", digitalAccount.getId(), "." , t);
+      return null;
+    }
   }
 }
