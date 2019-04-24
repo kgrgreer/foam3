@@ -9,6 +9,7 @@ p({"class":"foam.nanos.menu.Menu","id":"brokers","label":"Brokers","handler":{"c
 p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"GS Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"acceptanceDocumentDAO","label":"Acceptance Documents","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"acceptanceDocumentDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"accountingResultResponse","label":"Accounting Result Report","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountingReportDAO"},"order":1000,"parent":"admin"})
 
 p({"class":"foam.nanos.menu.Menu","id":"lineItemTypes","label":"LineItem Types","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"lineItemFees","label":"LineItem Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemFeeDAO"},"order":1000,"parent":"admin"})

@@ -13,7 +13,9 @@ foam.CLASS({
     'quickbooksService',
     'user',
     'xeroService',
-    'ctrl'
+    'ctrl',
+    'stack',
+    'accountingIntegrationUtil'
   ],
 
   exports: [
@@ -93,12 +95,9 @@ foam.CLASS({
       value: false
     },
     {
-      name: 'integrationSoftware',
-      type: 'String',
-      factory: function() {
-        let parsedUrl = new URL(window.location.href);
-        return parsedUrl.searchParams.get('accounting');
-      }
+      name: 'doSync',
+      type: 'Boolean',
+      value: false
     }
   ],
 
@@ -110,7 +109,7 @@ foam.CLASS({
       this
         .start().addClass(this.myClass())
           .start('h1').addClass('title')
-            .add('Syncing ' + this.integrationSoftware + ' to Ablii')
+            .add('Syncing ' + this.user.integrationCode.label + ' to Ablii')
           .end()
           .start().addClass('spinner-container')
             .start().addClass('spinner-container-center')
@@ -119,7 +118,31 @@ foam.CLASS({
           .end()
         .end();
 
-      let connectedBank = await this.user.accounts.where(
+      if ( this.doSync ) {
+        let result = await this.accountingIntegrationUtil.doSync(this);
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingReportPage1',
+          reportResult: result
+        });
+        return;
+      }
+
+      let connectedBank = await this.countConnectedBank();
+      if ( connectedBank.value === 0 ) {
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingBankMatching'
+        });
+      } else {
+        let result = await this.accountingIntegrationUtil.doSync(this);
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingReportPage1',
+          reportResult: result
+        });
+      }
+    },
+
+    async function countConnectedBank() {
+      return await this.user.accounts.where(
         this.AND(
           this.OR(
             this.EQ(this.Account.TYPE, this.BankAccount.name),
@@ -129,66 +152,6 @@ foam.CLASS({
           this.NEQ(this.BankAccount.INTEGRATION_ID, '')
         )
       ).select(this.COUNT());
-
-      if ( connectedBank.value === 0 ) {
-        this.add(this.Popup.create({
-          closeable: false,
-          onClose: this.sync.bind(this)
-        }).tag({
-          class: 'net.nanopay.accounting.ui.IntegrationPopUpView',
-          data: this,
-          isLandingPage: true
-        }));
-      } else {
-        this.bankMatched = true;
-        this.sync();
-      }
-    },
-
-    async function sync() {
-      // reset the url first
-      window.history.pushState({}, '', '/#sme.bank.matching')
-
-      if ( ! this.bankMatched )  {
-        this.pushMenu('sme.main.dashboard');
-        return;
-      }
-
-      let service = null;
-
-      if ( this.integrationSoftware === 'Xero' ) {
-        service = this.xeroService;
-      }
-      if ( this.integrationSoftware === 'quickbooks' ) {
-        service = this.quickbooksService;
-      }
-
-      let contactResult = await service.contactSync(null);
-      let invoiceResult = await service.invoiceSync(null);
-
-      if ( contactResult.result === false ) {
-        this.ctrl.notify(contactResult.reason, 'error');
-        this.pushMenu('sme.main.dashboard');
-      }
-
-      if ( invoiceResult.result === false  ) {
-        this.ctrl.notify(invoiceResult.reason, 'error');
-        this.pushMenu('sme.main.dashboard');
-      }
-
-      this.ctrl.notify('All information has been synchronized', 'success');
-
-      if ( contactResult.contactSyncMismatches.length !== 0 ||
-           contactResult.contactSyncErrors.length !== 0 ||
-           invoiceResult.invoiceSyncErrors.length !== 0) {
-        this.add(this.Popup.create().tag({
-          class: 'net.nanopay.accounting.ui.AccountingReportModal',
-          invoiceResult: invoiceResult,
-          contactResult: contactResult
-        }));
-      } else {
-        this.pushMenu('sme.main.dashboard')
-      }
     }
   ]
 });

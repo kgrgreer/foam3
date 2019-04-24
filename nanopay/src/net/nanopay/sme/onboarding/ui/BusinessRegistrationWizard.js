@@ -511,10 +511,12 @@ foam.CLASS({
       return true;
     },
 
-    function validateBeneficialOwners() {
-      var beneficialOwnersCount = this.viewData.user.beneficialOwners.length;
-      if ( ! this.viewData.noBeneficialOwners && ! this.viewData.publiclyTradedEntity ) {
-        if ( beneficialOwnersCount <= 0 ) {
+    async function validateBeneficialOwners() {
+      var beneficialOwnersCount = await this.viewData.user.beneficialOwners
+        .select(this.COUNT());
+      if ( ! this.viewData.noBeneficialOwners
+        && ! this.viewData.publiclyTradedEntity ) {
+        if ( beneficialOwnersCount.value <= 0 ) {
           return false;
         }
       }
@@ -646,7 +648,7 @@ foam.CLASS({
               }
             }
 
-            if ( ! this.validateBeneficialOwners() ) {
+            if ( ! await this.validateBeneficialOwners() ) {
               this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
               return;
             }
