@@ -692,6 +692,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/AbliiOverlayActionListView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
 
@@ -736,7 +737,7 @@ FOAM_FILES([
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
-  { name: 'net/nanopay/accounting/ResultResponseWrapper'},
+  { name: 'net/nanopay/accounting/ResultResponseWrapper' },
   { name: 'net/nanopay/accounting/AccountingBankAccount' },
   { name: 'net/nanopay/accounting/AccountingContactEmailCache' },
   { name: 'net/nanopay/accounting/AccountingErrorCodes' },
@@ -755,9 +756,16 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/quickbooks/QuickbooksToken' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksContact' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksInvoice' },
-  { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web']},
+  { name: 'net/nanopay/accounting/resultresponse/ContactResponseItem' },
+  { name: 'net/nanopay/accounting/resultresponse/InvoiceResponseItem' },
+  { name: 'net/nanopay/accounting/AccountingResultReport' },
+  { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/IntegrationPopUpView', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/AccountingReportModal', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/AccountingBankMatching', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/AccountingReportPage1', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/AccountingReportPage2', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/ErrorTable', flags: ['web'] },
 
 
   // accounting stub
