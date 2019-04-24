@@ -18,22 +18,22 @@ public class LiquiditySettingValidator implements Validator {
     Liquidity high = ls.getHighLiquidity();
     Liquidity low = ls.getLowLiquidity();
 
-    if ( high.getActive() ) {
-      if ( high.getThreshold() <= high.getResetBalance() && high.getEnableRebalancing() == true )
+    if ( high.getEnabled() ) {
+      if ( high.getThreshold() <= high.getResetBalance() && high.getRebalancingEnabled() == true )
         throw new RuntimeException("The high liquidity reset balance must be less then the threshold balance");
     }
 
-    if ( low.getActive() ) {
-      if ( low.getThreshold() >= low.getResetBalance() && low.getEnableRebalancing() == true )
+    if ( low.getEnabled() ) {
+      if ( low.getThreshold() >= low.getResetBalance() && low.getRebalancingEnabled() == true )
         throw new RuntimeException("The low liquidity reset balance must be more then the threshold balance");
     }
 
-    if ( high.getActive() && low.getActive() ) {
+    if ( high.getEnabled() && low.getEnabled() ) {
 
       if ( high.getThreshold() <= low.getThreshold() )
         throw new RuntimeException("The high liquidity threshold must be above the low liquidity threshold");
 
-      if ( low.getEnableRebalancing() == true && high.getEnableRebalancing() == true ) {
+      if ( low.getRebalancingEnabled() == true && high.getRebalancingEnabled() == true ) {
 
         if ( high.getResetBalance() <= low.getThreshold() )
           throw new RuntimeException("The low liquidity threshold must be below the high liquidity reset balance");

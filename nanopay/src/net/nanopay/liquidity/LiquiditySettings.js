@@ -55,8 +55,8 @@ foam.CLASS({
       name: 'highLiquidity',
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
-          enableRebalancing: false,
-          active: false,
+          rebalancingEnabled: false,
+          enabled: false,
         });
       }
     },
@@ -66,8 +66,8 @@ foam.CLASS({
       name: 'lowLiquidity',
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
-          enableRebalancing: false,
-          active: false,
+          rebalancingEnabled: false,
+          enabled: false,
         });
       }
     }

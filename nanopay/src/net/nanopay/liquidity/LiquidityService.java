@@ -102,9 +102,9 @@ public class LiquidityService
       )
     ).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
 
-    if ( ls.getHighLiquidity().getActive() == true )
+    if ( ls.getHighLiquidity().getEnabled() == true )
       executeHighLiquidity(pendingBalance, ls, txnAmount, account);
-    if ( ls.getLowLiquidity().getActive() == true )
+    if ( ls.getLowLiquidity().getEnabled() == true )
       executeLowLiquidity(pendingBalance, ls, txnAmount, account);
   }
 
@@ -145,7 +145,7 @@ public class LiquidityService
         else
           notifyUser(account, true, ls.getHighLiquidity().getThreshold(), ls.getUserToEmail());
       }
-      if ( liquidity.getEnableRebalancing() && currentBalance - liquidity.getResetBalance() != 0 ) {
+      if ( liquidity.getRebalancingEnabled() && currentBalance - liquidity.getResetBalance() != 0 ) {
         addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId());
       }
     }
@@ -175,7 +175,7 @@ public class LiquidityService
         else
           notifyUser(account, false, ls.getLowLiquidity().getThreshold(), ls.getUserToEmail());
       }
-      if ( liquidity.getEnableRebalancing() && liquidity.getResetBalance() - currentBalance != 0 ) {
+      if ( liquidity.getRebalancingEnabled() && liquidity.getResetBalance() - currentBalance != 0 ) {
         addCICOTransaction(liquidity.getResetBalance() - currentBalance, fundAccount.getId(), account.getId());
       }
     }

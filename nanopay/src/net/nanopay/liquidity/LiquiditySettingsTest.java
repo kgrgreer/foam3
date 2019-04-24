@@ -138,14 +138,12 @@ public class LiquiditySettingsTest
     Liquidity high = new Liquidity();
     high.setResetBalance(3L);
     high.setThreshold(4L);
-    high.setEnableRebalancing(true);
-    high.setActive(true);
+    high.setRebalancingEnabled(true);
 
     Liquidity low = new Liquidity();
-    low.setEnableRebalancing(true);
+    low.setRebalancingEnabled(true);
     low.setResetBalance(2L);
     low.setThreshold(1L);
-    low.setActive(true);
 
     ls_.setCashOutFrequency(Frequency.DAILY);
     ls_.setHighLiquidity(high);
@@ -186,17 +184,15 @@ public class LiquiditySettingsTest
   public LiquiditySettings setupLiquiditySettings(X x, DigitalAccount account, Account bankAccount, Long minLimit, Long maxLimit, Frequency frequency) {
     LiquiditySettings ls = new LiquiditySettings();
     Liquidity highLiquidity = new Liquidity();
-    highLiquidity.setEnableRebalancing(true);
+    highLiquidity.setRebalancingEnabled(true);
     highLiquidity.setResetBalance(maxLimit);
     highLiquidity.setThreshold(maxLimit + 1);
     highLiquidity.setPushPullAccount(bankAccount.getId());
-    highLiquidity.setActive(true);
     Liquidity lowLiquidity = new Liquidity();
-    lowLiquidity.setEnableRebalancing(true);
+    lowLiquidity.setRebalancingEnabled(true);
     lowLiquidity.setThreshold(minLimit - 1);
     lowLiquidity.setResetBalance(minLimit);
     lowLiquidity.setPushPullAccount(bankAccount.getId());
-    lowLiquidity.setActive(true);
 
     ls.setCashOutFrequency(frequency);
     ls.setHighLiquidity(highLiquidity);
@@ -230,10 +226,9 @@ public class LiquiditySettingsTest
     LiquiditySettings ls = new LiquiditySettings();
     Liquidity high = new Liquidity();
     Liquidity low = new Liquidity();
-    low.setEnableRebalancing(true);
-    low.setActive(true);
-    high.setEnableRebalancing(true);
-    high.setActive(false);
+    low.setRebalancingEnabled(true);
+    high.setRebalancingEnabled(true);
+    high.setEnabled(false);
 
     low.setThreshold(5);
     low.setResetBalance(3);
@@ -253,7 +248,7 @@ public class LiquiditySettingsTest
 
     high.setResetBalance(4);
     high.setThreshold(3);
-    high.setActive(true);
+    high.setEnabled(true);
     ls.setHighLiquidity(high);
 
     test(TestUtils.testThrows(
