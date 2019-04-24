@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.accounting',
-  name: 'ResultResponseWrapper',
+  name: 'AccountingResultReport',
 
   properties: [
     {
@@ -12,17 +12,13 @@ foam.CLASS({
       name: 'userId'
     },
     {
-      class: 'String',
-      name: 'method'
+      class: 'Date',
+      name: 'time'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.accounting.ResultResponse',
       name: 'resultResponse'
     },
-    {
-      class: 'Long',
-      name: 'timeStamp'
-    }
   ]
 });
