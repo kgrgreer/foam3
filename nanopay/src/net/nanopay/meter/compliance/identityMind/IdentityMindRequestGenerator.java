@@ -131,7 +131,7 @@ public class IdentityMindRequestGenerator {
     request.setDemail(receiver.getEmail());
     request.setSfn(prepareString(receiver.getFirstName()));
     request.setSln(prepareString(receiver.getLastName()));
-    Address receiverAddress = sender.getAddress();
+    Address receiverAddress = receiver.getAddress();
     if ( receiverAddress != null ) {
       request.setSsn(prepareString(receiverAddress.getStreetNumber(), receiverAddress.getStreetName(), receiverAddress.getSuite()));
       request.setSc(prepareString(receiverAddress.getCity()));
@@ -139,7 +139,7 @@ public class IdentityMindRequestGenerator {
       request.setSs(prepareString(receiverAddress.getRegionId()));
       request.setSz(prepareString(receiverAddress.getPostalCode()));
     }
-    Phone receiverPhone = sender.getPhone();
+    Phone receiverPhone = receiver.getPhone();
     if (receiverPhone != null) {
       request.setDph(prepareString(receiverPhone.getNumber()));
     }
