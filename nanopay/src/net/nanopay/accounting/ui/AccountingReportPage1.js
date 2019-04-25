@@ -199,7 +199,6 @@ foam.CLASS({
 
     function initSuccessContact() {
       let myData = this.reportResult.successContact;
-      //let myData = this.temp();
       let myDAO = foam.dao.MDAO.create( { of: this.ContactResponseItem } );
 
       for ( x in myData ) {
@@ -216,7 +215,6 @@ foam.CLASS({
 
     function initSuccessInvoice() {
       let myData = this.reportResult.successInvoice;
-      //let myData = this.temp();
       let myDAO = foam.dao.MDAO.create( { of: this.InvoiceResponseItem } );
 
       for ( x in myData ) {

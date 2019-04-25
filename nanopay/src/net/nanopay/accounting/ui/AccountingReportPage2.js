@@ -161,6 +161,7 @@ foam.CLASS({
 
   properties: [
     'reportResult',
+    'quickSyncRedirect',
     {
       class: 'Int',
       name: 'invoiceCount'
@@ -213,7 +214,7 @@ foam.CLASS({
               .start('p').add(this.CONTACTS_FAILED).end()
             .end()
             .start()
-              .add(this.CONTACT_TEXT + this.TEXT + this.user.integrationCode + this.TEXT2)
+              .add(this.CONTACT_TEXT + this.TEXT + this.user.integrationCode.label + this.TEXT2)
               .addClass('report-2-description')
             .end()
             .call( function() {
@@ -230,16 +231,16 @@ foam.CLASS({
               }
             })
 
-            .start('div').addClass('report-2-container-title').show(this.showInvoiceError$)
+            .start().addClass('report-2-container-title').show(this.showInvoiceError$)
               .start()
                 .addClass('exclamation-mark')
                 .start('img').attrs({ src: 'images/ablii/warning-triangle.svg' }).end()
               .end()
               .start('p').add(this.INVOICES_FAILED).end()
-            .end()
-            .start()
-              .add(this.INVOICE_TEXT + this.TEXT + this.user.integrationCode + this.TEXT2)
-              .addClass('report-2-description')
+              .start()
+                .add(this.INVOICE_TEXT + this.TEXT + this.user.integrationCode.label + this.TEXT2)
+                .addClass('report-2-description')
+              .end()
             .end()
             .call( function() {
               let invoiceErrors = self.reportResult.invoiceErrors;
@@ -283,7 +284,6 @@ foam.CLASS({
           .start(this.DOWNLOAD).addClass('download-button').end()
         .end()
       .end();
-
       if ( ! this.showContactError && ! this.showInvoiceError ) {
         this.pushMenu('sme.main.dashboard');
       }
