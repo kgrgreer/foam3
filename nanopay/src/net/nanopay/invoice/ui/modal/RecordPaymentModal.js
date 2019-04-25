@@ -82,6 +82,9 @@ foam.CLASS({
       background: transparent;
       background-color: transparent;
     }
+    ^ .full-width-input {
+      padding: 0px;
+    }
   `,
   
   methods: [
