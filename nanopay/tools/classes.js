@@ -468,6 +468,7 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
   'net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator',
   'net.nanopay.meter.compliance.identityMind.EntityLoginValidator',
+  'net.nanopay.meter.compliance.identityMind.FundingTransactionValidator',
   'net.nanopay.meter.compliance.identityMind.MerchantKYCValidator',
   'net.nanopay.meter.compliance.identityMind.IdentityMindRequest',
   'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
@@ -475,6 +476,7 @@ var classes = [
   'net.nanopay.meter.compliance.identityMind.predicate.ConsumerKYCStage1',
   'net.nanopay.meter.compliance.identityMind.predicate.ConsumerKYCStage3',
   'net.nanopay.meter.compliance.identityMind.predicate.EntityLoginStage2',
+  'net.nanopay.meter.compliance.identityMind.predicate.FundingTransaction',
   'net.nanopay.meter.compliance.identityMind.predicate.MerchantKYCStage3',
 
   // meter tests

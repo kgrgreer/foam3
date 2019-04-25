@@ -104,6 +104,9 @@ public class IdentityMindRequestGenerator {
       .setIp(getRemoteAddr(x))
       .build();
 
+    request.setAmt(Double.toString(transaction.getAmount() / 100.0));
+    request.setCcy(sourceAccount.getDenomination());
+
     // Sender information
     request.setMan(String.valueOf(sender.getId()));
     request.setTea(sender.getEmail());

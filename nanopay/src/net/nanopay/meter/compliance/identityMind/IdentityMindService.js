@@ -139,6 +139,33 @@ foam.CLASS({
       `
     },
     {
+      name: 'evaluateFunding',
+      type: 'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'transaction',
+          type: 'net.nanopay.tx.cico.CITransaction'
+        }
+      ],
+      javaCode: `
+        IdentityMindRequest request = IdentityMindRequestGenerator.getFundingRequest(x, transaction);
+        request.setUrl(getBaseUrl() + "/account/transferin");
+        request.setBasicAuth(getApiUser() + ":" + getApiKey());
+
+        IdentityMindResponse response = (IdentityMindResponse) sendRequest(
+          x, request, IdentityMindResponse.class);
+        response.setApiName("Funding");
+        response.setEntityType(request.getEntityType());
+        response.setEntityId(request.getEntityId());
+        return (IdentityMindResponse)
+          ((DAO) getIdentityMindResponseDAO()).put(response);
+      `
+    },
+    {
       name: 'sendRequest',
       type: 'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
       args: [
