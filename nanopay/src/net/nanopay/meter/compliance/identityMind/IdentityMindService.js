@@ -42,6 +42,11 @@ foam.CLASS({
       class: 'String',
       name: 'hashingSalt',
       value: '54l73D47'
+    },
+    {
+      class: 'String',
+      name: 'profile',
+      value: 'DEFAULT'
     }
   ],
 
@@ -67,6 +72,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getConsumerKYCRequest(x, consumer);
         request.setUrl(getBaseUrl() + "/account/consumer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
+        request.setProfile(getProfile());
         request.setStage(stage);
 
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
@@ -95,6 +101,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getEntityLoginRequest(x, login);
         request.setUrl(getBaseUrl() + "/account/login");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
+        request.setProfile(getProfile());
 
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
           x, request, IdentityMindResponse.class);
@@ -127,6 +134,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getMerchantKYCRequest(x, business);
         request.setUrl(getBaseUrl() + "/account/merchant");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
+        request.setProfile(getProfile());
         request.setStage(stage);
 
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
@@ -155,6 +163,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getFundingRequest(x, transaction);
         request.setUrl(getBaseUrl() + "/account/transferin");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
+        request.setProfile(getProfile());
 
         IdentityMindResponse response = (IdentityMindResponse) sendRequest(
           x, request, IdentityMindResponse.class);
