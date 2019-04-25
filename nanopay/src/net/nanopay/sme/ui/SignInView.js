@@ -250,6 +250,7 @@ foam.CLASS({
           await this.invitedTokenProcess();
           if ( this.user && this.user.twoFactorEnabled ) {
             this.loginSuccess = false;
+            window.history.replaceState({}, document.title, '/');
             this.stack.push({
               class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
             });
