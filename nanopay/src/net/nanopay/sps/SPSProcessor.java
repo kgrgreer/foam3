@@ -133,9 +133,9 @@ public class SPSProcessor implements ContextAgent {
 
   private String request(X x, RequestPacket requestPacket) {
     Logger logger = (Logger) x.get("logger");
-    SPSConfig spsConfig = (SPSConfig) x.get("SPSConfig");
+    SPSCredentials spsCredentials = (SPSCredentials) x.get("SPSCredentials");
 
-    String url = spsConfig.getUrl();
+    String url = spsCredentials.getUrl();
     String requestMsg = requestPacket.toSPSString();
     System.out.println("requestMsg: " + requestMsg);
 

@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sps',
-  name: 'SPSConfig',
+  name: 'SPSCredentials',
 
   axioms: [ foam.pattern.Singleton.create() ],
 

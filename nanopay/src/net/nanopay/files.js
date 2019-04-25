@@ -201,7 +201,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
   // sps
-  { name: 'net/nanopay/sps/SPSConfig' },
+  { name: 'net/nanopay/sps/SPSCredentials' },
 
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },

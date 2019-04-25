@@ -99,7 +99,7 @@ var classes = [
   'net.nanopay.sps.DetailResponseItemContent',
   'net.nanopay.sps.RequestPacket',
   'net.nanopay.sps.ResponsePacket',
-  'net.nanopay.sps.SPSConfig',
+  'net.nanopay.sps.SPSCredentials',
   'net.nanopay.sps.SPSTransaction',
   'net.nanopay.sps.SPSRejectFileRecord',
   'net.nanopay.sps.SPSSettlementFileRecord',
