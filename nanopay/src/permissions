@@ -304,4 +304,4 @@ p({"class":"foam.nanos.auth.Permission","id":"service.securefactSIDniDAO","descr
 p({"class":"foam.nanos.auth.Permission","id":"service.run.sugar","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.run.pacsMsg","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.flinksAuth"})
-p({"class":"foam.nanos.auth.Permission","id":"service.execute.accountingReportDAO"})
+p({"class":"foam.nanos.auth.Permission","id":"service.accountingReportDAO"})
