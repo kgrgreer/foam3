@@ -23,6 +23,7 @@ import net.nanopay.flinks.model.FlinksAccountsDetailResponse;
 import net.nanopay.meter.IpHistory;
 import net.nanopay.model.*;
 import net.nanopay.payment.Institution;
+import net.nanopay.plaid.PlaidResultReport;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -561,7 +562,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     String businessName = business.getBusinessName();
 
-    BankAccount bankAccount = (BankAccount) accountDAO
+    BankAccount bankAccount = (BankAccount) accountDAO.orderBy(DESC(BankAccount.CREATED))
       .find(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
@@ -657,6 +658,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         Date createDate = usBankAccount.getCreated();
         String bankAddedDate = sdf.format(createDate);
         list.add(new ListItem("PAD agreement date: " + bankAddedDate));
+        this.getPlaidDetails(x, (USBankAccount) bankAccount, list);
       }
 
       document.add(list);
@@ -673,6 +675,21 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     }
 
     return null;
+  }
+
+
+  private void getPlaidDetails(X x, USBankAccount bankAccount, List list) {
+    DAO plaidReportDAO = (DAO) x.get("plaidResultReportDAO");
+
+    if ( bankAccount.getPlaidReportId() != 0 ) {
+
+      PlaidResultReport report = (PlaidResultReport) plaidReportDAO.inX(x).find(bankAccount.getPlaidReportId());
+
+      list.add(new ListItem("Plaid Id: " + report.getPlaidId()));
+      list.add(new ListItem("Account Holder Name: " + report.getAccountHolderName()));
+      list.add(new ListItem("Date of validation: " + report.getValidationDate()));
+      list.add(new ListItem("IP address: " + report.getIp()));
+    }
   }
 
 
@@ -795,7 +812,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     DAO    accountDAO  = (DAO) x.get("accountDAO");
     Logger logger      = (Logger) x.get("logger");
 
-    BankAccount bankAccount = (BankAccount) accountDAO
+    BankAccount bankAccount = (BankAccount) accountDAO.orderBy(DESC(BankAccount.CREATED))
       .find(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
@@ -806,6 +823,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     Blob blob;
     try {
       if ( bankAccount instanceof USBankAccount) {
+
+        // if it's imported from plaid, then no bank account proof file.
+        if ( ((USBankAccount) bankAccount).getPlaidReportId() != 0 ) {
+          return null;
+        }
+
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
         foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
         String blobId = ((IdentifiedBlob) voidCheckImage.getData()).getId();

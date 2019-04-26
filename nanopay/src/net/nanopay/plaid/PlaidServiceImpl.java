@@ -246,6 +246,8 @@ public class PlaidServiceImpl implements PlaidService {
           selectedAccount.get(accountDetail.getMask()).equals(accountDetail.getName())
       ).collect(Collectors.toList());
 
+    PlaidResultReport report = createReport(x, accountDetails, plaidItem);
+
     for (PlaidAccountDetail accountDetail : accountDetails) {
 
       Institution institution =
@@ -267,14 +269,13 @@ public class PlaidServiceImpl implements PlaidService {
             .setStatus        (BankAccountStatus.VERIFIED)
             //.setCountry       ("US")
             .setInstitution   (institution.getId())
+            .setPlaidReportId(report.getId())
             .build());
       }
     }
-
-    this.createReport(x, accountDetails, plaidItem);
   }
 
-  public void createReport(X x, List<PlaidAccountDetail> accountDetails, PlaidItem plaidItem) throws IOException {
+  public PlaidResultReport createReport(X x, List<PlaidAccountDetail> accountDetails, PlaidItem plaidItem) throws IOException {
     PlaidClient plaidClient   = getClient(x);
     DAO plaidReportDAO        = (DAO) x.get("plaidResultReportDAO");
     User user                 = (User) x.get("user");
@@ -295,7 +296,7 @@ public class PlaidServiceImpl implements PlaidService {
     report.setIp(request.getRemoteAddr());
     report.setSelectedAccountDetail(accountDetails.toArray(new PlaidAccountDetail[accountDetails.size()]));
 
-    plaidReportDAO.inX(x).put(report);
+    return (PlaidResultReport) plaidReportDAO.inX(x).put(report);
   }
 
   /**
