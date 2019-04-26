@@ -36,18 +36,15 @@ foam.CLASS({
   }
   ^ .bank-pick-arrow {
     color: #8e9090;
-    display: inline-block;
-    vertical-align: top;
+  }
+  ^bank-pick-back {
+    cursor: pointer;
+    display: inline-flex;
   }
   ^ .bank-pick-back {
-    margin-left: 12px;
-    display: inline-block;
-    vertical-align: top;
     color: #8e9090;
-  }
-  ^ .bank-pick-title {
-    margin: 10px 0;
-    font-weight: 900;
+    font-size: 16px;
+    margin-left: 12px;
   }
   ^ .bank-pick-subtitle {
     margin-bottom: 40px;
@@ -211,8 +208,13 @@ foam.CLASS({
       .start().addClass('bank-currency-pick-height')
         .start().addClass('bank-pick-margin')
           .start().addClass('top')
-            .start().style({'margin-left': '5px'})
-              .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/gobackarrow-grey.svg' }).addClass('bank-pick-arrow').end()
+            .start().addClass(this.myClass('bank-pick-back'))
+              .start({
+                class: 'foam.u2.tag.Image',
+                data: 'images/ablii/gobackarrow-grey.svg'
+              })
+                .addClass('bank-pick-arrow')
+              .end()
               .start().add('Go back').addClass('bank-pick-back').end()
             .on('click', () => {
               this.stack.back();
@@ -232,7 +234,7 @@ foam.CLASS({
                 .style({ 'margin-left': '5px', 'margin-right': '5px' })
               .end()
             .endContext()
-            .start().addClass('institutionSearchContainer').show(this.selection$.map(function(v) { return v === 1; }))
+            .start().addClass('institutionSearchContainer')
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
               .start(this.FILTER_FOR)
                 .addClass('institutionSearch')
@@ -249,6 +251,15 @@ foam.CLASS({
               onComplete: this.createOnComplete()
             }).end()
           .end()
+
+          .start().show(this.selection$.map((v) => { return v === 2 && this.usdAvailable; }))
+            .start().tag({
+              class: 'net.nanopay.plaid.ui.PlaidView',
+              logoPath: 'images/ablii-logo.svg',
+              onComplete: this.createOnComplete()
+            }).end()
+          .end()
+
         .end()
       .end();
     },
@@ -288,11 +299,6 @@ foam.CLASS({
       label: 'US',
       code: function() {
         this.selection = 2;
-        this.add(this.Popup.create().tag({
-          class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
-          onDismiss: this.createOnDismiss(),
-          onComplete: this.createOnComplete()
-        }));
       }
     },
   ]

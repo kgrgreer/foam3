@@ -29,6 +29,9 @@ FOAM_FILES([
   { name: 'net/nanopay/account/AuthenticatedAccountDAOTest' },
   { name: 'net/nanopay/account/LoanAccount' },
   { name: 'net/nanopay/account/LoanedTotalAccount' },
+  { name: 'net/nanopay/account/NoBalanceRule' },
+  { name: 'net/nanopay/account/NoPendingTransactionsRule' },
+  { name: 'net/nanopay/account/NoChildrenRule' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/ClientUserJunction' },
@@ -173,6 +176,7 @@ FOAM_FILES([
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
+  { name: 'net/nanopay/kotak/KotakCredentials' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
 
   // interac
@@ -329,6 +333,11 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
   { name: 'net/nanopay/plaid/ClientPlaidService' },
+  { name: 'net/nanopay/plaid/model/PlaidAccountDetail' },
+  { name: 'net/nanopay/plaid/model/PlaidBalances' },
+  { name: 'net/nanopay/plaid/model/ACH' },
+  { name: 'net/nanopay/plaid/model/EFT' },
+  { name: 'net/nanopay/plaid/PlaidResultReport' },
   { name: 'net/nanopay/plaid/PlaidService' },
   { name: 'net/nanopay/plaid/config/PlaidCredential' },
   { name: 'net/nanopay/plaid/model/PlaidPublicToken' },
@@ -691,6 +700,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/AbliiOverlayActionListView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
 
@@ -754,9 +764,16 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/quickbooks/QuickbooksToken' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksContact' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksInvoice' },
+  { name: 'net/nanopay/accounting/resultresponse/ContactResponseItem' },
+  { name: 'net/nanopay/accounting/resultresponse/InvoiceResponseItem' },
+  { name: 'net/nanopay/accounting/AccountingResultReport' },
   { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/IntegrationPopUpView', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/AccountingReportModal', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/AccountingBankMatching', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/AccountingReportPage1', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/AccountingReportPage2', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/ErrorTable', flags: ['web'] },
 
 
   // accounting stub
@@ -776,6 +793,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/BusinessDetailView' },
+  { name: 'net/nanopay/meter/InvoiceDetailView' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
