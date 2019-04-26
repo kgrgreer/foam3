@@ -326,7 +326,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
   }
 
 
-  public Boolean importInvoice(X x, com.xero.model.Invoice xeroInvoice, HashMap<String, List<InvoiceResponseItem>> invoiceErrors) throws Exception {
+  public Boolean importInvoice(X x, com.xero.model.Invoice xeroInvoice, HashMap<String, List<InvoiceResponseItem>> invoiceErrors, Boolean isSingleSync) throws Exception {
     DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
     DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
@@ -344,8 +344,8 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     // Check if Invoice already exists on the portal
     if ( existingInvoice != null ) {
 
-      if ( existingInvoice.getLastUpdated() >= xeroInvoice.getUpdatedDateUTC().getTime().getTime() ) {
-        return false;
+      if ( existingInvoice.getLastUpdated() >= xeroInvoice.getUpdatedDateUTC().getTime().getTime()) {
+        return isSingleSync ? true : false;
       }
       // Clone the invoice to make changes
       existingInvoice = (XeroInvoice) existingInvoice.fclone();
@@ -546,7 +546,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
       for (com.xero.model.Invoice xeroInvoice : client.getInvoices()) {
         try {
-          if ( ! importInvoice(x, xeroInvoice, invoiceErrors) ) {
+          if ( ! importInvoice(x, xeroInvoice, invoiceErrors, false) ) {
             continue;
           } else {
             successInvoice.add(prepareResponseItemFrom(xeroInvoice));
@@ -907,7 +907,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       }
 
       com.xero.model.Invoice xeroInvoice = client.getInvoice(invoice.getXeroId());
-      if ( importInvoice(x, xeroInvoice, invoiceErrors) ) {
+      if ( importInvoice(x, xeroInvoice, invoiceErrors, true ) ) {
         return new ResultResponse.Builder(x)
           .setResult(true)
           .build();

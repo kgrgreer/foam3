@@ -12,7 +12,8 @@ var classes = [
   'net.nanopay.plaid.model.PlaidError',
   'net.nanopay.plaid.model.PlaidWebhook',
 
-  'net.nanopay.plaid.config.PlaidCredential'
+  'net.nanopay.plaid.config.PlaidCredential',
+  'net.nanopay.plaid.PlaidResultReport'
 ];
 
 var abstractClasses = [];

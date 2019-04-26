@@ -164,7 +164,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       xeroInvoice.setCurrencyCode(CurrencyCode.INR);
       xeroInvoice.setInvoiceID("1");
       xeroInvoice.setUpdatedDateUTC(date);
-      test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors), "Invalid Currency");
+      test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors,false), "Invalid Currency");
     } catch (Exception e) {
       e.printStackTrace();
       test(false, "Invalid Currency");
@@ -177,7 +177,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       xeroInvoice.setStatus(InvoiceStatus.DRAFT);
       xeroInvoice.setInvoiceID("2");
       xeroInvoice.setUpdatedDateUTC(date);
-      test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors), "Not Authorized");
+      test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors,false), "Not Authorized");
     } catch (Exception e) {
       e.printStackTrace();
       test(false, "Not Authorized");
@@ -193,7 +193,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       xeroInvoice.setAmountDue(new BigDecimal(5));
       xeroInvoice.setInvoiceID("3");
       xeroInvoice.setUpdatedDateUTC(date);
-      test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors), "Missing Contact" );
+      test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors,false), "Missing Contact" );
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -211,7 +211,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
       xeroInvoice.setAmountDue(new BigDecimal(6));
       xeroInvoice.setInvoiceID("4");
       xeroInvoice.setUpdatedDateUTC(date);
-      test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors), "All Fields Valid" );
+      test( ! xeroService.importInvoice(x, xeroInvoice, invoiceErrors,false), "All Fields Valid" );
     } catch (Exception e) {
       e.printStackTrace();
       test(false, "All Fields Valid");
