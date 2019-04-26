@@ -106,8 +106,8 @@ foam.CLASS({
         if ( result !== null ) {
           this.stack.push({
             class: 'net.nanopay.accounting.ui.AccountingReportPage1',
-            invoiceResult: result
-          })
+            reportResult: result
+          });
         }
         X.controllerView.removeClass('account-sync-loading-animation');
       }
