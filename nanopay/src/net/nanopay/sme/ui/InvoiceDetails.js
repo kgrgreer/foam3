@@ -63,11 +63,14 @@ foam.CLASS({
     }
     ^ .invoice-content {
       border-top: solid 1px #e2e2e3;
-      margin-top: 23px;
+      margin-top: 7px;
       padding-top: 23px;
     }
     ^ .invoice-row {
       margin-bottom: 32px;
+    }
+    ^ .subdued-text {
+      margin-top: 5px;
     }
     ^ .invoice-status-container {
       float: right;
@@ -105,6 +108,9 @@ foam.CLASS({
     }
     ^ .bold-label {
       line-height: 1.5;
+    }
+    ^ .reference-id-text {
+      font-size: 12px;
     }
   `,
 
@@ -210,6 +216,8 @@ foam.CLASS({
   messages: [
     { name: 'ATTACHMENT_LABEL', message: 'Attachments' },
     { name: 'AMOUNT_LABEL', message: 'Amount due' },
+    { name: 'PURCHASE_ORDER_LABEL', message: 'P.O No.' },
+    { name: 'REFERENCE_LABEL', message: 'Reference ID' },
     { name: 'DUE_DATE_LABEL', message: 'Date due' },
     { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
     { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
@@ -223,6 +231,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
+
       this
         .addClass(this.myClass())
         .start()
@@ -230,6 +239,12 @@ foam.CLASS({
           .addClass('inline')
           .add(this.slot(function(invoice$invoiceNumber) {
             return self.INVOICE_NUMBER_LABEL + invoice$invoiceNumber;
+          }))
+        .end()
+        .start()
+          .addClass(this.myClass('invoice-content-text'))
+          .add(this.slot(function(invoice$purchaseOrder) {
+            return self.PURCHASE_ORDER_LABEL + invoice$purchaseOrder;
           }))
         .end()
         .add(this.slot(function(invoice, invoice$status) {
@@ -392,7 +407,13 @@ foam.CLASS({
             }))
           .end()
         .end()
-
+        .start()
+          .addClass(this.myClass('invoice-content-text'))
+          .addClass('reference-id-text')
+          .add(this.slot(function(invoice$referenceId) {
+            return self.REFERENCE_LABEL + ' ' + invoice$referenceId;
+          }))
+        .end()
         .start()
           .show(this.showActions)
           .addClass(this.myClass('print-wrapper'))
