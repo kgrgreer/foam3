@@ -325,7 +325,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
 
-  private Boolean importInvoice(X x, com.xero.model.Invoice xeroInvoice, HashMap<String, List<InvoiceResponseItem>> invoiceErrors) throws Exception {
+  private Boolean importInvoice(X x, com.xero.model.Invoice xeroInvoice, HashMap<String, List<InvoiceResponseItem>> invoiceErrors, Boolean isSingleSync) throws Exception {
     DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
     DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
@@ -344,7 +344,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     if ( existingInvoice != null ) {
 
       if ( existingInvoice.getLastUpdated() >= xeroInvoice.getUpdatedDateUTC().getTime().getTime()) {
-        return false;
+        return isSingleSync ? true : false;
       }
       // Clone the invoice to make changes
       existingInvoice = (XeroInvoice) existingInvoice.fclone();
@@ -540,7 +540,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
 
       for (com.xero.model.Invoice xeroInvoice : client.getInvoices()) {
         try {
-          if ( ! importInvoice(x, xeroInvoice, invoiceErrors) ) {
+          if ( ! importInvoice(x, xeroInvoice, invoiceErrors, false) ) {
             continue;
           } else {
             successInvoice.add(prepareResponseItemFrom(xeroInvoice));
@@ -901,7 +901,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       }
 
       com.xero.model.Invoice xeroInvoice = client.getInvoice(invoice.getXeroId());
-      if ( importInvoice(x, xeroInvoice, invoiceErrors) ) {
+      if ( importInvoice(x, xeroInvoice, invoiceErrors, true ) ) {
         return new ResultResponse.Builder(x)
           .setResult(true)
           .build();
