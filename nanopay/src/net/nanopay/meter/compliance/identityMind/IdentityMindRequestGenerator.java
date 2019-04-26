@@ -144,11 +144,10 @@ public class IdentityMindRequestGenerator {
       request.setDph(prepareString(receiverPhone.getNumber()));
     }
     request.setDphash(getDigitalAccountHash(x, (DigitalAccount) destinationAccount));
-
     return request;
   }
 
-  public static String getUUID(FObject obj) {
+  private static String getUUID(FObject obj) {
     long id = (Long) obj.getProperty("id");
     Date created = (Date) obj.getProperty("created");
     long createdTime = created != null ? created.getTime() : id;

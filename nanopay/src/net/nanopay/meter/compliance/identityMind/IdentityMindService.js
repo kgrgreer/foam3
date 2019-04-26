@@ -25,28 +25,23 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'baseUrl',
-      value: 'https://staging.identitymind.com/im'
+      name: 'baseUrl'
     },
     {
       class: 'String',
-      name: 'apiUser',
-      value: 'nanopay'
+      name: 'apiUser'
     },
     {
       class: 'String',
-      name: 'apiKey',
-      value: '80c264cb0c381fbc995763982b35e965f37347eb'
+      name: 'apiKey'
     },
     {
       class: 'String',
-      name: 'hashingSalt',
-      value: '54l73D47'
+      name: 'hashingSalt'
     },
     {
       class: 'String',
-      name: 'profile',
-      value: 'DEFAULT'
+      name: 'profile'
     }
   ],
 
@@ -75,8 +70,7 @@ foam.CLASS({
         request.setProfile(getProfile());
         request.setStage(stage);
 
-        IdentityMindResponse response = (IdentityMindResponse) sendRequest(
-          x, request, IdentityMindResponse.class);
+        IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Consumer KYC Evaluation");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
@@ -103,8 +97,7 @@ foam.CLASS({
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
         request.setProfile(getProfile());
 
-        IdentityMindResponse response = (IdentityMindResponse) sendRequest(
-          x, request, IdentityMindResponse.class);
+        IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Entity Login Record");
         User user = login.findLoginAttemptedFor(x);
         response.setEntityType(request.getEntityType());
@@ -137,8 +130,7 @@ foam.CLASS({
         request.setProfile(getProfile());
         request.setStage(stage);
 
-        IdentityMindResponse response = (IdentityMindResponse) sendRequest(
-          x, request, IdentityMindResponse.class);
+        IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Merchant KYC Evaluation");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
@@ -165,8 +157,7 @@ foam.CLASS({
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
         request.setProfile(getProfile());
 
-        IdentityMindResponse response = (IdentityMindResponse) sendRequest(
-          x, request, IdentityMindResponse.class);
+        IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Funding");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
@@ -185,10 +176,6 @@ foam.CLASS({
         {
           name: 'request',
           type: 'net.nanopay.meter.compliance.identityMind.IdentityMindRequest'
-        },
-        {
-          name: 'responseClass',
-          javaType: 'java.lang.Class'
         }
       ],
       javaCode: `
@@ -215,7 +202,7 @@ foam.CLASS({
           JSONParser jsonParser = new JSONParser();
           jsonParser.setX(x);
           IdentityMindResponse response = (IdentityMindResponse)
-            jsonParser.parseString(responseJson, responseClass);
+            jsonParser.parseString(responseJson, IdentityMindResponse.class);
           response.setRequestJson(requestJson);
           response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
           return response;
