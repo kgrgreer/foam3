@@ -2,6 +2,14 @@ foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind',
   name: 'IdentityMindResponse',
 
+  tableColumns: [
+    'apiName',
+    'statusCode',
+    'entityId',
+    'frp',
+    'res'
+   ],
+
   properties: [
     {
       class: 'Long',
@@ -99,6 +107,12 @@ foam.CLASS({
       name: 'erd',
       documentation: `Description of the reason for the user's reputation.`,
       label: 'User reputation description'
+    },
+    {
+      class: 'String',
+      name: 'res',
+      documentation: 'Result of policy evaluation. Combines the result of fraud and automated review evaluations.',
+      label: 'Result of policy evaluation'
     },
     {
       class: 'String',
