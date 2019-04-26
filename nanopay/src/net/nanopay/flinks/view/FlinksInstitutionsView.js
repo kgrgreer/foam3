@@ -148,8 +148,8 @@ foam.CLASS({
 
   messages: [
     { name: 'NO_MATCH_FOUND', message: 'We could not find any banks with that name.' },
-    { name: 'OTHER_BANK', message: 'If you do not see your bank or if you wish to connect using a void check, ' },
-    { name: 'CLICK_HERE', message: 'click here!'}
+    { name: 'OTHER_BANK', message: 'Don\'t see your bank here?' },
+    { name: 'CLICK_HERE', message: 'Connect with a void check' }
   ],
 
   methods: [
