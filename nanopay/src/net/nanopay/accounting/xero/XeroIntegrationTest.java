@@ -20,7 +20,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
 
   @Override
   public void runTest(X x) {
-    XeroIntegrationService xeroService = new XeroIntegrationService();
+    XeroIntegrationService xeroService = (XeroIntegrationService) x.get("xeroService");
     xeroService.setX(x);
     createToken(x);
     testContactSync(x, xeroService);

@@ -34,7 +34,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
   @Override
   public void runTest(X x) {
 
-    QuickbooksIntegrationService quickbooksService = new QuickbooksIntegrationService();
+    QuickbooksIntegrationService quickbooksService = (QuickbooksIntegrationService) x.get("quickbooksService");
     quickbooksService.setX(x);
     try {
       quickbooksService.start();
