@@ -385,6 +385,7 @@ foam.CLASS({
             .startContext({ data: this.invoice })
               .start(this.invoice.CONTACT_ID, {
                 action: this.ADD_CONTACT,
+                search: true,
                 mode: displayMode
               })
                 .enableClass('invalid', this.slot(
@@ -590,6 +591,7 @@ foam.CLASS({
   actions: [
     {
       name: 'addContact',
+      label: 'Create new contact',
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
         X.view.add(X.view.Popup.create().tag({
