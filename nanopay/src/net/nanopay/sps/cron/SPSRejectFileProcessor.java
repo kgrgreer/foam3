@@ -42,7 +42,7 @@ public class SPSRejectFileProcessor implements ContextAgent {
       JSch jsch = new JSch();
       session = jsch.getSession(spsCredentials.getUser(), spsCredentials.getHost(), spsCredentials.getPort());
       session.setPassword(spsCredentials.getPassword());
-      String sftpPathSegment = spsCredentials.getSftpPathSegment();
+      String sftpPathSegment = "/" + spsCredentials.getUser();
 
       // add configuration
       Properties config = new Properties();
