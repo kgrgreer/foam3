@@ -8,7 +8,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.liquidity.Frequency'
   ],
   imports: [
     'liquiditySettingsDAO'
@@ -34,8 +35,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name',
-      value: 'name'
+      name: 'name'
     },
     {
       class: 'Reference',
@@ -71,6 +71,18 @@ foam.CLASS({
         });
       }
     }
+  ],
+  methods: [
+    {
+      name: 'toSummary',
+      documentation: `
+        When using a reference to the accountDAO, the labels associated to it will show a chosen property
+        rather than the first alphabetical string property. In this case, we are using the account name.
+      `,
+      code: function(x) {
+        var self = this;
+        return this.name;
+      },
+    },
   ]
 });
-
