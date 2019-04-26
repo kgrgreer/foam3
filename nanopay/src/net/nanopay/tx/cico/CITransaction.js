@@ -119,7 +119,7 @@ foam.CLASS({
       ],
       javaCode: `
       if ( oldTxn == null ) return;
-      if ( getStatus() != TransactionStatus.REVERSE && getStatus() != TransactionStatus.REVERSE_FAIL )
+      if ( getStatus() != TransactionStatus.REVERSE && getStatus() != TransactionStatus.REVERSE_FAIL && getStatus() != TransactionStatus.DECLINED)
       return;
 
       DAO notificationDAO = ((DAO) x.get("notificationDAO"));
@@ -173,9 +173,10 @@ foam.CLASS({
       HashMap<String, Object> args = new HashMap<>();
       AppConfig config       = (AppConfig) x.get("appConfig");
 
+      String bankAccountNumber = ((BankAccount)findSourceAccount(x)).getAccountNumber();
       args.put("amount", formatter.format(getAmount() / 100.00));
       args.put("name", receiver.getFirstName());
-      args.put("account", ((BankAccount)findSourceAccount(x)).getAccountNumber());
+      args.put("account", bankAccountNumber.substring(bankAccountNumber.length()-4, bankAccountNumber.length()));
       args.put("link",    config.getUrl());
 
       notification.setEmailArgs(args);

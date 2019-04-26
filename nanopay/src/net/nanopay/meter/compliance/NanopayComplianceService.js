@@ -34,14 +34,16 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
+        User agent = (User) x.get("agent");
+        if ( agent != null ) {
+          return ComplianceStatus.PASSED == agent.getCompliance();
+        }
+
         User user = (User) x.get("user");
         if ( user != null ) {
-          User agent = (User) x.get("agent");
-          if ( user instanceof Business ) {
-            return ComplianceStatus.PASSED == agent.getCompliance();
-          }
           return ComplianceStatus.PASSED == user.getCompliance();
         }
+
         return true;
       `
     },

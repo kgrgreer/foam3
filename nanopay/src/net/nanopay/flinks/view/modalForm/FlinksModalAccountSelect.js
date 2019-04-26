@@ -215,7 +215,7 @@ foam.CLASS({
 
     function createBankAccount(account, institution) {
       return this.CABankAccount.create({
-        name: account.Title,
+        name: institution.name,
         accountNumber: account.AccountNumber,
         institution: institution,
         institutionNumber: institution.institutionNumber,
