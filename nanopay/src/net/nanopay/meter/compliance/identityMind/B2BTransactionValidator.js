@@ -1,24 +1,24 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind',
-  name: 'FundingTransactionValidator',
+  name: 'B2BTransactionValidator',
 
-  documentation: 'Validates Cash-in transaction via IdentityMind Funding API.',
+  documentation: 'Validates bank to bank transaction via IdentityMind Transfer API.',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
   javaImports: [
-    'net.nanopay.tx.cico.CITransaction'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        CITransaction transaction = (CITransaction) obj;
+        Transaction transaction = (Transaction) obj;
         IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-        IdentityMindResponse response = identityMindService.evaluateFunding(x, transaction);
+        IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
         // if rejected or marked as manual review by IDM then throws exception
         ruler.putResult(response.getStatusCode() == 200
           ? response.getFrp()

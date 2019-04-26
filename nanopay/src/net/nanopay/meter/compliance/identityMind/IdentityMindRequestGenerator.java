@@ -15,7 +15,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessUserJunction;
-import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.model.Transaction;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
@@ -93,7 +93,7 @@ public class IdentityMindRequestGenerator {
     return request;
   }
 
-  public static IdentityMindRequest getFundingRequest(X x, CITransaction transaction) {
+  public static IdentityMindRequest getTransactionRequest(X x, Transaction transaction) {
     Account sourceAccount = transaction.findSourceAccount(x);
     Account destinationAccount = transaction.findDestinationAccount(x);
     User sender = sourceAccount.findOwner(x);
@@ -143,7 +143,7 @@ public class IdentityMindRequestGenerator {
     if (receiverPhone != null) {
       request.setDph(prepareString(receiverPhone.getNumber()));
     }
-    request.setDphash(getDigitalAccountHash(x, (DigitalAccount) destinationAccount));
+    request.setDphash(getBankAccountHash(x, (BankAccount) destinationAccount));
     return request;
   }
 

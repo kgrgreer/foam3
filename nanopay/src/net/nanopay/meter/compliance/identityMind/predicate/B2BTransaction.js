@@ -1,11 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind.predicate',
-  name: 'FundingTransaction',
+  name: 'B2BTransaction',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
   javaImports: [
-    'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.AbliiTransaction',
     'static foam.mlang.MLang.*',
   ],
 
@@ -14,7 +14,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         return EQ(
-          DOT(NEW_OBJ, INSTANCE_OF(CITransaction.class)), true
+          DOT(NEW_OBJ, INSTANCE_OF(AbliiTransaction.class)), true
         ).f(obj);
       `
     }
