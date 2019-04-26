@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind.predicate',
-  name: 'EntityLoginStage2',
+  name: 'EntityLogin',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
