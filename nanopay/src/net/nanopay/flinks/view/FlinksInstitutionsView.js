@@ -182,20 +182,10 @@ foam.CLASS({
                     }));
                   })
                   .end();
-                })
+                });
             }
             return this.E().start('p').addClass(self.myClass('no-content')).add(self.NO_MATCH_FOUND).end();
           }))
-          .start().addClass(this.myClass('otherbank-container'))
-            .start('p').addClass(this.myClass('plain-text')).add(this.OTHER_BANK).end()
-            .start('p')
-              .addClass(this.myClass('link-text'))
-              .add(this.CLICK_HERE)
-              .on('click', function() {
-                self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', onComplete: self.onComplete }));
-              })
-            .end()
-          .end()
         .end();
     },
 
