@@ -152,7 +152,7 @@ foam.CLASS({
   actions: [
     {
       name: 'addDevice',
-      label: 'ADD A NEW ACCOUNT',
+      label: 'Add a new device',
       icon: 'images/ic-plus.svg',
       code: function(X) {
         X.stack.push({class: 'net.nanopay.retail.ui.devices.form.DeviceForm'});
