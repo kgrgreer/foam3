@@ -157,7 +157,8 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         type: 'search',
         placeholder: 'Start typing to search',
-        onKey: true
+        onKey: true,
+        focused: true
       }
     },
     {
