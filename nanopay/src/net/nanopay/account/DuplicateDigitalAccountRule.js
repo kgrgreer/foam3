@@ -29,7 +29,6 @@ foam.CLASS({
             .where(
               AND(
                 INSTANCE_OF(DigitalAccount.class),
-                EQ(DigitalAccount.DELETED, false),
                 EQ(DigitalAccount.NAME, digitalAccount.getName()),
                 EQ(DigitalAccount.DENOMINATION, digitalAccount.getDenomination()),
                 HAS(DigitalAccount.PARENT),
