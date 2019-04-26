@@ -62,6 +62,9 @@ var classes = [
   'net.nanopay.account.LoanedTotalAccount',
   'net.nanopay.account.HoldingAccount',
   'net.nanopay.account.AuthenticatedAccountDAOTest',
+  'net.nanopay.account.NoBalanceRule',
+  'net.nanopay.account.NoPendingTransactionsRule',
+  'net.nanopay.account.NoChildrenRule',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
@@ -150,6 +153,7 @@ var classes = [
    'net.nanopay.accounting.IntegrationCode',
    'net.nanopay.accounting.IntegrationService',
    'net.nanopay.accounting.ResultResponse',
+   'net.nanopay.accounting.AccountingResultReport',
    'net.nanopay.accounting.ResultResponseWrapper',
    'net.nanopay.accounting.AccountingBankAccount',
    'net.nanopay.accounting.ContactMismatchPair',
@@ -175,6 +179,8 @@ var classes = [
    'net.nanopay.accounting.quickbooks.QuickbooksToken',
    'net.nanopay.accounting.quickbooks.model.QuickbooksContact',
    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
+   'net.nanopay.accounting.resultresponse.ContactResponseItem',
+   'net.nanopay.accounting.resultresponse.InvoiceResponseItem',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',

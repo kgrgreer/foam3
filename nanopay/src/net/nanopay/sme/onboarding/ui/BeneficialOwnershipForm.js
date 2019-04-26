@@ -36,6 +36,19 @@ requires: [
 ],
 
 css: `
+
+    ^ .property-birthdayField .date-display-box {
+      width: 473.5px !important;
+      font-size: 14px !important;
+      height: 35px !important;
+      border: solid 1px #8e9090 !important;
+      background: #fff !important;
+      border-radius: 3px !important;
+      font-weight: 400 !important;
+      box-shadow: none !important;
+      padding-top: 2px;
+    }
+
     ^ {
       width: 550px;
     }
@@ -51,6 +64,11 @@ css: `
     ^ table {
       width: 525px;
       margin: 0px;
+    }
+
+    .foam-u2-view-date-CalendarDatePicker-calendar_table {
+      margin: auto !important;
+      width: 224px !important;
     }
 
     ^ thead > tr > th {
