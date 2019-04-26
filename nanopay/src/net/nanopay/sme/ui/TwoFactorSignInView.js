@@ -77,6 +77,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'twoFactorToken',
+      view: {
+        class: 'foam.u2.TextField',
+        focused: true
+      }
     }
   ],
 
