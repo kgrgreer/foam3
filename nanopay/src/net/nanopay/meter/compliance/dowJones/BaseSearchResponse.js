@@ -11,6 +11,18 @@ foam.CLASS({
       name: 'id'
     },
     {
+      class: 'String',
+      name: 'searchType'
+    },
+    {
+      class: 'String',
+      name: 'nameSearched'
+    },
+    {
+      class: 'String',
+      name: 'totalMatchs'
+    },
+    {
       class: 'Int',
       name: 'httpStatusCode',
       documentation: 'HTTP Status Code retrieved from the HTTP GET request to the Dow Jones API'

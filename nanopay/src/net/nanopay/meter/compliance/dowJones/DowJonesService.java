@@ -47,6 +47,8 @@ public class DowJonesService
       if ( httpCode == 200 ) {
         BaseSearchResponse resp = (BaseSearchResponse) respMsg.getModel();
         feedback = resp;
+        resp.setSearchType("Dow Jones Person");
+        resp.setNameSearched(firstName + " " + surName);
         dowJonesResponseDAO_.put(resp);
       } else {
         feedback = (BaseSearchInvalidResponse) respMsg.getModel();
@@ -79,6 +81,8 @@ public class DowJonesService
       if ( httpCode == 200 ) {
         BaseSearchResponse resp = (BaseSearchResponse) respMsg.getModel();
         feedback = resp;
+        resp.setSearchType("Dow Jones Entity");
+        resp.setNameSearched(entityName);
         dowJonesResponseDAO_.put(resp);
       } else {
         feedback = (BaseSearchInvalidResponse) respMsg.getModel();

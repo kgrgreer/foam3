@@ -198,6 +198,7 @@ public class DowJonesResponseMsg
           matchArrList.add(match);
         }
         // set metadata from head response 
+        obj.setTotalMatchs(totalHits.getNodeValue());
         metadata.setApiVersion(apiVersion.getNodeValue());
         metadata.setBackendVersion(backendVersion.getNodeValue());
         metadata.setTotalHits(Integer.parseInt(totalHits.getNodeValue()));
