@@ -45,7 +45,7 @@ public class IdentityMindRequestGenerator {
     return new IdentityMindRequest.Builder(x)
       .setEntityType(user.getClass().getName())
       .setEntityId(user.getId())
-      .setMan(String.valueOf(login.getLoginAttemptedFor()))
+      .setMan(Long.toString(login.getLoginAttemptedFor()))
       .setTea(login.getEmail())
       .setIp(login.getIpAddress())
       .setBfn(prepareString(user.getFirstName()))
@@ -57,7 +57,7 @@ public class IdentityMindRequestGenerator {
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
       .setEntityType(business.getClass().getName())
       .setEntityId(business.getId())
-      .setMan(String.valueOf(business.getId()))
+      .setMan(Long.toString(business.getId()))
       .setTid(getUUID(business))
       .setTea(business.getEmail())
       .setIp(getRemoteAddr(x))
@@ -108,7 +108,7 @@ public class IdentityMindRequestGenerator {
     request.setCcy(sourceAccount.getDenomination());
 
     // Sender information
-    request.setMan(String.valueOf(sender.getId()));
+    request.setMan(Long.toString(sender.getId()));
     request.setTea(sender.getEmail());
     request.setBfn(prepareString(sender.getFirstName()));
     request.setBln(prepareString(sender.getLastName()));
@@ -127,7 +127,7 @@ public class IdentityMindRequestGenerator {
     request.setPach(getBankAccountHash(x, (BankAccount) sourceAccount));
 
     // Receiver information
-    request.setDman(String.valueOf(receiver.getId()));
+    request.setDman(Long.toString(receiver.getId()));
     request.setDemail(receiver.getEmail());
     request.setSfn(prepareString(receiver.getFirstName()));
     request.setSln(prepareString(receiver.getLastName()));
@@ -162,7 +162,7 @@ public class IdentityMindRequestGenerator {
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
       .setEntityType(user.getClass().getName())
       .setEntityId(user.getId())
-      .setMan(String.valueOf(user.getId()))
+      .setMan(Long.toString(user.getId()))
       .setTid(getUUID(user))
       .setTea(user.getEmail())
       .setIp(getRemoteAddr(x))
@@ -264,9 +264,9 @@ public class IdentityMindRequestGenerator {
       MessageDigest sha = MessageDigest.getInstance("SHA-1");
       IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
 
-      sha.update(bankAccount.getAccountNumber().getBytes());
       sha.update(identityMindService.getHashingSalt().getBytes());
       sha.update(bankAccount.getRoutingCode(x).getBytes());
+      sha.update(bankAccount.getAccountNumber().getBytes());
       return SecurityUtil.ByteArrayToHexString(sha.digest());
     } catch ( Throwable t ) {
       ((Logger) x.get("logger")).warning(
@@ -281,7 +281,7 @@ public class IdentityMindRequestGenerator {
       IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
 
       sha.update(identityMindService.getHashingSalt().getBytes());
-      sha.update(String.valueOf(digitalAccount.getId()).getBytes());
+      sha.update(Long.toString(digitalAccount.getId()).getBytes());
       return SecurityUtil.ByteArrayToHexString(sha.digest());
     } catch ( Throwable t ) {
       ((Logger) x.get("logger")).warning(
