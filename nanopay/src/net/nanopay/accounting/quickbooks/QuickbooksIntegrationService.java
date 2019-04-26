@@ -645,9 +645,23 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     InvoiceResponseItem errorItem = new InvoiceResponseItem();
-    errorItem.setDueDate(format.format(dueDate));
-    errorItem.setInvoiceNumber(qInvoice.getDocNumber());
-    errorItem.setAmount(amount.toString() + " " + qInvoice.getCurrencyRef().getValue());
+    if ( dueDate != null ) {
+      errorItem.setDueDate(format.format(dueDate));
+    } else {
+      errorItem.setDueDate("No due date set");
+    }
+
+    if ( qInvoice.getDocNumber() != null ) {
+      errorItem.setInvoiceNumber(qInvoice.getDocNumber());
+    } else {
+      errorItem.setInvoiceNumber("No invoice number");
+    }
+
+    if ( amount != null ) {
+      errorItem.setAmount(amount.toString() + " " + qInvoice.getCurrencyRef().getValue());
+    } else {
+      errorItem.setAmount("no amount set");
+    }
 
     return errorItem;
   }
@@ -733,6 +747,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     String id = qInvoice instanceof Bill ?
       ( (Bill) qInvoice )   .getVendorRef().getValue() :
       ( (Invoice) qInvoice ).getCustomerRef().getValue();
+
+    if ( id == null || SafetyUtil.isEmpty(id) ) {
+      invoiceErrors.get("MISS_CONTACT").add(errorItem);
+      return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
+    }
 
     AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.inX(x).find(AND(
       EQ(AccountingContactEmailCache.QUICK_ID, id),
