@@ -386,6 +386,7 @@ foam.CLASS({
               .start(this.invoice.CONTACT_ID, {
                 action: this.ADD_CONTACT,
                 search: true,
+                searchPlaceholder: 'Start typing company name to search',
                 mode: displayMode
               })
                 .enableClass('invalid', this.slot(

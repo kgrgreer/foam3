@@ -16,6 +16,7 @@ foam.CLASS({
         if ( user ) {
           display = user.id + ' ' + user.legalName;
         }
+
         return this.add(display);
       }
     ]
