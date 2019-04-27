@@ -3,12 +3,18 @@ foam.CLASS({
   name: 'IdentityMindResponse',
 
   tableColumns: [
+    'id',
     'apiName',
     'statusCode',
     'entityId',
     'frp',
     'res'
-   ],
+  ],
+
+  javaImports: [
+    'foam.util.SafetyUtil',
+    'net.nanopay.meter.compliance.ComplianceValidationStatus'
+  ],
 
   properties: [
     {
@@ -25,7 +31,8 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'statusCode'
+      name: 'statusCode',
+      tableWidth: 80
     },
     {
       class: 'String',
@@ -127,6 +134,26 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.AnyView'
       }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getComplianceValidationStatus',
+      type: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
+      javaCode: `
+        String result = ! SafetyUtil.isEmpty(getRes()) ? getRes() : getFrp();
+        switch (result) {
+          case "ACCEPT":
+            return ComplianceValidationStatus.VALIDATED;
+          case "DENY":
+            return ComplianceValidationStatus.REJECTED;
+          case "MANUAL_REVIEW":
+            return ComplianceValidationStatus.INVESTIGATING;
+          default:
+            return null;
+        }
+      `
     }
   ]
 });

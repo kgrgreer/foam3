@@ -23,9 +23,7 @@ foam.CLASS({
         IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
         IdentityMindResponse response = identityMindService.evaluateConsumer(
           x, obj, getStage());
-        ruler.putResult(response.getStatusCode() == 200
-          ? response.getFrp()
-          : "Error");
+        ruler.putResult(response.getComplianceValidationStatus());
       `
     }
   ]

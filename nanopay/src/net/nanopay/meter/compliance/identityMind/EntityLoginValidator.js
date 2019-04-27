@@ -19,9 +19,7 @@ foam.CLASS({
         LoginAttempt login = (LoginAttempt) obj;
         IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
         IdentityMindResponse response = identityMindService.recordLogin(x, login);
-        ruler.putResult(response.getStatusCode() == 200
-          ? response.getFrp()
-          : "Error");
+        ruler.putResult(response.getComplianceValidationStatus());
       `
     }
   ]

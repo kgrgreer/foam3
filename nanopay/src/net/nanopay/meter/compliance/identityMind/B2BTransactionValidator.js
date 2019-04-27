@@ -9,6 +9,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.logger.Logger',
+    'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -19,10 +21,13 @@ foam.CLASS({
         Transaction transaction = (Transaction) obj;
         IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
         IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
-        // if rejected or marked as manual review by IDM then throws exception
-        ruler.putResult(response.getStatusCode() == 200
-          ? response.getFrp()
-          : "Error");
+        ComplianceValidationStatus status = response.getComplianceValidationStatus();
+        if ( status != ComplianceValidationStatus.VALIDATED ) {
+          ((Logger) x.get("logger")).error(
+            "Transaction was denied by IdentityMind.", transaction);
+          throw new RuntimeException("Failed to validate transaction.");
+        }
+        ruler.putResult(status);
       `
     }
   ]
