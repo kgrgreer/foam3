@@ -1,12 +1,20 @@
 foam.CLASS({
   package: 'net.nanopay.approval',
   name: 'ApprovalRequest',
+  documentation: '',
+
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware'
+  ],
 
   properties: [
     {
-      class: 'String',
+      class: 'Long',
       name: 'id',
-      documentation: 'Sequence number'
+      documentation: 'Sequence number.'
     },
     {
       class: 'Reference',
@@ -15,13 +23,46 @@ foam.CLASS({
       documentation: 'the user that is requested for approval.'
     },
     {
-      class: 'Long',
-      name: 'objId'
+      class: 'String',
+      name: 'objId',
+      documentation: 'id of the object that needs approval.'
     },
     {
       class: 'String',
       name: 'daoKey',
-      documentation: ''
+      documentation: 'dao where the object can be found(based on objId).'
+    },
+    {
+      class: 'String',
+      name: 'memo',
+      documentation: 'description of the request.'
+    },
+    {
+      class: 'String',
+      name: 'token',
+      documentation: 'token in email for ‘click to approve’.'
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      visibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      visibility: 'RO'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      visibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy',
+      visibility: 'RO'
     }
   ]
 });
