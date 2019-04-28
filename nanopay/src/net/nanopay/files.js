@@ -840,4 +840,5 @@ FOAM_FILES([
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
+  { name: 'net/nanopay/approval/ApprovalStatus' }
 ]);
