@@ -33,6 +33,11 @@ foam.CLASS({
       documentation: 'dao where the object can be found(based on objId).'
     },
     {
+      class: 'Enum',
+      of: 'net.nanopay.approval.ApprovalStatus',
+      name: 'status'
+    },
+    {
       class: 'String',
       name: 'memo',
       documentation: 'description of the request.'
