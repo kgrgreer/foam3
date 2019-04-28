@@ -837,4 +837,7 @@ FOAM_FILES([
 
   // business
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
+
+  // approval
+  { name: 'net/nanopay/approval/ApprovalRequest' },
 ]);

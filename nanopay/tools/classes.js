@@ -486,6 +486,9 @@ var classes = [
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
+
+  // approval
+  'net.nanopay.approval.ApprovalRequest',
 ];
 
 var abstractClasses = [
