@@ -681,10 +681,10 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private void getPlaidDetails(X x, USBankAccount bankAccount, List list) {
     DAO plaidReportDAO = (DAO) x.get("plaidResultReportDAO");
 
-    if ( bankAccount.getPlaidReportId() != 0 ) {
+    PlaidResultReport report
+      = (PlaidResultReport) plaidReportDAO.inX(x).find(EQ(PlaidResultReport.NANOPAY_ACCOUNT_ID, bankAccount.getId()));
 
-      PlaidResultReport report = (PlaidResultReport) plaidReportDAO.inX(x).find(bankAccount.getPlaidReportId());
-
+    if ( report != null ) {
       list.add(new ListItem("Plaid Id: " + report.getPlaidId()));
       list.add(new ListItem("Account Holder Name: " + report.getAccountHolderName()));
       list.add(new ListItem("Date of validation: " + report.getValidationDate()));
@@ -811,6 +811,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
   private File getUSBankAccountProof(X x, Business business) {
     DAO    accountDAO  = (DAO) x.get("accountDAO");
     Logger logger      = (Logger) x.get("logger");
+    DAO plaidReportDAO = (DAO) x.get("plaidResultReportDAO");
 
     BankAccount bankAccount = (BankAccount) accountDAO.orderBy(DESC(BankAccount.CREATED))
       .find(AND(
@@ -818,16 +819,20 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
         EQ(Account.OWNER, business.getId())));
 
+    PlaidResultReport report
+      = (PlaidResultReport) plaidReportDAO.inX(x).find(EQ(PlaidResultReport.NANOPAY_ACCOUNT_ID, bankAccount.getId()));
+
+    // if it's imported from plaid, then no bank account proof file.
+    if ( report != null ) {
+      return null;
+    }
+
     String businessName = business.getBusinessName();
     String path;
     Blob blob;
     try {
       if ( bankAccount instanceof USBankAccount) {
 
-        // if it's imported from plaid, then no bank account proof file.
-        if ( ((USBankAccount) bankAccount).getPlaidReportId() != 0 ) {
-          return null;
-        }
 
         USBankAccount usBankAccount = (USBankAccount) bankAccount;
         foam.nanos.fs.File voidCheckImage = usBankAccount.getVoidCheckImage();
