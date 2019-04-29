@@ -1,7 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.approval',
   name: 'ApprovalRequest',
-  documentation: '',
+  documentation: 'Approval requests are stored in approvalRequestDAO and' +
+  'represent a single approval request for a single user.',
 
   implements: [
     'foam.nanos.auth.CreatedAware',
