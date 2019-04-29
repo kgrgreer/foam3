@@ -163,7 +163,7 @@ foam.CLASS({
     ^ .buttonDiv {
       width: 100%;
       height: 60px;
-      background-color: #edf0f5;
+      background-color: %BACKGROUNDCOLOR%;
       position: relative;
       bottom: 0;
       z-index: 200;

@@ -31,7 +31,7 @@ foam.CLASS({
     ^{
       width: 100%;
       margin: auto;
-      background-color: #edf0f5;
+      background-color: %BACKGROUNDCOLOR%;
     }
     ^ .settingsBar {
       width: 100%;

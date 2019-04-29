@@ -14,7 +14,7 @@ foam.CLASS({
   css: `
   ^{
     width: 100%;
-    background-color: #edf0f5;
+    background-color: %BACKGROUNDCOLOR%;
     margin: auto;
   }
   ^ .businessSettingsContainer {

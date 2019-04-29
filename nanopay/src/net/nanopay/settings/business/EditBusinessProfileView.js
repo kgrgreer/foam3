@@ -318,7 +318,7 @@ foam.CLASS({
       z-index: 1;
     }
     ^ .foam-nanos-auth-ProfilePictureView {
-      background: #edf0f5;
+      background: %BACKGROUNDCOLOR%;
     }
     ^ .net-nanopay-ui-ActionView-Save {
       float: right;

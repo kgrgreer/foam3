@@ -43,7 +43,7 @@ foam.CLASS({
     }
     ^ .box-for-drag-drop {
       margin: 20px;
-      border: dashed 4px #edf0f5;
+      border: dashed 4px %BACKGROUNDCOLOR%;
       height: 300px;
       width: 560px;
       overflow: scroll;

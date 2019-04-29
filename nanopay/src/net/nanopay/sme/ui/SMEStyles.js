@@ -605,7 +605,7 @@ foam.CLASS({
     .card {
       border-radius: 2px;
       box-shadow: 0 1px 1px 0 #dae1e9;
-      border: solid 1px #edf0f5;
+      border: solid 1px %BACKGROUNDCOLOR%;
       background-color: #ffffff;
     }
 
@@ -1167,7 +1167,7 @@ foam.CLASS({
     .navigationBar {
       height: 72px !important;
       box-shadow: 0 1px 1px 0 #dae1e9 !important;
-      border-top: 1px solid #edf0f5 !important;
+      border-top: 1px solid %BACKGROUNDCOLOR% !important;
     }
 
     .net-nanopay-ui-ActionView-unavailable {

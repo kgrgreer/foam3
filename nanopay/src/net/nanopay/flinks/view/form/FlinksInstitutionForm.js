@@ -41,8 +41,8 @@ foam.CLASS({
         }
         ^ .subContent {
           display: contents;
-          background-color: #edf0f5;
-          border: 1px solid #edf0f5;
+          background-color: %BACKGROUNDCOLOR%;
+          border: 1px solid %BACKGROUNDCOLOR%;
         }
         ^ .image {
           width: 170px;

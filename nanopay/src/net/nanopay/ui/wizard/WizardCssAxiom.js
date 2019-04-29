@@ -7,7 +7,7 @@ foam.CLASS({
       name: 'code',
       value: `
         ^{
-          background-color: #edf0f5;
+          background-color: %BACKGROUNDCOLOR%;
           height: calc(100% - 20px - 60px - 60px);
           margin: auto;
           padding-top: 30px;
