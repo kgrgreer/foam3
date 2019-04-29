@@ -26,6 +26,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'quickUpdate',
       hidden: true
+    },
+    {
+      class: 'Long',
+      name: 'lastUpdated'
     }
   ]
 });

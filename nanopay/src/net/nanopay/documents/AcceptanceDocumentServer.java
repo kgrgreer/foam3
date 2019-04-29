@@ -1,5 +1,6 @@
 package net.nanopay.documents;
 
+import foam.core.X;
 import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
@@ -19,7 +20,8 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
     this.userAcceptanceDocumentDAO_ = (DAO) getX().get("userAcceptanceDocumentDAO");
   }
 
-  public AcceptanceDocument getAcceptanceDocument(String name, String version) throws RuntimeException {
+  public AcceptanceDocument getAcceptanceDocument(X x, String name, String version) throws RuntimeException {
+    acceptanceDocumentDAO_.inX(x);
     AcceptanceDocument acceptanceDocument = null;
     if ( SafetyUtil.isEmpty(version) ) {
       ArraySink listSink = (ArraySink) acceptanceDocumentDAO_
@@ -44,8 +46,9 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
     return acceptanceDocument;
   }
 
-  public AcceptanceDocument getTransactionAcceptanceDocument(String name, String version, String transactionType) throws RuntimeException {
+  public AcceptanceDocument getTransactionAcceptanceDocument(X x, String name, String version, String transactionType) throws RuntimeException {
     AcceptanceDocument acceptanceDocument = null;
+    acceptanceDocumentDAO_.inX(x);
     if ( SafetyUtil.isEmpty(version) ) {
       ArraySink listSink = (ArraySink) acceptanceDocumentDAO_
           .where(
@@ -71,42 +74,43 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
     return acceptanceDocument;
   }
 
-  public AcceptanceDocument getTransactionRegionDocuments(String transactionType, AcceptanceDocumentType documentType, String country, String state) throws RuntimeException {
+  public AcceptanceDocument getTransactionRegionDocuments(X x, String transactionType, AcceptanceDocumentType documentType, String country, String state) throws RuntimeException {
     AcceptanceDocument acceptanceDocument = null;
-
+    acceptanceDocumentDAO_.inX(x);
     ArraySink listSink = (ArraySink) acceptanceDocumentDAO_
-        .where(
-            AND(
-                EQ(AcceptanceDocument.TRANSACTION_TYPE, transactionType),
-                EQ(AcceptanceDocument.DOCUMENT_TYPE, documentType),
-                EQ(AcceptanceDocument.COUNTRY, country),
-                EQ(AcceptanceDocument.STATE, state),
-                EQ(AcceptanceDocument.ENABLED, true)
-              )
-        ).select(new ArraySink());
+      .where(
+          AND(
+              EQ(AcceptanceDocument.TRANSACTION_TYPE, transactionType),
+              EQ(AcceptanceDocument.DOCUMENT_TYPE, documentType),
+              EQ(AcceptanceDocument.COUNTRY, country),
+              EQ(AcceptanceDocument.STATE, state),
+              EQ(AcceptanceDocument.ENABLED, true)
+            )
+      ).select(new ArraySink());
 
-        if ( listSink.getArray().size() > 0 ) {
-          acceptanceDocument = (AcceptanceDocument) listSink.getArray().get(0);
-        }
+    if ( listSink.getArray().size() > 0 ) {
+      acceptanceDocument = (AcceptanceDocument) listSink.getArray().get(0);
+    }
 
     return acceptanceDocument;
   }
 
-  public void updateUserAcceptanceDocument(long user, long acceptanceDocument, boolean accepted) {
-      UserAcceptanceDocument acceptedDocument = (UserAcceptanceDocument) userAcceptanceDocumentDAO_.find(
+  public void updateUserAcceptanceDocument(X x, long user, long acceptanceDocument, boolean accepted) {
+    userAcceptanceDocumentDAO_.inX(x);
+    UserAcceptanceDocument acceptedDocument = (UserAcceptanceDocument) userAcceptanceDocumentDAO_.find(
       AND(
         EQ(UserAcceptanceDocument.USER, user),
         EQ(UserAcceptanceDocument.ACCEPTED_DOCUMENT, acceptanceDocument)
         )
       );
 
-      if ( null == acceptedDocument ) {
-        acceptedDocument = new UserAcceptanceDocument.Builder(getX()).setUser(user).setAcceptedDocument(acceptanceDocument).build();
-      }
+    if ( null == acceptedDocument ) {
+      acceptedDocument = new UserAcceptanceDocument.Builder(x).setUser(user).setAcceptedDocument(acceptanceDocument).build();
+    }
 
-      acceptedDocument = (UserAcceptanceDocument) acceptedDocument.fclone();
-      acceptedDocument.setAccepted(accepted);
-      userAcceptanceDocumentDAO_.put_(getX(), acceptedDocument);
+    acceptedDocument = (UserAcceptanceDocument) acceptedDocument.fclone();
+    acceptedDocument.setAccepted(accepted);
+    userAcceptanceDocumentDAO_.put_(x, acceptedDocument);
   }
 
 }
