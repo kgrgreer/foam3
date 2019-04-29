@@ -17,6 +17,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.PropertyInfo',
     'foam.dao.DAO',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
@@ -26,7 +27,9 @@ foam.CLASS({
     'java.util.regex.Pattern',
     'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
+    'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.model.Business',
   ],
@@ -196,11 +199,82 @@ foam.CLASS({
           } else if ( ! isValidEmail ) {
             throw new IllegalStateException("Invalid email address.");
           }
-        }
 
+          if ( SafetyUtil.isEmpty(this.getOrganization()) ) {
+           throw new IllegalStateException("Business name is required.");
+          }
+
+          if ( getBankAccount() != 0 ) {
+
+            long bankAccountId = this.getBankAccount();
+            DAO accountDAO = (DAO) x.get("accountDAO");
+            BankAccount bankAccount = (BankAccount) accountDAO.find(bankAccountId);
+
+            if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
+              throw new RuntimeException("Financial institution name required.");
+            }
+
+            Address businessAddress = this.getBusinessAddress();
+
+            Pattern countryRegionId = Pattern.compile("^[A-Z ]{2}$");
+            if ( ! countryRegionId.matcher(businessAddress.getCountryId()).matches() ) {
+              throw new RuntimeException("Invalid country id.");
+            }
+            if ( ! countryRegionId.matcher(businessAddress.getRegionId()).matches() ) {
+              throw new RuntimeException("Invalid region id.");
+            }
+
+            Pattern streetNumber = Pattern.compile("^[0-9 ]{1,16}$");
+            if ( ! streetNumber.matcher(businessAddress.getStreetNumber()).matches() ) {
+              throw new RuntimeException("Invalid street number.");
+            }
+
+            Pattern addressPattern = Pattern.compile("^[#a-zA-Z0-9 ]{1,70}$");
+            if ( ! addressPattern.matcher(businessAddress.getStreetName()).matches() ) {
+              throw new RuntimeException("Invalid street name.");
+            }
+
+            Pattern cityPattern = Pattern.compile("^[a-zA-Z ]{1,35}$");
+            if ( ! cityPattern.matcher(businessAddress.getCity()).matches() ) {
+              throw new RuntimeException("Invalid city name.");
+            }
+
+            if ( ! this.validatePostalCode(businessAddress.getPostalCode(), businessAddress.getCountryId()) ) {
+              String codeType = businessAddress.getCountryId().equals("US") ? "zip code" : "postal code";
+              throw new RuntimeException("Invalid " + codeType + ".");
+            }
+          }
+        }
         if ( SafetyUtil.isEmpty(this.getOrganization()) ) {
           throw new IllegalStateException("Organization is required.");
         }
+      `
+    },
+    {
+      type: 'Boolean',
+      name: 'validatePostalCode',
+      args: [
+        {
+          class: 'String',
+          name: 'code'
+        },
+        {
+          class: 'String',
+          name: 'countryId'
+        }
+      ],
+      javaCode: `
+        Pattern caPosCode = Pattern.compile("^[ABCEGHJ-NPRSTVXY]\\\\d[ABCEGHJ-NPRSTV-Z][ -]?\\\\d[ABCEGHJ-NPRSTV-Z]\\\\d$");
+        Pattern usPosCode = Pattern.compile("^\\\\d{5}(?:[-\\\\s]\\\\d{4})?$");
+
+        switch ( countryId ) {
+         case "CA":
+           return caPosCode.matcher(code).matches();
+         case "US":
+           return usPosCode.matcher(code).matches();
+         default:
+           return false;
+       }
       `
     },
     {
