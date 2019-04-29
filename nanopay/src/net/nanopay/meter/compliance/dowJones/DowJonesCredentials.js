@@ -7,19 +7,15 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: 'namespace'
+    },
+    {
+      class: 'String',
       name: 'username'
     },
     {
       class: 'String',
       name: 'password'
-    },
-    {
-      class: 'String',
-      name: 'namespace'
-    },
-    {
-      class: 'String',
-      name: 'baseUrl'
     }
   ]
 });
