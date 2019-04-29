@@ -5,6 +5,7 @@ import com.xero.api.XeroClient;
 import com.xero.model.*;
 
 import foam.blob.BlobService;
+import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -33,7 +34,7 @@ import java.util.*;
 
 import static foam.mlang.MLang.*;
 
-public class XeroIntegrationService implements net.nanopay.accounting.IntegrationService{
+public class XeroIntegrationService extends ContextAwareSupport implements net.nanopay.accounting.IntegrationService{
 
 
   public XeroClient getClient(X x) {
@@ -85,7 +86,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     return true;
   }
 
-  private XeroContact createXeroContact(X x, com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
+  public XeroContact createXeroContact(X x, com.xero.model.Contact xeroContact, User user, XeroContact existingContact) {
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());
     XeroContact newContact;
@@ -177,7 +178,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     return newContact;
   }
 
-  private ContactMismatchPair importContact(X x, com.xero.model.Contact xeroContact) {
+  public ContactMismatchPair importContact(X x, com.xero.model.Contact xeroContact) {
     User user = (User) x.get("user");
     DAO agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
     DAO contactDAO  = ((DAO) x.get("contactDAO")).inX(x);
@@ -325,7 +326,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
   }
 
 
-  private Boolean importInvoice(X x, com.xero.model.Invoice xeroInvoice, HashMap<String, List<InvoiceResponseItem>> invoiceErrors) throws Exception {
+  public Boolean importInvoice(X x, com.xero.model.Invoice xeroInvoice, HashMap<String, List<InvoiceResponseItem>> invoiceErrors, Boolean isSingleSync) throws Exception {
     DAO contactDAO = ((DAO) x.get("contactDAO")).inX(x);
     DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
@@ -344,7 +345,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     if ( existingInvoice != null ) {
 
       if ( existingInvoice.getLastUpdated() >= xeroInvoice.getUpdatedDateUTC().getTime().getTime()) {
-        return false;
+        return isSingleSync ? true : false;
       }
       // Clone the invoice to make changes
       existingInvoice = (XeroInvoice) existingInvoice.fclone();
@@ -393,6 +394,11 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     }
 
     try {
+      if ( xeroInvoice.getContact() == null ) {
+        invoiceErrors.get("MISS_CONTACT").add(errorItem);
+        return false;
+      }
+
       // Searches for a previous existing Contact
       AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.find(
         EQ(AccountingContactEmailCache.XERO_ID, xeroInvoice.getContact().getContactID())
@@ -540,7 +546,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
 
       for (com.xero.model.Invoice xeroInvoice : client.getInvoices()) {
         try {
-          if ( ! importInvoice(x, xeroInvoice, invoiceErrors) ) {
+          if ( ! importInvoice(x, xeroInvoice, invoiceErrors, false) ) {
             continue;
           } else {
             successInvoice.add(prepareResponseItemFrom(xeroInvoice));
@@ -689,7 +695,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     }
   }
 
-  private ResultResponse getExceptionResponse(X x,Exception e) {
+   public ResultResponse getExceptionResponse(X x,Exception e) {
 
     if ( e instanceof com.xero.api.XeroApiException ){
       if ( ((XeroApiException) e).getResponseCode() == 503 ){
@@ -901,7 +907,7 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
       }
 
       com.xero.model.Invoice xeroInvoice = client.getInvoice(invoice.getXeroId());
-      if ( importInvoice(x, xeroInvoice, invoiceErrors) ) {
+      if ( importInvoice(x, xeroInvoice, invoiceErrors, true ) ) {
         return new ResultResponse.Builder(x)
           .setResult(true)
           .build();
@@ -955,9 +961,23 @@ public class XeroIntegrationService implements net.nanopay.accounting.Integratio
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     InvoiceResponseItem errorItem = new InvoiceResponseItem();
-    errorItem.setDueDate(format.format(invoice.getDueDate().getTime()));
-    errorItem.setInvoiceNumber(invoice.getInvoiceNumber());
-    errorItem.setAmount(invoice.getAmountDue() + " " + invoice.getCurrencyCode().value());
+    if ( invoice.getDueDate() != null ) {
+      errorItem.setDueDate(format.format(invoice.getDueDate().getTime()));
+    } else {
+      errorItem.setDueDate("No due date set");
+    }
+
+    if ( SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
+      errorItem.setInvoiceNumber(invoice.getInvoiceNumber());
+    } else {
+      errorItem.setInvoiceNumber("No invoice number");
+    }
+
+    if ( invoice.getAmountDue() != null && invoice.getCurrencyCode() != null ) {
+      errorItem.setAmount(invoice.getAmountDue() + " " + invoice.getCurrencyCode().value());
+    } else {
+      errorItem.setAmount("No amount set");
+    }
 
     return errorItem;
   }
