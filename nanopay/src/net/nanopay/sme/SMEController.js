@@ -190,9 +190,11 @@ foam.CLASS({
     },
 
     function onSessionTimeout() {
-      this.add(this.SMEModal.create({ closeable: false }).tag({
-        class: 'net.nanopay.ui.modal.SessionTimeoutModal',
-      }));
+      if ( this.user.emailVerified ) {
+        this.add(this.SMEModal.create({ closeable: false }).tag({
+          class: 'net.nanopay.ui.modal.SessionTimeoutModal',
+        }));
+      }
     },
 
     function initE() {
