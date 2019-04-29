@@ -95,22 +95,22 @@ foam.CLASS({
 
           // ONE
           if ( invoiceIsBeingPaidButNotComplete ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), payerUser.getEmail(), true, currencyDAO);
+            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payerUser.getEmail(), true, currencyDAO);
             sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }), externalInvoiceToken );
           }
           // TWO
           if ( invoiceIsARecievable ) {
-            args = populateArgsForEmail(args, invoice, payerUser.getFirstName(), payeeUser.label(), payeeUser.getEmail(), true, currencyDAO);
+            args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payeeUser.getEmail(), true, currencyDAO);
             sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, (new String[] { payerUser.getEmail() }),externalInvoiceToken );
           }
           // THREE  
           if ( invoiceNeedsApproval ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), "", "", true, currencyDAO);
+            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), "", true, currencyDAO);
             sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, findApproversOftheBusiness(x), externalInvoiceToken);
           }
           // FOUR 
           if ( invoiceIsBeingPaidAndCompleted ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.getFirstName(), payerUser.label(), payerUser.getEmail(), false, currencyDAO);
+            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payerUser.getEmail(), false, currencyDAO);
             sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }), externalInvoiceToken );
           }
         }
