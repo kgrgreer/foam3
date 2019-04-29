@@ -483,7 +483,7 @@ foam.CLASS({
         return hasNextOption;
       },
       isEnabled: function(errors) {
-        return ! errors && ! this.isLoading;;
+        return ! errors && ! this.isLoading;
       },
       code: function() {
         var currentViewId = this.views[this.position].id;
