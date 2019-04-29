@@ -93,25 +93,38 @@ foam.CLASS({
           DAO currencyDAO = (DAO) x.get("currencyDAO");
           TokenService externalInvoiceToken = (TokenService) x.get("externalInvoiceToken");
 
+          // FIELD LIST FOR:
+          // populateArgsForEmail(args(Map), invoice, name, fromName, sendTo, dated(bool), dueDate(bool), currencyDAO)
+          // sendEmailFunction(x, isContact, emailTemplateName, invoiceId, userBeingSentEmail, args(Map), sendTo, externalInvoiceToken)
+
           // ONE
           if ( invoiceIsBeingPaidButNotComplete ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payerUser.getEmail(), true, currencyDAO);
-            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }), externalInvoiceToken );
+            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), true, false, currencyDAO);
+            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
           }
           // TWO
           if ( invoiceIsARecievable ) {
-            args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payeeUser.getEmail(), true, currencyDAO);
-            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, (new String[] { payerUser.getEmail() }),externalInvoiceToken );
+            args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), true, true, currencyDAO);
+            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
           }
           // THREE  
           if ( invoiceNeedsApproval ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), "", true, currencyDAO);
-            sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, findApproversOftheBusiness(x), externalInvoiceToken);
+            User apr = null;
+            List<UserUserJunction> approvers = findApproversOftheBusiness(x);
+            DAO userDAO = (DAO) x.get("userDAO");
+            for ( UserUserJunction approver : approvers ) {
+              args.clear();
+              apr = (User) userDAO.find(approver.getTargetId());
+              if ( apr == null ) continue;
+              args.put("paymentTo", payerUser.label());
+              args = populateArgsForEmail(args, invoice, apr.label(), payeeUser.label(), apr.getEmail(), true, true, currencyDAO);
+              sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, apr.getEmail(), externalInvoiceToken);
+            }
           }
           // FOUR 
           if ( invoiceIsBeingPaidAndCompleted ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payerUser.getEmail(), false, currencyDAO);
-            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, (new String[] { payeeUser.getEmail() }), externalInvoiceToken );
+            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), false, false, currencyDAO);
+            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
           }
         }
         return super.put_(x, invoice);
@@ -146,9 +159,8 @@ foam.CLASS({
           javaType: 'java.util.HashMap<String, Object>',
         },
         {
-          name: 'sendToList',
-          class: 'Array',
-          of: 'String',
+          name: 'sendTo',
+          class: 'String'
         },
         {
           name: 'externalInvoiceToken',
@@ -167,7 +179,7 @@ foam.CLASS({
     
           args.put("link", appConfig.getUrl().replaceAll("/$", ""));
           EmailMessage message = new EmailMessage.Builder(x)
-            .setTo(sendToList)
+            .setTo((new String[] { sendTo }))
             .build();
           emailService.sendEmailFromTemplate(x, userBeingSentEmail, message, emailTemplateName, args);
         }
@@ -195,11 +207,15 @@ foam.CLASS({
           class: 'String'
         },
         {
-          name: 'fromEmail',
+          name: 'sendTo',
           class: 'String'
         },
         {
           name: 'dated',
+          class: 'Boolean'
+        },
+        {
+          name: 'dueDate',
           class: 'Boolean'
         },
         {
@@ -209,10 +225,9 @@ foam.CLASS({
       ],
       javaCode: `
         args = new HashMap<>();
-
+        args.put("sendTo", sendTo);
         args.put("name", name);
         args.put("fromName", fromName);
-        args.put("fromEmail", fromEmail);
         args.put("account", invoice.getInvoiceNumber());
     
         String amount = ((Currency) currencyDAO.find(invoice.getDestinationCurrency()))
@@ -223,7 +238,11 @@ foam.CLASS({
     
         if ( dated ) {
           SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-          args.put("date", invoice.getDueDate() != null ? dateFormat.format(invoice.getDueDate()) : "n/a");
+          if ( dueDate ) {
+            args.put("date", invoice.getDueDate() != null ? dateFormat.format(invoice.getDueDate()) : "n/a");
+          } else {
+            args.put("date", invoice.getPaymentDate() != null ? dateFormat.format(invoice.getPaymentDate()) : "n/a");
+          }
         }
     
         return args;
@@ -231,7 +250,7 @@ foam.CLASS({
     },
     {
       name: 'findApproversOftheBusiness',
-      type: 'String[]',
+      type: 'List<UserUserJunction>',
       args: [
         {
           name: 'x',
@@ -241,15 +260,13 @@ foam.CLASS({
       javaCode: `
         // Need to find all approvers and admins in a business
         DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-        PublicUserInfo tempUser = null;
-        List<String> listOfApprovers = new ArrayList();
         User user = (User) x.get("user");
         if ( user == null ) {
           ((Logger) x.get("logger")).error("@InvoiceNotificationDAO and context user is null", new Exception());
         }
     
         // currently the only sme group that can not approve an invoice is employees
-        List<UserUserJunction> arrayOfUsersRelatedToBusinss = ((ArraySink) agentJunctionDAO
+        return ((ArraySink) agentJunctionDAO
           .where(
             AND(
               EQ(UserUserJunction.TARGET_ID, user.getId()),
@@ -259,13 +276,6 @@ foam.CLASS({
                 )
               )
             ).select(new ArraySink())).getArray();
-    
-        for ( UserUserJunction obj : arrayOfUsersRelatedToBusinss ) {
-          tempUser = (PublicUserInfo) obj.getPartnerInfo();
-          listOfApprovers.add((tempUser != null ? tempUser.getEmail() : ""));
-        }
-    
-        return listOfApprovers.toArray(new String[listOfApprovers.size()]);
       `
     }
   ]
