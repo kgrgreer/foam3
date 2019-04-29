@@ -20,6 +20,7 @@ foam.CLASS({
     'contactDAO',
     'ctrl',
     'fxService',
+    'logger',
     'menuDAO',
     'notificationDAO',
     'notify',
@@ -374,7 +375,8 @@ foam.CLASS({
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
-        this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
+        this.logger.error('@SendRequestMoney (spot1): ' + error.message);
+        this.notify(this.INVOICE_ERROR + this.type, 'error');
         this.isLoading = false;
         return;
       }
@@ -388,7 +390,8 @@ foam.CLASS({
           try {
             await this.transactionDAO.put(transaction);
           } catch (error) {
-            this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+            this.logger.error('@SendRequestMoney (spot2): ' + error.message);
+            this.notify(this.TRANSACTION_ERROR + this.type, 'error');
             this.isLoading = false;
             return;
           }
@@ -400,8 +403,8 @@ foam.CLASS({
             transaction.isQuoted = true;
             await this.transactionDAO.put(transaction);
           } catch ( error ) {
-            console.error(error);
-            this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+            this.logger.error('@SendRequestMoney (spot3): ' + error.message);
+            this.notify(this.TRANSACTION_ERROR + this.type, 'error');
             this.isLoading = false;
             return;
           }
@@ -426,7 +429,8 @@ foam.CLASS({
         });
       } catch ( error ) {
         this.isLoading = false;
-        this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
+        this.logger.error('@SendRequestMoney (spot4): ' + error.message);
+        this.notify(this.TRANSACTION_ERROR + this.type, 'error');
         return;
       }
       this.isLoading = false;
@@ -442,7 +446,8 @@ foam.CLASS({
           ? 'sme.main.invoices.payables'
           : 'sme.main.invoices.receivables');
       } catch (error) {
-        this.notify(error.message ? error.message : this.SAVE_DRAFT_ERROR + this.type, 'error');
+        this.logger.error('@SendRequestMoney (spot5): ' + error.message);
+        this.notify(this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
       }
     },
@@ -456,8 +461,8 @@ foam.CLASS({
           this.invoice.payerId = contact.businessId || contact.id;
         }
       } catch (err) {
-        var msg = err ? err.message : this.CONTACT_NOT_FOUND;
-        this.notify(msg, 'error');
+        this.logger.error('@SendRequestMoney (spot5): ' + err.message);
+        this.notify(this.CONTACT_NOT_FOUND, 'error');
       }
     }
   ],

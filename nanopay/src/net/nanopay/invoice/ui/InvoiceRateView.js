@@ -44,6 +44,7 @@ foam.CLASS({
     'group',
     'invoice',
     'invoiceDAO',
+    'logger',
     'notify',
     'transactionQuotePlanDAO',
     'user',
@@ -536,8 +537,8 @@ foam.CLASS({
       try {
         await this.fetchBankAccount();
       } catch (err) {
-        var msg = err || this.ACCOUNT_FIND_ERROR;
-        this.notify(msg, 'error');
+        this.notify(this.ACCOUNT_FIND_ERROR, 'error');
+        this.logger.error('@InvoiceRateView.js (spot1)' + (err ? err.message : ''));
       }
 
       try {
@@ -545,7 +546,8 @@ foam.CLASS({
         this.quote = this.isFx ? await this.getFXQuote() : await this.getDomesticQuote();
         this.viewData.quote = this.quote;
       } catch (error) {
-        this.notify(this.RATE_FETCH_FAILURE + error.message, 'error');
+        this.notify(this.RATE_FETCH_FAILURE, 'error');
+        this.logger.error('@InvoiceRateView.js (spot2)' + (error ? error.message : ''));
       }
 
       this.loadingSpinner.hide();
@@ -576,7 +578,8 @@ foam.CLASS({
         this.chosenBankAccount = await this.user.accounts.find(accountId);
         this.viewData.bankAccount = this.chosenBankAccount;
       } catch (error) {
-        this.notify(this.ACCOUNT_FIND_ERROR + '\n' + error.message, 'error');
+        this.notify(this.ACCOUNT_FIND_ERROR, 'error');
+        this.logger.error('@InvoiceRateView.js (spot3)' + (error ? error.message : ''));
       }
 
       if ( ! this.isPayable ) {
@@ -599,7 +602,8 @@ foam.CLASS({
             .find(this.chosenBankAccount.denomination);
         }
       } catch (error) {
-        this.notify(this.CURRENCY_FIND_ERROR + '\n' + error.message, 'error');
+        this.notify(this.CURRENCY_FIND_ERROR, 'error');
+        this.logger.error('@InvoiceRateView.js (spot4)' + (error ? error.message : ''));
         this.loadingSpinner.hide();
         return;
       }

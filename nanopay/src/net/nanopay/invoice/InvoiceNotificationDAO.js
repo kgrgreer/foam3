@@ -97,34 +97,39 @@ foam.CLASS({
           // populateArgsForEmail(args(Map), invoice, name, fromName, sendTo, dated(bool), dueDate(bool), currencyDAO)
           // sendEmailFunction(x, isContact, emailTemplateName, invoiceId, userBeingSentEmail, args(Map), sendTo, externalInvoiceToken)
 
-          // ONE
-          if ( invoiceIsBeingPaidButNotComplete ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), true, false, currencyDAO);
-            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
-          }
-          // TWO
-          if ( invoiceIsARecievable ) {
-            args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), true, true, currencyDAO);
-            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
-          }
-          // THREE  
-          if ( invoiceNeedsApproval ) {
-            User apr = null;
-            List<UserUserJunction> approvers = findApproversOftheBusiness(x);
-            DAO userDAO = (DAO) x.get("userDAO");
-            for ( UserUserJunction approver : approvers ) {
-              args.clear();
-              apr = (User) userDAO.find(approver.getTargetId());
-              if ( apr == null ) continue;
-              args.put("paymentTo", payerUser.label());
-              args = populateArgsForEmail(args, invoice, apr.label(), payeeUser.label(), apr.getEmail(), true, true, currencyDAO);
-              sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, apr.getEmail(), externalInvoiceToken);
+          try {
+            // ONE
+            if ( invoiceIsBeingPaidButNotComplete ) {
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), true, invoice.getIssueDate(), currencyDAO);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
-          }
-          // FOUR 
-          if ( invoiceIsBeingPaidAndCompleted ) {
-            args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), false, false, currencyDAO);
-            sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
+            // TWO
+            if ( invoiceIsARecievable ) {
+              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), true, invoice.getDueDate(), currencyDAO);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
+            }
+            // THREE  
+            if ( invoiceNeedsApproval ) {
+              User tempApprover = null;
+              User currentUser = (User) x.get("user");
+              List<UserUserJunction> approvers = findApproversOftheBusiness(x);
+              DAO userDAO = (DAO) x.get("userDAO");
+              for ( UserUserJunction approver : approvers ) {
+                if ( args != null ) args.clear();
+                tempApprover = (User) userDAO.find(approver.getTargetId());
+                if ( tempApprover == null ) continue;
+                args = populateArgsForEmail(args, invoice, tempApprover.label(), payeeUser.label(), tempApprover.getEmail(), true, invoice.getDueDate(), currencyDAO);
+                args.put("paymentTo", currentUser.label());
+                sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, tempApprover.getEmail(), externalInvoiceToken);
+              }
+            }
+            // FOUR 
+            if ( invoiceIsBeingPaidAndCompleted ) {
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), false, invoice.getPaymentDate(), currencyDAO);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
           }
         }
         return super.put_(x, invoice);
@@ -215,8 +220,8 @@ foam.CLASS({
           class: 'Boolean'
         },
         {
-          name: 'dueDate',
-          class: 'Boolean'
+          name: 'date',
+          class: 'Date'
         },
         {
           name: 'currencyDAO',
@@ -238,11 +243,7 @@ foam.CLASS({
     
         if ( dated ) {
           SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-          if ( dueDate ) {
-            args.put("date", invoice.getDueDate() != null ? dateFormat.format(invoice.getDueDate()) : "n/a");
-          } else {
-            args.put("date", invoice.getPaymentDate() != null ? dateFormat.format(invoice.getPaymentDate()) : "n/a");
-          }
+            args.put("date", date != null ? dateFormat.format(date) : "n/a");
         }
     
         return args;
