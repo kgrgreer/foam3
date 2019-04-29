@@ -70,7 +70,7 @@ public class AuthenticatedApprovalDAO
   public FObject remove_(X x, FObject obj) {
     AuthService auth = (AuthService) x.get("auth");
 
-    if ( ! auth.check(x, GLOBAL_APPROVAL_READ) ) {
+    if ( ! auth.check(x, GLOBAL_APPROVAL_REMOVE) ) {
       throw new AuthenticationException();
     }
     return getDelegate().remove_(x, obj);
