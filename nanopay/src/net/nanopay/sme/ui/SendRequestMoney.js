@@ -183,6 +183,17 @@ foam.CLASS({
       }
     },
     {
+      name: 'isLoading',
+      value: false,
+      postSet: function(_,n) {
+        if ( n ) {
+          this.loadingSpin.show();
+          return;
+        }
+        this.loadingSpin.hide();
+      }
+    },
+    {
       name: 'hasSaveOption',
       expression: function(isForm, position) {
         return isForm &&
@@ -245,7 +256,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.loadingSpin.hide();
+      this.isLoading = false;
       if ( this.isApproving ) {
         this.title = 'Approve payment';
       } else {
@@ -344,7 +355,7 @@ foam.CLASS({
     },
 
     async function submit() {
-      this.loadingSpin.show();
+      this.isLoading = true;
       try {
         var result = await this.checkComplianceAndBanking();
         if ( ! result ) {
@@ -364,7 +375,7 @@ foam.CLASS({
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
         this.notify(error.message || this.INVOICE_ERROR + this.type, 'error');
-        this.loadingSpin.hide();
+        this.isLoading = false;
         return;
       }
 
@@ -378,7 +389,7 @@ foam.CLASS({
             await this.transactionDAO.put(transaction);
           } catch (error) {
             this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
-            this.loadingSpin.hide();
+            this.isLoading = false;
             return;
           }
         } else {
@@ -391,7 +402,7 @@ foam.CLASS({
           } catch ( error ) {
             console.error(error);
             this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
-            this.loadingSpin.hide();
+            this.isLoading = false;
             return;
           }
         }
@@ -414,11 +425,11 @@ foam.CLASS({
           invoice: this.invoice
         });
       } catch ( error ) {
-        this.loadingSpin.hide();
+        this.isLoading = false;
         this.notify(error.message || this.TRANSACTION_ERROR + this.type, 'error');
         return;
       }
-      this.loadingSpin.hide();
+      this.isLoading = false;
     },
 
     // Validates invoice and puts draft invoice to invoiceDAO.
@@ -472,7 +483,7 @@ foam.CLASS({
         return hasNextOption;
       },
       isEnabled: function(errors) {
-        return ! errors;
+        return ! errors && ! this.isLoading;
       },
       code: function() {
         var currentViewId = this.views[this.position].id;

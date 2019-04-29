@@ -25,6 +25,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
+    'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
@@ -48,20 +49,33 @@ foam.CLASS({
       margin: auto;
       text-align: center;
     }
-  ^ .spinner-container {
-      z-index: 1;
-    }
-  ^ .spinner-container-center {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
+  ^ .title {
+    font-size: 32px;
+    font-weight: 900;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #2b2b2b;
   }
-  ^ .spinner-container .net-nanopay-ui-LoadingSpinner img {
-    width: 200px;
-    height: 200px;
+
+  ^ .ablii-accounting-software-icon {
+    height: 44px;
+    width: 44px;
+    vertical-align: middle;
   }
+
+  ^ .plus-icon {
+    margin: 0px 16px 0px 16px;
+    display: inline-block;
+  }
+  ^ .loading-container {
+    width: 504px;
+    height: 150px;
+    text-align: left;
+    display: inline-block;
+  }
+
   `,
 
   properties: [
@@ -105,15 +119,35 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
 
+      let icon;
+      if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+         icon = 'images/xero.png';
+      } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        icon = 'images/quickbooks.png';
+      }
+
       // display loading icon
       this
         .start().addClass(this.myClass())
-          .start('h1').addClass('title')
-            .add('Syncing ' + this.user.integrationCode.label + ' to Ablii')
-          .end()
-          .start().addClass('spinner-container')
-            .start().addClass('spinner-container-center')
-              .add(this.loadingSpinner)
+          .start()
+            .addClass('loading-container')
+            .start('h1').addClass('title')
+              .add('Retrieving data...')
+            .end()
+            .start()
+              .addClass('image-container')
+              .start('img')
+                .addClass('ablii-accounting-software-icon')
+                .attrs({ src: 'images/ablii-logo.svg' })
+              .end()
+              .start('p')
+                .addClass('plus-icon')
+                .add('+')
+              .end()
+              .start('img')
+                .addClass('ablii-accounting-software-icon')
+                .attrs({ src: icon })
+              .end()
             .end()
           .end()
         .end();
