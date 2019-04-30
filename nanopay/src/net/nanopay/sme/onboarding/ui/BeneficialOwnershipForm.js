@@ -38,7 +38,7 @@ requires: [
 css: `
 
     ^ .property-birthdayField .date-display-box {
-      width: 473.5px !important;
+      width: 100%;
       font-size: 14px !important;
       height: 35px !important;
       border: solid 1px #8e9090 !important;
@@ -273,12 +273,6 @@ css: `
       margin: 25px 0px;
     }
 
-    ^ .foam-u2-tag-Select,
-    ^ .foam-u2-TextField,
-    ^ .foam-u2-DateView {
-      width: 95%;
-    }
-
     ^ .left-of-container {
       margin-right: 20px;
     }
@@ -313,13 +307,9 @@ css: `
     }
 
     ^ .boxedField {
-      border-width: 1px;  
-      border-style: solid;
-      margin-bottom: 20px;
-      padding-left: 25px;
-      padding-top: 16px;
+      border: 1px solid;  
       border-radius: 5px;
-      width: 91%;
+      padding: 24px;
     }
 
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
@@ -356,8 +346,10 @@ css: `
       margin-top: 26px;
     }
 
-    ^ .pushLeft {
-      margin-left: 180px;
+    ^ .buttons-container {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
     }
 
     ^ .owner-percent-container{
@@ -381,6 +373,10 @@ css: `
       color: #525455;
       font-size: 10px;
       line-height: 15px;
+    }
+
+    ^ .property-jobTitleField {
+      width: 100%;
     }
   `,
 
@@ -668,7 +664,7 @@ methods: [
               .end()
 
               .start(this.ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
-              .start().addClass('pushLeft')
+              .start().addClass('buttons-container')
                 .start(this.CANCEL_EDIT)
                   .enableClass('hidden', this.editingBeneficialOwner$, true)
                 .end()

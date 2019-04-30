@@ -88,9 +88,6 @@ foam.CLASS({
     ^ .exitContainer {
       display: flex;
     }
-    ^ .plainAction:last-child {
-      margin-right: 25px !important;
-    }
     ^ .net-nanopay-sme-ui-InfoMessageContainer {
       font-size: 14px;
       line-height: 1.5;
@@ -465,6 +462,7 @@ foam.CLASS({
   actions: [
     {
       name: 'save',
+      isSecondary: true,
       isAvailable: function(hasSaveOption) {
         return hasSaveOption;
       },

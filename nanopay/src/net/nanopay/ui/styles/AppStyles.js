@@ -58,18 +58,6 @@ foam.CLASS({
       border: none;
       outline: none;
     }
-    .net-nanopay-ui-ActionView-create {
-      background: %SECONDARYCOLOR%;
-      border: none;
-      box-shadow: none;
-      color: white;
-      font-weight: 100;
-      width: 135px;
-      height: 39px;
-    }
-    .net-nanopay-ui-ActionView-create:hover {
-      background: %SECONDARYHOVERCOLOR%;
-    }
     .net-nanopay-ui-ActionView-back {
       position: absolute;
       top: 110px;
@@ -229,16 +217,6 @@ foam.CLASS({
       padding: 10px;
       font-size: 14px;
     }
-    .label{
-      height: 16px;
-      font-family: Roboto;
-      font-size: 14px;
-      font-weight: 300;
-      text-align: left;
-      color: #093649;
-      margin-bottom: 8px;
-      margin-left: 15px;
-    }
     .link{
       color: %SECONDARYCOLOR%;
       cursor: pointer;
@@ -305,9 +283,6 @@ foam.CLASS({
       color: white;
       font-weight: 16px;
       display: inline-block;
-    }
-    .net-nanopay-ui-ActionView-signIn{
-      margin-left: 25px !important;
     }
     .arrow-down {
       width: 0;

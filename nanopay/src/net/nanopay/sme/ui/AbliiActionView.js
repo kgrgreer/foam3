@@ -1,17 +1,22 @@
 foam.CLASS({
-  package: 'net.nanopay.ui',
-  name: 'ActionView',
+  package: 'net.nanopay.sme.ui',
+  name: 'AbliiActionView',
   extends: 'foam.u2.UnstyledActionView',
+
+  documentation: 'Style overrides for Ablii buttons.',
 
   css: `
     ^ {
-      border-radius: 3px;
+      border-radius: 4px;
       text-align: center;
-      display: inline-block;
-      padding: 9px 16px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
       background-color: %SECONDARYCOLOR%;
       color: white;
-      border: 1px solid #355bc4;
+      outline: none;
+      border: 1px solid #4a33f4;
+      padding: 9px 16px;
     }
 
     ^ + ^ {
@@ -38,7 +43,7 @@ foam.CLASS({
     }
 
     ^:disabled:not(^secondary):not(^secondary-destructive):not(^destructive) {
-      border: 1px solid #a7beff;
+      border: 1px solid %SECONDARYDISABLEDCOLOR%;
       background-color: %SECONDARYDISABLEDCOLOR%;
     }
 
@@ -46,43 +51,21 @@ foam.CLASS({
       display: none;
     }
 
-    ^ img {
-      vertical-align: middle;
-    }
-
-    ^.material-icons {
-      cursor: pointer;
-    }
-
-    ^back {
-      display: none;
-    }
-
-    ^forward {
-      display: none;
-    }
-
     ^secondary {
-      border: 1px solid #cbcfd4;
-      background-image: linear-gradient(to bottom, #ffffff, #e7eaec);
-      color: %PRIMARYCOLOR%;
+      border: 1px solid %SECONDARYCOLOR%;
+      background-color: white;
+      color: %SECONDARYCOLOR%;
     }
 
     ^secondary:hover {
-      border-color: #cbcfd4;
-      background-image: linear-gradient(to bottom, #ffffff, #d3d6d8);
-      color: %PRIMARYHOVERCOLOR%;
-    }
-
-    ^secondary:focus {
-      background-image: linear-gradient(to bottom, #ffffff, #d3d6d8);
-      border: 2px solid %SECONDARYCOLOR%;
-      padding: 7px 15px;
+      border-color: %SECONDARYHOVERCOLOR%;
+      background-color: white;
+      color: %SECONDARYHOVERCOLOR%;
     }
 
     ^secondary:disabled {
-      border-color: #e7eaec;
-      color: %PRIMARYDISABLEDCOLOR%;
+      border-color: %SECONDARYDISABLEDCOLOR%;
+      color: %SECONDARYDISABLEDCOLOR%;
     }
 
     ^secondary-destructive {
@@ -123,10 +106,21 @@ foam.CLASS({
       border-color: #ed8e8d;
     }
 
+    ^tertiary {
+      background: none;
+      border: none;
+      box-shadow: none;
+      color: #8e9090;
+    }
+
+    ^tertiary:hover {
+      color: %SECONDARYCOLOR%;
+    }
+
     /* TODO: Support buttons of different sizes */
 
     ^small {
-      font-size: 12px;
+      font-size: 10px;
       padding: 8px 16px;
     }
 
@@ -145,11 +139,11 @@ foam.CLASS({
 
     ^large {
       font-size: 16px;
-      padding: 10px 16px;
+      padding: 13px 16px;
     }
 
     ^large:focus:not(:hover) {
-      padding: 9px 15px;
+      padding: 12px 15px;
     }
   `
 });

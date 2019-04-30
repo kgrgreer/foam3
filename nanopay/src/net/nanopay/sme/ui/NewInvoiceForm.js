@@ -122,7 +122,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice-carrot {
       position: relative;
-      right: 12px;
+      right: 0;
       top: -4px;
     }
     ^ .foam-u2-view-RichChoiceView-container {

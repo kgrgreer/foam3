@@ -18,58 +18,27 @@ foam.CLASS({
 
   css: `
     ^ .tfa-container {
-      padding-top: 20px;
+      padding: 24px;
       width: 490px;
-      height: 150px;
       border-radius: 2px;
       background-color: #ffffff;
-    }
-    ^ p {
-      display: inline-block;
-    }
-    ^ .label {
-      height: 16px;
-      font-family: Roboto;
-      font-size: 14px;
-      font-weight: 300;
-      text-align: left;
-      color: #093649;
-      margin-bottom: 8px;
-      margin-left: 25px;
-    }
-    ^ .full-width-input {
-      width: 90%;
-      height: 40px;
-      margin-left: 5%;
-      margin-bottom: 15px;
-      outline: none;
-      padding: 10px;
-    }
-    ^ .full-width-button {
-      width: 90%;
-      height: 40px;
-      border-radius: 2px;
-      margin: 0 auto;
-      text-align: center;
-      line-height: 40px;
-      cursor: pointer;
-      color: #ffffff;
-      margin-top: 10px;
-      margin-left: 25px;
     }
     ^ .tf-container {
       width: 450px;
       margin: auto;
-    }
-    ^ .full-width-button > span {
-      position: relative;
-      top: -5px;
     }
     ^ .net-nanopay-ui-ActionView-verify {
       padding-top: 4px;
     }
     ^ .caption {
       margin: 15px 0px;
+    }
+    ^ input {
+      width: 100%;
+    }
+    ^button-container {
+      display: flex;
+      justify-content: flex-end;
     }
   `,
 
@@ -107,10 +76,18 @@ foam.CLASS({
           .start().addClass('caption').addClass('explanation-container')
             .add(this.TWO_FACTOR_EXPLANATION)
           .end()
-          .start('form').addClass('tfa-container')
-            .start().addClass('label').add(this.TWO_FACTOR_LABEL).end()
-            .start(this.TWO_FACTOR_TOKEN).addClass('full-width-input').end()
-            .start(this.VERIFY).addClass('full-width-button').end()
+          .start('form')
+            .addClass('tfa-container')
+            .start('label')
+              .add(this.TWO_FACTOR_LABEL)
+            .end()
+            .start('p')
+              .tag(this.TWO_FACTOR_TOKEN)
+            .end()
+            .start()
+              .addClass(this.myClass('button-container'))
+              .tag(this.VERIFY)
+            .end()
           .end()
         .end();
     }

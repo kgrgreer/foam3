@@ -225,7 +225,7 @@ foam.CLASS({
         .end()
         .start('div').addClass('navigationContainer')
           .start('div').addClass('buttonContainer')
-            .start(this.DONE).addClass('plainAction').end()
+            .tag(this.DONE)
           .end()
         .end();
     }

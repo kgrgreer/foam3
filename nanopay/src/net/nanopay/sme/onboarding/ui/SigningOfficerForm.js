@@ -94,10 +94,11 @@ foam.CLASS({
     ^ .net-nanopay-ui-ActionView-addUsers {
       height: 40px;
       width: 250px;
-      background: none;
+      background: none !important;
       color: #8e9090;
       font-size: 16px;
       text-align: left;
+      border: none !important;
     }
 
     ^ .net-nanopay-ui-ActionView-addUsers:hover {

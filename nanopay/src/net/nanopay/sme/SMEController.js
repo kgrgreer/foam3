@@ -7,15 +7,17 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
+    'net.nanopay.accounting.AccountingIntegrationUtil',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.model.Business',
+    'net.nanopay.sme.ui.AbliiActionView',
+    'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.banner.ComplianceBannerData',
     'net.nanopay.sme.ui.banner.ComplianceBannerMode',
     'net.nanopay.sme.ui.ChangePasswordView',
-    'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
     'net.nanopay.sme.ui.SMEModal',
@@ -24,8 +26,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
-    'net.nanopay.sme.ui.VerifyEmail',
-    'net.nanopay.accounting.AccountingIntegrationUtil'
+    'net.nanopay.sme.ui.VerifyEmail'
   ],
 
   exports: [
@@ -212,7 +213,7 @@ foam.CLASS({
         // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
         self.BankPadAuthorization.create();
 
-        self.__subContext__.register(self.ActionView, 'foam.u2.ActionView');
+        self.__subContext__.register(self.AbliiActionView, 'foam.u2.ActionView');
         self.__subContext__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
         self.__subContext__.register(self.SMEModal, 'foam.u2.dialog.Popup');
         self.__subContext__.register(self.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');

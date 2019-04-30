@@ -284,9 +284,8 @@ foam.CLASS({
               })
               .on('load', this.getFileHeight)
             .end()
-            .start(this.PRINT_BUTTON).addClass('plainAction')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-print.svg' })
-              .end()
+            .start(this.PRINT_BUTTON)
+              .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-print.svg' })
             .end()
             .start().addClass('checkBoxDiv')
               .start({ class: 'foam.u2.md.CheckBox' },

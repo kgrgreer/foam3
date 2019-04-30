@@ -68,6 +68,7 @@ foam.CLASS({
       color: #604aff;
       font-size: 16px;
       font-family: lato;
+      border: none !important;
     }
 
     ^ .link:hover {

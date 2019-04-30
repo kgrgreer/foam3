@@ -32,7 +32,8 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-ActionView-closeModal {
       width: 60px;
-      background: none;
+      background: none !important;
+      border: none !important;
       color: #525455;
       font-size: 16px;
       margin-right: 25px;
@@ -52,10 +53,6 @@ foam.CLASS({
     }
     ^ .input-container {
       margin: 25px;
-    }
-    ^ .button {
-      width: 100px;
-      font-size: 14px;
     }
   `,
 
