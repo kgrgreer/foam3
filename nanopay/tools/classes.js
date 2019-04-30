@@ -43,6 +43,7 @@ var classes = [
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
   'net.nanopay.account.Balance',
+  'net.nanopay.account.DuplicateDigitalAccountRule',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
@@ -487,6 +488,10 @@ var classes = [
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
+
+  // approval
+  'net.nanopay.approval.ApprovalRequest',
+  'net.nanopay.approval.ApprovalStatus',
 ];
 
 var abstractClasses = [
