@@ -493,7 +493,6 @@ foam.CLASS({
     { name: 'EmailAddressLabel', message: 'Email Address' },
     { name: 'CountryCodeLabel', message: 'Country Code' },
     { name: 'PhoneNumberLabel', message: 'Phone Number' },
-    { name: 'PrincipalTypeLabel', message: 'Principal Type' },
     { name: 'DateOfBirthLabel', message: 'Date of Birth' },
     { name: 'ResidentialAddressLabel', message: 'Residential Address' },
     { name: 'CountryLabel', message: 'Country' },
@@ -614,14 +613,6 @@ foam.CLASS({
       value: ''
     },
     {
-      name: 'principleTypeField',
-      value: 'Shareholder',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: ['Shareholder', 'Owner', 'Officer']
-      }
-    },
-    {
       class: 'Date',
       name: 'birthdayField',
       tableCellFormatter: function(date) {
@@ -711,7 +702,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.principleTypeField = 'Shareholder';
       var modeSlot = this.isDisplayMode$.map(function(mode) {
         return mode ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       });
@@ -732,7 +722,7 @@ foam.CLASS({
               editColumnsEnabled: false,
               disableUserSelection: true,
               columns: [
-                'legalName', 'jobTitle', 'principleType',
+                'legalName', 'jobTitle',
                 foam.core.Property.create({
                   name: 'delete',
                   label: '',
@@ -885,11 +875,6 @@ foam.CLASS({
               .end()
             .end()
 
-            .start('p').add(this.PrincipalTypeLabel).addClass('infoLabel').end()
-            .start('div').addClass('dropdownContainer')
-              .tag(this.PRINCIPLE_TYPE_FIELD, { mode$: modeSlot })
-              .start('div').addClass('caret').end()
-            .end()
             .start('p').add(this.DateOfBirthLabel).addClass('infoLabel').end()
             .start(this.BIRTHDAY_FIELD, { mode$: modeSlot }).addClass('fullWidthField').end()
 
@@ -948,7 +933,6 @@ foam.CLASS({
       this.emailAddressField = '';
       this.phoneNumberField = '';
       this.isEditingPhone = false;
-      this.principleTypeField = 'Shareholder';
       this.birthdayField = null;
 
       this.countryField = 'CA';
@@ -979,7 +963,6 @@ foam.CLASS({
       this.emailAddressField = user.email;
       this.phoneNumberField = this.extractPhoneNumber(user.phone);
       this.isEditingPhone = false;
-      this.principleTypeField = user.principleType;
       this.birthdayField = user.birthday;
 
       this.countryField = user.address.countryId;
@@ -1141,7 +1124,6 @@ foam.CLASS({
           regionId: this.provinceField
         });
         principalOwner.jobTitle = this.jobTitleField;
-        principalOwner.principleType = this.principleTypeField;
 
         if ( ! this.editingPrincipalOwner ) {
           var owners = (await this.principalOwnersDAO.select()).array;

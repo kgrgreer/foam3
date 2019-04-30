@@ -1,6 +1,7 @@
 foam.INTERFACE({
     package: 'net.nanopay.documents',
     name: 'AcceptanceDocumentService',
+
     methods: [
         {
             name: 'getAcceptanceDocument',
@@ -8,6 +9,10 @@ foam.INTERFACE({
             async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [
+                {
+                    name: 'x',
+                    type: 'Context'
+                },
                 {
                     name: 'name',
                     type: 'String'
@@ -24,6 +29,10 @@ foam.INTERFACE({
             async: true,
             javaThrows: ['java.lang.RuntimeException'],
             args: [
+                {
+                    name: 'x',
+                    type: 'Context'
+                },
                 {
                     name: 'name',
                     type: 'String'
@@ -45,6 +54,10 @@ foam.INTERFACE({
             javaThrows: ['java.lang.RuntimeException'],
             args: [
                 {
+                    name: 'x',
+                    type: 'Context'
+                },
+                {
                     name: 'transactionType',
                     type: 'String'
                 },
@@ -65,6 +78,10 @@ foam.INTERFACE({
         {
             name: 'updateUserAcceptanceDocument',
             args: [
+                {
+                    name: 'x',
+                    type: 'Context'
+                },
                 {
                   type: 'Long',
                   name: 'user',

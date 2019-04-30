@@ -111,7 +111,7 @@ foam.CLASS({
       User payer = User.findUser(x, sourceAccount.getOwner());
       if ( null != payer && null != payer.getAddress() ) {
         AcceptanceDocumentService acceptanceDocumentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-        disclosure = acceptanceDocumentService.getTransactionRegionDocuments("AscendantFXTransaction",
+        disclosure = acceptanceDocumentService.getTransactionRegionDocuments(x, "AscendantFXTransaction",
           AcceptanceDocumentType.DISCLOSURE, payer.getAddress().getCountryId(), payer.getAddress().getRegionId());
       }
 

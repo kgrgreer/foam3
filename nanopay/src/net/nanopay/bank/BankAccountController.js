@@ -68,8 +68,7 @@ foam.CLASS({
               code: function(X) {
                 self.selectedAccount = this;
                 self.ctrl.add(self.Popup.create().tag({
-                  class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal',
-                  startAt: 'microCheck',
+                  class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
                   bank: self.selectedAccount
                 }));
               }
@@ -177,7 +176,12 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function onEdit(account) {
-        // Do nothing.
+        if ( account.status === this.BankAccountStatus.UNVERIFIED ) {
+          this.ctrl.add(this.Popup.create().tag({
+            class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
+            bank: account
+          }));
+        }
       }
     }
   ]

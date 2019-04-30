@@ -43,9 +43,11 @@ var classes = [
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
   'net.nanopay.account.Balance',
+  'net.nanopay.account.DuplicateDigitalAccountRule',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
+  'net.nanopay.model.BusinessUserJunction',
   'net.nanopay.account.Account',
   'net.nanopay.account.DigitalAccount',
   'net.nanopay.account.DigitalAccountInfo',
@@ -61,6 +63,9 @@ var classes = [
   'net.nanopay.account.LoanedTotalAccount',
   'net.nanopay.account.HoldingAccount',
   'net.nanopay.account.AuthenticatedAccountDAOTest',
+  'net.nanopay.account.NoBalanceRule',
+  'net.nanopay.account.NoPendingTransactionsRule',
+  'net.nanopay.account.NoChildrenRule',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
@@ -70,6 +75,8 @@ var classes = [
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
+  'net.nanopay.model.BusinessUserJunctionRefinement',
+  'net.nanopay.model.BeneficialOwner',
   'net.nanopay.model.BusinessSector',
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.Currency',
@@ -102,6 +109,7 @@ var classes = [
 
   // kotak
   'net.nanopay.kotak.Kotak',
+  'net.nanopay.kotak.KotakCredentials',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -146,6 +154,7 @@ var classes = [
    'net.nanopay.accounting.IntegrationCode',
    'net.nanopay.accounting.IntegrationService',
    'net.nanopay.accounting.ResultResponse',
+   'net.nanopay.accounting.AccountingResultReport',
    'net.nanopay.accounting.ResultResponseWrapper',
    'net.nanopay.accounting.AccountingBankAccount',
    'net.nanopay.accounting.ContactMismatchPair',
@@ -171,6 +180,8 @@ var classes = [
    'net.nanopay.accounting.quickbooks.QuickbooksToken',
    'net.nanopay.accounting.quickbooks.model.QuickbooksContact',
    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
+   'net.nanopay.accounting.resultresponse.ContactResponseItem',
+   'net.nanopay.accounting.resultresponse.InvoiceResponseItem',
 
   // fx
   'net.nanopay.fx.ExchangeRateInterface',
@@ -464,7 +475,6 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
 
-
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
@@ -472,8 +482,15 @@ var classes = [
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 
+  // business
+  'net.nanopay.business.EnforceOneBusinessAdminDAO',
+
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
+
+  // approval
+  'net.nanopay.approval.ApprovalRequest',
+  'net.nanopay.approval.ApprovalStatus',
 ];
 
 var abstractClasses = [
