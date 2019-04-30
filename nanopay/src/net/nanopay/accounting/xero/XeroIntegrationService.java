@@ -297,7 +297,9 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
         );
 
          ContactMismatchPair mismatchPair = importContact(x, xeroContact);
-         if ( mismatchPair.getResultCode() == ContactMismatchCode.SUCCESS ) {
+         if ( mismatchPair == null ) {
+           continue;
+         } else if ( mismatchPair.getResultCode() == ContactMismatchCode.SUCCESS ) {
            contactSuccess.add(prepareResponseItemFrom(xeroContact));
          }
          else {
@@ -964,19 +966,19 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     if ( invoice.getDueDate() != null ) {
       errorItem.setDueDate(format.format(invoice.getDueDate().getTime()));
     } else {
-      errorItem.setDueDate("No due date set");
+      errorItem.setDueDate("");
     }
 
     if ( SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
       errorItem.setInvoiceNumber(invoice.getInvoiceNumber());
     } else {
-      errorItem.setInvoiceNumber("No invoice number");
+      errorItem.setInvoiceNumber("");
     }
 
     if ( invoice.getAmountDue() != null && invoice.getCurrencyCode() != null ) {
       errorItem.setAmount(invoice.getAmountDue() + " " + invoice.getCurrencyCode().value());
     } else {
-      errorItem.setAmount("No amount set");
+      errorItem.setAmount("");
     }
 
     return errorItem;
@@ -986,10 +988,10 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     ContactResponseItem responseItem = new ContactResponseItem();
     responseItem.setBusinessName(xeroContact.getName());
     String name = "";
-    if ( SafetyUtil.isEmpty(xeroContact.getFirstName()) ) {
+    if ( ! SafetyUtil.isEmpty(xeroContact.getFirstName()) ) {
       name = xeroContact.getFirstName() + " ";
     }
-    if ( SafetyUtil.isEmpty(xeroContact.getName()) ) {
+    if ( ! SafetyUtil.isEmpty(xeroContact.getLastName()) ) {
       name += xeroContact.getLastName();
     }
     responseItem.setName(name);
