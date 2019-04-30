@@ -442,8 +442,8 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
       visibility: 'RO'
-   },
-   {
+    },
+    {
       class: 'DateTime',
       name: 'scheduledTime',
       documentation: `The scheduled date when transaction should be processed.`
@@ -454,6 +454,22 @@ foam.CLASS({
       value: false,
       permissionRequired: true,
       visibility: 'hidden'
+    },
+    {
+      name: 'reverseTransaction',
+      class: 'Reference',
+      documentation: 'The reverse of this transaction',
+      of: 'net.nanopay.tx.model.Transaction',
+      value: null,
+      hidden: true
+    },
+    {
+      name: 'originalTransaction',
+      class: 'Reference',
+      documentation: 'The transaction which was declined/cancelled triggering reversal',
+      of: 'net.nanopay.tx.model.Transaction',
+      value: null,
+      hidden: true
     },
   ],
 
