@@ -648,19 +648,19 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     if ( dueDate != null ) {
       errorItem.setDueDate(format.format(dueDate));
     } else {
-      errorItem.setDueDate("No due date set");
+      errorItem.setDueDate("");
     }
 
     if ( qInvoice.getDocNumber() != null ) {
       errorItem.setInvoiceNumber(qInvoice.getDocNumber());
     } else {
-      errorItem.setInvoiceNumber("No invoice number");
+      errorItem.setInvoiceNumber("");
     }
 
     if ( amount != null ) {
       errorItem.setAmount(amount.toString() + " " + qInvoice.getCurrencyRef().getValue());
     } else {
-      errorItem.setAmount("no amount set");
+      errorItem.setAmount("");
     }
 
     return errorItem;
