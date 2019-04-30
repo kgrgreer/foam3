@@ -13,6 +13,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Base64;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 // apache
 
@@ -65,16 +67,30 @@ import java.util.Base64;
         .setConnectionRequestTimeout(timeout*1000).build();
       client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
       client = HttpClientBuilder.create().build();
-      
+
       String urlAddress = "";
+      String pattern = "yyyy-MM-dd";
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
       if ( req.getRequestInfo().equals(PERSON_NAME) ) {
         String firstName = ((PersonNameSearchRequest) req.getModel()).getFirstName();
         String surName = ((PersonNameSearchRequest) req.getModel()).getSurName();
-        urlAddress = baseUrl + req.getRequestInfo() + "first-name=" + firstName + "&surname=" + surName;
+        Date filterLRDFrom = ((PersonNameSearchRequest) req.getModel()).getFilterLRDFrom();
+        if ( filterLRDFrom != null ) {
+          String formattedFilter = simpleDateFormat.format(filterLRDFrom);
+          urlAddress = baseUrl + req.getRequestInfo() + "first-name=" + firstName + "&surname=" + surName + "&filter-lrd-from=" + formattedFilter;
+        } else {
+          urlAddress = baseUrl + req.getRequestInfo() + "first-name=" + firstName + "&surname=" + surName;
+        }
       } else if ( req.getRequestInfo().equals(ENTITY_NAME) ) {
         String entityName = ((EntityNameSearchRequest) req.getModel()).getEntityName();
-        urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName;
+        Date filterLRDFrom = ((EntityNameSearchRequest) req.getModel()).getFilterLRDFrom();
+        if ( filterLRDFrom != null ) {
+          String formattedFilter = simpleDateFormat.format(filterLRDFrom);
+          urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName + "&filter-lrd-from=" + formattedFilter;
+        } else {
+          urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName;
+        }
       }
 
       HttpGet get = new HttpGet(urlAddress);
