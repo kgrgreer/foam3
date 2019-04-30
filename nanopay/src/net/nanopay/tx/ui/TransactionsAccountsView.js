@@ -175,7 +175,7 @@ foam.CLASS({
               class: 'foam.u2.view.TreeView',
               data: this.accountDAO.where(this.NEQ(this.Account.TYPE, 'CABankAccount')),
               selection$: this.selectedAccount$,
-              relationship: net.nanopay.account.AggregateAccountAccountChildrenRelationship,
+              relationship: net.nanopay.account.AccountAccountChildrenRelationship,
               formatter: function(data) {
                 this.add(data.name);
               }
@@ -277,7 +277,7 @@ foam.CLASS({
               data$: this.transactions$,
               columns: [
                 foam.core.Property.create({
-                  name: 'accountName',
+                  name: 'account',
                   label: 'From',
                   tableCellFormatter: function(value, obj, axiom) {
                     var account = self.accountsCache[obj.sourceAccount];
@@ -327,18 +327,8 @@ foam.CLASS({
                     }
                   }
                 }),
-                net.nanopay.fx.FXTransaction.FX_RATE.clone().copyFrom({
-                  label: 'FX Rate',
-                  tableCellFormatter: function(value, obj, axiom) {
-                    if ( obj.type === 'FXTransaction' ) {
-                      this.start().add(`1 ${obj.sourceCurrency} = ${obj.fxRate.toFixed(2)} ${obj.destinationCurrency}`)
-                        .end();
-                    } else {
-                      this.start().add('N/A')
-                        .end();
-                    }
-                  }
-                }), 'created',
+                net.nanopay.fx.FXTransaction.FX_RATE,
+                'created',
                 Transaction.STATUS.clone().copyFrom({
                   label: 'Status',
                   tableCellFormatter: function(value, obj, axiom) {
@@ -347,7 +337,7 @@ foam.CLASS({
                     .end();
                   }
                 }),
-                 'notes'
+                 net.nanopay.tx.RetailTransaction.NOTES
               ]
             });
         }

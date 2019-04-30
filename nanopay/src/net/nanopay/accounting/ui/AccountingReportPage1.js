@@ -138,7 +138,11 @@ foam.CLASS({
     }
 
     .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-invoiceNumber, .foam-u2-view-TableView-th-Amount, .foam-u2-view-TableView-th-dueDate {
-      width: 200px;
+      width: 225px;
+    }
+
+    .error-table-container .foam-u2-view-TableView thead > tr > th:last-child {
+      display: none;
     }
   `,
 
