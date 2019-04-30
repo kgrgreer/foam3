@@ -43,7 +43,7 @@ import org.apache.http.client.config.RequestConfig;
     }
   }
 
-  private DowJonesResponseMsg baseSearchService(DowJonesRequestMsg msg) {
+  public DowJonesResponseMsg baseSearchService(DowJonesRequestMsg msg) {
     DowJonesResponseMsg response = request(msg);
 
     if ( response.getHttpStatusCode() == 200 ) {
@@ -54,7 +54,7 @@ import org.apache.http.client.config.RequestConfig;
     return response;
   }
   
-  private DowJonesResponseMsg request(DowJonesRequestMsg req) {
+  public DowJonesResponseMsg request(DowJonesRequestMsg req) {
     DowJonesCredentials credentials = (DowJonesCredentials) getX().get("dowjonesCredentials");
 
     String authCredentials = credentials.getNamespace() + "/" + credentials.getUsername() + ":" + credentials.getPassword();

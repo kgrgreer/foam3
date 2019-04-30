@@ -27,7 +27,7 @@ public class DowJonesMockService
       return response;
     }
 
-    private DowJonesResponseMsg request(DowJonesRequestMsg msg) {
+    public DowJonesResponseMsg request(DowJonesRequestMsg msg) {
       String mockXML = "<?xml version='1.0' encoding='UTF-8'?>" +
       "<search-results>" +
           "<head>" +

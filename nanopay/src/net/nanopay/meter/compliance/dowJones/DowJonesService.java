@@ -21,12 +21,13 @@ public class DowJonesService
   implements DowJones, NanoService
 {
   protected DAO dowJonesResponseDAO_;
-  protected DowJonesRestInterface dowJonesService;
+  protected DowJonesRestInterface dowJonesRestService;
 
   @Override
   public void start() {
     setDowJonesRestService(new DowJonesRestService());
     dowJonesResponseDAO_ = (DAO) getX().get("dowJonesResponseDAO");
+    ((DowJonesRestService) dowJonesRestService).setX(getX());
   }
 
   public BaseSearchResponse personNameSearch(X x, String firstName, String surName, Date filterLRDFrom) {
@@ -35,7 +36,7 @@ public class DowJonesService
       DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, firstName, surName, filterLRDFrom);
 
       try {
-        respMsg = dowJonesService.serve(reqMsg, DowJonesRestService.PERSON_NAME);
+        respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.PERSON_NAME);
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Person Name Search]: " + t);
@@ -69,7 +70,7 @@ public class DowJonesService
       DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getEntityNameSearchRequest(x, entityName, filterLRDFrom);
 
       try {
-        respMsg = dowJonesService.serve(reqMsg, DowJonesRestService.ENTITY_NAME);
+        respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.ENTITY_NAME);
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Entity Name Search]: " + t);
@@ -97,8 +98,8 @@ public class DowJonesService
     }
   }
 
-  public void setDowJonesRestService(DowJonesRestInterface dowJonesService) {
-    this.dowJonesService = dowJonesService;
+  public void setDowJonesRestService(DowJonesRestInterface dowJonesRestService) {
+    this.dowJonesRestService = dowJonesRestService;
   }
 
 }
