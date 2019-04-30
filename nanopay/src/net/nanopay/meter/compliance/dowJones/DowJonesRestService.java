@@ -30,20 +30,20 @@ import org.apache.http.client.config.RequestConfig;
 
  public class DowJonesRestService
   extends ContextAwareSupport
+  implements DowJonesRestInterface
 {
   public static final String PERSON_NAME = "person-name?";
   public static final String ENTITY_NAME = "entity-name?";
 
-
-  public DowJonesResponseMsg serve(DowJonesRequestMsg msg, String RequestInfo) {
-    if ( ! RequestInfo.equals("") ) {
+  public DowJonesResponseMsg serve(DowJonesRequestMsg msg, String requestInfo) {
+    if ( ! requestInfo.equals("") ) {
       return baseSearchService(msg);
     } else {
       return null;
     }
   }
 
-  public DowJonesResponseMsg baseSearchService(DowJonesRequestMsg msg) {
+  private DowJonesResponseMsg baseSearchService(DowJonesRequestMsg msg) {
     DowJonesResponseMsg response = request(msg);
 
     if ( response.getHttpStatusCode() == 200 ) {

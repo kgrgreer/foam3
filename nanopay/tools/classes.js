@@ -498,6 +498,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.DowJonesCall',
   'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
   'net.nanopay.meter.compliance.dowJones.DowJones',
+  'net.nanopay.meter.compliance.dowJones.DowJonesRestInterface',
   'net.nanopay.meter.compliance.dowJones.EntityNameSearchRequest',
   'net.nanopay.meter.compliance.dowJones.IDTypeSearchRequest',
   'net.nanopay.meter.compliance.dowJones.Match',

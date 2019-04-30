@@ -21,12 +21,12 @@ public class DowJonesService
   implements DowJones, NanoService
 {
   protected DAO dowJonesResponseDAO_;
-  protected DowJonesRestService dowJonesService = new DowJonesRestService();
+  protected DowJonesRestInterface dowJonesService;
 
   @Override
   public void start() {
+    setDowJonesRestService(new DowJonesRestService());
     dowJonesResponseDAO_ = (DAO) getX().get("dowJonesResponseDAO");
-    dowJonesService.setX(getX());
   }
 
   public BaseSearchResponse personNameSearch(X x, String firstName, String surName, Date filterLRDFrom) {
@@ -95,6 +95,10 @@ public class DowJonesService
       logger.error("Dow Jones entity name search error: [ " + t.toString() + " ].", t);
       throw new AuthenticationException("Dow Jones entity name search failed");
     }
+  }
+
+  public void setDowJonesRestService(DowJonesRestInterface dowJonesService) {
+    this.dowJonesService = dowJonesService;
   }
 
 }

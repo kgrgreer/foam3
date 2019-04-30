@@ -18,6 +18,7 @@ public class DowJonesIntegrationTest extends Test {
   @Override
   public void runTest(X x) {
     dowJonesService_ = (DowJonesService) x.get("dowJonesService");
+    dowJonesService_.setDowJonesRestService(new DowJonesMockService());
     x_ = x;
     testUser_ = addUser("blakeDowJonesTest@dowjonestest.com");
     setUpTest();
