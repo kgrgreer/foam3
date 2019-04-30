@@ -1,0 +1,2 @@
+p({ class: 'net.nanopay.accounting.xero.XeroIntegrationTest', id: 'XeroIntegrationTest' })
+p({ class: 'net.nanopay.accounting.quickbooks.QuickBooksIntegrationTest', id: 'QuickBooksIntegrationTest' })

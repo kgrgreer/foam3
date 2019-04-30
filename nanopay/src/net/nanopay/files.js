@@ -11,9 +11,36 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
+  { name: 'net/nanopay/account/DuplicateDigitalAccountRule'},
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
   { name: 'net/nanopay/account/ui/AccountDetailView', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/accountDetails/AccountDetailsModal', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/accountDetails/AccountDetailsRequirements', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/accountDetails/accountTypes/AddShadowAccount', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/accountDetails/accountTypes/AddVirtualAccount', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/accountDetails/accountTypes/AddAggregateAccount', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/accountType/AccountTypeModal', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/accountType/AccountType', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/accountType/AccountTypes', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/components/ModalProgressBar', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/components/ModalTitleBar', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/notifyAndAuto/NotifyAndAuto', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/notifyAndAuto/NotifyAndAutoCeiling', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/notifyAndAuto/NotifyAndAutoFloor', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/notifyOnly/NotifyOnly', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/notifyOnly/NotifyOnlyCeiling', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/notifyOnly/NotifyOnlyFloor', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/LiquidityRule', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/LiquidityRuleNew', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/LiquidityRuleExisting', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/LiquidityRuleModal', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/LiquidityMode', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/liquidityRule/LiquidityRuleSaveTemplate', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/transactionLimit/AccountTransactionLimitModal', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/transactionLimit/AccountTransactionLimit', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/AddAccountModalWizard', flags: ['web'] },
+  { name: 'net/nanopay/account/ui/addAccountModal/AddAccountSubmissionModal', flags: ['web'] },
   { name: 'net/nanopay/account/Balance' },
   { name: 'net/nanopay/account/DigitalAccount' },
   { name: 'net/nanopay/account/DigitalAccountInfo' },
@@ -29,6 +56,9 @@ FOAM_FILES([
   { name: 'net/nanopay/account/AuthenticatedAccountDAOTest' },
   { name: 'net/nanopay/account/LoanAccount' },
   { name: 'net/nanopay/account/LoanedTotalAccount' },
+  { name: 'net/nanopay/account/NoBalanceRule' },
+  { name: 'net/nanopay/account/NoPendingTransactionsRule' },
+  { name: 'net/nanopay/account/NoChildrenRule' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/ClientUserJunction' },
@@ -330,6 +360,11 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
   { name: 'net/nanopay/plaid/ClientPlaidService' },
+  { name: 'net/nanopay/plaid/model/PlaidAccountDetail' },
+  { name: 'net/nanopay/plaid/model/PlaidBalances' },
+  { name: 'net/nanopay/plaid/model/ACH' },
+  { name: 'net/nanopay/plaid/model/EFT' },
+  { name: 'net/nanopay/plaid/PlaidResultReport' },
   { name: 'net/nanopay/plaid/PlaidService' },
   { name: 'net/nanopay/plaid/config/PlaidCredential' },
   { name: 'net/nanopay/plaid/model/PlaidPublicToken' },
@@ -692,6 +727,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/AbliiOverlayActionListView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorSelectionView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessSectorCitationView', flags: ['web'] },
 
@@ -736,7 +772,7 @@ FOAM_FILES([
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
-  { name: 'net/nanopay/accounting/ResultResponseWrapper'},
+  { name: 'net/nanopay/accounting/ResultResponseWrapper' },
   { name: 'net/nanopay/accounting/AccountingBankAccount' },
   { name: 'net/nanopay/accounting/AccountingContactEmailCache' },
   { name: 'net/nanopay/accounting/AccountingErrorCodes' },
@@ -755,9 +791,16 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/quickbooks/QuickbooksToken' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksContact' },
   { name: 'net/nanopay/accounting/quickbooks/model/QuickbooksInvoice' },
-  { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web']},
+  { name: 'net/nanopay/accounting/resultresponse/ContactResponseItem' },
+  { name: 'net/nanopay/accounting/resultresponse/InvoiceResponseItem' },
+  { name: 'net/nanopay/accounting/AccountingResultReport' },
+  { name: 'net/nanopay/accounting/ui/AccountingCallbackPage', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/IntegrationPopUpView', flags: ['web'] },
   { name: 'net/nanopay/accounting/ui/AccountingReportModal', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/AccountingBankMatching', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/AccountingReportPage1', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/AccountingReportPage2', flags: ['web'] },
+  { name: 'net/nanopay/accounting/ui/ErrorTable', flags: ['web'] },
 
 
   // accounting stub
@@ -778,6 +821,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/BusinessDetailView' },
+  { name: 'net/nanopay/meter/InvoiceDetailView' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
@@ -811,6 +855,13 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResult' },
 
+  { name: 'net/nanopay/liquidity/ui/Dashboard' },
+  { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
+  { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
+  { name: 'net/nanopay/liquidity/ui/account/Overview' },
+  { name: 'net/nanopay/liquidity/ui/account/Balance' },
+  { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
+
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
@@ -820,4 +871,8 @@ FOAM_FILES([
 
   // business
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
+
+  // approval
+  { name: 'net/nanopay/approval/ApprovalRequest' },
+  { name: 'net/nanopay/approval/ApprovalStatus' }
 ]);

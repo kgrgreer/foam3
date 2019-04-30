@@ -59,6 +59,7 @@ foam.INTERFACE({
     },
     {
       name: 'importSelectedAccountToSystem',
+      javaThrows: ['java.io.IOException'],
       args: [
         {
           name: 'x',
