@@ -2,11 +2,13 @@ package net.nanopay.meter.test;
 
 import foam.core.X;
 import foam.dao.DAO;
-import foam.nanos.test.Test;
 import foam.nanos.auth.User;
-import net.nanopay.meter.compliance.dowJones.*;
+import foam.nanos.test.Test;
+import net.nanopay.meter.compliance.dowJones.BaseSearchResponse;
+import net.nanopay.meter.compliance.dowJones.DowJonesMockService;
+import net.nanopay.meter.compliance.dowJones.DowJonesService;
 
-import static foam.mlang.MLang.*;
+import static foam.mlang.MLang.EQ;
 
 
 public class DowJonesIntegrationTest extends Test {
@@ -43,7 +45,7 @@ public class DowJonesIntegrationTest extends Test {
       user.setEmailVerified(true);
       user.setBusinessName("nanopay");
       user = (User) (((DAO) x_.get("localUserDAO")).put_(x_, user)).fclone();
-    } 
+    }
     return user;
   }
 

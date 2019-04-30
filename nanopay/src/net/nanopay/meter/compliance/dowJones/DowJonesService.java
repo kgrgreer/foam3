@@ -1,20 +1,17 @@
 package net.nanopay.meter.compliance.dowJones;
 
-import foam.core.*;
-import foam.dao.*;
-import java.io.*;
-import java.util.*;
-
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.User;
-import net.nanopay.meter.compliance.dowJones.*;
+import foam.core.ContextAwareSupport;
+import foam.core.X;
+import foam.dao.DAO;
 import foam.nanos.NanoService;
-import org.apache.commons.io.IOUtils;
+import foam.nanos.auth.AuthenticationException;
 import foam.nanos.logger.Logger;
+
+import java.util.Date;
 
 /**
  * The DowJonesService is used as a service that will be delegated into the Skeleton Box.
- * This service is used for searching a name, person or entity in the Dow Jones Risk Database. 
+ * This service is used for searching a name, person or entity in the Dow Jones Risk Database.
  */
 public class DowJonesService
   extends ContextAwareSupport
@@ -40,7 +37,7 @@ public class DowJonesService
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Person Name Search]: " + t);
-        throw new AuthenticationException("An error has occurred in an attempt to connect to Dow Jones");
+        throw new AuthenticationException("An error has occurred in an attempt to connect to Dow Jones: [ " + t.toString() + " ].");
       }
 
       int httpCode = respMsg.getHttpStatusCode();
@@ -60,7 +57,7 @@ public class DowJonesService
     } catch ( Throwable t ) {
       Logger logger = (Logger) x.get("logger");
       logger.error("Dow Jones person name search error: [ " + t.toString() + " ].", t);
-      throw new AuthenticationException("Dow Jones person name search failed");
+      throw new AuthenticationException("Dow Jones person name search failed: [ " + t.toString() + " ].");
     }
   }
 
@@ -74,7 +71,7 @@ public class DowJonesService
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Entity Name Search]: " + t);
-        throw new AuthenticationException("An error has occurred in an attempt to connect to Dow Jones");
+        throw new AuthenticationException("An error has occurred in an attempt to connect to Dow Jones: [ " + t.toString() + " ]." );
       }
 
       int httpCode = respMsg.getHttpStatusCode();
@@ -94,12 +91,11 @@ public class DowJonesService
     } catch ( Throwable t ) {
       Logger logger = (Logger) x.get("logger");
       logger.error("Dow Jones entity name search error: [ " + t.toString() + " ].", t);
-      throw new AuthenticationException("Dow Jones entity name search failed");
+      throw new AuthenticationException("Dow Jones entity name search failed: [ " + t.toString() + " ].");
     }
   }
 
   public void setDowJonesRestService(DowJonesRestInterface dowJonesRestService) {
     this.dowJonesRestService = dowJonesRestService;
   }
-
 }

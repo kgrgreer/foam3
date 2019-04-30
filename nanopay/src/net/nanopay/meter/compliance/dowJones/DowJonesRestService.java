@@ -1,28 +1,20 @@
 package net.nanopay.meter.compliance.dowJones;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Base64;
-
 import foam.core.ContextAwareSupport;
-import foam.core.X;
-import foam.dao.DAO;
-import foam.nanos.logger.Logger;
-import foam.nanos.notification.Notification;
-import net.nanopay.meter.compliance.dowJones.*;
-
-// apache
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.util.EntityUtils;
-import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.impl.client.HttpClientBuilder;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Base64;
+
+// apache
 
 /**
  * The DowJonesRestService is used to make a call to the Dow Jones Risk Database
@@ -53,13 +45,14 @@ import org.apache.http.client.config.RequestConfig;
     }
     return response;
   }
-  
+
   public DowJonesResponseMsg request(DowJonesRequestMsg req) {
     DowJonesCredentials credentials = (DowJonesCredentials) getX().get("dowjonesCredentials");
 
     String authCredentials = credentials.getNamespace() + "/" + credentials.getUsername() + ":" + credentials.getPassword();
     String encodedCredentials = Base64.getEncoder().encodeToString((authCredentials).getBytes());
 
+    String baseUrl = credentials.getBaseUrl();
     BufferedReader rd = null;
     HttpEntity responseEntity = null;
     HttpResponse response = null;
@@ -72,8 +65,7 @@ import org.apache.http.client.config.RequestConfig;
         .setConnectionRequestTimeout(timeout*1000).build();
       client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
       client = HttpClientBuilder.create().build();
-
-      String baseUrl = "https://djrc.api.test.dowjones.com/v1/search/";
+      
       String urlAddress = "";
 
       if ( req.getRequestInfo().equals(PERSON_NAME) ) {
@@ -84,7 +76,7 @@ import org.apache.http.client.config.RequestConfig;
         String entityName = ((EntityNameSearchRequest) req.getModel()).getEntityName();
         urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName;
       }
-      
+
       HttpGet get = new HttpGet(urlAddress);
       get.setHeader("Authorization", "Basic " + encodedCredentials);
       response = client.execute(get);
@@ -99,13 +91,13 @@ import org.apache.http.client.config.RequestConfig;
       }
       msg = new DowJonesResponseMsg(getX(), res.toString());
       msg.setHttpStatusCode(statusCode);
+      return msg;
     } catch ( Throwable t ) {
       throw new RuntimeException(t);
     } finally {
       IOUtils.closeQuietly(rd);
       HttpClientUtils.closeQuietly(response);
       HttpClientUtils.closeQuietly(client);
-      return msg;
     }
   }
 

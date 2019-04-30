@@ -1,25 +1,19 @@
 package net.nanopay.meter.compliance.dowJones;
 
-import foam.core.*;
-import net.nanopay.meter.compliance.dowJones.*;
-import net.nanopay.meter.compliance.dowJones.enums.*;
-
-import java.io.*;
-import java.lang.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.*;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import foam.core.X;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DowJonesResponseMsg
   extends DowJonesMsg
@@ -94,7 +88,7 @@ public class DowJonesResponseMsg
 
         // body response data
         NodeList matchList = body.getElementsByTagName("match");
-        
+
         for ( int i = 0; i < matchList.getLength(); i++ ) {
           List<String> riskIconsArrList = new ArrayList<String>();
           List<String> datesOfBirthArrList = new ArrayList<String>();
@@ -123,7 +117,7 @@ public class DowJonesResponseMsg
           Element matchedName = (Element) payload.getElementsByTagName("matched-name").item(0);
           String nameType = matchedName.getAttribute("name-type");
           Node matchedDateOfBirth = payload.getElementsByTagName("matched-date-of-birth").item(0);
-  
+
           Element datesOfBirth = (Element) payload.getElementsByTagName("dates-of-birth").item(0);
           if (datesOfBirth != null) {
             NodeList dateOfBirthList = datesOfBirth.getElementsByTagName("date-of-birth");
@@ -161,7 +155,7 @@ public class DowJonesResponseMsg
             }
             countryArrList.add(formattedCountryBuilder.toString());
           }
-          
+
           Node gender = payload.getElementsByTagName("gender").item(0);
 
           // set match data from body response
@@ -186,7 +180,7 @@ public class DowJonesResponseMsg
 
           String[] countriesArray = new String[ countryArrList.size() ];
           matchPayload.setCountries(countryArrList.toArray(countriesArray));
-          matchPayload.setGender(gender != null ? gender.getFirstChild().getNodeValue() : ""); 
+          matchPayload.setGender(gender != null ? gender.getFirstChild().getNodeValue() : "");
 
           match.setScore(score != null ? score.getFirstChild().getNodeValue() : "");
           match.setMatchType(matchType != null ? matchType.getFirstChild().getNodeValue() : "");
@@ -197,8 +191,8 @@ public class DowJonesResponseMsg
 
           matchArrList.add(match);
         }
-        // set metadata from head response 
-        obj.setTotalMatchs(totalHits.getNodeValue());
+        // set metadata from head response
+        obj.setTotalMatches(totalHits.getNodeValue());
         metadata.setApiVersion(apiVersion.getNodeValue());
         metadata.setBackendVersion(backendVersion.getNodeValue());
         metadata.setTotalHits(Integer.parseInt(totalHits.getNodeValue()));
@@ -208,7 +202,7 @@ public class DowJonesResponseMsg
         metadata.setCachedResultsId(cachedResultsId.getNodeValue());
 
         Match[] matchArray = new Match[ matchArrList.size() ];
-        responseBody.setMatchs(matchArrList.toArray(matchArray));
+        responseBody.setMatches(matchArrList.toArray(matchArray));
 
         // set metadata and response data
         obj.setMetadata(metadata);

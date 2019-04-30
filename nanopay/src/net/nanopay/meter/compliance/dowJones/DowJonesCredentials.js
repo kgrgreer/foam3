@@ -16,6 +16,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'password'
+    },
+    {
+      class: 'String',
+      name: 'baseUrl'
     }
   ]
 });

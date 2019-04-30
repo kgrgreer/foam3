@@ -20,7 +20,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'totalMatchs'
+      name: 'totalMatches'
     },
     {
       class: 'Int',

@@ -6,10 +6,6 @@ foam.CLASS({
     'net.nanopay.meter.compliance.dowJones.DowJones'
   ],
 
-  javaImports: [
-    'net.nanopay.meter.compliance.dowJones.BaseSearchResponse'
-  ],
-
   properties: [
     {
       class: 'Stub',
