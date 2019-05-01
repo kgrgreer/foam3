@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'canReceiveCurrencyDAO',
+    'ctrl',
     'errors',
     'invoice',
     'notificationDAO',
@@ -32,7 +33,9 @@ foam.CLASS({
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.Popup',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
   ],
 
   css: `
@@ -154,6 +157,46 @@ foam.CLASS({
     ^ .error-box-outline {
       border-color: #f91c1c;
     }
+    ^ .disabled {
+      pointer-events: none;
+      filter: grayscale(100%) opacity(60%);
+    }
+    ^tooltip {
+      display: none;
+      padding: 10px;
+      padding-bottom: 30px;
+      position: absolute;
+      width: 320px;
+      height: 75px;
+      border-radius: 3px;
+      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      border: solid 1px #e2e2e3;
+      background-color: #ffffff;
+      z-index: 1000;
+    }
+    ^showTooltip {
+      display: block;
+    }
+    ^no-access-icon {
+      margin-top: 13px;
+      float: left;
+      height: 100%;
+      margin-right: 10px;
+    }
+    ^ .date-input-field .date-display-box {
+      width: 99%;
+      font-size: 14px !important;
+      height: 40px !important;
+      border: solid 1px #8e9090 !important;
+      background: #fff !important;
+      border-radius: 3px !important;
+      font-weight: 400 !important;
+      box-shadow: none !important;
+      padding-top: 2px;
+    }
+    ^ .date-input-field .date-display-text {
+      color: #2b2b2b;
+    }
   `,
 
   messages: [
@@ -192,6 +235,21 @@ foam.CLASS({
     {
       name: 'UNSUPPORTED_CURRENCY2',
       message: ' for this contact'
+    },
+    {
+      name: 'TOOLTIP_TITLE',
+      message: `This field can't be edited.`
+    },
+    {
+      name: 'TOOLTIP_BODY',
+      message: 'Please edit this invoice in your accounting software and sync again.'
+    }
+  ],
+
+  constants: [
+    {
+      name: 'TOOLTIP_OFFSET',
+      value: 5
     }
   ],
 
@@ -250,6 +308,37 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAddBank',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showTooltip',
+      value: false
+    },
+     {
+      class: 'Boolean',
+      name: 'disableAccountingInvoiceFields',
+      value: false,
+      documentation: `
+        Users should not be able to edit invoice pulled from accounting software
+        on Ablii, as this will cause mismatches between the data on Ablii and
+        the data on the accounting software.
+      `,
+      expression: function(invoice, type) {
+        return (
+          this.XeroInvoice.isInstance(invoice) ||
+          this.QuickbooksInvoice.isInstance(invoice)
+        ) && type !== 'payable';
+      }
+    },
+    {
+      type: 'Int',
+      name: 'xPosition',
+      value: 0
+    },
+     {
+      type: 'Int',
+      name: 'yPosition',
+      value: 0
     }
   ],
 
@@ -259,17 +348,29 @@ foam.CLASS({
       // Setup the default destination currency
       this.invoice.destinationCurrency
         = this.currencyType;
-
       if ( this.type === 'payable' ) {
         this.invoice.payerId = this.user.id;
       } else {
         this.invoice.payeeId = this.user.id;
       }
+      let displayMode = this.disableAccountingInvoiceFields ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
       // Listeners to check if receiver or payer is valid for transaction.
       this.invoice$.dot('contactId').sub(this.onContactIdChange);
 
       this.currencyType$.sub(this.onCurrencyTypeChange);
+
+      this.ctrl
+        .start()
+          .addClass(this.myClass('tooltip'))
+          .style({ top: this.yPosition$, left: this.xPosition$ })
+          .enableClass(this.myClass('showTooltip'), this.showTooltip$)
+          .start().addClass(this.myClass('no-access-icon'))
+            .start('img').attrs({ src: 'images/no-access.svg' }).end()
+          .end()
+          .start('h3').add(this.TOOLTIP_TITLE).end()
+          .start('p').add(this.TOOLTIP_BODY).end()
+        .end();
 
       this.addClass(this.myClass()).start()
         .start().addClass('input-wrapper')
@@ -277,16 +378,23 @@ foam.CLASS({
             .addClass('input-label')
             .add(this.contactLabel)
           .end()
-          .startContext({ data: this.invoice })
-            .start(this.invoice.CONTACT_ID, {
-              action: this.ADD_CONTACT
-            })
-              .enableClass('invalid', this.slot(
-                function(isInvalid, type, showAddBank) {
-                  return isInvalid && type === 'payable' && showAddBank;
-                }))
-            .end()
-          .endContext()
+          .start()
+            .on('mouseenter', this.toggleTooltip)
+            .on('mouseleave', this.toggleTooltip)
+            .on('mousemove', this.setCoordinates)
+            .startContext({ data: this.invoice })
+              .start(this.invoice.CONTACT_ID, {
+                action: this.ADD_CONTACT,
+                search: true,
+                mode: displayMode
+              })
+                .enableClass('invalid', this.slot(
+                  function(isInvalid, type, showAddBank) {
+                    return isInvalid && type === 'payable' && showAddBank;
+                  }))
+              .end()
+            .endContext()
+          .end()
           .start()
             .show(this.isInvalid$)
             .addClass('validation-failure-container')
@@ -312,23 +420,29 @@ foam.CLASS({
         .startContext({ data: this.invoice })
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add('Amount').end()
-              .startContext({ data: this })
-                .start(this.CURRENCY_TYPE).enableClass('error-box-outline', this.slot(
-                  function(isInvalid, type, showAddBank) {
-                    return isInvalid && type === 'payable' && ! showAddBank;
-                  }))
-                  .on('click', () => {
-                    this.invoice.destinationCurrency
-                      = this.currencyType.alphabeticCode;
-                  })
-                .end()
-              .endContext()
-              .start().addClass('invoice-amount-input')
-                .start(this.Invoice.AMOUNT).enableClass('error-box', this.slot(
-                  function(isInvalid, type, showAddBank) {
-                    return isInvalid && type === 'payable' && ! showAddBank;
-                  }))
-                  .addClass('invoice-input-box')
+              .start()
+                .on('mouseenter', this.toggleTooltip)
+                .on('mouseleave', this.toggleTooltip)
+                .on('mousemove', this.setCoordinates)
+                .startContext({ data: this })
+                  .start(this.CURRENCY_TYPE, { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .enableClass('error-box-outline', this.slot( function(isInvalid, type, showAddBank) {
+                        return isInvalid && type === 'payable' && ! showAddBank;
+                      }))
+                    .on('click', () => {
+                      this.invoice.destinationCurrency = this.currencyType.alphabeticCode;
+                    })
+                  .end()
+                .endContext()
+                .start().addClass('invoice-amount-input')
+                  .start(this.Invoice.AMOUNT, { mode: displayMode })
+                    .enableClass('error-box', this.slot( function(isInvalid, type, showAddBank) {
+                      return isInvalid && type === 'payable' && ! showAddBank;
+                    }))
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .addClass('invoice-input-box')
+                  .end()
                 .end()
               .end()
               .start().show(this.slot(
@@ -350,17 +464,29 @@ foam.CLASS({
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Invoice Number').end()
-                .start(this.Invoice.INVOICE_NUMBER)
-                  .attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
-                  .addClass('input-field')
+                .start()
+                  .on('mouseenter', this.toggleTooltip)
+                  .on('mouseleave', this.toggleTooltip)
+                  .on('mousemove', this.setCoordinates)
+                  .start(this.Invoice.INVOICE_NUMBER, { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
+                    .addClass('input-field')
+                  .end()
                 .end()
               .end()
 
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Date issued').end()
-                .start(this.Invoice.ISSUE_DATE.clone().copyFrom({
-                  view: 'foam.u2.DateView'
-                })).addClass('input-field').end()
+                .start()
+                  .on('mouseenter', this.toggleTooltip)
+                  .on('mouseleave', this.toggleTooltip)
+                  .on('mousemove', this.setCoordinates)
+                  .start(this.Invoice.ISSUE_DATE, { view: 'foam.u2.view.date.DateTimePicker',  mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .addClass('date-input-field')
+                  .end()
+                .end()
               .end()
             .end()
 
@@ -375,8 +501,14 @@ foam.CLASS({
 
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Date Due').end()
-                .start(this.Invoice.DUE_DATE)
-                  .addClass('input-field')
+                .start()
+                  .on('mouseenter', this.toggleTooltip)
+                  .on('mouseleave', this.toggleTooltip)
+                  .on('mousemove', this.setCoordinates)
+                  .start(this.Invoice.DUE_DATE, { mode: displayMode })
+                    .enableClass('disabled', this.disableAccountingInvoiceFields$)
+                    .addClass('date-input-field')
+                  .end()
                 .end()
               .end()
             .end()
@@ -433,9 +565,7 @@ foam.CLASS({
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';
       var isPayable = this.type === 'payable';
-      var partyId = isPayable ?
-        ( this.invoice.payeeId ? this.invoice.payeeId : this.invoice.contactId )
-        : this.user.id;
+      var partyId = isPayable ? this.invoice.contactId : this.user.id;
       if ( partyId && destinationCurrency ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,
@@ -446,12 +576,22 @@ foam.CLASS({
         });
       }
       this.checkBankAccount();
+    },
+    function toggleTooltip() {
+      if ( this.disableAccountingInvoiceFields ) {
+        this.showTooltip = ! this.showTooltip;
+      }
+    },
+    function setCoordinates(e) {
+      this.xPosition = e.x + this.TOOLTIP_OFFSET;
+      this.yPosition = e.y + this.TOOLTIP_OFFSET;
     }
   ],
 
   actions: [
     {
       name: 'addContact',
+      label: 'Create new contact',
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
         X.view.add(X.view.Popup.create().tag({
@@ -461,3 +601,4 @@ foam.CLASS({
     }
   ]
 });
+

@@ -2,3 +2,6 @@
 p({"class":"net.nanopay.test.DateAndPlaceOfBirthDAOTest","id":"DateAndPlaceOfBirthDAOTest"})
 p({"class":"net.nanopay.test.BranchDAOTest","id":"BranchDAO-Test"})
 p({"class":"net.nanopay.test.BusinessSectorDAOTest","id":"BusinessSectorDAOTest"})
+p({"class":"net.nanopay.test.api.AuthenticationApiTest","id":"AuthenticationApiTest"})
+p({"class":"net.nanopay.test.api.AuthenticationFailureApiTest","id":"AuthenticationFailureApiTest"})
+p({"class":"net.nanopay.test.api.SessionAuthenticationFailureApiTest","id":"SessionAuthenticationFailureApiTest"})

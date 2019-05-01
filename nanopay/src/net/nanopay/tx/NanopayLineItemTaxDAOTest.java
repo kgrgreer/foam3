@@ -52,7 +52,7 @@ public class NanopayLineItemTaxDAOTest
     payee_ = (User) ((DAO) x_.get("localUserDAO")).find(EQ(User.EMAIL, "testascendantfxtransaction@nanopay.net"));
     if (payee_ == null) {
       payee_ = new User();
-      payee_.setFirstName("FXPayee3");
+      payee_.setFirstName("FXPayee");
       payee_.setLastName("AscendantFX");
       payee_.setGroup("business");
       payee_.setEmail("testascendantfxtransaction@nanopay.net");

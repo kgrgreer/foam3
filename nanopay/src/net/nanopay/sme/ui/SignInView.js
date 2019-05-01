@@ -101,7 +101,11 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'email'
+      name: 'email',
+      view: {
+        class: 'foam.u2.TextField',
+        focused: true
+      }
     },
     {
       class: 'Password',
@@ -187,8 +191,7 @@ foam.CLASS({
             .add(this.FORGET_PASSWORD_LABEL)
             .on('click', function() {
               self.stack.push({
-                class: 'foam.nanos.auth.resetPassword.EmailView',
-                signInView: { class: 'net.nanopay.sme.ui.SignInView' }
+                class: 'foam.nanos.auth.resetPassword.EmailView'
               });
             })
           .end()
@@ -251,6 +254,7 @@ foam.CLASS({
           await this.invitedTokenProcess();
           if ( this.user && this.user.twoFactorEnabled ) {
             this.loginSuccess = false;
+            window.history.replaceState({}, document.title, '/');
             this.stack.push({
               class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
             });

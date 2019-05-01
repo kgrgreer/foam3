@@ -38,6 +38,8 @@ public class BankAccountCodesTest
     if ( user == null ) {
       user = new User();
       user.setEmail("bankaccountcodes@nanopay.net");
+      user.setFirstName("Francis");
+      user.setLastName("Filth");
     }
     user = (User) user.fclone();
     user.setEmailVerified(true);

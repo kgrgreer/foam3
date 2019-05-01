@@ -16,8 +16,7 @@ foam.CLASS({
   imports: [
     'stack',
     'xeroService',
-    'xeroSignIn',
-    'quickSignIn',
+    'quickbooksService',
     'quickService'
   ],
 
@@ -180,11 +179,11 @@ foam.CLASS({
   listeners: [
 
     function signXero() {
-      var url = window.location.origin + '/service/xero?portRedirect=' + window.location.hash.slice(1);
+      var url = window.location.origin + '/service/WebAgent?portRedirect=' + window.location.hash.slice(1);
       window.location = this.attachSessionId(url);
     },
     function signQuick() {
-      var url = window.location.origin + '/service/quick?portRedirect=' + window.location.hash.slice(1);
+      var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
       window.location = this.attachSessionId(url);
     },
   ]

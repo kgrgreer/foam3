@@ -98,18 +98,6 @@ foam.CLASS({
           padding: 3px 7px;
           display: inline;
         }
-        .foam-u2-view-TableView-th-id  {width: 80px;}
-        .foam-u2-view-TableView-th-invoiceNumber  { width: 80px; }
-        .foam-u2-view-TableView-th-purchaseOrder  { width: 80px; }
-        .foam-u2-view-TableView-th-payerName { width: 150px; }
-        .foam-u2-view-TableView-th-payeeName   { width: 150px; }
-        .foam-u2-view-TableView-th-payerId { width: 150px; }
-        .foam-u2-view-TableView-th-payeeId   { width: 150px; }
-        .foam-u2-view-TableView-th-paymentDate      { width: 90px; }
-        .foam-u2-view-TableView-th-issueDate      { width: 90px; }
-        .foam-u2-view-TableView-th-dueDate      { width: 90px; }
-        .foam-u2-view-TableView-th-amount         { width: 90px; padding-right:20px; }
-        .foam-u2-view-TableView-th-status         { width: 130px; }
       */}
     })
   ]

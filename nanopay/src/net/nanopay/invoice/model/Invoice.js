@@ -58,7 +58,8 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 60
     },
     {
       class: 'String',
@@ -69,7 +70,8 @@ foam.CLASS({
         'invoice',
         'i'
       ],
-      visibility: foam.u2.Visibility.FINAL
+      visibility: foam.u2.Visibility.FINAL,
+      tableWidth: 110
     },
     {
       class: 'String',
@@ -89,7 +91,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'issueDate',
       documentation: `The date that the invoice was issued (created).`,
-      label: 'Issue Date',
+      label: 'Date Issued',
       required: true,
       factory: function() {
         if ( this.draft ) {
@@ -127,7 +129,8 @@ foam.CLASS({
       aliases: ['dueDate', 'due', 'd', 'issued'],
       tableCellFormatter: function(date) {
         this.add(date ? date.toISOString().substring(0, 10) : '');
-      }
+      },
+      tableWidth: 95
     },
     {
       class: 'DateTime',
@@ -169,6 +172,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       documentation: `The date the invoice was last modified.`,
+      tableWidth: 140
     },
     {
       class: 'Reference',
@@ -230,15 +234,17 @@ foam.CLASS({
       tableCellFormatter: function(value, invoice) {
         // Needed to show amount value for old invoices that don't have destination currency set
         if ( ! invoice.destinationCurrency ) {
-          invoice.destinationCurrency = 'CAD';
+          this.add(value);
         }
-        this.__subContext__.currencyDAO.find(invoice.destinationCurrency)
-            .then(function(currency) {
-              this.start()
-                .add(invoice.destinationCurrency + ' ' + currency.format(value))
-              .end();
-        }.bind(this));
-      }
+        this.__subContext__.currencyDAO
+          .find(invoice.destinationCurrency)
+          .then((currency) => {
+            this.start()
+              .add(currency.format(value) + ' ' + invoice.destinationCurrency)
+            .end();
+          });
+      },
+      tableWidth: 120
     },
     { // How is this used? - display only?
       documentation: `
@@ -386,13 +392,36 @@ foam.CLASS({
             .add(label)
           .end()
         .end();
-      }
+      },
+      tableWidth: 130
     },
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'invoiceFile',
+      label: '',
+      tableWidth: 70,
       documentation: 'Original invoice file',
-      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
+      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' },
+      tableCellFormatter: function(files) {
+        if ( ! (Array.isArray(files) && files.length > 0) ) return;
+        var actions = files.map((file) => {
+          return foam.core.Action.create({
+            label: file.filename,
+            code: function() {
+              window.open(file.address, '_blank');
+            }
+          });
+        });
+        this.tag({
+          class: 'foam.u2.view.OverlayActionListView',
+          data: actions,
+          obj: this,
+          activeImageURL: '/images/attachment-purple.svg',
+          restingImageURL: '/images/attachment.svg',
+          hoverImageURL: '/images/attachment.svg',
+          disabledImageURL: '/images/attachment.svg',
+        });
+      }
     },
     {
       class: 'Boolean',

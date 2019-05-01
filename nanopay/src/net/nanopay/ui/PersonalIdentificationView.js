@@ -75,7 +75,7 @@ foam.CLASS({
             .addClass('label')
             .add(this.ID_LABEL)
           .end()
-          .tag(this.PersonalIdentification.IDENTIFICATION_TYPE_ID)
+          .tag(this.PersonalIdentification.IDENTIFICATION_TYPE_ID, { placeholder: '- Please Select -' })
         .end()
         .start()
           .addClass('label-input')

@@ -37,12 +37,19 @@ foam.CLASS({
     'currencyDAO',
     'notificationDAO',
     'stack',
-    'user'
+    'user',
+    'xeroService',
+    'quickbooksService',
+    'accountingIntegrationUtil'
   ],
 
   requires: [
     'foam.nanos.notification.Notification',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.accounting.AccountingErrorCodes',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
@@ -178,15 +185,17 @@ foam.CLASS({
         .end();
     },
 
-    function payNow(event) {
+    async function payNow(event) {
       event.preventDefault();
       event.stopPropagation();
+      let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(this.data);
+      if ( updatedInvoice === null || updatedInvoice === undefined ) return;
       this.stack.push({
         class: 'net.nanopay.sme.ui.SendRequestMoney',
         isPayable: this.isPayable,
         isForm: false,
         isDetailView: true,
-        invoice: this.data
+        invoice: updatedInvoice
       });
     },
 

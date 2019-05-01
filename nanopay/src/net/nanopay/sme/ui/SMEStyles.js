@@ -757,8 +757,8 @@ foam.CLASS({
       filter: hue-rotate(67deg) saturate(100000000) opacity(65%);
     }
 
-    .foam-comics-DAOControllerView-top-row {
-      margin-bottom: 20px !important;
+    .net-nanopay-sme-SMEController .foam-comics-DAOControllerView-top-row {
+      margin-bottom: 36px;
     }
 
     .foam-comics-DAOControllerView-title-container span {
@@ -810,8 +810,13 @@ foam.CLASS({
       background: #fff;
     }
 
-    .foam-u2-view-TableView tbody tr:first-child td {
-      border-top: solid 1px #e2e2e3 !important;
+    .foam-u2-view-TableView tbody tr:hover {
+      background: #fff;
+      cursor: auto;
+    }
+
+    .foam-u2-view-TableView thead th {
+      border-bottom: solid 1px #e2e2e3;
     }
 
     .foam-u2-md-overlaydropdown {
@@ -832,25 +837,9 @@ foam.CLASS({
       transform: translate(50px, -202px);
     }
 
-    .foam-u2-view-tableview-context-menu-item {
-      border-radius: 0px;
-      padding: 8px 24px !important;
-      font-size: 16px;
-      color: #2b2b2b;
-    }
-
-    .foam-u2-view-tableview-context-menu-item:hover {
-      background: #f3f2ff !important;
-      color: #604aff !important;
-    }
-
     .foam-u2-view-SimpleSearch p {
       opacity: 0;
       margin: 0px;
-    }
-
-    table {
-      width: 1024px !important;
     }
 
     /* user status styles */
