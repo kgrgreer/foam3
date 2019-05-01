@@ -23,11 +23,10 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
     'foam.util.Email',
-    'foam.util.Password',
-    'foam.util.SafetyUtil',
     'java.util.Calendar',
     'java.util.HashMap',
-    'java.util.List'
+    'java.util.List',
+    'java.util.UUID'
   ],
 
   methods: [
@@ -47,7 +46,7 @@ AppConfig appConfig = (AppConfig) x.get("appConfig");
 User systemUser = (User) getX().get("user");
 x = x.put("user", systemUser);
 
-DAO userDAO = (DAO) getLocalUserUserDAO();
+DAO userDAO = (DAO) getX().get("localUserUserDAO");
 DAO tokenDAO = (DAO) getTokenDAO();
 String url = appConfig.getUrl()
     .replaceAll("/$", "");
