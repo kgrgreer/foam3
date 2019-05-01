@@ -149,11 +149,13 @@ function build_jar {
         ./tools/js_build/build.js
     fi
 
+    gradle --daemon compileJava jar
+
     if [[ ! -z "$VERSION" ]]; then
         mvn versions:set -DnewVersion=$VERSION
     fi
 
-    mvn package
+    mvn package -Dmaven.main.skip
 }
 
 function delete_runtime_journals {
