@@ -126,6 +126,38 @@ foam.CLASS({
       width: 200px;
     }
 
+    .contact-tables .error-table-container .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 153px;
+    }
+
+    .contact-tables .error-table-container .foam-u2-view-TableView tbody > tr > td:nth-child(2) {
+      padding-left: 102px;
+    }
+
+    .contact-tables .error-table-container .other .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 56px;
+    }
+
+    .contact-tables .error-table-container .other .foam-u2-view-TableView tbody > tr > td:first-child {
+      padding-left: 87px;
+    }
+
+    .invoice-tables .error-table-container .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 80px;
+    }
+
+    .invoice-tables .error-table-container .foam-u2-view-TableView tbody > tr > td:first-child {
+      padding-left: 54px;
+    }
+
+    .invoice-tables .error-table-container .other .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 56px;
+    }
+
+    .contact-mismatch-table .error-table-container .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 56px;
+    }
+
     ^ .download-button {
       float: right;
       margin-right: 24px;
