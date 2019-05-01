@@ -35,9 +35,10 @@ import java.util.*;
 import static foam.mlang.MLang.*;
 
 public class XeroIntegrationService extends ContextAwareSupport implements net.nanopay.accounting.IntegrationService{
-
+  private  boolean oldToken = false;
 
   public XeroClient getClient(X x) {
+    this.oldToken = false;
     User user = (User) x.get("user");
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());
@@ -46,22 +47,34 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     DAO configDAO = ((DAO) x.get("xeroConfigDAO")).inX(x);
     XeroConfig config = (XeroConfig)configDAO.find(app.getUrl());
     XeroClient client = new XeroClient(config);
-    if ( token == null || token.getToken().equals("") || ! (user.getIntegrationCode() == IntegrationCode.XERO)) {
+    if ( token == null || token.getToken().equals("") || ! (user.getIntegrationCode() == IntegrationCode.XERO) ) {
+      return null;
+    } else if ( token.getOrganizationId() == null || token.getBusinessName() == null ) {
+      this.oldToken = true;
       return null;
     }
     client.setOAuthToken(token.getToken(), token.getTokenSecret());
     return client;
   }
 
-
-  public ResultResponse isSignedIn(X x) {
-    XeroClient client = this.getClient(x);
+  public ResultResponse isValidClient(XeroClient client, X x) {
     if ( client == null ) {
       return new ResultResponse.Builder(x)
         .setResult(false)
-        .setReason("User not signed in")
-        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
+        .setReason( this.oldToken ? "Token Expired" : "User not signed in")
+        .setErrorCode( this.oldToken ? AccountingErrorCodes.TOKEN_EXPIRED : AccountingErrorCodes.NOT_SIGNED_IN)
         .build();
+    }
+    return new ResultResponse.Builder(x)
+        .setResult(true)
+        .build();
+  }
+
+  public ResultResponse isSignedIn(X x) {
+    XeroClient client = this.getClient(x);
+    ResultResponse validClient = isValidClient(client, x);
+    if ( ! validClient.getResult() ) {
+      return validClient;
     }
     return new ResultResponse.Builder(x)
       .setResult(true)
@@ -270,12 +283,9 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     List<ContactMismatchPair> result = new ArrayList<>();
     List<ContactResponseItem> contactSuccess = new ArrayList<>();
 
-    if ( client == null ) {
-      return new ResultResponse.Builder(x)
-        .setResult(false)
-        .setReason("User not signed in")
-        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
-        .build();
+    ResultResponse validClient = isValidClient(client, x);
+    if ( ! validClient.getResult() ) {
+      return validClient;
     }
 
     try {
@@ -297,7 +307,9 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
         );
 
          ContactMismatchPair mismatchPair = importContact(x, xeroContact);
-         if ( mismatchPair.getResultCode() == ContactMismatchCode.SUCCESS ) {
+         if ( mismatchPair == null ) {
+           continue;
+         } else if ( mismatchPair.getResultCode() == ContactMismatchCode.SUCCESS ) {
            contactSuccess.add(prepareResponseItemFrom(xeroContact));
          }
          else {
@@ -529,13 +541,9 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());
 
-    // Check that user has accessed xero before
-    if ( client == null ) {
-      return new ResultResponse.Builder(x)
-        .setResult(false)
-        .setReason("User not signed in")
-        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
-        .build();
+    ResultResponse validClient = isValidClient(client, x);
+    if ( ! validClient.getResult() ) {
+      return validClient;
     }
 
     try {
@@ -595,12 +603,9 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       }
       //sync single invoice. Set desync to true to sync later if it fails
       try {
-        if ( client == null ) {
-          return new ResultResponse.Builder(x)
-            .setResult(false)
-            .setReason("User not signed in")
-            .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
-            .build();
+        ResultResponse validClient = isValidClient(client, x);
+        if ( ! validClient.getResult() ) {
+          return validClient;
         }
         com.xero.model.Invoice xeroInvoice = client.getInvoice(nanoInvoice.getXeroId());
         PaymentResponse payment = createPayment(x,nanoInvoice,xeroInvoice);
@@ -733,12 +738,10 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     User user  = (User) x.get("user");
     XeroClient client = getClient(x);
 
-    if ( client == null ) {
-      response.response = new ResultResponse.Builder(x)
-        .setResult(false)
-        .setReason("User not connected to Xero.")
-        .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
-        .build();
+    ResultResponse validClient = isValidClient(client, x);
+    if ( ! validClient.getResult() ) {
+      response.response = validClient;
+      return response;
     }
 
     BankAccount account;
@@ -834,13 +837,9 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     XeroClient client = getClient(x);
 
     try {
-      // Check that user has accessed xero before
-      if ( client == null ) {
-        return new ResultResponse.Builder(x)
-          .setResult(false)
-          .setReason("User is not connected to xero")
-          .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
-          .build();
+      ResultResponse validClient = isValidClient(client, x);
+      if ( ! validClient.getResult() ) {
+        return validClient;
       }
       Organisation organisations = client.getOrganisations().get(0);
       token.setBusinessName(organisations.getLegalName());
@@ -868,9 +867,11 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       logger.error(e);
       ResultResponse response = getExceptionResponse(x,e);
       ArraySink sink = new ArraySink();
-      accountingBankDAO.where(
-        EQ(AccountingBankAccount.XERO_ORGANIZATION_ID, token.getOrganizationId())
-      ).select(sink);
+      if ( token != null && token.getOrganizationId() != null ) {
+        accountingBankDAO.where(
+          EQ(AccountingBankAccount.XERO_ORGANIZATION_ID, token.getOrganizationId())
+        ).select(sink);
+      }
       banksList = sink.getArray();
       response.setBankAccountList(banksList.toArray(new AccountingBankAccount[banksList.size()]));
       return saveResult(x, "bankAccountSync", response);
@@ -888,12 +889,9 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     ContactMismatchPair[] contactMismatchPair = new ContactMismatchPair[1];
 
     try {
-      if ( client == null ) {
-        return new ResultResponse.Builder(x)
-          .setResult(false)
-          .setReason("User not signed in")
-          .setErrorCode(AccountingErrorCodes.NOT_SIGNED_IN)
-          .build();
+      ResultResponse validClient = isValidClient(client, x);
+      if ( ! validClient.getResult() ) {
+        return validClient;
       }
 
       XeroInvoice invoice = (XeroInvoice) nanoInvoice;
@@ -964,19 +962,19 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     if ( invoice.getDueDate() != null ) {
       errorItem.setDueDate(format.format(invoice.getDueDate().getTime()));
     } else {
-      errorItem.setDueDate("No due date set");
+      errorItem.setDueDate("");
     }
 
     if ( SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
-      errorItem.setInvoiceNumber(invoice.getInvoiceNumber());
+      errorItem.setInvoiceNumber("");
     } else {
-      errorItem.setInvoiceNumber("No invoice number");
+      errorItem.setInvoiceNumber(invoice.getInvoiceNumber());
     }
 
     if ( invoice.getAmountDue() != null && invoice.getCurrencyCode() != null ) {
       errorItem.setAmount(invoice.getAmountDue() + " " + invoice.getCurrencyCode().value());
     } else {
-      errorItem.setAmount("No amount set");
+      errorItem.setAmount("");
     }
 
     return errorItem;
@@ -986,10 +984,10 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     ContactResponseItem responseItem = new ContactResponseItem();
     responseItem.setBusinessName(xeroContact.getName());
     String name = "";
-    if ( SafetyUtil.isEmpty(xeroContact.getFirstName()) ) {
+    if ( ! SafetyUtil.isEmpty(xeroContact.getFirstName()) ) {
       name = xeroContact.getFirstName() + " ";
     }
-    if ( SafetyUtil.isEmpty(xeroContact.getName()) ) {
+    if ( ! SafetyUtil.isEmpty(xeroContact.getLastName()) ) {
       name += xeroContact.getLastName();
     }
     responseItem.setName(name);
