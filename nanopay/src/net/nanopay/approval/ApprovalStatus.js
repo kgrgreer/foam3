@@ -4,7 +4,7 @@ foam.ENUM({
 
   values: [
     {
-      name: 'REQESTED',
+      name: 'REQUESTED',
       label: 'Requested',
       documentation: 'Request was sent.'
     },
@@ -15,7 +15,7 @@ foam.ENUM({
     },
     {
       name: 'REJECTED',
-      label: 'Rejecdted',
+      label: 'Rejected',
       documentation: 'Request was rejected.'
     }
   ]
