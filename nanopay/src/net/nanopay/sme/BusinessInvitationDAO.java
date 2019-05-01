@@ -9,7 +9,7 @@ import foam.nanos.auth.*;
 import foam.nanos.auth.token.Token;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import foam.util.SafetyUtil;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.auth.email.EmailWhitelistEntry;
@@ -129,7 +129,6 @@ public class BusinessInvitationDAO
    */
   public void sendInvitationEmail(X x, Business business, Invitation invite, boolean internalUserBool) {
     DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
-    EmailService email = (EmailService) x.get("email");
     User agent = (User) x.get("agent");
     Logger logger = (Logger) getX().get("logger");
 
@@ -171,6 +170,6 @@ public class BusinessInvitationDAO
     url += "?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName;
     url += ( internalUserBool ? "#invited" : "#sign-up" ) ;
     args.put("link", url);
-    email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
+    EmailsUtility.sendEmailFromTemplate(x, business, message, "external-business-add", args);
   }
 }

@@ -9,7 +9,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.util.Emails.EmailsUtility'
   ],
 
   methods: [
@@ -28,7 +29,6 @@ foam.CLASS({
           token.setData(UUID.randomUUID().toString());
           token = (Token) tokenDAO.put(token);
 
-          EmailService email = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage();
           message.setTo(new String[]{user.getEmail()});
 
@@ -44,7 +44,7 @@ foam.CLASS({
           }
 
           String template = (user.getWelcomeEmailSent())? "verifyEmail" : "welcome-email";
-          email.sendEmailFromTemplate(x, user, message, template, args);
+          EmailsUtility.sendEmailFromTemplate(x, user, message, template, args);
           return true;
         } catch (Throwable t) {
           ((Logger) getLogger()).error(t);
