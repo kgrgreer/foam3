@@ -94,18 +94,18 @@ foam.CLASS({
           TokenService externalInvoiceToken = (TokenService) x.get("externalInvoiceToken");
 
           // FIELD LIST FOR:
-          // populateArgsForEmail(args(Map), invoice, name, fromName, sendTo, dated(bool), dueDate(bool), currencyDAO)
+          // populateArgsForEmail(args(Map), invoice, name, fromName, sendTo, dueDate(bool), currencyDAO)
           // sendEmailFunction(x, isContact, emailTemplateName, invoiceId, userBeingSentEmail, args(Map), sendTo, externalInvoiceToken)
 
           try {
             // ONE
             if ( invoiceIsBeingPaidButNotComplete ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), true, invoice.getIssueDate(), currencyDAO);
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getIssueDate(), currencyDAO);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             // TWO
             if ( invoiceIsARecievable ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), true, invoice.getDueDate(), currencyDAO);
+              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             // THREE  
@@ -118,14 +118,14 @@ foam.CLASS({
                 if ( args != null ) args.clear();
                 tempApprover = (User) userDAO.find(approver.getTargetId());
                 if ( tempApprover == null ) continue;
-                args = populateArgsForEmail(args, invoice, tempApprover.label(), payeeUser.label(), tempApprover.getEmail(), true, invoice.getDueDate(), currencyDAO);
+                args = populateArgsForEmail(args, invoice, tempApprover.label(), payeeUser.label(), tempApprover.getEmail(), invoice.getDueDate(), currencyDAO);
                 args.put("paymentTo", currentUser.label());
                 sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, tempApprover.getEmail(), externalInvoiceToken);
               }
             }
             // FOUR 
             if ( invoiceIsBeingPaidAndCompleted ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), false, invoice.getPaymentDate(), currencyDAO);
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
           } catch (Exception e) {
@@ -216,10 +216,6 @@ foam.CLASS({
           class: 'String'
         },
         {
-          name: 'dated',
-          class: 'Boolean'
-        },
-        {
           name: 'date',
           class: 'Date'
         },
@@ -241,10 +237,8 @@ foam.CLASS({
         args.put("currency", invoice.getDestinationCurrency());
         args.put("amount", amount);
     
-        if ( dated ) {
-          SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-            args.put("date", date != null ? dateFormat.format(date) : "n/a");
-        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
+        args.put("date", date != null ? dateFormat.format(date) : "n/a");
     
         return args;
       `
