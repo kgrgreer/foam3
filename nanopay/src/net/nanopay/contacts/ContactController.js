@@ -20,7 +20,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountingIntegrationUtil',
     'checkComplianceAndBanking',
+    'stack',
     'user'
   ],
 
