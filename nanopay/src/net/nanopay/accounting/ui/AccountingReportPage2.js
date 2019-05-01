@@ -113,7 +113,7 @@ foam.CLASS({
     }
 
     .contact-tables .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName, .foam-u2-view-TableView-th-message {
-      width: 320px;
+      width: 225px;
     }
     .contact-tables .error-table-container .other .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName {
       width: 200px;
@@ -124,6 +124,38 @@ foam.CLASS({
 
     .contact-mismatch-table .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName, .foam-u2-view-TableView-th-message {
       width: 200px;
+    }
+
+    .contact-tables .error-table-container .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 153px;
+    }
+
+    .contact-tables .error-table-container .foam-u2-view-TableView tbody > tr > td:nth-child(2) {
+      padding-left: 102px;
+    }
+
+    .contact-tables .error-table-container .other .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 56px;
+    }
+
+    .contact-tables .error-table-container .other .foam-u2-view-TableView tbody > tr > td:first-child {
+      padding-left: 87px;
+    }
+
+    .invoice-tables .error-table-container .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 80px;
+    }
+
+    .invoice-tables .error-table-container .foam-u2-view-TableView tbody > tr > td:first-child {
+      padding-left: 54px;
+    }
+
+    .invoice-tables .error-table-container .other .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 56px;
+    }
+
+    .contact-mismatch-table .error-table-container .foam-u2-view-TableView tbody > tr > td {
+      padding-left: 56px;
     }
 
     ^ .download-button {
@@ -149,11 +181,11 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Some invoices and contacts failed to sync' },
-    { name: 'TEXT', message: 'Fix these errors in ' },
+    { name: 'TEXT', message: ' Fix these errors in ' },
     { name: 'TEXT2', message: ' and sync again. Download the report for you convenience.' },
     { name: 'CONTACT_TEXT', message: 'The following contacts failed to sync due to missing information.' },
     { name: 'INVOICE_TEXT', message: 'The following invoices failed to sync due to missing information.' },
-    { name: 'MISMATCH_TEXT', message: 'The following contacts and invoices failed to sync due to technical difficulties. We apologize for your inconvenience. Please contact our support team for more details.' },
+    { name: 'MISMATCH_TEXT', message: 'The following contacts failed to sync due to technical difficulties. We apologize for your inconvenience. Please contact our support team for more details.' },
     { name: 'MISMATCH', message: `Contacts and Invoices that currently can't be synced` },
     { name: 'INVOICES_FAILED', message: 'Invoices failed to sync' },
     { name: 'CONTACTS_FAILED', message: 'Contacts failed to sync ' },
@@ -204,16 +236,16 @@ foam.CLASS({
 
           .start('h1').add(this.TITLE).addClass('title').end()
 
-          .start('div').addClass('report-2-container-tables').show(this.showContactError$)
+          .start('div').addClass('report-2-container-tables')
 
-            .start('div').addClass('report-2-container-title')
+            .start('div').addClass('report-2-container-title').show(this.showContactError$)
               .start()
                 .addClass('exclamation-mark')
                 .start('img').attrs({ src: 'images/ablii/warning-triangle.svg' }).end()
               .end()
               .start('p').add(this.CONTACTS_FAILED).end()
             .end()
-            .start()
+            .start().show(this.showContactError$)
               .add(this.CONTACT_TEXT + this.TEXT + this.user.integrationCode.label + this.TEXT2)
               .addClass('report-2-description')
             .end()
@@ -237,10 +269,10 @@ foam.CLASS({
                 .start('img').attrs({ src: 'images/ablii/warning-triangle.svg' }).end()
               .end()
               .start('p').add(this.INVOICES_FAILED).end()
-              .start()
-                .add(this.INVOICE_TEXT + this.TEXT + this.user.integrationCode.label + this.TEXT2)
-                .addClass('report-2-description')
-              .end()
+            .end()
+            .start().show(this.showInvoiceError$)
+              .add(this.INVOICE_TEXT + this.TEXT + this.user.integrationCode.label + this.TEXT2)
+              .addClass('report-2-description')
             .end()
             .call( function() {
               let invoiceErrors = self.reportResult.invoiceErrors;

@@ -16,6 +16,31 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'approvalCode',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'settlementResponse',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'settleDate',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'achRequest',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
+      name: 'achRequestDate',
+      visibility: foam.u2.Visibility.RO
+    },
+    {
+      class: 'String',
       name: 'rejectReason',
       visibility: foam.u2.Visibility.RO
     },
