@@ -43,7 +43,7 @@ public class DowJonesIntegrationTest extends Test {
       user.setFirstName("Blake");
       user.setLastName("Green");
       user.setEmailVerified(true);
-      user.setBusinessName("nanopay");
+      user.setOrganization("nanopay");
       user = (User) (((DAO) x_.get("localUserDAO")).put_(x_, user)).fclone();
     }
     return user;

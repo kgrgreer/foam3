@@ -500,6 +500,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
   'net.nanopay.meter.compliance.dowJones.DowJones',
   'net.nanopay.meter.compliance.dowJones.DowJonesRestInterface',
+  'net.nanopay.meter.compliance.dowJones.EntityKYCValidator',
   'net.nanopay.meter.compliance.dowJones.EntityNameSearchRequest',
   'net.nanopay.meter.compliance.dowJones.IDTypeSearchRequest',
   'net.nanopay.meter.compliance.dowJones.Match',
@@ -507,6 +508,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.MatchPayload',
   'net.nanopay.meter.compliance.dowJones.MetadataSearchResponse',
   'net.nanopay.meter.compliance.dowJones.NameSearchRequest',
+  'net.nanopay.meter.compliance.dowJones.PersonKYCValidator',
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
   // meter tests
