@@ -8,9 +8,8 @@ import foam.dao.DAO;
 import foam.lib.csv.CSVSupport;
 import foam.nanos.logger.Logger;
 import net.nanopay.sps.SPSCredentials;
-import net.nanopay.sps.SPSRejectFileRecord;
+import net.nanopay.sps.SPSSettlementFileRecord;
 import net.nanopay.sps.SPSTransaction;
-import net.nanopay.tx.model.TransactionStatus;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +23,7 @@ import java.util.regex.Pattern;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-public class SPSRejectFileProcessor implements ContextAgent {
+public class SPSSettlementFileProcessor implements ContextAgent {
   @Override
   public void execute(X x) {
     SPSCredentials spsCredentials = (SPSCredentials) x.get("SPSCredentials");
@@ -56,8 +55,8 @@ public class SPSRejectFileProcessor implements ContextAgent {
       channel.connect();
       channelSftp = (ChannelSftp) channel;
 
-      Vector fileList = channelSftp.ls(sftpPathSegment + "/test/");
-      Pattern pattern = Pattern.compile("chargeback[0-9]{6}.csv");
+      Vector fileList = channelSftp.ls(sftpPathSegment + "/settlement/");
+      Pattern pattern = Pattern.compile("settlement[0-9]{6}.csv");
       for ( Object entry : fileList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
         Matcher matcher = pattern.matcher(e.getFilename());
@@ -67,17 +66,17 @@ public class SPSRejectFileProcessor implements ContextAgent {
       }
 
       for ( String fileName : fileNames ) {
-        InputStream fileInputStream = channelSftp.get(sftpPathSegment + "/test/" + fileName);
+        InputStream fileInputStream = channelSftp.get(sftpPathSegment + "/settlement/" + fileName);
         String input = editFirstRow(x, fileInputStream);
         InputStream is = new ByteArrayInputStream(input.getBytes());
 
         ArraySink arraySink = new ArraySink();
-        csvSupport.inputCSV(is, arraySink, SPSRejectFileRecord.getOwnClassInfo());
+        csvSupport.inputCSV(is, arraySink, SPSSettlementFileRecord.getOwnClassInfo());
 
         List list = arraySink.getArray();
         for ( Object record : list ) {
-          SPSRejectFileRecord spsRejectFileRecord = (SPSRejectFileRecord) record;
-          processTransaction(x, spsRejectFileRecord);
+          SPSSettlementFileRecord settlementFileRecord = (SPSSettlementFileRecord) record;
+          processTransaction(x, settlementFileRecord);
         }
       }
 
@@ -85,26 +84,26 @@ public class SPSRejectFileProcessor implements ContextAgent {
       boolean exist = false;
       for ( Object entry : folderList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
-        if ( "Archive_ChargebackFile".equals(e.getFilename()) ) {
+        if ( "Archive_SettlementFile".equals(e.getFilename()) ) {
           exist = true;
           break;
         }
       }
 
       if ( ! exist ) {
-        channelSftp.mkdir(sftpPathSegment + "/Archive_ChargebackFile");
-        channelSftp.chmod(Integer.parseInt("777", 8), sftpPathSegment + "/Archive_ChargebackFile");
+        channelSftp.mkdir(sftpPathSegment + "/Archive_SettlementFile");
+        channelSftp.chmod(Integer.parseInt("777", 8), sftpPathSegment + "/Archive_SettlementFile");
       }
 
-      String srcFileDirectory = sftpPathSegment + "/test/";
-      String dstFileDirectory = sftpPathSegment + "/Archive_ChargebackFile/";
+      String srcFileDirectory = sftpPathSegment + "/settlement/";
+      String dstFileDirectory = sftpPathSegment + "/Archive_SettlementFile/";
 
       // move processed files
       for ( String fileName : fileNames ) {
         channelSftp.rename(srcFileDirectory + fileName, dstFileDirectory + fileName);
       }
 
-      logger.debug("SPS Chargeback file processing finished");
+      logger.debug("SPS Settlement file processing finished");
 
     } catch (JSchException | SftpException e) {
       logger.error(e);
@@ -114,18 +113,20 @@ public class SPSRejectFileProcessor implements ContextAgent {
     }
   }
 
-  public static void processTransaction(X x, SPSRejectFileRecord spsRejectFileRecord) {
+  public static void processTransaction(X x, SPSSettlementFileRecord spsSettlementFileRecord) {
     DAO transactionDao = (DAO)x.get("localTransactionDAO");
     SPSTransaction tran = (SPSTransaction) transactionDao.find(AND(
-      EQ(SPSTransaction.BATCH_ID, spsRejectFileRecord.getBatch_ID()),
-      EQ(SPSTransaction.ITEM_ID, spsRejectFileRecord.getItem_ID())
+      EQ(SPSTransaction.BATCH_ID, spsSettlementFileRecord.getBatch_ID()),
+      EQ(SPSTransaction.ITEM_ID, spsSettlementFileRecord.getItem_ID())
     ));
 
     if ( tran != null ) {
       tran = (SPSTransaction) tran.fclone();
-      tran.setStatus(TransactionStatus.DECLINED);
-      tran.setRejectReason(spsRejectFileRecord.getReason());
-      tran.setChargebackTime(spsRejectFileRecord.getChargeBack());
+
+      tran.setSettlementResponse(spsSettlementFileRecord.getResponse());
+      tran.setSettleDate(spsSettlementFileRecord.getSettle_Date());
+      tran.setAchRequest(spsSettlementFileRecord.getAch_Request());
+      tran.setAchRequestDate(spsSettlementFileRecord.getAch_Request_Date());
 
       transactionDao.put(tran);
     }
@@ -141,7 +142,12 @@ public class SPSRejectFileProcessor implements ContextAgent {
       br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
       if ( (line = br.readLine()) != null ) {
-        line = line.replaceAll(" ", "_").replaceAll("/", "_");
+        line = line.replaceAll(" ", "_")
+          .replaceAll("/", "_")
+          .replaceAll("\\+", "_")
+          .replaceAll("#", "Num")
+          .replaceAll("\\(", "")
+          .replaceAll("\\)", "");
         sb.append(line).append("\n");
       }
 
