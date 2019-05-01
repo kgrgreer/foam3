@@ -39,5 +39,25 @@ foam.CLASS({
       name: 'responseBody',
       documentation: 'Body retreived from the body response data'
     }
+  ],
+
+  methods: [
+    {
+      name: 'getComplianceValidationStatus',
+      type: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
+      javaCode: `
+        String result = ! SafetyUtil.isEmpty(getResponseBody.getMatches()) ? getResponseBody.getMatches() : getResponseBody();
+        switch (result) {
+          case "ACCEPT":
+            return ComplianceValidationStatus.VALIDATED;
+          case "DENY":
+            return ComplianceValidationStatus.REJECTED;
+          case "MANUAL_REVIEW":
+            return ComplianceValidationStatus.INVESTIGATING;
+          default:
+            return null;
+        }
+      `
+    }
   ]
 });
