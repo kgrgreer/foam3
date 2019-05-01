@@ -11,13 +11,6 @@ foam.CLASS({
 
   documentation: 'Implementation of Token Service used for reset password for nanopay Users',
 
-  // imports: [
-  //   'appConfig',
-  //   'email',
-  //   'localUserDAO',
-  //   'tokenDAO'
-  // ],
-
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
