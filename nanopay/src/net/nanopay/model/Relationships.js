@@ -585,3 +585,25 @@ foam.RELATIONSHIP({
   inverseName: 'business',
   targetDAOKey: 'beneficialOwnerDAO'
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'debits',
+  inverseName: 'sourceAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  targetDAOKey: 'transactionDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'credits',
+  inverseName: 'destinationAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  targetDAOKey: 'transactionDAO',
+  targetProperty: { visibility: 'RO' }
+});
