@@ -27,10 +27,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.util.Calendar',
     'java.util.HashMap',
-    'java.util.List',
-    'java.util.UUID',
-    'net.nanopay.contacts.Contact',
-    'net.nanopay.model.Business',
+    'java.util.List'
   ],
 
   methods: [
@@ -50,7 +47,7 @@ AppConfig appConfig = (AppConfig) x.get("appConfig");
 User systemUser = (User) getX().get("user");
 x = x.put("user", systemUser);
 
-DAO userDAO = (DAO) getLocalUserDAO();
+DAO userDAO = (DAO) getLocalUserUserDAO();
 DAO tokenDAO = (DAO) getTokenDAO();
 String url = appConfig.getUrl()
     .replaceAll("/$", "");
@@ -72,13 +69,9 @@ if ( list == null || list.size() == 0 ) {
   throw new RuntimeException("User not found");
 }
 
-// find first non Business or Contact entry
+// Take first user, but report that other's matched.
 user = null;
 for ( Object u : list ) {
-  if ( u instanceof Contact ||
-       u instanceof Business ) {
-    continue;
-  }
   if ( user == null ) {
     user = (User) u;
   } else {
