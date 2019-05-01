@@ -91,7 +91,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'issueDate',
       documentation: `The date that the invoice was issued (created).`,
-      label: 'Issue Date',
+      label: 'Date Issued',
       required: true,
       factory: function() {
         if ( this.draft ) {
