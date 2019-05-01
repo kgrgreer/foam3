@@ -5,12 +5,21 @@ import java.security.MessageDigest;
 
 public class MerkleTree {
 
-  protected static final int DEFAULT_SIZE = 50000;
+  protected static int DEFAULT_SIZE = 50000;
+
 
   protected byte[][] data_ = null;
   protected int size_ = 0;
   protected String hashAlgorithm_;
   protected int treeDepth_ = 0;
+
+  public void setDefaultSize(int size) {
+    DEFAULT_SIZE = size;
+  }
+
+  public byte[][] getData() {
+    return data_;
+  }
 
 
   private ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {

@@ -4,13 +4,10 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'java.io.*',
-    'java.util.Arrays',
+    'foam.util.SafetyUtil',
     'java.security.MessageDigest',
-    'java.nio.charset.StandardCharsets',
     'org.bouncycastle.util.encoders.Hex',
-
-    'net.nanopay.security.MerkleTree',
+    'net.nanopay.security.MerkleTree'
   ],
 
   axioms: [
@@ -88,6 +85,8 @@ foam.CLASS({
         MerkleTree_7_Node_Test();
         MerkleTree_12_Node_Test();
         MerkleTree_36_Node_Test();
+        MerkleTree_Previous_Root_Test();
+        MerkleTree_Default_Size_Test();
       `
     },
     {
@@ -636,6 +635,38 @@ foam.CLASS({
         } catch ( Throwable t ) {
           test(false, "Merkle tree failed to build correctly with N=36. " + t);
         }
+      `
+    },
+    {
+      name: 'MerkleTree_Previous_Root_Test',
+      javaCode: `
+      MerkleTree tree = new MerkleTree();
+      try {
+        tree.addHash(getHash("kristina"));
+        tree.addHash(getHash("smirnova"));
+      } catch (Exception e) {
+        test(false, "MerkleTree_Previous_Root_Test: failed to addHash. Message: " + e.getMessage());
+      }
+      byte[][] builtTree = tree.buildTree();
+      test(Hex.toHexString(builtTree[0]).equals(Hex.toHexString(tree.getData()[0])), "treegetdata");
+      `
+    },
+    {
+      name: 'MerkleTree_Default_Size_Test',
+      javaCode: `
+      int treeSize = 100;
+    MerkleTree tree = new MerkleTree();
+
+    tree.setDefaultSize(treeSize);
+
+    try {
+      for ( int i = 0; i < 3*treeSize+1; i++ ) {
+        tree.addHash(getHash("s"));
+      }
+    } catch (Exception e) {
+      test(false, "MerkleTree_Default_Size_Test: failed to addHash. Message: " + e.getMessage());
+    }
+    test(SafetyUtil.equals(tree.getData().length, treeSize * 4), "Length of data increases by defaultsize everytime tree.data modulo defaultSize is 0.");
       `
     }
   ]
