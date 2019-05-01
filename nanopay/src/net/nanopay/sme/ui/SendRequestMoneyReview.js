@@ -65,7 +65,7 @@ foam.CLASS({
       this.updateDisclosure();
 
       // Update the next label
-      this.nextLabel = 'Submit';
+      this.nextLabel = 'Approve';
       this.start().addClass(this.myClass())
         .start().show(this.loadingSpin.isHidden$)
           .start({
