@@ -333,6 +333,7 @@ var classes = [
   // auth
   'net.nanopay.auth.LoginAttempt',
   'net.nanopay.auth.NanopayUserAndGroupAuthService',
+  'net.nanopay.auth.NanopayResetPasswordTokenService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
 
