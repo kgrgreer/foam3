@@ -452,7 +452,10 @@ foam.CLASS({
         var m = foam.mlang.ExpressionsSingleton.create();
         return {
           class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.auth.ui.ContactSelectionView' },
+          selectionView: {
+            class: 'net.nanopay.auth.ui.UserSelectionView',
+            emptySelectionLabel: 'Select from contacts'
+          },
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
