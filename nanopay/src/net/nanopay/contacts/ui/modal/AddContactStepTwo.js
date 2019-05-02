@@ -97,15 +97,23 @@ foam.CLASS({
     ^adding-account{
       margin-top: 16px;
     }
+    ^ .net-nanopay-sme-ui-AddressView .label-input .label {
+      margin-top: 16px;
+      padding-bottom: 0px !important;
+    }
+    ^ .net-nanopay-sme-ui-AddressView .foam-u2-TextField {
+      margin-bottom: 0px !important;
+    }
   `,
 
   messages: [
     { name: 'BANKING_TITLE', message: 'Add banking information' },
-    { name: 'INSTRUCTION', message: 'Enter the banking information for this business.  Please make sure that this is accurate as payments will go directly to the specified account.' },
+    { name: 'INSTRUCTION', message: 'Enter the contact’s bank account information.  Please make sure that this is accurate as payments will go directly to the specified account.' },
     { name: 'LABEL_CA', message: 'Canada' },
     { name: 'LABEL_US', message: 'US' },
     { name: 'LABEL_ACH_ROUTING_LABEL', message: 'ACH Routing No.' },
     { name: 'LABEL_ACH_ACCOUNT_LABEL', message: 'ACH Account No.' },
+    { name: 'NAME_LABEL', message: 'Financial Institution Name' },
     { name: 'EDIT_BANK_ERR', message: 'Error Editing Bank Account. Please try again.' },
     { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
     { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
@@ -284,6 +292,13 @@ foam.CLASS({
                 .start()
                   .addClass('divider')
                 .end()
+                .start()
+                  .start()
+                    .addClass('field-label')
+                    .add(self.NAME_LABEL)
+                  .end()
+                  .tag(self.caAccount.NAME)
+                .end()
                 .tag(self.caAccount.ADDRESS.clone().copyFrom({
                   view: {
                     class: 'net.nanopay.sme.ui.AddressView',
@@ -315,10 +330,17 @@ foam.CLASS({
                 .start()
                   .addClass('divider')
                 .end()
+                .start()
+                  .start().addClass('field-label')
+                    .add(self.NAME_LABEL)
+                  .end()
+                  .tag(self.usAccount.NAME)
+                .end()
                 .tag(self.usAccount.ADDRESS.clone().copyFrom({
                   view: {
                     class: 'net.nanopay.sme.ui.AddressView',
-                    withoutCountrySelection: true                  }
+                    withoutCountrySelection: true
+                  }
                 }))
               .endContext();
           }

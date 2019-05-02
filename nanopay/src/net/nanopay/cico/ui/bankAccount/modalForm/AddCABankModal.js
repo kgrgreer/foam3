@@ -49,7 +49,6 @@ foam.CLASS({
       flex-direction: column;
       justify-content: center;
       align-items: center;
-
       height: 100%;
     }
     ^ .spinner-container .net-nanopay-ui-LoadingSpinner img {
@@ -85,9 +84,7 @@ foam.CLASS({
       this.viewData.user = this.user;
       this.views = {
         'voidCheck'  : { view: { class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankVoidForm' }, startPoint: true },
-        'pad'        : { view: { class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankPADForm' } },
-        'microCheck' : { view: { class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm' } },
-        'done'       : { view: { class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankDoneForm' } }
+        'pad'        : { view: { class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankPADForm' } }
       };
     },
 

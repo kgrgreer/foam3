@@ -22,6 +22,8 @@ import foam.nanos.auth.User;
 import foam.nanos.fs.File;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
+import net.nanopay.accounting.resultresponse.ContactResponseItem;
+import net.nanopay.accounting.resultresponse.InvoiceResponseItem;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
 import net.nanopay.accounting.*;
@@ -34,6 +36,7 @@ import net.nanopay.model.Currency;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -80,8 +83,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   @Override
   public ResultResponse contactSync(X x) {
     List<ContactMismatchPair> result = new ArrayList<>();
-    List<String> invalidContacts = new ArrayList<>();
-    List<String> success = new ArrayList<>();
+    List<ContactResponseItem> success = new ArrayList<>();
+    HashMap<String, List<ContactResponseItem>> contactErrors = this.initContactErrors();
 
     try {
 
@@ -91,7 +94,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       for ( NameBase contact : contacts ) {
         try {
           // do validation
-          if ( ! isValidContact(contact, invalidContacts) ) {
+          if ( ! isValidContact(contact, contactErrors) ) {
             continue;
           }
 
@@ -101,12 +104,20 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           if ( mismatch != null ) {
             result.add(mismatch);
           } else {
-            success.add("QuickBooks contact " + contact.getDisplayName() + " import successfully");
+            success.add(prepareContactResponseItem(contact));
           }
 
         } catch ( Exception e ) {
-          logger.error(e);
-          invalidContacts.add("Can not import quickbooks contact # " + contact.getId() + ", " + e.getMessage());
+          if ( e.getMessage().equals("skip")) {
+
+          } else {
+            logger.error(e);
+            ContactResponseItem errorItem = new ContactResponseItem();
+            errorItem.setName(contact.getDisplayName());
+            errorItem.setBusinessName(contact.getCompanyName());
+            errorItem.setMessage(e.getMessage());
+            contactErrors.get("OTHER").add(errorItem);
+          }
         }
 
       }
@@ -118,8 +129,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return saveResult(x, "contactSync", new ResultResponse.Builder(x)
       .setResult(true)
       .setContactSyncMismatches(result.toArray(new ContactMismatchPair[result.size()]))
-      .setContactSyncErrors(invalidContacts.toArray(new String[invalidContacts.size()]))
-      .setSuccessContact(success.toArray(new String[success.size()]))
+      .setContactErrors(contactErrors)
+      .setSuccessContact(success.toArray(new ContactResponseItem[success.size()]))
       .build());
   }
 
@@ -127,8 +138,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse invoiceSync(X x) {
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-    List<String> errorResult = new ArrayList<>();
-    List<String> successResult = new ArrayList<>();
+    List<InvoiceResponseItem> successResult = new ArrayList<>();
+    HashMap<String, List<InvoiceResponseItem>> invoiceErrors = this.initInvoiceErrors();
 
     try {
 
@@ -140,16 +151,14 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       for ( Transaction invoice : list ) {
 
         try {
-          String importResult = importInvoice(x, invoice);
-          if ( importResult != null ) {
-            errorResult.add(importResult);
-          } else {
-            successResult.add("QuickBooks invoice " + invoice.getDocNumber() + " import successfully.");
+          String importResult = importInvoice(x, invoice, invoiceErrors);
+          if ( importResult == null ) {
+            successResult.add(prepareErrorItemFrom(invoice));
           }
 
         } catch ( Exception e ) {
           logger.error(e);
-          errorResult.add(e.getMessage());
+          invoiceErrors.get("OTHER").add(prepareErrorItemFrom(invoice));
         }
       }
 
@@ -161,8 +170,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     return saveResult(x, "invoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
-      .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
-      .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
+      .setSuccessInvoice(successResult.toArray(new InvoiceResponseItem[successResult.size()]))
+      .setInvoiceErrors(invoiceErrors)
       .build());
   }
 
@@ -170,8 +179,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   public ResultResponse singleInvoiceSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
-    List<String> errorResult = new ArrayList<>();
-    List<String> successResult = new ArrayList<>();
+    HashMap<String, List<InvoiceResponseItem>> invoiceErrors = this.initInvoiceErrors();
+    List<InvoiceResponseItem> successResult = new ArrayList<>();
 
 
     try {
@@ -197,11 +206,9 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       Transaction invoice = fetchInvoiceById(x, type, qInvoice.getQuickId());
 
-      String importResult = importInvoice(x, invoice);
+      String importResult = importInvoice(x, invoice, invoiceErrors);
       if ( importResult != null ) {
-        errorResult.add(importResult);
-      } else {
-        successResult.add("QuickBooks invoice " + invoice.getDocNumber() + " import successfully.");
+        successResult.add(prepareErrorItemFrom(invoice));
       }
 
     } catch ( Exception e ) {
@@ -210,8 +217,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     return saveResult(x, "singleInvoiceSync", new ResultResponse.Builder(x)
       .setResult(true)
-      .setInvoiceSyncErrors(errorResult.toArray(new String[errorResult.size()]))
-      .setSuccessInvoice(successResult.toArray(new String[successResult.size()]))
+      .setSuccessInvoice(successResult.toArray(new InvoiceResponseItem[successResult.size()]))
+      .setInvoiceErrors(invoiceErrors)
       .build());
   }
 
@@ -283,10 +290,12 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       logger.error(e);
       ResultResponse response = errorHandler(e);
       ArraySink sink = new ArraySink();
-      accountingBankDAO.where(
-        EQ(AccountingBankAccount.REALM_ID, token.getRealmId())
-      ).select(sink);
-      results = sink.getArray();
+      if ( token != null && token.getRealmId() != null ) {
+        accountingBankDAO.where(
+          EQ(AccountingBankAccount.REALM_ID, token.getRealmId())
+        ).select(sink);
+        results = sink.getArray();
+      }
       response.setBankAccountList(results.toArray(new AccountingBankAccount[results.size()]));
       resultWrapper.setResultResponse(resultResponse);
       resultDAO.inX(x).put(resultWrapper);
@@ -411,19 +420,26 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return resultResponse;
   }
 
-  public boolean isValidContact(NameBase quickContact, List<String> invalidContacts) {
-    if (
-      quickContact.getPrimaryEmailAddr() == null ||
-      SafetyUtil.isEmpty(quickContact.getCompanyName()) )
-    {
-      String str = "Quick Contact # " +
-        quickContact.getId() +
-        " can not be added because the contact is missing: " +
-        (quickContact.getPrimaryEmailAddr() == null ? "[Email]" : "") +
-        (SafetyUtil.isEmpty(quickContact.getCompanyName()) ? " [Company Name] " : "");
-      invalidContacts.add(str);
+  public boolean isValidContact(NameBase quickContact, HashMap<String, List<ContactResponseItem>> contactErrors) {
+    ContactResponseItem error = new ContactResponseItem();
+    error.setName(quickContact.getDisplayName());
+
+    if ( quickContact.getPrimaryEmailAddr() == null && SafetyUtil.isEmpty(quickContact.getCompanyName()) ) {
+      contactErrors.get("MISS_BUSINESS_EMAIL").add(error);
       return false;
     }
+
+    if ( SafetyUtil.isEmpty(quickContact.getCompanyName()) ) {
+      contactErrors.get("MISS_BUSINESS").add(error);
+      return false;
+    }
+
+    if ( quickContact.getPrimaryEmailAddr() == null ) {
+      error.setBusinessName(quickContact.getCompanyName());
+      contactErrors.get("MISS_EMAIL").add(error);
+      return false;
+    }
+
     return true;
   }
 
@@ -449,6 +465,12 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       EQ(Contact.OWNER, user.getId())
     ));
 
+    if ( existContact instanceof QuickbooksContact ) {
+      if ( ((QuickbooksContact) existContact).getLastUpdated() >= importContact.getMetaData().getLastUpdatedTime().getTime() ) {
+        throw new RuntimeException("skip");
+      }
+    }
+
     // existing user
     User existUser = (User) userDAO.find(
       EQ(User.EMAIL, email.getAddress())
@@ -459,6 +481,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       // existing user
       if ( existUser != null ) {
+        existContact.setFirstName(existUser.getFirstName());
+        existContact.setLastName(existUser.getLastName());
         return new ContactMismatchPair.Builder(x)
           .setExistContact(existContact)
           .setResultCode(ContactMismatchCode.EXISTING_USER_CONTACT)
@@ -496,6 +520,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true);
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
+          temp.setFirstName(existUser.getFirstName());
+          temp.setLastName(existUser.getLastName());
           temp.setOrganization(business.getOrganization());
           temp.setBusinessName(business.getBusinessName());
           temp.setBusinessId(business.getId());
@@ -512,8 +538,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           temp.setEmail(email.getAddress());
           temp.setFirstName(existUser.getFirstName());
           temp.setLastName(existUser.getLastName());
-          temp.setOrganization("TBD");
-          temp.setBusinessName("TBD");
+          temp.setOrganization("MULTI_BUSINESS");
+          temp.setBusinessName("MULTI_BUSINESS");
           return new ContactMismatchPair.Builder(x)
             .setExistContact(temp)
             .setResultCode(ContactMismatchCode.EXISTING_USER_MULTI)
@@ -609,20 +635,65 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     newContact.setQuickId(importContact.getId());
     newContact.setRealmId(token.getRealmId());
     newContact.setOwner(user.getId());
+    newContact.setLastUpdated(importContact.getMetaData().getLastUpdatedTime().getTime());
 
     return newContact;
   }
 
-  public String importInvoice(X x, Transaction qInvoice) {
+  public InvoiceResponseItem prepareErrorItemFrom(Transaction qInvoice) {
+    Date dueDate = getDueDateFrom(qInvoice);
+    BigDecimal amount  = getTotalAmountFrom(qInvoice);
 
-    if ( ! qInvoice.getCurrencyRef().getValue().equals("USD") &&
-         ! qInvoice.getCurrencyRef().getValue().equals("CAD") ) {
-      return "Invoice " + qInvoice.getDocNumber() +
-        " can not import because we don't support currency " + qInvoice.getCurrencyRef().getValue();
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+    InvoiceResponseItem errorItem = new InvoiceResponseItem();
+    if ( dueDate != null ) {
+      errorItem.setDueDate(format.format(dueDate));
+    } else {
+      errorItem.setDueDate("");
     }
+
+    if ( qInvoice.getDocNumber() != null ) {
+      errorItem.setInvoiceNumber(qInvoice.getDocNumber());
+    } else {
+      errorItem.setInvoiceNumber("");
+    }
+
+    if ( amount != null ) {
+      errorItem.setAmount(amount.toString() + " " + qInvoice.getCurrencyRef().getValue());
+    } else {
+      errorItem.setAmount("");
+    }
+
+    return errorItem;
+  }
+
+  public ContactResponseItem prepareContactResponseItem(NameBase contact) {
+    ContactResponseItem responseItem = new ContactResponseItem();
+    responseItem.setName(contact.getDisplayName());
+    responseItem.setBusinessName(contact.getCompanyName());
+    return responseItem;
+  }
+
+  public String importInvoice(X x, Transaction qInvoice, HashMap<String, List<InvoiceResponseItem>> invoiceErrors) {
+    // get data from invoice
+    Date dueDate = getDueDateFrom(qInvoice);
+    BigDecimal balance = getBalanceFrom(qInvoice);
+    BigDecimal amount  = getTotalAmountFrom(qInvoice);
+
+    // prepare error item
+    InvoiceResponseItem errorItem = prepareErrorItemFrom(qInvoice);
 
     User user = (User) x.get("user");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
+
+    // check currency support
+    if ( ! qInvoice.getCurrencyRef().getValue().equals("USD") &&
+         ! qInvoice.getCurrencyRef().getValue().equals("CAD") ) {
+      invoiceErrors.get("CURRENCY_NOT_SUPPORT").add(errorItem);
+      return "Invoice " + qInvoice.getDocNumber() +
+        " can not import because we don't support currency " + qInvoice.getCurrencyRef().getValue();
+    }
 
     QuickbooksInvoice existInvoice = (QuickbooksInvoice) invoiceDAO.inX(x).find(
       AND(
@@ -631,20 +702,20 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         EQ(QuickbooksInvoice.CREATED_BY, user.getId())
       ));
 
-    BigDecimal balance = qInvoice instanceof Bill ?
-      ( (Bill) qInvoice ) .getBalance() : ( (Invoice) qInvoice ) .getBalance();
-
     if ( existInvoice != null ) {
 
+      if ( existInvoice.getLastUpdated() >= qInvoice.getMetaData().getLastUpdatedTime().getTime() ) {
+        return "skip";
+      }
       existInvoice = (QuickbooksInvoice) existInvoice.fclone();
 
       // if desync, continue
       if ( existInvoice.getDesync() ) {
-        return null;
+        return "skip";
       }
 
       if ( qInvoice instanceof Invoice && net.nanopay.invoice.model.InvoiceStatus.DRAFT != existInvoice.getStatus() ) {
-        return null;
+        return "skip";
       }
 
       if (! (
@@ -652,7 +723,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           net.nanopay.invoice.model.InvoiceStatus.DRAFT   == existInvoice.getStatus() ||
           net.nanopay.invoice.model.InvoiceStatus.OVERDUE == existInvoice.getStatus() ))
       {
-        return null;
+        return "skip";
       }
 
       if ( balance.doubleValue() == 0.0 && existInvoice.getAmount() != 0 ) {
@@ -661,14 +732,14 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         existInvoice.setDraft(true);
         invoiceDAO.inX(x).put(existInvoice);
         invoiceDAO.inX(x).remove(existInvoice);
-        return null;
+        return "skip";
       }
     }
 
     if ( existInvoice == null ) {
 
       if ( balance.doubleValue() == 0.0 ) {
-        return null;
+        return "skip";
       }
 
       existInvoice = new QuickbooksInvoice();
@@ -679,12 +750,18 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       ( (Bill) qInvoice )   .getVendorRef().getValue() :
       ( (Invoice) qInvoice ).getCustomerRef().getValue();
 
+    if ( id == null || SafetyUtil.isEmpty(id) ) {
+      invoiceErrors.get("MISS_CONTACT").add(errorItem);
+      return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
+    }
+
     AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.inX(x).find(AND(
       EQ(AccountingContactEmailCache.QUICK_ID, id),
       EQ(AccountingContactEmailCache.REALM_ID, token.getRealmId())
     ));
 
     if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
+      invoiceErrors.get("MISS_CONTACT").add(errorItem);
       return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
     }
 
@@ -728,10 +805,26 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     existInvoice.setBusinessName(token.getBusinessName());
     existInvoice.setCreatedBy(user.getId());
     existInvoice.setContactId(contact.getId());
+    existInvoice.setLastUpdated(qInvoice.getMetaData().getLastUpdatedTime().getTime());
 
     invoiceDAO.inX(x).put(existInvoice);
 
     return null;
+  }
+
+  public Date getDueDateFrom(Transaction qbsInvoice) {
+    return qbsInvoice instanceof Bill ?
+      ( (Bill) qbsInvoice ) .getDueDate() : ( (Invoice) qbsInvoice ) .getDueDate();
+  }
+
+  public BigDecimal getBalanceFrom(Transaction qbsInvoice) {
+    return qbsInvoice instanceof Bill ?
+      ( (Bill) qbsInvoice ) .getBalance() : ( (Invoice) qbsInvoice ) .getBalance();
+  }
+
+  public BigDecimal getTotalAmountFrom(Transaction qbsInvoice) {
+    return qbsInvoice instanceof Bill ?
+      ( (Bill) qbsInvoice ) .getTotalAmt() : ( (Invoice) qbsInvoice ) .getTotalAmt();
   }
 
   public File[] getAttachments(X x, String type, String id) {
@@ -904,7 +997,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     QuickbooksConfig    config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.inX(x).find(user.getId());
 
-    if ( token == null ) {
+    if ( token == null || token.getRealmId() == null || token.getBusinessName() == null ) {
       throw new AccountingException(AccountingErrorCodes.TOKEN_EXPIRED.getLabel(), AccountingErrorCodes.TOKEN_EXPIRED);
     }
 
@@ -971,6 +1064,27 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     } catch ( Exception e ) {
       throw new AccountingException("Error fetch QuickBook data.", e);
     }
+  }
+
+  public HashMap<String, List<ContactResponseItem>> initContactErrors() {
+    HashMap<String, List<ContactResponseItem>> contactErrors = new HashMap<>();
+
+    contactErrors.put("MISS_BUSINESS_EMAIL", new ArrayList<>());
+    contactErrors.put("MISS_BUSINESS", new ArrayList<>());
+    contactErrors.put("MISS_EMAIL", new ArrayList<>());
+    contactErrors.put("OTHER", new ArrayList<>());
+
+    return contactErrors;
+  }
+
+  public HashMap<String, List<InvoiceResponseItem>> initInvoiceErrors() {
+    HashMap<String, List<InvoiceResponseItem>> invoiceErrors = new HashMap<>();
+
+    invoiceErrors.put("MISS_CONTACT", new ArrayList<>());
+    invoiceErrors.put("CURRENCY_NOT_SUPPORT", new ArrayList<>());
+    invoiceErrors.put("OTHER", new ArrayList<>());
+
+    return invoiceErrors;
   }
 
   public ResultResponse saveResult(X x, String method, ResultResponse resultResponse) {

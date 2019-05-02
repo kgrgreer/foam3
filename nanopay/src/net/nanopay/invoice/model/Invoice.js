@@ -91,7 +91,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'issueDate',
       documentation: `The date that the invoice was issued (created).`,
-      label: 'Issue Date',
+      label: 'Date Issued',
       required: true,
       factory: function() {
         if ( this.draft ) {
@@ -403,19 +403,24 @@ foam.CLASS({
       documentation: 'Original invoice file',
       view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' },
       tableCellFormatter: function(files) {
-        // TODO: Handle multiple files.
-        if ( Array.isArray(files) && files.length > 0 ) {
-          this
-            .start('a')
-              .attrs({
-                href: files[0].address,
-                target: '_blank'
-              })
-              .start()
-                .addClass('invoice-attachment-icon')
-              .end()
-            .end();
-        }
+        if ( ! (Array.isArray(files) && files.length > 0) ) return;
+        var actions = files.map((file) => {
+          return foam.core.Action.create({
+            label: file.filename,
+            code: function() {
+              window.open(file.address, '_blank');
+            }
+          });
+        });
+        this.tag({
+          class: 'foam.u2.view.OverlayActionListView',
+          data: actions,
+          obj: this,
+          activeImageURL: '/images/attachment-purple.svg',
+          restingImageURL: '/images/attachment.svg',
+          hoverImageURL: '/images/attachment.svg',
+          disabledImageURL: '/images/attachment.svg',
+        });
       }
     },
     {
@@ -447,11 +452,13 @@ foam.CLASS({
         var m = foam.mlang.ExpressionsSingleton.create();
         return {
           class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          selectionView: {
+            class: 'net.nanopay.auth.ui.UserSelectionView',
+            emptySelectionLabel: 'Select from contacts'
+          },
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              heading: 'Contacts',
               dao: foam.dao.PromisedDAO.create({
                 promise: X.businessDAO
                   .where(m.NEQ(net.nanopay.model.Business.STATUS, net.nanopay.admin.model.AccountStatus.DISABLED))
