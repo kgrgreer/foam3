@@ -43,7 +43,9 @@ foam.CLASS({
       border-radius: 3px;
       box-shadow: 1px 1.5px 1.5px 1px #dae1e9;
       background-color: #ffffff;
-      display: inline-block;
+      display: inline-flex;
+      justify-content: space-between;
+      align-items: center;
       margin-right: 16px;
       margin-bottom: 24px;
       padding: 15px 24px 15px 24px;
@@ -339,20 +341,30 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().add(this.IntegrationsTitle).addClass('title').end()
         .start().addClass('integration-box')
-          .start({ class: 'foam.u2.tag.Image', data: '/images/xero.png' }).addClass('accounting-logo').end()
-          .start().addClass('integration-info-div')
-            .start().add('Xero accounting').addClass('integration-box-title').end()
-            .start().add(this.xeroConnected$).addClass('account-info').end()
+          .start()
+            .start({ class: 'foam.u2.tag.Image', data: '/images/xero.png' }).addClass('accounting-logo').end()
+            .start().addClass('integration-info-div')
+              .start().add('Xero accounting').addClass('integration-box-title').end()
+              .start().add(this.xeroConnected$).addClass('account-info').end()
+            .end()
           .end()
-          .start(this.XERO_CONNECT, { label$: this.xeroBtnLabel$ }).enableClass('disconnect', this.showXeroDisconected$).end()
+          .start(this.XERO_CONNECT, {
+            label$: this.xeroBtnLabel$,
+            buttonStyle: 'SECONDARY'
+          }).enableClass('disconnect', this.showXeroDisconected$).end()
         .end()
         .start().addClass('integration-box')
-          .start({ class: 'foam.u2.tag.Image', data: '/images/quickbooks.png' }).addClass('accounting-logo').end()
-          .start().addClass('integration-info-div')
-            .start().add('Intuit quickbooks').addClass('integration-box-title').end()
-            .start().add(this.qbConnected$).addClass('account-info').end()
+          .start()
+            .start({ class: 'foam.u2.tag.Image', data: '/images/quickbooks.png' }).addClass('accounting-logo').end()
+            .start().addClass('integration-info-div')
+              .start().add('Intuit quickbooks').addClass('integration-box-title').end()
+              .start().add(this.qbConnected$).addClass('account-info').end()
+            .end()
           .end()
-          .start(this.QUICKBOOKS_CONNECT, { label$: this.qbBtnLabel$ }).enableClass('disconnect', this.showQuickBooksDisconected$).end()
+          .start(this.QUICKBOOKS_CONNECT, {
+            label$: this.qbBtnLabel$,
+            buttonStyle: 'SECONDARY'
+          }).enableClass('disconnect', this.showQuickBooksDisconected$).end()
         .end()
         .start().show(this.connected$)
           .start().add(this.BankMatchingTitle).addClass('title').end()
