@@ -6,8 +6,9 @@ foam.CLASS({
   javaImports: [
     'foam.util.SafetyUtil',
     'java.security.MessageDigest',
-    'org.bouncycastle.util.encoders.Hex',
-    'net.nanopay.security.MerkleTree'
+    'net.nanopay.security.MerkleTree',
+    'net.nanopay.security.MerkleTreeHelper',
+    'org.bouncycastle.util.encoders.Hex'
   ],
 
   axioms: [
@@ -32,6 +33,14 @@ foam.CLASS({
             @Override
             protected int computeTotalTreeNodes() {
               return super.computeTotalTreeNodes();
+            }
+
+            public void setDefaultSize(int size) {
+              defaultSize_ = size;
+            }
+
+            public byte[][] getData() {
+              return data_;
             }
           }
         `);
@@ -640,7 +649,7 @@ foam.CLASS({
     {
       name: 'MerkleTree_Previous_Root_Test',
       javaCode: `
-      MerkleTreeTestClass tree = new MerkleTreeTestClass();
+      TestMerkleTree tree = new TestMerkleTree();
       try {
         tree.addHash(getHash("kristina"));
         tree.addHash(getHash("smirnova"));
@@ -648,14 +657,24 @@ foam.CLASS({
         test(false, "MerkleTree_Previous_Root_Test: failed to addHash. Message: " + e.getMessage());
       }
       byte[][] builtTree = tree.buildTree();
-      test(Hex.toHexString(builtTree[0]).equals(Hex.toHexString(tree.getData()[0])), "treegetdata");
+
+      try {
+        tree.addHash(getHash("twinkle twinkle"));
+        tree.addHash(getHash("little star"));
+        tree.addHash(getHash("like a diamond in the sky"));
+      } catch (Exception e) {
+        test(false, "MerkleTree_Previous_Root_Test: failed to addHash. Message: " + e.getMessage());
+      }
+
+      byte[][] builtTree2 = tree.buildTree();
+      test(MerkleTreeHelper.FindHashIndex(builtTree2, builtTree[0]) != -1, "Second tree contains root fo the first tree.");
       `
     },
     {
       name: 'MerkleTree_Default_Size_Test',
       javaCode: `
       int treeSize = 100;
-      MerkleTreeTestClass tree = new MerkleTreeTestClass();
+      TestMerkleTree tree = new TestMerkleTree();
 
     tree.setDefaultSize(treeSize);
 
