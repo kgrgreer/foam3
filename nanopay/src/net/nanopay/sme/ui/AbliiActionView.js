@@ -13,11 +13,7 @@ foam.CLASS({
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      background-color: %SECONDARYCOLOR%;
-      color: white;
       outline: none;
-      border: 1px solid #4a33f4;
-      padding: 9px 16px;
     }
 
     ^ + ^ {
@@ -28,29 +24,70 @@ foam.CLASS({
       margin-right: 4px;
     }
 
-    ^:focus:not(:hover) {
-      border-width: 2px;
-      box-shadow: 0 1px 2px 0 rgba(22, 29, 37, 0.1), inset 0 1px 0 1px rgba(255, 255, 255, 0.06);
-      padding: 8px 15px;
-    }
-
     ^:hover:not(:disabled) {
       cursor: pointer;
-    }
-
-    ^:hover:not(:disabled):not(^secondary):not(^secondary-destructive):not(^destructive) {
-      border: 1px solid #294798;
-      background-color: %SECONDARYHOVERCOLOR%;
-    }
-
-    ^:disabled:not(^secondary):not(^secondary-destructive):not(^destructive) {
-      border: 1px solid %SECONDARYDISABLEDCOLOR%;
-      background-color: %SECONDARYDISABLEDCOLOR%;
     }
 
     ^unavailable {
       display: none;
     }
+
+
+    /*
+     * Primary
+     */
+
+    ^primary {
+      background-color: %SECONDARYCOLOR%;
+      color: white;
+      border: 1px solid #4a33f4;
+    }
+
+    ^primary:hover:not(:disabled) {
+      border: 1px solid #294798;
+      background-color: %SECONDARYHOVERCOLOR%;
+    }
+
+    ^primary:focus:not(:hover) {
+      border-color: #23186c;
+      box-shadow: 0 1px 2px 0 rgba(22, 29, 37, 0.1), inset 0 1px 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    ^primary:disabled {
+      border: 1px solid %SECONDARYDISABLEDCOLOR%;
+      background-color: %SECONDARYDISABLEDCOLOR%;
+    }
+
+
+    /*
+     * Primary destructive
+     */
+
+    ^primary-destructive {
+      background-color: %DESTRUCTIVECOLOR%;
+      border: 1px solid %DESTRUCTIVECOLOR%;
+    }
+
+    ^primary-destructive:hover {
+      background-color: %DESTRUCTIVEHOVERCOLOR%;
+      border-color: #a61414;
+    }
+
+    ^primary-destructive:focus {
+      border: 2px solid #a61414;
+      padding: 7px 15px;
+      box-shadow: 0 1px 2px 0 rgba(22, 29, 37, 0.1), inset 0 1px 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    ^primary-destructive:disabled {
+      background-color: %DESTRUCTIVEDISABLEDCOLOR%;
+      border-color: #ed8e8d;
+    }
+
+
+    /*
+     * Secondary
+     */
 
     ^secondary {
       border: 1px solid %SECONDARYCOLOR%;
@@ -64,10 +101,20 @@ foam.CLASS({
       color: %SECONDARYHOVERCOLOR%;
     }
 
+    ^secondary:focus:not(:hover) {
+      border-color: #432de7;
+      color: %SECONDARYHOVERCOLOR%;
+    }
+
     ^secondary:disabled {
       border-color: %SECONDARYDISABLEDCOLOR%;
       color: %SECONDARYDISABLEDCOLOR%;
     }
+
+
+    /*
+     * Secondary destructive
+     */
 
     ^secondary-destructive {
       border: 1px solid %DESTRUCTIVECOLOR%;
@@ -86,30 +133,14 @@ foam.CLASS({
       color: %DESTRUCTIVEDISABLEDCOLOR%;
     }
 
-    ^destructive {
-      background-color: %DESTRUCTIVECOLOR%;
-      border: 1px solid %DESTRUCTIVECOLOR%;
-    }
 
-    ^destructive:hover {
-      background-color: %DESTRUCTIVEHOVERCOLOR%;
-      border-color: #a61414;
-    }
-
-    ^destructive:focus {
-      border: 2px solid #a61414;
-      padding: 7px 15px;
-      box-shadow: 0 1px 2px 0 rgba(22, 29, 37, 0.1), inset 0 1px 0 1px rgba(255, 255, 255, 0.06);
-    }
-
-    ^destructive:disabled {
-      background-color: %DESTRUCTIVEDISABLEDCOLOR%;
-      border-color: #ed8e8d;
-    }
+    /*
+     * Tertiary
+     */
 
     ^tertiary {
       background: none;
-      border: none;
+      border: 1px solid transparent;
       box-shadow: none;
       color: #8e9090;
     }
@@ -118,15 +149,18 @@ foam.CLASS({
       color: %SECONDARYCOLOR%;
     }
 
-    /* TODO: Support buttons of different sizes */
+    ^tertiary:focus:not(:hover) {
+      border-color: #4a33f4;
+    }
+
+
+    /*
+     * Sizes
+     */
 
     ^small {
       font-size: 10px;
       padding: 8px 16px;
-    }
-
-    ^small:focus:not(:hover) {
-      padding: 7px 15px;
     }
 
     ^medium {
@@ -134,17 +168,9 @@ foam.CLASS({
       padding: 9px 16px;
     }
 
-    ^medium:focus:not(:hover) {
-      padding: 8px 15px;
-    }
-
     ^large {
       font-size: 16px;
       padding: 13px 16px;
-    }
-
-    ^large:focus:not(:hover) {
-      padding: 12px 15px;
     }
   `
 });
