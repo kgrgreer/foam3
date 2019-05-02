@@ -112,7 +112,7 @@ foam.CLASS({
         .start().addClass('bottom-modal')
           .start().addClass('float-right')
             .startContext({ data: this })
-              .start(this.CLOSE_MODAL).end()
+              .tag(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' })
               .start(this.ADD_USER).addClass('sme').addClass('button').addClass('primary').end()
             .endContext()
           .end()
