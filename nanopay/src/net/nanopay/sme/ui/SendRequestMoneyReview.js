@@ -58,6 +58,12 @@ foam.CLASS({
       margin-top: 15px;
     }
   `,
+  messages: [
+    {
+      name: 'APPROVE_INVOICE_LABEL',
+      message: 'Approve'
+    }
+  ],
 
   methods: [
     function initE() {
@@ -65,7 +71,7 @@ foam.CLASS({
       this.updateDisclosure();
 
       // Update the next label
-      this.nextLabel = 'Approve';
+      this.nextLabel = this.APPROVE_INVOICE_LABEL;
       this.start().addClass(this.myClass())
         .start().show(this.loadingSpin.isHidden$)
           .start({
