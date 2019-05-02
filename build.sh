@@ -159,6 +159,7 @@ function build_jar {
         # fi
 
         if [ "$RUN_JAR" -eq 1 ]; then
+            #gradle --daemon "${GRADLE_ARGS}" build
             gradle --daemon build
         else
            gradle --daemon build -x jar
