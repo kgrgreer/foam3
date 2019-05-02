@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'ctrl',
     'quickbooksService',
     'user',
     'userDAO',
@@ -22,6 +23,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
+    'net.nanopay.accounting.AccountingErrorCodes',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
@@ -326,6 +328,11 @@ foam.CLASS({
         this.accountingBankAccounts = await this.xeroService.bankAccountSync(null);
       }
       if ( this.accountingBankAccounts ) {
+        if ( this.accountingBankAccounts.errorCode == this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+          this.ctrl.add(this.Popup.create({ closeable: false }).tag({
+            class: 'net.nanopay.accounting.AccountingTimeOutModal'
+          }));
+        }
         for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
           if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
             bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name + '-' + this.accountingBankAccounts.bankAccountList[i].currencyCode]);

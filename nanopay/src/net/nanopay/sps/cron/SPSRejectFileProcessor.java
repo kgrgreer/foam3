@@ -7,7 +7,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.lib.csv.CSVSupport;
 import foam.nanos.logger.Logger;
-import net.nanopay.sps.SPSConfig;
+import net.nanopay.sps.SPSCredentials;
 import net.nanopay.sps.SPSRejectFileRecord;
 import net.nanopay.sps.SPSTransaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -27,7 +27,7 @@ import static foam.mlang.MLang.EQ;
 public class SPSRejectFileProcessor implements ContextAgent {
   @Override
   public void execute(X x) {
-    SPSConfig spsConfig = (SPSConfig) x.get("SPSConfig");
+    SPSCredentials spsCredentials = (SPSCredentials) x.get("SPSCredentials");
     Logger logger = (Logger) x.get("logger");
     CSVSupport csvSupport = new CSVSupport();
     csvSupport.setX(x);
@@ -40,9 +40,9 @@ public class SPSRejectFileProcessor implements ContextAgent {
     try {
       // create session with username and password
       JSch jsch = new JSch();
-      session = jsch.getSession(spsConfig.getUser(), spsConfig.getHost(), spsConfig.getPort());
-      session.setPassword(spsConfig.getPassword());
-      String sftpPathSegment = spsConfig.getSftpPathSegment();
+      session = jsch.getSession(spsCredentials.getUser(), spsCredentials.getHost(), spsCredentials.getPort());
+      session.setPassword(spsCredentials.getPassword());
+      String sftpPathSegment = "/" + spsCredentials.getUser();
 
       // add configuration
       Properties config = new Properties();

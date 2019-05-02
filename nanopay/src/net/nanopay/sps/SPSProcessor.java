@@ -85,7 +85,6 @@ public class SPSProcessor implements ContextAgent {
           // unique ID for duplicate transaction checking
           txnDetail.setOther(t.getId());
           txnDetail.setName(t.getPayee().getFirstName() + " " + t.getPayee().getLastName());
-          txnDetail.setName(bankAccount.findOwner(getX()).getFirstName() + " " + bankAccount.findOwner(getX()).getLastName());
           generalRequestPacket.setTxnDetail(txnDetail);
 
           generalRequestPacket.setRouteCode(bankAccount.getBranchId());
@@ -99,11 +98,12 @@ public class SPSProcessor implements ContextAgent {
           t.setBatchId(generalRequestResponse.getBatchId());
           t.setItemId(generalRequestResponse.getItemId());
 
-          // TODO: need discuss more about ApprovalCode with George
+          String approvalCode = generalRequestResponse.getApprovalCode();
+          t.setApprovalCode(approvalCode);
           if ( "A10".equals(generalRequestResponse.getApprovalCode()) ) {
-            t.setStatus(TransactionStatus.COMPLETED);
+            t.setStatus(TransactionStatus.SENT);
           } else if ("D20".equals(generalRequestResponse.getApprovalCode())) {
-            t.setStatus(TransactionStatus.DECLINED);
+            t.setStatus(TransactionStatus.FAILED);
           }
 
           transactionDAO.put(t);
@@ -133,9 +133,9 @@ public class SPSProcessor implements ContextAgent {
 
   private String request(X x, RequestPacket requestPacket) {
     Logger logger = (Logger) x.get("logger");
-    SPSConfig spsConfig = (SPSConfig) x.get("SPSConfig");
+    SPSCredentials spsCredentials = (SPSCredentials) x.get("SPSCredentials");
 
-    String url = spsConfig.getUrl();
+    String url = spsCredentials.getUrl();
     String requestMsg = requestPacket.toSPSString();
     System.out.println("requestMsg: " + requestMsg);
 
