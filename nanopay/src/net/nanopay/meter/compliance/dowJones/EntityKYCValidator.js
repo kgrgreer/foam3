@@ -16,13 +16,31 @@ foam.CLASS({
     }
   ],
 
+  javaImports: [
+    'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
+    'net.nanopay.meter.compliance.ComplianceValidationStatus',
+    'net.nanopay.meter.compliance.dowJones.DowJonesService',
+    'net.nanopay.meter.compliance.dowJones.BaseSearchResponse'
+  ],
+
   methods: [
     {
       name: 'applyAction',
       javaCode: `
+        User user = (User) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
-        BaseSearchResponse response = dowJonesService.entityNameSearch(x, obj.getOrganization(), null);
-        ruler.putResult(response.getComplianceValidationStatus());
+        try {
+          BaseSearchResponse response = dowJonesService.entityNameSearch(x, user.getOrganization(), null);
+          ruler.putResult(
+            response.getTotalMatches().equals("0")
+              ? ComplianceValidationStatus.VALIDATED
+              : ComplianceValidationStatus.INVESTIGATING
+          );
+        } catch (IllegalStateException e) {
+          ((Logger) x.get("logger")).warning("EntityKYCValidator failed.", e);
+          ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
+        }
       `
     }
   ]
