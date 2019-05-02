@@ -105,7 +105,7 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$INSTANCE"
+    ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
 
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
@@ -136,26 +136,64 @@ function clean {
             mkdir build
         fi
 
-        mvn clean
+        if [ "$GRADLE_BUILD" -eq 0 ]; then
+            mvn clean
+        fi
     fi
 }
 
 function build_jar {
-    if [ "$COMPILE_ONLY" -eq 0 ]; then
-        echo "INFO :: Building nanos..."
-        ./gen.sh
+    if [ "$GRADLE_BUILD" -eq 1 ]; then
+        GRADLE_ARGS=""
+        if [ ! -z "${VERSION}" ]; then
+            GRADLE_ARGS="$GRADLE_ARGS -Pversion=${VERSION}"
+        fi
 
-        echo "INFO :: Packaging js..."
-        ./tools/js_build/build.js
+        # if [ "$CLEAN_BUILD" -eq 1 ] &&
+        #        [ "$START_ONLY" -eq 0 ]; then
+        #     GRADLE_ARGS="$GRADLE_ARGS clean"
+        # fi
+
+        if [ "$RUN_JAR" -eq 1 ]; then
+            gradle --daemon clean build
+        else
+            gradle --daemon build
+            #gradle --daemon build -x jar
+        fi
+    else
+        # maven
+        if [ "$COMPILE_ONLY" -eq 0 ]; then
+            echo "INFO :: Building nanos..."
+            ./gen.sh
+
+            echo "INFO :: Packaging js..."
+            ./tools/js_build/build.js
+        fi
+
+        if [[ ! -z "$VERSION" ]]; then
+            mvn versions:set -DnewVersion=$VERSION
+        fi
+
+        mvn package
     fi
 
-    gradle --daemon compileJava jar
-
-    if [[ ! -z "$VERSION" ]]; then
-        mvn versions:set -DnewVersion=$VERSION
+    if [ "${RUN_JAR}" -eq 1 ]; then
+        cp -r deploy/bin/* "${NANOPAY_HOME}/bin/"
+        cp -r target/lib/* "${NANOPAY_HOME}/lib/"
     fi
+}
 
-    mvn package -Dmaven.main.skip
+function package_tar {
+    NAME=$(ls target/lib/nanopay-*.jar | awk '{print $1}' | sed 's/target\/lib\///;s/\.jar//')
+    echo NAME=$NAME
+    PACKAGE_DIR="target/package/opt/${NAME}"
+    rm -rf "target/package"
+    mkdir -p "${PACKAGE_DIR}"
+    cp -r "target/lib" "${PACKAGE_DIR}/"
+    cp -r "deploy/bin" "${PACKAGE_DIR}/"
+    mkdir -p "${PACKAGE_DIR}/journals"
+    cp -r "${JOURNAL_HOME}"/*.0 "${PACKAGE_DIR}/journals/"
+    tar -czf "target/package/${NAME}.tgz" -C target/package/opt "${NAME}"
 }
 
 function delete_runtime_journals {
@@ -229,33 +267,37 @@ function start_nanos {
     MESSAGE="Starting nanos ${INSTANCE}"
     echo "INFO :: ${MESSAGE}..."
 
-    cd "$PROJECT_HOME"
-
-    JAVA_OPTS="-Dhostname=${HOST_NAME} ${JAVA_OPTS}"
-    if [ "$DEBUG" -eq 1 ]; then
-        JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
-    fi
-    if [ ! -z "$WEB_PORT" ]; then
-        JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
-    fi
-
-    if [ -z "$MODE" ]; then
-        JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
-        # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
-        # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
-        # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
-        JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
-    fi
-    JAR=$(ls target/lib/nanopay-*.jar | awk '{print $1}')
-
-    echo JAR=$JAR
-    echo JAVA_OPTS=$JAVA_OPTS
-
-    if [ $DAEMONIZE -eq 0 ]; then
-        exec java $JAVA_OPTS -jar ${JAR}
+    if [ "${RUN_JAR}" -eq 1 ]; then
+        "${NANOPAY_HOME}/bin/run.sh" "-N${NANOPAY_HOME}" "-H${HOST_NAME}" "-W${WEB_PORT}"
     else
-        nohup java $JAVA_OPTS -jar ${JAR} &>/dev/null &
-        echo $! > "$NANOS_PIDFILE"
+        cd "$PROJECT_HOME"
+
+        JAVA_OPTS="-Dhostname=${HOST_NAME} ${JAVA_OPTS}"
+        if [ "$DEBUG" -eq 1 ]; then
+            JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
+        fi
+        if [ ! -z "$WEB_PORT" ]; then
+            JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
+        fi
+
+        if [ -z "$MODE" ]; then
+            JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
+            # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
+            # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
+            # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
+            JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
+        fi
+        echo JAVA_OPTS=$JAVA_OPTS
+
+        CLASSPATH=$(JARS=("target/lib"/*.jar); IFS=:; echo "${JARS[*]}")
+        CLASSPATH="$CLASSPATH;build/classes/java/main"
+
+        if [ $DAEMONIZE -eq 0 ]; then
+            exec java $JAVA_OPTS -cp "$CLASSPATH" foam.nanos.boot.Boot
+        else
+            nohup java $JAVA_OPTS -cp "$CLASSPATH" foam.nanos.boot.Boot &> /dev/null &
+            echo $! > "$NANOS_PIDFILE"
+        fi
     fi
 }
 
@@ -275,6 +317,12 @@ function setenv {
 
     if [ ! -d "$NANOPAY_HOME" ]; then
         mkdir -p "$NANOPAY_HOME"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/lib" ]; then
+        mkdir -p "${NANOPAY_HOME}/lib"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/bin" ]; then
+        mkdir -p "${NANOPAY_HOME}/bin"
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -384,9 +432,11 @@ function usage {
     echo "  -h : Print usage information."
     echo "  -i : Install npm and git hooks"
     echo "  -j : Delete runtime journals, build, and run app as usual."
+    echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"    echo "  -k : Package up a deployment tarball."
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
-    echo "  -N NAME : start another instance with given instance name"
+    echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
+    echo "  -n : new Gradle Build"
     echo "  -p : short cut for setting MODE to PRODUCTION"
     echo "  -q : short cut for setting MODE to STAGING"
     echo "  -r : Start nanos with whatever was last built."
@@ -394,6 +444,7 @@ function usage {
     echo "  -S : When debugging, start suspended."
     echo "  -t : Run All tests."
     echo "  -T testId1,testId2,... : Run listed tests."
+    echo "  -u : Run from jar. Intented for Production deployments."
     echo "  -v : java compile only (maven), no code generation."
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
@@ -406,8 +457,10 @@ function usage {
 
 ############################
 
+JOURNAL_CONFIG=
 INSTANCE=
 HOST_NAME=`hostname -s`
+GRADLE_BUILD=0
 VERSION=
 MODE=
 BUILD_ONLY=0
@@ -417,6 +470,8 @@ DEBUG_PORT=8000
 DEBUG_SUSPEND=n
 JAVA_OPTS=
 INSTALL=0
+PACKAGE=0
+RUN_JAR=0
 RUN_MIGRATION=0
 START_ONLY=0
 TEST=0
@@ -428,10 +483,10 @@ STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
-WEB_PORT=
+WEB_PORT=8080
 VULNERABILITY_CHECK=0
 
-while getopts "bcdD:ghijlmM:N:pqrsStT:vV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -443,11 +498,14 @@ while getopts "bcdD:ghijlmM:N:pqrsStT:vV:W:xz" opt ; do
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
+        J) JOURNAL_CONFIG=$OPTARG ;;
+        k) PACKAGE=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
         M) MODE=$OPTARG
            echo "MODE=${MODE}"
            ;;
+        n) GRADLE_BUILD=1 ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
@@ -470,6 +528,7 @@ while getopts "bcdD:ghijlmM:N:pqrsStT:vV:W:xz" opt ; do
            CLEAN_BUILD=1
            echo "$TESTS=${TESTS}"
            ;;
+        u) RUN_JAR=1;;
         v) COMPILE_ONLY=1 ;;
         V) VERSION=$OPTARG
            echo "VERSION=${VERSION}";;
@@ -529,8 +588,13 @@ if [ "$START_ONLY" -eq 0 ] ||
     deploy_journals
 fi
 
-if [ "$START_ONLY" -eq 0 ]; then
+if [ "${START_ONLY}" -eq 0 ]; then
     build_jar
+fi
+
+if [ "${PACKAGE}" -eq 1 ]; then
+    package_tar
+    quit 0
 fi
 
 if [ "$BUILD_ONLY" -eq 1 ] || [ ! -z "$MODE" ]; then

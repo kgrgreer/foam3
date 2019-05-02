@@ -455,20 +455,8 @@
             <groupId>org.apache.maven.plugins</groupId>
             <version>3.7.0</version>
             <artifactId>maven-compiler-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>default-compile</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <skipMain>true</skipMain>
-                </configuration>
-              </execution>
-            </executions>
             <configuration>
-              <useIncrementalCompilation>false</useIncrementalCompilation>
+              <useIncrementalCompilation>true</useIncrementalCompilation>
               <source>${maven.compiler.source}</source>
               <target>${maven.compiler.target}</target>
               <includes>
