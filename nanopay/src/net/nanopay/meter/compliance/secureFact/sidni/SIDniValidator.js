@@ -37,7 +37,7 @@ foam.CLASS({
     },
     {
       name: 'applyReverseAction',
-      javaCode: ' '
+      javaCode: ` `
     }
   ]
 });
