@@ -3,19 +3,15 @@ foam.CLASS({
   name: 'TransactionLimitRuleAction',
   implements: ['foam.nanos.ruler.RuleAction'],
 
+  documentation: 'This action implementation is responsible for for updating running limits' +
+  'and reverting it back in case transaction did not go through.',
+
   javaImports: [
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.model.Transaction',
     'java.util.HashMap',
     'foam.nanos.ruler.Rule'
   ],
-  // properties: [
-  //   {
-  //     class: 'FObjectProperty',
-  //     of: 'net.nanopay.tx.ruler.AbstractTransactionLimitRule',
-  //     name: 'rule'
-  //   }
-  // ],
 
   methods: [
     {
@@ -38,6 +34,9 @@ foam.CLASS({
     {
       name: 'applyReverseAction',
       javaCode: `
+      // the method is called in case when there are two limits set (for sending and for receiving)
+      // one limit was updated, but the second one threw "over limit", so we need to revert the first update
+
       Transaction txn = (Transaction) obj;
       HashMap hm = (HashMap) rule_.getHm();
 
