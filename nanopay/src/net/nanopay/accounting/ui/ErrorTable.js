@@ -91,6 +91,21 @@ foam.CLASS({
     overflow-x: hidden;
     overflow-y: scroll;
   }
+
+  .error-table-container .table-container .foam-u2-view-TableView thead > tr {
+    width: 677px;
+    overflow: hidden; 
+  }
+
+
+  .error-table-container .table-container .foam-u2-view-TableView-context-menu-cell {
+    display: none;
+  }
+
+  .error-table-container .table-container tr > td {
+    padding: 5px;
+    text-align: left;
+  }
   `,
 
   messages: [

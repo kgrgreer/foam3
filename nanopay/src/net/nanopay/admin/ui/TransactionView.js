@@ -35,7 +35,6 @@ foam.CLASS({
 
     ^pending-top-ups {
       opacity: 0.6;
-      font-family: Roboto;
       font-size: 24px;
       font-weight: 300 !important;
       line-height: 1.0;
@@ -120,7 +119,7 @@ foam.CLASS({
                 return count.value == 0 ? view.noPendingTransactions : '';
               }, view.daoSlot(this.transactionDAO, this.COUNT())))
           .end()
-        .end()
+        .end();
     }
   ],
 
@@ -150,7 +149,7 @@ foam.CLASS({
                 'id', 'issueDate', 'payer', 'payee', 'total'
               ],
             }).end();
-        },
+        }
       ]
     }
   ]

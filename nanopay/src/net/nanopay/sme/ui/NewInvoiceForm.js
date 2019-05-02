@@ -386,6 +386,7 @@ foam.CLASS({
               .start(this.invoice.CONTACT_ID, {
                 action: this.ADD_CONTACT,
                 search: true,
+                searchPlaceholder: 'Start typing company name to search',
                 mode: displayMode
               })
                 .enableClass('invalid', this.slot(
@@ -482,7 +483,7 @@ foam.CLASS({
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
                   .on('mousemove', this.setCoordinates)
-                  .start(this.Invoice.ISSUE_DATE.clone().copyFrom({ view: 'foam.u2.view.date.DateTimePicker' }), { mode: displayMode })
+                  .start(this.Invoice.ISSUE_DATE, { view: 'foam.u2.view.date.DateTimePicker',  mode: displayMode })
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .addClass('date-input-field')
                   .end()

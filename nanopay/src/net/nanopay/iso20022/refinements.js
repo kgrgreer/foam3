@@ -541,7 +541,7 @@ foam.CLASS({
                             logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
                           }
 
-                          Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification()));
+                          Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAgent().getBranchIdentification().getIdentification()));
                           if ( branch != null ) {
                             receiverBankAcct.setBranchId(String.valueOf(branch.getBranchId()));
                           } else {
