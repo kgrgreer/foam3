@@ -635,7 +635,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/TransferFrom', flags: ['web'] },
   { name: 'net/nanopay/ui/TransferTo', flags: ['web'] },
   { name: 'net/nanopay/ui/CCTransferView', flags: ['web'] },
-  { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },

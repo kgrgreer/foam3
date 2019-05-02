@@ -38,7 +38,7 @@ foam.CLASS({
     margin-top: 7px;
     margin-left: 7px;
   }
-  ^ .net-nanopay-ui-ActionView-currencyChoice{
+  ^ .foam-u2-ActionView-currencyChoice{
     background: none !important;
     border: 0 !important;
     box-shadow: none !important;
@@ -49,7 +49,7 @@ foam.CLASS({
   ^ .foam-nanos-u2-navigation-TopNavigation-CurrencyChoiceView {
     align-items: center;
   }
-  ^ .net-nanopay-ui-ActionView-currencyChoice > span{
+  ^ .foam-u2-ActionView-currencyChoice > span{
     font-family: Roboto;
     font-size: 16px;
     font-weight: 300;

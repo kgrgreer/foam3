@@ -94,7 +94,7 @@ foam.CLASS({
     ^ .net-nanopay-ui-modal-ModalHeader {
       width: 100%;
     }
-    ^ .net-nanopay-ui-ActionView-submitButton {
+    ^ .foam-u2-ActionView-submitButton {
       font-family: Roboto;
       width: 136px;
       height: 40px;
@@ -113,7 +113,7 @@ foam.CLASS({
       box-shadow: none;
       font-weight: normal;
     }
-    ^ .net-nanopay-ui-ActionView-cancelButton {
+    ^ .foam-u2-ActionView-cancelButton {
       font-family: Roboto;
       width: 136px;
       height: 40px;

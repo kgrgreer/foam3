@@ -92,7 +92,7 @@ foam.CLASS({
       margin-left: 5px;
       margin-top: 8px;
     }
-    ^ .net-nanopay-ui-ActionView-sendTransfer {
+    ^ .foam-u2-ActionView-sendTransfer {
       width: 135px;
       height: 40px;
       border-radius: 2px;
@@ -109,7 +109,7 @@ foam.CLASS({
       float: right;
       cursor: pointer;
     }
-    ^ .net-nanopay-ui-ActionView-sendTransfer:hover {
+    ^ .foam-u2-ActionView-sendTransfer:hover {
       background: #3783b3;
     }
     ^ table {
@@ -157,16 +157,16 @@ foam.CLASS({
     ^ .foam-u2-view-TableView-row {
       height: 40px;
     }
-    ^ .net-nanopay-ui-ActionView-create {
+    ^ .foam-u2-ActionView-create {
       visibility: hidden;
     }
     ^ .foam-u2-md-OverlayDropdown {
       width: 175px;
     }
-    ^ .net-nanopay-ui-ActionView-exportButton {
+    ^ .foam-u2-ActionView-exportButton {
       margin-right: 0;
     }
-    ^ .net-nanopay-ui-ActionView-filterButton {
+    ^ .foam-u2-ActionView-filterButton {
       position: absolute;
       width: 75px;
       height: 35px;

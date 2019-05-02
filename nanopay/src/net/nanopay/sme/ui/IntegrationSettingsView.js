@@ -147,7 +147,7 @@ foam.CLASS({
       margin-bottom: 16px;
       background-color: #ffffff;
     }
-    ^ .net-nanopay-ui-ActionView {
+    ^ .foam-u2-ActionView {
       width: 96px !important;
       height: 36px !important;
       border-radius: 4px;
@@ -160,10 +160,10 @@ foam.CLASS({
       color: #604aff;
       margin-top: 3px;
     }
-    ^ .net-nanopay-ui-ActionView-save:hover {
+    ^ .foam-u2-ActionView-save:hover {
       color: #4d38e1 !important;
     }
-    ^ .net-nanopay-ui-ActionView:hover {
+    ^ .foam-u2-ActionView:hover {
       background-color: #ffffff !important;
       color: #4d38e1;
       border-color: #4d38e1;

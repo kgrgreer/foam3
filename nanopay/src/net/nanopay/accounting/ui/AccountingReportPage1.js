@@ -55,7 +55,7 @@ foam.CLASS({
       padding-bottom: 12px;
       padding-right: 24px;
     }
-    ^ .net-nanopay-ui-ActionView-next {
+    ^ .foam-u2-ActionView-next {
       width: 158px;
       height: 48px !important;
       border-radius: 4px;
@@ -67,7 +67,7 @@ foam.CLASS({
       float:right;
       color: #FFFFFF !important;
     }
-    ^ .net-nanopay-ui-ActionView-next:hover {
+    ^ .foam-u2-ActionView-next:hover {
       background-color: #4d38e1 !important;
     }
     ^ .title {

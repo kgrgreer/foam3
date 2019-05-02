@@ -66,14 +66,14 @@ foam.CLASS({
     ^ .foam-u2-TextField:focus,
     ^ .foam-u2-DateView:focus,
     ^ .foam-u2-tag-Select:focus,
-    ^ .net-nanopay-ui-ActionView:focus {
+    ^ .foam-u2-ActionView:focus {
       border: solid 1px #59A5D5;
     }
 
     ^ .foam-u2-TextField:disabled,
     ^ .foam-u2-DateView:disabled,
     ^ .foam-u2-tag-Select:disabled,
-    ^ .net-nanopay-ui-ActionView:disabled {
+    ^ .foam-u2-ActionView:disabled {
       border: solid 1px rgba(164, 179, 184, 0.5) !important;
       color: #a4b3b8 !important;
     }
@@ -320,14 +320,14 @@ foam.CLASS({
     ^ .foam-nanos-auth-ProfilePictureView {
       background: %BACKGROUNDCOLOR%;
     }
-    ^ .net-nanopay-ui-ActionView-Save {
+    ^ .foam-u2-ActionView-Save {
       float: right;
       background: #59a5d5;
       color: white;
       margin-right: 100px;
       margin-left: 40px;
     }
-    .bottomActions > .net-nanopay-ui-ActionView-Cancel {
+    .bottomActions > .foam-u2-ActionView-Cancel {
       margin-left: 40px;
     }
     ^ .address2Hint {

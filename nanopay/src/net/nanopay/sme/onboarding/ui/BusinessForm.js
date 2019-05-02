@@ -72,7 +72,7 @@ foam.CLASS({
       float: right;
       top: -85px;
     }
-    ^ .net-nanopay-ui-ActionView-uploadButton {
+    ^ .foam-u2-ActionView-uploadButton {
       margin-top: 25px;
     }
     ^ .choiceDescription {
@@ -100,23 +100,23 @@ foam.CLASS({
       text-align: right;
       background-color: #fafafa;
     }
-    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton,
-    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-submitButton {
+    .net-nanopay-ui-modal-UploadModal .buttonBox .foam-u2-ActionView-cancelButton,
+    .net-nanopay-ui-modal-UploadModal .buttonBox .foam-u2-ActionView-submitButton {
       font-family: Lato;
       float: none;
       margin: 0;
     }
-    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton {
+    .net-nanopay-ui-modal-UploadModal .buttonBox .foam-u2-ActionView-cancelButton {
       width: auto;
       background-color: transparent;
       border: none;
       box-shadow: none;
       color: #525455;
     }
-    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-cancelButton:hover {
+    .net-nanopay-ui-modal-UploadModal .buttonBox .foam-u2-ActionView-cancelButton:hover {
       background-color: transparent;
     }
-    .net-nanopay-ui-modal-UploadModal .buttonBox .net-nanopay-ui-ActionView-submitButton {
+    .net-nanopay-ui-modal-UploadModal .buttonBox .foam-u2-ActionView-submitButton {
       margin-left: 24px;
     }
 

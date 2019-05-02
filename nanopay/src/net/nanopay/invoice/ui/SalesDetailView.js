@@ -42,26 +42,26 @@ foam.CLASS({
       line-height: 1;
       color: #093649;
     }
-    ^ .net-nanopay-ui-ActionView-backAction {
+    ^ .foam-u2-ActionView-backAction {
       border: 1px solid lightgrey;
       // background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
       position: relative;
       z-index: 10;
     }
-    .net-nanopay-ui-ActionView-backAction:hover {
+    .foam-u2-ActionView-backAction:hover {
       background: rgba(164, 179, 184, 0.3);
     }
-    ^ .net-nanopay-ui-ActionView-recordPayment:hover {
+    ^ .foam-u2-ActionView-recordPayment:hover {
       background: %SECONDARYHOVERCOLOR%;
     }
-    ^ .net-nanopay-ui-ActionView-voidDropDown:focus {
+    ^ .foam-u2-ActionView-voidDropDown:focus {
       background: %SECONDARYHOVERCOLOR%;
     }
-    ^ .net-nanopay-ui-ActionView-voidDropDown:hover {
+    ^ .foam-u2-ActionView-voidDropDown:hover {
       background: %SECONDARYHOVERCOLOR%;
     }
-    ^ .net-nanopay-ui-ActionView-recordPayment {
+    ^ .foam-u2-ActionView-recordPayment {
       background-color: #59A5D5;
       color: white;
       float: right;
@@ -69,13 +69,13 @@ foam.CLASS({
       position: sticky;
       z-index: 10;
     }
-    ^ .net-nanopay-ui-ActionView-voidDropDown {
+    ^ .foam-u2-ActionView-voidDropDown {
       width: 30px;
       height: 40px;
       background-color: #59A5D5;
       float: right;
     }
-    ^ .net-nanopay-ui-ActionView-voidDropDown::after {
+    ^ .foam-u2-ActionView-voidDropDown::after {
       content: ' ';
       position: absolute;
       height: 0;

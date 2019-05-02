@@ -118,7 +118,7 @@ css: `
       width: 100%;
     }
 
-    ^ .net-nanopay-ui-ActionView-addBeneficialOwner {
+    ^ .foam-u2-ActionView-addBeneficialOwner {
       margin-left: 160px;
       margin-top: 30px;
     }
@@ -163,7 +163,7 @@ css: `
       background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit {
+    ^ .foam-u2-ActionView-cancelEdit {
       width: 135px;
       height: 40px;
       color: black !important;
@@ -175,14 +175,14 @@ css: `
       margin-top: 35px;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit.hidden {
+    ^ .foam-u2-ActionView-cancelEdit.hidden {
       width: 0 !important;
       margin-left: 0 !important;
       opacity: 0;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit:hover,
-    ^ .net-nanopay-ui-ActionView-cancelEdit:focus {
+    ^ .foam-u2-ActionView-cancelEdit:hover,
+    ^ .foam-u2-ActionView-cancelEdit:focus {
       background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
@@ -235,7 +235,7 @@ css: `
     ^ .foam-u2-TextField:disabled,
     ^ .foam-u2-DateView:disabled,
     ^ .foam-u2-tag-Select:disabled,
-    ^ .net-nanopay-ui-ActionView:disabled {
+    ^ .foam-u2-ActionView:disabled {
       border: solid 1px rgba(164, 179, 184, 0.5) !important;
       color: #a4b3b8 !important;
     }

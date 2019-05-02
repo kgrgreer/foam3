@@ -252,7 +252,10 @@ foam.CLASS({
                 .add(self.slot(function(hasSaveOption) {
                   if ( hasSaveOption ) {
                     return this.E()
-                      .tag(self.SAVE, { label$: self.saveLabel$ });
+                      .tag(self.SAVE, {
+                        label$: self.saveLabel$,
+                        buttonStyle: 'SECONDARY'
+                      });
                   }
                 }))
               .end()
@@ -260,7 +263,10 @@ foam.CLASS({
                 .add(self.slot(function(hasBackOption) {
                   if ( hasBackOption ) {
                     return this.E()
-                      .tag(self.GO_BACK, { label$: self.backLabel$ });
+                      .tag(self.GO_BACK, {
+                        label$: self.backLabel$,
+                        buttonStyle: 'SECONDARY'
+                      });
                   }
                 }))
                 .tag(self.GO_NEXT, { label$: self.nextLabel$ })
@@ -313,7 +319,6 @@ foam.CLASS({
     */
     {
       name: 'goBack',
-      isSecondary: true,
       isAvailable: function(hasBackOption) {
         return hasBackOption;
       },
@@ -351,7 +356,6 @@ foam.CLASS({
     },
     {
       name: 'save',
-      isSecondary: true,
       isAvailable: function(hasSaveOption) {
         return hasSaveOption;
       },

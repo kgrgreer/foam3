@@ -70,7 +70,7 @@ foam.CLASS({
       color: #093649;
     }
 
-    ^ .net-nanopay-ui-ActionView-signIn{
+    ^ .foam-u2-ActionView-signIn{
       background: none;
       width: 50px;
       position: relative;

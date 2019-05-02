@@ -168,23 +168,23 @@ foam.CLASS({
       bottom: 0;
       z-index: 200;
     }
-    ^ .net-nanopay-ui-ActionView-closeButton {
+    ^ .foam-u2-ActionView-closeButton {
       border-radius: 2px;
       // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       margin-top: 30px;
     }
-    ^ .net-nanopay-ui-ActionView-closeButton:hover {
+    ^ .foam-u2-ActionView-closeButton:hover {
       background: lightgray;
     }
-    ^ .net-nanopay-ui-ActionView-saveButton {
+    ^ .foam-u2-ActionView-saveButton {
       float: right;
       border-radius: 2px;
       background-color: %SECONDARYCOLOR%;
       color: white;
       margin-top: 30px;
     }
-    ^ .net-nanopay-ui-ActionView-saveButton:hover {
+    ^ .foam-u2-ActionView-saveButton:hover {
       background: %SECONDARYCOLOR%;
       opacity: 0.9;
     }

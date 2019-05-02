@@ -46,7 +46,7 @@ foam.CLASS({
       margin: auto;
       font-family: Roboto;
     }
-    ^ .net-nanopay-ui-ActionView-close{
+    ^ .foam-u2-ActionView-close{
       right: -280px !important;
     }
     ^ .popUpHeader {
@@ -66,7 +66,7 @@ foam.CLASS({
       margin-left: 20px;
       display: inline-block;
     }
-    ^ .net-nanopay-ui-ActionView-closeButton {
+    ^ .foam-u2-ActionView-closeButton {
       width: 24px;
       height: 24px;
       margin: 0;
@@ -78,7 +78,7 @@ foam.CLASS({
       background: transparent;
       box-shadow: none;
     }
-    ^ .net-nanopay-ui-ActionView-closeButton:hover {
+    ^ .foam-u2-ActionView-closeButton:hover {
       background: transparent;
       background-color: transparent;
     }

@@ -127,18 +127,18 @@ foam.CLASS({
     ^ .property-twoFactorToken {
       width: 219px;
     }
-    ^ .net-nanopay-ui-ActionView-enableTwoFactor {
+    ^ .foam-u2-ActionView-enableTwoFactor {
       width: 96px;
       margin-left: 8px;
     }
-    ^ .net-nanopay-ui-ActionView-disableTwoFactor {
+    ^ .foam-u2-ActionView-disableTwoFactor {
       width: 96px;
       color: #f91c1c;
       background-color: transparent;
       border: 1px solid #f91c1c;
       margin-left: auto;
     }
-    ^ .net-nanopay-ui-ActionView-disableTwoFactor:hover {
+    ^ .foam-u2-ActionView-disableTwoFactor:hover {
       color: #f91c1c;
       background-color: transparent !important;
       border: 1px solid #f91c1c;

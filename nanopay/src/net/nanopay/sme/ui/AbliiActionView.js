@@ -1,10 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'AbliiActionView',
-  extends: 'foam.u2.UnstyledActionView',
+  extends: 'foam.u2.ActionView',
 
   documentation: 'Style overrides for Ablii buttons.',
 
+  inheritCSS: false,
   css: `
     ^ {
       border-radius: 4px;

@@ -27,7 +27,7 @@ foam.CLASS({
       width: 450px;
       margin: auto;
     }
-    ^ .net-nanopay-ui-ActionView-verify {
+    ^ .foam-u2-ActionView-verify {
       padding-top: 4px;
     }
     ^ .caption {

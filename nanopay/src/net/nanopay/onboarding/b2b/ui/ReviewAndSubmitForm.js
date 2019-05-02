@@ -86,13 +86,13 @@ foam.CLASS({
       margin-right: 20px;
       color: #a4b3b8;
     }
-    ^ .net-nanopay-ui-ActionView-printButton {
+    ^ .foam-u2-ActionView-printButton {
       height: 40px;
       width: 70px;
       margin-top: 15px;
       margin-left: 20px;
     }
-    ^ .net-nanopay-ui-ActionView-printButton span{
+    ^ .foam-u2-ActionView-printButton span{
       margin-left: 5px;
     }
     ^ .checkBoxLabel.enabled {

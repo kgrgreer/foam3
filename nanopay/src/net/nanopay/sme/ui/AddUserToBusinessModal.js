@@ -30,7 +30,7 @@ foam.CLASS({
     ^ .foam-u2-tag-Select {
       width: 100%;
     }
-    ^ .net-nanopay-ui-ActionView-closeModal {
+    ^ .foam-u2-ActionView-closeModal {
       width: 60px;
       background: none !important;
       border: none !important;
@@ -46,7 +46,7 @@ foam.CLASS({
       padding-top: 25px;
       background: #fafafa;
     }
-    ^ .net-nanopay-ui-ActionView-closeModal:hover {
+    ^ .foam-u2-ActionView-closeModal:hover {
       width: 60px;
       background: none;
       color: #525455;

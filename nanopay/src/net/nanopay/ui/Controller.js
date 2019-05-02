@@ -24,7 +24,6 @@ foam.CLASS({
     'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
-    'net.nanopay.ui.ActionView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.ui.NanoConnectStyles'
@@ -58,7 +57,7 @@ foam.CLASS({
       content: "";
       display: block;
     }
-    .foam-comics-DAOUpdateControllerView .property-transactionLimits .net-nanopay-ui-ActionView-addItem {
+    .foam-comics-DAOUpdateControllerView .property-transactionLimits .foam-u2-ActionView-addItem {
       height: auto;
       padding: 3px;
       width: auto;
@@ -165,8 +164,6 @@ foam.CLASS({
         self.NanoConnectStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
-
-        self.__subContext__.register(self.ActionView, 'foam.u2.ActionView');
 
         self.findBalance();
         self

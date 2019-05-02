@@ -82,7 +82,7 @@ foam.CLASS({
           margin-left: 8px;
         }
 
-        ^ .net-nanopay-ui-ActionView-unavailable {
+        ^ .foam-u2-ActionView-unavailable {
           width: 0 !important;
           margin: 0 !important;
           padding: 0 !important;

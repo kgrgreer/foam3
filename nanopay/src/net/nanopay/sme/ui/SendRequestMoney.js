@@ -462,7 +462,6 @@ foam.CLASS({
   actions: [
     {
       name: 'save',
-      isSecondary: true,
       isAvailable: function(hasSaveOption) {
         return hasSaveOption;
       },
