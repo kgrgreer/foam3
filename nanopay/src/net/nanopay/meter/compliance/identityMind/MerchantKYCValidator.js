@@ -12,22 +12,13 @@ foam.CLASS({
     'net.nanopay.model.Business'
   ],
 
-  properties: [
-    {
-      class: 'Int',
-      name: 'stage',
-      value: 3
-    }
-  ],
-
   methods: [
     {
       name: 'applyAction',
       javaCode: `
         Business business = (Business) obj;
         IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-        IdentityMindResponse response = identityMindService.evaluateMerchant(
-          x, business, getStage());
+        IdentityMindResponse response = identityMindService.evaluateMerchant(x, business);
         ruler.putResult(response.getComplianceValidationStatus());
       `
     }

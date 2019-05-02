@@ -483,9 +483,9 @@ var classes = [
   'net.nanopay.meter.compliance.identityMind.IdentityMindService',
   'net.nanopay.meter.compliance.identityMind.predicate.B2BTransaction',
   'net.nanopay.meter.compliance.identityMind.predicate.ConsumerKYCStage1',
-  'net.nanopay.meter.compliance.identityMind.predicate.ConsumerKYCStage3',
+  'net.nanopay.meter.compliance.identityMind.predicate.ConsumerKYCStage2',
   'net.nanopay.meter.compliance.identityMind.predicate.EntityLogin',
-  'net.nanopay.meter.compliance.identityMind.predicate.MerchantKYCStage3',
+  'net.nanopay.meter.compliance.identityMind.predicate.MerchantKYC',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',

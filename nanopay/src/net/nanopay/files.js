@@ -863,9 +863,9 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindService' },
   { name: 'net/nanopay/meter/compliance/identityMind/predicate/B2BTransaction' },
   { name: 'net/nanopay/meter/compliance/identityMind/predicate/ConsumerKYCStage1' },
-  { name: 'net/nanopay/meter/compliance/identityMind/predicate/ConsumerKYCStage3' },
+  { name: 'net/nanopay/meter/compliance/identityMind/predicate/ConsumerKYCStage2' },
   { name: 'net/nanopay/meter/compliance/identityMind/predicate/EntityLogin' },
-  { name: 'net/nanopay/meter/compliance/identityMind/predicate/MerchantKYCStage3' },
+  { name: 'net/nanopay/meter/compliance/identityMind/predicate/MerchantKYC' },
 
   { name: 'net/nanopay/liquidity/ui/Dashboard' },
   { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },

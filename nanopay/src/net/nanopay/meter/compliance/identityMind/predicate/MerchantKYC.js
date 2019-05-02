@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind.predicate',
-  name: 'MerchantKYCStage3',
+  name: 'MerchantKYC',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 

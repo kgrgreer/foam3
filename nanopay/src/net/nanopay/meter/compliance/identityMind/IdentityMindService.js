@@ -117,10 +117,6 @@ foam.CLASS({
         {
           name: 'business',
           type: 'net.nanopay.model.Business'
-        },
-        {
-          name: 'stage',
-          type: 'Integer'
         }
       ],
       javaCode: `
@@ -128,7 +124,6 @@ foam.CLASS({
         request.setUrl(getBaseUrl() + "/account/merchant");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
         request.setProfile(getProfile());
-        request.setStage(stage);
 
         IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Merchant KYC Evaluation");
