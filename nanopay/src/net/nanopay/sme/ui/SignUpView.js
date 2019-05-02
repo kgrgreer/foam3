@@ -294,44 +294,21 @@ foam.CLASS({
     },
 
     function validating() {
-      if ( this.isEmpty(this.firstNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'First Name Field Required.', type: 'error' }));
+      var msg;
+      if ( ! (this.isEmpty(msg = foam.nanos.auth.User.FIRST_NAME.validateObj(this.firstNameField))) ) {
+        this.add(this.NotificationMessage.create({ message: msg, type: 'error'}));
         return false;
       }
-      if ( this.firstNameField.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+      if ( ! (this.isEmpty(msg = foam.nanos.auth.User.LAST_NAME.validateObj(this.lastNameField))) ) {
+        this.add(this.NotificationMessage.create({ message: msg, type: 'error'}));
         return false;
       }
-      if ( /\d/.test(this.firstNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot contain numbers', type: 'error' }));
+      if ( ! (this.isEmpty(msg = foam.nanos.auth.User.ORGANIZATION.validateObj(this.companyNameField))) ) {
+        this.add(this.NotificationMessage.create({ message: msg, type: 'error'}));
         return false;
       }
-      if ( this.lastNameField.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
-        return false;
-      }
-      if ( /\d/.test(this.lastNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot contain numbers.', type: 'error' }));
-        return false;
-      }
-      if ( this.isEmpty(this.lastNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Last Name Field Required.', type: 'error' }));
-        return false;
-      }
-      if ( this.companyNameField > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Company Name cannot exceed 70 characters.', type: 'error' }));
-        return false;
-      }
-      if ( this.isEmpty(this.companyNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Company Name Field Required.', type: 'error' }));
-        return false;
-      }
-      if ( this.isEmpty(this.emailField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Email Field Required.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validateEmail(this.emailField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+      if ( ! (this.isEmpty(msg = foam.nanos.auth.User.EMAIL.validateObj(this.emailField))) ) {
+        this.add(this.NotificationMessage.create({ message: msg, type: 'error'}));
         return false;
       }
       if ( ! this.termsAndConditions ) {
@@ -342,7 +319,7 @@ foam.CLASS({
     },
 
     function isEmpty(field) {
-      return field.trim() === '';
+      return ( !field ) || ( field.trim() === '' );
     },
 
     function logIn() {
