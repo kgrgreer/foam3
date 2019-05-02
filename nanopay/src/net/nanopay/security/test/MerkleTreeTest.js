@@ -640,7 +640,7 @@ foam.CLASS({
     {
       name: 'MerkleTree_Previous_Root_Test',
       javaCode: `
-      MerkleTree tree = new MerkleTree();
+      MerkleTreeTestClass tree = new MerkleTreeTestClass();
       try {
         tree.addHash(getHash("kristina"));
         tree.addHash(getHash("smirnova"));
@@ -655,7 +655,7 @@ foam.CLASS({
       name: 'MerkleTree_Default_Size_Test',
       javaCode: `
       int treeSize = 100;
-    MerkleTree tree = new MerkleTree();
+      MerkleTreeTestClass tree = new MerkleTreeTestClass();
 
     tree.setDefaultSize(treeSize);
 
