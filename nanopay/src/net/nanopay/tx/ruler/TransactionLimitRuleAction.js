@@ -18,7 +18,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
       Transaction txn = (Transaction) obj;
-      HashMap hm = (HashMap) rule_.getHm();
+      HashMap hm = (HashMap) rule_.getCurrentLimits();
       Object id = rule_.getObjectToMap(txn, x);
 
       TransactionLimitState limitState = (TransactionLimitState) hm.get(id);
@@ -38,7 +38,7 @@ foam.CLASS({
       // one limit was updated, but the second one threw "over limit", so we need to revert the first update
 
       Transaction txn = (Transaction) obj;
-      HashMap hm = (HashMap) rule_.getHm();
+      HashMap hm = (HashMap) rule_.getCurrentLimits();
 
       Object key = rule_.getObjectToMap(txn, x);
 

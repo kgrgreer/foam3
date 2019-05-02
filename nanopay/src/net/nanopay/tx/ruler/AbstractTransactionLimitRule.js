@@ -53,7 +53,7 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'hm',
+      name: 'currentLimits',
       javaFactory: `
       return new java.util.HashMap<Object, TransactionLimitState>();
       `,
@@ -110,7 +110,7 @@ foam.CLASS({
         throw new RuntimeException("send property cannot be changed");
       }
       ret.clearAction();
-      ret.setHm(getHm());
+      ret.setCurrentLimits(getCurrentLimits());
       return ret;
       `
     }
