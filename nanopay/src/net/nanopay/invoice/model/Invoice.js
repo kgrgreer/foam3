@@ -452,11 +452,13 @@ foam.CLASS({
         var m = foam.mlang.ExpressionsSingleton.create();
         return {
           class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          selectionView: {
+            class: 'net.nanopay.auth.ui.UserSelectionView',
+            emptySelectionLabel: 'Select from contacts'
+          },
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              heading: 'Contacts',
               dao: foam.dao.PromisedDAO.create({
                 promise: X.businessDAO
                   .where(m.NEQ(net.nanopay.model.Business.STATUS, net.nanopay.admin.model.AccountStatus.DISABLED))
