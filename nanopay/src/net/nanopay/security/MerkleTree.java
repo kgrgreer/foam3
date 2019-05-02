@@ -58,7 +58,7 @@ public class MerkleTree {
   public void addHash(byte[] newHash){
     if ( data_ == null ){
       data_ = new byte[DEFAULT_SIZE][newHash.length];
-    } else if ( size_ == DEFAULT_SIZE ) {
+    } else if ( size_ % DEFAULT_SIZE == 0 ) {
       byte[][] oldData = data_;
       data_ = new byte[size_ + DEFAULT_SIZE][newHash.length];
       System.arraycopy(oldData, 0, data_, 0, size_);
@@ -125,6 +125,7 @@ public class MerkleTree {
     data_ = null;
     size_ = 0;
 
+    addHash(tree[0]);
     return tree;
   }
 

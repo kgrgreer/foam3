@@ -358,6 +358,11 @@ foam.CLASS({
           } else {
             this.loginSuccess = user ? true : false;
             this.user.copyFrom(user);
+            if ( this.loginSuccess ) {
+              // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
+              this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
+            }
             if ( ! this.user.emailVerified ) {
               this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
@@ -398,10 +403,7 @@ foam.CLASS({
           .put(newUser)
           .then((user) => {
             this.user = user;
-            // update user accepted terms and condition
-            this.acceptanceDocumentService.
-              updateUserAcceptanceDocument(user.id, this.termsAgreementDocument.id, this.termsAndConditions);            
-            this.logIn();             
+            this.logIn();                        
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
@@ -413,7 +415,7 @@ foam.CLASS({
   listeners: [
     async function loadAcceptanceDocument() {
       try {
-        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
       } catch (error) {
         console.warn('Error occured finding Terms Agreement: ', error);
       }
