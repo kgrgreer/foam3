@@ -6,6 +6,7 @@ foam.CLASS({
     documentation: 'Ablii Forgot Password Email View',
 
     imports: [
+      'ctrl',
       'notify',
       'resetPasswordToken',
       'stack',
@@ -238,6 +239,20 @@ foam.CLASS({
             this.invalidEmail = true;
             return;
           }
+  
+          this.invalidEmail = false;
+          var user = this.User.create({ email: this.email });
+          this.resetPasswordToken.generateToken(null, user).then(
+            (result) => {
+              if ( ! result ) {
+                throw new Error('Error generating reset token');
+              }
+              this.ctrl.notify(this.SUCCESS_MESSAGE + this.email);
+              this.stack.push(this.ResendView.create({ email: this.email }));
+          })
+          .catch(function(err) {
+            this.ctrl.notify(err.message, 'error');
+          });
 
           this.invalidEmail = false;
           var user = this.User.create({email: this.email});

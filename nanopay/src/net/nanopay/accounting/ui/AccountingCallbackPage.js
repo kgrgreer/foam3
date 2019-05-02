@@ -13,7 +13,9 @@ foam.CLASS({
     'quickbooksService',
     'user',
     'xeroService',
-    'ctrl'
+    'ctrl',
+    'stack',
+    'accountingIntegrationUtil'
   ],
 
   exports: [
@@ -23,6 +25,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
+    'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
@@ -46,20 +49,33 @@ foam.CLASS({
       margin: auto;
       text-align: center;
     }
-  ^ .spinner-container {
-      z-index: 1;
-    }
-  ^ .spinner-container-center {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
+  ^ .title {
+    font-size: 32px;
+    font-weight: 900;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: #2b2b2b;
   }
-  ^ .spinner-container .net-nanopay-ui-LoadingSpinner img {
-    width: 200px;
-    height: 200px;
+
+  ^ .ablii-accounting-software-icon {
+    height: 44px;
+    width: 44px;
+    vertical-align: middle;
   }
+
+  ^ .plus-icon {
+    margin: 0px 16px 0px 16px;
+    display: inline-block;
+  }
+  ^ .loading-container {
+    width: 504px;
+    height: 150px;
+    text-align: left;
+    display: inline-block;
+  }
+
   `,
 
   properties: [
@@ -93,12 +109,9 @@ foam.CLASS({
       value: false
     },
     {
-      name: 'integrationSoftware',
-      type: 'String',
-      factory: function() {
-        let parsedUrl = new URL(window.location.href);
-        return parsedUrl.searchParams.get('accounting');
-      }
+      name: 'doSync',
+      type: 'Boolean',
+      value: false
     }
   ],
 
@@ -106,20 +119,64 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
 
+      let icon;
+      if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+         icon = 'images/xero.png';
+      } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        icon = 'images/quickbooks.png';
+      }
+
       // display loading icon
       this
         .start().addClass(this.myClass())
-          .start('h1').addClass('title')
-            .add('Syncing ' + this.integrationSoftware + ' to Ablii')
-          .end()
-          .start().addClass('spinner-container')
-            .start().addClass('spinner-container-center')
-              .add(this.loadingSpinner)
+          .start()
+            .addClass('loading-container')
+            .start('h1').addClass('title')
+              .add('Retrieving data...')
+            .end()
+            .start()
+              .addClass('image-container')
+              .start('img')
+                .addClass('ablii-accounting-software-icon')
+                .attrs({ src: 'images/ablii-logo.svg' })
+              .end()
+              .start('p')
+                .addClass('plus-icon')
+                .add('+')
+              .end()
+              .start('img')
+                .addClass('ablii-accounting-software-icon')
+                .attrs({ src: icon })
+              .end()
             .end()
           .end()
         .end();
 
-      let connectedBank = await this.user.accounts.where(
+      if ( this.doSync ) {
+        let result = await this.accountingIntegrationUtil.doSync(this);
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingReportPage1',
+          reportResult: result
+        });
+        return;
+      }
+
+      let connectedBank = await this.countConnectedBank();
+      if ( connectedBank.value === 0 ) {
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingBankMatching'
+        });
+      } else {
+        let result = await this.accountingIntegrationUtil.doSync(this);
+        this.stack.push({
+          class: 'net.nanopay.accounting.ui.AccountingReportPage1',
+          reportResult: result
+        });
+      }
+    },
+
+    async function countConnectedBank() {
+      return await this.user.accounts.where(
         this.AND(
           this.OR(
             this.EQ(this.Account.TYPE, this.BankAccount.name),
@@ -129,66 +186,6 @@ foam.CLASS({
           this.NEQ(this.BankAccount.INTEGRATION_ID, '')
         )
       ).select(this.COUNT());
-
-      if ( connectedBank.value === 0 ) {
-        this.add(this.Popup.create({
-          closeable: false,
-          onClose: this.sync.bind(this)
-        }).tag({
-          class: 'net.nanopay.accounting.ui.IntegrationPopUpView',
-          data: this,
-          isLandingPage: true
-        }));
-      } else {
-        this.bankMatched = true;
-        this.sync();
-      }
-    },
-
-    async function sync() {
-      // reset the url first
-      window.history.pushState({}, '', '/#sme.bank.matching')
-
-      if ( ! this.bankMatched )  {
-        this.pushMenu('sme.main.dashboard');
-        return;
-      }
-
-      let service = null;
-
-      if ( this.integrationSoftware === 'Xero' ) {
-        service = this.xeroService;
-      }
-      if ( this.integrationSoftware === 'quickbooks' ) {
-        service = this.quickbooksService;
-      }
-
-      let contactResult = await service.contactSync(null);
-      let invoiceResult = await service.invoiceSync(null);
-
-      if ( contactResult.result === false ) {
-        this.ctrl.notify(contactResult.reason, 'error');
-        this.pushMenu('sme.main.dashboard');
-      }
-
-      if ( invoiceResult.result === false  ) {
-        this.ctrl.notify(invoiceResult.reason, 'error');
-        this.pushMenu('sme.main.dashboard');
-      }
-
-      this.ctrl.notify('All information has been synchronized', 'success');
-
-      if ( contactResult.contactSyncMismatches.length !== 0 ||
-           contactResult.contactSyncErrors.length !== 0 ||
-           invoiceResult.invoiceSyncErrors.length !== 0) {
-        this.add(this.Popup.create().tag({
-          class: 'net.nanopay.accounting.ui.AccountingReportModal',
-          invoiceResult: invoiceResult,
-          contactResult: contactResult
-        }));
-      } else {
-        this.pushMenu('sme.main.dashboard')
-      }
     }
   ]
 });

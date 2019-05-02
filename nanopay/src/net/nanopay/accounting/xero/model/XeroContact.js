@@ -26,6 +26,10 @@ foam.CLASS({
       name: 'chooseBusiness',
       value: false,
       documentation: 'set this to true to let user manually select the business of this contact'
+    },
+    {
+      class: 'Long',
+      name: 'lastUpdated'
     }
   ]
 });
