@@ -165,8 +165,6 @@ tasks.withType(JavaCompile) {
 }
 
 compileJava {
-     dependsOn tasks.withType(Exec)
-     doLast {
-        copyLib
-     }
+     dependsOn tasks.genJava
+     dependsOn tasks.copyLib
 }
