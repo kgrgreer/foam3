@@ -246,7 +246,10 @@ foam.CLASS({
                 .add(self.slot(function(hasExitOption) {
                   if ( hasExitOption ) {
                     return this.E()
-                      .tag(self.EXIT, { label$: self.exitLabel$ });
+                      .tag(self.EXIT, {
+                        label$: self.exitLabel$,
+                        buttonStyle: 'TERTIARY'
+                      });
                   }
                 }))
                 .add(self.slot(function(hasSaveOption) {
