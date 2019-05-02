@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
-  documentation: 'Pre-defined limit for transactions.',
+  documentation: 'Abstract class for transaction limits, never to be instantiated. Meant to be extended' +
+  'by models that would provide logic for getObjectToMap method. See example: AccountTransactionLimitRule.',
 
   javaImports: [
     'foam.core.FObject',
@@ -34,13 +35,14 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'limit',
-      documentation: 'Amount that running balance should not exceed'
+      documentation: 'Amount that running limit should not exceed'
     },
     {
       class: 'Boolean',
       name: 'send',
       value: true,
-      documentation: 'Transaction limit operation.'
+      documentation: 'Transaction operation, ' +
+      'determines whether limit is set for sending money or reciving money.'
     },
     {
       class: 'foam.core.Enum',
@@ -52,10 +54,10 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'hm',
-      //transient: true,
       javaFactory: `
       return new java.util.HashMap<Object, TransactionLimitState>();
-      `
+      `,
+      documentation: 'Stores map of objects and current running limits.'
     },
     {
       name: 'daoKey',
@@ -70,9 +72,7 @@ foam.CLASS({
     {
       name: 'predicate',
       javaFactory: `
-      //temporary until Mlang.REF is added
       return foam.mlang.MLang.EQ(DOT(NEW_OBJ, net.nanopay.tx.model.Transaction.IS_QUOTED), false);
-      //return EQ("true", "true");
       `
     }
   ],
