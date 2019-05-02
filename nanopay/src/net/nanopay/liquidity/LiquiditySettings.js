@@ -8,8 +8,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.liquidity.Frequency'
+    'net.nanopay.account.DigitalAccount'
   ],
   imports: [
     'liquiditySettingsDAO'
