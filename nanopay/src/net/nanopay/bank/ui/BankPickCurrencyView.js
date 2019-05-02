@@ -241,7 +241,13 @@ foam.CLASS({
                 .addClass(this.myClass('link-text'))
                 .add(this.CONNECT_LABEL)
                 .on('click', function() {
-                  self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', onComplete: self.onComplete }));
+                  var bankModal = self.selection == 1 ? 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal' :
+                      'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard';
+
+                  self.ctrl.add(self.Popup.create().tag({
+                    class: bankModal,
+                    onComplete: self.onComplete
+                  }));
                 })
               .end()
             .end()
