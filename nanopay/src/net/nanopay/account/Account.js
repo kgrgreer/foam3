@@ -149,14 +149,25 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      documentation: `
+        When using a reference to the accountDAO, the labels associated to it will show a chosen property
+        rather than the first alphabetical string property. In this case, we are using the account name.
+      `,
+      code: function(x) {
+        var self = this;
+        return this.name;
+      },
+    },
+    {
       name: 'findBalance',
       code: function(x) {
         var self = this;
         return new Promise(function(resolve, reject) {
           x.balanceDAO.find(self.id).then(function(balance) {
-          resolve( balance != null ? balance.balance : 0);
-   });
-  });
+            resolve( balance != null ? balance.balance : 0);
+          });
+        });
       },
       args: [
         {

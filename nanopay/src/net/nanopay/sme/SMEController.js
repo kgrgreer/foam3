@@ -15,6 +15,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.banner.ComplianceBannerData',
     'net.nanopay.sme.ui.banner.ComplianceBannerMode',
     'net.nanopay.sme.ui.ChangePasswordView',
+    'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
     'net.nanopay.sme.ui.SMEModal',
@@ -184,16 +185,16 @@ foam.CLASS({
         // will result in a redirect to dashboard.
         if ( menu ) {
           menu.launch(this);
-        } else {
-          this.confirmHashRedirectIfInvitedAndSignedIn();
         }
       };
     },
 
     function onSessionTimeout() {
-      this.add(this.SMEModal.create({ closeable: false }).tag({
-        class: 'net.nanopay.ui.modal.SessionTimeoutModal',
-      }));
+      if ( this.user.emailVerified ) {
+        this.add(this.SMEModal.create({ closeable: false }).tag({
+          class: 'net.nanopay.ui.modal.SessionTimeoutModal',
+        }));
+      }
     },
 
     function initE() {
@@ -223,6 +224,7 @@ foam.CLASS({
         self.__subContext__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
         self.__subContext__.register(self.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
         self.__subContext__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
+        self.__subContext__.register(self.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
 
         self.findBalance();
         self.addClass(self.myClass())
@@ -300,8 +302,8 @@ foam.CLASS({
     // FIXME: This whole thing needs to be looked at.
     function confirmHashRedirectIfInvitedAndSignedIn() {
       var locHash = location.hash;
-      var searchParams = new URLSearchParams(location.search);
       if ( locHash === '#invited' && this.loginSuccess ) {
+      var searchParams = new URLSearchParams(location.search);
         var dao = ctrl.__subContext__.smeBusinessRegistrationDAO;
         if ( dao ) {
           this.agent.signUpToken = searchParams.get('token');
@@ -383,8 +385,8 @@ foam.CLASS({
         return;
       }
 
+      this.confirmHashRedirectIfInvitedAndSignedIn();
       this.bannerizeCompliance();
-
       this.setPortalView(this.group);
 
       for ( var i = 0; i < this.MACROS.length; i++ ) {

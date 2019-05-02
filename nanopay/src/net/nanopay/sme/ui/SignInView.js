@@ -101,7 +101,11 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'email'
+      name: 'email',
+      view: {
+        class: 'foam.u2.TextField',
+        focused: true
+      }
     },
     {
       class: 'Password',
@@ -250,6 +254,7 @@ foam.CLASS({
           await this.invitedTokenProcess();
           if ( this.user && this.user.twoFactorEnabled ) {
             this.loginSuccess = false;
+            window.history.replaceState({}, document.title, '/');
             this.stack.push({
               class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
             });

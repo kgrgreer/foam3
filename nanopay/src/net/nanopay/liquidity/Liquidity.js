@@ -8,13 +8,20 @@ foam.CLASS({
   ],
 
   implements: [
-    'foam.mlang.Expressions'
+    'foam.mlang.Expressions',
+    'foam.nanos.auth.EnabledAware'
   ],
 
   properties: [
     {
       class: 'Boolean',
-      name: 'enableRebalancing',
+      name: 'enabled',
+      documentation: 'Determines whether Liquidity is active, and notifications and/or re-balancing is to occur',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'rebalancingEnabled',
       documentation: 'Triggeres automatic transaction on accounts.'
     },
     {
