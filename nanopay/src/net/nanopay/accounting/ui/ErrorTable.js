@@ -104,6 +104,7 @@ foam.CLASS({
 
   .error-table-container .table-container tr > td {
     padding: 5px;
+    text-align: left;
   }
   `,
 
