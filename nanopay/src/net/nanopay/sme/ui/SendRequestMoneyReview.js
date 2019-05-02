@@ -58,6 +58,12 @@ foam.CLASS({
       margin-top: 15px;
     }
   `,
+  messages: [
+    {
+      name: 'APPROVE_INVOICE_LABEL',
+      message: 'Approve'
+    }
+  ],
 
   methods: [
     function initE() {
@@ -65,7 +71,7 @@ foam.CLASS({
       this.updateDisclosure();
 
       // Update the next label
-      this.nextLabel = 'Submit';
+      this.nextLabel = this.APPROVE_INVOICE_LABEL;
       this.start().addClass(this.myClass())
         .start().show(this.loadingSpin.isHidden$)
           .start({
@@ -93,7 +99,7 @@ foam.CLASS({
       if ( ! this.isPayable ) return;
       var type = this.viewData.quote ? this.viewData.quote.type : null;
       try {
-        var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(type, this.AcceptanceDocumentType.DISCLOSURE, this.user.address.countryId, this.user.address.regionId);
+        var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(this.__context__, type, this.AcceptanceDocumentType.DISCLOSURE, this.user.address.countryId, this.user.address.regionId);
         if ( disclosure ) {
           this.disclosureView = this.Document.create({ markup: disclosure.body });
         }

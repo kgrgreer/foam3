@@ -8,11 +8,16 @@ foam.CLASS({
   imports: [
     'auth',
     'user',
-    'userDAO'
+    'userDAO',
+    'accountDAO',
+    'requestLogin',
+    'notify',
+    'sessionTimer'
   ],
 
   requires: [
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'net.nanopay.bank.BankAccount'
   ],
 
   implements: [
@@ -115,10 +120,17 @@ foam.CLASS({
     {
       name: 'signOut',
       label: 'Sign Out',
-      code: function () {
-        this.auth.logout().then(function() {
-          this.window.location.assign(this.window.location.origin);
-        });
+      code: async function (X) {
+
+        try {
+          X.closeDialog();
+          clearTimeout(this.sessionTimer.timer);
+          await this.auth.logout();
+          window.location.assign(window.location.origin);
+        } catch (e) {
+          this.notify(e.toString(), 'error');
+          window.location.assign(window.location.origin);
+        }
       }
     },
     {
@@ -127,15 +139,17 @@ foam.CLASS({
       code: async function (X) {
         clearInterval(this.timer);
         this.timer = null;
-        await this.userDAO.where(this.EQ(this.User.ID, this.user.id)).select();
-        X.closeDialog()
-      }
-    }
-  ],
 
-  listeners: [
-    function close() {
-      console.log("asd")
+        try {
+          X.closeDialog();
+          await this.accountDAO.where(
+            this.EQ(this.BankAccount.OWNER, this.user.id),
+          ).select();
+        } catch (e) {
+          this.notify(e.toString(), 'error');
+          this.signOut();
+        }
+      }
     }
   ]
 });

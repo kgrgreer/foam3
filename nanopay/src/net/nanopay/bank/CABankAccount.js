@@ -53,7 +53,9 @@ foam.CLASS({
         if ( branch ) {
           return;
         }
-        if ( ! /^\d+$/.test(branchId) ) {
+        if ( branchId === '' ) {
+          return 'Transit number required';
+        } else if ( ! /^\d+$/.test(branchId) ) {
           return 'Transit number must contain only digits.';
         } else if ( branchId.length !== 5 ) {
           return 'Transit number must be 5 digits.';
@@ -82,7 +84,11 @@ foam.CLASS({
         if ( institution ) {
           return;
         }
-        if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) return 'Invalid institution number.';
+        if ( institutionNumber === '' ) {
+          return 'Institution number required';
+        } else if ( ! RegExp('^[0-9]{3}$').test(institutionNumber) ) {
+          return 'Invalid institution number.';
+        }
       }
     },
     {

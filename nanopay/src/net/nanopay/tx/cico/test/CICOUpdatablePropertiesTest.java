@@ -67,6 +67,8 @@ public class CICOUpdatablePropertiesTest
     sender_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"cicotesting@nanopay.net" ));
     if ( sender_ == null ) {
       sender_ = new User();
+      sender_.setFirstName("Francis");
+      sender_.setLastName("Filth");
       sender_.setEmail("cicotesting@nanopay.net");
     }
     sender_ = (User) sender_.fclone();

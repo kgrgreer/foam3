@@ -79,6 +79,8 @@ public class ContactAuthorizationTest
       // Create the business user and put it in the userDAO.
       businessUser_ = new User();
       businessUser_.setEmail("ContactAuthorizationTest@example.com");
+      businessUser_.setFirstName("Francis");
+      businessUser_.setLastName("Filth");
       businessUser_.setGroup("business");
       businessUser_ = (User) userDAO_.put(businessUser_);
       businessUserContext_ = Auth.sudo(x, businessUser_);
@@ -86,6 +88,8 @@ public class ContactAuthorizationTest
       // Create other business user
       otherBusinessUser_ = new User();
       otherBusinessUser_.setEmail("ContactAuthorizationTest2@example.com");
+      otherBusinessUser_.setFirstName("Francis");
+      otherBusinessUser_.setLastName("Filth");
       otherBusinessUser_.setGroup("business");
       otherBusinessUser_ = (User) userDAO_.put(otherBusinessUser_);
       otherBusinessUserContext_ = Auth.sudo(x, otherBusinessUser_);

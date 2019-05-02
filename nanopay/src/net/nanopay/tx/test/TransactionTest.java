@@ -278,6 +278,8 @@ public class TransactionTest
     if ( user == null ) {
       user = new User();
       user.setEmail(email);
+      user.setFirstName("Francis");
+      user.setLastName("Filth");
       user.setEmailVerified(true);
       user = (User) (((DAO) x_.get("localUserDAO")).put_(x_, user)).fclone();
     }

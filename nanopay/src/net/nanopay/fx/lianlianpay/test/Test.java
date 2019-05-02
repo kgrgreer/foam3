@@ -40,7 +40,7 @@ public class Test {
       summary.setBatchId("000001");
       summary.setSourceCurrency("USD");
       summary.setTargetCurrency("CNY");
-      summary.setTotalTargetAmount(100.00);
+      summary.setTotalTargetAmount(100.00f);
       summary.setTotalCount(1);
       summary.setDistributeMode(DistributionMode.FIXED_TARGET_AMOUNT);
       summary.setInstructionType(InstructionType.B2B);
@@ -51,7 +51,7 @@ public class Test {
       instruction.setFundsType(InstructionType.B2B);
       instruction.setSourceCurrency("USD");
       instruction.setTargetCurrency("CNY");
-      instruction.setTargetAmount(100.00);
+      instruction.setTargetAmount(100.00f);
       instruction.setPayeeCompanyName("CompanyA");
       instruction.setPayeeContactNumber("81234561");
       instruction.setPayeeOrganizationCode("00000001-X");

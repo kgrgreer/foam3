@@ -146,7 +146,7 @@ foam.CLASS({
       name: 'disableCompanyName',
       documentation: `Set this to true to disable the Company Name input field.`
     },
-    'termsAndConditions',
+    'termsAndConditions',   
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
@@ -358,6 +358,11 @@ foam.CLASS({
           } else {
             this.loginSuccess = user ? true : false;
             this.user.copyFrom(user);
+            if ( this.loginSuccess ) {
+              // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
+              this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
+            }
             if ( ! this.user.emailVerified ) {
               this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
@@ -371,7 +376,7 @@ foam.CLASS({
         .catch((err) => {
           this.notify(err.message || 'There was a problem while signing you in.', 'error');
         });
-    },
+    }, 
 
   ],
 
@@ -392,17 +397,17 @@ foam.CLASS({
           // verification email instead.
           welcomeEmailSent: true,
           group: 'sme'
-        });
+        });      
 
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {
             this.user = user;
-            this.logIn();
+            this.logIn();                        
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
-          });
+          });          
       }
     }
   ],
@@ -410,10 +415,11 @@ foam.CLASS({
   listeners: [
     async function loadAcceptanceDocument() {
       try {
-        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+        this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
       } catch (error) {
         console.warn('Error occured finding Terms Agreement: ', error);
       }
     }
   ]
 });
+

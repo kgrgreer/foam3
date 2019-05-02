@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.dialog.Popup',
     'net.nanopay.retail.model.DeviceStatus',
     'net.nanopay.retail.model.Device'
   ],

@@ -82,9 +82,9 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Connect using a void check' },
     { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
-    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
-    { name: 'SUCCESS', message: 'Your bank account was successfully added' },
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
+    { name: 'SUCCESS', message: 'Your bank account was successfully added.' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
     { name: 'ERROR_FIRST', message: 'First name cannot be empty.' },
     { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
     { name: 'ERROR_FLENGTH', message: 'First name cannot exceed 70 characters.' },

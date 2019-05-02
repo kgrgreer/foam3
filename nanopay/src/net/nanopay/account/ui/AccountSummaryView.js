@@ -9,7 +9,8 @@ foam.CLASS({
 
   requires: [
     'foam.u2.view.TableView',
-    'net.nanopay.account.Account'
+    'net.nanopay.account.Account',
+    'net.nanopay.account.AggregateAccount'
   ],
 
   imports: [
@@ -68,9 +69,9 @@ foam.CLASS({
             height: 1000,
             x: 0,
             y: 0,
-            relationship: net.nanopay.account.AggregateAccountAccountchildrenRelationship,
-            data: net.nanopay.account.AggregateAccount.create({ id: 0, name: ' ', denomination: 'CAD' })
-          }},
+            relationship: net.nanopay.account.AccountAccountChildrenRelationship,
+            data: this.AggregateAccount.create({ id: 0, name: ' ', denomination: 'CAD' })
+          }}.bind(this),
           'Graph'
         ]
       ];

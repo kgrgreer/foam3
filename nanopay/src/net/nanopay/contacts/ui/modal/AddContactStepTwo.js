@@ -26,6 +26,8 @@ foam.CLASS({
 
   css: `
     ^{
+      height: 76vh;
+      overflow-y: scroll;
       padding: 24px;
     }
     ^ .check-image {
@@ -89,26 +91,29 @@ foam.CLASS({
     ^ .bank-option-container {
       margin-top: 24px;
     }
-    ^ .side-by-side {
-      display: grid;
-      grid-gap: 16px;
-      grid-template-columns: 1fr 1fr;
-    }
     ^ .flex {
       display: flex;
     }
     ^adding-account{
       margin-top: 16px;
     }
+    ^ .net-nanopay-sme-ui-AddressView .label-input .label {
+      margin-top: 16px;
+      padding-bottom: 0px !important;
+    }
+    ^ .net-nanopay-sme-ui-AddressView .foam-u2-TextField {
+      margin-bottom: 0px !important;
+    }
   `,
 
   messages: [
     { name: 'BANKING_TITLE', message: 'Add banking information' },
-    { name: 'INSTRUCTION', message: 'Enter the banking information for this business.  Please make sure that this is accurate as payments will go directly to the specified account.' },
+    { name: 'INSTRUCTION', message: 'Enter the contact’s bank account information.  Please make sure that this is accurate as payments will go directly to the specified account.' },
     { name: 'LABEL_CA', message: 'Canada' },
     { name: 'LABEL_US', message: 'US' },
     { name: 'LABEL_ACH_ROUTING_LABEL', message: 'ACH Routing No.' },
     { name: 'LABEL_ACH_ACCOUNT_LABEL', message: 'ACH Account No.' },
+    { name: 'NAME_LABEL', message: 'Financial Institution Name' },
     { name: 'EDIT_BANK_ERR', message: 'Error Editing Bank Account. Please try again.' },
     { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
     { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
@@ -226,7 +231,7 @@ foam.CLASS({
         .end()
         .start()
           .addClass('bank-option-container')
-          .addClass('side-by-side')
+          .addClass('two-column')
           .show(! this.wizard.data.bankAccount)
           .start()
             .addClass('bankAction')
@@ -284,13 +289,29 @@ foam.CLASS({
                     .tag(self.caAccount.ACCOUNT_NUMBER)
                   .end()
                 .end()
+                .start()
+                  .addClass('divider')
+                .end()
+                .start()
+                  .start()
+                    .addClass('field-label')
+                    .add(self.NAME_LABEL)
+                  .end()
+                  .tag(self.caAccount.NAME)
+                .end()
+                .tag(self.caAccount.ADDRESS.clone().copyFrom({
+                  view: {
+                    class: 'net.nanopay.sme.ui.AddressView',
+                    withoutCountrySelection: true
+                  }
+                }))
               .endContext();
           } else {
             return this.E()
               .startContext({ data: self.usAccount })
                 .start()
                   .addClass('check-margin')
-                  .addClass('side-by-side')
+                  .addClass('two-column')
                   .start()
                     .start()
                       .addClass('field-label')
@@ -306,6 +327,21 @@ foam.CLASS({
                     .tag(self.usAccount.ACCOUNT_NUMBER)
                   .end()
                 .end()
+                .start()
+                  .addClass('divider')
+                .end()
+                .start()
+                  .start().addClass('field-label')
+                    .add(self.NAME_LABEL)
+                  .end()
+                  .tag(self.usAccount.NAME)
+                .end()
+                .tag(self.usAccount.ADDRESS.clone().copyFrom({
+                  view: {
+                    class: 'net.nanopay.sme.ui.AddressView',
+                    withoutCountrySelection: true
+                  }
+                }))
               .endContext();
           }
         }))
@@ -323,6 +359,14 @@ foam.CLASS({
     /** Chooses a CA or US bank account. */
     function selectBank(bank) {
       this.isCABank = bank === 'CA';
+    },
+
+    function validateBank(bankAccount, countryId) {
+      if ( bankAccount.errors_ ) {
+        this.ctrl.notify(bankAccount.errors_[0][1], 'error');
+        return;
+      }
+      return bankAccount.address;
     }
   ],
 
@@ -341,6 +385,9 @@ foam.CLASS({
     {
       name: 'option',
       label: 'Save without banking',
+      isAvailable: function() {
+        return ! this.wizard.data.bankAccount;
+      },
       code: async function(X) {
         if ( ! await this.addContact() ) return;
         X.closeDialog();
@@ -352,18 +399,16 @@ foam.CLASS({
       isEnabled: function(isConnecting) {
         return ! isConnecting;
       },
-      code: async function(X) {
+      code: function(X) {
         // Validate the contact bank account fields.
-        if ( this.isCABank ) {
-          if ( this.caAccount.errors_ ) {
-            this.ctrl.notify(this.caAccount.errors_[0][1], 'error');
-            return;
-          }
-        } else {
-          if ( this.usAccount.errors_ ) {
-            this.ctrl.notify(this.usAccount.errors_[0][1], 'error');
-            return;
-          }
+        var bankAddress = this.isCABank
+          ? this.validateBank(this.caAccount, 'CA')
+          : this.validateBank(this.usAccount, 'US');
+
+        // Validate the contact address fields.
+        if ( bankAddress.errors_ ) {
+          this.ctrl.notify(bankAddress.errors_[0][1], 'error');
+          return;
         }
         X.pushToId('AddContactStepThree');
       }
