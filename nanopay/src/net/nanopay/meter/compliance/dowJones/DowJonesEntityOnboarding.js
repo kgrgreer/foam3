@@ -18,7 +18,7 @@ foam.CLASS({
         return AND(
           EQ(DOT(NEW_OBJ, INSTANCE_OF(Business.getOwnClassInfo())), true),
           EQ(DOT(NEW_OBJ, User.COMPLIANCE), ComplianceStatus.REQUESTED),
-          NEQ(DOT(OLD_OBJ), User.COMPLIANCE), ComplianceStatus.REQUESTED)
+          NEQ(DOT(OLD_OBJ, User.COMPLIANCE), ComplianceStatus.REQUESTED)
         ).f(obj);
       `
     }
