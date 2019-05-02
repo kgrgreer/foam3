@@ -216,7 +216,6 @@ foam.CLASS({
   messages: [
     { name: 'ATTACHMENT_LABEL', message: 'Attachments' },
     { name: 'AMOUNT_LABEL', message: 'Amount due' },
-    { name: 'PURCHASE_ORDER_LABEL', message: 'P.O No.' },
     { name: 'REFERENCE_LABEL', message: 'Reference ID' },
     { name: 'DUE_DATE_LABEL', message: 'Date due' },
     { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
@@ -244,7 +243,7 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('invoice-content-text'))
           .add(this.slot(function(invoice$purchaseOrder) {
-            return self.PURCHASE_ORDER_LABEL + invoice$purchaseOrder;
+            return self.PO_NO_LABEL + invoice$purchaseOrder;
           }))
         .end()
         .add(this.slot(function(invoice, invoice$status) {
