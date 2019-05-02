@@ -461,7 +461,8 @@ foam.CLASS({
       documentation: 'The reverse of this transaction',
       of: 'net.nanopay.tx.model.Transaction',
       value: null,
-      hidden: true
+      hidden: true,
+      permissionRequired: true
     },
     {
       name: 'originalTransaction',
@@ -469,7 +470,8 @@ foam.CLASS({
       documentation: 'The transaction which was declined/cancelled triggering reversal',
       of: 'net.nanopay.tx.model.Transaction',
       value: null,
-      hidden: true
+      hidden: true,
+      permissionRequired: true,
     },
   ],
 

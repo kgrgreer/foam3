@@ -98,13 +98,11 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-        Transaction ret = limitedClone(x, oldTxn);
-        ret.validate(x);
-
+        super.executeBeforePut(x,oldTxn);
         if ( canReverse(x, oldTxn) ) {
           this.createReverseTransaction(x);
         }
-        return ret;
+        return this;
       `
     },
     {
