@@ -33,8 +33,10 @@ public class UserToPublicUserInfoDAO
     Sink s = sink != null ? sink : new ArraySink();
     ProxySink proxy = new ProxySink(x, s) {
       public void put(Object o, Detachable d) {
-        if ( isPublic((User) o) ) {
-          getDelegate().put(o, d);
+        User user = (User) o;
+        if ( isPublic(user) ) {
+          PublicUserInfo userInfo = new PublicUserInfo(user);
+          getDelegate().put(userInfo, d);
         }
       }
     };

@@ -232,7 +232,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
   // sps
-  { name: 'net/nanopay/sps/SPSConfig' },
+  { name: 'net/nanopay/sps/SPSCredentials' },
 
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
@@ -810,7 +810,6 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/BankSyncView', flags: ['web'] },
   { name: 'net/nanopay/accounting/AccountingIntegrationUtil', flags: ['web'] },
 
-
   // meter
   { name: 'net/nanopay/meter/Blacklist' },
   { name: 'net/nanopay/meter/BlacklistEntityType' },
@@ -867,6 +866,38 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/identityMind/predicate/EntityLogin' },
   { name: 'net/nanopay/meter/compliance/identityMind/predicate/MerchantKYC' },
 
+  // dow jones
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/ContentSet' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterAMC' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterOEL' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterOOL' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterPEP' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterRegion' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterRegionKeys' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterSIC' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterSL' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterSOC' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/IDTypeKey' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/MatchType' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/RecordType' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/SearchType' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchInvalidResponse' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchResponse' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchResponseBody' },
+  { name: 'net/nanopay/meter/compliance/dowJones/ClientDowJonesService' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCall' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCredentials' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJones' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesRestInterface' },
+  { name: 'net/nanopay/meter/compliance/dowJones/EntityNameSearchRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/IDTypeSearchRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/Match' },
+  { name: 'net/nanopay/meter/compliance/dowJones/MatchedName' },
+  { name: 'net/nanopay/meter/compliance/dowJones/MatchPayload' },
+  { name: 'net/nanopay/meter/compliance/dowJones/MetadataSearchResponse' },
+  { name: 'net/nanopay/meter/compliance/dowJones/NameSearchRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
   { name: 'net/nanopay/liquidity/ui/Dashboard' },
   { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
