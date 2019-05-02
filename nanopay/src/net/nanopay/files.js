@@ -876,6 +876,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/ClientDowJonesService' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCall' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCredentials' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesEntityOnboarding' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesPersonOnboarding' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJones' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesRestInterface' },
   { name: 'net/nanopay/meter/compliance/dowJones/EntityKYCValidator' },
