@@ -230,6 +230,7 @@ foam.CLASS({
         args.put("name", name);
         args.put("fromName", fromName);
         args.put("account", invoice.getInvoiceNumber());
+        args.put("transId", invoice.getPaymentId());
     
         String amount = ((Currency) currencyDAO.find(invoice.getDestinationCurrency()))
           .format(invoice.getAmount());
