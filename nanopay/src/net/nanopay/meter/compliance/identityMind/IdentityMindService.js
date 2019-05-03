@@ -7,8 +7,10 @@ foam.CLASS({
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
     'foam.lib.json.OutputterMode',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'java.util.Base64',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
@@ -41,7 +43,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'profile'
+      name: 'defaultProfile',
+      value: 'DEFAULT'
     }
   ],
 
@@ -67,7 +70,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getConsumerKYCRequest(x, consumer);
         request.setUrl(getBaseUrl() + "/account/consumer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
-        request.setProfile(getProfile());
+        request.setProfile(getProfile(consumer));
         request.setStage(stage);
 
         IdentityMindResponse response = sendRequest(x, request);
@@ -95,7 +98,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getEntityLoginRequest(x, login);
         request.setUrl(getBaseUrl() + "/account/login");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
-        request.setProfile(getProfile());
+        request.setProfile(getDefaultProfile());
 
         IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Entity Login Record");
@@ -123,7 +126,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getMerchantKYCRequest(x, business);
         request.setUrl(getBaseUrl() + "/account/merchant");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
-        request.setProfile(getProfile());
+        request.setProfile(getProfile(business));
 
         IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Merchant KYC Evaluation");
@@ -150,7 +153,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getTransactionRequest(x, transaction);
         request.setUrl(getBaseUrl() + "/account/transfer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
-        request.setProfile(getProfile());
+        request.setProfile(getDefaultProfile());
 
         IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Transfer");
@@ -209,6 +212,29 @@ foam.CLASS({
           ((Logger) x.get("logger")).error(message, e);
           throw new RuntimeException(message);
         }
+      `
+    },
+    {
+      name: 'getProfile',
+      type: 'String',
+      args: [
+        {
+          name: 'obj',
+          type: 'FObject'
+        }
+      ],
+      javaCode: `
+        Address address = (Address) obj.getProperty("address");
+        if ( address != null
+          && ! SafetyUtil.isEmpty(address.getCountryId())
+        ) {
+          // Use hard-coded "nanopay" prefix for IdentityMind profile as we only
+          // need to scale by user countries at the moment.
+          //
+          // TODO: Discuss using spid for user segmentation to support scaling by products as well.
+          return String.format("nanopay%s", address.getCountryId());
+        }
+        return getDefaultProfile();
       `
     }
   ]
