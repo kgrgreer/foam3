@@ -43,9 +43,7 @@ foam.CLASS({
           class: 'foam.u2.view.ScrollTableView',
           columns: [
             this.BankAccount.NAME,
-            this.BankAccount.OWNER.clone().copyFrom({
-              tableWidth: 110
-            }),
+            this.BankAccount.OWNER,
             this.BankAccount.FLAG_IMAGE.clone().copyFrom({ tableWidth: 90 }),
             this.BankAccount.ACCOUNT_NUMBER.clone().copyFrom({ tableWidth: 120 }),
             this.BankAccount.STATUS.clone().copyFrom({ tableWidth: 110 }),
