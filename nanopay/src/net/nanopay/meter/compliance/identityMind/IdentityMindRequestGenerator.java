@@ -12,9 +12,9 @@ import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.auth.LoginAttempt;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.invoice.model.Invoice;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
-import net.nanopay.model.BusinessUserJunction;
 import net.nanopay.tx.model.Transaction;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,11 +96,13 @@ public class IdentityMindRequestGenerator {
     User sender = sourceAccount.findOwner(x);
     User receiver = destinationAccount.findOwner(x);
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
-      .setEntityType(transaction.getClass().getName())
-      .setEntityId(prepareString(transaction.getId()))
       .setIp(getRemoteAddr(x))
       .build();
 
+    if ( transaction.getInvoiceId() != 0 ) {
+      request.setEntityType(Invoice.class.getName());
+      request.setEntityId(transaction.getInvoiceId());
+    }
     request.setAmt(Double.toString(transaction.getAmount() / 100.0));
     request.setCcy(sourceAccount.getDenomination());
 
