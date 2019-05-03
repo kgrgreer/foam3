@@ -29,9 +29,6 @@ public class IdentityMindRequestGenerator {
     if ( obj instanceof User ) {
       return getConsumerKYCRequest(x, (User) obj);
     }
-    if ( obj instanceof BusinessUserJunction ) {
-      return getConsumerKYCRequest(x, (BusinessUserJunction) obj);
-    }
     if (obj instanceof BeneficialOwner) {
       return getConsumerKYCRequest(x, (BeneficialOwner) obj);
     }
@@ -185,15 +182,6 @@ public class IdentityMindRequestGenerator {
     }
     request.setTitle(prepareString(user.getJobTitle()));
     request.setDob(formatDate(user.getBirthday(), "yyyy-MM-dd"));
-    return request;
-  }
-
-  private static IdentityMindRequest getConsumerKYCRequest(X x, BusinessUserJunction officer) {
-    User user = officer.findTargetId(x);
-    Business business = officer.findSourceId(x);
-
-    IdentityMindRequest request = getConsumerKYCRequest(x, user);
-    request.setMerchantAid(getUUID(business));
     return request;
   }
 
