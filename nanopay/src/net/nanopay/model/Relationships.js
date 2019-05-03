@@ -143,13 +143,14 @@ foam.RELATIONSHIP({
       });
     },
     tableCellFormatter: function(value, obj, axiom) {
-      var self = this;
-      this.__subSubContext__.userDAO.find(value)
-      .then( function( user ) {
-        self.add(user.firstName);
-      }).catch(function(error) {
-        self.add(value);
-      });
+      this.__subSubContext__.userDAO
+        .find(value)
+        .then((user) => {
+          this.add('[', user.cls_.name, '] ', user.label());
+        })
+        .catch((error) => {
+          this.add(value);
+        });
     }
   }
 });
