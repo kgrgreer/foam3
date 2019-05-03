@@ -12,7 +12,6 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.accounting.AccountingResultReport'
@@ -51,6 +50,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'showIntegrationModal'
+    },
+    {
+      class: 'String',
+      name: 'redirectUrl'
     }
   ],
 
@@ -107,9 +110,11 @@ foam.CLASS({
       if ( this.XeroInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
         service = this.xeroService;
         accountingSoftwareName = 'Xero';
+        this.redirectUrl = '/service/xeroWebAgent?portRedirect=';
       } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
         service = this.quickbooksService;
         accountingSoftwareName = 'Quickbooks';
+        this.redirectUrl = '/service/quickbooksWebAgent?portRedirect=';
       }
       if ( service != null ) {
         let result = await service.singleInvoiceSync(null, invoice);
@@ -132,9 +137,23 @@ foam.CLASS({
     },
     function callback() {
       if ( this.showIntegrationModal ) {
-        this.ctrl.add(this.Popup.create().tag({
-          class: 'net.invoice.ui.modal.IntegrationModal'
-        }));
+        let service = null;
+        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+          service = this.xeroService;
+        } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+          service = this.quickbooksService;
+        }
+        if ( service != null ) {
+          service.removeToken(null);
+        }
+        if ( this.redirectUrl ) {
+          var url = window.location.origin + this.redirectUrl + window.location.hash.slice(1);
+          var sessionId = localStorage['defaultSession'];
+          if ( sessionId ) {
+            url += '&sessionId=' + sessionId;
+          }
+          window.location = url;
+        }
       }
     },
 

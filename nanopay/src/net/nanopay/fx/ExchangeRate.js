@@ -13,7 +13,11 @@ foam.CLASS({
   javaImports: [
       'net.nanopay.fx.FXProvider',
       'java.util.Date'
-    ],
+  ],
+
+  tableColumns: [
+    'id', 'fromCurrency', 'toCurrency', 'rate', 'expirationDate'
+  ],
 
   properties: [
     {
@@ -104,6 +108,6 @@ foam.CLASS({
       name: 'code',
       documentation: 'Status code associated to exchange rate approval/acceptance.',
       value: '200'
-    },
+    }
   ]
 });
