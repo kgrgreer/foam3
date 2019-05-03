@@ -24,7 +24,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
@@ -167,7 +166,8 @@ foam.CLASS({
     { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
-    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` }
+    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` },
+    { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions`}
   ],
 
   methods: [
@@ -295,24 +295,24 @@ foam.CLASS({
 
     function validating() {
       var msg;
-      if ( ! (this.isEmpty(msg = foam.nanos.auth.User.FIRST_NAME.validateObj(this.firstNameField))) ) {
-        this.add(this.NotificationMessage.create({ message: msg, type: 'error'}));
+      if ( ! (this.isEmpty(msg = this.User.FIRST_NAME.validateObj(this.firstNameField))) ) {
+        this.notify(msg, 'error');
         return false;
       }
-      if ( ! (this.isEmpty(msg = foam.nanos.auth.User.LAST_NAME.validateObj(this.lastNameField))) ) {
-        this.add(this.NotificationMessage.create({ message: msg, type: 'error'}));
+      if ( ! (this.isEmpty(msg = this.User.LAST_NAME.validateObj(this.lastNameField))) ) {
+        this.notify(msg, 'error');
         return false;
       }
-      if ( ! (this.isEmpty(msg = foam.nanos.auth.User.ORGANIZATION.validateObj(this.companyNameField))) ) {
-        this.add(this.NotificationMessage.create({ message: msg, type: 'error'}));
+      if ( ! (this.isEmpty(msg = this.User.ORGANIZATION.validateObj(this.companyNameField))) ) {
+        this.notify(msg, 'error');
         return false;
       }
-      if ( ! (this.isEmpty(msg = foam.nanos.auth.User.EMAIL.validateObj(this.emailField))) ) {
-        this.add(this.NotificationMessage.create({ message: msg, type: 'error'}));
+      if ( ! (this.isEmpty(msg = this.User.EMAIL.validateObj(this.emailField))) ) {
+        this.notify(msg, 'error');
         return false;
       }
       if ( ! this.termsAndConditions ) {
-        this.add(this.NotificationMessage.create({ message: 'Please accept the Terms and Conditions', type: 'error' }));
+        this.notify(this.TERMS_CONDITIONS_ERR, 'error');
         return false;
       }
       return true;
