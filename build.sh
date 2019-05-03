@@ -158,7 +158,7 @@ function build_jar {
         #     GRADLE_ARGS="$GRADLE_ARGS clean"
         # fi
 
-        if [ "$RUN_JAR" -eq 1 ]; then
+        if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
             #gradle --daemon "${GRADLE_ARGS}" build
             gradle --daemon build
         else
@@ -268,9 +268,6 @@ function status_nanos {
 }
 
 function start_nanos {
-    MESSAGE="Starting nanos ${INSTANCE}"
-    echo "INFO :: ${MESSAGE}..."
-
     if [ "${RUN_JAR}" -eq 1 ]; then
         "${NANOPAY_HOME}/bin/run.sh" "-N${NANOPAY_HOME}" "-H${HOST_NAME}" "-W${WEB_PORT}"
     else
@@ -285,7 +282,7 @@ function start_nanos {
         fi
 
         if [ -z "$MODE" ]; then
-  #          JAVA_OPTS="-Dresource.journals.dir=opt/nanopay/journals ${JAVA_OPTS}"
+            #          JAVA_OPTS="-Dresource.journals.dir=opt/nanopay/journals ${JAVA_OPTS}"
             # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
             # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
             # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
@@ -294,12 +291,28 @@ function start_nanos {
 
         CLASSPATH=$(JARS=("target/lib"/*.jar); IFS=:; echo "${JARS[*]}")
         CLASSPATH="build/classes/java/main:$CLASSPATH"
+        #echo CLASSPATH=$CLASSPATH
+
+        MESSAGE="Starting nanos ${INSTANCE}"
+        if [ "$TEST" -eq 1 ]; then
+            MESSAGE="Running tests..."
+            # Replacing spaces with commas.
+            TESTS=${TESTS// /,}
+            JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
+            if [ ! -z "${TESTS}" ]; then
+                JAVA_OPTS="${JAVA_OPTS} -Dfoam.tests=${TESTS}"
+            fi
+        fi
 
         export JAVA_TOOL_OPTIONS="$JAVA_OPTS"
+        echo "INFO :: ${MESSAGE}..."
 
-        if [ $DAEMONIZE -eq 0 ]; then
+        if [ "$TEST" -eq 1 ]; then
+            JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
+            exec java -jar "${JAR}"
+        elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
-       else
+        else
             nohup java -cp "$CLASSPATH" foam.nanos.boot.Boot &> /dev/null &
             echo $! > "$NANOS_PIDFILE"
         fi
@@ -381,30 +394,31 @@ function setenv {
     fi
 
     if [[ $TEST -eq 1 ]]; then
+        COMPILE_ONLY=0
+
+        echo "INFO :: Cleaned up temporary journal files."
         rmdir /tmp/nanopay
         mkdir /tmp/nanopay
         JOURNAL_HOME=/tmp/nanopay
         mkdir -p $JOURNAL_HOME
-        echo "INFO :: Cleaned up temporary journal files."
     fi
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
-    if [ -z "$JAVA_OPTS" ]; then
-        export JAVA_OPTS=""
-    fi
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
-    if [[ -f $PROJECT_HOME/tools/keystore.sh ]]; then
-        cd "$PROJECT_HOME"
-        printf "INFO :: Generating keystore...\n"
-        if [[ $TEST -eq 1 ]]; then
-          ./tools/keystore.sh -t
-        else
-          ./tools/keystore.sh
+    if [ "$INSTALL" -eq 1 ] || [ "$TEST" -eq 1 ]; then
+        if [[ -f $PROJECT_HOME/tools/keystore.sh ]]; then
+            cd "$PROJECT_HOME"
+            printf "INFO :: Generating keystore...\n"
+            if [[ $TEST -eq 1 ]]; then
+                ./tools/keystore.sh -t
+            else
+                ./tools/keystore.sh
+            fi
         fi
     fi
 
@@ -473,7 +487,7 @@ CLEAN_BUILD=0
 DEBUG=0
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
-JAVA_OPTS=
+export JAVA_OPTS=
 INSTALL=0
 PACKAGE=0
 RUN_JAR=0
@@ -557,17 +571,6 @@ if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     echo "INFO :: Checking dependencies for vulnerabilities..."
     mvn com.redhat.victims.maven:security-versions:check
     quit 0
-fi
-
-if [[ $TEST -eq 1 ]]; then
-    COMPILE_ONLY=0
-    echo "INFO :: Running tests..."
-    # Replacing spaces with commas.
-    TESTS=${TESTS// /,}
-    JAVA_OPTS="${JAVA_OPTS} -Dfoam.main=testRunnerScript"
-    if [ ! -z "${TESTS}" ]; then
-        JAVA_OPTS="${JAVA_OPTS} -Dfoam.tests=${TESTS}"
-    fi
 fi
 
 clean
