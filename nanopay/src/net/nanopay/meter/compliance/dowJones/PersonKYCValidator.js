@@ -42,6 +42,10 @@ foam.CLASS({
           ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
         }
       `
+    },
+    {
+      name: 'applyReverseAction',
+      javaCode: ` `
     }
   ]
 });
