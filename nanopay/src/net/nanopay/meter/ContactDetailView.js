@@ -48,13 +48,21 @@ foam.CLASS({
           this.Contact.ID,
           this.Contact.BUSINESS_NAME,
           this.Contact.EMAIL,
-          this.Contact.CREATED.clone().copyFrom({ label: 'Date created' }),
-          this.Contact.OWNER.clone().copyFrom({ label: 'Created By' }),
+          this.Contact.CREATED,
+          this.Contact.OWNER,
           this.Contact.SIGN_UP_STATUS,
           this.Contact.DELETED,
           this.Contact.SYNCED_FROM_ACCOUNTING,
           this.Contact.ACCOUNTS,
         ];
+      }
+    },
+    {
+      name: 'config',
+      value: {
+        signUpStatus: { label: 'Ablii sign-up status' },
+        created: { label: 'Date created' },
+        owner: { label: 'Created by' },
       }
     }
   ]
