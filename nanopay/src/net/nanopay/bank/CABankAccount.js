@@ -16,7 +16,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{4,30}$")'
+      javaValue: 'Pattern.compile("^[0-9]{6,17}$")'
     },
     {
       name: 'BRANCH_ID_PATTERN',
@@ -124,7 +124,6 @@ foam.CLASS({
       javaCode: `
       String accountNumber = this.getAccountNumber();
 
-      // is empty
       if ( SafetyUtil.isEmpty(accountNumber) ) {
         throw new IllegalStateException("Please enter an account number.");
       }
@@ -155,6 +154,7 @@ foam.CLASS({
       if ( institution != null ) {
         return;
       }
+
       // when the institutionNumber is provided and not the institution
       String institutionNumber = this.getInstitutionNumber();
       if ( SafetyUtil.isEmpty(institutionNumber) ) {
@@ -184,10 +184,10 @@ foam.CLASS({
       // when the branchId is provided and not the branch
       String branchId = this.getBranchId();
       if ( SafetyUtil.isEmpty(branchId) ) {
-        throw new IllegalStateException("Please enter a branch Id/ Transit Number.");
+        throw new IllegalStateException("Please enter a branch id/transit number.");
       }
       if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-        throw new IllegalStateException("Please enter a valid branch Id/ Transit Number.");
+        throw new IllegalStateException("Please enter a valid branch id/transit number.");
       }
       `
     }
