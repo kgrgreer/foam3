@@ -90,7 +90,7 @@ public class IdentityMindRequestGenerator {
     return request;
   }
 
-  public static IdentityMindRequest getTransactionRequest(X x, Transaction transaction) {
+  public static IdentityMindRequest getTransferRequest(X x, Transaction transaction) {
     Account sourceAccount = transaction.findSourceAccount(x);
     Account destinationAccount = transaction.findDestinationAccount(x);
     User sender = sourceAccount.findOwner(x);
@@ -109,7 +109,7 @@ public class IdentityMindRequestGenerator {
     request.setTea(sender.getEmail());
     request.setBfn(prepareString(sender.getFirstName()));
     request.setBln(prepareString(sender.getLastName()));
-    Address senderAddress = sender.getAddress();
+    Address senderAddress = sender.getBusinessAddress();
     if ( senderAddress != null ) {
       request.setBsn(prepareString(senderAddress.getStreetNumber(), senderAddress.getStreetName(), senderAddress.getSuite()));
       request.setBc(prepareString(senderAddress.getCity()));
@@ -128,7 +128,7 @@ public class IdentityMindRequestGenerator {
     request.setDemail(receiver.getEmail());
     request.setSfn(prepareString(receiver.getFirstName()));
     request.setSln(prepareString(receiver.getLastName()));
-    Address receiverAddress = receiver.getAddress();
+    Address receiverAddress = receiver.getBusinessAddress();
     if ( receiverAddress != null ) {
       request.setSsn(prepareString(receiverAddress.getStreetNumber(), receiverAddress.getStreetName(), receiverAddress.getSuite()));
       request.setSc(prepareString(receiverAddress.getCity()));
