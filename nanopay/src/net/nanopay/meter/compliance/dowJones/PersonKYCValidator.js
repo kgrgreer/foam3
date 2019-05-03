@@ -21,7 +21,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.dowJones.DowJonesService',
-    'net.nanopay.meter.compliance.dowJones.BaseSearchResponse'
+    'net.nanopay.meter.compliance.dowJones.DowJonesResponse'
   ],
 
   methods: [
@@ -31,7 +31,7 @@ foam.CLASS({
         User user = (User) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          BaseSearchResponse response = dowJonesService.personNameSearch(x, user.getFirstName(), user.getLastName(), null);
+          DowJonesResponse response = dowJonesService.personNameSearch(x, user.getFirstName(), user.getLastName(), null);
           ruler.putResult(
             response.getTotalMatches().equals("0")
               ? ComplianceValidationStatus.VALIDATED

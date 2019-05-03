@@ -5,7 +5,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'personNameSearch',
-      type: 'net.nanopay.meter.compliance.dowJones.BaseSearchResponse',
+      type: 'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
       async: true,
       javaThrows: ['foam.nanos.auth.AuthenticationException'],
       args: [
@@ -29,7 +29,7 @@ foam.INTERFACE({
     },
     {
       name: 'entityNameSearch',
-      type: 'net.nanopay.meter.compliance.dowJones.BaseSearchResponse',
+      type: 'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
       async: true,
       javaThrows: ['foam.nanos.auth.AuthenticationException'],
       args: [
