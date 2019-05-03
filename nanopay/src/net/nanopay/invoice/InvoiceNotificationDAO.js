@@ -90,17 +90,14 @@ foam.CLASS({
           // sendEmailFunction(x, isContact, emailTemplateName, invoiceId, userBeingSentEmail, args(Map), sendTo, externalInvoiceToken)
 
           try {
-            // ONE
             if ( invoiceIsBeingPaidButNotComplete ) {
               args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getIssueDate(), currencyDAO);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
-            // TWO
             if ( invoiceIsARecievable ) {
               args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
-            // THREE  
             if ( invoiceNeedsApproval ) {
               User tempApprover = null;
               User currentUser = (User) x.get("user");
@@ -115,11 +112,11 @@ foam.CLASS({
                 sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, tempApprover.getEmail(), externalInvoiceToken);
               }
             }
-            // FOUR 
             if ( invoiceIsBeingPaidAndCompleted ) {
               args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
+
           } catch (Exception e) {
             e.printStackTrace();
           }
@@ -259,7 +256,7 @@ foam.CLASS({
             AND(
               EQ(UserUserJunction.TARGET_ID, user.getId()),
               OR(
-                CONTAINS_IC( UserUserJunction.GROUP, "admin"),
+                CONTAINS_IC(UserUserJunction.GROUP, "admin"),
                 CONTAINS_IC(UserUserJunction.GROUP, "approver")
                 )
               )
