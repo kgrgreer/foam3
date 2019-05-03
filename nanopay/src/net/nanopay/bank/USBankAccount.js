@@ -10,6 +10,19 @@ foam.CLASS({
 
   documentation: 'US Bank account information.',
 
+  constants: [
+    {
+      name: 'BRANCH_ID_PATTERN',
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{9}$")'
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[0-9]{6,17}$")'
+    }
+  ],
+
   properties: [
     ['images/flags/us.png'],
     {
@@ -76,17 +89,46 @@ foam.CLASS({
     }
   ],
   methods: [
-   {
-     name: 'getBankCode',
-     type: 'String',
-     args: [
-       {
-         name: 'x', type: 'Context'
-       }
-     ],
-     javaCode: `
-       return "";
-     `
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        super.validate(x);
+        String branchId = this.getBranchId();
+        String accountNumber = this.getAccountNumber();
+        
+        if ( SafetyUtil.isEmpty(branchId) ) {
+          throw new IllegalStateException("Please enter a branch id/routing number.");
+        }
+        if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+          throw new IllegalStateException("Please enter a valid branch id/routing number.");
+        }
+
+        if ( SafetyUtil.isEmpty(accountNumber) ) {
+          throw new IllegalStateException("Please enter an account number.");
+        }
+        if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
+          throw new IllegalStateException("Please enter a valid account number.");
+        }
+      `
+    },
+    {
+      name: 'getBankCode',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        return "";
+      `
    },
  ]
 });
