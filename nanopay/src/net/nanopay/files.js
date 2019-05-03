@@ -820,6 +820,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/BusinessDetailView', flags: ['web'] },
+  { name: 'net/nanopay/meter/ContactDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
