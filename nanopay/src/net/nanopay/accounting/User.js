@@ -7,7 +7,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.accounting.IntegrationCode',
       name: 'integrationCode',
-      documentation: 'Code to determine which Accounting is currently active',
+      documentation: 'The code that determines which Accounting system is currently active with the user.',
       hidden: true,
       value: 'NONE'
     },
