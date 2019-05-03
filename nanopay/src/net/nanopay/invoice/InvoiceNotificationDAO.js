@@ -5,31 +5,23 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.token.TokenService',
     'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.auth.token.TokenService',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.email.EmailService',
-    'foam.util.SafetyUtil',
     'java.text.SimpleDateFormat',
     'java.util.*',
-    'net.nanopay.auth.PublicUserInfo',
-    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
-    'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.notification.NewInvoiceNotification',
     'net.nanopay.model.Currency',
-    'static foam.mlang.MLang.*',
-    'foam.mlang.predicate.ContainsIC'
+    'static foam.mlang.MLang.*'
   ],
 
   documentation: `
