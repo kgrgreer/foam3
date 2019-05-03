@@ -8,7 +8,8 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.liquidity.Frequency'
   ],
   imports: [
     'liquiditySettingsDAO'
@@ -34,8 +35,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name',
-      value: 'name'
+      name: 'name'
     },
     {
       class: 'Reference',
@@ -47,7 +47,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.liquidity.Frequency',
       name: 'cashOutFrequency',
-      documentation: 'Determines how often a automatic cash out can occur.'
+      documentation: 'Determines how often an automatic cash out can occur.'
     },
     {
       class: 'FObjectProperty',
@@ -55,9 +55,8 @@ foam.CLASS({
       name: 'highLiquidity',
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
-          resetBalance: 0,
-          threshold: 0,
-          enable: false,
+          rebalancingEnabled: false,
+          enabled: false,
         });
       }
     },
@@ -66,9 +65,24 @@ foam.CLASS({
       of: 'net.nanopay.liquidity.Liquidity',
       name: 'lowLiquidity',
       factory: function() {
-        return net.nanopay.liquidity.Liquidity.create();
+        return net.nanopay.liquidity.Liquidity.create({
+          rebalancingEnabled: false,
+          enabled: false,
+        });
       }
     }
+  ],
+  methods: [
+    {
+      name: 'toSummary',
+      documentation: `
+        When using a reference to the accountDAO, the labels associated to it will show a chosen property
+        rather than the first alphabetical string property. In this case, we are using the account name.
+      `,
+      code: function(x) {
+        var self = this;
+        return this.name;
+      },
+    },
   ]
 });
-

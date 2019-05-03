@@ -290,10 +290,12 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       logger.error(e);
       ResultResponse response = errorHandler(e);
       ArraySink sink = new ArraySink();
-      accountingBankDAO.where(
-        EQ(AccountingBankAccount.REALM_ID, token.getRealmId())
-      ).select(sink);
-      results = sink.getArray();
+      if ( token != null && token.getRealmId() != null ) {
+        accountingBankDAO.where(
+          EQ(AccountingBankAccount.REALM_ID, token.getRealmId())
+        ).select(sink);
+        results = sink.getArray();
+      }
       response.setBankAccountList(results.toArray(new AccountingBankAccount[results.size()]));
       resultWrapper.setResultResponse(resultResponse);
       resultDAO.inX(x).put(resultWrapper);
@@ -645,9 +647,23 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     InvoiceResponseItem errorItem = new InvoiceResponseItem();
-    errorItem.setDueDate(format.format(dueDate));
-    errorItem.setInvoiceNumber(qInvoice.getDocNumber());
-    errorItem.setAmount(amount.toString() + " " + qInvoice.getCurrencyRef().getValue());
+    if ( dueDate != null ) {
+      errorItem.setDueDate(format.format(dueDate));
+    } else {
+      errorItem.setDueDate("");
+    }
+
+    if ( qInvoice.getDocNumber() != null ) {
+      errorItem.setInvoiceNumber(qInvoice.getDocNumber());
+    } else {
+      errorItem.setInvoiceNumber("");
+    }
+
+    if ( amount != null ) {
+      errorItem.setAmount(amount.toString() + " " + qInvoice.getCurrencyRef().getValue());
+    } else {
+      errorItem.setAmount("");
+    }
 
     return errorItem;
   }
@@ -733,6 +749,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     String id = qInvoice instanceof Bill ?
       ( (Bill) qInvoice )   .getVendorRef().getValue() :
       ( (Invoice) qInvoice ).getCustomerRef().getValue();
+
+    if ( id == null || SafetyUtil.isEmpty(id) ) {
+      invoiceErrors.get("MISS_CONTACT").add(errorItem);
+      return "Invoice " + qInvoice.getDocNumber() + " can not import because contact do not exist.";
+    }
 
     AccountingContactEmailCache cache = (AccountingContactEmailCache) cacheDAO.inX(x).find(AND(
       EQ(AccountingContactEmailCache.QUICK_ID, id),
@@ -976,7 +997,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     QuickbooksConfig    config    = (QuickbooksConfig)configDAO.find(app.getUrl());
     QuickbooksToken  token = (QuickbooksToken) store.inX(x).find(user.getId());
 
-    if ( token == null ) {
+    if ( token == null || token.getRealmId() == null || token.getBusinessName() == null ) {
       throw new AccountingException(AccountingErrorCodes.TOKEN_EXPIRED.getLabel(), AccountingErrorCodes.TOKEN_EXPIRED);
     }
 
