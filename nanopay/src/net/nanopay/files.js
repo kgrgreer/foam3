@@ -821,6 +821,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/ContactDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/BusinessDetailView' },
+  { name: 'net/nanopay/meter/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/InvoiceDetailView' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
