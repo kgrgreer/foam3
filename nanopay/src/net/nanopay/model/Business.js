@@ -12,7 +12,7 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus'
   ],
 
-  documentation: 'Business extends user class & it is the company user for SME',
+  documentation: `Business extends user class & it is the company user for SME.`,
 
   tableColumns: [
     'id',
@@ -49,7 +49,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'residenceOperated',
-      documentation: 'Details whether business is operated in the owners residence.'
+      documentation: 'Verifies whether a business is operated in the residence of the owner.'
     },
     {
       class: 'foam.nanos.fs.FileArray',
