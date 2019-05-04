@@ -19,7 +19,7 @@ if os.path.isfile(JOURNAL_HOME + filename):
     lines = readFile.readlines();
     for line in lines:
 
-        if line.find('"id":"http"') != -1 and line.find('script-src') != -1:
+        if ( line.find('"id":"http"') != -1 or line.find('"name":"http"') != -1 ) and line.find('script-src') != -1:
             index = line.find('script-src') + 10
             line = line[:index] + " https://cdn.plaid.com/link/v2/stable/link-initialize.js" + line[index:]
         writeFile.write(line)
