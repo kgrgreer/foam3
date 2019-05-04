@@ -327,12 +327,12 @@ foam.CLASS({
       } else if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
         this.accountingBankAccounts = await this.xeroService.bankAccountSync(null);
       }
-      if ( this.accountingBankAccounts.errorCode == this.AccountingErrorCodes.TOKEN_EXPIRED ) {
-        this.ctrl.add(this.Popup.create({ closeable: false }).tag({
-          class: 'net.nanopay.accounting.AccountingTimeOutModal'
-        }));
-      }
       if ( this.accountingBankAccounts ) {
+        if ( this.accountingBankAccounts.errorCode == this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+          this.ctrl.add(this.Popup.create({ closeable: false }).tag({
+            class: 'net.nanopay.accounting.AccountingTimeOutModal'
+          }));
+        }
         for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
           if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
             bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name + '-' + this.accountingBankAccounts.bankAccountList[i].currencyCode]);
