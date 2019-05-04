@@ -26,6 +26,7 @@ foam.CLASS({
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
     'net.nanopay.model.Currency',
     'static foam.mlang.MLang.*',
@@ -73,7 +74,9 @@ foam.CLASS({
           &&
             newInvoiceStatus == InvoiceStatus.PAID
           && 
-          invoice.getPaymentDate() != null;
+          invoice.getPaymentDate() != null
+          &&
+          invoice.getPaymentMethod() != PaymentStatus.CHEQUE; //PaymentStatus.CHEQUE is used when we 'Mark as Complete'
         boolean invoiceNeedsApproval = 
             ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PENDING_APPROVAL )
           &&
