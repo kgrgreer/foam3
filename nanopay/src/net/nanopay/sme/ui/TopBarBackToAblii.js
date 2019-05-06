@@ -5,10 +5,15 @@ foam.CLASS({
 
   documentation: 'Top bar view for redirecting to ablii.com',
 
+  imports: [
+    'auth',
+    'stack'
+  ],
+
   css: `
     ^ .net-nanopay-sme-ui-TopBarBackToAblii-button{
       position: relative;
-      top: 20px;
+      top: 22px;
       cursor: pointer;
     }
   `,
@@ -19,7 +24,8 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass()).addClass('full-screen')
+      var self = this;
+      this.addClass(this.myClass())
       .start().addClass('top-bar')
         .start().addClass('top-bar-inner')
           .start().addClass(this.myClass('button'))
@@ -30,7 +36,8 @@ foam.CLASS({
             .end()
             .add(this.GO_BACK)
             .on('click', () => {
-              window.location = 'https://www.ablii.com';
+              self.auth.logout();
+              self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' })
             })
           .end()
         .end()

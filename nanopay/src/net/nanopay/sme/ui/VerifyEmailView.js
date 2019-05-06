@@ -21,24 +21,20 @@ foam.CLASS({
   css: `
     ^{
       margin: auto;
-      text-align: center;
       background: #fff;
-      height: 100%;
       width: 100%;
     }
-
     ^ .text-container{
-      width: 545px;
-      height: 215px;
+      width: 350px;
+      height: 100px;
       border-radius: 2px;
       padding-top: 5px;
-      margin: auto;
       color: #525455;
       font-size: 16px;
-      line-height: 2;
+      line-height: 1.5;
     }
-
     ^ .header{
+      width: 330px;
       font-family: lato;
       font-size: 30px;
       font-weight: bold;
@@ -46,15 +42,12 @@ foam.CLASS({
       letter-spacing: 0.5px;
       text-align: left;
       color: #093649;
-      text-align: center;
       font-weight: 900;
       margin-bottom: 8px;
     }
-
     ^ p{
       display: inline-block;
     }
-
     ^ .link{
       margin-left: 2px;
       cursor: pointer;
@@ -66,100 +59,42 @@ foam.CLASS({
       font-size: 16px;
       font-family: lato;
     }
-
     ^ .link:hover {
       background: none !important;
       color: #604aff;
       text-decoration: underline;
     }
-
-    ^ .Instructions-Text{
-      height: 16px;
-      height: 24px;
-      font-family: Lato;
-      font-size: 16px;
-      font-weight: normal;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: 1.5;
-      letter-spacing: normal;
-      text-align: center;
-      color: #525455;
-    }
-
-    ^ .Email-Text{
-      width: 182px;
-      height: 16px;
-      font-family: Roboto;
-      font-weight: 300;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #093649;
-      margin-top: 30px;
-      margin-bottom: 8px;
-      margin-left: 0px;
-      margin-right: 288px;
-    }
-
-    ^ .input-Box{
-      width: 100%;
-      height: 40px;
-      background-color: #ffffff;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      margin-bottom: 10px;
-      padding-left: 8px;
-      padding-right: 8px;
-      margin: 0px;
-      font-family: Roboto;
-      font-size: 14px;
-      text-align: left;
-      color: #093649;
-      font-weight: 300;
-      letter-spacing: 0.2px;
-      border-radius: 3px;
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-      border: solid 1px #8e9090;
-      margin-bottom: 32px;
-    }
-
-    ^ .button{
-      width: 168px;
-      height: 40px;
-      border-radius: 2px;
-      background-color: %SECONDARYCOLOR%;
-      margin-left: 20px;
-      margin-right: 20px;
-      margin-bottom: 20px;
-      margin-top: 10px;
-      text-align: center;
-      color: #ffffff;
-      font-family: Lato;
-      font-size: 16px;
-      line-height: 2.86;
-      cursor: pointer;
-      width: 128px;
-      height: 48px;
-      border-radius: 4px;
-      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-      border: solid 1px #4a33f4;
-      background-color: #604aff;
-    }
-
-    ^ .top-bar {
-      width: 100%;
-      height: 64px;
-      border-bottom: solid 1px #e2e2e3
-    }
-
-    ^ .top-bar img {
-      height: 25px;
-      margin-top: 20px;
-    }
-
     ^ .icon {
       width: 64px;
       margin-bottom: 16px;
       margin-top: 160px;
+    }
+    ^ .right-block {
+      margin-top: 120px;
+      width: 35% !important;
+    }
+    ^ .left-block {
+      width: 65% !important;
+      position: relative;
+      right: 100px;
+    }
+    ^ .sme-image {
+      margin-top: 15vh !important;
+    }
+    ^ .bold {
+      font-weight: 700;
+      margin-left: 3px;
+    }
+    ^ .net-nanopay-ui-ActionView-resendEmail {
+      height: 40px;
+      background: none;
+    }
+    ^ .carrot {
+      border-top: 5px solid blue;
+    }
+    ^ .invert-carrot {
+      border-top: none;
+      border-bottom: 5px solid blue;
     }
   `,
 
@@ -167,18 +102,40 @@ foam.CLASS({
     {
       class: 'String',
       name: 'email'
+    },
+    {
+      class: 'Boolean',
+      name: 'noEmailToggle'
     }
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Verify your email' },
-    { name: 'INSTRUCTIONS1', message: `We've sent a verification link to your email. Click on the link to get started!` },
-    { name: 'INSTRUCTIONS2', message: `If the email doesn’t arrive soon, check your spam folder or have us` }
+    { name: 'TITLE', message: 'Check your email' },
+    { name: 'INSTRUCTIONS1', message: 'We\'ve sent an email to ' },
+    { name: 'INSTRUCTIONS2', message: ' with a link to activate your account.' },
+    { name: 'NO_EMAIL_LINK', message: 'Don\'t see the email?' },
+    { name: 'RESEND_EMAIL_LINK', message: 'Resend the email' },
+    {
+      name: 'NO_EMAIL_INSTRUCTIONS_1', message: 'If you don\'t see an email from us within a few minutes, the following may have happened:'
+    },
+    {
+      name: 'NO_EMAIL_INSTRUCTIONS_2', message: 'The email went into your spam folder. (We know it\'s a scary place to look at, but it might be in there!)'
+    },
+    {
+      name: 'NO_EMAIL_INSTRUCTIONS_3', message: 'The email you entered may have had typo. (Don\'t sweat it, we type fast too! It happens)'
+    },
+    {
+      name: 'NO_EMAIL_INSTRUCTIONS_4', message: 'We can\'t send emails to this address.(you might have strong filtering or corporate firewalls)'
+    },
+    {
+      name: 'NO_EMAIL_INSTRUCTIONS_5', message: `If none of the above helped, we can simply`
+    }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
       var split = net.nanopay.sme.ui.SplitBorder.create();
 
       var left = this.Element.create()
@@ -191,29 +148,57 @@ foam.CLASS({
       var right = this.Element.create()
         .addClass(this.myClass())
         .start()
-          .start('img').addClass('icon').attr('src', 'images/mail-icon.svg').end()
           .start().addClass('header').add(this.TITLE).end()
           .start()
             .addClass('text-container')
-            .start().add(this.INSTRUCTIONS1).end()
+            .start().addClass('inline').add(this.INSTRUCTIONS1).end()
+            .start().addClass('bold').addClass('inline').add(this.user.email).end()
+            .start().addClass('inline').add(this.INSTRUCTIONS2).end()
+          .end()
+          .start()
+            .addClass('link')
+            .add(this.NO_EMAIL_LINK)
+            .on('click', function(){
+              self.noEmailToggle = ! self.noEmailToggle;
+            })
+            .start()
+              .addClass('inline')
+              .addClass('carrot')
+              .enableClass('invert-carrot', this.noEmailToggle$)
+            .end()
+          .end()
+          .br()
+
+          .start()
+            .addClass('text-container')
+            .show(this.noEmailToggle$)
+            .start().add(this.NO_EMAIL_INSTRUCTIONS_1).end()
             .br()
-            .start('span').add(this.INSTRUCTIONS2).end()
+            .start().add(this.NO_EMAIL_INSTRUCTIONS_2).end()
+            .br()
+            .start().add(this.NO_EMAIL_INSTRUCTIONS_3).end()
+            .br()
+            .start().add(this.NO_EMAIL_INSTRUCTIONS_4).end()
+            .br()
+            .start().add(this.NO_EMAIL_INSTRUCTIONS_5).end()
             .start(this.RESEND_EMAIL).addClass('link').end()
           .end()
-          .start(this.GO_TO_SIGN_IN).addClass('link').end()
         .end();
 
         split.leftPanel.add(left);
         split.rightPanel.add(right);
-        this.tag({ class: 'net.nanopay.sme.ui.TopBarBackToAblii' })
-        .add(split);
+
+        this.start().addClass(this.myClass())
+          .tag({ class: 'net.nanopay.sme.ui.TopBarBackToAblii' })
+          .add(split)
+        .end();
     }
   ],
 
   actions: [
     {
       name: 'resendEmail',
-      label: 'send it again',
+      label: 'Resend the email',
       code: function(X) {
         var self = this;
         this.emailToken.generateToken(null, this.user).then(function(result) {
@@ -223,16 +208,6 @@ foam.CLASS({
           self.add(self.NotificationMessage.create({ message: 'Verification email sent to ' + self.user.email }));
         }).catch(function(err) {
           self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-        });
-      }
-    },
-    {
-      name: 'goToSignIn',
-      label: 'Go back to sign in',
-      code: function(X) {
-        var self = this;
-        this.auth.logout().then(function(result) {
-          self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
         });
       }
     }
