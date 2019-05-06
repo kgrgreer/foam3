@@ -76,8 +76,8 @@ import java.text.SimpleDateFormat;
         String firstName = ((PersonNameSearchRequest) req.getModel()).getFirstName();
         String surName = ((PersonNameSearchRequest) req.getModel()).getSurName();
         Date filterLRDFrom = ((PersonNameSearchRequest) req.getModel()).getFilterLRDFrom();
-        firstName.replaceAll(" ", "%20");
-        surName.replaceAll(" ", "%20");
+        firstName = firstName.replaceAll("  *", "%20");
+        surName = surName.replaceAll("  *", "%20");
         if ( filterLRDFrom != null ) {
           String formattedFilter = simpleDateFormat.format(filterLRDFrom);
           urlAddress = baseUrl + req.getRequestInfo() + "first-name=" + firstName + "&surname=" + surName + "&filter-lrd-from=" + formattedFilter;
@@ -87,7 +87,7 @@ import java.text.SimpleDateFormat;
       } else if ( req.getRequestInfo().equals(ENTITY_NAME) ) {
         String entityName = ((EntityNameSearchRequest) req.getModel()).getEntityName();
         Date filterLRDFrom = ((EntityNameSearchRequest) req.getModel()).getFilterLRDFrom();
-        entityName.replaceAll(" ", "%20");
+        entityName = entityName.replaceAll("  *", "%20");
         if ( filterLRDFrom != null ) {
           String formattedFilter = simpleDateFormat.format(filterLRDFrom);
           urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName + "&filter-lrd-from=" + formattedFilter;
