@@ -147,13 +147,14 @@ foam.RELATIONSHIP({
       });
     },
     tableCellFormatter: function(value, obj, axiom) {
-      var self = this;
-      this.__subSubContext__.userDAO.find(value)
-      .then( function( user ) {
-        self.add(user.firstName);
-      }).catch(function(error) {
-        self.add(value);
-      });
+      this.__subSubContext__.userDAO
+        .find(value)
+        .then((user) => {
+          this.add('[', user.cls_.name, '] ', user.label());
+        })
+        .catch((error) => {
+          this.add(value);
+        });
     }
   }
 });
@@ -588,4 +589,26 @@ foam.RELATIONSHIP({
   forwardName: 'beneficialOwners',
   inverseName: 'business',
   targetDAOKey: 'beneficialOwnerDAO'
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'debits',
+  inverseName: 'sourceAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  targetDAOKey: 'transactionDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'credits',
+  inverseName: 'destinationAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  targetDAOKey: 'transactionDAO',
+  targetProperty: { visibility: 'RO' }
 });
