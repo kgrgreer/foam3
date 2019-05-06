@@ -322,7 +322,7 @@ foam.CLASS({
    {
      class: 'Boolean',
      name: 'displayExpiredTokenMessage',
-     vale: false
+     value: false
    }
   ],
 
