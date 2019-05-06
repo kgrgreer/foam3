@@ -5,8 +5,8 @@ foam.CLASS({
 
   documentation: `
     Contacts were introduced as a part of the Self-Serve project. They represent
-    people that are not yet on the platform, but that you can still send
-    invoices to.
+    people who, although they are not on the platform, can still receive invoices from
+    platform users.
   `,
 
   implements: [
@@ -97,8 +97,8 @@ foam.CLASS({
       label: 'Status',
       tableWidth: 170,
       documentation: `
-        Keeps track of the different states a contact can be in with respect to
-        whether the real user has signed up yet or not.
+      Tracks the registration status of a contact with respect to
+      whether the user can sign in or not.
       `,
       tableCellFormatter: function(state, obj) {
         this.start()
@@ -115,42 +115,48 @@ foam.CLASS({
       of: 'net.nanopay.model.Business',
       name: 'businessId',
       documentation: `
-        A reference to the real user's business once they've signed up.
+      A unique ID for the business associated with the human being, or real user, and 
+      declared by the real user at registration. 
       `
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'realUser',
-      documentation: `A reference to the real user once they've signed up.`
+      documentation: `A unique ID for the human being, or real user, who registers with 
+      our platform.`
     },
     {
       class: 'Boolean',
       name: 'loginEnabled',
+      documentation: 'Determines whether a human being, or real user, is able to login.',
       value: false
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'bankAccount',
-      documentation: `A reference to the contact bank account if created while registering the contact.`
+      documentation: `A unique ID for the bank account of the contact if created while 
+      registering the contact [Clarify: Registering a contact doesn't require a bank acount?].`
     },
     {
       name: 'businessAddress',
+      documentation: 'An unstructured address field for the business.',
       view: { class: 'net.nanopay.sme.ui.AddressView' }
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'businessStatus',
+      documentation: 'Determines the status of a business.',
       storageTransient: true
     },
     {
       name: 'emailVerified',
       value: true,
       documentation: `
-        We do this so that the transaction validation logic doesn't throw an
-        error when a contact is either the payer or payee of an invoice.
+      Verifies an email address as valid.  If the email address is not verified the transaction 
+      validation logic will throw an error when a contact is either the payer or payee of an invoice.
       `
     }
   ],
