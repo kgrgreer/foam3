@@ -85,6 +85,10 @@ foam.CLASS({
       color: #604aff;
     }
     
+     ^ .otherbank-container .link-text:hover {
+      cursor: pointer;
+    }
+    
     .plaid-loading {
       animation:plaid-rotate 1s linear infinite;
     }

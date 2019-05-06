@@ -3,8 +3,10 @@ foam.CLASS({
   name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
 
-  documentation: 'Base user in the system. Utlized for authentication,' +
-      ' personal information and permitting certain actions.',
+  documentation: `The user represents a person with the ability to use a username and password 
+      to log into and use the system as well as act on behalf of a business, 
+      if permissions are granted. It holds personal information and permits certain actions.
+      `,
 
   implements: [
     'foam.nanos.auth.DeletedAware',
@@ -41,21 +43,21 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'ownershipPercent',
-      documentation: 'For principal owners. This represents the percentage of ownership.',
+      documentation: `Represents the percentage of ownership if the user is a principal owner.`
     },
     {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
-      documentation: 'Proprietor details for business.',
+      documentation: 'Represents the proprietary details for the business.',
     },
     {
       class: 'Reference',
       targetDAOKey: 'businessSectorDAO',
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
-      documentation: 'General economic grouping for business.',
+      documentation: 'Represents the general economic grouping for the business.',
       view: function(args, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -75,20 +77,20 @@ foam.CLASS({
       class: 'Boolean',
       name: 'invited',
       value: false,
-      documentation: 'Determines if user was invited to the' +
-          ' platform, dictates invitation email.',
+      documentation: `Verifies if the user was invited to the
+          platform. This is dictated by an invitation email.`
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'invitedBy',
-      documentation: 'Reference to inviter.'
+      documentation: 'Represents the person who invited the user to the platform.'
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
-      documentation: 'Stores the users previous status.'
+      documentation: `Stores the previous status of the user.`
     },
     {
       class: 'Boolean',
@@ -96,15 +98,14 @@ foam.CLASS({
       javaGetter: `
         return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
-      documentation: 'enabled is Deprecated. Use status instead.',
+      documentation: '_enabled_ is deprecated; use _status_ instead.',
       hidden: true
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'status',
-      documentation: 'User status (pending, active, disabled).' +
-          ' Dictates portal accessibility.',
+      documentation: `Represents the type of status a user can have.`,
       tableCellFormatter: function(status) {
         var bgColour = '#a4b3b8';
         var borderColour = '#a4b3b8';
@@ -137,12 +138,12 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
-      documentation: 'Questionnaire response.'
+      documentation: 'Represents a response from the user to a questionnaire.'
     },
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
-      documentation: 'Additional documents for compliance verification.',
+      documentation: 'The uploaded additional documents for compliance verification.',
       view: function(_, X) {
         return {
           class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
@@ -150,18 +151,17 @@ foam.CLASS({
         };
       }
     },
-    // TODO: Remove this after migration.
     {
       class: 'FObjectArray',
       of: 'foam.nanos.auth.User',
       name: 'principalOwners',
-      documentation: 'Owners of business.'
+      documentation: 'Represents the people who own the majority shares in a business.'
     },
     {
       class: 'String',
       name: 'jobTitle',
       label: 'Job Title',
-      documentation: 'Job title of user.',
+      documentation: 'Represents the job title of the user.',
       validateObj: function(jobTitle) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
         if ( jobTitle.length > 0 && ! re.test(jobTitle) ) {
@@ -172,13 +172,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'welcomeEmailSent',
-      documentation: 'Determines whether welcome email has been sent.',
+      documentation: 'Verifies whether a welcome email has been sent to the user.',
       value: false,
     },
     {
       class: 'Boolean',
       name: 'portalAdminCreated',
-      documentation: 'Determines whether user was created by an admin user.',
+      documentation: 'Determines whether a user was created by an admin user.',
       value: false,
     },
     // NOTE: The following is subject to change and is not finalized.
@@ -195,8 +195,9 @@ foam.CLASS({
       class: 'String',
       name: 'businessIdentificationNumber',
       transient: true,
-      documentation: 'A number issued by an Issuing Authority such' +
-          ' as the CRA. Used as an identifier as well as for tax purposes.',
+      documentation: `The Business Identification Number (BIN) that identifies your business to federal,
+        provincial or municipal governments and is used by the business for tax purposes.
+        This number is typically issued by an Issuing Authority such as the CRA.`,
       getter: function() {
         return this.businessRegistrationNumber;
       },
@@ -210,9 +211,10 @@ foam.CLASS({
       class: 'String',
       name: 'businessRegistrationNumber',
       width: 35,
-      documentation: 'Business Identification Number (BIN) ' +
-          'that identifies your business to federal, ' +
-          'provincial, and municipal governments.',
+      documentation: `The Business Identification Number (BIN) that identifies your business to federal,
+      provincial or municipal governments and is used by the business for tax purposes.
+      This number is typically issued by an Issuing Authority such as the CRA.`,
+          
       validateObj: function(businessRegistrationNumber) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
         if ( businessRegistrationNumber.length > 0 &&
@@ -225,8 +227,7 @@ foam.CLASS({
       class: 'String',
       name: 'issuingAuthority',
       transient: true,
-      documentation: 'An organization that has the' +
-          ' power to issue an official document.',
+      documentation: 'An organization that has the power to issue an official document.',
       getter: function() {
         return this.businessRegistrationAuthority;
       },
@@ -239,8 +240,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessRegistrationAuthority',
-      documentation: 'An organization that has the' +
-          ' power to issue and process a business registration.',
+      documentation: 'An organization that has the power to issue and process a business registration.',
       width: 35,
       validateObj: function(businessRegistrationAuthority) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
@@ -253,8 +253,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'businessRegistrationDate',
-      documentation: 'Date the business was registered ' +
-          'by their issuing authority.'
+      documentation: 'The date that the business was registered by their issuing authority.'
     },
     {
       class: 'FObjectProperty',
@@ -276,9 +275,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onboarded',
-      documentation: 'Signifies completion of business ' +
-          'registration. Dictates portal views after' +
-          'compliance and account approval.',
+      documentation: `Signifies a completed business registration. Dictates portal views after
+          compliance and account approval.`,
       value: false,
       permissionRequired: true
     },
@@ -286,95 +284,94 @@ foam.CLASS({
       class: 'Boolean',
       name: 'createdPwd',
       value: false,
-      documentation: 'Determines whether user is using' +
-          ' his own unique password or one that was system generated.'
+      documentation: `Verifies whether the user is using its own unique password or one that was 
+      system-generated.`
     },
     {
       class: 'Int',
       name: 'inviteAttempts',
       value: 0,
-      documentation: 'Number of invite attempt.',
+      documentation: 'Represents the number of attempts to invite the user.',
     },
     {
       class: 'String',
       name: 'operatingBusinessName',
-      documentation: `Business name displayed to public.
-          Differs from organization by acting as a display name for businesses.
-          Is displayed on client if present taking place of organziation name.`
+      documentation: `The business name displayed to the public. 
+          This may differ from the organization name.`,
+          // Is displayed on client if present taking place of organziation name.
+          
     },
     {
       class: 'Boolean',
       name: 'holdingCompany',
-      documentation: `
-        States if user is a holding company. Holding companies represent a corporate group which
-        own shares of multiple companies.
-      `
+      documentation: `Verifies if a user is a holding company. 
+        A holding company represent a corporate group which
+        owns shares of multiple companies.`
     },
     {
       class: 'Boolean',
       name: 'thirdParty',
-      documentation: `
-        States if the user is taking instructions from and/or acting on behalf of a 3rd party.
+      documentation: `Verifies if the user is taking instructions from and/or acting on behalf 
+      of a 3rd party.
       `
     },
     {
       class: 'FObjectProperty',
       name: 'identification',
       of: 'net.nanopay.model.PersonalIdentification',
-      documentation: `
-        User identitfication. Differs from business identification by relating to an individual.
+      documentation: `A placeholder for the photo identification image, such as a passport, 
+      of the user.
       `
     },
     {
       class: 'Boolean',
       name: 'PEPHIORelated',
-      documentation: `States if user is a domestic or foreign Polically Exposed Person (PEP)
-          or Head of an International Organization (HIO), or related to any such person.
+      documentation: `States if the user is a domestic or foreign _Politically Exposed Person (PEP), 
+      Head of an International Organization (HIO)_, or related to any such person.
       `
     },
     // TODO: Remove
     {
       class: 'Boolean',
       name: 'signingOfficer',
-      documentation: `States if user is the signing officer capable of additional functionality when
-        acting as a business and providing additional information on behalf of business.
+      documentation: `States if the user is the signing officer capable of
+        acting as the business and providing additional information on behalf of the business.
       `
     },
     {
       class: 'FObjectProperty',
       name: 'suggestedUserTransactionInfo',
       of: 'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
-      documentation: `
-        Suggested user information relating to expected transaction types,
-        frequency, amount and currencies. Required for KYC purposes.
-      `
+      documentation: `The expected transaction types, frequency, amount and currencies 
+        that the user anticipates making with the platform. This information is required 
+        for KYC purposes.
+        `
     },
     {
       class: 'String',
       name: 'targetCustomers',
-      documentation: 'Who the business markets its products and services to'
+      documentation: 'Identifies the type of clients that the business markets its products and services.'
     },
     {
       class: 'String',
       name: 'sourceOfFunds',
-      documentation: 'Where the business receives its funds'
+      documentation: 'Identifies the entities that provide funding to the business.'
     },
     {
       class: 'String',
       name: 'taxIdentificationNumber',
-      documentation: 'Tax identification number associated to business user.'
+      documentation: 'The tax identification number associated with the business of the user.'
     },
     {
       class: 'String',
       name: 'signUpToken',
       storageTransient: true,
       documentation: `
-        This is set to a random UUID that's used to let users sign up to the
-        platform from an email link. If you sign up by clicking on a sign up
-        link in an email with a token, when creating the User, this property
-        will be set to the token so that backend can verify your email for
-        you and associate you with the contact that was created when inviting
-        you.
+        This is set to a random Universal Unique Identifier (UUID) 
+        that lets the user sign up to the platform from an email link. 
+        A sign up token is embedded in the email link.  This token includes a property
+        that allows the backend to verify the email of the user and associate the user
+        with the contact that was created when inviting the user.
       `
     },
     {
@@ -393,7 +390,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'deleted',
-      documentation: 'Indicates deleted user.',
+      documentation: 'Indicates a deleted user.',
       value: false,
       permissionRequired: true,
       visibility: 'RO',
@@ -402,7 +399,7 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      documentation: 'User\' profile picture.',
+      documentation: 'The profile picture of the user, initially defaulting to a placeholder picture.',
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
