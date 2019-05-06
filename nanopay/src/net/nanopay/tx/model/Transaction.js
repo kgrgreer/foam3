@@ -462,8 +462,7 @@ foam.CLASS({
     {
       name: 'doFolds',
       javaCode: `
-        Transfer[] transfers = this.getTransfers();
-        for (Transfer t : getTransfers() ) {
+        for ( Transfer t : getTransfers() ) {
           fm.foldForState(t.getAccount(),getLastModified(),t.getAmount());
         }
       `
