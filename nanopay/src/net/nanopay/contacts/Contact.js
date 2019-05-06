@@ -251,6 +251,8 @@ foam.CLASS({
 
           if ( this.getBankAccount() != 0 ) {
             BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
+            
+            if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
 
             if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
               throw new RuntimeException("Financial institution name required.");
