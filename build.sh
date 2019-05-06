@@ -31,8 +31,8 @@ function install {
 
     cd "$PROJECT_HOME"
 
-#    git submodule init
-#    git submodule update
+    git submodule init
+    git submodule update
 
     npm install
 
@@ -155,19 +155,18 @@ function clean {
 
 function build_jar {
     if [ "$GRADLE_BUILD" -eq 1 ]; then
-        GRADLE_ARGS=""
-        if [ ! -z "${VERSION}" ]; then
-            GRADLE_ARGS="$GRADLE_ARGS -Pversion=${VERSION}"
-        fi
-
-        # if [ "$CLEAN_BUILD" -eq 1 ] &&
-        #        [ "$START_ONLY" -eq 0 ]; then
-        #     GRADLE_ARGS="$GRADLE_ARGS clean"
+        # GRADLE_ARGS=""
+        # if [ ! -z "${VERSION}" ]; then
+        #     GRADLE_ARGS="$GRADLE_ARGS -Pversion=${VERSION}"
         # fi
 
         if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
             #gradle --daemon "${GRADLE_ARGS}" build
-            gradle --daemon build
+            if [ ! -z "${VERSION}" ]; then
+                gradle --daemon -Pversion=${VERSION} build
+            else
+                gradle --daemon build
+            fi
         else
            gradle --daemon build -x jar
         fi
@@ -188,7 +187,7 @@ function build_jar {
         mvn package
     fi
 
-    if [ "${RUN_JAR}" -eq 1 ]; then
+    if [ "${RUN_JAR}" -eq 1 ] || [ "$TEST" -eq 1 ]; then
         cp -r deploy/bin/* "${NANOPAY_HOME}/bin/"
         cp -r target/lib/* "${NANOPAY_HOME}/lib/"
     fi
@@ -336,7 +335,7 @@ function setenv {
 
     if [ -z "$NANOPAY_HOME" ]; then
         NANOPAY_ROOT="/opt"
-        if [[ ! -z "$INSTANCE" ]]; then
+        if [ "$TEST" -eq 1 ]; then
             NANOPAY_ROOT="/tmp"
         fi
         NANOPAY="nanopay"
@@ -344,21 +343,6 @@ function setenv {
             NANOPAY="nanopay_${INSTANCE}"
         fi
         export NANOPAY_HOME="$NANOPAY_ROOT/${NANOPAY}"
-    fi
-
-    if [ ! -d "$NANOPAY_HOME" ]; then
-        mkdir -p "$NANOPAY_HOME"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/lib" ]; then
-        mkdir -p "${NANOPAY_HOME}/lib"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/bin" ]; then
-        mkdir -p "${NANOPAY_HOME}/bin"
-    fi
-
-    if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
-        echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
-        quit 1
     fi
 
     if [ -z "$LOG_HOME" ]; then
@@ -382,6 +366,31 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
+    if [ "$TEST" -eq 1 ]; then
+        rm -rf "$NANOPAY_HOME"
+    fi
+
+    if [ ! -d "$NANOPAY_HOME" ]; then
+        mkdir -p "$NANOPAY_HOME"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/lib" ]; then
+        mkdir -p "${NANOPAY_HOME}/lib"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/bin" ]; then
+        mkdir -p "${NANOPAY_HOME}/bin"
+    fi
+    if [ ! -d "${LOG_HOME}" ]; then
+        mkdir -p "${LOG_HOME}"
+    fi
+    if [ ! -d "${JOURNAL_HOME}" ]; then
+        mkdir -p "${JOURNAL_HOME}"
+    fi
+
+    if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
+        echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
+        quit 1
+    fi
+
     PID_FILE="nanos.pid"
     if [[ ! -z "$INSTANCE" ]]; then
         PID_FILE="nanos_${INSTANCE}.pid"
@@ -398,28 +407,9 @@ function setenv {
         # works with Netskope disabled.
         npm install
 
-        mkdir -p "$NANOPAY_HOME"
-        mkdir -p "$JOURNAL_HOME"
-
         CLEAN_BUILD=1
         IS_AWS=1
-
-        mkdir -p "$LOG_HOME"
-    elif [[ ! -d "$JOURNAL_HOME" ]]; then
-        mkdir -p $JOURNAL_HOME
-        mkdir -p $LOG_HOME
     fi
-
-    # if [[ $TEST -eq 1 ]]; then
-    #     COMPILE_ONLY=0
-        # echo "INFO :: Cleaned up temporary journal files."
-        # rmdir /tmp/nanopay
-        # mkdir /tmp/nanopay
-        # JOURNAL_HOME=/tmp/nanopay
-        # mkdir -p $JOURNAL_HOME
-    # fi
-
-    WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
