@@ -389,6 +389,7 @@ properties: [
     name: 'editingBeneficialOwner',
     postSet: function(oldValue, newValue) {
       if ( newValue != null ) this.editBeneficialOwner(newValue, true);
+      this.viewData.beneficialOwner.id = newValue && newValue.id || 0;
       this.tableViewElement.selection = newValue;
     }
   },
