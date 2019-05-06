@@ -55,10 +55,6 @@ foam.CLASS({
       Map<String, Object>     args         = new HashMap<>();
       String url = ((AppConfig) getX().get("appConfig")).getUrl().replaceAll("/$", "");
 
-      // appConfig is currently set to getUrl() localhost:8080, thus switch to ablii.
-      // also this will not be the case on production thus the check first.
-      if ( url.contains("8080") ) url = "http://ablii:8080/";
-
       message.setTo(new String[]{user.getEmail()});
       args.put("business", user.label());
       args.put("link",     url);

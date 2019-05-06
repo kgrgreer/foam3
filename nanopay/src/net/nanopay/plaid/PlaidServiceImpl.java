@@ -12,6 +12,7 @@ import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.payment.Institution;
@@ -246,6 +247,7 @@ public class PlaidServiceImpl implements PlaidService {
           selectedAccount.get(accountDetail.getMask()).equals(accountDetail.getName())
       ).collect(Collectors.toList());
 
+
     for (PlaidAccountDetail accountDetail : accountDetails) {
 
       Institution institution =
@@ -256,7 +258,7 @@ public class PlaidServiceImpl implements PlaidService {
       }
 
       if (accountDetail.getACH() != null) {
-        accountDAO.inX(x).put(
+        BankAccount account = (BankAccount) accountDAO.inX(x).put(
           new USBankAccount.Builder(x)
             .setBranchId      (accountDetail.getACH().getRouting())
             .setWireRouting   (accountDetail.getACH().getWireRouting())
@@ -268,13 +270,14 @@ public class PlaidServiceImpl implements PlaidService {
             //.setCountry       ("US")
             .setInstitution   (institution.getId())
             .build());
+
+        // create a report for each imported bank account
+        createReport(x, accountDetail, account.getId(), plaidItem);
       }
     }
-
-    this.createReport(x, accountDetails, plaidItem);
   }
 
-  public void createReport(X x, List<PlaidAccountDetail> accountDetails, PlaidItem plaidItem) throws IOException {
+  public PlaidResultReport createReport(X x, PlaidAccountDetail accountDetail, Long nanopayAccountId, PlaidItem plaidItem) throws IOException {
     PlaidClient plaidClient   = getClient(x);
     DAO plaidReportDAO        = (DAO) x.get("plaidResultReportDAO");
     User user                 = (User) x.get("user");
@@ -287,15 +290,16 @@ public class PlaidServiceImpl implements PlaidService {
 
     IdentityGetResponse.Identity result = response.body().getIdentity();
 
-    report.setNanopayUserId(user.getId());
-    report.setCompanyName(user.getBusinessName());
-    report.setPlaidId(plaidItem.getItemId());
-    report.setAccountHolderName(result.getNames().get(0));
-    report.setValidationDate(new Date());
-    report.setIp(request.getRemoteAddr());
-    report.setSelectedAccountDetail(accountDetails.toArray(new PlaidAccountDetail[accountDetails.size()]));
+    report.setNanopayUserId       (user.getId());
+    report.setCompanyName         (user.getBusinessName());
+    report.setPlaidId             (plaidItem.getItemId());
+    report.setAccountHolderName   (result.getNames().get(0));
+    report.setValidationDate      (new Date());
+    report.setIp                  (request.getRemoteAddr());
+    report.setAccountDetail       (accountDetail);
+    report.setNanopayAccountId    (nanopayAccountId);
 
-    plaidReportDAO.inX(x).put(report);
+    return (PlaidResultReport) plaidReportDAO.inX(x).put(report);
   }
 
   /**
