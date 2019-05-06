@@ -264,19 +264,4 @@ public class IdentityMindRequestGenerator {
       return null;
     }
   }
-
-  private static String getDigitalAccountHash(X x, DigitalAccount digitalAccount) {
-    try {
-      MessageDigest sha = MessageDigest.getInstance("SHA-1");
-      IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-
-      sha.update(identityMindService.getHashingSalt().getBytes());
-      sha.update(Long.toString(digitalAccount.getId()).getBytes());
-      return SecurityUtil.ByteArrayToHexString(sha.digest());
-    } catch ( Throwable t ) {
-      ((Logger) x.get("logger")).warning(
-        "Cannot generate hash for digital account: ", digitalAccount.getId(), "." , t);
-      return null;
-    }
-  }
 }
