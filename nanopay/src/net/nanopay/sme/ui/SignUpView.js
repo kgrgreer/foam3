@@ -24,6 +24,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.u2.Element',
@@ -377,7 +378,7 @@ foam.CLASS({
             if ( this.loginSuccess ) {
               // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
               this.acceptanceDocumentService.
-              updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
+              updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions);
             }
             if ( ! this.user.emailVerified ) {
               this.stack.push({
@@ -392,8 +393,7 @@ foam.CLASS({
         .catch((err) => {
           this.notify(err.message || 'There was a problem while signing you in.', 'error');
         });
-    }, 
-
+    }
   ],
 
   actions: [
@@ -402,6 +402,10 @@ foam.CLASS({
       label: 'Create account',
       code: function(X, obj) {
         if ( ! this.validating() ) return;
+        businessAddress = this.Address.create({
+          countryId: this.country
+        });
+
         var newUser = this.User.create({
           firstName: this.firstNameField,
           lastName: this.lastNameField,
@@ -409,21 +413,24 @@ foam.CLASS({
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
           signUpToken: this.signUpToken,
+          // Address is removed from the user and used as the business address for the business created in
+          // the smeRegistrationDAO
+          businessAddress: businessAddress,
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
           welcomeEmailSent: true,
           group: 'sme'
-        });      
+        });
 
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {
             this.user = user;
-            this.logIn();                        
+            this.logIn();
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
-          });          
+          });
       }
     }
   ],
