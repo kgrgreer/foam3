@@ -19,16 +19,16 @@
     <maven>3.1.0</maven>
   </prerequisites>
 
-  <repositories>
-    <repository>
-      <id>xero-java-mvn-repo</id>
-      <url>https://raw.github.com/XeroAPI/Xero-Java/mvn-repo/</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
+  <!-- <repositories> -->
+  <!--   <repository> -->
+  <!--     <id>xero-java-mvn-repo</id> -->
+  <!--     <url>https://raw.github.com/XeroAPI/Xero-Java/mvn-repo/</url> -->
+  <!--     <snapshots> -->
+  <!--       <enabled>true</enabled> -->
+  <!--       <updatePolicy>always</updatePolicy> -->
+  <!--     </snapshots> -->
+  <!--   </repository> -->
+  <!-- </repositories> -->
 
   <dependencies>
     <dependency>
@@ -42,30 +42,35 @@
       <artifactId>commons-collections</artifactId>
       <version>3.2.2</version>
     </dependency>
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>1.9.3</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>commons-beanutils</groupId> -->
+    <!--   <artifactId>commons-beanutils</artifactId> -->
+    <!--   <version>1.9.3</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <version>2.12.0</version>
     </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>com.authy</groupId> -->
+    <!--   <artifactId>authy-java</artifactId> -->
+    <!--   <version>1.1.0</version> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>com.fasterxml.jackson.core</groupId> -->
+    <!--   <artifactId>jackson-core</artifactId> -->
+    <!--   <version>2.9.3</version> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>com.xero</groupId> -->
+    <!--   <artifactId>xero-java-sdk</artifactId> -->
+    <!--   <version>2.0.2</version> -->
+    <!-- </dependency> -->
     <dependency>
-      <groupId>com.authy</groupId>
-      <artifactId>authy-java</artifactId>
-      <version>1.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.9.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.xero</groupId>
-      <artifactId>xero-java-sdk</artifactId>
-      <version>2.0.2</version>
+      <groupId>com.github.xeroapi</groupId>
+      <artifactId>xero-java</artifactId>
+      <version>2.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.intuit.quickbooks-online</groupId>
@@ -117,6 +122,16 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-dbcp2</artifactId>
       <version>2.0.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xerces</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -163,11 +178,11 @@
       <artifactId>mongodb-driver</artifactId>
       <version>3.4.2</version>
     </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.0.0</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>org.postgresql</groupId> -->
+    <!--   <artifactId>postgresql</artifactId> -->
+    <!--   <version>42.0.0</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>org.java-websocket</groupId>
       <artifactId>Java-WebSocket</artifactId>
@@ -193,11 +208,11 @@
       <artifactId>jaxb-api</artifactId>
       <version>2.1</version>
     </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.2.11</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>com.sun.xml.bind</groupId> -->
+    <!--   <artifactId>jaxb-impl</artifactId> -->
+    <!--   <version>2.2.11</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
@@ -253,10 +268,15 @@
       <artifactId>html2pdf</artifactId>
       <version>1.0.2</version>
     </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>com.google.oauth-client</groupId> -->
+    <!--   <artifactId>google-oauth-client</artifactId> -->
+    <!--   <version>1.23.0</version> -->
+    <!-- </dependency> -->
     <dependency>
-      <groupId>com.google.oauth-client</groupId>
-      <artifactId>google-oauth-client</artifactId>
-      <version>1.23.0</version>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.0.b2</version>
     </dependency>
   </dependencies>
 

@@ -31,8 +31,8 @@ function install {
 
     cd "$PROJECT_HOME"
 
-    git submodule init
-    git submodule update
+#    git submodule init
+#    git submodule update
 
     npm install
 
@@ -140,8 +140,15 @@ function clean {
             mkdir target
         fi
 
+        if [ "${RUN_JAR}" -eq 1 ]; then
+            rm -rf "${NANOPAY_HOME}/bin/*"
+            rm -rf "${NANOPAY_HOME}/lib/*"
+        fi
+
         if [ "$GRADLE_BUILD" -eq 0 ]; then
             mvn clean
+        else
+            gradle clean
         fi
     fi
 }
@@ -269,6 +276,7 @@ function status_nanos {
 
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
+        echo NANOPAY_HOME=$NANOPAY_HOME
         "${NANOPAY_HOME}/bin/run.sh" "-N${NANOPAY_HOME}" "-H${HOST_NAME}" "-W${WEB_PORT}"
     else
         cd "$PROJECT_HOME"
@@ -325,12 +333,17 @@ function beginswith {
 }
 
 function setenv {
+
     if [ -z "$NANOPAY_HOME" ]; then
+        NANOPAY_ROOT="/opt"
+        if [[ ! -z "$INSTANCE" ]]; then
+            NANOPAY_ROOT="/tmp"
+        fi
         NANOPAY="nanopay"
         if [[ ! -z "$INSTANCE" ]]; then
             NANOPAY="nanopay_${INSTANCE}"
         fi
-        export NANOPAY_HOME="/opt/${NANOPAY}"
+        export NANOPAY_HOME="$NANOPAY_ROOT/${NANOPAY}"
     fi
 
     if [ ! -d "$NANOPAY_HOME" ]; then
@@ -379,6 +392,10 @@ function setenv {
         PROJECT_HOME=/pkg/stack/stage/NANOPAY
         cd "$PROJECT_HOME"
         cwd=$(pwd)
+
+        # see https://stackoverflow.com/a/22089950
+        #npm install npm --ca=""
+        # works with Netskope disabled.
         npm install
 
         mkdir -p "$NANOPAY_HOME"
@@ -393,15 +410,14 @@ function setenv {
         mkdir -p $LOG_HOME
     fi
 
-    if [[ $TEST -eq 1 ]]; then
-        COMPILE_ONLY=0
-
-        echo "INFO :: Cleaned up temporary journal files."
-        rmdir /tmp/nanopay
-        mkdir /tmp/nanopay
-        JOURNAL_HOME=/tmp/nanopay
-        mkdir -p $JOURNAL_HOME
-    fi
+    # if [[ $TEST -eq 1 ]]; then
+    #     COMPILE_ONLY=0
+        # echo "INFO :: Cleaned up temporary journal files."
+        # rmdir /tmp/nanopay
+        # mkdir /tmp/nanopay
+        # JOURNAL_HOME=/tmp/nanopay
+        # mkdir -p $JOURNAL_HOME
+    # fi
 
     WAR_HOME="$PROJECT_HOME"/target/root-0.0.1
 
@@ -540,6 +556,7 @@ while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
         t) TEST=1
            MODE=TEST
            CLEAN_BUILD=1
+           COMPILE_ONLY=0
            ;;
         T) TEST=1
            TESTS=$OPTARG
