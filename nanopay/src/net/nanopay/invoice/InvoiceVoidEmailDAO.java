@@ -44,9 +44,10 @@ public class InvoiceVoidEmailDAO
       return getDelegate().put_(x, obj);
 
     invoice = (Invoice) super.put_(x , obj);
-    AppConfig       config    = (AppConfig) x.get("appConfig");
-    EmailMessage    message   = new EmailMessage();
-    NumberFormat    formatter = NumberFormat.getCurrencyInstance();
+    Group           payerGroup = (Group) payer.findGroup(x);
+    AppConfig       config     = (AppConfig) payerGroup.getAppConfig(x);
+    EmailMessage    message    = new EmailMessage();
+    NumberFormat    formatter  = NumberFormat.getCurrencyInstance();
 
     String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ?
       (SafetyUtil.isEmpty(invoice.getPurchaseOrder()) ? "N/A" : invoice.getPurchaseOrder()) :

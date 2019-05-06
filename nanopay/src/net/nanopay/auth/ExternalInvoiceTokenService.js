@@ -14,7 +14,6 @@ foam.CLASS({
    imports: [
     'bareUserDAO',
     'currencyDAO',
-    'email',
     'invoiceDAO',
     'userUserDAO',
     'logger',
@@ -67,7 +66,6 @@ foam.CLASS({
         
         String template = (String) parameters.get("template");
 
-        EmailService emailService = (EmailService) getEmail();
         DAO tokenDAO = (DAO) getTokenDAO();
 
         // Create new token and associate passed in external user to token.
@@ -183,7 +181,7 @@ foam.CLASS({
           // Set token processed to true.
           clone.setProcessed(true);
           tokenDAO.put(clone);
-
+          
           return true;
         } catch (Throwable t) {
           logger.error("Error processing contact token", t);
