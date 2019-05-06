@@ -20,6 +20,8 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.Country',
+    'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.Iterator',
@@ -201,40 +203,36 @@ foam.CLASS({
           }
 
           if ( SafetyUtil.isEmpty(this.getOrganization()) ) {
-           throw new IllegalStateException("Business name is required.");
+            throw new IllegalStateException("Business name is required.");
           }
 
-          if ( getBankAccount() != 0 ) {
-
-            long bankAccountId = this.getBankAccount();
-            DAO accountDAO = (DAO) x.get("accountDAO");
-            BankAccount bankAccount = (BankAccount) accountDAO.find(bankAccountId);
-
-            if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
-              throw new RuntimeException("Financial institution name required.");
-            }
-
+          if ( this.getBusinessAddress() != null ) {
             Address businessAddress = this.getBusinessAddress();
+            DAO countryDAO = (DAO) x.get("countryDAO");
+            DAO regionDAO = (DAO) x.get("regionDAO");
 
-            Pattern countryRegionId = Pattern.compile("^[A-Z ]{2}$");
-            if ( ! countryRegionId.matcher(businessAddress.getCountryId()).matches() ) {
+            Country country = (Country) countryDAO.find(businessAddress.getCountryId());
+            if ( country == null ) {
               throw new RuntimeException("Invalid country id.");
             }
-            if ( ! countryRegionId.matcher(businessAddress.getRegionId()).matches() ) {
+
+            Region region = (Region) regionDAO.find(businessAddress.getRegionId());
+            if ( region == null ) {
               throw new RuntimeException("Invalid region id.");
             }
 
-            Pattern streetNumber = Pattern.compile("^[0-9 ]{1,16}$");
+            Pattern streetNumber = Pattern.compile("^[0-9]{1,16}$");
             if ( ! streetNumber.matcher(businessAddress.getStreetNumber()).matches() ) {
               throw new RuntimeException("Invalid street number.");
             }
 
-            Pattern addressPattern = Pattern.compile("^[#a-zA-Z0-9 ]{1,70}$");
-            if ( ! addressPattern.matcher(businessAddress.getStreetName()).matches() ) {
+            if ( SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
               throw new RuntimeException("Invalid street name.");
+            } else {
+              businessAddress.setStreetName(businessAddress.getStreetName().trim());
             }
 
-            Pattern cityPattern = Pattern.compile("^[a-zA-Z ]{1,35}$");
+            Pattern cityPattern = Pattern.compile("^[a-zA-Z]+(?:(?:\\\\s+|-|')[a-zA-Z]+){0,34}$");
             if ( ! cityPattern.matcher(businessAddress.getCity()).matches() ) {
               throw new RuntimeException("Invalid city name.");
             }
@@ -242,6 +240,14 @@ foam.CLASS({
             if ( ! this.validatePostalCode(businessAddress.getPostalCode(), businessAddress.getCountryId()) ) {
               String codeType = businessAddress.getCountryId().equals("US") ? "zip code" : "postal code";
               throw new RuntimeException("Invalid " + codeType + ".");
+            }
+          }
+
+          if ( this.getBankAccount() != 0 ) {
+            BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
+
+            if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
+              throw new RuntimeException("Financial institution name required.");
             }
           }
         }
@@ -268,13 +274,13 @@ foam.CLASS({
         Pattern usPosCode = Pattern.compile("^\\\\d{5}(?:[-\\\\s]\\\\d{4})?$");
 
         switch ( countryId ) {
-         case "CA":
-           return caPosCode.matcher(code).matches();
-         case "US":
-           return usPosCode.matcher(code).matches();
-         default:
-           return false;
-       }
+          case "CA":
+            return caPosCode.matcher(code).matches();
+          case "US":
+            return usPosCode.matcher(code).matches();
+          default:
+            return false;
+        }
       `
     },
     {
