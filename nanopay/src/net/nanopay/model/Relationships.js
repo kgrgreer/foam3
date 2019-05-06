@@ -48,7 +48,11 @@ foam.RELATIONSHIP({
       this.__subSubContext__.institutionDAO.find(value)
         .then( function( institution ) {
           if ( institution ) {
-            self.add(institution.institutionNumber);
+            if ( institution.institutionNumber !== "" ) {
+              self.add(institution.institutionNumber);
+            }  else {
+              self.add(institution.name);
+            }
           }
         }).catch( function( error ) {
           self.add('N/A');
@@ -80,11 +84,19 @@ foam.RELATIONSHIP({
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.account.Account',
   targetModel: 'net.nanopay.account.Account',
-  forwardName: 'parent',
-  inverseName: 'children',
+  inverseName: 'parent',
+  forwardName: 'children',
   cardinality: '1:*',
   targetProperty: {
-    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
+    view: function(_, X) {
+      var E = foam.mlang.Expressions.create();
+      return {
+        class: 'foam.u2.view.ReferenceView',
+        dao: X.accountDAO.orderBy(net.nanopay.account.Account.NAME),
+        placeholder: 'select Parent',
+        objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
+      };
+    }
   }
 });
 

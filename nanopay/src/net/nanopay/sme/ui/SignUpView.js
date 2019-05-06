@@ -24,7 +24,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
@@ -167,7 +166,8 @@ foam.CLASS({
     { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
-    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` }
+    { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` },
+    { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions`}
   ],
 
   methods: [
@@ -294,55 +294,32 @@ foam.CLASS({
     },
 
     function validating() {
-      if ( this.isEmpty(this.firstNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'First Name Field Required.', type: 'error' }));
+      var msg;
+      if ( ! (this.isEmpty(msg = this.User.FIRST_NAME.validateObj(this.firstNameField))) ) {
+        this.notify(msg, 'error');
         return false;
       }
-      if ( this.firstNameField.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+      if ( ! (this.isEmpty(msg = this.User.LAST_NAME.validateObj(this.lastNameField))) ) {
+        this.notify(msg, 'error');
         return false;
       }
-      if ( /\d/.test(this.firstNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot contain numbers', type: 'error' }));
+      if ( ! (this.isEmpty(msg = this.User.ORGANIZATION.validateObj(this.companyNameField))) ) {
+        this.notify(msg, 'error');
         return false;
       }
-      if ( this.lastNameField.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
-        return false;
-      }
-      if ( /\d/.test(this.lastNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot contain numbers.', type: 'error' }));
-        return false;
-      }
-      if ( this.isEmpty(this.lastNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Last Name Field Required.', type: 'error' }));
-        return false;
-      }
-      if ( this.companyNameField > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Company Name cannot exceed 70 characters.', type: 'error' }));
-        return false;
-      }
-      if ( this.isEmpty(this.companyNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Company Name Field Required.', type: 'error' }));
-        return false;
-      }
-      if ( this.isEmpty(this.emailField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Email Field Required.', type: 'error' }));
-        return false;
-      }
-      if ( ! this.validateEmail(this.emailField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+      if ( ! (this.isEmpty(msg = this.User.EMAIL.validateObj(this.emailField))) ) {
+        this.notify(msg, 'error');
         return false;
       }
       if ( ! this.termsAndConditions ) {
-        this.add(this.NotificationMessage.create({ message: 'Please accept the Terms and Conditions', type: 'error' }));
+        this.notify(this.TERMS_CONDITIONS_ERR, 'error');
         return false;
       }
       return true;
     },
 
     function isEmpty(field) {
-      return field.trim() === '';
+      return ( !field ) || ( field.trim() === '' );
     },
 
     function logIn() {
@@ -358,6 +335,11 @@ foam.CLASS({
           } else {
             this.loginSuccess = user ? true : false;
             this.user.copyFrom(user);
+            if ( this.loginSuccess ) {
+              // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
+              this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
+            }
             if ( ! this.user.emailVerified ) {
               this.stack.push({
                 class: 'foam.nanos.auth.ResendVerificationEmail'
@@ -398,16 +380,7 @@ foam.CLASS({
           .put(newUser)
           .then((user) => {
             this.user = user;
-            this.logIn(); 
-            // update user accepted terms and condition. We should do this after login because we need CreatedByDAO
-            try {
-              this.acceptanceDocumentService.
-              updateUserAcceptanceDocument(this.__context__, user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
-            } catch (err) {
-              console.warn('Error updateing acceptance document: ', err);
-              this.notify(err.message || 'There was a problem updating terms and condition status.', 'error');
-              return;
-            }                        
+            this.logIn();                        
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');

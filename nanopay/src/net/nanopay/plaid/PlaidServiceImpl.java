@@ -1,10 +1,7 @@
 package net.nanopay.plaid;
 
 import com.plaid.client.PlaidClient;
-import com.plaid.client.request.AuthGetRequest;
-import com.plaid.client.request.ItemPublicTokenCreateRequest;
-import com.plaid.client.request.ItemPublicTokenExchangeRequest;
-import com.plaid.client.request.ItemRemoveRequest;
+import com.plaid.client.request.*;
 import com.plaid.client.response.*;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -13,7 +10,9 @@ import foam.lib.json.JSONParser;
 import foam.mlang.MLang;
 import foam.mlang.sink.Count;
 import foam.nanos.app.AppConfig;
+import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.payment.Institution;
@@ -21,7 +20,9 @@ import net.nanopay.plaid.config.PlaidCredential;
 import net.nanopay.plaid.model.*;
 import retrofit2.Response;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,11 +68,17 @@ public class PlaidServiceImpl implements PlaidService {
       importSelectedAccountToSystem (x, userId, institutionId, selectedAccount);
 
     } catch ( PlaidException e ) {
-      error =
-        (PlaidError) jsonParser.parseString(e.getErrorBody(), PlaidError.class);
-      PlaidItem item = findItemBy(x, userId, institutionId);
-      new PlaidErrorHandler(x, item.getItemId()).handleError(error);
-      logger.error(userId + " " + error);
+
+      try {
+        error =
+          (PlaidError) jsonParser.parseString(e.getErrorBody(), PlaidError.class);
+        PlaidItem item = findItemBy(x, userId, institutionId);
+        new PlaidErrorHandler(x, item.getItemId()).handleError(error);
+        logger.error(userId + " " + error);
+      } catch ( Exception e2 ) {
+        throw e2;
+      }
+
     } catch ( Exception e ) {
       logger.error(userId + " " + e.getMessage());
       throw e;
@@ -222,9 +229,11 @@ public class PlaidServiceImpl implements PlaidService {
    *                        Key is the account mask, value is account name
    */
   @Override
-  public void importSelectedAccountToSystem(X x, long userId, String plaidInstitutionId, Map selectedAccount) {
+  public void importSelectedAccountToSystem(X x, long userId, String plaidInstitutionId, Map selectedAccount) throws IOException {
     DAO plaidAccountDetailDAO = (DAO) x.get("plaidAccountDetailDAO");
     DAO accountDAO            = (DAO) x.get("localAccountDAO");
+    PlaidItem
+      plaidItem             = findItemBy(x, userId, plaidInstitutionId);
 
     ArraySink select = (ArraySink) plaidAccountDetailDAO.where(
       MLang.AND(
@@ -238,6 +247,7 @@ public class PlaidServiceImpl implements PlaidService {
           selectedAccount.get(accountDetail.getMask()).equals(accountDetail.getName())
       ).collect(Collectors.toList());
 
+
     for (PlaidAccountDetail accountDetail : accountDetails) {
 
       Institution institution =
@@ -248,7 +258,7 @@ public class PlaidServiceImpl implements PlaidService {
       }
 
       if (accountDetail.getACH() != null) {
-        accountDAO.inX(x).put(
+        BankAccount account = (BankAccount) accountDAO.inX(x).put(
           new USBankAccount.Builder(x)
             .setBranchId      (accountDetail.getACH().getRouting())
             .setWireRouting   (accountDetail.getACH().getWireRouting())
@@ -260,8 +270,36 @@ public class PlaidServiceImpl implements PlaidService {
             //.setCountry       ("US")
             .setInstitution   (institution.getId())
             .build());
+
+        // create a report for each imported bank account
+        createReport(x, accountDetail, account.getId(), plaidItem);
       }
     }
+  }
+
+  public PlaidResultReport createReport(X x, PlaidAccountDetail accountDetail, Long nanopayAccountId, PlaidItem plaidItem) throws IOException {
+    PlaidClient plaidClient   = getClient(x);
+    DAO plaidReportDAO        = (DAO) x.get("plaidResultReportDAO");
+    User user                 = (User) x.get("user");
+    HttpServletRequest request = x.get(HttpServletRequest.class);
+    PlaidResultReport report  = new PlaidResultReport();
+
+    Response<IdentityGetResponse> response = plaidClient.service().identityGet(
+      new IdentityGetRequest(plaidItem.getAccessToken())
+    ).execute();
+
+    IdentityGetResponse.Identity result = response.body().getIdentity();
+
+    report.setNanopayUserId       (user.getId());
+    report.setCompanyName         (user.getBusinessName());
+    report.setPlaidId             (plaidItem.getItemId());
+    report.setAccountHolderName   (result.getNames().get(0));
+    report.setValidationDate      (new Date());
+    report.setIp                  (request.getRemoteAddr());
+    report.setAccountDetail       (accountDetail);
+    report.setNanopayAccountId    (nanopayAccountId);
+
+    return (PlaidResultReport) plaidReportDAO.inX(x).put(report);
   }
 
   /**
@@ -374,7 +412,7 @@ public class PlaidServiceImpl implements PlaidService {
       credential.setToken(createPublicToken(x, reLoginItem));
     }
 
-    credential.setWebhook(appConfig.getUrl() + "/plaidWebAgent");
+    credential.setWebhook(appConfig.getUrl() + "/service/plaidWebAgent");
     credential.setClientId("****");
     credential.setSecret("****");
 

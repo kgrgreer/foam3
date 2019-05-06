@@ -86,8 +86,8 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Connect using a void check' },
     { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
-    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.'},
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.'},
+    { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
     { name: 'ERROR_FIRST', message: 'First name cannot be empty.' },
     { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
     { name: 'ERROR_FLENGTH', message: 'First name cannot exceed 70 characters.' },
@@ -96,7 +96,8 @@ foam.CLASS({
     { name: 'ERROR_STREET_NUMBER', message: 'Invalid street name.' },
     { name: 'ERROR_CITY', message: 'Invalid city name.' },
     { name: 'ERROR_POSTAL', message: 'Invalid postal code.' },
-    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' }
+    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' },
+    { name: 'SUCCESS', message: 'Your bank account has been added, please verify the deposited amount. It should appear in this account in 2-3 business days.' }
   ],
 
   methods: [
@@ -116,9 +117,15 @@ foam.CLASS({
             .end()
           .end()
           .start('p').addClass(this.myClass('instructions')).add(this.INSTRUCTIONS).end()
-          .start({ class: 'net.nanopay.bank.ui.BankPADForm' , viewData$: this.viewData$ }).enableClass(this.myClass('shrink'), this.isConnecting$).end()
+          .start({ class: 'net.nanopay.bank.ui.BankPADForm', viewData$: this.viewData$ })
+            .enableClass(this.myClass('shrink'), this.isConnecting$)
+          .end()
         .end()
-        .start({class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar', back: this.BACK, next: this.NEXT}).end();
+        .start({
+          class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
+          back: this.BACK,
+          next: this.NEXT
+        }).end();
     },
 
     function validateForm() {
@@ -241,6 +248,9 @@ foam.CLASS({
 
         if ( ! model.validateInputs() ) return;
         model.capturePADAndPutBankAccounts();
+        this.ctrl.stack.back();
+        this.ctrl.notify(this.SUCCESS);
+        X.closeDialog();
       }
     }
   ]
