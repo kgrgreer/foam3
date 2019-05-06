@@ -463,8 +463,8 @@ foam.CLASS({
       name: 'doFolds',
       javaCode: `
         Transfer[] transfers = this.getTransfers();
-        for ( int i = 0; i < transfers.length; i++ ) {
-          fm.foldForState(transfers[i].getAccount(),this.getLastModified(),transfers[i].getAmount());
+        for (Transfer t : getTransfers() ) {
+          fm.foldForState(t.getAccount(),getLastModified(),t.getAmount());
         }
       `
     },
