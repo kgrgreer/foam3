@@ -228,13 +228,19 @@ foam.CLASS({
 
             if ( SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
               throw new RuntimeException("Invalid street name.");
-            } else {
+            } else if ( businessAddress.getStreetName().length() > 100 ) {
+              throw new RuntimeException("Street name cannot exceed 100 characters");
+            }
+            else {
               businessAddress.setStreetName(businessAddress.getStreetName().trim());
             }
 
-            Pattern cityPattern = Pattern.compile("^[a-zA-Z]+(?:(?:\\\\s+|-|')[a-zA-Z]+){0,34}$");
-            if ( ! cityPattern.matcher(businessAddress.getCity()).matches() ) {
+            if ( SafetyUtil.isEmpty(businessAddress.getCity()) ) {
               throw new RuntimeException("Invalid city name.");
+            } else if ( businessAddress.getCity().length() > 100 ) {
+              throw new RuntimeException("City cannot exceed 100 characters");
+            } else {
+              businessAddress.setCity(businessAddress.getCity().trim());
             }
 
             if ( ! this.validatePostalCode(businessAddress.getPostalCode(), businessAddress.getCountryId()) ) {
