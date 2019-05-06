@@ -48,7 +48,11 @@ foam.RELATIONSHIP({
       this.__subSubContext__.institutionDAO.find(value)
         .then( function( institution ) {
           if ( institution ) {
-            self.add(institution.institutionNumber);
+            if ( institution.institutionNumber !== "" ) {
+              self.add(institution.institutionNumber);
+            }  else {
+              self.add(institution.name);
+            }
           }
         }).catch( function( error ) {
           self.add('N/A');

@@ -29,6 +29,10 @@ foam.CLASS({
         }
         ruler.putResult(status);
       `
+    },
+    {
+      name: 'applyReverseAction',
+      javaCode: '//noop'
     }
   ]
 });

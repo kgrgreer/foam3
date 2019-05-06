@@ -25,6 +25,10 @@ foam.CLASS({
           x, obj, getStage());
         ruler.putResult(response.getComplianceValidationStatus());
       `
+    },
+    {
+      name: 'applyReverseAction',
+      javaCode: '//noop'
     }
   ]
 });

@@ -21,6 +21,10 @@ foam.CLASS({
         IdentityMindResponse response = identityMindService.evaluateMerchant(x, business);
         ruler.putResult(response.getComplianceValidationStatus());
       `
+    },
+    {
+      name: 'applyReverseAction',
+      javaCode: '//noop'
     }
   ]
 });

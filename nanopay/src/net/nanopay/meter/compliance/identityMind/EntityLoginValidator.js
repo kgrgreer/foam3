@@ -21,6 +21,10 @@ foam.CLASS({
         IdentityMindResponse response = identityMindService.recordLogin(x, login);
         ruler.putResult(response.getComplianceValidationStatus());
       `
+    },
+    {
+      name: 'applyReverseAction',
+      javaCode: '//noop'
     }
   ]
 });
