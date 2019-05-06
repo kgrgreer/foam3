@@ -12,6 +12,7 @@ foam.CLASS({
   imports: [
     'acceptanceDocumentService',
     'auth',
+    'countryDAO',
     'groupDAO',
     'loginSuccess',
     'menuDAO',
@@ -23,13 +24,14 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.u2.Element',
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
-    'net.nanopay.ui.NewPasswordView',
-    'net.nanopay.documents.AcceptanceDocument',
-    'net.nanopay.documents.AcceptanceDocumentService'
+    'net.nanopay.ui.NewPasswordView'
   ],
 
   css: `
@@ -100,6 +102,18 @@ foam.CLASS({
     ^ .link {
       margin-right: 5px;
     }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      background: #fff;
+      border-radius: 3px;
+      font-weight: 400;
+      padding: 12px;
+      color: #8e9090;
+      box-shadow: none;
+    }
   `,
 
   properties: [
@@ -118,6 +132,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'companyNameField'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      documentation: 'Reference to affiliated country.',
+      name: 'country'
     },
     {
       class: 'String',
@@ -145,7 +165,7 @@ foam.CLASS({
       name: 'disableCompanyName',
       documentation: `Set this to true to disable the Company Name input field.`
     },
-    'termsAndConditions',   
+    'termsAndConditions',
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
@@ -159,6 +179,7 @@ foam.CLASS({
     { name: 'F_NAME', message: 'First Name' },
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
+    { name: 'COUNTRY_LABEL', message: 'Country of operation' },
     { name: 'EMAIL', message: 'Email Address' },
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
@@ -171,10 +192,10 @@ foam.CLASS({
   ],
 
   methods: [
-     function init() {
-       this.SUPER();
-       this.loadAcceptanceDocument();
-     },
+    function init() {
+      this.SUPER();
+      this.loadAcceptanceDocument();
+    },
 
     function initE() {
       this.SUPER();
@@ -223,10 +244,28 @@ foam.CLASS({
             .end()
 
             .start().addClass('input-wrapper')
+              .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
+              .start(this.COUNTRY.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: 'Select your country',
+                  dao: this.countryDAO.where(this.OR(
+                    this.EQ(this.Country.NAME, 'Canada'),
+                    this.EQ(this.Country.NAME, 'USA')
+                  )),
+                  objToChoice: function(a) {
+                    return [a.id, a.name];
+                  }
+                }
+              }))
+              .end()
+            .end()
+
+            .start().addClass('input-wrapper')
               .start().add(this.EMAIL).addClass('input-label').end()
               .start(this.EMAIL_FIELD, { mode: emailDisplayMode })
                 .addClass('input-field')
-                .attr('placeholder', 'This will be your login ID')
+                .attr('placeholder', 'Example@example.com')
               .end()
             .end()
 
