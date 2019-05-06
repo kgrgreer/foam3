@@ -6,7 +6,9 @@ foam.CLASS({
   documentation: 'Resend verification email view',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.u2.Element',
+    'net.nanopay.sme.ui.SplitBorder'
   ],
 
   imports: [
@@ -177,15 +179,18 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this
+      var split = net.nanopay.sme.ui.SplitBorder.create();
+
+      var left = this.Element.create()
+      .addClass('cover-img-block')
+      .start('img')
+        .addClass('sme-image')
+        .attr('src', 'images/sign_in_illustration.png')
+      .end();
+
+      var right = this.Element.create()
         .addClass(this.myClass())
         .start()
-          .start()
-            .addClass('top-bar')
-            .start('img')
-              .attr('src', 'images/ablii-wordmark.svg')
-            .end()
-          .end()
           .start('img').addClass('icon').attr('src', 'images/mail-icon.svg').end()
           .start().addClass('header').add(this.TITLE).end()
           .start()
@@ -197,6 +202,11 @@ foam.CLASS({
           .end()
           .start(this.GO_TO_SIGN_IN).addClass('link').end()
         .end();
+
+        split.leftPanel.add(left);
+        split.rightPanel.add(right);
+        this.tag({ class: 'net.nanopay.sme.ui.TopBarBackToAblii' })
+        .add(split);
     }
   ],
 
