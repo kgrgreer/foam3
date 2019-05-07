@@ -283,13 +283,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'sourceAccount',
-      targetDAOKey: 'localAccountDAO',
-      visibility: 'RO'
-    },
-    {
       class: 'Long',
       name: 'payeeId',
       storageTransient: true,
@@ -300,13 +293,6 @@ foam.CLASS({
       name: 'payerId',
       storageTransient: true,
       visibility: 'HIDDEN',
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'destinationAccount',
-      targetDAOKey: 'localAccountDAO',
-      visibility: 'RO',
     },
     {
       class: 'Currency',

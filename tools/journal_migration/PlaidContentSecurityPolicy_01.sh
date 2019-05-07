@@ -20,8 +20,12 @@ if os.path.isfile(JOURNAL_HOME + filename):
     for line in lines:
 
         if ( line.find('"id":"http"') != -1 or line.find('"name":"http"') != -1 ) and line.find('script-src') != -1:
-            index = line.find('script-src') + 10
-            line = line[:index] + " https://cdn.plaid.com/link/v2/stable/link-initialize.js" + line[index:]
+            if line.find('script-src https://cdn.plaid.com/link/v2/stable/link-initialize.js') == -1:
+                index = line.find('script-src') + 10
+                line = line[:index] + " https://cdn.plaid.com/link/v2/stable/link-initialize.js" + line[index:]
+            if line.find('frame-src https://cdn.plaid.com/link/') == -1:
+                index = line.find('frame-src') + 9
+                line = line[:index] + " https://cdn.plaid.com/link/" + line[index:]
         writeFile.write(line)
 
     readFile.close()
