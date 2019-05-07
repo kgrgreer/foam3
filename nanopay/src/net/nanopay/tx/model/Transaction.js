@@ -796,12 +796,14 @@ foam.CLASS({
     },
     {
       name: 'addNext',
+      documentation: 'For adding multiple child transactions use CompositeTransaction',
       args: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
       Transaction tx = this;
       if ( tx.getNext() != null && tx.getNext().length >= 1 ) {
+         if ( tx.getNext().length > 1) throw new RuntimeException("Error, this non-Composite transaction has more then 1 child");
          Transaction [] t = tx.getNext();
          t[0].addNext(txn);
       }
