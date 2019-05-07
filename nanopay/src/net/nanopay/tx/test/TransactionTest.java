@@ -154,7 +154,7 @@ public class TransactionTest
 
     test(tq.getPlan().getClass()==FXTransaction.class,"Transaction is of type FXTransaction");
     test(tq.getPlan().getStatus()== COMPLETED,"FXTransaction is in completed status");
-    //test(tq.getPlan().getNext()==null,"FXTransaction is not chained");
+    test(tq.getPlan().getNext()==null || tq.getPlan().getNext().length == 0 ,"FXTransaction is not chained");
   }
 
   public void testVerificationTransaction(){

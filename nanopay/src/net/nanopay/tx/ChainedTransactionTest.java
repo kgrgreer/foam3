@@ -64,7 +64,7 @@ public class ChainedTransactionTest
     //test CADDigital -> INRDigital
     FXTransaction tx3;
     sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, tx2.getId())).select(new ArraySink());
-    test(sink.getArray().size() == 1, "tx3: tx2 is parent to a single transaction is: " + sink.getArray().size());
+    test(sink.getArray().size() == 1, "tx3: tx2 is parent to a single transaction");
     tx3 = (FXTransaction) sink.getArray().get(0);
     test(tx3.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx3: status PENDING_PARENT_COMPLETED");
     test(tx3.getSourceCurrency() != tx3.getDestinationCurrency(), "tx3: sourceCurrency != detstinationCurrency");
@@ -75,7 +75,7 @@ public class ChainedTransactionTest
 
     KotakCOTransaction tx4;
     sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, tx3.getId())).select(new ArraySink());
-    test(sink.getArray().size() == 1, "tx4: tx3 is parent to a single transaction is: " + sink.getArray().size());
+    test(sink.getArray().size() == 1, "tx4: tx3 is parent to a single transaction");
     tx4 = (KotakCOTransaction)  sink.getArray().get(0);
     test(tx4.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx4: status Pending");
     test(tx4.getSourceCurrency() == tx4.getDestinationCurrency(), "tx4: sourceCurrency == destinationCurrency");

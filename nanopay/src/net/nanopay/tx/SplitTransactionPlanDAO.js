@@ -98,7 +98,6 @@ foam.CLASS({
         Long destinationCurrencyAmount = 0l;
 
         // Check we can handle currency pair
-        Transaction digitalPlan = null;
         if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
           destinationDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)) {
           // XDigital -> XDIgital.
@@ -112,11 +111,11 @@ foam.CLASS({
           q2.setRequestTransaction(t2);
           TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
           if ( null != c2.getPlan() ) {
-            digitalPlan = c2.getPlan();
-            cashinPlan.setAmount(digitalPlan.getAmount() + digitalPlan.getCost());
-            destinationCurrencyAmount = digitalPlan.getDestinationAmount();
-            cashinPlan.addNext(digitalPlan);
-            txn.addLineItems(digitalPlan.getLineItems(), digitalPlan.getReverseLineItems());
+            Transaction plan = c2.getPlan();
+            txn.setAmount(plan.getAmount() + plan.getCost());
+            destinationCurrencyAmount = plan.getDestinationAmount();
+            txn.addNext(plan);
+            txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
           }
         } else {
           // XDigital -> USDIgital. Check if supported first
@@ -173,12 +172,9 @@ foam.CLASS({
         q5.setRequestTransaction(t5);
         TransactionQuote c5 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q5);
         if ( null != c5.getPlan() ) {
-          Transaction cashOutPlan = c5.getPlan();
-          if ( digitalPlan != null )
-            digitalPlan.addNext(cashOutPlan);
-          else
-            cashinPlan.addNext(cashOutPlan);
-          txn.addLineItems(cashOutPlan.getLineItems(), cashOutPlan.getReverseLineItems());
+          Transaction plan = c5.getPlan();
+          txn.addNext(plan);
+          txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
         }
         txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
@@ -219,7 +215,7 @@ foam.CLASS({
         TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
         if ( null != c2.getPlan() ) {
           Transaction plan = c2.getPlan();
-          cashinPlan.addNext(plan);
+          txn.addNext(plan);
           txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
         }
 
