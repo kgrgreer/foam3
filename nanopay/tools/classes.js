@@ -176,7 +176,7 @@ var classes = [
    'net.nanopay.liquidity.LiquiditySettings',
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
-   'net.nanopay.model.Frequency',
+   'net.nanopay.util.Frequency',
 
    // quick
    'net.nanopay.accounting.quickbooks.QuickbooksConfig',
@@ -210,7 +210,7 @@ var classes = [
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ExpiryLineItem',
-  'net.nanopay.model.Frequency',
+  'net.nanopay.util.Frequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
   'net.nanopay.tx.model.FeeType',

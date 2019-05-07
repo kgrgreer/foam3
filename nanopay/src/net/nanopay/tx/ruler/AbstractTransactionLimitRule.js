@@ -46,7 +46,7 @@ foam.CLASS({
     },
     {
       class: 'foam.core.Enum',
-      of: 'net.nanopay.model.Frequency',
+      of: 'net.nanopay.util.Frequency',
       name: 'period',
       value: 'DAILY',
       documentation: 'Transaction limit time frame. (Day, Week etc.)'
