@@ -109,7 +109,16 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode: `
-        // Don't authorize reads for now.
+        AuthService auth = (AuthService) x.get("auth");
+        User user = (User) x.get("user");
+
+        // If the user has the appropriate permission, allow access.
+        if ( auth.check(x, "business.read." + Long.toString(this.getId())) ) return;
+
+        // Allow businesses to read themselves.
+        if ( SafetyUtil.equals(this.getId(), user.getId()) ) return;
+
+        throw new AuthorizationException();
       `
     },
     {
