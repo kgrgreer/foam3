@@ -568,6 +568,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
 
+  // sme dashboard cards
+  { name: 'net/nanopay/sme/ui/dashboard/cards/UnlockPaymentsCard', flags: ['web'] },
+
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
 
