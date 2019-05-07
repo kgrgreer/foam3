@@ -112,7 +112,7 @@ foam.CLASS({
           TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
           if ( null != c2.getPlan() ) {
             Transaction plan = c2.getPlan();
-            txn.setAmount(plan.getAmount() + plan.getCost());
+            cashinPlan.setAmount(plan.getAmount() + plan.getCost());
             destinationCurrencyAmount = plan.getDestinationAmount();
             txn.addNext(plan);
             txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
