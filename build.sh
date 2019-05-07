@@ -141,8 +141,13 @@ function clean {
         fi
 
         if [ "${RUN_JAR}" -eq 1 ]; then
-            rm -rf "${NANOPAY_HOME}/bin/*"
-            rm -rf "${NANOPAY_HOME}/lib/*"
+            tmp=$PWD
+            echo PWD=$tmp
+            cd "${NANOPAY_HOME}/bin"
+            rm -rf *
+            cd "../lib"
+            rm -rf *
+            cd "$tmp"
         fi
 
         if [ "$GRADLE_BUILD" -eq 0 ]; then
