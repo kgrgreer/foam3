@@ -198,6 +198,11 @@ jar {
   from "$targetDir/classes"
   include "**"
 
+  sourceSets.main.resources {
+      srcDirs = ["/opt/nanopay/journals"]
+      includes = ["*.0"]
+  }
+
   manifest {
     attributes "Main-Class": "foam.nanos.boot.Boot"
     attributes "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(" ")
