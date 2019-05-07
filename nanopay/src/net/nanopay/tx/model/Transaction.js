@@ -801,21 +801,17 @@ foam.CLASS({
       ],
       javaCode: `
       Transaction tx = this;
-      //while( tx.getNext() != null ) {
-      Transaction [] t = tx.getNext();
-      //}
-      txn.setInitialStatus(txn.getStatus());
-      txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-      int size = 0;
-      if ( t != null ) {
-        size = t.length;
+      if ( tx.getNext() != null && tx.getNext().length >= 1 ) {
+         Transaction [] t = tx.getNext();
+         t[0].addNext(txn);
       }
-      Transaction [] t2 = new Transaction [size+1];
-      for ( int i = 0; i < tx.getNext().length; i++ ) {
-        t2[i] = t[i];
+      else {
+        txn.setInitialStatus(txn.getStatus());
+        txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
+        Transaction [] t2 = new Transaction [1];
+        t2[0] = txn;
+        tx.setNext(t2);
       }
-      t2[t2.length-1] = txn;
-      tx.setNext(t2);
     `
   },
   {
