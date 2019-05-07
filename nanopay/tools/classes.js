@@ -453,6 +453,7 @@ var classes = [
   'net.nanopay.meter.compliance.NanopayComplianceService',
   'net.nanopay.meter.compliance.canadianSanction.Record',
   'net.nanopay.meter.compliance.CanadianSanctionValidator',
+  'net.nanopay.meter.compliance.UserFinalRuleValidation',
   'net.nanopay.meter.compliance.secureFact.CanadianUserOnboarding',
   'net.nanopay.meter.compliance.secureFact.CanadianBusinessOnboarding',
   'net.nanopay.meter.compliance.secureFact.ResponseError',

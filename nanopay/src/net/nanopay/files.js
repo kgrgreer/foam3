@@ -831,6 +831,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
   { name: 'net/nanopay/meter/compliance/CanadianSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/refinements' },
+  { name: 'net/nanopay/meter/compliance/UserFinalRuleValidation' },
   { name: 'net/nanopay/meter/compliance/secureFact/CanadianUserOnboarding' },
   { name: 'net/nanopay/meter/compliance/secureFact/CanadianBusinessOnboarding' },
   { name: 'net/nanopay/meter/compliance/secureFact/ResponseError' },
