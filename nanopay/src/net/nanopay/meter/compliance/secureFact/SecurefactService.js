@@ -96,7 +96,7 @@ foam.CLASS({
         request.setAuthKey(getLevApiKey());
 
         LEVResponse response = (LEVResponse) sendRequest(x, request, LEVResponse.class);
-        response.setEntityName(business.getBusinessName());
+        response.setEntityName(business.getOrganization());
         response.setEntityId(business.getId());
         // Aggregate close matches
         LEVResult[] results = response.getResults();
