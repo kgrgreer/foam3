@@ -405,7 +405,7 @@ foam.CLASS({
     },
     {
       name: 'next',
-      class: 'FObjectProperty',
+      class: 'FObjectArray',
       of: 'net.nanopay.tx.model.Transaction',
       storageTransient: true,
       visibility: 'HIDDEN'
@@ -801,12 +801,21 @@ foam.CLASS({
       ],
       javaCode: `
       Transaction tx = this;
-      while( tx.getNext() != null ) {
-        tx = tx.getNext();
-      }
+      //while( tx.getNext() != null ) {
+      Transaction [] t = tx.getNext();
+      //}
       txn.setInitialStatus(txn.getStatus());
       txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-      tx.setNext(txn);
+      int size = 0;
+      if ( t != null ) {
+        size = t.length;
+      }
+      Transaction [] t2 = new Transaction [size+1];
+      for ( int i = 0; i < tx.getNext().length; i++ ) {
+        t2[i] = t[i];
+      }
+      t2[t2.length-1] = txn;
+      tx.setNext(t2);
     `
   },
   {
