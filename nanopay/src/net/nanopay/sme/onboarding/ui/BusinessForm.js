@@ -370,7 +370,7 @@ foam.CLASS({
       `,
       expression: function(industryId) {
         return this.businessSectorDAO.where(
-          this.EQ(this.BusinessSector.PARENT, industryId ? industryId.id : '')
+          this.EQ(this.BusinessSector.PARENT, industryId ? industryId : '')
         );
       }
     },

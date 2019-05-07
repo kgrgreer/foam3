@@ -7,7 +7,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.analytics.Foldable'
   ],
 
   imports: [
@@ -282,13 +283,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'sourceAccount',
-      targetDAOKey: 'localAccountDAO',
-      visibility: 'RO'
-    },
-    {
       class: 'Long',
       name: 'payeeId',
       storageTransient: true,
@@ -299,13 +293,6 @@ foam.CLASS({
       name: 'payerId',
       storageTransient: true,
       visibility: 'HIDDEN',
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'destinationAccount',
-      targetDAOKey: 'localAccountDAO',
-      visibility: 'RO',
     },
     {
       class: 'Currency',
@@ -458,6 +445,14 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'doFolds',
+      javaCode: `
+        for ( Transfer t : getTransfers() ) {
+          fm.foldForState(t.getAccount(),getLastModified(),t.getAmount());
+        }
+      `
+    },
     {
       name: 'limitedClone',
       args: [
