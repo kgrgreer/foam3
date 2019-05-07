@@ -24,7 +24,7 @@ public class UserRegistrationValidator implements Validator {
     if ( ! SafetyUtil.isEmpty(user.getDesiredPassword()) ) {
       ( (AuthService) x.get("auth") ).validatePassword( user.getDesiredPassword() );
     } 
-    else if ( oldUser == null) throw new RuntimeException("Password Field Required.");
+    else if ( oldUser == null) throw new RuntimeException("Password Required.");
     
     // TODO move all other registration related validation from Ablii front-end ot here.
   }
