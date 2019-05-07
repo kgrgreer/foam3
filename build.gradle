@@ -80,17 +80,17 @@ publishing {
 
 sourceSets {
     main {
-         java {
-             srcDirs = [
-                     "$rootDir/foam2/src",
-                     "$rootDir/nanopay/src",
-                     "$rootDir/build"
-             ]
-             exclude "com/chrome/**"
-             exclude "foam/nanos/tomcat/**"
-             exclude "foam/dao/DatastoreDAO.java"
-             exclude "net/nanopay/blob/**"
-         }
+        java {
+            srcDirs = [
+                    "$rootDir/foam2/src",
+                    "$rootDir/nanopay/src",
+                    "$rootDir/build"
+            ]
+            exclude "com/chrome/**"
+            exclude "foam/nanos/tomcat/**"
+            exclude "foam/dao/DatastoreDAO.java"
+            exclude "net/nanopay/blob/**"
+        }
     }
 }
 
@@ -144,8 +144,8 @@ configurations {
 task incrementalGenTask(type: IncrementalGenTask) {
     includeDirs.add(file("nanopay/src"))
     includeDirs.add(file("foam2/src"))
-     outputDir = file("$buildDir/")
-     inputProperty = project.properties['taskInputProperty'] ?: "original"
+    outputDir = file("$buildDir/")
+    inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
 
 task genJava(type: Exec) {
@@ -176,14 +176,14 @@ task foamCopy(type: Copy) {
 }
 
 task copyLib(type: Copy) {
-     into "$targetDir/lib"
-     from configurations.runtime
+    into "$targetDir/lib"
+    from configurations.runtime
 }
 
 task copyResources(type: Copy) {
-     into "$targetDir/classes"
-     from "$rootDir/nanopay/src/resources"
-     from "$rootDir/foam2/src/resources"
+    into "$targetDir/classes"
+    from "$rootDir/nanopay/src/resources"
+    from "$rootDir/foam2/src/resources"
 }
 
 task copyJournals(type: Copy) {
@@ -233,6 +233,6 @@ tasks.withType(JavaCompile) {
 }
 
 compileJava {
-     dependsOn tasks.genJava
-     dependsOn tasks.copyLib
+    dependsOn tasks.genJava
+    dependsOn tasks.copyLib
 }
