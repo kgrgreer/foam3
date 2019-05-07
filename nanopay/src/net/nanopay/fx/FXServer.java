@@ -61,7 +61,7 @@ public class FXServer extends ContextAwareSupport implements FXService, NanoServ
   public User findUser(long userId) {
     DAO bareUserDAO = (DAO) getX().get("bareUserDAO");
     DAO contactDAO = (DAO) getX().get("contactDAO");
-    DAO businessDAO = (DAO) getX().get("businessDAO");
+    DAO localBusinessDAO = (DAO) getX().get("localBusinessDAO");
     User user = null;
     Contact contact = null;
     try{
@@ -71,7 +71,7 @@ public class FXServer extends ContextAwareSupport implements FXService, NanoServ
           EQ(User.EMAIL, contact.getEmail()),
           NOT(INSTANCE_OF(Contact.class))));
       } else if ( contact != null && contact.getBusinessId() > 0 ){
-        user = (User) businessDAO.find(contact.getBusinessId());
+        user = (User) localBusinessDAO.find(contact.getBusinessId());
       } else {
         user = (User) bareUserDAO.find(userId);
       }

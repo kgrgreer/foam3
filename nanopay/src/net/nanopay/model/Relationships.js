@@ -444,8 +444,8 @@ foam.CLASS({
       ],
       type: 'String',
       javaCode: `
-        DAO businessDAO = (DAO) x.get("businessDAO");
-        Business targetUser = (Business) businessDAO.inX(x).find(junctionObj.getTargetId());
+        DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+        Business targetUser = (Business) localBusinessDAO.inX(x).find(junctionObj.getTargetId());
 
         // Permission string to check authorization.
         String permissionString = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
