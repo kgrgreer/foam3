@@ -57,8 +57,8 @@ foam.CLASS({
       }
     }),
     {
-      class: 'Array',
-      of: 'String',
+      class: 'FObjectArray',
+      of: 'net.nanopay.model.EmailAddress',
       name: 'signingOfficeEmails',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       visibilityExpression: function(signingOfficer) {
@@ -97,66 +97,92 @@ foam.CLASS({
       }
     },
     foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(signingOfficer, operatingUnderDifferentName) {
+        return signingOfficer && operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_AMOUNT.clone().copyFrom({
+      documentation: 'Change to option dropdown',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.clone().copyFrom({
+      documentation: 'Change to option dropdown',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
+      documentation: 'Change to option dropdown',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.clone().copyFrom({
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(signingOfficer, transactionPurpose) {
+        return signingOfficer & transactionPurpose == 'Other' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     {
       class: 'Boolean',
       name: 'ownershipAbovePercent',
+      label: 'Does anyone own above 25% of the company?',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     {
       class: 'Long',
-      name: 'amountOfIndividualsWhoOwnPercent',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      name: 'amountOfOwners',
+      label: 'Amount of individuals who own 25%',
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [ 1, 2, 3, 4, 5 ],
+      },
+      visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
+        return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     {
       class: 'Boolean',
       name: 'userOwnsPercent',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      label: 'I am one of these owners',
+      visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
+        return signingOfficer && ownershipAbovePercent? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      class: 'String',
+      name: 'principalType',
+      documentation: 'Change to option dropdown',
+      visibilityExpression: function(signingOfficer, userOwnsPercent) {
+        return signingOfficer && userOwnsPercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(signingOfficer, userOwnsPercent) {
+        return signingOfficer && userOwnsPercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      view: { 
+        class: 'foam.u2.CheckBox',
+        label: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.'
+      },
+      visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
+        return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     {
       class: 'Boolean',
       name: 'TermsAgreement',
+      view: { 
+        class: 'foam.u2.CheckBox',
+        label: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.'
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -165,8 +191,8 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'beneficialOwners',
       of: 'foam.nanos.auth.User',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
+        return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }
   ],
@@ -174,10 +200,10 @@ foam.CLASS({
   actions: [
     async function save(X){
       var self = this;
-
+      // This is a rough idea of how the values collected from the model will be translated to the appropriate objects and DAO's.
+      // Requires work.
       var business = await X.businessDAO.find(this.businessId ? this.businessId : X.user);
       var user = await X.userDAO.find(this.userId ? this.userId : X.agent);
-
 
       // Append values to user
       user.phone = this.phone;
