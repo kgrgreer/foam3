@@ -232,7 +232,7 @@ foam.CLASS({
             .addClass(this.myClass('container'))
             .select(dao, function(actionObj) {
               return this.E()
-                .attrs({name: actionObj.name})
+                .attrs({ name: actionObj.name })
                 .addClass(self.myClass('item'))
                 .enableClass(self.myClass('complete'), actionObj.completed)
                 .start(actionObj.imgObj)
