@@ -4,6 +4,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
+  { name: 'net/nanopay/tx/CompositeTransaction' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
