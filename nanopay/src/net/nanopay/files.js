@@ -775,6 +775,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
+  { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
+  { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
