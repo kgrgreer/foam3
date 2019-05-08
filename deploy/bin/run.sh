@@ -15,6 +15,7 @@ while getopts "H:N:W:" opt ; do
 done
 
 JAVA_OPTS=""
+JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
 JAVA_OPTS="${JAVA_OPTS} -Dhostname=${HOST_NAME}"
 JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
 JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
