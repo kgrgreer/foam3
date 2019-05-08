@@ -14,10 +14,10 @@ foam.CLASS({
       padding-left: 2px;
       width: 497px;
     }
-    ^ .net-nanopay-ui-ActionView-closeButton:hover:enabled {
+    ^ .foam-u2-ActionView-closeButton:hover:enabled {
       cursor: pointer;
     }
-    ^ .net-nanopay-ui-ActionView-closeButton {
+    ^ .foam-u2-ActionView-closeButton {
       float: left;
       margin: 0;
       outline: none;

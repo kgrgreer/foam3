@@ -75,7 +75,7 @@ foam.CLASS({
           margin-top: 9px;
         }
 
-        ^ .net-nanopay-ui-ActionView-actionButton {
+        ^ .foam-u2-ActionView-actionButton {
           display: inline-block !important;
           vertical-align: top !important;
           box-sizing: border-box !important;
@@ -96,7 +96,7 @@ foam.CLASS({
           opacity: 1.0 !important;
         }
 
-        ^ .net-nanopay-ui-ActionView-actionButton:hover {
+        ^ .foam-u2-ActionView-actionButton:hover {
           cursor: pointer !important;
           background: none !important;
           background-color: #59a5d5 !important;

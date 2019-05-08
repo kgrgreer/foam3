@@ -59,7 +59,7 @@ foam.CLASS({
       display: inline-block;
       margin-top: 20px;
     }
-    ^ .net-nanopay-ui-ActionView-saveButton {
+    ^ .foam-u2-ActionView-saveButton {
       width: 135px;
       height: 40px;
       border-radius: 2px;
@@ -74,7 +74,7 @@ foam.CLASS({
       background-color: %SECONDARYCOLOR%;
       margin-top: 30px;
     }
-    ^ .net-nanopay-ui-ActionView-saveButton:hover {
+    ^ .foam-u2-ActionView-saveButton:hover {
       opacity: 0.9;
       border: 1px solid %SECONDARYCOLOR%;
     }

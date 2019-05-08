@@ -48,17 +48,17 @@ foam.CLASS({
       line-height: 1;
       color: #093649;
     }
-    ^ .net-nanopay-ui-ActionView-backAction {
+    ^ .foam-u2-ActionView-backAction {
       border: 1px solid lightgrey;
       // background-color: rgba(164, 179, 184, 0.1);
       vertical-align: top;
       position: relative;
       z-index: 10;
     }
-    .net-nanopay-ui-ActionView-backAction:hover {
+    .foam-u2-ActionView-backAction:hover {
       background: rgba(164, 179, 184, 0.3);
     }
-    ^ .net-nanopay-ui-ActionView-payNow {
+    ^ .foam-u2-ActionView-payNow {
       background-color: #59A5D5;
       color: white;
       float: right;
@@ -66,22 +66,22 @@ foam.CLASS({
       position: sticky;
       z-index: 10;
     }
-    ^ .net-nanopay-ui-ActionView-payNow:hover {
+    ^ .foam-u2-ActionView-payNow:hover {
       background: %SECONDARYHOVERCOLOR%;
     }
-    ^ .net-nanopay-ui-ActionView-payNowDropDown:focus {
+    ^ .foam-u2-ActionView-payNowDropDown:focus {
       background: %SECONDARYHOVERCOLOR%;
     }
-    ^ .net-nanopay-ui-ActionView-payNowDropDown {
+    ^ .foam-u2-ActionView-payNowDropDown {
       width: 30px;
       height: 40px;
       background-color: #59A5D5;
       float: right;
     }
-    ^ .net-nanopay-ui-ActionView-payNowDropDown:hover{
+    ^ .foam-u2-ActionView-payNowDropDown:hover{
       background: %SECONDARYHOVERCOLOR%;
     }
-    ^ .net-nanopay-ui-ActionView-payNowDropDown::after {
+    ^ .foam-u2-ActionView-payNowDropDown::after {
       content: ' ';
       position: absolute;
       height: 0;

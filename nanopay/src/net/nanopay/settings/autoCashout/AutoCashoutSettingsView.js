@@ -12,7 +12,7 @@ foam.CLASS({
       code: function CSS() {/*
         ^{
           width: 100%;
-          background-color: #edf0f5;
+          background-color: %BACKGROUNDCOLOR%;
         }
         ^ .autoCashOutContainer {
           width: 992px;

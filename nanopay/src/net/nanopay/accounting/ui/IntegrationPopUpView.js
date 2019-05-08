@@ -87,7 +87,7 @@ foam.CLASS({
       font-weight: 900;
       color: #2b2b2b;
     }
-    ^ .net-nanopay-ui-ActionView-save {
+    ^ .foam-u2-ActionView-save {
       width: 96px;
       height: 36px !important;
       border-radius: 4px;
@@ -98,13 +98,13 @@ foam.CLASS({
       font-weight: 400;
       color: #FFFFFF !important;
     }
-    ^ .net-nanopay-ui-ActionView-save:hover {
+    ^ .foam-u2-ActionView-save:hover {
       background-color: #4d38e1 !important;
     }
     ^ .bank-matching{
       height: 40px;
     }
-    ^ .net-nanopay-ui-ActionView-cancel {
+    ^ .foam-u2-ActionView-cancel {
       background-color: transparent;
       color: #525455;
       border: none;
@@ -115,7 +115,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: lighter;
     }
-    ^ .net-nanopay-ui-ActionView-cancel:hover {
+    ^ .foam-u2-ActionView-cancel:hover {
       cursor : selector;
       background-color: transparent !important
     }

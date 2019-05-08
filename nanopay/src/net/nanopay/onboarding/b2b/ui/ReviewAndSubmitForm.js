@@ -86,13 +86,13 @@ foam.CLASS({
       margin-right: 20px;
       color: #a4b3b8;
     }
-    ^ .net-nanopay-ui-ActionView-printButton {
+    ^ .foam-u2-ActionView-printButton {
       height: 40px;
       width: 70px;
       margin-top: 15px;
       margin-left: 20px;
     }
-    ^ .net-nanopay-ui-ActionView-printButton span{
+    ^ .foam-u2-ActionView-printButton span{
       margin-left: 5px;
     }
     ^ .checkBoxLabel.enabled {
@@ -284,9 +284,8 @@ foam.CLASS({
               })
               .on('load', this.getFileHeight)
             .end()
-            .start(this.PRINT_BUTTON).addClass('plainAction')
-              .start({ class: 'foam.u2.tag.Image', data: 'images/ic-print.svg' })
-              .end()
+            .start(this.PRINT_BUTTON)
+              .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-print.svg' })
             .end()
             .start().addClass('checkBoxDiv')
               .start({ class: 'foam.u2.md.CheckBox' },

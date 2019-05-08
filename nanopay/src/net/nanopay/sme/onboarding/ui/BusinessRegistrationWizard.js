@@ -76,7 +76,7 @@ foam.CLASS({
     ^ .net-nanopay-sme-onboarding-ui-BeneficialOwnershipForm {
       padding-bottom: 150px;
     }
-    ^ .net-nanopay-ui-ActionView-goNext {
+    ^ .foam-u2-ActionView-goNext {
       border-radius: 4px !important;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       background-color: #604aff !important;
@@ -104,7 +104,7 @@ foam.CLASS({
     ^ .foam-u2-view-RadioView {
       margin-left: 50px;
     }
-    ^ .net-nanopay-ui-ActionView-uploadButton {
+    ^ .foam-u2-ActionView-uploadButton {
       background: #604aff !important;
     }
   `,
