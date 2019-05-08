@@ -14,6 +14,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
+    'foam.lib.json.OutputterMode',
     'foam.nanos.logger.Logger',
     'java.util.Arrays',
     'java.util.Base64',
@@ -134,7 +135,7 @@ foam.CLASS({
         try {
           String basicAuth = request.getAuthKey() + ":";
           StringEntity entity = new StringEntity(
-            new Outputter().setOutputClassNames(false).stringify(request));
+            new Outputter(OutputterMode.NETWORK).setOutputClassNames(false).stringify(request));
           entity.setContentType("application/json");
 
           httpPost.addHeader("Content-type", "application/json");
