@@ -106,8 +106,18 @@ class IncrementalGenTask extends DefaultTask {
 // https://android.googlesource.com/platform/tools/base/+/studio-master-dev/build-system/gradle-core/src/main/java/com/android/build/gradle/internal/tasks/IncrementalTask.java
 // https://mrhaki.blogspot.com/2017/04/gradle-goodness-using-incremental-task.html
 
-    @InputFiles
+    @Input
     List<File> includeDirs = new ArrayList<>();
+
+    @InputFiles
+    FileCollection getIncludedFiles() {
+        FileCollection files = getProject().files();
+        for(File f : includeDirs) {
+            files = files + getProject().fileTree(f);
+        }
+
+        return files;
+    }
 
     @OutputDirectory
     File outputDir
@@ -133,11 +143,12 @@ class IncrementalGenTask extends DefaultTask {
 }
 
 task incrementalGenTask(type: IncrementalGenTask) {
-     FileTree trees = fileTree(dir: "nanopay/src").matching { include "**/*.js"}
-     trees = trees + fileTree(dir: "nanopay/src").matching { include "**/*.js"}
-     trees.each{ File file -> includeDirs.add(file) }
-     outputDir = file("$buildDir")
-     inputProperty = project.properties['taskInputProperty'] ?: "original"
+    FileTree trees = fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")
+    trees.matching{include "**/*.js"}.each { File f ->
+        includeDirs.add(f)
+    }
+    outputDir = file("$buildDir")
+    inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
 
 task genJava(type: Exec) {
