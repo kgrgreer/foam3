@@ -125,10 +125,11 @@ foam.CLASS({
         try {
           X.closeDialog();
           clearTimeout(this.sessionTimer.timer);
-          this.requestLogin();
           await this.auth.logout();
+          window.location.assign(window.location.origin);
         } catch (e) {
           this.notify(e.toString(), 'error');
+          window.location.assign(window.location.origin);
         }
       }
     },

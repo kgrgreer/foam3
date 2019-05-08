@@ -80,25 +80,6 @@ foam.CLASS({
            getStatus().equals(TransactionStatus.COMPLETED);
       `
     },
-    {
-      name: `validate`,
-      args: [
-        { name: 'x', type: 'Context' }
-      ],
-      type: 'Void',
-      javaCode: `
-      super.validate(x);
 
-      if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
-        throw new RuntimeException("Bank account must be verified");
-      }
-      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-      if ( oldTxn != null && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) || oldTxn.getStatus().equals(TransactionStatus.REVERSE) || 
-        oldTxn.getStatus().equals(TransactionStatus.REVERSE_FAIL) ||
-        oldTxn.getStatus().equals(TransactionStatus.COMPLETED) ) && ! getStatus().equals(TransactionStatus.DECLINED) ) {
-        throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-      }
-      `
-    },
   ]
 });

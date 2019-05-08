@@ -8,7 +8,7 @@ foam.CLASS({
   name: 'VerifyEmail',
   extends: 'foam.u2.Controller',
 
-  documentation: 'Resend verification email view',
+  documentation: 'Resend verification email view (Deprecated since release 3.0)',
 
   requires: [
     'foam.u2.dialog.NotificationMessage'

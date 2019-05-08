@@ -257,7 +257,7 @@ foam.CLASS({
         [{
             class: 'foam.u2.view.TreeView',
             data: this.filteredTransactionDAO,
-            relationship: net.nanopay.tx.model.TransactionTransactionchildrenRelationship,
+            relationship: net.nanopay.tx.model.TransactionTransactionChildrenRelationship,
             startExpanded: false,
             draggable: false,
             formatter: function(data) {

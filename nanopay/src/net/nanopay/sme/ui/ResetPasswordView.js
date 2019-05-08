@@ -20,23 +20,23 @@ foam.CLASS({
     ],
 
     css: `
-      ^{
+      ^ {
         margin: auto;
         text-align: center;
         background: #fff;
         height: 100%;
         width: 100%;
       }
-  
-      ^ .Message-Container{
+
+      ^ .Message-Container {
         width: 330px;
         height: 215px;
         border-radius: 2px;
         padding-top: 5px;
         margin: auto;
       }
-  
-      ^ .Forgot-Password{
+
+      ^ .Forgot-Password {
         font-family: lato;
         font-size: 30px;
         font-weight: bold;
@@ -49,16 +49,16 @@ foam.CLASS({
         margin-bottom: 8px;
         padding-top: 160px;
       }
-  
-      ^ p{
+
+      ^ p {
         display: inline-block;
       }
-  
+
       ^ .link{
-        margin: auto;        
+        margin: auto;
       }
-  
-      ^ .Instructions-Text{
+
+      ^ .Instructions-Text {
         height: 16px;
         height: 24px;
         font-family: Lato;
@@ -71,8 +71,8 @@ foam.CLASS({
         text-align: center;
         color: #525455;
       }
-  
-      ^ .Email-Text{
+
+      ^ .Email-Text {
         width: 182px;
         height: 16px;
         font-family: Roboto;
@@ -85,8 +85,8 @@ foam.CLASS({
         margin-left: 0px;
         margin-right: 288px;
       }
-  
-      ^ .input-Box{
+
+      ^ .input-Box {
         width: 100%;
         height: 40px;
         background-color: #ffffff;
@@ -106,8 +106,8 @@ foam.CLASS({
         border: solid 1px #8e9090;
         margin-bottom: 5px;
       }
-  
-      ^ .Submit-Button{
+
+      ^ .Submit-Button {
         margin-bottom: 20px;
         margin-top: 20px;
         font-family: Lato;
@@ -151,9 +151,9 @@ foam.CLASS({
       }
 
       ^ .error-image {
-        height: auto; 
-        width: auto; 
-        max-width: 13px; 
+        height: auto;
+        width: auto;
+        max-width: 13px;
         max-height: 13px;
       }
     `,
@@ -165,18 +165,17 @@ foam.CLASS({
       },
       {
         class: 'Boolean',
-        name: 'invalidEmail',
-        value: false
+        name: 'invalidEmail'
       }
     ],
 
     messages: [
-      { name: 'INSTRUCTIONS', message: 'Enter the email you signed up with and we\'ll send you a link to create a new one' },
+      { name: 'INSTRUCTIONS',    message: 'Enter the email you signed up with and we\'ll send you a link to create a new one' },
       { name: 'FORGOT_PASSWORD', message: 'Forgot your password?' },
-      { name: 'EMAIL_LABEL', message: 'Email Address' },
+      { name: 'EMAIL_LABEL',     message: 'Email Address' },
       { name: 'BACK_TO_SIGN_IN', message: 'Back to sign in' },
       { name: 'SUCCESS_MESSAGE', message: 'Password reset instructions sent to ' },
-      { name: 'INVALID_EMAIL', message: ' Please enter a valid email.' }
+      { name: 'INVALID_EMAIL',   message: ' Please enter a valid email.' }
     ],
 
     methods: [
@@ -211,7 +210,7 @@ foam.CLASS({
           .start('p').addClass('sme').addClass('link')
             .add(this.BACK_TO_SIGN_IN)
             .on('click', function() {
-              self.stack.push({ class: 'net.nanopay.sme.ui.SignInView' });
+              self.stack.push({class: 'net.nanopay.sme.ui.SignInView'});
             })
           .end()
         .end();
@@ -225,21 +224,35 @@ foam.CLASS({
           if ( ! this.validateEmail(this.email) ) {
             this.invalidEmail = true;
             return;
-          } else {
-            this.invalidEmail = false;
-            var user = this.User.create({ email: this.email });
-            this.resetPasswordToken.generateToken(null, user).then(
-              (result) => {
-                if ( ! result ) {
-                  throw new Error('Error generating reset token');
-                }
-                this.ctrl.notify(this.SUCCESS_MESSAGE + this.email);
-                this.stack.push(this.ResendView.create({ email: this.email }));
-            })
-            .catch(function(err) {
-              this.ctrl.notify(err.message, 'error');
-            });
           }
+  
+          this.invalidEmail = false;
+          var user = this.User.create({ email: this.email });
+          this.resetPasswordToken.generateToken(null, user).then(
+            (result) => {
+              if ( ! result ) {
+                throw new Error('Error generating reset token');
+              }
+              this.ctrl.notify(this.SUCCESS_MESSAGE + this.email);
+              this.stack.push(this.ResendView.create({ email: this.email }));
+          })
+          .catch(function(err) {
+            this.ctrl.notify(err.message, 'error');
+          });
+
+          this.invalidEmail = false;
+          var user = this.User.create({email: this.email});
+          this.resetPasswordToken.generateToken(null, user).then(
+            (result) => {
+              if ( ! result ) {
+                throw new Error('Error generating reset token');
+              }
+              this.notify(this.SUCCESS_MESSAGE + this.email);
+              this.stack.push(this.ResendView.create({email: this.email}));
+          })
+          .catch(function(err) {
+            this.notify(err.message, 'error');
+          });
         }
       }
     ]

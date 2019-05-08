@@ -27,9 +27,14 @@ foam.CLASS({
       name: 'plaidId'
     },
     {
-      class: 'FObjectArray',
+      class: 'Long',
+      name: 'nanopayAccountId',
+      hidden: true
+    },
+    {
+      class: 'FObjectProperty',
       of: 'net.nanopay.plaid.model.PlaidAccountDetail',
-      name: 'selectedAccountDetail',
+      name: 'accountDetail',
       visibility: foam.u2.Visibility.RO
     },
     {

@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'ctrl',
     'quickbooksService',
     'user',
     'userDAO',
@@ -22,6 +23,7 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
+    'net.nanopay.accounting.AccountingErrorCodes',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
@@ -209,6 +211,12 @@ foam.CLASS({
     ^ .show {
       visibility: visible;
     }
+    ^ .token-expired-desc {
+      margin-top: 16px;
+      margin-left: 12px;
+      color: #f91c1c;
+      font-size: 13px;
+    }
   `,
 
   messages: [
@@ -222,7 +230,8 @@ foam.CLASS({
     { name: 'AccountingBanksLabel', message: 'Bank accounts in your accounting software' },
     { name: 'BankMatchingDesc1', message: 'Please select which accounts you would like to match between Ablii and ' },
     { name: 'BankMatchingDesc2', message: ' from the drop downs.' },
-    { name: 'BankMatchingDesc3', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in ' }
+    { name: 'BankMatchingDesc3', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in ' },
+    { name: 'TokenExpired', message: 'Please sync again to your accounting software to fetch the latest information.' }
   ],
 
   properties: [
@@ -311,6 +320,11 @@ foam.CLASS({
      class: 'Boolean',
      name: 'showMatchCurrency',
      value: false
+   },
+   {
+     class: 'Boolean',
+     name: 'displayExpiredTokenMessage',
+     value: false
    }
   ],
 
@@ -328,6 +342,9 @@ foam.CLASS({
         this.accountingBankAccounts = await this.xeroService.bankAccountSync(null);
       }
       if ( this.accountingBankAccounts ) {
+        if ( this.accountingBankAccounts.errorCode == this.AccountingErrorCodes.TOKEN_EXPIRED ) {
+          this.displayExpiredTokenMessage = true;
+        }
         for ( i=0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
           if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
             bankAccountList.push([this.accountingBankAccounts.bankAccountList[i].xeroBankAccountId, this.accountingBankAccounts.bankAccountList[i].name + '-' + this.accountingBankAccounts.bankAccountList[i].currencyCode]);
@@ -375,6 +392,11 @@ foam.CLASS({
               .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('qb-bank-matching').end()
               .start().add(this.BankMatchingDesc1 + this.user.integrationCode.label + this.BankMatchingDesc2).addClass('bank-matching-desc').end()
               .start().add(this.BankMatchingDesc3 + this.user.integrationCode.label ).addClass('bank-matching-desc').addClass('marginTop').end()
+              .start()
+                .show(this.displayExpiredTokenMessage)
+                .add(this.TokenExpired)
+                .addClass('token-expired-desc')
+              .end()
             .end()
             .start().addClass('inline-right-div')
               .start().add(this.YourBanksLabel).addClass('drop-down-label').end()

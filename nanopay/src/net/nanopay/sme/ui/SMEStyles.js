@@ -194,6 +194,18 @@ foam.CLASS({
       padding: 6px 16px;
     }
 
+    .carrot {
+      width: 0; 
+      height: 0; 
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid white;
+      display: inline-block;
+      position: relative;
+      top: -2;
+      left: 5;
+    }
+
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-selection-view {
       min-height: 40px;
       width: 100%;
