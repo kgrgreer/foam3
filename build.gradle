@@ -63,6 +63,14 @@ dependencies {
 	compile "xml-apis:xml-apis:1.4.01"
 }
 
+configurations {
+    all {
+        resolutionStrategy {
+            force 'xml-apis:xml-apis:1.4.01'
+        }
+    }
+}
+
 group = "net.nanopay"
 description = "nanopay"
 sourceCompatibility = "1.8"
@@ -80,26 +88,39 @@ publishing {
 
 sourceSets {
     main {
-         java {
-             srcDirs = [
-                     "$rootDir/foam2/src",
-                     "$rootDir/nanopay/src",
-                     "$rootDir/build"
-             ]
-             exclude "com/chrome/**"
-             exclude "foam/nanos/tomcat/**"
-             exclude "foam/dao/DatastoreDAO.java"
-             exclude "net/nanopay/blob/**"
-         }
+        java {
+            srcDirs = [
+                    "$rootDir/foam2/src",
+                    "$rootDir/nanopay/src",
+                    "$rootDir/build"
+            ]
+            exclude "com/chrome/**"
+            exclude "foam/nanos/tomcat/**"
+            exclude "foam/dao/DatastoreDAO.java"
+            exclude "net/nanopay/blob/**"
+        }
     }
 }
 
 class IncrementalGenTask extends DefaultTask {
-    @InputDirectory
-    def File inputDir
+// https://android.googlesource.com/platform/tools/base/+/studio-master-dev/build-system/gradle-core/src/main/java/com/android/build/gradle/internal/tasks/IncrementalTask.java
+// https://mrhaki.blogspot.com/2017/04/gradle-goodness-using-incremental-task.html
+
+    @Input
+    List<File> includeDirs = new ArrayList<>();
+
+    @InputFiles
+    FileCollection getIncludedFiles() {
+        FileCollection files = getProject().files();
+        for(File f : includeDirs) {
+            files = files + getProject().fileTree(f);
+        }
+
+        return files;
+    }
 
     @OutputDirectory
-    def File outputDir
+    File outputDir
 
     @Input
     def inputProperty
@@ -107,48 +128,47 @@ class IncrementalGenTask extends DefaultTask {
     @TaskAction
     void execute(IncrementalTaskInputs inputs) {
         println inputs.incremental ? "CHANGED inputs considered out of date"
-                                   : "ALL inputs considered out of date"
+                                : "ALL inputs considered out of date"
         if (!inputs.incremental)
             project.delete(outputDir.listFiles())
 
         inputs.outOfDate { change ->
             println "out of date: ${change.file.name}"
-           // def targetFile = new File(outputDir, change.file.name)
-           // targetFile.text = change.file.text.reverse()
         }
 
-        inputs.removed { change ->
-            println "removed: ${change.file.name}"
-           // def targetFile = new File(outputDir, change.file.name)
-           // targetFile.delete()
-        }
-    }
-}
-
-configurations {
-    all {
-        resolutionStrategy {
-            force 'xml-apis:xml-apis:1.4.01'
-        }
+        // inputs.removed { change ->
+        //    println "removed: ${change.file.name}"
+        // }
     }
 }
 
 task incrementalGenTask(type: IncrementalGenTask) {
-     inputDir = file("nanopay/src");
-     outputDir = file("$buildDir/")
-     inputProperty = project.properties['taskInputProperty'] ?: "original"
+    FileTree trees = fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")
+    trees.matching{include "**/*.js"}.each { File f ->
+        includeDirs.add(f)
+    }
+    outputDir = file("$buildDir")
+    inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
 
 task genJava(type: Exec) {
     // https://stackoverflow.com/a/43358562 - flags for controller tasks
-    dependsOn tasks.incrementalGenTask
-    onlyIf { !tasks.incrementalGenTask.state.upToDate }
-    commandLine 'bash', './gen.sh'
+    dependsOn {
+        tasks.incrementalGenTask
+    }
+    onlyIf { 
+        !tasks.incrementalGenTask.state.upToDate
+    }
+    commandLine 'bash', './gen.sh', 'build'
 }
 
 task packageFoam(type: NodeTask) {
-    dependsOn tasks.incrementalGenTask
-    onlyIf { !tasks.incrementalGenTask.state.upToDate }
+    dependsOn {
+        tasks.incrementalGenTask
+    }
+    onlyIf { 
+        !tasks.incrementalGenTask.state.upToDate
+    }
     script = file('./tools/js_build/build.js')
 }
 
@@ -159,14 +179,14 @@ task foamCopy(type: Copy) {
 }
 
 task copyLib(type: Copy) {
-     into "$targetDir/lib"
-     from configurations.runtime
+    into "$targetDir/lib"
+    from configurations.runtime
 }
 
 task copyResources(type: Copy) {
-     into "$targetDir/classes"
-     from "$rootDir/nanopay/src/resources"
-     from "$rootDir/foam2/src/resources"
+    into "$targetDir/classes"
+    from "$rootDir/nanopay/src/resources"
+    from "$rootDir/foam2/src/resources"
 }
 
 task copyJournals(type: Copy) {
@@ -221,6 +241,6 @@ tasks.withType(JavaCompile) {
 }
 
 compileJava {
-     dependsOn tasks.genJava
-     dependsOn tasks.copyLib
+    dependsOn tasks.genJava
+    dependsOn tasks.copyLib
 }
