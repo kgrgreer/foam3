@@ -8,6 +8,9 @@ foam.CLASS({
   `,
 
   properties: [
+    { class: 'String', 
+      name: 'name'
+    },
     {
       class: 'Int',
       name: 'id'

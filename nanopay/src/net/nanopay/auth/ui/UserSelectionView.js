@@ -33,6 +33,7 @@ foam.CLASS({
     function initE() {
       return this
         .start()
+        .attrs({name: "userSelectionView"})
           .addClass(this.myClass())
           .start().addClass('styleHolder_NameField')
             .add(this.data ?
@@ -41,7 +42,7 @@ foam.CLASS({
                 if ( obj ) {
                   formatted += obj.organization || obj.businessName;
                   if ( obj.legalName.trim() ) {
-                    formatted += ` (${obj.legalName})`;
+                    formatted += ` (${obj.legalName})`; 
                   }
                 }
                 return formatted;
