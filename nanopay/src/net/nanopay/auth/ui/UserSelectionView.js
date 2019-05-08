@@ -33,7 +33,7 @@ foam.CLASS({
     function initE() {
       return this
         .start()
-        .attrs({name: "userSelectionView"})
+        .attrs({ name: "userSelectionView" })
           .addClass(this.myClass())
           .start().addClass('styleHolder_NameField')
             .add(this.data ?
