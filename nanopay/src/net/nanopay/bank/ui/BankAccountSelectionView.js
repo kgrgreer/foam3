@@ -32,7 +32,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      return this.attrs({name: "bankAccountSelectionView"})
+      return this.attrs({ name: "bankAccountSelectionView" })
         .addClass(this.myClass())
         .callIfElse(
           this.data,
