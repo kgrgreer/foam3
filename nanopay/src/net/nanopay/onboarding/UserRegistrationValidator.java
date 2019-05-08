@@ -21,6 +21,7 @@ public class UserRegistrationValidator implements Validator {
     // One when user is an external user and being added to a business
     // Two when user is an internal user and being added to a business
     // case two does not have user.getDesiredPassword() populated.
+    // In the first case, the password is required and must be valid.
     if ( ! SafetyUtil.isEmpty(user.getDesiredPassword()) ) {
       ( (AuthService) x.get("auth") ).validatePassword( user.getDesiredPassword() );
     } 

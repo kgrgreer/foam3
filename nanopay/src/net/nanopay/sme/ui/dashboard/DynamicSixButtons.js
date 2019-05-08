@@ -170,19 +170,23 @@ foam.CLASS({
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'verifyEmail',
           completed: values[0],
           act: this.VERIFY_EMAIL
         }));
         this.bankAction = net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'addBank',
           completed: values[1],
           act: this.ADD_BANK
         });
         this.actionsDAO.put(this.bankAction);
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'syncAccounting',
           completed: values[2],
           act: this.SYNC_ACCOUNTING
         }));
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'busProfile',
           completed: values[3],
           act: this.BUS_PROFILE
         }));
@@ -228,6 +232,7 @@ foam.CLASS({
             .addClass(this.myClass('container'))
             .select(dao, function(actionObj) {
               return this.E()
+                .attrs({ name: actionObj.name })
                 .addClass(self.myClass('item'))
                 .enableClass(self.myClass('complete'), actionObj.completed)
                 .start(actionObj.imgObj)
