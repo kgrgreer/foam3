@@ -21,6 +21,11 @@ foam.CLASS({
     'user'
   ],
 
+  requires: [
+    'foam.nanos.auth.Address',
+    'net.nanopay.contacts.Contact'
+  ],
+
   css: `
     ^{
       padding: 24px;
@@ -63,6 +68,16 @@ foam.CLASS({
     { name: 'INSTRUCTION', message: 'In order to send payments to this business, we’ll need you to verify their business address below.' },
     { name: 'BUSINESS_ADDRESS_TITLE', message: 'Business address' },
     { name: 'STEP_INDICATOR', message: 'Step 3 of 3' }
+  ],
+
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address_',
+      documentation: `Temporarily store the business address when the first
+        time saving the new contact into the journal.`
+    }
   ],
 
   methods: [
@@ -118,7 +133,7 @@ foam.CLASS({
         await this.user.contacts.put(contact);
       } catch (err) {
         var msg = err.message || this.GENERIC_PUT_FAILED;
-        this.notify(msg, 'error');
+        this.ctrl.notify(msg, 'error');
       }
     }
   ],
@@ -149,7 +164,20 @@ foam.CLASS({
           return;
         }
 
+        // Temporarily replace the value of businessAddress property with
+        // the empty address object when the first time saving the new contact
+        if ( this.wizard.data.bankAccount === 0 ) {
+          this.address_ = this.wizard.data.businessAddress;
+          this.wizard.data.businessAddress = this.Address.create();
+        }
+
         if ( ! await this.addContact() ) return;
+
+        // Assign the value of the orignal businessAddress property back
+        if ( this.wizard.data.bankAccount === 0 ) {
+          this.wizard.data.businessAddress = this.address_;
+        }
+
         if ( ! await this.addBankAccount() ) return;
         X.closeDialog();
       }

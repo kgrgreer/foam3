@@ -24,7 +24,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
-    'net.nanopay.sme.ui.VerifyEmail',
+    'net.nanopay.sme.ui.VerifyEmailView',
     'net.nanopay.accounting.AccountingIntegrationUtil'
   ],
 
@@ -221,7 +221,7 @@ foam.CLASS({
         self.__subContext__.register(self.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
         self.__subContext__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
         self.__subContext__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
-        self.__subContext__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
+        self.__subContext__.register(self.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
         self.__subContext__.register(self.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
         self.__subContext__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
         self.__subContext__.register(self.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');

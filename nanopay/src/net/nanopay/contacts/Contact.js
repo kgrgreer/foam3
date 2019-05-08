@@ -206,7 +206,15 @@ foam.CLASS({
             throw new IllegalStateException("Business name is required.");
           }
 
-          if ( this.getBusinessAddress() != null ) {
+          if ( this.getBankAccount() != 0 ) {
+            BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
+            
+            if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
+
+            if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
+              throw new RuntimeException("Financial institution name required.");
+            }
+
             Address businessAddress = this.getBusinessAddress();
             DAO countryDAO = (DAO) x.get("countryDAO");
             DAO regionDAO = (DAO) x.get("regionDAO");
@@ -246,16 +254,6 @@ foam.CLASS({
             if ( ! this.validatePostalCode(businessAddress.getPostalCode(), businessAddress.getCountryId()) ) {
               String codeType = businessAddress.getCountryId().equals("US") ? "zip code" : "postal code";
               throw new RuntimeException("Invalid " + codeType + ".");
-            }
-          }
-
-          if ( this.getBankAccount() != 0 ) {
-            BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
-            
-            if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
-
-            if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
-              throw new RuntimeException("Financial institution name required.");
             }
           }
         }

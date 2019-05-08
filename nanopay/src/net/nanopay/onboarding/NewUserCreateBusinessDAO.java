@@ -13,6 +13,7 @@ import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.model.Business;
+import foam.nanos.auth.Address;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
@@ -154,6 +155,9 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     }
 
     // Put the user so that it gets an id.
+    // Remove business address collected from signup form.
+    Address businessAddress = user.getBusinessAddress();
+    user.setBusinessAddress(null);
     user = (User) super.put_(sysContext, obj).fclone();
 
     assert user.getId() != 0;
@@ -163,6 +167,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     Business business = new Business.Builder(userContext)
       .setBusinessName(user.getOrganization())
       .setOrganization(user.getOrganization())
+      .setAddress(businessAddress)
       .setSpid("nanopay")
       // We need to be able to send emails to businesses, but until now we were
       // avoiding giving businesses an email address. However, in Ablii users
