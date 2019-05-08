@@ -97,7 +97,7 @@ public class BusinessInvitationDAO
     );
 
     invite.setCreatedBy(business.getId());
-    // We only care about newly created invitations here.
+    
     if (existingInvite != null) {
       if(invite.getStatus() == InvitationStatus.COMPLETED) {
         invite.setId(existingInvite.getId());
