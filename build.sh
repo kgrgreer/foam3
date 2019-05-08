@@ -320,6 +320,7 @@ function start_nanos {
         echo "INFO :: ${MESSAGE}..."
 
         if [ "$TEST" -eq 1 ]; then
+            JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
             JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
             exec java -jar "${JAR}"
         elif [ "$DAEMONIZE" -eq 0 ]; then
