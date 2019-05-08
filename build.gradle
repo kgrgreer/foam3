@@ -63,6 +63,14 @@ dependencies {
 	compile "xml-apis:xml-apis:1.4.01"
 }
 
+configurations {
+    all {
+        resolutionStrategy {
+            force 'xml-apis:xml-apis:1.4.01'
+        }
+    }
+}
+
 group = "net.nanopay"
 description = "nanopay"
 sourceCompatibility = "1.8"
@@ -94,19 +102,12 @@ sourceSets {
     }
 }
 
-
 class IncrementalGenTask extends DefaultTask {
-    @Input
-    List<File> includeDirs = new ArrayList<>();
+// https://android.googlesource.com/platform/tools/base/+/studio-master-dev/build-system/gradle-core/src/main/java/com/android/build/gradle/internal/tasks/IncrementalTask.java
+// https://mrhaki.blogspot.com/2017/04/gradle-goodness-using-incremental-task.html
 
     @InputFiles
-    FileCollection getIncludedFiles() {
-        FileCollection files = getProject().files();
-        for(File f : includeDirs) {
-            files = files.plus(getProject().fileTree(f));
-        }
-        return files;
-    }
+    List<File> includeDirs = new ArrayList<>();
 
     @OutputDirectory
     File outputDir
@@ -125,27 +126,18 @@ class IncrementalGenTask extends DefaultTask {
             println "out of date: ${change.file.name}"
         }
 
-        inputs.removed { change ->
-            println "removed: ${change.file.name}"
-        }
-    }
-}
-
-
-
-configurations {
-    all {
-        resolutionStrategy {
-            force 'xml-apis:xml-apis:1.4.01'
-        }
+        // inputs.removed { change ->
+        //    println "removed: ${change.file.name}"
+        // }
     }
 }
 
 task incrementalGenTask(type: IncrementalGenTask) {
-    includeDirs.add(file("nanopay/src"))
-    includeDirs.add(file("foam2/src"))
-    outputDir = file("$buildDir/")
-    inputProperty = project.properties['taskInputProperty'] ?: "original"
+     FileTree trees = fileTree(dir: "nanopay/src").matching { include "**/*.js"}
+     trees = trees + fileTree(dir: "nanopay/src").matching { include "**/*.js"}
+     trees.each{ File file -> includeDirs.add(file) }
+     outputDir = file("$buildDir")
+     inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
 
 task genJava(type: Exec) {
