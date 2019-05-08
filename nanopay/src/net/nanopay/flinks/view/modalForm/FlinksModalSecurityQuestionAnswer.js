@@ -49,7 +49,7 @@ foam.CLASS({
       width: 100%;
       height: 40px;
 
-      border: 1px solid #edf0f5;
+      border: 1px solid %BACKGROUNDCOLOR%;
       border-radius: 2px;
       box-shadow: 0 1px 1px 0 #dae1e9;
       margin-top: 8px;

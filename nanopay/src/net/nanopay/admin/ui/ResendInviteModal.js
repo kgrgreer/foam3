@@ -34,21 +34,21 @@ foam.CLASS({
       text-align: center;
       margin-bottom: 60px;
     }
-    ^ .net-nanopay-ui-ActionView {
+    ^ .foam-u2-ActionView {
       width: 135px;
       height: 40px;
       border-radius: 2px;
       overflow: hidden;
       zoom: 1;
     }
-    ^ .net-nanopay-ui-ActionView-resend {
+    ^ .foam-u2-ActionView-resend {
       background-color: #59a5d5;
       color: white;
       display: inline-block;
       float:right;
     }
-    ^ .net-nanopay-ui-ActionView-resend:hover,
-    ^ .net-nanopay-ui-ActionView-resend:focus {
+    ^ .foam-u2-ActionView-resend:hover,
+    ^ .foam-u2-ActionView-resend:focus {
       background-color: #357eac;
     }
   `,

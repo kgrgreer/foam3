@@ -71,7 +71,7 @@ foam.CLASS({
       margin: 24px 0;
       width: 100%;
     }
-    ^ .net-nanopay-ui-ActionView-back {
+    ^ .foam-u2-ActionView-back {
       color: %SECONDARYCOLOR% !important;
       float: left;
     }

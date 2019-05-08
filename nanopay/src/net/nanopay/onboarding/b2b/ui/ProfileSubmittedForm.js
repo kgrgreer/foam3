@@ -51,15 +51,15 @@ foam.CLASS({
       text-align: left;
       color: #093649;
     }
-    ^ .net-nanopay-ui-ActionView-viewProfile,
-    ^ .net-nanopay-ui-ActionView-goToPortal {
+    ^ .foam-u2-ActionView-viewProfile,
+    ^ .foam-u2-ActionView-goToPortal {
       width: 135px;
       height: 40px;
       background-color: #59a5d5;
     }
 
-    ^ .net-nanopay-ui-ActionView-viewProfile span,
-    ^ .net-nanopay-ui-ActionView-goToPortal span {
+    ^ .foam-u2-ActionView-viewProfile span,
+    ^ .foam-u2-ActionView-goToPortal span {
       font-family: Roboto;
       font-size: 14px;
       font-weight: normal;
