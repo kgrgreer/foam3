@@ -676,6 +676,8 @@ FOAM_FILES([
 
   // sme
   { name: 'net/nanopay/model/Business' },
+  { name: 'net/nanopay/auth/PublicBusinessInfo' },
+  { name: 'net/nanopay/auth/BusinessToPublicBusinessInfoDAO' },
   { name: 'net/nanopay/model/BeneficialOwner' },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/ActionObject' },

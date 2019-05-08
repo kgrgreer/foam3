@@ -2,19 +2,24 @@ foam.CLASS({
     package: 'net.nanopay.meter',
     name: 'BusinessStatusContactDAO',
     extends: 'foam.dao.ProxyDAO',
-  
+
     documentation: `Decorator DAO which set businessStatus property for 
       contact object. It is set to DISABLED if the referenced business 
       record could not be retrieved.`,
-  
+
+    imports: [
+      'localBusinessDAO'
+    ],
+
     javaImports: [
       'foam.core.FObject',
+      'foam.dao.DAO',
       'foam.dao.ProxySink',
       'net.nanopay.admin.model.AccountStatus',
       'net.nanopay.contacts.Contact',
       'net.nanopay.model.Business'
     ],
-  
+
     methods: [
         {
           name: 'find_',
@@ -53,7 +58,8 @@ foam.CLASS({
               && result.getBusinessId() != 0
             ) {
               result = (Contact) result.fclone();
-              Business business = result.findBusinessId(x);
+              DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+              Business business = (Business) localBusinessDAO.inX(x).find(result.getBusinessId());
               result.setBusinessStatus(business != null
                 ? business.getStatus()
                 : AccountStatus.DISABLED);

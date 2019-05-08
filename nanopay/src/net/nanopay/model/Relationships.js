@@ -365,15 +365,19 @@ foam.CLASS({
           throw new AuthenticationException();
         }
 
-        // Check agent or user to authorize the request as.
-        User authorizedUser = agent != null ? agent : user;
+        // Let users read junctions where they're the source or target user.
+        boolean isSourceOrTarget =
+          SafetyUtil.equals(this.getSourceId(), user.getId()) ||
+          SafetyUtil.equals(this.getTargetId(), user.getId()) ||
+          (
+            agent != null &&
+            (
+              SafetyUtil.equals(this.getSourceId(), agent.getId()) ||
+              SafetyUtil.equals(this.getTargetId(), agent.getId())
+            )
+          );
 
-        // Check junction object relation to authorized user.
-        boolean authorized =
-            ( SafetyUtil.equals(this.getTargetId(), authorizedUser.getId()) ||
-            SafetyUtil.equals(this.getSourceId(), authorizedUser.getId()) );
-
-        if ( ! ( authorized || auth.check(x, (String) buildPermissionString(x, this, "read")) )){
+        if ( ! ( isSourceOrTarget || auth.check(x, (String) buildPermissionString(x, this, "read")) )){
           throw new AuthorizationException("Unable to retrieve junction due to permission restrictions.");
         }
       `
