@@ -62,6 +62,7 @@ public class SecurefactRequestGenerator {
       //       user's consent for using Securefact to verify his/her identity
       //       when completing business profile in BeneficialOwnershipForm.
       .setConsentGranted(true)
+      .setLanguage("en-CA")
       .build();
   }
 

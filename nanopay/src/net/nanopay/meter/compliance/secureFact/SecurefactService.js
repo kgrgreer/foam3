@@ -133,9 +133,10 @@ foam.CLASS({
         HttpResponse httpResponse = null;
 
         try {
+          Outputter outputter =
+            new Outputter(OutputterMode.NETWORK).setOutputClassNames(false);
           String basicAuth = request.getAuthKey() + ":";
-          StringEntity entity = new StringEntity(
-            new Outputter(OutputterMode.NETWORK).setOutputClassNames(false).stringify(request));
+          StringEntity entity = new StringEntity(outputter.stringify(request));
           entity.setContentType("application/json");
 
           httpPost.addHeader("Content-type", "application/json");
