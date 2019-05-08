@@ -99,9 +99,10 @@ foam.CLASS({
         response.setEntityName(business.getOrganization());
         response.setEntityId(business.getId());
         // Aggregate close matches
+        String region = business.getAddress().getRegionId();
         LEVResult[] results = response.getResults();
         long closeMatchCounter = Arrays.stream(results).filter(
-          o -> o.getCloseMatch()
+          o -> o.getCloseMatch() && o.getJurisdiction().equals(region)
         ).count();
         response.setCloseMatches(closeMatchCounter + "/" + results.length);
         return (LEVResponse)
