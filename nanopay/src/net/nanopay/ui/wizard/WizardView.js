@@ -248,16 +248,8 @@ foam.CLASS({
                     return this.E()
                       .tag(self.EXIT, {
                         label$: self.exitLabel$,
-                        buttonStyle: 'TERTIARY'
-                      });
-                  }
-                }))
-                .add(self.slot(function(hasSaveOption) {
-                  if ( hasSaveOption ) {
-                    return this.E()
-                      .tag(self.SAVE, {
-                        label$: self.saveLabel$,
-                        buttonStyle: 'SECONDARY'
+                        buttonStyle: 'TERTIARY',
+                        size: 'LARGE'
                       });
                   }
                 }))
@@ -268,11 +260,25 @@ foam.CLASS({
                     return this.E()
                       .tag(self.GO_BACK, {
                         label$: self.backLabel$,
-                        buttonStyle: 'SECONDARY'
+                        buttonStyle: 'SECONDARY',
+                        size: 'LARGE'
                       });
                   }
                 }))
-                .tag(self.GO_NEXT, { label$: self.nextLabel$ })
+                .add(self.slot(function(hasSaveOption) {
+                  if ( hasSaveOption ) {
+                    return this.E()
+                      .tag(self.SAVE, {
+                        label$: self.saveLabel$,
+                        buttonStyle: 'SECONDARY',
+                        size: 'LARGE'
+                      });
+                  }
+                }))
+                .tag(self.GO_NEXT, {
+                  label$: self.nextLabel$,
+                  size: 'LARGE'
+                })
               .end()
             .end()
           .end();

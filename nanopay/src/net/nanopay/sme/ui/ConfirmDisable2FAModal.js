@@ -66,38 +66,6 @@ foam.CLASS({
     ^action-container {
       margin-left: auto;
     }
-
-    ^cancel {
-      background-color: transparent;
-      color: #525455;
-      border: none;
-      box-shadow: none;
-      width: auto;
-      height: auto;
-      margin-right: 24px;
-      font-size: 14px;
-      font-weight: light;
-    }
-
-    ^cancel:hover {
-      background-color: transparent !important;
-      color: #525455;
-      border: none;
-      box-shadow: none;
-    }
-
-    ^disable {
-      background-color: #f91c1c;
-      color: white;
-      border: none;
-      width: auto;
-      padding: 4px 24px;
-    }
-
-    ^disable:hover {
-      background-color: #da1818 !important;
-      color: white;
-    }
   `,
 
   messages: [
@@ -140,8 +108,8 @@ foam.CLASS({
         .end()
         .start().addClass(this.myClass('bottom-container'))
           .start().addClass(this.myClass('action-container'))
-            .start(this.CANCEL).addClass(this.myClass('cancel')).end()
-            .start(this.DISABLE).addClass(this.myClass('disable')).end()
+            .tag(this.CANCEL, { buttonStyle: 'TERTIARY' })
+            .tag(this.DISABLE, { isDestructive: true })
           .end()
         .end();
     }

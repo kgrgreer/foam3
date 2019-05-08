@@ -80,11 +80,11 @@ foam.CLASS({
       this.start('div').addClass(this.myClass('container'))
         .callIf(this.back, function() {
           // If NEXT exists, render that action
-          this.tag(self.back);
+          this.tag(self.back, { buttonStyle: 'TERTIARY' });
         })
         .callIf(this.option, function() {
           // If option exists, render that action
-          this.tag(self.option);
+          this.tag(self.option, { buttonStyle: 'SECONDARY' });
         })
         .callIf(this.next, function() {
           // If BACK exists, render that action

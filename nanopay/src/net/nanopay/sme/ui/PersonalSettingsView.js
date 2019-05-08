@@ -352,7 +352,9 @@ foam.CLASS({
                     .add(this.Enabled)
                   .end()
                 .end()
-                .start(this.DISABLE_TWO_FACTOR).end()
+                .tag(this.DISABLE_TWO_FACTOR, {
+                  buttonStyle: 'SECONDARY'
+                })
               .end();
           }
         }, this.agent.twoFactorEnabled$))

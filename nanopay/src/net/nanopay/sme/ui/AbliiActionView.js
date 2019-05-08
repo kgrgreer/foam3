@@ -14,6 +14,7 @@ foam.CLASS({
       justify-content: center;
       align-items: center;
       outline: none;
+      border: 1px solid transparent;
     }
 
     ^ + ^ {
@@ -66,6 +67,7 @@ foam.CLASS({
     ^primary-destructive {
       background-color: %DESTRUCTIVECOLOR%;
       border: 1px solid %DESTRUCTIVECOLOR%;
+      color: white;
     }
 
     ^primary-destructive:hover {
