@@ -24,7 +24,7 @@ foam.CLASS({
           width: 970px;
           margin: auto;
         }
-        ^ .net-nanopay-ui-ActionView-create{
+        ^ .foam-u2-ActionView-create{
           display: none;
         }
         ^ .button-div{

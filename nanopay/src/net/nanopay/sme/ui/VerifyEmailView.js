@@ -49,7 +49,6 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .link{
-      margin-left: 2px;
       cursor: pointer;
       padding: 0px;
       height: auto;
@@ -125,7 +124,7 @@ foam.CLASS({
       name: 'NO_EMAIL_INSTRUCTIONS_3', message: 'The email you entered may have had typo. (Don\'t sweat it, we type fast too! It happens)'
     },
     {
-      name: 'NO_EMAIL_INSTRUCTIONS_4', message: 'We can\'t send emails to this address.(you might have strong filtering or corporate firewalls)'
+      name: 'NO_EMAIL_INSTRUCTIONS_4', message: 'We can\'t send emails to this address. (You might have strong filtering or corporate firewalls)'
     },
     {
       name: 'NO_EMAIL_INSTRUCTIONS_5', message: `If none of the above helped, we can simply`
@@ -158,7 +157,7 @@ foam.CLASS({
           .start()
             .addClass('link')
             .add(this.NO_EMAIL_LINK)
-            .on('click', function(){
+            .on('click', function() {
               self.noEmailToggle = ! self.noEmailToggle;
             })
             .start()
@@ -181,7 +180,7 @@ foam.CLASS({
             .start().add(this.NO_EMAIL_INSTRUCTIONS_4).end()
             .br()
             .start().add(this.NO_EMAIL_INSTRUCTIONS_5).end()
-            .start(this.RESEND_EMAIL).addClass('link').end()
+            .start(this.RESEND_EMAIL, { buttonStyle: 'UNSTYLED' }).addClass('link').end()
           .end()
         .end();
 

@@ -65,7 +65,7 @@ foam.CLASS({
     ^ .net-nanopay-ui-DataSecurityBanner {
       margin-top: 24px;
     }
-    ^ .net-nanopay-ui-ActionView-goToTerm {
+    ^ .foam-u2-ActionView-goToTerm {
       height: auto;
       width: auto;
       background-color: transparent;
@@ -73,7 +73,7 @@ foam.CLASS({
       font-size: 12px;
       padding: 0 3px;
     }
-    ^ .net-nanopay-ui-ActionView-goToTerm:hover {
+    ^ .foam-u2-ActionView-goToTerm:hover {
       background-color: transparent;
       color: %SECONDARYCOLOR%;
     }

@@ -124,7 +124,7 @@ foam.CLASS({
     ^ .label{
       margin: 0;
     }
-    ^ .net-nanopay-ui-ActionView-cancel {
+    ^ .foam-u2-ActionView-cancel {
       margin-left: 457px;
       margin-top: 20px;
     }

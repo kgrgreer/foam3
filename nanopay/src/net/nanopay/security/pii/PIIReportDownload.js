@@ -33,7 +33,7 @@ foam.CLASS({
     width: 992px;
     margin: 0 auto;
   }
-  ^ .net-nanopay-ui-ActionView-downloadJSON {
+  ^ .foam-u2-ActionView-downloadJSON {
     width: 135px;
     height: 50px;
     border-radius: 2px;
@@ -49,7 +49,7 @@ foam.CLASS({
     font-weight: normal;
     box-shadow: none;
   }
-  ^ .net-nanopay-ui-ActionView-downloadJSON:hover {
+  ^ .foam-u2-ActionView-downloadJSON:hover {
     opacity: 0.9;
   }
   `,

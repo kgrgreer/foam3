@@ -72,7 +72,7 @@ foam.CLASS({
         ^ .white-blue-button{
           margin-top: 20px
         }
-        ^ .net-nanopay-ui-ActionView-expandInvoices{
+        ^ .foam-u2-ActionView-expandInvoices{
           width: 300px;
           height: 30px;
           position: absolute;
