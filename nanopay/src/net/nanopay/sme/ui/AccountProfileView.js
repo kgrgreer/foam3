@@ -95,28 +95,7 @@ foam.CLASS({
       name: 'dao_',
       documentation: `JunctionDAO indicating who the current user or agent can act as.`,
       expression: function(agent) {
-        return this.PromisedDAO.create({
-          promise: agent.entities.junctionDAO$proxy
-            .where(this.EQ(this.UserUserJunction.SOURCE_ID, agent.id))
-            .select()
-            .then((sink) => {
-              if ( sink == null ) throw new Error(`This shouldn't be null.`);
-              return this.businessDAO
-                .where(
-                  this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
-                )
-                .select()
-                .then((businessSink) => {
-                  if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
-                  return agent.entities.junctionDAO$proxy.where(
-                    this.AND(
-                      this.EQ(this.UserUserJunction.SOURCE_ID, agent.id),
-                      this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
-                    )
-                  );
-                });
-            })
-        });
+        return agent.entities.junctionDAO.where(this.EQ(this.UserUserJunction.SOURCE_ID, agent.id));
       }
     }
   ],
@@ -141,9 +120,9 @@ foam.CLASS({
                   .end()
                   .on('click', function() {
                     self.dao_
-                      .select()
+                      .select(self.COUNT())
                       .then((sink) => {
-                        if ( sink.array.length === 1 ) {
+                        if ( sink.value === 1 ) {
                           self.notify(self.ONE_BUSINESS_MSG, 'error');
                         } else {
                           self.pushMenu(menu.id);

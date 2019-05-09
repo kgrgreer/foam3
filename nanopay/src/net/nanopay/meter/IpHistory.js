@@ -9,7 +9,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'businessDAO',
+    'publicBusinessDAO',
     'userDAO'
   ],
 
@@ -69,7 +69,7 @@ foam.RELATIONSHIP({
     visibility: foam.u2.Visibility.RO,
     tableCellFormatter: function(value, obj) {
       if ( value !== undefined ) {
-        obj.businessDAO.find(value).then(function(business) {
+        obj.publicBusinessDAO.find(value).then(function(business) {
           this.add(business.organization);
         }.bind(this));
       }
