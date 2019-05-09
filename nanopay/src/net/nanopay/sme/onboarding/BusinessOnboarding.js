@@ -14,80 +14,80 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'gettingStarted',
+      name: 'gettingStartedSection',
       title: 'Before you get started',
       help: 'Welcome! I’m Joanne, and I’ll help you unlock the full power of Ablii.'
     },
     {
-      name: 'adminReference',
+      name: 'adminReferenceSection',
       title: 'Admin Reference Properties',
     },
     {
-      name: 'signingOfficerQuestion',
+      name: 'signingOfficerQuestionSection',
       title: 'Are you considered a sigining officer at your company?',
       help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at your company…'
     },
     {
-      name: 'personalInformation',
+      name: 'personalInformationSection',
       title: 'Personal Information',
       help: 'Thanks, now I’ll need a bit of personal information so I can verify your identity…'
     },
     {
-      name: 'homeAddress',
+      name: 'homeAddressSection',
       title: 'Enter you home address',
       help: 'Awesome! Next, I’ll need to know your current home address…'
     },
     {
-      name: 'signingOfficerEmailAddresses',
+      name: 'signingOfficerEmailSection',
       title: 'Enter a signing officers email',
       help: `For security, we require the approval of a signing officer before you can continue.
           I can email your signing officers directly for the approval. Only 1 is required, but you can add as many as you like…`
     },
     {
-      name: 'businessAddress',
+      name: 'businessAddressSection',
       title: 'Enter your business address',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`
     },
     {
-      name: 'businessDetails',
+      name: 'businessDetailsSection',
       title: 'Enter your business details',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`
     },
     {
-      name: 'transactionDetails',
+      name: 'transactionDetailsSection',
       title: 'Enter your transaction details',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`
     },
     {
-      name: 'ownershipYesOrNo',
+      name: 'ownershipYesOrNoSection',
       title: 'Does your company have anyone that owns 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document 
           the percentage of ownership of any individual with a 25% + stake in the company.`
     },
     {
-      name: 'ownershipAmount',
+      name: 'ownershipAmountSection',
       title: 'Does your company have anyone that owns 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document 
           the percentage of ownership of any individual with a 25% + stake in the company.`
     },
     {
-      name: 'personalOwnership',
+      name: 'personalOwnershipSection',
       title: 'Add the principle type and percentage of ownership details for yourself',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`
 
     },
     {
-      name: 'beneficialOwners',
+      name: 'beneficialOwnersSection',
       title: 'Add beneficial owners',
       help: `Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…`
     },
     {
-      name: 'agreement',
+      name: 'agreementSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!'
     },
     {
-      name: '2fa',
+      name: '2faSection',
       title: 'Protect your account against fraud with Two-factor authentication',
       help: `Alright, it looks like that is all of the information we need! Last thing I’ll ask 
           is that you enable two factor authentication. We want to make sure your account is safe!`
@@ -103,31 +103,31 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'businessId',
-      section: 'adminReference'
+      section: 'adminReferenceSection'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',
-      section: 'adminReference'
+      section: 'adminReferenceSection'
     },
     foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
-      section: 'signingOfficerQuestion'
+      section: 'signingOfficerQuestionSection'
     }),
     foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
-      section: 'personalInformation'
+      section: 'personalInformationSection'
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
-      section: 'personalInformation'
+      section: 'personalInformationSection'
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
-      section: 'personalInformation',
+      section: 'personalInformationSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
-      section: 'personalInformation',
+      section: 'personalInformationSection',
       view: {
         class: 'foam.u2.CheckBox',
         label: 'I am a politically exposed persons or head of an international organization (PEP/HIO)'
@@ -137,7 +137,7 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
-      section: 'personalInformation',
+      section: 'personalInformationSection',
       view: { 
         class: 'foam.u2.CheckBox',
         label: 'I am taking instructions from and/or conducting transactions on behalf of a 3rd party'
@@ -147,7 +147,7 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
-      section: 'homeAddress',
+      section: 'homeAddressSection',
       view: {
         class: 'net.nanopay.sme.ui.AddressView'
       },
@@ -159,16 +159,20 @@ foam.CLASS({
       class: 'StringArray',
       name: 'signingOfficerEmails',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
-      section: 'signingOfficerEmailAddresses',
+      section: 'signingOfficerEmailSection',
       view: {
         class: 'foam.u2.view.StringArrayRowView'
+      },
+      validateObj: function(signingOfficerEmails) {
+        console.log(signingOfficerEmails);
+        return 'Email address is invalid.'
       },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
       }
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
-      section: 'businessAddress',
+      section: 'businessAddressSection',
       view: {
         class: 'net.nanopay.sme.ui.AddressView',
         withoutCountrySelection: true
@@ -178,19 +182,19 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
-      section: 'businessDetails',
+      section: 'businessDetailsSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     foam.nanos.auth.User.BUSINESS_SECTOR_ID.clone().copyFrom({
-      section: 'businessDetails',
+      section: 'businessDetailsSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
-      section: 'businessDetails',
+      section: 'businessDetailsSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -198,40 +202,40 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'operatingUnderDifferentName',
-      section: 'businessDetails',
+      section: 'businessDetailsSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
-      section: 'businessDetails',
+      section: 'businessDetailsSection',
       visibilityExpression: function(signingOfficer, operatingUnderDifferentName) {
         return signingOfficer && operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_AMOUNT.clone().copyFrom({
-      section: 'transactionDetails',
+      section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.clone().copyFrom({
-      section: 'transactionDetails',
+      section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
-      section: 'transactionDetails',
+      section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.clone().copyFrom({
-      section: 'transactionDetails',
+      section: 'transactionDetailsSection',
       visibilityExpression: function(signingOfficer, transactionPurpose) {
         return signingOfficer & transactionPurpose == 'Other' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -240,7 +244,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'ownershipAbovePercent',
       label: 'Does anyone own above 25% of the company?',
-      section: 'ownershipYesOrNo',
+      section: 'ownershipYesOrNoSection',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -256,7 +260,7 @@ foam.CLASS({
       class: 'Long',
       name: 'amountOfOwners',
       label: 'Amount of individuals who own 25%',
-      section: 'ownershipAmount',
+      section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [ 1, 2, 3, 4, 5 ],
@@ -268,7 +272,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'userOwnsPercent',
-      section: 'ownershipAmount',
+      section: 'ownershipAmountSection',
       label: 'I am one of these owners',
       visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
         return signingOfficer && ownershipAbovePercent? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -277,14 +281,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'principalType',
-      section: 'personalOwnership',
+      section: 'personalOwnershipSection',
       documentation: 'Change to option dropdown',
       visibilityExpression: function(signingOfficer, userOwnsPercent) {
         return signingOfficer && userOwnsPercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
-      section: 'personalOwnership',
+      section: 'personalOwnershipSection',
       visibilityExpression: function(signingOfficer, userOwnsPercent) {
         return signingOfficer && userOwnsPercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -293,7 +297,7 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'beneficialOwners',
       of: 'foam.nanos.auth.User',
-      section: 'beneficialOwners',
+      section: 'beneficialOwnersSectionSection',
       visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
         return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -301,7 +305,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
-      section: 'agreement',
+      section: 'agreementSection',
       view: { 
         class: 'foam.u2.CheckBox',
         label: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.'
@@ -313,7 +317,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'TermsAgreement',
-      section: 'agreement',
+      section: 'agreementSection',
       view: { 
         class: 'foam.u2.CheckBox',
         label: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.'
