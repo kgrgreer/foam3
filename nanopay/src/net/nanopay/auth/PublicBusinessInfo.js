@@ -9,34 +9,12 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'Long',
-      name: 'id',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'String',
-      name: 'businessName',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'String',
-      name: 'organization',
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Address',
-      name: 'businessAddress',
-      view: { class: 'foam.nanos.auth.AddressDetailView' },
-      visibility: foam.u2.Visibility.RO
-    },
-    {
-      class: 'EMail',
-      name: 'email',
-      visibility: foam.u2.Visibility.RO
-    }
-  ],
+    net.nanopay.model.Business.ID,
+    net.nanopay.model.Business.BUSINESS_NAME,
+    net.nanopay.model.Business.ORGANIZATION,
+    net.nanopay.model.Business.BUSINESS_ADDRESS,
+    net.nanopay.model.Business.EMAIL
+  ].map((p) => p.clone().copyFrom({ visibility: foam.u2.Visibility.RO })),
 
   axioms: [
     {
