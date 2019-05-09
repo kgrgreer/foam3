@@ -199,7 +199,7 @@ function build_jar {
 }
 
 function package_tar {
-    gradle tarz
+    gradle --daemon tarz
 }
 
 function delete_runtime_journals {
