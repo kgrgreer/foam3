@@ -247,7 +247,6 @@ task tarz(type: Tar) {
     }
 
     destinationDir file("target/package")
-    extension 'tar'
     compression = Compression.GZIP
 }
 
