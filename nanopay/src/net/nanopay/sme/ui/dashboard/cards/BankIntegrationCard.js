@@ -14,6 +14,8 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'pushMenu',
+    'stack',
     'user'
   ],
 
@@ -76,7 +78,6 @@ foam.CLASS({
         if ( accounts.length > 0 ) {
           self.account = accounts[0];
         }
-
         self.isLoading = false;
       });
     },
@@ -103,7 +104,7 @@ foam.CLASS({
         return isLoading ? false : true;
       },
       code: function() {
-        alert('TODO');
+        this.pushMenu('sme.main.banking');
       }
     },
     {
@@ -113,7 +114,11 @@ foam.CLASS({
         return isLoading ? false : true;
       },
       code: function() {
-        alert('TODO');
+        this.stack.push({
+          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+          usdAvailable: true,
+          cadAvailable: true
+        });
       }
     }
   ]
