@@ -118,7 +118,7 @@ function deploy_journals {
             if [ -f "$JOURNAL_OUT/$journal_file" ]; then
                 cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
             fi
-        done < $JOURNAL
+        done < $JOURNALS
     fi
 }
 
