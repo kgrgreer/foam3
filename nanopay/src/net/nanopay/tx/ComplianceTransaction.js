@@ -6,7 +6,21 @@ foam.CLASS({
   documentation: `Transaction to be created specifically for compliance purposes. stays in pending until compliance is passed`,
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
+  ],
+
+  properties: [
+    {
+      name: 'status',
+      value: 'COMPLETED',
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+    },
+    {
+      name: 'initialStatus',
+      value: 'COMPLETED',
+      javaFactory: 'return TransactionStatus.COMPLETED;',
+    }
   ],
 
   methods: [

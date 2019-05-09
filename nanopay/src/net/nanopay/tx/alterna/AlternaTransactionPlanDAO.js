@@ -31,6 +31,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.ComplianceTransaction',
     'static foam.mlang.MLang.*',
     'foam.dao.DAO'
   ],
@@ -83,7 +84,13 @@ foam.CLASS({
       // TODO: use EFT calculation process
       t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       t.setIsQuoted(true);
-      quote.addPlan(t);
+
+      ComplianceTransaction ct = new ComplianceTransaction.Builder(x)
+      //.setRequestedTransaction(t)
+      .build();
+      ct.copyFrom(t); // We might want to change destination/source to not show this as a user transaction
+      ct.addNext(t);
+      quote.addPlan(ct);
     }
 
     return getDelegate().put_(x, quote);
