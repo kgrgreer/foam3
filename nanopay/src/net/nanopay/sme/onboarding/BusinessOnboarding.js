@@ -14,52 +14,83 @@ foam.CLASS({
 
   sections: [
     {
+      name: 'gettingStarted',
+      title: 'Before you get started',
+      help: 'Welcome! I’m Joanne, and I’ll help you unlock the full power of Ablii.'
+    },
+    {
       name: 'adminReference',
-      title: 'Admin Reference Properties'
+      title: 'Admin Reference Properties',
     },
     {
       name: 'signingOfficerQuestion',
-      title: 'Are you considered a sigining officer at your company?'
+      title: 'Are you considered a sigining officer at your company?',
+      help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at your company…'
     },
     {
       name: 'personalInformation',
-      title: 'Personal Information'
+      title: 'Personal Information',
+      help: 'Thanks, now I’ll need a bit of personal information so I can verify your identity…'
     },
     {
       name: 'homeAddress',
-      title: 'Enter you home address'
+      title: 'Enter you home address',
+      help: 'Awesome! Next, I’ll need to know your current home address…'
     },
     {
       name: 'signingOfficerEmailAddresses',
-      title: 'Enter a signing officers email'
+      title: 'Enter a signing officers email',
+      help: `For security, we require the approval of a signing officer before you can continue.
+          I can email your signing officers directly for the approval. Only 1 is required, but you can add as many as you like…`
     },
     {
       name: 'businessAddress',
-      title: 'Enter your business address'
+      title: 'Enter your business address',
+      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`
     },
     {
       name: 'businessDetails',
-      title: 'Enter your business details'
+      title: 'Enter your business details',
+      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`
     },
     {
       name: 'transactionDetails',
-      title: 'Enter your transaction details'
+      title: 'Enter your transaction details',
+      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`
     },
     {
       name: 'ownershipYesOrNo',
-      title: 'Does your company have anyone that owns 25% or more of the business?'
+      title: 'Does your company have anyone that owns 25% or more of the business?',
+      help: `Great, almost done! In accordance with banking laws, we need to document 
+          the percentage of ownership of any individual with a 25% + stake in the company.`
     },
     {
       name: 'ownershipAmount',
-      title: 'Does your company have anyone that owns 25% or more of the business?'
+      title: 'Does your company have anyone that owns 25% or more of the business?',
+      help: `Great, almost done! In accordance with banking laws, we need to document 
+          the percentage of ownership of any individual with a 25% + stake in the company.`
     },
     {
       name: 'personalOwnership',
-      title: 'Add the principle type and percentage of ownership details for yourself'
+      title: 'Add the principle type and percentage of ownership details for yourself',
+      help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`
+
     },
     {
       name: 'beneficialOwners',
-      title: 'Add beneficial owners'
+      title: 'Add beneficial owners',
+      help: `Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…`
+    },
+    {
+      name: 'agreement',
+      title: 'Review the list of owners',
+      help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!'
+    },
+    {
+      name: '2fa',
+      title: 'Protect your account against fraud with Two-factor authentication',
+      help: `Alright, it looks like that is all of the information we need! Last thing I’ll ask 
+          is that you enable two factor authentication. We want to make sure your account is safe!`
     }
   ],
 
@@ -270,7 +301,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
-      section: 'beneficialOwners',
+      section: 'agreement',
       view: { 
         class: 'foam.u2.CheckBox',
         label: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.'
@@ -282,7 +313,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'TermsAgreement',
-      section: 'beneficialOwners',
+      section: 'agreement',
       view: { 
         class: 'foam.u2.CheckBox',
         label: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.'
