@@ -199,14 +199,7 @@ function build_jar {
 }
 
 function package_tar {
-    NAME=$(ls target/lib/nanopay-*.jar | awk '{print $1}' | sed 's/target\/lib\///;s/\.jar//')
-    echo NAME=$NAME
-    PACKAGE_DIR="target/package/opt/${NAME}"
-    rm -rf "target/package"
-    mkdir -p "${PACKAGE_DIR}"
-    cp -r "target/lib" "${PACKAGE_DIR}/"
-    cp -r "deploy/bin" "${PACKAGE_DIR}/"
-    tar -czf "target/package/${NAME}.tgz" -C target/package/opt "${NAME}"
+    gradle --daemon tarz
 }
 
 function delete_runtime_journals {
@@ -461,7 +454,8 @@ function usage {
     echo "  -h : Print usage information."
     echo "  -i : Install npm and git hooks"
     echo "  -j : Delete runtime journals, build, and run app as usual."
-    echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"    echo "  -k : Package up a deployment tarball."
+    echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
+    echo "  -k : Package up a deployment tarball."
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."

@@ -235,6 +235,21 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
+task tarz(type: Tar) {
+    def tarName = "${project.name}-${project.version}"
+    archiveName = "${tarName}.tgz"
+
+    into("${tarName}/bin/") {
+        from "deploy/bin"
+    }
+    into("${tarName}/lib/") {
+        from "target/lib"
+    }
+
+    destinationDir file("target/package")
+    compression = Compression.GZIP
+}
+
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
