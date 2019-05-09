@@ -133,12 +133,13 @@ foam.CLASS({
         HttpResponse httpResponse = null;
 
         try {
-          Outputter outputter =
+          Outputter jsonOutputter =
             new Outputter(OutputterMode.NETWORK).setOutputClassNames(false);
-          String basicAuth = request.getAuthKey() + ":";
-          StringEntity entity = new StringEntity(outputter.stringify(request));
+          String requestJson = jsonOutputter.stringify(request);
+          StringEntity entity = new StringEntity(requestJson);
           entity.setContentType("application/json");
 
+          String basicAuth = request.getAuthKey() + ":";
           httpPost.addHeader("Content-type", "application/json");
           httpPost.addHeader("Authorization", "Basic " +
             Base64.getEncoder().encodeToString(basicAuth.getBytes()));
@@ -153,6 +154,7 @@ foam.CLASS({
           jsonParser.setX(x);
           SecurefactResponse response = (SecurefactResponse)
             jsonParser.parseString(responseJson, responseClass);
+          response.setRequestJson(requestJson);
           response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
           return response;
         } catch(Exception e) {
