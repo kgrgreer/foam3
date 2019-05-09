@@ -28,6 +28,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
+        // add date of birth and country to person request
         User user = (User) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {

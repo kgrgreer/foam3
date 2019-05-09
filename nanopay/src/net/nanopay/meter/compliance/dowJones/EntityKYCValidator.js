@@ -19,6 +19,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'net.nanopay.model.Business',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.dowJones.DowJonesService',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse'
@@ -28,10 +29,11 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        User user = (User) obj;
+        // add date of birth and counrty to entity request
+        Business business = (Business) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          DowJonesResponse response = dowJonesService.entityNameSearch(x, user.getOrganization(), null);
+          DowJonesResponse response = dowJonesService.entityNameSearch(x, business.getOrganization(), null);
           ruler.putResult(
             response.getTotalMatches().equals("0")
               ? ComplianceValidationStatus.VALIDATED

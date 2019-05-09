@@ -10,11 +10,12 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
-    'foam.nanos.ruler.Rule',
-    'foam.nanos.ruler.RuleHistory',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'net.nanopay.meter.compliance.ComplianceService',
+    'foam.nanos.ruler.RuleHistory',
+    'foam.nanos.ruler.Rule',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'static foam.mlang.MLang.*'
   ],
 
@@ -23,15 +24,23 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         User user = (User) obj;
-        // check rule history dao, go through history and set users compliance validation based on results
         DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
-
+        
+        // Make proper query to check all rule history status associated to the user
         ArraySink sink = (ArraySink) ruleHistoryDAO.where(
           AND(
-            EQ(Rule.DAO_KEY, "localUserDAO"),
-            EQ(RuleHistory.OBJECT_ID, user.getId())
+            EQ(RuleHistory.OBJECT_ID, user.getId()),
+            EQ(Rule.DAO_KEY, "localUserDAO")
           )
         ).select(GROUP_BY(RuleHistory.RULE_ID, new ArraySink()));
+
+        for ( int i = 0; i < sink.getArray().size(); i++ ) {
+          if ( sink.getArray().get(i).getResult() != null ) {
+            if ( sink.getArray().get(i).getResult() == ComplianceValidationStatus.VALIDATED ) {
+              user.setCompliance(ComplianceStatus.PASSED);
+            }
+          }
+        }
       `
     },
     {
