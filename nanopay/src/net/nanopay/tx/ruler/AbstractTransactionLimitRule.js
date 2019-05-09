@@ -42,7 +42,7 @@ foam.CLASS({
       name: 'send',
       value: true,
       documentation: 'Transaction operation, ' +
-      'determines whether limit is set for sending money or reciving money.'
+      'determines whether limit is set for sending money or receiving money.'
     },
     {
       class: 'foam.core.Enum',
@@ -61,7 +61,7 @@ foam.CLASS({
     },
     {
       name: 'daoKey',
-      value: 'transactionDAO'
+      value: 'localTransactionDAO'
     },
     {
       name: 'action',
@@ -72,7 +72,7 @@ foam.CLASS({
     {
       name: 'predicate',
       javaFactory: `
-      return foam.mlang.MLang.EQ(DOT(NEW_OBJ, net.nanopay.tx.model.Transaction.IS_QUOTED), false);
+      return EQ(DOT(NEW_OBJ, Transaction.IS_QUOTED), false);
       `
     }
   ],
