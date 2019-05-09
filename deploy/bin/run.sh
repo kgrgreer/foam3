@@ -37,7 +37,7 @@ JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
 
 if [ "${INSTALL}" -eq 1 ]; then
     if [ ! -d "${NANOPAY_HOME}" ]; then
-        mkdir "${NANOPAY_HOME}"
+        mkdir -p "${NANOPAY_HOME}"
     fi
     cp -r "bin" "${NANOPAY_HOME}"
     cp -r "lib" "${NANOPAY_HOME}"
