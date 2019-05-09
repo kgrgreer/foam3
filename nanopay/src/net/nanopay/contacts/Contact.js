@@ -17,8 +17,11 @@ foam.CLASS({
   javaImports: [
     'foam.core.PropertyInfo',
     'foam.dao.DAO',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.Country',
+    'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.Iterator',
@@ -26,7 +29,9 @@ foam.CLASS({
     'java.util.regex.Pattern',
     'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
+    'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.model.Business',
   ],
@@ -43,7 +48,8 @@ foam.CLASS({
     'organization',
     'legalName',
     'email',
-    'signUpStatus'
+    'signUpStatus',
+    'deleted'
   ],
 
   properties: [
@@ -196,10 +202,91 @@ foam.CLASS({
           } else if ( ! isValidEmail ) {
             throw new IllegalStateException("Invalid email address.");
           }
-        }
 
+          if ( SafetyUtil.isEmpty(this.getOrganization()) ) {
+            throw new IllegalStateException("Business name is required.");
+          }
+
+          if ( this.getBankAccount() != 0 ) {
+            BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
+            
+            if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
+
+            if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
+              throw new RuntimeException("Financial institution name required.");
+            }
+
+            Address businessAddress = this.getBusinessAddress();
+            DAO countryDAO = (DAO) x.get("countryDAO");
+            DAO regionDAO = (DAO) x.get("regionDAO");
+
+            Country country = (Country) countryDAO.find(businessAddress.getCountryId());
+            if ( country == null ) {
+              throw new RuntimeException("Invalid country id.");
+            }
+
+            Region region = (Region) regionDAO.find(businessAddress.getRegionId());
+            if ( region == null ) {
+              throw new RuntimeException("Invalid region id.");
+            }
+
+            Pattern streetNumber = Pattern.compile("^[0-9]{1,16}$");
+            if ( ! streetNumber.matcher(businessAddress.getStreetNumber()).matches() ) {
+              throw new RuntimeException("Invalid street number.");
+            }
+
+            if ( SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
+              throw new RuntimeException("Invalid street name.");
+            } else if ( businessAddress.getStreetName().length() > 100 ) {
+              throw new RuntimeException("Street name cannot exceed 100 characters");
+            }
+            else {
+              businessAddress.setStreetName(businessAddress.getStreetName().trim());
+            }
+
+            if ( SafetyUtil.isEmpty(businessAddress.getCity()) ) {
+              throw new RuntimeException("Invalid city name.");
+            } else if ( businessAddress.getCity().length() > 100 ) {
+              throw new RuntimeException("City cannot exceed 100 characters");
+            } else {
+              businessAddress.setCity(businessAddress.getCity().trim());
+            }
+
+            if ( ! this.validatePostalCode(businessAddress.getPostalCode(), businessAddress.getCountryId()) ) {
+              String codeType = businessAddress.getCountryId().equals("US") ? "zip code" : "postal code";
+              throw new RuntimeException("Invalid " + codeType + ".");
+            }
+          }
+        }
         if ( SafetyUtil.isEmpty(this.getOrganization()) ) {
           throw new IllegalStateException("Organization is required.");
+        }
+      `
+    },
+    {
+      type: 'Boolean',
+      name: 'validatePostalCode',
+      args: [
+        {
+          class: 'String',
+          name: 'code'
+        },
+        {
+          class: 'String',
+          name: 'countryId'
+        }
+      ],
+      javaCode: `
+        Pattern caPosCode = Pattern.compile("^[ABCEGHJ-NPRSTVXY]\\\\d[ABCEGHJ-NPRSTV-Z][ -]?\\\\d[ABCEGHJ-NPRSTV-Z]\\\\d$");
+        Pattern usPosCode = Pattern.compile("^\\\\d{5}(?:[-\\\\s]\\\\d{4})?$");
+
+        switch ( countryId ) {
+          case "CA":
+            return caPosCode.matcher(code).matches();
+          case "US":
+            return usPosCode.matcher(code).matches();
+          default:
+            return false;
         }
       `
     },

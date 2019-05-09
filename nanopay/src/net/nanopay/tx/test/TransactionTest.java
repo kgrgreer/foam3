@@ -154,7 +154,7 @@ public class TransactionTest
 
     test(tq.getPlan().getClass()==FXTransaction.class,"Transaction is of type FXTransaction");
     test(tq.getPlan().getStatus()== COMPLETED,"FXTransaction is in completed status");
-    test(tq.getPlan().getNext()==null,"FXTransaction is not chained");
+    test(tq.getPlan().getNext()==null || tq.getPlan().getNext().length == 0 ,"FXTransaction is not chained");
   }
 
   public void testVerificationTransaction(){
@@ -202,9 +202,9 @@ public class TransactionTest
     tq = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO") ).put_(x_,tq).fclone();
     Transaction txn1 = tq.getPlan();
     test(txn1.getClass() == AbliiTransaction.class, "Parent transaction is of type AbliiTransaction");
-    Transaction txn2 = txn1.getNext();
+    Transaction txn2 = txn1.getNext()[0];
     test(txn2.getClass() == AlternaCITransaction.class, " 1st child is of type "+txn2.getClass().getName()+" should be AlternaCITransaction");
-    Transaction txn3 = txn2.getNext();
+    Transaction txn3 = txn2.getNext()[0];
     test(txn3.getClass() == AlternaCOTransaction.class, " 2nd child is of type "+txn2.getClass().getName()+" should be AlternaCOTransaction");
 
     test(txn2.getAmount()== txn3.getAmount(), "CI and CO transactions have same amount");

@@ -79,7 +79,7 @@ foam.CLASS({
       top: -30px;
       position: relative;
     }
-    ^ .net-nanopay-ui-ActionView{
+    ^ .foam-u2-ActionView{
       width: 540px;
       height: 40px;
       background-color: #59a5d5;

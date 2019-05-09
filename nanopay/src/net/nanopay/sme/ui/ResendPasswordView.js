@@ -127,13 +127,13 @@ foam.CLASS({
         background-color: #604aff;
       }
 
-      ^ .net-nanopay-ui-ActionView-resendEmail {
+      ^ .foam-u2-ActionView-resendEmail {
         display: inline-block;
         background: none;
         margin-left: 5px;
       }
 
-      ^ .net-nanopay-ui-ActionView-resendEmail:hover {
+      ^ .foam-u2-ActionView-resendEmail:hover {
         background: none;
         width: auto;
         height: auto;

@@ -36,13 +36,13 @@ foam.CLASS({
       align-items: center;
       justify-content: flex-end;
     }
-    ^ .net-nanopay-ui-ActionView-cancel {
+    ^ .foam-u2-ActionView-cancel {
       background: none;
       color: #525455;
       border: none;
       box-shadow: none;
     }
-    ^ .net-nanopay-ui-ActionView-cancel:hover {
+    ^ .foam-u2-ActionView-cancel:hover {
       background: none;
       color: #525455;
       border: none;

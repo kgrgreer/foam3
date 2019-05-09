@@ -16,7 +16,7 @@ foam.CLASS({
     width: 992px;
     margin: 0 auto;
   }
-  ^ .net-nanopay-ui-ActionView-downloadCsv {
+  ^ .foam-u2-ActionView-downloadCsv {
     width: 135px;
     height: 50px;
     border-radius: 2px;
@@ -32,7 +32,7 @@ foam.CLASS({
     font-weight: normal;
     box-shadow: none;
   }
-  ^ .net-nanopay-ui-ActionView-downloadCsv:hover {
+  ^ .foam-u2-ActionView-downloadCsv:hover {
     opacity: 0.9;
   }
   `,

@@ -67,7 +67,7 @@ foam.CLASS({
       height: 117px;
     }
     
-    ^ .container .net-nanopay-ui-ActionView {
+    ^ .container .foam-u2-ActionView {
       width: 96px;
       height: 36px;
       font-size: 14px;
