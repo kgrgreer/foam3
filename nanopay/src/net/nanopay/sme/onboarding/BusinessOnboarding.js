@@ -30,7 +30,7 @@ foam.CLASS({
       title: 'Enter you home address'
     },
     {
-      name: 'signingOfficerEmails',
+      name: 'signingOfficerEmailAddresses',
       title: 'Enter a signing officers email'
     },
     {
@@ -125,11 +125,13 @@ foam.CLASS({
       }
     }),
     {
-      class: 'FObjectArray',
-      of: 'net.nanopay.model.EmailAddress',
+      class: 'StringArray',
       name: 'signingOfficerEmails',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
-      section: 'signingOfficerEmails',
+      section: 'signingOfficerEmailAddresses',
+      view: {
+        class: 'foam.u2.view.StringArrayRowView'
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
       }
