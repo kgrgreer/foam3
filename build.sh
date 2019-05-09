@@ -112,12 +112,14 @@ function deploy_journals {
         quit 1
     fi
 
-    while read file; do
-        journal_file="$file".0
-        if [ -f "$JOURNAL_OUT/$journal_file" ]; then
-            cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
-        fi
-    done < $JOURNALS
+    if [ "$RUN_JAR" -eq 0 ]; then
+        while read file; do
+            journal_file="$file".0
+            if [ -f "$JOURNAL_OUT/$journal_file" ]; then
+                cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
+            fi
+        done < $JOURNAL
+    fi
 }
 
 function migrate_journals {
@@ -285,7 +287,6 @@ function start_nanos {
         fi
 
         if [ -z "$MODE" ]; then
-            #          JAVA_OPTS="-Dresource.journals.dir=opt/nanopay/journals ${JAVA_OPTS}"
             # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
             # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
             # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
@@ -294,7 +295,6 @@ function start_nanos {
 
         CLASSPATH=$(JARS=("target/lib"/*.jar); IFS=:; echo "${JARS[*]}")
         CLASSPATH="build/classes/java/main:$CLASSPATH"
-        #echo CLASSPATH=$CLASSPATH
 
         MESSAGE="Starting nanos ${INSTANCE}"
         if [ "$TEST" -eq 1 ]; then
