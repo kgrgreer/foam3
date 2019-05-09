@@ -77,7 +77,7 @@ foam.CLASS({
           .start().addClass('caption').addClass('explanation-container')
             .add(this.TWO_FACTOR_EXPLANATION)
           .end()
-          .start()
+          .start('form')
             .addClass('tfa-container')
             .start('label')
               .add(this.TWO_FACTOR_LABEL)
