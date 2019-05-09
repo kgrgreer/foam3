@@ -206,8 +206,6 @@ function package_tar {
     mkdir -p "${PACKAGE_DIR}"
     cp -r "target/lib" "${PACKAGE_DIR}/"
     cp -r "deploy/bin" "${PACKAGE_DIR}/"
-    mkdir -p "${PACKAGE_DIR}/journals"
-    cp -r "${JOURNAL_HOME}"/*.0 "${PACKAGE_DIR}/journals/"
     tar -czf "target/package/${NAME}.tgz" -C target/package/opt "${NAME}"
 }
 
