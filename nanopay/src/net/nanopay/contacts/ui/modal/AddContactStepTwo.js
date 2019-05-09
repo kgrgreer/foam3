@@ -118,7 +118,9 @@ foam.CLASS({
     { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
     { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
     { name: 'BRANCH_NOT_FOUND', message: `Could not find contact's bank account branch.` },
-    { name: 'STEP_INDICATOR', message: 'Step 2 of 3' }
+    { name: 'STEP_INDICATOR', message: 'Step 2 of 3' },
+    { name: 'CA_ACCOUNT_NAME_PLACEHOLDER', message: 'ex. TD Bank, Bank of Montreal' },
+    { name: 'US_ACCOUNT_NAME_PLACEHOLDER', message: 'ex. Bank of America, Wells Fargo' }
   ],
 
   properties: [
@@ -297,7 +299,9 @@ foam.CLASS({
                     .addClass('field-label')
                     .add(self.NAME_LABEL)
                   .end()
-                  .tag(self.caAccount.NAME)
+                  .start(self.caAccount.NAME)
+                    .setAttribute('placeholder', this.CA_ACCOUNT_NAME_PLACEHOLDER)
+                  .end()
                 .end()
                 .tag(self.caAccount.ADDRESS.clone().copyFrom({
                   view: {
@@ -334,7 +338,9 @@ foam.CLASS({
                   .start().addClass('field-label')
                     .add(self.NAME_LABEL)
                   .end()
-                  .tag(self.usAccount.NAME)
+                  .start(self.usAccount.NAME)
+                    .setAttribute('placeholder', this.US_ACCOUNT_NAME_PLACEHOLDER)
+                  .end()
                 .end()
                 .tag(self.usAccount.ADDRESS.clone().copyFrom({
                   view: {
@@ -362,6 +368,11 @@ foam.CLASS({
     },
 
     function validateBank(bankAccount, countryId) {
+      if ( ! bankAccount.name ) {
+        this.ctrl.notify('Financial institution name is required', 'error');
+        return;
+      }
+
       if ( bankAccount.errors_ ) {
         this.ctrl.notify(bankAccount.errors_[0][1], 'error');
         return;

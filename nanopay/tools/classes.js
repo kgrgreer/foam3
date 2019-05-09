@@ -16,6 +16,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.RetailTransactionPlanDAO',
+  'net.nanopay.tx.CompositeTransaction',
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.COTransaction',
   'net.nanopay.tx.alterna.AlternaFormat',
@@ -136,6 +137,10 @@ var classes = [
 
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+  'net.nanopay.sme.onboarding.BusinessOnboarding',
+  'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
+  'net.nanopay.sme.onboarding.ReceiveOnlyOnboarding',
+  'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 
@@ -152,6 +157,7 @@ var classes = [
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
+  'net.nanopay.invoice.InvoiceNotificationDAO',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
@@ -341,6 +347,8 @@ var classes = [
   'net.nanopay.auth.LoginAttempt',
   'net.nanopay.auth.NanopayUserAndGroupAuthService',
   'net.nanopay.auth.NanopayResetPasswordTokenService',
+  'net.nanopay.auth.PublicBusinessInfo',
+  'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
 
@@ -452,6 +460,7 @@ var classes = [
   'net.nanopay.meter.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
+  'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   'net.nanopay.meter.compliance.ComplianceAuthService',
   'net.nanopay.meter.compliance.ComplianceAware',
   'net.nanopay.meter.compliance.ComplianceValidationStatus',

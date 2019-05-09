@@ -111,18 +111,18 @@ foam.CLASS({
       padding: 12px;
       width: 504px;
     }
-    ^ .net-nanopay-ui-ActionView-currencyChoice {
+    ^ .foam-u2-ActionView-currencyChoice {
       margin-left: 0px !important;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice img {
       width: 20px;
     }
-    ^ .net-nanopay-ui-ActionView-CurrencyChoice > span {
+    ^ .foam-u2-ActionView-CurrencyChoice > span {
       font-size: 10px !important;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice-carrot {
       position: relative;
-      right: 12px;
+      right: 0;
       top: -4px;
     }
     ^ .foam-u2-view-RichChoiceView-container {

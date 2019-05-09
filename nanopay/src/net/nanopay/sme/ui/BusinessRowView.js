@@ -7,13 +7,9 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  documentation: `
-     A single row in a list of businesses.
-     It needs to pass in the businessId as data
-  `,
+  documentation: 'A single row in a list of businesses.',
 
   imports: [
-    'businessDAO',
     'contactDAO',
     'user'
   ],
@@ -87,13 +83,9 @@ foam.CLASS({
     properties: [
       {
         class: 'FObjectProperty',
+        of: 'net.nanopay.model.Business',
         name: 'data',
         documentation: 'Set this to the business you want to display in this row.'
-      },
-      {
-        class: 'FObjectProperty',
-        of: 'net.nanopay.model.Business',
-        name: 'business'
       },
       {
         type: 'Boolean',
@@ -104,21 +96,11 @@ foam.CLASS({
 
     methods: [
       function init() {
-        this.businessDAO
-          .find(this.data.id).then((business) => {
-            this.business = business;
-
-            this.contactDAO
-              .where(
-                this.EQ(this.Contact.BUSINESS_ID, business.id)
-              )
-              .select().then((contact) => {
-                if ( contact.array.length !== 0 ) {
-                  this.isConnected = true;
-                } else {
-                  this.isConnected = false;
-                }
-            });
+        this.contactDAO
+          .where(this.EQ(this.Contact.BUSINESS_ID, this.data.id))
+          .select(this.COUNT())
+          .then((countSink) => {
+            this.isConnected = countSink.value !== 0;
           });
       },
 
@@ -126,23 +108,20 @@ foam.CLASS({
         this.start()
           .addClass(this.myClass())
           .addClass(this.myClass('row'))
-          .enableClass(this.myClass('on-hover'),
-            this.slot(function(isConnected) {
-              return ! isConnected;
-          }))
+          .enableClass(this.myClass('on-hover'), this.isConnected$, true)
           .start()
             .start()
               .addClass(this.myClass('business-name'))
-              .add(this.slot(function(business) {
-                return business ? business.organization : '';
+              .add(this.slot(function(data) {
+                return data ? data.organization : '';
               }))
             .end()
             .start()
               .addClass(this.myClass('business-location'))
-              .add(this.slot(function(business) {
-                if ( business ) {
-                  var city = business.businessAddress.city;
-                  var region = business.businessAddress.regionId;
+              .add(this.slot(function(data) {
+                if ( data ) {
+                  var city = data.businessAddress.city;
+                  var region = data.businessAddress.regionId;
                   if ( city && region ) {
                     return `${city}, ${region}`;
                   } else if ( region ) {

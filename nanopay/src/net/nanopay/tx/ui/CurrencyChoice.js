@@ -35,7 +35,7 @@ foam.CLASS({
       margin-top: 8px;
       margin-left: 7px;
     }
-    ^ .net-nanopay-ui-ActionView-currencyChoice{
+    ^ .foam-u2-ActionView-currencyChoice{
       background: none;
       width: max-content;
       cursor: pointer;
@@ -45,7 +45,7 @@ foam.CLASS({
     ^ .foam-nanos-u2-navigation-TopNavigation-CurrencyChoiceView {
       align-items: center;
     }
-    ^ .net-nanopay-ui-ActionView-currencyChoice > span{
+    ^ .foam-u2-ActionView-currencyChoice > span{
       font-family: Roboto;
       font-size: 12px;
       position: relative;
@@ -90,7 +90,7 @@ foam.CLASS({
     ^ .popUpDropDown > div {
       display: flex;
     }
-    ^ .net-nanopay-ui-ActionView-currencyChoice img{
+    ^ .foam-u2-ActionView-currencyChoice img{
       width: 27px;
       position: relative;
       top: 2px;

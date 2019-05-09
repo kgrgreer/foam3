@@ -39,11 +39,11 @@ foam.CLASS({
   ^ .net-nanopay-ui-modal-ModalHeader {
     width: 100%;
   }
-  ^ .net-nanopay-ui-ActionView-printButton {
+  ^ .foam-u2-ActionView-printButton {
     float: left;
     margin: 15px 5px 15px 25px;
   }
-  ^ .net-nanopay-ui-ActionView-EmailButton {
+  ^ .foam-u2-ActionView-EmailButton {
     float: right;
     margin: 15px 25px 15px 5px;
   }

@@ -48,7 +48,11 @@ foam.RELATIONSHIP({
       this.__subSubContext__.institutionDAO.find(value)
         .then( function( institution ) {
           if ( institution ) {
-            self.add(institution.institutionNumber);
+            if ( institution.institutionNumber !== "" ) {
+              self.add(institution.institutionNumber);
+            }  else {
+              self.add(institution.name);
+            }
           }
         }).catch( function( error ) {
           self.add('N/A');
@@ -143,13 +147,14 @@ foam.RELATIONSHIP({
       });
     },
     tableCellFormatter: function(value, obj, axiom) {
-      var self = this;
-      this.__subSubContext__.userDAO.find(value)
-      .then( function( user ) {
-        self.add(user.firstName);
-      }).catch(function(error) {
-        self.add(value);
-      });
+      this.__subSubContext__.userDAO
+        .find(value)
+        .then((user) => {
+          this.add('[', user.cls_.name, '] ', user.label());
+        })
+        .catch((error) => {
+          this.add(value);
+        });
     }
   }
 });
@@ -360,15 +365,19 @@ foam.CLASS({
           throw new AuthenticationException();
         }
 
-        // Check agent or user to authorize the request as.
-        User authorizedUser = agent != null ? agent : user;
+        // Let users read junctions where they're the source or target user.
+        boolean isSourceOrTarget =
+          SafetyUtil.equals(this.getSourceId(), user.getId()) ||
+          SafetyUtil.equals(this.getTargetId(), user.getId()) ||
+          (
+            agent != null &&
+            (
+              SafetyUtil.equals(this.getSourceId(), agent.getId()) ||
+              SafetyUtil.equals(this.getTargetId(), agent.getId())
+            )
+          );
 
-        // Check junction object relation to authorized user.
-        boolean authorized =
-            ( SafetyUtil.equals(this.getTargetId(), authorizedUser.getId()) ||
-            SafetyUtil.equals(this.getSourceId(), authorizedUser.getId()) );
-
-        if ( ! ( authorized || auth.check(x, (String) buildPermissionString(x, this, "read")) )){
+        if ( ! ( isSourceOrTarget || auth.check(x, (String) buildPermissionString(x, this, "read")) )){
           throw new AuthorizationException("Unable to retrieve junction due to permission restrictions.");
         }
       `
@@ -439,8 +448,8 @@ foam.CLASS({
       ],
       type: 'String',
       javaCode: `
-        DAO businessDAO = (DAO) x.get("businessDAO");
-        Business targetUser = (Business) businessDAO.inX(x).find(junctionObj.getTargetId());
+        DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+        Business targetUser = (Business) localBusinessDAO.inX(x).find(junctionObj.getTargetId());
 
         // Permission string to check authorization.
         String permissionString = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
@@ -584,4 +593,26 @@ foam.RELATIONSHIP({
   forwardName: 'beneficialOwners',
   inverseName: 'business',
   targetDAOKey: 'beneficialOwnerDAO'
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'debits',
+  inverseName: 'sourceAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  targetDAOKey: 'transactionDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'credits',
+  inverseName: 'destinationAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  targetDAOKey: 'transactionDAO',
+  targetProperty: { visibility: 'RO' }
 });

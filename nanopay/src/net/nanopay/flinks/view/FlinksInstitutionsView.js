@@ -170,7 +170,7 @@ foam.CLASS({
           .add(this.slot(function(filterFor) {
             if ( self.filteredInstitutions.length > 0 ) {
               return this.E().forEach(self.filteredInstitutions, function(institution, index) {
-                this.start().addClass(self.myClass('institution-card')).addClass(self.myClass('institution-spacer'))
+                this.start().attrs({ name: institution.name }).addClass(self.myClass('institution-card')).addClass(self.myClass('institution-spacer'))
                   .start().addClass(self.myClass('institution-image-helper')).end()
                   .start({ class: 'foam.u2.tag.Image', data: institution.image }).addClass(self.myClass('institution-image')).end()
                   .on('click', function() {

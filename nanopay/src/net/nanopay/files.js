@@ -4,6 +4,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
+  { name: 'net/nanopay/tx/CompositeTransaction' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
@@ -575,6 +576,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
 
+  // sme dashboard cards
+  { name: 'net/nanopay/sme/ui/dashboard/cards/UnlockPaymentsCard', flags: ['web'] },
+
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
 
@@ -642,7 +646,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/TransferFrom', flags: ['web'] },
   { name: 'net/nanopay/ui/TransferTo', flags: ['web'] },
   { name: 'net/nanopay/ui/CCTransferView', flags: ['web'] },
-  { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
@@ -682,7 +685,10 @@ FOAM_FILES([
 
   // sme
   { name: 'net/nanopay/model/Business' },
+  { name: 'net/nanopay/auth/PublicBusinessInfo' },
+  { name: 'net/nanopay/auth/BusinessToPublicBusinessInfoDAO' },
   { name: 'net/nanopay/model/BeneficialOwner' },
+  { name: 'net/nanopay/sme/ui/AbliiActionView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/ActionObject' },
   { name: 'net/nanopay/sme/ui/dashboard/Dashboard', flags: ['web'] },
@@ -727,6 +733,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/VerifyEmailView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/TopBarBackToAblii', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ToastNotification', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
@@ -775,6 +783,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
+  { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
+  { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
@@ -825,10 +835,13 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
+  { name: 'net/nanopay/meter/BusinessDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/ContactDetailView', flags: ['web'] },
-  { name: 'net/nanopay/meter/BusinessDetailView' },
   { name: 'net/nanopay/meter/UserDetailView', flags: ['web'] },
-  { name: 'net/nanopay/meter/InvoiceDetailView' },
+  { name: 'net/nanopay/meter/InvoiceDetailView', flags: ['web'] },
+  { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
+  { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
+  { name: 'net/nanopay/meter/compliance/AbstractComplianceRuleAction' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },

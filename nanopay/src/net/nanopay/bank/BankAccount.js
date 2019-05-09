@@ -61,6 +61,7 @@ foam.CLASS({
         return /^\d*$/.test(n) ? n : o;
       },
       tableCellFormatter: function(str) {
+        if ( ! str ) return;
         this.start()
           .add('***' + str.substring(str.length - 4, str.length));
       },
