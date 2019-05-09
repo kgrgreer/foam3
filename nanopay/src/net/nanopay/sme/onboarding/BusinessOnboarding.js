@@ -1,6 +1,7 @@
 foam.CLASS({
-  package: 'net.nanopay.sme.onboarding.model',
+  package: 'net.nanopay.sme.onboarding',
   name: 'BusinessOnboarding',
+  ids: ['name'],
 
   documentation: `Multifunctional model used for business onboarding`,
 
@@ -63,6 +64,10 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'String',
+      name: 'name'
+    },
     {
       class: 'Reference',
       of: 'net.nanopay.model.Business',

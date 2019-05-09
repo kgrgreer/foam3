@@ -48,7 +48,7 @@ foam.CLASS({
       right: 20;
       bottom: 17;
     }
-    ^ .net-nanopay-ui-ActionView-backToHome {
+    ^ .foam-u2-ActionView-backToHome {
       color: white;
       background: %SECONDARYCOLOR%;
       margin-top: 20px;
@@ -74,7 +74,7 @@ foam.CLASS({
       height: 30px;
       padding-top: 10px;
     }
-    ^ .net-nanopay-ui-ActionView-remove {
+    ^ .foam-u2-ActionView-remove {
        display: none;
     }
   `,

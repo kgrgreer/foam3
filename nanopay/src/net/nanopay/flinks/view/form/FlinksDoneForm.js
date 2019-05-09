@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'FlinksDoneForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
   css: `
-  ^ .net-nanopay-ui-ActionView-closeButton {
+  ^ .foam-u2-ActionView-closeButton {
     margin-left: 264px;
     box-sizing: border-box;
     background-color: #59a5d5;

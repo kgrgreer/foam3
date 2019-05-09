@@ -288,7 +288,7 @@ foam.CLASS({
       width: 395px;
     }
 
-    ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
+    ^ .foam-u2-ActionView-addPrincipalOwner {
       width: 540px;
       height: 40px;
 
@@ -341,7 +341,7 @@ foam.CLASS({
       background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit {
+    ^ .foam-u2-ActionView-cancelEdit {
       width: 135px;
       height: 40px;
 
@@ -354,26 +354,26 @@ foam.CLASS({
       display: inline-block;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit.hidden {
+    ^ .foam-u2-ActionView-cancelEdit.hidden {
       width: 0 !important;
       margin-left: 0 !important;
       opacity: 0;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit:hover,
-    ^ .net-nanopay-ui-ActionView-cancelEdit:focus {
+    ^ .foam-u2-ActionView-cancelEdit:hover,
+    ^ .foam-u2-ActionView-cancelEdit:focus {
       background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
-    ^ .net-nanopay-ui-ActionView {
+    ^ .foam-u2-ActionView {
       color: white;
       font-size: 12px;
       outline: none;
       background-color: #59a5d5;
     }
 
-    ^ .net-nanopay-ui-ActionView:hover,
-    ^ .net-nanopay-ui-ActionView:focus {
+    ^ .foam-u2-ActionView:hover,
+    ^ .foam-u2-ActionView:focus {
       background-color: #3783b3;
     }
 
@@ -450,14 +450,14 @@ foam.CLASS({
     ^ .foam-u2-TextField:focus,
     ^ .foam-u2-DateView:focus,
     ^ .foam-u2-tag-Select:focus,
-    ^ .net-nanopay-ui-ActionView:focus {
+    ^ .foam-u2-ActionView:focus {
       border: solid 1px #59A5D5;
     }
 
     ^ .foam-u2-TextField:disabled,
     ^ .foam-u2-DateView:disabled,
     ^ .foam-u2-tag-Select:disabled,
-    ^ .net-nanopay-ui-ActionView:disabled {
+    ^ .foam-u2-ActionView:disabled {
       border: solid 1px rgba(164, 179, 184, 0.5) !important;
       color: #a4b3b8 !important;
     }
