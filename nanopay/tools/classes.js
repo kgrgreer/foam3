@@ -12,6 +12,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.plaid.config.PlaidCredential',
   'net.nanopay.tx.Transfer',
+  'net.nanopay.tx.ComplianceTransaction',
   'net.nanopay.tx.CompletedTransactionDAO',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
