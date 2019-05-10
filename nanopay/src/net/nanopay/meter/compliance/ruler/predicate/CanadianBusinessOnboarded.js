@@ -16,13 +16,14 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        Business business = (Business) NEW_OBJ.f(obj);
-        Address address = business.getAddress();
+        User user = (User) NEW_OBJ.f(obj);
+        Address address = user.getAddress();
 
-        return address != null
+        return user instanceof Business
+          && address != null
           && address.getCountryId().equals("CA")
-          && business.getOnboarded()
-          && ComplianceStatus.REQUESTED == business.getCompliance();
+          && user.getOnboarded()
+          && ComplianceStatus.REQUESTED == user.getCompliance();
       `
     }
   ]
