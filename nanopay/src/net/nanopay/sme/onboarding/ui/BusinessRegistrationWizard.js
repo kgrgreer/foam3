@@ -331,10 +331,10 @@ foam.CLASS({
         return false;
       }
 
-      if ( editedUser.additionalDocuments.length <= 0 ) {
-        this.notify(this.ERROR_ADD_SIGNING_DOCS, 'error');
-        return false;
-      }
+      // if ( editedUser.additionalDocuments.length <= 0 ) {
+      //   this.notify(this.ERROR_ADD_SIGNING_DOCS, 'error');
+      //   return false;
+      // }
 
       if ( foam.util.equals(this.viewData.user.businessAddress.countryId, 'CA') ) {
         // if ( ! this.viewData.canadianScrollBoxOne ) {
@@ -466,10 +466,10 @@ foam.CLASS({
         }
       }
 
-      if ( businessProfile.additionalDocuments.length <= 0 ) {
-        this.notify(this.ERROR_ADD_BUSINESS_DOCS, 'error');
-        return false;
-      }
+      // if ( businessProfile.additionalDocuments.length <= 0 ) {
+      //   this.notify(this.ERROR_ADD_BUSINESS_DOCS, 'error');
+      //   return false;
+      // }
 
       return true;
     },
