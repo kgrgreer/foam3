@@ -18,7 +18,7 @@ foam.CLASS({
   ],
   methods: [
     {
-      documentation: 'Trust account is the inverse of it\'s backing account, so is always negative',
+      documentation: 'OverDraft account provides liquidity via a backing account. It can have a positive or negative balance.'
       name: 'validateAmount',
       args: [
         {
