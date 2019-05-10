@@ -42,8 +42,8 @@ foam.CLASS({
           return super.put_(x, obj);
         }
 
-        Account destAcc = request.findDestinationAccount(x);
-        User owner = (User) destAcc.findOwner(x);
+        Account destAcc = request.findDestinationAccount(getX());
+        User owner = (User) destAcc.findOwner(getX());
 
         if ( owner instanceof Contact ) {
           Contact contact = (Contact) owner;
