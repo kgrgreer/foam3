@@ -1,15 +1,15 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance',
-  name: 'UserFinalRuleValidation',
+  name: 'BusinessFinalRuleValidation',
 
-  documentation: 'Sets a users compliance to passed if not otherwise marked by preceding compliance checks.',
+  documentation: 'Sets a businesses compliance to passed if not otherwise marked by preceding compliance checks.',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
   javaImports: [
-    'foam.nanos.auth.User',
+    'net.nanopay.model.Business',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.nanos.ruler.RuleHistory',
@@ -23,14 +23,14 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        User user = (User) obj;
+        Business business = (Business) obj;
         Boolean passed = true;
         DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
-        
-        // Make proper query to check all rule history status associated to the user
+
+        // Make proper query to check all rule history status associated to the business
         ArraySink sink = (ArraySink) ruleHistoryDAO.where(
           AND(
-            EQ(RuleHistory.OBJECT_ID, user.getId()),
+            EQ(RuleHistory.OBJECT_ID, business.getId()),
             EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
             EQ(Rule.RULE_GROUP, "onboarding")
           )
@@ -44,7 +44,7 @@ foam.CLASS({
         }
 
         if ( passed ) {
-          user.setCompliance(ComplianceStatus.PASSED);
+          business.setCompliance(ComplianceStatus.PASSED);
         }
       `
     },

@@ -1,16 +1,16 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
-  name: 'PersonKYCValidator',
+  name: 'BeneficialOwnerKYCValidator',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
-  documentation: 'Validates a user using DowJones Risk and Compliance API.',
+  documentation: 'Validates a beneficial owner using DowJones Risk and Compliance API.',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
   javaImports: [
-    'foam.nanos.auth.User',
+    'net.nanopay.model.BeneficialOwner',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.dowJones.DowJonesService',
@@ -21,11 +21,11 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        // add date of birth and country to person request
-        User user = (User) obj;
+        // add date of birth and country to beneficial owner request
+        BeneficialOwner beneficialOwner = (BeneficialOwner) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          DowJonesResponse response = dowJonesService.personNameSearch(x, user.getFirstName(), user.getLastName(), null);
+          DowJonesResponse response = dowJonesService.personNameSearch(x, beneficialOwner.getFirstName(), beneficialOwner.getLastName(), null);
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.getTotalMatches().equals("0") ) {
             status = ComplianceValidationStatus.INVESTIGATING;
@@ -33,7 +33,7 @@ foam.CLASS({
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
-          ((Logger) x.get("logger")).warning("PersonKYCValidator failed.", e);
+          ((Logger) x.get("logger")).warning("BeneficialOwnerKYCValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
         }
       `

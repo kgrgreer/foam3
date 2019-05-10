@@ -1,19 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
   name: 'EntityKYCValidator',
+  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: 'Validates an entity using Dow Jones Risk and Compliance API.',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
-  ],
-
-  properties: [
-    {
-      class: 'Int',
-      name: 'stage',
-      value: 1
-    }
   ],
 
   javaImports: [
@@ -34,11 +27,12 @@ foam.CLASS({
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
           DowJonesResponse response = dowJonesService.entityNameSearch(x, business.getOrganization(), null);
-          ruler.putResult(
-            response.getTotalMatches().equals("0")
-              ? ComplianceValidationStatus.VALIDATED
-              : ComplianceValidationStatus.INVESTIGATING
-          );
+          ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
+          if ( ! response.getTotalMatches().equals("0") ) {
+            status = ComplianceValidationStatus.INVESTIGATING;
+            requestApproval(x, response, "dowJonesResponseDAO");
+          }
+          ruler.putResult(status);
         } catch (IllegalStateException e) {
           ((Logger) x.get("logger")).warning("EntityKYCValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
