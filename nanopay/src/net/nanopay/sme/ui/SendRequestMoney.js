@@ -449,7 +449,7 @@ foam.CLASS({
       }
     },
     async function populatePayerIdOrPayeeId() {
-      if ( this.invoice.payerId && this.invoice.payeeId ) return;
+      // if ( this.invoice.payerId && this.invoice.payeeId ) return;
       try {
         var contact = await this.user.contacts.find(this.invoice.contactId);
         if ( this.isPayable ) {
@@ -488,6 +488,7 @@ foam.CLASS({
         return ! errors && ! this.isLoading;
       },
       code: function() {
+        // debugger;
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
