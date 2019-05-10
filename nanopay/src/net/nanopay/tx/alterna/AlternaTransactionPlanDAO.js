@@ -89,6 +89,7 @@ foam.CLASS({
       //.setRequestedTransaction(t)
       .build();
       ct.copyFrom(t); // We might want to change destination/source to not show this as a user transaction
+      ct.setIsQuoted(true);
       ct.addNext(t);
       quote.addPlan(ct);
     }

@@ -14,7 +14,9 @@ foam.CLASS({
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.tx.ComplianceTransaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.app.Mode'
   ],
 
   methods: [
@@ -23,41 +25,46 @@ foam.CLASS({
       javaCode: `
 
         if ( obj instanceof ComplianceTransaction ) {
-                    ComplianceTransaction ct = (ComplianceTransaction) obj;
-        DAO results = ((DAO) x.get("approvalRequestsDAO"))
-          .where(
-            AND(
-              EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
-              EQ(ApprovalRequest.OBJ_ID, ct.getId())
-            )
-          );
+        ComplianceTransaction ct = (ComplianceTransaction) obj;
+        if ( ct.getStatus() == TransactionStatus.PENDING ) {
+          if ( ( (AppConfig) x.get("appConfig") ).getMode() != Mode.TEST && ( (AppConfig) x.get("appConfig") ).getMode() != Mode.DEVELOPMENT ) {
+            DAO results = ((DAO) x.get("approvalRequestsDAO"))
+              .where(
+                AND(
+                  EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
+                  EQ(ApprovalRequest.OBJ_ID, ct.getId())
+                )
+              );
 
-        Count count = new Count();
-          count = (Count) results.select(count);
-          // If no approvalRequests are found, we need to make some
-          if ( count.getValue() == 0 ) {
-            ApprovalRequest ar = new ApprovalRequest.Builder(x)
-            .setObjId(ct.getId())
-            .setDaoKey("localTransactionDAO")
-            .setApprover(1)
-            .build();
-            ((DAO) x.get("approvalRequestsDAO")).put(ar);
+            Count count = new Count();
+              count = (Count) results.select(count);
+              // If no approvalRequests are found, we need to make some
+              if ( count.getValue() == 0 ) {
+                ApprovalRequest ar = new ApprovalRequest.Builder(x)
+                .setObjId(ct.getId())
+                .setDaoKey("localTransactionDAO")
+                .setApprover(1)
+                .build();
+                ((DAO) x.get("approvalRequestsDAO")).put(ar);
 
-          }
-          //We have received a Rejection and should decline.
-          else {
-            if ( ( (Count) results.where(
-              EQ(ApprovalRequest.STATUS,ApprovalStatus.REJECTED) ).select(count) ).getValue() > 0 ) {
-                ct.setStatus(TransactionStatus.DECLINED);
               }
+              //We have received a Rejection and should decline.
+              else {
+                if ( ( (Count) results.where(
+                  EQ(ApprovalRequest.STATUS,ApprovalStatus.REJECTED) ).select(count) ).getValue() > 0 ) {
+                    ct.setStatus(TransactionStatus.DECLINED);
+                  }
 
-            //We have received an Approval and can continue.
-            else if ( ( (Count) results.where(
-              EQ(ApprovalRequest.STATUS,ApprovalStatus.APPROVED) ).select(count) ).getValue() > 0 ) {
-                ct.setStatus(TransactionStatus.COMPLETED);
+                //We have received an Approval and can continue.
+                else if ( ( (Count) results.where(
+                  EQ(ApprovalRequest.STATUS,ApprovalStatus.APPROVED) ).select(count) ).getValue() > 0 ) {
+                    ct.setStatus(TransactionStatus.COMPLETED);
+                  }
               }
+            }
+            else  {  ct.setStatus(TransactionStatus.COMPLETED); }
+            obj = ct;
           }
-          obj = ct;
         }
       `
     },

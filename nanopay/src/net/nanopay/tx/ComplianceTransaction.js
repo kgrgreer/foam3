@@ -13,13 +13,13 @@ foam.CLASS({
   properties: [
     {
       name: 'status',
-      value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;',
     },
     {
       name: 'initialStatus',
-      value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;',
+      value: 'PENDING',
+      javaFactory: 'return TransactionStatus.PENDING;',
     }
   ],
 

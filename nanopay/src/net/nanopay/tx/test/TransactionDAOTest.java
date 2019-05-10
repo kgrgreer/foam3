@@ -2,13 +2,17 @@ package net.nanopay.tx.test;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.app.AppConfig;
+import foam.nanos.app.Mode;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
@@ -198,13 +202,23 @@ public class TransactionDAOTest
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
-    test(tx instanceof COTransaction, "Transaction type is CASHOUT" );
-    test(tx.getStatus() == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
-    test( senderInitialBalance - (txn.getAmount() + getFee(tx)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "Pending status. Cashout updated balance" );
-    tx.setStatus(TransactionStatus.SENT);
-    tx = (Transaction) txnDAO.put_(x_, tx);
-    test(tx.getStatus() == TransactionStatus.SENT, "CashOut transaction has status sent" );
-    //test( senderInitialBalance - (txn.getAmount() + getFee(tx)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After cashout transaction is sent balance updated" );
+    test(tx instanceof ComplianceTransaction, "Transaction type is ComplianceTransaction" );
+   // test(tx.getStatus() == TransactionStatus.PENDING, "Compliance transaction has status "+ tx.getStatus()+ " should have pending" );
+    test( ( (AppConfig) x_.get("appConfig") ).getMode() == Mode.TEST, "App is currently in "+( (AppConfig) x_.get("appConfig") ).getMode() +" Mode, should be Test mode" );
+    test(tx.getStatus() == TransactionStatus.COMPLETED, "tx should be complete because we are in testing mode" );
+
+    ArraySink s = new ArraySink.Builder(x_).build();
+    tx.getChildren(x_).select(s);
+    Transaction t = (Transaction) s.getArray().get(0);
+    test(s.getArray().size() == 1, " size of children is 1");
+    test( t instanceof COTransaction, "Transaction type is CASHOUT" );
+
+    test( t.getStatus()  == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
+    test( senderInitialBalance - (txn.getAmount() + getFee(t)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "Pending status. Cashout updated balance" );
+    t.setStatus(TransactionStatus.SENT);
+    t = (Transaction) txnDAO.put_(x_, t);
+    test(t.getStatus() == TransactionStatus.SENT, "CashOut transaction has status sent" );
+    test( senderInitialBalance - (txn.getAmount() + getFee(t)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After cashout transaction is sent balance updated" );
 
 
   }
