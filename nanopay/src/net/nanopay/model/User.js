@@ -413,7 +413,7 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      documentation: `TThe profile picture of the individual user, initially 
+      documentation: `The profile picture of the individual user, initially 
         defaulting to a placeholder picture.`,
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
