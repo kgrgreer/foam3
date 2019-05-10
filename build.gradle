@@ -204,6 +204,12 @@ task copyImages(type: Copy) {
     include "images/**"
 }
 
+task copyFlows(type: Copy) {
+    from "$rootDir/documents"
+    into "$targetDir/classes/documents"
+    include "**"
+}
+
 task copyFavicon(type: Copy) {
     from "$rootDir/favicon"
     into "$targetDir/classes/webroot/favicon"
