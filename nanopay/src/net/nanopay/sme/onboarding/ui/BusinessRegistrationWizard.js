@@ -337,20 +337,23 @@ foam.CLASS({
       }
 
       if ( foam.util.equals(this.viewData.user.businessAddress.countryId, 'CA') ) {
-        if ( ! this.viewData.canadianScrollBoxOne ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED_1, 'error');
-          return false;
-        }
+        // if ( ! this.viewData.canadianScrollBoxOne ) {
+        //   this.notify(this.ERROR_TERMS_NOT_CHECKED_1, 'error');
+        //   return false;
+        // }
         if ( ! this.viewData.canadianScrollBoxTwo ) {
           this.notify(this.ERROR_TERMS_NOT_CHECKED_2, 'error');
           return false;
         }
-      } else {
-        if ( ! this.viewData.americanScrollBox ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED_3, 'error');
-          return false;
-        }
       }
+      // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+      //
+      // } else {
+      //   if ( ! this.viewData.americanScrollBox ) {
+      //     this.notify(this.ERROR_TERMS_NOT_CHECKED_3, 'error');
+      //     return false;
+      //   }
+      // }
 
       return true;
     },
