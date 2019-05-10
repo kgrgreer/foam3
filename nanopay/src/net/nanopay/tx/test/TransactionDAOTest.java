@@ -203,8 +203,6 @@ public class TransactionDAOTest
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
     test(tx instanceof ComplianceTransaction, "Transaction type is ComplianceTransaction" );
-   // test(tx.getStatus() == TransactionStatus.PENDING, "Compliance transaction has status "+ tx.getStatus()+ " should have pending" );
-    test( ( (AppConfig) x_.get("appConfig") ).getMode() == Mode.TEST, "App is currently in "+( (AppConfig) x_.get("appConfig") ).getMode() +" Mode, should be Test mode" );
     test(tx.getStatus() == TransactionStatus.COMPLETED, "tx should be complete because we are in testing mode" );
 
     ArraySink s = new ArraySink.Builder(x_).build();
