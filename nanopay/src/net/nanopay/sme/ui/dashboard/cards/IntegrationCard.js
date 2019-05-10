@@ -63,21 +63,28 @@ foam.CLASS({
       color: #8e9090;
     }
 
-    ^action {
+    ^ .net-nanopay-sme-ui-AbliiActionView-primary {
       vertical-align: middle;
 
-      width: 96px !important;
+      width: 96px;
       margin-left: auto;
 
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       border: solid 1px #604aff;
-      background-color: #ffffff !important;
-      color: #604aff !important;
+      background-color: #ffffff;
+      color: #604aff;
     }
 
-    ^action:hover {
-      background-color: #604aff !important;
-      color: #ffffff !important;
+    ^ .net-nanopay-sme-ui-AbliiActionView-primary:disabled {
+      border: solid 1px #bdb4fd;
+      background-color: #ffffff;
+      color: #bdb4fd;
+    }
+
+    ^ .net-nanopay-sme-ui-AbliiActionView-primary:hover:not(:disabled) {
+      border: solid 1px #604aff;
+      background-color: #ffffff;
+      color: #604aff;
     }
   `,
 
@@ -115,7 +122,7 @@ foam.CLASS({
               .start('p').addClass(self.myClass('subtitle')).add(self.subtitle).end()
             .end()
             .startContext({ data: self.data })
-              .start(self.action).addClass(self.myClass('action')).end()
+              .tag(self.action)
             .endContext();
         }));
     }

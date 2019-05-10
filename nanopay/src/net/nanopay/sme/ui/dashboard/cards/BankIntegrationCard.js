@@ -34,6 +34,10 @@ foam.CLASS({
       message: 'Loading...'
     },
     {
+      name: 'SUBTITLE_ERROR',
+      message: 'Could not load account'
+    },
+    {
       name: 'SUBTITLE_EMPTY',
       message: 'No account added yet'
     },
@@ -60,16 +64,17 @@ foam.CLASS({
       value: true
     },
     {
+      class: 'Boolean',
+      name: 'isErrored',
+      value: false
+    },
+    {
       class: 'String',
       name: 'subtitleToUse',
-      expression: function(account, isLoading) {
-        if ( isLoading ) {
-          return this.SUBTITLE_LOADING;
-        }
-
-        if ( account ) {
-          return this.SUBTITLE_LINKED + ' ' + account.name;
-        }
+      expression: function(account, isLoading, isErrored) {
+        if ( isLoading )  return this.SUBTITLE_LOADING;
+        if ( isErrored )  return this.SUBTITLE_ERROR;
+        if ( account )    return this.SUBTITLE_LINKED + ' ' + account.name;
 
         return this.SUBTITLE_EMPTY;
       }
@@ -83,6 +88,10 @@ foam.CLASS({
         if ( accounts.length > 0 ) {
           self.account = accounts[0];
         }
+        self.isErrored = false;
+      }).catch(function(error) {
+        self.isErrored = true;
+      }).finally(function() {
         self.isLoading = false;
       });
     },
@@ -105,8 +114,16 @@ foam.CLASS({
     {
       name: 'viewAccount',
       label: 'View',
-      isEnabled: function(isLoading) {
-        return isLoading ? false : true;
+      isEnabled: function(isLoading, isErrored) {
+        if ( isLoading ) {
+          return false;
+        }
+
+        if ( isErrored ) {
+          return false;
+        }
+
+        return true;
       },
       code: function() {
         this.pushMenu('sme.main.banking');
@@ -115,13 +132,20 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add',
-      isEnabled: function(isLoading) {
-        return isLoading ? false : true;
+      isEnabled: function(isLoading, isErrored) {
+        if ( isLoading ) {
+          return false;
+        }
+
+        if ( isErrored ) {
+          return false;
+        }
+
+        return true;
       },
       code: function() {
         this.stack.push({
           class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-          usdAvailable: true,
           cadAvailable: true
         });
       }

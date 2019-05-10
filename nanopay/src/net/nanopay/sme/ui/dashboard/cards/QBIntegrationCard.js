@@ -60,7 +60,6 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.user.integrationCode = self.IntegrationCode.QUICKBOOKS;
       this.add(this.slot(function(subtitleToUse) {
         return this.E()
           .start(self.IntegrationCard, {
