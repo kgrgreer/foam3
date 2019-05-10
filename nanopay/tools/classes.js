@@ -51,6 +51,7 @@ var classes = [
   'net.nanopay.model.BusinessUserJunction',
   'net.nanopay.account.Account',
   'net.nanopay.account.DigitalAccount',
+  'net.nanopay.account.OverdraftAccount',
   'net.nanopay.account.DigitalAccountInfo',
   'net.nanopay.account.DigitalAccountServiceInterface',
   'net.nanopay.account.ClientDigitalAccountService',

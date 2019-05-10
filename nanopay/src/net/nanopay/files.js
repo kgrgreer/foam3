@@ -44,6 +44,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/ui/addAccountModal/AddAccountSubmissionModal', flags: ['web'] },
   { name: 'net/nanopay/account/Balance' },
   { name: 'net/nanopay/account/DigitalAccount' },
+  { name: 'net/nanopay/account/OverdraftAccount' },
   { name: 'net/nanopay/account/DigitalAccountInfo' },
   { name: 'net/nanopay/account/DigitalAccountServiceInterface' },
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
