@@ -191,6 +191,7 @@ foam.CLASS({
             .start('p')
               .addClass(this.myClass('link-text'))
               .add(this.CLICK_HERE)
+              .attrs({ name: 'clickHere' })
               .on('click', function() {
                 self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', onComplete: self.onComplete }));
               })
