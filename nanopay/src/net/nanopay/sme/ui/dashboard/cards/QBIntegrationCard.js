@@ -13,7 +13,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountingIntegrationUtil',
     'user',
+    'pushMenu'
   ],
 
   messages: [
@@ -53,6 +55,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
+      this.user.integrationCode = self.IntegrationCode.QUICKBOOKS;
       this.add(this.slot(function(subtitleToUse) {
         return this.E()
           .start(self.IntegrationCard, {
@@ -62,6 +65,15 @@ foam.CLASS({
             action: self.user.integrationCode === self.IntegrationCode.QUICKBOOKS ? self.SYNC : self.CONNECT
           }).end();
       }));
+    },
+
+    function attachSessionId(url) {
+      // attach session id if available
+      var sessionId = localStorage['defaultSession'];
+      if ( sessionId ) {
+        url += '&sessionId=' + sessionId;
+      }
+      return url;
     }
   ],
 
@@ -70,14 +82,15 @@ foam.CLASS({
       name: 'sync',
       label: 'Sync',
       code: function() {
-        alert('TODO');
+        this.pushMenu('sme.bank.matching');
       }
     },
     {
       name: 'connect',
       label: 'Connect',
       code: function() {
-        alert('TODO');
+        var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
+        window.location = this.attachSessionId(url);
       }
     }
   ]
