@@ -328,46 +328,46 @@ foam.CLASS({
     }
   ],
 
-  actions: [
-    async function save(X){
-      var self = this;
-      // This is a rough idea of how the values collected from the model will be translated to the appropriate objects and DAO's.
-      // Requires work.
-      var business = await X.businessDAO.find(this.businessId ? this.businessId : X.user);
-      var user = await X.userDAO.find(this.userId ? this.userId : X.agent);
+  // actions: [
+  //   async function save(X){
+  //     var self = this;
+  //     // This is a rough idea of how the values collected from the model will be translated to the appropriate objects and DAO's.
+  //     // Requires work.
+  //     var business = await X.businessDAO.find(this.businessId ? this.businessId : X.user);
+  //     var user = await X.userDAO.find(this.userId ? this.userId : X.agent);
 
-      // Append values to user
-      user.phone = this.phone;
-      user.birthday = this.birthday;
-      user.address = this.address;
+  //     // Append values to user
+  //     user.phone = this.phone;
+  //     user.birthday = this.birthday;
+  //     user.address = this.address;
 
-      var employee = user;
-      employee.signingOfficer = this.signingOfficer;
-      employee.PEPHIORelated = this.PEPHIORelated;
-      employee.thirdParty = this.thirdParty;
-      this.businessAddress.regionId = business.regionId ? business.regionId : this.businessAddress.regionId;
-      this.businessAddress.countryId = business.countryId ? business.countryId : this.businessAddress.countryId;
-      business.address = this.businessAddress;
-      business.businessTypeId = this.businessTypeId;
-      business.businessSectorId = this.businessSectorId;
-      business.sourceOfFunds = this.sourceOfFunds;
-      business.operatingBusinessName = this.operatingBusinessName;
+  //     var employee = user;
+  //     employee.signingOfficer = this.signingOfficer;
+  //     employee.PEPHIORelated = this.PEPHIORelated;
+  //     employee.thirdParty = this.thirdParty;
+  //     this.businessAddress.regionId = business.regionId ? business.regionId : this.businessAddress.regionId;
+  //     this.businessAddress.countryId = business.countryId ? business.countryId : this.businessAddress.countryId;
+  //     business.address = this.businessAddress;
+  //     business.businessTypeId = this.businessTypeId;
+  //     business.businessSectorId = this.businessSectorId;
+  //     business.sourceOfFunds = this.sourceOfFunds;
+  //     business.operatingBusinessName = this.operatingBusinessName;
 
-      var suggestedUserTransactionInfo = net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create({
-        annualTransactionAmount: this.annualTransactionAmount,
-        annualVolume: this.annualVolume,
-        transactionPurpose: this.transactionPurpose,
-        otherTransactionPurpose: this.otherTransactionPurpose
-      });
+  //     var suggestedUserTransactionInfo = net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create({
+  //       annualTransactionAmount: this.annualTransactionAmount,
+  //       annualVolume: this.annualVolume,
+  //       transactionPurpose: this.transactionPurpose,
+  //       otherTransactionPurpose: this.otherTransactionPurpose
+  //     });
 
-      business.suggestedUserTransactionInfo = suggestedUserTransactionInfo;
+  //     business.suggestedUserTransactionInfo = suggestedUserTransactionInfo;
 
-      this.beneficialOwners.forEach(function(beneficialOwner) {
-        self.business.beneficialOwners.add(beneficialOwner);
-      });
+  //     this.beneficialOwners.forEach(function(beneficialOwner) {
+  //       self.business.beneficialOwners.add(beneficialOwner);
+  //     });
 
-      var user = await X.userDAO.put(user);
-      var business = await X.businessDAO.put(business);
-    }
-  ]
+  //     var user = await X.userDAO.put(user);
+  //     var business = await X.businessDAO.put(business);
+  //   }
+  // ]
 }); 
