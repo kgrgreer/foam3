@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'BankAccount',
   extends: 'net.nanopay.account.Account',
 
-  documentation: 'Base class/model of all BankAccounts',
+  documentation: 'The base model for creating and managing all bank accounts.',
 
   requires: [
     'foam.nanos.auth.Address'
@@ -51,6 +51,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountNumber',
+      documentation: 'The account number of the bank account.',
       label: 'Account No.',
       view: {
         class: 'foam.u2.tag.Input',
@@ -78,6 +79,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
+      documentation: 'Tracks the type of status of the bank account.',
       permissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
@@ -130,6 +132,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'denomination',
+      documentation: 'The type of currency associated with the bank account.',
       label: 'Currency',
       aliases: ['currencyCode', 'currency'],
       value: 'CAD',
@@ -144,9 +147,13 @@ foam.CLASS({
       },
     },
     {
-      documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
       class: 'String',
       name: 'institutionNumber',
+      documentation: `In relation to the institute number of the Bank Account, 
+        this provides backward compatibility for mobile call flow. The 
+        BankAccountInstitutionDAO will look up the institutionNumber and set the 
+        institution property on the branch.
+      `,
       label: 'Inst. No.',
       storageTransient: true,
       hidden: true,
@@ -166,30 +173,32 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'verificationAttempts',
+      documentation: `Defines the number of times it is attempted to verify 
+        ownership of the bank account.`,
       value: 0,
       permissionRequired: true,
     },
     {
       class: 'DateTime',
       name: 'microVerificationTimestamp',
-      documentation: 'Time of micro deposit verification.'
+      documentation: 'The date and time of when ownership of the bank account is verified.'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'country',
+      documentation: `The name of the country associated with the bank account. 
+        This should be set by the child class.
+      `,
       visibility: 'RO',
-      documentation: `
-        Reference to affiliated country. This should be set by the child class.
-      `
+      
     },
     {
       class: 'URL',
       name: 'flagImage',
       label: 'Country', // To set table column heading
-      documentation: `
-        Link to an image of the country's flag. Used for display purposes. This
-        should be set by the child class.
+      documentation: `A URL link to an image of the country's flag. Used for 
+        display purposes. This should be set by the child class.
       `,
       visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
@@ -205,6 +214,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'address',
       documentation: `User pad authorization address.`,
+      // Note: To be removed
       factory: function() {
         return this.Address.create();
       },
@@ -214,7 +224,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'bankAddress',
-      documentation: `Bank account address.`,
+      documentation: `Returns the bank account address from the Address model.`,
       factory: function() {
         return this.Address.create();
       },
