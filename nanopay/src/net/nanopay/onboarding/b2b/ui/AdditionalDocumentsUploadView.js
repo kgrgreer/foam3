@@ -19,12 +19,12 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .net-nanopay-ui-ActionView-uploadButton {
+    ^ .foam-u2-ActionView-uploadButton {
       width: 135px;
       height: 40px;
       background-color: #59a5d5;
     }
-    ^ .net-nanopay-ui-ActionView-uploadButton span {
+    ^ .foam-u2-ActionView-uploadButton span {
       font-family: Roboto;
       font-size: 14px;
       font-weight: normal;
@@ -62,11 +62,11 @@ foam.CLASS({
     ^ .net-nanopay-invoice-ui-InvoiceFileView {
       margin-top: 10px;
     }
-    ^ .net-nanopay-ui-ActionView-saveButton {
+    ^ .foam-u2-ActionView-saveButton {
       width: 100%;
       height: 40px;
     }
-    ^ .net-nanopay-ui-ActionView-saveButton span {
+    ^ .foam-u2-ActionView-saveButton span {
       font-family: Roboto;
       font-size: 14px;
       font-weight: normal;

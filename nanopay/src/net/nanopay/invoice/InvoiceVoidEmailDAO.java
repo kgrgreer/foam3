@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
@@ -31,7 +32,8 @@ public class InvoiceVoidEmailDAO
   @Override
   public FObject put_(X x, FObject obj) {
     Invoice invoice = (Invoice) obj;
-    User    payer   = (User) userDAO_.find_(x, invoice.getPayerId() );
+    User payer = (User) invoice.findPayerId(x);
+    User payee = (User) invoice.findPayeeId(x);
 
     // Checks to make sure invoice is set to Void
     if (  PaymentStatus.VOID != invoice.getPaymentMethod() )
@@ -42,19 +44,27 @@ public class InvoiceVoidEmailDAO
       return getDelegate().put_(x, obj);
 
     invoice = (Invoice) super.put_(x , obj);
-    AppConfig       config    = (AppConfig) x.get("appConfig");
-    EmailService    email     = (EmailService) x.get("email");
-    EmailMessage    message   = new EmailMessage();
-    NumberFormat    formatter = NumberFormat.getCurrencyInstance();
+    Group           payerGroup = (Group) payer.findGroup(x);
+    AppConfig       config     = (AppConfig) payerGroup.getAppConfig(x);
+    EmailService    email      = (EmailService) x.get("email");
+    EmailMessage    message    = new EmailMessage();
+    NumberFormat    formatter  = NumberFormat.getCurrencyInstance();
 
-    String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ? "N/A" : invoice.getInvoiceNumber();
+    String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ?
+      (SafetyUtil.isEmpty(invoice.getPurchaseOrder()) ? "N/A" : invoice.getPurchaseOrder()) :
+      invoice.getInvoiceNumber();
 
     message.setTo(new String[]{payer.getEmail()});
     HashMap<String, Object> args = new HashMap<>();
-    args.put("account", accountVar);
-    args.put("amount",  formatter.format(invoice.getAmount()/100.00));
-    args.put("link",    config.getUrl());
-    args.put("name",    payer.getFirstName());
+    args.put("account",  accountVar);
+    args.put("amount",   formatter.format(invoice.getAmount()/100.00));
+    args.put("link",     config.getUrl());
+    args.put("name",     payer.getFirstName());
+
+    args.put("fromName", payee.label());
+    args.put("toName",   payer.label());
+    args.put("sendTo",   payer.getEmail());
+    args.put("supportEmail", SafetyUtil.isEmpty(config.getSupportEmail()) ? payerGroup.getSupportEmail() : config.getSupportEmail());
 
     try{
       email.sendEmailFromTemplate(x, payer, message, "voidInvoice", args);

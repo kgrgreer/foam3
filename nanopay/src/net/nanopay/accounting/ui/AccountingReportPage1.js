@@ -55,7 +55,7 @@ foam.CLASS({
       padding-bottom: 12px;
       padding-right: 24px;
     }
-    ^ .net-nanopay-ui-ActionView-next {
+    ^ .foam-u2-ActionView-next {
       width: 158px;
       height: 48px !important;
       border-radius: 4px;
@@ -67,7 +67,7 @@ foam.CLASS({
       float:right;
       color: #FFFFFF !important;
     }
-    ^ .net-nanopay-ui-ActionView-next:hover {
+    ^ .foam-u2-ActionView-next:hover {
       background-color: #4d38e1 !important;
     }
     ^ .title {
@@ -138,7 +138,27 @@ foam.CLASS({
     }
 
     .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-invoiceNumber, .foam-u2-view-TableView-th-Amount, .foam-u2-view-TableView-th-dueDate {
-      width: 200px;
+      width: 225px;
+    }
+
+    .error-table-container .foam-u2-view-TableView thead > tr > th:last-child {
+      display: none;
+    }
+
+    .error-table-container .foam-u2-view-TableView-net-nanopay-accounting-resultresponse-InvoiceResponseItem tbody > tr > td {
+      padding-left: 80px;
+    }
+
+    .error-table-container .foam-u2-view-TableView-net-nanopay-accounting-resultresponse-InvoiceResponseItem tbody > tr > td:first-child {
+      padding-left: 55px;
+    }
+
+    .error-table-container .foam-u2-view-TableView-net-nanopay-accounting-resultresponse-ContactResponseItem tbody > tr > td {
+      padding-left: 111px;
+    }
+
+    .error-table-container .foam-u2-view-TableView-net-nanopay-accounting-resultresponse-ContactResponseItem tbody > tr > td:nth-child(2) {
+      padding-left: 144px;
     }
   `,
 
@@ -222,7 +242,7 @@ foam.CLASS({
           id: x,
           invoiceNumber: myData[x].invoiceNumber,
           Amount: myData[x].Amount,
-          dueDate: myData.dueDate
+          dueDate: myData[x].dueDate
         }))
         this.invoiceCount++;
       }

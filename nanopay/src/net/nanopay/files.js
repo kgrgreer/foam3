@@ -4,6 +4,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FeeTransfer' },
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
+  { name: 'net/nanopay/tx/CompositeTransaction' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
@@ -233,7 +234,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/lianlianpay/model/StatementRecord' },
 
   // sps
-  { name: 'net/nanopay/sps/SPSConfig' },
+  { name: 'net/nanopay/sps/SPSCredentials' },
 
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
@@ -569,6 +570,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
 
+  // sme dashboard cards
+  { name: 'net/nanopay/sme/ui/dashboard/cards/UnlockPaymentsCard', flags: ['web'] },
+
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
 
@@ -636,7 +640,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/TransferFrom', flags: ['web'] },
   { name: 'net/nanopay/ui/TransferTo', flags: ['web'] },
   { name: 'net/nanopay/ui/CCTransferView', flags: ['web'] },
-  { name: 'net/nanopay/ui/ActionView', flags: ['web'] },
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountBalanceDashboard', flags: ['web'] },
@@ -677,7 +680,10 @@ FOAM_FILES([
 
   // sme
   { name: 'net/nanopay/model/Business' },
+  { name: 'net/nanopay/auth/PublicBusinessInfo' },
+  { name: 'net/nanopay/auth/BusinessToPublicBusinessInfoDAO' },
   { name: 'net/nanopay/model/BeneficialOwner' },
+  { name: 'net/nanopay/sme/ui/AbliiActionView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/ActionObject' },
   { name: 'net/nanopay/sme/ui/dashboard/Dashboard', flags: ['web'] },
@@ -722,6 +728,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/VerifyEmailView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/TopBarBackToAblii', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/ToastNotification', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
@@ -770,6 +778,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
+  { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
+  { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
@@ -811,7 +821,6 @@ FOAM_FILES([
   { name: 'net/nanopay/accounting/BankSyncView', flags: ['web'] },
   { name: 'net/nanopay/accounting/AccountingIntegrationUtil', flags: ['web'] },
 
-
   // meter
   { name: 'net/nanopay/meter/Blacklist' },
   { name: 'net/nanopay/meter/BlacklistEntityType' },
@@ -821,8 +830,13 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
-  { name: 'net/nanopay/meter/BusinessDetailView' },
-  { name: 'net/nanopay/meter/InvoiceDetailView' },
+  { name: 'net/nanopay/meter/BusinessDetailView', flags: ['web'] },
+  { name: 'net/nanopay/meter/ContactDetailView', flags: ['web'] },
+  { name: 'net/nanopay/meter/UserDetailView', flags: ['web'] },
+  { name: 'net/nanopay/meter/InvoiceDetailView', flags: ['web'] },
+  { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
+  { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
+  { name: 'net/nanopay/meter/compliance/AbstractComplianceRuleAction' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
@@ -856,6 +870,38 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVResult' },
 
+  // dow jones
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/ContentSet' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterAMC' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterOEL' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterOOL' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterPEP' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterRegion' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterRegionKeys' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterSIC' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterSL' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/FilterSOC' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/IDTypeKey' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/MatchType' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/RecordType' },
+  { name: 'net/nanopay/meter/compliance/dowJones/enums/SearchType' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchInvalidResponse' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchResponse' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BaseSearchResponseBody' },
+  { name: 'net/nanopay/meter/compliance/dowJones/ClientDowJonesService' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCall' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCredentials' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJones' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesRestInterface' },
+  { name: 'net/nanopay/meter/compliance/dowJones/EntityNameSearchRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/IDTypeSearchRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/Match' },
+  { name: 'net/nanopay/meter/compliance/dowJones/MatchedName' },
+  { name: 'net/nanopay/meter/compliance/dowJones/MatchPayload' },
+  { name: 'net/nanopay/meter/compliance/dowJones/MetadataSearchResponse' },
+  { name: 'net/nanopay/meter/compliance/dowJones/NameSearchRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
   { name: 'net/nanopay/liquidity/ui/Dashboard' },
   { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
@@ -872,4 +918,8 @@ FOAM_FILES([
 
   // business
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
+
+  // approval
+  { name: 'net/nanopay/approval/ApprovalRequest' },
+  { name: 'net/nanopay/approval/ApprovalStatus' }
 ]);

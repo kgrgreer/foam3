@@ -14,14 +14,13 @@ foam.CLASS({
     }
   `,
 
-  messages: [
-    {
-      name: 'DEFAULT_LABEL',
-      message: 'Select...'
-    }
-  ],
-
   properties: [
+    {
+      class: 'String',
+      name: 'emptySelectionLabel',
+      documentation: 'Empty selection label',
+      value: 'Select...'
+    },
     {
       name: 'data'
     },
@@ -34,6 +33,7 @@ foam.CLASS({
     function initE() {
       return this
         .start()
+        .attrs({ name: "userSelectionView" })
           .addClass(this.myClass())
           .start().addClass('styleHolder_NameField')
             .add(this.data ?
@@ -42,12 +42,12 @@ foam.CLASS({
                 if ( obj ) {
                   formatted += obj.organization || obj.businessName;
                   if ( obj.legalName.trim() ) {
-                    formatted += ` (${obj.legalName})`;
+                    formatted += ` (${obj.legalName})`; 
                   }
                 }
                 return formatted;
               }) :
-              this.DEFAULT_LABEL)
+              this.emptySelectionLabel)
           .end()
           .start().addClass('styleHolder_EmailField')
             .add(this.data ?

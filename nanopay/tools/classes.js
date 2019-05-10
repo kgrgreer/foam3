@@ -16,6 +16,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.RetailTransactionPlanDAO',
+  'net.nanopay.tx.CompositeTransaction',
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.COTransaction',
   'net.nanopay.tx.alterna.AlternaFormat',
@@ -104,9 +105,10 @@ var classes = [
   'net.nanopay.sps.DetailResponseItemContent',
   'net.nanopay.sps.RequestPacket',
   'net.nanopay.sps.ResponsePacket',
-  'net.nanopay.sps.SPSConfig',
+  'net.nanopay.sps.SPSCredentials',
   'net.nanopay.sps.SPSTransaction',
   'net.nanopay.sps.SPSRejectFileRecord',
+  'net.nanopay.sps.SPSSettlementFileRecord',
 
   // kotak
   'net.nanopay.kotak.Kotak',
@@ -133,6 +135,10 @@ var classes = [
 
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+  'net.nanopay.sme.onboarding.BusinessOnboarding',
+  'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
+  'net.nanopay.sme.onboarding.ReceiveOnlyOnboarding',
+  'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 
@@ -149,6 +155,7 @@ var classes = [
   'net.nanopay.invoice.notification.InvoicePaymentNotification',
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
+  'net.nanopay.invoice.InvoiceNotificationDAO',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
@@ -333,6 +340,9 @@ var classes = [
   // auth
   'net.nanopay.auth.LoginAttempt',
   'net.nanopay.auth.NanopayUserAndGroupAuthService',
+  'net.nanopay.auth.NanopayResetPasswordTokenService',
+  'net.nanopay.auth.PublicBusinessInfo',
+  'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
 
@@ -444,6 +454,7 @@ var classes = [
   'net.nanopay.meter.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
+  'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   'net.nanopay.meter.compliance.ComplianceAuthService',
   'net.nanopay.meter.compliance.ComplianceAware',
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -476,6 +487,39 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
 
+  // dow jones
+  'net.nanopay.meter.compliance.dowJones.enums.ContentSet',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterAMC',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterOEL',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterOOL',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterPEP',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterRegion',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterRegionKeys',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterSIC',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterSL',
+  'net.nanopay.meter.compliance.dowJones.enums.FilterSOC',
+  'net.nanopay.meter.compliance.dowJones.enums.IDTypeKey',
+  'net.nanopay.meter.compliance.dowJones.enums.MatchType',
+  'net.nanopay.meter.compliance.dowJones.enums.RecordType',
+  'net.nanopay.meter.compliance.dowJones.enums.SearchType',
+  'net.nanopay.meter.compliance.dowJones.BaseSearchInvalidResponse',
+  'net.nanopay.meter.compliance.dowJones.BaseSearchRequest',
+  'net.nanopay.meter.compliance.dowJones.BaseSearchResponse',
+  'net.nanopay.meter.compliance.dowJones.BaseSearchResponseBody',
+  'net.nanopay.meter.compliance.dowJones.ClientDowJonesService',
+  'net.nanopay.meter.compliance.dowJones.DowJonesCall',
+  'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
+  'net.nanopay.meter.compliance.dowJones.DowJones',
+  'net.nanopay.meter.compliance.dowJones.DowJonesRestInterface',
+  'net.nanopay.meter.compliance.dowJones.EntityNameSearchRequest',
+  'net.nanopay.meter.compliance.dowJones.IDTypeSearchRequest',
+  'net.nanopay.meter.compliance.dowJones.Match',
+  'net.nanopay.meter.compliance.dowJones.MatchedName',
+  'net.nanopay.meter.compliance.dowJones.MatchPayload',
+  'net.nanopay.meter.compliance.dowJones.MetadataSearchResponse',
+  'net.nanopay.meter.compliance.dowJones.NameSearchRequest',
+  'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
+
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
@@ -488,6 +532,10 @@ var classes = [
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
+
+  // approval
+  'net.nanopay.approval.ApprovalRequest',
+  'net.nanopay.approval.ApprovalStatus',
 ];
 
 var abstractClasses = [

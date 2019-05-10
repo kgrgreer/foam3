@@ -65,18 +65,6 @@ foam.CLASS({
     ^ .net-nanopay-ui-DataSecurityBanner {
       margin-top: 24px;
     }
-    ^ .net-nanopay-ui-ActionView-goToTerm {
-      height: auto;
-      width: auto;
-      background-color: transparent;
-      color: %SECONDARYCOLOR%;
-      font-size: 12px;
-      padding: 0 3px;
-    }
-    ^ .net-nanopay-ui-ActionView-goToTerm:hover {
-      background-color: transparent;
-      color: %SECONDARYCOLOR%;
-    }
     ^ .net-nanopay-ui-modal-TandCModal .iframe-container {
       height: 540px;
     }
@@ -137,8 +125,9 @@ foam.CLASS({
     { name: 'ACCEPT_CONDITIONS', message: 'Please accept the terms and conditions before proceeding.' },
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
     { name: 'LABEL_PASSWORD', message: 'Password' },
-    { name: 'LEGAL_1', message: 'I agree to the' },
-    { name: 'LEGAL_2', message: 'and authorize the release of my Bank information to nanopay.' },
+    { name: 'LEGAL_1', message: 'I agree to the ' },
+    { name: 'LEGAL_2', message: 'terms and conditions' },
+    { name: 'LEGAL_3', message: ' and authorize the release of my Bank information to nanopay.' },
     { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' }
   ],
 
@@ -168,8 +157,14 @@ foam.CLASS({
             .start(this.IS_TERMS_AGREED).addClass(this.myClass('checkbox')).end()
             .start().addClass(this.myClass('terms-text-container'))
               .add(this.LEGAL_1)
-              .start(this.GO_TO_TERM).end()
-              .add(this.LEGAL_2)
+              .start('a')
+                .attrs({
+                  href: this.termsAgreementDocument$.dot('link'),
+                  target: '_blank'
+                })
+                .add(this.LEGAL_2)
+              .end()
+              .add(this.LEGAL_3)
             .end()
           .end()
         .end()
@@ -234,13 +229,6 @@ foam.CLASS({
           return;
         }
         X.connect.connectToBank();
-      }
-    },
-    {
-      name: 'goToTerm',
-      label: 'terms and conditions',
-      code: function(X) {
-        window.open(this.termsAgreementDocument.link);
       }
     }
   ],

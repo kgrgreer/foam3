@@ -12,7 +12,6 @@ foam.CLASS({
   `,
 
    imports: [
-    'appConfig',
     'bareUserDAO',
     'currencyDAO',
     'email',
@@ -58,104 +57,52 @@ foam.CLASS({
       name: 'generateTokenWithParameters',
       javaCode:
       `
+      // Generates a token and sets link on the template args(Map)
+
       Logger logger = (Logger) getLogger();
 
       try {
-        DAO tokenDAO = (DAO) getTokenDAO();
-        DAO invoiceDAO = (DAO) getInvoiceDAO();
-        DAO bareUserDAO = (DAO) getBareUserDAO();
-        DAO currencyDAO = (DAO) getCurrencyDAO();
+        if ( ! (parameters.get("template") instanceof String) || SafetyUtil.isEmpty((String)parameters.get("template")) ) 
+          throw new RuntimeException("Required hash map parameters: template");
+        
+        String template = (String) parameters.get("template");
+
         EmailService emailService = (EmailService) getEmail();
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-YYYY");
-        String emailTemplate;
-        String inviteEmail;
-        User loginUser = new User();
-
-        // Requires hash map with invoice in parameters to redirect user to invoice after registration.
-        if ( parameters.get("invoice") == null ) {
-          throw new RuntimeException("Required hash map parameters: invoice");
-        }
-
-        // Get invoice for redirect. To be placed as param on email link.
-        Invoice invoice = (Invoice) parameters.get("invoice");
-        long invoiceId = invoice.getId();
-
-        boolean invType = invoice.getPayeeId() == invoice.getCreatedBy();
-        PublicUserInfo payee = invoice.getPayee();
-        PublicUserInfo payer = invoice.getPayer();
-
-        // Receivable
-        if ( user.getEmail().equals(payee.getEmail()) ) {
-          inviteEmail = payee.getEmail();
-          loginUser = (User) bareUserDAO.find(payer.getId());
-        } else {
-          inviteEmail = payer.getEmail();
-          loginUser = (User) bareUserDAO.find(payee.getId());
-        }
+        DAO tokenDAO = (DAO) getTokenDAO();
 
         // Create new token and associate passed in external user to token.
+        HashMap tokenParams = new HashMap();
+        tokenParams.put("inviteeEmail", user.getEmail());
+
         Token token = new Token();
-        parameters.put("inviteeEmail", inviteEmail);
-        token.setParameters(parameters);
+        token.setParameters(tokenParams);
         token.setUserId(user.getId());
         token.setExpiry(generateExpiryDate());
         token.setData(UUID.randomUUID().toString());
         token = (Token) tokenDAO.put(token);
 
-        // Determines email template to be sent based on status.
-        if (
-          invoice.getStatus() == InvoiceStatus.PAID ||
-          invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE
-        ) {
-          // For now we aren't going to send out an email when the invoice has
-          // been paid.
-          return true;
-        } else {
-          // If the external userId is equal to payeeId, then it is a payable
-          emailTemplate = user.getId() == invoice.getPayeeId() ? "external-payable" : "external-receivable";
-        }
-
         EmailMessage message = new EmailMessage.Builder(x)
           .setTo(new String[] { user.getEmail() })
           .build();
-        HashMap<String, Object> args = new HashMap<>();
 
-        Group group = loginUser.findGroup(x);
+        Group group = user.findGroup(x);
         AppConfig appConfig = group.getAppConfig(x);
         String url = appConfig.getUrl().replaceAll("/$", "");
 
         // Construct the url of the external invoice
         StringBuilder urlStringB = new StringBuilder();
-        urlStringB.append(url + "/?invoiceId=" + invoiceId);
+        urlStringB.append(url + "/?invoiceId=" + parameters.get("invoiceId"));
         urlStringB.append("&token=" + token.getData());
-
-        // If user.getEmail() is equal to payee.getEmail(), then it is a receivable
         try {
-          urlStringB.append("&email=" + URLEncoder.encode(inviteEmail, "UTF-8"));
+          urlStringB.append("&email=" + URLEncoder.encode(user.getEmail(), "UTF-8"));
         } catch(Exception e) {
           logger.error("Error encoding the email.", e);
           throw new RuntimeException(e);
         }
-
         urlStringB.append("#sign-up");
 
-        // Sets arguments on email.
-        if ( invoice.getDueDate() != null ) {
-          args.put("date", dateFormat.format(invoice.getDueDate()));
-        }
-
-        args.put("name", user.getFirstName());
-        args.put("amount", currencyDAO.find(((Currency) currencyDAO.find(invoice.getDestinationCurrency())).format(
-              invoice.getAmount()) + " " + invoice.getDestinationCurrency()));
-        if ( ! SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
-          args.put("invoiceNumber", invoice.getInvoiceNumber());
-        }
-        args.put("fromEmail", invType ? payee.getEmail() : payer.getEmail());
-        args.put("fromName", invType ? payee.label() : payer.label());
-        args.put("email", user.getEmail());
-        args.put("link", urlStringB.toString());
-        emailService.sendEmailFromTemplate(x, user, message, emailTemplate, args);
+        parameters.put("link", urlStringB.toString());
+        emailService.sendEmailFromTemplate(x, user, message, template, parameters);
 
         return true;
       } catch (Throwable t) {
@@ -182,9 +129,9 @@ foam.CLASS({
 
           // Attempts to find corresponding non expired, unprocessed token.
           Token result = (Token) tokenDAO.find(AND(
-          EQ(Token.PROCESSED, false),
-          GT(Token.EXPIRY, calendar.getTime()),
-          EQ(Token.DATA, token)
+            EQ(Token.PROCESSED, false),
+            GT(Token.EXPIRY, calendar.getTime()),
+            EQ(Token.DATA, token)
           ));
 
           if ( result == null ) {
@@ -193,8 +140,8 @@ foam.CLASS({
             throw new RuntimeException("Registration failed due to expired invitation. Please request an invite or sign up directly.");
           }
 
-          // FObject result = (FObject) list.get(0);
           Token clone = (Token) result.fclone();
+          // This is the current user - happy path is such that existingUser is the contact we want to replace
           User existingUser = (User) bareUserDAO.find(clone.getUserId());
 
           // Does not process token if new user email address does not match token user email address.
@@ -203,6 +150,9 @@ foam.CLASS({
           }
 
           // Does not set password and processes token if user exists.
+          // *So User is the new user we are creating,
+          // *existingUser is the contact - and
+          // *realUser attempts to see if existingUser has already become an active user.
           User realUser = (User) userUserDAO.find(
             AND(
               EQ(User.EMAIL, user.getEmail()),

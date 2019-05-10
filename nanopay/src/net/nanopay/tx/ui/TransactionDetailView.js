@@ -17,7 +17,7 @@ foam.CLASS({
     ^ .net-nanopay-tx-ui-SingleItemView{
       margin-top: 25px;
     }
-    ^ .net-nanopay-ui-ActionView-backAction{
+    ^ .foam-u2-ActionView-backAction{
       border-radius: 2px;
       border: 1px solid lightgrey;
       // background-color: rgba(164, 179, 184, 0.1);

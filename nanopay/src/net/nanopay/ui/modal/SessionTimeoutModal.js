@@ -59,12 +59,12 @@ foam.CLASS({
       letter-spacing: normal;
     }
     
-    ^ .net-nanopay-ui-ActionView-signOut {
+    ^ .foam-u2-ActionView-signOut {
       width: 96px;
       height: 36px;
     }
     
-    ^ .net-nanopay-ui-ActionView-staySignIn {
+    ^ .foam-u2-ActionView-staySignIn {
       width: 120px;
       height: 36px;
       margin-left: 16px;
@@ -125,10 +125,11 @@ foam.CLASS({
         try {
           X.closeDialog();
           clearTimeout(this.sessionTimer.timer);
-          this.requestLogin();
           await this.auth.logout();
+          window.location.assign(window.location.origin);
         } catch (e) {
           this.notify(e.toString(), 'error');
+          window.location.assign(window.location.origin);
         }
       }
     },

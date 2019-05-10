@@ -23,6 +23,20 @@ foam.CLASS({
   ],
 
   css: `
+    ^container {
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+    ^container:hover {
+      cursor: pointer;
+    }
+    ^container img {
+      margin: 0 4px;
+    }
+    ^container span {
+      font-size: 12px;
+    }
     ^carrot {
       width: 0;
       height: 0;
@@ -34,13 +48,15 @@ foam.CLASS({
       margin-top: 8px;
       margin-left: 5px;
     }
-    ^ .net-nanopay-ui-ActionView-currencyChoice{
-      background: none;
+    ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
       width: 84px !important;
       cursor: pointer;
       margin-left: 5px;
     }
-    ^ .net-nanopay-ui-ActionView-currencyChoice > span{
+    ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice > span {
       color: #2b2b2b !important;
       font-family: lato !important;
       font-size: 12px;
@@ -123,10 +139,10 @@ foam.CLASS({
       position: fixed;
       z-index: 850;
     }
-    ^ .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-currencyChoice img {
+    ^ .net-nanopay-sme-ui-AbliiActionView.net-nanopay-sme-ui-AbliiActionView-currencyChoice img {
       border-radius: 2px !important;
     }
-    ^ .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-currencyChoice:hover {
+    ^ .net-nanopay-sme-ui-AbliiActionView.net-nanopay-sme-ui-ActionView-currencyChoice:hover {
       background: transparent !important;
     }
     ^ .disabled {
@@ -178,12 +194,11 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-        .start(this.CURRENCY_CHOICE, {
-          icon$: this.chosenCurrency$.dot('flagImage').map(function(v) {
-            return v || ' ';
-          }),
-          label$: this.chosenCurrency$.dot('alphabeticCode')
-        })
+        .start()
+          .addClass(this.myClass('container'))
+          .start('img').attr('src', this.chosenCurrency$.dot('flagImage')).end()
+          .add(this.chosenCurrency$.dot('alphabeticCode'))
+          .on('click', this.onClick)
           .enableClass('disabled', this.mode$.map((mode) => mode === foam.u2.DisplayMode.DISABLED))
           .start('div')
             .addClass(this.myClass('carrot'))
@@ -193,42 +208,38 @@ foam.CLASS({
     }
   ],
 
-  actions: [
+  listeners: [
     {
-    name: 'currencyChoice',
-    label: ' ', // Whitespace is required
-    isEnabled: function(mode) {
-      return mode !== foam.u2.DisplayMode.DISABLED;
-    },
-    code: function() {
+      name: 'onClick',
+      code: function() {
         var self = this;
 
         this.optionPopup_ = this.View.create({});
 
         this.optionPopup_ = this.optionPopup_
-        .start('div')
-          .addClass('popUpDropDown')
-          .select(this.filteredDAO, function(currency) {
-            if ( typeof currency.flagImage === 'string' ) {
-              return this.E()
-                .start('img').addClass(this.myClass('img'))
-                    .attrs({ src: currency.flagImage })
-                    .addClass('flag')
-                .end()
-                .add(currency.alphabeticCode)
-                .on('click', function() {
-                    self.chosenCurrency = currency;
-                    self.optionPopup_.remove();
-                });
-            }
-          })
-        .end()
-        .start()
-          .addClass(this.myClass('background'))
-          .on('click', () => {
-            this.optionPopup_.remove();
-          })
-        .end();
+          .start('div')
+            .addClass('popUpDropDown')
+            .select(this.filteredDAO, function(currency) {
+              if ( typeof currency.flagImage === 'string' ) {
+                return this.E()
+                  .start('img').addClass(this.myClass('img'))
+                      .attrs({ src: currency.flagImage })
+                      .addClass('flag')
+                  .end()
+                  .add(currency.alphabeticCode)
+                  .on('click', function() {
+                      self.chosenCurrency = currency;
+                      self.optionPopup_.remove();
+                  });
+              }
+            })
+          .end()
+          .start()
+            .addClass(this.myClass('background'))
+            .on('click', () => {
+              this.optionPopup_.remove();
+            })
+          .end();
 
         self.optionsBtn_.add(self.optionPopup_);
       }
