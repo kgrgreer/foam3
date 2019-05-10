@@ -303,8 +303,8 @@
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
-    ^ .net-nanopay-ui-ActionView-enableTwoFactor,
-      .net-nanopay-ui-ActionView-disableTwoFactor {
+    ^ .foam-u2-ActionView-enableTwoFactor,
+      .foam-u2-ActionView-disableTwoFactor {
       width: 108px;
       height: 30px;
       border-radius: 2px;

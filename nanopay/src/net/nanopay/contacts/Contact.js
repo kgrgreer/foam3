@@ -48,7 +48,8 @@ foam.CLASS({
     'organization',
     'legalName',
     'email',
-    'signUpStatus'
+    'signUpStatus',
+    'deleted'
   ],
 
   properties: [
@@ -174,8 +175,8 @@ foam.CLASS({
         String containsDigitRegex = ".*\\\\d.*";
 
         if ( getBusinessId() != 0 ) {
-          DAO businessDAO = (DAO) x.get("businessDAO");
-          Business business = (Business) businessDAO.inX(x).find(getBusinessId());
+          DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+          Business business = (Business) localBusinessDAO.inX(x).find(getBusinessId());
           if ( business == null ) {
             throw new IllegalStateException("The business this contact references was not found.");
           }

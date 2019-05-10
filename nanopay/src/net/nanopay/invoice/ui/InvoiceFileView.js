@@ -76,13 +76,13 @@ foam.CLASS({
       padding-top: 6px;
       margin-left: 1.5px;
     }
-    ^ .net-nanopay-ui-ActionView-remove {
+    ^ .foam-u2-ActionView-remove {
       width: 20px;
       height: 20px;
       object-fit: contain;
       background: white;
     }
-    ^ .net-nanopay-ui-ActionView-remove:hover {
+    ^ .foam-u2-ActionView-remove:hover {
       background: white;
     }
   `,

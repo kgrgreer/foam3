@@ -40,14 +40,14 @@ foam.CLASS({
       display: inline-block;
       float: right;
     }
-    ^ .net-nanopay-ui-ActionView-backAction {
+    ^ .foam-u2-ActionView-backAction {
       width: 135px;
       height: 40px;
       border-radius: 2px;
       // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
     }
-    ^ .net-nanopay-ui-ActionView-print {
+    ^ .foam-u2-ActionView-print {
       width: 70px;
       height: 40px;
       border-radius: 2px;
@@ -55,13 +55,13 @@ foam.CLASS({
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
       margin-right: 10px;
     }
-    ^ .net-nanopay-ui-ActionView-print img {
+    ^ .foam-u2-ActionView-print img {
       width: 20px;
       height: 20px;
       object-fit: contain;
       margin-right: 9px;
     }
-    ^ .net-nanopay-ui-ActionView-print span {
+    ^ .foam-u2-ActionView-print span {
       width: 31px;
       height: 20px;
       font-family: Roboto;
@@ -74,7 +74,7 @@ foam.CLASS({
       text-align: center;
       color: #093649;
     }
-    ^ .net-nanopay-ui-ActionView-enableProfile {
+    ^ .foam-u2-ActionView-enableProfile {
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       color: white;
@@ -83,7 +83,7 @@ foam.CLASS({
       position: sticky;
       z-index: 10;
     }
-    ^ .net-nanopay-ui-ActionView-approveProfile {
+    ^ .foam-u2-ActionView-approveProfile {
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       color: white;
@@ -92,7 +92,7 @@ foam.CLASS({
       position: sticky;
       z-index: 10;
     }
-    ^ .net-nanopay-ui-ActionView-disableProfile {
+    ^ .foam-u2-ActionView-disableProfile {
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       color: white;
@@ -102,14 +102,14 @@ foam.CLASS({
       z-index: 10;
     }
 
-    ^ .net-nanopay-ui-ActionView-approveProfileDropDown {
+    ^ .foam-u2-ActionView-approveProfileDropDown {
       width: 30px;
       height: 40px;
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       float: right;
     }
-    ^ .net-nanopay-ui-ActionView-approveProfileDropDown::after {
+    ^ .foam-u2-ActionView-approveProfileDropDown::after {
       content: ' ';
       position: absolute;
       height: 0;
@@ -119,7 +119,7 @@ foam.CLASS({
       transform: translate(-6.5px, -1px);
     }
 
-    ^ .net-nanopay-ui-ActionView-activateProfile {
+    ^ .foam-u2-ActionView-activateProfile {
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       color: white;
@@ -128,14 +128,14 @@ foam.CLASS({
       position: sticky;
       z-index: 10;
     }
-    ^ .net-nanopay-ui-ActionView-activateProfileDropDown {
+    ^ .foam-u2-ActionView-activateProfileDropDown {
       width: 30px;
       height: 40px;
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       float: right;
     }
-    ^ .net-nanopay-ui-ActionView-activateProfileDropDown::after {
+    ^ .foam-u2-ActionView-activateProfileDropDown::after {
       content: ' ';
       position: absolute;
       height: 0;
@@ -145,7 +145,7 @@ foam.CLASS({
       transform: translate(-6.5px, -1px);
     }
 
-    ^ .net-nanopay-ui-ActionView-editProfile {
+    ^ .foam-u2-ActionView-editProfile {
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       color: white;
@@ -154,14 +154,14 @@ foam.CLASS({
       position: sticky;
       z-index: 10;
     }
-    ^ .net-nanopay-ui-ActionView-editProfileDropDown {
+    ^ .foam-u2-ActionView-editProfileDropDown {
       width: 30px;
       height: 40px;
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       float: right;
     }
-    ^ .net-nanopay-ui-ActionView-editProfileDropDown::after {
+    ^ .foam-u2-ActionView-editProfileDropDown::after {
       content: ' ';
       position: absolute;
       height: 0;

@@ -16,13 +16,13 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        return AND(
-          EQ(DOT(NEW_OBJ, INSTANCE_OF(User.getOwnClassInfo()))    , true),
-          EQ(DOT(NEW_OBJ, INSTANCE_OF(Business.getOwnClassInfo())), false),
-          EQ(DOT(DOT(NEW_OBJ, User.ADDRESS), Address.COUNTRY_ID)  , "CA"),
-          EQ(DOT(NEW_OBJ, User.COMPLIANCE), ComplianceStatus.REQUESTED),
-          NEQ(DOT(OLD_OBJ, User.COMPLIANCE), ComplianceStatus.REQUESTED)
-        ).f(obj);
+        User user = (User) NEW_OBJ.f(obj);
+        Address address = user.getAddress();
+
+        return address != null
+          && address.getCountryId().equals("CA")
+          && user.getClass() == User.class
+          && ComplianceStatus.REQUESTED == user.getCompliance();
       `
     }
   ]

@@ -30,9 +30,10 @@ foam.CLASS({
     ^ .foam-u2-tag-Select {
       width: 100%;
     }
-    ^ .net-nanopay-ui-ActionView-closeModal {
+    ^ .foam-u2-ActionView-closeModal {
       width: 60px;
-      background: none;
+      background: none !important;
+      border: none !important;
       color: #525455;
       font-size: 16px;
       margin-right: 25px;
@@ -45,17 +46,13 @@ foam.CLASS({
       padding-top: 25px;
       background: #fafafa;
     }
-    ^ .net-nanopay-ui-ActionView-closeModal:hover {
+    ^ .foam-u2-ActionView-closeModal:hover {
       width: 60px;
       background: none;
       color: #525455;
     }
     ^ .input-container {
       margin: 25px;
-    }
-    ^ .button {
-      width: 100px;
-      font-size: 14px;
     }
   `,
 
@@ -115,7 +112,7 @@ foam.CLASS({
         .start().addClass('bottom-modal')
           .start().addClass('float-right')
             .startContext({ data: this })
-              .start(this.CLOSE_MODAL).end()
+              .tag(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' })
               .start(this.ADD_USER).addClass('sme').addClass('button').addClass('primary').end()
             .endContext()
           .end()
@@ -160,8 +157,7 @@ foam.CLASS({
             this.closeDialog();
           })
           .catch((err) => {
-            var message = err ? err.message : this.INVITATION_ERROR;
-            this.notify(message, 'error');
+            this.notify(this.INVITATION_ERROR, 'error');
           });
       }
     },

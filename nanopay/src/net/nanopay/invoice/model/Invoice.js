@@ -460,8 +460,7 @@ foam.CLASS({
           sections: [
             {
               dao: foam.dao.PromisedDAO.create({
-                promise: X.businessDAO
-                  .where(m.NEQ(net.nanopay.model.Business.STATUS, net.nanopay.admin.model.AccountStatus.DISABLED))
+                promise: X.publicBusinessDAO
                   .select(m.MAP(net.nanopay.model.Business.ID))
                   .then(function(sink) {
                     return X.user.contacts
@@ -474,21 +473,6 @@ foam.CLASS({
                       .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
                   })
               })
-            },
-            {
-              heading: 'Disabled contacts',
-              dao: foam.dao.PromisedDAO.create({
-                promise: X.businessDAO
-                  .where(m.EQ(net.nanopay.model.Business.STATUS, net.nanopay.admin.model.AccountStatus.DISABLED))
-                  .select(m.MAP(net.nanopay.model.Business.ID))
-                  .then(function(sink) {
-                    return X.user.contacts
-                      .where(m.IN(net.nanopay.contacts.Contact.BUSINESS_ID, sink.delegate.array))
-                      .orderBy(foam.nanos.auth.User.BUSINESS_NAME);
-                  })
-              }),
-              disabled: true,
-              hideIfEmpty: true
             }
           ]
         };

@@ -138,14 +138,14 @@ foam.CLASS({
       padding: 24px !important;
     }
 
-    .net-nanopay-ui-ActionView-addButton,
-    .net-nanopay-ui-ActionView-saveButton {
+    .foam-u2-ActionView-addButton,
+    .foam-u2-ActionView-saveButton {
       float: right;
       margin-bottom: 0px !important;
       width: 135px !important;
     }
 
-    .net-nanopay-ui-ActionView-closeButton {
+    .foam-u2-ActionView-closeButton {
       margin-right: 0px !important;
     }
 
@@ -379,77 +379,6 @@ foam.CLASS({
       border: 1px solid %SECONDARYCOLOR% !important;
       background-image: url(images/ablii/radio-active.svg);
     }
-    }
-    .sme.button {
-      font-size: 16px;
-      border-radius: 4px;
-      font-weight: 500;
-      width: 128px;
-      height: 48px;
-      cursor: pointer;
-      text-align: center;
-      font-family: 'Lato', sans-serif !important;
-    }
-
-    .sme.button:focus {
-      outline: none;
-    }
-
-    .sme.button:active:enabled {
-      box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.54);
-    }
-
-    .sme.button.secondary:active {
-      box-shadow: inset 0 2px 1px 0 rgba(32, 46, 120, 0.34);
-    }
-
-    .sme.button.primary {
-      background: #604aff;
-      color: #fff;
-      border: none;
-    }
-
-    .sme.button.primary:hover {
-      background: #4d38e1;
-    }
-
-    .sme.button.secondary {
-      background: #fff;
-      color: #604aff;
-      border: 1px solid #604aff;
-    }
-
-    .sme.button.secondary:hover {}
-
-    .sme.button.error {
-      background: #f91c1c;
-      color: #fff;
-      border: none;
-    }
-
-    .sme.button.error:hover {
-      background: #da1818;
-    }
-
-    .sme.button.error.secondary {
-      background: #fff;
-      color: #f91c1c;
-      border: 1px solid #f91c1c;
-    }
-
-    .sme.button.medium {
-      width: 96px;
-      height: 36px;
-      font-size: 14px;
-    }
-
-    .sme.button.small {
-      width: 70px;
-      height: 24px;
-      font-size: 10px;
-    }
-
-    .sme.button.error.secondary:hover {}
 
     /* Link */
 
@@ -617,7 +546,7 @@ foam.CLASS({
     .card {
       border-radius: 2px;
       box-shadow: 0 1px 1px 0 #dae1e9;
-      border: solid 1px #edf0f5;
+      border: solid 1px %BACKGROUNDCOLOR%;
       background-color: #ffffff;
     }
 
@@ -726,13 +655,13 @@ foam.CLASS({
       padding: 12px;
     }
 
-    .net-nanopay-ui-ActionView-submitButton {
+    .foam-u2-ActionView-submitButton {
       background-color: #604aff !important;
     }
 
     /* DAO controller */
 
-    .foam-comics-DAOControllerView-top-row .net-nanopay-ui-ActionView {
+    .foam-comics-DAOControllerView-top-row .foam-u2-ActionView {
       width: 158px !important;
       height: 48px !important;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
@@ -742,7 +671,7 @@ foam.CLASS({
       background: #604aff !important;
     }
 
-    .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView {
+    .foam-comics-DAOControllerView .actions .foam-u2-ActionView {
       display: flex;
       align-items: center;
       background: none !important;
@@ -760,11 +689,11 @@ foam.CLASS({
       display: inline-block;
     }
 
-    .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView img + span {
+    .foam-comics-DAOControllerView .actions .foam-u2-ActionView img + span {
       margin-left: 12px;
     }
 
-    .foam-comics-DAOControllerView .actions .net-nanopay-ui-ActionView:hover {
+    .foam-comics-DAOControllerView .actions .foam-u2-ActionView:hover {
       /* Change the color of the icon to purple */
       filter: hue-rotate(67deg) saturate(100000000) opacity(65%);
     }
@@ -1128,7 +1057,7 @@ foam.CLASS({
       background-color: #f9fbff !important;
     }
 
-    .net-nanopay-ui-ActionView-save {
+    .foam-u2-ActionView-save {
       color: #525455 !important;
       background: none !important;
       font-size: 16px !important;
@@ -1136,7 +1065,7 @@ foam.CLASS({
       height: 48px !important;
     }
 
-    .net-nanopay-ui-ActionView-exit {
+    .foam-u2-ActionView-exit {
       color: #525455 !important;
       background: none !important;
       font-size: 16px !important;
@@ -1146,7 +1075,7 @@ foam.CLASS({
       box-shadow: none !important;
     }
 
-    .net-nanopay-ui-ActionView-goNext {
+    .foam-u2-ActionView-goNext {
       width: 158px !important;
       height: 48px !important;
       border-radius: 4px !important;
@@ -1158,8 +1087,8 @@ foam.CLASS({
       font-family: lato !important;
     }
 
-    .net-nanopay-ui-ActionView-goBack,
-    .net-nanopay-sme-ui-SendRequestMoney .net-nanopay-ui-ActionView-save {
+    .foam-u2-ActionView-goBack,
+    .net-nanopay-sme-ui-SendRequestMoney .foam-u2-ActionView-save {
       width: 158px !important;
       height: 48px !important;
       border-radius: 4px !important;
@@ -1179,10 +1108,10 @@ foam.CLASS({
     .navigationBar {
       height: 72px !important;
       box-shadow: 0 1px 1px 0 #dae1e9 !important;
-      border-top: 1px solid #edf0f5 !important;
+      border-top: 1px solid %BACKGROUNDCOLOR% !important;
     }
 
-    .net-nanopay-ui-ActionView-unavailable {
+    .foam-u2-ActionView-unavailable {
       display: none !important;
     }
 

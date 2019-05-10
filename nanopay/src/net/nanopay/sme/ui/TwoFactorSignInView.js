@@ -18,58 +18,29 @@ foam.CLASS({
 
   css: `
     ^ .tfa-container {
-      padding-top: 20px;
-      width: 490px;
-      height: 150px;
       border-radius: 2px;
-      background-color: #ffffff;
-    }
-    ^ p {
-      display: inline-block;
-    }
-    ^ .label {
-      height: 16px;
-      font-family: Roboto;
-      font-size: 14px;
-      font-weight: 300;
-      text-align: left;
-      color: #093649;
-      margin-bottom: 8px;
-      margin-left: 25px;
-    }
-    ^ .full-width-input {
-      width: 90%;
-      height: 40px;
-      margin-left: 5%;
-      margin-bottom: 15px;
-      outline: none;
-      padding: 10px;
-    }
-    ^ .full-width-button {
-      width: 90%;
-      height: 40px;
-      border-radius: 2px;
-      margin: 0 auto;
-      text-align: center;
-      line-height: 40px;
-      cursor: pointer;
-      color: #ffffff;
-      margin-top: 10px;
-      margin-left: 25px;
+      margin-top: 20px;
+      width: 450px;
     }
     ^ .tf-container {
       width: 450px;
       margin: auto;
     }
-    ^ .full-width-button > span {
-      position: relative;
-      top: -5px;
-    }
-    ^ .net-nanopay-ui-ActionView-verify {
+    ^ .foam-u2-ActionView-verify {
       padding-top: 4px;
     }
     ^ .caption {
       margin: 15px 0px;
+    }
+    ^ input {
+      width: 100%;
+    }
+    ^button-container {
+      display: flex;
+      justify-content: flex-end;
+    }
+    ^verify-button {
+      width: 100%;
     }
   `,
 
@@ -85,11 +56,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification token.' },
-    { name: 'TWO_FACTOR_SUCCESS', message: 'Login successful.' },
-    { name: 'TWO_FACTOR_LABEL', message: 'Token' },
-    { name: 'TWO_FACTOR_ERROR', message: 'Login failed. Please try again.' },
-    { name: 'TWO_FACTOR_TITLE', message: 'Two-Factor Authentication' },
+    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification code.' },
+    { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },
+    { name: 'TWO_FACTOR_ERROR', message: 'Incorrect code. Please try again.' },
+    { name: 'TWO_FACTOR_TITLE', message: 'Two-factor authentication' },
     { name: 'TWO_FACTOR_EXPLANATION', message: `Two-factor authentication is an extra layer of security for your Ablii account
         designed to ensure that you're the only person who can access your account, even if someone knows your password.
         Please get you code and enter it below. Please contact us at hello@ablii.com if you have lost your code.`
@@ -107,10 +77,20 @@ foam.CLASS({
           .start().addClass('caption').addClass('explanation-container')
             .add(this.TWO_FACTOR_EXPLANATION)
           .end()
-          .start('form').addClass('tfa-container')
-            .start().addClass('label').add(this.TWO_FACTOR_LABEL).end()
-            .start(this.TWO_FACTOR_TOKEN).addClass('full-width-input').end()
-            .start(this.VERIFY).addClass('full-width-button').end()
+          .start('form')
+            .addClass('tfa-container')
+            .start('label')
+              .add(this.TWO_FACTOR_LABEL)
+            .end()
+            .start('p')
+              .tag(this.TWO_FACTOR_TOKEN)
+            .end()
+            .start()
+              .addClass(this.myClass('button-container'))
+              .start(this.VERIFY)
+              .addClass(this.myClass('verify-button'))
+              .end()
+            .end()
           .end()
         .end();
     }
@@ -131,7 +111,6 @@ foam.CLASS({
         .then(function(result) {
           if ( result ) {
             self.loginSuccess = true;
-            self.notify(self.TWO_FACTOR_SUCCESS);
           } else {
             self.loginSuccess = false;
             self.notify(self.TWO_FACTOR_ERROR, 'error');

@@ -108,7 +108,7 @@ foam.CLASS({
       margin: auto;
       top: 40px;
     }
-    ^ .net-nanopay-ui-ActionView-remove {
+    ^ .foam-u2-ActionView-remove {
       background: none;
     }
   `,

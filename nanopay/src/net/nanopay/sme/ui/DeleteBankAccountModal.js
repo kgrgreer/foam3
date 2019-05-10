@@ -77,7 +77,7 @@ foam.CLASS({
       margin: 0;
       padding-top: 24px;
     }
-    ^ .net-nanopay-ui-modal-ModalHeader .net-nanopay-ui-ActionView-closeModal {
+    ^ .net-nanopay-ui-modal-ModalHeader .foam-u2-ActionView-closeModal {
       display: none;
     }
     ^ .net-nanopay-ui-modal-ModalHeader .title {
@@ -88,13 +88,13 @@ foam.CLASS({
       margin-left: 0;
       line-height: 1.5;
     }
-    ^ .net-nanopay-ui-ActionView-delete {
+    ^ .foam-u2-ActionView-delete {
       background-color: #f91c1c;
       width: auto;
       padding-left: 20px;
       padding-right: 20px;
     }
-    ^ .net-nanopay-ui-ActionView-delete:hover {
+    ^ .foam-u2-ActionView-delete:hover {
       background-color: #e31212;
     }
   `,

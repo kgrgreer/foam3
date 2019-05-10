@@ -29,11 +29,13 @@ public class SecurefactRequestGenerator {
   public static LEVRequest getLEVRequest(X x, Business business) {
     LEVRequest request = new LEVRequest();
     request.setSearchType("name");
-    request.setEntityName(business.getBusinessName());
+    request.setEntityName(business.getOrganization());
 
     Address address = business.getAddress();
-    if ( address == null ) {
-      throw new IllegalStateException("Business address can't be null");
+    if ( address == null
+      || ! address.getCountryId().equals("CA")
+    ) {
+      throw new IllegalStateException("Business address must be in Canada.");
     }
     request.setCountry(address.getCountryId());
     request.setJurisdiction(address.getRegionId());
@@ -60,6 +62,7 @@ public class SecurefactRequestGenerator {
       //       user's consent for using Securefact to verify his/her identity
       //       when completing business profile in BeneficialOwnershipForm.
       .setConsentGranted(true)
+      .setLanguage("en-CA")
       .build();
   }
 
