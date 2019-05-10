@@ -10,19 +10,17 @@ foam.CLASS({
       width: 100%;
     }
     ^ .styleHolder_NameField {
-    }
-    ^ .styleHolder_EmailField {
+      margin-right: 8px;
     }
   `,
 
-  messages: [
-    {
-      name: 'DEFAULT_LABEL',
-      message: 'Select...'
-    }
-  ],
-
   properties: [
+    {
+      class: 'String',
+      name: 'emptySelectionLabel',
+      documentation: 'Empty selection label',
+      value: 'Select...'
+    },
     {
       name: 'data'
     },
@@ -48,7 +46,7 @@ foam.CLASS({
                 }
                 return formatted;
               }) :
-              this.DEFAULT_LABEL)
+              this.emptySelectionLabel)
           .end()
           .start().addClass('styleHolder_EmailField')
             .add(this.data ?

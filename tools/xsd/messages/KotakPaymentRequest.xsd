@@ -14,7 +14,7 @@
       <xs:element name="Enrichment" type="MaxChar4000_ST" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="InitiateRequest">
+  <xs:complexType name="Payment">
     <xs:sequence>
       <xs:element name="RequestHeader" type="RequestHeaderType"/>
       <xs:element name="InstrumentList" type="InstrumentListType"/>
@@ -38,7 +38,7 @@
       <xs:element name="AccountNo" type="MaxChar20_ST" minOccurs="0"/>
       <xs:element name="DrRefNmbr" type="MaxChar14_ST" minOccurs="0"/>
       <xs:element name="DrDesc" type="MaxChar40_ST" minOccurs="0"/>
-      <xs:element name="PaymentDt" type="Date_ST" minOccurs="0"/>
+      <xs:element name="PaymentDt" type="MaxChar20_ST" minOccurs="0"/>
       <xs:element name="BankCdInd" type="MaxChar1_ST" minOccurs="0"/>
       <xs:element name="BeneBnkCd" type="MaxChar10_ST" minOccurs="0"/>
       <xs:element name="RecBrCd" type="MaxChar11_ST" minOccurs="0"/>
@@ -67,7 +67,7 @@
       <xs:element name="PickupBr" type="MaxChar10_ST" minOccurs="0"/>
       <xs:element name="PaymentRef" type="MaxChar45_ST" minOccurs="0"/>
       <xs:element name="ChgBorneBy" type="MaxChar1_ST" minOccurs="0"/>
-      <xs:element name="InstDt" type="Date_ST" minOccurs="0"/>
+      <xs:element name="InstDt" type="MaxChar20_ST" minOccurs="0"/>
       <xs:element name="MICRNo" type="MaxChar6_ST" minOccurs="0"/>
       <xs:element name="CreditRefNo" type="MaxChar45_ST" minOccurs="0"/>
       <xs:element name="PaymentDtl" type="MaxChar140_ST" minOccurs="0"/>

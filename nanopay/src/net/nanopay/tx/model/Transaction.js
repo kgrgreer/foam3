@@ -7,7 +7,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.analytics.Foldable'
   ],
 
   imports: [
@@ -458,6 +459,14 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'doFolds',
+      javaCode: `
+        for ( Transfer t : getTransfers() ) {
+          fm.foldForState(t.getAccount(),getLastModified(),t.getAmount());
+        }
+      `
+    },
     {
       name: 'limitedClone',
       args: [
