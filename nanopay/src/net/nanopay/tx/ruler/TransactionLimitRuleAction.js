@@ -59,8 +59,8 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-        net.nanopay.tx.ruler.AbstractTransactionLimitRule rule_;
-        public TransactionLimitRuleAction(net.nanopay.tx.ruler.AbstractTransactionLimitRule rule) {
+        net.nanopay.tx.ruler.TransactionLimitRule rule_;
+        public TransactionLimitRuleAction(net.nanopay.tx.ruler.TransactionLimitRule rule) {
           rule_ = rule;
         }
         `);

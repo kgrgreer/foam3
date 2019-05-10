@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
-  name: 'AbstractTransactionLimitRule',
+  name: 'TransactionLimitRule',
   extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
@@ -8,13 +8,7 @@ foam.CLASS({
   'by models that would provide logic for getObjectToMap method. See example: AccountTransactionLimitRule.',
 
   javaImports: [
-    'foam.core.FObject',
     'foam.core.X',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.RuleAction',
-    'foam.nanos.ruler.RuleEngine',
-    'java.util.HashMap',
-    'net.nanopay.account.Account',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
@@ -105,7 +99,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      AbstractTransactionLimitRule ret = (AbstractTransactionLimitRule) rule.fclone();
+      TransactionLimitRule ret = (TransactionLimitRule) rule.fclone();
       if ( ret.getSend() != getSend() ) {
         throw new RuntimeException("send property cannot be changed");
       }

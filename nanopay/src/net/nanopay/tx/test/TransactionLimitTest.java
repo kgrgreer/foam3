@@ -46,7 +46,6 @@ public class TransactionLimitTest extends Test {
     tx.setDestinationAccount(receiver_.getId());
     tx = (Transaction) txDAO.put_(x, tx);
     test(tx instanceof Transaction, "transaction for 9990 went though successfully. Limit is 10000");
-    System.out.println(tx);
 
     Transaction tx2 = new Transaction();
     tx2.setAmount(20L);
@@ -56,7 +55,6 @@ public class TransactionLimitTest extends Test {
       () -> txDAO.put_(x, tx2),
       "LIMIT",
       RuntimeException.class), "next transaction for 100L throws exception");
-    System.out.println(tx2);
 
     Transaction tx3 = new Transaction();
     tx3.setAmount(10L);

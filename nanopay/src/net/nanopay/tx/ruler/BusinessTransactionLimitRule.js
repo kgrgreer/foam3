@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'BusinessTransactionLimitRule',
-  extends: 'net.nanopay.tx.ruler.AbstractTransactionLimitRule',
+  extends: 'net.nanopay.tx.ruler.TransactionLimitRule',
 
   methods: [
     {

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'UserTransactionLimitRule',
-  extends: 'net.nanopay.tx.ruler.AbstractTransactionLimitRule',
+  extends: 'net.nanopay.tx.ruler.TransactionLimitRule',
 
   methods: [
     {
@@ -17,7 +17,7 @@ foam.CLASS({
           type: 'foam.core.X'
         }
       ],
-      javaCode: 'return getSend() ? txn.findSourceAccount(x).findOwner(x).getId() : txn.findDestinationAccount(x).findOwner(x).getId();'
+      javaCode: 'return getSend() ? txn.findSourceAccount(x).getOwner() : txn.findDestinationAccount(x).getOwner();'
     }
   ]
 });
