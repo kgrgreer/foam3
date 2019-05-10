@@ -488,7 +488,6 @@ foam.CLASS({
         return ! errors && ! this.isLoading;
       },
       code: function() {
-        // debugger;
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
