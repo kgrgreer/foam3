@@ -5,13 +5,13 @@ import java.security.MessageDigest;
 
 public class MerkleTree {
 
-  protected static final int DEFAULT_SIZE = 50000;
+  protected static int defaultSize_ = 50000;
+
 
   protected byte[][] data_ = null;
   protected int size_ = 0;
   protected String hashAlgorithm_;
   protected int treeDepth_ = 0;
-
 
   private ThreadLocal<MessageDigest> md_ = new ThreadLocal<MessageDigest>() {
     @Override
@@ -57,10 +57,10 @@ public class MerkleTree {
    */
   public void addHash(byte[] newHash){
     if ( data_ == null ){
-      data_ = new byte[DEFAULT_SIZE][newHash.length];
-    } else if ( size_ % DEFAULT_SIZE == 0 ) {
+      data_ = new byte[defaultSize_][newHash.length];
+    } else if ( size_ % defaultSize_ == 0 ) {
       byte[][] oldData = data_;
-      data_ = new byte[size_ + DEFAULT_SIZE][newHash.length];
+      data_ = new byte[size_ + defaultSize_][newHash.length];
       System.arraycopy(oldData, 0, data_, 0, size_);
     }
 
