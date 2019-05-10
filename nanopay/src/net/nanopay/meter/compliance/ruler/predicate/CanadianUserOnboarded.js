@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.predicate',
+  package: 'net.nanopay.meter.compliance.ruler.predicate',
   name: 'CanadianUserOnboarded',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],

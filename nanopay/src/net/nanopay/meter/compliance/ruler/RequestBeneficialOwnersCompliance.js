@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance',
+  package: 'net.nanopay.meter.compliance.ruler',
   name: 'RequestBeneficialOwnersCompliance',
 
   documentation: 'Marks beneficial owners of a business as compliance requested.',

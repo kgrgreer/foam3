@@ -459,20 +459,25 @@ var classes = [
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
   'net.nanopay.meter.compliance.ComplianceService',
   'net.nanopay.meter.compliance.NanopayComplianceService',
+
+  // ruler
+  'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
+  'net.nanopay.meter.compliance.ruler.RequestBeneficialOwnersCompliance',
+  'net.nanopay.meter.compliance.ruler.RequestSigningOfficersCompliance',
+  'net.nanopay.meter.compliance.ruler.SecurefactLEVValidator',
+  'net.nanopay.meter.compliance.ruler.SecurefactSIDniValidator',
+  'net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarding',
+  'net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded',
+  'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
+
+  // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
-  'net.nanopay.meter.compliance.CanadianSanctionValidator',
-  'net.nanopay.meter.compliance.RequestBeneficialOwnersCompliance',
-  'net.nanopay.meter.compliance.RequestSigningOfficersCompliance',
-  'net.nanopay.meter.compliance.predicate.BusinessOnboarding',
-  'net.nanopay.meter.compliance.predicate.CanadianBusinessOnboarded',
-  'net.nanopay.meter.compliance.predicate.CanadianUserOnboarded',
 
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
   'net.nanopay.meter.compliance.secureFact.SecurefactService',
-  'net.nanopay.meter.compliance.secureFact.sidni.SIDniValidator',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniRequest',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniCustomer',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniName',
@@ -482,7 +487,6 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAdditionalMatchInfo',
   'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniDataSources',
-  'net.nanopay.meter.compliance.secureFact.lev.LEVValidator',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVApplicant',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVChange',
   'net.nanopay.meter.compliance.secureFact.lev.model.LEVError',

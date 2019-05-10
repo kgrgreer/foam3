@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance',
+  package: 'net.nanopay.meter.compliance.ruler',
   name: 'RequestSigningOfficersCompliance',
 
   documentation: 'Marks signing officers of a business as compliance requested.',

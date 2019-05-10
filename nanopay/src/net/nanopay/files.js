@@ -841,14 +841,20 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
   { name: 'net/nanopay/meter/compliance/ComplianceService' },
   { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
-  { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
-  { name: 'net/nanopay/meter/compliance/CanadianSanctionValidator' },
-  { name: 'net/nanopay/meter/compliance/RequestBeneficialOwnersCompliance' },
-  { name: 'net/nanopay/meter/compliance/RequestSigningOfficersCompliance' },
   { name: 'net/nanopay/meter/compliance/refinements' },
-  { name: 'net/nanopay/meter/compliance/predicate/BusinessOnboarding' },
-  { name: 'net/nanopay/meter/compliance/predicate/CanadianBusinessOnboarded' },
-  { name: 'net/nanopay/meter/compliance/predicate/CanadianUserOnboarded' },
+
+  // ruler
+  { name: 'net/nanopay/meter/compliance/ruler/CanadianSanctionValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/RequestBeneficialOwnersCompliance' },
+  { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
+  { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/SecurefactSIDniValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarding' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
+
+  // canadian sanction
+  { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
 
   // securefact
   { name: 'net/nanopay/meter/compliance/secureFact/ResponseError' },
@@ -864,8 +870,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniAddress' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniCustomer' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/model/SIDniAdditionalMatchInfo' },
-  { name: 'net/nanopay/meter/compliance/secureFact/sidni/SIDniValidator' },
-  { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVValidator' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVApplicant' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVChange' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/model/LEVError' },
