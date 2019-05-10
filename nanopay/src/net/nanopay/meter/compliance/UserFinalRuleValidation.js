@@ -37,8 +37,8 @@ foam.CLASS({
         ).select(GROUP_BY(RuleHistory.RULE_ID, new ArraySink()));
 
         for ( int i = 0; i < sink.getArray().size(); i++ ) {
-          ComplianceValidationStatus result = (ComplianceValidationStatus) sink.getArray().get(i).getResult();
-          if ( result != ComplianceValidationStatus.VALIDATED ) {
+          RuleHistory ruleHistory = (RuleHistory) sink.getArray().get(i);
+          if ( (ComplianceValidationStatus) ruleHistory.getResult() != ComplianceValidationStatus.VALIDATED ) {
             passed = false;
           }
         }
