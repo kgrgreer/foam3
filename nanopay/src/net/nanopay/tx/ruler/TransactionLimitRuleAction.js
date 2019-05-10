@@ -7,9 +7,10 @@ foam.CLASS({
   'and reverting it back in case transaction did not go through.',
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
-    'net.nanopay.tx.model.Transaction',
-    'java.util.HashMap'
+    'java.util.HashMap',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [
@@ -17,6 +18,11 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
       Transaction txn = (Transaction) obj;
+      DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+      Transaction oldTxn = (Transaction) transactionDAO.find_(x, obj);
+      if ( ! txn.canTransfer(x, oldTxn) ) {
+        return;
+      }
       HashMap hm = (HashMap) rule_.getCurrentLimits();
       Object id = rule_.getObjectToMap(txn, x);
 
@@ -37,6 +43,12 @@ foam.CLASS({
       // one limit was updated, but the second one threw "over limit", so we need to revert the first update
 
       Transaction txn = (Transaction) obj;
+
+      DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+      Transaction oldTxn = (Transaction) transactionDAO.find_(x, obj);
+      if ( ! txn.canTransfer(x, oldTxn) ) {
+        return;
+      }
       HashMap hm = (HashMap) rule_.getCurrentLimits();
 
       Object key = rule_.getObjectToMap(txn, x);
