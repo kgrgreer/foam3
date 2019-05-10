@@ -18,7 +18,7 @@ foam.CLASS({
   ],
   methods: [
     {
-      documentation: 'OverDraft account provides liquidity via a backing account. It can have a positive or negative balance.'
+      documentation: 'OverDraft account provides liquidity via a backing account. It can have a positive or negative balance.',
       name: 'validateAmount',
       args: [
         {
