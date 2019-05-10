@@ -18,9 +18,9 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.Arrays',
     'java.util.Base64',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
+    'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
     'org.apache.http.entity.StringEntity',
@@ -55,7 +55,7 @@ foam.CLASS({
   methods: [
     {
       name: 'sidniVerify',
-      type: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
+      type: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
       args: [
         {
           name: 'x',
@@ -80,7 +80,7 @@ foam.CLASS({
     },
     {
       name: 'levSearch',
-      type: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
       args: [
         {
           name: 'x',

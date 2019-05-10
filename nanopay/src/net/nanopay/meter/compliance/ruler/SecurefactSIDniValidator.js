@@ -10,7 +10,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.SecurefactService',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse'
+    'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse'
   ],
 
   methods: [

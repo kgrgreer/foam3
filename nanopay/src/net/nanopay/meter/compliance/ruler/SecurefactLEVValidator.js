@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.SecurefactService',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.model.Business'
   ],
 
