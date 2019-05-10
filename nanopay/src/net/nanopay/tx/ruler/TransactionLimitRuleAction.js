@@ -9,8 +9,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.model.Transaction',
-    'java.util.HashMap',
-    'foam.nanos.ruler.Rule'
+    'java.util.HashMap'
   ],
 
   methods: [
