@@ -18,10 +18,9 @@ foam.CLASS({
 
   css: `
     ^ .tfa-container {
-      padding: 24px;
-      width: 490px;
       border-radius: 2px;
-      background-color: #ffffff;
+      margin-top: 20px;
+      width: 450px;
     }
     ^ .tf-container {
       width: 450px;
@@ -40,6 +39,9 @@ foam.CLASS({
       display: flex;
       justify-content: flex-end;
     }
+    ^verify-button {
+      width: 100%;
+    }
   `,
 
   properties: [
@@ -54,11 +56,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification token.' },
-    { name: 'TWO_FACTOR_SUCCESS', message: 'Login successful.' },
-    { name: 'TWO_FACTOR_LABEL', message: 'Token' },
-    { name: 'TWO_FACTOR_ERROR', message: 'Login failed. Please try again.' },
-    { name: 'TWO_FACTOR_TITLE', message: 'Two-Factor Authentication' },
+    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification code.' },
+    { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },
+    { name: 'TWO_FACTOR_ERROR', message: 'Incorrect code. Please try again.' },
+    { name: 'TWO_FACTOR_TITLE', message: 'Two-factor authentication' },
     { name: 'TWO_FACTOR_EXPLANATION', message: `Two-factor authentication is an extra layer of security for your Ablii account
         designed to ensure that you're the only person who can access your account, even if someone knows your password.
         Please get you code and enter it below. Please contact us at hello@ablii.com if you have lost your code.`
@@ -86,7 +87,9 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('button-container'))
-              .tag(this.VERIFY)
+              .start(this.VERIFY)
+              .addClass(this.myClass('verify-button'))
+              .end()
             .end()
           .end()
         .end();
@@ -108,7 +111,6 @@ foam.CLASS({
         .then(function(result) {
           if ( result ) {
             self.loginSuccess = true;
-            self.notify(self.TWO_FACTOR_SUCCESS);
           } else {
             self.loginSuccess = false;
             self.notify(self.TWO_FACTOR_ERROR, 'error');
