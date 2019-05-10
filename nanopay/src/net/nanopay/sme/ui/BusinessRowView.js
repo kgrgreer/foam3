@@ -171,6 +171,7 @@ foam.CLASS({
             .hide(this.isConnected$)
             .addClass(this.myClass('row'))
             .start()
+              .attrs({ name: 'selectBusiness' })
               .addClass(this.myClass('select-icon'))
             .end()
           .end()
