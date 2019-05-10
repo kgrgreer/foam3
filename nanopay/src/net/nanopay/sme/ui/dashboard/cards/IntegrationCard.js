@@ -3,6 +3,11 @@ foam.CLASS({
   name: 'IntegrationCard',
   extends: 'foam.u2.Element',
 
+  documentation: `
+    This model will layout an image, title, subtitle and action. It will
+    refresh itself once there is a change in any of these properties.
+  `,
+
   imports: [
     'data'
   ],

@@ -247,8 +247,6 @@ foam.CLASS({
       split.rightBottomPanel.add(botR);
 
       this.addClass(this.myClass()).add(split).end();
-      this.start(this.BankIntegrationCard).end();
-      this.start(this.QBIntegrationCard).end();
     }
   ]
 });

@@ -3,6 +3,11 @@ foam.CLASS({
   name: 'QBIntegrationCard',
   extends: 'foam.u2.Controller',
 
+  documentation: `
+    This card is specific to check if the user has a quickbooks integration
+    enabled and provides actions for both enabled and disabled.
+  `,
+
   requires: [
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',

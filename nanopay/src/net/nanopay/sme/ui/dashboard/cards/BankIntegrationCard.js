@@ -3,6 +3,11 @@ foam.CLASS({
   name: 'BankIntegrationCard',
   extends: 'foam.u2.Controller',
 
+  documentation: `
+    Card specific for checking if the user has a bank attached to their account.
+    Actions are provided for both scenarios (attached or not).
+  `,
+
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
