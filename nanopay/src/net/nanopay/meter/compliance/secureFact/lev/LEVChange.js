@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.lev.model',
+  package: 'net.nanopay.meter.compliance.secureFact.lev',
   name: 'LEVChange',
 
   properties: [
