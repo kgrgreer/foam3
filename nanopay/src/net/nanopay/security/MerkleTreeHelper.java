@@ -77,7 +77,7 @@ public class MerkleTreeHelper {
    * @param hash  The hash that is to be found.
    * @return The index of the hash in the tree.
    */
-  private static int FindHashIndex(byte[][] tree, byte[] hash){
+  public static int FindHashIndex(byte[][] tree, byte[] hash){
     for ( int n = (int) Math.floor((double) tree.length / 2.0 ) ; n < tree.length ; n++ ){
       if ( Arrays.equals(tree[n], hash) ){
         return n;
@@ -93,7 +93,7 @@ public class MerkleTreeHelper {
    * @param bits
    * @return Log base 2 value of bits
    */
-  private static int LogBase2(int bits) {
+  protected static int LogBase2(int bits) {
     int log = 0;
 
     if ( ( bits & 0xffff0000 ) != 0 ) { bits >>>= 16; log = 16; }
@@ -111,7 +111,7 @@ public class MerkleTreeHelper {
    * @param index The node for whose sibling's node index need to be found.
    * @return The index of the sibling in the tree.
    */
-  private static int GetSibling(int index){
+  protected static int GetSibling(int index){
     if ( index % 2 == 0 ) //index is right sibling
       return index - 1;
     else {//index is left sibling;

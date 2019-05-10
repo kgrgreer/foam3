@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.lev.model',
+  package: 'net.nanopay.meter.compliance.secureFact.lev',
   name: 'LEVResult',
 
   properties: [
@@ -63,7 +63,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVChange',
+      of: 'net.nanopay.meter.compliance.secureFact.lev.LEVChange',
       name: 'changes'
     },
     {
@@ -72,7 +72,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVIndividualScores',
+      of: 'net.nanopay.meter.compliance.secureFact.lev.LEVIndividualScores',
       name: 'individualScores'
     },
   ]

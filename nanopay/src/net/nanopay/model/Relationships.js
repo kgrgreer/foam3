@@ -99,6 +99,25 @@ foam.RELATIONSHIP({
     }
   }
 });
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.account.OverdraftAccount',
+  inverseName: 'backingAccount',
+  forwardName: 'fundedAccounts',
+  cardinality: '1:*',
+  targetDAOKey: 'accountDAO',
+  targetProperty: {
+    view: function(_, X) {
+      var E = foam.mlang.Expressions.create();
+      return {
+        class: 'foam.u2.view.ReferenceView',
+        dao: X.accountDAO.orderBy(net.nanopay.account.Account.NAME),
+        placeholder: 'select Backing Account',
+        objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
+      };
+    }
+  }
+});
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.liquidity.LiquiditySettings',
@@ -365,15 +384,19 @@ foam.CLASS({
           throw new AuthenticationException();
         }
 
-        // Check agent or user to authorize the request as.
-        User authorizedUser = agent != null ? agent : user;
+        // Let users read junctions where they're the source or target user.
+        boolean isSourceOrTarget =
+          SafetyUtil.equals(this.getSourceId(), user.getId()) ||
+          SafetyUtil.equals(this.getTargetId(), user.getId()) ||
+          (
+            agent != null &&
+            (
+              SafetyUtil.equals(this.getSourceId(), agent.getId()) ||
+              SafetyUtil.equals(this.getTargetId(), agent.getId())
+            )
+          );
 
-        // Check junction object relation to authorized user.
-        boolean authorized =
-            ( SafetyUtil.equals(this.getTargetId(), authorizedUser.getId()) ||
-            SafetyUtil.equals(this.getSourceId(), authorizedUser.getId()) );
-
-        if ( ! ( authorized || auth.check(x, (String) buildPermissionString(x, this, "read")) )){
+        if ( ! ( isSourceOrTarget || auth.check(x, (String) buildPermissionString(x, this, "read")) )){
           throw new AuthorizationException("Unable to retrieve junction due to permission restrictions.");
         }
       `
@@ -444,8 +467,8 @@ foam.CLASS({
       ],
       type: 'String',
       javaCode: `
-        DAO businessDAO = (DAO) x.get("businessDAO");
-        Business targetUser = (Business) businessDAO.inX(x).find(junctionObj.getTargetId());
+        DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+        Business targetUser = (Business) localBusinessDAO.inX(x).find(junctionObj.getTargetId());
 
         // Permission string to check authorization.
         String permissionString = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";

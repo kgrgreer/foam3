@@ -137,30 +137,18 @@ foam.CLASS({
         The DAO used to populate the enabled businesses in the list.
       `,
       expression: function(user, agent) {
-        var party = this.agent || this.user;
+        var party = agent || user;
         return this.PromisedDAO.create({
-          promise: party.entities.junctionDAO$proxy
-            .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id))
-            .select()
-            .then((sink) => {
-              if ( sink == null ) throw new Error(`This shouldn't be null.`);
-              return this.businessDAO
-                .where(
-                  this.AND(
-                    this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED),
-                    this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
-                  )
+          promise: party.entities.dao
+            .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
+            .select(this.MAP(this.Business.ID))
+            .then((mapSink) => {
+              return party.entities.junctionDAO.where(
+                this.AND(
+                  this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
+                  this.IN(this.UserUserJunction.TARGET_ID, mapSink.delegate.array)
                 )
-                .select()
-                .then((businessSink) => {
-                  if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
-                  return party.entities.junctionDAO$proxy.where(
-                    this.AND(
-                      this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
-                      this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
-                    )
-                  );
-                });
+              );
             })
         });
       }
@@ -172,30 +160,18 @@ foam.CLASS({
         The DAO used to populate the disabled businesses in the list.
       `,
       expression: function(user, agent) {
-        var party = this.agent || this.user;
+        var party = agent || user;
         return this.PromisedDAO.create({
-          promise: party.entities.junctionDAO$proxy
-            .where(this.EQ(this.UserUserJunction.SOURCE_ID, party.id))
-            .select()
-            .then((sink) => {
-              if ( sink == null ) throw new Error(`This shouldn't be null.`);
-              return this.businessDAO
-                .where(
-                  this.AND(
-                    this.EQ(this.Business.STATUS, this.AccountStatus.DISABLED),
-                    this.IN(this.Business.ID, sink.array.map((j) => j.targetId))
-                  )
+          promise: party.entities.dao
+            .where(this.EQ(this.Business.STATUS, this.AccountStatus.DISABLED))
+            .select(this.MAP(this.Business.ID))
+            .then((mapSink) => {
+              return party.entities.junctionDAO.where(
+                this.AND(
+                  this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
+                  this.IN(this.UserUserJunction.TARGET_ID, mapSink.delegate.array)
                 )
-                .select()
-                .then((businessSink) => {
-                  if ( businessSink == null ) throw new Error(`This shouldn't be null.`);
-                  return party.entities.junctionDAO$proxy.where(
-                    this.AND(
-                      this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
-                      this.IN(this.UserUserJunction.TARGET_ID, businessSink.array.map((b) => b.id))
-                    )
-                  );
-                });
+              );
             })
         });
       }
@@ -297,6 +273,8 @@ foam.CLASS({
                   })
                 .end();
             })
+          .end()
+          .start()
             .select(this.disabledBusinesses_, function(junction) {
               return this.E()
                 .start({

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance',
+  package: 'net.nanopay.meter.compliance.ruler',
   name: 'CanadianSanctionValidator',
 
   documentation: `Validator that checks user and business against
