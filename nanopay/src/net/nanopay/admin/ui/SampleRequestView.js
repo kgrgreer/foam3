@@ -48,7 +48,7 @@ foam.CLASS({
       background: %PRIMARYCOLOR%;
       width: 85%;
     }
-    ^ .net-nanopay-ui-ActionView-apiLink {
+    ^ .foam-u2-ActionView-apiLink {
       width: 160px;
       font-size: 20px;
       font-weight: 300;

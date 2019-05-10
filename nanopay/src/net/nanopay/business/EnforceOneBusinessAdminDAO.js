@@ -25,7 +25,7 @@ foam.CLASS({
 
   imports: [
     'agentJunctionDAO',
-    'businessDAO',
+    'localBusinessDAO',
     'groupDAO',
     'localSessionDAO'
   ],
@@ -50,11 +50,11 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         UserUserJunction junction = (UserUserJunction) obj;
-        DAO businessDAO = ((DAO) getBusinessDAO()).inX(x);
+        DAO localBusinessDAO = ((DAO) getLocalBusinessDAO()).inX(x);
         DAO agentJunctionDAO = ((DAO) getAgentJunctionDAO()).inX(x);
 
         // We only care about members of businesses in this decorator.
-        Business business = (Business) businessDAO.find(junction.getTargetId());
+        Business business = (Business) localBusinessDAO.find(junction.getTargetId());
         if ( business == null ) return super.put_(x, obj);
 
         Group group = junction.findGroup(x);

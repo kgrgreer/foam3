@@ -54,7 +54,7 @@ foam.CLASS({
       background-color: #ffffff;
       border: solid 1.5px #ffffff;
       box-shadow: 0 1px 1px 0 #dae1e9;
-      border: solid 1px #edf0f5;
+      border: solid 1px %BACKGROUNDCOLOR%;
     }
     ^item:hover {
       cursor: pointer;
@@ -74,7 +74,7 @@ foam.CLASS({
       margin: 8px 0 0 0;
       font-size: 14px;
     }
-    ^ .net-nanopay-ui-ActionView {
+    ^ .foam-u2-ActionView {
       height: 96px;
       width: 100%;
     }
@@ -177,10 +177,12 @@ foam.CLASS({
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'verifyEmail',
           completed: values[0],
           act: this.VERIFY_EMAIL
         }));
         this.bankAction = net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'addBank',
           completed: values[1],
           act: this.ADD_BANK
         });
@@ -195,6 +197,7 @@ foam.CLASS({
           this.completedCount--;
         }
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'busProfile',
           completed: values[3],
           act: this.BUS_PROFILE
         }));
@@ -240,6 +243,7 @@ foam.CLASS({
             .addClass(this.myClass('container'))
             .select(dao, function(actionObj) {
               return this.E()
+                .attrs({ name: actionObj.name })
                 .addClass(self.myClass('item'))
                 .enableClass(self.myClass('complete'), actionObj.completed)
                 .start(actionObj.imgObj)

@@ -33,19 +33,19 @@ foam.CLASS({
       align-items: center;
       justify-content: flex-end;
     }
-    ^ .net-nanopay-ui-ActionView-delete,
-    ^ .net-nanopay-ui-ActionView-delete:hover {
+    ^ .foam-u2-ActionView-delete,
+    ^ .foam-u2-ActionView-delete:hover {
       border-radius: 4px;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       background: #f91c1c;
       color: white;
       vertical-align: middle;
     }
-    ^ .net-nanopay-ui-ActionView-delete:hover {
+    ^ .foam-u2-ActionView-delete:hover {
       opacity: 0.9;
     }
-    ^ .net-nanopay-ui-ActionView-cancel,
-    ^ .net-nanopay-ui-ActionView-cancel:hover {
+    ^ .foam-u2-ActionView-cancel,
+    ^ .foam-u2-ActionView-cancel:hover {
       background: none;
       color: #525455;
       border: none;

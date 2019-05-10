@@ -65,11 +65,16 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.dao.ProxyDAO',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'static foam.mlang.MLang.EQ'
   ],
 
   implements: [
@@ -109,7 +114,40 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode: `
-        // Don't authorize reads for now.
+        AuthService auth = (AuthService) x.get("auth");
+        User user = (User) x.get("user");
+        User agent = (User) x.get("agent");
+
+        if ( user == null ) throw new AuthenticationException();
+
+        // If the user has the appropriate permission, allow access.
+        if ( auth.check(x, "business.read." + Long.toString(this.getId())) ) return;
+
+        // Allow businesses to read themselves.
+        if ( user instanceof Business && SafetyUtil.equals(this.getId(), user.getId())) return;
+
+        DAO junctionDAO = user.getEntities(x).getJunctionDAO();
+
+        // There are decorators on agentJunctionDAO that need to access
+        // businessDAO, but this method needs to access agentJunctionDAO, so we
+        // end up with a loop where the two call each other until the call stack
+        // overflows. In order to get around that, we skip all of the decorators
+        // on agentJunctionDAO, which is what the line below is doing. We could
+        // have made a second, undecorated service instead, but then it would be
+        // easily for developers to mistakenly use the undecorated service in
+        // places where it shouldn't be used.
+        while ( junctionDAO instanceof ProxyDAO ) junctionDAO = ((ProxyDAO) junctionDAO).getDelegate();
+
+        // Create a dummy object so we can search by its composite id.
+        UserUserJunction dummy = new UserUserJunction.Builder(x).setSourceId(agent != null ? agent.getId() : user.getId()).setTargetId(this.getId()).build();
+
+        UserUserJunction junction = (UserUserJunction) junctionDAO.inX(x).find(dummy.getId());
+        boolean userIsInBusiness = junction != null;
+
+        // Allow users to read businesses they're in.
+        if ( userIsInBusiness ) return;
+
+        throw new AuthorizationException();
       `
     },
     {
