@@ -24,6 +24,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isSignedIn',
       documentation: 'True if signed in to Accounting.'
+    },
+    {
+      name: 'hasPermissions',
+      factory: function() {
+        return [false, false, false];
+      }
     }
   ],
 
@@ -48,6 +54,8 @@ foam.CLASS({
   methods: [
     async function init() {
       this.SUPER();
+
+      this.hasPermissions = await this.accountingIntegrationUtil.getPermission();
       /*
       Retrieves the updated user as session user is only image of user at login.
       Determines which integration is being used at the moment as both integrations can not be simultaneously used.
@@ -84,8 +92,8 @@ foam.CLASS({
     {
       name: 'sync',
       label: 'Sync with Accounting',
-      isAvailable: function(isSignedIn) {
-        return ! isSignedIn;
+      isAvailable: function(isSignedIn, hasPermissions) {
+        return (! isSignedIn) && hasPermissions[0];
       },
       code: function(X) {
         X.controllerView.add(this.Popup.create().tag({
@@ -97,8 +105,8 @@ foam.CLASS({
       name: 'syncBtn',
       label: 'Sync',
       icon: 'images/ablii/sync-resting.svg',
-      isAvailable: function(isSignedIn) {
-        return isSignedIn;
+      isAvailable: function(isSignedIn, hasPermissions) {
+        return isSignedIn && hasPermissions[0];
       },
       code: async function(X) {
         X.controllerView.addClass('account-sync-loading-animation');
