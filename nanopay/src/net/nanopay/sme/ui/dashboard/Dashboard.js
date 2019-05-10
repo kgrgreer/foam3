@@ -16,9 +16,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
-    'net.nanopay.sme.ui.dashboard.RequireActionView',
-    'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard',
-    'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard',
+    'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
   imports: [
@@ -247,8 +245,6 @@ foam.CLASS({
       split.rightBottomPanel.add(botR);
 
       this.addClass(this.myClass()).add(split).end();
-      this.start(this.BankIntegrationCard).end();
-      this.start(this.QBIntegrationCard).end();
     }
   ]
 });
