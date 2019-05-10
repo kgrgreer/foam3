@@ -667,7 +667,7 @@ foam.CLASS({
       }
 
       byte[][] builtTree2 = tree.buildTree();
-      test(MerkleTreeHelper.FindHashIndex(builtTree2, builtTree[0]) != -1, "Second tree contains root fo the first tree.");
+      test(MerkleTreeHelper.FindHashIndex(builtTree2, builtTree[0]) != -1, "Second tree contains the root of the first tree.");
       `
     },
     {
@@ -676,16 +676,16 @@ foam.CLASS({
       int treeSize = 100;
       TestMerkleTree tree = new TestMerkleTree();
 
-    tree.setDefaultSize(treeSize);
+      tree.setDefaultSize(treeSize);
 
-    try {
-      for ( int i = 0; i < 3*treeSize+1; i++ ) {
-        tree.addHash(getHash("s"));
+      try {
+        for ( int i = 0; i < 3*treeSize+1; i++ ) {
+          tree.addHash(getHash("s"));
+        }
+      } catch (Exception e) {
+        test(false, "MerkleTree_Default_Size_Test: failed to addHash. Message: " + e.getMessage());
       }
-    } catch (Exception e) {
-      test(false, "MerkleTree_Default_Size_Test: failed to addHash. Message: " + e.getMessage());
-    }
-    test(SafetyUtil.equals(tree.getData().length, treeSize * 4), "Length of data increases by defaultsize everytime tree.data modulo defaultSize is 0.");
+      test(SafetyUtil.equals(tree.getData().length, treeSize * 4), "Length of 'data_' increases by 'defaultsize' as it becomes full.");
       `
     }
   ]
