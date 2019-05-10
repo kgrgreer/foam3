@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'JackieRule',
+  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: `Creates an approval request if a Compliance Transaction is encountered.`,
 
@@ -39,15 +40,8 @@ foam.CLASS({
             Count count = new Count();
               count = (Count) results.select(count);
               // If no approvalRequests are found, we need to make some
-              if ( count.getValue() == 0 ) {
-                ApprovalRequest ar = new ApprovalRequest.Builder(x)
-                .setObjId(ct.getId())
-                .setDaoKey("localTransactionDAO")
-                .setApprover(1)
-                .build();
-                ((DAO) x.get("approvalRequestsDAO")).put(ar);
-
-              }
+              if ( count.getValue() == 0 )
+                requestApproval(x, ct, "localTransactionDAO");
               //We have received a Rejection and should decline.
               else {
                 if ( ( (Count) results.where(
