@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact',
-  name: 'CanadianUserOnboarding',
+  package: 'net.nanopay.meter.compliance.predicate',
+  name: 'CanadianBusinessOnboarded',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
@@ -16,13 +16,13 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        User user = (User) NEW_OBJ.f(obj);
-        Address address = user.getAddress();
+        Business business = (Business) NEW_OBJ.f(obj);
+        Address address = business.getAddress();
 
         return address != null
           && address.getCountryId().equals("CA")
-          && user.getClass() == User.class
-          && ComplianceStatus.REQUESTED == user.getCompliance();
+          && business.getOnboarded()
+          && ComplianceStatus.REQUESTED == business.getCompliance();
       `
     }
   ]

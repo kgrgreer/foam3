@@ -836,7 +836,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/compliance/AbstractComplianceRuleAction' },
-  { name: 'net/nanopay/meter/compliance/BusinessOnboarding' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
@@ -847,8 +846,11 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/RequestBeneficialOwnersCompliance' },
   { name: 'net/nanopay/meter/compliance/RequestSigningOfficersCompliance' },
   { name: 'net/nanopay/meter/compliance/refinements' },
-  { name: 'net/nanopay/meter/compliance/secureFact/CanadianUserOnboarding' },
-  { name: 'net/nanopay/meter/compliance/secureFact/CanadianBusinessOnboarding' },
+  { name: 'net/nanopay/meter/compliance/predicate/BusinessOnboarding' },
+  { name: 'net/nanopay/meter/compliance/predicate/CanadianBusinessOnboarded' },
+  { name: 'net/nanopay/meter/compliance/predicate/CanadianUserOnboarded' },
+
+  // securefact
   { name: 'net/nanopay/meter/compliance/secureFact/ResponseError' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactResponse' },

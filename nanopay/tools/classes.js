@@ -454,7 +454,6 @@ var classes = [
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
   'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
-  'net.nanopay.meter.compliance.BusinessOnboarding',
   'net.nanopay.meter.compliance.ComplianceAuthService',
   'net.nanopay.meter.compliance.ComplianceAware',
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -464,8 +463,11 @@ var classes = [
   'net.nanopay.meter.compliance.CanadianSanctionValidator',
   'net.nanopay.meter.compliance.RequestBeneficialOwnersCompliance',
   'net.nanopay.meter.compliance.RequestSigningOfficersCompliance',
-  'net.nanopay.meter.compliance.secureFact.CanadianUserOnboarding',
-  'net.nanopay.meter.compliance.secureFact.CanadianBusinessOnboarding',
+  'net.nanopay.meter.compliance.predicate.BusinessOnboarding',
+  'net.nanopay.meter.compliance.predicate.CanadianBusinessOnboarded',
+  'net.nanopay.meter.compliance.predicate.CanadianUserOnboarded',
+
+  // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
