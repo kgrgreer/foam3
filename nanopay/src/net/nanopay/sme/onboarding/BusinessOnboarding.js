@@ -96,10 +96,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'name'
-    },
-    {
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'businessId',
