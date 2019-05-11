@@ -43,7 +43,8 @@ foam.CLASS({
         }
 
         Account destAcc = request.findDestinationAccount(getX());
-        User owner = (User) destAcc.findOwner(getX());
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
+        User owner = (User) localUserDAO.inX(x).find(destAcc.getOwner());
 
         if ( owner instanceof Contact ) {
           Contact contact = (Contact) owner;
