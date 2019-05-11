@@ -12,6 +12,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'accountingIntegrationUtil',
     'ctrl',
     'quickbooksService',
     'user',
@@ -331,6 +332,7 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.SUPER();
+      let showIntegrationButtons = await this.accountingIntegrationUtil.getPermission();
       let updatedUser = await this.userDAO.find(this.user.id);
       this.user.integrationCode = updatedUser.integrationCode;
       this.isXeroConnected();
@@ -355,9 +357,9 @@ foam.CLASS({
       }
       this.accountingList = bankAccountList;
       this
-        .addClass(this.myClass())
+        .addClass(this.myClass()).show(showIntegrationButtons[0])
         .start().add(this.IntegrationsTitle).addClass('title').end()
-        .start().addClass('integration-box')
+        .start().addClass('integration-box').show(showIntegrationButtons[1])
           .start()
             .start({ class: 'foam.u2.tag.Image', data: '/images/xero.png' }).addClass('accounting-logo').end()
             .start().addClass('integration-info-div')
@@ -370,7 +372,7 @@ foam.CLASS({
             buttonStyle: 'SECONDARY'
           }).enableClass('disconnect', this.showXeroDisconected$).end()
         .end()
-        .start().addClass('integration-box')
+        .start().addClass('integration-box').show(showIntegrationButtons[2])
           .start()
             .start({ class: 'foam.u2.tag.Image', data: '/images/quickbooks.png' }).addClass('accounting-logo').end()
             .start().addClass('integration-info-div')

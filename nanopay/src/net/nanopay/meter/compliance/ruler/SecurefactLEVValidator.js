@@ -1,18 +1,15 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.lev',
-  name: 'LEVValidator',
+  package: 'net.nanopay.meter.compliance.ruler',
+  name: 'SecurefactLEVValidator',
+  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: `Validates a business using SecureFact LEV api.`,
-
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
 
   javaImports: [
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.SecurefactService',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.model.Business'
   ],
 
@@ -24,14 +21,15 @@ foam.CLASS({
         SecurefactService securefactService = (SecurefactService) x.get("securefactService");
         try {
           LEVResponse response = securefactService.levSearch(x, business);
-          ruler.putResult(
-            response.hasCloseMatches()
-              ? ComplianceValidationStatus.VALIDATED
-              : ComplianceValidationStatus.INVESTIGATING
-          );
+          ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
+          if ( ! response.hasCloseMatches() ) {
+            status = ComplianceValidationStatus.INVESTIGATING;
+            requestApproval(x, response, "securefactLEVDAO");
+          }
+          ruler.putResult(status);
         } catch (IllegalStateException e) {
           ((Logger) x.get("logger")).warning("LEVValidator failed.", e);
-          ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
+          ruler.putResult(ComplianceValidationStatus.PENDING);
         }
       `
     },

@@ -1,12 +1,12 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.sidni.model',
+  package: 'net.nanopay.meter.compliance.secureFact.sidni',
   name: 'SIDniResponse',
   extends: 'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
 
   documentation: `The object for a SIDni response`,
 
   tableColumns: [
-    'id', 'name', 'entityId', 'verified', 'reason'
+    'id', 'entityName', 'entityId', 'verified', 'reason'
   ],
 
   properties: [
@@ -39,12 +39,12 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniDataSources',
+      of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniDataSources',
       name: 'dataSources'
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAdditionalMatchInfo',
+      of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniAdditionalMatchInfo',
       name: 'additionalMatchInfo'
     }
   ]

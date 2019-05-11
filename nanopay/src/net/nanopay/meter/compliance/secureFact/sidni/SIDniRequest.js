@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.sidni.model',
+  package: 'net.nanopay.meter.compliance.secureFact.sidni',
   name: 'SIDniRequest',
   extends: 'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
 
@@ -8,26 +8,26 @@ foam.CLASS({
   properties: [
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniCustomer',
+      of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniCustomer',
       name: 'customer',
       required: true
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniName',
+      of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniName',
       name: 'name',
       required: true
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniAddress',
+      of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniAddress',
       name: 'address',
       required: true,
       documentation: 'Has to have current address. Max size of 2'
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniPhone',
+      of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniPhone',
       name: 'phone'
     },
     {

@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.sidni.model',
+  package: 'net.nanopay.meter.compliance.secureFact.sidni',
   name: 'SIDniPhone',
 
   documentation: `The Phone object for SIDni`,
