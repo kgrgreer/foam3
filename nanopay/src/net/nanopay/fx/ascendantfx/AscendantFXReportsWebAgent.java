@@ -85,7 +85,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       srcFiles[2] = generateBankInfo(x, business);
       srcFiles[3] = getBusinessDoc(x, business);
       // srcFiles[4] = getUSBankAccountProof(x, business);
-      // srcFiles[4] = getBeneficialOwnersDoc(x, business);
+      // srcFiles[5] = getBeneficialOwnersDoc(x, business);
       int signingOfficerReportLength = signingOfficerReports == null ? 0 : signingOfficerReports.length;
       int signingOfficerIdLength     = signingOfficerIDs == null ? 0 : signingOfficerIDs.length;
       System.arraycopy(signingOfficerReports, 0, srcFiles, 6, signingOfficerReportLength);
