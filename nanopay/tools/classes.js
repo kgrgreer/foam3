@@ -468,9 +468,14 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.RequestSigningOfficersCompliance',
   'net.nanopay.meter.compliance.ruler.SecurefactLEVValidator',
   'net.nanopay.meter.compliance.ruler.SecurefactSIDniValidator',
+  'net.nanopay.meter.compliance.ruler.predicate.B2BTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarding',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
+  'net.nanopay.meter.compliance.ruler.predicate.ConsumerKYCStage1',
+  'net.nanopay.meter.compliance.ruler.predicate.ConsumerKYCStage2',
+  'net.nanopay.meter.compliance.ruler.predicate.EntityLogin',
+  'net.nanopay.meter.compliance.ruler.predicate.MerchantKYC',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
@@ -538,11 +543,6 @@ var classes = [
   'net.nanopay.meter.compliance.identityMind.IdentityMindRequest',
   'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
   'net.nanopay.meter.compliance.identityMind.IdentityMindService',
-  'net.nanopay.meter.compliance.identityMind.predicate.B2BTransaction',
-  'net.nanopay.meter.compliance.identityMind.predicate.ConsumerKYCStage1',
-  'net.nanopay.meter.compliance.identityMind.predicate.ConsumerKYCStage2',
-  'net.nanopay.meter.compliance.identityMind.predicate.EntityLogin',
-  'net.nanopay.meter.compliance.identityMind.predicate.MerchantKYC',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',

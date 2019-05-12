@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.identityMind.predicate',
+  package: 'net.nanopay.meter.compliance.ruler.predicate',
   name: 'B2BTransaction',
 
   documentation: 'Predicate for bank to bank transaction.',

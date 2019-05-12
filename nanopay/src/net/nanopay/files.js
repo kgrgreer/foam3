@@ -854,9 +854,14 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactSIDniValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/B2BTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarding' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/ConsumerKYCStage1' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/ConsumerKYCStage2' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/EntityLogin' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/MerchantKYC' },
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
@@ -930,11 +935,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindRequest' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindResponse' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindService' },
-  { name: 'net/nanopay/meter/compliance/identityMind/predicate/B2BTransaction' },
-  { name: 'net/nanopay/meter/compliance/identityMind/predicate/ConsumerKYCStage1' },
-  { name: 'net/nanopay/meter/compliance/identityMind/predicate/ConsumerKYCStage2' },
-  { name: 'net/nanopay/meter/compliance/identityMind/predicate/EntityLogin' },
-  { name: 'net/nanopay/meter/compliance/identityMind/predicate/MerchantKYC' },
 
   // meter tests
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
