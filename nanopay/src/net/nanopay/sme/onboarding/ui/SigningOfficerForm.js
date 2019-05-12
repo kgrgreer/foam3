@@ -87,20 +87,21 @@ foam.CLASS({
     ^ .medium-header {
       margin: 20px 0px;
     }
-    ^ .net-nanopay-ui-ActionView-uploadButton {
+    ^ .foam-u2-ActionView-uploadButton {
       margin-top: 20px;
     }
 
-    ^ .net-nanopay-ui-ActionView-addUsers {
+    ^ .foam-u2-ActionView-addUsers {
       height: 40px;
       width: 250px;
-      background: none;
+      background: none !important;
       color: #8e9090;
       font-size: 16px;
       text-align: left;
+      border: none !important;
     }
 
-    ^ .net-nanopay-ui-ActionView-addUsers:hover {
+    ^ .foam-u2-ActionView-addUsers:hover {
       background: none;
       color: #8e9090;
     }

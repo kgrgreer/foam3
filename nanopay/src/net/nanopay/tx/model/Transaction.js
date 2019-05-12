@@ -283,13 +283,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'sourceAccount',
-      targetDAOKey: 'localAccountDAO',
-      visibility: 'RO'
-    },
-    {
       class: 'Long',
       name: 'payeeId',
       storageTransient: true,
@@ -300,13 +293,6 @@ foam.CLASS({
       name: 'payerId',
       storageTransient: true,
       visibility: 'HIDDEN',
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'destinationAccount',
-      targetDAOKey: 'localAccountDAO',
-      visibility: 'RO',
     },
     {
       class: 'Currency',
@@ -419,7 +405,7 @@ foam.CLASS({
     },
     {
       name: 'next',
-      class: 'FObjectProperty',
+      class: 'FObjectArray',
       of: 'net.nanopay.tx.model.Transaction',
       storageTransient: true,
       visibility: 'HIDDEN'
@@ -462,8 +448,7 @@ foam.CLASS({
     {
       name: 'doFolds',
       javaCode: `
-        Transfer[] transfers = this.getTransfers();
-        for (Transfer t : getTransfers() ) {
+        for ( Transfer t : getTransfers() ) {
           fm.foldForState(t.getAccount(),getLastModified(),t.getAmount());
         }
       `
@@ -811,17 +796,24 @@ foam.CLASS({
     },
     {
       name: 'addNext',
+      documentation: 'For adding multiple child transactions use CompositeTransaction',
       args: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
       Transaction tx = this;
-      while( tx.getNext() != null ) {
-        tx = tx.getNext();
+      if ( tx.getNext() != null && tx.getNext().length >= 1 ) {
+         if ( tx.getNext().length > 1) throw new RuntimeException("Error, this non-Composite transaction has more then 1 child");
+         Transaction [] t = tx.getNext();
+         t[0].addNext(txn);
       }
-      txn.setInitialStatus(txn.getStatus());
-      txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-      tx.setNext(txn);
+      else {
+        txn.setInitialStatus(txn.getStatus());
+        txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
+        Transaction [] t2 = new Transaction [1];
+        t2[0] = txn;
+        tx.setNext(t2);
+      }
     `
   },
   {

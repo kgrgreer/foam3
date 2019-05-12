@@ -53,7 +53,7 @@ foam.CLASS({
       color: #525455;
     }
     
-    ^ .net-nanopay-ui-ActionView-cancelTimeOutModal {
+    ^ .foam-u2-ActionView-cancelTimeOutModal {
       width: 96px !important;
       height: 36px !important;
       color: #525455;
@@ -64,24 +64,24 @@ foam.CLASS({
       border: none;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelTimeOutModal:hover {
+    ^ .foam-u2-ActionView-cancelTimeOutModal:hover {
       background: #fafafa !important;
       border: none;
       color: #525455;
     }
     
-    ^ .net-nanopay-ui-ActionView-syncTimeOutModal {
+    ^ .foam-u2-ActionView-syncTimeOutModal {
       width: 96px !important;
       height: 36px !important;
       color: white;
       background-color: #604AFF;
     }
 
-    .net-nanopay-ui-ActionView.ignoreFloat {
+    .foam-u2-ActionView.ignoreFloat {
       float: none !important;
     }
 
-    ^ .net-nanopay-ui-ActionView-syncTimeOutModal:hover {
+    ^ .foam-u2-ActionView-syncTimeOutModal:hover {
       background-color: #4D38E1 !important;
       color: white;
     }
