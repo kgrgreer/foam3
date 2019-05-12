@@ -1,8 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler.predicate',
-  name: 'ConsumerKYCStage1',
+  name: 'AbliiSignup',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
+
+  documentation: 'Returns true if user signup for Ablii',
 
   javaImports: [
     'foam.nanos.auth.User',
@@ -13,8 +15,9 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        return EQ(
-          DOT(NEW_OBJ, CLASS_OF(User.class)), true
+        return AND(
+          EQ(DOT(NEW_OBJ, User.GROUP), "sme"),
+          EQ(OLD_OBJ, null)
         ).f(obj);
       `
     }

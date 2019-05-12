@@ -1,8 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler.predicate',
-  name: 'EntityLogin',
+  name: 'LoginSuccess',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
+
+  documentation: 'Returns true if user login successfully',
 
   javaImports: [
     'net.nanopay.auth.LoginAttempt',
@@ -13,8 +15,9 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        return EQ(
-          DOT(NEW_OBJ, LoginAttempt.LOGIN_SUCCESSFUL), true
+        return AND(
+          EQ(DOT(NEW_OBJ, LoginAttempt.LOGIN_SUCCESSFUL), true),
+          EQ(OLD_OBJ, null)
         ).f(obj);
       `
     }
