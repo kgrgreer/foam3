@@ -22,6 +22,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         Business business = (Business) obj;
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
         DAO userDAO = business.getSigningOfficers(x).getDAO();
         userDAO.select(new AbstractSink() {
           @Override
@@ -30,7 +31,9 @@ foam.CLASS({
             signingOfficer = (User) signingOfficer.fclone();
 
             signingOfficer.setCompliance(ComplianceStatus.REQUESTED);
-            userDAO.put(signingOfficer);
+            // Since userDAO is a relationship DAO updating is not permissible.
+            // Hence, use localUserDAO for updating the signing officer instead.
+            localUserDAO.put(signingOfficer);
           }
         });
       `
