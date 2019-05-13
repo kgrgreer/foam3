@@ -21,7 +21,6 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        // add date of birth and country to beneficial owner request
         BeneficialOwner beneficialOwner = (BeneficialOwner) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {

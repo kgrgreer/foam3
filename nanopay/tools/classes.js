@@ -461,6 +461,8 @@ var classes = [
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
   'net.nanopay.meter.compliance.ComplianceService',
   'net.nanopay.meter.compliance.NanopayComplianceService',
+  'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
+  'net.nanopay.meter.compliance.UserFinalRuleValidation',
 
   // ruler
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
@@ -474,11 +476,6 @@ var classes = [
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
-  'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
-  'net.nanopay.meter.compliance.CanadianSanctionValidator',
-  'net.nanopay.meter.compliance.UserFinalRuleValidation',
-  'net.nanopay.meter.compliance.secureFact.CanadianUserOnboarding',
-  'net.nanopay.meter.compliance.secureFact.CanadianBusinessOnboarding',
 
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',

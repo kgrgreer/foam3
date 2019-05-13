@@ -27,7 +27,6 @@ foam.CLASS({
         Boolean passed = true;
         DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
         
-        // Make proper query to check all rule history status associated to the user
         ArraySink sink = (ArraySink) ruleHistoryDAO.where(
           AND(
             EQ(RuleHistory.OBJECT_ID, user.getId()),
