@@ -449,7 +449,6 @@ foam.CLASS({
       }
     },
     async function populatePayerIdOrPayeeId() {
-      if ( this.invoice.payerId && this.invoice.payeeId ) return;
       try {
         var contact = await this.user.contacts.find(this.invoice.contactId);
         if ( this.isPayable ) {

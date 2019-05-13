@@ -215,6 +215,12 @@ css: `
       vertical-align: middle;
     }
 
+    ^ .principalOwnersCheckBox > .foam-u2-md-CheckBox-label {
+      margin-top: 0px !important;
+      margin-left: 8px;
+      width: 550px;
+    }
+
     ^ .checkBoxContainer .foam-u2-md-CheckBox-label {
       display: inline-block;
       vertical-align: middle;
@@ -725,26 +731,28 @@ methods: [
             })
           ]
         }, {}, this.tableViewElement$).end()
-        .start()
-          .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
-          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
-          .start({
-            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
-            files$: this.beneficialOwnerDocuments$,
-            supportedFormats: {
-              'image/jpg': 'JPG',
-              'image/jpeg': 'JPEG',
-              'image/png': 'PNG',
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
-              'application/msword': 'DOC',
-              'application/pdf': 'PDF'
-            }
-          }).end()
-        .end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_1).end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
+        // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+        //
+        // .start()
+        //   .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
+        //   .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
+        //   .start({
+        //     class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+        //     files$: this.beneficialOwnerDocuments$,
+        //     supportedFormats: {
+        //       'image/jpg': 'JPG',
+        //       'image/jpeg': 'JPEG',
+        //       'image/png': 'PNG',
+        //       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+        //       'application/msword': 'DOC',
+        //       'application/pdf': 'PDF'
+        //     }
+        //   }).end()
+        // .end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_1).end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
       .end()
       .start().addClass('principalOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.NO_ADDITIONAL_OWNERS, data$: this.noAdditionalBeneficialOwners$ }).end()

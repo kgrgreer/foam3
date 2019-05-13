@@ -105,8 +105,9 @@ foam.CLASS({
                   class: 'foam.u2.view.ChoiceView',
                   placeholder: 'Select...',
                   dao: self.countryDAO.where(self.OR(
-                    self.EQ(self.Country.NAME, 'Canada'),
-                    self.EQ(self.Country.NAME, 'USA')
+                    self.EQ(self.Country.NAME, 'Canada')
+                    // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
+                    // self.EQ(self.Country.NAME, 'USA')
                   )),
                   objToChoice: function(a) {
                     return [a.id, a.name];

@@ -244,10 +244,10 @@ foam.CLASS({
 
       this.views = [
         { id: 'business-registration-introduction', label: 'Getting Started', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.IntroductionView' }, isHiddenInOverview: true },
-        { id: 'business-registration-business-form', label: 'Your Business', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.BusinessForm' } },
-        { id: 'business-registration-transaction-estimate-form', label: 'Your Transactions', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.UserTransactionEstimateForm' } },
-        { id: 'business-registration-signing-officer-form', label: 'Signing Officer', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
-        { id: 'business-registration-beneficial-owner-form', label: 'Beneficial Ownership', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
+        { id: 'business-registration-business-form', label: 'Your Business', view: { class: 'net.nanopay.sme.onboarding.ui.BusinessForm' } },
+        { id: 'business-registration-transaction-estimate-form', label: 'Your Transactions', view: { class: 'net.nanopay.sme.onboarding.ui.UserTransactionEstimateForm' } },
+        { id: 'business-registration-signing-officer-form', label: 'Signing Officer', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
+        { id: 'business-registration-beneficial-owner-form', label: 'Beneficial Ownership', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
       ];
       this.viewData.user.suggestedUserTransactionInfo =
         this.user.suggestedUserTransactionInfo ?
@@ -332,26 +332,29 @@ foam.CLASS({
         return false;
       }
 
-      if ( editedUser.additionalDocuments.length <= 0 ) {
-        this.notify(this.ERROR_ADD_SIGNING_DOCS, 'error');
-        return false;
-      }
+      // if ( editedUser.additionalDocuments.length <= 0 ) {
+      //   this.notify(this.ERROR_ADD_SIGNING_DOCS, 'error');
+      //   return false;
+      // }
 
       if ( foam.util.equals(this.viewData.user.businessAddress.countryId, 'CA') ) {
-        if ( ! this.viewData.canadianScrollBoxOne ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED_1, 'error');
-          return false;
-        }
+        // if ( ! this.viewData.canadianScrollBoxOne ) {
+        //   this.notify(this.ERROR_TERMS_NOT_CHECKED_1, 'error');
+        //   return false;
+        // }
         if ( ! this.viewData.canadianScrollBoxTwo ) {
           this.notify(this.ERROR_TERMS_NOT_CHECKED_2, 'error');
           return false;
         }
-      } else {
-        if ( ! this.viewData.americanScrollBox ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED_3, 'error');
-          return false;
-        }
       }
+      // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+      //
+      // } else {
+      //   if ( ! this.viewData.americanScrollBox ) {
+      //     this.notify(this.ERROR_TERMS_NOT_CHECKED_3, 'error');
+      //     return false;
+      //   }
+      // }
 
       return true;
     },
@@ -464,10 +467,10 @@ foam.CLASS({
         }
       }
 
-      if ( businessProfile.additionalDocuments.length <= 0 ) {
-        this.notify(this.ERROR_ADD_BUSINESS_DOCS, 'error');
-        return false;
-      }
+      // if ( businessProfile.additionalDocuments.length <= 0 ) {
+      //   this.notify(this.ERROR_ADD_BUSINESS_DOCS, 'error');
+      //   return false;
+      // }
 
       return true;
     },
