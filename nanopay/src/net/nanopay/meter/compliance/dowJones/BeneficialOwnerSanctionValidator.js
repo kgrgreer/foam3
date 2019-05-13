@@ -10,11 +10,11 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.model.BeneficialOwner',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.dowJones.DowJonesService',
-    'net.nanopay.meter.compliance.dowJones.DowJonesResponse'
+    'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
+    'net.nanopay.model.BeneficialOwner'
   ],
 
   methods: [
