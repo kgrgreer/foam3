@@ -158,12 +158,8 @@ foam.CLASS({
         We expect to have a string array in the future
         when we enable multiple signing officers`,
       section: 'signingOfficerEmailSection',
-      view: {
-        class: 'foam.u2.view.StringArrayRowView'
-      },
-      validateObj: function(signingOfficerEmails) {
-        console.log(signingOfficerEmails);
-        return 'Email address is invalid.'
+      validateObj: function(signingOfficerEmail) {
+        return 'Email address is invalid.';
       },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
