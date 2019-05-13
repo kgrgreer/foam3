@@ -290,6 +290,7 @@ foam.CLASS({
     {
       name: 'currencyOne',
       label: 'Canada',
+      permissionConfig: { enabled: ['currency.read.CAD'] },
       code: function() {
         this.selection = 1;
       }
@@ -297,6 +298,7 @@ foam.CLASS({
     {
       name: 'currencyTwo',
       label: 'US',
+      permissionConfig: { enabled: ['currency.read.USD'] },
       code: function() {
         this.selection = 2;
       }
