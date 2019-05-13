@@ -14,6 +14,7 @@ import foam.nanos.auth.Country;
 import foam.nanos.auth.User;
 
 import foam.nanos.logger.Logger;
+import net.nanopay.model.Business;
 import net.nanopay.model.Currency;
 
 import net.nanopay.account.DigitalAccount;
@@ -32,7 +33,11 @@ public class CreateDefaultDigitalAccountOnUserCreateDAO
   public FObject put_(X x, FObject obj) {
     // putting the user first so the Id is correct when looking for accounts.
     User user = (User) super.put_(x, obj);
-    DigitalAccount.findDefault(getX(), user, null);
+    if ( user instanceof Business || user.getGroup().equals("sme") ) {
+      OverdraftAccount.findDefault(getX(), user, null);
+    } else {
+      DigitalAccount.findDefault(getX(), user, null);
+    }
     return user;
   }
 }
