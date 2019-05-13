@@ -28,6 +28,14 @@ foam.CLASS({
     {
       name: 'applyReverseAction',
       javaCode: '//noop'
+    },
+    {
+      name: 'canExecute',
+      javaCode: 'return true;'
+    },
+    {
+      name: 'describe',
+      javaCode: 'return "";'
     }
   ]
 });
