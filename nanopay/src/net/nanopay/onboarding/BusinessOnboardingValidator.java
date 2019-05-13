@@ -102,9 +102,10 @@ public class BusinessOnboardingValidator implements Validator {
     }
 
     // additional documents
-    if ( business.getAdditionalDocuments().length <= 0 ) {
-      throw new RuntimeException("Please upload at least one proof of registration file for your business type.");
-    }
+    // NOTE: AFX REMOVE FOR MVP RELEASE
+    // if ( business.getAdditionalDocuments().length <= 0 ) {
+    //   throw new RuntimeException("Please upload at least one proof of registration file for your business type.");
+    // }
 
   }
 
@@ -215,9 +216,10 @@ public class BusinessOnboardingValidator implements Validator {
     BusinessOnboardingValidator.validateIdentification(identification);
 
     // additional documents
-    if ( signingOfficer.getAdditionalDocuments().length <= 0 ) {
-      throw new RuntimeException("Please upload at least one identification file for the signing officer.");
-    }
+    // NOTE: AFX REMOVE FOR MVP RELEASE
+    // if ( signingOfficer.getAdditionalDocuments().length <= 0 ) {
+    //   throw new RuntimeException("Please upload at least one identification file for the signing officer.");
+    // }
 
     // birthday and age
     if ( signingOfficer.getBirthday() == null ) {

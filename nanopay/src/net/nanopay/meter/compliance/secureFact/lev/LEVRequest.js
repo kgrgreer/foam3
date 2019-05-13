@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.lev.model',
+  package: 'net.nanopay.meter.compliance.secureFact.lev',
   name: 'LEVRequest',
   extends: 'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
 
@@ -55,7 +55,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVApplicant',
+      of: 'net.nanopay.meter.compliance.secureFact.lev.LEVApplicant',
       name: 'applicant',
       documentation: 'Can only have 1 entry, but an array is required.'
     }

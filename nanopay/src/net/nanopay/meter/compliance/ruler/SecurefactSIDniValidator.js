@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.sidni',
-  name: 'SIDniValidator',
+  package: 'net.nanopay.meter.compliance.ruler',
+  name: 'SecurefactSIDniValidator',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: `Validates a user using SecureFact SIDni api.`,
@@ -10,7 +10,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.SecurefactService',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse'
+    'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse'
   ],
 
   methods: [
@@ -36,6 +36,19 @@ foam.CLASS({
     {
       name: 'applyReverseAction',
       javaCode: ` `
+    },
+    {
+      name: 'canExecute',
+      javaCode: `
+      // TODO: add an actual implementation
+      return true;
+      `
+    },
+    {
+      name: 'describe',
+      javaCode: `
+      // TODO: add an actual implementation
+      return "";`
     }
   ]
 });
