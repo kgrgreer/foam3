@@ -65,6 +65,14 @@ foam.CLASS({
     {
       name: 'applyReverseAction',
       javaCode: ` `
+    },
+    {
+      name: 'describe',
+      javaCode: ` return "Creates an approval request if a Compliance Transaction is encountered."; `
+    },
+    {
+      name: 'canExecute',
+      javaCode: ` return true;`
     }
   ]
 });
