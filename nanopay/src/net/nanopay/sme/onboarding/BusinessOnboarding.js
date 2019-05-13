@@ -21,10 +21,11 @@ foam.CLASS({
     {
       name: 'adminReferenceSection',
       title: 'Admin Reference Properties',
+      permissionRequired: true,
     },
     {
       name: 'signingOfficerQuestionSection',
-      title: 'Are you considered a sigining officer at your company?',
+      title: 'Are you considered a signing officer at your company?',
       help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at your company…'
     },
     {
@@ -35,34 +36,40 @@ foam.CLASS({
     {
       name: 'homeAddressSection',
       title: 'Enter you home address',
-      help: 'Awesome! Next, I’ll need to know your current home address…'
+      help: 'Awesome! Next, I’ll need to know your current home address…',
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'signingOfficerEmailSection',
       title: 'Enter a signing officers email',
       help: `For security, we require the approval of a signing officer before you can continue.
-          I can email your signing officers directly for the approval. Only 1 is required, but you can add as many as you like…`
+          I can email your signing officers directly for the approval. Only 1 is required, but you can add as many as you like…`,
+      isAvailable: function (signingOfficer) { return !signingOfficer }
     },
     {
       name: 'businessAddressSection',
       title: 'Enter your business address',
-      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`
+      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'businessDetailsSection',
       title: 'Enter your business details',
-      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`
+      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'transactionDetailsSection',
       title: 'Enter your transaction details',
-      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`
+      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'ownershipYesOrNoSection',
       title: 'Does your company have anyone that owns 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document 
-          the percentage of ownership of any individual with a 25% + stake in the company.`
+          the percentage of ownership of any individual with a 25% + stake in the company.`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'ownershipAmountSection',
@@ -152,17 +159,10 @@ foam.CLASS({
       }
     }),
     {
-      class: 'StringArray',
-      name: 'signingOfficerEmails',
+      class: 'String',
+      name: 'signingOfficerEmail',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
-      view: {
-        class: 'foam.u2.view.StringArrayRowView'
-      },
-      validateObj: function(signingOfficerEmails) {
-        console.log(signingOfficerEmails);
-        return 'Email address is invalid.'
-      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
       }
@@ -178,19 +178,44 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
+      label: 'Type of business',
       section: 'businessDetailsSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
-    foam.nanos.auth.User.BUSINESS_SECTOR_ID.clone().copyFrom({
+    // FIXME: Add Choose from override and dataToText to defaults to the data's toSummary()
+    {
+      class: 'Reference',
+      targetDAOKey: 'businessSectorDAO',
+      name: 'businessSectorId',
       section: 'businessDetailsSection',
+      of: 'net.nanopay.model.BusinessSector',
+      documentation: 'Represents the general economic grouping for the business.',
+      label: 'Nature of business (NAIC code)',
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
+          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
+          sections: [
+            {
+              heading: 'Industries',
+              dao: X.businessSectorDAO
+            }
+          ],
+          search: true,
+          searchPlaceholder: 'Search...'
+        };
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
-    }),
+    },
+
     foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
+      label: 'Primary source of funds',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -198,6 +223,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'operatingUnderDifferentName',
+      label: 'Does your business operate under a different name?',
       section: 'businessDetailsSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
