@@ -12,6 +12,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
+  { name: 'net/nanopay/account/Accountable' },
   { name: 'net/nanopay/account/DuplicateDigitalAccountRule'},
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
@@ -44,6 +45,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/ui/addAccountModal/AddAccountSubmissionModal', flags: ['web'] },
   { name: 'net/nanopay/account/Balance' },
   { name: 'net/nanopay/account/DigitalAccount' },
+  { name: 'net/nanopay/account/OverdraftAccount' },
   { name: 'net/nanopay/account/DigitalAccountInfo' },
   { name: 'net/nanopay/account/DigitalAccountServiceInterface' },
   { name: 'net/nanopay/account/ClientDigitalAccountService' },
@@ -571,6 +573,9 @@ FOAM_FILES([
 
   // sme dashboard cards
   { name: 'net/nanopay/sme/ui/dashboard/cards/UnlockPaymentsCard', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/cards/IntegrationCard', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/cards/BankIntegrationCard', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/cards/QBIntegrationCard', flags: ['web'] },
 
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
