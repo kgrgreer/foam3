@@ -206,7 +206,7 @@ public class IdentityMindRequestGenerator {
       request.setBs(prepareString(address.getRegionId()));
       request.setBz(prepareString(address.getPostalCode()));
     }
-    request.setOwnership(owner.getOwnershipPercent() / 100.0);
+    request.setOwnership(owner.getOwnershipPercent());
     request.setTitle(prepareString(owner.getJobTitle()));
     request.setDob(formatDate(owner.getBirthday(), "yyyy-MM-dd"));
     return request;
