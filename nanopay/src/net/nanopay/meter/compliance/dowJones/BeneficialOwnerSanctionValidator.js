@@ -1,18 +1,17 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
-  name: 'EntityKYCValidator',
+  name: 'BeneficialOwnerSanctionValidator',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
-  documentation: 'Validates an entity using Dow Jones Risk and Compliance API.',
+  documentation: 'Validates a beneficial owner using DowJones Risk and Compliance API.',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
   javaImports: [
-    'foam.nanos.auth.User',
+    'net.nanopay.model.BeneficialOwner',
     'foam.nanos.logger.Logger',
-    'net.nanopay.model.Business',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.dowJones.DowJonesService',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse'
@@ -22,11 +21,10 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        // add date of birth and counrty to entity request
-        Business business = (Business) obj;
+        BeneficialOwner beneficialOwner = (BeneficialOwner) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          DowJonesResponse response = dowJonesService.entityNameSearch(x, business.getOrganization(), null);
+          DowJonesResponse response = dowJonesService.personNameSearch(x, beneficialOwner.getFirstName(), beneficialOwner.getLastName(), null);
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.getTotalMatches().equals("0") ) {
             status = ComplianceValidationStatus.INVESTIGATING;
@@ -34,7 +32,7 @@ foam.CLASS({
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
-          ((Logger) x.get("logger")).warning("EntityKYCValidator failed.", e);
+          ((Logger) x.get("logger")).warning("BeneficialOwnerSanctionValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
         }
       `
@@ -42,6 +40,20 @@ foam.CLASS({
     {
       name: 'applyReverseAction',
       javaCode: ` `
+    },
+    {
+      name: 'canExecute',
+      javaCode: `
+      // TODO: add an actual implementation
+      return true;
+      `
+    },
+    {
+      name: 'describe',
+      javaCode: `
+      // TODO: add an actual implementation
+      return "";
+      `
     }
   ]
 });

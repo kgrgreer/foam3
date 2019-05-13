@@ -906,7 +906,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesRequest' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesResponse' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesResponseBody' },
-  { name: 'net/nanopay/meter/compliance/dowJones/BeneficialOwnerKYCValidator' },
+  { name: 'net/nanopay/meter/compliance/dowJones/BeneficialOwnerSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/dowJones/BeneficialOwnerOnboarding' },
   { name: 'net/nanopay/meter/compliance/dowJones/ClientDowJonesService' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCall' },
@@ -915,7 +915,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/PersonOnboarding' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJones' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesRestInterface' },
-  { name: 'net/nanopay/meter/compliance/dowJones/EntityKYCValidator' },
+  { name: 'net/nanopay/meter/compliance/dowJones/EntitySanctionValidator' },
   { name: 'net/nanopay/meter/compliance/dowJones/EntityNameSearchRequest' },
   { name: 'net/nanopay/meter/compliance/dowJones/IDTypeSearchRequest' },
   { name: 'net/nanopay/meter/compliance/dowJones/Match' },
@@ -923,7 +923,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/MatchPayload' },
   { name: 'net/nanopay/meter/compliance/dowJones/MetadataSearchResponse' },
   { name: 'net/nanopay/meter/compliance/dowJones/NameSearchRequest' },
-  { name: 'net/nanopay/meter/compliance/dowJones/PersonKYCValidator' },
+  { name: 'net/nanopay/meter/compliance/dowJones/PersonSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
 
   // liquidity

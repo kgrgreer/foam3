@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
-  name: 'PersonKYCValidator',
+  name: 'PersonSanctionValidator',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: 'Validates a user using DowJones Risk and Compliance API.',
@@ -33,7 +33,7 @@ foam.CLASS({
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
-          ((Logger) x.get("logger")).warning("PersonKYCValidator failed.", e);
+          ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
         }
       `
@@ -41,6 +41,20 @@ foam.CLASS({
     {
       name: 'applyReverseAction',
       javaCode: ` `
+    },
+    {
+      name: 'canExecute',
+      javaCode: `
+      // TODO: add an actual implementation
+      return true;
+      `
+    },
+    {
+      name: 'describe',
+      javaCode: `
+      // TODO: add an actual implementation
+      return "";
+      `
     }
   ]
 });

@@ -518,7 +518,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.DowJonesRequest',
   'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
   'net.nanopay.meter.compliance.dowJones.DowJonesResponseBody',
-  'net.nanopay.meter.compliance.dowJones.BeneficialOwnerKYCValidator',
+  'net.nanopay.meter.compliance.dowJones.BeneficialOwnerSanctionValidator',
   'net.nanopay.meter.compliance.dowJones.BeneficialOwnerOnboarding',
   'net.nanopay.meter.compliance.dowJones.ClientDowJonesService',
   'net.nanopay.meter.compliance.dowJones.DowJonesCall',
@@ -527,7 +527,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.PersonOnboarding',
   'net.nanopay.meter.compliance.dowJones.DowJones',
   'net.nanopay.meter.compliance.dowJones.DowJonesRestInterface',
-  'net.nanopay.meter.compliance.dowJones.EntityKYCValidator',
+  'net.nanopay.meter.compliance.dowJones.EntitySanctionValidator',
   'net.nanopay.meter.compliance.dowJones.EntityNameSearchRequest',
   'net.nanopay.meter.compliance.dowJones.IDTypeSearchRequest',
   'net.nanopay.meter.compliance.dowJones.Match',
@@ -535,7 +535,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.MatchPayload',
   'net.nanopay.meter.compliance.dowJones.MetadataSearchResponse',
   'net.nanopay.meter.compliance.dowJones.NameSearchRequest',
-  'net.nanopay.meter.compliance.dowJones.PersonKYCValidator',
+  'net.nanopay.meter.compliance.dowJones.PersonSanctionValidator',
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
   // meter tests
