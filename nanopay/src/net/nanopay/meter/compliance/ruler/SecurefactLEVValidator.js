@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.lev',
-  name: 'LEVValidator',
+  package: 'net.nanopay.meter.compliance.ruler',
+  name: 'SecurefactLEVValidator',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: `Validates a business using SecureFact LEV api.`,
@@ -9,7 +9,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.SecurefactService',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.model.Business'
   ],
 
@@ -36,6 +36,19 @@ foam.CLASS({
     {
       name: 'applyReverseAction',
       javaCode: ` `
+    },
+    {
+      name: 'canExecute',
+      javaCode: `
+      // TODO: add an actual implementation
+      return true;
+      `
+    },
+    {
+      name: 'describe',
+      javaCode: `
+      // TODO: add an actual implementation
+      return "";`
     }
   ]
 });

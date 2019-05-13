@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance',
+  package: 'net.nanopay.meter.compliance.ruler',
   name: 'CanadianSanctionValidator',
 
   documentation: `Validator that checks user and business against
@@ -51,6 +51,19 @@ foam.CLASS({
     {
       name: 'applyReverseAction',
       javaCode: ` `
+    },
+    {
+      name: 'canExecute',
+      javaCode: `
+      // TODO: add an actual implementation
+      return true;
+      `
+    },
+    {
+      name: 'describe',
+      javaCode: `
+      // TODO: add an actual implementation
+      return "";`
     }
   ]
 });

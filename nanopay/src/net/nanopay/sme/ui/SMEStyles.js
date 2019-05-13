@@ -359,6 +359,8 @@ foam.CLASS({
 
     /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
     .white-radio {
+      /* The line below is required as a side effect of the radios being Actions. They shouldn't be actions. */
+      justify-content: flex-start !important;
       text-align: left !important;
       text-indent: 50px;
       width: 225px !important;
