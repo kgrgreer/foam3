@@ -31,7 +31,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Transaction parent = (Transaction) obj;
 
     while ( ! SafetyUtil.isEmpty(parent.getParent()) ) {
-      parent = parent.findParent(x);
+      parent = parent.findParent(getX());
     }
 
     // AscendantFXTransaction needs to generate the id before setting the invoice paymentId
