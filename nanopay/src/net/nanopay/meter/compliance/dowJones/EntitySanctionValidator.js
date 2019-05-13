@@ -22,7 +22,6 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        // add date of birth and counrty to entity request
         Business business = (Business) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
