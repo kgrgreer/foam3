@@ -344,6 +344,7 @@ var classes = [
   'net.nanopay.auth.NanopayResetPasswordTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
+  'net.nanopay.auth.CheckCurrencyRule',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.IPLoggingAuthService',
 
