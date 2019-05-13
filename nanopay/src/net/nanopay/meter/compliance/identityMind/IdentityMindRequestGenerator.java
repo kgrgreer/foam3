@@ -2,6 +2,7 @@ package net.nanopay.meter.compliance.identityMind;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
@@ -94,7 +95,8 @@ public class IdentityMindRequestGenerator {
     Account sourceAccount = transaction.findSourceAccount(x);
     Account destinationAccount = transaction.findDestinationAccount(x);
     User sender = sourceAccount.findOwner(x);
-    User receiver = destinationAccount.findOwner(x);
+    DAO localUserDAO = (DAO) x.get("localUserDAO");
+    User receiver = (User) localUserDAO.inX(x).find(destinationAccount.getOwner());
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
       .setIp(getRemoteAddr(x))
       .build();
