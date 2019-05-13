@@ -10,6 +10,7 @@ foam.CLASS({
 
   imports: [
     'invoiceDAO',
+    'currencyDAO',
     'user'
   ],
 
@@ -53,10 +54,12 @@ foam.CLASS({
   methods: [
     function initE() {
       // Get body msg
+      
       this.bodyMsg = this.data.notificationType;
       if ( this.bodyMsg.includes('Invoice') ) {
         this.invoiceDAO.find(this.data.invoiceId).then((invoice) => {
           if ( invoice == null ) this.bodyMsg = 'The invoice for this notification can no longer be found.';
+          this.currencyFormatted = currency.format(this.invoice.amount) + ' ' + currency.alphabeticCode;
           if ( invoice.payeeId === this.user.id ) {
             var name = invoice.payer.businessName ?
               invoice.payer.businessName :
