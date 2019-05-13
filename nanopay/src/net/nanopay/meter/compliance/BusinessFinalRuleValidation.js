@@ -9,13 +9,13 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.model.Business',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.nanos.ruler.RuleHistory',
     'foam.nanos.ruler.Rule',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
+    'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
 
