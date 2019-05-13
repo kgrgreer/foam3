@@ -516,18 +516,21 @@ foam.CLASS({
           .end()
           .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
           .start(this.IDENTIFICATION).end()
-          // Terms and Services and Compliance stuff
-            .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' })
-              .show(this.isCanadian$)
-              .start('a').addClass('sme').addClass('link')
-                .addClass(this.myClass('terms-link'))
-                .add('Download or Print this Agreement Here')
-                .on('click', () => {
-                  var link = this.triPartyAgreementCad ? this.triPartyAgreementCad.link : '';
-                  window.open(link);
-                })
-              .end()
-            .end()
+            // Terms and Services and Compliance stuff
+            //
+            // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+            //
+            // .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' })
+            //   .show(this.isCanadian$)
+            //   .start('a').addClass('sme').addClass('link')
+            //     .addClass(this.myClass('terms-link'))
+            //     .add('Download or Print this Agreement Here')
+            //     .on('click', () => {
+            //       var link = this.triPartyAgreementCad ? this.triPartyAgreementCad.link : '';
+            //       window.open(link);
+            //     })
+            //   .end()
+            // .end()
             .start(this.DUAL_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px' })
               .show(this.isCanadian$)
               .start('a').addClass('sme').addClass('link')
@@ -539,41 +542,45 @@ foam.CLASS({
                 })
               .end()
             .end()
-            .start(this.TRI_PARTY_AGREEMENT_USD).style({ 'margin-top': '30px' })
-              .hide(this.isCanadian$)
-              .start('a').addClass('sme').addClass('link')
-                .addClass(this.myClass('terms-link'))
-                .add('Download or Print this Agreement Here')
-                .on('click', () => {
-                  var link = this.triPartyAgreementUsd ? this.triPartyAgreementUsd.link : '';
-                  window.open(link);
-                })
-              .end()
-            .end()
-            .start().addClass('checkBoxes').show(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
-            .end()
+            // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+            // 
+            // .start(this.TRI_PARTY_AGREEMENT_USD).style({ 'margin-top': '30px' })
+            //   .hide(this.isCanadian$)
+            //   .start('a').addClass('sme').addClass('link')
+            //     .addClass(this.myClass('terms-link'))
+            //     .add('Download or Print this Agreement Here')
+            //     .on('click', () => {
+            //       var link = this.triPartyAgreementUsd ? this.triPartyAgreementUsd.link : '';
+            //       window.open(link);
+            //     })
+            //   .end()
+            // .end()
+            // .start().addClass('checkBoxes').show(this.isCanadian$)
+            //   .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
+            // .end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
               .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxTwo$ }).add(this.dualPartyAgreementCad$.dot('checkboxText')).end()
             .end()
-            .start().addClass('checkBoxes').hide(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.americanScrollBox$ }).add(this.triPartyAgreementUsd$.dot('checkboxText')).end()
-            .end()
+            // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+            //
+            // .start().addClass('checkBoxes').hide(this.isCanadian$)
+            //   .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.americanScrollBox$ }).add(this.triPartyAgreementUsd$.dot('checkboxText')).end()
+            // .end()
           // End of Terms and Services and Compliance stuff
-          .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
-          .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
-          .start({
-            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
-            files$: this.additionalDocs$,
-            supportedFormats: {
-              'image/jpg': 'JPG',
-              'image/jpeg': 'JPEG',
-              'image/png': 'PNG',
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
-              'application/msword': 'DOC',
-              'application/pdf': 'PDF'
-            }
-          }).end()
+          // .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
+          // .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
+          // .start({
+          //   class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+          //   files$: this.additionalDocs$,
+          //   supportedFormats: {
+          //     'image/jpg': 'JPG',
+          //     'image/jpeg': 'JPEG',
+          //     'image/png': 'PNG',
+          //     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+          //     'application/msword': 'DOC',
+          //     'application/pdf': 'PDF'
+          //   }
+          // }).end()
         .end()
       .end()
       .start() .hide(this.signingOfficer$.map(function(v) {

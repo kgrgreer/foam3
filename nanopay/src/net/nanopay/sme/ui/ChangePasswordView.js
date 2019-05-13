@@ -106,27 +106,8 @@ foam.CLASS({
         margin-bottom: 32px;
       }
   
-      ^ .Next-Button{
-        width: 168px;
-        height: 40px;
-        border-radius: 2px;
-        background-color: %SECONDARYCOLOR%;
-        margin-left: 20px;
-        margin-right: 20px;
-        margin-bottom: 20px;
+      ^ .Next-Button {
         margin-top: 32px;
-        text-align: center;
-        color: #ffffff;
-        font-family: Lato;
-        font-size: 16px;
-        line-height: 2.86;
-        cursor: pointer;
-        width: 128px;
-        height: 48px;
-        border-radius: 4px;
-        box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-        border: solid 1px #4a33f4;
-        background-color: #604aff;
       }
 
       ^ .top-bar {
@@ -249,7 +230,7 @@ foam.CLASS({
             .start().addClass('Email-Text').add(this.CONFIRM_PASSWORD_LABEL).end()
             .add(this.CONFIRMATION_PASSWORD)
             .start()
-              .start(this.CONFIRM).addClass('Next-Button').end()
+              .start(this.CONFIRM, { size: 'LARGE' }).addClass('Next-Button').end()
             .end()
           .end()
       .end();
