@@ -112,12 +112,12 @@ foam.CLASS({
         width: 300px;
       }
 
-      ^ .net-nanopay-ui-ActionView-goNext {
+      ^ .foam-u2-ActionView-goNext {
         margin-left: 40px !important;
         font-size: 12px;
       }
 
-      ^ .net-nanopay-ui-ActionView-goBack {
+      ^ .foam-u2-ActionView-goBack {
           min-width: 136px;
           height: 40px;
           font-size: 12px;

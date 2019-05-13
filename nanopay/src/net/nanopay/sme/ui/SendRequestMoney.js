@@ -89,9 +89,6 @@ foam.CLASS({
     ^ .exitContainer {
       display: flex;
     }
-    ^ .plainAction:last-child {
-      margin-right: 25px !important;
-    }
     ^ .net-nanopay-sme-ui-InfoMessageContainer {
       font-size: 14px;
       line-height: 1.5;

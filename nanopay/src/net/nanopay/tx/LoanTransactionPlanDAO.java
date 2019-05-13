@@ -82,7 +82,7 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
     //if this is a fx transaction, destination amount should be in different currency and amount
     //if ( ! ( plan.getDestinationAmount() == 0 ) && ! ( depositLineItem == null ) ) depositLineItem.setAmount( plan.getDestinationAmount() );
 
-    while(plan.getNext()!=null) plan = plan.getNext();
+    //while(plan.getNext()!=null) plan = plan.getNext();
     if ( withdrawLineItem != null ) plan.addLineItems( new TransactionLineItem[] {withdrawLineItem},null );
     if ( depositLineItem != null ) plan.addLineItems( new TransactionLineItem[] {depositLineItem},null );
     return quote;

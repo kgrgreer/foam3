@@ -36,7 +36,7 @@ foam.CLASS({
       margin-bottom: 60px;
     }
 
-    ^ .net-nanopay-ui-ActionView {
+    ^ .foam-u2-ActionView {
       width: 135px;
       height: 40px;
       border-radius: 2px;
@@ -44,13 +44,13 @@ foam.CLASS({
       zoom: 1;
     }
 
-    ^ .net-nanopay-ui-ActionView-logOut {
+    ^ .foam-u2-ActionView-logOut {
       // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
     }
 
-    ^ .net-nanopay-ui-ActionView-logOut:hover,
-    ^ .net-nanopay-ui-ActionView-logOut:focus {
+    ^ .foam-u2-ActionView-logOut:hover,
+    ^ .foam-u2-ActionView-logOut:focus {
       background-color: rgba(164, 179, 184, 0.3);
     }
 
@@ -59,7 +59,7 @@ foam.CLASS({
       float:right;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancel {
+    ^ .foam-u2-ActionView-cancel {
       width: 73px;
       color: #59a5d5;
       margin-right: 5px;
@@ -68,19 +68,19 @@ foam.CLASS({
       box-shadow: none;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancel:hover,
-    ^ .net-nanopay-ui-ActionView-cancel:focus {
+    ^ .foam-u2-ActionView-cancel:hover,
+    ^ .foam-u2-ActionView-cancel:focus {
       border-radius: 2px;
       background-color: rgba(89, 165, 213, 0.3);
     }
 
-    ^ .net-nanopay-ui-ActionView-saveAndLogOut {
+    ^ .foam-u2-ActionView-saveAndLogOut {
       background-color: #59a5d5;
       color: white;
     }
 
-    ^ .net-nanopay-ui-ActionView-saveAndLogOut:hover,
-    ^ .net-nanopay-ui-ActionView-saveAndLogOut:focus {
+    ^ .foam-u2-ActionView-saveAndLogOut:hover,
+    ^ .foam-u2-ActionView-saveAndLogOut:focus {
       background-color: #357eac;
     }
   `,

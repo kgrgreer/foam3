@@ -294,7 +294,7 @@ foam.CLASS({
       width: 395px;
     }
 
-    ^ .net-nanopay-ui-ActionView-addPrincipalOwner {
+    ^ .foam-u2-ActionView-addPrincipalOwner {
       width: 540px;
       height: 40px;
 
@@ -303,40 +303,40 @@ foam.CLASS({
       margin-top: 40px;
     }
 
-    ^ .net-nanopay-ui-ActionView-delete {
+    ^ .foam-u2-ActionView-delete {
       background-color: rgba(216, 30, 5, 0.3) !important;
       border: solid 1px #d81e05 !important;
       color: #d81e05 !important;
       margin-left: 10px;
     }
 
-    ^ .net-nanopay-ui-ActionView-delete:hover,
-    ^ .net-nanopay-ui-ActionView-delete:focus {
+    ^ .foam-u2-ActionView-delete:hover,
+    ^ .foam-u2-ActionView-delete:focus {
       background-color: #d81e05 !important;
       color: white !important;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit {
+    ^ .foam-u2-ActionView-cancelEdit {
       color: black !important;
       background-color: rgba(164, 179, 184, 0.1) !important;
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8) !important;
       float: right;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit:hover,
-    ^ .net-nanopay-ui-ActionView-cancelEdit:focus {
+    ^ .foam-u2-ActionView-cancelEdit:hover,
+    ^ .foam-u2-ActionView-cancelEdit:focus {
       background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
-    ^ .net-nanopay-ui-ActionView {
+    ^ .foam-u2-ActionView {
       color: white;
       font-size: 12px;
       outline: none;
       background-color: #59a5d5;
     }
 
-    ^ .net-nanopay-ui-ActionView:hover,
-    ^ .net-nanopay-ui-ActionView:focus {
+    ^ .foam-u2-ActionView:hover,
+    ^ .foam-u2-ActionView:focus {
       background-color: #3783b3;
     }
 
@@ -413,14 +413,14 @@ foam.CLASS({
     ^ .foam-u2-TextField:focus,
     ^ .foam-u2-DateView:focus,
     ^ .foam-u2-tag-Select:focus,
-    ^ .net-nanopay-ui-ActionView:focus {
+    ^ .foam-u2-ActionView:focus {
       border: solid 1px #59A5D5;
     }
 
     ^ .foam-u2-TextField:disabled,
     ^ .foam-u2-DateView:disabled,
     ^ .foam-u2-tag-Select:disabled,
-    ^ .net-nanopay-ui-ActionView:disabled {
+    ^ .foam-u2-ActionView:disabled {
       border: solid 1px rgba(164, 179, 184, 0.5) !important;
       color: #a4b3b8 !important;
     }
@@ -437,14 +437,14 @@ foam.CLASS({
       width: 540px;
       padding-bottom: 75px;
     }
-    .bottomActions > .net-nanopay-ui-ActionView-Save {
+    .bottomActions > .foam-u2-ActionView-Save {
       float: right;
       background: #59a5d5;
       color: white;
       margin-right: 100px;
       margin-left: 40px;
     }
-    .bottomActions > .net-nanopay-ui-ActionView-Cancel {
+    .bottomActions > .foam-u2-ActionView-Cancel {
       margin-left: 40px;
     }
     ^ .deleteButton, ^ .editButton {

@@ -48,7 +48,8 @@ foam.CLASS({
     'organization',
     'legalName',
     'email',
-    'signUpStatus'
+    'signUpStatus',
+    'deleted'
   ],
 
   properties: [
@@ -174,8 +175,8 @@ foam.CLASS({
         String containsDigitRegex = ".*\\\\d.*";
 
         if ( getBusinessId() != 0 ) {
-          DAO businessDAO = (DAO) x.get("businessDAO");
-          Business business = (Business) businessDAO.inX(x).find(getBusinessId());
+          DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+          Business business = (Business) localBusinessDAO.inX(x).find(getBusinessId());
           if ( business == null ) {
             throw new IllegalStateException("The business this contact references was not found.");
           }
@@ -206,7 +207,15 @@ foam.CLASS({
             throw new IllegalStateException("Business name is required.");
           }
 
-          if ( this.getBusinessAddress() != null ) {
+          if ( this.getBankAccount() != 0 ) {
+            BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
+            
+            if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
+
+            if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
+              throw new RuntimeException("Financial institution name required.");
+            }
+
             Address businessAddress = this.getBusinessAddress();
             DAO countryDAO = (DAO) x.get("countryDAO");
             DAO regionDAO = (DAO) x.get("regionDAO");
@@ -246,16 +255,6 @@ foam.CLASS({
             if ( ! this.validatePostalCode(businessAddress.getPostalCode(), businessAddress.getCountryId()) ) {
               String codeType = businessAddress.getCountryId().equals("US") ? "zip code" : "postal code";
               throw new RuntimeException("Invalid " + codeType + ".");
-            }
-          }
-
-          if ( this.getBankAccount() != 0 ) {
-            BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
-            
-            if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
-
-            if ( SafetyUtil.isEmpty(bankAccount.getName()) ) {
-              throw new RuntimeException("Financial institution name required.");
             }
           }
         }

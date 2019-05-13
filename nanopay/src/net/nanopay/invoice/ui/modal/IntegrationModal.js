@@ -15,6 +15,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountingIntegrationUtil',
     'xeroService',
     'quickbooksService',
     'user'
@@ -114,7 +115,7 @@ foam.CLASS({
     background-color: #ffffff;
     border: solid 1.5px #ffffff;
     box-shadow: 0 1px 1px 0 #dae1e9;
-    border: solid 1px #edf0f5;
+    border: solid 1px %BACKGROUNDCOLOR%;
     width: 190px;
     padding: 20px;
     display: inline-block;
@@ -128,17 +129,16 @@ foam.CLASS({
   }
   ^ .content-wrapper {
     margin-top: 16px;
+    text-align: center;
   }
-  ^ .float-right {
-    float: right;
-  }
-  ^ .float-left {
-    float: left;
+  ^ .margin-left {
+    margin-left: 20px;
   }
   `,
   methods: [
-    function initE() {
+    async function initE() {
       this.SUPER();
+      let showbuttons = await this.accountingIntegrationUtil.getPermission();
       this
       .start()
       .addClass(this.myClass())
@@ -147,14 +147,14 @@ foam.CLASS({
               .start().addClass('headerTitle').add('Select your accounting software to connect')
               .end()
               .start().addClass('content-wrapper')
-                .start().addClass('integration-item').addClass('float-left').on('click', this.signXero)
+                .start().addClass('integration-item').on('click', this.signXero).show(showbuttons[1])
                   .start('img').attr('src', 'images/xero.png')
                   .end()
                   .start()
                     .add('Xero').addClass('integrationText')
                   .end()
                 .end()
-                .start().addClass('integration-item').addClass('float-right').on('click', this.signQuickbooks)
+                .start().addClass('integration-item').enableClass('margin-left', showbuttons[1]).on('click', this.signQuickbooks).show(showbuttons[2])
                   .start('img').attr('src', 'images/quickbooks.png')
                   .end()
                   .start()

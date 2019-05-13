@@ -80,10 +80,10 @@ foam.CLASS({
   ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-flinks-view-form-FlinksSubHeader .secondImg {
     margin: auto;
   }
-  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView {
+  ^ .net-nanopay-flinks-view-form-FlinksForm .foam-u2-ActionView {
     background-color: %SECONDARYCOLOR%;
   }
-  .net-nanopay-ui-ActionView-closeModal {
+  .foam-u2-ActionView-closeModal {
     background-color: transparent !important;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .positionColumn {
@@ -109,11 +109,11 @@ foam.CLASS({
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account:hover {
     border: solid 1px %SECONDARYCOLOR%;
   }
-  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-closeButton,
-  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .net-nanopay-ui-ActionView-nextButton {
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .foam-u2-ActionView-closeButton,
+  ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .foam-u2-ActionView-nextButton {
     display: none;
   }
-  ^ .net-nanopay-flinks-view-form-FlinksForm .net-nanopay-ui-ActionView.net-nanopay-ui-ActionView-closeButton {
+  ^ .net-nanopay-flinks-view-form-FlinksForm .foam-u2-ActionView.foam-u2-ActionView-closeButton {
     float: right;
     margin-right: 24px !important;
     width: auto;
