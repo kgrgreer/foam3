@@ -3,11 +3,17 @@ foam.CLASS({
   name: 'BusinessOnboardingDAO',
   extends: 'foam.dao.ProxyDAO',
 
+  documentation: `
+    This decorator handles adding and updating business information including
+    business address, signing officer and benifical officer.
+  `,
+
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Invitation',
@@ -33,10 +39,10 @@ foam.CLASS({
         // TODO: Please call the java validator of the businessOnboarding here
         // TODO: Please add the condition to handle saving the draft
 
-        DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
-        DAO localUserDAO = (DAO) x.get("localUserDAO");
-        DAO invitationDAO = (DAO) x.get("businessInvitationDAO");
-        DAO beneficialOwnerDAO = (DAO) x.get("beneficialOwnerDAO");
+        DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
+        DAO invitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
+        DAO beneficialOwnerDAO = ((DAO) x.get("beneficialOwnerDAO")).inX(x);
 
         Business business = businessOnboarding.findBusinessId(x);
         User user = businessOnboarding.findUserId(x);
@@ -56,12 +62,12 @@ foam.CLASS({
           business.getSigningOfficers(x).add(user);
         } else {
           // If the user needs to invite the signing officer
-          String signingOfficeEmail = businessOnboarding.getSigningOfficerEmail();
+          String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();
 
           Invitation invitation = new Invitation();
           invitation.setGroup("admin");
           invitation.setCreatedBy(user.getId());
-          invitation.setEmail(signingOfficeEmail);
+          invitation.setEmail(signingOfficerEmail);
 
           // Send invitation to email to the signing officer
           invitationDAO.put(invitation);
@@ -93,13 +99,15 @@ foam.CLASS({
         if ( businessOnboarding.getOwnershipAbovePercent() ) {
           BeneficialOwner[] beneficialOwnersArray = businessOnboarding.getBeneficialOwners();
           for ( BeneficialOwner beneficialOwner: beneficialOwnersArray ) {
-            beneficialOwner.setBusiness(business.getId());
-            beneficialOwnerDAO.put(beneficialOwner);
+            business.getBeneficialOwners(x).put(beneficialOwner);
           }
         }
 
         business.setOnboarded(true);
-        business.setCompliance(net.nanopay.admin.model.ComplianceStatus.REQUESTED);
+
+        if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
+          business.setCompliance(ComplianceStatus.REQUESTED);
+        }
 
         localBusinessDAO.put(business);
         return getDelegate().put_(x, obj);
