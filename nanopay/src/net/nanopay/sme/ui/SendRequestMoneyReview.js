@@ -22,6 +22,7 @@ foam.CLASS({
     'acceptanceDocumentService',
     'ctrl',
     'invoice',
+    'isApproving',
     'isPayable',
     'loadingSpin',
     'notify',
@@ -62,6 +63,10 @@ foam.CLASS({
     {
       name: 'APPROVE_INVOICE_LABEL',
       message: 'Approve'
+    },
+    {
+      name: 'SUBMIT_LABEL',
+      message: 'Submit'
     }
   ],
 
@@ -71,7 +76,10 @@ foam.CLASS({
       this.updateDisclosure();
 
       // Update the next label
-      this.nextLabel = this.APPROVE_INVOICE_LABEL;
+      this.nextLabel = this.isApproving
+        ? this.APPROVE_INVOICE_LABEL
+        : this.SUBMIT_LABEL;
+
       this.start().addClass(this.myClass())
         .start().show(this.loadingSpin.isHidden$)
           .start({
