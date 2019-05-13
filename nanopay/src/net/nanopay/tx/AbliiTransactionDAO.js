@@ -69,11 +69,11 @@ foam.CLASS({
 
         try {
           // check if we can make the CO at th same time as CI
-        Account account = DigitalAccount.findDefault(x,(User) x.get("user"), request.getSourceCurrency());
-        account.validateAmount(x, null, request.getAmount());
-        CompositeTransaction ct = new CompositeTransaction();
-        ct.copyFrom(request);
-        request.addNext(ct);
+          Account account = DigitalAccount.findDefault(x,(User) x.get("user"), request.getSourceCurrency());
+          account.validateAmount(x, null, request.getAmount());
+          CompositeTransaction ct = new CompositeTransaction();
+          ct.copyFrom(request);
+          request.addNext(ct);
         }
         catch ( RuntimeException e) {
           // transaction not eligible for fast pay
