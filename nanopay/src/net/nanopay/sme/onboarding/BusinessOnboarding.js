@@ -152,9 +152,11 @@ foam.CLASS({
       }
     }),
     {
-      class: 'StringArray',
-      name: 'signingOfficerEmails',
-      documentation: 'Business signing officer emails. To be sent invitations to join platform',
+      class: 'String',
+      name: 'signingOfficerEmail',
+      documentation: `Email for inviting signing officer to join the platform.
+        We expect to have a string array in the future
+        when we enable multiple signing officers`,
       section: 'signingOfficerEmailSection',
       view: {
         class: 'foam.u2.view.StringArrayRowView'
@@ -292,7 +294,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       name: 'beneficialOwners',
-      of: 'foam.nanos.auth.User',
+      of: 'net.nanopay.model.BeneficialOwner',
       section: 'beneficialOwnersSectionSection',
       visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
         return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
