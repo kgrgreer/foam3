@@ -17,6 +17,7 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.CompositeTransaction'
   ],
 
   methods: [
@@ -64,6 +65,18 @@ foam.CLASS({
 
           request.setDestinationAccount(destBankAccount.getId());
           quote.setRequestTransaction(request);
+        }
+
+        try {
+          // check if we can make the CO at th same time as CI
+        Account account = DigitalAccount.findDefault(x,(User) x.get("user"), request.getSourceCurrency());
+        account.validateAmount(x, null, request.getAmount());
+        CompositeTransaction ct = new CompositeTransaction();
+        ct.copyFrom(request);
+        request.addNext(ct);
+        }
+        catch ( RuntimeException e) {
+          // transaction not eligible for fast pay
         }
 
         return super.put_(x, quote);
