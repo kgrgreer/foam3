@@ -130,7 +130,7 @@ function migrate_journals {
 
 function clean {
     if [ "$CLEAN_BUILD" -eq 1 ] &&
-           [ "$START_ONLY" -eq 0 ]; then
+           [ "$RESTART_ONLY" -eq 0 ]; then
         echo "INFO :: Cleaning Up"
 
         if [ -d "build/" ]; then
@@ -496,7 +496,7 @@ INSTALL=0
 PACKAGE=0
 RUN_JAR=0
 RUN_MIGRATION=0
-START_ONLY=0
+RESTART_ONLY=0
 TEST=0
 IS_AWS=0
 DAEMONIZE=0
@@ -539,7 +539,7 @@ while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
            CLEAN_BUILD=1
            echo "MODE=${MODE}"
            ;;
-        r) START_ONLY=1 ;;
+        r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
            MODE=TEST
@@ -594,14 +594,14 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
-if [ "$START_ONLY" -eq 0 ] ||
+if [ "$RESTART_ONLY" -eq 0 ] ||
        [ "$COMPILE_ONLY" -eq 0 ] ||
        [ "$BUILD_ONLY" -eq 0 ] ||
        [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
     deploy_journals
 fi
 
-if [ "${START_ONLY}" -eq 0 ]; then
+if [ "${RESTART_ONLY}" -eq 0 ]; then
     build_jar
 fi
 
