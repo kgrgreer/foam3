@@ -252,7 +252,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'memo',
-      documentation: 'Free form memo field.'
+      documentation: 'Free form memo field - Used as recipient business name.'
     }
   ]
 });

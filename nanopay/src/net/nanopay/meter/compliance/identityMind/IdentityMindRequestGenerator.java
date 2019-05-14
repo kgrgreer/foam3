@@ -116,6 +116,20 @@ public class IdentityMindRequestGenerator {
     request.setMerchantAid(getUUID(sourceAccount.findOwner(x)));
     request.setMan(Long.toString(sender.getId()));
     request.setPach(getBankAccountHash(x, (BankAccount) sourceAccount));
+    request.setBfn(prepareString(sender.getFirstName()));
+    request.setBln(prepareString(sender.getLastName()));
+    Address senderAddress = sender.getBusinessAddress();
+    if ( senderAddress != null ) {
+      request.setBsn(prepareString(senderAddress.getStreetNumber(), senderAddress.getStreetName(), senderAddress.getSuite()));
+      request.setBc(prepareString(senderAddress.getCity()));
+      request.setBco(prepareString(senderAddress.getCountryId()));
+      request.setBs(prepareString(senderAddress.getRegionId()));
+      request.setBz(prepareString(senderAddress.getPostalCode()));
+    }
+    Phone senderPhone = sender.getPhone();
+    if (senderPhone != null) {
+      request.setPhn(prepareString(senderPhone.getNumber()));
+    }
 
     // Receiver information
     request.setDman(Long.toString(receiver.getId()));
@@ -123,6 +137,7 @@ public class IdentityMindRequestGenerator {
 
     // External contact extra information
     if ( receiver instanceof Contact ) {
+      request.setMemo(receiver.getBusinessName());
       request.setDemail(receiver.getEmail());
       request.setSfn(prepareString(receiver.getFirstName()));
       request.setSln(prepareString(receiver.getLastName()));
