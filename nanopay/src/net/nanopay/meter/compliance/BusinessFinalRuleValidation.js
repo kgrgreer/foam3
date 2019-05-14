@@ -11,7 +11,7 @@
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'foam.dao.ProxySink',    
+    'foam.dao.ProxySink',
     'foam.nanos.ruler.RuleHistory',
     'foam.nanos.ruler.Rule',
     'net.nanopay.admin.model.ComplianceStatus',
