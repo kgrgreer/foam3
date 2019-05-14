@@ -98,6 +98,7 @@ foam.CLASS({
       name: 'revenueEstimate',
       view: {
         class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
         choices: [
           '$0 -$50,000',
           '$50,001 to $100,000',
@@ -190,6 +191,7 @@ foam.CLASS({
       name: 'annualFieldDomestic',
       view: {
         class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
         choices: [
           '1 to 100',
           '100 to 199',
@@ -218,6 +220,7 @@ foam.CLASS({
       name: 'estimatedFieldDomestic',
       view: {
         class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
         choices: [
           '$0 to $10,000',
           '$10,001 to $50,000',

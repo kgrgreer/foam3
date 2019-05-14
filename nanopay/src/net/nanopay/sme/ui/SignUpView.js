@@ -171,12 +171,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'termsAgreementDocument'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.documents.AcceptanceDocument',
-      name: 'privacyDocument'
-    },
+    }
   ],
 
   messages: [
