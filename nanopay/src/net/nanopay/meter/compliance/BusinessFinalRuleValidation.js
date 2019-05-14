@@ -53,7 +53,7 @@
         } catch (Exception e) {
           // make sure we capture the right exception
           passed = false;
-          getLogger().error("IT WORKED DJ!");
+          System.out.println("IT WORKED DJ!");
         } 
 
         if ( passed ) {
