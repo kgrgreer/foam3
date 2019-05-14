@@ -126,6 +126,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ProxyAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/BusinessAuthService', flags: ['web'] },
+  { name: 'net/nanopay/auth/CheckCurrencyRule' },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
@@ -239,6 +240,7 @@ FOAM_FILES([
 
   // tx
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
+  { name: 'net/nanopay/util/Frequency' },
   { name: 'net/nanopay/tx/model/Fee' },
   { name: 'net/nanopay/tx/model/FeeInterface' },
   { name: 'net/nanopay/tx/model/FeeType' },
@@ -254,6 +256,11 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/RefundTransaction' },
   { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
+  { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
+  { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/BusinessTransactionLimitRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
@@ -264,6 +271,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
+  { name: 'net/nanopay/tx/ruler/TransactionLimitState' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -658,7 +666,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
    { name: 'net/nanopay/liquidity/LiquidityAuth' },
-   { name: 'net/nanopay/liquidity/Frequency' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
 

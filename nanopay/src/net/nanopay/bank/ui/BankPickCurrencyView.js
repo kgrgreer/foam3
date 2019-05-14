@@ -113,16 +113,6 @@ foam.CLASS({
   ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .foam-u2-ActionView-nextButton {
     display: none;
   }
-  ^ .net-nanopay-flinks-view-form-FlinksForm .foam-u2-ActionView.foam-u2-ActionView-closeButton {
-    float: right;
-    margin-right: 24px !important;
-    width: auto;
-    min-width: 0;
-    background-color: transparent;
-    color: #525455;
-    border: none;
-    box-shadow: none;
-  }
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account.selected {
     border: solid 3px %SECONDARYCOLOR%;
   }
@@ -290,6 +280,7 @@ foam.CLASS({
     {
       name: 'currencyOne',
       label: 'Canada',
+      permissionConfig: { enabled: ['currency.read.CAD'] },
       code: function() {
         this.selection = 1;
       }
@@ -297,6 +288,7 @@ foam.CLASS({
     {
       name: 'currencyTwo',
       label: 'US',
+      permissionConfig: { enabled: ['currency.read.USD'] },
       code: function() {
         this.selection = 2;
       }
