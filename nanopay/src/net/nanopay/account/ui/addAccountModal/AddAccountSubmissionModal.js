@@ -159,7 +159,7 @@ foam.CLASS({
       liquiditySettings.userToEmail = newRuleDetails.whoReceivesNotification;
 
       // Set frequency to Per Transaction
-      liquiditySettings.cashOutFrequency = net.nanopay.liquidity.Frequency.PER_TRANSACTION;
+      liquiditySettings.cashOutFrequency = net.nanopay.util.Frequency.PER_TRANSACTION;
 
       var ruleDetails = newRuleDetails.liquidityThresholdDetails;
 
