@@ -187,7 +187,6 @@ foam.CLASS({
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
-    // FIXME: Add Choose from override and dataToText to defaults to the data's toSummary()
     {
       class: 'Reference',
       targetDAOKey: 'businessSectorDAO',
