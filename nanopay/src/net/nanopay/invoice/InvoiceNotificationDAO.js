@@ -45,6 +45,12 @@ foam.CLASS({
         if ( obj == null || ((Invoice) obj).getStatus() == null ) return obj;
     
         Invoice invoice  = (Invoice) obj;
+
+        // CPF-1322 showed an issue with an invoice not being saved in dao due to error down chain
+        // thus confirm invoice put first.
+        invoice = super.put_(x, invoice);
+        if ( invoice == null ) return invoice;
+
         Invoice oldInvoice = (Invoice) super.find(invoice.getId());
     
         User payerUser = (User) invoice.findPayerId(x);
@@ -60,7 +66,9 @@ foam.CLASS({
           && 
           ( newInvoiceStatus == InvoiceStatus.PENDING )
           && 
-          invoice.getPaymentDate() != null;
+          invoice.getPaymentDate() != null
+          &&
+          invoice.isPropertySet("paymentId");
         boolean invoiceIsBeingPaidAndCompleted = 
           ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PAID )
           &&
@@ -124,7 +132,7 @@ foam.CLASS({
             e.printStackTrace();
           }
         }
-        return super.put_(x, invoice);
+        return invoice;
       `
     },
     {
