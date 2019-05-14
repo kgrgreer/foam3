@@ -357,6 +357,8 @@ function setenv {
       IS_LINUX=1
     fi
 
+    export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
+
     export PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
 
     export JOURNAL_OUT="$PROJECT_HOME"/target/journals
