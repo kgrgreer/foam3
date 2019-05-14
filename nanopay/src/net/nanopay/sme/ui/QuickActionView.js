@@ -48,6 +48,7 @@ foam.CLASS({
               .call(function() {
                 this
                   .start()
+                  .addClass((menu.label).replace(/[^\w]/g,'').toLowerCase())
                     .start('img')
                       .addClass('icon')
                       .attr('src', menu.icon)
@@ -55,7 +56,6 @@ foam.CLASS({
                     .start('a')
                       .addClass('menu-item')
                       .addClass('sme-noselect')
-                      .addClass((menu.label).replace(/[^\w]/g,'').toLowerCase())
                       .add(menu.label)
                     .end()
                     .on('click', () => {
