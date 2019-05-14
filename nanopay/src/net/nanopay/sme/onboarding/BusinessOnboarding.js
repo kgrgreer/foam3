@@ -285,7 +285,7 @@ foam.CLASS({
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
-        choices: [ 1, 2, 3, 4, 5 ],
+        choices: [ 1, 2, 3, 4 ],
       },
       visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
         return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
