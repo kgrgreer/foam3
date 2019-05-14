@@ -8,8 +8,9 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.token.Token;
+import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
+import foam.nanos.auth.token.Token;
 import foam.nanos.logger.Logger;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
@@ -134,6 +135,14 @@ public class UserRegistrationDAO
       }
     }
     if ( ! isInternal ) checkUserDuplication(x, user);
+
+    Address businessAddress = user.getBusinessAddress();
+
+    // Prevent non cad accounts
+    if ( businessAddress.getCountryId() != 'CA' ) {
+      throw new IllegalStateException("Only canadian businesses permitted.");
+    }
+
     return super.put_(sysContext, user);
   }
 
