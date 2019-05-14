@@ -12,12 +12,20 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
+    'net.nanopay.account.OverdraftAccount',
+    'net.nanopay.account.LoanedTotalAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.CompositeTransaction'
+    'net.nanopay.tx.CompositeTransaction',
+    'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.cico.COTransaction',
+
+    'java.util.ArrayList',
+    'java.util.List',
+    'foam.mlang.MLang'
   ],
 
   methods: [
@@ -75,6 +83,74 @@ foam.CLASS({
           CompositeTransaction ct = new CompositeTransaction();
           ct.copyFrom(request);
           request.addNext(ct);
+
+          TransactionQuote tq = (TransactionQuote) super.put_(x, quote);
+
+          Transaction t = tq.getPlan();
+          while ( ! (t instanceof CompositeTransaction) && t.getNext() != null && t.getNext().length > 0 ){
+            t = t.getNext()[0];
+          }
+          if ( t != null && t instanceof CompositeTransaction ) {
+            for ( Transaction ti : t.getNext() ) {
+              if ( ti instanceof CITransaction ) {
+                // add transfers for liability -> float
+                Account a = ti.findDestinationAccount(x);
+
+                if (a instanceof OverdraftAccount ) {
+                  OverdraftAccount oda = (OverdraftAccount) a;
+                  long liabilityAccount = oda.getBackingAccount();
+                  long floatAccount = ((LoanedTotalAccount) ((DAO) x.get("accountDAO")).find(
+                    MLang.AND(
+                      MLang.INSTANCE_OF( LoanedTotalAccount.class ),
+                      MLang.EQ( LoanedTotalAccount.DENOMINATION,oda.getDenomination())
+                    ))).getId();
+                  List transfers = new ArrayList();
+                  Transfer transfer = new Transfer.Builder(x)
+                    .setAmount(-ti.getAmount())
+                    .setAccount(liabilityAccount)
+                    .setVisible(false)
+                    .build();
+                  transfers.add(transfer);
+                  Transfer transfer2 = new Transfer.Builder(x)
+                    .setAmount(ti.getAmount())
+                    .setAccount(floatAccount)
+                    .setVisible(false)
+                    .build();
+                  transfers.add(transfer2);
+                  ti.add((Transfer[]) transfers.toArray(new Transfer[0]));
+                }
+              }
+              if ( ti instanceof COTransaction ) {
+                // add transfers for float -> liability
+                 Account a = ti.getNext()[0].findSourceAccount(x);
+                 if (a instanceof OverdraftAccount ) {
+                    OverdraftAccount oda = (OverdraftAccount) a;
+                    long liabilityAccount = oda.getBackingAccount();
+                    long floatAccount = ((LoanedTotalAccount) ((DAO) x.get("accountDAO")).find(
+                      MLang.AND(
+                        MLang.INSTANCE_OF( LoanedTotalAccount.class ),
+                        MLang.EQ( LoanedTotalAccount.DENOMINATION,oda.getDenomination())
+                      ))).getId();
+                    List transfers = new ArrayList();
+                    Transfer transfer = new Transfer.Builder(x)
+                      .setAmount(ti.getAmount())
+                      .setAccount(liabilityAccount)
+                      .setVisible(false)
+                      .build();
+                    transfers.add(transfer);
+                    Transfer transfer2 = new Transfer.Builder(x)
+                      .setAmount(-ti.getAmount())
+                      .setAccount(floatAccount)
+                      .setVisible(false)
+                      .build();
+                    transfers.add(transfer2);
+                    ti.add((Transfer[]) transfers.toArray(new Transfer[0]));
+
+                }
+              }
+            }
+          }
+          return tq;
         }
         catch ( RuntimeException e) {
           // transaction not eligible for fast pay
