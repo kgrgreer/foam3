@@ -10,7 +10,6 @@ import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import foam.util.SecurityUtil;
 import net.nanopay.account.Account;
-import net.nanopay.account.DigitalAccount;
 import net.nanopay.auth.LoginAttempt;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
@@ -111,6 +110,13 @@ public class IdentityMindRequestGenerator {
     }
     request.setAmt(Double.toString(transaction.getAmount() / 100.0));
     request.setCcy(sourceAccount.getDenomination());
+
+    boolean isDomestic = sourceAccount.getClass() == destinationAccount.getClass();
+    String[] tags = new String[] {
+      isDomestic ? "Domestic" : "X-Border"
+    };
+    request.setMemo1(isDomestic);
+    request.setTags(tags);
 
     // Sender information
     request.setMerchantAid(getUUID(sourceAccount.findOwner(x)));

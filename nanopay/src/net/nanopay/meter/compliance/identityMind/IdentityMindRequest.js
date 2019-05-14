@@ -250,9 +250,19 @@ foam.CLASS({
       value: 1
     },
     {
+      class: 'StringArray',
+      name: 'tags',
+      documentation: 'An array of tags to be applied to the transaction'
+    },
+    {
       class: 'String',
       name: 'memo',
       documentation: 'Free form memo field - Used as recipient business name.'
+    },
+    {
+      class: 'Boolean',
+      name: 'memo1',
+      documentation: 'Memo1 field - Used as domestic transaction flag.'
     }
   ]
 });
