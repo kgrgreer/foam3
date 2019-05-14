@@ -13,6 +13,7 @@ import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.auth.LoginAttempt;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.contacts.Contact;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
@@ -94,9 +95,12 @@ public class IdentityMindRequestGenerator {
   public static IdentityMindRequest getTransferRequest(X x, Transaction transaction) {
     Account sourceAccount = transaction.findSourceAccount(x);
     Account destinationAccount = transaction.findDestinationAccount(x);
-    User sender = sourceAccount.findOwner(x);
+    // The owner of destination account is a business but we need to know
+    // the person who actually sends the payment therefore uses agent as sender.
+    User sender = (User) x.get("agent");
     DAO localUserDAO = (DAO) x.get("localUserDAO");
     User receiver = (User) localUserDAO.inX(x).find(destinationAccount.getOwner());
+
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
       .setIp(getRemoteAddr(x))
       .build();
@@ -109,42 +113,32 @@ public class IdentityMindRequestGenerator {
     request.setCcy(sourceAccount.getDenomination());
 
     // Sender information
+    request.setMerchantAid(getUUID(sourceAccount.findOwner(x)));
     request.setMan(Long.toString(sender.getId()));
-    request.setTea(sender.getEmail());
-    request.setBfn(prepareString(sender.getFirstName()));
-    request.setBln(prepareString(sender.getLastName()));
-    Address senderAddress = sender.getBusinessAddress();
-    if ( senderAddress != null ) {
-      request.setBsn(prepareString(senderAddress.getStreetNumber(), senderAddress.getStreetName(), senderAddress.getSuite()));
-      request.setBc(prepareString(senderAddress.getCity()));
-      request.setBco(prepareString(senderAddress.getCountryId()));
-      request.setBs(prepareString(senderAddress.getRegionId()));
-      request.setBz(prepareString(senderAddress.getPostalCode()));
-    }
-    Phone senderPhone = sender.getPhone();
-    if (senderPhone != null) {
-      request.setPhn(prepareString(senderPhone.getNumber()));
-    }
     request.setPach(getBankAccountHash(x, (BankAccount) sourceAccount));
 
     // Receiver information
     request.setDman(Long.toString(receiver.getId()));
-    request.setDemail(receiver.getEmail());
-    request.setSfn(prepareString(receiver.getFirstName()));
-    request.setSln(prepareString(receiver.getLastName()));
-    Address receiverAddress = receiver.getBusinessAddress();
-    if ( receiverAddress != null ) {
-      request.setSsn(prepareString(receiverAddress.getStreetNumber(), receiverAddress.getStreetName(), receiverAddress.getSuite()));
-      request.setSc(prepareString(receiverAddress.getCity()));
-      request.setSco(prepareString(receiverAddress.getCountryId()));
-      request.setSs(prepareString(receiverAddress.getRegionId()));
-      request.setSz(prepareString(receiverAddress.getPostalCode()));
-    }
-    Phone receiverPhone = receiver.getPhone();
-    if (receiverPhone != null) {
-      request.setDph(prepareString(receiverPhone.getNumber()));
-    }
     request.setDpach(getBankAccountHash(x, (BankAccount) destinationAccount));
+
+    // External contact extra information
+    if ( receiver instanceof Contact ) {
+      request.setDemail(receiver.getEmail());
+      request.setSfn(prepareString(receiver.getFirstName()));
+      request.setSln(prepareString(receiver.getLastName()));
+      Address receiverAddress = receiver.getBusinessAddress();
+      if (receiverAddress != null) {
+        request.setSsn(prepareString(receiverAddress.getStreetNumber(), receiverAddress.getStreetName(), receiverAddress.getSuite()));
+        request.setSc(prepareString(receiverAddress.getCity()));
+        request.setSco(prepareString(receiverAddress.getCountryId()));
+        request.setSs(prepareString(receiverAddress.getRegionId()));
+        request.setSz(prepareString(receiverAddress.getPostalCode()));
+      }
+      Phone receiverPhone = receiver.getPhone();
+      if (receiverPhone != null) {
+        request.setDph(prepareString(receiverPhone.getNumber()));
+      }
+    }
     return request;
   }
 
