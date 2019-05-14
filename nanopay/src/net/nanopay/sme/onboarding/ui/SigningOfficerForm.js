@@ -296,18 +296,20 @@ foam.CLASS({
         this.viewData.agent.additionalDocuments = n;
       }
     },
-    {
-      class: 'FObjectProperty',
-      name: 'identification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
-      factory: function() {
-        return this.viewData.agent.identification ? this.viewData.agent.identification : this.PersonalIdentification.create({});
-      },
-      postSet: function(o, n) {
-        this.viewData.agent.identification = n;
-      },
-    },
+    // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
+    //
+    // {
+    //   class: 'FObjectProperty',
+    //   name: 'identification',
+    //   of: 'net.nanopay.model.PersonalIdentification',
+    //   view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
+    //   factory: function() {
+    //     return this.viewData.agent.identification ? this.viewData.agent.identification : this.PersonalIdentification.create({});
+    //   },
+    //   postSet: function(o, n) {
+    //     this.viewData.agent.identification = n;
+    //   },
+    // },
     {
       class: 'Boolean',
       name: 'termsCheckBox',
@@ -514,8 +516,10 @@ foam.CLASS({
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
             .start(this.POLITICALLY_EXPOSED).addClass('radio-button').end()
           .end()
-          .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
-          .start(this.IDENTIFICATION).end()
+            // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+            // 
+            // .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
+            // .start(this.IDENTIFICATION).end()
             // Terms and Services and Compliance stuff
             //
             // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
