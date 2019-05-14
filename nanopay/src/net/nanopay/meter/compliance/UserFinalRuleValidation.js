@@ -11,7 +11,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'foam.dao.ProxySink',
+    'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
     'foam.nanos.ruler.RuleHistory',
     'foam.nanos.ruler.Rule',
@@ -24,41 +24,24 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        User user = (User) obj;
-        Boolean passed = true;
-        DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
+      User user = (User) obj;
 
-        // do a select, but in each put to the sink, check some logic, and basically you can return from there.
-        // define the lookup logic
+      DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
+      Count count = new Count();
+      count = (Count) ruleHistoryDAO.where(
+          AND(
+            EQ(RuleHistory.OBJECT_ID, user.getId()),
+            EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
+            EQ(Rule.RULE_GROUP, "onboarding"),
+            NEQ(RuleHistory.RESULT, ComplianceValidationStatus.VALIDATED)
+          )
+        )
+        .limit(1)
+        .select(count);
 
-        ProxySink decoratedSink = new ProxySink(x, new ArraySink() ) {
-          @Override
-          public void put(Object obj, foam.core.Detachable sub) {
-            RuleHistory ruleHistory = (RuleHistory) obj;
-            if ( (ComplianceValidationStatus) ruleHistory.getResult() != ComplianceValidationStatus.VALIDATED ) {
-              eof();
-              throw new RuntimeException("Final Compliance Validation for user " + user.getId() + "failed");
-            }
-          }
-        };
-
-        try {
-          ArraySink sink = (ArraySink) ruleHistoryDAO.where(
-            AND(
-              EQ(RuleHistory.OBJECT_ID, user.getId()),
-              EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
-              EQ(Rule.RULE_GROUP, "onboarding")
-            )
-          ).select(decoratedSink);
-        } catch (Exception e) {
-          // make sure we capture the right exception
-          passed = false;
-          System.out.println("IT WORKED DJ!");
-        } 
-
-        if ( passed ) {
-          user.setCompliance(ComplianceStatus.PASSED);
-        }
+      if ( count.getValue() == 0 ) {
+        user.setCompliance(ComplianceStatus.PASSED);
+      }
       `
     },
     {

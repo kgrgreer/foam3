@@ -11,7 +11,6 @@
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ArraySink',
-    'foam.dao.ProxySink',
     'foam.mlang.sink.Count',
     'foam.nanos.ruler.RuleHistory',
     'foam.nanos.ruler.Rule',
