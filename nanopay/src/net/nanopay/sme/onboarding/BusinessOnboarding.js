@@ -199,8 +199,6 @@ foam.CLASS({
       view: function(args, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
-          selectionView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorSelectionView' },
-          rowView: { class: 'net.nanopay.sme.onboarding.ui.BusinessSectorCitationView' },
           sections: [
             {
               heading: 'Industries',
@@ -208,7 +206,8 @@ foam.CLASS({
             }
           ],
           search: true,
-          searchPlaceholder: 'Search...'
+          searchPlaceholder: 'Search...',
+          choosePlaceholder: 'Select...'
         };
       },
       visibilityExpression: function(signingOfficer) {
@@ -266,15 +265,14 @@ foam.CLASS({
       }
     }),
     {
-      class: 'Boolean',
       name: 'ownershipAbovePercent',
       label: 'Does anyone own above 25% of the company?',
       section: 'ownershipYesOrNoSection',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          'No ( or this is a publicly traded company)',
-          'Yes, we have owners with 25% +'
+          [false, 'No ( or this is a publicly traded company)'],
+          [true, 'Yes, we have owners with 25% +']
         ],
       },
       visibilityExpression: function(signingOfficer) {

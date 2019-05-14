@@ -19,5 +19,19 @@ foam.CLASS({
       class: 'Long',
       name: 'parent'
     }
+  ],
+
+  method: [
+    {
+      name: 'toSummary',
+      documentation: `
+        When using a reference to the BusinessSectorDAO, the labels associated to it will show a chosen property
+        rather than the first alphabetical string property. In this case, we are using the business sector name.
+      `,
+      code: function(x) {
+        var self = this;
+        return this.name;
+      },
+    },
   ]
 });
