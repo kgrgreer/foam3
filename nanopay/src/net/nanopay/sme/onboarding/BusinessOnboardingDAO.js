@@ -42,7 +42,6 @@ foam.CLASS({
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO invitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
-        DAO beneficialOwnerDAO = ((DAO) x.get("beneficialOwnerDAO")).inX(x);
 
         Business business = businessOnboarding.findBusinessId(x);
         User user = businessOnboarding.findUserId(x);
@@ -84,7 +83,7 @@ foam.CLASS({
         business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
 
         if ( businessOnboarding.getOperatingUnderDifferentName() ) {
-          business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
+          business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName()); 
         }
 
         // Business info: transaction details

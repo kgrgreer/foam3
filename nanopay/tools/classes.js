@@ -138,11 +138,11 @@ var classes = [
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
   'net.nanopay.sme.onboarding.BusinessOnboarding',
   'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
+  'net.nanopay.sme.onboarding.BusinessOnboardingDAOTest',
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboarding',
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
-  'net.nanopay.sme.onboarding.BusinessOnboardingDAOTest',
 
   // sme compliance banner
   'net.nanopay.sme.ui.banner.ComplianceBannerData',
