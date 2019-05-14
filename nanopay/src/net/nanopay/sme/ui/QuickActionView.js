@@ -55,6 +55,7 @@ foam.CLASS({
                     .start('a')
                       .addClass('menu-item')
                       .addClass('sme-noselect')
+                      .addClass((menu.label).replace(/[^\w]/g,'').toLowerCase())
                       .add(menu.label)
                     .end()
                     .on('click', () => {
