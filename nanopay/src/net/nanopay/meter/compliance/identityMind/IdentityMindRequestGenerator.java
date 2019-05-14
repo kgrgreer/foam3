@@ -144,7 +144,7 @@ public class IdentityMindRequestGenerator {
     if (receiverPhone != null) {
       request.setDph(prepareString(receiverPhone.getNumber()));
     }
-    request.setDphash(getBankAccountHash(x, (BankAccount) destinationAccount));
+    request.setDpach(getBankAccountHash(x, (BankAccount) destinationAccount));
     return request;
   }
 

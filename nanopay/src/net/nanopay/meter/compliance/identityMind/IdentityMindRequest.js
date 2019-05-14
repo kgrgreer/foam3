@@ -225,8 +225,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'dphash',
-      documentation: 'Destination digital account id (Hash).'
+      name: 'dpach',
+      documentation: 'Destination ACH account number (Hash).'
     },
     {
       class: 'String',
