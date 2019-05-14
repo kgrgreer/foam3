@@ -76,7 +76,9 @@ foam.CLASS({
       title: 'Does your company have anyone that owns 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document 
           the percentage of ownership of any individual with a 25% + stake in the company.`,
-      isAvailable: function (signingOfficer, ownershipAbovePercent) { return signingOfficer && ownershipAbovePercent }
+      isAvailable: function (signingOfficer, ownershipAbovePercent) { 
+        return signingOfficer && ownershipAbovePercent 
+      }
     },
     {
       name: 'personalOwnershipSection',
@@ -91,10 +93,10 @@ foam.CLASS({
       isAvailable: function (signingOfficer, ownershipAbovePercent) { return signingOfficer && ownershipAbovePercent }
     },
     {
-      name: 'agreementSection',
+      name: 'reviewOwnersSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      isAvailable: function (signingOfficer) { return signingOfficer && ownershipAbovePercent }
     },
     {
       name: '2faSection',
@@ -118,6 +120,7 @@ foam.CLASS({
       section: 'adminReferenceSection'
     },
     {
+      class: 'Boolean',
       name: 'signingOfficer',
       documentation: `States if the user is the signing officer capable of
         acting as the business and providing additional information on behalf of the business.
@@ -129,8 +132,8 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [false, 'Yes, I am a signing officer'],
-          [true, 'No, I am not'],
+          [true, 'Yes, I am a signing officer'],
+          [false, 'No, I am not'],
         ],
       },
     },
@@ -278,6 +281,7 @@ foam.CLASS({
       }
     }),
     {
+      class: 'Boolean',
       name: 'ownershipAbovePercent',
       label: 'Does anyone own above 25% of the company?',
       section: 'ownershipYesOrNoSection',
@@ -341,7 +345,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
-      section: 'agreementSection',
+      section: 'reviewOwnersSection',
       view: { 
         class: 'foam.u2.CheckBox',
         label: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.'
@@ -353,7 +357,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'TermsAgreement',
-      section: 'agreementSection',
+      section: 'personalInformationSection',
       view: { 
         class: 'foam.u2.CheckBox',
         label: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.'
