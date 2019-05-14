@@ -75,23 +75,26 @@ foam.CLASS({
       name: 'ownershipAmountSection',
       title: 'Does your company have anyone that owns 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document 
-          the percentage of ownership of any individual with a 25% + stake in the company.`
+          the percentage of ownership of any individual with a 25% + stake in the company.`,
+      isAvailable: function (signingOfficer, ownershipAbovePercent) { return signingOfficer && ownershipAbovePercent }
     },
     {
       name: 'personalOwnershipSection',
       title: 'Add the principle type and percentage of ownership details for yourself',
-      help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`
-
+      help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
+      isAvailable: function (signingOfficer, userOwnsPercent) { return signingOfficer && userOwnsPercent }
     },
     {
       name: 'beneficialOwnersSection',
       title: 'Add beneficial owners',
-      help: `Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…`
+      help: `Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…`,
+      isAvailable: function (signingOfficer, ownershipAbovePercent) { return signingOfficer && ownershipAbovePercent }
     },
     {
       name: 'agreementSection',
       title: 'Review the list of owners',
-      help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!'
+      help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: '2faSection',
@@ -319,7 +322,7 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'beneficialOwners',
       of: 'foam.nanos.auth.User',
-      section: 'beneficialOwnersSectionSection',
+      section: 'beneficialOwnersSection',
       visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
         return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
