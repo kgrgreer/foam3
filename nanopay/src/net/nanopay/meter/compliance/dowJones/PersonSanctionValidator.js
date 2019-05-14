@@ -12,9 +12,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.dowJones.DowJonesService',
-    'net.nanopay.meter.compliance.dowJones.DowJonesResponse'
+    'net.nanopay.meter.compliance.ComplianceValidationStatus'
   ],
 
   methods: [

@@ -13,9 +13,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.model.Business',
-    'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.dowJones.DowJonesService',
-    'net.nanopay.meter.compliance.dowJones.DowJonesResponse'
+    'net.nanopay.meter.compliance.ComplianceValidationStatus'
   ],
 
   methods: [
