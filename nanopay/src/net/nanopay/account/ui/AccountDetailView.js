@@ -39,6 +39,7 @@ foam.CLASS({
       },
       ['choices', [
           [ 'net.nanopay.account.DigitalAccount' , 'Digital Account' ],
+          [ 'net.nanopay.account.OverdraftAccount', 'Overdraft Account' ],
           [ 'net.nanopay.bank.BankAccount', 'Bank Account' ],
           [ 'net.nanopay.bank.CABankAccount', 'Canadian Bank Account' ],
           [ 'net.nanopay.bank.INBankAccount', 'Indian Bank Account' ],

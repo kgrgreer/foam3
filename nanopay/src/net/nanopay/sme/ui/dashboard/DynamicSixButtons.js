@@ -27,6 +27,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountingIntegrationUtil',
     'menuDAO',
     'pushMenu',
     'notify',
@@ -104,7 +105,7 @@ foam.CLASS({
   messages: [
     {
       name: 'COMPLETION_SENTENCE',
-      message: '/4 completed.'
+      message: ' completed.'
     },
     {
       name: 'COMPLETION_SENTENCE_2',
@@ -145,12 +146,18 @@ foam.CLASS({
       name: 'bankAction',
       documentation: `This a var to store the 'Add Banking' action. 
       Needed to confirm that the action was completed in THIS models standard action 'addBank'`
+    },
+    {
+      name: 'maximumNumberOfSteps',
+      class: 'Int',
+      value: 3
     }
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       var self = this;
+      let showAccoutingSync = await this.accountingIntegrationUtil.getPermission();
       Promise.all([
         this.user.emailVerified,
         this.user.accounts
@@ -180,11 +187,15 @@ foam.CLASS({
           act: this.ADD_BANK
         });
         this.actionsDAO.put(this.bankAction);
-        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          name: 'syncAccounting',
-          completed: values[2],
-          act: this.SYNC_ACCOUNTING
-        }));
+        if ( showAccoutingSync[0] ) {
+          this.maximumNumberOfSteps = 4;
+          this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+            completed: values[2],
+            act: this.SYNC_ACCOUNTING
+          }));
+        } else if ( this.user.hasIntegrated ) {
+          this.completedCount--;
+        }
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
           name: 'busProfile',
           completed: values[3],
@@ -204,7 +215,7 @@ foam.CLASS({
               .start()
                 .addClass(this.myClass('front'))
                 .style({
-                  width: `${Math.floor(parseInt(this.completedCount / 4 * 100))}%`
+                  width: `${Math.floor(parseInt(this.completedCount / this.maximumNumberOfSteps * 100))}%`
                 })
               .end()
             .end()
@@ -213,7 +224,7 @@ foam.CLASS({
             .addClass(this.myClass('container'))
             .start('span')
               .start('strong')
-                .add(this.completedCount, this.COMPLETION_SENTENCE)
+                .add(this.completedCount, '/', this.maximumNumberOfSteps, this.COMPLETION_SENTENCE)
               .end()
               .start('span')
                 .add(this.COMPLETION_SENTENCE_2)

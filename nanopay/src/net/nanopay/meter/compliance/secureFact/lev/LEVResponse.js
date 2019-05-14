@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.lev.model',
+  package: 'net.nanopay.meter.compliance.secureFact.lev',
   name: 'LEVResponse',
   extends: 'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
 
@@ -30,7 +30,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
+      of: 'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
       name: 'results'
     }
   ],
