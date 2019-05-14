@@ -43,15 +43,14 @@ foam.CLASS({
       javaCode: `
         // Gathering Variables and checking null objects
         if ( obj == null || ((Invoice) obj).getStatus() == null ) return obj;
-    
-        Invoice invoice  = (Invoice) obj;
+
+        Invoice invoice = (Invoice) obj;
+        Invoice oldInvoice = (Invoice) super.find(invoice.getId());
 
         // CPF-1322 showed an issue with an invoice not being saved in dao due to error down chain
         // thus confirm invoice put first.
-        invoice = super.put_(x, invoice);
+        invoice = (Invoice) super.put_(x, invoice);
         if ( invoice == null ) return invoice;
-
-        Invoice oldInvoice = (Invoice) super.find(invoice.getId());
     
         User payerUser = (User) invoice.findPayerId(x);
         User payeeUser = (User) invoice.findPayeeId(x);
