@@ -10,8 +10,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.dao.ArraySink',
-    'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
     'foam.nanos.ruler.RuleHistory',
     'foam.nanos.ruler.Rule',
@@ -27,19 +25,16 @@ foam.CLASS({
       User user = (User) obj;
 
       DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
-      Count count = new Count();
-      count = (Count) ruleHistoryDAO.where(
-          AND(
-            EQ(RuleHistory.OBJECT_ID, user.getId()),
-            EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
-            EQ(Rule.RULE_GROUP, "onboarding"),
-            NEQ(RuleHistory.RESULT, ComplianceValidationStatus.VALIDATED)
-          )
+      RuleHistory ruleHistory = (RuleHistory) ruleHistoryDAO.find(
+        AND(
+          EQ(RuleHistory.OBJECT_ID, user.getId()),
+          EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
+          EQ(Rule.RULE_GROUP, "onboarding"),
+          NEQ(RuleHistory.RESULT, ComplianceValidationStatus.VALIDATED)
         )
-        .limit(1)
-        .select(count);
+      );
 
-      if ( count.getValue() == 0 ) {
+      if ( ruleHistory == null ) {
         user.setCompliance(ComplianceStatus.PASSED);
       }
       `
