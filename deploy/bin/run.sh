@@ -45,6 +45,7 @@ fi
 
 # TODO: assertions, java_home
 JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
+export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 #nohup java -jar "${JAR}" &>/dev/null &
