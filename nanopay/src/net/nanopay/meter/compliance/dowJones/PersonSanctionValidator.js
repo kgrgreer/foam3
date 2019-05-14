@@ -31,7 +31,7 @@ foam.CLASS({
           ruler.putResult(status);
         } catch (IllegalStateException e) {
           ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
-          ruler.putResult(ComplianceValidationStatus.INVESTIGATING);
+          ruler.putResult(ComplianceValidationStatus.PENDING);
         }
       `
     },
