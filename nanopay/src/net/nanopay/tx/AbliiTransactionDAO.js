@@ -19,6 +19,7 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
+
     'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
@@ -26,6 +27,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.List',
     'foam.mlang.MLang'
+
   ],
 
   methods: [
@@ -83,6 +85,7 @@ foam.CLASS({
           CompositeTransaction ct = new CompositeTransaction();
           ct.copyFrom(request);
           request.addNext(ct);
+
 
           TransactionQuote tq = (TransactionQuote) super.put_(x, quote);
 
