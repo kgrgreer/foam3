@@ -29,7 +29,7 @@ foam.CLASS({
         ComplianceTransaction ct = (ComplianceTransaction) obj;
         if ( ct.getStatus() == TransactionStatus.PENDING ) {
           if ( ( (AppConfig) x.get("appConfig") ).getMode() != Mode.TEST && ( (AppConfig) x.get("appConfig") ).getMode() != Mode.DEVELOPMENT ) {
-            DAO results = ((DAO) x.get("approvalRequestsDAO"))
+            DAO results = ((DAO) x.get("approvalRequestDAO"))
               .where(
                 AND(
                   EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
