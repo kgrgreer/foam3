@@ -77,6 +77,15 @@ foam.CLASS({
       font-size: 14px;
       color: #2b2b2b;
     }
+    ^ .bankAction:hover {
+      background-color: white;
+    }
+    ^ .bankAction:disabled {
+      border: 1px solid #e2e2e3;
+    }
+    ^ .bankAction:disabled p {
+      color: #8e9090;
+    }
     ^ .transit-container {
       width: 133px;
       margin-right: 16px;
@@ -235,25 +244,19 @@ foam.CLASS({
           .addClass('bank-option-container')
           .addClass('two-column')
           .show(! this.wizard.data.bankAccount)
-          .start()
+          .start(this.SELECT_CABANK)
             .addClass('bankAction')
             .enableClass('selected', this.isCABank$)
             .start('p')
               .add(this.LABEL_CA)
             .end()
-            .on('click', function() {
-              self.selectBank('CA');
-            })
           .end()
-          .start()
+          .start(this.SELECT_USBANK)
             .addClass('bankAction')
             .enableClass('selected', this.isCABank$, true)
             .start('p')
               .add(this.LABEL_US)
             .end()
-            .on('click', function() {
-              self.selectBank('US');
-            })
           .end()
         .end()
         .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath$ })
@@ -422,6 +425,22 @@ foam.CLASS({
           return;
         }
         X.pushToId('AddContactStepThree');
+      }
+    },
+    {
+      name: 'selectCABank',
+      label: '',
+      permissionConfig: { enabled: ['currency.read.CAD'] },
+      code: function() {
+        this.selectBank('CA');
+      }
+    },
+    {
+      name: 'selectUSBank',
+      label: '',
+      permissionConfig: { enabled: ['currency.read.USD'] },
+      code: function() {
+        this.selectBank('US');
       }
     }
   ]

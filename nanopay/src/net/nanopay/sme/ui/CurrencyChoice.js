@@ -154,25 +154,6 @@ foam.CLASS({
   properties: [
     'optionsBtn_',
     {
-      Class: 'Boolean',
-      name: 'isNorthAmerica',
-      documentation: 'Only for payment between Canada and US'
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'filteredDAO',
-      expression: function() {
-        if ( this.isNorthAmerica ) {
-          return this.currencyDAO.where(this.OR(
-            this.EQ(this.Currency.COUNTRY, 'CA'),
-            this.EQ(this.Currency.COUNTRY, 'US')
-          ));
-        }
-        return this.currencyDAO;
-      },
-      documentation: 'Only get the currency of Canada & US'
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.model.Currency',
       name: 'chosenCurrency',
@@ -187,7 +168,7 @@ foam.CLASS({
     function initE() {
       var denominationToFind = this.data ? this.data : this.currentAccount.denomination;
       // Get the default currency and set it as chosenCurrency
-      this.filteredDAO.find(denominationToFind)
+      this.currencyDAO.find(denominationToFind)
         .then((currency) => {
           this.chosenCurrency = currency;
         });
@@ -219,7 +200,7 @@ foam.CLASS({
         this.optionPopup_ = this.optionPopup_
           .start('div')
             .addClass('popUpDropDown')
-            .select(this.filteredDAO, function(currency) {
+            .select(this.currencyDAO, function(currency) {
               if ( typeof currency.flagImage === 'string' ) {
                 return this.E()
                   .start('img').addClass(this.myClass('img'))

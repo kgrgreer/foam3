@@ -257,10 +257,7 @@ foam.CLASS({
     'type',
     {
       name: 'currencyType',
-      view: {
-        class: 'net.nanopay.sme.ui.CurrencyChoice',
-        isNorthAmerica: true
-      },
+      view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
       expression: function(invoice) {
         return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
       }
