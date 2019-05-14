@@ -62,6 +62,19 @@ foam.CLASS({
         ", rule id: " + rule_.getId());
       }
       `
+    },
+    {
+      name: 'canExecute',
+      javaCode: `
+      // TODO: add an actual implementation
+      return true;
+      `
+    },
+    {
+      name: 'describe',
+      javaCode: `
+      // TODO: add an actual implementation
+      return "";`
     }
   ],
 
