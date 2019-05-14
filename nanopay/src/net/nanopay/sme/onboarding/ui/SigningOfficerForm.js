@@ -520,9 +520,8 @@ foam.CLASS({
             // 
             // .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
             // .start(this.IDENTIFICATION).end()
-            // Terms and Services and Compliance stuff
             //
-            // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+            // Terms and Services and Compliance stuff
             //
             // .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' })
             //   .show(this.isCanadian$)

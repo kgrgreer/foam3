@@ -172,6 +172,11 @@ foam.CLASS({
       of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'termsAgreementDocument'
     },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.documents.AcceptanceDocument',
+      name: 'privacyDocument'
+    },
   ],
 
   messages: [
@@ -243,24 +248,24 @@ foam.CLASS({
                 .addClass('input-field').attr('placeholder', 'ABC Company')
               .end()
             .end()
-            // 
-            // .start().addClass('input-wrapper')
-            //   .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
-            //   .start(this.COUNTRY.clone().copyFrom({
-            //     view: {
-            //       class: 'foam.u2.view.ChoiceView',
-            //       placeholder: 'Select your country',
-            //       dao: this.countryDAO.where(this.OR(
-            //         this.EQ(this.Country.NAME, 'Canada'),
-            //         this.EQ(this.Country.NAME, 'USA')
-            //       )),
-            //       objToChoice: function(a) {
-            //         return [a.id, a.name];
-            //       }
-            //     }
-            //   }))
-            //   .end()
-            // .end()
+            
+            .start().addClass('input-wrapper')
+              .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
+              .start(this.COUNTRY.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: 'Select your country',
+                  dao: this.countryDAO.where(this.OR(
+                    this.EQ(this.Country.NAME, 'Canada'),
+                    // this.EQ(this.Country.NAME, 'USA')
+                  )),
+                  objToChoice: function(a) {
+                    return [a.id, a.name];
+                  }
+                }
+              }))
+              .end()
+            .end()
 
             .start().addClass('input-wrapper')
               .start().add(this.EMAIL).addClass('input-label').end()

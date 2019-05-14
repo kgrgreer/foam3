@@ -592,7 +592,7 @@ messages: [
   },
   {
     name: 'NO_ADDITIONAL_OWNERS',
-    message: `I confirm that I have listed the details for all beneficial owners who own 25% or more of the business.`
+    message: `I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.`
   },
   { name: 'BENEFICIAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
   { name: 'BENEFICIAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },

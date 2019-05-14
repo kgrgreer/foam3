@@ -333,10 +333,12 @@ foam.CLASS({
             .start().addClass('label').add(this.isUSABasedCompany ? this.US_VOLUME_LABEL : this.CA_VOLUME_LABEL).end()
             .tag(this.ESTIMATED_FIELD_DOMESTIC, { onKey: true })
           .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
-            .start(this.FIRST_TRADE_DATE_FIELD_DOMESTIC).end()
-          .end()
+          // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
+          //
+          // .start().addClass('label-input')
+          //   .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
+          //   .start(this.FIRST_TRADE_DATE_FIELD_DOMESTIC).end()
+          // .end()
         .end()
         // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
         //
