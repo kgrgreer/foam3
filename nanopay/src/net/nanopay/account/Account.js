@@ -94,16 +94,15 @@ foam.CLASS({
     {
       class: 'String',
       name: 'denomination',
-      documentation: `The unit of measure of the balance - such as Currency. 
-        For example: the value of the denomination is the currency code.
+      documentation: `The unit of measure of the payment type. The payment system can handle 
+        denominations of any type, from mobile minutes to stocks.  
       `,
       tableWidth: 127
     },
     {
       class: 'Boolean',
       name: 'isDefault',
-      documentation: `Verifies that an account is the first preferred option.
-        of the User.`,
+      documentation: `Verifies that an account is the first preferred option of the User.`,
       label: 'Set As Default',
       value: false
     },
@@ -151,7 +150,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastModified',
-      documentation: 'The date and time of when the account was created in the system.'
+      documentation: 'The date and time of when the account was last changed in the system.'
     },
     {
       class: 'Reference',

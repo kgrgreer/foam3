@@ -65,7 +65,9 @@ foam.CLASS({
     },
     {
       name: 'legalName',
-      documentation: '',
+      documentation: `A field for the legal first and last name of the Contact, 
+        if different than the provided first name.  The field will default to first 
+        name, last name.`,
       label: 'Name'
     },
     {

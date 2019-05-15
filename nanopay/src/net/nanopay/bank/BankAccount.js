@@ -79,7 +79,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.bank.BankAccountStatus',
       name: 'status',
-      documentation: 'Tracks the type of status of the bank account.',
+      documentation: 'Tracks the status of the bank account.',
       permissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
@@ -132,7 +132,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'denomination',
-      documentation: 'The type of currency associated with the bank account.',
+      documentation: `The unit of measure of the payment type . The payment system 
+        can handle denominations of any type, from mobile minutes to stocks.  In this case, 
+        the type of currency associated with the bank account.`,
       label: 'Currency',
       aliases: ['currencyCode', 'currency'],
       value: 'CAD',
