@@ -861,9 +861,15 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactSIDniValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/AbliiSignup' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/B2BTransaction' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BeneficialOwnerComplianceRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessComplianceRequested' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarding' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
