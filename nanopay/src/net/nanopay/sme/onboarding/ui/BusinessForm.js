@@ -231,6 +231,12 @@ foam.CLASS({
     {
       name: 'industryId',
       documentation: 'The general industry that the business is a part of.',
+      factory: function() {
+        this.businessSectorDAO.find(this.viewData.user.businessSectorId).then((businessSector) => {
+          this.industryId = businessSector.parent;
+        });
+        return null;
+      },
       view: function(args, X) {
         var BusinessSector = X.lookup('net.nanopay.model.BusinessSector');
         var m = X.lookup('foam.mlang.ExpressionsSingleton').create();
