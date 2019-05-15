@@ -10,6 +10,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.dao.ArraySink',
     'foam.nanos.auth.User',
     'foam.nanos.ruler.RuleHistory',
     'foam.nanos.ruler.Rule',
@@ -23,24 +24,29 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
       User user = (User) obj;
-
       DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
 
-      // find previous date on which this rule check was executed
+      ArraySink sink = (ArraySink) ruleHistoryDAO.where(
+        AND(
+          EQ(RuleHistory.OBJECT_ID, user.getId()),
+          EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
+          EQ(RuleHistory.RULE_ID, 1300)
+        )
+      ).orderBy(DESC(RuleHistory.CREATED)).limit(1).select(new ArraySink());
 
-      // then add the date time for that to the query below, and only return results that occured after
-      // that datetime.
+      RuleHistory previousExecution = (RuleHistory) sink.getArray().get(0);
 
-      RuleHistory ruleHistory = (RuleHistory) ruleHistoryDAO.find(
+      RuleHistory failedRuleHistory = (RuleHistory) ruleHistoryDAO.find(
         AND(
           EQ(RuleHistory.OBJECT_ID, user.getId()),
           EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
           EQ(Rule.RULE_GROUP, "onboarding"),
+          GT(RuleHistory.CREATED, previousExecution.getCreated()),
           NEQ(RuleHistory.RESULT, ComplianceValidationStatus.VALIDATED)
         )
       );
 
-      if ( ruleHistory == null ) {
+      if ( failedRuleHistory == null ) {
         user.setCompliance(ComplianceStatus.PASSED);
       }
       `
