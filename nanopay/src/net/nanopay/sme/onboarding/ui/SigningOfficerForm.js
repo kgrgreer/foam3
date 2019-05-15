@@ -123,6 +123,7 @@ foam.CLASS({
       padding-top: 30px;
     }
     ^ .checkBoxes input{
+      margin-right: 20px;
       vertical-align: middle;
     }
     ^ .checkBoxes span{

@@ -207,16 +207,16 @@ public class BusinessOnboardingValidator implements Validator {
     if ( SafetyUtil.isEmpty(signingOfficer.getJobTitle()) ) {
       throw new RuntimeException("Job title required.");
     }
-
+    // NOTE: AFX REMOVE FOR MVP RELEASE
+    //
     // identification
-    PersonalIdentification identification = signingOfficer.getIdentification();
-    if ( identification == null ) {
-      throw new RuntimeException("Identification required.");
-    }
-    BusinessOnboardingValidator.validateIdentification(identification);
+    // PersonalIdentification identification = signingOfficer.getIdentification();
+    // if ( identification == null ) {
+    //   throw new RuntimeException("Identification required.");
+    // }
+    // BusinessOnboardingValidator.validateIdentification(identification);
 
     // additional documents
-    // NOTE: AFX REMOVE FOR MVP RELEASE
     // if ( signingOfficer.getAdditionalDocuments().length <= 0 ) {
     //   throw new RuntimeException("Please upload at least one identification file for the signing officer.");
     // }
