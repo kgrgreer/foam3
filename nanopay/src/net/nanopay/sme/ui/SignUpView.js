@@ -250,11 +250,7 @@ foam.CLASS({
                 .addClass('input-field').attr('placeholder', 'ABC Company')
               .end()
             .end()
-<<<<<<< HEAD
-
-=======
-            
->>>>>>> 0317d7a24517479efc55cc82cf201b0af694dca8
+      
             .start().addClass('input-wrapper')
               .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
               .start(this.COUNTRY.clone().copyFrom({
