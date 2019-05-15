@@ -5,6 +5,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.model.Currency',
     'foam.nanos.notification.NotificationView',
   ],
 
@@ -59,7 +60,11 @@ foam.CLASS({
       if ( this.bodyMsg.includes('Invoice') ) {
         this.invoiceDAO.find(this.data.invoiceId).then((invoice) => {
           if ( invoice == null ) this.bodyMsg = 'The invoice for this notification can no longer be found.';
-          this.currencyFormatted = currency.format(this.invoice.amount) + ' ' + currency.alphabeticCode;
+          this.currencyDAO.find(this.data.destinationCurrency)
+            .then((currency) => {
+            this.currencyFormatted = currency.format(this.data.amount) + ' ' +
+              currency.alphabeticCode;
+          });
           if ( invoice.payeeId === this.user.id ) {
             var name = invoice.payer.businessName ?
               invoice.payer.businessName :
