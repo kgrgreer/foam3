@@ -23,7 +23,7 @@ foam.CLASS({
         Business business = (Business) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          DowJonesResponse response = dowJonesService.entityNameSearch(x, business.getOrganization(), null);
+          DowJonesResponse response = dowJonesService.entityNameSearch(x, business.getOrganization(), null, business.getAddress().getCountryId());
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.getTotalMatches().equals("0") ) {
             status = ComplianceValidationStatus.INVESTIGATING;

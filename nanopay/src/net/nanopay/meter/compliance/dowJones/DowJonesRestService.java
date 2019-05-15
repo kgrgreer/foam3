@@ -68,31 +68,44 @@ import java.text.SimpleDateFormat;
       client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
       client = HttpClientBuilder.create().build();
 
-      String urlAddress = "";
+      String urlAddress = baseUrl;
       String pattern = "yyyy-MM-dd";
       SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
       if ( req.getRequestInfo().equals(PERSON_NAME) ) {
+        urlAddress += req.getRequestInfo();
         String firstName = ((PersonNameSearchRequest) req.getModel()).getFirstName();
         String surName = ((PersonNameSearchRequest) req.getModel()).getSurName();
         Date filterLRDFrom = ((PersonNameSearchRequest) req.getModel()).getFilterLRDFrom();
+        Date dateOfBirth = ((PersonNameSearchRequest) req.getModel()).getDateOfBirth();
+        String filterRegion = ((PersonNameSearchRequest) req.getModel()).getFilterRegion();
         firstName = firstName.replaceAll("  *", "%20");
         surName = surName.replaceAll("  *", "%20");
+        urlAddress += "first-name=" + firstName + "&surname=" + surName;
         if ( filterLRDFrom != null ) {
-          String formattedFilter = simpleDateFormat.format(filterLRDFrom);
-          urlAddress = baseUrl + req.getRequestInfo() + "first-name=" + firstName + "&surname=" + surName + "&filter-lrd-from=" + formattedFilter;
-        } else {
-          urlAddress = baseUrl + req.getRequestInfo() + "first-name=" + firstName + "&surname=" + surName;
+          String formattedLRDFilter = simpleDateFormat.format(filterLRDFrom);
+          urlAddress += "&filter-lrd-from=" + formattedLRDFilter;
+        }
+        if ( dateOfBirth != null ) {
+          String formattedDOBFilter = simpleDateFormat.format(dateOfBirth);
+          urlAddress += "&date-of-birth=" + formattedDOBFilter;
+        }
+        if ( filterRegion != null ) {
+          urlAddress += "&filter-region=" + filterRegion;
         }
       } else if ( req.getRequestInfo().equals(ENTITY_NAME) ) {
+        urlAddress += req.getRequestInfo();
         String entityName = ((EntityNameSearchRequest) req.getModel()).getEntityName();
         Date filterLRDFrom = ((EntityNameSearchRequest) req.getModel()).getFilterLRDFrom();
+        String filterRegion = ((EntityNameSearchRequest) req.getModel()).getFilterRegion();
         entityName = entityName.replaceAll("  *", "%20");
+        urlAddress += "entity-name=" + entityName;
         if ( filterLRDFrom != null ) {
           String formattedFilter = simpleDateFormat.format(filterLRDFrom);
-          urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName + "&filter-lrd-from=" + formattedFilter;
-        } else {
-          urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName;
+          urlAddress += "&filter-lrd-from=" + formattedFilter;
+        }
+        if ( filterRegion != null ) {
+          urlAddress += "&filter-region=" + filterRegion;
         }
       }
 

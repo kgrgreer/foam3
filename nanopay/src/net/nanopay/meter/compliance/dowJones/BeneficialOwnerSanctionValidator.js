@@ -22,7 +22,7 @@ foam.CLASS({
         BeneficialOwner beneficialOwner = (BeneficialOwner) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          DowJonesResponse response = dowJonesService.personNameSearch(x, beneficialOwner.getFirstName(), beneficialOwner.getLastName(), null);
+          DowJonesResponse response = dowJonesService.personNameSearch(x, beneficialOwner.getFirstName(), beneficialOwner.getLastName(), null, beneficialOwner.getBirthday(), beneficialOwner.getAddress().getCountryId());
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.getTotalMatches().equals("0") ) {
             status = ComplianceValidationStatus.INVESTIGATING;

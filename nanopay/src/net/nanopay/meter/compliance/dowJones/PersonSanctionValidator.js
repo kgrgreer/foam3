@@ -22,7 +22,7 @@ foam.CLASS({
         User user = (User) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          DowJonesResponse response = dowJonesService.personNameSearch(x, user.getFirstName(), user.getLastName(), null);
+          DowJonesResponse response = dowJonesService.personNameSearch(x, user.getFirstName(), user.getLastName(), null, user.getBirthday(), user.getAddress().getCountryId());
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.getTotalMatches().equals("0") ) {
             status = ComplianceValidationStatus.INVESTIGATING;
