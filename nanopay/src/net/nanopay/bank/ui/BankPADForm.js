@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Agreement form for PAD Authorization',
 
+  imports: [
+    'user'
+  ],
+
   css: `
     ^section-header {
       font-size: 16px;
@@ -188,7 +192,7 @@ foam.CLASS({
 
         .tag({
           class: 'net.nanopay.sme.ui.AddressView',
-          data: this.viewData.user.address
+          data: this.user.businessAddress
         })
 
         .start().addClass(this.myClass('divider')).end()
