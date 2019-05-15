@@ -44,7 +44,8 @@ foam.CLASS({
            * this is because the user in the calling context may not have permission to update
            * all neccessary properties
            */
-          children.put_(getX(), child);
+          child = (Transaction) children.put_(getX(), child);
+          if ( txn instanceof net.nanopay.tx.ComplianceTransaction ) throw new RuntimeException("yoyop " + child.getStatus());
         }
       }
       return txn;

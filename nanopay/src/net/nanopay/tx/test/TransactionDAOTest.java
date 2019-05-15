@@ -210,6 +210,7 @@ public class TransactionDAOTest
     Transaction t = (Transaction) s.getArray().get(0);
     test(s.getArray().size() == 1, " size of children is 1");
     test( t instanceof COTransaction, "Transaction type is CASHOUT" );
+    test( false, ""+ t.getStatus()+"   "+t.getParent()+"  "+tx.getId());
 
     test( t.getStatus()  == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
     test( senderInitialBalance - (txn.getAmount() + getFee(t)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "Pending status. Cashout updated balance" );

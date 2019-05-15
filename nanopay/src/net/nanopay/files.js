@@ -272,7 +272,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
-  { name: 'net/nanopay/tx/JackieRule' },
+  { name: 'net/nanopay/tx/JackieRuleOnCreate' },
+  { name: 'net/nanopay/tx/JackieRuleOnPut' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitState' },
 
   // tx tests

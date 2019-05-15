@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'JackieRule',
+  name: 'JackieRuleOnPut',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
-  documentation: `Creates an approval request if a Compliance Transaction is encountered.`,
+  documentation: `Checks if Jackie approved the transaction`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -28,7 +28,9 @@ foam.CLASS({
         if ( obj instanceof ComplianceTransaction ) {
         ComplianceTransaction ct = (ComplianceTransaction) obj;
         if ( ct.getStatus() == TransactionStatus.PENDING ) {
+
           if ( ( (AppConfig) x.get("appConfig") ).getMode() != Mode.TEST && ( (AppConfig) x.get("appConfig") ).getMode() != Mode.DEVELOPMENT ) {
+
             DAO results = ((DAO) x.get("approvalRequestDAO"))
               .where(
                 AND(
@@ -37,11 +39,15 @@ foam.CLASS({
                 )
               );
 
+
             Count count = new Count();
               count = (Count) results.select(count);
-              // If no approvalRequests are found, we need to make some
-              if ( count.getValue() == 0 )
-                requestApproval(x, ct, "localTransactionDAO");
+
+
+              if ( count.getValue() == 0 ) {
+                throw new RuntimeException("No approval request was created on put.");
+              }
+
               //We have received a Rejection and should decline.
               else {
                 if ( ( (Count) results.where(
