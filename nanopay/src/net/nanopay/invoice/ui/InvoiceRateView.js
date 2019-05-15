@@ -538,7 +538,7 @@ foam.CLASS({
         await this.fetchBankAccount();
       } catch (err) {
         this.notify(this.ACCOUNT_FIND_ERROR, 'error');
-        this.logger.error('@InvoiceRateView.js (Fetch Bank Account)' + (err ? err.message : ''));
+        console.error('@InvoiceRateView.js (Fetch Bank Account)' + (err ? err.message : ''));
       }
 
       try {
@@ -547,7 +547,7 @@ foam.CLASS({
         this.viewData.quote = this.quote;
       } catch (error) {
         this.notify(this.RATE_FETCH_FAILURE, 'error');
-        this.logger.error('@InvoiceRateView.js (Fetch Quote)' + (error ? error.message : ''));
+        console.error('@InvoiceRateView.js (Fetch Quote)' + (error ? error.message : ''));
       }
 
       this.loadingSpinner.hide();
@@ -579,7 +579,7 @@ foam.CLASS({
         this.viewData.bankAccount = this.chosenBankAccount;
       } catch (error) {
         this.notify(this.ACCOUNT_FIND_ERROR, 'error');
-        this.logger.error('@InvoiceRateView.js (Fetch payer accounts)' + (error ? error.message : ''));
+        console.error('@InvoiceRateView.js (Fetch payer accounts)' + (error ? error.message : ''));
       }
 
       if ( ! this.isPayable ) {
@@ -603,7 +603,7 @@ foam.CLASS({
         }
       } catch (error) {
         this.notify(this.CURRENCY_FIND_ERROR, 'error');
-        this.logger.error('@InvoiceRateView.js (Set source currency)' + (error ? error.message : ''));
+        console.error('@InvoiceRateView.js (Set source currency)' + (error ? error.message : ''));
         this.loadingSpinner.hide();
         return;
       }
