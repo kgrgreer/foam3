@@ -358,6 +358,11 @@ foam.CLASS({
     }
 
     /* Buttons Reference the following component style guide: https://app.zeplin.io/project/5bea24519befb87e8387dec8/screen/5bea260ad4ba093cf835ae49 */
+    /*
+     * FIXME: This should have been its own component, not a global CSS style.
+     * Then we wouldn't have needed all of these !importants to override the
+     * default ActionView styles.
+     */
     .white-radio {
       /* The line below is required as a side effect of the radios being Actions. They shouldn't be actions. */
       justify-content: flex-start !important;
@@ -380,6 +385,10 @@ foam.CLASS({
     .white-radio.selected {
       border: 1px solid %SECONDARYCOLOR% !important;
       background-image: url(images/ablii/radio-active.svg);
+    }
+    .white-radio:disabled {
+      border: 1px solid #e2e2e3 !important;
+      color: #8e9090 !important;
     }
 
     /* Link */

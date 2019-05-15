@@ -189,7 +189,8 @@ foam.CLASS({
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` },
-    { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions`}
+    { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions`},
+    { name: 'COUNTRY_ERROR', message: 'Country of operation required.' }
   ],
 
   methods: [
@@ -243,24 +244,24 @@ foam.CLASS({
                 .addClass('input-field').attr('placeholder', 'ABC Company')
               .end()
             .end()
-            // 
-            // .start().addClass('input-wrapper')
-            //   .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
-            //   .start(this.COUNTRY.clone().copyFrom({
-            //     view: {
-            //       class: 'foam.u2.view.ChoiceView',
-            //       placeholder: 'Select your country',
-            //       dao: this.countryDAO.where(this.OR(
-            //         this.EQ(this.Country.NAME, 'Canada'),
-            //         this.EQ(this.Country.NAME, 'USA')
-            //       )),
-            //       objToChoice: function(a) {
-            //         return [a.id, a.name];
-            //       }
-            //     }
-            //   }))
-            //   .end()
-            // .end()
+
+            .start().addClass('input-wrapper')
+              .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
+              .start(this.COUNTRY.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: 'Select your country',
+                  dao: this.countryDAO.where(this.OR(
+                    this.EQ(this.Country.NAME, 'Canada'),
+                    // this.EQ(this.Country.NAME, 'USA')
+                  )),
+                  objToChoice: function(a) {
+                    return [a.id, a.name];
+                  }
+                }
+              }))
+              .end()
+            .end()
 
             .start().addClass('input-wrapper')
               .start().add(this.EMAIL).addClass('input-label').end()
@@ -351,6 +352,12 @@ foam.CLASS({
         this.notify(msg, 'error');
         return false;
       }
+
+      if ( this.isEmpty(this.country) ) {
+        this.notify(this.COUNTRY_ERROR, 'error');
+        return false;
+      }
+
       if ( ! this.termsAndConditions ) {
         this.notify(this.TERMS_CONDITIONS_ERR, 'error');
         return false;
@@ -402,6 +409,7 @@ foam.CLASS({
       label: 'Create account',
       code: function(X, obj) {
         if ( ! this.validating() ) return;
+
         businessAddress = this.Address.create({
           countryId: this.country
         });
