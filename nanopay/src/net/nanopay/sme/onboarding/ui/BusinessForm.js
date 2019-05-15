@@ -314,6 +314,7 @@ foam.CLASS({
       documentation: 'Where the business receives its money from',
       view: {
         class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
         choices: [
           'Purchase of goods produced',
           'Completion of service contracts',
