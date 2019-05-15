@@ -44,7 +44,6 @@ foam.CLASS({
     'group',
     'invoice',
     'invoiceDAO',
-    'logger',
     'notify',
     'transactionQuotePlanDAO',
     'user',

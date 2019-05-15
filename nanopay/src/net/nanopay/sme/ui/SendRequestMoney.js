@@ -20,7 +20,6 @@ foam.CLASS({
     'contactDAO',
     'ctrl',
     'fxService',
-    'logger',
     'menuDAO',
     'notificationDAO',
     'notify',
