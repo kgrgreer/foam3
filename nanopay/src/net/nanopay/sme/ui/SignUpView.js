@@ -71,8 +71,11 @@ foam.CLASS({
       height: 19.4;
       margin-bottom: 12px;
     }
+    ^ .terms {
+      font-size: 12px !important;
+    }
     ^terms-link {
-      font-size: 14px !important;
+      font-size: 12px !important;
       margin-left: 5px;
       text-decoration: none;
     }
@@ -171,7 +174,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'termsAgreementDocument'
-    },
+    }
   ],
 
   messages: [
@@ -186,10 +189,14 @@ foam.CLASS({
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
     { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' },
+    { name: 'PRIVACY_DOCUMENT_NAME', message: 'privacyPolicy' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` },
-    { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions`}
+    { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions and Privacy Policy.` },
+    { name: 'AND', message: `and`},
+    { name: 'PRIVACY_LABEL', message: `Privacy Policy` }
+
   ],
 
   methods: [
@@ -243,24 +250,24 @@ foam.CLASS({
                 .addClass('input-field').attr('placeholder', 'ABC Company')
               .end()
             .end()
-            // 
-            // .start().addClass('input-wrapper')
-            //   .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
-            //   .start(this.COUNTRY.clone().copyFrom({
-            //     view: {
-            //       class: 'foam.u2.view.ChoiceView',
-            //       placeholder: 'Select your country',
-            //       dao: this.countryDAO.where(this.OR(
-            //         this.EQ(this.Country.NAME, 'Canada'),
-            //         this.EQ(this.Country.NAME, 'USA')
-            //       )),
-            //       objToChoice: function(a) {
-            //         return [a.id, a.name];
-            //       }
-            //     }
-            //   }))
-            //   .end()
-            // .end()
+            
+            .start().addClass('input-wrapper')
+              .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
+              .start(this.COUNTRY.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: 'Select your country',
+                  dao: this.countryDAO.where(this.OR(
+                    this.EQ(this.Country.NAME, 'Canada'),
+                    // this.EQ(this.Country.NAME, 'USA')
+                  )),
+                  objToChoice: function(a) {
+                    return [a.id, a.name];
+                  }
+                }
+              }))
+              .end()
+            .end()
 
             .start().addClass('input-wrapper')
               .start().add(this.EMAIL).addClass('input-label').end()
@@ -277,7 +284,7 @@ foam.CLASS({
               }).end()
             .end()
 
-            .start().addClass('input-wrapper')
+            .start().addClass('input-wrapper').addClass('terms')
               .start({ class: 'foam.u2.CheckBox' })
                 .on('click', (event) => {
                   this.termsAndConditions = event.target.checked;
@@ -291,6 +298,16 @@ foam.CLASS({
                 .add(this.TERMS_AGREEMENT_LABEL_2)
                 .on('click', () => {
                   window.open(this.termsAgreementDocument.link);
+                })
+              .end()
+              .start().addClass('inline')
+                .add(this.AND)
+              .end()
+              .start('a').addClass('sme').addClass('link')
+                .addClass(this.myClass('terms-link'))
+                .add(this.PRIVACY_LABEL)
+                .on('click', () => {
+                  window.open(this.privacyDocument.link);
                 })
               .end()
             .end()
@@ -379,6 +396,9 @@ foam.CLASS({
               // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
               this.acceptanceDocumentService.
               updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions);
+
+              this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(this.__context__, this.user.id, this.privacyDocument.id, this.termsAndConditions);
             }
             if ( ! this.user.emailVerified ) {
               this.stack.push({
@@ -439,6 +459,7 @@ foam.CLASS({
     async function loadAcceptanceDocument() {
       try {
         this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+        this.privacyDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.PRIVACY_DOCUMENT_NAME, '');
       } catch (error) {
         console.warn('Error occured finding Terms Agreement: ', error);
       }

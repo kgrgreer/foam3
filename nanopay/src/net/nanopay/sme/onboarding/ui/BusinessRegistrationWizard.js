@@ -320,16 +320,16 @@ foam.CLASS({
         return false;
       }
 
-      editedUser.identification.validate();
-      if ( editedUser.identification.errors_ ) {
-        this.notify(editedUser.identification.errors_[0][1], 'error');
-        return false;
-      }
+      // editedUser.identification.validate();
+      // if ( editedUser.identification.errors_ ) {
+      //   this.notify(editedUser.identification.errors_[0][1], 'error');
+      //   return false;
+      // }
 
-      if ( editedUser.identification.expirationDate <= currentDate ) {
-        this.notify(this.ERROR_ID_EXPIRED, 'error');
-        return false;
-      }
+      // if ( editedUser.identification.expirationDate <= currentDate ) {
+      //   this.notify(this.ERROR_ID_EXPIRED, 'error');
+      //   return false;
+      // }
 
       // if ( editedUser.additionalDocuments.length <= 0 ) {
       //   this.notify(this.ERROR_ADD_SIGNING_DOCS, 'error');
