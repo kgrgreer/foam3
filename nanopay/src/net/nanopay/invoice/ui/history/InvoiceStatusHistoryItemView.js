@@ -24,10 +24,15 @@ foam.CLASS({
 
   css: `
     ^ .iconPosition {
-      margin-left: -6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50px;
+      background-color: #2e227f;
+      margin-left: -1px;
     }
     ^ .statusBox {
-      margin-top: -20px;
+      height: 75px;
+      margin-top: -15px;
       padding-bottom: 22px;
     }
     ^ .statusContent {
@@ -137,7 +142,6 @@ foam.CLASS({
         .addClass(this.myClass())
         .style({ 'padding-left': '20px' })
         .start('div').addClass('iconPosition')
-          .tag({ class: 'foam.u2.tag.Image', data: attributes.icon })
         .end()
         .start('div').addClass('statusBox')
           .start('div')
@@ -145,7 +149,7 @@ foam.CLASS({
             .start('span').addClass('statusTitle')
               .add('Invoice has been marked as ', )
             .end()
-            .start('div').addClass(attributes.labelDecoration)
+            .start('div').addClass('inline')
               .start('span').add(attributes.labelText)
                 .start('span').style({ 'margin-left': '4px' })
                   .callIf(hasDisplayDate && attributes.labelText == 'Scheduled', function() {

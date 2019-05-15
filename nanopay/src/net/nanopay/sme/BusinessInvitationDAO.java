@@ -97,10 +97,16 @@ public class BusinessInvitationDAO
     );
 
     invite.setCreatedBy(business.getId());
-    // We only care about newly created invitations here.
-    if ( existingInvite != null ) {
-      invite.setId(existingInvite.getId());
-      return super.put_(x, invite);
+    
+    if (existingInvite != null) {
+      if(invite.getStatus() == InvitationStatus.COMPLETED) {
+        invite.setId(existingInvite.getId());
+        return super.put_(x, invite);
+      }
+      // for duplicate invites 
+      Logger logger = (Logger) getX().get("logger");
+      logger.warning("Invitation already exists");
+      throw new RuntimeException("Invitation already exists");
     }
 
     User internalUser = (User) localUserUserDAO.find(EQ(User.EMAIL, invite.getEmail()));

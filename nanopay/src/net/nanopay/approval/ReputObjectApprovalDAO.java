@@ -20,8 +20,8 @@ public class ReputObjectApprovalDAO
     ApprovalRequest request = (ApprovalRequest) getDelegate().put_(x, obj);
     if ( old != null && old.getStatus() != request.getStatus() ) {
       DAO dao = (DAO) x.get(request.getDaoKey());
-      FObject found = dao.find(request.getObjId());
-      dao.put(found);
+      FObject found = dao.find_(x, request.getObjId());
+      dao.put_(x, found);
     }
     return request;
   }

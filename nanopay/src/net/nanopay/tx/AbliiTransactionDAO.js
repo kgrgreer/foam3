@@ -36,18 +36,19 @@ foam.CLASS({
       javaCode: `
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction request = (Transaction) quote.getRequestTransaction().fclone();
-        DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+        DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         User destAccOwner;
         if ( ! ( request instanceof AbliiTransaction ) ) {
           return super.put_(x, obj);
         }
 
-        Account destAcc = request.findDestinationAccount(x);
-        User owner = (User) destAcc.findOwner(x);
+        Account destAcc = request.findDestinationAccount(getX());
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
+        User owner = (User) localUserDAO.inX(x).find(destAcc.getOwner());
 
         if ( owner instanceof Contact ) {
           Contact contact = (Contact) owner;
-          destAccOwner = (User) businessDAO.find(contact.getBusinessId());
+          destAccOwner = (User) localBusinessDAO.find(contact.getBusinessId());
           if ( destAccOwner == null ) {
             destAccOwner = (User) owner;
           }

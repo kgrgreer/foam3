@@ -226,48 +226,59 @@ foam.CLASS({
       this.addClass(this.myClass())
         .on('dragover', this.onDragOver)
         .on('drop', this.onDropOut)
-        .start('div').addClass('wizardBody')
-          .start('div')
+        .start().addClass('wizardBody')
+          .start()
             .start('p').add(this.title || '').addClass('title').end()
           .end()
-          .start('div').addClass('positionColumn')
+          .start().addClass('positionColumn')
             .tag(this.WizardOverview.create({ titles: this.viewTitles, position$: this.position$ }))
           .end()
-          .start('div').addClass('stackColumn')
+          .start().addClass('stackColumn')
             .tag({ class: 'foam.u2.stack.StackView', data: this.subStack, showActions: false })
           .end()
         .end()
         .callIf(! this.hideBottomBar, function() {
-          this.start('div').addClass('navigationBar')
-            .start('div').addClass('navigationContainer')
-              .start('div').addClass('exitContainer')
+          this.start()
+            .addClass('navigationBar')
+            .start()
+              .addClass('navigationContainer')
+              .start()
                 .add(self.slot(function(hasExitOption) {
                   if ( hasExitOption ) {
                     return this.E()
-                      .start(self.EXIT, { label$: self.exitLabel$ })
-                        .addClass('plainAction')
-                      .end();
+                      .tag(self.EXIT, {
+                        label$: self.exitLabel$,
+                        buttonStyle: 'TERTIARY',
+                        size: 'LARGE'
+                      });
+                  }
+                }))
+              .end()
+              .start()
+                .add(self.slot(function(hasBackOption) {
+                  if ( hasBackOption ) {
+                    return this.E()
+                      .tag(self.GO_BACK, {
+                        label$: self.backLabel$,
+                        buttonStyle: 'SECONDARY',
+                        size: 'LARGE'
+                      });
                   }
                 }))
                 .add(self.slot(function(hasSaveOption) {
                   if ( hasSaveOption ) {
                     return this.E()
-                      .start(self.SAVE, { label$: self.saveLabel$ })
-                        .addClass('inlineDisplay')
-                      .end();
+                      .tag(self.SAVE, {
+                        label$: self.saveLabel$,
+                        buttonStyle: 'SECONDARY',
+                        size: 'LARGE'
+                      });
                   }
                 }))
-              .end()
-              .start('div').addClass('backNextContainer')
-                .add(self.slot(function(hasBackOption) {
-                  if ( hasBackOption ) {
-                    return this.E().addClass('inlineDisplay')
-                      .start(self.GO_BACK, { label$: self.backLabel$ })
-                        .addClass('plainAction')
-                      .end();
-                  }
-                }))
-                .tag(self.GO_NEXT, { label$: self.nextLabel$ })
+                .tag(self.GO_NEXT, {
+                  label$: self.nextLabel$,
+                  size: 'LARGE'
+                })
               .end()
             .end()
           .end();

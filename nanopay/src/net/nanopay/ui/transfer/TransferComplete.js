@@ -71,7 +71,7 @@ foam.CLASS({
         ^ .show-yes{
           display: inline-block;
         }
-        ^ .net-nanopay-ui-ActionView-exportButton{
+        ^ .foam-u2-ActionView-exportButton{
           position: relative;
           top: -55px;
           float: none;

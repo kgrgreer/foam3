@@ -111,18 +111,18 @@ foam.CLASS({
       padding: 12px;
       width: 504px;
     }
-    ^ .net-nanopay-ui-ActionView-currencyChoice {
+    ^ .foam-u2-ActionView-currencyChoice {
       margin-left: 0px !important;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice img {
       width: 20px;
     }
-    ^ .net-nanopay-ui-ActionView-CurrencyChoice > span {
+    ^ .foam-u2-ActionView-CurrencyChoice > span {
       font-size: 10px !important;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice-carrot {
       position: relative;
-      right: 12px;
+      right: 0;
       top: -4px;
     }
     ^ .foam-u2-view-RichChoiceView-container {
@@ -257,10 +257,7 @@ foam.CLASS({
     'type',
     {
       name: 'currencyType',
-      view: {
-        class: 'net.nanopay.sme.ui.CurrencyChoice',
-        isNorthAmerica: true
-      },
+      view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
       expression: function(invoice) {
         return invoice.destinationCurrency ? invoice.destinationCurrency : 'CAD';
       }
@@ -483,7 +480,7 @@ foam.CLASS({
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
                   .on('mousemove', this.setCoordinates)
-                  .start(this.Invoice.ISSUE_DATE, { view: 'foam.u2.view.date.DateTimePicker',  mode: displayMode })
+                  .start(this.Invoice.ISSUE_DATE, { view: 'foam.u2.view.date.DateTimePicker',  mode: displayMode, showTimeOfDay: false })
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .addClass('date-input-field')
                   .end()

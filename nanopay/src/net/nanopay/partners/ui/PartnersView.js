@@ -156,7 +156,7 @@ foam.CLASS({
     ^ .show {
       margin-top: 75px;
     }
-    ^ .net-nanopay-ui-ActionView-partnersModal{
+    ^ .foam-u2-ActionView-partnersModal{
       float: right;
     }
   `,

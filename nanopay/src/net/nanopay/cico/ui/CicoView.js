@@ -103,7 +103,7 @@ foam.CLASS({
       vertical-align: middle;
     }
 
-    ^ .net-nanopay-ui-ActionView-cashInBtn {
+    ^ .foam-u2-ActionView-cashInBtn {
       width: 135px;
       height: 50px;
       border-radius: 2px;
@@ -119,11 +119,11 @@ foam.CLASS({
       font-weight: normal;
       box-shadow: none;
     }
-    ^ .net-nanopay-ui-ActionView-cashInBtn:hover {
+    ^ .foam-u2-ActionView-cashInBtn:hover {
       background: %SECONDARYCOLOR%;
       opacity: 0.9;
     }
-    ^ .net-nanopay-ui-ActionView-cashOutButton {
+    ^ .foam-u2-ActionView-cashOutButton {
       width: 135px;
       height: 50px;
       border-radius: 2px;
@@ -140,7 +140,7 @@ foam.CLASS({
       font-weight: normal;
       margin-bottom: 2px;
     }
-    ^ .net-nanopay-ui-ActionView-cashOutButton:hover {
+    ^ .foam-u2-ActionView-cashOutButton:hover {
       background: lightgray;
     }
     ^ .recentActivities {
@@ -153,7 +153,7 @@ foam.CLASS({
       color: #093649;
       margin-top: 15px;
     }
-    ^ .net-nanopay-ui-ActionView-create {
+    ^ .foam-u2-ActionView-create {
       visibility: hidden;
     }
     ^ .foam-u2-md-OverlayDropdown {

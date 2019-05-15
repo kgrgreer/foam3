@@ -56,7 +56,7 @@ foam.CLASS({
           margin-left: 20px;
           display: inline-block;
         }
-        ^ .net-nanopay-ui-ActionView-closeButton {
+        ^ .foam-u2-ActionView-closeButton {
           width: 24px;
           height: 24px;
           margin: 0;
@@ -69,11 +69,11 @@ foam.CLASS({
           background: transparent;
           box-shadow: none;
         }
-        ^ .net-nanopay-ui-ActionView-closeButton:hover {
+        ^ .foam-u2-ActionView-closeButton:hover {
           background: transparent;
           background-color: transparent;
         }
-        ^ .net-nanopay-ui-ActionView-deleteButton {
+        ^ .foam-u2-ActionView-deleteButton {
           width: 136px;
           height: 40px;
           background: rgba(164, 179, 184, 0.1);
@@ -83,10 +83,10 @@ foam.CLASS({
           margin: 0;
           float: left;
         }
-        ^ .net-nanopay-ui-ActionView-deleteButton:hover {
+        ^ .foam-u2-ActionView-deleteButton:hover {
           background: lightgray;
         }
-        ^ .net-nanopay-ui-ActionView-verifyButton {
+        ^ .foam-u2-ActionView-verifyButton {
           width: 136px;
           height: 40px;
           background: %SECONDARYCOLOR%;
@@ -97,12 +97,12 @@ foam.CLASS({
           outline: none;
           float: right;
         }
-        ^ .net-nanopay-ui-ActionView-verifyButton:hover {
+        ^ .foam-u2-ActionView-verifyButton:hover {
           background: %SECONDARYCOLOR%;
           border-color: %SECONDARYCOLOR%;
           opacity: 0.9;
         }
-        ^ .net-nanopay-ui-ActionView-defaultButton {
+        ^ .foam-u2-ActionView-defaultButton {
           position: relative;
           width: 136px;
           height: 40px;
@@ -114,7 +114,7 @@ foam.CLASS({
           outline: none;
           float: right;
         }
-        ^ .net-nanopay-ui-ActionView-defaultButton:hover {
+        ^ .foam-u2-ActionView-defaultButton:hover {
           background: %SECONDARYCOLOR%;
           border-color: %SECONDARYCOLOR%;
           opacity: 0.9;

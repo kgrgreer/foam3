@@ -12,7 +12,7 @@ foam.INTERFACE({
         },
         {
           name: 'frequency',
-          type: 'net.nanopay.liquidity.Frequency'
+          type: 'net.nanopay.util.Frequency'
         },
         {
           // helps determine if account balance went out of the range for the first time.
@@ -26,7 +26,7 @@ foam.INTERFACE({
       args: [
         {
           name: 'frequency',
-          type: 'net.nanopay.liquidity.Frequency'
+          type: 'net.nanopay.util.Frequency'
         }
       ]
     }
