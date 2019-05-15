@@ -53,8 +53,8 @@ foam.CLASS({
     { name: 'GUIDE_MESSAGE_REQUIREMENTS', message: 'Here are some things you need to get this done:' },
     { name: 'BUSINESS_ADDRESS', message: 'Business Address' },
     { name: 'BUSINESS_REGISTRATION_INFO', message: 'Business Registration Information' },
-    { name: 'PROOF_OF_REGISTRATION', message: 'Proof of Business Registration' },
-    { name: 'SIGNING_OFFICER', message: 'Signing Officer Information' },
+    { name: 'PROOF_OF_REGISTRATION', message: 'Business Information' },
+    { name: 'SIGNING_OFFICER', message: 'Signing Officer Information & Identification' },
     { name: 'COMPANY_OWNERSHIP', message: 'Company Ownership Information' },
     // Second Section of messages
     { name: 'WHY_ASK', message: 'Why do we need this?' },
