@@ -97,7 +97,7 @@ var classes = [
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.alterna.AlternaCOTransaction',
   'net.nanopay.tx.cico.COTransaction',
-  'net.nanopay.liquidity.Frequency',
+  'net.nanopay.util.Frequency',
   'net.nanopay.tx.model.FeeInterface',
   'net.nanopay.tx.model.FeeType',
   'net.nanopay.tx.model.FixedFee',
