@@ -96,7 +96,7 @@ foam.CLASS({
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
-      isAvailable: function (signingOfficer) { return signingOfficer && ownershipAbovePercent }
+      isAvailable: function (signingOfficer, ownershipAbovePercent) { return signingOfficer && ownershipAbovePercent }
     },
     {
       name: '2faSection',
@@ -126,9 +126,7 @@ foam.CLASS({
         acting as the business and providing additional information on behalf of the business.
       `,
       section: 'signingOfficerQuestionSection',
-      help: `
-        A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)
-      `,
+      help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
