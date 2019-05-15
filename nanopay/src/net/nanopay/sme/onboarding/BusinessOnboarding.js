@@ -234,8 +234,7 @@ foam.CLASS({
       label: 'Nature of business (NAIC code)',
 
       /*
-        FIXME: Need a way to pass in the businessSectorId here to work with mode,
-        visbilityExpressions don't really work herte
+        FIXME: Need to use visibility expressions, currently only supports Mode
       */
       view: function(args, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
