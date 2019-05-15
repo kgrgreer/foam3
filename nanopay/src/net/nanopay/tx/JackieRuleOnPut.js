@@ -27,7 +27,7 @@ foam.CLASS({
 
         if ( obj instanceof ComplianceTransaction ) {
         ComplianceTransaction ct = (ComplianceTransaction) obj;
-        if ( ct.getStatus() == TransactionStatus.PENDING ) {
+        if ( ct.getStatus() == TransactionStatus.PENDING && ((ComplianceTransaction)oldObj).getStatus() == TransactionStatus.PENDING) {
 
           if ( ( (AppConfig) x.get("appConfig") ).getMode() != Mode.TEST && ( (AppConfig) x.get("appConfig") ).getMode() != Mode.DEVELOPMENT ) {
 
@@ -63,7 +63,6 @@ foam.CLASS({
               }
             }
             else  {  ct.setStatus(TransactionStatus.COMPLETED); }
-            obj = ct;
           }
         }
       `

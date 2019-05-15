@@ -45,7 +45,6 @@ foam.CLASS({
            * all neccessary properties
            */
           child = (Transaction) children.put_(getX(), child);
-          if ( txn instanceof net.nanopay.tx.ComplianceTransaction ) throw new RuntimeException("yoyop " + child.getStatus());
         }
       }
       return txn;

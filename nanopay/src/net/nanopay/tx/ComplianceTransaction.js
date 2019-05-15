@@ -20,6 +20,21 @@ foam.CLASS({
       name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;',
+    },
+    {
+      name: 'statusChoices',
+      hidden: true,
+      documentation: 'Returns available statuses for each transaction depending on current status',
+      factory: function() {
+        if ( this.status == this.TransactionStatus.PENDING ) {
+          return [
+            'choose status',
+            ['COMPLETED', 'COMPLETED'],
+            ['CANCELLED', 'DECLINED']
+          ];
+        }
+       return ['No status to choose'];
+      }
     }
   ],
 
@@ -41,6 +56,7 @@ foam.CLASS({
       javaCode: `
         return false;
       `
-    }
+    },
+
   ]
 });

@@ -88,7 +88,9 @@ foam.CLASS({
       ComplianceTransaction ct = new ComplianceTransaction.Builder(x)
       //.setRequestedTransaction(t)
       .build();
-      ct.copyFrom(t); // We might want to change destination/source to not show this as a user transaction
+      ct.setDestinationAccount(t.getDestinationAccount());
+      ct.setSourceAccount(t.getSourceAccount());
+      ct.setAmount(1);
       ct.setIsQuoted(true);
       ct.addNext(t);
       quote.addPlan(ct);
