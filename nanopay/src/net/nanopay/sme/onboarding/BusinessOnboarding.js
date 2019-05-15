@@ -198,32 +198,32 @@ foam.CLASS({
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
-    {
-      class: 'Reference',
-      targetDAOKey: 'businessSectorDAO',
-      name: 'businessSectorId',
-      section: 'businessDetailsSection',
-      of: 'net.nanopay.model.BusinessSector',
-      documentation: 'Represents the general economic grouping for the business.',
-      label: 'Nature of business (NAIC code)',
-      view: function(args, X) {
-        return {
-          class: 'foam.u2.view.RichChoiceView',
-          sections: [
-            {
-              heading: 'Industries',
-              dao: X.businessSectorDAO
-            }
-          ],
-          search: true,
-          searchPlaceholder: 'Search...',
-          choosePlaceholder: 'Select...'
-        };
-      },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
-    },
+    // {
+    //   class: 'Reference',
+    //   targetDAOKey: 'businessSectorDAO',
+    //   name: 'businessSectorId',
+    //   section: 'businessDetailsSection',
+    //   of: 'net.nanopay.model.BusinessSector',
+    //   documentation: 'Represents the general economic grouping for the business.',
+    //   label: 'Nature of business (NAIC code)',
+    //   view: function(args, X) {
+    //     return {
+    //       class: 'foam.u2.view.RichChoiceView',
+    //       sections: [
+    //         {
+    //           heading: 'Industries',
+    //           dao: X.businessSectorDAO
+    //         }
+    //       ],
+    //       search: true,
+    //       searchPlaceholder: 'Search...',
+    //       choosePlaceholder: 'Select...'
+    //     };
+    //   },
+    //   visibilityExpression: function(signingOfficer) {
+    //     return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+    //   }
+    // },
     {
       class: 'Reference',
       targetDAOKey: 'businessSectorDAO',
@@ -231,19 +231,21 @@ foam.CLASS({
       section: 'businessDetailsSection',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'Represents the specific economic grouping for the business.',
-      label: '',
+      label: 'Nature of business (NAIC code)',
 
       /*
         FIXME: Need a way to pass in the businessSectorId here to work with mode,
         visbilityExpressions don't really work herte
       */
       view: function(args, X) {
+        var m = foam.mlang.ExpressionsSingleton.create();
+
         return {
           class: 'foam.u2.view.RichChoiceView',
           sections: [
             {
               heading: 'Specific Industries',
-              dao: X.businessSectorDAO
+              dao: X.businessSectorDAO.where(m.NEQ(net.nanopay.model.BusinessSector.PARENT, 0))
             }
           ],
           search: true,
