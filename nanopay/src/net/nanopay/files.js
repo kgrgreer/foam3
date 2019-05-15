@@ -791,6 +791,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
   { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
   { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
+  { name: 'net/nanopay/sme/onboarding/ui/WizardView' },
+  { name: 'net/nanopay/sme/onboarding/ui/WizardPageView' },
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
