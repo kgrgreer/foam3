@@ -149,20 +149,16 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'personalInformationSection',
-      view: {
-        class: 'foam.u2.CheckBox',
-        label: 'I am a politically exposed persons or head of an international organization (PEP/HIO)',
-      },
+      label: '',
+      label2: 'I am a politically exposed persons or head of an international organization (PEP/HIO)',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
       section: 'personalInformationSection',
-      view: { 
-        class: 'foam.u2.CheckBox',
-        label: 'I am taking instructions from and/or conducting transactions on behalf of a 3rd party'
-      },
+      label: '',
+      label2: 'I am taking instructions from and/or conducting transactions on behalf of a 3rd party',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -380,10 +376,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
-      view: { 
-        class: 'foam.u2.CheckBox',
-        label: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.'
-      },
+      label: '',
+      label2: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.',
       visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
         return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -394,10 +388,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'TermsAgreement',
       section: 'personalInformationSection',
-      view: { 
-        class: 'foam.u2.CheckBox',
-        label: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.'
-      },
+      label: '',
+      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
