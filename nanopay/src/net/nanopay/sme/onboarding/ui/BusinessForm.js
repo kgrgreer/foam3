@@ -306,9 +306,31 @@ foam.CLASS({
       class: 'String',
       name: 'sourceOfFundsField',
       documentation: 'Where the business receives its money from',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: [
+          'Purchase of goods produced',
+          'Completion of service contracts',
+          'Investment Income',
+          'Brokerage Fees',
+          'Consulting Fees',
+          'Sale of investments',
+          'Inheritance',
+          'Grants, loans, and other sources of financing',
+          'Other'
+        ]
+      },
       factory: function() {
         if ( this.viewData.user.sourceOfFunds ) return this.viewData.user.sourceOfFunds;
       },
+      postSet: function(o, n) {
+        this.viewData.user.sourceOfFunds = n;
+      }
+    },
+    {
+      class: 'String',
+      name: 'sourceOfFundsOtherField',
+      documentation: 'Where the business receives its money from (Other select field)',
       postSet: function(o, n) {
         this.viewData.user.sourceOfFunds = n;
       }
@@ -397,7 +419,9 @@ foam.CLASS({
     { name: 'OPERATING_QUESTION', message: 'My business operates under a different name' },
     { name: 'OPERATING_BUSINESS_NAME_LABEL', message: 'Operating Business Name' },
     { name: 'PRODUCTS_AND_SERVICES_LABEL', message: 'Who do you market your products and services to?' },
+    { name: 'PRODUCTS_TIP', message: '* For example what type of customers do you have (corporate/individual/financial institutions/other); what are the industry sectors of your customers; what are your customers main geographic locations?' },
     { name: 'SOURCE_OF_FUNDS_LABEL', message: 'Source of Funds (what is your primary source of revenue?)' },
+    { name: 'SOURCE_OF_FUNDS_OTHER_LABEL', message: 'Source of Funds (Other)' },
     { name: 'TAX_ID_LABEL', message: 'Tax Identification Number (US Only)' },
     { name: 'HOLDING_QUESTION', message: 'Is this a holding company?' },
     { name: 'THIRD_PARTY_QUESTION', message: 'Are you taking instruction from and/or conducting transactions on behalf of a third party?' },
@@ -407,7 +431,7 @@ foam.CLASS({
     { name: 'WEBSITE_LABEL', message: 'Website (Optional)' },
     { name: 'THIRD_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_DESCRIPTION', message: 'Please upload one of the following:' },
-    { name: 'NO_PO_BOXES', message: 'No PO Boxes Allowed' }
+    { name: 'NO_PO_BOXES', message: 'No PO Boxes Allowed' },
   ],
 
   methods: [
@@ -485,9 +509,21 @@ foam.CLASS({
             .start().addClass('label').add(this.PRODUCTS_AND_SERVICES_LABEL).end()
             .start(this.TARGET_CUSTOMERS_FIELD).addClass('input-field').end()
           .end()
+          // Place info box here.
+          .start().addClass('subdued-text')
+            .add(this.PRODUCTS_TIP)
+          .end()
+          .start()
           .start().addClass('label-input')
             .start().addClass('label').add(this.SOURCE_OF_FUNDS_LABEL).end()
-            .start(this.SOURCE_OF_FUNDS_FIELD).addClass('input-field').end()
+            .start(this.SOURCE_OF_FUNDS_FIELD).end()
+          .end()
+          .start().show(this.sourceOfFundsField$.map(function(str) {
+            return str == 'Other';
+          }))
+            .addClass('label-input')
+            .start().addClass('label').add(this.SOURCE_OF_FUNDS_LABEL).end()
+            .start(this.SOURCE_OF_FUNDS_OTHER_FIELD).addClass('input-field').end()
           .end()
           // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
           //

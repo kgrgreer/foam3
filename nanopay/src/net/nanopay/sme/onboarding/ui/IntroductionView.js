@@ -66,9 +66,7 @@ foam.CLASS({
     },
     {
       name: 'WHY_ASK_EXPLANATION2',
-      message: `Once your profile is complete, we will conduct review to enable 
-          domestic and cross-border payments!
-      `
+      message: `Once your profile is complete, we will conduct a review to enable payments!`
     }
   ],
 
