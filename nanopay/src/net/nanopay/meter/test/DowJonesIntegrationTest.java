@@ -29,8 +29,8 @@ public class DowJonesIntegrationTest extends Test {
   private void setUpTest() {
     DowJonesResponse personNameObj;
     DowJonesResponse entityNameObj;
-    personNameObj = dowJonesService_.personNameSearch(x_, testUser_.getFirstName(), testUser_.getLastName(), null);
-    entityNameObj = dowJonesService_.entityNameSearch(x_, testUser_.getBusinessName(), null);
+    personNameObj = dowJonesService_.personNameSearch(x_, testUser_.getFirstName(), testUser_.getLastName(), null, null, null);
+    entityNameObj = dowJonesService_.entityNameSearch(x_, testUser_.getBusinessName(), null, null);
     test(personNameObj != null, "Dow Jones Person Response Object Created.");
     test(entityNameObj != null, "Dow Jones Entity Response Object Created.");
   }

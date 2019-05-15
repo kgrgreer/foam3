@@ -36,8 +36,7 @@ foam.CLASS({
       documentation: 'Operator to combine filterRegionKeys values.'
     },
     {
-      class: 'Enum',
-      of: 'net.nanopay.meter.compliance.dowJones.enums.FilterRegion',
+      class: 'String',
       name: 'filterRegion',
       documentation: 'Filter to restrict the search results by region.'
     },

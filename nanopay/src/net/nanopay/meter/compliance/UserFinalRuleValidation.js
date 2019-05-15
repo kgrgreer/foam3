@@ -25,6 +25,12 @@ foam.CLASS({
       User user = (User) obj;
 
       DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
+
+      // find previous date on which this rule check was executed
+
+      // then add the date time for that to the query below, and only return results that occured after
+      // that datetime.
+
       RuleHistory ruleHistory = (RuleHistory) ruleHistoryDAO.find(
         AND(
           EQ(RuleHistory.OBJECT_ID, user.getId()),

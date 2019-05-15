@@ -18,12 +18,20 @@ foam.INTERFACE({
           type: 'String'
         },
         {
-          name: 'lastName',
+          name: 'surName',
           type: 'String'
         },
         {
           name: 'filterLRDFrom',
           type: 'Date'
+        },
+        {
+          name: 'dateOfBirth',
+          type: 'Date'
+        },
+        {
+          name: 'filterRegion',
+          type: 'String'
         }
       ]
     },
@@ -44,6 +52,10 @@ foam.INTERFACE({
         {
           name: 'filterLRDFrom',
           type: 'Date'
+        },
+        {
+          name: 'filterRegion',
+          type: 'String'
         }
       ]
     }

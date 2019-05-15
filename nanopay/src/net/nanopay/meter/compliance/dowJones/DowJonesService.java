@@ -27,10 +27,10 @@ public class DowJonesService
     ((DowJonesRestService) dowJonesRestService).setX(getX());
   }
 
-  public DowJonesResponse personNameSearch(X x, String firstName, String surName, Date filterLRDFrom) {
+  public DowJonesResponse personNameSearch(X x, String firstName, String surName, Date filterLRDFrom, Date dateOfBirth, String filterRegion) {
     try {
       DowJonesResponseMsg respMsg = null;
-      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, firstName, surName, filterLRDFrom);
+      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, firstName, surName, filterLRDFrom, dateOfBirth, filterRegion);
 
       try {
         respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.PERSON_NAME);
@@ -61,10 +61,10 @@ public class DowJonesService
     }
   }
 
-  public DowJonesResponse entityNameSearch(X x, String entityName, Date filterLRDFrom) {
+  public DowJonesResponse entityNameSearch(X x, String entityName, Date filterLRDFrom, String filterRegion) {
     try {
       DowJonesResponseMsg respMsg = null;
-      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getEntityNameSearchRequest(x, entityName, filterLRDFrom);
+      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getEntityNameSearchRequest(x, entityName, filterLRDFrom, filterRegion);
 
       try {
         respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.ENTITY_NAME);
