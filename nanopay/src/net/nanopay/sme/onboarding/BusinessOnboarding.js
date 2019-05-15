@@ -151,7 +151,7 @@ foam.CLASS({
       section: 'personalInformationSection',
       view: {
         class: 'foam.u2.CheckBox',
-        label: 'I am a politically exposed persons or head of an international organization (PEP/HIO)'
+        label: 'I am a politically exposed persons or head of an international organization (PEP/HIO)',
       },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -228,6 +228,34 @@ foam.CLASS({
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
+    {
+      class: 'Reference',
+      targetDAOKey: 'businessSectorDAO',
+      name: 'businessIndustryId',
+      section: 'businessDetailsSection',
+      of: 'net.nanopay.model.BusinessSector',
+      documentation: 'Represents the specific economic grouping for the business.',
+      label: '',
+
+      /*
+        FIXME: Need a way to pass in the businessSectorId here to work with mode,
+        visbilityExpressions don't really work herte
+      */
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          sections: [
+            {
+              heading: 'Specific Industries',
+              dao: X.businessSectorDAO
+            }
+          ],
+          search: true,
+          searchPlaceholder: 'Search...',
+          choosePlaceholder: 'Select...',
+        };
+      },
+    },
 
     foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
@@ -241,6 +269,13 @@ foam.CLASS({
       name: 'operatingUnderDifferentName',
       label: 'Does your business operate under a different name?',
       section: 'businessDetailsSection',
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          [true, 'Yes'],
+          [false, 'No'],
+        ],
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -311,7 +346,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'userOwnsPercent',
       section: 'ownershipAmountSection',
-      label: 'I am one of these owners',
+      label: '',
+      label2: 'I am one of these owners',
       visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
         return signingOfficer && ownershipAbovePercent? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -352,6 +388,8 @@ foam.CLASS({
         return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
+
+    // FIXME: We need to give a link to the Dual Party Agreement
     {
       class: 'Boolean',
       name: 'TermsAgreement',
