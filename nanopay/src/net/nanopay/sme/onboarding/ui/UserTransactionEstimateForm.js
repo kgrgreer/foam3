@@ -37,7 +37,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .inline {
-      margin: 15px 0px;
+      margin-bottom: 15px;
     }
     ^ .info-label {
       width: 400px;
@@ -64,7 +64,6 @@ foam.CLASS({
     ^ .flag-image {
       width: 20px;
       margin-right: 10px;
-      margin-top: 30px;
     }
     ^ .transfer-container {
       position: relative;
@@ -89,7 +88,7 @@ foam.CLASS({
       color: #2b2b2b !important;
     }
     ^ .medium-header {
-      margin-bottom: 25px;
+      margin: 25px 0px;
     }
   `,
 
@@ -98,9 +97,15 @@ foam.CLASS({
       class: 'String',
       name: 'revenueEstimate',
       view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '$/year',
-        onKey: true
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          '$0 -$50,000',
+          '$50,001 to $100,000',
+          '$100,001 to $500,000',
+          '$500,001 to $1,000,000',
+          'Over $1,000,000'
+        ]
       },
       factory: function() {
         if ( this.viewData.user.suggestedUserTransactionInfo.annualRevenue ) {
@@ -184,6 +189,17 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualFieldDomestic',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          '1 to 100',
+          '100 to 199',
+          '200 to 499',
+          '500 to 999',
+          'Over 1,000'
+        ]
+      },
       factory: function() {
         if ( this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount ) {
           return this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount;
@@ -202,6 +218,17 @@ foam.CLASS({
     {
       class: 'String',
       name: 'estimatedFieldDomestic',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          '$0 to $10,000',
+          '$10,001 to $50,000',
+          '$100,001 to $500,000',
+          '$500,001 to $1,000,000',
+          'Over $1,000,000'
+        ]
+      },
       factory: function() {
         if ( this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume ) {
           return this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume;
@@ -333,10 +360,12 @@ foam.CLASS({
             .start().addClass('label').add(this.isUSABasedCompany ? this.US_VOLUME_LABEL : this.CA_VOLUME_LABEL).end()
             .tag(this.ESTIMATED_FIELD_DOMESTIC, { onKey: true })
           .end()
-          .start().addClass('label-input')
-            .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
-            .start(this.FIRST_TRADE_DATE_FIELD_DOMESTIC).end()
-          .end()
+          // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
+          //
+          // .start().addClass('label-input')
+          //   .start().addClass('label').add(this.ANTICIPATED_TRADE_LABEL).end()
+          //   .start(this.FIRST_TRADE_DATE_FIELD_DOMESTIC).end()
+          // .end()
         .end()
         // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
         //

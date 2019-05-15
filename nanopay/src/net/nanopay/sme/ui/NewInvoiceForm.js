@@ -480,7 +480,7 @@ foam.CLASS({
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
                   .on('mousemove', this.setCoordinates)
-                  .start(this.Invoice.ISSUE_DATE, { view: 'foam.u2.view.date.DateTimePicker',  mode: displayMode })
+                  .start(this.Invoice.ISSUE_DATE, { view: 'foam.u2.view.date.DateTimePicker',  mode: displayMode, showTimeOfDay: false })
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .addClass('date-input-field')
                   .end()
