@@ -512,6 +512,9 @@ properties: [
     name: 'noBeneficialOwners',
     documentation: `This is displayed as a checkbox, with text 'No individuals own 25% or more.'
     This cannot be true at the same time as publiclyTradedEntity. UX requirement`,
+    factory: function() {
+      return this.viewData.noBeneficialOwners;
+    },
     postSet: function(o, n) {
       this.viewData.noBeneficialOwners = n;
       if ( n && this.publiclyTradedEntity ) {
@@ -525,6 +528,9 @@ properties: [
     name: 'publiclyTradedEntity',
     documentation: `This is displayed as a checkbox, with text 'Owned by a publicly traded entity'
     This cannot be true at the same time as noBeneficialOwners. UX requirement`,
+    factory: function() {
+      return this.viewData.publiclyTradedEntity;
+    },
     postSet: function(o, n) {
       this.viewData.publiclyTradedEntity = n;
       if ( n && this.noBeneficialOwners ) {
@@ -546,6 +552,9 @@ properties: [
     name: 'noAdditionalBeneficialOwners',
     documentation: `This is displayed as a checkbox, with text acknowledging the form
     contains details for all beneficial owners.`,
+    factory: function() {
+      return this.viewData.noAdditionalBeneficialOwners;
+    },
     postSet: function(o, n) {
       this.viewData.noAdditionalBeneficialOwners = n;
     }
