@@ -15,7 +15,7 @@ foam.CLASS({
   ],
   properties: [
     {
-      class: 'FObjectProperty',
+      class: 'Reference',
       of: 'net.nanopay.model.BusinessSector',
       name: 'parentChoice'
     },
@@ -24,10 +24,9 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'predicate',
       expression: function(parentChoice) {
-        parentChoice && parentChoice.describe();
-
+        console.log(parentChoice);
         return parentChoice ?
-          this.EQ(this.BusinessSector.PARENT, parentChoice.id) :
+          this.EQ(this.BusinessSector.PARENT, parentChoice) :
           this.FALSE;
       }
     },
