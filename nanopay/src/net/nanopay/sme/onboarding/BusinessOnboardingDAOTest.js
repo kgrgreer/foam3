@@ -101,7 +101,7 @@ foam.CLASS({
         onboarding.setAddress(signingOfficerAddress);
 
         onboarding.setBusinessTypeId(6);
-        onboarding.setBusinessSectorId(7);
+        onboarding.setBusinessIndustryId(42311);
         onboarding.setSourceOfFunds("Revenue");
         onboarding.setAnnualTransactionAmount("9656000");
         onboarding.setAnnualVolume("88560");

@@ -170,16 +170,14 @@ foam.CLASS({
       }
     }),
     // FIXME: We need to give a link to the Dual Party Agreement
-    {
-      class: 'Boolean',
-      name: 'dualPartyAgreement',
+    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
       label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
-    },
+    }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'homeAddressSection',
       view: {
@@ -204,6 +202,8 @@ foam.CLASS({
       section: 'businessDetailsSection'
     }),
     {
+      class: 'Reference',
+      of: 'net.nanopay.model.BusinessSector',
       name: 'businessIndustryId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
@@ -369,16 +369,6 @@ foam.CLASS({
         ]
       }
     },
-    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
-      section: 'agreementSection',
-      view: {
-        class: 'foam.u2.CheckBox',
-        label: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.'
-      },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
-    }),
     {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',

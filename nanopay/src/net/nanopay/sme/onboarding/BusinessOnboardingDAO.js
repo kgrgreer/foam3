@@ -84,7 +84,7 @@ foam.CLASS({
 
         // Business info: business details
         business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
-        business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
+        business.setBusinessSectorId(businessOnboarding.getBusinessIndustryId());
         business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
 
         if ( businessOnboarding.getOperatingUnderDifferentName() ) {
