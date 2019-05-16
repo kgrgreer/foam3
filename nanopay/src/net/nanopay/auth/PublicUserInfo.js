@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'PublicUserInfo',
-  documentation: `This model represents a public subset of a user's properties`,
+  documentation: `The base model for representing the public information of a User`,
 
   javaImports: [
     'foam.nanos.auth.User',
@@ -12,41 +12,53 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
+      documentation: `The ID for the public information of a User`,
       visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
       name: 'firstName',
+      documentation: 'The first name of the individual person, or real user.',
       visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
       name: 'lastName',
+      documentation: 'The last name of the individual person, or real user.',
       visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
       name: 'businessName',
+      documentation: `The name of the business associated with the public 
+        information of a User.`,
       visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
       name: 'organization',
+      documentation: `The organization/business associated with the public 
+        nformation of a User.`,
       visibility: foam.u2.Visibility.RO
     },
     {
       class: 'EMail',
-      name: 'email'
+      name: 'email',
+      documentation: 'The email address of the public information of a User.',
     },
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
+      documentation: `The profile picture of the individual user, or real user, 
+        initially defaulting to a placeholder picture.`,
       view: { class: 'foam.nanos.auth.ProfilePictureView' }
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
+      documentation: `Returns the postal address of the business associated with the 
+        public information of a User.  It is drawn from the Address model.`,
       view: { class: 'foam.nanos.auth.AddressDetailView' },
       visibility: foam.u2.Visibility.RO
     },
@@ -54,19 +66,23 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Phone',
       name: 'businessPhone',
+      documentation: `Returns the phone number of the business associated with the 
+        public information of a User. It is drawn from the Phone model.`,
       view: { class: 'foam.nanos.auth.PhoneDetailView' },
       visibility: foam.u2.Visibility.RO
     },
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
+      documentation: `The profile picture of the business, initially defaulting 
+        to a placeholder picture.`,
       view: { class: 'foam.nanos.auth.ProfilePictureView' },
       visibility: foam.u2.Visibility.RO
     },
     {
       class: 'String',
       name: 'type',
-      documentation: 'Type of user. (Business, Contact, etc.)'
+      documentation: 'The type of the public information of a User.'
     }
   ],
 
