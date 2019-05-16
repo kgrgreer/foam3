@@ -14,6 +14,8 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.account.Debtable',
+    'net.nanopay.account.DebtAccount',
+    'net.nanopay.tx.model.Transaction',
   ],
 
   methods: [
@@ -30,7 +32,9 @@ foam.CLASS({
       Account destinationAccount = request.findDestinationAccount(x);
 
       if ( sourceAccount instanceof Debtable ) {
-        Account creditor = ((Debtable) sourceAccount).getCreditorAccount();
+        DebtAccount debtAccount = ((Debtable) sourceAccount).findDebtAccount(x);
+        Account creditor = debtAccount.findCreditorAccount(x);
+
         Transaction d = new DebtTransaction.Builder(x)
           .setSourceAccount(creditorAccount)
           .setDestinationAccount(sourceAccount)

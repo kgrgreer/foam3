@@ -28,25 +28,25 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.Transfer[]',
       javaCode: `
-        // If Detable/Overdraft account does not have sufficient balance
-        // then incur debt.
+      // If Detable/Overdraft account does not have sufficient balance
+      // then incur debt.
 
-        List transfers = new ArrayList();
-        Long amount = getTotal();
+      Long amount = getTotal();
+      Account sourceAccount = findSourceAccount(x);
+      Account destinationAccount = findDestinationAccount(x);
+      DebtAccount debtAccount = ((Debtable) destinationAccount).findDebtAccount(x);
 
-        Long balance = getDestinationAccount().findBalance(x);
-        if ( balance < amount ) {
-          Long delta = amount;
-          if ( balance > 0 ) {
-            delta = amount - balance;
-          }
-          transfers.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-delta).build());
-          transfers.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(delta).build());
+      Long balance = getDestinationAccount().findBalance(x);
+      destinationAccount.validateAmount(x, balance, amount);
 
-          DebtAccount debtAccount = DebtAccount.findDebtAccount(x, /*owner*/ getDestinationAccount(), /*creditor*/ d.findCreditorAccount(x));
-          transfers.add(new Transfer.Builder(x).setAccount(debtAccount.setAmount(-delta).build());
-        }
-        return (Transfer[]) all.toArray(new Transfer[0]);
+      Long debt = amount > balance ? amount - balance : 0L;
+      if ( debt > 0 ) {
+        transfers.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-debt).build());
+        transfers.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(debt).build());
+
+        transfers.add(new Transfer.Builder(x).setAccount(debtAccount.setAmount(-debt).build());
+      }
+      return (Transfer[]) all.toArray(new Transfer[0]);
       `
     }
   ]
