@@ -24,7 +24,7 @@ foam.CLASS({
           }
         })
           .start('h1')
-            .add(this.data$.dot('help'))
+            .add(this.section$.dot('help'))
           .end()
           .tag(this.SectionView, {
              section$: this.section$,
