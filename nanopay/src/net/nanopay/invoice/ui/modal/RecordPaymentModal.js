@@ -103,7 +103,7 @@ foam.CLASS({
           .start(this.NOTE).addClass('input-box').end()
         .end()
         .start()
-          .tag(this.RECORD, { size: 'MEDIUM' })
+          .tag(this.RECORD)
           .addClass('record-payment-button')
         .end()
       .end();
