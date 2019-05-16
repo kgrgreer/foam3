@@ -27,10 +27,10 @@ public class DowJonesService
     ((DowJonesRestService) dowJonesRestService).setX(getX());
   }
 
-  public BaseSearchResponse personNameSearch(X x, String firstName, String surName, Date filterLRDFrom) {
+  public DowJonesResponse personNameSearch(X x, String firstName, String surName, Date filterLRDFrom, Date dateOfBirth, String filterRegion) {
     try {
       DowJonesResponseMsg respMsg = null;
-      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, firstName, surName, filterLRDFrom);
+      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, firstName, surName, filterLRDFrom, dateOfBirth, filterRegion);
 
       try {
         respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.PERSON_NAME);
@@ -41,15 +41,15 @@ public class DowJonesService
       }
 
       int httpCode = respMsg.getHttpStatusCode();
-      BaseSearchResponse feedback;
+      DowJonesResponse feedback;
       if ( httpCode == 200 ) {
-        BaseSearchResponse resp = (BaseSearchResponse) respMsg.getModel();
+        DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
         feedback = resp;
         resp.setSearchType("Dow Jones Person");
         resp.setNameSearched(firstName + " " + surName);
         dowJonesResponseDAO_.put(resp);
       } else {
-        feedback = (BaseSearchInvalidResponse) respMsg.getModel();
+        feedback = (DowJonesInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
         logger.error("Dow Jones Person Name Search: [ HttpStatusCode: " + feedback.getHttpStatusCode() + " ]");
       }
@@ -61,10 +61,10 @@ public class DowJonesService
     }
   }
 
-  public BaseSearchResponse entityNameSearch(X x, String entityName, Date filterLRDFrom) {
+  public DowJonesResponse entityNameSearch(X x, String entityName, Date filterLRDFrom, String filterRegion) {
     try {
       DowJonesResponseMsg respMsg = null;
-      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getEntityNameSearchRequest(x, entityName, filterLRDFrom);
+      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getEntityNameSearchRequest(x, entityName, filterLRDFrom, filterRegion);
 
       try {
         respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.ENTITY_NAME);
@@ -75,15 +75,15 @@ public class DowJonesService
       }
 
       int httpCode = respMsg.getHttpStatusCode();
-      BaseSearchResponse feedback;
+      DowJonesResponse feedback;
       if ( httpCode == 200 ) {
-        BaseSearchResponse resp = (BaseSearchResponse) respMsg.getModel();
+        DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
         feedback = resp;
         resp.setSearchType("Dow Jones Entity");
         resp.setNameSearched(entityName);
         dowJonesResponseDAO_.put(resp);
       } else {
-        feedback = (BaseSearchInvalidResponse) respMsg.getModel();
+        feedback = (DowJonesInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
         logger.error("Dow Jones Entity Name Search: [ HttpStatusCode: " + feedback.getHttpStatusCode() + " ]");
       }

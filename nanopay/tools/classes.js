@@ -474,6 +474,8 @@ var classes = [
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
   'net.nanopay.meter.compliance.ComplianceService',
   'net.nanopay.meter.compliance.NanopayComplianceService',
+  'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
+  'net.nanopay.meter.compliance.UserFinalRuleValidation',
 
   // ruler
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
@@ -531,15 +533,17 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.enums.MatchType',
   'net.nanopay.meter.compliance.dowJones.enums.RecordType',
   'net.nanopay.meter.compliance.dowJones.enums.SearchType',
-  'net.nanopay.meter.compliance.dowJones.BaseSearchInvalidResponse',
-  'net.nanopay.meter.compliance.dowJones.BaseSearchRequest',
-  'net.nanopay.meter.compliance.dowJones.BaseSearchResponse',
-  'net.nanopay.meter.compliance.dowJones.BaseSearchResponseBody',
+  'net.nanopay.meter.compliance.dowJones.DowJonesInvalidResponse',
+  'net.nanopay.meter.compliance.dowJones.DowJonesRequest',
+  'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
+  'net.nanopay.meter.compliance.dowJones.DowJonesResponseBody',
+  'net.nanopay.meter.compliance.dowJones.BeneficialOwnerSanctionValidator',
   'net.nanopay.meter.compliance.dowJones.ClientDowJonesService',
   'net.nanopay.meter.compliance.dowJones.DowJonesCall',
   'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
   'net.nanopay.meter.compliance.dowJones.DowJones',
   'net.nanopay.meter.compliance.dowJones.DowJonesRestInterface',
+  'net.nanopay.meter.compliance.dowJones.EntitySanctionValidator',
   'net.nanopay.meter.compliance.dowJones.EntityNameSearchRequest',
   'net.nanopay.meter.compliance.dowJones.IDTypeSearchRequest',
   'net.nanopay.meter.compliance.dowJones.Match',
@@ -547,6 +551,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.MatchPayload',
   'net.nanopay.meter.compliance.dowJones.MetadataSearchResponse',
   'net.nanopay.meter.compliance.dowJones.NameSearchRequest',
+  'net.nanopay.meter.compliance.dowJones.PersonSanctionValidator',
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
   // meter tests
