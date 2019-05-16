@@ -112,11 +112,6 @@ foam.CLASS({
           return this.viewData.user.suggestedUserTransactionInfo.annualRevenue;
         }
       },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\d+$/;
-        return reg.test(n) ? n : o;
-      },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.annualRevenue = n;
       }
@@ -205,12 +200,6 @@ foam.CLASS({
           return this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount;
         }
       },
-      adapt: function(oldValue, newValue) {
-        if ( typeof newValue === 'string' ) {
-          return newValue.replace(/\D/g, '');
-        }
-        return newValue;
-      },
       postSet: function(o, n) {
         if ( n ) this.viewData.user.suggestedUserTransactionInfo.annualDomesticTransactionAmount = n.trim();
       }
@@ -233,12 +222,6 @@ foam.CLASS({
         if ( this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume ) {
           return this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume;
         }
-      },
-      adapt: function(oldValue, newValue) {
-        if ( typeof newValue === 'string' ) {
-          return newValue.replace(/\D/g, '');
-        }
-        return newValue;
       },
       postSet: function(o, n) {
         this.viewData.user.suggestedUserTransactionInfo.annualDomesticVolume = n;
