@@ -14,9 +14,19 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.ruler.RuleHistory',
     'foam.nanos.ruler.Rule',
+    'java.util.Date',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'static foam.mlang.MLang.*'
+  ],
+
+  constants: [
+    {
+      type: 'Long',
+      name: 'RULE_ID',
+      value: 1300,
+      documentation: 'The rule ID associated to this rule'
+    }
   ],
 
   methods: [
@@ -25,26 +35,39 @@ foam.CLASS({
       javaCode: `
       User user = (User) obj;
       DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
+      Date previousExecutionDate = new Date();
+      RuleHistory failedRuleHistory;
 
       ArraySink sink = (ArraySink) ruleHistoryDAO.where(
         AND(
           EQ(RuleHistory.OBJECT_ID, user.getId()),
           EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
-          EQ(RuleHistory.RULE_ID, 1300)
+          EQ(RuleHistory.RULE_ID, RULE_ID)
         )
       ).orderBy(DESC(RuleHistory.CREATED)).limit(1).select(new ArraySink());
 
-      RuleHistory previousExecution = (RuleHistory) sink.getArray().get(0);
-
-      RuleHistory failedRuleHistory = (RuleHistory) ruleHistoryDAO.find(
-        AND(
-          EQ(RuleHistory.OBJECT_ID, user.getId()),
-          EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
-          EQ(Rule.RULE_GROUP, "onboarding"),
-          GT(RuleHistory.CREATED, previousExecution.getCreated()),
-          NEQ(RuleHistory.RESULT, ComplianceValidationStatus.VALIDATED)
-        )
-      );
+      if ( sink.getArray().size() > 0 ) {
+        RuleHistory previousExecution = (RuleHistory) sink.getArray().get(0);
+        previousExecutionDate = previousExecution.getCreated();
+        failedRuleHistory = (RuleHistory) ruleHistoryDAO.find(
+          AND(
+            EQ(RuleHistory.OBJECT_ID, user.getId()),
+            EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
+            EQ(Rule.RULE_GROUP, "onboarding"),
+            GT(RuleHistory.CREATED, previousExecutionDate),
+            NEQ(RuleHistory.RESULT, ComplianceValidationStatus.VALIDATED)
+          )
+        );
+      } else {
+        failedRuleHistory = (RuleHistory) ruleHistoryDAO.find(
+          AND(
+            EQ(RuleHistory.OBJECT_ID, user.getId()),
+            EQ(RuleHistory.OBJECT_DAO_KEY, "localUserDAO"),
+            EQ(Rule.RULE_GROUP, "onboarding"),
+            NEQ(RuleHistory.RESULT, ComplianceValidationStatus.VALIDATED)
+          )
+        );
+      }
 
       if ( failedRuleHistory == null ) {
         user.setCompliance(ComplianceStatus.PASSED);
