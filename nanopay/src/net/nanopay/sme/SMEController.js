@@ -105,7 +105,7 @@ foam.CLASS({
     },
     {
       name: 'PASSED_BANNER',
-      message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!'
+      message: 'Congratulations! Your business is now fully verified and ready to make domestic payments!'
     },
     {
       name: 'INCOMPLETE_BUSINESS_REGISTRATION',

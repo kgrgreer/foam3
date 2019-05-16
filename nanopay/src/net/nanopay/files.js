@@ -275,6 +275,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitState' },
+  { name: 'net/nanopay/tx/FailedTransactionNotification' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -794,6 +795,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
   { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
   { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
+  { name: 'net/nanopay/sme/onboarding/ui/WizardView' },
+  { name: 'net/nanopay/sme/onboarding/ui/WizardPageView' },
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
@@ -864,9 +867,15 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactSIDniValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/AbliiSignup' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/B2BTransaction' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BeneficialOwnerComplianceRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessComplianceRequested' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarding' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
@@ -940,6 +949,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 
   // business
+  { name: 'net/nanopay/business/NatureOfBusiness' },
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
 
   // approval

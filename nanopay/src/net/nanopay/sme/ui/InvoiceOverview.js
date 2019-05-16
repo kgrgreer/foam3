@@ -127,7 +127,7 @@ foam.CLASS({
       padding-left: 0px;
       margin-left: -13px;
       height: auto;
-      padding-top: 5px;
+      padding-top: 15px;
     }
     ^ .net-nanopay-invoice-ui-history-InvoiceHistoryView {
       height: auto;

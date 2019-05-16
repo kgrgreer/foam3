@@ -55,7 +55,7 @@ foam.CLASS({
       padding-bottom: 12px;
       padding-right: 24px;
     }
-    ^ .foam-u2-ActionView-next {
+    ^ .next-button {
       width: 158px;
       height: 48px !important;
       border-radius: 4px;
@@ -211,7 +211,7 @@ foam.CLASS({
           .end()
 
           .start().addClass('button-bar')
-            .start(this.NEXT).end()
+            .start(this.NEXT).addClass('next-button').end()
           .end()
 
         .end();
