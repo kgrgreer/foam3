@@ -130,14 +130,14 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'loginEnabled',
-      documentation: 'Verifies that the Contact can login to the platform.',
+      documentation: 'Determines whether the Contact can login to the platform.',
       value: false
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'bankAccount',
-      documentation: `The ID for the bank account of the Contact 
+      documentation: `The unique identifier for the bank account of the Contact 
         if created while registering the Contact.`
     },
     {

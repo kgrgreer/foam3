@@ -77,7 +77,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'invited',
       value: false,
-      documentation: `Verifies if the User was invited to the platform by 
+      documentation: `Determines whether the User was invited to the platform by 
         an invitation email.`
     },
     {
@@ -95,7 +95,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enabled',
-      documentation: 'Verifies that the User is permitted certain actions.',
+      documentation: 'Determines whether the User is permitted certain actions.',
       javaGetter: `
         return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
@@ -174,13 +174,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'welcomeEmailSent',
-      documentation: 'Verifies that a welcome email has been sent to the User.',
+      documentation: 'Determines whether a welcome email has been sent to the User.',
       value: false,
     },
     {
       class: 'Boolean',
       name: 'portalAdminCreated',
-      documentation: 'Verifies that a User was created by an admin user.',
+      documentation: 'Determines whether a User was created by an admin user.',
       value: false,
     },
     // NOTE: The following is subject to change and is not finalized.
@@ -285,7 +285,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onboarded',
-      documentation: `Verifies a completed business registration. This property 
+      documentation: `Determines whether completed business registration. This property 
         dictates portal views after compliance and account approval.`,
       value: false,
       permissionRequired: true
@@ -294,7 +294,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'createdPwd',
       value: false,
-      documentation: `Verifies that the User is using its own unique password or one 
+      documentation: `Determines whether the User is using its own unique password or one 
         that was system-generated.`
     },
     {
@@ -314,13 +314,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'holdingCompany',
-      documentation: `Verifies if a User is a holding company.  A holding company 
+      documentation: `Determines whether a User is a holding company.  A holding company 
         represent a corporate group which owns shares of multiple companies.`
     },
     {
       class: 'Boolean',
       name: 'thirdParty',
-      documentation: `Verifies if the User is taking instructions from and/or acting 
+      documentation: `Determines whether the User is taking instructions from and/or acting 
         on behalf of a 3rd party.
       `
     },
@@ -335,7 +335,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'PEPHIORelated',
-      documentation: `States if the user is a domestic or foreign _Politically 
+      documentation: `Determines whether the user is a domestic or foreign _Politically 
         Exposed Person (PEP), Head of an International Organization (HIO)_, or 
         related to any such person.
       `
@@ -344,7 +344,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'signingOfficer',
-      documentation: `Verifies that the user is the signing officer capable of 
+      documentation: `Determines whether the user is the signing officer capable of 
         acting as the business and providing additional information on behalf of 
         the business.
       `
@@ -404,7 +404,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'deleted',
-      documentation: 'Verifies that the User is deleted.',
+      documentation: 'Determines whether the User is deleted.',
       value: false,
       permissionRequired: true,
       visibility: 'RO',

@@ -170,6 +170,8 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'randomDepositAmount',
+      documentation:`A small financial sum deposited into a bank account to test
+        onboarding onto our system.`,
       networkTransient: true
     },
     {
@@ -209,7 +211,9 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'integrationId'
+      name: 'integrationId',
+      documentation:`A unique identifier for a bank account when it becomes a line item
+        in a transaction.`,
     },
     {
       class: 'FObjectProperty',

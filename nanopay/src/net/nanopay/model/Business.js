@@ -48,13 +48,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'loginEnabled',
-      documentation: 'Verifies that the User can login to the platform.',
+      documentation: 'Determines whether the User can login to the platform.',
       value: false
     },
     {
       class: 'Boolean',
       name: 'residenceOperated',
-      documentation: 'Verifies that a business is operated at the residence of the owner.'
+      documentation: 'Determines whether a business is operated at the residence of the owner.'
     },
     {
       class: 'foam.nanos.fs.FileArray',
