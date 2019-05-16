@@ -74,10 +74,12 @@ foam.CLASS({
       ],
       javaCode: `
         if ( amount > 0 &&
-             amount > -balance.getBalance()) {
-          throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain <= 0. " + this.getClass().getSimpleName()+"."+getName());
+             amount > -balance.getBalance() ||
+             amount < 0 &&
+             amount + balance.getBalance() < limit ) {
+          throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain between [limit, 0]" + this.getClass().getSimpleName()+"."+getName());
         }
       `
     }
   ]
-);
+});
