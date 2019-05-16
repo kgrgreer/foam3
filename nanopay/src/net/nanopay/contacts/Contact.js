@@ -86,7 +86,16 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      validateObj: function(firstName) {}
+      validateObj: function(firstName) {
+        if ( !! firstName ) {
+          var containsDigitRegex = /\d/;
+          if ( firstName.length > this.NAME_MAX_LENGTH ) {
+            return 'First name cannot exceed 70 characters.';
+          } else if ( containsDigitRegex.test(firstName) ) {
+            return 'First name cannot contain numbers.';
+          }
+        }
+      }
     },
     {
       name: 'middleName',
@@ -94,7 +103,16 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      validateObj: function(lastName) {}
+      validateObj: function(lastName) {
+        if ( !! lastName ) {
+          var containsDigitRegex = /\d/;
+          if ( lastName.length > this.NAME_MAX_LENGTH ) {
+            return 'Last name cannot exceed 70 characters.';
+          } else if ( containsDigitRegex.test(lastName) ) {
+            return 'Last name cannot contain numbers.';
+          }
+        }
+      }
     },
     {
       class: 'foam.core.Enum',
