@@ -12,8 +12,6 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
-    'net.nanopay.account.OverdraftAccount',
-    'net.nanopay.account.LoanedTotalAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business',
@@ -21,12 +19,7 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
 
     'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.cico.CITransaction',
-    'net.nanopay.tx.cico.COTransaction',
 
-    'java.util.ArrayList',
-    'java.util.List',
-    'foam.mlang.MLang'
 
   ],
 
