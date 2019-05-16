@@ -118,6 +118,14 @@ foam.CLASS({
     {
       name: 'QUERY_BANK_AMOUNT_ERROR',
       message: 'An unexpected error occurred while counting the number of bank accounts the user has: '
+    },
+    {
+      name: 'ADDED_TO_BUSINESS_1',
+      message: "You've been successfully added to "
+    },
+    {
+      name: 'ADDED_TO_BUSINESS_2',
+      message: '. Welcome to Ablii!'
     }
   ],
 
@@ -312,7 +320,7 @@ foam.CLASS({
           var userr = dao.put(this.agent);
           if ( userr ) {
             this.agent.copyFrom(userr);
-            ctrl.notify(`Success you are now apart of a new business: ${searchParams.get('companyName')}`);
+            ctrl.notify(this.ADDED_TO_BUSINESS_1 + searchParams.get('companyName') + this.ADDED_TO_BUSINESS_2);
             // replace url parameters with 'ablii' and redirect to dashboard, effectively riding the token of url history
             history.replaceState({}, '', 'ablii');
             this.pushMenu('sme.main.dashboard');
