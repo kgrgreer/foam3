@@ -73,7 +73,7 @@ foam.CLASS({
     },
     {
       name: 'ownershipAmountSection',
-      title: 'Does your company have anyone that owns 25% or more of the business?',
+      title: 'How many people own 25% or more of your company?',
       help: `Great, almost done! In accordance with banking laws, we need to document 
           the percentage of ownership of any individual with a 25% + stake in the company.`,
       isAvailable: function (signingOfficer, ownershipAbovePercent) { 
