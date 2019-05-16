@@ -9,6 +9,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
+    'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
   ],
 
@@ -73,7 +74,7 @@ foam.CLASS({
     },
     {
       name: 'ownershipAmountSection',
-      title: 'Does your company have anyone that owns 25% or more of the business?',
+      title: 'How many people own 25% or more of your company?',
       help: `Great, almost done! In accordance with banking laws, we need to document 
           the percentage of ownership of any individual with a 25% + stake in the company.`,
       isAvailable: function (signingOfficer, ownershipAbovePercent) { 
@@ -87,11 +88,21 @@ foam.CLASS({
       isAvailable: function (signingOfficer, userOwnsPercent) { return signingOfficer && userOwnsPercent }
     },
     {
-      name: 'beneficialOwnersSection',
-      title: 'Add beneficial owners',
+      name: 'owner1Section',
+      title: 'Add for owner #1',
       help: `Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…`,
-      isAvailable: function (signingOfficer, ownershipAbovePercent) { return signingOfficer && ownershipAbovePercent }
+      isAvailable: function(signingOfficer, userOwnsPercent, ownershipAbovePercent, amountOfOwners) {
+        return signingOfficer && ownershipAbovePercent && amountOfOwners >= 1 && ! userOwnsPercent;
+      }
     },
+    [2, 3, 4].map((i) => ({
+      name: `owner${i}Section`,
+      title: `Add for owner #${i}`,
+      help: `Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…`,
+      isAvailable: function(signingOfficer, ownershipAbovePercent, amountOfOwners) {
+        return signingOfficer && ownershipAbovePercent && amountOfOwners >= i;
+      }
+    })),
     {
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
@@ -104,7 +115,7 @@ foam.CLASS({
       help: `Alright, it looks like that is all of the information we need! Last thing I’ll ask 
           is that you enable two factor authentication. We want to make sure your account is safe!`
     }
-  ],
+  ].flat(),
 
   properties: [
     {
@@ -276,24 +287,41 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'amountOfOwners',
+      flags: ['web'],
       label: 'Amount of individuals who own 25%',
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [ 1, 2, 3, 4 ],
       },
-      visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
-        return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      validateObj: function(signingOfficer, ownershipAbovePercent, amountOfOwners) {
+        return signingOfficer && ownershipAbovePercent &&
+          ! ( amountOfOwners >= 1 && amountOfOwners <= 4 ) ? 'Please select a value' : null;
       }
     },
     {
       class: 'Boolean',
       name: 'userOwnsPercent',
+      flags: ['web'],
       section: 'ownershipAmountSection',
       label: '',
       label2: 'I am one of these owners',
       visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
         return signingOfficer && ownershipAbovePercent? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      postSet: function(_, n) {
+        this.clearProperty('owner1');
+        if ( ! n ) return;
+        this.owner1 = this.userId;
+        this.owner1.copyFrom(
+          this.cls_.getAxiomsByClass(foam.core.Property)
+            .filter((p) => p.section == 'personalInformationSection')
+            .reduce((map, p) => {
+              map[p.name] = p.f(this);
+              return map
+            })
+        );
+        console.log('TODO: make sure all properties of user are copied into beneficial owner.')
       }
     },
     {
@@ -311,13 +339,52 @@ foam.CLASS({
         return signingOfficer && userOwnsPercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
+    [1, 2, 3, 4].map((i) => ({
+      class: 'FObjectProperty',
+      of: 'net.nanopay.model.BeneficialOwner',
+      name: `owner${i}`,
+      section: `owner${i}Section`,
+      view: {
+        class: 'foam.u2.detail.SectionView',
+        sectionName: 'requiredSection',
+        showTitle: false
+      },
+      label: '',
+      flags: ['web'],
+      factory: function() {
+        return this.BeneficialOwner.create();
+      }
+    })),
     {
       class: 'FObjectArray',
       name: 'beneficialOwners',
-      of: 'foam.nanos.auth.User',
+      of: 'net.nanopay.model.BeneficialOwner',
+      hidden: true
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      of: 'net.nanopay.model.BeneficialOwner',
+      name: 'beneficialOwnersTable',
+      flags: ['web'],
       section: 'beneficialOwnersSection',
-      visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
-        return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      expression: function(beneficialOwners) {
+        var dao = foam.dao.EasyDAO.create({
+          of: 'net.nanopay.model.BeneficialOwner',
+          seqNo: true,
+          daoType: 'MDAO'
+        });
+        beneficialOwners.forEach((o) => dao.put(o));
+        return dao;
+      },
+      view: {
+        class: 'foam.u2.view.TableView',
+        editColumnsEnabled: false,
+        disableUserSelection: true,
+        columns: [
+          'firstName',
+          'lastName',
+          'jobTitle'
+        ]
       }
     },
     {
@@ -334,7 +401,7 @@ foam.CLASS({
     // FIXME: We need to give a link to the Dual Party Agreement
     {
       class: 'Boolean',
-      name: 'TermsAgreement',
+      name: 'dualPartyAgreement',
       section: 'personalInformationSection',
       label: '',
       label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
@@ -342,7 +409,28 @@ foam.CLASS({
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }
-  ],
+  ].flat(),
+
+  reactions: [
+    ['', 'amountOfOwners', 'updateBeneficialOwners']
+  ].concat([1, 2, 3, 4].map((i) => [
+    `owner${i}`, 'propertyChange', 'updateBeneficialOwners'
+  ])),
+
+  listeners: [
+    {
+      name: 'updateBeneficialOwners',
+      isFramed: true,
+      code: function() {
+        this.beneficialOwners = [
+          this.owner1,
+          this.owner2,
+          this.owner3,
+          this.owner4
+        ].slice(0, this.amountOfOwners);
+      }
+    }
+  ]
 
   // actions: [
   //   async function save(X){
@@ -386,4 +474,4 @@ foam.CLASS({
   //     var business = await X.businessDAO.put(business);
   //   }
   // ]
-}); 
+});
