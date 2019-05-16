@@ -450,7 +450,7 @@ foam.CLASS({
     },
     {
       name: 'INVITE_USERS_EXP',
-      message: `Invite a signing officer or other employees in your business.
+      message: `Invite a signing officer to your business.
           Recipients will receive a link to join your business on Ablii`
     },
     {
