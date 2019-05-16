@@ -131,7 +131,11 @@ foam.CLASS({
       },
     }),
     foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
-      section: 'personalInformationSection'
+      section: 'personalInformationSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'Chief Visionary Officer'
+      }
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection'
@@ -170,8 +174,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'signingOfficerEmail',
+      label: 'Enter your signing officers email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'example@email.com'
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
       }
@@ -189,6 +198,7 @@ foam.CLASS({
     foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
       section: 'businessDetailsSection',
+      placeholder: 'Select...',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -201,9 +211,25 @@ foam.CLASS({
       view: { class: 'net.nanopay.business.NatureOfBusiness' },
     },
 
+    // FIXME: Turn into a dropdown
     foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
       label: 'Primary source of funds',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          'Purchase of goods produced',
+          'Completion of service contracts',
+          'Investment Income',
+          'Brokerage Fees',
+          'Consulting Fees',
+          'Sale of investments',
+          'Inheritance',
+          'Grants, loans, and other sources of financing',
+          'Other'
+        ]
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -234,7 +260,7 @@ foam.CLASS({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
+        placeholder: 'Select...',
         choices: [
           '$0 to $50,000',
           '$50,001 to $100,000',
@@ -251,7 +277,7 @@ foam.CLASS({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
+        placeholder: 'Select...',
         choices: [
           '$0 to $50,000',
           '$50,001 to $100,000',
@@ -269,7 +295,7 @@ foam.CLASS({
       documentation: 'Change to option dropdown',
       view: {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
+        placeholder: 'Select...',
         choices: [
           'Payables for products and/or services',
           'Working capital',
