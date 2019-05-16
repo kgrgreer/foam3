@@ -94,12 +94,17 @@ foam.CLASS({
       name: 'myDaoNotification',
       factory: function() {
         return this.notificationDAO.where(
-          this.OR(
-            this.EQ(this.Notification.USER_ID, this.user.id),
-            this.EQ(this.Notification.GROUP_ID, this.group),
-            this.EQ(this.Notification.BROADCASTED, true)
+          this.AND(
+             this.OR(
+              this.EQ(this.Notification.USER_ID, this.user.id),
+              this.EQ(this.Notification.GROUP_ID, this.group.id),
+              this.EQ(this.Notification.BROADCASTED, true)
+            ),
+            this.NOT(this.IN(
+                this.Notification.NOTIFICATION_TYPE,
+                this.user.disabledTopics))
           )
-        );
+        ).orderBy(this.DESC(this.Notification.ISSUED_DATE));
       }
     },
     {
