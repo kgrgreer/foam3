@@ -19,5 +19,14 @@ foam.CLASS({
       class: 'Long',
       name: 'parent'
     }
+  ],
+
+  method: [
+    {
+      name: 'toSummary',
+      code: function(x) {
+        return this.name;
+      },
+    },
   ]
 });

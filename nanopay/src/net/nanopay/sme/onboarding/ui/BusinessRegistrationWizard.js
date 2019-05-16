@@ -183,12 +183,13 @@ foam.CLASS({
     { name: 'ERROR_LAST_NAME_DIGITS', message: 'Last name cannot contain numbers.' },
     { name: 'ERROR_TERMS_AND_CONDITIONS_MESSAGE', message: 'Please accept the terms and conditions.' },
     { name: 'ERROR_BASE_CURRENCY_MESSAGE', message: 'Base currency required.' },
-    { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Annual revenue required.' },
+    { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Domestic Annual Gross Sales required.' },
     { name: 'ERROR_INTERNATIONAL_PAYMENTS_MESSAGE', message: 'International payments required.' },
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
     { name: 'ERROR_OTHER_TRANSACTION_PURPOSE_MESSAGE', message: 'Please provide additional information for your transaction purpose.' },
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual Number of Transactions is required.' },
-    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Estimated Annual Volume in USD is required.' },
+    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Domestic Estimated Annual Volume required.' },
+    { name: 'ERROR_ANNUAL_VOLUME_CAD', message: 'Domestic Estimated Annual Volume required.' },
     { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required.' },
     { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
     { name: 'ERROR_ID_EXPIRED', message: 'Identification expiry date indicates that the ID is expired.' },
@@ -391,17 +392,35 @@ foam.CLASS({
           this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
           return false;
         }
-
-        if ( ! transactionInfo.annualVolume ) {
-          this.notify(this.ERROR_ANNUAL_VOLUME_MESSAGE, 'error');
-          return false;
-        }
-
-        if ( ! transactionInfo.firstTradeDate ) {
-          this.notify(this.ERROR_MISSING_FIRST_PAYMENT_DATE, 'error');
-          return false;
-        }
       }
+      
+      if ( ! transactionInfo.annualDomesticTransactionAmount ) {
+        this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
+        return false;
+      }
+
+      if ( ! transactionInfo.annualDomesticVolume ) {
+        this.notify(this.ERROR_ANNUAL_VOLUME_CAD, 'error');
+        return false;
+      }
+
+      // AFX RELATED - international payment
+      // if ( transactionInfo.internationalPayments ) {
+      //   if ( ! transactionInfo.annualTransactionAmount ) {
+      //     this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
+      //     return false;
+      //   }
+
+      //   if ( ! transactionInfo.annualVolume ) {
+      //     this.notify(this.ERROR_ANNUAL_VOLUME_MESSAGE, 'error');
+      //     return false;
+      //   }
+
+      //   if ( ! transactionInfo.firstTradeDate ) {
+      //     this.notify(this.ERROR_MISSING_FIRST_PAYMENT_DATE, 'error');
+      //     return false;
+      //   }
+      // }
 
       return true;
     },
