@@ -318,18 +318,16 @@ foam.CLASS({
         return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
-    {
-      class: 'Boolean',
-      name: 'TermsAgreement',
+    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
       section: 'agreementSection',
-      view: { 
+      view: {
         class: 'foam.u2.CheckBox',
         label: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.'
       },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
-    }
+    })
   ],
 
   // actions: [

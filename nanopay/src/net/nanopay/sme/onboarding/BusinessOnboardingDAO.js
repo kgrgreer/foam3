@@ -53,9 +53,13 @@ foam.CLASS({
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
           user.setBirthday(businessOnboarding.getBirthday());
+          user.setAddress(businessOnboarding.getAddress());
+
+          // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
-          user.setAddress(businessOnboarding.getAddress());
+          business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
+
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
           business.getSigningOfficers(x).add(user);

@@ -97,6 +97,7 @@ foam.CLASS({
         onboarding.setBirthday(birthday);
         onboarding.setPEPHIORelated(true);
         onboarding.setThirdParty(true);
+        onboarding.setDualPartyAgreement(true);
         onboarding.setAddress(signingOfficerAddress);
 
         onboarding.setBusinessTypeId(6);
@@ -104,7 +105,7 @@ foam.CLASS({
         onboarding.setSourceOfFunds("Revenue");
         onboarding.setAnnualTransactionAmount("9656000");
         onboarding.setAnnualVolume("88560");
-        onboarding.setTransactionPurpose("Pay vendors");
+        onboarding.setTransactionPurpose("Payables for products and/or services");
         onboarding.setTargetCustomers("Small manufacturing businesses in North America");
         onboarding.setOwnershipAbovePercent(false);
         try {
