@@ -77,11 +77,13 @@ foam.CLASS({
 
               DAO accountDAO  = user.getAccounts(x);
 
+              Class currentClass = new Object() { }.getClass().getEnclosingClass();
+
               List accounts = ((ArraySink) accountDAO
                 .where(
                   AND(
                     EQ(Account.ENABLED, true),
-                    INSTANCE_OF(DigitalAccount.class),
+                    INSTANCE_OF(currentClass),
                     EQ(Account.DENOMINATION, denomination),
                     EQ(Account.IS_DEFAULT, true)
                   )
@@ -89,7 +91,13 @@ foam.CLASS({
                 .select(new ArraySink())).getArray();
 
               if ( accounts.size() == 0 ) {
-                account = new DigitalAccount();
+                try {
+                  java.lang.reflect.Method m = currentClass.getMethod("Builder", foam.core.X.class);
+                  account = (DigitalAccount) m.invoke(null, x);
+                } catch ( Throwable t ) {
+                  logger.error("failed to instantiate "+currentClass.getName(), t);
+                  account = new DigitalAccount();
+                }
                 account.setDenomination(denomination);
                 account.setIsDefault(true);
                 account.setOwner(user.getId()); // required until user.getAccounts()

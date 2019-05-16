@@ -13,11 +13,11 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.DebtAccount',
-  ]
+  ],
 
   properties: [
     {
-      name: 'DebtAccount',
+      name: 'debtAccount',
       class: 'Reference',
       of: 'net.nanopay.account.DebtAccount',
       view: function(_, X) {
@@ -28,14 +28,13 @@ foam.CLASS({
             )
           ),
           placeholder: '--',
-          objToChoice: function(lenderAccount) {
-            return [debtorAccount.id, debtorAccount.name];
+          objToChoice: function(debtAccount) {
+            return [debtAccount.id, debtAccount.name];
           }
         });
       }
-
     }
-  ]
+  ],
 
   methods: [
     {
