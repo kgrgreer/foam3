@@ -538,8 +538,6 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.ClientDowJonesService',
   'net.nanopay.meter.compliance.dowJones.DowJonesCall',
   'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
-  'net.nanopay.meter.compliance.dowJones.EntityOnboarding',
-  'net.nanopay.meter.compliance.dowJones.PersonOnboarding',
   'net.nanopay.meter.compliance.dowJones.DowJones',
   'net.nanopay.meter.compliance.dowJones.DowJonesRestInterface',
   'net.nanopay.meter.compliance.dowJones.EntitySanctionValidator',
