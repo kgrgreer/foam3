@@ -204,7 +204,7 @@ foam.CLASS({
       section: 'businessDetailsSection'
     }),
     {
-      name: 'businessIndustryId',
+      name: 'businessSectorId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
       label: 'Nature of business (NAIC code)',
