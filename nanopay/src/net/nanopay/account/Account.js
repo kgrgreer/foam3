@@ -47,7 +47,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enabled',
+<<<<<<< HEAD
       documentation: `Determines whether an account is disabled. Accounts 
+=======
+      documentation: `Verifies that an account is disabled. Accounts 
+>>>>>>> development
         on this platform are disabled rather than deleted.
       `,
       value: true
@@ -55,7 +59,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'deleted',
+<<<<<<< HEAD
       documentation: 'Determines whether the account is deleted.',
+=======
+      documentation: 'Verifies that the account is deleted.',
+>>>>>>> development
       value: false,
       permissionRequired: true,
       visibility: 'RO',
@@ -82,13 +90,21 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'transferIn',
+<<<<<<< HEAD
       documentation: 'Determines whether an account can receive transfers.',
+=======
+      documentation: 'Verifies that an account can receive transfers.',
+>>>>>>> development
       value: true
     },
     {
       class: 'Boolean',
       name: 'transferOut',
+<<<<<<< HEAD
       documentation: 'Determines whether an account can make transfers out.',
+=======
+      documentation: 'Verifies that an account can make transfers out.',
+>>>>>>> development
       value: true
     },
     {
@@ -102,7 +118,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isDefault',
+<<<<<<< HEAD
       documentation: `Determines whether an account is the first preferred option of the User.`,
+=======
+      documentation: `Verifies that an account is the first preferred option of the User.`,
+>>>>>>> development
       label: 'Set As Default',
       value: false
     },
@@ -156,7 +176,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
+<<<<<<< HEAD
       documentation: `The unique identifier of the individual person, or real user, 
+=======
+      documentation: `The ID of the individual person, or real user, 
+>>>>>>> development
         who last modified this account.`,
     }
   ],

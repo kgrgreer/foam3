@@ -20,9 +20,9 @@ public class DowJonesMockService
       DowJonesResponseMsg response = request(msg);
   
       if ( response.getHttpStatusCode() == 200 ) {
-        response.setModelInfo(BaseSearchResponse.getOwnClassInfo());
+        response.setModelInfo(DowJonesResponse.getOwnClassInfo());
       } else {
-        response.setModelInfo(BaseSearchInvalidResponse.getOwnClassInfo());
+        response.setModelInfo(DowJonesInvalidResponse.getOwnClassInfo());
       }
       return response;
     }

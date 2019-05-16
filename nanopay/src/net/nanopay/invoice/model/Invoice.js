@@ -427,8 +427,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'scheduledEmailSent',
       documentation: `Determines whether an email has been sent to the Payer 
-        informing them that the payment they scheduled is due.
-      `,
+        informing them that the payment they scheduled is due.`,
       value: false
     },
     {
