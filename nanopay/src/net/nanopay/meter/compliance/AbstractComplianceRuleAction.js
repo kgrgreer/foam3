@@ -56,8 +56,10 @@ foam.CLASS({
               @Override
               public void put(Object o, Detachable d) {
                 User approver = (User) o;
-                approvalRequest.setApprover(approver.getId());
-                approvalRequestDAO.put(approvalRequest);
+                ApprovalRequest ar = (ApprovalRequest) approvalRequest.fclone();
+
+                ar.setApprover(approver.getId());
+                approvalRequestDAO.put(ar);
               }
             });
         }
