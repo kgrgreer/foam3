@@ -24,6 +24,7 @@ foam.CLASS({
   imports: [
     'acceptanceDocumentService',
     'agent',
+    'ctrl',
     'isSigningOfficer',
     'menuDAO',
     'user'
@@ -463,12 +464,18 @@ foam.CLASS({
       message: `Please provide a copy of your government issued drivers license or passport. 
           The image must be clear, or will require resubmission. If your name differs from what 
           the ID shows, please provide sufficient documentation (marriage certificate, name change documentation, etc)`
+    },
+    {
+      name: 'QUEBEC_DISCLAIMER',
+      message: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.'
     }
   ],
 
   methods: [
     function init() {
       this.loadAcceptanceDocuments();
+
+      this.onDetach(this.viewData.agent.address.regionId$.sub(this.checkQuebec));
     },
     function initE() {
       this.nextLabel = 'Next';
@@ -630,6 +637,13 @@ foam.CLASS({
         console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
       }
     },
+
+    function checkQuebec(detachable, eventName, propName, propSlot) {
+      var regionId = propSlot.get();
+      if ( regionId === 'QC' ) {
+        this.ctrl.notify(this.QUEBEC_DISCLAIMER, 'error');
+      }
+    }
   ],
 
   actions: [

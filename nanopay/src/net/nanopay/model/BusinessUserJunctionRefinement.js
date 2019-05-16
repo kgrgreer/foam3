@@ -13,9 +13,12 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
+    'foam.util.SafetyUtil',
     'net.nanopay.model.Business'
   ],
 
@@ -40,6 +43,8 @@ foam.CLASS({
         if ( getSourceId() != user.getId() ) {
           throw new AuthorizationException("Users may not assign themselves as signing officers of businesses. The business must assign the user as a signing officer.");
         }
+
+        checkQuebec(x);
       `
     },
     {
@@ -92,6 +97,8 @@ foam.CLASS({
         if ( getSourceId() != user.getId() ) {
           throw new AuthorizationException("Users may not assign themselves as signing officers of businesses. The business must assign the user as a signing officer.");
         }
+
+        checkQuebec(x);
       `
     },
     {
@@ -120,6 +127,25 @@ foam.CLASS({
           )
         ) {
           throw new AuthorizationException("Permission denied. You are not associated with this junction.");
+        }
+      `
+    },
+    {
+      name: 'checkQuebec',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaCode: `
+        // Temporarily prohibit signing officers living in Quebec.
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
+        User signingOfficer = (User) localUserDAO.inX(x).find(getSourceId());
+
+        if ( signingOfficer != null ) {
+          Address address = signingOfficer.getAddress();
+
+          if ( address != null && SafetyUtil.equals(address.getRegionId(), "QC") ) {
+            throw new IllegalStateException("Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.");
+          }
         }
       `
     }
