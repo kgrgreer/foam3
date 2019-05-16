@@ -31,7 +31,6 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'predicate',
       expression: function(parentChoice) {
-        console.log(parentChoice);
         return parentChoice ?
           this.EQ(this.BusinessSector.PARENT, parentChoice) :
           this.FALSE;
