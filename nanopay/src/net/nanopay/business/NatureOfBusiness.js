@@ -42,13 +42,29 @@ foam.CLASS({
       this.SUPER();
       this
         .start(this.Cols)
-          .tag(self.RichChoiceView, {
+          .tag(this.RichChoiceView, {
             data$: this.parentChoice$,
-            dao: this.businessSectorDAO.where(this.EQ(this.BusinessSector.PARENT, 0))
+            sections: [
+              {
+                heading: 'Industries',
+                dao: this.businessSectorDAO.where(this.EQ(this.BusinessSector.PARENT, 0))
+              }
+            ],
+            search: true,
+            searchPlaceholder: 'Search...',
+            choosePlaceholder: 'Select...'
           })
-          .tag(self.RichChoiceView, {
+          .tag(this.RichChoiceView, {
             data$: this.data$,
-            dao: this.filteredDAO$proxy
+            sections: [
+              {
+                heading: 'Industries',
+                dao: this.filteredDAO$proxy
+              }
+            ],
+            search: true,
+            searchPlaceholder: 'Search...',
+            choosePlaceholder: 'Select...'
           })
         .end();
     }
