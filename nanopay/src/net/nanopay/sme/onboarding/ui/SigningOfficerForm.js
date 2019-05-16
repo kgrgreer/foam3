@@ -436,11 +436,6 @@ foam.CLASS({
           family member of any such person?`
     },
     {
-      name: 'INVITE_INFO',
-      message: `Invite a signing officer or other employees in your business.
-          Recipients will receive a link to join your business on Ablii`
-    },
-    {
       name: 'SIGNING_INFORMATION',
       message: `A signing officer is a person legally authorized to act
           on behalf of the business. (e.g. CEO, COO, board director)`
