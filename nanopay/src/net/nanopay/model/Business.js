@@ -67,6 +67,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthService',
@@ -93,6 +94,13 @@ foam.CLASS({
       javaCode: `
         if ( SafetyUtil.isEmpty(this.getBusinessName()) ) {
           throw new IllegalStateException("Business name cannot be empty.");
+        }
+
+        // Temporarily prohibit businesses based in Quebec.
+        Address businessAddress = this.getBusinessAddress();
+
+        if ( businessAddress != null && SafetyUtil.equals(businessAddress.getRegionId(), "QC") ) {
+          throw new IllegalStateException("Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.");
         }
       `
     },
