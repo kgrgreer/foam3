@@ -10,7 +10,6 @@ foam.CLASS({
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'net.nanopay.model.Business',
-    'net.nanopay.business.NatureOfBusiness'
   ],
 
   sections: [
@@ -200,7 +199,6 @@ foam.CLASS({
       }
     }),
     {
-      class: 'FObjectProperty',
       name: 'businessIndustryId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
