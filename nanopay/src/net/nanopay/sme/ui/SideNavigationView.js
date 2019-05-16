@@ -220,6 +220,7 @@ foam.CLASS({
               .call(function() {
                 this
                   .start()
+                    .attrs({name: menu.label})
                     .addClass('sme-sidenav-item-wrapper')
                     .enableClass('active-menu', self.currentMenu$.map((currentMenu) => {
                       return currentMenu != null && currentMenu.id === menu.id;

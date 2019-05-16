@@ -194,7 +194,7 @@ foam.CLASS({
   ^ .foam-u2-TextField:focus,
   ^ .foam-u2-DateView:focus,
   ^ .foam-u2-tag-Select:focus,
-  ^ .net-nanopay-ui-ActionView:focus {
+  ^ .foam-u2-ActionView:focus {
     border: solid 1px #59A5D5;
   }
   `,

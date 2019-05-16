@@ -27,6 +27,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountingIntegrationUtil',
     'menuDAO',
     'pushMenu',
     'notify',
@@ -53,7 +54,7 @@ foam.CLASS({
       background-color: #ffffff;
       border: solid 1.5px #ffffff;
       box-shadow: 0 1px 1px 0 #dae1e9;
-      border: solid 1px #edf0f5;
+      border: solid 1px %BACKGROUNDCOLOR%;
     }
     ^item:hover {
       cursor: pointer;
@@ -73,7 +74,7 @@ foam.CLASS({
       margin: 8px 0 0 0;
       font-size: 14px;
     }
-    ^ .net-nanopay-ui-ActionView {
+    ^ .foam-u2-ActionView {
       height: 96px;
       width: 100%;
     }
@@ -104,7 +105,7 @@ foam.CLASS({
   messages: [
     {
       name: 'COMPLETION_SENTENCE',
-      message: '/4 completed.'
+      message: ' completed.'
     },
     {
       name: 'COMPLETION_SENTENCE_2',
@@ -145,12 +146,18 @@ foam.CLASS({
       name: 'bankAction',
       documentation: `This a var to store the 'Add Banking' action. 
       Needed to confirm that the action was completed in THIS models standard action 'addBank'`
+    },
+    {
+      name: 'maximumNumberOfSteps',
+      class: 'Int',
+      value: 3
     }
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       var self = this;
+      let showAccoutingSync = await this.accountingIntegrationUtil.getPermission();
       Promise.all([
         this.user.emailVerified,
         this.user.accounts
@@ -170,19 +177,27 @@ foam.CLASS({
       ]).then((values) => {
         this.completedCount = values.filter((val) => val).length;
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'verifyEmail',
           completed: values[0],
           act: this.VERIFY_EMAIL
         }));
         this.bankAction = net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'addBank',
           completed: values[1],
           act: this.ADD_BANK
         });
         this.actionsDAO.put(this.bankAction);
+        if ( showAccoutingSync[0] ) {
+          this.maximumNumberOfSteps = 4;
+          this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+            completed: values[2],
+            act: this.SYNC_ACCOUNTING
+          }));
+        } else if ( this.user.hasIntegrated ) {
+          this.completedCount--;
+        }
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          completed: values[2],
-          act: this.SYNC_ACCOUNTING
-        }));
-        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+          name: 'busProfile',
           completed: values[3],
           act: this.BUS_PROFILE
         }));
@@ -200,7 +215,7 @@ foam.CLASS({
               .start()
                 .addClass(this.myClass('front'))
                 .style({
-                  width: `${Math.floor(parseInt(this.completedCount / 4 * 100))}%`
+                  width: `${Math.floor(parseInt(this.completedCount / this.maximumNumberOfSteps * 100))}%`
                 })
               .end()
             .end()
@@ -209,7 +224,7 @@ foam.CLASS({
             .addClass(this.myClass('container'))
             .start('span')
               .start('strong')
-                .add(this.completedCount, this.COMPLETION_SENTENCE)
+                .add(this.completedCount, '/', this.maximumNumberOfSteps, this.COMPLETION_SENTENCE)
               .end()
               .start('span')
                 .add(this.COMPLETION_SENTENCE_2)
@@ -228,6 +243,7 @@ foam.CLASS({
             .addClass(this.myClass('container'))
             .select(dao, function(actionObj) {
               return this.E()
+                .attrs({ name: actionObj.name })
                 .addClass(self.myClass('item'))
                 .enableClass(self.myClass('complete'), actionObj.completed)
                 .start(actionObj.imgObj)
@@ -266,11 +282,9 @@ foam.CLASS({
         if ( this.bankAction.completed ) {
           this.notify(this.SINGULAR_BANK, 'warning');
         } else {
-          this.stack.push({
-            class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-            usdAvailable: true,
-            cadAvailable: true
-          });
+          this.menuDAO
+            .find('sme.main.banking')
+            .then((menu) => menu.launch());
         }
       }
     },

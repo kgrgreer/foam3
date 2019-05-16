@@ -61,20 +61,16 @@ foam.CLASS({
       color: #604AFF;
     }
 
-    ^ .net-nanopay-ui-ActionView {
-      background: none;
-      background-color: transparent;
+    ^ .net-nanopay-sme-ui-AbliiActionView {
+      border: none !important;
+      background: none !important;
+      box-shadow: none !important;
       border: none;
       box-shadow: none;
       width: auto;
       height: 16px;
       padding: 0;
       margin-left: auto;
-    }
-
-    ^ .net-nanopay-ui-ActionView:hover {
-      background: none;
-      background-color: transparent;
     }
 
     ^close-action {

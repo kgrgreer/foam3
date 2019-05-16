@@ -77,6 +77,15 @@ foam.CLASS({
       font-size: 14px;
       color: #2b2b2b;
     }
+    ^ .bankAction:hover {
+      background-color: white;
+    }
+    ^ .bankAction:disabled {
+      border: 1px solid #e2e2e3;
+    }
+    ^ .bankAction:disabled p {
+      color: #8e9090;
+    }
     ^ .transit-container {
       width: 133px;
       margin-right: 16px;
@@ -118,7 +127,9 @@ foam.CLASS({
     { name: 'ACCOUNT_NOT_FOUND', message: `Could not find contact's bank account.` },
     { name: 'INSTITUTION_NOT_FOUND', message: `Could not find contact's bank account institution.` },
     { name: 'BRANCH_NOT_FOUND', message: `Could not find contact's bank account branch.` },
-    { name: 'STEP_INDICATOR', message: 'Step 2 of 3' }
+    { name: 'STEP_INDICATOR', message: 'Step 2 of 3' },
+    { name: 'CA_ACCOUNT_NAME_PLACEHOLDER', message: 'ex. TD Bank, Bank of Montreal' },
+    { name: 'US_ACCOUNT_NAME_PLACEHOLDER', message: 'ex. Bank of America, Wells Fargo' }
   ],
 
   properties: [
@@ -233,25 +244,19 @@ foam.CLASS({
           .addClass('bank-option-container')
           .addClass('two-column')
           .show(! this.wizard.data.bankAccount)
-          .start()
+          .start(this.SELECT_CABANK)
             .addClass('bankAction')
             .enableClass('selected', this.isCABank$)
             .start('p')
               .add(this.LABEL_CA)
             .end()
-            .on('click', function() {
-              self.selectBank('CA');
-            })
           .end()
-          .start()
+          .start(this.SELECT_USBANK)
             .addClass('bankAction')
             .enableClass('selected', this.isCABank$, true)
             .start('p')
               .add(this.LABEL_US)
             .end()
-            .on('click', function() {
-              self.selectBank('US');
-            })
           .end()
         .end()
         .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath$ })
@@ -297,7 +302,9 @@ foam.CLASS({
                     .addClass('field-label')
                     .add(self.NAME_LABEL)
                   .end()
-                  .tag(self.caAccount.NAME)
+                  .start(self.caAccount.NAME)
+                    .setAttribute('placeholder', this.CA_ACCOUNT_NAME_PLACEHOLDER)
+                  .end()
                 .end()
                 .tag(self.caAccount.ADDRESS.clone().copyFrom({
                   view: {
@@ -334,7 +341,9 @@ foam.CLASS({
                   .start().addClass('field-label')
                     .add(self.NAME_LABEL)
                   .end()
-                  .tag(self.usAccount.NAME)
+                  .start(self.usAccount.NAME)
+                    .setAttribute('placeholder', this.US_ACCOUNT_NAME_PLACEHOLDER)
+                  .end()
                 .end()
                 .tag(self.usAccount.ADDRESS.clone().copyFrom({
                   view: {
@@ -362,6 +371,11 @@ foam.CLASS({
     },
 
     function validateBank(bankAccount, countryId) {
+      if ( ! bankAccount.name ) {
+        this.ctrl.notify('Financial institution name is required', 'error');
+        return;
+      }
+
       if ( bankAccount.errors_ ) {
         this.ctrl.notify(bankAccount.errors_[0][1], 'error');
         return;
@@ -411,6 +425,22 @@ foam.CLASS({
           return;
         }
         X.pushToId('AddContactStepThree');
+      }
+    },
+    {
+      name: 'selectCABank',
+      label: '',
+      permissionConfig: { enabled: ['currency.read.CAD'] },
+      code: function() {
+        this.selectBank('CA');
+      }
+    },
+    {
+      name: 'selectUSBank',
+      label: '',
+      permissionConfig: { enabled: ['currency.read.USD'] },
+      code: function() {
+        this.selectBank('US');
       }
     }
   ]

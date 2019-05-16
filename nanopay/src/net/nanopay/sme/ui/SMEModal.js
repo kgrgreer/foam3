@@ -19,6 +19,8 @@ foam.CLASS({
       height: 24px !important;
       cursor: pointer;
       transition: ease 0.2s;
+      padding: 0;
+      border: none !important;
     }
 
     ^X:hover {

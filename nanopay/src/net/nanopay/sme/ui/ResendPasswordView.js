@@ -127,16 +127,8 @@ foam.CLASS({
         background-color: #604aff;
       }
 
-      ^ .net-nanopay-ui-ActionView-resendEmail {
-        display: inline-block;
-        background: none;
+      ^ [name="resendEmail"] {
         margin-left: 5px;
-      }
-
-      ^ .net-nanopay-ui-ActionView-resendEmail:hover {
-        background: none;
-        width: auto;
-        height: auto;
       }
 
       ^ .top-bar {
@@ -183,7 +175,10 @@ foam.CLASS({
             .start().addClass('Message-Container')
               .start().addClass('Instructions-Text').add(this.INSTRUCTIONS, this.email).end()
               .start().add(this.NO_EMAIL).addClass('Instructions-Text').end()
-              .start(this.RESEND_EMAIL).addClass('sme').addClass('link').end()
+              .start(this.RESEND_EMAIL, { buttonStyle: 'UNSTYLED' })
+                .addClass('sme')
+                .addClass('link')
+              .end()
             .end()
             .start().addClass('sme').addClass('link')
               .add(this.BACK_TO_SIGN_IN)

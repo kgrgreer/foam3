@@ -46,7 +46,7 @@ foam.CLASS({
       margin-left: 20px;
       display: inline-block;
     }
-    ^ .net-nanopay-ui-ActionView-closeButton {
+    ^ .foam-u2-ActionView-closeButton {
       width: 24px;
       height: 24px;
       margin: 0;
@@ -59,11 +59,11 @@ foam.CLASS({
       background: transparent;
       box-shadow: none;
     }
-    ^ .net-nanopay-ui-ActionView-closeButton:hover {
+    ^ .foam-u2-ActionView-closeButton:hover {
       background: transparent;
       background-color: transparent;
     }
-    ^ .net-nanopay-ui-ActionView-deleteButton {
+    ^ .foam-u2-ActionView-deleteButton {
       width: 136px;
       height: 40px;
       background: rgba(164, 179, 184, 0.1);
@@ -73,7 +73,7 @@ foam.CLASS({
       margin: 0;
       float: left;
     }
-    ^ .net-nanopay-ui-ActionView-deleteButton:hover {
+    ^ .foam-u2-ActionView-deleteButton:hover {
       background: lightgray;
     }
     ^ .descriptionStyle {
