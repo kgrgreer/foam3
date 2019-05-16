@@ -2,7 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Currency',
 
-  documentation: 'Currency information.',
+  documentation: `The base model for storing, using and managing currency information. 
+    All class properties require a return of *true* in order to pass.`,
 
   ids: [
     'alphabeticCode'
@@ -16,31 +17,32 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      documentation: 'Name of currency.',
+      documentation: 'The name of the type of currency.',
       required: true
     },
     {
       class: 'String',
       name: 'alphabeticCode',
-      documentation: 'Alphabetic code of currency.',
+      documentation: 'The alphabetic code associated with a type of currency.',
       required: true
     },
     {
       class: 'Long',
       name: 'numericCode',
-      documentation: 'Numeric code of currency.',
+      documentation: 'The numeric code associated with a type of currency.',
       required: true
     },
     {
       class: 'Int',
       name: 'precision',
-      documentation: 'The number of digits that come after the decimal point.',
+      documentation: 'Defines the number of digits that come after the decimal point. ',
       required: true
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
-      documentation: 'Reference to affiliated country.',
+      documentation: `The name of the country associated with the currency. 
+        This should be set by the child class.`,
       name: 'country',
       required: true
     },
@@ -59,7 +61,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'symbol',
-      documentation: 'The symbol used for the currency. Eg: $ for CAD.',
+      documentation: 'The symbol used for the type of currency. Eg: $ for CAD.',
       required: true
     },
     {
@@ -74,14 +76,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'flagImage',
-      documentation: 'Flag image used in relation to currency.'
+      documentation: 'The flag image used in relation to currency.'
     },
     {
       class: 'Boolean',
       name: 'showSpace',
-      documentation: `
-        Set to true if there is a space between the symbol and the number when
-        the currency is displayed.
+      documentation: `Sets to true if there is a space between the symbol and 
+        the number when the currency is displayed.
       `,
       required: true
     }
@@ -90,9 +91,9 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
-      documentation: `
-        When using a reference to the currencyDAO, the labels associated to it will show a chosen property
-        rather than the first alphabetical string property. In this case, we are using the alphabeticCode.
+      documentation: `When using a reference to the currencyDAO, the labels associated 
+        to it will show a chosen property rather than the first alphabetical string 
+        property. In this case, we are using the alphabeticCode.
       `,
       code: function(x) {
         var self = this;

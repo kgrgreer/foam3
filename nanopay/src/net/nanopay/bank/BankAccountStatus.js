@@ -2,7 +2,7 @@ foam.ENUM({
   package: 'net.nanopay.bank',
   name: 'BankAccountStatus',
 
-  documentation: 'Types for Bank account status',
+  documentation: 'The base model for tracking and managing the status of a bank account.',
 
   values: [
     {

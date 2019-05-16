@@ -59,8 +59,8 @@ foam.CLASS({
     { name: 'COUNTRY_LABEL', message: 'Country' },
     { name: 'STREET_NUMBER_LABEL', message: 'Street Number' },
     { name: 'STREET_NAME_LABEL', message: 'Street Name' },
-    { name: 'ADDRESS_LABEL', message: 'Address Line 2' },
-    { name: 'ADDRESS_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
+    { name: 'ADDRESS_LABEL', message: 'Address Line 2 (Optional)' },
+    { name: 'ADDRESS_HINT', message: 'Apartment, suite, etc.' },
     { name: 'PROVINCE_LABEL', message: 'State/Province' },
     { name: 'CITY_LABEL', message: 'City' },
     { name: 'POSTAL_CODE_LABEL', message: 'Postal Code/Zip Code' }
@@ -156,7 +156,7 @@ foam.CLASS({
           .start().addClass('label').add(this.ADDRESS_LABEL).end()
           .start(this.Address.SUITE, { mode$: this.mode$ })
             .addClass('input-field')
-            .setAttribute('placeholder', 'Optional')
+            .setAttribute('placeholder', this.ADDRESS_HINT)
           .end()
         .end()
         .start()
