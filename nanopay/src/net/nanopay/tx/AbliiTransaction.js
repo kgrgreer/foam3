@@ -38,8 +38,9 @@ foam.CLASS({
         if ( sender.getId() == receiver.getId() ) return;
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        String notificationMsg = sender.label() + " just initiated a payment to " + receiver.label() + " for " + formatter.format(getAmount()/100.00) + " on Invoice #" + this.findInvoiceId(x).getInvoiceNumber() + " PO" + this.findInvoiceId(x).getPurchaseOrder() + ".";
-        
+        String notificationMsg = sender.label() + " just initiated a payment to " + receiver.label() + " for " + formatter.format(getAmount()/100.00) + " on Invoice #" + this.findInvoiceId(x).getInvoiceNumber();
+        notificationMsg += this.findInvoiceId(x).getPurchaseOrder().length() > 0 ? " PO" + this.findInvoiceId(x).getPurchaseOrder() + "." : ".";
+
         // notification to sender
         Notification senderNotification = new Notification();
         senderNotification.setUserId(sender.getId()); // this.getStat()
