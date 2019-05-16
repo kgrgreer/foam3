@@ -65,7 +65,7 @@ foam.CLASS({
           .add(this.parentChoice$.map((id) => {
             return this.E()
               .tag(this.RichChoiceView, {
-                visibility: id != null ? 'RW' : 'DISABLED',
+                visibility: id != 0 ? 'RW' : 'DISABLED',
                 data$: this.data$,
                 sections: [
                   {
