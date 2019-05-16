@@ -380,7 +380,7 @@ foam.CLASS({
         return false;
       }
 
-      // AFX RELATED
+     // NOTE: AFX REMOVED FOR MVP RELEASE
       // if ( ! transactionInfo.annualRevenue ) {
       //   this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
       //   return false;
