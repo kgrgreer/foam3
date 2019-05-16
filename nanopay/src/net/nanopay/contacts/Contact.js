@@ -95,7 +95,7 @@ foam.CLASS({
           return 'First name cannot exceed 70 characters.';
         }
         if ( /\d/.test(firstName) ) {
-          return 'First name cannot contain numbers';
+          return 'First name cannot contain numbers.';
         }
       }
     }),
@@ -106,7 +106,7 @@ foam.CLASS({
           return 'Last name cannot exceed 70 characters.';
         }
         if ( /\d/.test(lastName) ) {
-          return 'Last name cannot contain numbers';
+          return 'Last name cannot contain numbers.';
         } 
       }
     }),
