@@ -135,19 +135,32 @@ public class BusinessOnboardingValidator implements Validator {
       throw new RuntimeException("Additional information for your transaction purpose required.");
     }
 
-    if ( transactionInfo.getInternationalPayments() ) {
-      if ( SafetyUtil.isEmpty(transactionInfo.getAnnualTransactionAmount()) ) {
-        throw new RuntimeException("Annual Number of Transactions is required.");
-      }
-
-      if ( SafetyUtil.isEmpty(transactionInfo.getAnnualVolume()) ) {
-        throw new RuntimeException("Estimated Annual Volume in USD is required.");
-      }
-
-      if ( transactionInfo.getFirstTradeDate() == null ) {
-        throw new RuntimeException("Anticipated first payment date is required.");
-      }
+    if ( SafetyUtil.isEmpty(transactionInfo.getAnnualRevenue()) ) {
+      throw new RuntimeException("Domestic Annual Gross Sales required.");
     }
+
+    if ( SafetyUtil.isEmpty(transactionInfo.getAnnualDomesticVolume()) ) {
+      throw new RuntimeException("Domestic Annual Number of Transactions required.");
+    }
+
+    if ( SafetyUtil.isEmpty(transactionInfo.getAnnualDomesticTransactionAmount()) ) {
+      throw new RuntimeException("Domestic Estimated Annual Volume required.");
+    }
+
+    // NOTE: AFX REMOVE FOR MVP RELEASE
+    // if ( transactionInfo.getInternationalPayments() ) {
+    //   if ( SafetyUtil.isEmpty(transactionInfo.getAnnualTransactionAmount()) ) {
+    //     throw new RuntimeException("Annual Number of Transactions is required.");
+    //   }
+
+    //   if ( SafetyUtil.isEmpty(transactionInfo.getAnnualVolume()) ) {
+    //     throw new RuntimeException("Estimated Annual Volume in USD is required.");
+    //   }
+
+    //   if ( transactionInfo.getFirstTradeDate() == null ) {
+    //     throw new RuntimeException("Anticipated first payment date is required.");
+    //   }
+    // }
   }
 
   public void validateBeneficialOwners(X x, Business business) {

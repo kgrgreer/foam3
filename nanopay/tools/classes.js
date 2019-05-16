@@ -275,6 +275,7 @@ var classes = [
   'net.nanopay.tx.TestTransaction',
   'net.nanopay.tx.AbliiTransaction',
   'net.nanopay.tx.InterestTransaction',
+  'net.nanopay.tx.FailedTransactionNotification',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -476,9 +477,15 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.RequestSigningOfficersCompliance',
   'net.nanopay.meter.compliance.ruler.SecurefactLEVValidator',
   'net.nanopay.meter.compliance.ruler.SecurefactSIDniValidator',
+  'net.nanopay.meter.compliance.ruler.predicate.AbliiSignup',
+  'net.nanopay.meter.compliance.ruler.predicate.B2BTransaction',
+  'net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested',
+  'net.nanopay.meter.compliance.ruler.predicate.BusinessComplianceRequested',
   'net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarding',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
+  'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
+  'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
