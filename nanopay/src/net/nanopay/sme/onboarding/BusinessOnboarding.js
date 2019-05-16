@@ -9,7 +9,8 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
+    'net.nanopay.business.NatureOfBusiness'
   ],
 
   sections: [
@@ -198,60 +199,13 @@ foam.CLASS({
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
-    // {
-    //   class: 'Reference',
-    //   targetDAOKey: 'businessSectorDAO',
-    //   name: 'businessSectorId',
-    //   section: 'businessDetailsSection',
-    //   of: 'net.nanopay.model.BusinessSector',
-    //   documentation: 'Represents the general economic grouping for the business.',
-    //   label: 'Nature of business (NAIC code)',
-    //   view: function(args, X) {
-    //     return {
-    //       class: 'foam.u2.view.RichChoiceView',
-    //       sections: [
-    //         {
-    //           heading: 'Industries',
-    //           dao: X.businessSectorDAO
-    //         }
-    //       ],
-    //       search: true,
-    //       searchPlaceholder: 'Search...',
-    //       choosePlaceholder: 'Select...'
-    //     };
-    //   },
-    //   visibilityExpression: function(signingOfficer) {
-    //     return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-    //   }
-    // },
     {
-      class: 'Reference',
-      targetDAOKey: 'businessSectorDAO',
+      class: 'FObjectProperty',
       name: 'businessIndustryId',
       section: 'businessDetailsSection',
-      of: 'net.nanopay.model.BusinessSector',
       documentation: 'Represents the specific economic grouping for the business.',
       label: 'Nature of business (NAIC code)',
-
-      /*
-        FIXME: Need to use visibility expressions, currently only supports Mode
-      */
-      view: function(args, X) {
-        var m = foam.mlang.ExpressionsSingleton.create();
-
-        return {
-          class: 'foam.u2.view.RichChoiceView',
-          sections: [
-            {
-              heading: 'Specific Industries',
-              dao: X.businessSectorDAO.where(m.NEQ(net.nanopay.model.BusinessSector.PARENT, 0))
-            }
-          ],
-          search: true,
-          searchPlaceholder: 'Search...',
-          choosePlaceholder: 'Select...',
-        };
-      },
+      view: { class: 'net.nanopay.business.NatureOfBusiness' },
     },
 
     foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
