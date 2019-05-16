@@ -21,7 +21,7 @@ foam.CLASS({
             )
           ),
           placeholder: '--',
-          objToChoice: function(lenderAccount) {
+          objToChoice: function(debtorAccount) {
             return [debtorAccount.id, debtorAccount.name];
           }
         });
@@ -41,7 +41,7 @@ foam.CLASS({
             )
           ),
           placeholder: '--',
-          objToChoice: function(lenderAccount) {
+          objToChoice: function(creditorAccount) {
             return [creditorAccount.id, creditorAccount.name];
           }
         });
