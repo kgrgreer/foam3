@@ -267,6 +267,18 @@ foam.CLASS({
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          'Payables for products and/or services',
+          'Working capital',
+          'Bill payments',
+          'Intracompany bank transfers',
+          'Government fee and taxes',
+          'Other'
+        ]
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
