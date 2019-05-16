@@ -13,6 +13,10 @@ foam.INTERFACE({
           type: 'Context'
         },
         {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        },
+        {
           name: 'denomination',
           type: 'String'
         }

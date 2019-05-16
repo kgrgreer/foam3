@@ -55,6 +55,7 @@ var classes = [
   'net.nanopay.account.Account',
   'net.nanopay.account.Accountable',
   'net.nanopay.account.DigitalAccount',
+  'net.nanopay.account.DebtAccount',
   'net.nanopay.account.OverdraftAccount',
   'net.nanopay.account.DigitalAccountInfo',
   'net.nanopay.account.DigitalAccountServiceInterface',

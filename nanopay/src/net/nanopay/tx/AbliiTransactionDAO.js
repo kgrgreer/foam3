@@ -99,9 +99,6 @@ foam.CLASS({
                 // add transfers for liability -> float
                 Account a = ti.findDestinationAccount(x);
 
-                if (a instanceof OverdraftAccount ) {
-                  OverdraftAccount oda = (OverdraftAccount) a;
-                  long liabilityAccount = oda.getBackingAccount();
                   long floatAccount = ((LoanedTotalAccount) ((DAO) x.get("accountDAO")).find(
                     MLang.AND(
                       MLang.INSTANCE_OF( LoanedTotalAccount.class ),
@@ -126,30 +123,53 @@ foam.CLASS({
               if ( ti instanceof COTransaction ) {
                 // add transfers for float -> liability
                  Account a = ti.getNext()[0].findSourceAccount(x);
-                 if (a instanceof OverdraftAccount ) {
-                    OverdraftAccount oda = (OverdraftAccount) a;
-                    long liabilityAccount = oda.getBackingAccount();
-                    long floatAccount = ((LoanedTotalAccount) ((DAO) x.get("accountDAO")).find(
-                      MLang.AND(
-                        MLang.INSTANCE_OF( LoanedTotalAccount.class ),
-                        MLang.EQ( LoanedTotalAccount.DENOMINATION,oda.getDenomination())
-                      ))).getId();
-                    List transfers = new ArrayList();
-                    Transfer transfer = new Transfer.Builder(x)
-                      .setAmount(ti.getAmount())
-                      .setAccount(liabilityAccount)
-                      .setVisible(false)
-                      .build();
-                    transfers.add(transfer);
-                    Transfer transfer2 = new Transfer.Builder(x)
-                      .setAmount(-ti.getAmount())
-                      .setAccount(floatAccount)
-                      .setVisible(false)
-                      .build();
-                    transfers.add(transfer2);
-                    ti.add((Transfer[]) transfers.toArray(new Transfer[0]));
+                 // TODO: quote transaction between backing and 'this'.
+                // planner  Digital -> Detable
+                // if Digital Detable then quote again, repeat.
 
+                if (a instanceof OverdraftAccount ) {
+                  OverdraftAccount oda = (OverdraftAccount) a;
+                  long liabilityAccount = oda.getBackingAccount();
+
+                  Transaction d = new DebtTransaction.Builder(x)
+                    .setSourceAccount(backingAccount)
+                    .setDestinationAccount(detableAccount)
+                    .build();
+                  transfers.add(d);
+// NOTE: DebtTransaction takes care of generating Transfers.
+// in TransactionDAO ignore transfers from DebtAccounts.
+// The transfers below are not necesary.
+// at time of Transfer if NSF then DECLINE Transaction, and
+// append a new CO dependent on the CI.
+// need IncurDebtTransaction and PayDebtTransaction, the CI
+// would delegate to a PayDebtTransaction which can pay the correct account,
+// else we call getTransfers from an Account.
+// debtAccount.getTransfers(x, +/-amount); - incur, + pay.
                 }
+                // if (a instanceof OverdraftAccount ) {
+                //     OverdraftAccount oda = (OverdraftAccount) a;
+                //     long liabilityAccount = oda.getBackingAccount();
+                //     long floatAccount = ((LoanedTotalAccount) ((DAO) x.get("accountDAO")).find(
+                //       MLang.AND(
+                //         MLang.INSTANCE_OF( LoanedTotalAccount.class ),
+                //         MLang.EQ( LoanedTotalAccount.DENOMINATION,oda.getDenomination())
+                //       ))).getId();
+                //     List transfers = new ArrayList();
+                //     Transfer transfer = new Transfer.Builder(x)
+                //       .setAmount(ti.getAmount())
+                //       .setAccount(liabilityAccount)
+                //       .setVisible(false)
+                //       .build();
+                //     transfers.add(transfer);
+                //     Transfer transfer2 = new Transfer.Builder(x)
+                //       .setAmount(-ti.getAmount())
+                //       .setAccount(floatAccount)
+                //       .setVisible(false)
+                //       .build();
+                //     transfers.add(transfer2);
+                //     ti.add((Transfer[]) transfers.toArray(new Transfer[0]));
+
+                // }
               }
             }
           }
