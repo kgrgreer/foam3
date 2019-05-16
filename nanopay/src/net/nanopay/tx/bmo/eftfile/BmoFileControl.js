@@ -16,7 +16,7 @@ foam.CLASS({
     },
     {
       name: 'totalValueOfD',
-      class: 'Int'
+      class: 'Long'
     },
     {
       name: 'totalNumberOfD',
@@ -24,7 +24,7 @@ foam.CLASS({
     },
     {
       name: 'totalValueOfC',
-      class: 'Int',
+      class: 'Long',
     },
     {
       name: 'totalNumberOfC',

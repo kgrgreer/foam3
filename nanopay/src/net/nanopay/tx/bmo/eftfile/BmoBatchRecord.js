@@ -21,4 +21,22 @@ foam.CLASS({
       of: 'net.nanopay.tx.bmo.eftfile.BmoBatchControl'
     }
   ],
+
+  methods: [
+    {
+      name: 'toBmoFormat',
+      type: 'String',
+      javaCode:
+        `
+      String details = "";
+      for ( BmoDetailRecord detailRecord : this.getDetailRecords()) {
+        details = details + detailRecord.toBmoFormat();
+      }
+  
+      return this.getBatchHeaderRecord().toBmoFormat() +
+        details +
+        this.getBatchControlRecord().toBmoFormat();
+      `
+    }
+  ]
 });

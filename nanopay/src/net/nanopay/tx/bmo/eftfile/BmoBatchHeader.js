@@ -25,7 +25,7 @@ foam.CLASS({
     },
     {
       name: 'payableDate',
-      class: 'Date',
+      class: 'String',
       documentation: 'Julian date on which funds are payable'
     },
     {
@@ -56,7 +56,7 @@ foam.CLASS({
       return this.getLogicalRecordTypeId()
         + this.getBatchPaymentType()
         + this.getTransactionTypeCode()
-        + BmoFormatUtil.toJulianDate(this.getPayableDate())
+        + this.getPayableDate()
         + BmoFormatUtil.addRightBlanks(this.getOriginatorShortName(), 15)
         + BmoFormatUtil.addRightBlanks(this.getOriginatorLongName(), 30)
         + "0" + this.getInstitutionIdForReturns()

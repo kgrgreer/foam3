@@ -4,10 +4,32 @@ foam.CLASS({
 
   documentation: `BMO EFT file`,
 
+  tableColumns: [
+    'id', 'fileName', 'env'
+  ],
+
   properties: [
     {
       name: 'id',
       class: 'Long'
+    },
+    {
+      name: 'fileName',
+      class: 'String'
+    },
+    {
+      name: 'env',
+      class: 'String',
+      documentation: 'value could be "sandbox" or "production". '
+    },
+    {
+      name: 'fileCreationTimeEST',
+      class: 'String'
+    },
+    {
+      name: 'beautifyString',
+      class: 'String',
+      view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 }
     },
     {
       name: 'headerRecord',
@@ -23,15 +45,45 @@ foam.CLASS({
       name: 'trailerRecord',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.bmo.eftfile.BmoFileControl',
-    },
-    {
-      name: 'filePath',
-      class: 'String'
-    },
-    {
-      name: 'env',
-      class: 'String',
-      documentation: 'value could be "sandbox" or "production". '
     }
   ],
+
+  methods: [
+    {
+      name: 'toBmoFormat',
+      type: 'String',
+      javaCode:
+      `
+      String fileHeader = this.getHeaderRecord().toBmoFormat();
+      
+      String batchRecord = "";
+      for ( BmoBatchRecord record : this.getBatchRecords() ) {
+        batchRecord = batchRecord + record.toBmoFormat();
+      }
+      
+      String fileControl = this.getTrailerRecord().toBmoFormat();
+      
+      return fileHeader + batchRecord + fileControl;
+      `
+    },
+    {
+      name: 'beautify',
+      type: 'String',
+      javaCode:
+        `
+      String str = this.toBmoFormat();
+  
+      int lineSize = 80;
+  
+      int index = 0;
+      StringBuilder sb = new StringBuilder();
+      while ( index < str.length() ) {
+        sb.append(str.substring(index, index + lineSize) + System.lineSeparator());
+        index = index + lineSize;
+      }
+  
+      return sb.toString();
+      `
+    }
+  ]
 });

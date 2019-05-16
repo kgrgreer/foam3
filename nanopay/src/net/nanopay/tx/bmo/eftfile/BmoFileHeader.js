@@ -26,11 +26,7 @@ foam.CLASS({
     {
       name: 'fileCreationDate',
       class: 'String',
-      documentation: 'Julian file creation date, pattern: 0YYDDD',
-      javaGetter:
-      `
-      return BmoFormatUtil.toJulianDate(LocalDate.now());
-      `
+      documentation: 'Julian file creation date, pattern: 0YYDDD'
     },
     {
       name: 'destinationDataCentreCode',

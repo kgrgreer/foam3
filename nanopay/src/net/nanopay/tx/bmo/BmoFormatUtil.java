@@ -2,20 +2,29 @@ package net.nanopay.tx.bmo;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class BmoFormatUtil {
 
-  public static String toJulianDate(LocalDate date) {
-    return "0"
-        + String.valueOf(date.getYear() % 100)
-        + addLeftZeros(date.getDayOfYear(), 3);
+  public static String getCurrentJulianDateEST() {
+    return toJulianDateEST(Instant.now());
   }
 
-  public static String toJulianDate(Date date) {
-    return toJulianDate(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+  public static String toJulianDateEST(Instant instant) {
+    ZonedDateTime est = instant.atZone(ZoneId.of("America/Toronto"));
+    return "0"
+      + String.valueOf(est.getYear() % 100)
+      + addLeftZeros(est.getDayOfYear(), 3);
+  }
+
+  public static String getCurrentDateTimeEST() {
+    ZonedDateTime est = ZonedDateTime.now(ZoneId.of("America/Toronto"));
+    return est.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
   }
 
   public static String addLeftZeros(long number, int size) {

@@ -6,6 +6,10 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'id',
+      class: 'Long'
+    },
+    {
       name: 'originatorId',
       class: 'String'
     },
@@ -47,6 +51,10 @@ foam.CLASS({
     },
     {
       name: 'accountNumberForRecalls',
+      class: 'String'
+    },
+    {
+      name: 'env',
       class: 'String'
     }
   ]
