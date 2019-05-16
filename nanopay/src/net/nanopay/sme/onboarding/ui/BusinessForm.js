@@ -340,6 +340,7 @@ foam.CLASS({
       name: 'sourceOfFundsOtherField',
       documentation: 'Where the business receives its money from (Other select field)',
       postSet: function(o, n) {
+        this.viewData.sourceOfFundsOther = n;
         this.viewData.user.sourceOfFunds = n;
       }
     },

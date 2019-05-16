@@ -470,7 +470,9 @@ foam.CLASS({
       }
 
       if ( ! businessProfile.sourceOfFunds
-        || ! businessProfile.sourceOfFunds.trim() ) {
+        || ! businessProfile.sourceOfFunds.trim()
+        || businessProfile.sourceOfFunds === 'Other'
+        && ( ! this.viewData.sourceOfFundsOther || ! this.viewData.sourceOfFundsOther.trim()) ) {
         this.notify(this.ERROR_MISSING_SOURCE_OF_FUNDS, 'error');
         return false;
       }
