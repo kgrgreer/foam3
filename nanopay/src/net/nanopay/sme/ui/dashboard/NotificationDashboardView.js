@@ -60,19 +60,19 @@ foam.CLASS({
       if ( this.bodyMsg.includes('Invoice') ) {
         this.invoiceDAO.find(this.data.invoiceId).then((invoice) => {
           if ( invoice == null ) this.bodyMsg = 'The invoice for this notification can no longer be found.';
-          this.currencyDAO.find(this.data.destinationCurrency)
+          this.currencyDAO.find(this.invoice.destinationCurrency)
             .then((currency) => {
-            this.currencyFormatted = currency.format(this.data.amount) + ' ' +
+            this.currencyFormatted = currency.format(this.invoice.amount) + ' ' +
               currency.alphabeticCode;
           });
           if ( invoice.payeeId === this.user.id ) {
             var name = invoice.payer.businessName ?
               invoice.payer.businessName :
               invoice.payer.label();
-            this.bodyMsg = `Received payment from ${name} for $${invoice.amount/100}`;
+            this.bodyMsg = `Received payment from ${name} for ${this.currencyFormatted}`;
           } else {
             var name = invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label();
-            this.bodyMsg = `Sent payment to ${name} for $${invoice.amount/100}`;
+            this.bodyMsg = `Sent payment to ${name} for ${this.currencyFormatted}`;
           }
         }).catch((_) => {
           this.bodyMsg = ' ';
