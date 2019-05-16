@@ -62,18 +62,22 @@ foam.CLASS({
             searchPlaceholder: 'Search...',
             choosePlaceholder: 'Select...'
           })
-          .tag(this.RichChoiceView, {
-            data$: this.data$,
-            sections: [
-              {
-                heading: 'Specific Industries',
-                dao: this.filteredDAO$proxy
-              }
-            ],
-            search: true,
-            searchPlaceholder: 'Search...',
-            choosePlaceholder: 'Select...'
-          })
+          .add(this.parentChoice$.map((id) => {
+            return this.E()
+              .tag(this.RichChoiceView, {
+                visibility: id != 0 ? 'RW' : 'DISABLED',
+                data$: this.data$,
+                sections: [
+                  {
+                    heading: 'Specific Industries',
+                    dao: this.filteredDAO$proxy
+                  }
+                ],
+                search: true,
+                searchPlaceholder: 'Search...',
+                choosePlaceholder: 'Select...'
+              })
+          }))
         .end();
     }
   ]
