@@ -192,6 +192,7 @@ foam.CLASS({
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
     { name: 'COUNTRY_LABEL', message: 'Country of operation' },
+    { name: 'COUNTRY_ERROR', message: 'Country of operation required.' },
     { name: 'EMAIL', message: 'Email Address' },
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
