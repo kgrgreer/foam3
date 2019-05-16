@@ -118,6 +118,14 @@ foam.CLASS({
       color: #8e9090;
       box-shadow: none;
     }
+    ^disclaimer {
+      width: 331px;
+      font-family: Lato;
+      font-size: 10px;
+      color: #8e9090;
+      margin: 50px auto 0 auto;
+      line-height: 1.5;
+    }
   `,
 
   properties: [
@@ -184,6 +192,7 @@ foam.CLASS({
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
     { name: 'COUNTRY_LABEL', message: 'Country of operation' },
+    { name: 'COUNTRY_ERROR', message: 'Country of operation required.' },
     { name: 'EMAIL', message: 'Email Address' },
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
@@ -195,7 +204,8 @@ foam.CLASS({
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` },
     { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions and Privacy Policy.` },
     { name: 'AND', message: `and`},
-    { name: 'PRIVACY_LABEL', message: `Privacy Policy` }
+    { name: 'PRIVACY_LABEL', message: `Privacy Policy` },
+    { name: 'QUEBEC_DISCLAIMER', message: '*Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' }
 
   ],
 
@@ -221,6 +231,10 @@ foam.CLASS({
         .start('img')
           .addClass('sme-image')
           .attr('src', 'images/sign_in_illustration.png')
+        .end()
+        .start('p')
+          .addClass(this.myClass('disclaimer'))
+          .add(this.QUEBEC_DISCLAIMER)
         .end();
 
       var right = this.Element.create()

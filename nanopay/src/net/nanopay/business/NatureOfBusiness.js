@@ -13,9 +13,16 @@ foam.CLASS({
   imports: [
     'businessSectorDAO'
   ],
+
+  css: `
+    ^ .foam-u2-view-RichChoiceView {
+      width: 248px;
+    }
+  `,
+
   properties: [
     {
-      class: 'FObjectProperty',
+      class: 'Reference',
       of: 'net.nanopay.model.BusinessSector',
       name: 'parentChoice'
     },
@@ -41,6 +48,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this
+        .addClass(this.myClass())
         .start(this.Cols)
           .tag(this.RichChoiceView, {
             data$: this.parentChoice$,
@@ -54,18 +62,22 @@ foam.CLASS({
             searchPlaceholder: 'Search...',
             choosePlaceholder: 'Select...'
           })
-          .tag(this.RichChoiceView, {
-            data$: this.data$,
-            sections: [
-              {
-                heading: 'Industries',
-                dao: this.filteredDAO$proxy
-              }
-            ],
-            search: true,
-            searchPlaceholder: 'Search...',
-            choosePlaceholder: 'Select...'
-          })
+          .add(this.parentChoice$.map((id) => {
+            return this.E()
+              .tag(this.RichChoiceView, {
+                visibility: id != 0 ? 'RW' : 'DISABLED',
+                data$: this.data$,
+                sections: [
+                  {
+                    heading: 'Specific Industries',
+                    dao: this.filteredDAO$proxy
+                  }
+                ],
+                search: true,
+                searchPlaceholder: 'Search...',
+                choosePlaceholder: 'Select...'
+              })
+          }))
         .end();
     }
   ]
