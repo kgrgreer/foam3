@@ -197,6 +197,8 @@ function build_jar {
     if [ "${RUN_JAR}" -eq 1 ] || [ "$TEST" -eq 1 ]; then
         cp -r deploy/bin/* "${NANOPAY_HOME}/bin/"
         cp -r target/lib/* "${NANOPAY_HOME}/lib/"
+
+        export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
     fi
 }
 
@@ -356,8 +358,6 @@ function setenv {
     elif [[ $OSTYPE =~ $LINUXOS ]]; then
       IS_LINUX=1
     fi
-
-    export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
 
     export PROJECT_HOME="$( cd "$(dirname "$0")" ; pwd -P )"
 
