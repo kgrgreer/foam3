@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
@@ -95,6 +96,13 @@ foam.CLASS({
         suggestedUserTransactionInfo.setAnnualTransactionAmount(businessOnboarding.getAnnualTransactionAmount());
         suggestedUserTransactionInfo.setAnnualVolume(businessOnboarding.getAnnualVolume());
         suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
+
+        // If user enters the other transaction purpose
+        if ( businessOnboarding.getOtherTransactionPurpose().equals("Others") &&
+          ! SafetyUtil.isEmpty(businessOnboarding.getOtherTransactionPurpose()) ) {
+          suggestedUserTransactionInfo.setOtherTransactionPurpose(businessOnboarding.getOtherTransactionPurpose());
+        }
+
         business.setTargetCustomers(businessOnboarding.getTargetCustomers());
         business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
