@@ -401,7 +401,7 @@ foam.CLASS({
     // FIXME: We need to give a link to the Dual Party Agreement
     {
       class: 'Boolean',
-      name: 'TermsAgreement',
+      name: 'dualPartyAgreement',
       section: 'personalInformationSection',
       label: '',
       label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
