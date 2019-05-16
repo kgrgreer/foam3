@@ -534,7 +534,6 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
   'net.nanopay.meter.compliance.dowJones.DowJonesResponseBody',
   'net.nanopay.meter.compliance.dowJones.BeneficialOwnerSanctionValidator',
-  'net.nanopay.meter.compliance.dowJones.BeneficialOwnerOnboarding',
   'net.nanopay.meter.compliance.dowJones.ClientDowJonesService',
   'net.nanopay.meter.compliance.dowJones.DowJonesCall',
   'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
