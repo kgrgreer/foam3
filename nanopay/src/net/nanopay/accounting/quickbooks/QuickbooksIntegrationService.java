@@ -212,7 +212,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       }
 
     } catch ( Exception e ) {
-      saveResult(x, "singleInvoiceSync", errorHandler(e));
+      return saveResult(x, "singleInvoiceSync", errorHandler(e));
     }
 
     return saveResult(x, "singleInvoiceSync", new ResultResponse.Builder(x)

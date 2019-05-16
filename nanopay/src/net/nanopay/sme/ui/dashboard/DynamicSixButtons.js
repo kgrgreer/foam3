@@ -282,11 +282,9 @@ foam.CLASS({
         if ( this.bankAction.completed ) {
           this.notify(this.SINGULAR_BANK, 'warning');
         } else {
-          this.stack.push({
-            class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-            usdAvailable: true,
-            cadAvailable: true
-          });
+          this.menuDAO
+            .find('sme.main.banking')
+            .then((menu) => menu.launch());
         }
       }
     },
