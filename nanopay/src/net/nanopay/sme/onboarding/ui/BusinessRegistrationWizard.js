@@ -381,11 +381,19 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! transactionInfo.annualRevenue ) {
-        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
-        return false;
-      }
+     // NOTE: AFX REMOVED FOR MVP RELEASE
+      // if ( ! transactionInfo.annualRevenue ) {
+      //   this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
+      //   return false;
+      // }
 
+      if ( transactionInfo.internationalPayments ) {
+        if ( ! transactionInfo.annualTransactionAmount ) {
+          this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
+          return false;
+        }
+      }
+      
       if ( ! transactionInfo.annualDomesticTransactionAmount ) {
         this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
         return false;
