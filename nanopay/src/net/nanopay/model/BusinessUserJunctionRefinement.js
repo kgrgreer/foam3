@@ -136,14 +136,14 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       javaCode: `
-        // Temporarily prohibit businesses based in Quebec.
+        // Temporarily prohibit signing officers living in Quebec.
         DAO localUserDAO = (DAO) x.get("localUserDAO");
         User signingOfficer = (User) localUserDAO.inX(x).find(getSourceId());
 
         if ( signingOfficer != null ) {
-          Address businessAddress = signingOfficer.getBusinessAddress();
+          Address address = signingOfficer.getAddress();
 
-          if ( businessAddress != null && SafetyUtil.equals(businessAddress.getRegionId(), "QC") ) {
+          if ( address != null && SafetyUtil.equals(address.getRegionId(), "QC") ) {
             throw new IllegalStateException("Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.");
           }
         }
