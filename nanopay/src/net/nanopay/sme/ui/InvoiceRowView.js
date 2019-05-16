@@ -196,11 +196,10 @@ foam.CLASS({
         currencyId: this.data.destinationCurrency
       });
       let responseObj = await this.canReceiveCurrencyDAO.put(request);
-        if ( ! responseObj.response ) {
-          console.log(responseObj);
-          this.ctrl.notify(responseObj.message, 'error');
-          return;
-        }
+      if ( ! responseObj.response ) {
+        this.ctrl.notify(responseObj.message, 'error');
+        return;
+      }
       let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(this.data);
       if ( updatedInvoice === null || updatedInvoice === undefined ) return;
       this.stack.push({
