@@ -276,6 +276,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitState' },
   { name: 'net/nanopay/tx/FailedTransactionNotification' },
+  { name: 'net/nanopay/tx/DebtTransaction' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },

@@ -273,6 +273,8 @@ var classes = [
   'net.nanopay.tx.KotakTransactionPlanDAO',
   'net.nanopay.tx.NanopayFXTransactionPlanDAO',
   'net.nanopay.tx.AbliiTransactionDAO',
+  'net.nanopay.tx.DebtablePlanDAO',
+  'net.nanopay.tx.DebtTransaction',
   'net.nanopay.tx.NanopayTransactionFeeDAO',
   'net.nanopay.tx.TestTransaction',
   'net.nanopay.tx.AbliiTransaction',

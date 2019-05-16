@@ -16,6 +16,7 @@ foam.CLASS({
     'net.nanopay.account.Debtable',
     'net.nanopay.account.DebtAccount',
     'net.nanopay.tx.model.Transaction',
+    'foam.nanos.logger.Logger',
   ],
 
   methods: [
