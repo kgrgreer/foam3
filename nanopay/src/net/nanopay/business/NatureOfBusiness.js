@@ -24,8 +24,10 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'predicate',
       expression: function(parentChoice) {
+        parentChoice && parentChoice.describe();
+
         return parentChoice ?
-          this.EQ(this.BusinessSector.PARENT, parentChoice) :
+          this.EQ(this.BusinessSector.PARENT, parentChoice.id) :
           this.FALSE;
       }
     },
@@ -58,7 +60,7 @@ foam.CLASS({
             data$: this.data$,
             sections: [
               {
-                heading: 'Industries',
+                heading: 'Specific Industries',
                 dao: this.filteredDAO$proxy
               }
             ],
