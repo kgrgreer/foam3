@@ -4,11 +4,32 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   requires: [
     'foam.u2.detail.SectionView',
-    'foam.u2.layout.Cols'
+    'foam.u2.layout.Cols',
+    'foam.u2.layout.Rows'
+
   ],
   imports: [
     'data as fobj'
   ],
+  css: `
+    ^ {
+      background-color: white;
+    }
+
+    ^joanne {
+      width: 128px;
+      height: 128px;
+      border-radius: 64px;
+    }
+
+    ^help {
+      font-family: Lato;
+      font-size: 24px;
+      line-height: 1.5;
+      text-align: center;
+      color: #525455;
+    }
+  `,
   properties: [
     {
       class: 'FObjectProperty',
@@ -19,18 +40,27 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this
+      this.addClass(this.myClass())
+        .start(this.Rows)
         .start(this.Cols, {
           defaultChildStyle: {
             flex: 1,
             basis: 0
           }
         })
-          .start('h1')
-            .add(this.data$.dot('help'))
+          .start(this.Rows, {
+            defaultChildStyle: {
+              'justify-content' : 'center'
+            }
+          }).style({ 'justify-content': 'center'})
+            .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/joanne@2x.jpg' }).addClass(this.myClass('joanne')).end()
+            .start('h1').addClass(this.myClass('help'))
+              .add(this.data$.dot('help'))
+            .end()
           .end()
           .tag(this.SectionView, { data: this.data })
-        .end();
+        .end()
+        .end()
     }
   ]
 });

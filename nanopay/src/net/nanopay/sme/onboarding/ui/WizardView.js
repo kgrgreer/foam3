@@ -26,16 +26,24 @@ foam.CLASS({
       }
     },
     {
+      name: 'progress',
+      expression: function(currentPage, numPages) {
+        if ( currentPage < 0 ) return 0;
+        if ( currentPage > numPages ) return 100;
+        return (currentPage / numPages) * 100;
+      },
+      view: { class: 'foam.u2.ProgressView' }
+    },
+    {
       name: 'sectionView',
       value: { class: 'net.nanopay.sme.onboarding.ui.WizardPageView' }
     }
   ],
   methods: [
     function initE() {
-      this.add(this.slot(function(numPages, currentPage) {
-        // TODO: Use these values to render a progress bar.
-        return `${currentPage}/${numPages}`;
-      }));
+      this.startContext({ data: this })
+        .add(this.PROGRESS)
+      .endContext();
       this.SUPER();
     }
   ]
