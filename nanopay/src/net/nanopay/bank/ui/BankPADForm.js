@@ -166,6 +166,7 @@ foam.CLASS({
         this.viewData.agree2 = this.TC2;
         this.viewData.agree3 = this.TC3;
       }
+      this.viewData.user.address = this.user.businessAddress;
 
       this.addClass(this.myClass())
         .start('p').add(this.LABEL_LEGAL_NAME).addClass(this.myClass('section-header')).end()
@@ -192,7 +193,7 @@ foam.CLASS({
 
         .tag({
           class: 'net.nanopay.sme.ui.AddressView',
-          data: this.user.businessAddress
+          data: this.viewData.user.address
         })
 
         .start().addClass(this.myClass('divider')).end()

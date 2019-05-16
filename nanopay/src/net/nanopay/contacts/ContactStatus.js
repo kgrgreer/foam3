@@ -2,9 +2,9 @@ foam.ENUM({
   package: 'net.nanopay.contacts',
   name: 'ContactStatus',
 
-  documentation: `
-    Keeps track of the different states a contact can be in with respect to
-    whether the real user has signed up yet or not.
+  documentation: `The base model for tracking the registration status of a 
+    Contact.  A Contact is defined as a person who is not registered on the 
+    platform, but can still receive invoices from platform users.
   `,
 
   values: [
