@@ -71,11 +71,11 @@ foam.CLASS({
           SafetyUtil.equals(business.getCompliance(), ComplianceStatus.PASSED) &&
           business.getIsPublic();
 
-        if ( ((AuthService)x.get("auth")).check(x, "currency.read.USD") ) {
+        if ( ((AuthService) x.get("auth")).check(x, "currency.read.USD") ) {
           return rtn;
         }
 
-        ArraySink bob = (ArraySink)((DAO)x.get("accountDAO")).where(
+        ArraySink results = (ArraySink) ((DAO) x.get("accountDAO")).where(
           AND(
             EQ(Account.OWNER, business.getId()),
             EQ(BankAccount.DENOMINATION, "USD"),
@@ -83,7 +83,7 @@ foam.CLASS({
           )
         ).select(new ArraySink());
 
-        return rtn && (bob.getArray().size() == 0);
+        return rtn && (results.getArray().size() == 0);
 
       `
     }
