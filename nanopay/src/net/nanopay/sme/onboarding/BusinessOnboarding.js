@@ -297,14 +297,6 @@ foam.CLASS({
       validateObj: function(signingOfficer, ownershipAbovePercent, amountOfOwners) {
         return signingOfficer && ownershipAbovePercent &&
           ! ( amountOfOwners >= 1 && amountOfOwners <= 4 ) ? 'Please select a value' : null;
-      },
-      postSet: function(_, n) {
-        return [
-          this.owner1,
-          this.owner2,
-          this.owner3,
-          this.owner4
-        ].slice(0, n);
       }
     },
     {
@@ -366,10 +358,33 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       name: 'beneficialOwners',
-      of: 'foam.nanos.auth.User',
+      of: 'net.nanopay.model.BeneficialOwner',
+      hidden: true
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      of: 'net.nanopay.model.BeneficialOwner',
+      name: 'beneficialOwnersTable',
+      flags: ['web'],
       section: 'beneficialOwnersSection',
-      visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
-        return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      expression: function(beneficialOwners) {
+        var dao = foam.dao.EasyDAO.create({
+          of: 'net.nanopay.model.BeneficialOwner',
+          seqNo: true,
+          daoType: 'MDAO'
+        });
+        beneficialOwners.forEach((o) => dao.put(o));
+        return dao;
+      },
+      view: {
+        class: 'foam.u2.view.TableView',
+        editColumnsEnabled: false,
+        disableUserSelection: true,
+        columns: [
+          'firstName',
+          'lastName',
+          'jobTitle'
+        ]
       }
     },
     {
@@ -395,6 +410,27 @@ foam.CLASS({
       }
     }
   ].flat(),
+
+  reactions: [
+    ['', 'amountOfOwners', 'updateBeneficialOwners']
+  ].concat([1, 2, 3, 4].map((i) => [
+    `owner${i}`, 'propertyChange', 'updateBeneficialOwners'
+  ])),
+
+  listeners: [
+    {
+      name: 'updateBeneficialOwners',
+      isFramed: true,
+      code: function() {
+        this.beneficialOwners = [
+          this.owner1,
+          this.owner2,
+          this.owner3,
+          this.owner4
+        ].slice(0, this.amountOfOwners);
+      }
+    }
+  ]
 
   // actions: [
   //   async function save(X){
@@ -438,4 +474,4 @@ foam.CLASS({
   //     var business = await X.businessDAO.put(business);
   //   }
   // ]
-}); 
+});
