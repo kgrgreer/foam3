@@ -9,6 +9,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
+    'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
   ],
 
@@ -348,16 +349,18 @@ foam.CLASS({
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',
-      of: 'foam.nanos.auth.User',
+      of: 'net.nanopay.model.BeneficialOwner',
       name: `owner${i}`,
-      section: `owner${1}Section`,
+      section: `owner${i}Section`,
       view: {
-        class: 'foam.u2.detail.SectionedDetailView'
+        class: 'foam.u2.detail.SectionView',
+        sectionName: 'requiredSection',
+        showTitle: false
       },
       label: '',
       flags: ['web'],
       factory: function() {
-        return this.User.create();
+        return this.BeneficialOwner.create();
       }
     })),
     {
