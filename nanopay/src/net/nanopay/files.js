@@ -939,6 +939,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 
   // business
+  { name: 'net/nanopay/business/NatureOfBusiness' },
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
 
   // approval
