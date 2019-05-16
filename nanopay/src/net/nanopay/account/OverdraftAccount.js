@@ -13,7 +13,8 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.DebtAccount',
-  ]
+    'foam.dao.DAO',
+  ],
 
   properties: [
     {
@@ -35,7 +36,7 @@ foam.CLASS({
       }
 
     }
-  ]
+  ],
 
   methods: [
     {
@@ -50,7 +51,7 @@ foam.CLASS({
       javaCode: `
         // lets think about finding total Debts of all debt accounts
         DebtAccount da = ((DebtAccount)(DAO) x.get("debtAccountDAO").find(getDebtAccount()));
-        return ((Long) da.findBalance(x) + da.get(limit));
+        return ((Long) da.findBalance(x)) + da.get(limit);
       `
     },
     {
@@ -71,6 +72,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      long bal = balance == null ? 0L : balance.getBalance();
+
         if ( amount < 0 &&
              -amount > bal+ checkDebtLimit(x) ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
