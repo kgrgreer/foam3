@@ -48,7 +48,7 @@ foam.CLASS({
               .call(function() {
                 this
                   .start()
-                  .addClass((menu.label).replace(/[^\w]/g,'').toLowerCase())
+                    .attrs({ name: (menu.label).replace(/[^\w]/g,'').toLowerCase() })
                     .start('img')
                       .addClass('icon')
                       .attr('src', menu.icon)
