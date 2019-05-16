@@ -232,14 +232,34 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_AMOUNT.clone().copyFrom({
       section: 'transactionDetailsSection',
-      documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          '$0 to $50,000',
+          '$50,001 to $100,000',
+          '$100,001 to $500,000',
+          '$500,001 to $1,000,000',
+          'Over $1,000,000'
+        ]
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
-      documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Please select',
+        choices: [
+          '$0 to $50,000',
+          '$50,001 to $100,000',
+          '$100,001 to $500,000',
+          '$500,001 to $1,000,000',
+          'Over $1,000,000'
+        ]
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
