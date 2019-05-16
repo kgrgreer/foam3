@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: ``,
 
   javaImports: [
+    'net.nanopay.account.Account',
+    'net.nanopay.account.Debtable',
     'net.nanopay.tx.model.Transaction',
     'java.util.List',
     'java.util.ArrayList',
@@ -32,9 +34,7 @@ foam.CLASS({
         List transfers = new ArrayList();
         Long amount = getTotal();
 
-        // TODO: Detable d = (Detable) getDestinationAccount();
-        OverdraftAccount d = (OverdraftAccount) getDestinationAccount();
-        Long balance = d.findBalance(x);
+        Long balance = getDestinationAccount().findBalance(x);
         if ( balance < amount ) {
           Long delta = amount;
           if ( balance > 0 ) {
@@ -43,7 +43,7 @@ foam.CLASS({
           transfers.add(new Transfer.Builder(x).setAccount(getSourceAccount()).setAmount(-delta).build());
           transfers.add(new Transfer.Builder(x).setAccount(getDestinationAccount()).setAmount(delta).build());
 
-          DebtAccount debtAccount = DebtAccount.findDebtAccount(x, /*owner*/ d, /*creditor*/ d.findBackingAccount(x));
+          DebtAccount debtAccount = DebtAccount.findDebtAccount(x, /*owner*/ getDestinationAccount(), /*creditor*/ d.findCreditorAccount(x));
           transfers.add(new Transfer.Builder(x).setAccount(debtAccount.setAmount(-delta).build());
         }
         return (Transfer[]) all.toArray(new Transfer[0]);

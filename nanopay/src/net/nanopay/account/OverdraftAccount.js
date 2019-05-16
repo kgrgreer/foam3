@@ -8,7 +8,7 @@ foam.CLASS({
   documentation: 'An OverDraft Account which can incur debt.  When a transfer exceeds the balance, the funds can be borrowed from the Backing Account. The borrowed funds, lender, terms, are captured in a DebtAccount.',
 
   implements: [
-    'net.nanopay.account.Detable'
+    'net.nanopay.account.Debtable'
   ],
 
   javaImports: [
@@ -34,7 +34,7 @@ foam.CLASS({
     },
     {
       // part of Accountification 
-      name: 'backingAccount',
+      name: 'creditorAccount',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       documentation: 'The account to forward payment request to.',
@@ -47,7 +47,7 @@ foam.CLASS({
           ),
           placeholder: '--',
           objToChoice: function(lenderAccount) {
-            return [backingAccount.id, backingAccount.name];
+            return [creditorAccount.id, creditorAccount.name];
           }
         });
       }
