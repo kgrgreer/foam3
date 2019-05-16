@@ -119,12 +119,7 @@ foam.CLASS({
       name: 'userId',
       section: 'adminReferenceSection'
     },
-    {
-      class: 'Boolean',
-      name: 'signingOfficer',
-      documentation: `States if the user is the signing officer capable of
-        acting as the business and providing additional information on behalf of the business.
-      `,
+    foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
       view: {
@@ -134,7 +129,7 @@ foam.CLASS({
           [false, 'No, I am not'],
         ],
       },
-    },
+    }),
     foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
       section: 'personalInformationSection'
     }),
