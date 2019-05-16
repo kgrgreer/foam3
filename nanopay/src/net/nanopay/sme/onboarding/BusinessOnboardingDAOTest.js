@@ -105,6 +105,7 @@ foam.CLASS({
         onboarding.setAnnualTransactionAmount("9656000");
         onboarding.setAnnualVolume("88560");
         onboarding.setTransactionPurpose("Pay vendors");
+        onboarding.setTargetCustomers("Small manufacturing businesses in North America");
         onboarding.setOwnershipAbovePercent(false);
         try {
           onboardService.put_(x, onboarding);

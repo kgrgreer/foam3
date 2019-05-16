@@ -234,6 +234,16 @@ foam.CLASS({
         return signingOfficer && transactionPurpose == 'Other' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
+    foam.nanos.auth.User.TARGET_CUSTOMERS.clone().copyFrom({
+      section: 'transactionDetailsSection',
+      view: {
+        class: 'foam.u2.tag.TextArea',
+        placeholder: 'Example: Small manufacturing businesses in North America'
+      },
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      }
+    }),
     {
       class: 'Boolean',
       name: 'ownershipAbovePercent',

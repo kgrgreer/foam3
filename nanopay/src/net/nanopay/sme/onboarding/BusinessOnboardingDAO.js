@@ -91,6 +91,7 @@ foam.CLASS({
         suggestedUserTransactionInfo.setAnnualTransactionAmount(businessOnboarding.getAnnualTransactionAmount());
         suggestedUserTransactionInfo.setAnnualVolume(businessOnboarding.getAnnualVolume());
         suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
+        business.setTargetCustomers(businessOnboarding.getTargetCustomers());
         business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
         // * Step 7: Percent of ownership
