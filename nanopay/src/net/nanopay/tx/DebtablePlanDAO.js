@@ -23,13 +23,13 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       Logger logger = (Logger) x.get("logger");
-      TransactionQuote quote = (TransactionQuote) obj;
-      Transaction request = quote.getRequestTransaction();
+      TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
+      Transaction plan = quote.getPlan();
 
       logger.debug(this.getClass().getSimpleName(), "put", quote);
 
-      Account sourceAccount = request.findSourceAccount(x);
-      Account destinationAccount = request.findDestinationAccount(x);
+      Account sourceAccount = plan.findSourceAccount(x);
+      Account destinationAccount = plan.findDestinationAccount(x);
 
       if ( sourceAccount instanceof Debtable ) {
         DebtAccount debtAccount = ((Debtable) sourceAccount).findDebtAccount(x);
@@ -38,10 +38,12 @@ foam.CLASS({
         Transaction d = new DebtTransaction.Builder(x)
           .setSourceAccount(creditorAccount)
           .setDestinationAccount(sourceAccount)
+          .setQuoted(true)
           .build();
-        d.setNext(request);
-        quote.setRequestTransaction(d);
+        d.addNext(plan);
+        quote.setPlan(d);
       }
+      return quote;
       `
     }
   ]
