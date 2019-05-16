@@ -13,6 +13,13 @@ foam.CLASS({
   imports: [
     'businessSectorDAO'
   ],
+
+  css: `
+    ^ .foam-u2-view-RichChoiceView {
+      width: 248px;
+    }
+  `,
+
   properties: [
     {
       class: 'Reference',
@@ -42,6 +49,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this
+        .addClass(this.myClass())
         .start(this.Cols)
           .tag(this.RichChoiceView, {
             data$: this.parentChoice$,
