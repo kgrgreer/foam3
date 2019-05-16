@@ -34,12 +34,12 @@ foam.CLASS({
 
       if ( sourceAccount instanceof Debtable ) {
         DebtAccount debtAccount = ((Debtable) sourceAccount).findDebtAccount(x);
-        Account creditor = debtAccount.findCreditorAccount(x);
+        Account creditorAccount = debtAccount.findCreditorAccount(x);
 
         Transaction d = new DebtTransaction.Builder(x)
-          .setSourceAccount(creditorAccount)
-          .setDestinationAccount(sourceAccount)
-          .setQuoted(true)
+          .setSourceAccount(creditorAccount.getId())
+          .setDestinationAccount(sourceAccount.getId())
+          .setIsQuoted(true)
           .build();
         d.addNext(plan);
         quote.setPlan(d);
