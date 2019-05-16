@@ -30,12 +30,11 @@ foam.CLASS({
             )
           ),
           placeholder: '--',
-          objToChoice: function(lenderAccount) {
-            return [debtorAccount.id, debtorAccount.name];
+          objToChoice: function(debtAccount) {
+            return [debtAccount.id, debtAccount.name];
           }
         });
       }
-
     }
   ],
 
