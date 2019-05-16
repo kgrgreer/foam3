@@ -20,7 +20,6 @@ foam.CLASS({
     'contactDAO',
     'ctrl',
     'fxService',
-    'logger',
     'menuDAO',
     'notificationDAO',
     'notify',
@@ -88,9 +87,6 @@ foam.CLASS({
     }
     ^ .exitContainer {
       display: flex;
-    }
-    ^ .plainAction:last-child {
-      margin-right: 25px !important;
     }
     ^ .net-nanopay-sme-ui-InfoMessageContainer {
       font-size: 14px;
@@ -375,7 +371,7 @@ foam.CLASS({
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
       } catch (error) {
-        this.logger.error('@SendRequestMoney (Invoice put): ' + error.message);
+        console.error('@SendRequestMoney (Invoice put): ' + error.message);
         this.notify(this.INVOICE_ERROR + this.type, 'error');
         this.isLoading = false;
         return;
@@ -390,7 +386,7 @@ foam.CLASS({
           try {
             await this.transactionDAO.put(transaction);
           } catch (error) {
-            this.logger.error('@SendRequestMoney (Transaction put): ' + error.message);
+            console.error('@SendRequestMoney (Transaction put): ' + error.message);
             this.notify(this.TRANSACTION_ERROR + this.type, 'error');
             this.isLoading = false;
             return;
@@ -403,7 +399,7 @@ foam.CLASS({
             transaction.isQuoted = true;
             await this.transactionDAO.put(transaction);
           } catch ( error ) {
-            this.logger.error('@SendRequestMoney (Accept and put transaction quote): ' + error.message);
+            console.error('@SendRequestMoney (Accept and put transaction quote): ' + error.message);
             this.notify(this.TRANSACTION_ERROR + this.type, 'error');
             this.isLoading = false;
             return;
@@ -429,7 +425,7 @@ foam.CLASS({
         });
       } catch ( error ) {
         this.isLoading = false;
-        this.logger.error('@SendRequestMoney (Invoice/Integration Sync): ' + error.message);
+        console.error('@SendRequestMoney (Invoice/Integration Sync): ' + error.message);
         this.notify(this.TRANSACTION_ERROR + this.type, 'error');
         return;
       }
@@ -446,13 +442,12 @@ foam.CLASS({
           ? 'sme.main.invoices.payables'
           : 'sme.main.invoices.receivables');
       } catch (error) {
-        this.logger.error('@SendRequestMoney (Invoice put after quote transaction put): ' + error.message);
+        console.error('@SendRequestMoney (Invoice put after quote transaction put): ' + error.message);
         this.notify(this.SAVE_DRAFT_ERROR + this.type, 'error');
         return;
       }
     },
     async function populatePayerIdOrPayeeId() {
-      if ( this.invoice.payerId && this.invoice.payeeId ) return;
       try {
         var contact = await this.user.contacts.find(this.invoice.contactId);
         if ( this.isPayable ) {
@@ -461,7 +456,8 @@ foam.CLASS({
           this.invoice.payerId = contact.businessId || contact.id;
         }
       } catch (err) {
-        this.logger.error('@SendRequestMoney (Populate invoice fields): ' + err.message);
+        if ( this.invoice.payerId && this.invoice.payeeId && err.id == 'foam.nanos.auth.AuthorizationException' ) return;
+        console.error('@SendRequestMoney (Populate invoice fields): ' + err.message);
         this.notify(this.CONTACT_NOT_FOUND, 'error');
       }
     }

@@ -21,6 +21,18 @@ foam.CLASS({
       name: 'statusCode'
     },
     {
+      class: 'String',
+      name: 'requestJson',
+      view: {
+        class: 'io.c9.ace.Editor',
+        config: {
+          width: 600, height: 200,
+          mode: 'JSON',
+          isReadOnly: true
+        }
+      }
+    },
+    {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.ResponseError',
       name: 'errors'

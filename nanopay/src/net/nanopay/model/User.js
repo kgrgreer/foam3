@@ -548,7 +548,7 @@ foam.CLASS({
           static public User findUser(X x, long userId) {
               DAO bareUserDAO = (DAO) x.get("bareUserDAO");
               DAO contactDAO = (DAO) x.get("contactDAO");
-              DAO businessDAO = (DAO) x.get("businessDAO");
+              DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
               User user = null;
               Contact contact = null;
               try{
@@ -561,7 +561,7 @@ foam.CLASS({
                     user = contact;
                   }
                 } else if ( contact != null && contact.getBusinessId() > 0 ){
-                  user = (User) businessDAO.find(contact.getBusinessId());
+                  user = (User) localBusinessDAO.find(contact.getBusinessId());
                 } else {
                   user = (User) bareUserDAO.find(userId);
                 }

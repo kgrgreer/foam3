@@ -15,16 +15,17 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.dao.NullDAO',
     'foam.dao.PromisedDAO',
     'foam.mlang.sink.Count',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.auth.PublicBusinessInfo',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business'
   ],
 
   imports: [
-    'businessDAO',
+    'publicBusinessDAO',
     'ctrl',
     'notify',
     'publicUserDAO',
@@ -40,8 +41,8 @@ foam.CLASS({
     ^container {
       margin: 24px;
     }
-    ^ .net-nanopay-ui-ActionView-cancel,
-    ^ .net-nanopay-ui-ActionView-cancel:hover {
+    ^ .foam-u2-ActionView-cancel,
+    ^ .foam-u2-ActionView-cancel:hover {
       background: none;
       color: #525455;
       border: none;
@@ -196,18 +197,16 @@ foam.CLASS({
       `,
       expression: function(filter) {
         if ( filter.length < 2 ) {
-          return foam.dao.NullDAO.create({ of: net.nanopay.model.Business });
+          return this.NullDAO.create({ of: this.PublicBusinessInfo });
         } else {
           return this.PromisedDAO.create({
             promise: this.user.contacts
               .select(this.MAP(this.Contact.BUSINESS_ID))
               .then((mapSink) => {
-                var dao = this.businessDAO
+                var dao = this.publicBusinessDAO
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
-                      this.EQ(this.Business.STATUS, this.AccountStatus.ACTIVE),
-                      this.EQ(this.Business.COMPLIANCE, this.ComplianceStatus.PASSED),
                       this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
                       this.IN(this.Business.ID, mapSink.delegate.array)
                     )
@@ -232,18 +231,16 @@ foam.CLASS({
       `,
       expression: function(filter) {
         if ( filter.length < 2 ) {
-          return foam.dao.NullDAO.create({ of: net.nanopay.model.Business });
+          return this.NullDAO.create({ of: net.nanopay.auth.PublicBusinessInfo });
         } else {
           return this.PromisedDAO.create({
             promise: this.user.contacts
               .select(this.MAP(this.Contact.BUSINESS_ID))
               .then((mapSink) => {
-                var dao = this.businessDAO
+                var dao = this.publicBusinessDAO
                   .where(
                     this.AND(
                       this.NEQ(this.Business.ID, this.user.id),
-                      this.EQ(this.Business.STATUS, this.AccountStatus.ACTIVE),
-                      this.EQ(this.Business.COMPLIANCE, this.ComplianceStatus.PASSED),
                       this.CONTAINS_IC(this.Business.ORGANIZATION, filter),
                       this.NOT(this.IN(this.Business.ID, mapSink.delegate.array))
                     )

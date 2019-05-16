@@ -43,3 +43,26 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'net.nanopay.meter.compliance',
+  name: 'BeneficialOwnerComplianceRefine',
+  refines: 'net.nanopay.model.BeneficialOwner',
+
+  implements: [
+    'net.nanopay.meter.compliance.ComplianceAware'
+  ],
+
+  properties: [
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.ComplianceStatus',
+      name: 'compliance',
+      documentation: 'Beneficial owner compliance status.',
+      tableCellFormatter: function(status) {
+        return status.label;
+      },
+      permissionRequired: true
+    }
+  ]
+});

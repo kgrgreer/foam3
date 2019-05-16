@@ -14,12 +14,13 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
+    'foam.lib.json.OutputterMode',
     'foam.nanos.logger.Logger',
     'java.util.Arrays',
     'java.util.Base64',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
-    'net.nanopay.meter.compliance.secureFact.lev.model.LEVResult',
-    'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
+    'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
     'org.apache.http.entity.StringEntity',
@@ -54,7 +55,7 @@ foam.CLASS({
   methods: [
     {
       name: 'sidniVerify',
-      type: 'net.nanopay.meter.compliance.secureFact.sidni.model.SIDniResponse',
+      type: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
       args: [
         {
           name: 'x',
@@ -79,7 +80,7 @@ foam.CLASS({
     },
     {
       name: 'levSearch',
-      type: 'net.nanopay.meter.compliance.secureFact.lev.model.LEVResponse',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
       args: [
         {
           name: 'x',
@@ -96,12 +97,13 @@ foam.CLASS({
         request.setAuthKey(getLevApiKey());
 
         LEVResponse response = (LEVResponse) sendRequest(x, request, LEVResponse.class);
-        response.setEntityName(business.getBusinessName());
+        response.setEntityName(business.getOrganization());
         response.setEntityId(business.getId());
         // Aggregate close matches
+        String region = business.getAddress().getRegionId();
         LEVResult[] results = response.getResults();
         long closeMatchCounter = Arrays.stream(results).filter(
-          o -> o.getCloseMatch()
+          o -> o.getCloseMatch() && o.getJurisdiction().equals(region)
         ).count();
         response.setCloseMatches(closeMatchCounter + "/" + results.length);
         return (LEVResponse)
@@ -131,11 +133,13 @@ foam.CLASS({
         HttpResponse httpResponse = null;
 
         try {
-          String basicAuth = request.getAuthKey() + ":";
-          StringEntity entity = new StringEntity(
-            new Outputter().setOutputClassNames(false).stringify(request));
+          Outputter jsonOutputter =
+            new Outputter(OutputterMode.NETWORK).setOutputClassNames(false);
+          String requestJson = jsonOutputter.stringify(request);
+          StringEntity entity = new StringEntity(requestJson);
           entity.setContentType("application/json");
 
+          String basicAuth = request.getAuthKey() + ":";
           httpPost.addHeader("Content-type", "application/json");
           httpPost.addHeader("Authorization", "Basic " +
             Base64.getEncoder().encodeToString(basicAuth.getBytes()));
@@ -150,6 +154,7 @@ foam.CLASS({
           jsonParser.setX(x);
           SecurefactResponse response = (SecurefactResponse)
             jsonParser.parseString(responseJson, responseClass);
+          response.setRequestJson(requestJson);
           response.setStatusCode(httpResponse.getStatusLine().getStatusCode());
           return response;
         } catch(Exception e) {

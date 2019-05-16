@@ -98,12 +98,10 @@ foam.CLASS({
                   view: {
                     class: 'foam.u2.view.ChoiceView',
                     placeholder: '- Please select -',
-                    dao: this.isPassport // Passports from any country can be used.
-                      ? this.countryDAO
-                      : this.countryDAO.where(this.data.OR(
-                        this.data.EQ(this.Country.NAME, 'Canada'),
-                        this.data.EQ(this.Country.NAME, 'USA')
-                      )),
+                    dao: this.countryDAO.where(this.data.OR(
+                      this.data.EQ(this.Country.NAME, 'Canada'),
+                      this.data.EQ(this.Country.NAME, 'USA')
+                    )),
                     objToChoice: function(a) {
                       return [a.id, a.name];
                     }

@@ -243,7 +243,7 @@ foam.CLASS({
     {
       name: 'payeeListView',
       postSet: function(oldValue, newValue) {
-        this.payeeList = newValue.id;
+        this.payeeList = newValue;
       },
       view: function(_, X) {
         return {
