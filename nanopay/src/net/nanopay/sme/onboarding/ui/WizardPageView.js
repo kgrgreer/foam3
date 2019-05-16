@@ -1,19 +1,16 @@
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardPageView',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
   requires: [
     'foam.u2.detail.SectionView',
     'foam.u2.layout.Cols'
-  ],
-  imports: [
-    'data as fobj'
   ],
   properties: [
     {
       class: 'FObjectProperty',
       of: 'foam.layout.Section',
-      name: 'data'
+      name: 'section'
     },
   ],
   methods: [
@@ -29,7 +26,10 @@ foam.CLASS({
           .start('h1')
             .add(this.data$.dot('help'))
           .end()
-          .tag(this.SectionView, { data: this.data })
+          .tag(this.SectionView, {
+             section$: this.section$,
+             data$: this.data$
+          })
         .end();
     }
   ]
