@@ -234,7 +234,7 @@ foam.CLASS({
       documentation: 'The general industry that the business is a part of.',
       factory: function() {
         this.businessSectorDAO.find(this.viewData.user.businessSectorId).then((businessSector) => {
-          this.industryId = businessSector.parent;
+          if ( businessSector != null ) this.industryId = businessSector.parent;
         });
         return null;
       },
