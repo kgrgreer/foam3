@@ -23,8 +23,12 @@ foam.CLASS({
     }
 
     ^help {
+      width: 331px;
+      margin-top: 36px;
+
       font-family: Lato;
       font-size: 24px;
+      font-weight: normal;
       line-height: 1.5;
       text-align: center;
       color: #525455;
@@ -41,7 +45,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this.addClass(this.myClass())
-        .start(this.Rows)
         .start(this.Cols, {
           defaultChildStyle: {
             flex: 1,
@@ -50,6 +53,7 @@ foam.CLASS({
         })
           .start(this.Rows, {
             defaultChildStyle: {
+              'display' : 'flex',
               'justify-content' : 'center'
             }
           }).style({ 'justify-content': 'center'})
@@ -59,7 +63,6 @@ foam.CLASS({
             .end()
           .end()
           .tag(this.SectionView, { data: this.data })
-        .end()
         .end()
     }
   ]
