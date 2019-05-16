@@ -169,13 +169,21 @@ foam.CLASS({
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
+    // FIXME: We need to give a link to the Dual Party Agreement
+    {
+      class: 'Boolean',
+      name: 'dualPartyAgreement',
+      section: 'personalInformationSection',
+      label: '',
+      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      }
+    },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'homeAddressSection',
       view: {
         class: 'net.nanopay.sme.ui.AddressView'
-      },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     {
@@ -183,9 +191,6 @@ foam.CLASS({
       name: 'signingOfficerEmail',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
-      }
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
@@ -193,31 +198,22 @@ foam.CLASS({
         class: 'net.nanopay.sme.ui.AddressView',
         withoutCountrySelection: true
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
     }),
     foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
-      section: 'businessDetailsSection',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
+      section: 'businessDetailsSection'
     }),
     {
       name: 'businessIndustryId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
       label: 'Nature of business (NAIC code)',
-      view: { class: 'net.nanopay.business.NatureOfBusiness' },
+      view: { class: 'net.nanopay.business.NatureOfBusiness' }
     },
 
     foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
-      label: 'Primary source of funds',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
+      label: 'Primary source of funds'
     }),
     {
       class: 'Boolean',
@@ -230,42 +226,30 @@ foam.CLASS({
           [true, 'Yes'],
           [false, 'No'],
         ],
-      },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
       section: 'businessDetailsSection',
-      visibilityExpression: function(signingOfficer, operatingUnderDifferentName) {
-        return signingOfficer && operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(operatingUnderDifferentName) {
+        return operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_AMOUNT.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
-      visibilityExpression: function(signingOfficer, transactionPurpose) {
-        return signingOfficer && transactionPurpose == 'Other' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(transactionPurpose) {
+        return  transactionPurpose == 'Other' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
     {
@@ -280,9 +264,6 @@ foam.CLASS({
           [true, 'Yes, we have owners with 25% +']
         ],
       },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
     },
     {
       class: 'Long',
@@ -294,8 +275,8 @@ foam.CLASS({
         class: 'foam.u2.view.RadioView',
         choices: [ 1, 2, 3, 4 ],
       },
-      validateObj: function(signingOfficer, ownershipAbovePercent, amountOfOwners) {
-        return signingOfficer && ownershipAbovePercent &&
+      validateObj: function(ownershipAbovePercent, amountOfOwners) {
+        return ownershipAbovePercent &&
           ! ( amountOfOwners >= 1 && amountOfOwners <= 4 ) ? 'Please select a value' : null;
       }
     },
@@ -306,9 +287,6 @@ foam.CLASS({
       section: 'ownershipAmountSection',
       label: '',
       label2: 'I am one of these owners',
-      visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
-        return signingOfficer && ownershipAbovePercent? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      },
       postSet: function(_, n) {
         this.clearProperty('owner1');
         if ( ! n ) return;
@@ -328,16 +306,10 @@ foam.CLASS({
       class: 'String',
       name: 'principalType',
       section: 'personalOwnershipSection',
-      documentation: 'Change to option dropdown',
-      visibilityExpression: function(signingOfficer, userOwnsPercent) {
-        return signingOfficer && userOwnsPercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
+      documentation: 'Change to option dropdown'
     },
     foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
-      visibilityExpression: function(signingOfficer, userOwnsPercent) {
-        return signingOfficer && userOwnsPercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',
@@ -366,7 +338,7 @@ foam.CLASS({
       of: 'net.nanopay.model.BeneficialOwner',
       name: 'beneficialOwnersTable',
       flags: ['web'],
-      section: 'beneficialOwnersSection',
+      section: 'reviewOwnersSection',
       expression: function(beneficialOwners) {
         var dao = foam.dao.EasyDAO.create({
           of: 'net.nanopay.model.BeneficialOwner',
@@ -392,23 +364,8 @@ foam.CLASS({
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
       label: '',
-      label2: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.',
-      visibilityExpression: function(signingOfficer, ownershipAbovePercent) {
-        return signingOfficer && ownershipAbovePercent ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
+      label2: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.'
     },
-
-    // FIXME: We need to give a link to the Dual Party Agreement
-    {
-      class: 'Boolean',
-      name: 'dualPartyAgreement',
-      section: 'personalInformationSection',
-      label: '',
-      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
-    }
   ].flat(),
 
   reactions: [
