@@ -94,7 +94,7 @@ foam.CLASS({
         if ( firstName.length > 70 ) {
           return 'First name cannot exceed 70 characters.';
         }
-        if ( /\d/.test(this.firstName) ) {
+        if ( /\d/.test(firstName) ) {
           return 'First name cannot contain numbers';
         }
       }
@@ -105,7 +105,7 @@ foam.CLASS({
         if ( lastName.length > 70 ) {
           return 'Last name cannot exceed 70 characters.';
         }
-        if ( /\d/.test(this.lastName) ) {
+        if ( /\d/.test(lastName) ) {
           return 'Last name cannot contain numbers';
         } 
       }
