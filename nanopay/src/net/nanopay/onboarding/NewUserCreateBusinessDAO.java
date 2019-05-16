@@ -77,7 +77,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       if ( token == null ) {
         throw new RuntimeException("Unable to process user registration");
       }
-      
+
       Map<String, Object> params = (Map) token.getParameters();
 
       try {
@@ -86,7 +86,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
         clone.setProcessed(true);
         tokenDAO_.inX(sysContext).put(clone);
       } catch (Exception ignored) { }
-      
+
       // There can be different tokens with different parameters used.
       // When adding a user to a business, we'll have the group
       // and businessId parameters set, so check for those here.
@@ -121,35 +121,36 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             /* PROCESSING external users */
             user = (User) super.put_(sysContext, user);
           }
-            // Set up new connection between user and business
-            junction = new UserUserJunction();
-            junction.setSourceId(user.getId());
-            junction.setTargetId(business.getId());
 
-            String junctionGroup = business.getBusinessPermissionId() + "." + group;
-            junction.setGroup(junctionGroup);
+          // Set up new connection between user and business
+          junction = new UserUserJunction();
+          junction.setSourceId(user.getId());
+          junction.setTargetId(business.getId());
 
-            agentJunctionDAO_.inX(sysContext).put(junction);
-            
-            // Get a context with the Business in it so we can update the invitation.
-            X businessContext = Auth.sudo(sysContext, business);
+          String junctionGroup = business.getBusinessPermissionId() + "." + group;
+          junction.setGroup(junctionGroup);
 
-            // Update the invitation to mark that they joined.
-            Invitation invitation = (Invitation) invitationDAO_
-              .inX(businessContext)
-              .find(
-                AND(
-                  EQ(Invitation.CREATED_BY, businessId),
-                  EQ(Invitation.EMAIL, user.getEmail())
-                )
-              ).fclone();
-            invitation.setStatus(InvitationStatus.COMPLETED);
-            invitationDAO_.inX(businessContext).put(invitation);
+          agentJunctionDAO_.inX(sysContext).put(junction);
 
-            // Return here because we don't want to create a duplicate business
-            // with the same name. Instead, we just want to create(external)/update(internal) the user and
-            // add them to an existing business.
-            return user;
+          // Get a context with the Business in it so we can update the invitation.
+          X businessContext = Auth.sudo(sysContext, business);
+
+          // Update the invitation to mark that they joined.
+          Invitation invitation = (Invitation) invitationDAO_
+            .inX(businessContext)
+            .find(
+              AND(
+                EQ(Invitation.CREATED_BY, businessId),
+                EQ(Invitation.EMAIL, user.getEmail())
+              )
+            ).fclone();
+          invitation.setStatus(InvitationStatus.COMPLETED);
+          invitationDAO_.inX(businessContext).put(invitation);
+
+          // Return here because we don't want to create a duplicate business
+          // with the same name. Instead, we just want to create(external)/update(internal) the user and
+          // add them to an existing business.
+          return user;
         }
       }
     }
