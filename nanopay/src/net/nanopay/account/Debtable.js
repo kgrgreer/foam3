@@ -1,13 +1,13 @@
 foam.INTERFACE({
   package: 'net.nanopay.account',
   name: 'Debtable',
-  documentation: ` This account can have a debt, must implement the debtor/debtAccounts relationship and return many debtAccount`,
-  methods: [
+  documentation: ` This account can have a debt, must implement the debtor/debtAccount relationship and return a debtAccount`,
 
+  methods: [
     {
-      name: 'getDebtAccounts',
-      documentation: 'get My debtAccounts',
-      type: 'net.nanopay.account.DebtAccount[]',
+      name: 'getDebtAccount',
+      documentation: 'get My debtAccount',
+      type: 'net.nanopay.account.DebtAccount',
       args: [
         {
           name: 'x',
