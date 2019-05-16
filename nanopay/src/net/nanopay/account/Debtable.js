@@ -7,6 +7,11 @@ foam.INTERFACE({
     {
       name: 'findDebtAccount',
       documentation: 'get My debtAccount',
+      type: 'Long',
+    },
+    {
+      name: 'findDebtAccount',
+      documentation: 'get My debtAccount',
       type: 'net.nanopay.account.DebtAccount',
       args: [
         {
