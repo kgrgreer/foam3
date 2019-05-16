@@ -76,6 +76,7 @@ description = "nanopay"
 sourceCompatibility = "1.8"
 libsDirName = "lib"
 
+def genJavaDir = "build"
 def targetDir = "target"
 
 publishing {
@@ -147,7 +148,7 @@ task incrementalGenTask(type: IncrementalGenTask) {
     trees.matching{include "**/*.js"}.each { File f ->
         includeDirs.add(f)
     }
-    outputDir = file("$buildDir")
+    outputDir = file(genJavaDir)
     inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
 
@@ -159,7 +160,7 @@ task genJava(type: Exec) {
     onlyIf { 
         !tasks.incrementalGenTask.state.upToDate
     }
-    commandLine 'bash', './gen.sh', 'build'
+    commandLine 'bash', './gen.sh', genJavaDir
 }
 
 task packageFoam(type: NodeTask) {
@@ -252,7 +253,7 @@ task tarz(type: Tar) {
         from "target/lib"
     }
 
-    destinationDir file("target/package")
+    destinationDir = file("target/package")
     compression = Compression.GZIP
 }
 
