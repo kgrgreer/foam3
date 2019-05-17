@@ -14,6 +14,16 @@ foam.CLASS({
   css: `
     ^ {
       background-color: white;
+      height: 84%;
+    }
+
+    ^sections-container {
+      height: 100%;
+      align-items: center !important;
+    }
+
+    ^left-section {
+      padding-top: 
     }
 
     ^joanne {
@@ -50,13 +60,13 @@ foam.CLASS({
             flex: 1,
             basis: 0
           }
-        })
+        }).addClass(this.myClass('sections-container'))
           .start(this.Rows, {
             defaultChildStyle: {
               'display' : 'flex',
               'justify-content' : 'center'
             }
-          }).style({ 'justify-content': 'center'})
+          }).addClass(this.myClass('left-section'))
             .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/joanne@2x.jpg' }).addClass(this.myClass('joanne')).end()
             .start('h1').addClass(this.myClass('help'))
               .add(this.data$.dot('help'))
