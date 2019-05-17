@@ -7,6 +7,7 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 import foam.util.SecurityUtil;
 import net.nanopay.account.Account;
@@ -18,7 +19,6 @@ import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.tx.model.Transaction;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -251,10 +251,11 @@ public class IdentityMindRequestGenerator {
   }
 
   private static String getRemoteAddr(X x) {
-    HttpServletRequest request = x.get(HttpServletRequest.class);
-    if ( request != null ) {
-      return request.getRemoteAddr();
+    Session session = x.get(Session.class);
+    if ( session != null ) {
+      return session.getRemoteHost();
     }
+
     return null;
   }
 
