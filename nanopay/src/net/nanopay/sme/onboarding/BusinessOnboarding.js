@@ -195,9 +195,8 @@ foam.CLASS({
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
       view: {
-        class: 'net.nanopay.sme.ui.AddressView',
-        withoutCountrySelection: true
-      },
+        class: 'net.nanopay.sme.ui.AddressView'
+      }
     }),
     foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',

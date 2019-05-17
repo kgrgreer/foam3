@@ -192,7 +192,7 @@ foam.CLASS({
       factory: function() {
         return this.Phone.create();
       },
-      view: { class: 'foam.nanos.auth.PhoneDetailView' }
+      view: { class: 'foam.u2.detail.VerticalDetailView' }
     },
     {
       class: 'String',
