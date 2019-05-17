@@ -5,7 +5,7 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'findDebtAccount',
+      name: 'getDebtAccount',
       documentation: 'get My debtAccount',
       type: 'Long',
     },
