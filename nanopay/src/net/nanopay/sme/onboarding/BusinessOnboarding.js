@@ -68,17 +68,17 @@ foam.CLASS({
     {
       name: 'ownershipYesOrNoSection',
       title: 'Does your company have anyone that owns 25% or more of the business?',
-      help: `Great, almost done! In accordance with banking laws, we need to document 
+      help: `Great, almost done! In accordance with banking laws, we need to document
           the percentage of ownership of any individual with a 25% + stake in the company.`,
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'ownershipAmountSection',
       title: 'How many people own 25% or more of your company?',
-      help: `Great, almost done! In accordance with banking laws, we need to document 
+      help: `Great, almost done! In accordance with banking laws, we need to document
           the percentage of ownership of any individual with a 25% + stake in the company.`,
-      isAvailable: function (signingOfficer, ownershipAbovePercent) { 
-        return signingOfficer && ownershipAbovePercent 
+      isAvailable: function (signingOfficer, ownershipAbovePercent) {
+        return signingOfficer && ownershipAbovePercent
       }
     },
     {
@@ -112,7 +112,7 @@ foam.CLASS({
     {
       name: '2faSection',
       title: 'Protect your account against fraud with Two-factor authentication',
-      help: `Alright, it looks like that is all of the information we need! Last thing I’ll ask 
+      help: `Alright, it looks like that is all of the information we need! Last thing I’ll ask
           is that you enable two factor authentication. We want to make sure your account is safe!`
     }
   ].flat(),
@@ -130,6 +130,17 @@ foam.CLASS({
       name: 'userId',
       section: 'adminReferenceSection'
     },
+    {
+      class: 'String',
+      name: 'firstName',
+      section: 'adminReferenceSection'
+    },
+    {
+      class: 'String',
+      name: 'lastName',
+      section: 'adminReferenceSection'
+    },
+
     foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
@@ -142,7 +153,11 @@ foam.CLASS({
       },
     }),
     foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
-      section: 'personalInformationSection'
+      section: 'personalInformationSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'Chief Visionary Officer'
+      }
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection'
@@ -170,16 +185,14 @@ foam.CLASS({
       }
     }),
     // FIXME: We need to give a link to the Dual Party Agreement
-    {
-      class: 'Boolean',
-      name: 'dualPartyAgreement',
+    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
       label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
-    },
+    }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'homeAddressSection',
       view: {
@@ -189,20 +202,28 @@ foam.CLASS({
     {
       class: 'String',
       name: 'signingOfficerEmail',
+      label: 'Enter your signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'example@email.com'
+      },
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
       view: {
-        class: 'net.nanopay.sme.ui.AddressView'
-      }
+        class: 'net.nanopay.sme.ui.AddressView',
+      },
     }),
     foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
-      section: 'businessDetailsSection'
+      section: 'businessDetailsSection',
+      placeholder: 'Select...',
     }),
     {
+      class: 'Reference',
+      of: 'net.nanopay.model.BusinessSector',
       name: 'businessSectorId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
@@ -210,9 +231,25 @@ foam.CLASS({
       view: { class: 'net.nanopay.business.NatureOfBusiness' }
     },
 
+    // FIXME: Turn into a dropdown
     foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
-      label: 'Primary source of funds'
+      label: 'Primary source of funds',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          'Purchase of goods produced',
+          'Completion of service contracts',
+          'Investment Income',
+          'Brokerage Fees',
+          'Consulting Fees',
+          'Sale of investments',
+          'Inheritance',
+          'Grants, loans, and other sources of financing',
+          'Other'
+        ]
+      },
     }),
     {
       class: 'Boolean',
@@ -235,21 +272,60 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_AMOUNT.clone().copyFrom({
       section: 'transactionDetailsSection',
-      documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          '$0 to $50,000',
+          '$50,001 to $100,000',
+          '$100,001 to $500,000',
+          '$500,001 to $1,000,000',
+          'Over $1,000,000'
+        ]
+      },
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
-      documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          '$0 to $50,000',
+          '$50,001 to $100,000',
+          '$100,001 to $500,000',
+          '$500,001 to $1,000,000',
+          'Over $1,000,000'
+        ]
+      },
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          'Payables for products and/or services',
+          'Working capital',
+          'Bill payments',
+          'Intracompany bank transfers',
+          'Government fee and taxes',
+          'Other'
+        ]
+      },
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       visibilityExpression: function(transactionPurpose) {
         return  transactionPurpose == 'Other' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
+    }),
+    foam.nanos.auth.User.TARGET_CUSTOMERS.clone().copyFrom({
+      section: 'transactionDetailsSection',
+      view: {
+        class: 'foam.u2.tag.TextArea',
+        placeholder: 'Example: Small manufacturing businesses in North America'
+      },
     }),
     {
       class: 'Boolean',
@@ -289,23 +365,22 @@ foam.CLASS({
       postSet: function(_, n) {
         this.clearProperty('owner1');
         if ( ! n ) return;
-        this.owner1 = this.userId;
-        this.owner1.copyFrom(
-          this.cls_.getAxiomsByClass(foam.core.Property)
-            .filter((p) => p.section == 'personalInformationSection')
-            .reduce((map, p) => {
-              map[p.name] = p.f(this);
-              return map
-            })
-        );
-        console.log('TODO: make sure all properties of user are copied into beneficial owner.')
+        this.owner1.jobTitle = this.jobTitle;
+        this.owner1.firstName = this.firstName;
+        this.owner1.lastName = this.lastName;
+        this.owner1.birthday = this.birthday;
+        this.owner1.address = this.address;
       }
     },
     {
       class: 'String',
-      name: 'principalType',
+      name: 'roJobTitle',
+      label: 'Job Title',
+      factory: function() {
+        return this.jobTitle;
+      },
       section: 'personalOwnershipSection',
-      documentation: 'Change to option dropdown'
+      visibility: foam.u2.Visibility.RO
     },
     foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
@@ -363,12 +438,13 @@ foam.CLASS({
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
       label: '',
-      label2: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.'
+      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.'
     },
   ].flat(),
 
   reactions: [
-    ['', 'amountOfOwners', 'updateBeneficialOwners']
+    ['', 'amountOfOwners', 'updateBeneficialOwners'],
+    ['', 'propertyChange.userId', 'updateUserInfo']
   ].concat([1, 2, 3, 4].map((i) => [
     `owner${i}`, 'propertyChange', 'updateBeneficialOwners'
   ])),
@@ -384,6 +460,15 @@ foam.CLASS({
           this.owner3,
           this.owner4
         ].slice(0, this.amountOfOwners);
+      }
+    },
+    {
+      name: 'updateUserInfo',
+      code: function() {
+        this.userId$find.then(user => {
+          this.firstName = user.firstName;
+          this.lastName = user.lastName;
+        })
       }
     }
   ]

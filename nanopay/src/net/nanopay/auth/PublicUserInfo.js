@@ -12,7 +12,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      documentation: `The ID for the public information of a User`,
+      documentation: `The unique identifier for the User.`,
       visibility: foam.u2.Visibility.RO
     },
     {

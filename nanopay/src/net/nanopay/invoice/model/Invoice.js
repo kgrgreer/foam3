@@ -207,13 +207,14 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'draft',
-      documentation: `Verifies that the Invoice is finalized.`,
+      documentation: `Determines whether the Invoice is finalized.`,
       value: false
     },
     {
       class: 'String',
       name: 'invoiceFileUrl',
       documentation: 'A URL link to the online location of the invoice.'
+      // invoiceFileUrl is not used. All references are commented out.
     },
     {
       class: 'String',
@@ -302,12 +303,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'external',
-      documentation: 'Verifies that the invoice was created for an external user.'
+      documentation: 'Determines whether the invoice was created for an external user.'
     },
     {
       class: 'Boolean',
       name: 'autoPay',
-      documentation: ''
+      documentation: 'Determines whether the invoice can be paid automatically.'
       // TODO
     },
     {
@@ -325,7 +326,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.invoice.model.InvoiceStatus',
       name: 'status',
-      documentation: `Tracks the status of the invoice regarding payment. This 
+      documentation: `A list of the types of status for an invoice regarding payment. This 
         is a calculated property used to determine whether an invoice is unpaid, 
         void, pending, paid, scheduled, or overdue.
       `,
@@ -425,27 +426,31 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'scheduledEmailSent',
-      documentation: `Verifies that an email has been sent to the Payer 
-        informing them that the payment they scheduled is due.
-      `,
+      documentation: `Determines whether an email has been sent to the Payer 
+        informing them that the payment they scheduled is due.`,
       value: false
     },
     {
       class: 'String',
       name: 'referenceId',
+      documentation: `The unique identifier for sent and received form email.`,
       javaFactory: `
         return UUID.randomUUID().toString();
       `
     },
     {
       class: 'Boolean',
-      name: 'removed'
+      name: 'removed',
+      documentation: 'Determines whether an invoice has been removed.'
     },
     {
       class: 'Reference',
       targetDAOKey: 'contactDAO',
       of: 'net.nanopay.contacts.Contact',
       name: 'contactId',
+      documentation: `The unique identifier for the Contact, representing people who, 
+        although they are not registered on the platform, can still receive invoices from
+        platform users.`,
       view: function(_, X) {
         var m = foam.mlang.ExpressionsSingleton.create();
         return {

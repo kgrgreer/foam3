@@ -202,14 +202,16 @@ public class TransactionTest
     tq = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO") ).put_(x_,tq).fclone();
     Transaction txn1 = tq.getPlan();
     test(txn1.getClass() == AbliiTransaction.class, "Parent transaction is of type AbliiTransaction");
-    Transaction txn2 = txn1.getNext()[0];
-    test(txn2.getClass() == AlternaCITransaction.class, " 1st child is of type "+txn2.getClass().getName()+" should be AlternaCITransaction");
-    Transaction txn3 = txn2.getNext()[0];
-    test(txn3.getClass() == AlternaCOTransaction.class, " 2nd child is of type "+txn2.getClass().getName()+" should be AlternaCOTransaction");
 
-    test(txn2.getAmount()== txn3.getAmount(), "CI and CO transactions have same amount");
-    test(txn2.getDestinationAccount()==txn3.getSourceAccount(),"CI and CO use same digital account");
-    test(txn1.getDestinationAccount()==txn3.getDestinationAccount(), "txn1 and txn3 destination accounts are the same");
+    Transaction txn2 = txn1.getNext()[0];
+    Transaction txn3 = txn2.getNext()[0];
+    Transaction txn4 = txn2.getNext()[1];
+    test(txn3.getClass() == AlternaCITransaction.class, " 1st child is of type "+txn3.getClass().getName()+" should be AlternaCITransaction");
+    test(txn4.getClass() == AlternaCOTransaction.class, " 2nd child is of type "+txn4.getClass().getName()+" should be AlternaCOTransaction");
+
+    test(txn3.getAmount()== txn4.getAmount(), "CI and CO transactions have same amount");
+    test(txn3.getDestinationAccount()==txn4.getSourceAccount(),"CI and CO use same digital account");
+    test(txn1.getDestinationAccount()==txn4.getDestinationAccount(), "txn1 and txn3 destination accounts are the same");
     test(txn1.getSourceAccount()==txn2.getSourceAccount(), "txn1 and txn2 source accounts are the same");
     test(txn1.getStatus() == COMPLETED," Ablii transaction is COMPLETED");
     test(txn2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CI transaction is "+txn2.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
