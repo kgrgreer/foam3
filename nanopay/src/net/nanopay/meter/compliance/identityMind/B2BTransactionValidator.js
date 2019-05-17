@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Validates bank to bank transaction via IdentityMind Transfer API.',
 
   javaImports: [
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -20,7 +21,14 @@ foam.CLASS({
         ComplianceValidationStatus status = response.getComplianceValidationStatus();
 
         if ( status != ComplianceValidationStatus.VALIDATED ) {
-          requestApproval(x, transaction, "localTransactionDAO");
+          requestApproval(x,
+            new ComplianceApprovalRequest.Builder(x)
+              .setObjId(transaction.getId())
+              .setDaoKey("localTransactionDAO")
+              .setCauseId(response.getId())
+              .setCauseDaoKey("identityMindResponseDAO")
+              .build()
+          );
         }
         ruler.putResult(status);
       `
