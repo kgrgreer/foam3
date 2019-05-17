@@ -370,8 +370,6 @@ foam.CLASS({
         this.owner1.lastName = this.lastName;
         this.owner1.birthday = this.birthday;
         this.owner1.address = this.address;
-
-        console.log('TODO: make sure all properties of user are copied into beneficial owner.')
       }
     },
     {
