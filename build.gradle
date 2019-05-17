@@ -63,11 +63,9 @@ dependencies {
 	compile "xml-apis:xml-apis:1.4.01"
 }
 
-configurations {
-    all {
-        resolutionStrategy {
-            force 'xml-apis:xml-apis:1.4.01'
-        }
+configurations.all {
+    resolutionStrategy {
+        force 'xml-apis:xml-apis:1.4.01'
     }
 }
 
@@ -103,7 +101,7 @@ sourceSets {
     }
 }
 
-class IncrementalGenTask extends DefaultTask {
+class IncrementalTask extends DefaultTask {
 // https://android.googlesource.com/platform/tools/base/+/studio-master-dev/build-system/gradle-core/src/main/java/com/android/build/gradle/internal/tasks/IncrementalTask.java
 // https://mrhaki.blogspot.com/2017/04/gradle-goodness-using-incremental-task.html
 
@@ -143,7 +141,7 @@ class IncrementalGenTask extends DefaultTask {
     }
 }
 
-task incrementalGenTask(type: IncrementalGenTask) {
+task incrementalGenTask(type: IncrementalTask) {
     FileTree trees = fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")
     trees.matching{include "**/*.js"}.each { File f ->
         includeDirs.add(f)
@@ -161,6 +159,25 @@ task genJava(type: Exec) {
         !tasks.incrementalGenTask.state.upToDate
     }
     commandLine 'bash', './gen.sh', genJavaDir
+}
+
+task incrementalFindTask(type: IncrementalTask) {
+  FileTree trees = fileTree(dir: "deployment") + fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src") + fileTree(dir: "interac/src")
+  trees.matching{include "**/*.jrl"}.each { File f ->
+    includeDirs.add(f)
+  }
+  outputDir = file(genJavaDir)
+  inputProperty = project.properties['taskInputProperty'] ?: "original"
+}
+
+task findSH(type: Exec) {
+  dependsOn {
+    tasks.incrementalFindTask
+  }
+  onlyIf {
+    !tasks.incrementalFindTask.state.upToDate
+  }
+  commandLine 'bash', './find.sh', genJavaDir
 }
 
 task packageFoam(type: NodeTask) {
@@ -219,7 +236,7 @@ task copyFavicon(type: Copy) {
 
 jar {
   dependsOn tasks.withType(Copy)
-  destinationDir file("$targetDir/lib")
+  destinationDirectory = file("$targetDir/lib")
 
   from "$buildDir/classes/java/main"
   from "$targetDir/classes"
@@ -244,7 +261,7 @@ tasks.withType(JavaCompile) {
 
 task tarz(type: Tar) {
     def tarName = "${project.name}-${project.version}"
-    archiveName = "${tarName}.tgz"
+    archiveFileName = "${tarName}.tgz"
 
     into("${tarName}/bin/") {
         from "deploy/bin"
@@ -253,7 +270,7 @@ task tarz(type: Tar) {
         from "target/lib"
     }
 
-    destinationDir = file("target/package")
+    destinationDirectory = file("target/package")
     compression = Compression.GZIP
 }
 
