@@ -207,7 +207,7 @@ public class TransactionTest
     Transaction txn3 = txn2.getNext()[0];
     test(txn3.getNext()[0].getClass() == AlternaCOTransaction.class, " 2nd child is of type "+txn3.getClass().getName()+" should be AlternaCOTransaction");
 
-    test(txn2.getAmount()== txn3.getAmount(), "CI and CO transactions have same amount");
+    test(txn2.getAmount()== txn3.getNext()[0].getAmount(), "CI and CO transactions have same amount");
     test(txn2.getDestinationAccount()==txn3.getSourceAccount(),"CI and CO use same digital account");
     test(txn1.getDestinationAccount()==txn3.getDestinationAccount(), "txn1 and txn3 destination accounts are the same");
     test(txn1.getSourceAccount()==txn2.getSourceAccount(), "txn1 and txn2 source accounts are the same");

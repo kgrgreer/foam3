@@ -10,6 +10,8 @@ import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
+import net.nanopay.approval.ApprovalRequest;
+import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.tx.ComplianceTransaction;
@@ -190,7 +192,8 @@ public class TransactionDAOTest
     test( senderInitialBalance  ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is declined balance is reverted" );
   }
 
-  public void testCashOut() {Transaction txn = new Transaction();
+  public void testCashOut() {
+    Transaction txn = new Transaction();
     setBankAccount(BankAccountStatus.UNVERIFIED);
     txn.setPayerId(sender_.getId());
     txn.setDestinationAccount(senderBankAccount_.getId());
@@ -202,15 +205,20 @@ public class TransactionDAOTest
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
+    DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
+    ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, tx.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+    request.setStatus(ApprovalStatus.APPROVED);
+    approvalDAO.put_(x_, request);
+
+    tx = (Transaction) txnDAO.find_(x_, tx).fclone();
     test(tx instanceof ComplianceTransaction, "Transaction type is ComplianceTransaction" );
-    test(tx.getStatus() == TransactionStatus.COMPLETED, "tx should be complete because we are in testing mode" );
+    test(tx.getStatus() == TransactionStatus.COMPLETED, "tx was completed automatically as approval request was approved." );
 
     ArraySink s = new ArraySink.Builder(x_).build();
     tx.getChildren(x_).select(s);
     Transaction t = (Transaction) s.getArray().get(0);
     test(s.getArray().size() == 1, " size of children is 1");
     test( t instanceof COTransaction, "Transaction type is CASHOUT" );
-    test( false, ""+ t.getStatus()+"   "+t.getParent()+"  "+tx.getId());
 
     test( t.getStatus()  == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
     test( senderInitialBalance - (txn.getAmount() + getFee(t)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "Pending status. Cashout updated balance" );

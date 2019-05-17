@@ -23,12 +23,7 @@ foam.CLASS({
   methods: [
     {
       name: 'applyAction',
-      javaCode: `
-
-        if ( obj instanceof ComplianceTransaction ) {
-          requestApproval(x, obj, "localTransactionDAO");
-        }
-      `
+      javaCode: `requestApproval(x, obj, "localTransactionDAO");`
     },
     {
       name: 'applyReverseAction',
