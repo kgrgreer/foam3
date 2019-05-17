@@ -142,7 +142,11 @@ foam.CLASS({
       },
     }),
     foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
-      section: 'personalInformationSection'
+      section: 'personalInformationSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'Chief Visionary Officer'
+      }
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection'
@@ -189,8 +193,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'signingOfficerEmail',
+      label: 'Enter your signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'example@email.com'
+      },
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
@@ -201,19 +210,36 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
-      section: 'businessDetailsSection'
+      section: 'businessDetailsSection',
+      placeholder: 'Select...',
     }),
     {
-      name: 'businessIndustryId',
+      name: 'businessSectorId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
       label: 'Nature of business (NAIC code)',
       view: { class: 'net.nanopay.business.NatureOfBusiness' }
     },
 
+    // FIXME: Turn into a dropdown
     foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
-      label: 'Primary source of funds'
+      label: 'Primary source of funds',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          'Purchase of goods produced',
+          'Completion of service contracts',
+          'Investment Income',
+          'Brokerage Fees',
+          'Consulting Fees',
+          'Sale of investments',
+          'Inheritance',
+          'Grants, loans, and other sources of financing',
+          'Other'
+        ]
+      },
     }),
     {
       class: 'Boolean',
@@ -236,21 +262,60 @@ foam.CLASS({
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_AMOUNT.clone().copyFrom({
       section: 'transactionDetailsSection',
-      documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          '$0 to $50,000',
+          '$50,001 to $100,000',
+          '$100,001 to $500,000',
+          '$500,001 to $1,000,000',
+          'Over $1,000,000'
+        ]
+      },
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
-      documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          '$0 to $50,000',
+          '$50,001 to $100,000',
+          '$100,001 to $500,000',
+          '$500,001 to $1,000,000',
+          'Over $1,000,000'
+        ]
+      },
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          'Payables for products and/or services',
+          'Working capital',
+          'Bill payments',
+          'Intracompany bank transfers',
+          'Government fee and taxes',
+          'Other'
+        ]
+      },
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       visibilityExpression: function(transactionPurpose) {
         return  transactionPurpose == 'Other' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
+    }),
+    foam.nanos.auth.User.TARGET_CUSTOMERS.clone().copyFrom({
+      section: 'transactionDetailsSection',
+      view: {
+        class: 'foam.u2.tag.TextArea',
+        placeholder: 'Example: Small manufacturing businesses in North America'
+      },
     }),
     {
       class: 'Boolean',
