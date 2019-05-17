@@ -4,10 +4,17 @@ foam.CLASS({
   extends: 'foam.u2.detail.WizardSectionsView',
   css: `
     ^ {
-      height:100%;
       display: flex;
       flex-direction: column;
       background-color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh !important;
+      width: 100vw !important;
+      z-index: 950;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
     ^header {
@@ -49,7 +56,7 @@ foam.CLASS({
       align-items: center !important;
     }
 
-    ^ .net-nanopay-sme-ui-AbliiActionView-next {
+    ^ .net-nanopay-sme-ui-AbliiActionView-primary {
       width: 158px;
       height: 48px;
     }
@@ -95,7 +102,10 @@ foam.CLASS({
     function initE() {
       this.addClass(this.myClass());
 
-      this.start().addClass(this.myClass('header'))
+      this
+        .start().addClass(this.myClass('header'))
+          // TODO: Add ablii logo
+          // TODO: Add save & exit
         .end()
         .startContext({ data: this })
           .add(this.PROGRESS)
