@@ -434,7 +434,7 @@ foam.CLASS({
     {
       name: 'selectCABank',
       label: '',
-      permissionConfig: { enabled: ['currency.read.CAD'] },
+      enabledPermissions: ['currency.read.CAD'],
       code: function() {
         this.selectBank('CA');
       }
@@ -442,7 +442,7 @@ foam.CLASS({
     {
       name: 'selectUSBank',
       label: '',
-      permissionConfig: { enabled: ['currency.read.USD'] },
+      enabledPermissions: ['currency.read.USD'],
       code: function() {
         this.selectBank('US');
       }
