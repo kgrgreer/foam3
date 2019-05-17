@@ -6,12 +6,20 @@ import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.token.Token;
 import foam.nanos.http.WebAgent;
+import foam.nanos.notification.email.DAOResourceLoader;
+import foam.nanos.notification.email.EmailTemplate;
 import net.nanopay.model.Business;
+import org.jtwig.JtwigModel;
+import org.jtwig.JtwigTemplate;
+import org.jtwig.environment.EnvironmentConfiguration;
+import org.jtwig.environment.EnvironmentConfigurationBuilder;
+import org.jtwig.resource.loader.TypedResourceLoader;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.Map;
 
 import static foam.mlang.MLang.EQ;
@@ -22,15 +30,19 @@ import static foam.mlang.MLang.EQ;
  * service will handle adding that user to the business.
  */
 public class JoinBusinessWebAgent implements WebAgent {
+
+  public EnvironmentConfiguration config_;
+
   @Override
   public void execute(X x) {
-    String message = "";
+    String message;
     PrintWriter out = x.get(PrintWriter.class);
     JoinBusinessTokenService tokenService = (JoinBusinessTokenService) x.get("joinBusinessToken");
     HttpServletRequest request = x.get(HttpServletRequest.class);
     HttpServletResponse response = x.get(HttpServletResponse.class);
     String tokenUUID = request.getParameter("token");
     String redirect = request.getParameter("redirect");
+    User user = null;
 
     try {
       // Look up the token.
@@ -49,7 +61,7 @@ public class JoinBusinessWebAgent implements WebAgent {
       // Look up the user.
       if ( token.getUserId() == 0 ) throw new Exception("User not found.");
       DAO localUserDAO = (DAO) x.get("localUserDAO");
-      User user = (User) localUserDAO.inX(x).find(token.getUserId());
+      user = (User) localUserDAO.inX(x).find(token.getUserId());
       if ( user == null ) throw new Exception("User not found.");
 
       // Check if the user has already joined the business.
@@ -67,8 +79,20 @@ public class JoinBusinessWebAgent implements WebAgent {
       message = "There was a problem adding you to the business.<br>" + t.getMessage();
     }
 
-    // TODO
-    out.write(message);
+    if ( config_ == null ) {
+      config_ = EnvironmentConfigurationBuilder
+        .configuration()
+        .resources()
+        .resourceLoaders()
+        .add(new TypedResourceLoader("dao", new DAOResourceLoader(x, user.getGroup())))
+        .and().and()
+        .build();
+    }
+
+    EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(x, "join-business-splash-page", user.getGroup());
+    JtwigTemplate template = JtwigTemplate.inlineTemplate(emailTemplate.getBody(), config_);
+    JtwigModel model = JtwigModel.newModel(Collections.singletonMap("msg", message));
+    out.write(template.render(model));
 
     if ( ! redirect.equals("null") ) {
       try {
