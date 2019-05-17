@@ -68,17 +68,17 @@ foam.CLASS({
     {
       name: 'ownershipYesOrNoSection',
       title: 'Does your company have anyone that owns 25% or more of the business?',
-      help: `Great, almost done! In accordance with banking laws, we need to document 
+      help: `Great, almost done! In accordance with banking laws, we need to document
           the percentage of ownership of any individual with a 25% + stake in the company.`,
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'ownershipAmountSection',
       title: 'How many people own 25% or more of your company?',
-      help: `Great, almost done! In accordance with banking laws, we need to document 
+      help: `Great, almost done! In accordance with banking laws, we need to document
           the percentage of ownership of any individual with a 25% + stake in the company.`,
-      isAvailable: function (signingOfficer, ownershipAbovePercent) { 
-        return signingOfficer && ownershipAbovePercent 
+      isAvailable: function (signingOfficer, ownershipAbovePercent) {
+        return signingOfficer && ownershipAbovePercent
       }
     },
     {
@@ -112,7 +112,7 @@ foam.CLASS({
     {
       name: '2faSection',
       title: 'Protect your account against fraud with Two-factor authentication',
-      help: `Alright, it looks like that is all of the information we need! Last thing I’ll ask 
+      help: `Alright, it looks like that is all of the information we need! Last thing I’ll ask
           is that you enable two factor authentication. We want to make sure your account is safe!`
     }
   ].flat(),
@@ -304,9 +304,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'principalType',
+      name: 'roJobTitle',
+      label: 'Job Title',
+      factory: function() {
+        return this.jobTitle;
+      },
       section: 'personalOwnershipSection',
-      documentation: 'Change to option dropdown'
+      visibility: foam.u2.Visibility.RO
     },
     foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
