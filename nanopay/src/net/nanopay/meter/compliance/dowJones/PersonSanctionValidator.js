@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
   name: 'PersonSanctionValidator',
-  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
+  extends: 'net.nanopay.meter.compliance.dowJones.AbstractDowJonesComplianceRuleAction',
 
   documentation: 'Validates a user using DowJones Risk and Compliance API.',
 
@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
+    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
     'java.util.Date',
     'static foam.mlang.MLang.*',
   ],
@@ -21,25 +22,19 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         User user = (User) obj;
-        Date filterLRDFrom = null;
-        DAO dowJonesResponseDAO = (DAO) x.get("dowJonesResponseDAO");
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          ArraySink sink = (ArraySink) dowJonesResponseDAO.where(
-            AND(
-              EQ(DowJonesResponse.USER_ID, user.getId()),
-              EQ(DowJonesResponse.SEARCH_TYPE, "Dow Jones Person"),
-              LT(DowJonesResponse.SEARCH_DATE, new Date()),
-              GT(DowJonesResponse.TOTAL_MATCHES, 0)
-            )
-          ).orderBy(DESC(DowJonesResponse.SEARCH_DATE)).limit(1).select(new ArraySink());
+          Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones Person");
+          PersonNameSearchData searchData = new PersonNameSearchData.Builder(x)
+            .setSearchId(user.getId())
+            .setFirstName(user.getFirstName())
+            .setSurName(user.getLastName())
+            .setFilterLRDFrom(filterLRDFrom)
+            .setDateOfBirth(user.getBirthday())
+            .setFilterRegion(user.getAddress().getCountryId())
+            .build();
 
-          if ( sink.getArray().size() > 0 ) {
-            DowJonesResponse dowJonesResponse = (DowJonesResponse) sink.getArray().get(0);
-            filterLRDFrom = dowJonesResponse.getSearchDate();
-          }
-
-          DowJonesResponse response = dowJonesService.personNameSearch(x, user.getFirstName(), user.getLastName(), filterLRDFrom, user.getBirthday(), user.getAddress().getCountryId());
+          DowJonesResponse response = dowJonesService.personNameSearch(x, searchData);
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;

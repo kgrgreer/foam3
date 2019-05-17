@@ -7,6 +7,8 @@ import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.logger.Logger;
+import net.nanopay.meter.compliance.dowJones.EntityNameSearchData;
+import net.nanopay.meter.compliance.dowJones.PersonNameSearchData;
 
 import java.util.Date;
 
@@ -30,10 +32,10 @@ public class DowJonesService
     user_ = (User) getX().get("user");
   }
 
-  public DowJonesResponse personNameSearch(X x, String firstName, String surName, Date filterLRDFrom, Date dateOfBirth, String filterRegion) {
+  public DowJonesResponse personNameSearch(X x, PersonNameSearchData searchData) {
     try {
       DowJonesResponseMsg respMsg = null;
-      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, firstName, surName, filterLRDFrom, dateOfBirth, filterRegion);
+      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, searchData);
 
       try {
         respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.PERSON_NAME);
@@ -49,8 +51,8 @@ public class DowJonesService
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
         feedback = resp;
         resp.setSearchType("Dow Jones Person");
-        resp.setNameSearched(firstName + " " + surName);
-        resp.setUserId(user_.getId());
+        resp.setNameSearched(searchData.getFirstName() + " " + searchData.getSurName());
+        resp.setUserId(searchData.getSearchId());
         resp.setSearchDate(new Date());
         dowJonesResponseDAO_.put(resp);
       } else {
@@ -66,10 +68,10 @@ public class DowJonesService
     }
   }
 
-  public DowJonesResponse entityNameSearch(X x, String entityName, Date filterLRDFrom, String filterRegion) {
+  public DowJonesResponse entityNameSearch(X x, EntityNameSearchData searchData) {
     try {
       DowJonesResponseMsg respMsg = null;
-      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getEntityNameSearchRequest(x, entityName, filterLRDFrom, filterRegion);
+      DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getEntityNameSearchRequest(x, searchData);
 
       try {
         respMsg = dowJonesRestService.serve(reqMsg, DowJonesRestService.ENTITY_NAME);
@@ -85,8 +87,8 @@ public class DowJonesService
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
         feedback = resp;
         resp.setSearchType("Dow Jones Entity");
-        resp.setNameSearched(entityName);
-        resp.setUserId(user_.getId());
+        resp.setNameSearched(searchData.getEntityName());
+        resp.setUserId(searchData.getSearchId());
         resp.setSearchDate(new Date());
         dowJonesResponseDAO_.put(resp);
       } else {
