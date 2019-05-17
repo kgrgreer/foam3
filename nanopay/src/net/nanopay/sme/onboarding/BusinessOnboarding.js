@@ -133,11 +133,15 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firstName',
+      flags: ['web'],
+      transient: true,
       section: 'adminReferenceSection'
     },
     {
       class: 'String',
       name: 'lastName',
+      flags: ['web'],
+      transient: true,
       section: 'adminReferenceSection'
     },
 
@@ -332,6 +336,9 @@ foam.CLASS({
       name: 'ownershipAbovePercent',
       label: 'Does anyone own above 25% of the company?',
       section: 'ownershipYesOrNoSection',
+      postSet: function(_, n) {
+        if ( ! n ) this.amountOfOwners = 0;
+      },
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -343,7 +350,6 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'amountOfOwners',
-      flags: ['web'],
       label: 'Amount of individuals who own 25%',
       section: 'ownershipAmountSection',
       view: {
@@ -358,26 +364,25 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'userOwnsPercent',
-      flags: ['web'],
       section: 'ownershipAmountSection',
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
         this.clearProperty('owner1');
         if ( ! n ) return;
-        this.owner1.jobTitle = this.jobTitle;
-        this.owner1.firstName = this.firstName;
-        this.owner1.lastName = this.lastName;
-        this.owner1.birthday = this.birthday;
-        this.owner1.address = this.address;
+        this.owner1.jobTitle$.follow(this.jobTitle$);
+        this.owner1.firstName$.follow(this.firstName$);
+        this.owner1.lastName$.follow(this.lastName$);
+        this.owner1.birthday$.follow(this.birthday$);
+        this.owner1.address$.follow(this.address$);
       }
     },
     {
       class: 'String',
       name: 'roJobTitle',
       label: 'Job Title',
-      factory: function() {
-        return this.jobTitle;
+      expression: function(jobTitle) {
+        return jobTitle;
       },
       section: 'personalOwnershipSection',
       visibility: foam.u2.Visibility.RO
@@ -405,7 +410,12 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'beneficialOwners',
       of: 'net.nanopay.model.BeneficialOwner',
-      hidden: true
+      hidden: true,
+      postSet: function(_, n) {
+        n.forEach((o, i) => {
+          this['owner'+i] = o;
+        });
+      }
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -465,10 +475,10 @@ foam.CLASS({
     {
       name: 'updateUserInfo',
       code: function() {
-        this.userId$find.then(user => {
+        this.userId$find.then((user) => {
           this.firstName = user.firstName;
           this.lastName = user.lastName;
-        })
+        });
       }
     }
   ]
