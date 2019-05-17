@@ -37,9 +37,11 @@ foam.CLASS({
     }
 
     ^right-section {
-      vertical-align: middle;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
       overflow: scroll;
-      max-height: 80vh;
+      height: 100%;
       flex: 1;
       basis:0;
       padding: 0px 128px;
