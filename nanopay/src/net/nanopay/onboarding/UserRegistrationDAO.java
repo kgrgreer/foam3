@@ -57,7 +57,7 @@ public class UserRegistrationDAO
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }
-    
+
     // Set user SPID and group defined by service.
     user.setSpid(spid_);
     user.setGroup(group_);
@@ -89,9 +89,10 @@ public class UserRegistrationDAO
 
       Map<String, Object> params = (Map) token.getParameters();
 
+      // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
       // Check if user is internal ( already a registered user ), which will happen if adding a user to
       // a business.
-      isInternal = params.containsKey("internal" ) && ((Boolean) params.get("internal"));
+      isInternal = params.containsKey("internal") && ((Boolean) params.get("internal"));
       if ( ! isInternal ) {
         checkUserDuplication(x, user);
       }
@@ -136,6 +137,8 @@ public class UserRegistrationDAO
         }
       }
     }
+
+    // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
     if ( ! isInternal ) checkUserDuplication(x, user);
 
     Address businessAddress = user.getBusinessAddress();

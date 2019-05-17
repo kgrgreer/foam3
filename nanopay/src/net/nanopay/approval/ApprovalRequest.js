@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.dao.AbstractDAO',
     'net.nanopay.approval.ApprovalStatus'
   ],
 
@@ -114,6 +115,7 @@ foam.CLASS({
       code: function() {
         this.status = this.ApprovalStatus.APPROVED;
         this.approvalRequestDAO.put(this);
+        this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
       },
     },
     {
@@ -122,6 +124,7 @@ foam.CLASS({
       code: function() {
         this.status = this.ApprovalStatus.REJECTED;
         this.approvalRequestDAO.put(this);
+        this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
       },
     }
   ]

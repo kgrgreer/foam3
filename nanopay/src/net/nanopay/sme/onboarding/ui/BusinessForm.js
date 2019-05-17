@@ -19,6 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'user',
     'businessDAO',
     'businessSectorDAO'
@@ -233,7 +234,7 @@ foam.CLASS({
       documentation: 'The general industry that the business is a part of.',
       factory: function() {
         this.businessSectorDAO.find(this.viewData.user.businessSectorId).then((businessSector) => {
-          this.industryId = businessSector.parent;
+          if ( businessSector != null ) this.industryId = businessSector.parent;
         });
         return null;
       },
@@ -339,6 +340,7 @@ foam.CLASS({
       name: 'sourceOfFundsOtherField',
       documentation: 'Where the business receives its money from (Other select field)',
       postSet: function(o, n) {
+        this.viewData.sourceOfFundsOther = n;
         this.viewData.user.sourceOfFunds = n;
       }
     },
@@ -346,8 +348,11 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'addressField',
       factory: function() {
-        return this.viewData.user.businessAddress ?
-            this.viewData.user.businessAddress : this.Address.create({});
+        var rtn = this.viewData.user.businessAddress
+          ? this.viewData.user.businessAddress
+          : this.Address.create({});
+        this.onDetach(rtn.regionId$.sub(this.checkQuebec));
+        return rtn;
       },
       view: { class: 'net.nanopay.sme.ui.AddressView' },
       postSet: function(o, n) {
@@ -439,6 +444,7 @@ foam.CLASS({
     { name: 'THIRD_TITLE', message: 'Add supporting files' },
     { name: 'UPLOAD_DESCRIPTION', message: 'Please upload one of the following:' },
     { name: 'NO_PO_BOXES', message: 'No PO Boxes Allowed' },
+    { name: 'QUEBEC_DISCLAIMER', message: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' }
   ],
 
   methods: [
@@ -574,6 +580,15 @@ foam.CLASS({
           .additionalDocuments.concat(newDocs);
         var result = await this.businessDAO.put(this.user);
         this.viewData.user.additionalDocuments = result.additionalDocuments;
+      }
+    }
+  ],
+
+  listeners: [
+    function checkQuebec(detachable, eventName, propName, propSlot) {
+      var regionId = propSlot.get();
+      if ( regionId === 'QC' ) {
+        this.ctrl.notify(this.QUEBEC_DISCLAIMER, 'error');
       }
     }
   ]

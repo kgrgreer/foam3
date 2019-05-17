@@ -33,3 +33,6 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Provid
 //Securefact Responses
 p({"class":"foam.nanos.menu.Menu","id":"operation.sidni","label":"SIDni Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"securefactSIDniDAO"},"order":3300,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.lev","label":"LEV Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"securefactLEVDAO"},"order":3400,"parent":"operation"})
+
+//Dow Jones Responses
+p({"class":"foam.nanos.menu.Menu","id":"operation.dowjones","label":"Dow Jones Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"dowJonesResponseDAO"},"order":3500,"parent":"operation"})
