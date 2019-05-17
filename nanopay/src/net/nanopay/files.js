@@ -789,6 +789,7 @@ FOAM_FILES([
   // sme onboarding
   { name: 'net/nanopay/sme/onboarding/ui/BusinessRegistrationWizard', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/IntroductionView', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/IntroOnboarding', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/SigningOfficerForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
