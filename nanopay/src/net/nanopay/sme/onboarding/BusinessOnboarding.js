@@ -438,7 +438,7 @@ foam.CLASS({
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
       label: '',
-      label2: 'I certify that all benefical owners with 25% or more ownership have been listed and the information included about them is accurate.'
+      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.'
     },
   ].flat(),
 
