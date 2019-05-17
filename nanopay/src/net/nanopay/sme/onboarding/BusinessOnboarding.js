@@ -17,7 +17,7 @@ foam.CLASS({
     {
       name: 'gettingStartedSection',
       title: 'Before you get started',
-      help: 'Welcome! I’m Joanne, and I’ll help you unlock the full power of Ablii.'
+      help: `Welcome! I’m Joanne, and I’ll help you unlock the full power of Ablii.`
     },
     {
       name: 'adminReferenceSection',
@@ -139,6 +139,15 @@ foam.CLASS({
       class: 'String',
       name: 'lastName',
       section: 'adminReferenceSection'
+    },
+
+    {
+      name: 'welcome',
+      section: 'gettingStartedSection',
+      label: '',
+      view: {
+        class: 'net.nanopay.sme.onboarding.ui.IntroOnboarding'
+      }
     },
 
     foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
