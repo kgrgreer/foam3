@@ -47,7 +47,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enabled',
-      documentation: `Verifies that an account is disabled. Accounts 
+      documentation: `Determines whether an account is disabled. Accounts 
         on this platform are disabled rather than deleted.
       `,
       value: true
@@ -55,7 +55,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'deleted',
-      documentation: 'Verifies that the account is deleted.',
+      documentation: 'Determines whether the account is deleted.',
       value: false,
       permissionRequired: true,
       visibility: 'RO',
@@ -82,13 +82,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'transferIn',
-      documentation: 'Verifies that an account can receive transfers.',
+      documentation: 'Determines whether an account can receive transfers.',
       value: true
     },
     {
       class: 'Boolean',
       name: 'transferOut',
-      documentation: 'Verifies that an account can make transfers out.',
+      documentation: 'Determines whether an account can make transfers out.',
       value: true
     },
     {
@@ -102,7 +102,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isDefault',
-      documentation: `Verifies that an account is the first preferred option of the User.`,
+      documentation: `Determines whether an account is the first preferred option of the User.`,
       label: 'Set As Default',
       value: false
     },
@@ -156,7 +156,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      documentation: `The ID of the individual person, or real user, 
+      documentation: `The unique identifier of the individual person, or real user, 
         who last modified this account.`,
     }
   ],
