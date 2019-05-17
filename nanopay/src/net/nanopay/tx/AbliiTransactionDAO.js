@@ -83,7 +83,6 @@ foam.CLASS({
             ct.setIsQuoted(true);
             request.addNext(ct);
           }
-            // throw new RuntimeException("Sorry, this user is not eligible for fast pay at the moment");
           
           // NOTE: DebtTransaction takes care of generating Transfers.
           // in TransactionDAO ignore transfers from DebtAccounts.
