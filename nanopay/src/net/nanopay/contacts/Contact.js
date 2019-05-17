@@ -89,27 +89,38 @@ foam.CLASS({
         }
       }
     },
-    foam.nanos.auth.User.FIRST_NAME.clone().copyFrom({
+    {
+      name: 'firstName',
       validateObj: function(firstName) {
-        if ( firstName.length > 70 ) {
-          return 'First name cannot exceed 70 characters.';
-        }
-        if ( /\d/.test(firstName) ) {
-          return 'First name cannot contain numbers.';
+        if ( !! firstName ) {
+          var containsDigitRegex = /\d/;
+          if ( firstName.length > this.NAME_MAX_LENGTH ) {
+            return 'First name cannot exceed 70 characters.';
+          }
+          if ( containsDigitRegex.test(firstName) ) {
+            return 'First name cannot contain numbers.';
+          }
         }
       }
-    }),
-    foam.nanos.auth.User.MIDDLE_NAME,
-    foam.nanos.auth.User.LAST_NAME.clone().copyFrom({
+    },
+    {
+      name: 'middleName',
+      validateObj: function(middleName) {}
+    },
+    {
+      name: 'lastName',
       validateObj: function(lastName) {
-        if ( lastName.length > 70 ) {
-          return 'Last name cannot exceed 70 characters.';
+        if ( !! lastName ) {
+          var containsDigitRegex = /\d/;
+          if ( lastName.length > this.NAME_MAX_LENGTH ) {
+            return 'Last name cannot exceed 70 characters.';
+          }
+          if ( containsDigitRegex.test(lastName) ) {
+            return 'Last name cannot contain numbers.';
+          }
         }
-        if ( /\d/.test(lastName) ) {
-          return 'Last name cannot contain numbers.';
-        } 
       }
-    }),
+    },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.contacts.ContactStatus',

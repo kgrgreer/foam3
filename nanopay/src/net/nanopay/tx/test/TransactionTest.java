@@ -202,6 +202,7 @@ public class TransactionTest
     tq = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO") ).put_(x_,tq).fclone();
     Transaction txn1 = tq.getPlan();
     test(txn1.getClass() == AbliiTransaction.class, "Parent transaction is of type AbliiTransaction");
+
     Transaction txn2 = txn1.getNext()[0];
     Transaction txn3 = txn2.getNext()[0];
     Transaction txn4 = txn2.getNext()[1];
