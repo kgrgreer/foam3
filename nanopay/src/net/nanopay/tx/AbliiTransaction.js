@@ -1,3 +1,5 @@
+// ASK two notifications
+// email - remove
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'AbliiTransaction',
@@ -12,6 +14,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'java.lang.StringBuilder',
     'java.text.NumberFormat',
     'java.util.HashMap',
     'java.util.List',
@@ -31,58 +34,45 @@ foam.CLASS({
         { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
+        DAO notificationDAO = (DAO) x.get("notificationDAO");
+
         if ( getStatus() != TransactionStatus.COMPLETED || getInvoiceId() == 0 ) return;
         User sender = findSourceAccount(x).findOwner(x);
-        DAO localUserDAO = (DAO) x.get("localUserDAO");
         User receiver = (User) localUserDAO.find(findDestinationAccount(x).getOwner());
-        if ( sender.getId() == receiver.getId() ) return;
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
-        String notificationMsg = sender.label() + " just initiated a payment to " + receiver.label() + " for " + formatter.format(getAmount()/100.00) + " on Invoice #" + this.findInvoiceId(x).getInvoiceNumber();
-        notificationMsg += this.findInvoiceId(x).getPurchaseOrder().length() > 0 ? " PO" + this.findInvoiceId(x).getPurchaseOrder() + "." : ".";
+        StringBuilder sb = new StringBuilder(sender.label())
+          .append(" just initiated a payment to ")
+          .append(receiver.label())
+          .append(" for ")
+          .append(formatter.format(getAmount()/100.00))
+          .append(" on Invoice#: ")
+          .append(this.findInvoiceId(x).getInvoiceNumber());
+        if(this.findInvoiceId(x).getPurchaseOrder().length() > 0) {
+          sb.append(" and P.O:");
+          sb.append(this.findInvoiceId(x).getPurchaseOrder());
+        } 
+        sb.append(".");
+        String notificationMsg = sb.toString();
 
         // notification to sender
         Notification senderNotification = new Notification();
-        senderNotification.setUserId(sender.getId()); // this.getStat()
-        senderNotification.setEmailIsEnabled(true);
-        AppConfig    config    = (AppConfig) x.get("appConfig");
-
-        HashMap<String, Object> args = new HashMap<>();
-        args.put("amount",    formatter.format(getAmount()/100.00));
-        args.put("name",      sender.getFirstName());
-        args.put("link",      config.getUrl());
-
-        senderNotification.setEmailName("transfer-paid");
+        senderNotification.setUserId(sender.getId());
         senderNotification.setBody(notificationMsg);
         senderNotification.setNotificationType("Transaction Initiated");
         senderNotification.setIssuedDate(this.findInvoiceId(x).getIssueDate());
-        args.put("email",     sender.getEmail());
-        args.put("applink" ,  config.getAppLink());
-        args.put("playlink" , config.getPlayLink());
-
-        senderNotification.setEmailArgs(args);
-        ((DAO)x.get("notificationDAO")).put_(x, senderNotification);
+        notificationDAO.put_(x, senderNotification);
 
         // notification to receiver
-        Notification receiverNotification = new Notification();
-        receiverNotification.setUserId(receiver.getId()); // this.getStat()
-        receiverNotification.setEmailIsEnabled(true);
-
-        args = new HashMap<>();
-        args.put("amount",    formatter.format(getAmount()/100.00));
-        args.put("name",      receiver.getFirstName());
-        args.put("link",      config.getUrl());
-
-        receiverNotification.setEmailName("transfer-paid");
-        receiverNotification.setBody(notificationMsg);
-        receiverNotification.setNotificationType("Transaction Initiated");
-        receiverNotification.setIssuedDate(this.findInvoiceId(x).getIssueDate());
-        args.put("email",     receiver.getEmail());
-        args.put("applink" ,  config.getAppLink());
-        args.put("playlink" , config.getPlayLink());
-
-        receiverNotification.setEmailArgs(args);
-        ((DAO)x.get("notificationDAO")).put_(x, receiverNotification);
+        if(receiver.getId() != sender.getId()) {
+          Notification receiverNotification = new Notification();
+          receiverNotification.setUserId(receiver.getId()); 
+          receiverNotification.setBody(notificationMsg);
+          receiverNotification.setNotificationType("Transaction Initiated");
+          receiverNotification.setIssuedDate(this.findInvoiceId(x).getIssueDate());
+          notificationDAO.put_(x, receiverNotification);
+        }
       `
     },
     {
