@@ -68,6 +68,7 @@ foam.CLASS({
         } else {
           return super.put_(x, quote);
         }
+        txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
         quote.addPlan(txn);
       }
