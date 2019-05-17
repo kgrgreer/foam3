@@ -470,7 +470,7 @@ foam.CLASS({
       name: 'viewAccounts',
       label: 'View Accounts',
       tableWidth: 135,
-      permissionRequired: true,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewAccounts'],
       code: function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         this.__context__.stack.push({
@@ -487,7 +487,7 @@ foam.CLASS({
       name: 'viewTransactions',
       label: 'View Transactions',
       tableWidth: 160,
-      permissionRequired: true,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewTransactions'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         var ids = await X.accountDAO
@@ -512,7 +512,7 @@ foam.CLASS({
     {
       name: 'viewPayables',
       label: 'View Payables',
-      permissionRequired: true,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewPayables'],
       code: async function(X) {
         this.__context__.stack.push({
           class: 'foam.comics.BrowserView',
@@ -527,7 +527,7 @@ foam.CLASS({
     {
       name: 'viewReceivables',
       label: 'View Receivables',
-      permissionRequired: true,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewReceivables'],
       code: async function(X) {
         this.__context__.stack.push({
           class: 'foam.comics.BrowserView',
