@@ -193,7 +193,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'signingOfficerEmail',
-      label: 'Enter your signing officers email',
+      label: 'Enter your signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
       view: {
