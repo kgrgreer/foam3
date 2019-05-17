@@ -18,6 +18,7 @@ foam.CLASS({
     'java.util.List',
     'java.util.ArrayList',
     'foam.util.SafetyUtil',
+    'net.nanopay.invoice.model.Invoice',
     'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.liquidity.LiquiditySettings',
     'net.nanopay.util.Frequency',
@@ -32,10 +33,12 @@ foam.CLASS({
         { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
+        if ( getStatus() != TransactionStatus.COMPLETED || getInvoiceId() == 0 ) return;
+
         DAO localUserDAO = (DAO) x.get("localUserDAO");
         DAO notificationDAO = (DAO) x.get("notificationDAO");
+        Invoice invoice = this.findInvoiceId(x);
 
-        if ( getStatus() != TransactionStatus.COMPLETED || getInvoiceId() == 0 ) return;
         User sender = findSourceAccount(x).findOwner(x);
         User receiver = (User) localUserDAO.find(findDestinationAccount(x).getOwner());
 
@@ -46,10 +49,10 @@ foam.CLASS({
           .append(" for ")
           .append(formatter.format(getAmount()/100.00))
           .append(" on Invoice#: ")
-          .append(this.findInvoiceId(x).getInvoiceNumber());
-        if(this.findInvoiceId(x).getPurchaseOrder().length() > 0) {
-          sb.append(" and P.O:");
-          sb.append(this.findInvoiceId(x).getPurchaseOrder());
+          .append(invoice.getInvoiceNumber());
+        if(invoice.getPurchaseOrder().length() > 0) {
+          sb.append(" and P.O: ");
+          sb.append(invoice.getPurchaseOrder());
         } 
         sb.append(".");
         String notificationMsg = sb.toString();
@@ -59,7 +62,7 @@ foam.CLASS({
         senderNotification.setUserId(sender.getId());
         senderNotification.setBody(notificationMsg);
         senderNotification.setNotificationType("Transaction Initiated");
-        senderNotification.setIssuedDate(this.findInvoiceId(x).getIssueDate());
+        senderNotification.setIssuedDate(invoice.getIssueDate());
         notificationDAO.put_(x, senderNotification);
 
         // notification to receiver
@@ -68,7 +71,7 @@ foam.CLASS({
           receiverNotification.setUserId(receiver.getId()); 
           receiverNotification.setBody(notificationMsg);
           receiverNotification.setNotificationType("Transaction Initiated");
-          receiverNotification.setIssuedDate(this.findInvoiceId(x).getIssueDate());
+          receiverNotification.setIssuedDate(invoice.getIssueDate());
           notificationDAO.put_(x, receiverNotification);
         }
       `
