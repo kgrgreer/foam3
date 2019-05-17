@@ -14,24 +14,8 @@ foam.INTERFACE({
           type: 'Context'
         },
         {
-          name: 'firstName',
-          type: 'String'
-        },
-        {
-          name: 'surName',
-          type: 'String'
-        },
-        {
-          name: 'filterLRDFrom',
-          type: 'Date'
-        },
-        {
-          name: 'dateOfBirth',
-          type: 'Date'
-        },
-        {
-          name: 'filterRegion',
-          type: 'String'
+          name: 'searchData',
+          type: 'net.nanopay.meter.compliance.dowJones.PersonNameSearchData'
         }
       ]
     },
@@ -46,16 +30,8 @@ foam.INTERFACE({
           type: 'Context'
         },
         {
-          name: 'entityName',
-          type: 'String'
-        },
-        {
-          name: 'filterLRDFrom',
-          type: 'Date'
-        },
-        {
-          name: 'filterRegion',
-          type: 'String'
+          name: 'searchData',
+          type: 'net.nanopay.meter.compliance.dowJones.EntityNameSearchData'
         }
       ]
     }
