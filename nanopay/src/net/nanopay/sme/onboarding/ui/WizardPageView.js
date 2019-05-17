@@ -58,7 +58,8 @@ foam.CLASS({
         .start(this.Cols, {
           defaultChildStyle: {
             flex: 1,
-            basis: 0
+            basis: 0,
+            padding: '0px 128px'
           }
         }).addClass(this.myClass('sections-container'))
           .start(this.Rows, {
