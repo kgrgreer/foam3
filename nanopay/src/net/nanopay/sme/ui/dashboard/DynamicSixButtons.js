@@ -35,7 +35,7 @@ foam.CLASS({
     'notify',
     'stack',
     'user',
-    'userDAO',
+    'userDAO'
     ],
 
   css: `

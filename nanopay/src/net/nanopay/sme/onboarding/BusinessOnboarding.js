@@ -363,8 +363,6 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
-        debugger;
-
         this.clearProperty('owner1');
         if ( ! n ) return;
         this.owner1.jobTitle = this.jobTitle;
