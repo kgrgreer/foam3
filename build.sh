@@ -105,7 +105,7 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    gradle findSH -Pmode=${MODE} -Pjournal.config=${JOURNAL_CONFIG}
+    gradle --daemon findSH -Pmode=${MODE} -Pjournal.config=${JOURNAL_CONFIG}
 
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
