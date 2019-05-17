@@ -11,7 +11,7 @@ foam.CLASS({
   css: `
     ^ {
       background-color: white;
-      height: 84%;
+      height: 93%;
     }
 
     ^sections-container {
