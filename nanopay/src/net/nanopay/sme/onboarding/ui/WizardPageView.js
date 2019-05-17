@@ -10,7 +10,7 @@ foam.CLASS({
   ],
   css: `
     ^ {
-      height: 93%;
+      height: 92%;
       border-bottom: solid 1px #edf0f5;
     }
 

@@ -49,7 +49,7 @@ foam.CLASS({
       align-items: center !important;
     }
 
-    ^ .net-nanopay-sme-onboarding-ui-WizardView-navigation-bar .net-nanopay-sme-ui-AbliiActionView-primary {
+    ^ .net-nanopay-sme-ui-AbliiActionView-next {
       width: 158px;
       height: 48px;
     }
