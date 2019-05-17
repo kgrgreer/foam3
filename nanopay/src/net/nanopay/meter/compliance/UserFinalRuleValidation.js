@@ -70,7 +70,10 @@ foam.CLASS({
       }
 
       if ( failedRuleHistory == null ) {
+        // get localUserDAO and put the new user into the dao (due to permission issues)
         user.setCompliance(ComplianceStatus.PASSED);
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
+        localUserDAO.put(user.fclone());
       }
       `
     },
