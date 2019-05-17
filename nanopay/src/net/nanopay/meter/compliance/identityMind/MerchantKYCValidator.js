@@ -1,14 +1,13 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind',
   name: 'MerchantKYCValidator',
+  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: 'Validates a business using IdentityMind Merchant KYC Evaluation API.',
 
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
-
   javaImports: [
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
+    'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.model.Business'
   ],
 
@@ -19,7 +18,19 @@ foam.CLASS({
         Business business = (Business) obj;
         IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
         IdentityMindResponse response = identityMindService.evaluateMerchant(x, business);
-        ruler.putResult(response.getComplianceValidationStatus());
+        ComplianceValidationStatus status = response.getComplianceValidationStatus();
+
+        if ( status != ComplianceValidationStatus.VALIDATED ) {
+          requestApproval(x,
+            new ComplianceApprovalRequest.Builder(x)
+              .setObjId(Long.toString(business.getId()))
+              .setDaoKey("localUserDAO")
+              .setCauseId(response.getId())
+              .setCauseDaoKey("identityMindResponseDAO")
+              .build()
+          );
+        }
+        ruler.putResult(status);
       `
     },
     {
