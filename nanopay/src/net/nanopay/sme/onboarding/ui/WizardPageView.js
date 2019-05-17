@@ -61,6 +61,7 @@ foam.CLASS({
             flex: 1,
             basis: 0,
             padding: '0px 128px',
+            display: 'flex'
           }
         }).addClass(this.myClass('sections-container'))
           .start(this.Rows, {
