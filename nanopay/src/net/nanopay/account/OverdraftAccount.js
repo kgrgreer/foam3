@@ -52,7 +52,7 @@ foam.CLASS({
       type: 'Long',
       javaCode: `
         // lets think about finding total Debts of all debt accounts
-        DebtAccount da = ((DebtAccount)((DAO) x.get("debtAccountDAO")).find(MLang.EQ(DebtAccount.ID, getDebtAccount())));
+        DebtAccount da = ((DebtAccount)((DAO) x.get("localDebtAccountDAO")).find(MLang.EQ(DebtAccount.ID, getDebtAccount())));
         return ((Long) da.findBalance(x)) + da.getLimit();
       `
     },
