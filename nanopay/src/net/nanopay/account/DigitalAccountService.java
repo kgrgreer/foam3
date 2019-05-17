@@ -17,7 +17,7 @@ public class DigitalAccountService
 
     if ( user instanceof Business || user.getGroup().equals("sme") ) {
       DAO accountDAO = (DAO) x.get("accountDAO");
-      OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount());
+      OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount()).fclone();
       DebtAccount debtAccount = (DebtAccount) accountDAO.put(new DebtAccount.Builder(x).setDebtor(overdraft.getId()).build());
       overdraft.setDebtAccount(debtAccount.getId());
       return overdraft;
