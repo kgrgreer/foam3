@@ -18,6 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'accountingReportDAO',
     'contactDAO',
     'ctrl',
@@ -288,6 +289,14 @@ foam.CLASS({
         case 'EXISTING_USER_MULTI':
           return this.EXISTING_USER_MULTI;
       }
+    },
+
+    async function getPermission() {
+      let display = [];
+      display[1] = await this.auth.check(null, 'service.xeroService');
+      display[2] = await this.auth.check(null, 'service.quickbooksService');
+      display[0] = display[1] || display[2];
+      return display;
     }
   ]
 });

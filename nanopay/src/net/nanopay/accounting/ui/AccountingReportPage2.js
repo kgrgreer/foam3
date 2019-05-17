@@ -51,7 +51,7 @@ foam.CLASS({
       padding-bottom: 12px;
       padding-right: 24px;
     }
-    ^ .net-nanopay-ui-ActionView-done {
+    ^ .done-button {
       width: 158px;
       height: 48px !important;
       border-radius: 4px;
@@ -63,7 +63,7 @@ foam.CLASS({
       float:right;
       color: #FFFFFF !important;
     }
-    ^ .net-nanopay-ui-ActionView-done:hover {
+    ^ .foam-u2-ActionView-done:hover {
       background-color: #4d38e1 !important;
     }
     
@@ -312,7 +312,7 @@ foam.CLASS({
 
         .end()
         .start().addClass('button-bar')
-          .start(this.DONE).end()
+          .start(this.DONE).addClass('done-button').end()
           .start(this.DOWNLOAD).addClass('download-button').end()
         .end()
       .end();

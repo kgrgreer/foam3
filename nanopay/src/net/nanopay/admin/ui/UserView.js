@@ -56,7 +56,7 @@ foam.CLASS({
       float: right;
       display: inline-block;
     }
-    ^ .net-nanopay-ui-ActionView-exportButton {
+    ^ .foam-u2-ActionView-exportButton {
       float: right;
       // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
@@ -66,16 +66,16 @@ foam.CLASS({
       z-index: 100;
       margin-right: 5px;
     }
-    ^ .net-nanopay-ui-ActionView-exportButton img {
+    ^ .foam-u2-ActionView-exportButton img {
       margin-right: 5px;
     }
-    ^ .net-nanopay-ui-ActionView-addUser {
+    ^ .foam-u2-ActionView-addUser {
       background-color: %SECONDARYCOLOR%;
       border: solid 1px %SECONDARYCOLOR%;
       color: white;
       float: right;
     }
-    ^ .net-nanopay-ui-ActionView-addUser::after {
+    ^ .foam-u2-ActionView-addUser::after {
       content: ' ';
       position: absolute;
       height: 0;
@@ -117,10 +117,10 @@ foam.CLASS({
     ^ .foam-u2-view-TableView-row {
       height: 40px;
     }
-    ^ .net-nanopay-ui-ActionView-addUser:hover {
+    ^ .foam-u2-ActionView-addUser:hover {
       background: #357eac;
     }
-    ^ .net-nanopay-ui-ActionView-addUser:focus {
+    ^ .foam-u2-ActionView-addUser:focus {
       background: #357eac;
     }
   `,

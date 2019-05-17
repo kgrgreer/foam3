@@ -71,7 +71,7 @@ foam.CLASS({
       margin: 24px 0;
       width: 100%;
     }
-    ^ .net-nanopay-ui-ActionView-back {
+    ^ .foam-u2-ActionView-back {
       color: %SECONDARYCOLOR% !important;
       float: left;
     }
@@ -132,11 +132,17 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'confirmRelationship',
+      view: {
+        class: 'foam.u2.CheckBox'
+      }
+    },
+    {
+      class: 'Boolean',
       name: 'shouldInvite',
       documentation: `
         True if the user wants to invite the contact to join Ablii.
       `,
-      value: false,
       view: {
         class: 'foam.u2.CheckBox',
         label: 'Invite them to join Ablii'
@@ -150,7 +156,6 @@ foam.CLASS({
         var account = this.CABankAccount.create({
           denomination: 'CAD'
         });
-        account.address.countryId = 'CA';
         return account;
       }
     },

@@ -18,6 +18,7 @@ foam.CLASS({
       Boolean nu = "".equals(((Transaction) obj).getId());
 
       Transaction txn = (Transaction)obj;
+      // Transaction [] next = txn.getNext();
       Transaction next = txn.getNext();
       if ( next != null ) {
         txn.setNext(null);
@@ -26,6 +27,10 @@ foam.CLASS({
       if ( next != null ) {
         next.setParent(txn.getId());
         ((DAO) x.get("localTransactionDAO")).put_(x, next);
+        // for ( Transaction nextTransaction : next ) {
+        //   nextTransaction.setParent(txn.getId());
+        //   ((DAO) x.get("localTransactionDAO")).put_(x, nextTransaction);
+        // }
       }
       return txn;
       `

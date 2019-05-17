@@ -97,7 +97,7 @@ foam.CLASS({
       margin-top: 20px;
       margin-bottom: 30px;
     }
-    ^ .net-nanopay-ui-ActionView-printPage{
+    ^ .foam-u2-ActionView-printPage{
       margin-top: 20px;
     }
     ^ .light-roboto-h2{
@@ -127,7 +127,7 @@ foam.CLASS({
       .foam-u2-view-TableView-th-editColumns{
         display: none;
       }
-      ^ .net-nanopay-ui-ActionView-printPage{
+      ^ .foam-u2-ActionView-printPage{
         display: none;
       }
       .net-nanopay-ui-topNavigation-TopNav{

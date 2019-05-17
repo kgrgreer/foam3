@@ -18,7 +18,7 @@ foam.CLASS({
   css: `
     ^{
       width: 100%;
-      background-color: #edf0f5;
+      background-color: %BACKGROUNDCOLOR%;
       margin: auto;
       padding-bottom: 60px;
     }
@@ -111,17 +111,17 @@ foam.CLASS({
       cursor: pointer;
       opacity: 1;
     }
-    ^ .net-nanopay-ui-ActionView-editProfile {
+    ^ .foam-u2-ActionView-editProfile {
       color: #59a5d5;
       background-color: white;
       text-decoration: underline;
       margin-left: 42px;
       height: 15px;
     }
-    ^ .net-nanopay-ui-ActionView-editProfile:hover {
+    ^ .foam-u2-ActionView-editProfile:hover {
       cursor: pointer;
     }
-    ^ .net-nanopay-ui-ActionView-editProfile:active {
+    ^ .foam-u2-ActionView-editProfile:active {
       color: #2974a3;
     }
     ^ .dayOfWeekDiv {

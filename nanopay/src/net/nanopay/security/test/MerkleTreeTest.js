@@ -4,13 +4,11 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'java.io.*',
-    'java.util.Arrays',
+    'foam.util.SafetyUtil',
     'java.security.MessageDigest',
-    'java.nio.charset.StandardCharsets',
-    'org.bouncycastle.util.encoders.Hex',
-
     'net.nanopay.security.MerkleTree',
+    'net.nanopay.security.MerkleTreeHelper',
+    'org.bouncycastle.util.encoders.Hex'
   ],
 
   axioms: [
@@ -35,6 +33,14 @@ foam.CLASS({
             @Override
             protected int computeTotalTreeNodes() {
               return super.computeTotalTreeNodes();
+            }
+
+            public void setDefaultSize(int size) {
+              defaultSize_ = size;
+            }
+
+            public byte[][] getData() {
+              return data_;
             }
           }
         `);
@@ -88,6 +94,8 @@ foam.CLASS({
         MerkleTree_7_Node_Test();
         MerkleTree_12_Node_Test();
         MerkleTree_36_Node_Test();
+        MerkleTree_Previous_Root_Test();
+        MerkleTree_Default_Size_Test();
       `
     },
     {
@@ -636,6 +644,48 @@ foam.CLASS({
         } catch ( Throwable t ) {
           test(false, "Merkle tree failed to build correctly with N=36. " + t);
         }
+      `
+    },
+    {
+      name: 'MerkleTree_Previous_Root_Test',
+      javaCode: `
+      TestMerkleTree tree = new TestMerkleTree();
+      try {
+        tree.addHash(getHash("kristina"));
+        tree.addHash(getHash("smirnova"));
+      } catch (Exception e) {
+        test(false, "MerkleTree_Previous_Root_Test: failed to addHash. Message: " + e.getMessage());
+      }
+      byte[][] builtTree = tree.buildTree();
+
+      try {
+        tree.addHash(getHash("twinkle twinkle"));
+        tree.addHash(getHash("little star"));
+        tree.addHash(getHash("like a diamond in the sky"));
+      } catch (Exception e) {
+        test(false, "MerkleTree_Previous_Root_Test: failed to addHash. Message: " + e.getMessage());
+      }
+
+      byte[][] builtTree2 = tree.buildTree();
+      test(MerkleTreeHelper.FindHashIndex(builtTree2, builtTree[0]) != -1, "Second tree contains the root of the first tree.");
+      `
+    },
+    {
+      name: 'MerkleTree_Default_Size_Test',
+      javaCode: `
+      int treeSize = 100;
+      TestMerkleTree tree = new TestMerkleTree();
+
+      tree.setDefaultSize(treeSize);
+
+      try {
+        for ( int i = 0; i < 3*treeSize+1; i++ ) {
+          tree.addHash(getHash("s"));
+        }
+      } catch (Exception e) {
+        test(false, "MerkleTree_Default_Size_Test: failed to addHash. Message: " + e.getMessage());
+      }
+      test(SafetyUtil.equals(tree.getData().length, treeSize * 4), "Length of 'data_' increases by 'defaultsize' as it becomes full.");
       `
     }
   ]

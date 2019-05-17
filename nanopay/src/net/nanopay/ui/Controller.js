@@ -24,7 +24,6 @@ foam.CLASS({
     'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
-    'net.nanopay.ui.ActionView',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.ui.NanoConnectStyles'
@@ -58,30 +57,11 @@ foam.CLASS({
       content: "";
       display: block;
     }
-    .foam-comics-DAOUpdateControllerView .property-transactionLimits .net-nanopay-ui-ActionView-addItem {
+    .foam-comics-DAOUpdateControllerView .property-transactionLimits .foam-u2-ActionView-addItem {
       height: auto;
       padding: 3px;
       width: auto;
     }
-    .foam-u2-view-TableView .net-nanopay-ui-ActionView {
-      height: auto;
-      padding: 8px;
-      width: auto;
-    }
-    .net-nanopay-ui-ActionView-exportButton {
-      float: right;
-      // background-color: rgba(164, 179, 184, 0.1);
-      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      width: 75px !important;
-      height: 40px;
-      cursor: pointer;
-      z-index: 100;
-      margin-right: 5px;
-    }
-    .net-nanopay-ui-ActionView-exportButton img {
-      margin-right: 5px;
-    }
-
     
     /*
      * The following CSS is for styling flow documents because they don't have
@@ -184,8 +164,6 @@ foam.CLASS({
         self.NanoConnectStyles.create();
         self.InvoiceStyles.create();
         self.ModalStyling.create();
-
-        self.__subContext__.register(self.ActionView, 'foam.u2.ActionView');
 
         self.findBalance();
         self

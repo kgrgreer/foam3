@@ -7,15 +7,17 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.account.Account',
+    'net.nanopay.accounting.AccountingIntegrationUtil',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.model.Business',
+    'net.nanopay.sme.ui.AbliiActionView',
+    'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.banner.ComplianceBannerData',
     'net.nanopay.sme.ui.banner.ComplianceBannerMode',
     'net.nanopay.sme.ui.ChangePasswordView',
-    'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
     'net.nanopay.sme.ui.SMEModal',
@@ -24,7 +26,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.SuccessPasswordView',
     'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
-    'net.nanopay.sme.ui.VerifyEmail',
+    'net.nanopay.sme.ui.VerifyEmailView',
     'net.nanopay.accounting.AccountingIntegrationUtil'
   ],
 
@@ -103,7 +105,7 @@ foam.CLASS({
     },
     {
       name: 'PASSED_BANNER',
-      message: 'Congratulations! Your business is now fully verified and ready to make domestic and cross-border payments!'
+      message: 'Congratulations! Your business is now fully verified and ready to make domestic payments!'
     },
     {
       name: 'INCOMPLETE_BUSINESS_REGISTRATION',
@@ -116,6 +118,14 @@ foam.CLASS({
     {
       name: 'QUERY_BANK_AMOUNT_ERROR',
       message: 'An unexpected error occurred while counting the number of bank accounts the user has: '
+    },
+    {
+      name: 'ADDED_TO_BUSINESS_1',
+      message: "You've been successfully added to "
+    },
+    {
+      name: 'ADDED_TO_BUSINESS_2',
+      message: '. Welcome to Ablii!'
     }
   ],
 
@@ -214,14 +224,14 @@ foam.CLASS({
         // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
         self.BankPadAuthorization.create();
 
-        self.__subContext__.register(self.ActionView, 'foam.u2.ActionView');
+        self.__subContext__.register(self.AbliiActionView, 'foam.u2.ActionView');
         self.__subContext__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
         self.__subContext__.register(self.SMEModal, 'foam.u2.dialog.Popup');
         self.__subContext__.register(self.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
         self.__subContext__.register(self.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
         self.__subContext__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
         self.__subContext__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
-        self.__subContext__.register(self.VerifyEmail, 'foam.nanos.auth.ResendVerificationEmail');
+        self.__subContext__.register(self.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
         self.__subContext__.register(self.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
         self.__subContext__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
         self.__subContext__.register(self.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
@@ -303,19 +313,19 @@ foam.CLASS({
     function confirmHashRedirectIfInvitedAndSignedIn() {
       var locHash = location.hash;
       if ( locHash === '#invited' && this.loginSuccess ) {
-      var searchParams = new URLSearchParams(location.search);
+        var searchParams = new URLSearchParams(location.search);
         var dao = ctrl.__subContext__.smeBusinessRegistrationDAO;
         if ( dao ) {
           this.agent.signUpToken = searchParams.get('token');
           var userr = dao.put(this.agent);
           if ( userr ) {
             this.agent.copyFrom(userr);
-            ctrl.notify(`Success you are now apart of a new business: ${searchParams.get('companyName')}`);
+            this.notify(this.ADDED_TO_BUSINESS_1 + searchParams.get('companyName') + this.ADDED_TO_BUSINESS_2);
             // replace url parameters with 'ablii' and redirect to dashboard, effectively riding the token of url history
             history.replaceState({}, '', 'ablii');
             this.pushMenu('sme.main.dashboard');
           } else {
-            ctrl.notify(err.message || `The invitation to a business ${searchParams.get('companyName')} was not processed, please try again.`, 'error');
+            this.notify(err.message || `The invitation to a business ${searchParams.get('companyName')} was not processed, please try again.`, 'error');
             // replace url parameters with 'ablii' and redirect to dashboard, effectively riding the token of url history
             history.replaceState({}, '', 'ablii');
             this.pushMenu('sme.main.dashboard');

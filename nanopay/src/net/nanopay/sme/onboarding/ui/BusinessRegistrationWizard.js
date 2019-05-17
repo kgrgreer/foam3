@@ -76,7 +76,7 @@ foam.CLASS({
     ^ .net-nanopay-sme-onboarding-ui-BeneficialOwnershipForm {
       padding-bottom: 150px;
     }
-    ^ .net-nanopay-ui-ActionView-goNext {
+    ^ .foam-u2-ActionView-goNext {
       border-radius: 4px !important;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
       background-color: #604aff !important;
@@ -104,7 +104,7 @@ foam.CLASS({
     ^ .foam-u2-view-RadioView {
       margin-left: 50px;
     }
-    ^ .net-nanopay-ui-ActionView-uploadButton {
+    ^ .foam-u2-ActionView-uploadButton {
       background: #604aff !important;
     }
   `,
@@ -183,12 +183,13 @@ foam.CLASS({
     { name: 'ERROR_LAST_NAME_DIGITS', message: 'Last name cannot contain numbers.' },
     { name: 'ERROR_TERMS_AND_CONDITIONS_MESSAGE', message: 'Please accept the terms and conditions.' },
     { name: 'ERROR_BASE_CURRENCY_MESSAGE', message: 'Base currency required.' },
-    { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Annual revenue required.' },
+    { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Domestic Annual Gross Sales required.' },
     { name: 'ERROR_INTERNATIONAL_PAYMENTS_MESSAGE', message: 'International payments required.' },
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
     { name: 'ERROR_OTHER_TRANSACTION_PURPOSE_MESSAGE', message: 'Please provide additional information for your transaction purpose.' },
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual Number of Transactions is required.' },
-    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Estimated Annual Volume in USD is required.' },
+    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Domestic Estimated Annual Volume required.' },
+    { name: 'ERROR_ANNUAL_VOLUME_CAD', message: 'Domestic Estimated Annual Volume required.' },
     { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required.' },
     { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
     { name: 'ERROR_ID_EXPIRED', message: 'Identification expiry date indicates that the ID is expired.' },
@@ -243,10 +244,10 @@ foam.CLASS({
 
       this.views = [
         { id: 'business-registration-introduction', label: 'Getting Started', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.IntroductionView' }, isHiddenInOverview: true },
-        { id: 'business-registration-business-form', label: 'Your Business', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.BusinessForm' } },
-        { id: 'business-registration-transaction-estimate-form', label: 'Your Transactions', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.UserTransactionEstimateForm' } },
-        { id: 'business-registration-signing-officer-form', label: 'Signing Officer', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
-        { id: 'business-registration-beneficial-owner-form', label: 'Beneficial Ownership', subtitle: 'Additional information', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
+        { id: 'business-registration-business-form', label: 'Your Business', view: { class: 'net.nanopay.sme.onboarding.ui.BusinessForm' } },
+        { id: 'business-registration-transaction-estimate-form', label: 'Your Transactions', view: { class: 'net.nanopay.sme.onboarding.ui.UserTransactionEstimateForm' } },
+        { id: 'business-registration-signing-officer-form', label: 'Signing Officer', view: { class: 'net.nanopay.sme.onboarding.ui.SigningOfficerForm' } },
+        { id: 'business-registration-beneficial-owner-form', label: 'Beneficial Ownership', view: { class: 'net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm' } }
       ];
       this.viewData.user.suggestedUserTransactionInfo =
         this.user.suggestedUserTransactionInfo ?
@@ -320,37 +321,40 @@ foam.CLASS({
         return false;
       }
 
-      editedUser.identification.validate();
-      if ( editedUser.identification.errors_ ) {
-        this.notify(editedUser.identification.errors_[0][1], 'error');
-        return false;
-      }
+      // editedUser.identification.validate();
+      // if ( editedUser.identification.errors_ ) {
+      //   this.notify(editedUser.identification.errors_[0][1], 'error');
+      //   return false;
+      // }
 
-      if ( editedUser.identification.expirationDate <= currentDate ) {
-        this.notify(this.ERROR_ID_EXPIRED, 'error');
-        return false;
-      }
+      // if ( editedUser.identification.expirationDate <= currentDate ) {
+      //   this.notify(this.ERROR_ID_EXPIRED, 'error');
+      //   return false;
+      // }
 
-      if ( editedUser.additionalDocuments.length <= 0 ) {
-        this.notify(this.ERROR_ADD_SIGNING_DOCS, 'error');
-        return false;
-      }
+      // if ( editedUser.additionalDocuments.length <= 0 ) {
+      //   this.notify(this.ERROR_ADD_SIGNING_DOCS, 'error');
+      //   return false;
+      // }
 
       if ( foam.util.equals(this.viewData.user.businessAddress.countryId, 'CA') ) {
-        if ( ! this.viewData.canadianScrollBoxOne ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED_1, 'error');
-          return false;
-        }
+        // if ( ! this.viewData.canadianScrollBoxOne ) {
+        //   this.notify(this.ERROR_TERMS_NOT_CHECKED_1, 'error');
+        //   return false;
+        // }
         if ( ! this.viewData.canadianScrollBoxTwo ) {
           this.notify(this.ERROR_TERMS_NOT_CHECKED_2, 'error');
           return false;
         }
-      } else {
-        if ( ! this.viewData.americanScrollBox ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED_3, 'error');
-          return false;
-        }
       }
+      // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+      //
+      // } else {
+      //   if ( ! this.viewData.americanScrollBox ) {
+      //     this.notify(this.ERROR_TERMS_NOT_CHECKED_3, 'error');
+      //     return false;
+      //   }
+      // }
 
       return true;
     },
@@ -377,27 +381,46 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! transactionInfo.annualRevenue ) {
-        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
-        return false;
-      }
+     // NOTE: AFX REMOVED FOR MVP RELEASE
+      // if ( ! transactionInfo.annualRevenue ) {
+      //   this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
+      //   return false;
+      // }
 
       if ( transactionInfo.internationalPayments ) {
         if ( ! transactionInfo.annualTransactionAmount ) {
           this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
           return false;
         }
-
-        if ( ! transactionInfo.annualVolume ) {
-          this.notify(this.ERROR_ANNUAL_VOLUME_MESSAGE, 'error');
-          return false;
-        }
-
-        if ( ! transactionInfo.firstTradeDate ) {
-          this.notify(this.ERROR_MISSING_FIRST_PAYMENT_DATE, 'error');
-          return false;
-        }
       }
+      
+      if ( ! transactionInfo.annualDomesticTransactionAmount ) {
+        this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
+        return false;
+      }
+
+      if ( ! transactionInfo.annualDomesticVolume ) {
+        this.notify(this.ERROR_ANNUAL_VOLUME_CAD, 'error');
+        return false;
+      }
+
+      // AFX RELATED - international payment
+      // if ( transactionInfo.internationalPayments ) {
+      //   if ( ! transactionInfo.annualTransactionAmount ) {
+      //     this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
+      //     return false;
+      //   }
+
+      //   if ( ! transactionInfo.annualVolume ) {
+      //     this.notify(this.ERROR_ANNUAL_VOLUME_MESSAGE, 'error');
+      //     return false;
+      //   }
+
+      //   if ( ! transactionInfo.firstTradeDate ) {
+      //     this.notify(this.ERROR_MISSING_FIRST_PAYMENT_DATE, 'error');
+      //     return false;
+      //   }
+      // }
 
       return true;
     },
@@ -447,7 +470,9 @@ foam.CLASS({
       }
 
       if ( ! businessProfile.sourceOfFunds
-        || ! businessProfile.sourceOfFunds.trim() ) {
+        || ! businessProfile.sourceOfFunds.trim()
+        || businessProfile.sourceOfFunds === 'Other'
+        && ( ! this.viewData.sourceOfFundsOther || ! this.viewData.sourceOfFundsOther.trim()) ) {
         this.notify(this.ERROR_MISSING_SOURCE_OF_FUNDS, 'error');
         return false;
       }
@@ -463,10 +488,10 @@ foam.CLASS({
         }
       }
 
-      if ( businessProfile.additionalDocuments.length <= 0 ) {
-        this.notify(this.ERROR_ADD_BUSINESS_DOCS, 'error');
-        return false;
-      }
+      // if ( businessProfile.additionalDocuments.length <= 0 ) {
+      //   this.notify(this.ERROR_ADD_BUSINESS_DOCS, 'error');
+      //   return false;
+      // }
 
       return true;
     },

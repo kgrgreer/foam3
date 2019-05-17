@@ -47,7 +47,7 @@ foam.CLASS({
       right: 20px;
       float: right;
     }
-    ^ .net-nanopay-ui-ActionView-closeModal {
+    ^ .foam-u2-ActionView-closeModal {
       position: relative;
       right: 0px;
       width: 50px;

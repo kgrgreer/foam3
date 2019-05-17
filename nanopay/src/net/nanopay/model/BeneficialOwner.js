@@ -27,18 +27,26 @@ foam.CLASS({
     'legalName'
   ],
 
+  sections: [
+    {
+      name: 'requiredSection'
+    }
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id'
     },
-    'firstName',
-    'middleName',
-    'lastName',
-    'legalName',
+    {
+      class: 'String',
+      name: 'jobTitle',
+      section: 'requiredSection'
+    },
     {
       class: 'Int',
       name: 'ownershipPercent',
+      section: 'requiredSection',
       documentation: `
         Represents the percentage of the business that the beneficial owner
         owns.
@@ -46,21 +54,31 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'jobTitle'
+      name: 'firstName',
+      section: 'requiredSection'
+    },
+    {
+      class: 'String',
+      name: 'lastName',
+      section: 'requiredSection'
+    },
+    'middleName',
+    'legalName',
+    {
+      class: 'Date',
+      name: 'birthday',
+      section: 'requiredSection',
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
+      section: 'requiredSection',
       factory: function() {
         return this.Address.create();
       },
       view: { class: 'foam.nanos.auth.AddressDetailView' }
     },
-    {
-      class: 'Date',
-      name: 'birthday'
-    }
   ],
 
   methods: [

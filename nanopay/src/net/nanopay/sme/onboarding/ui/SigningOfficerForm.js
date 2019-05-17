@@ -24,6 +24,7 @@ foam.CLASS({
   imports: [
     'acceptanceDocumentService',
     'agent',
+    'ctrl',
     'isSigningOfficer',
     'menuDAO',
     'user'
@@ -87,20 +88,21 @@ foam.CLASS({
     ^ .medium-header {
       margin: 20px 0px;
     }
-    ^ .net-nanopay-ui-ActionView-uploadButton {
+    ^ .foam-u2-ActionView-uploadButton {
       margin-top: 20px;
     }
 
-    ^ .net-nanopay-ui-ActionView-addUsers {
+    ^ .foam-u2-ActionView-addUsers {
       height: 40px;
       width: 250px;
-      background: none;
+      background: none !important;
       color: #8e9090;
       font-size: 16px;
       text-align: left;
+      border: none !important;
     }
 
-    ^ .net-nanopay-ui-ActionView-addUsers:hover {
+    ^ .foam-u2-ActionView-addUsers:hover {
       background: none;
       color: #8e9090;
     }
@@ -122,6 +124,7 @@ foam.CLASS({
       padding-top: 30px;
     }
     ^ .checkBoxes input{
+      margin-right: 20px;
       vertical-align: middle;
     }
     ^ .checkBoxes span{
@@ -295,18 +298,20 @@ foam.CLASS({
         this.viewData.agent.additionalDocuments = n;
       }
     },
-    {
-      class: 'FObjectProperty',
-      name: 'identification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
-      factory: function() {
-        return this.viewData.agent.identification ? this.viewData.agent.identification : this.PersonalIdentification.create({});
-      },
-      postSet: function(o, n) {
-        this.viewData.agent.identification = n;
-      },
-    },
+    // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
+    //
+    // {
+    //   class: 'FObjectProperty',
+    //   name: 'identification',
+    //   of: 'net.nanopay.model.PersonalIdentification',
+    //   view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
+    //   factory: function() {
+    //     return this.viewData.agent.identification ? this.viewData.agent.identification : this.PersonalIdentification.create({});
+    //   },
+    //   postSet: function(o, n) {
+    //     this.viewData.agent.identification = n;
+    //   },
+    // },
     {
       class: 'Boolean',
       name: 'termsCheckBox',
@@ -432,11 +437,6 @@ foam.CLASS({
           family member of any such person?`
     },
     {
-      name: 'INVITE_INFO',
-      message: `Invite a signing officer or other employees in your business.
-          Recipients will receive a link to join your business on Ablii`
-    },
-    {
       name: 'SIGNING_INFORMATION',
       message: `A signing officer is a person legally authorized to act
           on behalf of the business. (e.g. CEO, COO, board director)`
@@ -451,7 +451,7 @@ foam.CLASS({
     },
     {
       name: 'INVITE_USERS_EXP',
-      message: `Invite a signing officer or other employees in your business.
+      message: `Invite a signing officer to your business.
           Recipients will receive a link to join your business on Ablii`
     },
     {
@@ -459,12 +459,18 @@ foam.CLASS({
       message: `Please provide a copy of your government issued drivers license or passport. 
           The image must be clear, or will require resubmission. If your name differs from what 
           the ID shows, please provide sufficient documentation (marriage certificate, name change documentation, etc)`
+    },
+    {
+      name: 'QUEBEC_DISCLAIMER',
+      message: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.'
     }
   ],
 
   methods: [
     function init() {
       this.loadAcceptanceDocuments();
+
+      this.onDetach(this.viewData.agent.address.regionId$.sub(this.checkQuebec));
     },
     function initE() {
       this.nextLabel = 'Next';
@@ -513,20 +519,24 @@ foam.CLASS({
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
             .start(this.POLITICALLY_EXPOSED).addClass('radio-button').end()
           .end()
-          .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
-          .start(this.IDENTIFICATION).end()
-          // Terms and Services and Compliance stuff
-            .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' })
-              .show(this.isCanadian$)
-              .start('a').addClass('sme').addClass('link')
-                .addClass(this.myClass('terms-link'))
-                .add('Download or Print this Agreement Here')
-                .on('click', () => {
-                  var link = this.triPartyAgreementCad ? this.triPartyAgreementCad.link : '';
-                  window.open(link);
-                })
-              .end()
-            .end()
+            // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+            // 
+            // .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
+            // .start(this.IDENTIFICATION).end()
+            //
+            // Terms and Services and Compliance stuff
+            //
+            // .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' })
+            //   .show(this.isCanadian$)
+            //   .start('a').addClass('sme').addClass('link')
+            //     .addClass(this.myClass('terms-link'))
+            //     .add('Download or Print this Agreement Here')
+            //     .on('click', () => {
+            //       var link = this.triPartyAgreementCad ? this.triPartyAgreementCad.link : '';
+            //       window.open(link);
+            //     })
+            //   .end()
+            // .end()
             .start(this.DUAL_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px' })
               .show(this.isCanadian$)
               .start('a').addClass('sme').addClass('link')
@@ -538,41 +548,45 @@ foam.CLASS({
                 })
               .end()
             .end()
-            .start(this.TRI_PARTY_AGREEMENT_USD).style({ 'margin-top': '30px' })
-              .hide(this.isCanadian$)
-              .start('a').addClass('sme').addClass('link')
-                .addClass(this.myClass('terms-link'))
-                .add('Download or Print this Agreement Here')
-                .on('click', () => {
-                  var link = this.triPartyAgreementUsd ? this.triPartyAgreementUsd.link : '';
-                  window.open(link);
-                })
-              .end()
-            .end()
-            .start().addClass('checkBoxes').show(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
-            .end()
+            // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+            // 
+            // .start(this.TRI_PARTY_AGREEMENT_USD).style({ 'margin-top': '30px' })
+            //   .hide(this.isCanadian$)
+            //   .start('a').addClass('sme').addClass('link')
+            //     .addClass(this.myClass('terms-link'))
+            //     .add('Download or Print this Agreement Here')
+            //     .on('click', () => {
+            //       var link = this.triPartyAgreementUsd ? this.triPartyAgreementUsd.link : '';
+            //       window.open(link);
+            //     })
+            //   .end()
+            // .end()
+            // .start().addClass('checkBoxes').show(this.isCanadian$)
+            //   .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
+            // .end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
               .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxTwo$ }).add(this.dualPartyAgreementCad$.dot('checkboxText')).end()
             .end()
-            .start().addClass('checkBoxes').hide(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.americanScrollBox$ }).add(this.triPartyAgreementUsd$.dot('checkboxText')).end()
-            .end()
+            // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+            //
+            // .start().addClass('checkBoxes').hide(this.isCanadian$)
+            //   .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.americanScrollBox$ }).add(this.triPartyAgreementUsd$.dot('checkboxText')).end()
+            // .end()
           // End of Terms and Services and Compliance stuff
-          .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
-          .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
-          .start({
-            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
-            files$: this.additionalDocs$,
-            supportedFormats: {
-              'image/jpg': 'JPG',
-              'image/jpeg': 'JPEG',
-              'image/png': 'PNG',
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
-              'application/msword': 'DOC',
-              'application/pdf': 'PDF'
-            }
-          }).end()
+          // .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
+          // .start().add(this.SIGNING_OFFICER_UPLOAD_DESC).end()
+          // .start({
+          //   class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+          //   files$: this.additionalDocs$,
+          //   supportedFormats: {
+          //     'image/jpg': 'JPG',
+          //     'image/jpeg': 'JPEG',
+          //     'image/png': 'PNG',
+          //     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+          //     'application/msword': 'DOC',
+          //     'application/pdf': 'PDF'
+          //   }
+          // }).end()
         .end()
       .end()
       .start() .hide(this.signingOfficer$.map(function(v) {
@@ -618,6 +632,13 @@ foam.CLASS({
         console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
       }
     },
+
+    function checkQuebec(detachable, eventName, propName, propSlot) {
+      var regionId = propSlot.get();
+      if ( regionId === 'QC' ) {
+        this.ctrl.notify(this.QUEBEC_DISCLAIMER, 'error');
+      }
+    }
   ],
 
   actions: [

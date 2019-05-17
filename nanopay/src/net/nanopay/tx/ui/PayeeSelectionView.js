@@ -8,6 +8,7 @@ foam.CLASS({
         name: 'data',
         documentation: 'The selected object.'
       },
+      'fullObject',
       'viewData'
     ],
   
@@ -15,8 +16,8 @@ foam.CLASS({
       function initE() {
         let display = 'Select a payee';   
   
-        if ( this.data !== undefined ) {
-          display = this.data.email;
+        if ( this.fullObject !== undefined ) {
+          display = this.fullObject.email;
         } else if ( this.viewData.payeeAccountCheck && this.viewData.payeeCard ) {
           display  = this.viewData.payeeCard.email;
         }

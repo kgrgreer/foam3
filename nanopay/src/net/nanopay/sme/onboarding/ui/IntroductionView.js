@@ -53,7 +53,7 @@ foam.CLASS({
     { name: 'GUIDE_MESSAGE_REQUIREMENTS', message: 'Here are some things you need to get this done:' },
     { name: 'BUSINESS_ADDRESS', message: 'Business Address' },
     { name: 'BUSINESS_REGISTRATION_INFO', message: 'Business Registration Information' },
-    { name: 'PROOF_OF_REGISTRATION', message: 'Proof of Business Registration' },
+    { name: 'PROOF_OF_REGISTRATION', message: 'Business Information' },
     { name: 'SIGNING_OFFICER', message: 'Signing Officer Information & Identification' },
     { name: 'COMPANY_OWNERSHIP', message: 'Company Ownership Information' },
     // Second Section of messages
@@ -66,9 +66,7 @@ foam.CLASS({
     },
     {
       name: 'WHY_ASK_EXPLANATION2',
-      message: `Once your profile is complete, we will conduct review to enable 
-          domestic and cross-border payments!
-      `
+      message: `Once your profile is complete, we will conduct a review to enable payments!`
     }
   ],
 

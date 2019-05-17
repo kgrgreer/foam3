@@ -104,7 +104,7 @@ foam.CLASS({
       font-weight: 900;
       color: #2b2b2b;
     }
-    ^ .net-nanopay-ui-ActionView-save {
+    ^ .save-button {
       width: 158px;
       height: 48px !important;
       border-radius: 4px;
@@ -117,13 +117,13 @@ foam.CLASS({
       float: right;
       color: #FFFFFF !important;
     }
-    ^ .net-nanopay-ui-ActionView-save:hover {
+    ^ .foam-u2-ActionView-save:hover {
       background-color: #4d38e1 !important;
     }
     ^ .bank-matching{
       height: 40px;
     }
-    ^ .net-nanopay-ui-ActionView-cancel {
+    ^ .cancel-button {
       float: left;
       background-color: transparent;
       color: #525455;
@@ -135,7 +135,7 @@ foam.CLASS({
       font-size: 16px;
       font-weight: lighter;
     }
-    ^ .net-nanopay-ui-ActionView-cancel:hover {
+    ^ .foam-u2-ActionView-cancel:hover {
       cursor : selector;
       background-color: transparent !important
     }
@@ -316,8 +316,8 @@ foam.CLASS({
           .end()
         .end()
         .start().addClass('button-bar')
-          .start(this.CANCEL).end()
-          .start(this.SAVE).end()
+          .start(this.CANCEL).addClass('cancel-button').end()
+          .start(this.SAVE).addClass('save-button').end()
         .end()
       .end();
     },

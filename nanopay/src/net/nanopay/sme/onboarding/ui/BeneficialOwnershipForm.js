@@ -38,7 +38,7 @@ requires: [
 css: `
 
     ^ .property-birthdayField .date-display-box {
-      width: 473.5px !important;
+      width: 100%;
       font-size: 14px !important;
       height: 35px !important;
       border: solid 1px #8e9090 !important;
@@ -118,17 +118,9 @@ css: `
       width: 100%;
     }
 
-    ^ .net-nanopay-ui-ActionView-addBeneficialOwner {
+    ^ .foam-u2-ActionView-addBeneficialOwner {
       margin-left: 160px;
       margin-top: 30px;
-    }
-
-    ^ .updateButton {
-      display: table-row;
-      vertical-align: top;
-      margin-left: 19px;
-      width: 140px !important;
-      margin-top: 35px;
     }
 
     ^ .deleteButton, ^ .editButton {
@@ -163,7 +155,7 @@ css: `
       background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit {
+    ^ .foam-u2-ActionView-cancelEdit {
       width: 135px;
       height: 40px;
       color: black !important;
@@ -175,14 +167,14 @@ css: `
       margin-top: 35px;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit.hidden {
+    ^ .foam-u2-ActionView-cancelEdit.hidden {
       width: 0 !important;
       margin-left: 0 !important;
       opacity: 0;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancelEdit:hover,
-    ^ .net-nanopay-ui-ActionView-cancelEdit:focus {
+    ^ .foam-u2-ActionView-cancelEdit:hover,
+    ^ .foam-u2-ActionView-cancelEdit:focus {
       background-color: rgba(164, 179, 184, 0.3) !important;
     }
 
@@ -215,6 +207,12 @@ css: `
       vertical-align: middle;
     }
 
+    ^ .principalOwnersCheckBox > .foam-u2-md-CheckBox-label {
+      margin-top: 0px !important;
+      margin-left: 8px;
+      width: 550px;
+    }
+
     ^ .checkBoxContainer .foam-u2-md-CheckBox-label {
       display: inline-block;
       vertical-align: middle;
@@ -235,7 +233,7 @@ css: `
     ^ .foam-u2-TextField:disabled,
     ^ .foam-u2-DateView:disabled,
     ^ .foam-u2-tag-Select:disabled,
-    ^ .net-nanopay-ui-ActionView:disabled {
+    ^ .foam-u2-ActionView:disabled {
       border: solid 1px rgba(164, 179, 184, 0.5) !important;
       color: #a4b3b8 !important;
     }
@@ -273,12 +271,6 @@ css: `
       margin: 25px 0px;
     }
 
-    ^ .foam-u2-tag-Select,
-    ^ .foam-u2-TextField,
-    ^ .foam-u2-DateView {
-      width: 95%;
-    }
-
     ^ .left-of-container {
       margin-right: 20px;
     }
@@ -313,13 +305,9 @@ css: `
     }
 
     ^ .boxedField {
-      border-width: 1px;  
-      border-style: solid;
-      margin-bottom: 20px;
-      padding-left: 25px;
-      padding-top: 16px;
+      border: 1px solid;  
       border-radius: 5px;
-      width: 91%;
+      padding: 24px;
     }
 
     ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
@@ -356,8 +344,10 @@ css: `
       margin-top: 26px;
     }
 
-    ^ .pushLeft {
-      margin-left: 180px;
+    ^ .buttons-container {
+      margin-top: 24px;
+      display: flex;
+      justify-content: flex-end;
     }
 
     ^ .owner-percent-container{
@@ -381,6 +371,10 @@ css: `
       color: #525455;
       font-size: 10px;
       line-height: 15px;
+    }
+
+    ^ .property-jobTitleField {
+      width: 100%;
     }
   `,
 
@@ -510,6 +504,9 @@ properties: [
     name: 'noBeneficialOwners',
     documentation: `This is displayed as a checkbox, with text 'No individuals own 25% or more.'
     This cannot be true at the same time as publiclyTradedEntity. UX requirement`,
+    factory: function() {
+      return this.viewData.noBeneficialOwners;
+    },
     postSet: function(o, n) {
       this.viewData.noBeneficialOwners = n;
       if ( n && this.publiclyTradedEntity ) {
@@ -523,6 +520,9 @@ properties: [
     name: 'publiclyTradedEntity',
     documentation: `This is displayed as a checkbox, with text 'Owned by a publicly traded entity'
     This cannot be true at the same time as noBeneficialOwners. UX requirement`,
+    factory: function() {
+      return this.viewData.publiclyTradedEntity;
+    },
     postSet: function(o, n) {
       this.viewData.publiclyTradedEntity = n;
       if ( n && this.noBeneficialOwners ) {
@@ -544,6 +544,9 @@ properties: [
     name: 'noAdditionalBeneficialOwners',
     documentation: `This is displayed as a checkbox, with text acknowledging the form
     contains details for all beneficial owners.`,
+    factory: function() {
+      return this.viewData.noAdditionalBeneficialOwners;
+    },
     postSet: function(o, n) {
       this.viewData.noAdditionalBeneficialOwners = n;
     }
@@ -590,7 +593,7 @@ messages: [
   },
   {
     name: 'NO_ADDITIONAL_OWNERS',
-    message: `I confirm that I have listed the details for all beneficial owners who own 25% or more of the business.`
+    message: `I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.`
   },
   { name: 'BENEFICIAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
   { name: 'BENEFICIAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
@@ -668,13 +671,11 @@ methods: [
               .end()
 
               .start(this.ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
-              .start().addClass('pushLeft')
-                .start(this.CANCEL_EDIT)
+              .start().addClass('buttons-container')
+                .start(this.CANCEL_EDIT, { buttonStyle: 'TERTIARY' })
                   .enableClass('hidden', this.editingBeneficialOwner$, true)
                 .end()
-                .start(this.ADD_BENEFICIAL_OWNER, { label$: this.addBeneficialOwnerLabel$ })
-                  .enableClass('updateButton', this.editingBeneficialOwner$)
-                .end()
+                .tag(this.ADD_BENEFICIAL_OWNER, { label$: this.addBeneficialOwnerLabel$ })
               .end()
             .end()
           .end()
@@ -728,26 +729,28 @@ methods: [
             })
           ]
         }, {}, this.tableViewElement$).end()
-        .start()
-          .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
-          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
-          .start({
-            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
-            files$: this.beneficialOwnerDocuments$,
-            supportedFormats: {
-              'image/jpg': 'JPG',
-              'image/jpeg': 'JPEG',
-              'image/png': 'PNG',
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
-              'application/msword': 'DOC',
-              'application/pdf': 'PDF'
-            }
-          }).end()
-        .end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_1).end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
+        // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+        //
+        // .start()
+        //   .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
+        //   .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
+        //   .start({
+        //     class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+        //     files$: this.beneficialOwnerDocuments$,
+        //     supportedFormats: {
+        //       'image/jpg': 'JPG',
+        //       'image/jpeg': 'JPEG',
+        //       'image/png': 'PNG',
+        //       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+        //       'application/msword': 'DOC',
+        //       'application/pdf': 'PDF'
+        //     }
+        //   }).end()
+        // .end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_1).end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
       .end()
       .start().addClass('principalOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.NO_ADDITIONAL_OWNERS, data$: this.noAdditionalBeneficialOwners$ }).end()

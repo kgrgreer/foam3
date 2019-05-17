@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.liquidity.LiquiditySettings',
-    'net.nanopay.liquidity.Frequency',
+    'net.nanopay.util.Frequency',
     'net.nanopay.account.Account'
 ],
 

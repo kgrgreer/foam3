@@ -15,15 +15,17 @@ extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    ApprovalRequest request = (ApprovalRequest) obj;
+    FObject old = ((DAO)x.get("approvalRequestDAO")).find_(x, obj);
+    ApprovalRequest ret = (ApprovalRequest) getDelegate().put_(x, obj);
+    if ( old != null ) return ret;
     Notification notification = new Notification();
-    notification.setUserId(request.getApprover());
+    notification.setUserId(ret.getApprover());
     notification.setNotificationType("New approval request");
     notification.setEmailIsEnabled(true);
     notification.setBody("New approval was requested");
     //notification.setEmailName("future email template name"); !!! PROPER WAY TO SET EMAIL TEMPLATE (when it is done) !!!
     //notification.setEmailArgs(MAP_GOES_HERE); !!! PROPER WAY TO SET EMAIL ARGS FOR TEMPLATE !!!
     ((DAO)x.get("notificationDAO")).put(notification);
-    return getDelegate().put_(x, obj);
+    return ret;
   }
 }

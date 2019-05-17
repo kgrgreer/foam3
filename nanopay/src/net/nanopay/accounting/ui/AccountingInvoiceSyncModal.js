@@ -52,7 +52,7 @@ foam.CLASS({
       margin-top: 8px;
     }
     
-    ^ .net-nanopay-ui-ActionView-cancel {
+    ^ .cancel-button {
       width: 96px !important;
       height: 36px !important;
       color: #525455;
@@ -63,13 +63,13 @@ foam.CLASS({
       border: none;
     }
 
-    ^ .net-nanopay-ui-ActionView-cancel:hover {
+    ^ .cancel-button:hover {
       background: #fafafa !important;
       border: none;
       color: #525455;
     }
     
-    ^ .net-nanopay-ui-ActionView-continue {
+    ^ .continue-button {
       margin-right: 23px;
       width: 96px !important;
       height: 36px !important;
@@ -77,11 +77,11 @@ foam.CLASS({
       background-color: #604AFF;
     }
 
-    .net-nanopay-ui-ActionView.ignoreFloat {
+    .foam-u2-ActionView.ignoreFloat {
       float: none !important;
     }
 
-    ^ .net-nanopay-ui-ActionView-continue:hover {
+    ^ .continue-button:hover {
       background-color: #4D38E1 !important;
       color: white;
     }
@@ -112,8 +112,8 @@ foam.CLASS({
                   .add( (this.businessName == null ? '.' : ' named ' + this.businessName + '.') + ' Please sync again to ensure this information remains up to date.').end()
               .end()
               .start().addClass('actions')
-                .start(this.CANCEL).addClass('cancel').addClass('ignoreFloat').end()
-                .start(this.CONTINUE).addClass('sync').addClass('ignoreFloat').end()
+                .start(this.CANCEL).addClass('cancel-button').addClass('ignoreFloat').end()
+                .start(this.CONTINUE).addClass('continue-button').addClass('ignoreFloat').end()
               .end()
             .end()
           .end()

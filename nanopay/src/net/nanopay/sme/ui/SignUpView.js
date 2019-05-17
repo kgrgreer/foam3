@@ -12,6 +12,7 @@ foam.CLASS({
   imports: [
     'acceptanceDocumentService',
     'auth',
+    'countryDAO',
     'groupDAO',
     'loginSuccess',
     'menuDAO',
@@ -23,13 +24,15 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.u2.Element',
+    'net.nanopay.documents.AcceptanceDocument',
+    'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
     'net.nanopay.sme.ui.SplitBorder',
-    'net.nanopay.ui.NewPasswordView',
-    'net.nanopay.documents.AcceptanceDocument',
-    'net.nanopay.documents.AcceptanceDocumentService'
+    'net.nanopay.ui.NewPasswordView'
   ],
 
   css: `
@@ -68,8 +71,11 @@ foam.CLASS({
       height: 19.4;
       margin-bottom: 12px;
     }
+    ^ .terms {
+      font-size: 12px !important;
+    }
     ^terms-link {
-      font-size: 14px !important;
+      font-size: 12px !important;
       margin-left: 5px;
       text-decoration: none;
     }
@@ -100,6 +106,26 @@ foam.CLASS({
     ^ .link {
       margin-right: 5px;
     }
+    ^ .foam-u2-tag-Select {
+      width: 100%;
+      font-size: 14px;
+      height: 40px;
+      border: solid 1px #8e9090;
+      background: #fff;
+      border-radius: 3px;
+      font-weight: 400;
+      padding: 12px;
+      color: #8e9090;
+      box-shadow: none;
+    }
+    ^disclaimer {
+      width: 331px;
+      font-family: Lato;
+      font-size: 10px;
+      color: #8e9090;
+      margin: 50px auto 0 auto;
+      line-height: 1.5;
+    }
   `,
 
   properties: [
@@ -118,6 +144,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'companyNameField'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      documentation: 'Reference to affiliated country.',
+      name: 'country'
     },
     {
       class: 'String',
@@ -145,12 +177,12 @@ foam.CLASS({
       name: 'disableCompanyName',
       documentation: `Set this to true to disable the Company Name input field.`
     },
-    'termsAndConditions',   
+    'termsAndConditions',
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'termsAgreementDocument'
-    },
+    }
   ],
 
   messages: [
@@ -159,22 +191,29 @@ foam.CLASS({
     { name: 'F_NAME', message: 'First Name' },
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
+    { name: 'COUNTRY_LABEL', message: 'Country of operation' },
+    { name: 'COUNTRY_ERROR', message: 'Country of operation required.' },
     { name: 'EMAIL', message: 'Email Address' },
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
     { name: 'TERMS_AGREEMENT_LABEL_2', message: 'Terms and Conditions' },
     { name: 'TERMS_AGREEMENT_DOCUMENT_NAME', message: 'NanopayTermsAndConditions' },
+    { name: 'PRIVACY_DOCUMENT_NAME', message: 'privacyPolicy' },
     { name: 'GO_BACK', message: 'Go to ablii.com' },
     { name: 'PASSWORD_STRENGTH_ERROR', message: 'Password is not strong enough.' },
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` },
-    { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions`}
+    { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions and Privacy Policy.` },
+    { name: 'AND', message: `and`},
+    { name: 'PRIVACY_LABEL', message: `Privacy Policy` },
+    { name: 'QUEBEC_DISCLAIMER', message: '*Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' }
+
   ],
 
   methods: [
-     function init() {
-       this.SUPER();
-       this.loadAcceptanceDocument();
-     },
+    function init() {
+      this.SUPER();
+      this.loadAcceptanceDocument();
+    },
 
     function initE() {
       this.SUPER();
@@ -192,6 +231,10 @@ foam.CLASS({
         .start('img')
           .addClass('sme-image')
           .attr('src', 'images/sign_in_illustration.png')
+        .end()
+        .start('p')
+          .addClass(this.myClass('disclaimer'))
+          .add(this.QUEBEC_DISCLAIMER)
         .end();
 
       var right = this.Element.create()
@@ -221,12 +264,30 @@ foam.CLASS({
                 .addClass('input-field').attr('placeholder', 'ABC Company')
               .end()
             .end()
+      
+            .start().addClass('input-wrapper')
+              .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
+              .start(this.COUNTRY.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.ChoiceView',
+                  placeholder: 'Select your country',
+                  dao: this.countryDAO.where(this.OR(
+                    this.EQ(this.Country.NAME, 'Canada'),
+                    // this.EQ(this.Country.NAME, 'USA')
+                  )),
+                  objToChoice: function(a) {
+                    return [a.id, a.name];
+                  }
+                }
+              }))
+              .end()
+            .end()
 
             .start().addClass('input-wrapper')
               .start().add(this.EMAIL).addClass('input-label').end()
               .start(this.EMAIL_FIELD, { mode: emailDisplayMode })
                 .addClass('input-field')
-                .attr('placeholder', 'This will be your login ID')
+                .attr('placeholder', 'Example@example.com')
               .end()
             .end()
 
@@ -237,7 +298,7 @@ foam.CLASS({
               }).end()
             .end()
 
-            .start().addClass('input-wrapper')
+            .start().addClass('input-wrapper').addClass('terms')
               .start({ class: 'foam.u2.CheckBox' })
                 .on('click', (event) => {
                   this.termsAndConditions = event.target.checked;
@@ -251,6 +312,16 @@ foam.CLASS({
                 .add(this.TERMS_AGREEMENT_LABEL_2)
                 .on('click', () => {
                   window.open(this.termsAgreementDocument.link);
+                })
+              .end()
+              .start().addClass('inline')
+                .add(this.AND)
+              .end()
+              .start('a').addClass('sme').addClass('link')
+                .addClass(this.myClass('terms-link'))
+                .add(this.PRIVACY_LABEL)
+                .on('click', () => {
+                  window.open(this.privacyDocument.link);
                 })
               .end()
             .end()
@@ -311,6 +382,12 @@ foam.CLASS({
         this.notify(msg, 'error');
         return false;
       }
+
+      if ( this.isEmpty(this.country) ) {
+        this.notify(this.COUNTRY_ERROR, 'error');
+        return false;
+      }
+
       if ( ! this.termsAndConditions ) {
         this.notify(this.TERMS_CONDITIONS_ERR, 'error');
         return false;
@@ -338,7 +415,10 @@ foam.CLASS({
             if ( this.loginSuccess ) {
               // update user accepted terms and condition here. We should do this here after login because we need CreatedByDAO
               this.acceptanceDocumentService.
-              updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions); 
+              updateUserAcceptanceDocument(this.__context__, this.user.id, this.termsAgreementDocument.id, this.termsAndConditions);
+
+              this.acceptanceDocumentService.
+              updateUserAcceptanceDocument(this.__context__, this.user.id, this.privacyDocument.id, this.termsAndConditions);
             }
             if ( ! this.user.emailVerified ) {
               this.stack.push({
@@ -353,8 +433,7 @@ foam.CLASS({
         .catch((err) => {
           this.notify(err.message || 'There was a problem while signing you in.', 'error');
         });
-    }, 
-
+    }
   ],
 
   actions: [
@@ -363,6 +442,11 @@ foam.CLASS({
       label: 'Create account',
       code: function(X, obj) {
         if ( ! this.validating() ) return;
+
+        businessAddress = this.Address.create({
+          countryId: this.country
+        });
+
         var newUser = this.User.create({
           firstName: this.firstNameField,
           lastName: this.lastNameField,
@@ -370,21 +454,24 @@ foam.CLASS({
           desiredPassword: this.passwordField,
           organization: this.companyNameField,
           signUpToken: this.signUpToken,
+          // Address is removed from the user and used as the business address for the business created in
+          // the smeRegistrationDAO
+          businessAddress: businessAddress,
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
           welcomeEmailSent: true,
           group: 'sme'
-        });      
+        });
 
         this.smeBusinessRegistrationDAO
           .put(newUser)
           .then((user) => {
             this.user = user;
-            this.logIn();                        
+            this.logIn();
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
-          });          
+          });
       }
     }
   ],
@@ -393,6 +480,7 @@ foam.CLASS({
     async function loadAcceptanceDocument() {
       try {
         this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
+        this.privacyDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.PRIVACY_DOCUMENT_NAME, '');
       } catch (error) {
         console.warn('Error occured finding Terms Agreement: ', error);
       }
