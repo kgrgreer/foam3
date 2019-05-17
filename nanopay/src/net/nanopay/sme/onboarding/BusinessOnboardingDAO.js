@@ -42,7 +42,7 @@ foam.CLASS({
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
-        DAO invitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
+        DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
 
         Business business = businessOnboarding.findBusinessId(x);
         User user = businessOnboarding.findUserId(x);
@@ -69,12 +69,32 @@ foam.CLASS({
           String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();
 
           Invitation invitation = new Invitation();
+          /**
+           * Summary: the group set in the invitation obj is not the final(real) group 
+           * that the signing office will get after signing up with the invitation email.
+           * It is a string saved in the token that will passed into the NewUserCreateBusinessDAO class.
+           * The group of the new signing officer will generate in the NewUserCreateBusinessDAO class.
+           * 
+           * Details: After we set the group in the invitation obj, we put the invitation
+           * into the businessInvitationDAO service.
+           * 
+           * In the BusinessOnboardingDAO service, it has a decorator called businessInvitationDAO.
+           * In the put_ method of businessInvitationDAO.java,
+           * it basically set up a token which contains the group information which is the temp string: 'admin'
+           * 
+           * When the user signs up with the signing officer invitation email,
+           * the app will call the smeBusinessRegistrationDAO service.
+           * In the smeBusinessRegistrationDAO service, it has a decorator called NewUserCreateBusinessDAO.
+           * 
+           * In NewUserCreateBusinessDAO.java, it generates the business specific group
+           * in the format of: businessName+businessId.admin. (such as: nanopay8010.admin).
+           */
           invitation.setGroup("admin");
           invitation.setCreatedBy(user.getId());
           invitation.setEmail(signingOfficerEmail);
 
           // Send invitation to email to the signing officer
-          invitationDAO.put(invitation);
+          businessInvitationDAO.put(invitation);
         }
 
         // * Step 6: Business info        
@@ -107,12 +127,9 @@ foam.CLASS({
         business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
         // * Step 7: Percent of ownership
-        // If someone owns above 25% of the company
-        if ( businessOnboarding.getOwnershipAbovePercent() ) {
-          BeneficialOwner[] beneficialOwnersArray = businessOnboarding.getBeneficialOwners();
-          for ( BeneficialOwner beneficialOwner: beneficialOwnersArray ) {
-            business.getBeneficialOwners(x).put(beneficialOwner);
-          }
+        BeneficialOwner[] beneficialOwnersArray = businessOnboarding.getBeneficialOwners();
+        for ( BeneficialOwner beneficialOwner: beneficialOwnersArray ) {
+          business.getBeneficialOwners(x).put(beneficialOwner);
         }
 
         business.setOnboarded(true);
