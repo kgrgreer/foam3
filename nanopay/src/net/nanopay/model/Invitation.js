@@ -64,8 +64,7 @@ foam.CLASS({
       name: 'status'
     },
     {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Group',
+      class: 'String',
       name: 'group',
       documentation: `
         Used in Ablii when inviting someone who is not on the platform to join a
