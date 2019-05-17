@@ -108,7 +108,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           }
 
         } catch ( Exception e ) {
-          if ( e.getMessage().equals("skip")) {
+          if ( "skip".equals(e.getMessage())) {
 
           } else {
             logger.error(e);
@@ -621,7 +621,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       if ( importContact.getGivenName() != null ) {
         newContact.setFirstName(importContact.getGivenName());
       }
-      if ( importContact.getGivenName() != null ) {
+      if ( importContact.getFamilyName() != null ) {
         newContact.setLastName(importContact.getFamilyName());
       }
       newContact.setBusinessPhone(businessPhone);
