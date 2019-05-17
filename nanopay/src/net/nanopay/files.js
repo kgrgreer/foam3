@@ -197,6 +197,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/Corridor' },
   { name: 'net/nanopay/fx/FXProvider' },
   { name: 'net/nanopay/fx/FXUserStatus' },
+  { name: 'net/nanopay/fx/KotakFxTransaction' },
+  { name: 'net/nanopay/fx/ManualFxApprovalRequest' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
@@ -212,6 +214,7 @@ FOAM_FILES([
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
+  { name: 'net/nanopay/tx/ManualFxRule' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },

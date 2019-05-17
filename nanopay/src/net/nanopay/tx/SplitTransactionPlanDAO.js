@@ -23,6 +23,8 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.INBankAccount',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.exception.UnsupportedTransactionException',
     'net.nanopay.tx.*',
@@ -68,16 +70,17 @@ foam.CLASS({
       txn.setInitialStatus(TransactionStatus.COMPLETED);
 
       Transaction cashinPlan = null;
-
+      
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
 
       if ( sourceAccount instanceof BankAccount &&
+        ! ( sourceAccount instanceof CABankAccount ) &&
         destinationAccount instanceof BankAccount &&
+        ! ( destinationAccount instanceof INBankAccount ) &&
         ! sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
         DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(getX()), sourceAccount.getDenomination());
         DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
-
         // Split 1: XBank -> XDigital.
         TransactionQuote q1 = new TransactionQuote.Builder(x).build();
         q1.copyFrom(quote);
