@@ -4,6 +4,16 @@ foam.CLASS({
   extends: 'net.nanopay.account.DigitalAccount',
   documentation: 'Account which captures a debt obligation, the creditor, and the debtor.',
 
+  implements: [
+      'foam.mlang.Expressions',
+  ],
+
+  requires: [
+  'net.nanopay.account.OverdraftAccount',
+  'net.nanopay.account.ZeroAccount',
+  'net.nanopay.account.Account'
+  ],
+
   properties: [
     // name: 'terms' - future - capture the repayment, interest, ...
     {
@@ -16,9 +26,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.accountDAO.where(
-            X.data.AND(
-              X.data.NOT(X.data.INSTANCE_OF(X.data.ZeroAccount))
-            )
+             X.data.INSTANCE_OF(X.data.OverdraftAccount)
           ),
           placeholder: '--',
           objToChoice: function(debtorAccount) {

@@ -8,8 +8,12 @@ foam.CLASS({
   documentation: 'An OverDraft Account which can incur debt.  When a transfer exceeds the balance, the funds can be borrowed from the Backing Account. The borrowed funds, lender, terms, are captured in a DebtAccount.',
 
   implements: [
-    'net.nanopay.account.Debtable'
+    'net.nanopay.account.Debtable',
+    'foam.mlang.Expressions',
   ],
+    requires: [
+    'net.nanopay.account.DebtAccount',
+    ],
 
   javaImports: [
     'net.nanopay.account.DebtAccount',
@@ -25,9 +29,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.accountDAO.where(
-            X.data.AND(
-              X.data.NOT(X.data.INSTANCE_OF(X.data.ZeroAccount))
-            )
+              X.data.INSTANCE_OF(X.data.DebtAccount)
           ),
           placeholder: '--',
           objToChoice: function(debtAccount) {
