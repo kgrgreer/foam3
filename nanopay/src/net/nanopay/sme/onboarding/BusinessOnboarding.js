@@ -130,6 +130,17 @@ foam.CLASS({
       name: 'userId',
       section: 'adminReferenceSection'
     },
+    {
+      class: 'String',
+      name: 'firstName',
+      section: 'adminReferenceSection'
+    },
+    {
+      class: 'String',
+      name: 'lastName',
+      section: 'adminReferenceSection'
+    },
+
     foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
@@ -203,7 +214,6 @@ foam.CLASS({
       section: 'businessAddressSection',
       view: {
         class: 'net.nanopay.sme.ui.AddressView',
-        withoutCountrySelection: true
       },
     }),
     foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
@@ -353,17 +363,16 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
+        debugger;
+
         this.clearProperty('owner1');
         if ( ! n ) return;
-        this.owner1 = this.userId;
-        this.owner1.copyFrom(
-          this.cls_.getAxiomsByClass(foam.core.Property)
-            .filter((p) => p.section == 'personalInformationSection')
-            .reduce((map, p) => {
-              map[p.name] = p.f(this);
-              return map
-            })
-        );
+        this.owner1.jobTitle = this.jobTitle;
+        this.owner1.firstName = this.firstName;
+        this.owner1.lastName = this.lastName;
+        this.owner1.birthday = this.birthday;
+        this.owner1.address = this.address;
+
         console.log('TODO: make sure all properties of user are copied into beneficial owner.')
       }
     },
@@ -434,7 +443,8 @@ foam.CLASS({
   ].flat(),
 
   reactions: [
-    ['', 'amountOfOwners', 'updateBeneficialOwners']
+    ['', 'amountOfOwners', 'updateBeneficialOwners'],
+    ['', 'propertyChange.userId', 'updateUserInfo']
   ].concat([1, 2, 3, 4].map((i) => [
     `owner${i}`, 'propertyChange', 'updateBeneficialOwners'
   ])),
@@ -450,6 +460,15 @@ foam.CLASS({
           this.owner3,
           this.owner4
         ].slice(0, this.amountOfOwners);
+      }
+    },
+    {
+      name: 'updateUserInfo',
+      code: function() {
+        this.userId$find.then(user => {
+          this.firstName = user.firstName;
+          this.lastName = user.lastName;
+        })
       }
     }
   ]
