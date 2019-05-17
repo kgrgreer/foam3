@@ -29,6 +29,7 @@ foam.CLASS({
 
   imports: [
     'accountingIntegrationUtil',
+    'agent',
     'menuDAO',
     'pushMenu',
     'notify',
@@ -314,7 +315,16 @@ foam.CLASS({
       icon: 'images/Briefcase_Icon.svg',
       code: function() {
         if ( ! this.user.onboarded ) {
-          this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.WizardView', data: this.BusinessOnboarding.create() });
+
+          // TODO: Fix reactions to trigger from arguments
+          var bo = this.BusinessOnboarding.create();
+          bo.userId = this.agent.id;
+          bo.businessId = this.user.id 
+
+          this.stack.push({ 
+            class: 'net.nanopay.sme.onboarding.ui.WizardView', 
+            data: bo
+          });
         } else {
           this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
         }

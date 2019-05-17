@@ -7,11 +7,11 @@ foam.CLASS({
       height:100%;
       display: flex;
       flex-direction: column;
+      background-color: white;
     }
 
     ^header {
       height: 64px;
-      background-color: white;
       border: solid 1px #edf0f5;
     }
 
