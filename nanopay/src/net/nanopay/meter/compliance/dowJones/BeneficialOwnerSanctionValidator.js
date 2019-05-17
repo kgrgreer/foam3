@@ -5,14 +5,11 @@ foam.CLASS({
 
   documentation: 'Validates a beneficial owner using DowJones Risk and Compliance API.',
 
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
-
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.model.BeneficialOwner',
     'java.util.Date',
@@ -46,7 +43,13 @@ foam.CLASS({
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x, response, "dowJonesResponseDAO");
+            requestApproval(x, 
+              new ComplianceApprovalRequest.Builder(x)
+                .setObjId(Long.toString(beneficialOwner.getId()))
+                .setDaoKey("beneficialOwnerDAO")
+                .setCauseId(response.getId())
+                .setCauseDaoKey("dowJonesResponseDAO")
+                .build());
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {

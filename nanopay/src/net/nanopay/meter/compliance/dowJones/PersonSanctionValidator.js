@@ -5,18 +5,15 @@ foam.CLASS({
 
   documentation: 'Validates a user using DowJones Risk and Compliance API.',
 
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
-
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'java.util.Date',
-    'static foam.mlang.MLang.*'
+    'static foam.mlang.MLang.*',
   ],
 
   methods: [
@@ -46,7 +43,13 @@ foam.CLASS({
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x, response, "dowJonesResponseDAO");
+            requestApproval(x, 
+              new ComplianceApprovalRequest.Builder(x)
+                .setObjId(Long.toString(user.getId()))
+                .setDaoKey("localUserDAO")
+                .setCauseId(response.getId())
+                .setCauseDaoKey("dowJonesResponseDAO")
+                .build());
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
