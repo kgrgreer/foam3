@@ -405,7 +405,7 @@ foam.CLASS({
     },
     {
       name: 'next',
-      class: 'FObjectArray',
+      class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       storageTransient: true,
       visibility: 'HIDDEN'
@@ -802,18 +802,12 @@ foam.CLASS({
       ],
       javaCode: `
       Transaction tx = this;
-      if ( tx.getNext() != null && tx.getNext().length >= 1 ) {
-         if ( tx.getNext().length > 1) throw new RuntimeException("Error, this non-Composite transaction has more then 1 child");
-         Transaction [] t = tx.getNext();
-         t[0].addNext(txn);
+      while( tx.getNext() != null ) {
+        tx = tx.getNext();
       }
-      else {
-        txn.setInitialStatus(txn.getStatus());
-        txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-        Transaction [] t2 = new Transaction [1];
-        t2[0] = txn;
-        tx.setNext(t2);
-      }
+      txn.setInitialStatus(txn.getStatus());
+      txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
+      tx.setNext(txn);
     `
   },
   {
