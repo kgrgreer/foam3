@@ -565,6 +565,7 @@ var classes = [
 
   // business
   'net.nanopay.business.EnforceOneBusinessAdminDAO',
+  'net.nanopay.business.JoinBusinessTokenService',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
