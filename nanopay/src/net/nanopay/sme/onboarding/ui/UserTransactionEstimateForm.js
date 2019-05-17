@@ -100,7 +100,7 @@ foam.CLASS({
         class: 'foam.u2.view.ChoiceView',
         placeholder: 'Please select',
         choices: [
-          '$0 -$50,000',
+          '$0 to $50,000',
           '$50,001 to $100,000',
           '$100,001 to $500,000',
           '$500,001 to $1,000,000',

@@ -121,6 +121,11 @@ public class BusinessOnboardingValidator implements Validator {
       throw new RuntimeException("Base currency required.");
     }
 
+    // NOTE: AFX REMOVE FOR MVP RELEASE
+    // if ( SafetyUtil.isEmpty(transactionInfo.getAnnualRevenue()) ) {
+    //   throw new RuntimeException("Annual revenue required.");
+    // }
+
     if ( SafetyUtil.isEmpty(transactionInfo.getTransactionPurpose()) ) {
       throw new RuntimeException("Transaction purpose required.");
     }

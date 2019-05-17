@@ -67,6 +67,11 @@ foam.CLASS({
           documents$: X.data.beneficialOwnerDocuments$
         };
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'dualPartyAgreement',
+      documentation: 'Verifies if the user is accept the dual-party agreement.',
     }
   ],
 

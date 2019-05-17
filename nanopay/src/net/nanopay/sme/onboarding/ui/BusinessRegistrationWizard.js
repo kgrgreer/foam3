@@ -223,7 +223,7 @@ foam.CLASS({
     },
     {
       name: 'SUCCESS_REGISTRATION_MESSAGE',
-      message: `Business profile completed. Admins can change profile information in Business Settings`
+      message: `Business profile completed.`
     }
   ],
 
@@ -381,11 +381,10 @@ foam.CLASS({
         return false;
       }
 
-     // NOTE: AFX REMOVED FOR MVP RELEASE
-      // if ( ! transactionInfo.annualRevenue ) {
-      //   this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
-      //   return false;
-      // }
+      if ( ! transactionInfo.annualRevenue ) {
+        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
+        return false;
+      }
 
       if ( transactionInfo.internationalPayments ) {
         if ( ! transactionInfo.annualTransactionAmount ) {
@@ -470,7 +469,9 @@ foam.CLASS({
       }
 
       if ( ! businessProfile.sourceOfFunds
-        || ! businessProfile.sourceOfFunds.trim() ) {
+        || ! businessProfile.sourceOfFunds.trim()
+        || businessProfile.sourceOfFunds === 'Other'
+        && ( ! this.viewData.sourceOfFundsOther || ! this.viewData.sourceOfFundsOther.trim()) ) {
         this.notify(this.ERROR_MISSING_SOURCE_OF_FUNDS, 'error');
         return false;
       }
