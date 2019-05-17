@@ -57,7 +57,7 @@ foam.CLASS({
         Field need to fill in when user select other transaction purpose.
       `,
       view: {
-        class: 'foam.u2.tag.Input',
+        class: 'foam.u2.TextField',
         placeholder: '',
         onKey: true
       },
