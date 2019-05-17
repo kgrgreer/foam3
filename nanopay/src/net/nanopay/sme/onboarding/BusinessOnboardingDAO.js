@@ -42,7 +42,7 @@ foam.CLASS({
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
-        DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
+        DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO"));
 
         Business business = businessOnboarding.findBusinessId(x);
         User user = businessOnboarding.findUserId(x);
@@ -90,7 +90,7 @@ foam.CLASS({
            * in the format of: businessName+businessId.admin. (such as: nanopay8010.admin).
            */
           invitation.setGroup("admin");
-          invitation.setCreatedBy(user.getId());
+          invitation.setCreatedBy(business.getId());
           invitation.setEmail(signingOfficerEmail);
 
           // Send invitation to email to the signing officer
@@ -113,9 +113,11 @@ foam.CLASS({
 
         // Business info: transaction details
         SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
-        suggestedUserTransactionInfo.setAnnualTransactionAmount(businessOnboarding.getAnnualTransactionAmount());
-        suggestedUserTransactionInfo.setAnnualVolume(businessOnboarding.getAnnualVolume());
+        suggestedUserTransactionInfo.setBaseCurrency("CAD");
+        suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
+        suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
         suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
+        suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
 
         // If user enters the other transaction purpose
         if ( businessOnboarding.getOtherTransactionPurpose().equals("Others") &&
