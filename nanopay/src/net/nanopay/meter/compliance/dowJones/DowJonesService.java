@@ -1,6 +1,5 @@
 package net.nanopay.meter.compliance.dowJones;
 
-import foam.nanos.auth.User;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
@@ -22,14 +21,12 @@ public class DowJonesService
 {
   protected DAO dowJonesResponseDAO_;
   protected DowJonesRestInterface dowJonesRestService;
-  protected User user_;
 
   @Override
   public void start() {
     setDowJonesRestService(new DowJonesRestService());
     dowJonesResponseDAO_ = (DAO) getX().get("dowJonesResponseDAO");
     ((DowJonesRestService) dowJonesRestService).setX(getX());
-    user_ = (User) getX().get("user");
   }
 
   public DowJonesResponse personNameSearch(X x, PersonNameSearchData searchData) {
