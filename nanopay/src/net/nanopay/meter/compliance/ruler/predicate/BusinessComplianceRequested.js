@@ -1,8 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler.predicate',
-  name: 'BusinessOnboarding',
+  name: 'BusinessComplianceRequested',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
+
+  documentation: 'Returns true if business compliance is requested',
 
   javaImports: [
     'net.nanopay.admin.model.ComplianceStatus',
@@ -15,9 +17,8 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         return AND(
-          EQ(DOT(NEW_OBJ, INSTANCE_OF(Business.getOwnClassInfo())), true),
-          EQ(DOT(NEW_OBJ, Business.COMPLIANCE), ComplianceStatus.REQUESTED),
-          NEQ(DOT(OLD_OBJ, Business.COMPLIANCE), ComplianceStatus.REQUESTED)
+          EQ(DOT(NEW_OBJ, INSTANCE_OF(Business.class)), true),
+          EQ(DOT(NEW_OBJ, Business.COMPLIANCE), ComplianceStatus.REQUESTED)
         ).f(obj);
       `
     }

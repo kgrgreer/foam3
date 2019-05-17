@@ -123,14 +123,6 @@ css: `
       margin-top: 30px;
     }
 
-    ^ .updateButton {
-      display: table-row;
-      vertical-align: top;
-      margin-left: 19px;
-      width: 140px !important;
-      margin-top: 35px;
-    }
-
     ^ .deleteButton, ^ .editButton {
       width: 64px;
       height: 24px;
@@ -680,12 +672,10 @@ methods: [
 
               .start(this.ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .start().addClass('buttons-container')
-                .start(this.CANCEL_EDIT)
+                .start(this.CANCEL_EDIT, { buttonStyle: 'TERTIARY' })
                   .enableClass('hidden', this.editingBeneficialOwner$, true)
                 .end()
-                .start(this.ADD_BENEFICIAL_OWNER, { label$: this.addBeneficialOwnerLabel$ })
-                  .enableClass('updateButton', this.editingBeneficialOwner$)
-                .end()
+                .tag(this.ADD_BENEFICIAL_OWNER, { label$: this.addBeneficialOwnerLabel$ })
               .end()
             .end()
           .end()

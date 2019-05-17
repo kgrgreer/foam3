@@ -12,7 +12,12 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus'
   ],
 
-  documentation: `Business extends user class & it is the company user for SME.`,
+  documentation: `Business is an object that extends the user class. A business is an 
+    entity on behalf of which multiple users can act.  A business is associated with 
+    the company name provided by the user upon registraton. The business object allows 
+    business information to be updated and retrieved.  The body parameters refer to 
+    the business as the 'organization'.
+  `,
 
   tableColumns: [
     'id',
@@ -29,9 +34,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessPermissionId',
-      documentation: `
-        A generated name that doesn't contain any special characters. Used in
-        permission strings related to the business.
+      documentation: `A generated name used in permission strings related to the business. 
+        The name does not contain any special characters.
       `,
       expression: function(businessName, id) {
         return businessName.replace(/\W/g, '').toLowerCase() + id;
@@ -44,17 +48,19 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'loginEnabled',
+      documentation: 'Verifies that the User can login to the platform.',
       value: false
     },
     {
       class: 'Boolean',
       name: 'residenceOperated',
-      documentation: 'Verifies whether a business is operated in the residence of the owner.'
+      documentation: 'Verifies that a business is operated at the residence of the owner.'
     },
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'beneficialOwnerDocuments',
-      documentation: 'Additional documents for beneficial owners verification.',
+      documentation: `A stored copy of the documents that verify a person as a 
+        beneficial owner.`,
       view: function(_, X) {
         return {
           class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
@@ -67,6 +73,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthService',
@@ -93,6 +100,13 @@ foam.CLASS({
       javaCode: `
         if ( SafetyUtil.isEmpty(this.getBusinessName()) ) {
           throw new IllegalStateException("Business name cannot be empty.");
+        }
+
+        // Temporarily prohibit businesses based in Quebec.
+        Address businessAddress = this.getBusinessAddress();
+
+        if ( businessAddress != null && SafetyUtil.equals(businessAddress.getRegionId(), "QC") ) {
+          throw new IllegalStateException("Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.");
         }
       `
     },
