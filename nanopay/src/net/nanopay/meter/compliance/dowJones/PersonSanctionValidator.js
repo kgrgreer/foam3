@@ -1,42 +1,39 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.ruler',
-  name: 'SecurefactLEVValidator',
+  package: 'net.nanopay.meter.compliance.dowJones',
+  name: 'PersonSanctionValidator',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
-  documentation: `Validates a business using SecureFact LEV api.`,
+  documentation: 'Validates a user using DowJones Risk and Compliance API.',
 
   javaImports: [
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
-    'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.secureFact.SecurefactService',
-    'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
-    'net.nanopay.model.Business'
+    'net.nanopay.meter.compliance.ComplianceValidationStatus'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        Business business = (Business) obj;
-        SecurefactService securefactService = (SecurefactService) x.get("securefactService");
+        User user = (User) obj;
+        DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          LEVResponse response = securefactService.levSearch(x, business);
+          DowJonesResponse response = dowJonesService.personNameSearch(x, user.getFirstName(), user.getLastName(), null, user.getBirthday(), user.getAddress().getCountryId());
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
-          if ( ! response.hasCloseMatches() ) {
+          if ( ! response.getTotalMatches().equals("0") ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x,
+            requestApproval(x, 
               new ComplianceApprovalRequest.Builder(x)
-                .setObjId(Long.toString(business.getId()))
+                .setObjId(Long.toString(user.getId()))
                 .setDaoKey("localUserDAO")
                 .setCauseId(response.getId())
-                .setCauseDaoKey("securefactLEVDAO")
-                .build()
-            );
+                .setCauseDaoKey("dowJonesResponseDAO")
+                .build());
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
-          ((Logger) x.get("logger")).warning("LEVValidator failed.", e);
+          ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }
       `
@@ -56,7 +53,8 @@ foam.CLASS({
       name: 'describe',
       javaCode: `
       // TODO: add an actual implementation
-      return "";`
+      return "";
+      `
     }
   ]
 });

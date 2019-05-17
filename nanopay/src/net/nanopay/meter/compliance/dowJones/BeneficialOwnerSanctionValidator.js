@@ -1,42 +1,39 @@
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.ruler',
-  name: 'SecurefactLEVValidator',
+  package: 'net.nanopay.meter.compliance.dowJones',
+  name: 'BeneficialOwnerSanctionValidator',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
-  documentation: `Validates a business using SecureFact LEV api.`,
+  documentation: 'Validates a beneficial owner using DowJones Risk and Compliance API.',
 
   javaImports: [
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.meter.compliance.secureFact.SecurefactService',
-    'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.BeneficialOwner'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        Business business = (Business) obj;
-        SecurefactService securefactService = (SecurefactService) x.get("securefactService");
+        BeneficialOwner beneficialOwner = (BeneficialOwner) obj;
+        DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          LEVResponse response = securefactService.levSearch(x, business);
+          DowJonesResponse response = dowJonesService.personNameSearch(x, beneficialOwner.getFirstName(), beneficialOwner.getLastName(), null, beneficialOwner.getBirthday(), beneficialOwner.getAddress().getCountryId());
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
-          if ( ! response.hasCloseMatches() ) {
+          if ( ! response.getTotalMatches().equals("0") ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x,
+            requestApproval(x, 
               new ComplianceApprovalRequest.Builder(x)
-                .setObjId(Long.toString(business.getId()))
-                .setDaoKey("localUserDAO")
+                .setObjId(Long.toString(beneficialOwner.getId()))
+                .setDaoKey("beneficialOwnerDAO")
                 .setCauseId(response.getId())
-                .setCauseDaoKey("securefactLEVDAO")
-                .build()
-            );
+                .setCauseDaoKey("dowJonesResponseDAO")
+                .build());
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
-          ((Logger) x.get("logger")).warning("LEVValidator failed.", e);
+          ((Logger) x.get("logger")).warning("BeneficialOwnerSanctionValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }
       `
@@ -56,7 +53,8 @@ foam.CLASS({
       name: 'describe',
       javaCode: `
       // TODO: add an actual implementation
-      return "";`
+      return "";
+      `
     }
   ]
 });

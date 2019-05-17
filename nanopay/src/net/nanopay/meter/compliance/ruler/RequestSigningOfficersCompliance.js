@@ -30,10 +30,10 @@ foam.CLASS({
             User signingOfficer = (User) obj;
             signingOfficer = (User) signingOfficer.fclone();
 
+            // User.compliance is a permissioned property thus we need
+            // to use localUserDAO when saving change to the property.
             signingOfficer.setCompliance(ComplianceStatus.REQUESTED);
-            // Since userDAO is a relationship DAO updating is not permissible.
-            // Hence, use localUserDAO for updating the signing officer instead.
-            localUserDAO.put(signingOfficer);
+            localUserDAO.inX(x).put(signingOfficer);
           }
         });
       `
