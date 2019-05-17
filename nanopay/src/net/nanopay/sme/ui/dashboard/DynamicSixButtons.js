@@ -316,9 +316,10 @@ foam.CLASS({
       code: function() {
         if ( ! this.user.onboarded ) {
 
+          // TODO: Fix reactions to trigger from arguments
           var bo = this.BusinessOnboarding.create();
-            bo.userId = this.agent.id;
-            bo.businessId = this.user.id 
+          bo.userId = this.agent.id;
+          bo.businessId = this.user.id 
 
           this.stack.push({ 
             class: 'net.nanopay.sme.onboarding.ui.WizardView', 
