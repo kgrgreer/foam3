@@ -223,7 +223,7 @@ foam.CLASS({
     },
     {
       name: 'SUCCESS_REGISTRATION_MESSAGE',
-      message: `Business profile completed. Admins can change profile information in Business Settings`
+      message: `Business profile completed.`
     }
   ],
 
