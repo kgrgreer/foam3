@@ -1,15 +1,12 @@
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardPageView',
-  extends: 'foam.u2.Element',
+  extends: 'foam.u2.View',
   requires: [
     'foam.u2.detail.SectionView',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows'
 
-  ],
-  imports: [
-    'data as fobj'
   ],
   css: `
     ^ {
@@ -48,7 +45,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.layout.Section',
-      name: 'data'
+      name: 'section'
     },
   ],
   methods: [
@@ -70,10 +67,13 @@ foam.CLASS({
           }).addClass(this.myClass('left-section'))
             .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/joanne@2x.jpg' }).addClass(this.myClass('joanne')).end()
             .start('h1').addClass(this.myClass('help'))
-              .add(this.data$.dot('help'))
+              .add(this.section$.dot('help'))
             .end()
           .end()
-          .tag(this.SectionView, { data: this.data })
+          .tag(this.SectionView, {
+            section$: this.section$,
+            data$: this.data$
+         })
         .end()
     }
   ]
