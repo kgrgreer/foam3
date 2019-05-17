@@ -75,7 +75,7 @@ public class IdentityMindRequestGenerator {
       request.setAln(prepareString(user.getLastName()));
     }
 
-    Address address = business.getAddress();
+    Address address = business.getBusinessAddress();
     if ( address != null ) {
       request.setAsn(prepareString(address.getStreetNumber(), address.getStreetName(), address.getSuite()));
       request.setAc(prepareString(address.getCity()));
