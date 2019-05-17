@@ -1,5 +1,3 @@
-// ASK two notifications
-// email - remove
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'AbliiTransaction',
