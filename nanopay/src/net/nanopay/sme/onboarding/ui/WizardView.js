@@ -114,7 +114,9 @@ foam.CLASS({
         .addClass(this.myClass())
         .start().addClass(this.myClass('header'))
           .start({ class: 'foam.u2.tag.Image', data: 'images/ablii-wordmark.svg' }).addClass(this.myClass('logo')).end()
-          .start().add(this.SAVE_AND_EXIT).addClass(this.myClass('save-exit')).end()
+          .startContext({ data: this })
+            .start().add(this.SAVE_AND_EXIT).addClass(this.myClass('save-exit')).end()
+          .endContext()
         .end()
         .startContext({ data: this })
           .add(this.PROGRESS)
@@ -174,8 +176,14 @@ foam.CLASS({
       name: 'saveAndExit',
       label: 'Save & Exit',
       code: function(x) {
-        x.ctrl.notify('Progress saved.')
-        x.stack.back();
+        var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
+        dao.put(this.data.clone().copyFrom({ status: 'DRAFT' })).
+          then(function() {
+            x.ctrl.notify('Progress saved.');
+            x.stack.back();
+          }, function() {
+            x.ctrl.notify('Error saving progress, please try again shortly.', 'error');
+          });
       }
     }
   ]
