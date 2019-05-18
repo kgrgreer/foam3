@@ -2,6 +2,11 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
+
+  imports: [
+    'stack'
+  ],
+
   css: `
     ^ {
       display: flex;
@@ -10,16 +15,19 @@ foam.CLASS({
       position: fixed;
       top: 0;
       left: 0;
-      height: 100vh !important;
-      width: 100vw !important;
+      height: 100vh;
+      width: 100vw;
       z-index: 950;
-      margin: 0 !important;
-      padding: 0 !important;
+      margin: 0;
+      padding: 0;
     }
+    
 
     ^header {
       height: 64px;
       border: solid 1px #edf0f5;
+      justify-content: space-between;
+      display: flex;
     }
 
     ^ .foam-u2-ProgressView {
@@ -54,11 +62,6 @@ foam.CLASS({
       border: solid 1px #edf0f5;
 
       align-items: center !important;
-    }
-
-    ^ .net-nanopay-sme-ui-AbliiActionView-primary {
-      width: 158px;
-      height: 48px;
     }
   `,
   properties: [
@@ -105,12 +108,24 @@ foam.CLASS({
       this
         .start().addClass(this.myClass('header'))
           // TODO: Add ablii logo
+          .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/joanne@2x.jpg' }).addClass(this.myClass('logo')).end()
           // TODO: Add save & exit
+          .start().add(this.SAVE_AND_EXIT).addClass(this.myClass('save-exit')).end()
         .end()
         .startContext({ data: this })
           .add(this.PROGRESS)
         .endContext();
       this.SUPER();
+    }
+  ],
+
+  actions: [
+    {
+      name: 'saveAndExit',
+      label: 'Save & Exit',
+      code: function (x) {
+        x.stack.back();
+      }
     }
   ]
 });
