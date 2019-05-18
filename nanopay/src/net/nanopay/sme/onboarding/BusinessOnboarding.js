@@ -49,9 +49,9 @@ foam.CLASS({
     },
     {
       name: 'signingOfficerEmailSection',
-      title: 'Enter a signing officers email',
+      title: 'Enter your signing officer\'s email',
       help: `For security, we require the approval of a signing officer before you can continue.
-          I can email your signing officers directly for the approval. Only 1 is required, but you can add as many as you like…`,
+          I can email your signing officer directly for the approval.`,
       isAvailable: function (signingOfficer) { return !signingOfficer }
     },
     {
@@ -177,6 +177,7 @@ foam.CLASS({
     foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
+      label: '',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -193,7 +194,8 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
-      section: 'personalInformationSection'
+      section: 'personalInformationSection',
+      label: 'Phone #'
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       section: 'personalInformationSection',
@@ -233,15 +235,24 @@ foam.CLASS({
       }
     }),
     {
+      name: 'signingOfficerEmailInfo',
+      documentation: 'More info on signing officer',
+      label: '',
+      section: 'signingOfficerEmailSection',
+      view: function(){
+        return foam.u2.Element.create()
+          .start('div')
+            .add('Invite a signing officer to complete the onboarding for your business.  Once the signing officer completes their onboarding, your business can start using Ablii.')
+          .end();
+      }
+    },
+    {
       class: 'String',
       name: 'signingOfficerEmail',
       label: 'Enter your signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
-      view: {
-        class: 'foam.u2.TextField',
-        placeholder: 'example@email.com'
-      },
+      placeholder: 'example@email.com'
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
@@ -300,6 +311,10 @@ foam.CLASS({
     },
     foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
       section: 'businessDetailsSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'Enter your operating name'
+      },
       visibilityExpression: function(operatingUnderDifferentName) {
         return operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -364,7 +379,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'ownershipAbovePercent',
-      label: 'Does anyone own above 25% of the company?',
+      label: '',
       section: 'ownershipYesOrNoSection',
       postSet: function(_, n) {
         if ( ! n ) this.amountOfOwners = 0;
@@ -380,7 +395,6 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'amountOfOwners',
-      label: 'Amount of individuals who own 25%',
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
@@ -418,8 +432,17 @@ foam.CLASS({
       section: 'personalOwnershipSection',
       visibility: foam.u2.Visibility.RO
     },
+
+    // FIXME: IntView not respecting the min-max range
     foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
+      label: '% of ownership',
+      view: {
+        class: 'foam.u2.IntView',
+        min: 25,
+        max: 100,
+      },
+      value: 35
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',
