@@ -38,7 +38,12 @@ foam.CLASS({
       javaCode: `
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
         // TODO: Please call the java validator of the businessOnboarding here
-        // TODO: Please add the condition to handle saving the draft
+
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, obj);
+        }
+
+        businessOnboarding.validate(x);
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
@@ -50,6 +55,8 @@ foam.CLASS({
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
+        business.setPhone(businessOnboarding.getPhone());
+        business.setBusinessPhone(businessOnboarding.getPhone());
         
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
@@ -129,9 +136,8 @@ foam.CLASS({
         business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
         // * Step 7: Percent of ownership
-        BeneficialOwner[] beneficialOwnersArray = businessOnboarding.getBeneficialOwners();
-        for ( BeneficialOwner beneficialOwner: beneficialOwnersArray ) {
-          business.getBeneficialOwners(x).put(beneficialOwner);
+        for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
+          business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
         }
 
         business.setOnboarded(true);

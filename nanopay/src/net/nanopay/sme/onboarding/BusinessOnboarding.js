@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'BusinessOnboarding',
   ids: ['userId'],
 
+  tableColumns: ['userId', 'status'],
+
   documentation: `Multifunctional model used for business onboarding`,
 
   requires: [
@@ -124,6 +126,12 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Enum',
+      of: 'net.nanopay.sme.onboarding.OnboardingStatus',
+      name: 'status',
+      value: 'DRAFT'
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'businessId',
@@ -133,16 +141,27 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',
-      section: 'adminReferenceSection'
+      section: 'adminReferenceSection',
+      postSet: function(_, n) {
+        this.userId$find.then((user) => {
+          if ( this.userId != n ) return;
+          this.firstName = user.firstName;
+          this.lastName = user.lastName;
+        });
+      }
     },
     {
       class: 'String',
       name: 'firstName',
+      flags: ['web'],
+      transient: true,
       section: 'adminReferenceSection'
     },
     {
       class: 'String',
       name: 'lastName',
+      flags: ['web'],
+      transient: true,
       section: 'adminReferenceSection'
     },
 
@@ -347,6 +366,9 @@ foam.CLASS({
       name: 'ownershipAbovePercent',
       label: 'Does anyone own above 25% of the company?',
       section: 'ownershipYesOrNoSection',
+      postSet: function(_, n) {
+        if ( ! n ) this.amountOfOwners = 0;
+      },
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -358,7 +380,6 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'amountOfOwners',
-      flags: ['web'],
       label: 'Amount of individuals who own 25%',
       section: 'ownershipAmountSection',
       view: {
@@ -374,26 +395,25 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'userOwnsPercent',
-      flags: ['web'],
       section: 'ownershipAmountSection',
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
         this.clearProperty('owner1');
         if ( ! n ) return;
-        this.owner1.jobTitle = this.jobTitle;
-        this.owner1.firstName = this.firstName;
-        this.owner1.lastName = this.lastName;
-        this.owner1.birthday = this.birthday;
-        this.owner1.address = this.address;
+        this.owner1.jobTitle$.follow(this.jobTitle$);
+        this.owner1.firstName$.follow(this.firstName$);
+        this.owner1.lastName$.follow(this.lastName$);
+        this.owner1.birthday$.follow(this.birthday$);
+        this.owner1.address$.follow(this.address$);
       }
     },
     {
       class: 'String',
       name: 'roJobTitle',
       label: 'Job Title',
-      factory: function() {
-        return this.jobTitle;
+      expression: function(jobTitle) {
+        return jobTitle;
       },
       section: 'personalOwnershipSection',
       visibility: foam.u2.Visibility.RO
@@ -412,31 +432,25 @@ foam.CLASS({
         showTitle: false
       },
       label: '',
-      flags: ['web'],
       factory: function() {
-        return this.BeneficialOwner.create();
+        return this.BeneficialOwner.create({ business$: this.businessId$ });
       }
     })),
     {
-      class: 'FObjectArray',
-      name: 'beneficialOwners',
-      of: 'net.nanopay.model.BeneficialOwner',
-      hidden: true
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      of: 'net.nanopay.model.BeneficialOwner',
       name: 'beneficialOwnersTable',
       flags: ['web'],
       section: 'reviewOwnersSection',
-      expression: function(beneficialOwners) {
-        var dao = foam.dao.EasyDAO.create({
+      transient: true,
+      cloneProperty: function() {},
+      factory: function() {
+        return foam.dao.EasyDAO.create({
           of: 'net.nanopay.model.BeneficialOwner',
           seqNo: true,
           daoType: 'MDAO'
         });
-        beneficialOwners.forEach((o) => dao.put(o));
-        return dao;
+      },
+      postSet: function() {
+        this.updateTable();
       },
       view: {
         class: 'foam.u2.view.TableView',
@@ -459,48 +473,95 @@ foam.CLASS({
   ].flat(),
 
   reactions: [
-    ['', 'amountOfOwners', 'updateBeneficialOwners'],
-    ['', 'propertyChange.userId', 'updateUserInfo']
-  ].concat([1, 2, 3, 4].map((i) => [
-    `owner${i}`, 'propertyChange', 'updateBeneficialOwners'
-  ])),
+    [1, 2, 3, 4].map((i) => [
+      `owner${i}`, 'propertyChange', 'updateTable'
+    ])
+  ].flat(),
 
   listeners: [
     {
-      name: 'updateBeneficialOwners',
+      name: 'updateTable',
       isFramed: true,
       code: function() {
-        this.beneficialOwners = [
-          this.owner1,
-          this.owner2,
-          this.owner3,
-          this.owner4
-        ].slice(0, this.amountOfOwners);
+        var self = this;
+        self.beneficialOwnersTable.removeAll().then(function() {
+          for ( var i = 0; i < self.amountOfOwners; i++ ) {
+            self.beneficialOwnersTable.put(self['owner'+(i+1)].clone());
+          }
+        });
+      }
+    },
+  ],
+  actions: [
+    {
+      name: 'autofill',
+      permissionRequired: true,
+      section: 'adminReferenceSection',
+      code: function() {
+        this.copyFrom({
+            "status": 0,
+            "signingOfficer": true,
+            "jobTitle": "CEO",
+            "phone": {
+              "number": "1231231234"
+            },
+            "birthday": 537685200000,
+            "PEPHIORelated": true,
+            "thirdParty": true,
+            "dualPartyAgreement": true,
+            "address": {
+              "countryId": "CA",
+              "regionId": "ON",
+              "streetNumber": "123",
+              "streetName": "Users St.",
+              "city": "User City",
+              "postalCode": "L3L4L4"
+            },
+            "businessAddress": {
+              "countryId": "CA",
+              "regionId": "ON",
+              "streetNumber": "233",
+              "streetName": "Park St",
+              "city": "Waterloo",
+              "postalCode": "N3N2N2"
+            },
+            "businessTypeId": 2,
+            "businessSectorId": 11293,
+            "sourceOfFunds": "Investment Income",
+            "operatingUnderDifferentName": true,
+            "operatingBusinessName": "OP Inc",
+            "annualTransactionAmount": "$100,001 to $500,000",
+            "annualVolume": "$0 to $50,000",
+            "transactionPurpose": "Intracompany bank transfers",
+            "targetCustomers": "People",
+            "ownershipAbovePercent": true,
+            "amountOfOwners": 2,
+            "userOwnsPercent": true,
+            "owner2": {
+              "jobTitle": "COO",
+              "firstName": "Foo",
+              "lastName": "Bar",
+              "birthday": 315550800000,
+              "address": {
+                "countryId": "CA",
+                "regionId": "NS",
+                "streetNumber": "123",
+                "streetName": "Pobox",
+                "city": "Farmland",
+                "postalCode": "J3J3J3"
+              },
+              "business": 8006
+            },
+            "certifyAllInfoIsAccurate": true
+        });
       }
     },
     {
-      name: 'updateUserInfo',
-      code: function() {
-        this.userId$find.then((user) => {
-          this.firstName = user.firstName;
-          this.lastName = user.lastName;
-        });
-      }
-    }
-  ],
-  methods: [
-    function init() {
-      window.HENRY = this;
-    }
-  ],
-
-  actions: [
-    {
       name: 'submit',
       // Todo: this need to be the 2FA section
-      section: 'gettingStartedSection',
-      isEnabled: function(errors) {
-        return ! errors;
+      section: 'reviewOwnersSection',
+      isEnabled: function(errors_) {
+        return ! errors_;
       },
       code: async function(x) {
         try {
