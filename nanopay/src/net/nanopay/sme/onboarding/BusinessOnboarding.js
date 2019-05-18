@@ -511,15 +511,15 @@ foam.CLASS({
               "countryId": "CA",
               "regionId": "ON",
               "streetNumber": "123",
-              "streetName": "PErsonal St.",
-              "city": "Sauga",
+              "streetName": "Users St.",
+              "city": "User City",
               "postalCode": "L3L4L4"
             },
             "businessAddress": {
               "countryId": "CA",
               "regionId": "ON",
               "streetNumber": "233",
-              "streetName": "Kw Park",
+              "streetName": "Park St",
               "city": "Waterloo",
               "postalCode": "N3N2N2"
             },
@@ -527,7 +527,7 @@ foam.CLASS({
             "businessSectorId": 11293,
             "sourceOfFunds": "Investment Income",
             "operatingUnderDifferentName": true,
-            "operatingBusinessName": "MIKEGEY",
+            "operatingBusinessName": "OP Inc",
             "annualTransactionAmount": "$100,001 to $500,000",
             "annualVolume": "$0 to $50,000",
             "transactionPurpose": "Intracompany bank transfers",
@@ -535,25 +535,10 @@ foam.CLASS({
             "ownershipAbovePercent": true,
             "amountOfOwners": 2,
             "userOwnsPercent": true,
-            "owner1": {
-              "jobTitle": "CEO",
-              "firstName": "mike",
-              "lastName": "c",
-              "birthday": 537685200000,
-              "address": {
-                "countryId": "CA",
-                "regionId": "ON",
-                "streetNumber": "123",
-                "streetName": "PErsonal St.",
-                "city": "Sauga",
-                "postalCode": "L3L4L4"
-              },
-              "business": 8006
-            },
             "owner2": {
-              "jobTitle": "CTO",
-              "firstName": "Kev",
-              "lastName": "Greer",
+              "jobTitle": "COO",
+              "firstName": "Foo",
+              "lastName": "Bar",
               "birthday": 315550800000,
               "address": {
                 "countryId": "CA",
