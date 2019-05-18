@@ -417,7 +417,7 @@ foam.CLASS({
       },
       label: '',
       factory: function() {
-        return this.BeneficialOwner.create();
+        return this.BeneficialOwner.create({ business$: this.businessId$ });
       }
     })),
     {
@@ -470,12 +470,92 @@ foam.CLASS({
         var self = this;
         self.beneficialOwnersTable.removeAll().then(function() {
           for ( var i = 0; i < self.amountOfOwners; i++ ) {
-            self.beneficialOwnersTable.put(self['owner'+(i+1)]);
+            self.beneficialOwnersTable.put(self['owner'+(i+1)].clone());
           }
         });
       }
     },
   ],
+  actions: [
+    {
+      name: 'autofill',
+      permissionRequired: true,
+      section: 'adminReferenceSection',
+      code: function() {
+        this.copyFrom({
+            "status": 0,
+            "signingOfficer": true,
+            "jobTitle": "CEO",
+            "phone": {
+              "number": "1231231234"
+            },
+            "birthday": 537685200000,
+            "PEPHIORelated": true,
+            "thirdParty": true,
+            "dualPartyAgreement": true,
+            "address": {
+              "countryId": "CA",
+              "regionId": "ON",
+              "streetNumber": "123",
+              "streetName": "PErsonal St.",
+              "city": "Sauga",
+              "postalCode": "L3L4L4"
+            },
+            "businessAddress": {
+              "countryId": "CA",
+              "regionId": "ON",
+              "streetNumber": "233",
+              "streetName": "Kw Park",
+              "city": "Waterloo",
+              "postalCode": "N3N2N2"
+            },
+            "businessTypeId": 2,
+            "businessSectorId": 11293,
+            "sourceOfFunds": "Investment Income",
+            "operatingUnderDifferentName": true,
+            "operatingBusinessName": "MIKEGEY",
+            "annualTransactionAmount": "$100,001 to $500,000",
+            "annualVolume": "$0 to $50,000",
+            "transactionPurpose": "Intracompany bank transfers",
+            "targetCustomers": "People",
+            "ownershipAbovePercent": true,
+            "amountOfOwners": 2,
+            "userOwnsPercent": true,
+            "owner1": {
+              "jobTitle": "CEO",
+              "firstName": "mike",
+              "lastName": "c",
+              "birthday": 537685200000,
+              "address": {
+                "countryId": "CA",
+                "regionId": "ON",
+                "streetNumber": "123",
+                "streetName": "PErsonal St.",
+                "city": "Sauga",
+                "postalCode": "L3L4L4"
+              },
+              "business": 8006
+            },
+            "owner2": {
+              "jobTitle": "CTO",
+              "firstName": "Kev",
+              "lastName": "Greer",
+              "birthday": 315550800000,
+              "address": {
+                "countryId": "CA",
+                "regionId": "NS",
+                "streetNumber": "123",
+                "streetName": "Pobox",
+                "city": "Farmland",
+                "postalCode": "J3J3J3"
+              },
+              "business": 8006
+            },
+            "certifyAllInfoIsAccurate": true
+        });
+      }
+    }
+  ]
   // actions: [
   //   async function save(X){
   //     var self = this;
