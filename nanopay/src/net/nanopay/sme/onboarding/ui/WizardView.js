@@ -21,13 +21,18 @@ foam.CLASS({
       margin: 0;
       padding: 0;
     }
-    
+
+    ^logo {
+      height: 22px;
+    }
 
     ^header {
       height: 64px;
       border: solid 1px #edf0f5;
       justify-content: space-between;
+      align-items: center;
       display: flex;
+      padding: 0 128px;
     }
 
     ^ .foam-u2-ProgressView {
@@ -107,9 +112,7 @@ foam.CLASS({
 
       this
         .start().addClass(this.myClass('header'))
-          // TODO: Add ablii logo
-          .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/joanne@2x.jpg' }).addClass(this.myClass('logo')).end()
-          // TODO: Add save & exit
+          .start({ class: 'foam.u2.tag.Image', data: 'images/ablii-wordmark.svg' }).addClass(this.myClass('logo')).end()
           .start().add(this.SAVE_AND_EXIT).addClass(this.myClass('save-exit')).end()
         .end()
         .startContext({ data: this })
