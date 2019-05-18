@@ -49,7 +49,7 @@ foam.CLASS({
     },
     {
       name: 'signingOfficerEmailSection',
-      title: 'Enter a signing officers email',
+      title: 'Enter your signing officer\'s email',
       help: `For security, we require the approval of a signing officer before you can continue.
           I can email your signing officer directly for the approval.`,
       isAvailable: function (signingOfficer) { return !signingOfficer }
@@ -235,8 +235,21 @@ foam.CLASS({
       }
     }),
     {
+      name: 'signingOfficerEmailInfo',
+      documentation: 'More info on signing officer',
+      label: '',
+      section: 'signingOfficerEmailSection',
+      view: function(){
+        return foam.u2.Element.create()
+          .start('div')
+            .add('Invite a signing officer to complete the onboarding for your business.  Once the signing officer completes their onboarding, your business can start using Ablii.')
+          .end();
+      }
+    },
+    {
       class: 'String',
       name: 'signingOfficerEmail',
+      label: 'Enter your signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
       placeholder: 'example@email.com'
