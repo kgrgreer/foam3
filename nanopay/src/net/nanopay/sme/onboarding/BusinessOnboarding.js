@@ -51,7 +51,7 @@ foam.CLASS({
       name: 'signingOfficerEmailSection',
       title: 'Enter a signing officers email',
       help: `For security, we require the approval of a signing officer before you can continue.
-          I can email your signing officers directly for the approval. Only 1 is required, but you can add as many as you like…`,
+          I can email your signing officer directly for the approval.`,
       isAvailable: function (signingOfficer) { return !signingOfficer }
     },
     {
@@ -298,6 +298,10 @@ foam.CLASS({
     },
     foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
       section: 'businessDetailsSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'Enter your operating name'
+      },
       visibilityExpression: function(operatingUnderDifferentName) {
         return operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -378,7 +382,6 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'amountOfOwners',
-      label: 'Amount of individuals who own 25%',
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
@@ -416,8 +419,17 @@ foam.CLASS({
       section: 'personalOwnershipSection',
       visibility: foam.u2.Visibility.RO
     },
+
+    // FIXME: IntView not respecting the min-max range
     foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
+      label: '% of ownership',
+      view: {
+        class: 'foam.u2.IntView',
+        min: 25,
+        max: 100,
+      },
+      value: 35
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',
