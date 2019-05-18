@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'BusinessOnboarding',
   ids: ['userId'],
 
+  tableColumns: ['userId', 'status'],
+
   documentation: `Multifunctional model used for business onboarding`,
 
   requires: [
@@ -118,6 +120,12 @@ foam.CLASS({
   ].flat(),
 
   properties: [
+    {
+      class: 'Enum',
+      of: 'net.nanopay.sme.onboarding.OnboardingStatus',
+      name: 'status',
+      value: 'DRAFT'
+    },
     {
       class: 'Reference',
       of: 'net.nanopay.model.Business',
@@ -366,16 +374,7 @@ foam.CLASS({
       name: 'userOwnsPercent',
       section: 'ownershipAmountSection',
       label: '',
-      label2: 'I am one of these owners',
-      postSet: function(_, n) {
-        this.clearProperty('owner1');
-        if ( ! n ) return;
-        this.owner1.jobTitle$.follow(this.jobTitle$);
-        this.owner1.firstName$.follow(this.firstName$);
-        this.owner1.lastName$.follow(this.lastName$);
-        this.owner1.birthday$.follow(this.birthday$);
-        this.owner1.address$.follow(this.address$);
-      }
+      label2: 'I am one of these owners'
     },
     {
       class: 'String',
@@ -402,8 +401,8 @@ foam.CLASS({
       },
       label: '',
       flags: ['web'],
-      factory: function() {
-        return this.BeneficialOwner.create();
+      expression: function(beneficialOwners) {
+        return beneficialOwners[i-1] || null;
       }
     })),
     {
@@ -418,19 +417,15 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.dao.DAOProperty',
-      of: 'net.nanopay.model.BeneficialOwner',
       name: 'beneficialOwnersTable',
       flags: ['web'],
       section: 'reviewOwnersSection',
-      expression: function(beneficialOwners) {
-        var dao = foam.dao.EasyDAO.create({
+      factory: function() {
+        return foam.dao.EasyDAO.create({
           of: 'net.nanopay.model.BeneficialOwner',
           seqNo: true,
           daoType: 'MDAO'
         });
-        beneficialOwners.forEach((o) => dao.put(o));
-        return dao;
       },
       view: {
         class: 'foam.u2.view.TableView',
@@ -453,27 +448,49 @@ foam.CLASS({
   ].flat(),
 
   reactions: [
-    ['', 'amountOfOwners', 'updateBeneficialOwners'],
+    ['', 'propertyChange.amountOfOwners', 'updateBeneficialOwners'],
+    ['', 'propertyChange.userOwnsPercent', 'updateBeneficialOwners'],
     ['', 'propertyChange.userId', 'updateUserInfo']
-  ].concat([1, 2, 3, 4].map((i) => [
-    `owner${i}`, 'propertyChange', 'updateBeneficialOwners'
-  ])),
+  ],
 
   listeners: [
     {
       name: 'updateBeneficialOwners',
       isFramed: true,
       code: function() {
-        this.beneficialOwners = [
-          this.owner1,
-          this.owner2,
-          this.owner3,
-          this.owner4
-        ].slice(0, this.amountOfOwners);
+        this.beneficialOwners = [1, 2, 3, 4]
+          .map((i) => this.BeneficialOwner.create(this.beneficialOwners[i]))
+          .slice(0, this.amountOfOwners);
+
+        if ( this.userOwnsPercent && this.amountOfOwners > 0 ) {
+          this.beneficialOwners[0].jobTitle$.follow(this.jobTitle$);
+          this.beneficialOwners[0].firstName$.follow(this.firstName$);
+          this.beneficialOwners[0].lastName$.follow(this.lastName$);
+          this.beneficialOwners[0].birthday$.follow(this.birthday$);
+          this.beneficialOwners[0].address$.follow(this.address$);
+        }
+
+        this.beneficialOwners.forEach((b) => {
+          b.onDetach(b.sub(this.updateTable));
+        });
+        this.updateTable();
+      }
+    },
+    {
+      name: 'updateTable',
+      isFramed: true,
+      code: function() {
+        var self = this;
+        self.beneficialOwnersTable.removeAll().then(function() {
+          self.beneficialOwners.forEach(function(b) {
+            self.beneficialOwnersTable.put(b);
+          });
+        });
       }
     },
     {
       name: 'updateUserInfo',
+      isFramed: true,
       code: function() {
         this.userId$find.then((user) => {
           this.firstName = user.firstName;
@@ -481,8 +498,7 @@ foam.CLASS({
         });
       }
     }
-  ]
-
+  ],
   // actions: [
   //   async function save(X){
   //     var self = this;
