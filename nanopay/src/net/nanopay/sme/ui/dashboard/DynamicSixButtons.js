@@ -317,11 +317,7 @@ foam.CLASS({
         if ( ! this.user.onboarded ) {
           var userId = this.agent.id;
           var businessId = this.user.id;
-          var id = net.nanopay.sme.onboarding.BusinessOnboardingId.create({
-            userId: userId,
-            businessId: businessId
-          }, x);
-          x.businessOnboardingDAO.find(id).then((o) => {
+          x.businessOnboardingDAO.find(businessId).then((o) => {
             o = o || this.BusinessOnboarding.create({
               userId: userId,
               businessId: businessId
