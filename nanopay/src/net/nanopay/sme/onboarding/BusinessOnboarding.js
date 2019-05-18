@@ -271,6 +271,7 @@ foam.CLASS({
           [true, 'Yes'],
           [false, 'No'],
         ],
+        isHorizontal: true
       }
     },
     foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
@@ -358,6 +359,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [ 1, 2, 3, 4 ],
+        isHorizontal: true
       },
       validateObj: function(ownershipAbovePercent, amountOfOwners) {
         return ownershipAbovePercent &&
