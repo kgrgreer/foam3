@@ -136,7 +136,14 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',
-      section: 'adminReferenceSection'
+      section: 'adminReferenceSection',
+      postSet: function(_, n) {
+        this.userId$find.then((user) => {
+          if ( this.userId != n ) return;
+          this.firstName = user.firstName;
+          this.lastName = user.lastName;
+        });
+      }
     },
     {
       class: 'String',
@@ -374,7 +381,16 @@ foam.CLASS({
       name: 'userOwnsPercent',
       section: 'ownershipAmountSection',
       label: '',
-      label2: 'I am one of these owners'
+      label2: 'I am one of these owners',
+      postSet: function(_, n) {
+        this.clearProperty('owner1');
+        if ( ! n ) return;
+        this.owner1.jobTitle$.follow(this.jobTitle$);
+        this.owner1.firstName$.follow(this.firstName$);
+        this.owner1.lastName$.follow(this.lastName$);
+        this.owner1.birthday$.follow(this.birthday$);
+        this.owner1.address$.follow(this.address$);
+      }
     },
     {
       class: 'String',
@@ -400,32 +416,25 @@ foam.CLASS({
         showTitle: false
       },
       label: '',
-      flags: ['web'],
-      expression: function(beneficialOwners) {
-        return beneficialOwners[i-1] || null;
+      factory: function() {
+        return this.BeneficialOwner.create();
       }
     })),
-    {
-      class: 'FObjectArray',
-      name: 'beneficialOwners',
-      of: 'net.nanopay.model.BeneficialOwner',
-      hidden: true,
-      postSet: function(_, n) {
-        n.forEach((o, i) => {
-          this['owner'+i] = o;
-        });
-      }
-    },
     {
       name: 'beneficialOwnersTable',
       flags: ['web'],
       section: 'reviewOwnersSection',
+      transient: true,
+      cloneProperty: function() {},
       factory: function() {
         return foam.dao.EasyDAO.create({
           of: 'net.nanopay.model.BeneficialOwner',
           seqNo: true,
           daoType: 'MDAO'
         });
+      },
+      postSet: function() {
+        this.updateTable();
       },
       view: {
         class: 'foam.u2.view.TableView',
@@ -448,56 +457,24 @@ foam.CLASS({
   ].flat(),
 
   reactions: [
-    ['', 'propertyChange.amountOfOwners', 'updateBeneficialOwners'],
-    ['', 'propertyChange.userOwnsPercent', 'updateBeneficialOwners'],
-    ['', 'propertyChange.userId', 'updateUserInfo']
-  ],
+    [1, 2, 3, 4].map((i) => [
+      `owner${i}`, 'propertyChange', 'updateTable'
+    ])
+  ].flat(),
 
   listeners: [
-    {
-      name: 'updateBeneficialOwners',
-      isFramed: true,
-      code: function() {
-        this.beneficialOwners = [1, 2, 3, 4]
-          .map((i) => this.BeneficialOwner.create(this.beneficialOwners[i]))
-          .slice(0, this.amountOfOwners);
-
-        if ( this.userOwnsPercent && this.amountOfOwners > 0 ) {
-          this.beneficialOwners[0].jobTitle$.follow(this.jobTitle$);
-          this.beneficialOwners[0].firstName$.follow(this.firstName$);
-          this.beneficialOwners[0].lastName$.follow(this.lastName$);
-          this.beneficialOwners[0].birthday$.follow(this.birthday$);
-          this.beneficialOwners[0].address$.follow(this.address$);
-        }
-
-        this.beneficialOwners.forEach((b) => {
-          b.onDetach(b.sub(this.updateTable));
-        });
-        this.updateTable();
-      }
-    },
     {
       name: 'updateTable',
       isFramed: true,
       code: function() {
         var self = this;
         self.beneficialOwnersTable.removeAll().then(function() {
-          self.beneficialOwners.forEach(function(b) {
-            self.beneficialOwnersTable.put(b);
-          });
+          for ( var i = 0; i < self.amountOfOwners; i++ ) {
+            self.beneficialOwnersTable.put(self['owner'+(i+1)]);
+          }
         });
       }
     },
-    {
-      name: 'updateUserInfo',
-      isFramed: true,
-      code: function() {
-        this.userId$find.then((user) => {
-          this.firstName = user.firstName;
-          this.lastName = user.lastName;
-        });
-      }
-    }
   ],
   // actions: [
   //   async function save(X){
