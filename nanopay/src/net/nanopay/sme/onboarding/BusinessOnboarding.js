@@ -1,7 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'BusinessOnboarding',
-  ids: ['userId', 'businessId'],
+
+  ids: ['businessId'],
 
   tableColumns: ['userId', 'status'],
 
