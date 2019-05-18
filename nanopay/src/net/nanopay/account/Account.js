@@ -41,13 +41,13 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       documentation: 'The ID for the account.',
-      visibility: foam.u2.Visibility.RO,
+      visibility: 'RO',
       tableWidth: 50
     },
     {
       class: 'Boolean',
       name: 'enabled',
-      documentation: `Determines whether an account is disabled. Accounts 
+      documentation: `Determines whether an account is disabled. Accounts
         on this platform are disabled rather than deleted.
       `,
       value: true
@@ -64,7 +64,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      documentation: `The given name of the account, 
+      documentation: `The given name of the account,
         provided by the individual person, or real user.`,
       validateObj: function(name) {
         if ( /^\s+$/.test(name) ) {
@@ -75,7 +75,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'desc',
-      documentation: `The given description of the account, provided by 
+      documentation: `The given description of the account, provided by
         the individual person, or real user.`,
       label: 'Description'
     },
@@ -94,8 +94,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'denomination',
-      documentation: `The unit of measure of the payment type. The payment system can handle 
-        denominations of any type, from mobile minutes to stocks.  
+      documentation: `The unit of measure of the payment type. The payment system can handle
+        denominations of any type, from mobile minutes to stocks.
       `,
       tableWidth: 127
     },
@@ -112,7 +112,7 @@ foam.CLASS({
       name: 'type',
       documentation: 'The type of the account.',
       transient: true,
-      visibility: foam.u2.Visibility.RO,
+      visibility: 'RO',
       factory: function() {
         return this.cls_.name;
       },
@@ -126,6 +126,7 @@ foam.CLASS({
       name: 'balance',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
+      visibility: 'RO',
       tableCellFormatter: function(value, obj, id) {
         var self = this;
         this.__subSubContext__.balanceDAO.find(obj.id).then( function( balance ) {
@@ -139,25 +140,29 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      documentation: 'The date and time of when the account was created in the system.'
+      documentation: 'The date and time of when the account was created in the system.',
+      visibility: 'RO',
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      documentation: 'The ID of the User who created the account.'
+      documentation: 'The ID of the User who created the account.',
+      visibility: 'RO',
     },
     {
       class: 'DateTime',
       name: 'lastModified',
-      documentation: 'The date and time of when the account was last changed in the system.'
+      documentation: 'The date and time of when the account was last changed in the system.',
+      visibility: 'RO',
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      documentation: `The unique identifier of the individual person, or real user, 
+      documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
+      visibility: 'RO',
     }
   ],
 
@@ -165,8 +170,8 @@ foam.CLASS({
     {
       name: 'toSummary',
       documentation: `
-        When using a reference to the accountDAO, the labels associated with it will show 
-        a chosen property rather than the first alphabetical string property. In this 
+        When using a reference to the accountDAO, the labels associated with it will show
+        a chosen property rather than the first alphabetical string property. In this
         case, we are using the account name.
       `,
       code: function(x) {
@@ -205,7 +210,7 @@ foam.CLASS({
     },
     {
       name: 'validateAmount',
-      documentation: `Allows a specific value to be used to perform a balance operation. 
+      documentation: `Allows a specific value to be used to perform a balance operation.
         For example: Trust accounts can be negative.`,
       args: [
         {
