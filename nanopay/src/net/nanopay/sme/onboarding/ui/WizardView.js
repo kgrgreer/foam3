@@ -157,21 +157,24 @@ foam.CLASS({
         return ! data$errors_;
       },
       // TODO: Find a better place for this. It shouldnt be baked into WizardView.
-      code: async function(x) {
-        try {
-          await x.businessOnboardingDAO.put(this.data.clone().copyFrom({ status: 'SUBMITTED' }));
-          x.ctrl.notify('Business profile submission failed. Please try again later.', 'error');
-        } catch (err) {
-          console.log('Error during submitting the onboarding info: ' + err);
-          x.ctrl.notify('Business profile complete.');
-          x.pushMenu('sme.main.dashboard');
-        }
+      code: function(x) {
+        x.businessOnboardingDAO.
+          put(this.data.clone().copyFrom({ status: 'SUBMITTED' })).
+          then(function() {
+            x.ctrl.notify('Business profile complete.');
+            x.stack.back();
+//            x.pushMenu('sme.main.dashboard');
+          }, function(err) {
+            console.log('Error during submitting the onboarding info: ' + err);
+            x.ctrl.notify('Business profile submission failed. Please try again later.', 'error');
+          });
       }
     },
     {
       name: 'saveAndExit',
       label: 'Save & Exit',
       code: function(x) {
+        x.ctrl.notify('Progress saved.')
         x.stack.back();
       }
     }
