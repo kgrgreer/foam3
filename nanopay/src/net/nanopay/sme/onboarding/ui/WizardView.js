@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'WizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
 
-  imports: [
-    'stack'
-  ],
-
   css: `
     ^ {
       display: flex;
