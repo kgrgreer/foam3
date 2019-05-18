@@ -49,15 +49,15 @@ foam.CLASS({
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO"));
 
-        Business business = businessOnboarding.findBusinessId(x);
-        User user = businessOnboarding.findUserId(x);
+        Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
+        User user = (User)localUserDAO.find(businessOnboarding.getUserId());
 
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
         business.setPhone(businessOnboarding.getPhone());
         business.setBusinessPhone(businessOnboarding.getPhone());
-        
+
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
           user.setBirthday(businessOnboarding.getBirthday());
@@ -77,22 +77,22 @@ foam.CLASS({
 
           Invitation invitation = new Invitation();
           /**
-           * Summary: the group set in the invitation obj is not the final(real) group 
+           * Summary: the group set in the invitation obj is not the final(real) group
            * that the signing office will get after signing up with the invitation email.
            * It is a string saved in the token that will passed into the NewUserCreateBusinessDAO class.
            * The group of the new signing officer will generate in the NewUserCreateBusinessDAO class.
-           * 
+           *
            * Details: After we set the group in the invitation obj, we put the invitation
            * into the businessInvitationDAO service.
-           * 
+           *
            * In the BusinessOnboardingDAO service, it has a decorator called businessInvitationDAO.
            * In the put_ method of businessInvitationDAO.java,
            * it basically set up a token which contains the group information which is the temp string: 'admin'
-           * 
+           *
            * When the user signs up with the signing officer invitation email,
            * the app will call the smeBusinessRegistrationDAO service.
            * In the smeBusinessRegistrationDAO service, it has a decorator called NewUserCreateBusinessDAO.
-           * 
+           *
            * In NewUserCreateBusinessDAO.java, it generates the business specific group
            * in the format of: businessName+businessId.admin. (such as: nanopay8010.admin).
            */
@@ -104,7 +104,7 @@ foam.CLASS({
           businessInvitationDAO.put(invitation);
         }
 
-        // * Step 6: Business info        
+        // * Step 6: Business info
         // Business info: business address
         business.setAddress(businessOnboarding.getBusinessAddress());
         business.setBusinessAddress(businessOnboarding.getBusinessAddress());
@@ -115,7 +115,7 @@ foam.CLASS({
         business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
 
         if ( businessOnboarding.getOperatingUnderDifferentName() ) {
-          business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName()); 
+          business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
         }
 
         // Business info: transaction details
