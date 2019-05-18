@@ -202,6 +202,11 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: '',
       label2: 'I am a politically exposed persons or head of an international organization (PEP/HIO)',
+      help: `
+        A political exposed person (PEP) or the head of an international organization (HIO) 
+        is a person entrusted with a prominent position that typically comes with the opportunity 
+        to influence decisions and the ability to control resources
+      `,
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -210,6 +215,10 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: '',
       label2: 'I am taking instructions from and/or conducting transactions on behalf of a 3rd party',
+      help: `
+        A third party is a person or entity who instructs another person or entity
+        to conduct an activity or financial transaction on their behalf
+      `,
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
