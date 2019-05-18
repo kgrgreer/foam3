@@ -43,6 +43,8 @@ foam.CLASS({
           return getDelegate().put_(x, obj);
         }
 
+        businessOnboarding.validate(x);
+
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
@@ -130,9 +132,8 @@ foam.CLASS({
         business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
         // * Step 7: Percent of ownership
-        BeneficialOwner[] beneficialOwnersArray = businessOnboarding.getBeneficialOwners();
-        for ( BeneficialOwner beneficialOwner: beneficialOwnersArray ) {
-          business.getBeneficialOwners(x).put(beneficialOwner);
+        for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
+          business.getBeneficialOwners(x).put((BeneficialOwner) getProperty("owner"+i));
         }
 
         business.setOnboarded(true);
