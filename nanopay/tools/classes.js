@@ -494,6 +494,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
+  'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
 
   // canadian sanction
@@ -536,6 +537,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.enums.MatchType',
   'net.nanopay.meter.compliance.dowJones.enums.RecordType',
   'net.nanopay.meter.compliance.dowJones.enums.SearchType',
+  'net.nanopay.meter.compliance.dowJones.AbstractDowJonesComplianceRuleAction',
   'net.nanopay.meter.compliance.dowJones.DowJonesInvalidResponse',
   'net.nanopay.meter.compliance.dowJones.DowJonesRequest',
   'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
@@ -547,6 +549,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.DowJones',
   'net.nanopay.meter.compliance.dowJones.DowJonesRestInterface',
   'net.nanopay.meter.compliance.dowJones.EntitySanctionValidator',
+  'net.nanopay.meter.compliance.dowJones.EntityNameSearchData',
   'net.nanopay.meter.compliance.dowJones.EntityNameSearchRequest',
   'net.nanopay.meter.compliance.dowJones.IDTypeSearchRequest',
   'net.nanopay.meter.compliance.dowJones.Match',
@@ -555,6 +558,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.MetadataSearchResponse',
   'net.nanopay.meter.compliance.dowJones.NameSearchRequest',
   'net.nanopay.meter.compliance.dowJones.PersonSanctionValidator',
+  'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
   // meter tests

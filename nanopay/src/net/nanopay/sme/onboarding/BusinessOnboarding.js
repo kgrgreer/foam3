@@ -15,11 +15,16 @@ foam.CLASS({
     'net.nanopay.model.Business',
   ],
 
+  imports: [
+    'ctrl',
+    'pushMenu',
+  ],
+
   sections: [
     {
       name: 'gettingStartedSection',
       title: 'Before you get started',
-      help: 'Welcome! I’m Joanne, and I’ll help you unlock the full power of Ablii.'
+      help: `Welcome! I’m Joanne, and I’ll help you unlock the full power of Ablii.`
     },
     {
       name: 'adminReferenceSection',
@@ -160,6 +165,15 @@ foam.CLASS({
       section: 'adminReferenceSection'
     },
 
+    {
+      name: 'welcome',
+      section: 'gettingStartedSection',
+      label: '',
+      view: {
+        class: 'net.nanopay.sme.onboarding.ui.IntroOnboarding'
+      }
+    },
+
     foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
@@ -289,7 +303,7 @@ foam.CLASS({
         return operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
-    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_AMOUNT.clone().copyFrom({
+    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.clone().copyFrom({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.view.ChoiceView',
@@ -303,7 +317,7 @@ foam.CLASS({
         ]
       },
     }),
-    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.clone().copyFrom({
+    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.view.ChoiceView',
@@ -554,48 +568,24 @@ foam.CLASS({
             "certifyAllInfoIsAccurate": true
         });
       }
+    },
+    {
+      name: 'submit',
+      // Todo: this need to be the 2FA section
+      section: 'reviewOwnersSection',
+      isEnabled: function(errors_) {
+        return ! errors_;
+      },
+      code: async function(x) {
+        try {
+          await x.businessOnboardingDAO.put(this);
+          x.ctrl.notify('Business profile submission failed. Please try again later.', 'error');
+        } catch (err) {
+          console.log('Error during submitting the onboarding info: ' + err);
+          x.ctrl.notify('Business profile complete.');
+          x.pushMenu('sme.main.dashboard');
+        }
+      }
     }
   ]
-  // actions: [
-  //   async function save(X){
-  //     var self = this;
-  //     // This is a rough idea of how the values collected from the model will be translated to the appropriate objects and DAO's.
-  //     // Requires work.
-  //     var business = await X.businessDAO.find(this.businessId ? this.businessId : X.user);
-  //     var user = await X.userDAO.find(this.userId ? this.userId : X.agent);
-
-  //     // Append values to user
-  //     user.phone = this.phone;
-  //     user.birthday = this.birthday;
-  //     user.address = this.address;
-
-  //     var employee = user;
-  //     employee.signingOfficer = this.signingOfficer;
-  //     employee.PEPHIORelated = this.PEPHIORelated;
-  //     employee.thirdParty = this.thirdParty;
-  //     this.businessAddress.regionId = business.regionId ? business.regionId : this.businessAddress.regionId;
-  //     this.businessAddress.countryId = business.countryId ? business.countryId : this.businessAddress.countryId;
-  //     business.address = this.businessAddress;
-  //     business.businessTypeId = this.businessTypeId;
-  //     business.businessSectorId = this.businessSectorId;
-  //     business.sourceOfFunds = this.sourceOfFunds;
-  //     business.operatingBusinessName = this.operatingBusinessName;
-
-  //     var suggestedUserTransactionInfo = net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create({
-  //       annualTransactionAmount: this.annualTransactionAmount,
-  //       annualVolume: this.annualVolume,
-  //       transactionPurpose: this.transactionPurpose,
-  //       otherTransactionPurpose: this.otherTransactionPurpose
-  //     });
-
-  //     business.suggestedUserTransactionInfo = suggestedUserTransactionInfo;
-
-  //     this.beneficialOwners.forEach(function(beneficialOwner) {
-  //       self.business.beneficialOwners.add(beneficialOwner);
-  //     });
-
-  //     var user = await X.userDAO.put(user);
-  //     var business = await X.businessDAO.put(business);
-  //   }
-  // ]
 });

@@ -789,6 +789,7 @@ FOAM_FILES([
   // sme onboarding
   { name: 'net/nanopay/sme/onboarding/ui/BusinessRegistrationWizard', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/IntroductionView', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/IntroOnboarding', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/SigningOfficerForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
@@ -882,6 +883,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
 
   // canadian sanction
@@ -924,6 +926,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/enums/MatchType' },
   { name: 'net/nanopay/meter/compliance/dowJones/enums/RecordType' },
   { name: 'net/nanopay/meter/compliance/dowJones/enums/SearchType' },
+  { name: 'net/nanopay/meter/compliance/dowJones/AbstractDowJonesComplianceRuleAction' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesInvalidResponse' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesRequest' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesResponse' },
@@ -935,6 +938,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/DowJones' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesRestInterface' },
   { name: 'net/nanopay/meter/compliance/dowJones/EntitySanctionValidator' },
+  { name: 'net/nanopay/meter/compliance/dowJones/EntityNameSearchData' },
   { name: 'net/nanopay/meter/compliance/dowJones/EntityNameSearchRequest' },
   { name: 'net/nanopay/meter/compliance/dowJones/IDTypeSearchRequest' },
   { name: 'net/nanopay/meter/compliance/dowJones/Match' },
@@ -943,6 +947,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/MetadataSearchResponse' },
   { name: 'net/nanopay/meter/compliance/dowJones/NameSearchRequest' },
   { name: 'net/nanopay/meter/compliance/dowJones/PersonSanctionValidator' },
+  { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchData' },
   { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
 
   // liquidity
