@@ -55,6 +55,8 @@ foam.CLASS({
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
+        business.setPhone(businessOnboarding.getPhone());
+        business.setBusinessPhone(businessOnboarding.getPhone());
         
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
@@ -133,7 +135,7 @@ foam.CLASS({
 
         // * Step 7: Percent of ownership
         for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
-          business.getBeneficialOwners(x).put((BeneficialOwner) getProperty("owner"+i));
+          business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
         }
 
         business.setOnboarded(true);
