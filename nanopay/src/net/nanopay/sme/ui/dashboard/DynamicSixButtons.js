@@ -313,17 +313,19 @@ foam.CLASS({
       name: 'busProfile',
       label: 'Business Profile',
       icon: 'images/Briefcase_Icon.svg',
-      code: function() {
+      code: function(x) {
         if ( ! this.user.onboarded ) {
-
-          // TODO: Fix reactions to trigger from arguments
-          var bo = this.BusinessOnboarding.create();
-          bo.userId = this.agent.id;
-          bo.businessId = this.user.id 
-
-          this.stack.push({ 
-            class: 'net.nanopay.sme.onboarding.ui.WizardView', 
-            data: bo
+          var userId = this.agent.id;
+          var businessId = this.user.id;
+          x.businessOnboardingDAO.find(businessId).then((o) => {
+            o = o || this.BusinessOnboarding.create({
+              userId: userId,
+              businessId: businessId
+            });
+            this.stack.push({
+              class: 'net.nanopay.sme.onboarding.ui.WizardView',
+              data: o
+            });
           });
         } else {
           this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
