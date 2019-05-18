@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'BusinessOnboarding',
-  ids: ['userId'],
+  ids: ['userId', 'businessId'],
 
   tableColumns: ['userId', 'status'],
 
@@ -115,12 +115,6 @@ foam.CLASS({
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
       isAvailable: function (signingOfficer, ownershipAbovePercent) { return signingOfficer && ownershipAbovePercent }
-    },
-    {
-      name: '2faSection',
-      title: 'Protect your account against fraud with Two-factor authentication',
-      help: `Alright, it looks like that is all of the information we need! Last thing I’ll ask
-          is that you enable two factor authentication. We want to make sure your account is safe!`
     }
   ].flat(),
 
@@ -552,24 +546,6 @@ foam.CLASS({
             },
             "certifyAllInfoIsAccurate": true
         });
-      }
-    },
-    {
-      name: 'submit',
-      // Todo: this need to be the 2FA section
-      section: 'reviewOwnersSection',
-      isEnabled: function(errors_) {
-        return ! errors_;
-      },
-      code: async function(x) {
-        try {
-          await x.businessOnboardingDAO.put(this);
-          x.ctrl.notify('Business profile submission failed. Please try again later.', 'error');
-        } catch (err) {
-          console.log('Error during submitting the onboarding info: ' + err);
-          x.ctrl.notify('Business profile complete.');
-          x.pushMenu('sme.main.dashboard');
-        }
       }
     }
   ]

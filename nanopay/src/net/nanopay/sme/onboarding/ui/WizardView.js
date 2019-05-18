@@ -2,7 +2,9 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
-
+  requires: [
+    'foam.u2.layout.Item'
+  ],
   css: `
     ^ {
       display: flex;
@@ -102,27 +104,74 @@ foam.CLASS({
       value: { class: 'net.nanopay.sme.onboarding.ui.WizardPageView' }
     }
   ],
+  reactions: [
+    ['data', 'propertyChange', 'saveDraft']
+  ],
   methods: [
     function initE() {
-      this.addClass(this.myClass());
-
+      var self = this;
       this
+        .addClass(this.myClass())
         .start().addClass(this.myClass('header'))
           .start({ class: 'foam.u2.tag.Image', data: 'images/ablii-wordmark.svg' }).addClass(this.myClass('logo')).end()
           .start().add(this.SAVE_AND_EXIT).addClass(this.myClass('save-exit')).end()
         .end()
         .startContext({ data: this })
           .add(this.PROGRESS)
-        .endContext();
-      this.SUPER();
+        .endContext()
+        .start(self.Rows)
+          .add(self.slot(function(sections, currentIndex) {
+            return self.E()
+              .tag(self.sectionView, {
+                section: sections[currentIndex],
+                data$: self.data$
+              });
+          })).addClass(this.myClass('wizard-body'))
+          .startContext({ data: this })
+            .start(self.Cols).addClass(this.myClass('footer'))
+              .add(this.PREV)
+              .start(this.Item)
+                .add(this.NEXT)
+                .add(this.SUBMIT)
+              .end()
+            .end()
+          .endContext()
+        .end();
     }
   ],
-
+  listeners: [
+    {
+      name: 'saveDraft',
+      isMerged: true,
+      mergeDelay: 2000,
+      code: function() {
+        var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
+        dao.put(this.data.clone().copyFrom({ status: 'DRAFT' }));
+      }
+    }
+  ],
   actions: [
+    {
+      name: 'submit',
+      isAvailable: function(data$errors_) {
+        return ! data$errors_;
+      },
+      // TODO: Find a better place for this. It shouldnt be baked into WizardView.
+      code: async function(x) {
+        try {
+          await x.businessOnboardingDAO.put(this.data.clone().copyFrom({ status: 'SUBMITTED' }));
+          x.ctrl.notify('Business profile submission failed. Please try again later.', 'error');
+        } catch (err) {
+          console.log('Error during submitting the onboarding info: ' + err);
+          x.ctrl.notify('Business profile complete.');
+          x.pushMenu('sme.main.dashboard');
+        }
+      }
+    },
     {
       name: 'saveAndExit',
       label: 'Save & Exit',
-      code: function (x) {
+      code: function(x) {
         x.stack.back();
       }
     }
