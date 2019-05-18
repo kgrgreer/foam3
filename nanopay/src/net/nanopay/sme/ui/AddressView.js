@@ -57,16 +57,12 @@ foam.CLASS({
 
   messages: [
     { name: 'COUNTRY_LABEL', message: 'Country' },
-    { name: 'STREET_NUMBER_PLACEHOLDER', message: 'Street Number' },
     { name: 'STREET_NUMBER_LABEL', message: 'Street Number' },
-    { name: 'STREET_NAME_PLACEHOLDER', message: 'Street Name' },
     { name: 'STREET_NAME_LABEL', message: 'Street Name' },
     { name: 'ADDRESS_LABEL', message: 'Address Line 2 (Optional)' },
     { name: 'ADDRESS_HINT', message: 'Apartment, suite, etc.' },
     { name: 'PROVINCE_LABEL', message: 'State/Province' },
-    { name: 'CITY_PLACEHOLDER', message: 'City' },
     { name: 'CITY_LABEL', message: 'City' },
-    { name: 'POSTAL_CODE_PLACEHOLDER', message: 'Postal Code/Zip Code' },
     { name: 'POSTAL_CODE_LABEL', message: 'Postal Code/Zip Code' }
   ],
 
@@ -147,14 +143,12 @@ foam.CLASS({
             .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
             .start(this.Address.STREET_NUMBER, { mode$: this.mode$ })
               .addClass('input-field')
-              .setAttribute('placeholder', this.STREET_NUMBER_PLACEHOLDER)
             .end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.STREET_NAME_LABEL).end()
             .start(this.Address.STREET_NAME, { mode$: this.mode$ })
               .addClass('input-field')
-              .setAttribute('placeholder', this.STREET_NAME_PLACEHOLDER)
             .end()
           .end()
         .end()
@@ -172,14 +166,12 @@ foam.CLASS({
             .start().addClass('label').add(this.CITY_LABEL).end()
             .start(this.Address.CITY, { mode$: this.mode$ })
               .addClass('input-field')
-              .setAttribute('placeholder', this.CITY_PLACEHOLDER)
             .end()
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.POSTAL_CODE_LABEL).end()
             .start(this.Address.POSTAL_CODE, { mode$: this.mode$ })
               .addClass('input-field')
-              .setAttribute('placeholder', this.POSTAL_CODE_PLACEHOLDER)
             .end()
           .end()
           .callIf(this.withoutCountrySelection, function() {
