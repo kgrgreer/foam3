@@ -177,6 +177,7 @@ foam.CLASS({
     foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
+      label: '',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -193,7 +194,8 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
-      section: 'personalInformationSection'
+      section: 'personalInformationSection',
+      label: 'Phone #'
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       section: 'personalInformationSection',
@@ -235,13 +237,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'signingOfficerEmail',
-      label: 'Enter your signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
-      view: {
-        class: 'foam.u2.TextField',
-        placeholder: 'example@email.com'
-      },
+      placeholder: 'example@email.com'
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
@@ -364,7 +362,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'ownershipAbovePercent',
-      label: 'Does anyone own above 25% of the company?',
+      label: '',
       section: 'ownershipYesOrNoSection',
       postSet: function(_, n) {
         if ( ! n ) this.amountOfOwners = 0;
