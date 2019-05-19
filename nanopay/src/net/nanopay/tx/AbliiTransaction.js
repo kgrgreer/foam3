@@ -7,22 +7,14 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.lang.StringBuilder',
     'java.text.NumberFormat',
-    'java.util.HashMap',
-    'java.util.List',
-    'java.util.ArrayList',
-    'foam.util.SafetyUtil',
+    'net.nanopay.account.Account',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.liquidity.LiquiditySettings',
-    'net.nanopay.util.Frequency',
-    'net.nanopay.account.Account'
   ],
 
   methods: [
