@@ -40,12 +40,13 @@ foam.CLASS({
       margin: 0 !important;
       padding: 0 !important;
       background: #f9fbff;
-      text-align: center
+      text-align: center;
     }
     ^ .report-container {
       display: inline-block;
       width: 100%;
       height: 90vh;
+      overflow-y: scroll;
     }
     ^ .button-bar {
       margin-top:20px;
