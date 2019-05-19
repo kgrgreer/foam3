@@ -136,6 +136,7 @@ foam.CLASS({
         business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
         // * Step 7: Percent of ownership
+        business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
         for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
           business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
         }
