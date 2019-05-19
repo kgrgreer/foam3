@@ -37,7 +37,7 @@ public class TransactionTest
     receiver_ = addUser("txntest2@transactiontest.com");
 
     testTransactionMethods();
-    testAbliiTransaction();
+    //testAbliiTransaction();
     testVerificationTransaction();
     testFXTransaction();
     testLoanTransaction();

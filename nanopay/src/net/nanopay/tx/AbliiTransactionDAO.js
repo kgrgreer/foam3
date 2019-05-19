@@ -76,13 +76,14 @@ foam.CLASS({
         try {
           // check if we can make the CO at th same time as CI
           Account account = DigitalAccount.findDefault(x,(User) x.get("user"), request.getSourceCurrency());
-          if (account instanceof Debtable && ((Debtable) account).findDebtAccount(x) != null && ((Debtable)account).findDebtAccount(x).getLimit() > 0 )
-            throw new RuntimeException("Sorry, this user is not eligible for fast pay at the moment");
-          //account.validateAmount(x, null, request.getAmount());
-          CompositeTransaction ct = new CompositeTransaction();
-          ct.copyFrom(request);
-          ct.setIsQuoted(true);
-          request.addNext(ct);
+          if (account instanceof Debtable && ((Debtable) account).findDebtAccount(x) != null && ((Debtable)account).findDebtAccount(x).getLimit() > 0 ) {
+            //account.validateAmount(x, null, request.getAmount());
+            CompositeTransaction ct = new CompositeTransaction();
+            ct.copyFrom(request);
+            ct.setIsQuoted(true);
+            request.addNext(ct);
+          }
+          
           // NOTE: DebtTransaction takes care of generating Transfers.
           // in TransactionDAO ignore transfers from DebtAccounts.
           // The transfers below are not necesary.

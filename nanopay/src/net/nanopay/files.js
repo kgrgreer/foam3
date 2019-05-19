@@ -796,6 +796,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
   { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
+  { name: 'net/nanopay/sme/onboarding/OnboardingStatus' },
   { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
   { name: 'net/nanopay/sme/onboarding/ui/WizardView' },
   { name: 'net/nanopay/sme/onboarding/ui/WizardPageView' },
@@ -976,6 +977,7 @@ FOAM_FILES([
   // business
   { name: 'net/nanopay/business/NatureOfBusiness' },
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
+  { name: 'net/nanopay/business/JoinBusinessTokenService' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },

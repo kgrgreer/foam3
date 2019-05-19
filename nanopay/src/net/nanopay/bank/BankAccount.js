@@ -213,8 +213,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'integrationId',
-      documentation:`A unique identifier for a bank account when it becomes a line item
-        in a transaction.`,
+      documentation:`A unique identifier for a bank account within the 
+        client's accounting software.`,
     },
     {
       class: 'FObjectProperty',

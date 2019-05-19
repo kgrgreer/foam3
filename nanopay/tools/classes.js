@@ -142,6 +142,7 @@ var classes = [
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
   'net.nanopay.sme.onboarding.BusinessOnboarding',
+  'net.nanopay.sme.onboarding.OnboardingStatus',
   'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
   'net.nanopay.sme.onboarding.BusinessOnboardingDAOTest',
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboarding',
@@ -578,6 +579,7 @@ var classes = [
 
   // business
   'net.nanopay.business.EnforceOneBusinessAdminDAO',
+  'net.nanopay.business.JoinBusinessTokenService',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
