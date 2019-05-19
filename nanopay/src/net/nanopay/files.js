@@ -968,6 +968,7 @@ FOAM_FILES([
   // business
   { name: 'net/nanopay/business/NatureOfBusiness' },
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
+  { name: 'net/nanopay/business/JoinBusinessTokenService' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
