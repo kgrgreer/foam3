@@ -64,7 +64,8 @@ foam.CLASS({
           email.sendEmailFromTemplate(x, user, message, "join-business-internal", args);
           return true;
         } catch(Throwable t) {
-          t.printStackTrace();
+          Logger logger = (Logger) x.get("logger");
+          logger.error(this.getClass().getSimpleName(), "generateTokenWithParameters",t);
           return false;
         }
       `
