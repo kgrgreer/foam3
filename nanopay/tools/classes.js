@@ -142,6 +142,7 @@ var classes = [
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
   'net.nanopay.sme.onboarding.BusinessOnboarding',
+  'net.nanopay.sme.onboarding.OnboardingStatus',
   'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
   'net.nanopay.sme.onboarding.BusinessOnboardingDAOTest',
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboarding',

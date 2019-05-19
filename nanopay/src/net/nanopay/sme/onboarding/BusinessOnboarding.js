@@ -1,7 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'BusinessOnboarding',
-  ids: ['userId'],
+
+  ids: ['businessId'],
+
+  tableColumns: ['userId', 'status'],
 
   documentation: `Multifunctional model used for business onboarding`,
 
@@ -11,6 +14,11 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
+  ],
+
+  imports: [
+    'ctrl',
+    'pushMenu',
   ],
 
   sections: [
@@ -42,9 +50,9 @@ foam.CLASS({
     },
     {
       name: 'signingOfficerEmailSection',
-      title: 'Enter a signing officers email',
+      title: 'Enter your signing officer\'s email',
       help: `For security, we require the approval of a signing officer before you can continue.
-          I can email your signing officers directly for the approval. Only 1 is required, but you can add as many as you like…`,
+          I can email your signing officer directly for the approval.`,
       isAvailable: function (signingOfficer) { return !signingOfficer }
     },
     {
@@ -108,16 +116,16 @@ foam.CLASS({
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
       isAvailable: function (signingOfficer, ownershipAbovePercent) { return signingOfficer && ownershipAbovePercent }
-    },
-    {
-      name: '2faSection',
-      title: 'Protect your account against fraud with Two-factor authentication',
-      help: `Alright, it looks like that is all of the information we need! Last thing I’ll ask
-          is that you enable two factor authentication. We want to make sure your account is safe!`
     }
   ].flat(),
 
   properties: [
+    {
+      class: 'Enum',
+      of: 'net.nanopay.sme.onboarding.OnboardingStatus',
+      name: 'status',
+      value: 'DRAFT'
+    },
     {
       class: 'Reference',
       of: 'net.nanopay.model.Business',
@@ -128,16 +136,27 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',
-      section: 'adminReferenceSection'
+      section: 'adminReferenceSection',
+      postSet: function(_, n) {
+        this.userId$find.then((user) => {
+          if ( this.userId != n ) return;
+          this.firstName = user.firstName;
+          this.lastName = user.lastName;
+        });
+      }
     },
     {
       class: 'String',
       name: 'firstName',
+      flags: ['web'],
+      transient: true,
       section: 'adminReferenceSection'
     },
     {
       class: 'String',
       name: 'lastName',
+      flags: ['web'],
+      transient: true,
       section: 'adminReferenceSection'
     },
 
@@ -153,6 +172,7 @@ foam.CLASS({
     foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
+      label: '',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -169,7 +189,8 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
-      section: 'personalInformationSection'
+      section: 'personalInformationSection',
+      label: 'Phone #'
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       section: 'personalInformationSection',
@@ -181,6 +202,11 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: '',
       label2: 'I am a politically exposed persons or head of an international organization (PEP/HIO)',
+      help: `
+        A political exposed person (PEP) or the head of an international organization (HIO) 
+        is a person entrusted with a prominent position that typically comes with the opportunity 
+        to influence decisions and the ability to control resources
+      `,
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -189,6 +215,10 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: '',
       label2: 'I am taking instructions from and/or conducting transactions on behalf of a 3rd party',
+      help: `
+        A third party is a person or entity who instructs another person or entity
+        to conduct an activity or financial transaction on their behalf
+      `,
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -209,15 +239,24 @@ foam.CLASS({
       }
     }),
     {
+      name: 'signingOfficerEmailInfo',
+      documentation: 'More info on signing officer',
+      label: '',
+      section: 'signingOfficerEmailSection',
+      view: function(){
+        return foam.u2.Element.create()
+          .start('div')
+            .add('Invite a signing officer to complete the onboarding for your business.  Once the signing officer completes their onboarding, your business can start using Ablii.')
+          .end();
+      }
+    },
+    {
       class: 'String',
       name: 'signingOfficerEmail',
       label: 'Enter your signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
-      view: {
-        class: 'foam.u2.TextField',
-        placeholder: 'example@email.com'
-      },
+      placeholder: 'example@email.com'
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
@@ -271,15 +310,20 @@ foam.CLASS({
           [true, 'Yes'],
           [false, 'No'],
         ],
+        isHorizontal: true
       }
     },
     foam.nanos.auth.User.OPERATING_BUSINESS_NAME.clone().copyFrom({
       section: 'businessDetailsSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: 'Enter your operating name'
+      },
       visibilityExpression: function(operatingUnderDifferentName) {
         return operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
-    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_AMOUNT.clone().copyFrom({
+    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.clone().copyFrom({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.view.ChoiceView',
@@ -293,7 +337,7 @@ foam.CLASS({
         ]
       },
     }),
-    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.clone().copyFrom({
+    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.view.ChoiceView',
@@ -339,8 +383,11 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'ownershipAbovePercent',
-      label: 'Does anyone own above 25% of the company?',
+      label: '',
       section: 'ownershipYesOrNoSection',
+      postSet: function(_, n) {
+        if ( ! n ) this.amountOfOwners = 0;
+      },
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -352,12 +399,11 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'amountOfOwners',
-      flags: ['web'],
-      label: 'Amount of individuals who own 25%',
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [ 1, 2, 3, 4 ],
+        isHorizontal: true
       },
       validateObj: function(ownershipAbovePercent, amountOfOwners) {
         return ownershipAbovePercent &&
@@ -367,32 +413,40 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'userOwnsPercent',
-      flags: ['web'],
       section: 'ownershipAmountSection',
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
         this.clearProperty('owner1');
         if ( ! n ) return;
-        this.owner1.jobTitle = this.jobTitle;
-        this.owner1.firstName = this.firstName;
-        this.owner1.lastName = this.lastName;
-        this.owner1.birthday = this.birthday;
-        this.owner1.address = this.address;
+        this.owner1.jobTitle$.follow(this.jobTitle$);
+        this.owner1.firstName$.follow(this.firstName$);
+        this.owner1.lastName$.follow(this.lastName$);
+        this.owner1.birthday$.follow(this.birthday$);
+        this.owner1.address$.follow(this.address$);
       }
     },
     {
       class: 'String',
       name: 'roJobTitle',
       label: 'Job Title',
-      factory: function() {
-        return this.jobTitle;
+      expression: function(jobTitle) {
+        return jobTitle;
       },
       section: 'personalOwnershipSection',
       visibility: foam.u2.Visibility.RO
     },
+
+    // FIXME: IntView not respecting the min-max range
     foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
+      label: '% of ownership',
+      view: {
+        class: 'foam.u2.IntView',
+        min: 25,
+        max: 100,
+      },
+      value: 35
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',
@@ -405,31 +459,25 @@ foam.CLASS({
         showTitle: false
       },
       label: '',
-      flags: ['web'],
       factory: function() {
-        return this.BeneficialOwner.create();
+        return this.BeneficialOwner.create({ business$: this.businessId$ });
       }
     })),
     {
-      class: 'FObjectArray',
-      name: 'beneficialOwners',
-      of: 'net.nanopay.model.BeneficialOwner',
-      hidden: true
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      of: 'net.nanopay.model.BeneficialOwner',
       name: 'beneficialOwnersTable',
       flags: ['web'],
       section: 'reviewOwnersSection',
-      expression: function(beneficialOwners) {
-        var dao = foam.dao.EasyDAO.create({
+      transient: true,
+      cloneProperty: function() {},
+      factory: function() {
+        return foam.dao.EasyDAO.create({
           of: 'net.nanopay.model.BeneficialOwner',
           seqNo: true,
           daoType: 'MDAO'
         });
-        beneficialOwners.forEach((o) => dao.put(o));
-        return dao;
+      },
+      postSet: function() {
+        this.updateTable();
       },
       view: {
         class: 'foam.u2.view.TableView',
@@ -452,76 +500,88 @@ foam.CLASS({
   ].flat(),
 
   reactions: [
-    ['', 'amountOfOwners', 'updateBeneficialOwners'],
-    ['', 'propertyChange.userId', 'updateUserInfo']
-  ].concat([1, 2, 3, 4].map((i) => [
-    `owner${i}`, 'propertyChange', 'updateBeneficialOwners'
-  ])),
+    [1, 2, 3, 4].map((i) => [
+      `owner${i}`, 'propertyChange', 'updateTable'
+    ])
+  ].flat(),
 
   listeners: [
     {
-      name: 'updateBeneficialOwners',
+      name: 'updateTable',
       isFramed: true,
       code: function() {
-        this.beneficialOwners = [
-          this.owner1,
-          this.owner2,
-          this.owner3,
-          this.owner4
-        ].slice(0, this.amountOfOwners);
+        var self = this;
+        self.beneficialOwnersTable.removeAll().then(function() {
+          for ( var i = 0; i < self.amountOfOwners; i++ ) {
+            self.beneficialOwnersTable.put(self['owner'+(i+1)].clone());
+          }
+        });
       }
     },
+  ],
+  actions: [
     {
-      name: 'updateUserInfo',
+      name: 'autofill',
+      permissionRequired: true,
+      section: 'adminReferenceSection',
       code: function() {
-        this.userId$find.then(user => {
-          this.firstName = user.firstName;
-          this.lastName = user.lastName;
-        })
+        this.copyFrom({
+            "status": 0,
+            "signingOfficer": true,
+            "jobTitle": "CEO",
+            "phone": {
+              "number": "1231231234"
+            },
+            "birthday": 537685200000,
+            "PEPHIORelated": true,
+            "thirdParty": true,
+            "dualPartyAgreement": true,
+            "address": {
+              "countryId": "CA",
+              "regionId": "ON",
+              "streetNumber": "123",
+              "streetName": "Users St.",
+              "city": "User City",
+              "postalCode": "L3L4L4"
+            },
+            "businessAddress": {
+              "countryId": "CA",
+              "regionId": "ON",
+              "streetNumber": "233",
+              "streetName": "Park St",
+              "city": "Waterloo",
+              "postalCode": "N3N2N2"
+            },
+            "businessTypeId": 2,
+            "businessSectorId": 11293,
+            "sourceOfFunds": "Investment Income",
+            "operatingUnderDifferentName": true,
+            "operatingBusinessName": "OP Inc",
+            "annualTransactionAmount": "$100,001 to $500,000",
+            "annualVolume": "$0 to $50,000",
+            "transactionPurpose": "Intracompany bank transfers",
+            "targetCustomers": "People",
+            "ownershipAbovePercent": true,
+            "amountOfOwners": 2,
+            "userOwnsPercent": true,
+            "owner2": {
+              "jobTitle": "COO",
+              "firstName": "Foo",
+              "lastName": "Bar",
+              "birthday": 315550800000,
+              "address": {
+                "countryId": "CA",
+                "regionId": "NS",
+                "streetNumber": "123",
+                "streetName": "Pobox",
+                "city": "Farmland",
+                "postalCode": "J3J3J3"
+              },
+              "business": 8006
+            },
+            "certifyAllInfoIsAccurate": true
+        });
       }
     }
   ]
-
-  // actions: [
-  //   async function save(X){
-  //     var self = this;
-  //     // This is a rough idea of how the values collected from the model will be translated to the appropriate objects and DAO's.
-  //     // Requires work.
-  //     var business = await X.businessDAO.find(this.businessId ? this.businessId : X.user);
-  //     var user = await X.userDAO.find(this.userId ? this.userId : X.agent);
-
-  //     // Append values to user
-  //     user.phone = this.phone;
-  //     user.birthday = this.birthday;
-  //     user.address = this.address;
-
-  //     var employee = user;
-  //     employee.signingOfficer = this.signingOfficer;
-  //     employee.PEPHIORelated = this.PEPHIORelated;
-  //     employee.thirdParty = this.thirdParty;
-  //     this.businessAddress.regionId = business.regionId ? business.regionId : this.businessAddress.regionId;
-  //     this.businessAddress.countryId = business.countryId ? business.countryId : this.businessAddress.countryId;
-  //     business.address = this.businessAddress;
-  //     business.businessTypeId = this.businessTypeId;
-  //     business.businessSectorId = this.businessSectorId;
-  //     business.sourceOfFunds = this.sourceOfFunds;
-  //     business.operatingBusinessName = this.operatingBusinessName;
-
-  //     var suggestedUserTransactionInfo = net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create({
-  //       annualTransactionAmount: this.annualTransactionAmount,
-  //       annualVolume: this.annualVolume,
-  //       transactionPurpose: this.transactionPurpose,
-  //       otherTransactionPurpose: this.otherTransactionPurpose
-  //     });
-
-  //     business.suggestedUserTransactionInfo = suggestedUserTransactionInfo;
-
-  //     this.beneficialOwners.forEach(function(beneficialOwner) {
-  //       self.business.beneficialOwners.add(beneficialOwner);
-  //     });
-
-  //     var user = await X.userDAO.put(user);
-  //     var business = await X.businessDAO.put(business);
-  //   }
-  // ]
 });

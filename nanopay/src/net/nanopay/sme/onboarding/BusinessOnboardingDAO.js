@@ -38,19 +38,26 @@ foam.CLASS({
       javaCode: `
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
         // TODO: Please call the java validator of the businessOnboarding here
-        // TODO: Please add the condition to handle saving the draft
+
+        if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
+          return getDelegate().put_(x, obj);
+        }
+
+        businessOnboarding.validate(x);
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
-        DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
+        DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO"));
 
-        Business business = businessOnboarding.findBusinessId(x);
-        User user = businessOnboarding.findUserId(x);
+        Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
+        User user = (User)localUserDAO.find(businessOnboarding.getUserId());
 
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
-        
+        business.setPhone(businessOnboarding.getPhone());
+        business.setBusinessPhone(businessOnboarding.getPhone());
+
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
           user.setBirthday(businessOnboarding.getBirthday());
@@ -70,34 +77,34 @@ foam.CLASS({
 
           Invitation invitation = new Invitation();
           /**
-           * Summary: the group set in the invitation obj is not the final(real) group 
+           * Summary: the group set in the invitation obj is not the final(real) group
            * that the signing office will get after signing up with the invitation email.
            * It is a string saved in the token that will passed into the NewUserCreateBusinessDAO class.
            * The group of the new signing officer will generate in the NewUserCreateBusinessDAO class.
-           * 
+           *
            * Details: After we set the group in the invitation obj, we put the invitation
            * into the businessInvitationDAO service.
-           * 
+           *
            * In the BusinessOnboardingDAO service, it has a decorator called businessInvitationDAO.
            * In the put_ method of businessInvitationDAO.java,
            * it basically set up a token which contains the group information which is the temp string: 'admin'
-           * 
+           *
            * When the user signs up with the signing officer invitation email,
            * the app will call the smeBusinessRegistrationDAO service.
            * In the smeBusinessRegistrationDAO service, it has a decorator called NewUserCreateBusinessDAO.
-           * 
+           *
            * In NewUserCreateBusinessDAO.java, it generates the business specific group
            * in the format of: businessName+businessId.admin. (such as: nanopay8010.admin).
            */
           invitation.setGroup("admin");
-          invitation.setCreatedBy(user.getId());
+          invitation.setCreatedBy(business.getId());
           invitation.setEmail(signingOfficerEmail);
 
           // Send invitation to email to the signing officer
           businessInvitationDAO.put(invitation);
         }
 
-        // * Step 6: Business info        
+        // * Step 6: Business info
         // Business info: business address
         business.setAddress(businessOnboarding.getBusinessAddress());
         business.setBusinessAddress(businessOnboarding.getBusinessAddress());
@@ -108,14 +115,16 @@ foam.CLASS({
         business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
 
         if ( businessOnboarding.getOperatingUnderDifferentName() ) {
-          business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName()); 
+          business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
         }
 
         // Business info: transaction details
         SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
-        suggestedUserTransactionInfo.setAnnualTransactionAmount(businessOnboarding.getAnnualTransactionAmount());
-        suggestedUserTransactionInfo.setAnnualVolume(businessOnboarding.getAnnualVolume());
+        suggestedUserTransactionInfo.setBaseCurrency("CAD");
+        suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
+        suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
         suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
+        suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
 
         // If user enters the other transaction purpose
         if ( businessOnboarding.getOtherTransactionPurpose().equals("Others") &&
@@ -127,9 +136,8 @@ foam.CLASS({
         business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
 
         // * Step 7: Percent of ownership
-        BeneficialOwner[] beneficialOwnersArray = businessOnboarding.getBeneficialOwners();
-        for ( BeneficialOwner beneficialOwner: beneficialOwnersArray ) {
-          business.getBeneficialOwners(x).put(beneficialOwner);
+        for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
+          business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
         }
 
         business.setOnboarded(true);

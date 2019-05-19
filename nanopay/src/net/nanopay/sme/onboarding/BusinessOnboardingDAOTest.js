@@ -103,8 +103,8 @@ foam.CLASS({
         onboarding.setBusinessTypeId(6);
         onboarding.setBusinessSectorId(42311);
         onboarding.setSourceOfFunds("Revenue");
-        onboarding.setAnnualTransactionAmount("9656000");
-        onboarding.setAnnualVolume("88560");
+        onboarding.setAnnualRevenue("9656000");
+        onboarding.setAnnualDomesticVolume("88560");
         onboarding.setTransactionPurpose("Payables for products and/or services");
         onboarding.setTargetCustomers("Small manufacturing businesses in North America");
         onboarding.setOwnershipAbovePercent(false);
