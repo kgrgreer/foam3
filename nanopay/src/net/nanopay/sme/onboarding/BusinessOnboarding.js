@@ -39,7 +39,7 @@ foam.CLASS({
     },
     {
       name: 'personalInformationSection',
-      title: 'Personal Information',
+      title: 'Enter your personal information',
       help: 'Thanks, now I’ll need a bit of personal information so I can verify your identity…'
     },
     {
