@@ -488,7 +488,6 @@ foam.CLASS({
       label: '',
       label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.'
     },
-    // FIXME: We need to give a link to the Dual Party Agreement
     net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
       section: 'reviewOwnersSection',
       label: '',
