@@ -727,6 +727,34 @@ foam.CLASS({
       }
     },
     {
+      class: 'Int',
+      name: 'totalOwnership',
+      section: 'reviewOwnersSection',
+      expression: function(amountOfOwners,
+                           owner1$ownershipPercent,
+                           owner2$ownershipPercent,
+                           owner3$ownershipPercent,
+                           owner4$ownershipPercent) {
+        var sum = 0;
+        if ( amountOfOwners >= 1 ) sum += owner1$ownershipPercent;
+        if ( amountOfOwners >= 2 ) sum += owner2$ownershipPercent;
+        if ( amountOfOwners >= 3 ) sum += owner3$ownershipPercent;
+        if ( amountOfOwners >= 4 ) sum += owner4$ownershipPercent;
+        return sum;
+      },
+      javaGetter: `
+        int sum = 0;
+        if ( getAmountOfOwners() >= 1 ) sum += getOwner1().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 2 ) sum += getOwner2().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 3 ) sum += getOwner3().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 4 ) sum += getOwner4().getOwnershipPercent();
+        return sum;
+      `,
+      visibility: 'RO',
+      autoValidate: true,
+      max: 100
+    },
+    {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
