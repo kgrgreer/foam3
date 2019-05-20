@@ -26,13 +26,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'accountingIntegrationUtil',
     'businessOnboardingDAO',
-    // 'agent',
-    // 'menuDAO',
-    // 'pushMenu',
-    // 'notify',
-    // 'stack',
     'user',
     'userDAO'
     ],
@@ -105,28 +101,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hidePaymentCards',
       documentation: 'This the clickable arrow under the title, that toggles the onboarding cards.'
-    },
-    {
-      class: 'Boolean',
-      name: 'isEmployee',
-      documentation: 'This is for toggling the cards.'
-    },
-    {
-      class: 'Boolean',
-      name: 'isCompleted',
-      documentation: 'This is for understanding if we have finished the onboarding.'
-    },
-    {
-      class: 'Boolean',
-      name: 'isAllCompleted',
-      documentation: 'This is for understanding if we have cpmpleted onboarding, adding a bank and syncing with accounting.',
-      // expression: function(isEmployee, isCompleted) {
-      //   return isEmployee;// ||
-      // }
-    },
-    {
-      class: 'Boolean',
-      name: 'isBankCompleted'
     }
   ],
 
@@ -140,81 +114,66 @@ foam.CLASS({
                 this.EQ(this.Account.TYPE, this.BankAccount.name),
                 this.EQ(this.Account.TYPE, this.CABankAccount.name),
                 this.EQ(this.Account.TYPE, this.USBankAccount.name)
-              ), this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
+              ), this.EQ(this.Account.Owner, this.user.id)
             )
           ).select().then((result) => result),
         this.accountingIntegrationUtil.getPermission(),
         this.userDAO.find(this.user.id).then((use) => use.hasIntegrated),
         this.businessOnboardingDAO.find(this.user.id).then((o) => o.signingOfficer),
-        this.user.onboarded
+        this.user.onboarded,
+        this.accountDAO.select().then((bb)=>bb.array)
       ]).then((values) => {
-          this.isEmployee = values[3];
-          this.isCompleted = values[4];
-          this.isBankCompleted = values[0] && values[0].id != 0;
-          this.isAllCompleted = this.isCompleted && this.isBankCompleted && values[2];
+          // REFERENCE FOR values
+          // bankAccount                     = values[0];
+          // userHasPermissionForAccounting  = values[1];
+          // userHasIntegratedWithAccounting = values[2];
+          // isSigningOfficer                = values[3];
+          // isOnboardingCompleted           = values[4];
+          debugger;
+          values[5];
+          let account =  values[0] && values[0].array[0];
+          let accountVerified = account && account.status == this.BankAccountStatus.VERIFIED;
+          let isBankCompleted = account && account.id != 0 && accountVerified;
+          let isAllCompleted  = values[4] && isBankCompleted && values[2];
+          let sectionsShowing = values[3] && isAllCompleted; // convience boolean for displaying certian sections
           this
             .addClass(this.myClass())
             .start().addClass('subTitle').add('Welcome back ' + this.user.label() + '!').end()
-    
-            .start().hide(this.isEmployee$)
-    
-              .start()
-                .addClass('divider')
-              .end()
-              .start().addClass('radio-as-arrow')
-                .add(this.HIDE_PAYMENT_CARDS)
-              .end()
-    
-              .start().addClass('cards').hide(this.hidePaymentCards$)
-    
-                .start('span')
-                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: this.isCompleted })
+
+              .callIf(! values[3] && ! isAllCompleted, () => {
+                this.start()
+                  .addClass('divider')
                 .end()
-                .start('span').addClass('inner-card')
-                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL })
+                .start().addClass('radio-as-arrow')
+                  .add(this.HIDE_PAYMENT_CARDS)
                 .end()
-    
-              .end()
-    
-              .start().addClass('cards')
-                .start('span')
-                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: values[0], isErrored: false, isLoading: false })
-                .end()
-                .start('span').addClass('inner-card')
-                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: values[1], hasIntegration: values[2] })
-                .end()
-              .end()
-    
-            .end()
-    
-            .start().show(this.isEmployee$)
-    
-              .start('span').addClass('card').hide(this.isCompleted$)
-    
-                .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard',  })
-              .end()
-              .start().addClass('card').show(this.isCompleted$)
-                .start('span')
-                  .start(this.BankIntegrationCard).end()
-                .end()
-                .start('span').addClass('inner-card')
-                  .start(this.QBIntegrationCard).end()
-                .end()
-    
-              .end()
-    
-            .end()
-    
-            .start().addClass('cards')
-              .start()
-                .addClass('divider-half')
-              .end()
-              .start('span')
-                .add('Your latest Ablii items')
-              .end()
-              .start()
-                .addClass('divider-half')
-              .end()
+                .start().addClass('cards').hide(this.hidePaymentCards$)
+                  .start('span')
+                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: values[4] })
+                  .end()
+                  .start('span').addClass('inner-card')
+                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL })
+                  .end()
+                .end();
+              })
+
+              .callIf(sectionsShowing, () => {
+                this.start('span').addClass('card')
+                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
+                .end();
+              })
+
+              .callIf(! sectionsShowing, () => {
+                this.start().addClass('cards')
+                  .start('span')
+                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: account, isAccountVerified: accountVerified })
+                  .end()
+                  .start('span').addClass('inner-card')
+                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: values[1] && values[1][0], hasIntegration: values[2] })
+                  .end()
+                .end();
+              })
+
             .end();
         });
 
@@ -223,77 +182,11 @@ foam.CLASS({
       //   this.maximumNumberOfSteps = 4;
       //   this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
       //     completed: values[2],
-      //     act: this.SYNC_ACCOUNTING
+      //     act: this.SYNC_ACCOUNTING <- confirm this //TODO
       //   }));
       // } else if ( this.user.hasIntegrated ) {
       //   this.completedCount--;
       // }
     },
-  ],
-
-  // actions: [
-  //   {
-  //     name: 'verifyEmail',
-  //     label: 'Verify Email',
-  //     code: function() {
-  //       // TODO
-  //     }
-  //   },
-  //   {
-  //     name: 'addBank',
-  //     label: 'Add Banking',
-  //     icon: 'images/bank_icon.svg',
-  //     code: function() {
-  //       if ( this.bankAction.completed ) {
-  //         this.notify(this.SINGULAR_BANK, 'warning');
-  //       } else {
-  //         this.menuDAO
-  //           .find('sme.main.banking')
-  //           .then((menu) => menu.launch());
-  //       }
-  //     }
-  //   },
-  //   {
-  //     name: 'syncAccounting',
-  //     label: 'Sync Accounting',
-  //     icon: 'images/ablii/sync-resting.svg',
-  //     code: function() {
-  //       this.add(this.Popup.create().tag({
-  //         class: 'net.invoice.ui.modal.IntegrationModal'
-  //       }));
-  //     }
-  //   },
-  //   {
-  //     name: 'addContacts',
-  //     label: 'Add Contacts',
-  //     code: function() {
-  //       this.menuDAO
-  //         .find('sme.main.contacts')
-  //         .then((menu) => menu.launch());
-  //     }
-  //   },
-  //   {
-  //     name: 'busProfile',
-  //     label: 'Business Profile',
-  //     icon: 'images/Briefcase_Icon.svg',
-  //     code: function(x) {
-  //       if ( ! this.user.onboarded ) {
-  //         var userId = this.agent.id;
-  //         var businessId = this.user.id;
-  //         x.businessOnboardingDAO.find(businessId).then((o) => {
-  //           o = o || this.BusinessOnboarding.create({
-  //             userId: userId,
-  //             businessId: businessId
-  //           });
-  //           this.stack.push({
-  //             class: 'net.nanopay.sme.onboarding.ui.WizardView',
-  //             data: o
-  //           });
-  //         });
-  //       } else {
-  //         this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
-  //       }
-  //     }
-  //   },
-  // ]
+  ]
 });

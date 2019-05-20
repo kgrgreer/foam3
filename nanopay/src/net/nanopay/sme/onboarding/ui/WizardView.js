@@ -167,7 +167,7 @@ foam.CLASS({
             x.stack.back();
 //            x.pushMenu('sme.main.dashboard');
           }, function(err) {
-            console.log('Error during submitting the onboarding info: ' + err);
+            console.log('Error during submitting the onboarding info: ' + err.message);
             x.ctrl.notify('Business profile submission failed.  ' +
                           ( ( err && err.message ) ? err.message : 'Please try again later.' ),
                           'error');

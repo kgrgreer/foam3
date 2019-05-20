@@ -59,36 +59,36 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isLoading',
-      value: true
-    },
-    {
-      class: 'Boolean',
-      name: 'isErrored',
-      value: true
+      name: 'isAccountVerified'
     },
     {
       class: 'String',
       name: 'subtitleToUse',
-      expression: function(account, isLoading, isErrored) {
-        if ( isLoading )  return this.SUBTITLE_LOADING;
-        if ( isErrored )  return this.SUBTITLE_ERROR;
-        if ( account )    return this.SUBTITLE_LINKED + ' ' + account.name;
+      expression: function(isAccountThere, isAccountVerified ) {
+        if ( isAccountThere && isAccountVerified ) return this.SUBTITLE_LINKED + ' ' + this.account.name;
 
         return this.SUBTITLE_EMPTY;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isAccountThere',
+      expression: function(account) {
+        console.log('isAccountThere ' + (account != undefined && account.id != 0));
+        return account != undefined && account.id != 0;
       }
     }
   ],
 
   methods: [
     function initE() {
-      this.add(this.slot((account, subtitleToUse) => {
+      this.add(this.slot((subtitleToUse, isAccountThere, isAccountVerified) => {
         return this.E()
           .start(this.IntegrationCard, {
             iconPath: this.iconPath,
             title: this.TITLE,
             subtitle: subtitleToUse,
-            action: account ? this.VIEW_ACCOUNT : this.ADD_BANK
+            action: isAccountThere && isAccountVerified ? this.VIEW_ACCOUNT : this.ADD_BANK
           }).end();
       }));
     }
@@ -98,17 +98,6 @@ foam.CLASS({
     {
       name: 'viewAccount',
       label: 'View',
-      isEnabled: function(isLoading, isErrored) {
-        if ( isLoading ) {
-          return false;
-        }
-
-        if ( isErrored ) {
-          return false;
-        }
-
-        return true;
-      },
       code: function() {
         this.pushMenu('sme.main.banking');
       }
@@ -116,22 +105,15 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add',
-      isEnabled: function(isLoading, isErrored) {
-        if ( isLoading ) {
-          return false;
-        }
-
-        if ( isErrored ) {
-          return false;
-        }
-
-        return true;
-      },
       code: function() {
-        this.stack.push({
-          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-          cadAvailable: true
-        });
+        if ( this.isAccountThere && ! this.isAccountVerified ) {
+          this.pushMenu('sme.main.banking');
+        } else {
+          this.stack.push({
+            class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+            cadAvailable: true
+          });
+        }
       }
     }
   ]
