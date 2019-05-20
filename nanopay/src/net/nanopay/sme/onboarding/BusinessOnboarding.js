@@ -529,6 +529,21 @@ foam.CLASS({
           'Over 1000'
         ]
       },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'annualTransactionFrequency'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ANNUAL_TRANSACTION_FREQUENCY
+                }), 0)
+            );
+          },
+          errorString: 'Please make a selection.'
+        }
+      ]
     }),
 
     // TODO: The following two properties should just be one property with a choice view that allows you
