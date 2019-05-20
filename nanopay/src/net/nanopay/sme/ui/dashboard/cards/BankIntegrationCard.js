@@ -18,7 +18,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
     'pushMenu',
     'stack',
     'user'
@@ -66,7 +65,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isErrored',
-      value: false
+      value: true
     },
     {
       class: 'String',
@@ -82,29 +81,14 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      var self = this;
-      this.accountDAO.where(this.EQ(this.Account.OWNER, this.user.id)).limit(1).select().then(function(accounts) {
-        if ( accounts.length > 0 ) {
-          self.account = accounts[0];
-        }
-        self.isErrored = false;
-      }).catch(function(error) {
-        self.isErrored = true;
-      }).finally(function() {
-        self.isLoading = false;
-      });
-    },
-
     function initE() {
-      var self = this;
-      this.add(this.slot(function(account, subtitleToUse) {
+      this.add(this.slot((account, subtitleToUse) => {
         return this.E()
-          .start(self.IntegrationCard, {
-            iconPath: self.iconPath,
-            title: self.TITLE,
+          .start(this.IntegrationCard, {
+            iconPath: this.iconPath,
+            title: this.TITLE,
             subtitle: subtitleToUse,
-            action: account ? self.VIEW_ACCOUNT : self.ADD_BANK
+            action: account ? this.VIEW_ACCOUNT : this.ADD_BANK
           }).end();
       }));
     }

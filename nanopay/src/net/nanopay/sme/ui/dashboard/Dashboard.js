@@ -123,7 +123,7 @@ foam.CLASS({
           });
         return 0;
       }
-    },
+    }
   ],
 
   methods: [
@@ -136,7 +136,7 @@ foam.CLASS({
         .start('h1')
           .add(this.TITLE)
         .end()
-        .tag({ class: 'net.nanopay.sme.ui.dashboard.DynamicSixButtons' });
+        .tag({ class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard' });
 
       var topL = this.Element.create()
         .start('h2')

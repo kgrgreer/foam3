@@ -8,10 +8,14 @@ foam.CLASS({
   `,
 
   requires: [
-    'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCardType'
+    'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCardType',
+    'net.nanopay.sme.onboarding.BusinessOnboarding'
   ],
 
   imports: [
+    'agent',
+    'stack',
+    'menuDAO',
     'user'
   ],
 
@@ -188,11 +192,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isComplete',
-      documentation: `
-        TODO: Maybe bring in the logic to determine if the card should show if the step is complete.
-        If true, will not display an action. Instead, will show a completed message.
-      `
+      name: 'isComplete'
     },
   ],
 
@@ -225,9 +225,7 @@ foam.CLASS({
               .start('p').addClass(self.myClass('complete')).add(self.COMPLETE).end()
             .end();
           }))
-
-        .end()
-
+        .end();
     }
   ],
 
@@ -235,10 +233,24 @@ foam.CLASS({
     {
       name: 'getStarted',
       label: 'Get started',
-      code: function() {
+      code: function(x) {
         if ( this.type === this.UnlockPaymentsCardType.DOMESTIC ) {
-          // TODO
-          alert('TODO');
+          if ( ! this.user.onboarded ) {
+            var userId = this.agent.id;
+            var businessId = this.user.id;
+            x.businessOnboardingDAO.find(businessId).then((o) => {
+              o = o || this.BusinessOnboarding.create({
+                userId: userId,
+                businessId: businessId
+              });
+              this.stack.push({
+                class: 'net.nanopay.sme.onboarding.ui.WizardView',
+                data: o
+              });
+            });
+          } else {
+            this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
+          }
         }
       }
     }
