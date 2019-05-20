@@ -141,7 +141,7 @@ foam.CLASS({
         .start('h1')
           .add(this.TITLE)
         .end()
-        .tag({ class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard' });
+        .tag({ class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard' }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
 
       var topL = this.Element.create()
         .start('h2')
