@@ -31,7 +31,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added during the beta.' },
+    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added.' },
     { name: 'DELETE_BANK_MESSAGE', message: 'Please contact us at support@ablii.com to delete this bank account.' }
   ],
 
