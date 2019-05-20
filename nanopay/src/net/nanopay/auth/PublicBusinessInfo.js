@@ -28,7 +28,8 @@ foam.CLASS({
             setOrganization(business.getOrganization());
             setBusinessName(business.getBusinessName());
             setBusinessAddress(business.getBusinessAddress());
-            setEmail(business.getEmail());
+// Emails are not to be public.  CPF-1523
+//            setEmail(business.getEmail());
           }
         `);
       },
