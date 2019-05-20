@@ -750,7 +750,9 @@ foam.CLASS({
         if ( getAmountOfOwners() >= 4 ) sum += getOwner4().getOwnershipPercent();
         return sum;
       `,
-      visibility: 'RO',
+      visibilityExpression: function(totalOwnership) {
+        return totalOwnership > 100 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      },
       autoValidate: true,
       max: 100
     },
