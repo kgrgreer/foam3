@@ -117,7 +117,7 @@ foam.CLASS({
       name: 'HIDE',
       message: 'Hide'
     },
-    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added during the beta' }
+    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added.' }
   ],
 
   properties: [

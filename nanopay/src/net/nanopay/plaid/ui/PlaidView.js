@@ -206,7 +206,7 @@ foam.CLASS({
         );
 
       if ( Object.keys(selectedAccount).length > 1 ) {
-        this.showNotification('Only 1 bank account can be added during the beta.', 'warning');
+        this.showNotification('Only 1 bank account can be added.', 'warning');
         this.isLoading = false;
         return;
       }
