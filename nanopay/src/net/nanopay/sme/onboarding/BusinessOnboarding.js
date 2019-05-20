@@ -91,7 +91,7 @@ foam.CLASS({
     },
     {
       name: 'personalOwnershipSection',
-      title: 'Add the principle type and percentage of ownership details for yourself',
+      title: 'Add the job title and percent ownership details for yourself',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
       isAvailable: function (signingOfficer, userOwnsPercent) { return signingOfficer && userOwnsPercent }
     },
