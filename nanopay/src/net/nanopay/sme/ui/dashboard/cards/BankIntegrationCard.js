@@ -58,14 +58,10 @@ foam.CLASS({
       value: 'images/ablii/ic-dashboardBank.svg'
     },
     {
-      class: 'Boolean',
-      name: 'isAccountVerified'
-    },
-    {
       class: 'String',
       name: 'subtitleToUse',
-      expression: function(isAccountThere, isAccountVerified ) {
-        if ( isAccountThere && isAccountVerified ) return this.SUBTITLE_LINKED + ' ' + this.account.name;
+      expression: function(isAccountThere) {
+        if ( isAccountThere ) return this.SUBTITLE_LINKED + ' ' + this.account.name;
 
         return this.SUBTITLE_EMPTY;
       }
@@ -74,7 +70,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isAccountThere',
       expression: function(account) {
-        console.log('isAccountThere ' + (account != undefined && account.id != 0));
         return account != undefined && account.id != 0;
       }
     }
@@ -82,13 +77,13 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.add(this.slot((subtitleToUse, isAccountThere, isAccountVerified) => {
+      this.add(this.slot((subtitleToUse, isAccountThere) => {
         return this.E()
           .start(this.IntegrationCard, {
             iconPath: this.iconPath,
             title: this.TITLE,
             subtitle: subtitleToUse,
-            action: isAccountThere && isAccountVerified ? this.VIEW_ACCOUNT : this.ADD_BANK
+            action: isAccountThere ? this.VIEW_ACCOUNT : this.ADD_BANK
           }).end();
       }));
     }
@@ -106,14 +101,7 @@ foam.CLASS({
       name: 'addBank',
       label: 'Add',
       code: function() {
-        if ( this.isAccountThere && ! this.isAccountVerified ) {
-          this.pushMenu('sme.main.banking');
-        } else {
-          this.stack.push({
-            class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-            cadAvailable: true
-          });
-        }
+        this.pushMenu('sme.main.banking');
       }
     }
   ]

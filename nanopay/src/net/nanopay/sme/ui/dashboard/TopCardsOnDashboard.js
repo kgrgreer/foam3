@@ -25,8 +25,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard'
   ],
 
-  imports: [
-    'accountDAO',
+    imports: [
     'accountingIntegrationUtil',
     'businessOnboardingDAO',
     'user',
@@ -105,7 +104,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    function initE() {
       Promise.all([
         this.user.accounts
           .where(
@@ -114,14 +113,12 @@ foam.CLASS({
                 this.EQ(this.Account.TYPE, this.BankAccount.name),
                 this.EQ(this.Account.TYPE, this.CABankAccount.name),
                 this.EQ(this.Account.TYPE, this.USBankAccount.name)
-              ), this.EQ(this.Account.Owner, this.user.id)
-            )
+              ), this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED))
           ).select().then((result) => result),
         this.accountingIntegrationUtil.getPermission(),
         this.userDAO.find(this.user.id).then((use) => use.hasIntegrated),
-        this.businessOnboardingDAO.find(this.user.id).then((o) => o.signingOfficer),
-        this.user.onboarded,
-        this.accountDAO.select().then((bb)=>bb.array)
+        this.businessOnboardingDAO.find(this.user.id).then((o) => o),
+        this.user.onboarded
       ]).then((values) => {
           // REFERENCE FOR values
           // bankAccount                     = values[0];
@@ -129,18 +126,16 @@ foam.CLASS({
           // userHasIntegratedWithAccounting = values[2];
           // isSigningOfficer                = values[3];
           // isOnboardingCompleted           = values[4];
-          debugger;
-          values[5];
-          let account =  values[0] && values[0].array[0];
-          let accountVerified = account && account.status == this.BankAccountStatus.VERIFIED;
-          let isBankCompleted = account && account.id != 0 && accountVerified;
-          let isAllCompleted  = values[4] && isBankCompleted && values[2];
-          let sectionsShowing = values[3] && isAllCompleted; // convience boolean for displaying certian sections
+          let account          = values[0] && values[0].array[0];
+          let isBankCompleted  = account && account.id != 0;
+          let isAllCompleted   = values[4] && isBankCompleted && values[2];
+          let isSigningOfficer = values[3] && values[3].signingOfficer;
+          let sectionsShowing  = isSigningOfficer && ! isAllCompleted; // convience boolean for displaying certian sections
           this
             .addClass(this.myClass())
             .start().addClass('subTitle').add('Welcome back ' + this.user.label() + '!').end()
 
-              .callIf(! values[3] && ! isAllCompleted, () => {
+              .callIf(! isSigningOfficer && ! isAllCompleted, () => {
                 this.start()
                   .addClass('divider')
                 .end()
@@ -166,27 +161,18 @@ foam.CLASS({
               .callIf(! sectionsShowing, () => {
                 this.start().addClass('cards')
                   .start('span')
-                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: account, isAccountVerified: accountVerified })
+                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: account })
                   .end()
                   .start('span').addClass('inner-card')
                     .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: values[1] && values[1][0], hasIntegration: values[2] })
                   .end()
                 .end();
               })
-
+              
+              .start('cards')
+                .addClass('divider-half')
             .end();
         });
-
-      // INTEGRATION
-      // if ( values[1] ) {
-      //   this.maximumNumberOfSteps = 4;
-      //   this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-      //     completed: values[2],
-      //     act: this.SYNC_ACCOUNTING <- confirm this //TODO
-      //   }));
-      // } else if ( this.user.hasIntegrated ) {
-      //   this.completedCount--;
-      // }
-    },
+    }
   ]
 });

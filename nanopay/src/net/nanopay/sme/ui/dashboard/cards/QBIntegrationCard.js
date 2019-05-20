@@ -9,6 +9,7 @@ foam.CLASS({
   `,
 
   requires: [
+    'foam.u2.dialog.Popup',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
   ],
@@ -106,8 +107,11 @@ foam.CLASS({
         return hasPermission;
       },
       code: function() {
-        var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
-        window.location = this.attachSessionId(url);
+        // var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
+        // window.location = this.attachSessionId(url);
+        this.add(this.Popup.create().tag({
+          class: 'net.invoice.ui.modal.IntegrationModal'
+        }));
       }
     }
   ]
