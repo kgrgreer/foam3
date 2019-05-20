@@ -63,6 +63,7 @@ foam.CLASS({
             flex: 1,
             basis: 0,
             padding: '0px 128px',
+            'justify-content' : 'center',
             display: 'flex'
           }
         }).addClass(this.myClass('sections-container'))
