@@ -41,6 +41,7 @@ foam.CLASS({
       padding: 0 !important;
       background: #f9fbff;
       text-align: center;
+      overflow-y: scroll;
     }
     ^ .report-container {
       display: inline-block;
