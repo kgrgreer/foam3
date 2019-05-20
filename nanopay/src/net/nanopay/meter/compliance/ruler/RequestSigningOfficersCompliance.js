@@ -23,19 +23,18 @@ foam.CLASS({
       javaCode: `
         Business business = (Business) obj;
         DAO localUserDAO = (DAO) x.get("localUserDAO");
-        DAO userDAO = business.getSigningOfficers(x).getDAO();
-        userDAO.select(new AbstractSink() {
-          @Override
-          public void put(Object obj, Detachable sub) {
-            User signingOfficer = (User) obj;
-            signingOfficer = (User) signingOfficer.fclone();
+        business.getSigningOfficers(x).getDAO()
+          .select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              User signingOfficer = (User) localUserDAO.find(obj).fclone();
 
-            // User.compliance is a permissioned property thus we need
-            // to use localUserDAO when saving change to the property.
-            signingOfficer.setCompliance(ComplianceStatus.REQUESTED);
-            localUserDAO.inX(x).put(signingOfficer);
-          }
-        });
+              // User.compliance is a permissioned property thus we need
+              // to use localUserDAO when saving change to the property.
+              signingOfficer.setCompliance(ComplianceStatus.REQUESTED);
+              localUserDAO.inX(x).put(signingOfficer);
+            }
+          });
       `
     },
     {
