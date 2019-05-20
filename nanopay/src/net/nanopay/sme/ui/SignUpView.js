@@ -264,7 +264,7 @@ foam.CLASS({
                 .addClass('input-field').attr('placeholder', 'ABC Company')
               .end()
             .end()
-      
+
             .start().addClass('input-wrapper')
               .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
               .start(this.COUNTRY.clone().copyFrom({
@@ -344,9 +344,6 @@ foam.CLASS({
 
       this.addClass(this.myClass()).addClass('full-screen')
         .start().addClass('top-bar')
-          .start().addClass('top-bar-message')
-              .add(this.TOP_MESSAGE)
-          .end()
           .start().addClass('top-bar-inner')
             .start().addClass(this.myClass('button'))
               .start()
@@ -487,4 +484,3 @@ foam.CLASS({
     }
   ]
 });
-
