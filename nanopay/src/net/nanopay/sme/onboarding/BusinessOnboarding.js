@@ -266,7 +266,7 @@ foam.CLASS({
       name: 'businessSectorId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
-      label: 'Nature of business (NAIC code)',
+      label: 'Nature of business',
       view: { class: 'net.nanopay.business.NatureOfBusiness' }
     },
 
@@ -339,6 +339,20 @@ foam.CLASS({
           '$100,001 to $500,000',
           '$500,001 to $1,000,000',
           'Over $1,000,000'
+        ]
+      },
+    }),
+    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.clone().copyFrom({
+      section: 'transactionDetailsSection',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          '1 to 99',
+          '100 to 199',
+          '200 to 499',
+          '500 to 999',
+          'Over 1000'
         ]
       },
     }),
@@ -570,6 +584,7 @@ foam.CLASS({
             "operatingBusinessName": "OP Inc",
             "annualTransactionAmount": "$100,001 to $500,000",
             "annualVolume": "$0 to $50,000",
+            "annualTransactionFrequency": "1 to 99",
             "transactionPurpose": "Intracompany bank transfers",
             "targetCustomers": "People",
             "ownershipAbovePercent": true,
