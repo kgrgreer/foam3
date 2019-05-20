@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
   ],
@@ -652,11 +653,22 @@ foam.CLASS({
             }
           }
           if ( this.position === 4 ) {
+            if ( ! await this.validateBeneficialOwners() ) {
+              this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
+              return;
+            }
+
+            if ( ! this.viewData.noAdditionalBeneficialOwners ) {
+              this.notify(this.ERROR_NO_ADDITIONAL_BENEFICIAL_OWNERS, 'error' );
+              return;
+            }
+
             // validate beneficial owners info
             if ( this.isFillingBeneficialOwnerForm(this.viewData.beneficialOwner) ) {
               if ( this.validateBeneficialOwner(this.viewData.beneficialOwner) ) {
                 try {
-                  var beneficialOwner = this.User.create({
+                  var beneficialOwner = this.BeneficialOwner.create({
+                    id: this.viewData.beneficialOwner.id,
                     firstName: this.viewData.beneficialOwner.firstName,
                     lastName: this.viewData.beneficialOwner.lastName,
                     birthday: this.viewData.beneficialOwner.birthday,
@@ -670,16 +682,6 @@ foam.CLASS({
               } else {
                 return;
               }
-            }
-
-            if ( ! await this.validateBeneficialOwners() ) {
-              this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
-              return;
-            }
-
-            if ( ! this.viewData.noAdditionalBeneficialOwners ) {
-              this.notify(this.ERROR_NO_ADDITIONAL_BENEFICIAL_OWNERS, 'error' );
-              return;
             }
 
             this.user.onboarded = true;

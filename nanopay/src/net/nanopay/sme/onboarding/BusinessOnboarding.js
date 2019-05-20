@@ -39,7 +39,7 @@ foam.CLASS({
     },
     {
       name: 'personalInformationSection',
-      title: 'Personal Information',
+      title: 'Enter your personal information',
       help: 'Thanks, now I’ll need a bit of personal information so I can verify your identity…'
     },
     {
@@ -91,7 +91,7 @@ foam.CLASS({
     },
     {
       name: 'personalOwnershipSection',
-      title: 'Add the principle type and percentage of ownership details for yourself',
+      title: 'Add the job title and percent ownership details for yourself',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
       isAvailable: function (signingOfficer, userOwnsPercent) { return signingOfficer && userOwnsPercent }
     },
@@ -203,8 +203,8 @@ foam.CLASS({
       label: '',
       label2: 'I am a politically exposed persons or head of an international organization (PEP/HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO) 
-        is a person entrusted with a prominent position that typically comes with the opportunity 
+        A political exposed person (PEP) or the head of an international organization (HIO)
+        is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
       `,
       visibilityExpression: function(signingOfficer) {
@@ -219,15 +219,6 @@ foam.CLASS({
         A third party is a person or entity who instructs another person or entity
         to conduct an activity or financial transaction on their behalf
       `,
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
-    }),
-    // FIXME: We need to give a link to the Dual Party Agreement
-    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
-      section: 'personalInformationSection',
-      label: '',
-      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
@@ -497,6 +488,26 @@ foam.CLASS({
       label: '',
       label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.'
     },
+    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
+      section: 'reviewOwnersSection',
+      label: '',
+      //      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
+      label2Formatter: function() {
+        this.
+          add('I acknowledge that I have read and accept the ').
+          start('a').
+            attrs({
+              href: "https://nanopay.net/wp-content/uploads/2019/05/nanopay-Canada-Dual-Agreement.pdf",
+              target: "blank"
+            }).
+            add('Dual Party Agreement').
+          end().
+          add(' for Ablii Canadian Payment Services.');
+      },
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      }
+    })
   ].flat(),
 
   reactions: [

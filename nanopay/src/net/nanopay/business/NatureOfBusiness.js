@@ -42,6 +42,15 @@ foam.CLASS({
       expression: function(businessSectorDAO, predicate) {
         return businessSectorDAO.where(predicate);
       }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.BusinessSector',
+      name: 'data',
+      postSet: function(_, n) {
+        if ( ! n ) return;
+        this.data$find.then((o) => this.parentChoice = o.parent);
+      }
     }
   ],
   methods: [
@@ -76,7 +85,7 @@ foam.CLASS({
                 search: true,
                 searchPlaceholder: 'Search...',
                 choosePlaceholder: 'Select...'
-              })
+              });
           }))
         .end();
     }

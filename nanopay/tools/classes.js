@@ -561,6 +561,15 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
+  // identitymind
+  'net.nanopay.meter.compliance.identityMind.B2BTransactionValidator',
+  'net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator',
+  'net.nanopay.meter.compliance.identityMind.EntityLoginValidator',
+  'net.nanopay.meter.compliance.identityMind.MerchantKYCValidator',
+  'net.nanopay.meter.compliance.identityMind.IdentityMindRequest',
+  'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
+  'net.nanopay.meter.compliance.identityMind.IdentityMindService',
+
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
