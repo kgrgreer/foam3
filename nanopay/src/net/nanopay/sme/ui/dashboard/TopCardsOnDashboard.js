@@ -25,12 +25,12 @@ foam.CLASS({
     'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard'
   ],
 
-    imports: [
+  imports: [
     'accountingIntegrationUtil',
     'businessOnboardingDAO',
     'user',
     'userDAO'
-    ],
+  ],
 
   css: `
   ^ .cards {
@@ -107,54 +107,47 @@ foam.CLASS({
           let isAllCompleted   = values[4] && isBankCompleted && values[2];
           let isSigningOfficer = values[3] && values[3].signingOfficer;
           let sectionsShowing  = isSigningOfficer && ! isAllCompleted; // convience boolean for displaying certian sections
+
           this
             .addClass(this.myClass())
+
             .start().addClass('subTitle').add('Welcome back ' + this.user.label() + '!').end()
 
-              .callIf(! isSigningOfficer && ! isAllCompleted, () => {
-                this.start()
-                  .addClass('divider')
-                .end()
-                .start().addClass('radio-as-arrow')
-                  .add(this.HIDE_PAYMENT_CARDS)
-                .end()
-                .start().addClass('cards').hide(this.hidePaymentCards$)
-                  .start('span')
-                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: values[4] })
-                  .end()
-                  .start('span').addClass('inner-card')
-                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL })
-                  .end()
-                .end();
-              })
-
-              .callIf(sectionsShowing, () => {
-                this.start('span').addClass('card')
-                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
-                .end();
-              })
-
-              .callIf(! sectionsShowing, () => {
-                this.start().addClass('cards')
-                  .start('span')
-                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: account })
-                  .end()
-                  .start('span').addClass('inner-card')
-                    .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: values[1] && values[1][0], hasIntegration: values[2] })
-                  .end()
-                .end();
-              })
-              
-              .start().addClass('line')
-                .start('span')
-                  .addClass('divider-half').add('Your lastest Ablii items')
-                .end()
-                // .start().add('Your lastest Ablii items').end()
-                // .start()
-                //   .addClass('divider-half')
-                // .end()
+            .callIf(! isSigningOfficer && ! isAllCompleted, () => {
+              this.start()
+                .addClass('divider')
               .end()
+              .start().addClass('radio-as-arrow')
+                .add(this.HIDE_PAYMENT_CARDS)
+              .end()
+              .start().addClass('cards').hide(this.hidePaymentCards$)
+                .start('span')
+                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: values[4] })
+                .end()
+                .start('span').addClass('inner-card')
+                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL })
+                .end()
+              .end();
+            })
 
+            .callIfElse(sectionsShowing, () => {
+              this.start('span').addClass('card')
+                .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
+              .end();
+            }, () => {
+              this.start().addClass('cards')
+                .start('span')
+                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: account })
+                .end()
+                .start('span').addClass('inner-card')
+                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: values[1] && values[1][0], hasIntegration: values[2] })
+                .end()
+              .end();
+            })
+            .start().addClass('line')
+              .start('span')
+                .addClass('divider-half').add('Your lastest Ablii items')
+              .end()
             .end();
         });
     }
