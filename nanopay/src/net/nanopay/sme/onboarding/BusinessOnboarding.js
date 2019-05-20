@@ -576,6 +576,7 @@ foam.CLASS({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.tag.TextArea',
+        onKey: true,
         placeholder: 'Example: Small manufacturing businesses in North America'
       },
       validationPredicates: [
@@ -645,6 +646,7 @@ foam.CLASS({
       postSet: function(_, n) {
         this.clearProperty('owner1');
         if ( ! n ) return;
+        this.owner1.ownershipPercent$.follow(this.ownershipPercent$);
         this.owner1.jobTitle$.follow(this.jobTitle$);
         this.owner1.firstName$.follow(this.firstName$);
         this.owner1.lastName$.follow(this.lastName$);
