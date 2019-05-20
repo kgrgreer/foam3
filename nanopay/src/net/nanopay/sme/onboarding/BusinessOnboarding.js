@@ -664,15 +664,9 @@ foam.CLASS({
     },
 
     // FIXME: IntView not respecting the min-max range
-    foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
+    net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
-      label: '% of ownership',
-      view: {
-        class: 'foam.u2.IntView',
-        min: 25,
-        max: 100,
-      },
-      value: 25
+      label: '% of ownership'
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',

@@ -52,7 +52,9 @@ foam.CLASS({
         Represents the percentage of the business that the beneficial owner
         owns.
       `,
-      // TODO: At least 25% ?
+      autoValidate: true,
+      min: 25,
+      max: 100
     },
     {
       class: 'String',
