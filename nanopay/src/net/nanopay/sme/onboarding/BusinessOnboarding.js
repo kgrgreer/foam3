@@ -576,6 +576,7 @@ foam.CLASS({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.tag.TextArea',
+        onKey: true,
         placeholder: 'Example: Small manufacturing businesses in North America'
       },
       validationPredicates: [
@@ -645,6 +646,7 @@ foam.CLASS({
       postSet: function(_, n) {
         this.clearProperty('owner1');
         if ( ! n ) return;
+        this.owner1.ownershipPercent$.follow(this.ownershipPercent$);
         this.owner1.jobTitle$.follow(this.jobTitle$);
         this.owner1.firstName$.follow(this.firstName$);
         this.owner1.lastName$.follow(this.lastName$);
@@ -664,15 +666,9 @@ foam.CLASS({
     },
 
     // FIXME: IntView not respecting the min-max range
-    foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
+    net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
-      label: '% of ownership',
-      view: {
-        class: 'foam.u2.IntView',
-        min: 25,
-        max: 100,
-      },
-      value: 25
+      label: '% of ownership'
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',
@@ -731,6 +727,36 @@ foam.CLASS({
           'ownershipPercent'
         ]
       }
+    },
+    {
+      class: 'Int',
+      name: 'totalOwnership',
+      section: 'reviewOwnersSection',
+      expression: function(amountOfOwners,
+                           owner1$ownershipPercent,
+                           owner2$ownershipPercent,
+                           owner3$ownershipPercent,
+                           owner4$ownershipPercent) {
+        var sum = 0;
+        if ( amountOfOwners >= 1 ) sum += owner1$ownershipPercent;
+        if ( amountOfOwners >= 2 ) sum += owner2$ownershipPercent;
+        if ( amountOfOwners >= 3 ) sum += owner3$ownershipPercent;
+        if ( amountOfOwners >= 4 ) sum += owner4$ownershipPercent;
+        return sum;
+      },
+      javaGetter: `
+        int sum = 0;
+        if ( getAmountOfOwners() >= 1 ) sum += getOwner1().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 2 ) sum += getOwner2().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 3 ) sum += getOwner3().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 4 ) sum += getOwner4().getOwnershipPercent();
+        return sum;
+      `,
+      visibilityExpression: function(totalOwnership) {
+        return totalOwnership > 100 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      },
+      autoValidate: true,
+      max: 100
     },
     {
       class: 'Boolean',
