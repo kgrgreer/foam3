@@ -31,16 +31,18 @@ foam.CLASS({
       overflow-y: scroll;
       padding: 24px;
     }
-    ^invite {
-      margin-top: 16px;
-    }
-    ^invite-explaination {
-      color: %PRIMARYCOLOR%;
+    ^confirm-explaination {
+      color: /*%PRIMARYCOLOR%*/ #2B2B2B;
       font-size: 14px;
       line-height: 1.5;
-      margin-top: 16px;
+      margin-top: -25px;
+      margin-right: 6px;
+      width: 90%;
+      float: right;
     }
-
+    ^confirm {
+      margin: 30px 0px 0px 16px;
+    }
     /* Customized checkbox */
     .foam-u2-CheckBox-label {
       color: %PRIMARYCOLOR% !important;
@@ -52,15 +54,15 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'CREATE_TITLE', message: 'Create a personal contact' },
+    { name: 'CREATE_TITLE', message: 'Create a contact' },
     { name: 'EDIT_TITLE', message: 'Edit contact' },
     { name: 'INSTRUCTION', message: `Create a new contact by entering in their business information below. If you have their banking information, you can start sending payments to the contact right away.` },
     { name: 'BUSINESS_LABEL', message: 'Business name' },
     { name: 'BUSINESS_PLACEHOLDER', message: 'Enter business name' },
     { name: 'EMAIL_PLACEHOLDER', message: 'example@domain.com' },
-    { name: 'INVITE_EXPLAINATION', message: `You confirm you have a business relationship with this contact and acknowledge that notifications for the Ablii service will be sent to the email address provided above.` },
     { name: 'CONTACT_EXIST', message: 'Contact with same email address already exists.' },
-    { name: 'STEP_INDICATOR', message: 'Step 1 of 3' }
+    { name: 'STEP_INDICATOR', message: 'Step 1 of 3' },
+    { name: 'INVITE_EXPLAINATION', message: `You confirm you have a business relationship with this contact and acknowledge that notifications for the Ablii service will be sent to the email address provided above.` },
   ],
 
   properties: [
@@ -71,6 +73,16 @@ foam.CLASS({
       expression: function(isEdit) {
         return isEdit ? this.EDIT_TITLE : this.CREATE_TITLE;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'confirm',
+      expression: function(wizard$confirmRelationship) {
+        if ( wizard$confirmRelationship == undefined ) {
+          return this.confirm;
+        }
+        return wizard$confirmRelationship;
+      }
     }
   ],
 
@@ -78,7 +90,6 @@ foam.CLASS({
     function initE() {
       var emailDisplayMode = this.isEdit ?
         foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
-
       this.addClass(this.myClass())
         .start().addClass('title-block')
           .start()
@@ -140,17 +151,20 @@ foam.CLASS({
         .endContext()
         .startContext({ data: this.wizard })
           .start()
-            .hide(this.isEdit)
             .start()
-              .addClass(this.myClass('invite'))
-              .add(this.wizard.SHOULD_INVITE)
+              .addClass('divider')
             .end()
-            .start()
-              .addClass(this.myClass('invite-explaination'))
-              .add(this.INVITE_EXPLAINATION)
+            .hide(this.isEdit)
+            .start().addClass(this.myClass('confirm'))
+              .add(this.wizard.CONFIRM_RELATIONSHIP)
             .end()
           .end()
         .endContext()
+        .start('p')
+          .addClass(this.myClass('confirm-explaination'))
+          .add(this.INVITE_EXPLAINATION)
+          .hide(this.wizard.isEdit)
+        .end()
         .tag({
           class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',
           back: this.BACK,
@@ -181,19 +195,24 @@ foam.CLASS({
     },
     {
       name: 'next',
-      label: 'Next',
+      label: 'Continue',
+      isEnabled: function(confirm, isEdit) {
+        if ( isEdit ) return isEdit;
+        return confirm;
+      },
       code: async function(X) {
         // Validate the contact fields.
         if ( this.wizard.data.errors_ ) {
           this.notify(this.wizard.data.errors_[0][1], 'error');
           return;
         }
+
         if ( ! this.isEdit ) {
           try {
             var contact = await this.user.contacts.where(
               this.EQ(this.Contact.EMAIL, this.wizard.data.email)
             ).select();
-            if ( contact.array.length !== 0 ) {
+            if ( contact.array.length != 0 ) {
               this.ctrl.notify(this.CONTACT_EXIST, 'warning');
               return;
             }

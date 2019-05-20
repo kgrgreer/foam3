@@ -80,10 +80,10 @@ foam.CLASS({
           x.save();
 
           // Add shadow blur to box
-          x.shadowBlur = 5;
+          x.shadowBlur    = 5;
           x.shadowOffsetX = 5;
           x.shadowOffsetY = 5;
-          x.shadowColor = "gray";
+          x.shadowColor   = "gray";
 
           x.translate(-this.width/2, 0);
           this.SUPER(x);
@@ -108,22 +108,21 @@ foam.CLASS({
           // Paint lines to childNodes
           if ( this.expanded && this.childNodes.length ) {
             var h = this.childNodes[0].y*3/4;
-            line(0, this.height, 0, h);
             var l = this.childNodes.length;
+
+            line(0, this.height, 0, h);
             for ( var i = 0 ; i < l ; i++ ) {
               var c = this.childNodes[i];
               var isShadow = c.data.name.indexOf('Shadow') != -1;
 
-            if ( ! isShadow ) {
-             line(0, h, c.x, h);
-             line(c.x, h, c.x, c.y);
-
-             } else {
-               var c0 = this.childNodes[i-1];
-               line(c0.x, c0.y+c.height/2, c.x, c.y+c.height/2);
-             }
-
-                                       }
+              if ( ! isShadow ) {
+                line(0, h, c.x, h);
+                line(c.x, h, c.x, c.y);
+              } else {
+                var c0 = this.childNodes[i-1];
+                line(c0.x, c0.y+c.height/2, c.x, c.y+c.height/2);
+              }
+            }
           }
 
           x.lineWidth = this.borderWidth;

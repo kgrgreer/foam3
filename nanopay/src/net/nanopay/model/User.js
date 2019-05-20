@@ -3,10 +3,9 @@ foam.CLASS({
   name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
 
-  documentation: `The user represents a person with the ability to use a username and password 
-      to log into and use the system as well as act on behalf of a business, 
-      if permissions are granted. It holds personal information and permits certain actions.
-      `,
+  documentation: `A version of the FOAM User base model customized for 
+    the nanopay platform and business.  
+  `,
 
   implements: [
     'foam.nanos.auth.DeletedAware',
@@ -43,21 +42,22 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'ownershipPercent',
-      documentation: `Represents the percentage of ownership if the user is a principal owner.`
+      documentation: `Defines the percentage of ownership if the user is a principal 
+        owner.`
     },
     {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
-      documentation: 'Represents the proprietary details for the business.',
+      documentation: 'The ID of the proprietary details of the business.',
     },
     {
       class: 'Reference',
       targetDAOKey: 'businessSectorDAO',
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
-      documentation: 'Represents the general economic grouping for the business.',
+      documentation: 'The ID of the general economic grouping for the business.',
       view: function(args, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -77,35 +77,36 @@ foam.CLASS({
       class: 'Boolean',
       name: 'invited',
       value: false,
-      documentation: `Verifies if the user was invited to the
-          platform. This is dictated by an invitation email.`
+      documentation: `Determines whether the User was invited to the platform by 
+        an invitation email.`
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'invitedBy',
-      documentation: 'Represents the person who invited the user to the platform.'
+      documentation: 'The ID of the person who invited the User to the platform.'
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
-      documentation: `Stores the previous status of the user.`
+      documentation: `Tracks the previous status of the User.`
     },
     {
       class: 'Boolean',
       name: 'enabled',
+      documentation: 'Determines whether the User is permitted certain actions.',
       javaGetter: `
         return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
-      documentation: '_enabled_ is deprecated; use _status_ instead.',
+      // NOTE: '_enabled_ is deprecated; use _status_ instead.',
       hidden: true
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'status',
-      documentation: `Represents the type of status a user can have.`,
+      documentation: `Tracks the type of status of the User.`,
       tableCellFormatter: function(status) {
         var bgColour = '#a4b3b8';
         var borderColour = '#a4b3b8';
@@ -138,12 +139,13 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.onboarding.model.Questionnaire',
       name: 'questionnaire',
-      documentation: 'Represents a response from the user to a questionnaire.'
+      documentation: `Returns the response from the User to a questionnaire from the 
+        Questionnaire model.`
     },
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'additionalDocuments',
-      documentation: 'The uploaded additional documents for compliance verification.',
+      documentation: 'A stored copy of additional documents for compliance verification.',
       view: function(_, X) {
         return {
           class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
@@ -161,7 +163,7 @@ foam.CLASS({
       class: 'String',
       name: 'jobTitle',
       label: 'Job Title',
-      documentation: 'Represents the job title of the user.',
+      documentation: 'The job title of the individual person, or real user.',
       validateObj: function(jobTitle) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
         if ( jobTitle.length > 0 && ! re.test(jobTitle) ) {
@@ -172,13 +174,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'welcomeEmailSent',
-      documentation: 'Verifies whether a welcome email has been sent to the user.',
+      documentation: 'Determines whether a welcome email has been sent to the User.',
       value: false,
     },
     {
       class: 'Boolean',
       name: 'portalAdminCreated',
-      documentation: 'Determines whether a user was created by an admin user.',
+      documentation: 'Determines whether a User was created by an admin user.',
       value: false,
     },
     // NOTE: The following is subject to change and is not finalized.
@@ -186,18 +188,20 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Phone',
       name: 'businessPhone',
+      documentation: 'The phone number of the business.',
       factory: function() {
         return this.Phone.create();
       },
-      view: { class: 'foam.nanos.auth.PhoneDetailView' }
+      view: { class: 'foam.u2.detail.VerticalDetailView' }
     },
     {
       class: 'String',
       name: 'businessIdentificationNumber',
       transient: true,
-      documentation: `The Business Identification Number (BIN) that identifies your business to federal,
-        provincial or municipal governments and is used by the business for tax purposes.
-        This number is typically issued by an Issuing Authority such as the CRA.`,
+      documentation: `The Business Identification Number (BIN) that identifies your business 
+        to federal, provincial or municipal governments and is used by the business 
+        for tax purposes. This number is typically issued by an Issuing Authority such as 
+        the CRA.`,
       getter: function() {
         return this.businessRegistrationNumber;
       },
@@ -211,9 +215,10 @@ foam.CLASS({
       class: 'String',
       name: 'businessRegistrationNumber',
       width: 35,
-      documentation: `The Business Identification Number (BIN) that identifies your business to federal,
-      provincial or municipal governments and is used by the business for tax purposes.
-      This number is typically issued by an Issuing Authority such as the CRA.`,
+      documentation: `The Business Identification Number (BIN) that identifies your business 
+        to federal, provincial or municipal governments and is used by the business 
+        for tax purposes. This number is typically issued by an Issuing Authority such as 
+        the CRA.`,
           
       validateObj: function(businessRegistrationNumber) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
@@ -240,7 +245,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessRegistrationAuthority',
-      documentation: 'An organization that has the power to issue and process a business registration.',
+      documentation: `An organization that has the power to issue and process a 
+        business registration.`,
       width: 35,
       validateObj: function(businessRegistrationAuthority) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
@@ -259,6 +265,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
+      documentation: `Returns the postal address of the business associated with the 
+        User from the Address model.`,
       factory: function() {
         return this.Address.create();
       },
@@ -267,6 +275,8 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
+      documentation: `The profile picture of the business, such as a logo, initially 
+        defaulting to a placeholder picture.`,
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/business-placeholder.png'
@@ -275,8 +285,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'onboarded',
-      documentation: `Signifies a completed business registration. Dictates portal views after
-          compliance and account approval.`,
+      documentation: `Determines whether completed business registration. This property 
+        dictates portal views after compliance and account approval.`,
       value: false,
       permissionRequired: true
     },
@@ -284,94 +294,97 @@ foam.CLASS({
       class: 'Boolean',
       name: 'createdPwd',
       value: false,
-      documentation: `Verifies whether the user is using its own unique password or one that was 
-      system-generated.`
+      documentation: `Determines whether the User is using its own unique password or one 
+        that was system-generated.`
     },
     {
       class: 'Int',
       name: 'inviteAttempts',
       value: 0,
-      documentation: 'Represents the number of attempts to invite the user.',
+      documentation: 'Defines the number of attempts to invite the user.',
     },
     {
       class: 'String',
       name: 'operatingBusinessName',
-      documentation: `The business name displayed to the public. 
-          This may differ from the organization name.`,
+      documentation: `The business name displayed to the public. This may differ 
+        from the organization name.`,
           // Is displayed on client if present taking place of organziation name.
           
     },
     {
       class: 'Boolean',
       name: 'holdingCompany',
-      documentation: `Verifies if a user is a holding company. 
-        A holding company represent a corporate group which
-        owns shares of multiple companies.`
+      documentation: `Determines whether a User is a holding company.  A holding company 
+        represent a corporate group which owns shares of multiple companies.`
     },
     {
       class: 'Boolean',
       name: 'thirdParty',
-      documentation: `Verifies if the user is taking instructions from and/or acting on behalf 
-      of a 3rd party.
+      documentation: `Determines whether the User is taking instructions from and/or acting 
+        on behalf of a 3rd party.
       `
     },
     {
       class: 'FObjectProperty',
       name: 'identification',
       of: 'net.nanopay.model.PersonalIdentification',
-      documentation: `A placeholder for the photo identification image, such as a passport, 
-      of the user.
+      documentation: `A placeholder for the photo identification image, such as a 
+        passport, of the individual person, or real user.
       `
     },
     {
       class: 'Boolean',
       name: 'PEPHIORelated',
-      documentation: `States if the user is a domestic or foreign _Politically Exposed Person (PEP), 
-      Head of an International Organization (HIO)_, or related to any such person.
+      documentation: `Determines whether the user is a domestic or foreign _Politically 
+        Exposed Person (PEP), Head of an International Organization (HIO)_, or 
+        related to any such person.
       `
     },
     // TODO: Remove
     {
       class: 'Boolean',
       name: 'signingOfficer',
-      documentation: `States if the user is the signing officer capable of
-        acting as the business and providing additional information on behalf of the business.
+      documentation: `Determines whether the user is the signing officer capable of 
+        acting as the business and providing additional information on behalf of 
+        the business.
       `
     },
     {
       class: 'FObjectProperty',
       name: 'suggestedUserTransactionInfo',
       of: 'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
-      documentation: `The expected transaction types, frequency, amount and currencies 
-        that the user anticipates making with the platform. This information is required 
-        for KYC purposes.
+      documentation: `Returns the expected transaction types, frequency, amount and 
+        currencies that the User anticipates making with the platform. This 
+        information is required for KYC purposes.  It is drawn from the 
+        suggestedUserTransactionInfo object.
         `
     },
     {
       class: 'String',
       name: 'targetCustomers',
-      documentation: 'Identifies the type of clients that the business markets its products and services.'
+      documentation: `The type of clients that the business markets its products and 
+        services.`
     },
     {
       class: 'String',
       name: 'sourceOfFunds',
-      documentation: 'Identifies the entities that provide funding to the business.'
+      documentation: 'The entities that provide funding to the business.'
     },
     {
       class: 'String',
       name: 'taxIdentificationNumber',
-      documentation: 'The tax identification number associated with the business of the user.'
+      documentation: `The tax identification number associated with the business of 
+      the User.`
     },
     {
       class: 'String',
       name: 'signUpToken',
       storageTransient: true,
-      documentation: `
-        This is set to a random Universal Unique Identifier (UUID) 
-        that lets the user sign up to the platform from an email link. 
-        A sign up token is embedded in the email link.  This token includes a property
-        that allows the backend to verify the email of the user and associate the user
-        with the contact that was created when inviting the user.
+      documentation: `This is set to a random Universal Unique Identifier (UUID) that 
+        lets the User register with the platform from an email link. A sign up token 
+        is embedded in the email link.  This token includes a property that allows the 
+        backend to verify the email of the User and associate the User with the Contact 
+        that was created when inviting the User.
       `
     },
     {
@@ -379,6 +392,7 @@ foam.CLASS({
       class: 'String',
       visibility: 'RO',
       storageTransient: true,
+      documentation: `The type of the User.`,
       tableWidth: 75,
       getter: function() {
          return this.cls_.name;
@@ -390,7 +404,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'deleted',
-      documentation: 'Indicates a deleted user.',
+      documentation: 'Determines whether the User is deleted.',
       value: false,
       permissionRequired: true,
       visibility: 'RO',
@@ -399,7 +413,8 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      documentation: 'The profile picture of the user, initially defaulting to a placeholder picture.',
+      documentation: `The profile picture of the individual user, initially 
+        defaulting to a placeholder picture.`,
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
@@ -455,7 +470,7 @@ foam.CLASS({
       name: 'viewAccounts',
       label: 'View Accounts',
       tableWidth: 135,
-      permissionRequired: true,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewAccounts'],
       code: function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         this.__context__.stack.push({
@@ -472,7 +487,7 @@ foam.CLASS({
       name: 'viewTransactions',
       label: 'View Transactions',
       tableWidth: 160,
-      permissionRequired: true,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewTransactions'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         var ids = await X.accountDAO
@@ -497,7 +512,7 @@ foam.CLASS({
     {
       name: 'viewPayables',
       label: 'View Payables',
-      permissionRequired: true,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewPayables'],
       code: async function(X) {
         this.__context__.stack.push({
           class: 'foam.comics.BrowserView',
@@ -512,7 +527,7 @@ foam.CLASS({
     {
       name: 'viewReceivables',
       label: 'View Receivables',
-      permissionRequired: true,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewReceivables'],
       code: async function(X) {
         this.__context__.stack.push({
           class: 'foam.comics.BrowserView',

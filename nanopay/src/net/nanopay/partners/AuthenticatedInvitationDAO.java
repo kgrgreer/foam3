@@ -8,9 +8,11 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import foam.util.Auth;
 import net.nanopay.contacts.Contact;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
@@ -23,9 +25,12 @@ import static foam.mlang.MLang.OR;
 public class AuthenticatedInvitationDAO
   extends ProxyDAO
 {
+  public AuthService auth_ = null;
+
   public AuthenticatedInvitationDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
+    auth_ = (AuthService) x.get("auth");
   }
 
   @Override
@@ -40,6 +45,8 @@ public class AuthenticatedInvitationDAO
     Invitation existingInvite = (Invitation) getDelegate().find_(x, invite);
 
     if ( existingInvite != null ) {
+      if ( auth_.check(x, "*") ) return super.put_(x, obj);
+
       this.checkPermissions(x, existingInvite);
 
       // Valid business case #1: User is responding to an invite
@@ -117,7 +124,7 @@ public class AuthenticatedInvitationDAO
 
   public void checkPermissions(X x, Invitation invite) {
     User user = this.getUser(x);
-    boolean hasPermission = this.isOwner(user, invite);
+    boolean hasPermission = auth_.check(x, "*") || this.isOwner(user, invite);
 
     if ( ! hasPermission ) {
       throw new AuthorizationException();
@@ -125,6 +132,7 @@ public class AuthenticatedInvitationDAO
   }
 
   public DAO getSecureDAO(X x) {
+    if ( auth_.check(x, "*") ) return getDelegate();
     User user = this.getUser(x);
     long id = user.getId();
     return getDelegate().where(OR(
@@ -145,10 +153,12 @@ public class AuthenticatedInvitationDAO
     return invite.getInviteeId() == id || invite.getCreatedBy() == id;
   }
 
+  // TODO: This probably shouldn't be happening in this decorator.
   public void prepareNewInvite(X x, Invitation invite) {
     User user = this.getUser(x);
 
-    if ( invite.getCreatedBy() != user.getId() ) {
+    AuthService auth = (AuthService) x.get("auth");
+    if ( invite.getCreatedBy() != user.getId() && ! auth.check(x, "*") ) {
       throw new AuthorizationException("If you want to create a new invite, you " +
           "have to set `createdBy` to the id of the current user.");
     }
@@ -163,8 +173,8 @@ public class AuthenticatedInvitationDAO
     boolean isContact = recipient != null;
     boolean internal = false;
     if ( ! isContact ) {
-      DAO userDAO = (DAO) x.get("localUserDAO");
-      recipient = this.getUserByEmail(userDAO.inX(x), invite.getEmail());
+      DAO localUserUserDAO = (DAO) x.get("localUserUserDAO");
+      recipient = this.getUserByEmail(localUserUserDAO.inX(x), invite.getEmail());
       internal = recipient != null;
     }
 
@@ -181,7 +191,7 @@ public class AuthenticatedInvitationDAO
     // email
     invite.setTimestamp(new Date(0L));
 
-    if ( isContact || internal ) invite.setInviteeId(recipient.getId());
+    if ( recipient != null ) invite.setInviteeId(recipient.getId());
   }
 
   public User getUserByEmail(DAO userDAO, String emailAddress) {

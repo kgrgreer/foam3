@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.account',
   name: 'Account',
 
-  documentation: 'Base model of all Accounts',
+  documentation: 'The base model for creating and managing all accounts.',
 
   // relationships: owner (User)
 
@@ -40,18 +40,22 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
+      documentation: 'The ID for the account.',
       visibility: foam.u2.Visibility.RO,
       tableWidth: 50
     },
     {
       class: 'Boolean',
       name: 'enabled',
-      documentation: 'Accounts are disabled rather than deleted',
+      documentation: `Determines whether an account is disabled. Accounts 
+        on this platform are disabled rather than deleted.
+      `,
       value: true
     },
     {
       class: 'Boolean',
       name: 'deleted',
+      documentation: 'Determines whether the account is deleted.',
       value: false,
       permissionRequired: true,
       visibility: 'RO',
@@ -60,6 +64,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
+      documentation: `The given name of the account, 
+        provided by the individual person, or real user.`,
       validateObj: function(name) {
         if ( /^\s+$/.test(name) ) {
           return 'Account name may not consist of only whitespace.';
@@ -69,30 +75,34 @@ foam.CLASS({
     {
       class: 'String',
       name: 'desc',
+      documentation: `The given description of the account, provided by 
+        the individual person, or real user.`,
       label: 'Description'
     },
     {
       class: 'Boolean',
       name: 'transferIn',
+      documentation: 'Determines whether an account can receive transfers.',
       value: true
     },
     {
       class: 'Boolean',
       name: 'transferOut',
+      documentation: 'Determines whether an account can make transfers out.',
       value: true
     },
     {
-      documentation: `
-          Unit of measure of the balance - such as Currency. The value of the
-          denomination is the currency code, for example.
-      `,
       class: 'String',
       name: 'denomination',
+      documentation: `The unit of measure of the payment type. The payment system can handle 
+        denominations of any type, from mobile minutes to stocks.  
+      `,
       tableWidth: 127
     },
     {
       class: 'Boolean',
       name: 'isDefault',
+      documentation: `Determines whether an account is the first preferred option of the User.`,
       label: 'Set As Default',
       value: false
     },
@@ -100,6 +110,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'type',
+      documentation: 'The type of the account.',
       transient: true,
       visibility: foam.u2.Visibility.RO,
       factory: function() {
@@ -113,6 +124,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'balance',
+      documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       tableCellFormatter: function(value, obj, id) {
         var self = this;
@@ -127,23 +139,25 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
-      documentation: 'Creation date.'
+      documentation: 'The date and time of when the account was created in the system.'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      documentation: 'User who created the entry'
+      documentation: 'The ID of the User who created the account.'
     },
     {
       class: 'DateTime',
       name: 'lastModified',
-      documentation: 'Last modified date.'
+      documentation: 'The date and time of when the account was last changed in the system.'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'lastModifiedBy'
+      name: 'lastModifiedBy',
+      documentation: `The unique identifier of the individual person, or real user, 
+        who last modified this account.`,
     }
   ],
 
@@ -151,8 +165,9 @@ foam.CLASS({
     {
       name: 'toSummary',
       documentation: `
-        When using a reference to the accountDAO, the labels associated to it will show a chosen property
-        rather than the first alphabetical string property. In this case, we are using the account name.
+        When using a reference to the accountDAO, the labels associated with it will show 
+        a chosen property rather than the first alphabetical string property. In this 
+        case, we are using the account name.
       `,
       code: function(x) {
         var self = this;
@@ -189,8 +204,9 @@ foam.CLASS({
       `
     },
     {
-      documentation: 'Allow Account specific validation of balance operation. Trust accounts can be negative, for example.',
       name: 'validateAmount',
+      documentation: `Allows a specific value to be used to perform a balance operation. 
+        For example: Trust accounts can be negative.`,
       args: [
         {
           name: 'x',

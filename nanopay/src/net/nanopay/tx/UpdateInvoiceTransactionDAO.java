@@ -5,8 +5,6 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.util.SafetyUtil;
-import net.nanopay.account.Account;
-import net.nanopay.account.DigitalAccount;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
@@ -15,9 +13,7 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class UpdateInvoiceTransactionDAO extends ProxyDAO {
   public UpdateInvoiceTransactionDAO(X x, DAO delegate) {
@@ -65,9 +61,20 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoiceDAO.put(invoice);
       } else if ( status == TransactionStatus.DECLINED || status == TransactionStatus.REVERSE || status == TransactionStatus.REVERSE_FAIL ) {
-        invoice.setPaymentDate(null);
-        invoice.setPaymentMethod(PaymentStatus.NONE);
-        invoiceDAO.put(invoice);
+        // Do nothing. Our team will investigate and then manually set the status of the invoice.
+
+        HashMap<String, Object> args = new HashMap();
+        args.put("transactionId", transaction.getId());
+        args.put("invoiceId", invoice.getId());
+
+        // Send a notification to the payment-ops team.
+        FailedTransactionNotification notification = new FailedTransactionNotification.Builder(x)
+          .setTransactionId(transaction.getId())
+          .setInvoiceId(invoice.getId())
+          .setEmailArgs(args)
+          .build();
+        DAO notificationDAO = ((DAO) x.get("notificationDAO")).inX(x);
+        notificationDAO.put(notification);
       }
     }
 
