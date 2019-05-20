@@ -26,6 +26,24 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 public class IdentityMindRequestGenerator {
+  protected final static ThreadLocal<SimpleDateFormat> isoDateSdf = new ThreadLocal<SimpleDateFormat>() {
+    @Override
+    protected SimpleDateFormat initialValue() {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+      return sdf;
+    }
+  };
+
+  protected final static ThreadLocal<SimpleDateFormat> timestampSdf = new ThreadLocal<SimpleDateFormat>() {
+    @Override
+    protected SimpleDateFormat initialValue() {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+      return sdf;
+    }
+  };
+
   public static IdentityMindRequest getConsumerKYCRequest(X x, FObject obj) {
     if ( obj instanceof User ) {
       return getConsumerKYCRequest(x, (User) obj);
@@ -184,7 +202,7 @@ public class IdentityMindRequestGenerator {
       .setIp(getRemoteAddr(x))
       .setBfn(prepareString(user.getFirstName()))
       .setBln(prepareString(user.getLastName()))
-      .setAccountCreationTime(formatDate(user.getCreated()))
+      .setAccountCreationTime(timestampSdf.get().format(user.getCreated()))
       .build();
 
     Address address = user.getAddress();
@@ -200,7 +218,7 @@ public class IdentityMindRequestGenerator {
       request.setPhn(prepareString(phone.getNumber()));
     }
     request.setTitle(prepareString(user.getJobTitle()));
-    request.setDob(formatDate(user.getBirthday(), "yyyy-MM-dd"));
+    request.setDob(isoDateSdf.get().format(user.getBirthday()));
     return request;
   }
 
@@ -225,7 +243,7 @@ public class IdentityMindRequestGenerator {
     }
     request.setOwnership(owner.getOwnershipPercent());
     request.setTitle(prepareString(owner.getJobTitle()));
-    request.setDob(formatDate(owner.getBirthday(), "yyyy-MM-dd"));
+    request.setDob(isoDateSdf.get().format(owner.getBirthday()));
     return request;
   }
 
