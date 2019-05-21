@@ -4,7 +4,7 @@
         "replyBox":{
             "class":"foam.box.HTTPReplyBox"
         },
-        "sessionId":"6d2df1a2-982e-4537-9fcd-randomtrash1"
+        "sessionId":"6d2df1a2-982e-4537-9fcd-randomabc123"
     },
     "object":{
         "class":"foam.box.RPCMessage",
