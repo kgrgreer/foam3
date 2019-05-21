@@ -317,9 +317,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
-              e.GT(foam.mlang.StringLength.create({
-                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER_EMAIL
-              }), 0)
+              e.REG_EXP(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER_EMAIL, /.+@.+/)
             );
           },
           errorString: 'Please provide an email for the signing officer.'
