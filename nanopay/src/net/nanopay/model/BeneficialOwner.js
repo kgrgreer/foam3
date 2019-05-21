@@ -79,7 +79,7 @@ foam.CLASS({
           args: ['birthday'],
           predicateFactory: function(e) {
             return foam.mlang.predicate.OlderThan.create({
-              arg1: foam.nanos.auth.User.BIRTHDAY,
+              arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
               timeMs: 18 * 365 * 24 * 60 * 60 * 1000
             });
           },

@@ -645,13 +645,6 @@ foam.CLASS({
       label2: 'I am one of these owners',
       postSet: function(_, n) {
         this.clearProperty('owner1');
-        if ( ! n ) return;
-        this.owner1.ownershipPercent$.follow(this.ownershipPercent$);
-        this.owner1.jobTitle$.follow(this.jobTitle$);
-        this.owner1.firstName$.follow(this.firstName$);
-        this.owner1.lastName$.follow(this.lastName$);
-        this.owner1.birthday$.follow(this.birthday$);
-        this.owner1.address$.follow(this.address$);
       }
     },
     {
@@ -668,7 +661,24 @@ foam.CLASS({
     // FIXME: IntView not respecting the min-max range
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
-      label: '% of ownership'
+      label: '% of ownership',
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'ownershipAbovePercent', 'userOwnsPercent', 'ownershipPercent'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_ABOVE_PERCENT, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.USER_OWNS_PERCENT, false),
+              e.AND(
+                e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_PERCENT, 100),
+                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_PERCENT, 25)
+              )
+            );
+          },
+          errorString: `Ownership must be between 25% and 100%.`
+        }
+      ]
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',
@@ -683,6 +693,17 @@ foam.CLASS({
       label: '',
       factory: function() {
         return this.BeneficialOwner.create({ business$: this.businessId$ });
+      },
+      postSet: i != 1 ? undefined : function(_, n) {
+        if ( ! this.userOwnsPercent ) return;
+        var sub = foam.core.FObject.create();
+        sub.onDetach(n.ownershipPercent$.follow(this.ownershipPercent$));
+        sub.onDetach(n.jobTitle$.follow(this.jobTitle$));
+        sub.onDetach(n.firstName$.follow(this.firstName$));
+        sub.onDetach(n.lastName$.follow(this.lastName$));
+        sub.onDetach(n.birthday$.follow(this.birthday$));
+        sub.onDetach(n.address$.follow(this.address$));
+        this.owner1Subscription = sub;
       },
       validationPredicates: [
         {
@@ -700,6 +721,14 @@ foam.CLASS({
         }
       ]
     })),
+    {
+      name: 'owner1Subscription',
+      hidden: true,
+      postSet: function(o, n) {
+        o && o.detach();
+        this.onDetach(n);
+      },
+    },
     {
       name: 'beneficialOwnersTable',
       flags: ['web'],
@@ -802,8 +831,9 @@ foam.CLASS({
   reactions: [
     ['', 'propertyChange.amountOfOwners', 'updateTable']
   ].concat([1, 2, 3, 4].map((i) => [
-    `owner${i}`, 'propertyChange', 'updateTable'
-  ])),
+    [`owner${i}`, 'propertyChange', 'updateTable'],
+    ['', `propertyChange.owner${i}`, 'updateTable']
+  ]).flat()),
 
   listeners: [
     {
