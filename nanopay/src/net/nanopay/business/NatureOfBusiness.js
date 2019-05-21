@@ -14,12 +14,6 @@ foam.CLASS({
     'businessSectorDAO'
   ],
 
-  css: `
-    ^ .foam-u2-view-RichChoiceView {
-      width: 11vw;
-    }
-  `,
-
   properties: [
     {
       class: 'Reference',
@@ -41,6 +35,15 @@ foam.CLASS({
       name: 'filteredDAO',
       expression: function(businessSectorDAO, predicate) {
         return businessSectorDAO.where(predicate);
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.BusinessSector',
+      name: 'data',
+      postSet: function(_, n) {
+        if ( ! n ) return;
+        this.data$find.then((o) => this.parentChoice = o.parent);
       }
     }
   ],
@@ -76,7 +79,7 @@ foam.CLASS({
                 search: true,
                 searchPlaceholder: 'Search...',
                 choosePlaceholder: 'Select...'
-              })
+              });
           }))
         .end();
     }

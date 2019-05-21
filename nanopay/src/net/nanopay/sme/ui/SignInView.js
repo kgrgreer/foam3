@@ -202,9 +202,6 @@ foam.CLASS({
 
       this.addClass(this.myClass()).addClass('full-screen')
       .start().addClass('top-bar')
-        .start().addClass('top-bar-message')
-            .add(this.TOP_MESSAGE)
-        .end()
         .start().addClass('top-bar-inner')
           .start().addClass(this.myClass('button'))
             .start()

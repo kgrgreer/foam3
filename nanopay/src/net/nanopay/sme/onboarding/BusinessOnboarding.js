@@ -1,8 +1,32 @@
+/*
+  This is a hack that's needed because the properties we pull
+  in from other models don't get their sourceCls_ set properly.
+  The outputter being used is what the js build tool uses and it
+  outputs properties to look like they'd look if they were hand
+  written.
+  TODO: Make this not necessary.
+*/
+foam.LIB({
+  name: 'net.nanopay.sme.onboarding',
+  constants: {
+    SpecialOutputter: foam.json.Outputter.create({
+      pretty: true,
+      strict: false,
+      outputDefaultValues: false,
+      passPropertiesByReference: false,
+      propertyPredicate: function(o, p) {
+        return o.hasOwnProperty(p.name) &&
+          ! p.storageTransient;
+      }
+    }),
+  }
+});
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'BusinessOnboarding',
 
-  ids: ['businessId'],
+  ids: ['userId'],
 
   tableColumns: ['userId', 'status'],
 
@@ -39,7 +63,7 @@ foam.CLASS({
     },
     {
       name: 'personalInformationSection',
-      title: 'Personal Information',
+      title: 'Enter your personal information',
       help: 'Thanks, now I’ll need a bit of personal information so I can verify your identity…'
     },
     {
@@ -91,9 +115,11 @@ foam.CLASS({
     },
     {
       name: 'personalOwnershipSection',
-      title: 'Add the principle type and percentage of ownership details for yourself',
+      title: 'Add the job title and percent ownership details for yourself',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
-      isAvailable: function (signingOfficer, userOwnsPercent) { return signingOfficer && userOwnsPercent }
+      isAvailable: function(signingOfficer, ownershipAbovePercent, userOwnsPercent) {
+        return signingOfficer && ownershipAbovePercent && userOwnsPercent;
+      }
     },
     {
       name: 'owner1Section',
@@ -115,7 +141,7 @@ foam.CLASS({
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
-      isAvailable: function (signingOfficer, ownershipAbovePercent) { return signingOfficer && ownershipAbovePercent }
+      isAvailable: function (signingOfficer) { return signingOfficer }
     }
   ].flat(),
 
@@ -124,7 +150,8 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.sme.onboarding.OnboardingStatus',
       name: 'status',
-      value: 'DRAFT'
+      value: 'DRAFT',
+      section: 'adminReferenceSection'
     },
     {
       class: 'Reference',
@@ -150,19 +177,23 @@ foam.CLASS({
       name: 'firstName',
       flags: ['web'],
       transient: true,
-      section: 'adminReferenceSection'
+      section: 'adminReferenceSection',
+      minLength: 1
     },
     {
       class: 'String',
       name: 'lastName',
       flags: ['web'],
       transient: true,
-      section: 'adminReferenceSection'
+      section: 'adminReferenceSection',
+      minLength: 1
     },
 
     {
       name: 'welcome',
       section: 'gettingStartedSection',
+      flags: ['web'],
+      transient: true,
       label: '',
       view: {
         class: 'net.nanopay.sme.onboarding.ui.IntroOnboarding'
@@ -186,25 +217,43 @@ foam.CLASS({
       view: {
         class: 'foam.u2.TextField',
         placeholder: 'Chief Visionary Officer'
-      }
+      },
+      minLength: 1,
+      maxLength: 50
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
-      label: 'Phone #'
+      label: 'Phone #',
+      autoValidate: true
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       section: 'personalInformationSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              foam.mlang.predicate.OlderThan.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY,
+                timeMs: 18 * 365 * 24 * 60 * 60 * 1000
+              })
+            );
+          },
+          errorString: 'Must be at least 18 years old.'
+        }
+      ]
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
       label2: 'I am a politically exposed persons or head of an international organization (PEP/HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO) 
-        is a person entrusted with a prominent position that typically comes with the opportunity 
+        A political exposed person (PEP) or the head of an international organization (HIO)
+        is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
       `,
       visibilityExpression: function(signingOfficer) {
@@ -221,22 +270,27 @@ foam.CLASS({
       `,
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
-    }),
-    // FIXME: We need to give a link to the Dual Party Agreement
-    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
-      section: 'personalInformationSection',
-      label: '',
-      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
+      },
     }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'homeAddressSection',
       view: {
         class: 'net.nanopay.sme.ui.AddressView'
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS
+              }), true)
+            );
+          },
+          errorString: 'Invalid address.'
+        }
+      ]
     }),
     {
       name: 'signingOfficerEmailInfo',
@@ -256,18 +310,56 @@ foam.CLASS({
       label: 'Enter your signing officer\'s email',
       documentation: 'Business signing officer emails. To be sent invitations to join platform',
       section: 'signingOfficerEmailSection',
-      placeholder: 'example@email.com'
+      placeholder: 'example@email.com',
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'signingOfficerEmail'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, true),
+              e.REG_EXP(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER_EMAIL, /.+@.+/)
+            );
+          },
+          errorString: 'Please provide an email for the signing officer.'
+        }
+      ]
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
       view: {
         class: 'net.nanopay.sme.ui.AddressView',
       },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'businessAddress', 'businessAddress$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS
+              }), true)
+            );
+          },
+          errorString: 'Invalid address.'
+        }
+      ]
     }),
     foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
       section: 'businessDetailsSection',
       placeholder: 'Select...',
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'businessTypeId'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_TYPE_ID, 0)
+            );
+          },
+          errorString: 'Please select a type of business.'
+        }
+      ]
     }),
     {
       class: 'Reference',
@@ -275,29 +367,58 @@ foam.CLASS({
       name: 'businessSectorId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
-      label: 'Nature of business (NAIC code)',
-      view: { class: 'net.nanopay.business.NatureOfBusiness' }
+      label: 'Nature of business',
+      view: { class: 'net.nanopay.business.NatureOfBusiness' },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'businessSectorId'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_SECTOR_ID, 0)
+            );
+          },
+          errorString: 'Please select a nature of business.'
+        }
+      ]
     },
-
-    // FIXME: Turn into a dropdown
     foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
       label: 'Primary source of funds',
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
-        choices: [
-          'Purchase of goods produced',
-          'Completion of service contracts',
-          'Investment Income',
-          'Brokerage Fees',
-          'Consulting Fees',
-          'Sale of investments',
-          'Inheritance',
-          'Grants, loans, and other sources of financing',
-          'Other'
-        ]
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        otherKey: 'Other',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: 'Select...',
+          choices: [
+            'Purchase of goods produced',
+            'Completion of service contracts',
+            'Investment Income',
+            'Brokerage Fees',
+            'Consulting Fees',
+            'Sale of investments',
+            'Inheritance',
+            'Grants, loans, and other sources of financing',
+            'Other'
+          ]
+        }
       },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'sourceOfFunds'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.SOURCE_OF_FUNDS
+                }), 0)
+            );
+          },
+          errorString: 'Please provide a primary source of funds.'
+        }
+      ]
     }),
     {
       class: 'Boolean',
@@ -321,7 +442,23 @@ foam.CLASS({
       },
       visibilityExpression: function(operatingUnderDifferentName) {
         return operatingUnderDifferentName ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'operatingUnderDifferentName', 'operatingBusinessName'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.OPERATING_UNDER_DIFFERENT_NAME, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.OPERATING_BUSINESS_NAME
+                }), 0)
+            );
+          },
+          errorString: 'Please enter a business name.'
+        }
+      ]
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.clone().copyFrom({
       section: 'transactionDetailsSection',
@@ -336,6 +473,21 @@ foam.CLASS({
           'Over $1,000,000'
         ]
       },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'annualRevenue'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ANNUAL_REVENUE
+                }), 0)
+            );
+          },
+          errorString: 'Please make a selection.'
+        }
+      ]
     }),
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME.clone().copyFrom({
       section: 'transactionDetailsSection',
@@ -350,35 +502,110 @@ foam.CLASS({
           'Over $1,000,000'
         ]
       },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'annualDomesticVolume'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ANNUAL_DOMESTIC_VOLUME
+                }), 0)
+            );
+          },
+          errorString: 'Please make a selection.'
+        }
+      ]
     }),
-    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
+    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.clone().copyFrom({
       section: 'transactionDetailsSection',
-      documentation: 'Change to option dropdown',
       view: {
         class: 'foam.u2.view.ChoiceView',
         placeholder: 'Select...',
         choices: [
-          'Payables for products and/or services',
-          'Working capital',
-          'Bill payments',
-          'Intracompany bank transfers',
-          'Government fee and taxes',
-          'Other'
+          '1 to 99',
+          '100 to 199',
+          '200 to 499',
+          '500 to 999',
+          'Over 1000'
         ]
       },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'annualTransactionFrequency'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ANNUAL_TRANSACTION_FREQUENCY
+                }), 0)
+            );
+          },
+          errorString: 'Please make a selection.'
+        }
+      ]
     }),
-    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.clone().copyFrom({
+
+    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
-      visibilityExpression: function(transactionPurpose) {
-        return  transactionPurpose == 'Other' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
+      documentation: 'Change to option dropdown',
+      view: {
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        otherKey: 'Other',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: 'Select...',
+          choices: [
+            'Payables for products and/or services',
+            'Working capital',
+            'Bill payments',
+            'Intracompany bank transfers',
+            'Government fee and taxes',
+            'Other'
+          ]
+        }
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'transactionPurpose'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.TRANSACTION_PURPOSE
+                }), 0)
+            );
+          },
+          errorString: 'Please provide a transaction purpose.'
+        }
+      ]
     }),
+
     foam.nanos.auth.User.TARGET_CUSTOMERS.clone().copyFrom({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.tag.TextArea',
+        onKey: true,
         placeholder: 'Example: Small manufacturing businesses in North America'
       },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'targetCustomers'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.TARGET_CUSTOMERS
+                }), 0)
+            );
+          },
+          errorString: 'Please enter target customers.'
+        }
+      ]
     }),
     {
       class: 'Boolean',
@@ -391,7 +618,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [false, 'No ( or this is a publicly traded company)'],
+          [false, 'No (or this is a publicly traded company)'],
           [true, 'Yes, we have owners with 25% +']
         ],
       },
@@ -405,10 +632,22 @@ foam.CLASS({
         choices: [ 1, 2, 3, 4 ],
         isHorizontal: true
       },
-      validateObj: function(ownershipAbovePercent, amountOfOwners) {
-        return ownershipAbovePercent &&
-          ! ( amountOfOwners >= 1 && amountOfOwners <= 4 ) ? 'Please select a value' : null;
-      }
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'amountOfOwners', 'ownershipAbovePercent'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_ABOVE_PERCENT, false),
+              e.AND(
+                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 1),
+                e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 4)
+              )
+            );
+          },
+          errorString: 'Please select a number of owners.'
+        }
+      ]
     },
     {
       class: 'Boolean',
@@ -418,12 +657,6 @@ foam.CLASS({
       label2: 'I am one of these owners',
       postSet: function(_, n) {
         this.clearProperty('owner1');
-        if ( ! n ) return;
-        this.owner1.jobTitle$.follow(this.jobTitle$);
-        this.owner1.firstName$.follow(this.firstName$);
-        this.owner1.lastName$.follow(this.lastName$);
-        this.owner1.birthday$.follow(this.birthday$);
-        this.owner1.address$.follow(this.address$);
       }
     },
     {
@@ -438,15 +671,26 @@ foam.CLASS({
     },
 
     // FIXME: IntView not respecting the min-max range
-    foam.nanos.auth.User.OWNERSHIP_PERCENT.clone().copyFrom({
+    net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
       label: '% of ownership',
-      view: {
-        class: 'foam.u2.IntView',
-        min: 25,
-        max: 100,
-      },
-      value: 35
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'ownershipAbovePercent', 'userOwnsPercent', 'ownershipPercent'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_ABOVE_PERCENT, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.USER_OWNS_PERCENT, false),
+              e.AND(
+                e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_PERCENT, 100),
+                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_PERCENT, 25)
+              )
+            );
+          },
+          errorString: `Ownership must be between 25% and 100%.`
+        }
+      ]
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',
@@ -461,11 +705,36 @@ foam.CLASS({
       label: '',
       factory: function() {
         return this.BeneficialOwner.create({ business$: this.businessId$ });
-      }
+      },
+      postSet: i != 1 ? undefined : function(_, n) {
+        if ( ! this.userOwnsPercent ) return;
+        this.onDetach(n.ownershipPercent$.follow(this.ownershipPercent$));
+        this.onDetach(n.jobTitle$.follow(this.jobTitle$));
+        this.onDetach(n.firstName$.follow(this.firstName$));
+        this.onDetach(n.lastName$.follow(this.lastName$));
+        this.onDetach(n.birthday$.follow(this.birthday$));
+        this.onDetach(n.address$.follow(this.address$));
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'amountOfOwners', `owner${i}$errors_`],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.LT(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, i),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding['OWNER'+i]
+              }), true)
+            );
+          },
+          errorString: `Owner #${i} is invalid.`
+        }
+      ]
     })),
     {
       name: 'beneficialOwnersTable',
       flags: ['web'],
+      label: '',
       section: 'reviewOwnersSection',
       transient: true,
       cloneProperty: function() {},
@@ -486,24 +755,103 @@ foam.CLASS({
         columns: [
           'firstName',
           'lastName',
-          'jobTitle'
+          'jobTitle',
+          'ownershipPercent'
         ]
+      },
+      visibilityExpression: function(ownershipAbovePercent) {
+        return ownershipAbovePercent ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
       }
+    },
+    {
+      class: 'Int',
+      name: 'totalOwnership',
+      section: 'reviewOwnersSection',
+      expression: function(amountOfOwners,
+                           owner1$ownershipPercent,
+                           owner2$ownershipPercent,
+                           owner3$ownershipPercent,
+                           owner4$ownershipPercent) {
+        var sum = 0;
+        if ( amountOfOwners >= 1 ) sum += owner1$ownershipPercent;
+        if ( amountOfOwners >= 2 ) sum += owner2$ownershipPercent;
+        if ( amountOfOwners >= 3 ) sum += owner3$ownershipPercent;
+        if ( amountOfOwners >= 4 ) sum += owner4$ownershipPercent;
+        return sum;
+      },
+      javaGetter: `
+        int sum = 0;
+        if ( getAmountOfOwners() >= 1 ) sum += getOwner1().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 2 ) sum += getOwner2().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 3 ) sum += getOwner3().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 4 ) sum += getOwner4().getOwnershipPercent();
+        return sum;
+      `,
+      visibilityExpression: function(totalOwnership) {
+        return totalOwnership > 100 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      },
+      autoValidate: true,
+      max: 100
     },
     {
       class: 'Boolean',
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
       label: '',
-      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.'
+      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'certifyAllInfoIsAccurate'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
+            );
+          },
+          errorString: 'You must certify that all beneficial owners with 25% or more ownership have been listed.'
+        }
+      ]
     },
-  ].flat(),
+    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
+      section: 'reviewOwnersSection',
+      label: '',
+      //      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
+      label2Formatter: function() {
+        this.
+          add('I acknowledge that I have read and accept the ').
+          start('a').
+            attrs({
+              href: "https://nanopay.net/wp-content/uploads/2019/05/nanopay-Canada-Dual-Agreement.pdf",
+              target: "blank"
+            }).
+            add('Dual Party Agreement').
+          end().
+          add(' for Ablii Canadian Payment Services.');
+      },
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'ownershipAbovePercent', 'dualPartyAgreement'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, true)
+            );
+          },
+          errorString: 'Must acknowledge the dual party agreement.'
+        }
+      ]
+    })
+  ].flat().map((a) => net.nanopay.sme.onboarding.SpecialOutputter.objectify(a)),
 
   reactions: [
-    [1, 2, 3, 4].map((i) => [
-      `owner${i}`, 'propertyChange', 'updateTable'
-    ])
-  ].flat(),
+    ['', 'propertyChange.amountOfOwners', 'updateTable']
+  ].concat([1, 2, 3, 4].map((i) => [
+    [`owner${i}`, 'propertyChange', 'updateTable'],
+    ['', `propertyChange.owner${i}`, 'updateTable']
+  ]).flat()),
 
   listeners: [
     {
@@ -518,70 +866,5 @@ foam.CLASS({
         });
       }
     },
-  ],
-  actions: [
-    {
-      name: 'autofill',
-      permissionRequired: true,
-      section: 'adminReferenceSection',
-      code: function() {
-        this.copyFrom({
-            "status": 0,
-            "signingOfficer": true,
-            "jobTitle": "CEO",
-            "phone": {
-              "number": "1231231234"
-            },
-            "birthday": 537685200000,
-            "PEPHIORelated": true,
-            "thirdParty": true,
-            "dualPartyAgreement": true,
-            "address": {
-              "countryId": "CA",
-              "regionId": "ON",
-              "streetNumber": "123",
-              "streetName": "Users St.",
-              "city": "User City",
-              "postalCode": "L3L4L4"
-            },
-            "businessAddress": {
-              "countryId": "CA",
-              "regionId": "ON",
-              "streetNumber": "233",
-              "streetName": "Park St",
-              "city": "Waterloo",
-              "postalCode": "N3N2N2"
-            },
-            "businessTypeId": 2,
-            "businessSectorId": 11293,
-            "sourceOfFunds": "Investment Income",
-            "operatingUnderDifferentName": true,
-            "operatingBusinessName": "OP Inc",
-            "annualTransactionAmount": "$100,001 to $500,000",
-            "annualVolume": "$0 to $50,000",
-            "transactionPurpose": "Intracompany bank transfers",
-            "targetCustomers": "People",
-            "ownershipAbovePercent": true,
-            "amountOfOwners": 2,
-            "userOwnsPercent": true,
-            "owner2": {
-              "jobTitle": "COO",
-              "firstName": "Foo",
-              "lastName": "Bar",
-              "birthday": 315550800000,
-              "address": {
-                "countryId": "CA",
-                "regionId": "NS",
-                "streetNumber": "123",
-                "streetName": "Pobox",
-                "city": "Farmland",
-                "postalCode": "J3J3J3"
-              },
-              "business": 8006
-            },
-            "certifyAllInfoIsAccurate": true
-        });
-      }
-    }
   ]
 });

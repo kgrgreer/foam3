@@ -18,6 +18,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0;
       padding: 0;
+      overflow: scroll;
     }
 
     ^logo {
@@ -115,7 +116,13 @@ foam.CLASS({
         .start().addClass(this.myClass('header'))
           .start({ class: 'foam.u2.tag.Image', data: 'images/ablii-wordmark.svg' }).addClass(this.myClass('logo')).end()
           .startContext({ data: this })
-            .start().add(this.SAVE_AND_EXIT).addClass(this.myClass('save-exit')).end()
+            .start()
+              .tag(this.SAVE_AND_EXIT, {
+                buttonStyle: 'TERTIARY',
+                size: 'LARGE'
+              })
+              .addClass(this.myClass('save-exit'))
+            .end()
           .endContext()
         .end()
         .startContext({ data: this })
@@ -131,10 +138,14 @@ foam.CLASS({
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })
             .start(self.Cols).addClass(this.myClass('footer'))
-              .add(this.PREV)
+              .tag(this.PREV, {
+                buttonStyle: 'TERTIARY',
+                icon: '/images/ablii/gobackarrow-grey.svg',
+                size: 'LARGE'
+              })
               .start(this.Item)
-                .add(this.NEXT)
-                .add(this.SUBMIT)
+                .tag(this.NEXT, { size: 'LARGE' })
+                .tag(this.SUBMIT, { size: 'LARGE' })
               .end()
             .end()
           .endContext()
@@ -168,7 +179,9 @@ foam.CLASS({
 //            x.pushMenu('sme.main.dashboard');
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
-            x.ctrl.notify('Business profile submission failed. Please try again later.', 'error');
+            x.ctrl.notify('Business profile submission failed.  ' +
+                          ( ( err && err.message ) ? err.message : 'Please try again later.' ),
+                          'error');
           });
       }
     },

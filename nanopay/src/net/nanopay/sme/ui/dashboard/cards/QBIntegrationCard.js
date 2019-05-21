@@ -9,6 +9,7 @@ foam.CLASS({
   `,
 
   requires: [
+    'foam.u2.dialog.Popup',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
   ],
@@ -18,7 +19,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountingIntegrationUtil',
     'user',
     'pushMenu'
   ],
@@ -54,6 +54,14 @@ foam.CLASS({
 
         return this.SUBTITLE_EMPTY;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'hasPermission'
+    },
+    {
+      class: 'Boolean',
+      name: 'hasIntegration'
     }
   ],
 
@@ -66,7 +74,7 @@ foam.CLASS({
             iconPath: self.iconPath,
             title: self.TITLE,
             subtitle: subtitleToUse,
-            action: self.user.integrationCode === self.IntegrationCode.QUICKBOOKS ? self.SYNC : self.CONNECT
+            action: self.user.integrationCode === self.IntegrationCode.QUICKBOOKS && self.hasIntegration ? self.SYNC : self.CONNECT
           }).end();
       }));
     },
@@ -85,6 +93,9 @@ foam.CLASS({
     {
       name: 'sync',
       label: 'Sync',
+      isAvailable: function(hasPermission) {
+        return hasPermission;
+      },
       code: function() {
         this.pushMenu('sme.bank.matching');
       }
@@ -92,9 +103,15 @@ foam.CLASS({
     {
       name: 'connect',
       label: 'Connect',
+      isAvailable: function(hasPermission) {
+        return hasPermission;
+      },
       code: function() {
-        var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
-        window.location = this.attachSessionId(url);
+        // var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
+        // window.location = this.attachSessionId(url);
+        this.add(this.Popup.create().tag({
+          class: 'net.invoice.ui.modal.IntegrationModal'
+        }));
       }
     }
   ]

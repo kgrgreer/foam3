@@ -196,6 +196,8 @@ foam.CLASS({
         if ( menu ) {
           menu.launch(this);
         }
+
+        this.bannerizeCompliance();
       };
     },
 
@@ -282,23 +284,12 @@ foam.CLASS({
           view = {
             class: 'net.nanopay.sme.ui.SignUpView',
             emailField: searchParams.get('email'),
-            disableEmail: true,
+            disableEmail: !! searchParams.get('email'),
             signUpToken: searchParams.get('token'),
             companyNameField: searchParams.has('companyName')
               ? searchParams.get('companyName')
               : '',
             disableCompanyName: searchParams.has('companyName')
-          };
-        }
-
-        // Situation where redirect is from adding an existing user to a
-        // business.
-        if ( locHash === '#invited' && ! self.loginSuccess ) {
-          view = {
-            class: 'net.nanopay.sme.ui.SignInView',
-            email: searchParams.get('email'),
-            disableEmail: true,
-            signUpToken: searchParams.get('token'),
           };
         }
       }
@@ -307,31 +298,6 @@ foam.CLASS({
         self.stack.push(view);
         self.loginSuccess$.sub(resolve);
       });
-    },
-
-    // FIXME: This whole thing needs to be looked at.
-    function confirmHashRedirectIfInvitedAndSignedIn() {
-      var locHash = location.hash;
-      if ( locHash === '#invited' && this.loginSuccess ) {
-        var searchParams = new URLSearchParams(location.search);
-        var dao = ctrl.__subContext__.smeBusinessRegistrationDAO;
-        if ( dao ) {
-          this.agent.signUpToken = searchParams.get('token');
-          var userr = dao.put(this.agent);
-          if ( userr ) {
-            this.agent.copyFrom(userr);
-            this.notify(this.ADDED_TO_BUSINESS_1 + searchParams.get('companyName') + this.ADDED_TO_BUSINESS_2);
-            // replace url parameters with 'ablii' and redirect to dashboard, effectively riding the token of url history
-            history.replaceState({}, '', 'ablii');
-            this.pushMenu('sme.main.dashboard');
-          } else {
-            this.notify(err.message || `The invitation to a business ${searchParams.get('companyName')} was not processed, please try again.`, 'error');
-            // replace url parameters with 'ablii' and redirect to dashboard, effectively riding the token of url history
-            history.replaceState({}, '', 'ablii');
-            this.pushMenu('sme.main.dashboard');
-          }
-        }
-      }
     },
 
     function bannerizeCompliance() {
@@ -395,7 +361,6 @@ foam.CLASS({
         return;
       }
 
-      this.confirmHashRedirectIfInvitedAndSignedIn();
       this.bannerizeCompliance();
       this.setPortalView(this.group);
 

@@ -47,7 +47,7 @@ foam.CLASS({
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
-        DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO"));
+        DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());
@@ -71,6 +71,45 @@ foam.CLASS({
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
           business.getSigningOfficers(x).add(user);
+
+          // * Step 6: Business info
+          // Business info: business address
+          business.setAddress(businessOnboarding.getBusinessAddress());
+          business.setBusinessAddress(businessOnboarding.getBusinessAddress());
+
+          // Business info: business details
+          business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
+          business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
+          business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
+
+          if ( businessOnboarding.getOperatingUnderDifferentName() ) {
+            business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
+          }
+
+          // Business info: transaction details
+          SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
+          suggestedUserTransactionInfo.setBaseCurrency("CAD");
+          suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
+          suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
+          suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
+          suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
+
+          business.setTargetCustomers(businessOnboarding.getTargetCustomers());
+          business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
+
+          // * Step 7: Percent of ownership
+          business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
+          for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
+            business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
+          }
+
+          business.setOnboarded(true);
+
+          if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
+            business.setCompliance(ComplianceStatus.REQUESTED);
+          }
+
+          localBusinessDAO.put(business);
         } else {
           // If the user needs to invite the signing officer
           String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();
@@ -104,49 +143,6 @@ foam.CLASS({
           businessInvitationDAO.put(invitation);
         }
 
-        // * Step 6: Business info
-        // Business info: business address
-        business.setAddress(businessOnboarding.getBusinessAddress());
-        business.setBusinessAddress(businessOnboarding.getBusinessAddress());
-
-        // Business info: business details
-        business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
-        business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
-        business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
-
-        if ( businessOnboarding.getOperatingUnderDifferentName() ) {
-          business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
-        }
-
-        // Business info: transaction details
-        SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
-        suggestedUserTransactionInfo.setBaseCurrency("CAD");
-        suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
-        suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
-        suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
-        suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
-
-        // If user enters the other transaction purpose
-        if ( businessOnboarding.getOtherTransactionPurpose().equals("Others") &&
-          ! SafetyUtil.isEmpty(businessOnboarding.getOtherTransactionPurpose()) ) {
-          suggestedUserTransactionInfo.setOtherTransactionPurpose(businessOnboarding.getOtherTransactionPurpose());
-        }
-
-        business.setTargetCustomers(businessOnboarding.getTargetCustomers());
-        business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
-
-        // * Step 7: Percent of ownership
-        for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
-          business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
-        }
-
-        business.setOnboarded(true);
-
-        if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
-          business.setCompliance(ComplianceStatus.REQUESTED);
-        }
-
-        localBusinessDAO.put(business);
         return getDelegate().put_(x, obj);
       `
     }
