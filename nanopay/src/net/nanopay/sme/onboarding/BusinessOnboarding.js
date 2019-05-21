@@ -635,7 +635,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [false, 'No ( or this is a publicly traded company)'],
+          [false, 'No (or this is a publicly traded company)'],
           [true, 'Yes, we have owners with 25% +']
         ],
       },
@@ -774,6 +774,9 @@ foam.CLASS({
           'jobTitle',
           'ownershipPercent'
         ]
+      },
+      visibilityExpression: function(ownershipAbovePercent) {
+        return ownershipAbovePercent ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
       }
     },
     {
