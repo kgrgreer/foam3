@@ -696,12 +696,12 @@ foam.CLASS({
       },
       postSet: i != 1 ? undefined : function() {
         if ( ! this.userOwnsPercent ) return;
-        this.owner1.ownershipPercent$.follow(this.ownershipPercent$);
-        this.owner1.jobTitle$.follow(this.jobTitle$);
-        this.owner1.firstName$.follow(this.firstName$);
-        this.owner1.lastName$.follow(this.lastName$);
-        this.owner1.birthday$.follow(this.birthday$);
-        this.owner1.address$.follow(this.address$);
+        this.onDetach(this.owner1.ownershipPercent$.follow(this.ownershipPercent$));
+        this.onDetach(this.owner1.jobTitle$.follow(this.jobTitle$));
+        this.onDetach(this.owner1.firstName$.follow(this.firstName$));
+        this.onDetach(this.owner1.lastName$.follow(this.lastName$));
+        this.onDetach(this.owner1.birthday$.follow(this.birthday$));
+        this.onDetach(this.owner1.address$.follow(this.address$));
       },
       validationPredicates: [
         {
