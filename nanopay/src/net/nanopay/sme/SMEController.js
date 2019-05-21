@@ -282,7 +282,7 @@ foam.CLASS({
           view = {
             class: 'net.nanopay.sme.ui.SignUpView',
             emailField: searchParams.get('email'),
-            disableEmail: true,
+            disableEmail: !! searchParams.get('email'),
             signUpToken: searchParams.get('token'),
             companyNameField: searchParams.has('companyName')
               ? searchParams.get('companyName')
