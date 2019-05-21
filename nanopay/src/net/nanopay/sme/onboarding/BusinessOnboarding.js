@@ -645,13 +645,6 @@ foam.CLASS({
       label2: 'I am one of these owners',
       postSet: function(_, n) {
         this.clearProperty('owner1');
-        if ( ! n ) return;
-        this.owner1.ownershipPercent$.follow(this.ownershipPercent$);
-        this.owner1.jobTitle$.follow(this.jobTitle$);
-        this.owner1.firstName$.follow(this.firstName$);
-        this.owner1.lastName$.follow(this.lastName$);
-        this.owner1.birthday$.follow(this.birthday$);
-        this.owner1.address$.follow(this.address$);
       }
     },
     {
@@ -668,7 +661,24 @@ foam.CLASS({
     // FIXME: IntView not respecting the min-max range
     net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.clone().copyFrom({
       section: 'personalOwnershipSection',
-      label: '% of ownership'
+      label: '% of ownership',
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'ownershipAbovePercent', 'userOwnsPercent'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_ABOVE_PERCENT, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.USER_OWNS_PERCENT, false),
+              e.AND(
+                e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_PERCENT, 100),
+                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_PERCENT, 25)
+              )
+            );
+          },
+          errorString: `Ownership must be between 25% and 100%.`
+        }
+      ]
     }),
     [1, 2, 3, 4].map((i) => ({
       class: 'FObjectProperty',
@@ -683,6 +693,16 @@ foam.CLASS({
       label: '',
       factory: function() {
         return this.BeneficialOwner.create({ business$: this.businessId$ });
+      },
+      postSet: function() {
+        if ( i == 1 && this.userOwnsPercent ) {
+          this.owner1.ownershipPercent$.follow(this.ownershipPercent$);
+          this.owner1.jobTitle$.follow(this.jobTitle$);
+          this.owner1.firstName$.follow(this.firstName$);
+          this.owner1.lastName$.follow(this.lastName$);
+          this.owner1.birthday$.follow(this.birthday$);
+          this.owner1.address$.follow(this.address$);
+        }
       },
       validationPredicates: [
         {
@@ -802,8 +822,9 @@ foam.CLASS({
   reactions: [
     ['', 'propertyChange.amountOfOwners', 'updateTable']
   ].concat([1, 2, 3, 4].map((i) => [
-    `owner${i}`, 'propertyChange', 'updateTable'
-  ])),
+    [`owner${i}`, 'propertyChange', 'updateTable'],
+    ['', `propertyChange.owner${i}`, 'updateTable']
+  ]).flat()),
 
   listeners: [
     {
