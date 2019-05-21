@@ -694,15 +694,14 @@ foam.CLASS({
       factory: function() {
         return this.BeneficialOwner.create({ business$: this.businessId$ });
       },
-      postSet: function() {
-        if ( i == 1 && this.userOwnsPercent ) {
-          this.owner1.ownershipPercent$.follow(this.ownershipPercent$);
-          this.owner1.jobTitle$.follow(this.jobTitle$);
-          this.owner1.firstName$.follow(this.firstName$);
-          this.owner1.lastName$.follow(this.lastName$);
-          this.owner1.birthday$.follow(this.birthday$);
-          this.owner1.address$.follow(this.address$);
-        }
+      postSet: i != 1 ? undefined : function() {
+        if ( ! this.userOwnsPercent ) return;
+        this.owner1.ownershipPercent$.follow(this.ownershipPercent$);
+        this.owner1.jobTitle$.follow(this.jobTitle$);
+        this.owner1.firstName$.follow(this.firstName$);
+        this.owner1.lastName$.follow(this.lastName$);
+        this.owner1.birthday$.follow(this.birthday$);
+        this.owner1.address$.follow(this.address$);
       },
       validationPredicates: [
         {
