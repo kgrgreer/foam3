@@ -14,12 +14,6 @@ foam.CLASS({
     'businessSectorDAO'
   ],
 
-  css: `
-    ^ .foam-u2-view-RichChoiceView {
-
-    }
-  `,
-
   properties: [
     {
       class: 'Reference',
