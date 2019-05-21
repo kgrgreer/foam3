@@ -196,6 +196,8 @@ foam.CLASS({
         if ( menu ) {
           menu.launch(this);
         }
+
+        this.bannerizeCompliance();
       };
     },
 
