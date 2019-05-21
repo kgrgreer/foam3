@@ -31,6 +31,19 @@ foam.CLASS({
       name: 'totalMatches'
     },
     {
+      class: 'String',
+      name: 'notes',
+      view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 40 }
+    },
+    {
+      class: 'String',
+      name: 'approvalStatus',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: ['True Match', 'False Positive']
+      }
+    },
+    {
       class: 'Int',
       name: 'httpStatusCode',
       documentation: 'HTTP Status Code retrieved from the HTTP GET request to the Dow Jones API'
