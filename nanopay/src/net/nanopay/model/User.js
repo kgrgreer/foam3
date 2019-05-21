@@ -163,13 +163,7 @@ foam.CLASS({
       class: 'String',
       name: 'jobTitle',
       label: 'Job Title',
-      documentation: 'The job title of the individual person, or real user.',
-      validateObj: function(jobTitle) {
-        var re = /^[a-zA-Z0-9 ]{1,35}$/;
-        if ( jobTitle.length > 0 && ! re.test(jobTitle) ) {
-          return 'Invalid job title.';
-        }
-      }
+      documentation: 'The job title of the individual person, or real user.'
     },
     {
       class: 'Boolean',

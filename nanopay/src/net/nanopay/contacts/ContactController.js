@@ -53,7 +53,6 @@ foam.CLASS({
             this.Contact.ORGANIZATION.clone().copyFrom({
               tableWidth: undefined
             }),
-            'email',
             'signUpStatus',
             foam.core.Property.create({
               name: 'warning',
