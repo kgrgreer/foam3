@@ -128,7 +128,8 @@ foam.CLASS({
                     },
                     dao$: choices,
                     mode$: this.mode$
-                  }
+                  },
+                  label: this.PROVINCE_LABEL
                 })
               })
             .end()
