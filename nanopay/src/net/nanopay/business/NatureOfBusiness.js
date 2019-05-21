@@ -5,7 +5,8 @@ foam.CLASS({
   requires: [
     'net.nanopay.model.BusinessSector',
     'foam.u2.layout.Cols',
-    'foam.u2.view.RichChoiceView'
+    'foam.u2.view.RichChoiceView',
+    'foam.u2.layout.Item'
   ],
   implements: [
     'foam.mlang.Expressions'
@@ -52,19 +53,27 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start(this.Cols)
-          .tag(this.RichChoiceView, {
-            data$: this.parentChoice$,
-            sections: [
-              {
-                heading: 'Industries',
-                dao: this.businessSectorDAO.where(this.EQ(this.BusinessSector.PARENT, 0))
-              }
-            ],
-            search: true,
-            searchPlaceholder: 'Search...',
-            choosePlaceholder: 'Select...'
-          })
+        .start(this.Cols, {
+          defaultChildStyle: {
+            'flex' : 1
+          }})
+          .start(this.Item)
+            .style({ 'flex' : 1, 'margin-right' : '16px' })
+            .tag(this.RichChoiceView, {
+              data$: this.parentChoice$,
+              sections: [
+                {
+                  heading: 'Industries',
+                  dao: this.businessSectorDAO.where(this.EQ(this.BusinessSector.PARENT, 0))
+                }
+              ],
+              search: true,
+              searchPlaceholder: 'Search...',
+              choosePlaceholder: 'Select...'
+            })
+
+          .end()
+
           .add(this.parentChoice$.map((id) => {
             return this.E()
               .tag(this.RichChoiceView, {
