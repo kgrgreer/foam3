@@ -811,7 +811,19 @@ foam.CLASS({
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
       label: '',
-      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.'
+      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'certifyAllInfoIsAccurate'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
+            );
+          },
+          errorString: 'You must certify that all beneficial owners with 25% or more ownership have been listed.'
+        }
+      ]
     },
     net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
       section: 'reviewOwnersSection',
