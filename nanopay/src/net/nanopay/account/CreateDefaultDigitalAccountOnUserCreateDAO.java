@@ -22,7 +22,7 @@ public class CreateDefaultDigitalAccountOnUserCreateDAO
     // putting the user first so the Id is correct when looking for accounts.
     User user = (User) super.put_(x, obj);
     DigitalAccountService service = (DigitalAccountService) x.get("digitalAccount");
-    service.findDefault(getX(), user, null);
+    service.findDefault(getX().put("user", user), null);
     return user;
   }
 }
