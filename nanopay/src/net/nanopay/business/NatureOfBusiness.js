@@ -16,7 +16,7 @@ foam.CLASS({
 
   css: `
     ^ .foam-u2-view-RichChoiceView {
-      width: 11vw;
+
     }
   `,
 
