@@ -189,22 +189,9 @@ foam.CLASS({
         .end();
     },
 
-   async function checkBankAccount() {
-      let contact = await this.userDAO.find(this.data.contactId);
-      if ( contact && ! contact.bankAccount ) {
-        return 'Contact does not have a verified bank account';
-      }
-      return '';
-    },
-
     async function payNow(event) {
       event.preventDefault();
       event.stopPropagation();
-      let hasBankAccount = await this.checkBankAccount();
-      if ( hasBankAccount !== '' ) {
-        this.ctrl.notify(hasBankAccount, 'error');
-        return;
-      }
       var request = this.CanReceiveCurrency.create({
         userId: this.data.payeeId,
         currencyId: this.data.destinationCurrency
