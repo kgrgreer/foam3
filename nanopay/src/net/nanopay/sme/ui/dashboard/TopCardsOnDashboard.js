@@ -17,12 +17,12 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.sme.ui.dashboard.RequireActionView',
-    'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard',
-    'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCardType',
     'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard',
     'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard',
-    'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard'
+    'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard',
+    'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard',
+    'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCardType',
+    'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
   imports: [
@@ -37,6 +37,11 @@ foam.CLASS({
     margin-top: 20px;
     display: inline-flex;
   }
+  ^ .lower-cards {
+    margin-top: 20px;
+    display: inline-flex;
+    margin-bottom: 20px;
+  }
   ^ .inner-card {
     margin-left: 20px;
   }
@@ -46,7 +51,6 @@ foam.CLASS({
     margin: 24px 0 0 0;
     width: 97%;
   }
-  
   ^ .subTitle {
     color: #8e9090;
     font-size: 16px;
@@ -111,17 +115,19 @@ foam.CLASS({
     left: 17px;
     bottom: -10px;
   }
-  // ^ .foam-u2-CheckBox:after {
-  //   content: none;
-  // }
   `,
 
   properties: [
     {
       class: 'Boolean',
       name: 'hidePaymentCards',
-      documentation: 'This the clickable arrow under the title, that toggles the onboarding cards.'
+      documentation: 'The clickable arrow under the title, that toggles the onboarding cards.'
     }
+  ],
+
+  messages: [
+    { name: 'LOWER_LINE_TXT', message: 'Welcome back ' },
+    { name: 'UPPER_TXT', message: 'Your lastest Ablii items' }
   ],
 
   methods: [
@@ -156,7 +162,7 @@ foam.CLASS({
           this
             .addClass(this.myClass())
 
-            .start().addClass('subTitle').add('Welcome back ' + this.user.label() + '!').end()
+            .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
 
             .callIf(! isSigningOfficer && ! isAllCompleted, () => {
               this.start()
@@ -182,7 +188,7 @@ foam.CLASS({
                 .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
               .end();
             }, () => {
-              this.start().addClass('cards')
+              this.start().addClass('lower-cards')
                 .start('span')
                   .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: account })
                 .end()
@@ -193,7 +199,7 @@ foam.CLASS({
             })
             .start().addClass('line')
               .start('span')
-                .addClass('divider-half').add('Your lastest Ablii items')
+                .addClass('divider-half').add(this.UPPER_TXT)
               .end()
             .end();
         });
