@@ -635,7 +635,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [false, 'No ( or this is a publicly traded company)'],
+          [false, 'No (or this is a publicly traded company)'],
           [true, 'Yes, we have owners with 25% +']
         ],
       },
