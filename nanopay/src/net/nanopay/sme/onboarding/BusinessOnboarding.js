@@ -369,7 +369,7 @@ foam.CLASS({
       name: 'businessSectorId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
-      label: 'Nature of business (NAIC code)',
+      label: 'Nature of business',
       view: { class: 'net.nanopay.business.NatureOfBusiness' },
       validationPredicates: [
         {
@@ -516,6 +516,35 @@ foam.CLASS({
         }
       ]
     }),
+    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.clone().copyFrom({
+      section: 'transactionDetailsSection',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          '1 to 99',
+          '100 to 199',
+          '200 to 499',
+          '500 to 999',
+          'Over 1000'
+        ]
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'annualTransactionFrequency'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ANNUAL_TRANSACTION_FREQUENCY
+                }), 0)
+            );
+          },
+          errorString: 'Please make a selection.'
+        }
+      ]
+    }),
 
     // TODO: The following two properties should just be one property with a choice view that allows you
     // to provide an "other"
@@ -606,7 +635,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [false, 'No ( or this is a publicly traded company)'],
+          [false, 'No (or this is a publicly traded company)'],
           [true, 'Yes, we have owners with 25% +']
         ],
       },
@@ -745,6 +774,9 @@ foam.CLASS({
           'jobTitle',
           'ownershipPercent'
         ]
+      },
+      visibilityExpression: function(ownershipAbovePercent) {
+        return ownershipAbovePercent ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
       }
     },
     {
@@ -782,7 +814,19 @@ foam.CLASS({
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
       label: '',
-      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.'
+      label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'certifyAllInfoIsAccurate'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
+            );
+          },
+          errorString: 'You must certify that all beneficial owners with 25% or more ownership have been listed.'
+        }
+      ]
     },
     net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
       section: 'reviewOwnersSection',
