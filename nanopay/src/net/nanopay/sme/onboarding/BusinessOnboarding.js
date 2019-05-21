@@ -774,6 +774,9 @@ foam.CLASS({
           'jobTitle',
           'ownershipPercent'
         ]
+      },
+      visibilityExpression: function(ownershipAbovePercent) {
+        return ownershipAbovePercent ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
       }
     },
     {
