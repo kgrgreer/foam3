@@ -51,9 +51,33 @@ foam.CLASS({
     color: #8e9090;
     font-size: 16px;
   }
-  ^ .radio-as-arrow {
+  ^ .radio-as-arrow-margins {
     float: right;
     margin-top: -12px;
+  }
+  ^ .radio-as-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 4px 5px 4px;
+    border-color: transparent transparent white transparent;
+    position: relative;
+    left: 17px;
+    bottom: -10px;
+    z-index: 0;
+    pointer-events:none;
+  }
+  ^ .radio-as-arrow-down {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    border-color: white transparent transparent transparent;
+    position: relative;
+    left: 17px;
+    bottom: -10px;
+    z-index: 0;
+    pointer-events:none;
   } 
   ^ .line {
     width: 100%;
@@ -69,6 +93,27 @@ foam.CLASS({
     text-align: center;
     color: #8e9090;
   }
+  ^ .foam-u2-CheckBox {
+    -webkit-appearance: none;
+    background-color: %SECONDARYCOLOR%;
+    border-radius: 50%;
+    z-index: 10000;
+    
+  }
+  ^ .foam-u2-CheckBox:checked:after {
+    content: none;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    border-color: transparent transparent white transparent;
+    position: relative;
+    left: 17px;
+    bottom: -10px;
+  }
+  // ^ .foam-u2-CheckBox:after {
+  //   content: none;
+  // }
   `,
 
   properties: [
@@ -110,16 +155,19 @@ foam.CLASS({
 
           this
             .addClass(this.myClass())
-            
+
             .start().addClass('subTitle').add('Welcome back ' + this.user.label() + '!').end()
 
             .callIf(! isSigningOfficer && ! isAllCompleted, () => {
               this.start()
                 .addClass('divider')
               .end()
-              .start().addClass('radio-as-arrow')
+              
+              .start().addClass('radio-as-arrow-margins')
                 .add(this.HIDE_PAYMENT_CARDS)
               .end()
+              .start().addClass('radio-as-arrow').addClass('radio-as-arrow-margins').hide(this.hidePaymentCards$).end()
+              .start().addClass('radio-as-arrow-down').addClass('radio-as-arrow-margins').show(this.hidePaymentCards$).end()
               .start().addClass('cards').hide(this.hidePaymentCards$)
                 .start('span')
                   .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: values[4] })
