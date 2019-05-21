@@ -90,7 +90,7 @@ foam.CLASS({
       .build();
       ct.setDestinationAccount(t.getDestinationAccount());
       ct.setSourceAccount(t.getSourceAccount());
-      ct.setAmount(1);
+//      ct.setAmount();
       ct.setIsQuoted(true);
       ct.addNext(t);
       quote.addPlan(ct);

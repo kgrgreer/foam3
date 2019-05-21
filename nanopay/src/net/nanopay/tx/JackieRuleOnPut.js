@@ -25,7 +25,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
           ComplianceTransaction ct = (ComplianceTransaction) obj;
-          if ( ( (AppConfig) x.get("appConfig") ).getMode() != Mode.TEST && ( (AppConfig) x.get("appConfig") ).getMode() != Mode.DEVELOPMENT ) {
+//          if ( ( (AppConfig) x.get("appConfig") ).getMode() != Mode.TEST && ( (AppConfig) x.get("appConfig") ).getMode() != Mode.DEVELOPMENT ) {
 
             DAO results = ((DAO) x.get("approvalRequestDAO"))
               .where(
@@ -57,8 +57,8 @@ foam.CLASS({
                     ct.setStatus(TransactionStatus.COMPLETED);
                   }
               }
-            }
-            else  {  ct.setStatus(TransactionStatus.COMPLETED); }
+  //          }
+  //          else  {  ct.setStatus(TransactionStatus.COMPLETED); }
       `
     },
     {

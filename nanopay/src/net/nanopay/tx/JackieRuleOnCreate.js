@@ -9,21 +9,47 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.mlang.sink.Count',
-    'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.*',
+    'foam.mlang.sink.Count',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.app.Mode',
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.app.Mode'
+  ],
+
+  properties: [
+    {
+      name: 'jackieId',
+      class: 'Long',
+      value: 8233
+      //class: 'Reference',
+      //of: 'foam.nanos.auth.Group',
+    }
   ],
 
   methods: [
     {
       name: 'applyAction',
-      javaCode: `requestApproval(x, obj, "localTransactionDAO");`
+      javaCode: `
+        ComplianceTransaction ct = (ComplianceTransaction) obj;
+
+        ApprovalRequest req = new ApprovalRequest.Builder(x)
+          .setDaoKey("localTransactionDAO")
+          .setObjId(ct.getId())
+          .setApprover(getJackieId())
+          .build();
+        if ( ( (AppConfig) x.get("appConfig") ).getMode() == Mode.TEST ||
+             ( (AppConfig) x.get("appConfig") ).getMode() == Mode.DEVELOPMENT ) {
+          req.setStatus(ApprovalStatus.APPROVED);
+          req.setMemo("Auto set to COMPLETE for TEST|DEVELOPMENT Mode.");
+        }
+        requestApproval(x, req);
+      `
     },
     {
       name: 'applyReverseAction',
