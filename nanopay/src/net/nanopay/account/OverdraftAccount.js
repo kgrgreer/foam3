@@ -28,9 +28,7 @@ foam.CLASS({
       of: 'net.nanopay.account.DebtAccount',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.accountDAO.where(
-              X.data.INSTANCE_OF(X.data.DebtAccount)
-          ),
+          dao: X.debtAccountDAO,
           placeholder: '--',
           objToChoice: function(debtAccount) {
             return [debtAccount.id, debtAccount.name];
