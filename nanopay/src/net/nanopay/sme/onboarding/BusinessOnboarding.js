@@ -783,9 +783,6 @@ foam.CLASS({
       section: 'reviewOwnersSection',
       label: '',
       label2: 'I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      },
       validationPredicates: [
         {
           args: ['signingOfficer', 'certifyAllInfoIsAccurate'],
