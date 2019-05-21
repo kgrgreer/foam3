@@ -1,4 +1,4 @@
-package nanopay.src.net.nanopay.scripts.DAOSecurityTest;
+package net.nanopay.scripts.DAOSecurityTest;
 
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
@@ -139,21 +139,14 @@ public class DAOSecurityTest {
             if ( serve != null && serve) {
               String dao = (String) jso.get("name");
               if ( ! dao.endsWith("DAO") || ignores.contains(dao) ) continue;
-//              System.out.println("Testing " + dao);
               try {
-//                if (testDAO(dao, request)) System.out.println(dao + " passed");
                 testDAO(dao, request);
               } catch (TestDAOFailed testDAOFailed) {
-//                System.out.println(dao + " failed");
-//                System.out.println(dao + " response code: " + testDAOFailed.getResponse());
-//                System.out.println(dao + " response body: " + testDAOFailed.getMsgBody());
                 failedDAOs.put(dao, testDAOFailed.getMsgBody());
               } catch (IOException e) {
                 e.printStackTrace();
                 failedDAOs.put(dao, "IOException: " + e.getMessage());
               }
-//              System.out.println("----------------------------------------------------------");
-//              System.out.flush();
             }
           } catch (NullPointerException | ParseException e) {
             e.printStackTrace();
@@ -162,10 +155,8 @@ public class DAOSecurityTest {
     }
 
     StringBuilder ret = new StringBuilder();
-//    System.out.println("Failed DAOs:");
     ret.append("Failed DAOs:\n");
     for(Map.Entry<String, String> dao : failedDAOs.entrySet()) {
-//      System.out.println("\t" + dao.getKey() + ": " + dao.getValue());
       ret.append(dao.getKey()).append(": ").append(dao.getValue()).append('\n');
     }
     return ret.toString();
