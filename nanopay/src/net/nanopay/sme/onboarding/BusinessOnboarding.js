@@ -694,14 +694,16 @@ foam.CLASS({
       factory: function() {
         return this.BeneficialOwner.create({ business$: this.businessId$ });
       },
-      postSet: i != 1 ? undefined : function() {
+      postSet: i != 1 ? undefined : function(_, n) {
         if ( ! this.userOwnsPercent ) return;
-        this.onDetach(this.owner1.ownershipPercent$.follow(this.ownershipPercent$));
-        this.onDetach(this.owner1.jobTitle$.follow(this.jobTitle$));
-        this.onDetach(this.owner1.firstName$.follow(this.firstName$));
-        this.onDetach(this.owner1.lastName$.follow(this.lastName$));
-        this.onDetach(this.owner1.birthday$.follow(this.birthday$));
-        this.onDetach(this.owner1.address$.follow(this.address$));
+        var sub = foam.core.FObject.create();
+        sub.onDetach(n.ownershipPercent$.follow(this.ownershipPercent$));
+        sub.onDetach(n.jobTitle$.follow(this.jobTitle$));
+        sub.onDetach(n.firstName$.follow(this.firstName$));
+        sub.onDetach(n.lastName$.follow(this.lastName$));
+        sub.onDetach(n.birthday$.follow(this.birthday$));
+        sub.onDetach(n.address$.follow(this.address$));
+        this.owner1Subscription = sub;
       },
       validationPredicates: [
         {
@@ -719,6 +721,14 @@ foam.CLASS({
         }
       ]
     })),
+    {
+      name: 'owner1Subscription',
+      hidden: true,
+      postSet: function(o, n) {
+        o && o.detach();
+        this.onDetach(n);
+      },
+    },
     {
       name: 'beneficialOwnersTable',
       flags: ['web'],
