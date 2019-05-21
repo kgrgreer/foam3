@@ -305,6 +305,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.run.sugar","description":"
 p({"class":"foam.nanos.auth.Permission","id":"service.run.pacsMsg","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.flinksAuth"})
 p({"class":"foam.nanos.auth.Permission","id":"service.accountingReportDAO"})
+p({"class":"foam.nanos.auth.Permission","id":"debtAccountDAO.read.*"})
 p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.viewAccounts","description":"Controls visibility of View Accounts action on User models. Does not actually enforce any access control."})
 p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.viewTransactions","description":"Controls visibility of View Transactions button on Uesr models. Does not actually enforce any access control."})
 p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.viewPayables","description":"Controls visibility of View Payables button on User models. Does not actually enforce any access control."})
