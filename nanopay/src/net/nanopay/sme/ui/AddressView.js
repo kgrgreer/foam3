@@ -62,7 +62,7 @@ foam.CLASS({
     { name: 'STREET_NAME_LABEL', message: 'Street Name' },
     { name: 'ADDRESS_LABEL', message: 'Address Line 2 (Optional)' },
     { name: 'ADDRESS_HINT', message: 'Apartment, suite, etc.' },
-    { name: 'PROVINCE_LABEL', message: 'State/Province' },
+    { name: 'PROVINCE_LABEL', message: 'Province/State' },
     { name: 'CITY_LABEL', message: 'City' },
     { name: 'POSTAL_CODE_LABEL', message: 'Postal Code/Zip Code' }
   ],
