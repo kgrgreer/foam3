@@ -95,7 +95,7 @@ foam.CLASS({
           suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
 
           // If user enters the other transaction purpose
-          if ( businessOnboarding.getOtherTransactionPurpose().equals("Others") &&
+          if ( businessOnboarding.getTransactionPurpose().equals("Other") &&
             ! SafetyUtil.isEmpty(businessOnboarding.getOtherTransactionPurpose()) ) {
             suggestedUserTransactionInfo.setOtherTransactionPurpose(businessOnboarding.getOtherTransactionPurpose());
           }
