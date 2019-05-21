@@ -369,7 +369,7 @@ foam.CLASS({
       name: 'businessSectorId',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
-      label: 'Nature of business (NAIC code)',
+      label: 'Nature of business',
       view: { class: 'net.nanopay.business.NatureOfBusiness' },
       validationPredicates: [
         {
@@ -509,6 +509,35 @@ foam.CLASS({
               e.GT(
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ANNUAL_DOMESTIC_VOLUME
+                }), 0)
+            );
+          },
+          errorString: 'Please make a selection.'
+        }
+      ]
+    }),
+    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.clone().copyFrom({
+      section: 'transactionDetailsSection',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        placeholder: 'Select...',
+        choices: [
+          '1 to 99',
+          '100 to 199',
+          '200 to 499',
+          '500 to 999',
+          'Over 1000'
+        ]
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'annualTransactionFrequency'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.ANNUAL_TRANSACTION_FREQUENCY
                 }), 0)
             );
           },
