@@ -16,6 +16,7 @@ foam.CLASS({
     'net.nanopay.account.Debtable',
     'net.nanopay.account.DebtAccount',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.cico.VerificationTransaction',
     'foam.nanos.logger.Logger',
   ],
 
@@ -26,6 +27,8 @@ foam.CLASS({
       Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
       Transaction plan = quote.getPlan();
+
+      if (plan instanceof VerificationTransaction) return quote;
 
       logger.debug(this.getClass().getSimpleName(), "put", quote);
 

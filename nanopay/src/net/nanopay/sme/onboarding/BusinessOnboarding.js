@@ -26,7 +26,7 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'BusinessOnboarding',
 
-  ids: ['businessId'],
+  ids: ['userId'],
 
   tableColumns: ['userId', 'status'],
 
@@ -751,6 +751,7 @@ foam.CLASS({
     {
       name: 'beneficialOwnersTable',
       flags: ['web'],
+      label: '',
       section: 'reviewOwnersSection',
       transient: true,
       cloneProperty: function() {},
