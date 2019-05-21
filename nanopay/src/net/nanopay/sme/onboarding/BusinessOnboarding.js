@@ -664,7 +664,7 @@ foam.CLASS({
       label: '% of ownership',
       validationPredicates: [
         {
-          args: ['signingOfficer', 'ownershipAbovePercent', 'userOwnsPercent'],
+          args: ['signingOfficer', 'ownershipAbovePercent', 'userOwnsPercent', 'ownershipPercent'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
