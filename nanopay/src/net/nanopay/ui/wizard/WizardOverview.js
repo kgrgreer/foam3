@@ -24,40 +24,35 @@ foam.CLASS({
     }
 
     ^ .positionCircle {
-      position: relative;
-      width: 21px;
-      height: 21px;
-      box-sizing: border-box;
-      border-radius: 10.5px;
-      background-color: #a4b3b8;
-      margin: auto;
-
-      overflow: hidden;
-
-      -webkit-transition: all .15s ease-in-out;
       -moz-transition: all .15s ease-in-out;
       -ms-transition: all .15s ease-in-out;
       -o-transition: all .15s ease-in-out;
+      -webkit-transition: all .15s ease-in-out;
+      background-color: #a4b3b8;
+      border-radius: 10.5px;
+      box-sizing: border-box;
+      height: 21px;
+      margin: auto;
+      overflow: hidden;
+      padding-top: 1px;
+      position: relative;
       transition: all .15s ease-in-out;
+      width: 21px;
     }
 
     ^ .positionCircle img {
-      position: absolute;
-      top: 0;
-      left: 0;
-
-      opacity: 0;
-
-      width: 0;
-      height: 0;
-
-      z-index: 11;
-
-      -webkit-transition: all .15s ease-in-out;
       -moz-transition: all .15s ease-in-out;
       -ms-transition: all .15s ease-in-out;
       -o-transition: all .15s ease-in-out;
+      -webkit-transition: all .15s ease-in-out;
+      height: 0;
+      left: 0;
+      opacity: 0;
+      position: absolute;
+      top: 0;
       transition: all .15s ease-in-out;
+      width: 0;
+      z-index: 11;
     }
 
     ^ .positionCircle.complete img {
@@ -77,11 +72,11 @@ foam.CLASS({
 
     ^ .positionCircle p {
       color: white;
-      line-height: 21px;
-      width: 21px;
       font-size: 12px;
-      text-align: center;
+      line-height: 21px;
       margin: 0;
+      text-align: center;
+      width: 21px;
 
       -webkit-transition: font-size .25s ease-in-out;
       -moz-transition: font-size .25s ease-in-out;
