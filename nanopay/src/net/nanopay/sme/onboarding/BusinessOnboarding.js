@@ -388,19 +388,23 @@ foam.CLASS({
       section: 'businessDetailsSection',
       label: 'Primary source of funds',
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
-        choices: [
-          'Purchase of goods produced',
-          'Completion of service contracts',
-          'Investment Income',
-          'Brokerage Fees',
-          'Consulting Fees',
-          'Sale of investments',
-          'Inheritance',
-          'Grants, loans, and other sources of financing',
-          'Other'
-        ]
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        otherKey: 'Other',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: 'Select...',
+          choices: [
+            'Purchase of goods produced',
+            'Completion of service contracts',
+            'Investment Income',
+            'Brokerage Fees',
+            'Consulting Fees',
+            'Sale of investments',
+            'Inheritance',
+            'Grants, loans, and other sources of financing',
+            'Other'
+          ]
+        }
       },
       validationPredicates: [
         {
@@ -414,7 +418,7 @@ foam.CLASS({
                 }), 0)
             );
           },
-          errorString: 'Please select a primary source of funds.'
+          errorString: 'Please provide a primary source of funds.'
         }
       ]
     }),
@@ -517,22 +521,24 @@ foam.CLASS({
       ]
     }),
 
-    // TODO: The following two properties should just be one property with a choice view that allows you
-    // to provide an "other"
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.clone().copyFrom({
       section: 'transactionDetailsSection',
       documentation: 'Change to option dropdown',
       view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Select...',
-        choices: [
-          'Payables for products and/or services',
-          'Working capital',
-          'Bill payments',
-          'Intracompany bank transfers',
-          'Government fee and taxes',
-          'Other'
-        ]
+        class: 'foam.u2.view.ChoiceWithOtherView',
+        otherKey: 'Other',
+        choiceView: {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: 'Select...',
+          choices: [
+            'Payables for products and/or services',
+            'Working capital',
+            'Bill payments',
+            'Intracompany bank transfers',
+            'Government fee and taxes',
+            'Other'
+          ]
+        }
       },
       validationPredicates: [
         {
@@ -544,27 +550,6 @@ foam.CLASS({
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.sme.onboarding.BusinessOnboarding.TRANSACTION_PURPOSE
                 }), 0)
-            );
-          },
-          errorString: 'Please make a selection.'
-        }
-      ]
-    }),
-    net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.clone().copyFrom({
-      section: 'transactionDetailsSection',
-      visibilityExpression: function(transactionPurpose) {
-        return  transactionPurpose == 'Other' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      },
-      validationPredicates: [
-        {
-          args: ['signingOfficer', 'transactionPurpose', 'otherTransactionPurpose'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.TRANSACTION_PURPOSE, 'Other'),
-              e.GTE(foam.mlang.StringLength.create({
-                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.OTHER_TRANSACTION_PURPOSE
-              }), 1)
             );
           },
           errorString: 'Please provide a transaction purpose.'
