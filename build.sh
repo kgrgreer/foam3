@@ -466,7 +466,6 @@ while getopts "bcdD:ghijlmM:N:pqrsStT:vV:W:xz" opt ; do
            TESTS=$OPTARG
            MODE=TEST
            CLEAN_BUILD=1
-           echo "$TESTS=${TESTS}"
            ;;
         v) COMPILE_ONLY=1 ;;
         V) VERSION=$OPTARG
