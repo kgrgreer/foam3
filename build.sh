@@ -353,6 +353,18 @@ function setenv {
         fi
     fi
 
+    # HSM setup
+    if [[ $IS_MAC -eq 1 ]]; then
+      HSM_HOME=$PROJECT_HOME/tools/hsm
+
+      #softhsm setup
+      if [[ -f $HSM_HOME/development.sh ]]; then
+        cd "$HSM_HOME"
+        printf "INFO :: Setting up SoftHSM...\n"
+        $HSM_HOME/development.sh -r $HSM_HOME
+      fi
+    fi
+
     if [[ -z $JAVA_HOME ]]; then
       if [[ $IS_MAC -eq 1 ]]; then
         JAVA_HOME=$($(dirname $(readlink $(which javac)))/java_home)
