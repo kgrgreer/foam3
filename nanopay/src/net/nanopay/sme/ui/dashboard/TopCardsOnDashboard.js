@@ -110,7 +110,7 @@ foam.CLASS({
 
           this
             .addClass(this.myClass())
-
+            
             .start().addClass('subTitle').add('Welcome back ' + this.user.label() + '!').end()
 
             .callIf(! isSigningOfficer && ! isAllCompleted, () => {
@@ -129,7 +129,6 @@ foam.CLASS({
                 .end()
               .end();
             })
-
             .callIfElse(sectionsShowing, () => {
               this.start('span').addClass('card')
                 .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })

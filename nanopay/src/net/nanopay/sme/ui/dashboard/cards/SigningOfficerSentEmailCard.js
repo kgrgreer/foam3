@@ -21,8 +21,7 @@ foam.CLASS({
   css: `
     ^ {
       width: 100%;
-      height: 14%;
-
+      max-height: 135px;
       box-sizing: border-box;
 
       border-radius: 4px;
