@@ -52,6 +52,10 @@ foam.CLASS({
             Logger logger = (Logger) x.get("logger");
             DigitalAccount account = null;
 
+            if ( user == null ) {
+              logger.warning("DigitalAccount.findDefault user null", new Exception());
+              return null;
+            }
             synchronized(String.valueOf(user.getId()).intern()) {
               logger.info(DigitalAccount.class.getSimpleName(), "findDefault", "user", user.getId(), "currency", currency);
 
