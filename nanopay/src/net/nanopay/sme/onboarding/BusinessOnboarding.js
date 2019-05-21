@@ -751,6 +751,7 @@ foam.CLASS({
     {
       name: 'beneficialOwnersTable',
       flags: ['web'],
+      label: '',
       section: 'reviewOwnersSection',
       transient: true,
       cloneProperty: function() {},
