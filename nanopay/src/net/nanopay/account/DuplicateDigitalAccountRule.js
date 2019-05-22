@@ -23,9 +23,8 @@ foam.CLASS({
       javaCode: `
         if ( obj instanceof DigitalAccount &&
              ((DigitalAccount) obj).getId() == 0L ) {
-          Count count = new Count();
           DigitalAccount digitalAccount = (DigitalAccount) obj;
-          count = (Count) ((DAO) x.get("accountDAO"))
+          Count count = (Count) ((DAO) x.get("accountDAO"))
             .where(
               AND(
                 INSTANCE_OF(DigitalAccount.class),
@@ -44,7 +43,6 @@ foam.CLASS({
             throw new  RuntimeException("You cannot create this account because it is a duplicate of another.");
           }
         }
-      }
       `
     },
     {
