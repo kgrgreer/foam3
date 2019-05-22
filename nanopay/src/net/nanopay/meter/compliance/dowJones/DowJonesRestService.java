@@ -82,15 +82,15 @@ import java.text.SimpleDateFormat;
         firstName = firstName.replaceAll("  *", "%20");
         surName = surName.replaceAll("  *", "%20");
         urlAddress += "first-name=" + firstName + "&surname=" + surName;
-        if ( filterLRDFrom != null ) {
+        if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
           String formattedLRDFilter = simpleDateFormat.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedLRDFilter;
         }
-        if ( dateOfBirth != null ) {
+        if ( dateOfBirth != null && ! dateOfBirth.equals("") ) {
           String formattedDOBFilter = simpleDateFormat.format(dateOfBirth);
           urlAddress += "&date-of-birth=" + formattedDOBFilter;
         }
-        if ( filterRegion != null ) {
+        if ( filterRegion != null && ! filterRegion.equals("") ) {
           urlAddress += "&filter-region=" + filterRegion;
         }
       } else if ( req.getRequestInfo().equals(ENTITY_NAME) ) {
@@ -100,15 +100,16 @@ import java.text.SimpleDateFormat;
         String filterRegion = ((EntityNameSearchRequest) req.getModel()).getFilterRegion();
         entityName = entityName.replaceAll("  *", "%20");
         urlAddress += "entity-name=" + entityName;
-        if ( filterLRDFrom != null ) {
+        if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
           String formattedFilter = simpleDateFormat.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedFilter;
         }
-        if ( filterRegion != null ) {
+        if ( filterRegion != null && ! filterRegion.equals("") ) {
           urlAddress += "&filter-region=" + filterRegion;
         }
       }
 
+      urlAddress = urlAddress.replaceAll("  *", "%20");
       HttpGet get = new HttpGet(urlAddress);
       get.setHeader("Authorization", "Basic " + encodedCredentials);
       response = client.execute(get);
