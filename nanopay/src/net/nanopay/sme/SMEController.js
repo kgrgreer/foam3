@@ -101,7 +101,7 @@ foam.CLASS({
   messages: [
     {
       name: 'REQUESTED_BANNER',
-      message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 2-3 business days.'
+      message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 1-3 business days.'
     },
     {
       name: 'PASSED_BANNER',
@@ -300,8 +300,9 @@ foam.CLASS({
       });
     },
 
-    function bannerizeCompliance() {
-      switch ( this.user.compliance ) {
+    async function bannerizeCompliance() {
+      var user = await this.client.userDAO.find(this.user.id);
+      switch ( user.compliance ) {
         case this.ComplianceStatus.NOTREQUESTED:
           break;
         case this.ComplianceStatus.REQUESTED:
