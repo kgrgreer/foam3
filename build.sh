@@ -259,7 +259,14 @@ function start_nanos {
 
 function beginswith {
     # https://stackoverflow.com/a/18558871
-    case $2 in "$1"*) true;; *) false;; esac;
+    case $2 in
+      "$1"*)
+        true
+        ;;
+      *)
+        false
+        ;;
+    esac
 }
 
 function setenv {
@@ -354,16 +361,16 @@ function setenv {
     fi
 
     # HSM setup
-    # if [[ $IS_MAC -eq 1 ]]; then
-    #   HSM_HOME=$PROJECT_HOME/tools/hsm
+    if [[ $IS_MAC -eq 1 ]]; then
+      HSM_HOME=$PROJECT_HOME/tools/hsm
+      HSM_CONFIG_PATH='/opt/nanopay/keys/pkcs11.cfg'
 
-    #   #softhsm setup
-    #   if [[ -f $HSM_HOME/development.sh ]]; then
-    #     cd "$HSM_HOME"
-    #     printf "INFO :: Setting up SoftHSM...\n"
-    #     $HSM_HOME/development.sh -r $HSM_HOME
-    #   fi
-    # fi
+      #softhsm setup
+      if [[ -f $HSM_HOME/development.sh ]]; then
+        printf "INFO :: Setting up SoftHSM...\n"
+        $HSM_HOME/development.sh -r $HSM_HOME -d $HSM_CONFIG_PATH
+      fi
+    fi
 
     if [[ -z $JAVA_HOME ]]; then
       if [[ $IS_MAC -eq 1 ]]; then

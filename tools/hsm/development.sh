@@ -58,13 +58,21 @@ function clean {
   printf "INFO :: Tokens: development and testing, have been deleted.\n"
 }
 
+function config_setup {
+  cp $ROOT/dev/softhsm.cfg $CONFIG_PATH
+
+  printf "INFO :: SoftHSM config file setup...\n"
+}
+
 CREATE=0
+CONFIG_PATH="/opt/nanopay/keys/pkcs11.cfg"
 PIN="Secret.123"
 ROOT="."
 
-while getopts "cp:r:" opt ; do
+while getopts "cp:r:d" opt ; do
     case $opt in
         c) CREATE=1 ;;
+        d) CONFIG_PATH=$OPTARG ;;
         p) PIN=$OPTARG ;;
         r) ROOT=$OPTARG ;;
         ?) usage ; exit 1 ;;
@@ -79,6 +87,8 @@ if [[ $CREATE -eq 1 ]]; then
 else
   migrate_slots
 fi
+
+config_setup
 
 printf "INFO :: SoftHSM successfully setup.\n"
 softhsm2-util --show-slots
