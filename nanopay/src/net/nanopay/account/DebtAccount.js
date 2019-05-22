@@ -21,6 +21,7 @@ foam.CLASS({
       label: 'Debtor',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
+      targetDAOKey:'localAccountDAO',
       documentation: 'The account which owes this debt.',
       visibility: 'RO',
       view: function(_, X) {
@@ -41,6 +42,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       documentation: 'The account which is owned this debt.',
+      targetDAOKey: 'localAccountDAO',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.accountDAO.where(

@@ -26,6 +26,7 @@ foam.CLASS({
       name: 'debtAccount',
       class: 'Reference',
       of: 'net.nanopay.account.DebtAccount',
+      targetDAOKey:'localDebtAccountDAO',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.debtAccountDAO,
@@ -39,6 +40,20 @@ foam.CLASS({
   ],
 
   methods: [
+  {
+        name: 'getDebtLimit',
+        args: [
+          {
+          name: 'x',
+          type: 'Context'
+          }
+        ],
+        type: 'Long',
+        javaCode: `
+          DebtAccount da = ((DebtAccount)((DAO) x.get("localDebtAccountDAO")).find(MLang.EQ(DebtAccount.ID, getDebtAccount())));
+          return  da.getLimit() - ((Long) da.findBalance(x));
+        `
+      },
     {
       documentation: 'Debt account is always negative',
       name: 'validateAmount',

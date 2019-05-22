@@ -99,7 +99,7 @@ public class TransactionDAO
   }
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
-    X y = x.put("balanceDAO",getBalanceDAO());
+    X y = getX().put("balanceDAO",getBalanceDAO());
     Transfer[] ts = txn.createTransfers(y, oldTxn);
 
     // TODO: disallow or merge duplicate accounts

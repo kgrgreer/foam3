@@ -37,8 +37,8 @@ foam.CLASS({
       Account destinationAccount = plan.findDestinationAccount(x);
 
       if ( sourceAccount instanceof Debtable ) {
-        DebtAccount debtAccount = ((OverdraftAccount) sourceAccount).findDebtAccount(getX());
-        Account creditorAccount = debtAccount.findCreditorAccount(getX());
+        DebtAccount debtAccount = ((OverdraftAccount) sourceAccount).findDebtAccount(x);
+        Account creditorAccount = debtAccount.findCreditorAccount(x);
 
         Transaction d = new DebtTransaction.Builder(x)
           .setSourceAccount(creditorAccount.getId())

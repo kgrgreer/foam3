@@ -76,7 +76,7 @@ foam.CLASS({
         try {
           // check if we can make the CO at th same time as CI
           Account account = DigitalAccount.findDefault(x,(User) x.get("user"), request.getSourceCurrency());
-          if (account instanceof Debtable && ((Debtable) account).findDebtAccount(getX()) != null && ((Debtable)account).findDebtAccount(getX()).getLimit() > 0 ) {
+          if (account instanceof Debtable && ((Debtable) account).findDebtAccount(x) != null && ((Debtable)account).findDebtAccount(x).getLimit() > 0 ) {
             //account.validateAmount(x, null, request.getAmount());
             CompositeTransaction ct = new CompositeTransaction();
             ct.copyFrom(request);
