@@ -205,6 +205,15 @@ public class TransactionTest
 
     Transaction txn2 = txn1.getNext()[0];
     Transaction txn3 = txn2.getNext()[0];
+
+    // Future with CompositeTransaction
+    // test(txn3.getNext()[0].getClass() == AlternaCOTransaction.class, " 2nd child is of type "+txn3.getClass().getName()+" should be AlternaCOTransaction");
+
+    // test(txn2.getAmount()== txn3.getNext()[0].getAmount(), "CI and CO transactions have same amount");
+    // test(txn2.getDestinationAccount()==txn3.getSourceAccount(),"CI and CO use same digital account");
+    // test(txn1.getDestinationAccount()==txn3.getDestinationAccount(), "txn1 and txn3 destination accounts are the same");
+
+    // Non Composite
     Transaction txn4 = txn2.getNext()[1];
     test(txn3.getClass() == AlternaCITransaction.class, " 1st child is of type "+txn3.getClass().getName()+" should be AlternaCITransaction");
     test(txn4.getClass() == AlternaCOTransaction.class, " 2nd child is of type "+txn4.getClass().getName()+" should be AlternaCOTransaction");
@@ -212,6 +221,8 @@ public class TransactionTest
     test(txn3.getAmount()== txn4.getAmount(), "CI and CO transactions have same amount");
     test(txn3.getDestinationAccount()==txn4.getSourceAccount(),"CI and CO use same digital account");
     test(txn1.getDestinationAccount()==txn4.getDestinationAccount(), "txn1 and txn3 destination accounts are the same");
+
+
     test(txn1.getSourceAccount()==txn2.getSourceAccount(), "txn1 and txn2 source accounts are the same");
     test(txn1.getStatus() == COMPLETED," Ablii transaction is COMPLETED");
     test(txn2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CI transaction is "+txn2.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
