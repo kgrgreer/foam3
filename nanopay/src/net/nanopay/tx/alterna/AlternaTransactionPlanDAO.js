@@ -86,11 +86,10 @@ foam.CLASS({
       t.setIsQuoted(true);
 
       ComplianceTransaction ct = new ComplianceTransaction.Builder(x)
-      //.setRequestedTransaction(t)
       .build();
       ct.setDestinationAccount(t.getDestinationAccount());
       ct.setSourceAccount(t.getSourceAccount());
-//      ct.setAmount();
+      ct.setAmount(t.getAmount());
       ct.setIsQuoted(true);
       ct.addNext(t);
       quote.addPlan(ct);
