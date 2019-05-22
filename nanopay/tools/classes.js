@@ -199,6 +199,7 @@ var classes = [
    'net.nanopay.accounting.resultresponse.InvoiceResponseItem',
 
   // fx
+  'net.nanopay.tx.CreateManualFxRule',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',

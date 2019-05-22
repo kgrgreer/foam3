@@ -30,10 +30,10 @@ foam.CLASS({
       javaCode: `
       TransactionQuote quote = (TransactionQuote) obj;
       Transaction request = quote.getRequestTransaction();
-       Account sourceAccount = request.findSourceAccount(x);
-      Account destinationAccount = request.findDestinationAccount(x);
-      BankAccount kotakCAbank = BankAccount.findDefault(x, destinationAccount.findOwner(x), "CAD");
-      BankAccount kotakINbank = BankAccount.findDefault(x, destinationAccount.findOwner(x), "INR");
+      Account sourceAccount = request.findSourceAccount(getX());
+      Account destinationAccount = request.findDestinationAccount(getX());
+      BankAccount kotakCAbank = BankAccount.findDefault(getX(), destinationAccount.findOwner(getX()), "CAD");
+      BankAccount kotakINbank = BankAccount.findDefault(getX(), destinationAccount.findOwner(getX()), "INR");
        if ( sourceAccount instanceof DigitalAccount && destinationAccount instanceof INBankAccount &&
         sourceAccount.getDenomination().equalsIgnoreCase("CAD") && destinationAccount.getDenomination().equalsIgnoreCase("INR") &&
         kotakCAbank != null && kotakCAbank instanceof CABankAccount &&
@@ -70,9 +70,8 @@ foam.CLASS({
         t3.setSourceAccount(kotakINbank.getId());
         t3.setSourceCurrency(request.getDestinationCurrency());
         txn.addNext(t3);
-         txn.setIsQuoted(true);
+        txn.setIsQuoted(true);
         quote.addPlan(txn);
-         return quote;
       }
        return super.put_(x, quote);
       `

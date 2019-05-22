@@ -13,16 +13,9 @@ foam.CLASS({
 
    documentation: `Kotak transaction that stays in pending until a manual transaction rate is entered`,
 
-   properties: [
-    {
-      class: 'Double',
-      name: 'rate'
-    },
-  ],
-
    methods: [
-    {
-      name: 'createTransfers',
+     {
+      name: 'canTransfer',
       args: [
         {
           name: 'x',
@@ -33,23 +26,10 @@ foam.CLASS({
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.Transfer[]',
+      type: 'Boolean',
       javaCode: `
-        List all = new ArrayList();
-        TransactionLineItem[] lineItems = getLineItems();
-        for ( int i = 0; i < lineItems.length; i++ ) {
-          TransactionLineItem lineItem = lineItems[i];
-          Transfer[] transfers = lineItem.createTransfers(x, oldTxn, this, getStatus() == TransactionStatus.REVERSE);
-          for ( int j = 0; j < transfers.length; j++ ) {
-            all.add(transfers[j]);
-          }
-        }
-        Transfer[] transfers = getTransfers();
-        for ( int i = 0; i < transfers.length; i++ ) {
-          all.add(transfers[i]);
-        }
-        return (Transfer[]) all.toArray(new Transfer[0]);
+      return false;
       `
-    }
+     }
   ]
 });
