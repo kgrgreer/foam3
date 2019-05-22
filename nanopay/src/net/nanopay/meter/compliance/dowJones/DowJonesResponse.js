@@ -38,16 +38,16 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'notes',
-      view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 40 }
-    },
-    {
-      class: 'String',
       name: 'approvalStatus',
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: ['True Match', 'False Positive']
       }
+    },
+    {
+      class: 'String',
+      name: 'notes',
+      view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 40 }
     },
     {
       class: 'Int',
