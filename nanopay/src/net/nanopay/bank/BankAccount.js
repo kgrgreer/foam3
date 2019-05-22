@@ -33,10 +33,7 @@ foam.CLASS({
     'name',
     'flagImage',
     'denomination',
-    'institution',
-    'branch',
-    'accountNumber',
-    'status',
+    'institution'
   ],
 
   // relationships: branch (Branch)
@@ -47,6 +44,11 @@ foam.CLASS({
       value: 70
     }
   ],
+
+  tableColumns: [
+
+  ],
+
   properties: [
     {
       class: 'String',
