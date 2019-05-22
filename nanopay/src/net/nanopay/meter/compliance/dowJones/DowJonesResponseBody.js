@@ -1,8 +1,8 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
-  name: 'BaseSearchResponseBody',
+  name: 'DowJonesResponseBody',
 
-  documentation: 'Response body within BaseSearchResponse',
+  documentation: 'Response body within DowJonesResponse',
 
   properties: [
     {

@@ -13,6 +13,7 @@ import foam.nanos.notification.email.EmailService;
 import foam.util.SafetyUtil;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.auth.email.EmailWhitelistEntry;
+import net.nanopay.business.JoinBusinessTokenService;
 import net.nanopay.model.Business;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
@@ -84,8 +85,6 @@ public class BusinessInvitationDAO
       throw new AuthorizationException("Only employees can be added for the time being."); // TODO: Come up with a better message.
     }
 
-    DAO localUserUserDAO = (DAO) x.get("localUserUserDAO");
-
     Invitation existingInvite = (Invitation) getDelegate().inX(getX()).find(
       OR(
         EQ(Invitation.ID, invite.getId()),
@@ -97,43 +96,53 @@ public class BusinessInvitationDAO
     );
 
     invite.setCreatedBy(business.getId());
-    
-    if (existingInvite != null) {
-      if(invite.getStatus() == InvitationStatus.COMPLETED) {
+
+    if ( existingInvite != null ) {
+      if ( invite.getStatus() == InvitationStatus.COMPLETED ) {
         invite.setId(existingInvite.getId());
         return super.put_(x, invite);
       }
-      // for duplicate invites 
-      Logger logger = (Logger) getX().get("logger");
-      logger.warning("Invitation already exists");
+
+      // Log duplicate invites.
+      Logger logger = (Logger) x.get("logger");
+      logger.warning(String.format("Invitation with id %d already exists.", invite.getId()));
       throw new RuntimeException("Invitation already exists");
     }
 
-    User internalUser = (User) localUserUserDAO.find(EQ(User.EMAIL, invite.getEmail()));
-    boolean internalUserBool;
-    if ( internalUserBool = internalUser != null ) {
-      invite.setInternal(true);
+    if ( invite.getInternal() ) {
+      // Inviting a user who's already on our platform to join a business.
       invite.setStatus(InvitationStatus.SENT);
+      JoinBusinessTokenService joinBusiness = (JoinBusinessTokenService) x.get("joinBusinessToken");
+      HashMap<String, Object> parameters = new HashMap<>();
+      parameters.put("businessId", business.getId());
+      parameters.put("group", invite.getGroup());
+      parameters.put("inviteeEmail", invite.getEmail());
+      DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
+      User invitee = (User) localUserDAO.find(invite.getInviteeId());
+      joinBusiness.generateTokenWithParameters(x, invitee, parameters);
     } else {
+      // Inviting a user who's not on our platform to join a business.
+
       // Add invited user to the email whitelist.
       EmailWhitelistEntry entry = new EmailWhitelistEntry();
       entry.setId(invite.getEmail());
       whitelistedEmailDAO_.inX(getX()).put(entry);
+
+      sendInvitationEmail(x, business, invite);
     }
-    // Send email invite
-    sendInvitationEmail(x, business, invite, internalUserBool);
+
     invite.setTimestamp(new Date());
     return super.put_(x, invite);
   }
 
   /**
-   * Send an email inviting the recipient to join a Business in Ablii.
+   * Send an email inviting the recipient to join a Business in Ablii. This only
+   * handles inviting users that aren't on our platform yet.
    * @param x The context.
    * @param business The business they will join.
    * @param invite The invitation object.
-   * @param internalUserBool True is user is already a user, False if user is not.
    */
-  public void sendInvitationEmail(X x, Business business, Invitation invite, boolean internalUserBool) {
+  public void sendInvitationEmail(X x, Business business, Invitation invite) {
     DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
     EmailService email = (EmailService) x.get("email");
     User agent = (User) x.get("agent");
@@ -144,7 +153,6 @@ public class BusinessInvitationDAO
     tokenParams.put("businessId", business.getId());
     tokenParams.put("group", invite.getGroup());
     tokenParams.put("inviteeEmail", invite.getEmail());
-    tokenParams.put("internal", invite.getInternal());
 
     Group group = business.findGroup(x);
     AppConfig appConfig = group.getAppConfig(x);
@@ -174,9 +182,8 @@ public class BusinessInvitationDAO
       throw new RuntimeException(e);
     }
 
-    url += "?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName;
-    url += ( internalUserBool ? "#invited" : "#sign-up" ) ;
+    url += "?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";
     args.put("link", url);
-    email.sendEmailFromTemplate(x, business, message, "external-business-add", args);
+    email.sendEmailFromTemplate(x, business, message, "join-business-external", args);
   }
 }

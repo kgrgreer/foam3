@@ -23,11 +23,13 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.sme.ui.dashboard.ActionObject'
+    'net.nanopay.sme.ui.dashboard.ActionObject',
+    'net.nanopay.sme.onboarding.BusinessOnboarding'
   ],
 
   imports: [
     'accountingIntegrationUtil',
+    'agent',
     'menuDAO',
     'pushMenu',
     'notify',
@@ -115,7 +117,7 @@ foam.CLASS({
       name: 'HIDE',
       message: 'Hide'
     },
-    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added during the beta' }
+    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added.' }
   ],
 
   properties: [
@@ -144,7 +146,7 @@ foam.CLASS({
     },
     {
       name: 'bankAction',
-      documentation: `This a var to store the 'Add Banking' action. 
+      documentation: `This a var to store the 'Add Banking' action.
       Needed to confirm that the action was completed in THIS models standard action 'addBank'`
     },
     {
@@ -311,9 +313,20 @@ foam.CLASS({
       name: 'busProfile',
       label: 'Business Profile',
       icon: 'images/Briefcase_Icon.svg',
-      code: function() {
+      code: function(x) {
         if ( ! this.user.onboarded ) {
-          this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
+          var userId = this.agent.id;
+          var businessId = this.user.id;
+          x.businessOnboardingDAO.find(userId).then((o) => {
+            o = o || this.BusinessOnboarding.create({
+              userId: userId,
+              businessId: businessId
+            });
+            this.stack.push({
+              class: 'net.nanopay.sme.onboarding.ui.WizardView',
+              data: o
+            });
+          });
         } else {
           this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
         }

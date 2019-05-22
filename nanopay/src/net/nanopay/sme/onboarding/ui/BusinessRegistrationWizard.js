@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
   ],
@@ -183,12 +184,13 @@ foam.CLASS({
     { name: 'ERROR_LAST_NAME_DIGITS', message: 'Last name cannot contain numbers.' },
     { name: 'ERROR_TERMS_AND_CONDITIONS_MESSAGE', message: 'Please accept the terms and conditions.' },
     { name: 'ERROR_BASE_CURRENCY_MESSAGE', message: 'Base currency required.' },
-    { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Annual revenue required.' },
+    { name: 'ERROR_ANNUAL_REVENUE_MESSAGE', message: 'Domestic Annual Gross Sales required.' },
     { name: 'ERROR_INTERNATIONAL_PAYMENTS_MESSAGE', message: 'International payments required.' },
     { name: 'ERROR_TRANSACTION_PURPOSE_MESSAGE', message: 'Transaction purpose required.' },
     { name: 'ERROR_OTHER_TRANSACTION_PURPOSE_MESSAGE', message: 'Please provide additional information for your transaction purpose.' },
     { name: 'ERROR_ANNUAL_TRANSACTION_MESSAGE', message: 'Annual Number of Transactions is required.' },
-    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Estimated Annual Volume in USD is required.' },
+    { name: 'ERROR_ANNUAL_VOLUME_MESSAGE', message: 'Domestic Estimated Annual Volume required.' },
+    { name: 'ERROR_ANNUAL_VOLUME_CAD', message: 'Domestic Estimated Annual Volume required.' },
     { name: 'ERROR_TAX_ID_REQUIRED', message: 'Tax Identification Number is required.' },
     { name: 'ERROR_TAX_ID_INVALID', message: 'Tax Identification Number should be 9 digits.' },
     { name: 'ERROR_ID_EXPIRED', message: 'Identification expiry date indicates that the ID is expired.' },
@@ -222,7 +224,7 @@ foam.CLASS({
     },
     {
       name: 'SUCCESS_REGISTRATION_MESSAGE',
-      message: `Business profile completed. Admins can change profile information in Business Settings`
+      message: `Business profile completed.`
     }
   ],
 
@@ -380,28 +382,45 @@ foam.CLASS({
         return false;
       }
 
-      // AFX RELATED
-      // if ( ! transactionInfo.annualRevenue ) {
-      //   this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
-      //   return false;
-      // }
+      if ( ! transactionInfo.annualRevenue ) {
+        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
+        return false;
+      }
 
       if ( transactionInfo.internationalPayments ) {
         if ( ! transactionInfo.annualTransactionAmount ) {
           this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
           return false;
         }
-
-        if ( ! transactionInfo.annualVolume ) {
-          this.notify(this.ERROR_ANNUAL_VOLUME_MESSAGE, 'error');
-          return false;
-        }
-
-        if ( ! transactionInfo.firstTradeDate ) {
-          this.notify(this.ERROR_MISSING_FIRST_PAYMENT_DATE, 'error');
-          return false;
-        }
       }
+      
+      if ( ! transactionInfo.annualDomesticTransactionAmount ) {
+        this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
+        return false;
+      }
+
+      if ( ! transactionInfo.annualDomesticVolume ) {
+        this.notify(this.ERROR_ANNUAL_VOLUME_CAD, 'error');
+        return false;
+      }
+
+      // AFX RELATED - international payment
+      // if ( transactionInfo.internationalPayments ) {
+      //   if ( ! transactionInfo.annualTransactionAmount ) {
+      //     this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
+      //     return false;
+      //   }
+
+      //   if ( ! transactionInfo.annualVolume ) {
+      //     this.notify(this.ERROR_ANNUAL_VOLUME_MESSAGE, 'error');
+      //     return false;
+      //   }
+
+      //   if ( ! transactionInfo.firstTradeDate ) {
+      //     this.notify(this.ERROR_MISSING_FIRST_PAYMENT_DATE, 'error');
+      //     return false;
+      //   }
+      // }
 
       return true;
     },
@@ -451,7 +470,9 @@ foam.CLASS({
       }
 
       if ( ! businessProfile.sourceOfFunds
-        || ! businessProfile.sourceOfFunds.trim() ) {
+        || ! businessProfile.sourceOfFunds.trim()
+        || businessProfile.sourceOfFunds === 'Other'
+        && ( ! this.viewData.sourceOfFundsOther || ! this.viewData.sourceOfFundsOther.trim()) ) {
         this.notify(this.ERROR_MISSING_SOURCE_OF_FUNDS, 'error');
         return false;
       }
@@ -632,11 +653,22 @@ foam.CLASS({
             }
           }
           if ( this.position === 4 ) {
+            if ( ! await this.validateBeneficialOwners() ) {
+              this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
+              return;
+            }
+
+            if ( ! this.viewData.noAdditionalBeneficialOwners ) {
+              this.notify(this.ERROR_NO_ADDITIONAL_BENEFICIAL_OWNERS, 'error' );
+              return;
+            }
+
             // validate beneficial owners info
             if ( this.isFillingBeneficialOwnerForm(this.viewData.beneficialOwner) ) {
               if ( this.validateBeneficialOwner(this.viewData.beneficialOwner) ) {
                 try {
-                  var beneficialOwner = this.User.create({
+                  var beneficialOwner = this.BeneficialOwner.create({
+                    id: this.viewData.beneficialOwner.id,
                     firstName: this.viewData.beneficialOwner.firstName,
                     lastName: this.viewData.beneficialOwner.lastName,
                     birthday: this.viewData.beneficialOwner.birthday,
@@ -650,16 +682,6 @@ foam.CLASS({
               } else {
                 return;
               }
-            }
-
-            if ( ! await this.validateBeneficialOwners() ) {
-              this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
-              return;
-            }
-
-            if ( ! this.viewData.noAdditionalBeneficialOwners ) {
-              this.notify(this.ERROR_NO_ADDITIONAL_BENEFICIAL_OWNERS, 'error' );
-              return;
             }
 
             this.user.onboarded = true;

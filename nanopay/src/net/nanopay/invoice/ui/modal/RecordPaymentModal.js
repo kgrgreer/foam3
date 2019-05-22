@@ -66,24 +66,15 @@ foam.CLASS({
       margin-left: 20px;
       display: inline-block;
     }
-    ^ .foam-u2-ActionView-closeButton {
-      width: 24px;
-      height: 24px;
-      margin: 0;
-      margin-right: 20px;
-      display: inline-block;
-      float: right;
-      outline: 0;
-      border: none;
-      background: transparent;
-      box-shadow: none;
-    }
-    ^ .foam-u2-ActionView-closeButton:hover {
-      background: transparent;
-      background-color: transparent;
-    }
     ^ .full-width-input {
       padding: 0px;
+    }
+    ^ .record-payment-button {
+      float: right;
+      margin: 20px;
+    }
+    ^ .label {
+      margin-left: 25px;
     }
   `,
   
@@ -96,7 +87,6 @@ foam.CLASS({
       .start()
         .start().addClass('popUpHeader')
           .start().add(this.TITLE).addClass('popUpTitle').end()
-          .add(this.CLOSE_BUTTON)
         .end()
         .start().addClass('key-value-container')
           .start()
@@ -112,20 +102,15 @@ foam.CLASS({
           .start().addClass('label').add('Note').end()
           .start(this.NOTE).addClass('input-box').end()
         .end()
-        .start(this.RECORD).addClass('blue-button').addClass('btn').end()
+        .start()
+          .tag(this.RECORD)
+          .addClass('record-payment-button')
+        .end()
       .end();
     }
   ],
 
   actions: [
-    {
-      name: 'closeButton',
-      icon: 'images/ic-cancelwhite.svg',
-      label: 'Close',
-      code: function(X) {
-        X.closeDialog();
-      }
-    },
     {
       name: 'record',
       label: 'Record Payment',

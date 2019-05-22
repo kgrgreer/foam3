@@ -3,22 +3,59 @@ foam.CLASS({
   name: 'OverdraftAccount',
   extends: 'net.nanopay.account.DigitalAccount',
 
-  documentation: 'OverDraft Account. Its balance can go to a negative value that is the negative of the overdraftLimit',
+    // relationships: DebtAccounts - see below
+  
+  documentation: 'An OverDraft Account which can incur debt.  When a transfer exceeds the balance, the funds can be borrowed from the Backing Account. The borrowed funds, lender, terms, are captured in a DebtAccount.',
+
+  implements: [
+    'net.nanopay.account.Debtable',
+    'foam.mlang.Expressions',
+  ],
+    requires: [
+    'net.nanopay.account.DebtAccount',
+    ],
 
   javaImports: [
-
+    'net.nanopay.account.DebtAccount',
+    'foam.dao.DAO',
+    'foam.mlang.MLang'
   ],
 
   properties: [
     {
-      class: 'Long',
-      name: 'overdraftLimit',
-      value: 0
+      name: 'debtAccount',
+      class: 'Reference',
+      of: 'net.nanopay.account.DebtAccount',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.debtAccountDAO,
+          placeholder: '--',
+          objToChoice: function(debtAccount) {
+            return [debtAccount.id, debtAccount.name];
+          }
+        });
+      }
     }
   ],
+
   methods: [
     {
-      documentation: 'OverDraft account provides liquidity via a backing account. It can have a positive or negative balance.',
+      name: 'checkDebtLimit',
+      args: [
+        {
+        name: 'x',
+        type: 'Context'
+        }
+      ],
+      type: 'Long',
+      javaCode: `
+        // lets think about finding total Debts of all debt accounts
+        DebtAccount da = ((DebtAccount)((DAO) x.get("localDebtAccountDAO")).find(MLang.EQ(DebtAccount.ID, getDebtAccount())));
+        return ((Long) da.findBalance(x)) + da.getLimit();
+      `
+    },
+    {
+      documentation: 'Debt account is always negative',
       name: 'validateAmount',
       args: [
         {
@@ -35,16 +72,17 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        long bal = balance == null ? 0L : balance.getBalance();
+      long bal = balance == null ? 0L : balance.getBalance();
 
         if ( amount < 0 &&
-             -amount > bal + getOverdraftLimit() ) {
+             -amount > bal+ checkDebtLimit(x) ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-          logger.debug(this, "amount", amount, "balance", bal);
-          throw new RuntimeException("Insufficient balance/overdraft in account " + this.getId());
+          logger.debug(this, "amount", amount, "balance", bal, "debtLimit", checkDebtLimit(x) );
+          throw new RuntimeException("Insufficient balance in account and overdraft exceeded " + this.getId());
         }
       `
     }
   ]
 });
+
 

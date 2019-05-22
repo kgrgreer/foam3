@@ -2,7 +2,7 @@ foam.ENUM({
   package: 'net.nanopay.admin.model',
   name: 'AccountStatus',
 
-  documentation: 'Invitation status (pending, active, disabled)',
+  documentation: `The base model for tracking the registration status of the account.`,
 
   values: [
     { name: 'PENDING',       label: 'Pending'       },

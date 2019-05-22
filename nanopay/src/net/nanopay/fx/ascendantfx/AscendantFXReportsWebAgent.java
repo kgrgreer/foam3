@@ -404,14 +404,15 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String province = signingOfficer.getAddress().getRegionId();
     String country = signingOfficer.getAddress().getCountryId();
     String postalCode = signingOfficer.getAddress().getPostalCode();
-    IdentificationType idType = (IdentificationType) identificationTypeDAO
-      .find(signingOfficer.getIdentification().getIdentificationTypeId());
-    String identificationType = idType.getName();
-    String provinceOfIssue = signingOfficer.getIdentification().getRegionId();
-    String countryOfIssue = signingOfficer.getIdentification().getCountryId();
-    String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
-    String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
-    String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
+    // AFX RELATED
+    // IdentificationType idType = (IdentificationType) identificationTypeDAO
+    //   .find(signingOfficer.getIdentification().getIdentificationTypeId());
+    // String identificationType = idType.getName();
+    // String provinceOfIssue = signingOfficer.getIdentification().getRegionId();
+    // String countryOfIssue = signingOfficer.getIdentification().getCountryId();
+    // String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
+    // String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
+    // String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
     IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
     String nameOfPerson = ipHistory.findUser(x).getLegalName();
     String timestamp = sdf.format(ipHistory.getCreated());
@@ -442,14 +443,15 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("State/Province: " + province));
       list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
-      list.add(new ListItem("Type of identification: " + identificationType));
-      if ( ! identificationType.equals("Passport") && ! SafetyUtil.isEmpty(provinceOfIssue) ) {
-        list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
-      }
-      list.add(new ListItem("Country of issue: " + countryOfIssue));
-      list.add(new ListItem("Identification number: " + identificationNumber));
-      list.add(new ListItem("Issue date: " + issueDate));
-      list.add(new ListItem("Expiration date: " + expirationDate));
+      // AFX RELATED
+      // list.add(new ListItem("Type of identification: " + identificationType));
+      // if ( ! identificationType.equals("Passport") && ! SafetyUtil.isEmpty(provinceOfIssue) ) {
+      //   list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
+      // }
+      // list.add(new ListItem("Country of issue: " + countryOfIssue));
+      // list.add(new ListItem("Identification number: " + identificationNumber));
+      // list.add(new ListItem("Issue date: " + issueDate));
+      // list.add(new ListItem("Expiration date: " + expirationDate));
       list.add(new ListItem("Digital signature_Name of person: " + nameOfPerson));
       list.add(new ListItem("Digital signature_Timestamp: " + timestamp));
       list.add(new ListItem("Digital signature_Ip address: " + ipAddress));

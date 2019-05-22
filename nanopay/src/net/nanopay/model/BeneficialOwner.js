@@ -27,40 +27,77 @@ foam.CLASS({
     'legalName'
   ],
 
+  sections: [
+    {
+      name: 'requiredSection'
+    }
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id'
     },
-    'firstName',
-    'middleName',
-    'lastName',
-    'legalName',
+    {
+      class: 'String',
+      name: 'jobTitle',
+      section: 'requiredSection',
+      minLength: 1
+    },
     {
       class: 'Int',
       name: 'ownershipPercent',
+      section: 'requiredSection',
       documentation: `
         Represents the percentage of the business that the beneficial owner
         owns.
       `,
+      autoValidate: true,
+      min: 25,
+      max: 100
     },
     {
       class: 'String',
-      name: 'jobTitle'
+      name: 'firstName',
+      section: 'requiredSection',
+      minLength: 1
+    },
+    {
+      class: 'String',
+      name: 'lastName',
+      section: 'requiredSection',
+      minLength: 1
+    },
+    'middleName',
+    'legalName',
+    {
+      class: 'Date',
+      name: 'birthday',
+      section: 'requiredSection',
+      validationPredicates: [
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return foam.mlang.predicate.OlderThan.create({
+              arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
+              timeMs: 18 * 365 * 24 * 60 * 60 * 1000
+            });
+          },
+          errorString: 'Must be at least 18 years old.'
+        }
+      ]
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
+      section: 'requiredSection',
       factory: function() {
         return this.Address.create();
       },
-      view: { class: 'foam.nanos.auth.AddressDetailView' }
+      view: { class: 'net.nanopay.sme.ui.AddressView' },
+      autoValidate: true
     },
-    {
-      class: 'Date',
-      name: 'birthday'
-    }
   ],
 
   methods: [

@@ -44,22 +44,22 @@ foam.CLASS({
     ^ .foam-u2-TextField,
     ^ .foam-u2-DateView,
     ^ .foam-u2-tag-Select {
-      height: 40px;
       background-color: #ffffff;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      padding: 12px 12px;
+      border: solid 1px #8e9090;
+      padding: 10.5px;
       box-sizing: border-box;
       outline: none;
-
-      // -webkit-appearance: none;
-      -webkit-transition: all .15s linear;
-      -moz-transition: all .15s linear;
-      -ms-transition: all .15s linear;
-      -o-transition: all .15s linear;
-      transition: all 0.15s linear;
-    }
-    ^ .foam-u2-tag-Select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-position: right 50%;
+      background-repeat: no-repeat;
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAMCAYAAABSgIzaAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NDZFNDEwNjlGNzFEMTFFMkJEQ0VDRTM1N0RCMzMyMkIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NDZFNDEwNkFGNzFEMTFFMkJEQ0VDRTM1N0RCMzMyMkIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0NkU0MTA2N0Y3MUQxMUUyQkRDRUNFMzU3REIzMzIyQiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo0NkU0MTA2OEY3MUQxMUUyQkRDRUNFMzU3REIzMzIyQiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuGsgwQAAAA5SURBVHjaYvz//z8DOYCJgUxAf42MQIzTk0D/M+KzkRGPoQSdykiKJrBGpOhgJFYTWNEIiEeAAAMAzNENEOH+do8AAAAASUVORK5CYII=);
+      margin-bottom: 0;
       width: 100%;
+      color: rgb(117, 117, 117);
+    }
+    ^ .foam-u2-tag-Select.selection-made {
+      color: %PRIMARYCOLOR%;
     }
     ^ .full-width-input-password {
       padding: 12px 34px 12px 12px ! important;
@@ -106,17 +106,13 @@ foam.CLASS({
     ^ .link {
       margin-right: 5px;
     }
-    ^ .foam-u2-tag-Select {
-      width: 100%;
-      font-size: 14px;
-      height: 40px;
-      border: solid 1px #8e9090;
-      background: #fff;
-      border-radius: 3px;
-      font-weight: 400;
-      padding: 12px;
+    ^disclaimer {
+      width: 331px;
+      font-family: Lato;
+      font-size: 10px;
       color: #8e9090;
-      box-shadow: none;
+      margin: 50px auto 0 auto;
+      line-height: 1.5;
     }
   `,
 
@@ -184,6 +180,7 @@ foam.CLASS({
     { name: 'L_NAME', message: 'Last Name' },
     { name: 'C_NAME', message: 'Company Name' },
     { name: 'COUNTRY_LABEL', message: 'Country of operation' },
+    { name: 'COUNTRY_ERROR', message: 'Country of operation required.' },
     { name: 'EMAIL', message: 'Email Address' },
     { name: 'PASSWORD', message: 'Password' },
     { name: 'TERMS_AGREEMENT_LABEL', message: 'I agree to Ablii’s' },
@@ -195,7 +192,8 @@ foam.CLASS({
     { name: 'TOP_MESSAGE', message: `Ablii is currently in early access, for now only approved emails can create an account.  Contact us at hello@ablii.com if you'd like to join!` },
     { name: 'TERMS_CONDITIONS_ERR', message: `Please accept the Terms and Conditions and Privacy Policy.` },
     { name: 'AND', message: `and`},
-    { name: 'PRIVACY_LABEL', message: `Privacy Policy` }
+    { name: 'PRIVACY_LABEL', message: `Privacy Policy` },
+    { name: 'QUEBEC_DISCLAIMER', message: '*Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' }
 
   ],
 
@@ -221,6 +219,10 @@ foam.CLASS({
         .start('img')
           .addClass('sme-image')
           .attr('src', 'images/sign_in_illustration.png')
+        .end()
+        .start('p')
+          .addClass(this.myClass('disclaimer'))
+          .add(this.QUEBEC_DISCLAIMER)
         .end();
 
       var right = this.Element.create()
@@ -250,7 +252,7 @@ foam.CLASS({
                 .addClass('input-field').attr('placeholder', 'ABC Company')
               .end()
             .end()
-      
+
             .start().addClass('input-wrapper')
               .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
               .start(this.COUNTRY.clone().copyFrom({
@@ -330,9 +332,6 @@ foam.CLASS({
 
       this.addClass(this.myClass()).addClass('full-screen')
         .start().addClass('top-bar')
-          .start().addClass('top-bar-message')
-              .add(this.TOP_MESSAGE)
-          .end()
           .start().addClass('top-bar-inner')
             .start().addClass(this.myClass('button'))
               .start()
@@ -473,4 +472,3 @@ foam.CLASS({
     }
   ]
 });
-

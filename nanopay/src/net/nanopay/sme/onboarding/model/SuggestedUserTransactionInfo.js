@@ -21,6 +21,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualRevenue',
+      label: 'Gross annual sales (estimated)',
       documentation: `Estimated annual revenue for user or business.`
     },
     {
@@ -36,6 +37,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'transactionPurpose',
+      label: 'Purpose of transactions on Ablii',
       documentation: `General transaction purposes.`,
       view: {
         class: 'foam.u2.view.ChoiceView',
@@ -57,7 +59,7 @@ foam.CLASS({
         Field need to fill in when user select other transaction purpose.
       `,
       view: {
-        class: 'foam.u2.tag.Input',
+        class: 'foam.u2.TextField',
         placeholder: '',
         onKey: true
       },
@@ -68,6 +70,12 @@ foam.CLASS({
       documentation: `Estimated annual number of transactions user or business conducts.
       BaseCurrency of this field which is set when user confirms that they do international transfers,
       is opposite (CAD - USD) of set base currency of this model.`
+    },
+    {
+      class: 'String',
+      name: 'annualTransactionFrequency',
+      label: 'Annual number of transactions (estimated)',
+      documentation: `Estimated annual frequency of transactions the user or business conducts.`
     },
     {
       class: 'String',
@@ -90,6 +98,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualDomesticVolume',
+      label: 'Annual volume on Ablii (estimated)',
       documentation: `Estimated annual volume in USD of user or business. baseCurrency of this model.
       US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`
     },

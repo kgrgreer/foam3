@@ -48,7 +48,7 @@ public class DowJonesResponseMsg
   }
 
   /*
-  * Method to fetch the XML response from Dow Jones and parse the data into the BaseSearchResponse model
+  * Method to fetch the XML response from Dow Jones and parse the data into the DowJonesResponse model
   */
   @Override
   public DowJonesCall getModel() {
@@ -64,9 +64,9 @@ public class DowJonesResponseMsg
       if ( getXml() == null ) {
         throw new RuntimeException("No XML Found");
       }
-      BaseSearchResponse obj = new BaseSearchResponse();
+      DowJonesResponse obj = new DowJonesResponse();
       MetadataSearchResponse metadata = new MetadataSearchResponse();
-      BaseSearchResponseBody responseBody = new BaseSearchResponseBody();
+      DowJonesResponseBody responseBody = new DowJonesResponseBody();
       List<Match> matchArrList = new ArrayList<Match>();
 
       try {
@@ -192,7 +192,7 @@ public class DowJonesResponseMsg
           matchArrList.add(match);
         }
         // set metadata from head response
-        obj.setTotalMatches(totalHits.getNodeValue());
+        obj.setTotalMatches(Integer.parseInt(totalHits.getNodeValue()));
         metadata.setApiVersion(apiVersion.getNodeValue());
         metadata.setBackendVersion(backendVersion.getNodeValue());
         metadata.setTotalHits(Integer.parseInt(totalHits.getNodeValue()));
