@@ -586,6 +586,7 @@ FOAM_FILES([
 
   // sme dashboard cards
   { name: 'net/nanopay/sme/ui/dashboard/cards/UnlockPaymentsCard', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/cards/SigningOfficerSentEmailCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/cards/IntegrationCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/cards/BankIntegrationCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/cards/QBIntegrationCard', flags: ['web'] },
@@ -709,6 +710,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/DynamicSixButtons', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/TopCardsOnDashboard', flags: ['web'] },
   { name: 'net/nanopay/sme/SMEController', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SignInView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SignUpView', flags: ['web'] },

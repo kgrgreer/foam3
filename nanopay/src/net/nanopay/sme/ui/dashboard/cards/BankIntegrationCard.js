@@ -18,7 +18,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
     'pushMenu',
     'stack',
     'user'
@@ -59,52 +58,32 @@ foam.CLASS({
       value: 'images/ablii/ic-dashboardBank.svg'
     },
     {
-      class: 'Boolean',
-      name: 'isLoading',
-      value: true
-    },
-    {
-      class: 'Boolean',
-      name: 'isErrored',
-      value: false
-    },
-    {
       class: 'String',
       name: 'subtitleToUse',
-      expression: function(account, isLoading, isErrored) {
-        if ( isLoading )  return this.SUBTITLE_LOADING;
-        if ( isErrored )  return this.SUBTITLE_ERROR;
-        if ( account )    return this.SUBTITLE_LINKED + ' ' + account.name;
+      expression: function(isAccountThere) {
+        if ( isAccountThere ) return this.SUBTITLE_LINKED + ' ' + this.account.name;
 
         return this.SUBTITLE_EMPTY;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isAccountThere',
+      expression: function(account) {
+        return account != undefined && account.id != 0;
       }
     }
   ],
 
   methods: [
-    function init() {
-      var self = this;
-      this.accountDAO.where(this.EQ(this.Account.OWNER, this.user.id)).limit(1).select().then(function(accounts) {
-        if ( accounts.length > 0 ) {
-          self.account = accounts[0];
-        }
-        self.isErrored = false;
-      }).catch(function(error) {
-        self.isErrored = true;
-      }).finally(function() {
-        self.isLoading = false;
-      });
-    },
-
     function initE() {
-      var self = this;
-      this.add(this.slot(function(account, subtitleToUse) {
+      this.add(this.slot((subtitleToUse, isAccountThere) => {
         return this.E()
-          .start(self.IntegrationCard, {
-            iconPath: self.iconPath,
-            title: self.TITLE,
+          .start(this.IntegrationCard, {
+            iconPath: this.iconPath,
+            title: this.TITLE,
             subtitle: subtitleToUse,
-            action: account ? self.VIEW_ACCOUNT : self.ADD_BANK
+            action: isAccountThere ? this.VIEW_ACCOUNT : this.ADD_BANK
           }).end();
       }));
     }
@@ -114,17 +93,6 @@ foam.CLASS({
     {
       name: 'viewAccount',
       label: 'View',
-      isEnabled: function(isLoading, isErrored) {
-        if ( isLoading ) {
-          return false;
-        }
-
-        if ( isErrored ) {
-          return false;
-        }
-
-        return true;
-      },
       code: function() {
         this.pushMenu('sme.main.banking');
       }
@@ -132,22 +100,8 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add',
-      isEnabled: function(isLoading, isErrored) {
-        if ( isLoading ) {
-          return false;
-        }
-
-        if ( isErrored ) {
-          return false;
-        }
-
-        return true;
-      },
       code: function() {
-        this.stack.push({
-          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-          cadAvailable: true
-        });
+        this.pushMenu('sme.main.banking');
       }
     }
   ]

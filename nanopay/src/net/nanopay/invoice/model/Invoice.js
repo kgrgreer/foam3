@@ -187,7 +187,6 @@ foam.CLASS({
       name: 'payee',
       documentation: `Returns the name of the party receiving the payment from the 
         Public User Info model.`,
-      storageTransient: true,
       hidden: true
     },
     {
@@ -196,7 +195,6 @@ foam.CLASS({
       name: 'payer',
       documentation: `Returns the name of the party making the payment from the 
         Public User Info model.`,
-      storageTransient: true,
       hidden: true
     },
     {
