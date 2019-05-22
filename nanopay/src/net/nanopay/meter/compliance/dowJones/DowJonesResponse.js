@@ -5,6 +5,13 @@ foam.CLASS({
 
   documentation: 'Base class model for a search response from the Dow Jones Risk Database.',
 
+  tableColumns: [
+      'id',
+      'userId',
+      'searchDate',
+      'searchType',
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -16,11 +23,13 @@ foam.CLASS({
     },
     {
       class: 'Date',
-      name: 'searchDate'
+      name: 'searchDate',
+      label: 'Date'
     },
     {
       class: 'String',
-      name: 'searchType'
+      name: 'searchType',
+      label: 'Type',
     },
     {
       class: 'String',
