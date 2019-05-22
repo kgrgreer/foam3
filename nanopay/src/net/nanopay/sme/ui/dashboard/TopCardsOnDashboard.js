@@ -17,6 +17,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
+    'net.nanopay.model.Invitation',
     'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard',
     'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard',
     'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard',
@@ -29,6 +30,7 @@ foam.CLASS({
     'accountingIntegrationUtil',
     'agent',
     'businessOnboardingDAO',
+    'businessInvitationDAO',
     'user',
     'userDAO'
   ],
@@ -145,7 +147,12 @@ foam.CLASS({
           ).select().then((result) => result),
         this.accountingIntegrationUtil.getPermission(),
         this.userDAO.find(this.user.id).then((use) => use.hasIntegrated),
-        this.businessOnboardingDAO.find(this.agent.id).then((o) => o),
+        // this.businessOnboardingDAO.find(this.agent.id).then((o) => o),
+        this.businessInvitationDAO.where(
+          this.AND(
+            this.EQ(this.Invitation.GROUP, 'admin'),
+            this.EQ(this.Invitation.CREATED_BY, this.user.id)
+          )).select().then((result) => result),
         this.user.onboarded
       ]).then((values) => {
           // REFERENCE FOR values
@@ -157,7 +164,7 @@ foam.CLASS({
           let account          = values[0] && values[0].array[0];
           let isBankCompleted  = account && account.id != 0;
           let isAllCompleted   = values[4] && isBankCompleted && values[2];
-          let isSigningOfficer = values[3] ? values[3].signingOfficer : true; // if not set yet, assume user is signingOfficer
+          let isSigningOfficer = values[3] == undefined; // if not set yet, assume user is signingOfficer
           let sectionsShowing  = ! isSigningOfficer && ! isAllCompleted; // convience boolean for displaying certian sections
 
           this
