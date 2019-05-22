@@ -24,41 +24,29 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-          ComplianceTransaction ct = (ComplianceTransaction) obj;
-//          if ( ( (AppConfig) x.get("appConfig") ).getMode() != Mode.TEST && ( (AppConfig) x.get("appConfig") ).getMode() != Mode.DEVELOPMENT ) {
+        ComplianceTransaction ct = (ComplianceTransaction) obj;
+        // ((Logger) x.get("logger")).debug("JackieRuleOnPut status IN", ct.getStatus());
+          DAO results = ((DAO) x.get("approvalRequestDAO"))
+            .where(
+              AND(
+                EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
+                EQ(ApprovalRequest.OBJ_ID, ct.getId())
+              )
+            );
 
-            DAO results = ((DAO) x.get("approvalRequestDAO"))
-              .where(
-                AND(
-                  EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
-                  EQ(ApprovalRequest.OBJ_ID, ct.getId())
-                )
-              );
-
-
-            Count count = new Count();
-              count = (Count) results.select(count);
-
-
-              if ( count.getValue() == 0 ) {
-                throw new RuntimeException("No approval request was created on put.");
-              }
-
-              //We have received a Rejection and should decline.
-              else {
-                if ( ( (Count) results.where(
-                  EQ(ApprovalRequest.STATUS,ApprovalStatus.REJECTED) ).select(count) ).getValue() > 0 ) {
-                    ct.setStatus(TransactionStatus.DECLINED);
-                  }
-
-                //We have received an Approval and can continue.
-                else if ( ( (Count) results.where(
-                  EQ(ApprovalRequest.STATUS,ApprovalStatus.APPROVED) ).select(count) ).getValue() > 0 ) {
-                    ct.setStatus(TransactionStatus.COMPLETED);
-                  }
-              }
-  //          }
-  //          else  {  ct.setStatus(TransactionStatus.COMPLETED); }
+          if ( ( (Count) results.select(new Count()) ).getValue()  == 0 ) {
+            ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), "No approval was created on put (create).");
+            throw new RuntimeException("No approval request was created on put.");
+          } else if ( ( (Count) results.where(
+            EQ(ApprovalRequest.STATUS,ApprovalStatus.REJECTED) ).select(new Count()) ).getValue() > 0 ) {
+            //We have received a Rejection and should decline.
+            ct.setStatus(TransactionStatus.DECLINED);
+          } else if ( ( (Count) results.where(
+            EQ(ApprovalRequest.STATUS,ApprovalStatus.APPROVED) ).select(new Count()) ).getValue() > 0 ) {
+            //We have received an Approval and can continue.
+            ct.setStatus(TransactionStatus.COMPLETED);
+          }
+        // ((Logger) x.get("logger")).debug("JackieRuleOnPut status OUT", ct.getStatus());
       `
     },
     {

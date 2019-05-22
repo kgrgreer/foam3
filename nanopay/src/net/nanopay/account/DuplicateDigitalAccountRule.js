@@ -21,11 +21,12 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
+      Logger logger = (Logger) x.get("logger");
 
-        if ( obj instanceof DigitalAccount ) {
-          Count count = new Count();
-          DigitalAccount digitalAccount = (DigitalAccount) obj;
-          count = (Count) ((DAO) x.get("accountDAO"))
+      if ( obj instanceof DigitalAccount ) {
+        DigitalAccount digitalAccount = (DigitalAccount) obj;
+        if ( digitalAccount.getId() == 0 ) {
+          Count count = (Count) ((DAO) x.get("accountDAO"))
             .where(
               AND(
                 INSTANCE_OF(DigitalAccount.class),
@@ -37,15 +38,14 @@ foam.CLASS({
               )
             )
             .limit(1)
-            .select(count);
+            .select(new Count());
           if ( count.getValue() > 0 ) {
-            Logger logger = (Logger) x.get("logger");
-            logger.log("Cannot create account as a duplicate already exists");
-            throw new  RuntimeException("You cannot create this account because it is a duplicate of another");
+            logger.log("Cannot create account as a duplicate already exists.");
+            throw new  RuntimeException("You cannot create this account because it is a duplicate of another.");
           }
         }
+      }
       `
-
     },
     {
       name: 'applyReverseAction',

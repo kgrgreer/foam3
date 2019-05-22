@@ -43,11 +43,6 @@ foam.CLASS({
           .setObjId(ct.getId())
           .setApprover(getJackieId())
           .build();
-        if ( ( (AppConfig) x.get("appConfig") ).getMode() == Mode.TEST ||
-             ( (AppConfig) x.get("appConfig") ).getMode() == Mode.DEVELOPMENT ) {
-          req.setStatus(ApprovalStatus.APPROVED);
-          req.setMemo("Auto set to COMPLETE for TEST|DEVELOPMENT Mode.");
-        }
         requestApproval(x, req);
       `
     },
