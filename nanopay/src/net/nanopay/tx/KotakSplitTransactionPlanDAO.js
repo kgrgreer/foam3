@@ -49,7 +49,6 @@ foam.CLASS({
         Transaction cashinPlan = c1.getPlan();
         if ( cashinPlan != null ) {
           txn.addNext(cashinPlan);
-          txn.addLineItems(cashinPlan.getLineItems(), cashinPlan.getReverseLineItems());
         } else {
           return super.put_(x, quote);
         }
@@ -64,12 +63,18 @@ foam.CLASS({
         Transaction kotakPlan = c2.getPlan();
         if ( kotakPlan != null ) {
           txn.addNext(kotakPlan);
-          txn.addLineItems(kotakPlan.getLineItems(), kotakPlan.getReverseLineItems());
+          Transaction[] nextPlans = kotakPlan.getNext();
+          while( nextPlans != null && nextPlans.length > 0 ) {
+            Transaction nextPlan = nextPlans[0];
+            txn.addLineItems(nextPlan.getLineItems(), nextPlan.getReverseLineItems());
+            nextPlans = nextPlan.getNext();
+          }
         } else {
           return super.put_(x, quote);
         }
         txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
+        ((SummaryTransaction) txn).collectLineItems();
         quote.addPlan(txn);
       }
         

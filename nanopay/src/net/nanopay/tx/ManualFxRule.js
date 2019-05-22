@@ -26,7 +26,6 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: ` 
       KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) obj;
-      // no fx rate has been entered
       DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
       Sink sink = new ArraySink();
       sink = approvalRequestDAO

@@ -26,6 +26,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: ` 
       KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) obj;
+      DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
       approvalRequestDAO.put_(x,
         new ManualFxApprovalRequest.Builder(x)
           .setDaoKey("transactionDAO")
