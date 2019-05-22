@@ -26,6 +26,7 @@ foam.CLASS({
       name: 'debtAccount',
       class: 'Reference',
       of: 'net.nanopay.account.DebtAccount',
+      targetDAOKey:'localDebtAccountDAO',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.debtAccountDAO,
@@ -39,21 +40,20 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'checkDebtLimit',
-      args: [
-        {
-        name: 'x',
-        type: 'Context'
-        }
-      ],
-      type: 'Long',
-      javaCode: `
-        // lets think about finding total Debts of all debt accounts
-        DebtAccount da = ((DebtAccount)((DAO) x.get("localDebtAccountDAO")).find(MLang.EQ(DebtAccount.ID, getDebtAccount())));
-        return ((Long) da.findBalance(x)) + da.getLimit();
-      `
-    },
+  {
+        name: 'getDebtLimit',
+        args: [
+          {
+          name: 'x',
+          type: 'Context'
+          }
+        ],
+        type: 'Long',
+        javaCode: `
+          DebtAccount da = ((DebtAccount)((DAO) x.get("localDebtAccountDAO")).find(MLang.EQ(DebtAccount.ID, getDebtAccount())));
+          return  da.getLimit() - ((Long) da.findBalance(x));
+        `
+      },
     {
       documentation: 'Debt account is always negative',
       name: 'validateAmount',
@@ -75,9 +75,8 @@ foam.CLASS({
       long bal = balance == null ? 0L : balance.getBalance();
 
         if ( amount < 0 &&
-             -amount > bal+ checkDebtLimit(x) ) {
+             -amount > bal ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-          logger.debug(this, "amount", amount, "balance", bal, "debtLimit", checkDebtLimit(x) );
           throw new RuntimeException("Insufficient balance in account and overdraft exceeded " + this.getId());
         }
       `
