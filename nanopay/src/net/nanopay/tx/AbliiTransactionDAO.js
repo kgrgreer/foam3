@@ -81,6 +81,7 @@ foam.CLASS({
             CompositeTransaction ct = new CompositeTransaction();
             ct.copyFrom(request);
             ct.setIsQuoted(true);
+            ct.setName("Composite Transaction for fastPay");
             request.addNext(ct);
           }
           
