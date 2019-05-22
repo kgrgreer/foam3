@@ -9,7 +9,14 @@ foam.CLASS({
   ],
 
   properties: [
-    ['country', 'images/flags/india.png'],
+     {
+      name: 'country',
+      value: 'IN'
+    },
+    {
+      name: 'flagImage',
+      value: 'images/flags/india.png'
+    },
     {
       name: 'denomination',
       value: 'INR'
