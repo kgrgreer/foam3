@@ -67,6 +67,9 @@ foam.CLASS({
     ^ .sme-inputContainer{
       margin-bottom: 2%
     }
+    ^ .login {
+      height: 48px;
+    }
     ^ .login-logo-img {
       height: 19.4;
       margin-bottom: 12px;
@@ -170,6 +173,15 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'termsAgreementDocument'
+    },
+    {
+      class: 'Boolean',
+      name: 'isLoading',
+      documentation: `
+        True after the button has been clicked and before it either succeeds or
+        fails. Used to prevent the user from clicking multiple times on the
+        button which will create duplicate users.
+      `
     }
   ],
 
@@ -314,7 +326,10 @@ foam.CLASS({
               .end()
             .end()
 
-            .start(this.CREATE_NEW).addClass('sme-button').addClass('block').addClass('login').end()
+            .start(this.CREATE_NEW)
+              .addClass('block')
+              .addClass('login')
+            .end()
             .start().addClass('sme-subTitle')
               .start('strong').add(this.SUBTITLE).end()
               .start('span').addClass('app-link')
@@ -425,8 +440,16 @@ foam.CLASS({
     {
       name: 'createNew',
       label: 'Create account',
+      isEnabled: function(isLoading) {
+        return ! isLoading;
+      },
       code: function(X, obj) {
-        if ( ! this.validating() ) return;
+        this.isLoading = true;
+
+        if ( ! this.validating() ) {
+          this.isLoading = false;
+          return;
+        }
 
         businessAddress = this.Address.create({
           countryId: this.country
@@ -456,6 +479,9 @@ foam.CLASS({
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     }
