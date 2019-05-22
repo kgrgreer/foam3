@@ -49,6 +49,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .link{
+      display: inline-block;
       cursor: pointer;
       padding: 0px;
       height: auto;
