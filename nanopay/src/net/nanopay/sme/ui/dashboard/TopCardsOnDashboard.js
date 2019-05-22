@@ -147,7 +147,9 @@ foam.CLASS({
           ).select().then((result) => result),
         this.accountingIntegrationUtil.getPermission(),
         this.userDAO.find(this.user.id).then((use) => use.hasIntegrated),
-        this.businessOnboardingDAO.find(this.agent.id).then((b)=>b),
+        this.businessOnboardingDAO.find(this.agent.id).then((b)=> {
+          return b && b.status === this.OnboardingStatus.SUBMITTED && b.signingOfficer;
+        }),
         this.user.onboarded
       ]).then((values) => {
           // REFERENCE FOR values
@@ -159,11 +161,8 @@ foam.CLASS({
           let account          = values[0] && values[0].array[0];
           let isBankCompleted  = account && account.id != 0;
           let isAllCompleted   = values[4] && isBankCompleted && values[2];
-          let isSigningOfficer = values[3] == undefined // condition when user just signs up
-            || ! ( ! values[3].signingOfficer && values[3].status == this.OnboardingStatus.SUBMITTED) // condition we are actually looking for
-            || values[3].status == this.OnboardingStatus.DRAFT; // condition check since values[3].signingOfficer is by default false
+          let isSigningOfficer = values[3];
           let sectionsShowing  = ! isSigningOfficer && ! isAllCompleted; // convience boolean for displaying certian sections
-          console.log('values[3] ' + values[3] + 'isSigningOfficer ' + isSigningOfficer );
           this
             .addClass(this.myClass())
 
