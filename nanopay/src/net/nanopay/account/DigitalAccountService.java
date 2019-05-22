@@ -26,6 +26,7 @@ public class DigitalAccountService
          debtAccount = (DebtAccount) accountDAO.put(
            new DebtAccount.Builder(x)
              .setDebtorAccount(overdraft.getId())
+             .setCreditorAccount(6)
              .setParent(overdraft.getId())
              .setName("DebtAccount for: " + overdraft.getId())
              .build()).fclone();
