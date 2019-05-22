@@ -19,7 +19,7 @@ public class DigitalAccountService
        DAO accountDAO = (DAO) x.get("accountDAO");
        OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount()).fclone();
 
-       DebtAccount debtAccount = overdraft.findDebtAccount(x);
+       DebtAccount debtAccount = overdraft.findDebtAccount(getX());
 
        if ( debtAccount == null ) {
          overdraft = (OverdraftAccount) accountDAO.put(overdraft).fclone();
