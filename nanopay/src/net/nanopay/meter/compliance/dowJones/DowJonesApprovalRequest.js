@@ -13,7 +13,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'comments',
+      name: 'notes',
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 40 }
     }
   ]

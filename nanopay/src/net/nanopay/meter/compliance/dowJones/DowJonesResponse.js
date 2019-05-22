@@ -37,12 +37,9 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      class: 'String',
-      name: 'approvalStatus',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: ['True Match', 'False Positive']
-      }
+      class: 'Enum',
+      of: 'net.nanopay.approval.ApprovalStatus',
+      name: 'status'
     },
     {
       class: 'String',
