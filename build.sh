@@ -453,7 +453,11 @@ while getopts "bcdD:ghijlmM:N:pqrsStT:vV:W:xz" opt ; do
            ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
-        i) INSTALL=1 ;;
+        i) if [ "$(id -u)" == "0" ]; then
+        	echo "Please do not run this command with sudo."
+	        exit 1
+           fi
+           INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
