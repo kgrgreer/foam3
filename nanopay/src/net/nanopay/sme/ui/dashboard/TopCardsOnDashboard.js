@@ -83,7 +83,7 @@ foam.CLASS({
     bottom: -10px;
     z-index: 0;
     pointer-events:none;
-  } 
+  }
   ^ .line {
     width: 100%;
     height: 10px;
@@ -103,7 +103,7 @@ foam.CLASS({
     background-color: %SECONDARYCOLOR%;
     border-radius: 50%;
     z-index: 10000;
-    
+
   }
   ^ .foam-u2-CheckBox:checked:after {
     content: none;
@@ -128,7 +128,7 @@ foam.CLASS({
 
   messages: [
     { name: 'LOWER_LINE_TXT', message: 'Welcome back ' },
-    { name: 'UPPER_TXT', message: 'Your lastest Ablii items' }
+    { name: 'UPPER_TXT', message: 'Your latest Ablii items' }
   ],
 
   methods: [
@@ -169,7 +169,7 @@ foam.CLASS({
               this.start()
                 .addClass('divider')
               .end()
-              
+
               .start().addClass('radio-as-arrow-margins')
                 .add(this.HIDE_PAYMENT_CARDS)
               .end()
