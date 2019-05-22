@@ -75,7 +75,6 @@ public class IdentityMindRequestGenerator {
       .setEntityId(business.getId())
       .setMan(Long.toString(business.getId()))
       .setTid(getUUID(business))
-      .setTea(business.getEmail())
       .setIp(getRemoteAddr(x))
       .build();
 
