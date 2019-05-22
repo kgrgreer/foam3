@@ -16,10 +16,10 @@ public class DigitalAccountService
   public DigitalAccount findDefault(X x, String denomination) {
       User user = (User) x.get("user");
      if ( user instanceof Business || user.getGroup().equals("sme") ) {
-       DAO accountDAO = (DAO) x.get("accountDAO");
+       DAO accountDAO = (DAO) x.get("localAccountDAO");
        OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount()).fclone();
 
-       DebtAccount debtAccount = overdraft.findDebtAccount(getX());
+       DebtAccount debtAccount = (DebtAccount) accountDAO.inX(x).find(overdraft.getDebtAccount());
 
        if ( debtAccount == null ) {
          overdraft = (OverdraftAccount) accountDAO.put(overdraft).fclone();
