@@ -79,8 +79,6 @@ import java.text.SimpleDateFormat;
         Date filterLRDFrom = ((PersonNameSearchRequest) req.getModel()).getFilterLRDFrom();
         Date dateOfBirth = ((PersonNameSearchRequest) req.getModel()).getDateOfBirth();
         String filterRegion = ((PersonNameSearchRequest) req.getModel()).getFilterRegion();
-        firstName = firstName.replaceAll("  *", "%20");
-        surName = surName.replaceAll("  *", "%20");
         urlAddress += "first-name=" + firstName + "&surname=" + surName;
         if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
           String formattedLRDFilter = simpleDateFormat.format(filterLRDFrom);
@@ -98,7 +96,6 @@ import java.text.SimpleDateFormat;
         String entityName = ((EntityNameSearchRequest) req.getModel()).getEntityName();
         Date filterLRDFrom = ((EntityNameSearchRequest) req.getModel()).getFilterLRDFrom();
         String filterRegion = ((EntityNameSearchRequest) req.getModel()).getFilterRegion();
-        entityName = entityName.replaceAll("  *", "%20");
         urlAddress += "entity-name=" + entityName;
         if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
           String formattedFilter = simpleDateFormat.format(filterLRDFrom);
