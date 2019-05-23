@@ -27,18 +27,15 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Transaction parent = (Transaction) obj;
 
     while ( ! SafetyUtil.isEmpty(parent.getParent()) ) {
-      parent = parent.findParent(x);
+      parent = parent.findParent(getX());
     }
-
-    // AscendantFXTransaction needs to generate the id before setting the invoice paymentId
-    parent = (Transaction) super.put_(x, parent);
 
     Invoice invoice = parent.findInvoiceId(x);
 
     if ( parent.getInvoiceId() != 0 ) {
       if ( invoice == null ) {
         throw new RuntimeException("Invoice with id " + parent.getInvoiceId() + " not found.");
-      } else if ( invoice.getStatus() == InvoiceStatus.PAID && parent.getStatus() != TransactionStatus.DECLINED ) {
+      } else if ( invoice.getStatus() == InvoiceStatus.PAID && parent.getStatus() != TransactionStatus.DECLINED && transaction instanceof AbliiTransaction) {
         throw new RuntimeException("Invoice already paid.");
       }
 
