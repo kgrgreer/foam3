@@ -10,7 +10,7 @@ foam.CLASS({
   ],
   css: `
     ^ {
-      height: 93%;
+      height: 92%;
       border-bottom: solid 1px #edf0f5;
     }
 
@@ -37,12 +37,18 @@ foam.CLASS({
     }
 
     ^right-section {
-      vertical-align: middle;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
       overflow: scroll;
-      max-height: 80vh;
+      height: 100%;
       flex: 1;
       basis:0;
-      padding: 0px 128px;
+      padding-right: 128px;
+    }
+
+    ^ .property-signingOfficer .foam-u2-view-RadioView:last-child {
+      margin: 0;
     }
   `,
   properties: [
@@ -60,7 +66,7 @@ foam.CLASS({
           defaultChildStyle: {
             flex: 1,
             basis: 0,
-            padding: '0px 128px',
+            'justify-content' : 'center',
             display: 'flex'
           }
         }).addClass(this.myClass('sections-container'))
@@ -77,10 +83,10 @@ foam.CLASS({
           .end()
 
           .start(this.Item).addClass(this.myClass('right-section'))
-            .tag(this.SectionView, {
+            .start(this.SectionView, {
               section$: this.section$,
               data$: this.data$
-            })
+            }).style({ 'flex': 1 }).end()
           .end()
         .end()
     }

@@ -17,7 +17,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      documentation: 'The name of the type of currency.',
+      documentation: `This is the [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) 
+        international standard for currency codes.`,
       required: true
     },
     {
@@ -76,12 +77,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'flagImage',
-      documentation: 'The flag image used in relation to currency.'
+      documentation: `The flag image used in relation to currencies from countries currently
+        supported by the platform.`,
     },
     {
       class: 'Boolean',
       name: 'showSpace',
-      documentation: `Sets to true if there is a space between the symbol and 
+      documentation: `Determines whether there is a space between the symbol and 
         the number when the currency is displayed.
       `,
       required: true

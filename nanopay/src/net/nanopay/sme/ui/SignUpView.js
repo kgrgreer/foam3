@@ -44,28 +44,31 @@ foam.CLASS({
     ^ .foam-u2-TextField,
     ^ .foam-u2-DateView,
     ^ .foam-u2-tag-Select {
-      height: 40px;
       background-color: #ffffff;
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      padding: 12px 12px;
+      border: solid 1px #8e9090;
+      padding: 10.5px;
       box-sizing: border-box;
       outline: none;
-
-      // -webkit-appearance: none;
-      -webkit-transition: all .15s linear;
-      -moz-transition: all .15s linear;
-      -ms-transition: all .15s linear;
-      -o-transition: all .15s linear;
-      transition: all 0.15s linear;
-    }
-    ^ .foam-u2-tag-Select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-position: right 50%;
+      background-repeat: no-repeat;
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAMCAYAAABSgIzaAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NDZFNDEwNjlGNzFEMTFFMkJEQ0VDRTM1N0RCMzMyMkIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NDZFNDEwNkFGNzFEMTFFMkJEQ0VDRTM1N0RCMzMyMkIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0NkU0MTA2N0Y3MUQxMUUyQkRDRUNFMzU3REIzMzIyQiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo0NkU0MTA2OEY3MUQxMUUyQkRDRUNFMzU3REIzMzIyQiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuGsgwQAAAA5SURBVHjaYvz//z8DOYCJgUxAf42MQIzTk0D/M+KzkRGPoQSdykiKJrBGpOhgJFYTWNEIiEeAAAMAzNENEOH+do8AAAAASUVORK5CYII=);
+      margin-bottom: 0;
       width: 100%;
+      color: %PRIMARYCOLOR%;
+    }
+    ^ .foam-u2-tag-Select:not(.selection-made) {
+      color: rgb(117, 117, 117);
     }
     ^ .full-width-input-password {
       padding: 12px 34px 12px 12px ! important;
     }
     ^ .sme-inputContainer{
       margin-bottom: 2%
+    }
+    ^ .login {
+      height: 48px;
     }
     ^ .login-logo-img {
       height: 19.4;
@@ -105,18 +108,6 @@ foam.CLASS({
     }
     ^ .link {
       margin-right: 5px;
-    }
-    ^ .foam-u2-tag-Select {
-      width: 100%;
-      font-size: 14px;
-      height: 40px;
-      border: solid 1px #8e9090;
-      background: #fff;
-      border-radius: 3px;
-      font-weight: 400;
-      padding: 12px;
-      color: #8e9090;
-      box-shadow: none;
     }
     ^disclaimer {
       width: 331px;
@@ -182,6 +173,15 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'termsAgreementDocument'
+    },
+    {
+      class: 'Boolean',
+      name: 'isLoading',
+      documentation: `
+        True after the button has been clicked and before it either succeeds or
+        fails. Used to prevent the user from clicking multiple times on the
+        button which will create duplicate users.
+      `
     }
   ],
 
@@ -264,7 +264,7 @@ foam.CLASS({
                 .addClass('input-field').attr('placeholder', 'ABC Company')
               .end()
             .end()
-      
+
             .start().addClass('input-wrapper')
               .start().add(this.COUNTRY_LABEL).addClass('input-label').end()
               .start(this.COUNTRY.clone().copyFrom({
@@ -326,7 +326,10 @@ foam.CLASS({
               .end()
             .end()
 
-            .start(this.CREATE_NEW).addClass('sme-button').addClass('block').addClass('login').end()
+            .start(this.CREATE_NEW)
+              .addClass('block')
+              .addClass('login')
+            .end()
             .start().addClass('sme-subTitle')
               .start('strong').add(this.SUBTITLE).end()
               .start('span').addClass('app-link')
@@ -344,9 +347,6 @@ foam.CLASS({
 
       this.addClass(this.myClass()).addClass('full-screen')
         .start().addClass('top-bar')
-          .start().addClass('top-bar-message')
-              .add(this.TOP_MESSAGE)
-          .end()
           .start().addClass('top-bar-inner')
             .start().addClass(this.myClass('button'))
               .start()
@@ -440,8 +440,16 @@ foam.CLASS({
     {
       name: 'createNew',
       label: 'Create account',
+      isEnabled: function(isLoading) {
+        return ! isLoading;
+      },
       code: function(X, obj) {
-        if ( ! this.validating() ) return;
+        this.isLoading = true;
+
+        if ( ! this.validating() ) {
+          this.isLoading = false;
+          return;
+        }
 
         businessAddress = this.Address.create({
           countryId: this.country
@@ -471,6 +479,9 @@ foam.CLASS({
           })
           .catch((err) => {
             this.notify(err.message || 'There was a problem creating your account.', 'error');
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     }
@@ -487,4 +498,3 @@ foam.CLASS({
     }
   ]
 });
-

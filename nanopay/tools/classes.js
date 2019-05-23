@@ -12,6 +12,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.plaid.config.PlaidCredential',
   'net.nanopay.tx.Transfer',
+  'net.nanopay.tx.ComplianceTransaction',
   'net.nanopay.tx.CompletedTransactionDAO',
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.cico.CITransaction',
@@ -142,6 +143,7 @@ var classes = [
   // sme onboarding
   'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
   'net.nanopay.sme.onboarding.BusinessOnboarding',
+  'net.nanopay.sme.onboarding.OnboardingStatus',
   'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
   'net.nanopay.sme.onboarding.BusinessOnboardingDAOTest',
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboarding',
@@ -220,6 +222,8 @@ var classes = [
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
+  'net.nanopay.tx.JackieRuleOnCreate',
+  'net.nanopay.tx.JackieRuleOnPut',
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ExpiryLineItem',
@@ -499,6 +503,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
+  'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
 
   // canadian sanction
@@ -541,6 +546,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.enums.MatchType',
   'net.nanopay.meter.compliance.dowJones.enums.RecordType',
   'net.nanopay.meter.compliance.dowJones.enums.SearchType',
+  'net.nanopay.meter.compliance.dowJones.AbstractDowJonesComplianceRuleAction',
   'net.nanopay.meter.compliance.dowJones.DowJonesInvalidResponse',
   'net.nanopay.meter.compliance.dowJones.DowJonesRequest',
   'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
@@ -552,6 +558,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.DowJones',
   'net.nanopay.meter.compliance.dowJones.DowJonesRestInterface',
   'net.nanopay.meter.compliance.dowJones.EntitySanctionValidator',
+  'net.nanopay.meter.compliance.dowJones.EntityNameSearchData',
   'net.nanopay.meter.compliance.dowJones.EntityNameSearchRequest',
   'net.nanopay.meter.compliance.dowJones.IDTypeSearchRequest',
   'net.nanopay.meter.compliance.dowJones.Match',
@@ -560,7 +567,17 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.MetadataSearchResponse',
   'net.nanopay.meter.compliance.dowJones.NameSearchRequest',
   'net.nanopay.meter.compliance.dowJones.PersonSanctionValidator',
+  'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
+
+  // identitymind
+  'net.nanopay.meter.compliance.identityMind.B2BTransactionValidator',
+  'net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator',
+  'net.nanopay.meter.compliance.identityMind.EntityLoginValidator',
+  'net.nanopay.meter.compliance.identityMind.MerchantKYCValidator',
+  'net.nanopay.meter.compliance.identityMind.IdentityMindRequest',
+  'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
+  'net.nanopay.meter.compliance.identityMind.IdentityMindService',
 
   // meter tests
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
@@ -571,6 +588,7 @@ var classes = [
 
   // business
   'net.nanopay.business.EnforceOneBusinessAdminDAO',
+  'net.nanopay.business.JoinBusinessTokenService',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',

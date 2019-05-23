@@ -11,7 +11,6 @@ foam.CLASS({
   documentation: 'US Bank account information.',
 
   properties: [
-    ['images/flags/us.png'],
     {
       name: 'country',
       value: 'US'

@@ -70,7 +70,10 @@
         }
 
         if ( failedRuleHistory == null ) {
+          // get localUserDAO and put the new user into the dao (due to permission issues)
           business.setCompliance(ComplianceStatus.PASSED);
+          DAO localUserDAO = (DAO) x.get("localUserDAO");
+          localUserDAO.put(business.fclone());
         }
       `
     },

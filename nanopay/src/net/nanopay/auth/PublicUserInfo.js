@@ -12,7 +12,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      documentation: `The ID for the public information of a User`,
+      documentation: `The unique identifier for the User.`,
       visibility: foam.u2.Visibility.RO
     },
     {
@@ -68,7 +68,7 @@ foam.CLASS({
       name: 'businessPhone',
       documentation: `Returns the phone number of the business associated with the 
         public information of a User. It is drawn from the Phone model.`,
-      view: { class: 'foam.nanos.auth.PhoneDetailView' },
+      view: { class: 'foam.u2.detail.VerticalDetailView' },
       visibility: foam.u2.Visibility.RO
     },
     {

@@ -18,10 +18,10 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'user',
     'name',
+    'userStatus',
+    'user',
     'orgId',
-    'userStatus'
   ],
 
   properties: [

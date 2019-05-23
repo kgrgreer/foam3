@@ -39,10 +39,12 @@ foam.CLASS({
       Account destinationAccount = findDestinationAccount(x);
       DebtAccount debtAccount = ((Debtable) destinationAccount).findDebtAccount(x);
 
-      Balance balance = (Balance) destinationAccount.findBalance(x);
-      destinationAccount.validateAmount(x, balance, amount);
-      Long bal = balance.getBalance();
-      Long debt = amount > bal ? amount - bal : 0L;
+      Long balance = (Long) destinationAccount.findBalance(x);
+      Balance bal = new Balance ();
+      bal.setBalance(balance);
+      bal.setAccount(destinationAccount.getId());
+      destinationAccount.validateAmount(x, bal, amount);
+      Long debt = amount > balance ? amount - balance : 0L;
 
       List transfers = new ArrayList();
 

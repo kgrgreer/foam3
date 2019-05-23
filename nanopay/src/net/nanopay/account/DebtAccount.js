@@ -4,6 +4,16 @@ foam.CLASS({
   extends: 'net.nanopay.account.DigitalAccount',
   documentation: 'Account which captures a debt obligation, the creditor, and the debtor.',
 
+  implements: [
+      'foam.mlang.Expressions',
+  ],
+
+  requires: [
+  'net.nanopay.account.OverdraftAccount',
+  'net.nanopay.account.ZeroAccount',
+  'net.nanopay.account.Account'
+  ],
+
   properties: [
     // name: 'terms' - future - capture the repayment, interest, ...
     {
@@ -11,14 +21,13 @@ foam.CLASS({
       label: 'Debtor',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
+      targetDAOKey:'localAccountDAO',
       documentation: 'The account which owes this debt.',
       visibility: 'RO',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.accountDAO.where(
-            X.data.AND(
-              X.data.NOT(X.data.INSTANCE_OF(X.data.ZeroAccount))
-            )
+             X.data.INSTANCE_OF(X.data.OverdraftAccount)
           ),
           placeholder: '--',
           objToChoice: function(debtorAccount) {
@@ -33,6 +42,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       documentation: 'The account which is owned this debt.',
+      targetDAOKey: 'localAccountDAO',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.accountDAO.where(
@@ -73,10 +83,11 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      long bal = balance == null ? 0L : balance.getBalance();
         if ( amount > 0 &&
-             amount > -balance.getBalance() ||
+             amount > -bal ||
              amount < 0 &&
-             amount + balance.getBalance() < getLimit() ) {
+             amount + bal < this.getLimit() ) {
           throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain between [limit, 0]" + this.getClass().getSimpleName()+"."+getName());
         }
       `
