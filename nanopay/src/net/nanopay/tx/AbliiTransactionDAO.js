@@ -73,36 +73,36 @@ foam.CLASS({
           quote.setRequestTransaction(request);
         }
 
-        // Logger logger = (Logger) x.get("logger");
-        // try {
-        //   // check if we can make the CO at th same time as CI
-        //   Account account = DigitalAccount.findDefault(getX(), destAccOwner, request.getSourceCurrency());
-        //   logger.info("AbliiTransactionDAO michal ", account);
-        //   if (account instanceof Debtable &&
-        //       ((Debtable) account).findDebtAccount(x) != null &&
-        //       ((Debtable) account).findDebtAccount(x).getLimit() < 0 ) {
+         Logger logger = (Logger) x.get("logger");
+         try {
+           // check if we can make the CO at th same time as CI
+           Account account = DigitalAccount.findDefault(getX(), destAccOwner, request.getSourceCurrency());
+           logger.info("AbliiTransactionDAO michal ", account);
+           if (account instanceof Debtable &&
+               ((Debtable) account).findDebtAccount(x) != null &&
+               ((Debtable) account).findDebtAccount(x).getLimit() < 0 ) {
 
-        //     CompositeTransaction ct = new CompositeTransaction();
-        //     ct.copyFrom(request);
-        //     ct.setIsQuoted(true);
-        //     ct.setName("Composite Transaction for FastPay");
-        //     request.addNext(ct);
-        //   }
+             CompositeTransaction ct = new CompositeTransaction();
+             ct.copyFrom(request);
+             ct.setIsQuoted(true);
+             ct.setName("Composite Transaction for FastPay");
+             request.addNext(ct);
+           }
           
-        //   // NOTE: DebtTransaction takes care of generating Transfers.
-        //   // in TransactionDAO ignore transfers from DebtAccounts.
-        //   // The transfers below are not necesary.
-        //   // at time of Transfer if NSF then DECLINE Transaction, and
-        //   // append a new CO dependent on the CI.
-        //   // need IncurDebtTransaction and PayDebtTransaction, the CI
-        //   // would delegate to a PayDebtTransaction which can pay the correct account,
-        //   // else we call getTransfers from an Account.
-        //   // debtAccount.getTransfers(x, +/-amount); - incur, + pay.
+           // NOTE: DebtTransaction takes care of generating Transfers.
+           // in TransactionDAO ignore transfers from DebtAccounts.
+           // The transfers below are not necesary.
+           // at time of Transfer if NSF then DECLINE Transaction, and
+           // append a new CO dependent on the CI.
+           // need IncurDebtTransaction and PayDebtTransaction, the CI
+           // would delegate to a PayDebtTransaction which can pay the correct account,
+           // else we call getTransfers from an Account.
+           // debtAccount.getTransfers(x, +/-amount); - incur, + pay.
 
-        // } catch ( RuntimeException e) {
-        //   // transaction not eligible for fast pay
-        //   logger.error(e);
-        // }
+         } catch ( RuntimeException e) {
+           // transaction not eligible for fast pay
+           logger.error(e);
+         }
         return super.put_(x, quote);
       `
     },
