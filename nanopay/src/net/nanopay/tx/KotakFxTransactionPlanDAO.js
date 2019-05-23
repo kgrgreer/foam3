@@ -32,7 +32,7 @@ foam.CLASS({
       Transaction request = quote.getRequestTransaction();
       Account sourceAccount = request.findSourceAccount(getX());
       Account destinationAccount = request.findDestinationAccount(getX());
-      BankAccount kotakCAbank = BankAccount.findDefault(getX(), destinationAccount.findOwner(getX()), "CAD");
+      BankAccount kotakCAbank = (CABankAccount) ((DAO) x.get("accountDAO")).find(8005);
       BankAccount kotakINbank = BankAccount.findDefault(getX(), destinationAccount.findOwner(getX()), "INR");
        if ( sourceAccount instanceof DigitalAccount && destinationAccount instanceof INBankAccount &&
         sourceAccount.getDenomination().equalsIgnoreCase("CAD") && destinationAccount.getDenomination().equalsIgnoreCase("INR") &&
