@@ -12,6 +12,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
+      label: 'Business Type',
       documentation: 'Name of business type.'
     },
     {

@@ -12,7 +12,12 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus'
   ],
 
-  documentation: `Business extends user class & it is the company user for SME.`,
+  documentation: `Business is an object that extends the user class. A business is an 
+    entity on behalf of which multiple users can act.  A business is associated with 
+    the company name provided by the user upon registraton. The business object allows 
+    business information to be updated and retrieved.  The body parameters refer to 
+    the business as the 'organization'.
+  `,
 
   tableColumns: [
     'id',
@@ -29,9 +34,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessPermissionId',
-      documentation: `
-        A generated name that doesn't contain any special characters. Used in
-        permission strings related to the business.
+      documentation: `A generated name used in permission strings related to the business. 
+        The name does not contain any special characters.
       `,
       expression: function(businessName, id) {
         return businessName.replace(/\W/g, '').toLowerCase() + id;
@@ -44,32 +48,45 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'loginEnabled',
+      documentation: 'Determines whether the User can login to the platform.',
       value: false
     },
     {
       class: 'Boolean',
       name: 'residenceOperated',
-      documentation: 'Verifies whether a business is operated in the residence of the owner.'
+      documentation: 'Determines whether a business is operated at the residence of the owner.'
     },
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'beneficialOwnerDocuments',
-      documentation: 'Additional documents for beneficial owners verification.',
+      documentation: `A stored copy of the documents that verify a person as a 
+        beneficial owner.`,
       view: function(_, X) {
         return {
           class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
           documents$: X.data.beneficialOwnerDocuments$
         };
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'dualPartyAgreement',
+      documentation: 'Verifies if the user is accept the dual-party agreement.',
     }
   ],
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.dao.ProxyDAO',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'static foam.mlang.MLang.EQ'
   ],
 
   implements: [
@@ -88,6 +105,13 @@ foam.CLASS({
       javaCode: `
         if ( SafetyUtil.isEmpty(this.getBusinessName()) ) {
           throw new IllegalStateException("Business name cannot be empty.");
+        }
+
+        // Temporarily prohibit businesses based in Quebec.
+        Address businessAddress = this.getBusinessAddress();
+
+        if ( businessAddress != null && SafetyUtil.equals(businessAddress.getRegionId(), "QC") ) {
+          throw new IllegalStateException("Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.");
         }
       `
     },
@@ -109,7 +133,40 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode: `
-        // Don't authorize reads for now.
+        AuthService auth = (AuthService) x.get("auth");
+        User user = (User) x.get("user");
+        User agent = (User) x.get("agent");
+
+        if ( user == null ) throw new AuthenticationException();
+
+        // If the user has the appropriate permission, allow access.
+        if ( auth.check(x, "business.read." + Long.toString(this.getId())) ) return;
+
+        // Allow businesses to read themselves.
+        if ( user instanceof Business && SafetyUtil.equals(this.getId(), user.getId())) return;
+
+        DAO junctionDAO = user.getEntities(x).getJunctionDAO();
+
+        // There are decorators on agentJunctionDAO that need to access
+        // businessDAO, but this method needs to access agentJunctionDAO, so we
+        // end up with a loop where the two call each other until the call stack
+        // overflows. In order to get around that, we skip all of the decorators
+        // on agentJunctionDAO, which is what the line below is doing. We could
+        // have made a second, undecorated service instead, but then it would be
+        // easily for developers to mistakenly use the undecorated service in
+        // places where it shouldn't be used.
+        while ( junctionDAO instanceof ProxyDAO ) junctionDAO = ((ProxyDAO) junctionDAO).getDelegate();
+
+        // Create a dummy object so we can search by its composite id.
+        UserUserJunction dummy = new UserUserJunction.Builder(x).setSourceId(agent != null ? agent.getId() : user.getId()).setTargetId(this.getId()).build();
+
+        UserUserJunction junction = (UserUserJunction) junctionDAO.inX(x).find(dummy.getId());
+        boolean userIsInBusiness = junction != null;
+
+        // Allow users to read businesses they're in.
+        if ( userIsInBusiness ) return;
+
+        throw new AuthorizationException();
       `
     },
     {

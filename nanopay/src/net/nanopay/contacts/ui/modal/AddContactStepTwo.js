@@ -25,6 +25,9 @@ foam.CLASS({
   ],
 
   css: `
+    ^invite {
+      margin-top: 16px;
+    }
     ^{
       height: 76vh;
       overflow-y: scroll;
@@ -76,6 +79,15 @@ foam.CLASS({
       line-height: 1.5;
       font-size: 14px;
       color: #2b2b2b;
+    }
+    ^ .bankAction:hover {
+      background-color: white;
+    }
+    ^ .bankAction:disabled {
+      border: 1px solid #e2e2e3;
+    }
+    ^ .bankAction:disabled p {
+      color: #8e9090;
     }
     ^ .transit-container {
       width: 133px;
@@ -235,25 +247,19 @@ foam.CLASS({
           .addClass('bank-option-container')
           .addClass('two-column')
           .show(! this.wizard.data.bankAccount)
-          .start()
+          .start(this.SELECT_CABANK)
             .addClass('bankAction')
             .enableClass('selected', this.isCABank$)
             .start('p')
               .add(this.LABEL_CA)
             .end()
-            .on('click', function() {
-              self.selectBank('CA');
-            })
           .end()
-          .start()
+          .start(this.SELECT_USBANK)
             .addClass('bankAction')
             .enableClass('selected', this.isCABank$, true)
             .start('p')
               .add(this.LABEL_US)
             .end()
-            .on('click', function() {
-              self.selectBank('US');
-            })
           .end()
         .end()
         .start({ class: 'foam.u2.tag.Image', data: self.voidCheckPath$ })
@@ -292,9 +298,6 @@ foam.CLASS({
                   .end()
                 .end()
                 .start()
-                  .addClass('divider')
-                .end()
-                .start()
                   .start()
                     .addClass('field-label')
                     .add(self.NAME_LABEL)
@@ -303,12 +306,16 @@ foam.CLASS({
                     .setAttribute('placeholder', this.CA_ACCOUNT_NAME_PLACEHOLDER)
                   .end()
                 .end()
-                .tag(self.caAccount.ADDRESS.clone().copyFrom({
-                  view: {
-                    class: 'net.nanopay.sme.ui.AddressView',
-                    withoutCountrySelection: true
-                  }
-                }))
+                .start()
+                  .addClass('divider')
+                .end()
+                .startContext({ data: this.wizard })
+                  .start()
+                    .hide(this.isEdit)
+                    .addClass(this.myClass('invite'))
+                    .add(this.wizard.SHOULD_INVITE)
+                  .end()
+                .endContext()
               .endContext();
           } else {
             return this.E()
@@ -370,14 +377,17 @@ foam.CLASS({
     function validateBank(bankAccount, countryId) {
       if ( ! bankAccount.name ) {
         this.ctrl.notify('Financial institution name is required', 'error');
-        return;
+        return false;
       }
-
-      if ( bankAccount.errors_ ) {
-        this.ctrl.notify(bankAccount.errors_[0][1], 'error');
-        return;
+      try {
+        bankAccount.validate();
+      } catch (e) {
+        if ( bankAccount.errors_ ) {
+          this.ctrl.notify(bankAccount.errors_[0][1], 'error');
+          return false;
+        }
       }
-      return bankAccount.address;
+      return true;
     }
   ],
 
@@ -412,16 +422,29 @@ foam.CLASS({
       },
       code: function(X) {
         // Validate the contact bank account fields.
-        var bankAddress = this.isCABank
-          ? this.validateBank(this.caAccount, 'CA')
-          : this.validateBank(this.usAccount, 'US');
+        var correctFields;
+        if ( this.isCABank ) correctFields = this.validateBank(this.caAccount, 'CA');
+        else correctFields = this.validateBank(this.usAccount, 'US');
+        if ( ! correctFields ) return;
 
-        // Validate the contact address fields.
-        if ( bankAddress.errors_ ) {
-          this.ctrl.notify(bankAddress.errors_[0][1], 'error');
-          return;
-        }
+        // // Validate the contact address fields.
         X.pushToId('AddContactStepThree');
+      }
+    },
+    {
+      name: 'selectCABank',
+      label: '',
+      enabledPermissions: ['currency.read.CAD'],
+      code: function() {
+        this.selectBank('CA');
+      }
+    },
+    {
+      name: 'selectUSBank',
+      label: '',
+      enabledPermissions: ['currency.read.USD'],
+      code: function() {
+        this.selectBank('US');
       }
     }
   ]

@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: `Setting view displaying business information, user management and integration view`,
 
   imports: [
+    'accountingIntegrationUtil',
     'auth'
   ],
 
@@ -63,9 +64,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       this.SUPER();
-
+      showIntegrationTab = await this.accountingIntegrationUtil.getPermission();
       this.auth
         .check(null, 'menu.read.sme.userManagement')
         .then((hasPermission) => {
@@ -83,13 +84,14 @@ foam.CLASS({
             ).end();
           }
 
-          tabs.start(this.Tab, {
-            label: this.INTEGRATION_TAB,
-            selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB'
-          })
-            .add(this.IntegrationSettingsView.create({}, this))
-          .end();
-
+          if ( showIntegrationTab[0] ) {
+            tabs.start(this.Tab, {
+              label: this.INTEGRATION_TAB,
+              selected: this.preSelectedTab && this.preSelectedTab === 'INTEGRATION_TAB'
+            })
+              .add(this.IntegrationSettingsView.create({}, this))
+            .end();
+          }
           this.addClass(this.myClass())
             .start('h1').add(this.TITLE).end()
             .start().addClass('section-line').end()

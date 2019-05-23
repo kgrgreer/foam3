@@ -1,0 +1,118 @@
+foam.CLASS({
+  package: 'net.nanopay.sme.ui.dashboard.cards',
+  name: 'QBIntegrationCard',
+  extends: 'foam.u2.Controller',
+
+  documentation: `
+    This card is specific to check if the user has a quickbooks integration
+    enabled and provides actions for both enabled and disabled.
+  `,
+
+  requires: [
+    'foam.u2.dialog.Popup',
+    'net.nanopay.accounting.IntegrationCode',
+    'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
+  ],
+
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
+  imports: [
+    'user',
+    'pushMenu'
+  ],
+
+  messages: [
+    {
+      name: 'TITLE',
+      message: 'Accounting software'
+    },
+    {
+      name: 'SUBTITLE_EMPTY',
+      message: 'Not connected'
+    },
+    {
+      name: 'SUBTITLE_LINKED',
+      message: 'Connected to QBO'
+    }
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'iconPath',
+      value: 'images/ablii/QBO@2x.png'
+    },
+    {
+      class: 'String',
+      name: 'subtitleToUse',
+      expression: function(user$integrationCode) {
+        if ( user$integrationCode === this.IntegrationCode.QUICKBOOKS ) {
+          return this.SUBTITLE_LINKED;
+        }
+
+        return this.SUBTITLE_EMPTY;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'hasPermission'
+    },
+    {
+      class: 'Boolean',
+      name: 'hasIntegration'
+    }
+  ],
+
+  methods: [
+    function initE() {
+      var self = this;
+      this.add(this.slot(function(subtitleToUse) {
+        return this.E()
+          .start(self.IntegrationCard, {
+            iconPath: self.iconPath,
+            title: self.TITLE,
+            subtitle: subtitleToUse,
+            action: self.user.integrationCode === self.IntegrationCode.QUICKBOOKS && self.hasIntegration ? self.SYNC : self.CONNECT
+          }).end();
+      }));
+    },
+
+    function attachSessionId(url) {
+      // attach session id if available
+      var sessionId = localStorage['defaultSession'];
+      if ( sessionId ) {
+        url += '&sessionId=' + sessionId;
+      }
+      return url;
+    }
+  ],
+
+  actions: [
+    {
+      name: 'sync',
+      label: 'Sync',
+      isAvailable: function(hasPermission) {
+        return hasPermission;
+      },
+      code: function() {
+        this.pushMenu('sme.bank.matching');
+      }
+    },
+    {
+      name: 'connect',
+      label: 'Connect',
+      isAvailable: function(hasPermission) {
+        return hasPermission;
+      },
+      code: function() {
+        // var url = window.location.origin + '/service/quickbooksWebAgent?portRedirect=' + window.location.hash.slice(1);
+        // window.location = this.attachSessionId(url);
+        this.add(this.Popup.create().tag({
+          class: 'net.invoice.ui.modal.IntegrationModal'
+        }));
+      }
+    }
+  ]
+});

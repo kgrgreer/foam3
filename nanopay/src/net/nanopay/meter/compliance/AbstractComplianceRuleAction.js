@@ -16,7 +16,8 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
     'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus'
+    'net.nanopay.approval.ApprovalStatus',
+    'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
@@ -37,12 +38,8 @@ foam.CLASS({
           type: 'Context'
         },
         {
-          name: 'obj',
-          type: 'FObject'
-        },
-        {
-          name: 'objDaoKey',
-          type: 'String'
+          name: 'approvalRequest',
+          type: 'net.nanopay.approval.ApprovalRequest'
         }
       ],
       javaCode: `
@@ -50,22 +47,21 @@ foam.CLASS({
         Group group = (Group) groupDAO.find(getApproverGroupId());
         if ( group != null ) {
           DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
-          String objId = String.valueOf(obj.getProperty("id"));
+          DAO localUserDAO = (DAO) x.get("localUserDAO");
 
-          group.getUsers(x).select(new AbstractSink() {
-            @Override
-            public void put(Object o, Detachable d) {
-              User approver = (User) o;
-              approvalRequestDAO.put(
-                new ApprovalRequest.Builder(x)
-                  .setApprover(approver.getId())
-                  .setObjId(objId)
-                  .setDaoKey(objDaoKey)
-                  .setStatus(ApprovalStatus.REQUESTED)
-                  .build()
-              );
-            }
-          });
+          // Create an approval request for each user in the approver group
+          localUserDAO.inX(x)
+            .where(EQ(User.GROUP, group.getId()))
+            .select(new AbstractSink() {
+              @Override
+              public void put(Object o, Detachable d) {
+                User approver = (User) o;
+                ApprovalRequest ar = (ApprovalRequest) approvalRequest.fclone();
+
+                ar.setApprover(approver.getId());
+                approvalRequestDAO.put(ar);
+              }
+            });
         }
       `
     }

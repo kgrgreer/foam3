@@ -4,9 +4,9 @@ foam.CLASS({
   extends: 'foam.nanos.auth.User',
 
   documentation: `
-    Contacts were introduced as a part of the Self-Serve project. They represent
-    people that are not yet on the platform, but that you can still send
-    invoices to.
+    The base model, as part of the Self-Serve project, for representing people who, 
+    although they are not registered on the platform, can still receive invoices from
+    platform users.
   `,
 
   implements: [
@@ -48,12 +48,14 @@ foam.CLASS({
     'organization',
     'legalName',
     'email',
-    'signUpStatus'
+    'signUpStatus',
+    'deleted'
   ],
 
   properties: [
     {
       name: 'organization',
+      documentation: 'The organization/business associated with the Contact.',
       label: 'Company',
       validateObj: function(organization) {
         if (
@@ -69,10 +71,14 @@ foam.CLASS({
     },
     {
       name: 'legalName',
+      documentation: `A field for the legal first and last name of the Contact, 
+        if different than the provided first name.  The field will default to first 
+        name, last name.`,
       label: 'Name'
     },
     {
       name: 'email',
+      documentation: 'The email address of the Contact.',
       label: 'Email',
       validateObj: function(email) {
         if ( ! this.businessId ) {
@@ -85,7 +91,17 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      validateObj: function(firstName) {}
+      validateObj: function(firstName) {
+        if ( !! firstName ) {
+          var containsDigitRegex = /\d/;
+          if ( firstName.length > this.NAME_MAX_LENGTH ) {
+            return 'First name cannot exceed 70 characters.';
+          }
+          if ( containsDigitRegex.test(firstName) ) {
+            return 'First name cannot contain numbers.';
+          }
+        }
+      }
     },
     {
       name: 'middleName',
@@ -93,7 +109,17 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      validateObj: function(lastName) {}
+      validateObj: function(lastName) {
+        if ( !! lastName ) {
+          var containsDigitRegex = /\d/;
+          if ( lastName.length > this.NAME_MAX_LENGTH ) {
+            return 'Last name cannot exceed 70 characters.';
+          }
+          if ( containsDigitRegex.test(lastName) ) {
+            return 'Last name cannot contain numbers.';
+          }
+        }
+      }
     },
     {
       class: 'foam.core.Enum',
@@ -101,9 +127,8 @@ foam.CLASS({
       name: 'signUpStatus',
       label: 'Status',
       tableWidth: 170,
-      documentation: `
-        Keeps track of the different states a contact can be in with respect to
-        whether the real user has signed up yet or not.
+      documentation: `Tracks the registration status of a contact with respect to
+        whether a individual person, or real user, can sign in or not.
       `,
       tableCellFormatter: function(state, obj) {
         this.start()
@@ -119,43 +144,46 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'businessId',
-      documentation: `
-        A reference to the real user's business once they've signed up.
-      `
+      documentation: `A unique identifier for the business associated with the Contact.`
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'realUser',
-      documentation: `A reference to the real user once they've signed up.`
+      documentation: `The ID for the individual person, or real user, 
+        who registers with our platform.`
     },
     {
       class: 'Boolean',
       name: 'loginEnabled',
+      documentation: 'Determines whether the Contact can login to the platform.',
       value: false
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'bankAccount',
-      documentation: `A reference to the contact bank account if created while registering the contact.`
+      documentation: `The unique identifier for the bank account of the Contact 
+        if created while registering the Contact.`
     },
     {
       name: 'businessAddress',
+      documentation: 'The postal address of the business associated with the Contact.',
       view: { class: 'net.nanopay.sme.ui.AddressView' }
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'businessStatus',
+      documentation: 'Tracks the status of a business.',
       storageTransient: true
     },
     {
       name: 'emailVerified',
       value: true,
-      documentation: `
-        We do this so that the transaction validation logic doesn't throw an
-        error when a contact is either the payer or payee of an invoice.
+      documentation: `Verifies that the email address of the Contact is valid. 
+        If the email address is not verified the transaction validation logic will 
+        throw an error when a Contact is either the Payer or Payee of an invoice.
       `
     }
   ],
@@ -174,8 +202,8 @@ foam.CLASS({
         String containsDigitRegex = ".*\\\\d.*";
 
         if ( getBusinessId() != 0 ) {
-          DAO businessDAO = (DAO) x.get("businessDAO");
-          Business business = (Business) businessDAO.inX(x).find(getBusinessId());
+          DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+          Business business = (Business) localBusinessDAO.inX(x).find(getBusinessId());
           if ( business == null ) {
             throw new IllegalStateException("The business this contact references was not found.");
           }

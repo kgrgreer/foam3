@@ -18,6 +18,14 @@ foam.CLASS({
     'net.nanopay.documents.ui.AcceptanceDocumentView'
   ],
 
+  tableColumns: [
+    'id',
+    'name',
+    'link',
+    'issuedDate',
+    'expiryDate',
+  ],
+
   properties: [
     {
       class: 'Long',

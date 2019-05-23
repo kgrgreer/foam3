@@ -17,6 +17,12 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
+
+    'net.nanopay.tx.CompositeTransaction',
+    'net.nanopay.account.Debtable',
+    'net.nanopay.account.DebtAccount',
+
+
   ],
 
   methods: [
@@ -36,18 +42,19 @@ foam.CLASS({
       javaCode: `
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction request = (Transaction) quote.getRequestTransaction().fclone();
-        DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+        DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         User destAccOwner;
         if ( ! ( request instanceof AbliiTransaction ) ) {
           return super.put_(x, obj);
         }
 
-        Account destAcc = request.findDestinationAccount(x);
-        User owner = (User) destAcc.findOwner(x);
+        Account destAcc = request.findDestinationAccount(getX());
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
+        User owner = (User) localUserDAO.inX(x).find(destAcc.getOwner());
 
         if ( owner instanceof Contact ) {
           Contact contact = (Contact) owner;
-          destAccOwner = (User) businessDAO.find(contact.getBusinessId());
+          destAccOwner = (User) localBusinessDAO.find(contact.getBusinessId());
           if ( destAccOwner == null ) {
             destAccOwner = (User) owner;
           }
@@ -56,7 +63,7 @@ foam.CLASS({
         }
 
         if ( destAcc instanceof DigitalAccount ) {
-          BankAccount destBankAccount = BankAccount.findDefault(x, destAccOwner, request.getDestinationCurrency());
+          BankAccount destBankAccount = BankAccount.findDefault(getX(), destAccOwner, request.getDestinationCurrency());
 
           if ( destBankAccount == null ) {
             throw new RuntimeException("Contact does not have a " + request.getDestinationCurrency() + " bank account.");
@@ -66,6 +73,36 @@ foam.CLASS({
           quote.setRequestTransaction(request);
         }
 
+        // Logger logger = (Logger) x.get("logger");
+        // try {
+        //   // check if we can make the CO at th same time as CI
+        //   Account account = DigitalAccount.findDefault(getX(), destAccOwner, request.getSourceCurrency());
+        //   logger.info("AbliiTransactionDAO michal ", account);
+        //   if (account instanceof Debtable &&
+        //       ((Debtable) account).findDebtAccount(x) != null &&
+        //       ((Debtable) account).findDebtAccount(x).getLimit() < 0 ) {
+
+        //     CompositeTransaction ct = new CompositeTransaction();
+        //     ct.copyFrom(request);
+        //     ct.setIsQuoted(true);
+        //     ct.setName("Composite Transaction for FastPay");
+        //     request.addNext(ct);
+        //   }
+          
+        //   // NOTE: DebtTransaction takes care of generating Transfers.
+        //   // in TransactionDAO ignore transfers from DebtAccounts.
+        //   // The transfers below are not necesary.
+        //   // at time of Transfer if NSF then DECLINE Transaction, and
+        //   // append a new CO dependent on the CI.
+        //   // need IncurDebtTransaction and PayDebtTransaction, the CI
+        //   // would delegate to a PayDebtTransaction which can pay the correct account,
+        //   // else we call getTransfers from an Account.
+        //   // debtAccount.getTransfers(x, +/-amount); - incur, + pay.
+
+        // } catch ( RuntimeException e) {
+        //   // transaction not eligible for fast pay
+        //   logger.error(e);
+        // }
         return super.put_(x, quote);
       `
     },

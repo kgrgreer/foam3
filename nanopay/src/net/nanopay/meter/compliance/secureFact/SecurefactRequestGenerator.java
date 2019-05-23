@@ -5,8 +5,8 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.meter.compliance.secureFact.lev.model.LEVRequest;
-import net.nanopay.meter.compliance.secureFact.sidni.model.*;
+import net.nanopay.meter.compliance.secureFact.lev.LEVRequest;
+import net.nanopay.meter.compliance.secureFact.sidni.*;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessType;
 
@@ -31,7 +31,7 @@ public class SecurefactRequestGenerator {
     request.setSearchType("name");
     request.setEntityName(business.getOrganization());
 
-    Address address = business.getAddress();
+    Address address = business.getBusinessAddress();
     if ( address == null
       || ! address.getCountryId().equals("CA")
     ) {
@@ -39,7 +39,7 @@ public class SecurefactRequestGenerator {
     }
     request.setCountry(address.getCountryId());
     request.setJurisdiction(address.getRegionId());
-    request.setAddress(address.getPostalCode());
+    request.setAddress(address.getPostalCode().replaceAll(" ", ""));
 
     BusinessType businessType = business.findBusinessTypeId(x);
     if ( businessType != null ) {
@@ -84,7 +84,9 @@ public class SecurefactRequestGenerator {
 
   private static SIDniAddress[] buildAddress(X x, User user) {
     Address userAddress = user.getAddress();
-    if ( SafetyUtil.isEmpty(userAddress.getAddress()) ) {
+    if (userAddress == null
+      || SafetyUtil.isEmpty(userAddress.getAddress())
+    ) {
       throw new IllegalStateException("User address can't be blank");
     }
     return new SIDniAddress[] {
@@ -93,7 +95,7 @@ public class SecurefactRequestGenerator {
         .setAddressLine(userAddress.getAddress())
         .setCity(userAddress.getCity())
         .setProvince(userAddress.getRegionId())
-        .setPostalCode(userAddress.getPostalCode())
+        .setPostalCode(userAddress.getPostalCode().replaceAll(" ", ""))
         .build()
     };
   }

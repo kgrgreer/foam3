@@ -17,9 +17,6 @@ foam.CLASS({
     'bank',
     'isConnecting',
     'notify',
-    'validateAccountNumber',
-    'validateInstitutionNumber',
-    'validateTransitNumber'
   ],
 
   css: `
@@ -182,11 +179,8 @@ foam.CLASS({
     { name: 'LABEL_NICKNAME', message: 'Nickname' },
     { name: 'HINT', message: 'Set a nickname to easily identify your account later on.' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
-    { name: 'INVALID_TRANSIT', message: 'Invalid transit #.' },
-    { name: 'INVALID_INSTITUTION', message: 'Invalid institution #.' },
-    { name: 'INVALID_ACCOUNT', message: 'Invalid account #.' },
-    { name: 'BANK_NAME_PLACEHOLDER', message: 'My Bank' }
+    { name: 'BANK_NAME_PLACEHOLDER', message: 'My Bank' },
+    { name: 'BANK_NAME_ERROR', message: 'Please set a nickname to easily identify your account later on.' }
   ],
 
   methods: [
@@ -234,34 +228,14 @@ foam.CLASS({
     },
 
     function validateForm() {
-      var nameRegEx = /^[a-z0-9 ]{1,32}$/i;
-
-      if ( ! this.bank.branchId ||
-           ! this.bank.institutionNumber ||
-           ! this.bank.accountNumber ||
-           ! this.bank.name ) {
-        ctrl.notify(this.INVALID_FORM, 'error');
-        return false;
-      }
-
-      if ( ! this.validateTransitNumber(this.bank.branchId) ) {
-        ctrl.notify(this.INVALID_TRANSIT, 'error');
-        return false;
-      }
-      if ( ! this.validateInstitutionNumber(this.bank.institutionNumber) ) {
-        ctrl.notify(this.INVALID_INSTITUTION, 'error');
-        return false;
-      }
-      if ( ! this.validateAccountNumber(this.bank.accountNumber) ) {
-        ctrl.notify(this.INVALID_ACCOUNT, 'error');
-        return false;
-      }
-
       if ( this.bank.errors_ ) {
         ctrl.notify(this.bank.errors_[0][1], 'error');
         return false;
       }
-
+      if ( this.bank.name.trim() === '' ) {
+        ctrl.notify(this.BANK_NAME_ERROR, 'error');
+        return false;
+      }
       return true;
     }
   ],

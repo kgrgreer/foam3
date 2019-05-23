@@ -39,13 +39,15 @@ foam.CLASS({
       },
       ['choices', [
           [ 'net.nanopay.account.DigitalAccount' , 'Digital Account' ],
+          [ 'net.nanopay.account.OverdraftAccount', 'Overdraft Account' ],
           [ 'net.nanopay.bank.BankAccount', 'Bank Account' ],
           [ 'net.nanopay.bank.CABankAccount', 'Canadian Bank Account' ],
           [ 'net.nanopay.bank.INBankAccount', 'Indian Bank Account' ],
           [ 'net.nanopay.bank.PKBankAccount', 'Pakistan Bank Account' ],
           [ 'net.nanopay.bank.USBankAccount', 'US Bank Account' ],
           [ 'net.nanopay.account.TrustAccount', 'Trust' ],
-          [ 'net.nanopay.account.LoanAccount', 'Loan Account' ]
+          [ 'net.nanopay.account.LoanAccount', 'Loan Account' ],
+          [ 'net.nanopay.account.DebtAccount', 'Debt Account' ]
         ]
       ]
     ],

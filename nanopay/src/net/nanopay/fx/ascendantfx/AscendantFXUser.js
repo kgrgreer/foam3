@@ -18,10 +18,10 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'user',
     'name',
+    'userStatus',
+    'user',
     'orgId',
-    'userStatus'
   ],
 
   properties: [
@@ -45,7 +45,7 @@ foam.CLASS({
           sections: [
             {
               heading: 'Business Users',
-              dao: X.businessDAO,
+              dao: X.publicBusinessDAO,
               objToChoice: function(a) {
                 return [a.id, a.businessName];
               }

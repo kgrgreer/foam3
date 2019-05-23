@@ -128,6 +128,7 @@ foam.CLASS({
           this.notify(this.INVALID_EMAIL, 'error');
           return;
         }
+
         // Disallow the adding of a user if they are currently already a user in the business.
         // dao is populated when this modal is called from UserManagementView.js
         if ( this.dao ) {
@@ -143,6 +144,7 @@ foam.CLASS({
           });
           if ( disallowUserAdditionReturnFromAddUser ) return;
         }
+
         var invitation = this.Invitation.create({
           group: this.role,
           createdBy: this.user.id,

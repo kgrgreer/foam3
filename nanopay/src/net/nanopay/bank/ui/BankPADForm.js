@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Agreement form for PAD Authorization',
 
+  imports: [
+    'user'
+  ],
+
   css: `
     ^section-header {
       font-size: 16px;
@@ -162,6 +166,7 @@ foam.CLASS({
         this.viewData.agree2 = this.TC2;
         this.viewData.agree3 = this.TC3;
       }
+      this.viewData.user.address = this.user.businessAddress;
 
       this.addClass(this.myClass())
         .start('p').add(this.LABEL_LEGAL_NAME).addClass(this.myClass('section-header')).end()

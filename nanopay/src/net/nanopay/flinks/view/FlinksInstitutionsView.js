@@ -148,8 +148,8 @@ foam.CLASS({
 
   messages: [
     { name: 'NO_MATCH_FOUND', message: 'We could not find any banks with that name.' },
-    { name: 'OTHER_BANK', message: 'If you do not see your bank or if you wish to connect using a void check, ' },
-    { name: 'CLICK_HERE', message: 'click here!'}
+    { name: 'OTHER_BANK', message: 'Don\'t see your bank here?' },
+    { name: 'CLICK_HERE', message: 'Connect with a void check' }
   ],
 
   methods: [
@@ -182,20 +182,10 @@ foam.CLASS({
                     }));
                   })
                   .end();
-                })
+                });
             }
             return this.E().start('p').addClass(self.myClass('no-content')).add(self.NO_MATCH_FOUND).end();
           }))
-          .start().addClass(this.myClass('otherbank-container'))
-            .start('p').addClass(this.myClass('plain-text')).add(this.OTHER_BANK).end()
-            .start('p')
-              .addClass(this.myClass('link-text'))
-              .add(this.CLICK_HERE)
-              .on('click', function() {
-                self.ctrl.add(self.Popup.create().tag({ class: 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal', onComplete: self.onComplete }));
-              })
-            .end()
-          .end()
         .end();
     },
 

@@ -239,20 +239,6 @@ foam.CLASS({
           .catch(function(err) {
             this.ctrl.notify(err.message, 'error');
           });
-
-          this.invalidEmail = false;
-          var user = this.User.create({email: this.email});
-          this.resetPasswordToken.generateToken(null, user).then(
-            (result) => {
-              if ( ! result ) {
-                throw new Error('Error generating reset token');
-              }
-              this.notify(this.SUCCESS_MESSAGE + this.email);
-              this.stack.push(this.ResendView.create({email: this.email}));
-          })
-          .catch(function(err) {
-            this.notify(err.message, 'error');
-          });
         }
       }
     ]

@@ -23,10 +23,13 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.sme.ui.dashboard.ActionObject'
+    'net.nanopay.sme.ui.dashboard.ActionObject',
+    'net.nanopay.sme.onboarding.BusinessOnboarding'
   ],
 
   imports: [
+    'accountingIntegrationUtil',
+    'agent',
     'menuDAO',
     'pushMenu',
     'notify',
@@ -104,7 +107,7 @@ foam.CLASS({
   messages: [
     {
       name: 'COMPLETION_SENTENCE',
-      message: '/4 completed.'
+      message: ' completed.'
     },
     {
       name: 'COMPLETION_SENTENCE_2',
@@ -114,7 +117,7 @@ foam.CLASS({
       name: 'HIDE',
       message: 'Hide'
     },
-    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added during the beta' }
+    { name: 'SINGULAR_BANK', message: 'Only 1 bank account can be added.' }
   ],
 
   properties: [
@@ -143,14 +146,20 @@ foam.CLASS({
     },
     {
       name: 'bankAction',
-      documentation: `This a var to store the 'Add Banking' action. 
+      documentation: `This a var to store the 'Add Banking' action.
       Needed to confirm that the action was completed in THIS models standard action 'addBank'`
+    },
+    {
+      name: 'maximumNumberOfSteps',
+      class: 'Int',
+      value: 3
     }
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       var self = this;
+      let showAccoutingSync = await this.accountingIntegrationUtil.getPermission();
       Promise.all([
         this.user.emailVerified,
         this.user.accounts
@@ -180,11 +189,15 @@ foam.CLASS({
           act: this.ADD_BANK
         });
         this.actionsDAO.put(this.bankAction);
-        this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
-          name: 'syncAccounting',
-          completed: values[2],
-          act: this.SYNC_ACCOUNTING
-        }));
+        if ( showAccoutingSync[0] ) {
+          this.maximumNumberOfSteps = 4;
+          this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
+            completed: values[2],
+            act: this.SYNC_ACCOUNTING
+          }));
+        } else if ( this.user.hasIntegrated ) {
+          this.completedCount--;
+        }
         this.actionsDAO.put(net.nanopay.sme.ui.dashboard.ActionObject.create({
           name: 'busProfile',
           completed: values[3],
@@ -204,7 +217,7 @@ foam.CLASS({
               .start()
                 .addClass(this.myClass('front'))
                 .style({
-                  width: `${Math.floor(parseInt(this.completedCount / 4 * 100))}%`
+                  width: `${Math.floor(parseInt(this.completedCount / this.maximumNumberOfSteps * 100))}%`
                 })
               .end()
             .end()
@@ -213,7 +226,7 @@ foam.CLASS({
             .addClass(this.myClass('container'))
             .start('span')
               .start('strong')
-                .add(this.completedCount, this.COMPLETION_SENTENCE)
+                .add(this.completedCount, '/', this.maximumNumberOfSteps, this.COMPLETION_SENTENCE)
               .end()
               .start('span')
                 .add(this.COMPLETION_SENTENCE_2)
@@ -271,11 +284,9 @@ foam.CLASS({
         if ( this.bankAction.completed ) {
           this.notify(this.SINGULAR_BANK, 'warning');
         } else {
-          this.stack.push({
-            class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-            usdAvailable: true,
-            cadAvailable: true
-          });
+          this.menuDAO
+            .find('sme.main.banking')
+            .then((menu) => menu.launch());
         }
       }
     },
@@ -302,9 +313,20 @@ foam.CLASS({
       name: 'busProfile',
       label: 'Business Profile',
       icon: 'images/Briefcase_Icon.svg',
-      code: function() {
+      code: function(x) {
         if ( ! this.user.onboarded ) {
-          this.stack.push({ class: 'net.nanopay.sme.onboarding.ui.BusinessRegistrationWizard', hideTitles: true });
+          var userId = this.agent.id;
+          var businessId = this.user.id;
+          x.businessOnboardingDAO.find(userId).then((o) => {
+            o = o || this.BusinessOnboarding.create({
+              userId: userId,
+              businessId: businessId
+            });
+            this.stack.push({
+              class: 'net.nanopay.sme.onboarding.ui.WizardView',
+              data: o
+            });
+          });
         } else {
           this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
         }

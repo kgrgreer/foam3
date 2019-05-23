@@ -12,9 +12,19 @@ foam.CLASS({
 
   css: `
     ^ .net-nanopay-sme-ui-TopBarBackToAblii-button{
-      position: relative;
-      top: 22px;
+      margin-top: 56px;
       cursor: pointer;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: normal;
+      color: #8e9090;
+      display: inline;
+      position: relative;
+      top: 20px;
+      left: 20px;
     }
   `,
 
