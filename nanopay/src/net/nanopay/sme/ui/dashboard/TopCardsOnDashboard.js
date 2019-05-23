@@ -17,6 +17,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
+    'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard',
     'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard',
     'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard',
@@ -29,6 +30,7 @@ foam.CLASS({
     'accountingIntegrationUtil',
     'agent',
     'businessOnboardingDAO',
+    'businessInvitationDAO',
     'user',
     'userDAO'
   ],
@@ -142,68 +144,55 @@ foam.CLASS({
                 this.EQ(this.Account.TYPE, this.CABankAccount.name),
                 this.EQ(this.Account.TYPE, this.USBankAccount.name)
               ), this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED))
-          ).select().then((result) => result),
+          ).select(),
         this.accountingIntegrationUtil.getPermission(),
-        this.userDAO.find(this.user.id).then((use) => use.hasIntegrated),
-        this.businessOnboardingDAO.find(this.agent.id).then((o) => o),
+        this.userDAO.find(this.user.id),
+        this.businessOnboardingDAO.find(this.agent.id),
         this.user.onboarded
       ]).then((values) => {
-          // REFERENCE FOR values
-          // bankAccount                     = values[0];
-          // userHasPermissionForAccounting  = values[1];
-          // userHasIntegratedWithAccounting = values[2];
-          // isSigningOfficer                = values[3];
-          // isOnboardingCompleted           = values[4];
-          let account          = values[0] && values[0].array[0];
-          let isBankCompleted  = account && account.id != 0;
-          let isAllCompleted   = values[4] && isBankCompleted && values[2];
-          let isSigningOfficer = values[3] ? values[3].signingOfficer : true; // if not set yet, assume user is signingOfficer
-          let sectionsShowing  = ! isSigningOfficer && ! isAllCompleted; // convience boolean for displaying certian sections
+        var bankAccount = values[0] && values[0].array[0];
+        var userHasPermissionsForAccounting = values[1];
+        var user = values[2];
+        var businessOnboarding = values[3];
 
-          this
-            .addClass(this.myClass())
-
-            .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
-
-            .callIf( isSigningOfficer && ! isAllCompleted, () => {
-              this.start()
-                .addClass('divider')
-              .end()
-
-              .start().addClass('radio-as-arrow-margins')
-                .add(this.HIDE_PAYMENT_CARDS)
-              .end()
-              .start().addClass('radio-as-arrow').addClass('radio-as-arrow-margins').hide(this.hidePaymentCards$).end()
-              .start().addClass('radio-as-arrow-down').addClass('radio-as-arrow-margins').show(this.hidePaymentCards$).end()
+        this
+          .addClass(this.myClass())
+          .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
+          .callIfElse( businessOnboarding &&
+                       businessOnboarding.status === this.OnboardingStatus.SUBMITTED &&
+                       ! businessOnboarding.signingOfficer, () => {
+            this
+              .start('span').addClass('card')
+                .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
+              .end();
+          }, () => {
+            this
+              .start().addClass('divider').end()
+              .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
+              .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
               .start().addClass('cards').hide(this.hidePaymentCards$)
                 .start('span')
-                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: values[4] })
+                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: this.user.onboarded })
                 .end()
                 .start('span').addClass('inner-card')
                   .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL })
                 .end()
               .end();
-            })
-            .callIfElse(sectionsShowing, () => {
-              this.start('span').addClass('card')
-                .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
-              .end();
-            }, () => {
-              this.start().addClass('lower-cards')
-                .start('span')
-                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: account })
-                .end()
-                .start('span').addClass('inner-card')
-                  .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: values[1] && values[1][0], hasIntegration: values[2] })
-                .end()
-              .end();
-            })
-            .start().addClass('line')
-              .start('span')
-                .addClass('divider-half').add(this.UPPER_TXT)
-              .end()
-            .end();
-        });
+          })
+          .start().addClass('lower-cards')
+            .start('span')
+              .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: bankAccount })
+            .end()
+            .start('span').addClass('inner-card')
+              .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: userHasPermissionsForAccounting && userHasPermissionsForAccounting[0], hasIntegration: user.hasIntegrated })
+            .end()
+          .end()
+          .start().addClass('line')
+            .start('span')
+             .addClass('divider-half').add(this.UPPER_TXT)
+            .end()
+          .end();
+      });
     }
   ]
 });
