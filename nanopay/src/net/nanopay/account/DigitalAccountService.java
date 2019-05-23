@@ -15,7 +15,6 @@ public class DigitalAccountService
 
   public DigitalAccount findDefault(X x, String denomination) {
     User user = (User) x.get("user");
-    return DigitalAccount.findDefault(getX(), user, denomination);
 
      if ( user instanceof Business || user.getGroup().equals("sme") ) {
        DAO accountDAO = (DAO) x.get("localAccountDAO");
@@ -30,12 +29,12 @@ public class DigitalAccountService
        }
        if ( debtAccount == null ) {
          debtAccount = (DebtAccount) accountDAO.put(
-                                                    new DebtAccount.Builder(x)
-                                                    .setDebtorAccount(overdraft.getId())
-                                                    .setCreditorAccount(6)
-                                                    .setParent(overdraft.getId())
-                                                    .setName("DebtAccount for: " + overdraft.getId())
-                                                    .build()).fclone();
+          new DebtAccount.Builder(x)
+            .setDebtorAccount(overdraft.getId())
+            .setCreditorAccount(6)
+            .setParent(overdraft.getId())
+            .setName("DebtAccount for: " + overdraft.getId())
+            .build()).fclone();
        }
        overdraft.setDebtAccount(debtAccount.getId());
        overdraft = (OverdraftAccount) accountDAO.put(overdraft).fclone();
