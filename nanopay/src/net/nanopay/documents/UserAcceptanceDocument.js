@@ -34,6 +34,10 @@ foam.CLASS({
       name: 'user'
     },
     {
+      class: 'String',
+      name: 'ipAddress'
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.documents.AcceptanceDocument',
       name: 'acceptedDocument'
