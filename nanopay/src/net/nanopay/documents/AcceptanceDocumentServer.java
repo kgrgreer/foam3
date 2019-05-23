@@ -8,6 +8,7 @@ import foam.dao.ArraySink;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import foam.util.SafetyUtil;
+import javax.servlet.http.HttpServletRequest;
 
 public class AcceptanceDocumentServer extends ContextAwareSupport implements AcceptanceDocumentService, NanoService {
 
@@ -97,6 +98,8 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
 
   public void updateUserAcceptanceDocument(X x, long user, long acceptanceDocument, boolean accepted) {
     userAcceptanceDocumentDAO_.inX(x);
+    HttpServletRequest request = x.get(HttpServletRequest.class);
+    String ipAddress = request.getRemoteAddr();
     UserAcceptanceDocument acceptedDocument = (UserAcceptanceDocument) userAcceptanceDocumentDAO_.find(
       AND(
         EQ(UserAcceptanceDocument.USER, user),
@@ -110,6 +113,7 @@ public class AcceptanceDocumentServer extends ContextAwareSupport implements Acc
 
     acceptedDocument = (UserAcceptanceDocument) acceptedDocument.fclone();
     acceptedDocument.setAccepted(accepted);
+    acceptedDocument.setIpAddress(request.getRemoteAddr());
     userAcceptanceDocumentDAO_.put_(x, acceptedDocument);
   }
 
