@@ -20,6 +20,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'group',
     'notificationDAO',
     'pushMenu',
@@ -133,6 +134,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.ctrl.bannerizeCompliance();
       this.SUPER();
       var self = this;
       var split = this.DashboardBorder.create();
