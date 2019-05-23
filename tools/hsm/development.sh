@@ -26,7 +26,7 @@ function migrate_slot {
   # Check if the slots already exist and add them if they don't
   for d in ./hsm/dev/*; do
     if [[ ! -d "/usr/local/var/lib/softhsm/tokens/{$d}" ]]; then
-      cp -r $ROOT/dev/0c67db3b-39d0-6d8a-f146-a683a1f0988b /usr/local/var/lib/softhsm/tokens
+      cp -r $ROOT/dev/2c994c25-5565-55f2-0f4f-9458ac0f1537 /usr/local/var/lib/softhsm/tokens
     fi
   done
 
@@ -50,7 +50,7 @@ function config_setup {
 }
 
 function backup {
-  cp -r /usr/local/var/lib/softhsm/tokens $ROOT/dev/0c67db3b-39d0-6d8a-f146-a683a1f0988b
+  cp -r /usr/local/var/lib/softhsm/tokens $ROOT/dev/2c994c25-5565-55f2-0f4f-9458ac0f1537
 
   printf "INFO :: Token for development has been backed up to the repo successfully.\n"
 }
