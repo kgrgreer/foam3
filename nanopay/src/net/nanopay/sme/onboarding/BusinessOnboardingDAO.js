@@ -45,7 +45,8 @@ foam.CLASS({
           net.nanopay.documents.AcceptanceDocumentService documentService = 
             (net.nanopay.documents.AcceptanceDocumentService)(x.get("acceptanceDocumentService"));
 
-          documentService.updateUserAcceptanceDocument(x, obj.getUserId(), "dualPartyAgreementCAD", true);
+          net.nanopay.documents.AcceptanceDocument document = documentService.getAcceptanceDocument(x, 'dualPartyAgreementCAD', '');
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), document.getId(), true);
         }
 
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
