@@ -81,7 +81,7 @@ foam.CLASS({
       if ( transaction == null ) {
         return transaction;
       }
-
+      
       DAO typeAccountDAO = (DAO) x.get("lineItemTypeAccountDAO");
       User payee = applyTo.findDestinationAccount(x).findOwner(x);
 
