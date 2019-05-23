@@ -39,6 +39,15 @@ foam.CLASS({
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
         // TODO: Please call the java validator of the businessOnboarding here
 
+        BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
+
+        if ( ( ! old || ! old.getDualPartyAgreement() ) && obj.getDualPartyAgreement() ) {
+          net.nanopay.documents.AcceptanceDocumentService documentService = 
+            (net.nanopay.documents.AcceptanceDocumentService)(x.get("acceptanceDocumentService"));
+
+          documentService.updateUserAcceptanceDocument(x, obj.getUserId(), "dualPartyAgreementCAD", true);
+        }
+
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
           return getDelegate().put_(x, obj);
         }
