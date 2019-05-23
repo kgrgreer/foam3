@@ -29,7 +29,7 @@ foam.CLASS({
         );
 
         dowJonesResponse.setStatus(approvalRequest.getStatus());
-        dowJonesResponse.setNotes(approvalRequest.getNotes());
+        dowJonesResponse.setComments(approvalRequest.getComments());
         dowJonesResponseDAO.put(dowJonesResponse);
       `
     },
