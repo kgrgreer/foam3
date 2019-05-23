@@ -181,52 +181,69 @@ foam.CLASS({
         quote.addPlan(txn);
       }
 
+
+       //----- Bank -> Bank  TRANSACTION SPLIT -------
       if ( sourceAccount instanceof BankAccount &&
         destinationAccount instanceof BankAccount &&
         sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
-        DigitalAccount digitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
 
-        // Split 1: XBank -> XDigital
+        DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(getX()), sourceAccount.getDenomination());
+        DigitalAccount destinationDigitalAccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
+        // Split 1: ABank -> ADigital
         TransactionQuote q1 = new TransactionQuote.Builder(x).build();
         q1.copyFrom(quote);
         Transaction t1 = new Transaction.Builder(x).build();
         t1.copyFrom(request);
         t1.setNext(null);
         // Get Payer Digital Account to fufil CASH-IN
-        t1.setDestinationAccount(digitalaccount.getId());
+        t1.setDestinationAccount(sourceDigitalAccount.getId());
         q1.setRequestTransaction(t1);
 
         TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
-        if ( null != c1.getPlan() ) {
-          cashinPlan = c1.getPlan();
-          txn.addNext(cashinPlan);
-          txn.addLineItems(cashinPlan.getLineItems(), cashinPlan.getReverseLineItems());
-        }
 
-        // XDigital -> XBankAccount.
+        // Split 2: ADigital -> BDigital
         TransactionQuote q2 = new TransactionQuote.Builder(x).build();
-        q2.copyFrom(quote);
-
         Transaction t2 = new Transaction.Builder(x).build();
         t2.copyFrom(request);
         t2.setNext(null);
-        t2.setSourceAccount(digitalaccount.getId());
-        t2.setDestinationAccount(destinationAccount.getId());
+        t2.setSourceAccount(sourceDigitalAccount.getId());
+        t2.setDestinationAccount(destinationDigitalAccount.getId());
         q2.setRequestTransaction(t2);
-
         TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
-        if ( null != c2.getPlan() ) {
-          Transaction plan = c2.getPlan();
-          txn.addNext(plan);
-          txn.addLineItems(plan.getLineItems(), plan.getReverseLineItems());
-        }
+
+        // Split 3: BDigital -> BBankAccount
+        TransactionQuote q3 = new TransactionQuote.Builder(x).build();
+        q2.copyFrom(quote);
+        Transaction t3 = new Transaction.Builder(x).build();
+        t3.copyFrom(request);
+        t3.setNext(null);
+        t3.setSourceAccount(destinationDigitalAccount.getId());
+        t3.setDestinationAccount(destinationAccount.getId());
+        q3.setRequestTransaction(t3);
+
+        TransactionQuote c3 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q3);
+
+        // Put chain transaction together. (add cashIn to summary)
+        if ( null != c1.getPlan() || null != c3.getPlan() ||  null != c2.getPlan() )
+          return super.put_(x, quote);
+
+        Transaction cashInPlan = c1.getPlan();
+        Transaction digitalPlan = c2.getPlan();
+        Transaction cashOutPlan = c3.getPlan();
+
+        txn.addNext(cashInPlan);
+        txn.addLineItems(cashInPlan.getLineItems(), cashInPlan.getReverseLineItems());
+
+        digitalPlan.addNext(cashOutPlan);
+        digitalPlan.addLineItems(cashOutPlan.getLineItems(), cashOutPlan.getReverseLineItems());
+
+        txn.addNext(digitalPlan);
+        txn.addLineItems(digitalPlan.getLineItems(), digitalPlan.getReverseLineItems());
 
         txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
         quote.addPlan(txn);
       }
-
-
       return super.put_(x, quote);
     `
     },
