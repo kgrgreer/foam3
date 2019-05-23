@@ -9,24 +9,37 @@ import net.nanopay.kotak.model.reversal.DetailsType;
 import net.nanopay.kotak.model.reversal.HeaderType;
 import net.nanopay.kotak.model.reversal.Reversal;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+
 public class Test implements ContextAgent {
 
   private String paymentMessageId;
 
   @Override
   public void execute(X x) {
-    KotakService kotakService = new KotakService(x);
+    //KotakService kotakService = new KotakService(x);
 
-    paymentTest(kotakService);
-    reversalTest(kotakService);
+    try {
+      byte[] array = Files.readAllBytes(Paths.get("/Users/zac/Desktop/test.png"));
+      System.out.println(Arrays.toString(array));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+//     paymentTest(kotakService);
+//     reversalTest(kotakService);
+
   }
 
-  private void paymentTest(KotakService kotakService) {
+  public void paymentTest(KotakService kotakService, String payMode, int txnAmnt, String IFSCCode, String remitPurpose) {
     RequestHeaderType requestHeader = new RequestHeaderType();
     paymentMessageId = KotakUtils.getUniqueId();
     System.out.println("paymentMessageId: " + paymentMessageId);
     requestHeader.setMessageId(paymentMessageId);
-    requestHeader.setMsgSource("NANOPAY");
+    // requestHeader.setMsgSource("NANOPAY");
     requestHeader.setClientCode("TESTAPI");
     requestHeader.setBatchRefNmbr(paymentMessageId);
 
@@ -34,16 +47,19 @@ public class Test implements ContextAgent {
     InstrumentType instrument1 = new InstrumentType();
     instrument1.setInstRefNo(paymentMessageId);
     instrument1.setMyProdCode("NETPAY");
-    instrument1.setTxnAmnt(6);
+    instrument1.setPayMode(payMode);
+    instrument1.setTxnAmnt(txnAmnt);
     instrument1.setAccountNo("9411128990");
     instrument1.setPaymentDt(KotakUtils.getCurrentIndianDate());
 
-    instrument1.setRecBrCd("BOFA0BG3978");
+    // instrument1.setRecBrCd("BOFA0BG3978");
+    instrument1.setRecBrCd(IFSCCode);
     instrument1.setBeneAcctNo("9111175690");
     instrument1.setBeneName("HELLO API");
 
     EnrichmentSetType enrichmentSet = new EnrichmentSetType();
-    enrichmentSet.setEnrichment(new String[]{"UAT TEST NAME~SAVING~Remitter address~9411128990~FAMILY_MAINTENANCE~~~"});
+    // enrichmentSet.setEnrichment(new String[]{"UAT TEST NAME~SAVING~Remitter address~9411128990~FAMILY_MAINTENANCE~~~"});
+    enrichmentSet.setEnrichment(new String[]{"UAT TEST NAME~SAVING~Remitter address~9411128990~" + remitPurpose + "~~~"});
 
     instrument1.setEnrichmentSet(enrichmentSet);
 
@@ -57,20 +73,22 @@ public class Test implements ContextAgent {
     Acknowledgement ackHeader = paymentResponse.getAckHeader();
 
     String paymentResponseMsgId = ackHeader.getMessageId();
-    System.out.println("paymentResponseMsgId: " + paymentResponseMsgId);
+    // System.out.println("paymentResponseMsgId: " + paymentResponseMsgId);
 
     String paymentResponseStatusCode = ackHeader.getStatusCd();
     System.out.println("paymentResponseStatusCode: " + paymentResponseStatusCode);
 
     String paymentResponseStatusRem = ackHeader.getStatusRem();
     System.out.println("paymentResponseStatusRem: " + paymentResponseStatusRem);
+
+    System.out.println("===========================");
   }
 
 
-  private void reversalTest(KotakService kotakService) {
+  public void reversalTest(KotakService kotakService, String paymentMessageId) {
     HeaderType header = new HeaderType();
     header.setReq_Id(KotakUtils.getUniqueId());
-    header.setMsg_Src("NANOPAY");
+    // header.setMsg_Src("NANOPAY");
     header.setClient_Code("TESTAPI");
     header.setDate_Post(KotakUtils.getCurrentIndianDate());
 
@@ -84,12 +102,14 @@ public class Test implements ContextAgent {
     Reversal reversalResponse = kotakService.submitReversal(reversal);
 
     System.out.println("reqId: " + reversalResponse.getHeader().getReq_Id());
-    System.out.println("msgSrc: " + reversalResponse.getHeader().getMsg_Src());
+    // System.out.println("msgSrc: " + reversalResponse.getHeader().getMsg_Src());
     System.out.println("clientCode: " + reversalResponse.getHeader().getClient_Code());
 
     System.out.println("msgId: " + reversalResponse.getDetails().getRev_Detail()[0].getMsg_Id());
     System.out.println("statusCode: " + reversalResponse.getDetails().getRev_Detail()[0].getStatus_Code());
     System.out.println("statusDesc: " + reversalResponse.getDetails().getRev_Detail()[0].getStatus_Desc());
-    System.out.println("UTR: " + reversalResponse.getDetails().getRev_Detail()[0].getUTR());
+    // System.out.println("UTR: " + reversalResponse.getDetails().getRev_Detail()[0].getUTR());
+
+    System.out.println("===========================");
   }
 }
