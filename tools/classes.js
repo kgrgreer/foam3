@@ -70,6 +70,12 @@ plaid.abstractClasses = plaid.abstractClasses.map(function(element) { return [ '
 plaid.skeletons = plaid.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
 plaid.proxies = plaid.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
 
+var afex = require('../nanopay/src/net/nanopay/fx/afex/classes.js');
+afex.classes = afex.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
+afex.abstractClasses = afex.abstractClasses.map(function(element) { return [ 'nanopay/src/', element ]; })
+afex.skeletons = afex.skeletons.map(function(element) { return [ 'nanopay/src/', element ]; })
+afex.proxies = afex.proxies.map(function(element) { return [ 'nanopay/src/', element ]; })
+
 var classes = [];
 classes = classes.concat(
   foam.classes, nanopay.classes,
@@ -82,7 +88,8 @@ classes = classes.concat(
   kotakPaymentResponse.classes,
   kotakReversal.classes,
   flinks.classes,
-  plaid.classes);
+  plaid.classes,
+  afex.classes);
 
 var abstractClasses = [];
 abstractClasses = abstractClasses.concat(
@@ -97,7 +104,8 @@ abstractClasses = abstractClasses.concat(
   kotakPaymentResponse.abstractClasses,
   kotakReversal.abstractClasses,
   flinks.abstractClasses,
-  plaid.abstractClasses);
+  plaid.abstractClasses,
+  afex.abstractClasses);
 
 var skeletons = [];
 skeletons = skeletons.concat(
@@ -112,7 +120,8 @@ skeletons = skeletons.concat(
   kotakPaymentResponse.skeletons,
   kotakReversal.skeletons,
   flinks.skeletons,
-  plaid.skeletons);
+  plaid.skeletons,
+  afex.skeletons);
 
 var proxies = [];
 proxies = proxies.concat(
@@ -127,7 +136,8 @@ proxies = proxies.concat(
   kotakPaymentResponse.proxies,
   kotakReversal.proxies,
   flinks.proxies,
-  plaid.proxies);
+  plaid.proxies,
+  afex.proxies);
 
 var blacklist = [];
 blacklist = blacklist.concat(
@@ -142,7 +152,8 @@ blacklist = blacklist.concat(
   kotakPaymentResponse.blacklist,
   kotakReversal.blacklist,
   flinks.blacklist,
-  plaid.blacklist);
+  plaid.blacklist,
+  afex.blacklist);
 
 module.exports = {
     classes: classes,
