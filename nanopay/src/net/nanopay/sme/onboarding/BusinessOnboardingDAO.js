@@ -41,7 +41,7 @@ foam.CLASS({
 
         BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
 
-        if ( ( ! old || ! old.getDualPartyAgreement() ) && obj.getDualPartyAgreement() ) {
+        if ( ( old == null || ! old.getDualPartyAgreement() ) && obj.getDualPartyAgreement() ) {
           net.nanopay.documents.AcceptanceDocumentService documentService = 
             (net.nanopay.documents.AcceptanceDocumentService)(x.get("acceptanceDocumentService"));
 
