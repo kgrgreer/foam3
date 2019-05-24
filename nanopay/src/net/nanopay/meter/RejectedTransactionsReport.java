@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class RejectedTransactionsReport {
 
   final static char SEPARATOR = ',';
-  final static int NUM_ELEMENTS = 24;
+  final static int NUM_ELEMENTS = 18;
 
   public <T> String nullCheckToString(T obj, Function<T, String> fn) {
     if ( obj != null ) return fn.apply(obj);
@@ -50,7 +50,6 @@ public class RejectedTransactionsReport {
       nullCheckToString(receiver, (r) -> Long.toString(r.getId())),
       nullCheckToString(receiver, User::getEmail),
       nullCheckToString(receiver, User::label),
-      "N/A",  // Rejection reason
       Long.toString(transaction.getAmount()),
       Long.toString(transaction.getDestinationAmount()),
       "N/A",  // Location name
@@ -99,7 +98,7 @@ public class RejectedTransactionsReport {
           MLang.GTE(Transaction.COMPLETION_DATE, startDate)
         ),
         MLang.LTE(Transaction.CREATED, endDate),
-        MLang.NEQ(Transaction.STATUS, "rejected")
+        MLang.NEQ(Transaction.STATUS, TransactionStatus.DECLINED)
       )
     ).select(new ArraySink())).getArray();
 
@@ -110,14 +109,13 @@ public class RejectedTransactionsReport {
       "Settlement Status",
       "Transaction Status",
       "Transaction Type",
-      "Dispute Status",
+      "Rejection Reason",
       "Sender User ID",
       "Sender Name",
       "Sender Email",
       "Receiver User ID",
       "Receiver Name",
       "Receiver Email",
-      "Rejection Reason",
       "Amount Attempted",
       "Amount Settled",
       "Location Name",
