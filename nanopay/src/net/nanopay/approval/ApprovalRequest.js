@@ -65,7 +65,7 @@ foam.CLASS({
       name: 'daoKey',
       visibility: 'RO',
       documentation: `Used internally in approvalDAO to point where requested object can be found.
-      Should not be used for retrieving approval requests for a given objects
+      Should not be used to retrieve approval requests for a given objects
       since an object can have multiple requests of different nature.`
     },
     {
@@ -78,6 +78,25 @@ foam.CLASS({
         EQ(ApprovalRequest.OBJ_ID, objectId),
         EQ(ApprovalRequest.REQUEST_REFERENCE, "reference")
       )`
+    },
+    {
+      class: 'Int',
+      name: 'points',
+      documentation: `Specific to each ApprovalRequest object.
+      Determines the weight of the approved request depending on the approver's role.
+      Future: populated in approvalRequestDAO pipeline based on configurations.
+      Currentely populated as 1.`
+    },
+    {
+      class: 'Int',
+      name: 'requiredPoints',
+      value: 1,
+      documentation: `Defines how many approvers required and approvers' ranks.
+      E.g. when set to 10:
+      1) 10 approval requests with "points" set to 1.
+      2) 2 approval requests with "points" set to 3 and 1 approval request with "points" set to 5.
+      etc.
+      Deafults to 1 meaning only one approval of any approver rank is required by default.`
     },
     {
       class: 'Reference',
@@ -146,6 +165,7 @@ foam.CLASS({
         this.approvalRequestDAO.put(this);
         this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
       },
+
     }
   ]
 });

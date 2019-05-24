@@ -10,10 +10,12 @@ import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 
 /*
-*
+* Populates "points" property for new requests based on approver user.
 * When approvalRequest.group property is set, creates a new ApprovalRequest object for each user in the group and puts it to approvalDAO.
+* When approvalRequest.approver property is set, approvalRequest.group is ignored.
 * The original object is returned and should not be used for any operations.
  */
+
 public class SendGroupRequestApprovalDAO
 extends ProxyDAO {
 
@@ -27,8 +29,14 @@ extends ProxyDAO {
     ApprovalRequest request = (ApprovalRequest) obj;
     ApprovalRequest oldRequest = (ApprovalRequest) ((DAO) getX().get("approvalRequestDAO")).find(obj);
 
-    if ( oldRequest != null || request.findApprover(getX()) != null ) {
+    if ( oldRequest != null ) {
       return super.put_(x, obj);
+    }
+    User approver = request.findApprover(getX());
+
+    if ( approver != null ) {
+      request.setPoints(findUserPoints(approver));
+      return super.put_(x, request);
     }
 
     Group group = request.findGroup(getX());
@@ -53,5 +61,10 @@ extends ProxyDAO {
     request.clearId();
     request.setApprover(userId);
     ((DAO) getX().get("approvalRequestDAO")).put(request);
+  }
+
+  private int findUserPoints(User user) {
+    // TODO: find user points based on spid/role/group/configurations
+    return 1;
   }
 }
