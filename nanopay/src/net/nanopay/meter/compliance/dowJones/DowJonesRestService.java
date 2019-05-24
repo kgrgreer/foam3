@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Base64;
 import java.util.Date;
+import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
 // apache
@@ -70,7 +71,9 @@ import java.text.SimpleDateFormat;
 
       String urlAddress = baseUrl;
       String pattern = "yyyy-MM-dd";
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+      SimpleDateFormat filterLRDFormat = new SimpleDateFormat(pattern);
+      SimpleDateFormat dobFormat = new SimpleDateFormat(pattern);
+      dobFormat.setTimeZone(TimeZone.getTimeZone("GMT+1"));
 
       if ( req.getRequestInfo().equals(PERSON_NAME) ) {
         urlAddress += req.getRequestInfo();
@@ -81,11 +84,11 @@ import java.text.SimpleDateFormat;
         String filterRegion = ((PersonNameSearchRequest) req.getModel()).getFilterRegion();
         urlAddress += "first-name=" + firstName + "&surname=" + surName;
         if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
-          String formattedLRDFilter = simpleDateFormat.format(filterLRDFrom);
+          String formattedLRDFilter = filterLRDFormat.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedLRDFilter;
         }
         if ( dateOfBirth != null && ! dateOfBirth.equals("") ) {
-          String formattedDOBFilter = simpleDateFormat.format(dateOfBirth);
+          String formattedDOBFilter = dobFormat.format(dateOfBirth);
           urlAddress += "&date-of-birth=" + formattedDOBFilter;
         }
         if ( filterRegion != null && ! filterRegion.equals("") ) {
@@ -98,7 +101,7 @@ import java.text.SimpleDateFormat;
         String filterRegion = ((EntityNameSearchRequest) req.getModel()).getFilterRegion();
         urlAddress += "entity-name=" + entityName;
         if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
-          String formattedFilter = simpleDateFormat.format(filterLRDFrom);
+          String formattedFilter = filterLRDFormat.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedFilter;
         }
         if ( filterRegion != null && ! filterRegion.equals("") ) {
