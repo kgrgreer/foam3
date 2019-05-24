@@ -64,7 +64,20 @@ foam.CLASS({
       class: 'String',
       name: 'daoKey',
       visibility: 'RO',
-      documentation: 'dao where the object can be found(based on objId).'
+      documentation: `Used internally in approvalDAO to point where requested object can be found.
+      Should not be used for retrieving approval requests for a given objects
+      since an object can have multiple requests of different nature.`
+    },
+    {
+      class: 'String',
+      name: 'requestReference',
+      documentation: `Should be unique to a certain type of requests and created within a single rule. 
+      For example "IdentityMind Business approval". 
+      When retrieving approval requests from a dao, do not use daoKey, use requestReference instead: 
+      mland.AND(
+        EQ(ApprovalRequest.OBJ_ID, objectId),
+        EQ(ApprovalRequest.REQUEST_REFERENCE, "request reference")
+      )`
     },
     {
       class: 'Enum',
