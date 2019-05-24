@@ -44,7 +44,16 @@ foam.CLASS({
         ManualFxApprovalRequest request = (ManualFxApprovalRequest) list.get(0);
         kotakFxTransaction.setFxRate(request.getRate());
         kotakFxTransaction.setStatus(TransactionStatus.COMPLETED);
-        approvalRequestDAO.remove_(x, request);
+        approvalRequestDAO
+          .where(
+            MLang.AND(
+              MLang.INSTANCE_OF(ManualFxApprovalRequest.class),
+              MLang.EQ(ManualFxApprovalRequest.DAO_KEY, "transactionDAO"),
+              MLang.EQ(ManualFxApprovalRequest.OBJ_ID, kotakFxTransaction.getId()),
+              MLang.NEQ(ManualFxApprovalRequest.ID, request.getId())
+            )
+          )
+          .removeAll();
       }
       `
     },
