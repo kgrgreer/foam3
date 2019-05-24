@@ -9,11 +9,11 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 
-/*
-* Populates "points" property for new requests based on approver user.
-* When approvalRequest.group property is set, creates a new ApprovalRequest object for each user in the group and puts it to approvalDAO.
-* When approvalRequest.approver property is set, approvalRequest.group is ignored.
-* The original object is returned and should not be used for any operations.
+/**
+ * Populates "points" property for new requests based on approver user.
+ * When approvalRequest.group property is set, creates a new ApprovalRequest object for each user in the group and puts it to approvalDAO.
+ * When approvalRequest.approver property is set, approvalRequest.group is ignored.
+ * The original object is returned and should not be used for any operations.
  */
 
 public class SendGroupRequestApprovalDAO
