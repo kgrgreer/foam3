@@ -42,7 +42,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'approver',
       visibility: 'RO',
-      documentation: 'the user that is requested for approval.',
+      documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
       tableCellFormatter: function(approver) {
         let self = this;
         this.__subSubContext__.userDAO.find(approver).then((user)=> {
@@ -76,8 +76,15 @@ foam.CLASS({
       When retrieving approval requests from a dao, do not use daoKey, use requestReference instead: 
       mland.AND(
         EQ(ApprovalRequest.OBJ_ID, objectId),
-        EQ(ApprovalRequest.REQUEST_REFERENCE, "request reference")
+        EQ(ApprovalRequest.REQUEST_REFERENCE, "reference")
       )`
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Group',
+      name: 'group',
+      documentation: `When set, each user in the group will receive a request for approval.
+      If "approver" property is set, "group" property is ignored.`
     },
     {
       class: 'Enum',
