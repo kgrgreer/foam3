@@ -4,7 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.dao.ProxyDAO;
+import foam.dao.ReadOnlyDAO;
 import static foam.mlang.MLang.*;
 
 import foam.dao.Sink;
@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComplianceHistoryDAO
-  extends ProxyDAO
+  extends ReadOnlyDAO
 {
 
   public ComplianceHistoryDAO(X x) {
-
+    super(x);
   }
 
   private DAO filterDelegate() {
