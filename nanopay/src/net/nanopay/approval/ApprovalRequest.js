@@ -115,7 +115,12 @@ foam.CLASS({
       name: 'memo',
       label: 'Notes',
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 },
-      documentation: 'description of the request.'
+      documentation: 'Meant to be used for explanation on why request was approved/rejected'
+    },
+    {
+      class: 'String',
+      name: 'description',
+      documentation: `Approval request description.`
     },
     {
       class: 'String',
