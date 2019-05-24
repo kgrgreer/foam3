@@ -224,8 +224,8 @@ foam.CLASS({
         TransactionQuote c3 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q3);
 
         // Put chain transaction together. (add cashIn to summary)
-        if ( null != c1.getPlan() || null != c3.getPlan() ||  null != c2.getPlan() )
-          return super.put_(x, quote);
+       // if ( null != c1.getPlan() && null != c3.getPlan() ||  null != c2.getPlan() )
+          //return super.put_(x, quote);
 
         Transaction cashInPlan = c1.getPlan();
         Transaction digitalPlan = c2.getPlan();

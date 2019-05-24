@@ -38,7 +38,9 @@ foam.CLASS({
           }
           newPlans.add(plan);
         }
-        quote.setPlans( newPlans.toArray(new Transaction[newPlans.size()]));
+
+         plans = newPlans.toArray(new Transaction[newPlans.size()]);
+         quote.setPlans(plans);
         return quote;
       `
     }

@@ -77,7 +77,6 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         // FastPay from senders buisness
         Account senderDigitalAccount = DigitalAccount.findDefault(getX(), sender, request.getSourceCurrency());
-        //logger.info("AbliiTransactionDAO michal ", account);
         if (senderDigitalAccount instanceof Debtable &&
           ((Debtable) senderDigitalAccount).findDebtAccount(x) != null && // should be system context?
           ((Debtable) senderDigitalAccount).findDebtAccount(x).getLimit() > 0 ) {
