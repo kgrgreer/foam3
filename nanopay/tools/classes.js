@@ -482,6 +482,7 @@ var classes = [
   'net.nanopay.meter.compliance.NanopayComplianceService',
   'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
+  'net.nanopay.meter.compliance.ComplianceHistoryDAO',
 
   // ruler
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
