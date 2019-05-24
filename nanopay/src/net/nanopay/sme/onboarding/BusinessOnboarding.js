@@ -991,7 +991,7 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user.getId() == getUserId() ) return;
+        if ( user != null && user.getId() == getUserId() ) return;
 
         String permission = "businessOnboarding.create." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
@@ -1004,7 +1004,7 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user.getId() == getUserId() ) return;
+        if ( user != null && user.getId() == getUserId() ) return;
 
         String permission = "businessOnboarding.read." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
@@ -1017,7 +1017,7 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user.getId() == getUserId() ) return;
+        if ( user != null && user.getId() == getUserId() ) return;
 
         String permission = "businessOnboarding.update." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
@@ -1030,7 +1030,7 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user.getId() == getUserId() ) return;
+        if ( user != null && user.getId() == getUserId() ) return;
 
         String permission = "businessOnboarding.delete." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
