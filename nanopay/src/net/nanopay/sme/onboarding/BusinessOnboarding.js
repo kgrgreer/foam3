@@ -170,6 +170,12 @@ foam.CLASS({
           this.firstName = user.firstName;
           this.lastName = user.lastName;
         });
+      },
+      tableCellFormatter: function(id, o) {
+        var e = this.start('span').add(id).end();
+        o.userId$find.then(function(b) {
+          e.add(' - ', b.businessName || b.organization);
+        });
       }
     },
     {
