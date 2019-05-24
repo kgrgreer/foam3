@@ -39,9 +39,7 @@ foam.CLASS({
     },
     {
       name: 'help',
-      factory: function() {
-        return 'Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…'
-      }
+      value: 'Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…'
     },
     {
       name: 'title',
@@ -391,6 +389,16 @@ foam.CLASS({
       },
       validationPredicates: [
         {
+          args: ['signingOfficer', 'address', 'address$regionId', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC')
+            );
+          },
+          errorString: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.'
+        },
+        {
           args: ['signingOfficer', 'address', 'address$errors_'],
           predicateFactory: function(e) {
             return e.OR(
@@ -401,16 +409,6 @@ foam.CLASS({
             );
           },
           errorString: 'Invalid address.'
-        },
-        {
-          args: ['signingOfficer', 'address', 'address$regionId', 'address$errors_'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.NEQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC')
-            );
-          },
-          errorString: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.'
         }
       ],
       validationTextVisible: true
@@ -454,6 +452,16 @@ foam.CLASS({
       },
       validationPredicates: [
         {
+          args: ['signingOfficer', 'businessAddress', 'businessAddress$regionId', 'businessAddress$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC')
+            );
+          },
+          errorString: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.'
+        },
+        {
           args: ['signingOfficer', 'businessAddress', 'businessAddress$errors_'],
           predicateFactory: function(e) {
             return e.OR(
@@ -464,16 +472,6 @@ foam.CLASS({
             );
           },
           errorString: 'Invalid address.'
-        },
-        {
-          args: ['signingOfficer', 'businessAddress', 'businessAddress$regionId', 'businessAddress$errors_'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.NEQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC')
-            );
-          },
-          errorString: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.'
         }
       ],
       validationTextVisible: true
@@ -829,7 +827,7 @@ foam.CLASS({
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
       index: 1,
-      postSet: function() {
+      postSet: function(_, n) {
         if ( ! this.userOwnsPercent ) return;
         this.onDetach(n.ownershipPercent$.follow(this.ownershipPercent$));
         this.onDetach(n.jobTitle$.follow(this.jobTitle$));
