@@ -73,15 +73,20 @@ public class ChainedTransactionTest
     test(tx3.getFxRate() != 0.0, "tx3: fx rate retrieved");
     test(tx3.getDestinationAmount() != 0, "tx3: destinationAmount is set");
 
-    KotakCOTransaction tx4;
+    ComplianceTransaction tx4;
+    KotakCOTransaction tx5;
     sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, tx3.getId())).select(new ArraySink());
     test(sink.getArray().size() == 1, "tx4: tx3 is parent to a single transaction");
-    tx4 = (KotakCOTransaction)  sink.getArray().get(0);
-    test(tx4.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx4: status Pending");
-    test(tx4.getSourceCurrency() == tx4.getDestinationCurrency(), "tx4: sourceCurrency == destinationCurrency");
-    test(tx4.getDestinationCurrency() == "INR", "tx4: destinationCurrency == INR");
 
-    test( tx4.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "Last transaction: getStatus == PENDING_PARENT_COMPLETED");
+    tx4 = (ComplianceTransaction)  sink.getArray().get(0);
+    sink = (ArraySink) txnDAO.where(EQ(Transaction.PARENT, tx4.getId())).select(new ArraySink());
+    test(sink.getArray().size() == 1, "tx5: tx4 is parent to a single transaction");
+    tx5 = (KotakCOTransaction)  sink.getArray().get(0);
+    test(tx5.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "tx5: status Pending");
+    test(tx5.getSourceCurrency() == tx5.getDestinationCurrency(), "tx5: sourceCurrency == destinationCurrency");
+    test(tx5.getDestinationCurrency() == "INR", "tx5: destinationCurrency == INR");
+
+    test( tx5.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "Last transaction: getStatus == PENDING_PARENT_COMPLETED");
 
     //Complete tx2
     Transaction t = (Transaction) txnDAO.find_(x, tx2.getId()).fclone();
@@ -93,17 +98,23 @@ public class ChainedTransactionTest
     tx3 = (FXTransaction) txnDAO.find(tx3.getId());
     test(tx3.getStatus() == TransactionStatus.COMPLETED, "CAT tx3 was updated automamtically");
 
-    tx4 = (KotakCOTransaction) txnDAO.find(tx4.getId());
-    test(tx4.getStatus() == TransactionStatus.PENDING, "Kotak tx4 transaction has status == PENDING");
+    tx4 = (ComplianceTransaction) txnDAO.find(tx4.getId());
+    test(tx4.getStatus() == TransactionStatus.PENDING, "Compliance tx4 is waiting for approval");
+
+    tx4.setStatus(TransactionStatus.COMPLETED);
+    tx4 = (ComplianceTransaction) txnDAO.put_(x, tx4);
+
+    tx5 = (KotakCOTransaction) txnDAO.find(tx5.getId());
+    test(tx5.getStatus() == TransactionStatus.PENDING, "Kotak tx5 transaction has status == PENDING");
     test(txn.getState(x) == TransactionStatus.PENDING, "top level tx in PENDING state");
 
     //complete last kotak txn;
-    tx4.setStatus(TransactionStatus.SENT);
-    tx4 = (KotakCOTransaction) txnDAO.put_(x, tx4);
-    test(tx4.getStatus() == TransactionStatus.SENT, "tx4 status SENT");
-    tx4.setStatus(TransactionStatus.COMPLETED);
-    tx4 = (KotakCOTransaction) txnDAO.put_(x, tx4);
-    test(tx4.getStatus() == TransactionStatus.COMPLETED, "tx4 status COMPLETED");
+    tx5.setStatus(TransactionStatus.SENT);
+    tx5 = (KotakCOTransaction) txnDAO.put_(x, tx5);
+    test(tx5.getStatus() == TransactionStatus.SENT, "tx5 status SENT");
+    tx5.setStatus(TransactionStatus.COMPLETED);
+    tx5 = (KotakCOTransaction) txnDAO.put_(x, tx5);
+    test(tx5.getStatus() == TransactionStatus.COMPLETED, "tx5 status COMPLETED");
 
     txn = (Transaction) txnDAO.find(txn.getId());
     test(txn.getStatus() == TransactionStatus.COMPLETED, "top level txn status COMPLETED");
