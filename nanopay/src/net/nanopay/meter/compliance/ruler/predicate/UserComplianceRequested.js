@@ -17,7 +17,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         return AND(
-          EQ(DOT(NEW_OBJ, CLASS_OF(User.class)), true),
+          EQ(DOT(NEW_OBJ, INSTANCE_OF(User.class)), true),
           EQ(DOT(NEW_OBJ, User.COMPLIANCE), ComplianceStatus.REQUESTED)
         ).f(obj);
       `
