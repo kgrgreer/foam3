@@ -39,9 +39,7 @@ foam.CLASS({
     },
     {
       name: 'help',
-      factory: function() {
-        return 'Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…'
-      }
+      value: 'Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…'
     },
     {
       name: 'title',
