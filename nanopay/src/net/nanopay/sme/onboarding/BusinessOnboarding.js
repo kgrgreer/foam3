@@ -827,7 +827,7 @@ foam.CLASS({
     {
       class: 'net.nanopay.sme.onboarding.OwnerProperty',
       index: 1,
-      postSet: function() {
+      postSet: function(_, n) {
         if ( ! this.userOwnsPercent ) return;
         this.onDetach(n.ownershipPercent$.follow(this.ownershipPercent$));
         this.onDetach(n.jobTitle$.follow(this.jobTitle$));
