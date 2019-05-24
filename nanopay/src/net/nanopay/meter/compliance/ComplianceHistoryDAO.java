@@ -12,9 +12,6 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.ruler.Rule;
 import foam.nanos.ruler.RuleHistory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ComplianceHistoryDAO
   extends ReadOnlyDAO
 {
@@ -24,19 +21,12 @@ public class ComplianceHistoryDAO
   }
 
   private DAO filterDelegate() {
-    ArraySink as1 = new ArraySink();
-    DAO ruleDAO = (DAO) x_.get("ruleDAO");
-    ruleDAO.where(OR(
-      EQ(Rule.RULE_GROUP, "onboarding")
-    )).select(as1);
-
-    List<Long> ids = new ArrayList<>();
-    for ( Object obj : as1.getArray() ) {
-      Rule rule = (Rule) obj;
-      ids.add(rule.getId());
-    }
-
-    return getDelegate().where(IN(RuleHistory.RULE_ID, ids.toArray(new Long[0])));
+    return getDelegate().where(IN(
+      RuleHistory.RULE_ID,
+      ((ArraySink) ((DAO) x_.get("ruleDAO")).where(OR(
+          EQ(Rule.RULE_GROUP, "onboarding"))
+      ).select(new ArraySink())).getArray().stream().map((rule) -> ((Rule)rule).getId()).toArray()
+    ));
   }
 
   @Override
