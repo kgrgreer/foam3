@@ -48,7 +48,7 @@ foam.CLASS({
           return super.put_(x, obj);
         }
         Account destAcc = request.findDestinationAccount(getX());
-        Account sourceAcc = request.findDestinationAccount(getX());
+        Account sourceAcc = request.findSourceAccount(getX());
         DAO localUserDAO = (DAO) x.get("localUserDAO");
         User sender = (User) localUserDAO.inX(x).find(sourceAcc.getOwner());
         User receiver = (User) localUserDAO.inX(x).find(destAcc.getOwner());
