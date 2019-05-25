@@ -6,16 +6,25 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Updates user compliance after associated approval request changes.
+  documentation: `Updates user compliance after approval request changes.
 
-    When approval request changes, the user object is re-put back into DAO
-    without modification then here we check if there is no pending approval
-    requests for the user on other causes (Eg., Securefact/DJ/IDM failed).
+    When approval request changes (to APPROVED/REJECTED), the associated user
+    object is re-put back into DAO without modification.
 
-    If no more pending approval request, the user compliance is updated
-    according the approval request status. Otherwise, passing on without
-    changing user compliance.`,
+    UserComplianceApproval gets the updated approval request and clear the
+    existing pending approval requests.
 
+    If approval request is APPROVED, it will remove other pending approval
+    requests of the same cause. For example, three approval requests were
+    created because Securefact could not verify the user, if one approval
+    request is updated to APPROVED then the other two approval requests will be
+    removed. Then, if there is no more pending it updates the user compliance to
+    PASSED. If there remain pending approval requests, it passes on without
+    changing the user compliance.
+
+    If approval request is REJECTED, it will remove all pending approval requests
+    including approval requests of other causes (eg., IdentityMind
+    REJECTED/MANUAL_REVIEW). Then it updates the user compliance to FAILED.`,
 
   javaImports: [
     'foam.dao.ArraySink',
@@ -40,6 +49,7 @@ foam.CLASS({
             EQ(ApprovalRequest.OBJ_ID, Long.toString(user.getId()))
           ));
 
+        // Get approval request that was updated
         ArraySink sink = (ArraySink) dao
           .where(IN(ApprovalRequest.STATUS, new ApprovalStatus[] {
             ApprovalStatus.APPROVED, ApprovalStatus.REJECTED }))
@@ -47,28 +57,33 @@ foam.CLASS({
           .limit(1)
           .select(new ArraySink());
 
-        // Get approve request that was updated
-        ApprovalRequest approvalRequest = null;
         if ( ! sink.getArray().isEmpty() ) {
-          approvalRequest = (ApprovalRequest) sink.getArray().get(0);
-        }
+          ApprovalRequest approvalRequest = (ApprovalRequest) sink.getArray().get(0);
 
-        // Get pending approval requests count
-        Count requested = (Count) dao
-          .where(AND(
-            EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED),
-            getCauseDaoKeyNEQ(approvalRequest),
-            getCreatedGTE(approvalRequest)))
-          .limit(1)
-          .select(new Count());
+          // Remove existing pending approval requests
+          dao
+            .where(AND(
+              EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED),
+              OR(
+                EQ(approvalRequest.getStatus(), ApprovalStatus.REJECTED),
+                getCauseEq((ComplianceApprovalRequest) approvalRequest)),
+              LT(ApprovalRequest.CREATED, approvalRequest.getLastModified())))
+            .removeAll();
 
-        if ( requested.getValue() == 0 ) {
-          DAO localUserDAO = (DAO) x.get("localUserDAO");
-          user.setCompliance(
-            ApprovalStatus.APPROVED == approvalRequest.getStatus()
-              ? ComplianceStatus.PASSED
-              : ComplianceStatus.FAILED);
-          localUserDAO.inX(x).put(user);
+          // Get pending approval requests count
+          Count requested = (Count) dao
+            .where(EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED))
+            .limit(1)
+            .select(new Count());
+
+          if ( requested.getValue() == 0 ) {
+            DAO localUserDAO = (DAO) x.get("localUserDAO");
+            user.setCompliance(
+              ApprovalStatus.APPROVED == approvalRequest.getStatus()
+                ? ComplianceStatus.PASSED
+                : ComplianceStatus.FAILED);
+            localUserDAO.inX(x).put(user);
+          }
         }
       `
     },
@@ -85,35 +100,19 @@ foam.CLASS({
       javaCode: 'return "";'
     },
     {
-      name: 'getCreatedGTE',
+      name: 'getCauseEq',
       type: 'foam.mlang.predicate.Predicate',
       args: [
         {
           name: 'approvalRequest',
-          type: 'net.nanopay.approval.ApprovalRequest'
+          type: 'net.nanopay.meter.compliance.ComplianceApprovalRequest'
         }
       ],
       javaCode: `
         return approvalRequest != null
-          ? GTE(ApprovalRequest.CREATED, approvalRequest.getLastModified())
-          : TRUE;
-      `
-    },
-    {
-      name: 'getCauseDaoKeyNEQ',
-      type: 'foam.mlang.predicate.Predicate',
-      args: [
-        {
-          name: 'approvalRequest',
-          type: 'net.nanopay.approval.ApprovalRequest'
-        }
-      ],
-      javaCode: `
-        return approvalRequest instanceof ComplianceApprovalRequest
-          ? NEQ(
-              ComplianceApprovalRequest.CAUSE_DAO_KEY,
-              ((ComplianceApprovalRequest) approvalRequest).getCauseDaoKey()
-            )
+          ? AND(
+              EQ(ComplianceApprovalRequest.CAUSE_ID, approvalRequest.getCauseId()),
+              EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, approvalRequest.getCauseDaoKey()))
           : TRUE;
       `
     }
