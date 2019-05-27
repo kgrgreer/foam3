@@ -98,7 +98,7 @@ public class RejectedTransactionsReport {
           MLang.GTE(Transaction.COMPLETION_DATE, startDate)
         ),
         MLang.LTE(Transaction.CREATED, endDate),
-        MLang.NEQ(Transaction.STATUS, TransactionStatus.DECLINED)
+        MLang.EQ(Transaction.STATUS, TransactionStatus.DECLINED)
       )
     ).select(new ArraySink())).getArray();
 
