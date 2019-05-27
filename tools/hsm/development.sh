@@ -40,7 +40,14 @@ function clean {
     softhsm2-util --delete-token --token "development"
   fi
 
-  printf "INFO :: Token for development has been deleted.\n"
+  # Testing token is made by the pkcs11_keystoremanager_test test
+  softhsm2-util --show-slots | grep -q 'SecurityTestUtil'
+  TESTING_SLOT=$?
+  if [[ $TESTING_SLOT -eq 0 ]]; then
+    softhsm2-util --delete-token --token "SecurityTestUtil"
+  fi
+
+  printf "INFO :: Tokens for development and testing have been deleted.\n"
 }
 
 function config_setup {
