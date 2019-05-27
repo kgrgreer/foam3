@@ -876,10 +876,12 @@ FOAM_FILES([
 
   // ruler
   { name: 'net/nanopay/meter/compliance/ruler/CanadianSanctionValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/ClearUserApprovalRequests' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestBeneficialOwnersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactSIDniValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/UserComplianceApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/AbliiSignup' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/B2BTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BeneficialOwnerComplianceRequested' },
@@ -888,7 +890,9 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/NewEqOld' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/UserCompliancePassedOrFailed' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
 
   // canadian sanction
