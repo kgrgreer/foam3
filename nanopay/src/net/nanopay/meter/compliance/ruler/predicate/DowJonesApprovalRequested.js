@@ -7,7 +7,8 @@ foam.CLASS({
   documentation: 'Returns true if approval request is of type DowJonesApprovalRequest',
 
   javaImports: [
-    'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest'
+    'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
