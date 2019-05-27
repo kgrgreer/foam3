@@ -49,18 +49,18 @@ extends ProxyDAO {
 
       @Override
       public void put(Object obj, Detachable sub) {
-        sendSingleRequest(request, ((User)obj).getId());
+        sendSingleRequest(x, request, ((User)obj).getId());
       }
 
     });
     return obj;
   }
 
-  private void sendSingleRequest(ApprovalRequest req, long userId) {
+  private void sendSingleRequest(X x, ApprovalRequest req, long userId) {
     ApprovalRequest request = (ApprovalRequest) req.fclone();
     request.clearId();
     request.setApprover(userId);
-    ((DAO) getX().get("approvalRequestDAO")).put(request);
+    ((DAO) x.get("approvalRequestDAO")).put_(x, request);
   }
 
   private int findUserPoints(User user) {

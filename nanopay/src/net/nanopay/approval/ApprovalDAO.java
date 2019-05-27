@@ -38,7 +38,7 @@ public class ApprovalDAO
 
         //puts object to its original dao
         rePutObject(request);
-        
+
         //removes all the requests that were not approved to clean up approvalRequestDAO
         removeUnsedRequests(requests);
       }
