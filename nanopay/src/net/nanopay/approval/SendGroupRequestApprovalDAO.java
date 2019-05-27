@@ -27,7 +27,7 @@ extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     ApprovalRequest request = (ApprovalRequest) obj;
-    ApprovalRequest oldRequest = (ApprovalRequest) ((DAO) getX().get("approvalRequestDAO")).find(obj);
+    ApprovalRequest oldRequest = (ApprovalRequest) ((DAO) x.get("approvalRequestDAO")).find(obj);
 
     if ( oldRequest != null ) {
       return super.put_(x, obj);

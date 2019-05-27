@@ -24,8 +24,8 @@ public class ApprovalDAO
   @Override
   public FObject put_(X x, FObject obj) {
     DAO requestDAO = ((DAO)x.get("approvalRequestDAO"));
-    ApprovalRequest old = (ApprovalRequest) requestDAO.inX(getX()).find(obj);
-    ApprovalRequest request = (ApprovalRequest) getDelegate().put_(x, obj);
+    ApprovalRequest old = (ApprovalRequest) requestDAO.find(obj);
+    ApprovalRequest request = (ApprovalRequest) getDelegate().put(obj);
     if ( old != null && old.getStatus() != request.getStatus() && request.getStatus() == ApprovalStatus.APPROVED ) {
 
       DAO requests = requestDAO.where(AND(
@@ -48,7 +48,7 @@ public class ApprovalDAO
 
   private void rePutObject(ApprovalRequest request) {
     DAO dao = (DAO) x_.get(request.getDaoKey());
-    FObject found = dao.inX(x_).find(request.getObjId()).fclone();
+    FObject found = dao.find(request.getObjId()).fclone();
     dao.inX(x_).put(found);
   }
 
