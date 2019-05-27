@@ -8,18 +8,18 @@ import static foam.mlang.MLang.*;
 
 public class ApprovalRequestUtil {
 
-  public static DAO getAllRequests(X x, ApprovalRequest request) {
+  public static DAO getAllRequests(X x, String objId, String requestReference) {
     return ((DAO) x.get("approvalRequestDAO")).where(AND(
-      EQ(ApprovalRequest.OBJ_ID, request.getObjId()),
-      EQ(ApprovalRequest.REQUEST_REFERENCE, request.getRequestReference())
+      EQ(ApprovalRequest.OBJ_ID, objId),
+      EQ(ApprovalRequest.REQUEST_REFERENCE, requestReference)
     ));
   }
 
-  public static DAO getAllApprovedRequests(X x, ApprovalRequest request) {
-    return getAllRequests(x, request).where(EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
+  public static DAO getAllApprovedRequests(X x, String objId, String requestReference) {
+    return getAllRequests(x, objId, requestReference).where(EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
   }
 
-  public static int getApprovedPoints(X x, ApprovalRequest request) {
-    return ((Double) ((Sum) getAllApprovedRequests(x, request).select(SUM(ApprovalRequest.POINTS))).getValue()).intValue();
+  public static int getApprovedPoints(X x, String objId, String requestReference) {
+    return ((Double) ((Sum) getAllApprovedRequests(x, objId, requestReference).select(SUM(ApprovalRequest.POINTS))).getValue()).intValue();
   }
 }

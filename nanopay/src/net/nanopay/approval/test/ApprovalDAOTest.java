@@ -9,7 +9,6 @@ import foam.dao.MDAO;
 import foam.dao.SequenceNumberDAO;
 import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
-import foam.mlang.sink.Sum;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.ruler.*;
@@ -33,19 +32,16 @@ extends Test {
     userDAO = new RulerDAO(x, new MDAO(User.getOwnClassInfo()), "testUserDAO");
     x = x.put("localUserDAO", userDAO);
     x = x.put("userDAO", userDAO);
-    //x = TestUtils.mockDAO(x, "localGroupDAO");
-    groupDAO = ((DAO) x.get("localGroupDAO"));//.inX(x);
-    //x = x.put("groupDAO", groupDAO);
-    //x = TestUtils.mockDAO(x, "ruleDAO");
+
+    x = TestUtils.mockDAO(x, "localGroupDAO");
+    groupDAO = ((DAO) x.get("localGroupDAO"));
+    x = x.put("groupDAO", groupDAO);
 
     requestDAO = new SendGroupRequestApprovalDAO(x, new SequenceNumberDAO(new AuthenticatedApprovalDAO(x, new ApprovalDAO(x, new MDAO(ApprovalRequest.getOwnClassInfo()))))).inX(x);
     x = x.put("approvalRequestDAO", requestDAO);
-    userDAO = ((DAO) x.get("localUserDAO")).inX(x);
-    //x = x.put("approvalRequestDAO", requestDAO);
-    //x = x.put("localUserDAO", userDAO);
+    userDAO = ((DAO) x.get("localUserDAO"));
 
-    ruleDAO = ((DAO) x.get("ruleDAO"));//.inX(x);
-    groupDAO = ((DAO) x.get("localGroupDAO"));//.inX(x);
+    ruleDAO = ((DAO) x.get("ruleDAO"));
 
     createGroup();
     createUsers();
@@ -67,12 +63,8 @@ extends Test {
 
     test(numberOfRequests == 5, "Expected: 5 requests were created, one for each user in the group. Actual: " + numberOfRequests);
     test(userToTest.getFirstName().equals("Pending"), "Expected: Tested user's first name is 'Pending' at the start of the test. Actual: " + userToTest.getFirstName());
-
-    requestDAO.where(AND(
-      EQ(ApprovalRequest.OBJ_ID, ((Long)userToTest.getId()).toString()),
-      EQ(ApprovalRequest.REQUEST_REFERENCE, initialRequest.getRequestReference()),
-      NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)
-    )).limit(2).select(new AbstractSink() {
+DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, ((Long)userToTest.getId()).toString(), initialRequest.getRequestReference()).where(NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
+    unapprovedRequestDAO.limit(2).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
         ApprovalRequest req = (ApprovalRequest)((ApprovalRequest) obj).fclone();
@@ -85,11 +77,7 @@ extends Test {
 
     test(userToTest.getFirstName().equals("Pending"), "Expected: Tested user's first name is still 'Pending' after 2 requests were approved. Actual: " + userToTest.getFirstName());
 
-    requestDAO.where(AND(
-      EQ(ApprovalRequest.OBJ_ID, ((Long)userToTest.getId()).toString()),
-      EQ(ApprovalRequest.REQUEST_REFERENCE, initialRequest.getRequestReference()),
-      NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)
-    )).limit(1).select(new AbstractSink() {
+    unapprovedRequestDAO.limit(1).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
         ApprovalRequest req = (ApprovalRequest)((ApprovalRequest) obj).fclone();
@@ -176,11 +164,13 @@ extends Test {
       @Override
       public void applyAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
         User user = (User) obj;
-        long points = ((Double) ((Sum) requestDAO.where(AND(
-          EQ(ApprovalRequest.OBJ_ID, ((Long)userToTest.getId()).toString()),
-          EQ(ApprovalRequest.REQUEST_REFERENCE, initialRequest.getRequestReference()),
-          EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)
-        )).select(SUM(ApprovalRequest.POINTS))).getValue()).longValue();
+//        long points = ((Double) ((Sum) requestDAO.where(AND(
+//          EQ(ApprovalRequest.OBJ_ID, ((Long)userToTest.getId()).toString()),
+//          EQ(ApprovalRequest.REQUEST_REFERENCE, initialRequest.getRequestReference()),
+//          EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)
+//        )).select(SUM(ApprovalRequest.POINTS))).getValue()).longValue();
+//
+        long points = ApprovalRequestUtil.getApprovedPoints(ctx, ((Long)userToTest.getId()).toString(), initialRequest.getRequestReference());
 
         if ( points >= initialRequest.getRequiredPoints() ) {
           user.setFirstName("Approved");
