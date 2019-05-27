@@ -48,8 +48,9 @@ foam.CLASS({
                 return getDelegate().where(IN(
                     RuleHistory.RULE_ID,
                     ((ArraySink) ((DAO) x_.get("ruleDAO")).where(OR(
-                        EQ(Rule.RULE_GROUP, "onboarding"))
-                    ).select(new ArraySink())).getArray().stream().map((rule) -> ((Rule)rule).getId()).toArray()
+                        EQ(Rule.RULE_GROUP, "onboarding"),
+                        EQ(Rule.RULE_GROUP, "compliance")
+                    )).select(new ArraySink())).getArray().stream().map((rule) -> ((Rule)rule).getId()).toArray()
                 ));
             `
           }
