@@ -77,31 +77,9 @@ public class EFTReturnFileProcessor implements ContextAgent
         }
       }
 
-      Vector folderList = channelSftp.ls("/");
-      boolean exist = false;
-      for ( Object entry : folderList ) {
-        ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
-        if ( "Archive_EFTReturnFile".equals(e.getFilename()) ) {
-          exist = true;
-          break;
-        }
-      }
-
-      if ( ! exist ) {
-        channelSftp.mkdir("Archive_EFTReturnFile");
-      }
-
-      String srcFileDirectory = "/Returns/";
-      String dstFileDirectory = "/Archive_EFTReturnFile/";
-
-      // move processed files
-      for ( String fileName : fileNames ) {
-        channelSftp.rename(srcFileDirectory + fileName, dstFileDirectory + fileName);
-      }
-
       logger.debug("EFT Return file processing finished");
 
-    } catch ( JSchException | SftpException e ) {
+    } catch ( JSchException | SftpException e) {
       logger.error(e);
     } finally {
       if ( channel != null ) channel.disconnect();
