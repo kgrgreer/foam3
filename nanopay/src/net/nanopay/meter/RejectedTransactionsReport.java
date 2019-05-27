@@ -98,7 +98,13 @@ public class RejectedTransactionsReport {
           MLang.GTE(Transaction.COMPLETION_DATE, startDate)
         ),
         MLang.LTE(Transaction.CREATED, endDate),
-        MLang.EQ(Transaction.STATUS, TransactionStatus.DECLINED)
+        MLang.OR(
+          MLang.EQ(Transaction.STATUS, TransactionStatus.DECLINED),
+          MLang.EQ(Transaction.STATUS, TransactionStatus.REVERSE),
+          MLang.EQ(Transaction.STATUS, TransactionStatus.REVERSE_FAIL),
+          MLang.EQ(Transaction.STATUS, TransactionStatus.CANCELLED),
+          MLang.EQ(Transaction.STATUS, TransactionStatus.FAILED)
+        )
       )
     ).select(new ArraySink())).getArray();
 
