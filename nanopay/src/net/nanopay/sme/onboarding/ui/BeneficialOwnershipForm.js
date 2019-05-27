@@ -123,14 +123,6 @@ css: `
       margin-top: 30px;
     }
 
-    ^ .updateButton {
-      display: table-row;
-      vertical-align: top;
-      margin-left: 19px;
-      width: 140px !important;
-      margin-top: 35px;
-    }
-
     ^ .deleteButton, ^ .editButton {
       width: 64px;
       height: 24px;
@@ -213,6 +205,12 @@ css: `
     ^ .checkBoxContainer .foam-u2-md-CheckBox {
       display: inline-block;
       vertical-align: middle;
+    }
+
+    ^ .principalOwnersCheckBox > .foam-u2-md-CheckBox-label {
+      margin-top: 0px !important;
+      margin-left: 8px;
+      width: 550px;
     }
 
     ^ .checkBoxContainer .foam-u2-md-CheckBox-label {
@@ -385,6 +383,7 @@ properties: [
     name: 'editingBeneficialOwner',
     postSet: function(oldValue, newValue) {
       if ( newValue != null ) this.editBeneficialOwner(newValue, true);
+      this.viewData.beneficialOwner.id = newValue && newValue.id || 0;
       this.tableViewElement.selection = newValue;
     }
   },
@@ -506,6 +505,9 @@ properties: [
     name: 'noBeneficialOwners',
     documentation: `This is displayed as a checkbox, with text 'No individuals own 25% or more.'
     This cannot be true at the same time as publiclyTradedEntity. UX requirement`,
+    factory: function() {
+      return this.viewData.noBeneficialOwners;
+    },
     postSet: function(o, n) {
       this.viewData.noBeneficialOwners = n;
       if ( n && this.publiclyTradedEntity ) {
@@ -519,6 +521,9 @@ properties: [
     name: 'publiclyTradedEntity',
     documentation: `This is displayed as a checkbox, with text 'Owned by a publicly traded entity'
     This cannot be true at the same time as noBeneficialOwners. UX requirement`,
+    factory: function() {
+      return this.viewData.publiclyTradedEntity;
+    },
     postSet: function(o, n) {
       this.viewData.publiclyTradedEntity = n;
       if ( n && this.noBeneficialOwners ) {
@@ -540,6 +545,9 @@ properties: [
     name: 'noAdditionalBeneficialOwners',
     documentation: `This is displayed as a checkbox, with text acknowledging the form
     contains details for all beneficial owners.`,
+    factory: function() {
+      return this.viewData.noAdditionalBeneficialOwners;
+    },
     postSet: function(o, n) {
       this.viewData.noAdditionalBeneficialOwners = n;
     }
@@ -586,7 +594,7 @@ messages: [
   },
   {
     name: 'NO_ADDITIONAL_OWNERS',
-    message: `I confirm that I have listed the details for all beneficial owners who own 25% or more of the business.`
+    message: `I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.`
   },
   { name: 'BENEFICIAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
   { name: 'BENEFICIAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
@@ -665,12 +673,10 @@ methods: [
 
               .start(this.ADDRESS_FIELD, { mode$: modeSlotSameAsAdmin }).end()
               .start().addClass('buttons-container')
-                .start(this.CANCEL_EDIT)
+                .start(this.CANCEL_EDIT, { buttonStyle: 'TERTIARY' })
                   .enableClass('hidden', this.editingBeneficialOwner$, true)
                 .end()
-                .start(this.ADD_BENEFICIAL_OWNER, { label$: this.addBeneficialOwnerLabel$ })
-                  .enableClass('updateButton', this.editingBeneficialOwner$)
-                .end()
+                .tag(this.ADD_BENEFICIAL_OWNER, { label$: this.addBeneficialOwnerLabel$ })
               .end()
             .end()
           .end()
@@ -724,26 +730,28 @@ methods: [
             })
           ]
         }, {}, this.tableViewElement$).end()
-        .start()
-          .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
-          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
-          .start({
-            class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
-            files$: this.beneficialOwnerDocuments$,
-            supportedFormats: {
-              'image/jpg': 'JPG',
-              'image/jpeg': 'JPEG',
-              'image/png': 'PNG',
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
-              'application/msword': 'DOC',
-              'application/pdf': 'PDF'
-            }
-          }).end()
-        .end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_1).end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
-        .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
+        // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+        //
+        // .start()
+        //   .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()
+        //   .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.UPLOAD_INFORMATION })
+        //   .start({
+        //     class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+        //     files$: this.beneficialOwnerDocuments$,
+        //     supportedFormats: {
+        //       'image/jpg': 'JPG',
+        //       'image/jpeg': 'JPEG',
+        //       'image/png': 'PNG',
+        //       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+        //       'application/msword': 'DOC',
+        //       'application/pdf': 'PDF'
+        //     }
+        //   }).end()
+        // .end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_1).end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_2).end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_3).end()
+        // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
       .end()
       .start().addClass('principalOwnersCheckBox')
         .start({ class: 'foam.u2.md.CheckBox', label: this.NO_ADDITIONAL_OWNERS, data$: this.noAdditionalBeneficialOwners$ }).end()

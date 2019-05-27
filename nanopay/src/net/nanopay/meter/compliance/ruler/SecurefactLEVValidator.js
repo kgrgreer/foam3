@@ -7,6 +7,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.SecurefactService',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
@@ -24,7 +25,14 @@ foam.CLASS({
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.hasCloseMatches() ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x, response, "securefactLEVDAO");
+            requestApproval(x,
+              new ComplianceApprovalRequest.Builder(x)
+                .setObjId(Long.toString(business.getId()))
+                .setDaoKey("localUserDAO")
+                .setCauseId(response.getId())
+                .setCauseDaoKey("securefactLEVDAO")
+                .build()
+            );
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
@@ -36,6 +44,19 @@ foam.CLASS({
     {
       name: 'applyReverseAction',
       javaCode: ` `
+    },
+    {
+      name: 'canExecute',
+      javaCode: `
+      // TODO: add an actual implementation
+      return true;
+      `
+    },
+    {
+      name: 'describe',
+      javaCode: `
+      // TODO: add an actual implementation
+      return "";`
     }
   ]
 });

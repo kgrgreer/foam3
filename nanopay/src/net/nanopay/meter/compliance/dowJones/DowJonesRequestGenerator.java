@@ -6,11 +6,13 @@ import java.util.Date;
 
 public class DowJonesRequestGenerator {
 
-  public static DowJonesRequestMsg getPersonNameSearchRequest(X x, String firstName, String surName, Date filterLRDFrom) {
+  public static DowJonesRequestMsg getPersonNameSearchRequest(X x, PersonNameSearchData searchData) {
     PersonNameSearchRequest request = new PersonNameSearchRequest();
-    request.setFirstName(firstName);
-    request.setSurName(surName);
-    request.setFilterLRDFrom(filterLRDFrom);
+    request.setFirstName(searchData.getFirstName());
+    request.setSurName(searchData.getSurName());
+    request.setFilterLRDFrom(searchData.getFilterLRDFrom());
+    request.setDateOfBirth(searchData.getDateOfBirth());
+    request.setFilterRegion(searchData.getFilterRegion());
 
     DowJonesRequestMsg msg = new DowJonesRequestMsg(x, request);
     msg.setHttpMethod("GET");
@@ -18,10 +20,11 @@ public class DowJonesRequestGenerator {
     return msg;
   }
 
-  public static DowJonesRequestMsg getEntityNameSearchRequest(X x, String entityName, Date filterLRDFrom) {
+  public static DowJonesRequestMsg getEntityNameSearchRequest(X x, EntityNameSearchData searchData) {
     EntityNameSearchRequest request = new EntityNameSearchRequest();
-    request.setEntityName(entityName);
-    request.setFilterLRDFrom(filterLRDFrom);
+    request.setEntityName(searchData.getEntityName());
+    request.setFilterLRDFrom(searchData.getFilterLRDFrom());
+    request.setFilterRegion(searchData.getFilterRegion());
 
     DowJonesRequestMsg msg = new DowJonesRequestMsg(x, request);
     msg.setHttpMethod("GET");

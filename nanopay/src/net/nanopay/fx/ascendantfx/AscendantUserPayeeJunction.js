@@ -11,6 +11,14 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  tableColumns: [
+    'id',
+    'user',
+    'created',
+    'createdBy',
+    'orgId',
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -34,6 +42,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
+      label: 'Creation Date',
       documentation: 'Creation date.'
     },
     {

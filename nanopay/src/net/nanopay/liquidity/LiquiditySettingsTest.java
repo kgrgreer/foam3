@@ -8,12 +8,16 @@ import foam.test.TestUtils;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
+import net.nanopay.approval.ApprovalRequest;
+import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.util.Frequency;
 import net.nanopay.liquidity.Liquidity;
 import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.liquidity.LiquiditySettingsCheckCron;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.*;
 
 import static foam.mlang.MLang.*;
@@ -44,6 +48,11 @@ public class LiquiditySettingsTest
     test(balance == CASH_IN_AMOUNT + initialBalance, "Initial balance "+CASH_IN_AMOUNT);
     // Cash-Out to self will not trigger Liquidity
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
+    DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
+    ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+    request.setStatus(ApprovalStatus.APPROVED);
+    approvalDAO.put_(x_, request);
+
     balance = (Long)senderDigitalDefault.findBalance(x);
     test(balance == CASH_IN_AMOUNT + initialBalance - CASH_OUT_AMOUNT, "Balance with PENDING Cash-Out "+(initialBalance + CASH_IN_AMOUNT-CASH_OUT_AMOUNT));
 
@@ -157,6 +166,11 @@ public class LiquiditySettingsTest
     balance = (Long) senderDigitalDefault.findBalance(x);
     test(SafetyUtil.equals(balance, CASH_IN_AMOUNT+high.getResetBalance()), "testAffectOfCICO: Cash-In, expecting: "+CASH_IN_AMOUNT+high.getResetBalance()+", found: "+balance);
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
+    DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
+    ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+    request.setStatus(ApprovalStatus.APPROVED);
+    approvalDAO.put_(x_, request);
+
     balance = (Long) senderDigitalDefault.findBalance(x);
     test(SafetyUtil.equals(balance, CASH_IN_AMOUNT - CASH_OUT_AMOUNT+high.getResetBalance()), "testAffectOfCICO: PENDING Cash-Out, expecting: "+(CASH_IN_AMOUNT - CASH_OUT_AMOUNT)+high.getResetBalance()+", found: "+balance);
 
@@ -235,7 +249,7 @@ public class LiquiditySettingsTest
 
     ls.setHighLiquidity(high);
     ls.setLowLiquidity(low);
-    
+
     test(TestUtils.testThrows(
       () -> lsDAO.put_(x_, high),
       "you can only put instanceof LiquiditySettings to LiquiditySettingsDAO",

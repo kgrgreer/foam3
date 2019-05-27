@@ -21,6 +21,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
@@ -127,7 +129,7 @@ foam.CLASS({
       padding-left: 0px;
       margin-left: -13px;
       height: auto;
-      padding-top: 5px;
+      padding-top: 15px;
     }
     ^ .net-nanopay-invoice-ui-history-InvoiceHistoryView {
       height: auto;
@@ -359,7 +361,8 @@ foam.CLASS({
       expression: function(invoice$status, invoice$createdBy) {
         return this.user.id === invoice$createdBy &&
         ( invoice$status === this.InvoiceStatus.UNPAID ||
-          invoice$status === this.InvoiceStatus.OVERDUE );
+          invoice$status === this.InvoiceStatus.OVERDUE ) && !
+        ( ( this.QuickbooksInvoice.isInstance(this.invoice) || this.XeroInvoice.isInstance(this.invoice) ) && this.isPayable );
       }
     },
     {

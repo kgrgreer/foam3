@@ -224,6 +224,7 @@ foam.CLASS({
                     return this.E()
                       .start({
                         class: 'net.nanopay.sme.ui.InvoiceRowView',
+                        showQuickAction: false,
                         data: invoice
                       })
                         .on('click', async () => {

@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
-  name: 'BaseSearchResponse',
+  name: 'DowJonesResponse',
   extends: 'net.nanopay.meter.compliance.dowJones.DowJonesCall',
 
   documentation: 'Base class model for a search response from the Dow Jones Risk Database.',
@@ -11,6 +11,14 @@ foam.CLASS({
       name: 'id'
     },
     {
+      class: 'Long',
+      name: 'userId'
+    },
+    {
+      class: 'Date',
+      name: 'searchDate'
+    },
+    {
       class: 'String',
       name: 'searchType'
     },
@@ -19,7 +27,7 @@ foam.CLASS({
       name: 'nameSearched'
     },
     {
-      class: 'String',
+      class: 'Int',
       name: 'totalMatches'
     },
     {
@@ -35,7 +43,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.meter.compliance.dowJones.BaseSearchResponseBody',
+      of: 'net.nanopay.meter.compliance.dowJones.DowJonesResponseBody',
       name: 'responseBody',
       documentation: 'Body retreived from the body response data'
     }

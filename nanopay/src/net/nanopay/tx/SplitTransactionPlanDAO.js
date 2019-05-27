@@ -191,6 +191,7 @@ foam.CLASS({
         q1.copyFrom(quote);
         Transaction t1 = new Transaction.Builder(x).build();
         t1.copyFrom(request);
+        t1.setNext(null);
         // Get Payer Digital Account to fufil CASH-IN
         t1.setDestinationAccount(digitalaccount.getId());
         q1.setRequestTransaction(t1);
@@ -208,6 +209,7 @@ foam.CLASS({
 
         Transaction t2 = new Transaction.Builder(x).build();
         t2.copyFrom(request);
+        t2.setNext(null);
         t2.setSourceAccount(digitalaccount.getId());
         t2.setDestinationAccount(destinationAccount.getId());
         q2.setRequestTransaction(t2);
