@@ -24,6 +24,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'branchDAO',
     'institutionDAO',
     'pushMenu',
     'stack',
@@ -96,17 +97,13 @@ foam.CLASS({
 
   methods: [
     async function getInstitution() {
-      if ( this.isAccountThere ) {
-        await this.institutionDAO.where(
-        this.EQ(this.Institution.INSTITUTION_NUMBER, this.account.institutionNumber))
-          .limit(1)
-          .select()
-          .then((sink) => {
-            if(sink) {
-              this.abbreviation = sink.array[0].abbreviation;
-              this.bankName = sink.array[0].name;
-            }
-          });
+      if ( this.isAccountThere ) {      
+        let branch = await this.branchDAO.find(this.account.branch);
+        let institution = await this.institutionDAO.find(branch.institution);
+        if ( institution ) {
+          this.abbreviation = institution.abbreviation;
+          this.bankName = institution.name;
+        }
       } 
     }, 
 
