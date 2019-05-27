@@ -101,7 +101,7 @@ try {
 
   channelSftp.cd("/");
 
-  String filename = CsvUtil.generateFilename(now);
+  String filename = CsvUtil.generateFilename(now, credentials.getIdentifier());
 
   Vector rootList = channelSftp.ls("/");
   boolean rootFolderCsvFileExist = false;
