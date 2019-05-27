@@ -79,7 +79,7 @@ public class EFTReturnFileProcessor implements ContextAgent
 
       logger.debug("EFT Return file processing finished");
 
-    } catch ( JSchException | SftpException e) {
+    } catch ( JSchException | SftpException e ) {
       logger.error(e);
     } finally {
       if ( channel != null ) channel.disconnect();
