@@ -164,12 +164,6 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, ((Long)userToTe
       @Override
       public void applyAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
         User user = (User) obj;
-//        long points = ((Double) ((Sum) requestDAO.where(AND(
-//          EQ(ApprovalRequest.OBJ_ID, ((Long)userToTest.getId()).toString()),
-//          EQ(ApprovalRequest.REQUEST_REFERENCE, initialRequest.getRequestReference()),
-//          EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)
-//        )).select(SUM(ApprovalRequest.POINTS))).getValue()).longValue();
-//
         long points = ApprovalRequestUtil.getApprovedPoints(ctx, ((Long)userToTest.getId()).toString(), initialRequest.getRequestReference());
 
         if ( points >= initialRequest.getRequiredPoints() ) {
