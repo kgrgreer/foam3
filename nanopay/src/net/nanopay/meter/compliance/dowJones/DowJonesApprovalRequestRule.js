@@ -28,9 +28,10 @@ foam.CLASS({
           )
         );
 
-        dowJonesResponse.setStatus(approvalRequest.getStatus());
-        dowJonesResponse.setComments(approvalRequest.getComments());
-        dowJonesResponseDAO.put(dowJonesResponse);
+        DowJonesResponse dowJonesResponse_ = (DowJonesResponse) dowJonesResponse.fclone();
+        dowJonesResponse_.setStatus(approvalRequest.getStatus());
+        dowJonesResponse_.setComments(approvalRequest.getComments());
+        dowJonesResponseDAO.put(dowJonesResponse_);
       `
     },
     {
