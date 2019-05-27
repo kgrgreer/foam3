@@ -37,7 +37,7 @@ extends Test {
     groupDAO = ((DAO) x.get("localGroupDAO"));
     x = x.put("groupDAO", groupDAO);
 
-    requestDAO = new SendGroupRequestApprovalDAO(x, new SequenceNumberDAO(new AuthenticatedApprovalDAO(x, new ApprovalDAO(x, new MDAO(ApprovalRequest.getOwnClassInfo()))))).inX(x);
+    requestDAO = new SendGroupRequestApprovalDAO(x, new foam.dao.ValidatingDAO(x, new SequenceNumberDAO(new AuthenticatedApprovalDAO(x, new ApprovalDAO(x, new MDAO(ApprovalRequest.getOwnClassInfo()))))));
     x = x.put("approvalRequestDAO", requestDAO);
     userDAO = ((DAO) x.get("localUserDAO"));
 
@@ -114,7 +114,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, ((Long)userToTe
     initialRequest.setGroup(group.getId());
     initialRequest.setRequiredPoints(3);
     initialRequest.setRequestReference("testing approval system");
-    initialRequest.setDaoKey("localUserDAO");
+    initialRequest.setDaoKey("locfdsgglUserDAO");
   }
 
   private void createUserRule(X ctx) {

@@ -5,10 +5,17 @@ foam.CLASS({
   'represent a single approval request for a single user.',
 
   implements: [
+    'foam.core.Validatable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
+  ],
+
+  javaImports: [
+    'foam.core.X',
+    'foam.core.FObject',
+    'foam.dao.DAO'
   ],
 
   requires: [
@@ -149,6 +156,21 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       visibility: 'RO'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `DAO dao = (DAO) x.get(getDaoKey());
+if ( dao == null ) {
+  throw new RuntimeException("Invalid dao key for the approval request object.");
+}
+FObject obj = dao.inX(x).find(getObjId());
+if ( obj == null ) {
+  throw new RuntimeException("Invalid object id.");
+}
+      `
     }
   ],
 

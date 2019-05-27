@@ -30,7 +30,7 @@ extends ProxyDAO {
     ApprovalRequest oldRequest = (ApprovalRequest) ((DAO) x.get("approvalRequestDAO")).find(obj);
 
     if ( oldRequest != null ) {
-      return super.put_(x, obj);
+      return getDelegate().put_(x, obj);
     }
     User approver = request.findApprover(getX());
 
