@@ -114,7 +114,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, ((Long)userToTe
     initialRequest.setGroup(group.getId());
     initialRequest.setRequiredPoints(3);
     initialRequest.setRequestReference("testing approval system");
-    initialRequest.setDaoKey("locfdsgglUserDAO");
+    initialRequest.setDaoKey("localUserDAO");
   }
 
   private void createUserRule(X ctx) {

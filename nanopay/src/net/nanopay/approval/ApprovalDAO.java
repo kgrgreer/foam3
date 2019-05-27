@@ -50,7 +50,7 @@ public class ApprovalDAO
   }
 
   private void removeUnsedRequests(DAO dao) {
-    dao.where(NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)).removeAll();
+    dao.where(EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)).removeAll();
   }
 
   private long getCurrentPoints(DAO dao) {
