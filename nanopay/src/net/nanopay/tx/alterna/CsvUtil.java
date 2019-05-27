@@ -103,8 +103,8 @@ public class CsvUtil {
    * @param date date to use in the filename
    * @return the filename
    */
-  public static String generateFilename(Date date) {
-    return filenameSdf.get().format(date) + "_B2B.csv";
+  public static String generateFilename(Date date, String identifier) {
+    return filenameSdf.get().format(date) + "_" + identifier + ".csv";
   }
 
   /**
