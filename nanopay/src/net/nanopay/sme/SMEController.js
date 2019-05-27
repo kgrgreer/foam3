@@ -27,20 +27,20 @@ foam.CLASS({
     'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
     'net.nanopay.sme.ui.VerifyEmailView',
-    'net.nanopay.accounting.AccountingIntegrationUtil'
+    'foam.u2.Element',
   ],
 
   exports: [
+    'accountingIntegrationUtil',
     'agent',
     'appConfig',
     'as ctrl',
     'bannerData',
     'bannerizeCompliance',
-    'checkComplianceAndBanking',
+    'checkAbilityToMakePayment',
     'currentAccount',
     'privacyUrl',
     'termsUrl',
-    'accountingIntegrationUtil'
   ],
 
   implements: [
@@ -96,6 +96,12 @@ foam.CLASS({
     max-width: 450px;
     text-overflow: ellipsis;
   }
+  ^ .toast-link {
+    color: #604aff;
+    cursor: pointer;
+    margin-left: 5px;
+    text-decoration: underline;
+  }
   `,
 
   messages: [
@@ -110,6 +116,14 @@ foam.CLASS({
     {
       name: 'INCOMPLETE_BUSINESS_REGISTRATION',
       message: `You must complete your business profile and add banking first.`
+    },
+    {
+      name: 'TWO_FACTOR_REQUIRED_ONE',
+      message: `For your security, two factor authentication is required to send payment.`
+    },
+    {
+      name: 'TWO_FACTOR_REQUIRED_TWO',
+      message: 'Click here to set up.'
     },
     {
       name: 'HAS_NOT_PASSED_COMPLIANCE',
@@ -320,8 +334,9 @@ foam.CLASS({
       }
     },
 
-    async function checkComplianceAndBanking() {
+    async function checkAbilityToMakePayment(isPayable) {
       var bankAccountCount = await this.bankingAmount();
+      var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
 
       if ( this.user.compliance !== this.ComplianceStatus.PASSED
            || bankAccountCount === 0 ) {
@@ -331,6 +346,30 @@ foam.CLASS({
           this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'error');
         }
         return false;
+      } else if ( this.user.compliance === this.ComplianceStatus.PASSED
+        && bankAccountCount !== 0
+        && isPayable
+        && canPayInvoice
+        && ! this.agent.twoFactorEnabled ) {
+          // This condition is to check if the user enable the 2FA when the user
+          // have the permission to send a payable after the user passed
+          // the compliance and already add the bank account.
+          //
+          // It is required and only for payables.
+          this.notify(
+            // Pass the customized DOM element into the toast notification
+            this.Element.create()
+              .start().style({ 'display': 'inline-block' })
+                .add(this.TWO_FACTOR_REQUIRED_ONE)
+              .end()
+              .start('a').addClass('toast-link')
+                .add(this.TWO_FACTOR_REQUIRED_TWO)
+                .on('click', () => {
+                  this.pushMenu('sme.accountProfile.personal-settings');
+                })
+              .end()
+              , 'warning');
+          return false;
       }
       return true;
     },

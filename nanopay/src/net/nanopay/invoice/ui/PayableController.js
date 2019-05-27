@@ -22,7 +22,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'checkComplianceAndBanking',
+    'checkAbilityToMakePayment',
     'currencyDAO',
     'stack',
     'user',
@@ -91,7 +91,7 @@ foam.CLASS({
                 if (! updatedInvoice) {
                   return;
                 }
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAbilityToMakePayment(true).then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.send').then((menu) => {
                       var clone = menu.clone();
@@ -172,7 +172,7 @@ foam.CLASS({
           name: 'sendMoney',
           label: 'Send payment',
           code: function(X) {
-            self.checkComplianceAndBanking().then((result) => {
+            self.checkAbilityToMakePayment(true).then((result) => {
               if ( result ) {
                 X.menuDAO.find('sme.quickAction.send').then((menu) => {
                   var clone = menu.clone();

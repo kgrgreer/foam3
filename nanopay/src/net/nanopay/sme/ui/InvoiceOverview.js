@@ -34,7 +34,7 @@ foam.CLASS({
     'accountDAO',
     'auth',
     'canReceiveCurrencyDAO',
-    'checkComplianceAndBanking',
+    'checkAbilityToMakePayment',
     'ctrl',
     'currencyDAO',
     'email',
@@ -683,7 +683,7 @@ foam.CLASS({
         return this.invoice.status === this.InvoiceStatus.DRAFT;
       },
       code: function(X) {
-        this.checkComplianceAndBanking().then((result) => {
+        this.checkAbilityToMakePayment(this.isPayable).then((result) => {
           if ( ! result ) return;
           var menuName = this.isPayable ? 'send' : 'request';
           X.menuDAO.find(`sme.quickAction.${menuName}`).then((menu) => {
@@ -711,7 +711,7 @@ foam.CLASS({
       },
       code: function(X) {
         var self = this;
-        this.checkComplianceAndBanking().then((result) => {
+        this.checkAbilityToMakePayment(this.isPayable).then((result) => {
           if ( result ) {
             // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
             var request = self.CanReceiveCurrency.create({

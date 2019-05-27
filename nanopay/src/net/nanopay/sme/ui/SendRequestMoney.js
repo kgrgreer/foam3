@@ -16,7 +16,7 @@ foam.CLASS({
     'appConfig',
     'auth',
     'canReceiveCurrencyDAO',
-    'checkComplianceAndBanking',
+    'checkAbilityToMakePayment',
     'contactDAO',
     'ctrl',
     'fxService',
@@ -309,7 +309,7 @@ foam.CLASS({
     },
 
     function initE() {
-      this.checkComplianceAndBanking().then((result) => {
+      this.checkAbilityToMakePayment(this.isPayable).then((result) => {
         if ( ! result ) {
           this.pushMenu('sme.main.dashboard');
           return;
@@ -354,7 +354,7 @@ foam.CLASS({
     async function submit() {
       this.isLoading = true;
       try {
-        var result = await this.checkComplianceAndBanking();
+        var result = await this.checkAbilityToMakePayment(this.isPayable);
         if ( ! result ) {
           this.notify(this.COMPLIANCE_ERROR, 'error');
           return;

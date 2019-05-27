@@ -21,7 +21,7 @@ foam.CLASS({
 
   imports: [
     'accountingIntegrationUtil',
-    'checkComplianceAndBanking',
+    'checkAbilityToMakePayment',
     'stack',
     'user'
   ],
@@ -103,7 +103,7 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAbilityToMakePayment(true).then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.request').then((menu) => {
                       var clone = menu.clone();
@@ -128,7 +128,7 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAbilityToMakePayment(true).then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.send').then((menu) => {
                       var clone = menu.clone();

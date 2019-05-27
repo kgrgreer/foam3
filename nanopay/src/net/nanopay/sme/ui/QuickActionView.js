@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'checkComplianceAndBanking',
+    'checkAbilityToMakePayment',
     'menuDAO',
     'pushMenu'
   ],
@@ -70,7 +70,8 @@ foam.CLASS({
 
   listeners: [
     function quickActionRedirect(menu) {
-      this.checkComplianceAndBanking().then((result) => {
+      var isPayable = menu.id === 'sme.quickAction.send';
+      this.checkAbilityToMakePayment(isPayable).then((result) => {
         if ( result ) {
           this.pushMenu(menu.id);
         }

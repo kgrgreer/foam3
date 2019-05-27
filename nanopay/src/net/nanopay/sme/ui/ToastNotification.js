@@ -33,6 +33,7 @@ foam.CLASS({
       border: 1px solid #03cf1f;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
     @keyframes fade {
       0% { opacity: 0; }
@@ -86,12 +87,18 @@ foam.CLASS({
       class: 'String',
       name: 'message'
     },
+    {
+      class: 'foam.u2.ViewSpec',
+      name: 'contentElement'
+    },
     'data'
   ],
 
   methods: [
 
     function initE() {
+      var self = this;
+
       var img;
       if ( this.type === 'error' ) {
         img = 'images/inline-error-icon.svg';
@@ -112,6 +119,9 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('message'))
+              .callIf(this.contentElement, function() {
+                this.tag(self.contentElement);
+              })
               .add(this.message)
             .end()
           .end()
@@ -119,7 +129,6 @@ foam.CLASS({
             .start()
               .addClass(this.myClass('link-icon'))
               .start()
-                .addClass(this.myClass('align-top'))
                 .addClass(this.myClass('close-icon'))
                 .on('click', () => this.remove())
               .end()
