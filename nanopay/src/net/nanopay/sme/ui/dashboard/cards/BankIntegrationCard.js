@@ -8,9 +8,15 @@ foam.CLASS({
     Actions are provided for both scenarios (attached or not).
   `,
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   requires: [
     'net.nanopay.account.Account',
-    'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.payment.Institution',
+    'net.nanopay.sme.ui.dashboard.cards.IntegrationCard'
   ],
 
   implements: [
@@ -18,9 +24,10 @@ foam.CLASS({
   ],
 
   imports: [
+    'institutionDAO',
     'pushMenu',
     'stack',
-    'user'
+    'user',
   ],
 
   messages: [
@@ -61,8 +68,12 @@ foam.CLASS({
       class: 'String',
       name: 'subtitleToUse',
       expression: function(isAccountThere) {
-        if ( isAccountThere ) return this.SUBTITLE_LINKED + ' ' + this.account.name;
-
+        if ( isAccountThere ) {
+          var subtitle = this.SUBTITLE_LINKED + ' ';
+          subtitle += this.abbreviation ? this.abbreviation : (this.bankname ? this.bankname : this.account.name);
+          subtitle += ' ****' + this.account.accountNumber.slice(4)
+          return subtitle;
+        }
         return this.SUBTITLE_EMPTY;
       }
     },
@@ -72,20 +83,45 @@ foam.CLASS({
       expression: function(account) {
         return account != undefined && account.id != 0;
       }
+    },
+    {
+      class: 'String',
+      name: 'abbreviation'
+    },
+    {
+      class: 'String',
+      name: 'bankName'
     }
   ],
 
   methods: [
+    async function getInstitution() {
+      if ( this.isAccountThere ) {
+        await this.institutionDAO.where(
+        this.EQ(this.Institution.INSTITUTION_NUMBER, this.account.institutionNumber))
+          .limit(1)
+          .select()
+          .then((sink) => {
+            if(sink) {
+              this.abbreviation = sink.array[0].abbreviation;
+              this.bankName = sink.array[0].name;
+            }
+          });
+      } 
+    }, 
+
     function initE() {
-      this.add(this.slot((subtitleToUse, isAccountThere) => {
-        return this.E()
-          .start(this.IntegrationCard, {
-            iconPath: this.iconPath,
-            title: this.TITLE,
-            subtitle: subtitleToUse,
-            action: isAccountThere ? this.VIEW_ACCOUNT : this.ADD_BANK
-          }).end();
-      }));
+      this.getInstitution().then(() => {
+        this.add(this.slot((subtitleToUse, isAccountThere) => {
+          return this.E()
+            .start(this.IntegrationCard, {
+              iconPath: this.iconPath,
+              title: this.TITLE,
+              subtitle: subtitleToUse,
+              action: isAccountThere ? this.VIEW_ACCOUNT : this.ADD_BANK
+            }).end();
+        }));
+      })
     }
   ],
 
