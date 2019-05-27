@@ -106,7 +106,7 @@ foam.CLASS({
                     });
                   }
                 }).catch((err) => {
-                  console.warn('Error occured when checking the compliance: ', err);
+                  console.warn('Error occured when checking the ability to make payment: ', err);
                 });
               }
             }),
@@ -187,7 +187,7 @@ foam.CLASS({
                 });
               }
             }).catch((err) => {
-              console.warn('Error occured when checking the compliance: ', err);
+              console.warn('Error occured when checking the ability to make payment:', err);
             });
           }
         });

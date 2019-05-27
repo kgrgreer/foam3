@@ -76,7 +76,7 @@ foam.CLASS({
           this.pushMenu(menu.id);
         }
       }).catch((err) => {
-        console.warn('Error occured when checking the compliance: ', err);
+        console.warn('Error occured when checking the ability to make payment: ', err);
       });
     }
   ]

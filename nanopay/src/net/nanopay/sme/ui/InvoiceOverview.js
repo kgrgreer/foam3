@@ -695,6 +695,8 @@ foam.CLASS({
             });
             clone.launch(X, X.controllerView);
           });
+        }).catch((err) => {
+          console.warn('Error occured when checking the ability to make payment: ', err);
         });
       }
     },
@@ -733,7 +735,7 @@ foam.CLASS({
                 });
                 clone.launch(X, X.controllerView);
               }).catch((err) => {
-                console.warn('Error occured when checking the compliance: ', err);
+                console.warn('Error occured when checking the ability to make payment: ', err);
               });
             });
           }
