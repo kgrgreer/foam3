@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Base64;
 import java.util.Date;
-import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
 // apache
@@ -71,8 +70,7 @@ import java.text.SimpleDateFormat;
 
       String urlAddress = baseUrl;
       String pattern = "yyyy-MM-dd";
-      SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
       if ( req.getRequestInfo().equals(PERSON_NAME) ) {
         urlAddress += req.getRequestInfo();
@@ -81,16 +79,18 @@ import java.text.SimpleDateFormat;
         Date filterLRDFrom = ((PersonNameSearchRequest) req.getModel()).getFilterLRDFrom();
         Date dateOfBirth = ((PersonNameSearchRequest) req.getModel()).getDateOfBirth();
         String filterRegion = ((PersonNameSearchRequest) req.getModel()).getFilterRegion();
+        firstName = firstName.replaceAll("  *", "%20");
+        surName = surName.replaceAll("  *", "%20");
         urlAddress += "first-name=" + firstName + "&surname=" + surName;
-        if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
-          String formattedLRDFilter = sdf.format(filterLRDFrom);
+        if ( filterLRDFrom != null ) {
+          String formattedLRDFilter = simpleDateFormat.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedLRDFilter;
         }
-        if ( dateOfBirth != null && ! dateOfBirth.equals("") ) {
-          String formattedDOBFilter = sdf.format(dateOfBirth);
+        if ( dateOfBirth != null ) {
+          String formattedDOBFilter = simpleDateFormat.format(dateOfBirth);
           urlAddress += "&date-of-birth=" + formattedDOBFilter;
         }
-        if ( filterRegion != null && ! filterRegion.equals("") ) {
+        if ( filterRegion != null ) {
           urlAddress += "&filter-region=" + filterRegion;
         }
       } else if ( req.getRequestInfo().equals(ENTITY_NAME) ) {
@@ -98,17 +98,17 @@ import java.text.SimpleDateFormat;
         String entityName = ((EntityNameSearchRequest) req.getModel()).getEntityName();
         Date filterLRDFrom = ((EntityNameSearchRequest) req.getModel()).getFilterLRDFrom();
         String filterRegion = ((EntityNameSearchRequest) req.getModel()).getFilterRegion();
+        entityName = entityName.replaceAll("  *", "%20");
         urlAddress += "entity-name=" + entityName;
-        if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
-          String formattedFilter = sdf.format(filterLRDFrom);
+        if ( filterLRDFrom != null ) {
+          String formattedFilter = simpleDateFormat.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedFilter;
         }
-        if ( filterRegion != null && ! filterRegion.equals("") ) {
+        if ( filterRegion != null ) {
           urlAddress += "&filter-region=" + filterRegion;
         }
       }
 
-      urlAddress = urlAddress.replaceAll("  *", "%20");
       HttpGet get = new HttpGet(urlAddress);
       get.setHeader("Authorization", "Basic " + encodedCredentials);
       response = client.execute(get);
