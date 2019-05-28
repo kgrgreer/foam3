@@ -5,10 +5,6 @@ foam.CLASS({
 
   documentation: 'Agreement form for PAD Authorization',
 
-  requires: [
-    'foam.nanos.auth.Address'
-  ],
-
   imports: [
     'user'
   ],
