@@ -40,12 +40,14 @@ foam.CLASS({
       margin: 0 !important;
       padding: 0 !important;
       background: #f9fbff;
-      text-align: center
+      text-align: center;
+      overflow-y: scroll;
     }
     ^ .report-container {
       display: inline-block;
       width: 100%;
       height: 90vh;
+      overflow-y: scroll;
     }
     ^ .button-bar {
       margin-top:20px;
@@ -55,7 +57,7 @@ foam.CLASS({
       padding-bottom: 12px;
       padding-right: 24px;
     }
-    ^ .foam-u2-ActionView-next {
+    ^ .next-button {
       width: 158px;
       height: 48px !important;
       border-radius: 4px;
@@ -182,6 +184,9 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      if ( ! this.reportResult ) {
+        return null;
+      }
       this
         .start().addClass(this.myClass())
 
@@ -211,7 +216,7 @@ foam.CLASS({
           .end()
 
           .start().addClass('button-bar')
-            .start(this.NEXT).end()
+            .start(this.NEXT).addClass('next-button').end()
           .end()
 
         .end();

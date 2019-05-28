@@ -47,6 +47,7 @@ foam.CLASS({
     margin-left: 12px;
   }
   ^ .bank-pick-subtitle {
+    display: inline-block;
     margin-bottom: 40px;
     font-size: 16px;
     font-weight: normal;
@@ -150,11 +151,23 @@ foam.CLASS({
     position: relative;
     padding-left: 36px;
   }
+  ^link-text {
+    color: %SECONDARYCOLOR%;
+    margin-top: 0px;
+    cursor: pointer;
+    margin-left: 3px;
+    font-size: 16px;
+    display: inline-block;
+  }
+  ^ h1 {
+    margin-bottom: 0px;
+  }
   `,
 
   messages: [
     { name: 'TITLE', message: 'Add a new bank' },
-    { name: 'SUB_TITLE', message: 'Choose your banking provider below to get started' },
+    { name: 'SUB_TITLE', message: 'Connect through a banking partner below, or ' },
+    { name: 'CONNECT_LABEL', message: 'connect with a void check' },
     { name: 'BANK_ADDED', message: 'Your bank account was successfully added.' },
   ],
 
@@ -193,6 +206,8 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      var self = this;
+
       this.checkIntegration();
       this.addClass(this.myClass())
       .start().addClass('bank-currency-pick-height')
@@ -210,7 +225,22 @@ foam.CLASS({
               this.stack.back();
             }).end()
             .start('h1').add(this.TITLE).addClass('bank-pick-title').end()
-            .start('h4').add(this.SUB_TITLE).addClass('bank-pick-title').addClass('bank-pick-subtitle').end()
+            .start()
+              .start('h4').add(this.SUB_TITLE).addClass('bank-pick-title').addClass('bank-pick-subtitle').end()
+              .start('p')
+                .addClass(this.myClass('link-text'))
+                .add(this.CONNECT_LABEL)
+                .on('click', function() {
+                  var bankModal = self.selection == 1 ? 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal' :
+                      'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard';
+
+                  self.ctrl.add(self.Popup.create().tag({
+                    class: bankModal,
+                    onComplete: self.onComplete
+                  }));
+                })
+              .end()
+            .end()
             .start('span').addClass('resting')
             .startContext({ data: this })
               .start(this.CURRENCY_ONE)
@@ -280,7 +310,7 @@ foam.CLASS({
     {
       name: 'currencyOne',
       label: 'Canada',
-      permissionConfig: { enabled: ['currency.read.CAD'] },
+      enabledPermissions: ['currency.read.CAD'],
       code: function() {
         this.selection = 1;
       }
@@ -288,7 +318,7 @@ foam.CLASS({
     {
       name: 'currencyTwo',
       label: 'US',
-      permissionConfig: { enabled: ['currency.read.USD'] },
+      enabledPermissions: ['currency.read.USD'],
       code: function() {
         this.selection = 2;
       }

@@ -8,7 +8,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.contacts.Contact;
@@ -39,7 +39,6 @@ public class RegistrationApprovedEmailDAO
 
       user = (User) super.put_(x , obj);
       AppConfig               config    = (AppConfig) x.get("appConfig");
-      EmailService            email     = (EmailService) x.get("email");
       EmailMessage            message   = new EmailMessage();
       HashMap<String, Object> args      = new HashMap<>();
 
@@ -48,7 +47,7 @@ public class RegistrationApprovedEmailDAO
       args.put("link",    config.getUrl());
 
       try {
-        email.sendEmailFromTemplate(x, user, message, "reg-approved", args);
+        EmailsUtility.sendEmailFromTemplate(x, user, message, "reg-approved", args);
       } catch (Throwable t) {
         (x.get(Logger.class)).error("Error sending approval email.", t);
       }

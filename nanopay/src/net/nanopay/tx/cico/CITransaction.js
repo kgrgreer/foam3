@@ -4,25 +4,27 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
-    'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
     'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
+    'java.text.NumberFormat',
+    'foam.util.SafetyUtil',
+    'java.util.ArrayList',
+    'java.util.Arrays',
     'java.util.HashMap',
     'java.util.List',
-    'java.util.ArrayList',
-    'java.text.NumberFormat',
-    'foam.nanos.notification.Notification',
-    'foam.nanos.auth.User',
-    'foam.nanos.app.AppConfig',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.Transfer',
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
-    'java.util.Arrays',
-    'foam.util.SafetyUtil',
-    'net.nanopay.liquidity.LiquidityService'
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.liquidity.LiquidityService',
+    'net.nanopay.model.Currency',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.Transfer'
   ],
 
   properties: [
@@ -110,70 +112,91 @@ foam.CLASS({
         { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-      if ( oldTxn == null ) return;
-      if ( getStatus() != TransactionStatus.REVERSE && getStatus() != TransactionStatus.REVERSE_FAIL && getStatus() != TransactionStatus.DECLINED)
-      return;
+        if ( oldTxn == null ) return;
 
-      DAO notificationDAO = ((DAO) x.get("notificationDAO"));
-      if ( getStatus() == TransactionStatus.REVERSE_FAIL ) {
+        if (
+          getStatus() != TransactionStatus.REVERSE &&
+          getStatus() != TransactionStatus.REVERSE_FAIL &&
+          getStatus() != TransactionStatus.DECLINED
+        ) return;
+
+        DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+
+        if ( getStatus() == TransactionStatus.REVERSE_FAIL ) {
+          Notification notification = new Notification();
+          notification.setEmailIsEnabled(true);
+          notification.setBody("Cash in transaction id: " + getId() + " was declined but failed to revert the balance.");
+          notification.setNotificationType("Cashin transaction declined");
+          notification.setGroupId("support");
+          notificationDAO.put(notification);
+          return;
+        }
+
+        User sender = findSourceAccount(x).findOwner(x);
+        User receiver = findDestinationAccount(x).findOwner(x);
         Notification notification = new Notification();
         notification.setEmailIsEnabled(true);
-        notification.setBody("Cash in transaction id: " + getId() + " was declined but failed to revert the balance.");
-        notification.setNotificationType("Cashin transaction declined");
-        notification.setGroupId("support");
-        notificationDAO.put(notification);
-        return;
-      }
-      User sender = findSourceAccount(x).findOwner(x);
-      User receiver = findDestinationAccount(x).findOwner(x);
-      Notification notification = new Notification();
-      notification.setEmailIsEnabled(true);
 
-      if ( getInvoiceId() != 0 ) {
-        notification.setBody("Transaction for invoice #" + getInvoiceId() + " was rejected. Receiver's balance was reverted, invoice was not paid.");
-      notification.setUserId(sender.getId());
-      notification.setNotificationType("Reject invoice payment");
-      notification.setEmailName("pay-from-bank-account-reject");
+        // Traverse the chain to find the invoiceId if there is one.
+        DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
+        Transaction t = this;
+        String parent = t.getParent();
 
-      NumberFormat formatter = NumberFormat.getCurrencyInstance();
-      HashMap<String, Object> args = new HashMap<>();
-      AppConfig config       = (AppConfig) x.get("appConfig");
+        while ( ! SafetyUtil.isEmpty(parent) ) {
+          t = (Transaction) localTransactionDAO.inX(x).find(t.getParent());
+          parent = t.getParent();
+        }
 
-      args.put("amount", formatter.format(getAmount() / 100.00));
-      args.put("name", sender.getFirstName());
-      args.put("account", ((BankAccount)findSourceAccount(x)).getAccountNumber());
-      args.put("payerName", sender.getFirstName());
-      args.put("payeeName", receiver.getFirstName());
-      args.put("link",    config.getUrl());
+        long invoiceId = t.getInvoiceId();
 
-      notification.setEmailArgs(args);
+        if ( invoiceId != 0 ) {
+          notification.setBody("Transaction for invoice #" + invoiceId + " was rejected. Receiver's balance was reverted, invoice was not paid.");
+          notification.setUserId(sender.getId());
+          notification.setNotificationType("Reject invoice payment");
+          notification.setEmailName("pay-from-bank-account-reject");
 
-      Notification notificationReceiver = new Notification();
-      notificationReceiver.copyFrom(notification);
-      notificationReceiver.setUserId(receiver.getId());
-      args.put("name", receiver.getFirstName());
-      notificationReceiver.setEmailArgs(args);
+          HashMap<String, Object> args = new HashMap<>();
+          AppConfig config = (AppConfig) (sender.findGroup(x)).getAppConfig(x);
 
-      notificationDAO.put(notification);
-      notificationDAO.put(notificationReceiver);
-    } else {
-      notification.setBody("Your Cash In transaction was rejected.");
-      notification.setUserId(receiver.getId());
-      notification.setNotificationType("Reject Cash in transaction");
-      notification.setEmailName("cashin-reject");
-      NumberFormat formatter = NumberFormat.getCurrencyInstance();
-      HashMap<String, Object> args = new HashMap<>();
-      AppConfig config       = (AppConfig) x.get("appConfig");
+          DAO invoiceDAO = (DAO) x.get("invoiceDAO");
+          Invoice invoice = (Invoice) invoiceDAO.find(invoiceId);
+          DAO currencyDAO = (DAO) x.get("currencyDAO");
+          Currency currency = (Currency) currencyDAO.find(invoice.getDestinationCurrency());
 
-      String bankAccountNumber = ((BankAccount)findSourceAccount(x)).getAccountNumber();
-      args.put("amount", formatter.format(getAmount() / 100.00));
-      args.put("name", receiver.getFirstName());
-      args.put("account", bankAccountNumber.substring(bankAccountNumber.length()-4, bankAccountNumber.length()));
-      args.put("link",    config.getUrl());
+          if ( ! Invoice.INVOICE_NUMBER.isDefaultValue(invoice) ) {
+            args.put("invoiceNumber", invoice.getInvoiceNumber());
+          }
 
-      notification.setEmailArgs(args);
-      notificationDAO.put(notification);
-    }
+          args.put("amount", currency.format(getAmount()));
+          args.put("toName", sender.label());
+          args.put("name", receiver.label());
+          args.put("reference", invoice.getReferenceId());
+          args.put("sendTo", sender.getEmail());
+          args.put("account", ((BankAccount) findSourceAccount(x)).getAccountNumber());
+          args.put("payerName", sender.getFirstName());
+          args.put("payeeName", receiver.getFirstName());
+          args.put("link", config.getUrl());
+
+          notification.setEmailArgs(args);
+          notificationDAO.put(notification);
+        } else {
+          notification.setBody("Your Cash In transaction was rejected.");
+          notification.setUserId(receiver.getId());
+          notification.setNotificationType("Reject Cash in transaction");
+          notification.setEmailName("cashin-reject");
+          NumberFormat formatter = NumberFormat.getCurrencyInstance();
+          HashMap<String, Object> args = new HashMap<>();
+          AppConfig config = (AppConfig) (receiver.findGroup(x)).getAppConfig(x);
+
+          String bankAccountNumber = ((BankAccount)findSourceAccount(x)).getAccountNumber();
+          args.put("amount", formatter.format(getAmount() / 100.00));
+          args.put("name", receiver.getFirstName());
+          args.put("account", bankAccountNumber.substring(bankAccountNumber.length()-4, bankAccountNumber.length()));
+          args.put("link",    config.getUrl());
+
+          notification.setEmailArgs(args);
+          notificationDAO.put(notification);
+        }
       `
     },
     {

@@ -65,55 +65,55 @@ foam.CLASS({
       switch ( status.newValue ) {
         case this.InvoiceStatus.VOID:
           return {
-            labelText: 'Void',
+            labelText: this.InvoiceStatus.VOID.label,
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
         case this.InvoiceStatus.PENDING:
           return {
-            labelText: 'Pending',
+            labelText: this.InvoiceStatus.PENDING.label,
             labelDecoration: 'Invoice-Status-Pending',
             icon: 'images/ic-pending.svg',
           };
         case this.InvoiceStatus.PAID:
           return {
-            labelText: 'Paid',
+            labelText: this.InvoiceStatus.PAID.label,
             labelDecoration: 'Invoice-Status-Paid',
             icon: 'images/ic-approve.svg'
           };
         case this.InvoiceStatus.SCHEDULED:
           return {
-            labelText: 'Scheduled',
+            labelText: this.InvoiceStatus.SCHEDULED.label,
             labelDecoration: 'Invoice-Status-Scheduled',
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.OVERDUE:
           return {
-            labelText: 'Overdue',
+            labelText: this.InvoiceStatus.OVERDUE.label,
             labelDecoration: 'Invoice-Status-Overdue',
             icon: 'images/ic-overdue.svg'
           };
         case this.InvoiceStatus.UNPAID:
           return {
-            labelText: 'Unpaid',
+            labelText: this.InvoiceStatus.UNPAID.label,
             labelDecoration: 'Invoice-Status-Unpaid',
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.PENDING_APPROVAL:
           return {
-            labelText: 'Pending approval',
+            labelText: this.InvoiceStatus.PENDING_APPROVAL.label,
             labelDecoration: 'Invoice-Status-Pending-approval',
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.PENDING_ACCEPTANCE:
           return {
-            labelText: 'Pending acceptance',
+            labelText: this.InvoiceStatus.PENDING_ACCEPTANCE.label,
             labelDecoration: 'Invoice-Status-Pending-approval',
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.DEPOSITING_MONEY:
           return {
-            labelText: 'Depositing money',
+            labelText: this.InvoiceStatus.DEPOSITING_MONEY.label,
             labelDecoration: 'Invoice-Status-Pending-approval',
             icon: 'images/ic-scheduled.svg'
           };
@@ -147,7 +147,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add('Invoice has been marked as ', )
+              .add('Invoice status changed to ', )
             .end()
             .start('div').addClass('inline')
               .start('span').add(attributes.labelText)

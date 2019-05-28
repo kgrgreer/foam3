@@ -29,6 +29,7 @@ import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
+import net.nanopay.account.DebtAccount;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.tx.DigitalTransaction;
@@ -92,13 +93,14 @@ public class TransactionDAO
   boolean canExecute(X x, Transaction txn, Transaction oldTxn) {
     return ( ! SafetyUtil.isEmpty(txn.getId()) ||
              txn instanceof DigitalTransaction ) &&
-      txn.getNext() == null &&
+      (txn.getNext() == null || txn.getNext().length == 0 ) &&
       (txn.canTransfer(x, oldTxn) ||
        txn.canReverseTransfer(x, oldTxn));
   }
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
-    Transfer[] ts = txn.createTransfers(getX(), oldTxn);
+    X y = getX().put("balanceDAO",getBalanceDAO());
+    Transfer[] ts = txn.createTransfers(y, oldTxn);
 
     // TODO: disallow or merge duplicate accounts
     if ( ts.length != 1 ) {
@@ -118,7 +120,8 @@ public class TransactionDAO
         throw new RuntimeException("Unknown account: " + tr.getAccount());
       }
       account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
-      hm.put(account.getDenomination(),( hm.get(account.getDenomination()) == null ? 0 : (Long)hm.get(account.getDenomination())) + tr.getAmount());
+      if ( ! (account instanceof DebtAccount) )
+        hm.put(account.getDenomination(), (hm.get(account.getDenomination()) == null ? 0 : (Long) hm.get(account.getDenomination())) + tr.getAmount());
     }
 
     for ( Object value : hm.values() ) {

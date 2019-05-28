@@ -23,7 +23,7 @@ foam.CLASS({
         txn.setNext(null);
       }
       txn = (Transaction) getDelegate().put_(x, txn);
-      if ( next != null ) {
+      if ( next != null && next.length > 0 ) {
         for ( Transaction nextTransaction : next ) {
           nextTransaction.setParent(txn.getId());
           ((DAO) x.get("localTransactionDAO")).put_(x, nextTransaction);

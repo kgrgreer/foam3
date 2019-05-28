@@ -104,6 +104,9 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-CurrencyChoice .popUpDropDown::before {
       transform: translate(63px, -28px);
     }
+    ^ .net-nanopay-sme-ui-CurrencyChoice .popUpDropDown {
+      padding: 0px;
+    }
     ^ .foam-u2-tag-TextArea {
       border-radius: 3px !important;
       border: solid 1px #8e9090 !important;
@@ -196,6 +199,9 @@ foam.CLASS({
     }
     ^ .date-input-field .date-display-text {
       color: #2b2b2b;
+    }
+    ^ .foam-u2-DateView {
+      width: 100%;
     }
   `,
 

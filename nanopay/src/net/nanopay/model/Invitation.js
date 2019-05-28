@@ -5,6 +5,13 @@ foam.CLASS({
   documentation: 'Objects will determine whether an invitation to the ' +
       'platform or a connection request will be sent',
 
+  tableColumns: [
+    'id',
+    'invitee',
+    'inviter',
+    'timestamp',
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -45,6 +52,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'timestamp',
+      label: 'Date',
       documentation: 'Timestamp of when invitation was sent',
     },
     {
@@ -64,8 +72,7 @@ foam.CLASS({
       name: 'status'
     },
     {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Group',
+      class: 'String',
       name: 'group',
       documentation: `
         Used in Ablii when inviting someone who is not on the platform to join a

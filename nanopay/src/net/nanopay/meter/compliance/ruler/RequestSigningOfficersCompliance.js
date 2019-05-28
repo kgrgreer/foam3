@@ -22,17 +22,19 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         Business business = (Business) obj;
-        DAO userDAO = business.getSigningOfficers(x).getDAO();
-        userDAO.select(new AbstractSink() {
-          @Override
-          public void put(Object obj, Detachable sub) {
-            User signingOfficer = (User) obj;
-            signingOfficer = (User) signingOfficer.fclone();
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
+        business.getSigningOfficers(x).getDAO()
+          .select(new AbstractSink() {
+            @Override
+            public void put(Object obj, Detachable sub) {
+              User signingOfficer = (User) localUserDAO.find(obj).fclone();
 
-            signingOfficer.setCompliance(ComplianceStatus.REQUESTED);
-            userDAO.put(signingOfficer);
-          }
-        });
+              // User.compliance is a permissioned property thus we need
+              // to use localUserDAO when saving change to the property.
+              signingOfficer.setCompliance(ComplianceStatus.REQUESTED);
+              localUserDAO.inX(x).put(signingOfficer);
+            }
+          });
       `
     },
     {
