@@ -193,8 +193,8 @@ foam.CLASS({
 
         .tag({
           class: 'net.nanopay.sme.ui.AddressView',
+          controllerMode: this.validateAddress(this.viewData.user.address) ? foam.u2.ControllerMode.VIEW : foam.u2.ControllerMode.CREATE,
           data: this.viewData.user.address,
-          mode: this.validateAddress(this.viewData.user.address) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
         })
 
         .start().addClass(this.myClass('divider')).end()
