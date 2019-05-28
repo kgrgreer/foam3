@@ -75,9 +75,8 @@ foam.CLASS({
       Account destinationAccount = request.findDestinationAccount(x);
 
       if ( sourceAccount instanceof BankAccount &&
-        ! ( sourceAccount instanceof CABankAccount ) &&
         destinationAccount instanceof BankAccount &&
-        ! ( destinationAccount instanceof INBankAccount ) &&
+        ! ( sourceAccount.getId() == 111 && destinationAccount instanceof INBankAccount ) &&
         ! sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
         DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(getX()), sourceAccount.getDenomination());
         DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
