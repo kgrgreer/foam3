@@ -108,7 +108,7 @@ import java.text.SimpleDateFormat;
         }
       }
 
-      urlAddress = urlAddress.replaceAll(" ", "%20");
+      urlAddress = urlAddress.replaceAll("  *", "%20");
       HttpGet get = new HttpGet(urlAddress);
       get.setHeader("Authorization", "Basic " + encodedCredentials);
       response = client.execute(get);
