@@ -45,7 +45,7 @@ foam.CLASS({
       margin-right: 10px;
       vertical-align: middle;
     }
-    ^message {
+    ^content {
       display: inline-block;
       vertical-align: middle;
     }
@@ -83,15 +83,7 @@ foam.CLASS({
       class: 'String',
       name: 'type'
     },
-    {
-      class: 'String',
-      name: 'message'
-    },
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'contentElement'
-    },
-    'data'
+    'message'
   ],
 
   methods: [
@@ -118,11 +110,12 @@ foam.CLASS({
               .attrs({ src: img })
             .end()
             .start()
-              .addClass(this.myClass('message'))
-              .callIf(this.contentElement, function() {
-                this.tag(self.contentElement);
+              .addClass(this.myClass('content'))
+              .callIfElse(foam.String.isInstance(this.message), function() {
+                this.add(self.message);
+              }, function() {
+                this.tag(self.message);
               })
-              .add(this.message)
             .end()
           .end()
           .startContext({ data: this })
