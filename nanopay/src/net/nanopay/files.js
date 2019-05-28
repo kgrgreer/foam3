@@ -208,6 +208,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
+  // AFEX
+  { name: 'net/nanopay/fx/afex/AFEXTransaction' },
+
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },
