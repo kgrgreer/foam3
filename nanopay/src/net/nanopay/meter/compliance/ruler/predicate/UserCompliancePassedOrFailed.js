@@ -1,10 +1,10 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler.predicate',
-  name: 'UserComplianceRequested',
+  name: 'UserCompliancePassedOrFailed',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
-  documentation: 'Returns true if user compliance is requested',
+  documentation: 'Returns true if user compliance is passed or failed.',
 
   javaImports: [
     'foam.nanos.auth.User',
@@ -16,9 +16,9 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        return AND(
-          EQ(DOT(NEW_OBJ, INSTANCE_OF(User.class)), true),
-          EQ(DOT(NEW_OBJ, User.COMPLIANCE), ComplianceStatus.REQUESTED)
+        return OR(
+          EQ(DOT(NEW_OBJ, User.COMPLIANCE), ComplianceStatus.PASSED),
+          EQ(DOT(NEW_OBJ, User.COMPLIANCE), ComplianceStatus.FAILED)
         ).f(obj);
       `
     }

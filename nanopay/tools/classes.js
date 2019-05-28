@@ -244,6 +244,7 @@ var classes = [
   'net.nanopay.tx.LineItemAmountType',
   'net.nanopay.tx.LineItemAmount',
   'net.nanopay.tx.LineItemFee',
+  'net.nanopay.tx.CompliancePlanDAO',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
@@ -485,10 +486,12 @@ var classes = [
 
   // ruler
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
+  'net.nanopay.meter.compliance.ruler.ClearUserApprovalRequests',
   'net.nanopay.meter.compliance.ruler.RequestBeneficialOwnersCompliance',
   'net.nanopay.meter.compliance.ruler.RequestSigningOfficersCompliance',
   'net.nanopay.meter.compliance.ruler.SecurefactLEVValidator',
   'net.nanopay.meter.compliance.ruler.SecurefactSIDniValidator',
+  'net.nanopay.meter.compliance.ruler.UserComplianceApproval',
   'net.nanopay.meter.compliance.ruler.predicate.AbliiSignup',
   'net.nanopay.meter.compliance.ruler.predicate.B2BTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested',
@@ -497,7 +500,9 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
+  'net.nanopay.meter.compliance.ruler.predicate.NewEqOld',
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
+  'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
 
   // canadian sanction

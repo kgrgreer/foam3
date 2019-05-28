@@ -59,7 +59,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function doSync(view) {
+    async function doSync(view, goDashboard) {
       // find the service
       let service = null;
 
@@ -74,7 +74,8 @@ foam.CLASS({
       let contactResult = await service.contactSync(null);
       if ( contactResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
         this.ctrl.add(this.Popup.create({ closeable: false }).tag({
-          class: 'net.nanopay.accounting.AccountingTimeOutModal'
+          class: 'net.nanopay.accounting.AccountingTimeOutModal',
+          goDashboard: goDashboard
         }));
         return null;
       }

@@ -18,7 +18,9 @@ foam.CLASS({
   ],
 
   implements: [
-    'net.nanopay.accounting.AccountingIntegrationTrait'
+    'net.nanopay.accounting.AccountingIntegrationTrait',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
   ],
 
   imports: [
@@ -136,7 +138,8 @@ foam.CLASS({
               isEnabled: function() {
                 return self.user.id === this.createdBy &&
                   ( this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE );
+                  this.status === self.InvoiceStatus.OVERDUE ) && !
+                  ( self.QuickbooksInvoice.isInstance(this) || self.XeroInvoice.isInstance(this) );
               },
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.UNPAID ||
