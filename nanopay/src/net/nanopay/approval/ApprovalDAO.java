@@ -37,7 +37,7 @@ public class ApprovalDAO
         rePutObject(request);
 
         //removes all the requests that were not approved to clean up approvalRequestDAO
-        removeUnsedRequests(requests);
+        removeUnusedRequests(requests);
       }
     }
     return request;
@@ -49,12 +49,16 @@ public class ApprovalDAO
     dao.inX(x_).put(found);
   }
 
-  private void removeUnsedRequests(DAO dao) {
+  private void removeUnusedRequests(DAO dao) {
     dao.where(EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)).removeAll();
   }
 
   private long getCurrentPoints(DAO dao) {
-    return ((Double) ((Sum) dao.where(EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED))
-      .select(SUM(ApprovalRequest.POINTS))).getValue()).longValue();
+    return ((Double)
+      ((Sum) dao
+        .where(EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED))
+        .select(SUM(ApprovalRequest.POINTS))
+      ).getValue()
+    ).longValue();
   }
 }

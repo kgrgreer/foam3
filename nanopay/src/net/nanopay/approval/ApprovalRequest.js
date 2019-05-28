@@ -5,7 +5,6 @@ foam.CLASS({
   'represent a single approval request for a single user.',
 
   implements: [
-    'foam.core.Validatable',
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
@@ -78,10 +77,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'requestReference',
-      documentation: `Should be unique to a certain type of requests and created within a single rule. 
-      For example "IdentityMind Business approval". 
-      When retrieving approval requests from a dao, do not use daoKey, use requestReference instead: 
-      mland.AND(
+      documentation: `Should be unique to a certain type of requests and created within a single rule.
+      For example "IdentityMind Business approval".
+      When retrieving approval requests from a dao, do not use daoKey, use requestReference instead:
+      mlang.AND(
         EQ(ApprovalRequest.OBJ_ID, objectId),
         EQ(ApprovalRequest.REQUEST_REFERENCE, "reference")
       )`
@@ -162,6 +161,12 @@ foam.CLASS({
   methods: [
     {
       name: 'validate',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
       javaCode: `DAO dao = (DAO) x.get(getDaoKey());
 if ( dao == null ) {
   throw new RuntimeException("Invalid dao key for the approval request object.");
