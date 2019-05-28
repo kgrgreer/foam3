@@ -15,34 +15,33 @@ public class DigitalAccountService
 
   public DigitalAccount findDefault(X x, String denomination) {
     User user = (User) x.get("user");
-    return DigitalAccount.findDefault(getX(), user, denomination);
 
-    // if ( user instanceof Business || user.getGroup().equals("sme") ) {
-    //   DAO accountDAO = (DAO) x.get("localAccountDAO");
-    //   OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount()).fclone();
+     if ( user instanceof Business || user.getGroup().equals("sme") ) {
+       DAO accountDAO = (DAO) x.get("localAccountDAO");
+       OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount()).fclone();
 
-    //   DebtAccount debtAccount = (DebtAccount) overdraft.findDebtAccount(x);
-    //   if ( debtAccount == null ) {
-    //     debtAccount = (DebtAccount) overdraft.findDebtAccount(getX());
-    //     if ( debtAccount != null ) {
-    //       ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "debtAccount found via getX()");
-    //     }
-    //   }
-    //   if ( debtAccount == null ) {
-    //     debtAccount = (DebtAccount) accountDAO.put(
-    //                                                new DebtAccount.Builder(x)
-    //                                                .setDebtorAccount(overdraft.getId())
-    //                                                .setCreditorAccount(6)
-    //                                                .setParent(overdraft.getId())
-    //                                                .setName("DebtAccount for: " + overdraft.getId())
-    //                                                .build()).fclone();
-    //   }
-    //   overdraft.setDebtAccount(debtAccount.getId());
-    //   overdraft = (OverdraftAccount) accountDAO.put(overdraft).fclone();
+       DebtAccount debtAccount = (DebtAccount) overdraft.findDebtAccount(x);
+       if ( debtAccount == null ) {
+         debtAccount = (DebtAccount) overdraft.findDebtAccount(getX());
+         if ( debtAccount != null ) {
+           ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "debtAccount found via getX()");
+         }
+       }
+       if ( debtAccount == null ) {
+         debtAccount = (DebtAccount) accountDAO.put(
+          new DebtAccount.Builder(x)
+            .setDebtorAccount(overdraft.getId())
+            .setCreditorAccount(6)
+            .setParent(overdraft.getId())
+            .setName("DebtAccount for: " + overdraft.getId())
+            .build()).fclone();
+       }
+       overdraft.setDebtAccount(debtAccount.getId());
+       overdraft = (OverdraftAccount) accountDAO.put(overdraft).fclone();
 
-    //   return overdraft;
-    // } else {
-    //   return DigitalAccount.findDefault(getX(), user, denomination);
-    // }
+       return overdraft;
+     } else {
+       return DigitalAccount.findDefault(getX(), user, denomination);
+     }
   }
 }

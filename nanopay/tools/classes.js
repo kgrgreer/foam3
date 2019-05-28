@@ -244,6 +244,7 @@ var classes = [
   'net.nanopay.tx.LineItemAmountType',
   'net.nanopay.tx.LineItemAmount',
   'net.nanopay.tx.LineItemFee',
+  'net.nanopay.tx.CompliancePlanDAO',
   'net.nanopay.tx.model.TransactionStatus',
   'net.nanopay.tx.model.TransactionEntity',
   'net.nanopay.tx.TransactionLineItem',
