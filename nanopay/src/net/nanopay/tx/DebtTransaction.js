@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'DebtTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
 
-  documentation: ``,
+  documentation: 'transaction that incurs debt on a debtAccount',
 
   javaImports: [
     'net.nanopay.account.Account',
