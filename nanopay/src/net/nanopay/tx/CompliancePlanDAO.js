@@ -20,7 +20,6 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        Logger logger = (Logger) x.get("logger");
         TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
         Transaction [] plans = quote.getPlans();
         ArrayList<Transaction> newPlans = new ArrayList();

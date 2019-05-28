@@ -235,10 +235,10 @@ foam.CLASS({
         txn.addLineItems(cashInPlan.getLineItems(), cashInPlan.getReverseLineItems());
 
         digitalPlan.addNext(cashOutPlan);
-        digitalPlan.addLineItems(cashOutPlan.getLineItems(), cashOutPlan.getReverseLineItems());
 
         txn.addNext(digitalPlan);
         txn.addLineItems(digitalPlan.getLineItems(), digitalPlan.getReverseLineItems());
+        txn.addLineItems(cashOutPlan.getLineItems(), cashOutPlan.getReverseLineItems());
 
         txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);

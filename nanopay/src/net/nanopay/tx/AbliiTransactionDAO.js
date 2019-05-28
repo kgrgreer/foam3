@@ -73,9 +73,8 @@ foam.CLASS({
           quote.setRequestTransaction(request);
         }
 
-        // Check if we can do FastPay
-        Logger logger = (Logger) x.get("logger");
-        // FastPay from senders business
+        // Check if we can do FastPay from sender's business
+
         Account senderDigitalAccount = DigitalAccount.findDefault(getX(), sender, request.getSourceCurrency());
         if (senderDigitalAccount instanceof Debtable &&
           ((Debtable) senderDigitalAccount).findDebtAccount(x) != null && // should be system context?
