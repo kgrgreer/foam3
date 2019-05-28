@@ -9,6 +9,7 @@ foam.CLASS({
     'agent',
     'ctrl',
     'twofactor',
+    'user'
   ],
 
   requires: [
@@ -110,6 +111,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hideDisableButton',
       value: 'false'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'realUser',
+      expression: function(agent, user) {
+        return agent ? agent : user;
+      }
     }
   ],
 
@@ -117,7 +125,7 @@ foam.CLASS({
     function initE() {
       this.addClass(this.myClass())
         .start()
-          .add(this.agent.twoFactorEnabled$.map((twoFactorEnabled) => {
+          .add(this.realUser$.dot('twoFactorEnabled').map((twoFactorEnabled) => {
             if ( ! twoFactorEnabled ) {
               // two factor disabled
               var self = this;
@@ -201,7 +209,7 @@ foam.CLASS({
           }
 
           self.twoFactorToken = null;
-          self.agent.twoFactorEnabled = true;
+          self.realUser.twoFactorEnabled = true;
           self.ctrl.notify(self.TwoFactorEnableSuccess);
         })
         .catch(function(err) {
