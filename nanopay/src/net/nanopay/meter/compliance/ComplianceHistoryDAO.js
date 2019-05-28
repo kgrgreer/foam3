@@ -8,15 +8,9 @@ foam.CLASS({
     ],
 
     javaImports: [
-        'foam.core.FObject',
-        'foam.core.X',
         'foam.dao.ArraySink',
         'foam.dao.DAO',
-        'foam.dao.ReadOnlyDAO',
         'static foam.mlang.MLang.*',
-
-        'foam.dao.Sink',
-        'foam.mlang.predicate.Predicate',
         'foam.nanos.ruler.Rule',
         'foam.nanos.ruler.RuleHistory'
     ],
@@ -45,13 +39,12 @@ foam.CLASS({
             type: 'foam.dao.DAO',
             args: [],
             javaCode: `
-                return getDelegate().where(IN(
-                    RuleHistory.RULE_ID,
-                    ((ArraySink) ((DAO) x_.get("ruleDAO")).where(OR(
-                        EQ(Rule.RULE_GROUP, "onboarding"),
-                        EQ(Rule.RULE_GROUP, "compliance")
-                    )).select(new ArraySink())).getArray().stream().map((rule) -> ((Rule)rule).getId()).toArray()
-                ));
+              return getDelegate().where(IN(
+                RuleHistory.RULE_ID,
+                ((ArraySink)((foam.mlang.sink.Map)((DAO) x_.get("ruleDAO")).where(OR(
+                  EQ(Rule.RULE_GROUP, "onboarding")
+                )).select(MAP(Rule.ID, new ArraySink()))).getDelegate()).getArray().toArray()
+              ));
             `
           }
     ]
