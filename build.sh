@@ -105,7 +105,11 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
-    gradle --daemon findSH -Pmode=${MODE} -Pjournal.config=${JOURNAL_CONFIG}
+    if [ "$GRADLE_BULD" -eq 0 ]; then
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$INSTANCE"
+    else
+        gradle --daemon findSH -Pmode=${MODE} -Pjournal.config=${JOURNAL_CONFIG} --rerun-tasks
+    fi
 
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
@@ -133,13 +137,15 @@ function clean {
            [ "$RESTART_ONLY" -eq 0 ]; then
         echo "INFO :: Cleaning Up"
 
-        if [ -d "build/" ]; then
-            rm -rf build
-            mkdir build
-        fi
-        if [ -d "target/" ]; then
-            rm -rf target
-            mkdir target
+        if [ "$GRADLE_BUILD" -eq 0 ]; then
+            if [ -d "build/" ]; then
+                rm -rf build
+                mkdir build
+            fi
+            if [ -d "target/" ]; then
+                rm -rf target
+                mkdir target
+            fi
         fi
 
         if [ "${RUN_JAR}" -eq 1 ]; then
