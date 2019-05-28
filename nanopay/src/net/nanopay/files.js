@@ -853,7 +853,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/IpHistory' },
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
-  { name: 'net/nanopay/meter/Report' },
+  { name: 'net/nanopay/meter/reports/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/BusinessDetailView', flags: ['web'] },

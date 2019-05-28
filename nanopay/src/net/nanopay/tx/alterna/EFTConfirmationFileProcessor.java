@@ -7,7 +7,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import net.nanopay.cico.model.EFTConfirmationFileRecord;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.tx.model.Transaction;
@@ -171,12 +171,12 @@ public class EFTConfirmationFileProcessor implements ContextAgent
   }
 
   public static void sendEmail(X x, String subject, String content) {
-    EmailService emailService = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
 
     message.setTo(new String[]{"ops@nanopay.net"});
     message.setSubject(subject);
     message.setBody(content);
-    emailService.sendEmail(x, message);
+    
+    EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
   }
 }
