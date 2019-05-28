@@ -279,6 +279,11 @@ task tarz(type: Tar) {
     compression = Compression.GZIP
 }
 
+clean {
+    delete "${workingDir}/${targetDir}"
+    delete "${buildDir}"
+}
+
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
