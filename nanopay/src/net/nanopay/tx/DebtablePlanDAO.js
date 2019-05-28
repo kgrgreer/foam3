@@ -38,12 +38,11 @@ foam.CLASS({
 
       if (sourceAccount instanceof Debtable &&
           ((Debtable) sourceAccount).findDebtAccount(x) != null &&
-          ((Debtable) sourceAccount).findDebtAccount(x).getLimit() < 0 ) {
+          ((Debtable) sourceAccount).findDebtAccount(x).getLimit() > 0 ) {
 
         DebtAccount debtAccount = ((OverdraftAccount) sourceAccount).findDebtAccount(x);
         Account creditorAccount = debtAccount.findCreditorAccount(x);
 
-        logger.info("DetablePlanDAO debtAccount michal ", debtAccount);
         Transaction d = new DebtTransaction.Builder(x)
           .setSourceAccount(creditorAccount.getId())
           .setDestinationAccount(sourceAccount.getId())

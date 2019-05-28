@@ -26,7 +26,7 @@ foam.CLASS({
       name: 'debtAccount',
       class: 'Reference',
       of: 'net.nanopay.account.DebtAccount',
-      targetDAOKey:'localDebtAccountDAO',
+      targetDAOKey:'localDebtAccountDAO', // should change this back to authenticateD?
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.debtAccountDAO,
