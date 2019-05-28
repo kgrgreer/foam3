@@ -198,7 +198,7 @@ foam.CLASS({
         .tag({
           class: 'net.nanopay.sme.ui.AddressView',
           data: this.viewData.user.address,
-          mode: this.viewData.user.address.validate() ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
+          mode: this.validateAddress(this.viewData.user.address) ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
         })
 
         .start().addClass(this.myClass('divider')).end()
@@ -284,6 +284,9 @@ foam.CLASS({
             .end();
           })
         .end();
+    },
+    function validateAddress(address) {
+      return address.streetName && address.streetNumber && address.city && address.countryId && address.postalCode && address.regionId;
     }
   ],
 
