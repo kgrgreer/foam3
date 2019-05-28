@@ -11,6 +11,14 @@ foam.CLASS({
       name: 'id'
     },
     {
+      class: 'Long',
+      name: 'userId'
+    },
+    {
+      class: 'Date',
+      name: 'searchDate'
+    },
+    {
       class: 'String',
       name: 'searchType'
     },
@@ -19,7 +27,7 @@ foam.CLASS({
       name: 'nameSearched'
     },
     {
-      class: 'String',
+      class: 'Int',
       name: 'totalMatches'
     },
     {

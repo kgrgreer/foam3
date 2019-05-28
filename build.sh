@@ -237,13 +237,15 @@ function start_nanos {
         JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
     fi
 
-    if [ -z "$MODE" ]; then
-        JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
+    if [ -z "$MODE" ] || [ "$MODE" == "DEVELOPMENT" ] || [ "$MODE" == "STAGING" ] || [ "$MODE" == "TEST" ]; then
+#        JAVA_OPTS="-Dresource.journals.dir=journals ${JAVA_OPTS}"
         # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
         # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
         # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
         JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
     fi
+    JAVA_OPTS="${JAVA_OPTS} -Dappconfig.mode=${MODE}"
+
     JAR=$(ls target/lib/nanopay-*.jar | awk '{print $1}')
 
     echo JAR=$JAR
@@ -353,6 +355,18 @@ function setenv {
         fi
     fi
 
+    # HSM setup
+    # if [[ $IS_MAC -eq 1 ]]; then
+    #   HSM_HOME=$PROJECT_HOME/tools/hsm
+
+    #   #softhsm setup
+    #   if [[ -f $HSM_HOME/development.sh ]]; then
+    #     cd "$HSM_HOME"
+    #     printf "INFO :: Setting up SoftHSM...\n"
+    #     $HSM_HOME/development.sh -r $HSM_HOME
+    #   fi
+    # fi
+
     if [[ -z $JAVA_HOME ]]; then
       if [[ $IS_MAC -eq 1 ]]; then
         JAVA_HOME=$($(dirname $(readlink $(which javac)))/java_home)
@@ -439,7 +453,11 @@ while getopts "bcdD:ghijlmM:N:pqrsStT:vV:W:xz" opt ; do
            ;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
-        i) INSTALL=1 ;;
+        i) if [ "$(id -u)" == "0" ]; then
+        	echo "Please do not run this command with sudo."
+	        exit 1
+           fi
+           INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
@@ -531,7 +549,7 @@ if [ "$START_ONLY" -eq 0 ]; then
     build_jar
 fi
 
-if [ "$BUILD_ONLY" -eq 1 ] || [ ! -z "$MODE" ]; then
+if [ "$BUILD_ONLY" -eq 1 ]; then
     if [ -z "$INSTANCE" ] && [ "$TEST" -eq 0 ]; then
         quit 0
     fi

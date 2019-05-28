@@ -5,11 +5,13 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.model.Currency',
     'foam.nanos.notification.NotificationView',
   ],
 
   imports: [
     'invoiceDAO',
+    'currencyDAO',
     'user'
   ],
 
@@ -52,27 +54,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      // Get body msg
-      this.bodyMsg = this.data.notificationType;
-      if ( this.bodyMsg.includes('Invoice') ) {
-        this.invoiceDAO.find(this.data.invoiceId).then((invoice) => {
-          if ( invoice == null ) this.bodyMsg = 'The invoice for this notification can no longer be found.';
-          if ( invoice.payeeId === this.user.id ) {
-            var name = invoice.payer.businessName ?
-              invoice.payer.businessName :
-              invoice.payer.label();
-            this.bodyMsg = `Received payment from ${name} for ${this.currencyFormatted}`;
-          } else {
-            var name = invoice.payee.businessName ? invoice.payee.businessName : invoice.payee.label();
-            this.bodyMsg = `Sent payment to ${name} for $${invoice.amount/100}`;
-          }
-        }).catch((_) => {
-          this.bodyMsg = ' ';
-        });
-      } else {
-        this.bodyMsg = this.data.body;
-      }
-      // Get date
+      this.bodyMsg = this.data.body;
       this.date = this.data.issuedDate ?
           this.spliceDateFormatter(this.data.issuedDate.toISOString().slice(0, 10)) : '';
 

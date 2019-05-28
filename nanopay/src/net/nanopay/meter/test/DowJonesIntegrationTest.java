@@ -7,6 +7,10 @@ import foam.nanos.test.Test;
 import net.nanopay.meter.compliance.dowJones.DowJonesResponse;
 import net.nanopay.meter.compliance.dowJones.DowJonesMockService;
 import net.nanopay.meter.compliance.dowJones.DowJonesService;
+import net.nanopay.meter.compliance.dowJones.EntityNameSearchData;
+import net.nanopay.meter.compliance.dowJones.PersonNameSearchData;
+
+import java.util.Date;
 
 import static foam.mlang.MLang.EQ;
 
@@ -29,8 +33,22 @@ public class DowJonesIntegrationTest extends Test {
   private void setUpTest() {
     DowJonesResponse personNameObj;
     DowJonesResponse entityNameObj;
-    personNameObj = dowJonesService_.personNameSearch(x_, testUser_.getFirstName(), testUser_.getLastName(), null, null, null);
-    entityNameObj = dowJonesService_.entityNameSearch(x_, testUser_.getBusinessName(), null, null);
+    PersonNameSearchData personSearchData = new PersonNameSearchData.Builder(x_)
+      .setSearchId(testUser_.getId())
+      .setFirstName(testUser_.getFirstName())
+      .setSurName(testUser_.getLastName())
+      .setFilterLRDFrom(new Date())
+      .setDateOfBirth(new Date())
+      .setFilterRegion("CA")
+      .build();
+    EntityNameSearchData entitySearchData = new EntityNameSearchData.Builder(x_)
+      .setSearchId(testUser_.getId())
+      .setEntityName(testUser_.getOrganization())
+      .setFilterLRDFrom(new Date())
+      .setFilterRegion("CA")
+      .build();
+    personNameObj = dowJonesService_.personNameSearch(x_, personSearchData);
+    entityNameObj = dowJonesService_.entityNameSearch(x_, entitySearchData);
     test(personNameObj != null, "Dow Jones Person Response Object Created.");
     test(entityNameObj != null, "Dow Jones Entity Response Object Created.");
   }
