@@ -22,10 +22,7 @@ foam.CLASS({
         DAO dowJonesResponseDAO = (DAO) x.get("dowJonesResponseDAO");
 
         DowJonesResponse dowJonesResponse = (DowJonesResponse) dowJonesResponseDAO.find(
-          AND(
-            EQ(DowJonesResponse.ID,      approvalRequest.getCauseId()),
-            EQ(DowJonesResponse.USER_ID, Long.valueOf(approvalRequest.getObjId()))
-          )
+            EQ(DowJonesResponse.ID,      approvalRequest.getCauseId())
         );
 
         DowJonesResponse dowJonesResponse_ = (DowJonesResponse) dowJonesResponse.fclone();

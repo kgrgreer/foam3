@@ -71,9 +71,8 @@ import java.text.SimpleDateFormat;
 
       String urlAddress = baseUrl;
       String pattern = "yyyy-MM-dd";
-      SimpleDateFormat filterLRDFormat = new SimpleDateFormat(pattern);
-      SimpleDateFormat dobFormat = new SimpleDateFormat(pattern);
-      dobFormat.setTimeZone(TimeZone.getTimeZone("GMT+1"));
+      SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
       if ( req.getRequestInfo().equals(PERSON_NAME) ) {
         urlAddress += req.getRequestInfo();
@@ -84,11 +83,11 @@ import java.text.SimpleDateFormat;
         String filterRegion = ((PersonNameSearchRequest) req.getModel()).getFilterRegion();
         urlAddress += "first-name=" + firstName + "&surname=" + surName;
         if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
-          String formattedLRDFilter = filterLRDFormat.format(filterLRDFrom);
+          String formattedLRDFilter = sdf.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedLRDFilter;
         }
         if ( dateOfBirth != null && ! dateOfBirth.equals("") ) {
-          String formattedDOBFilter = dobFormat.format(dateOfBirth);
+          String formattedDOBFilter = sdf.format(dateOfBirth);
           urlAddress += "&date-of-birth=" + formattedDOBFilter;
         }
         if ( filterRegion != null && ! filterRegion.equals("") ) {
@@ -101,7 +100,7 @@ import java.text.SimpleDateFormat;
         String filterRegion = ((EntityNameSearchRequest) req.getModel()).getFilterRegion();
         urlAddress += "entity-name=" + entityName;
         if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
-          String formattedFilter = filterLRDFormat.format(filterLRDFrom);
+          String formattedFilter = sdf.format(filterLRDFrom);
           urlAddress += "&filter-lrd-from=" + formattedFilter;
         }
         if ( filterRegion != null && ! filterRegion.equals("") ) {
@@ -109,7 +108,7 @@ import java.text.SimpleDateFormat;
         }
       }
 
-      urlAddress = urlAddress.replaceAll("  *", "%20");
+      urlAddress = urlAddress.replaceAll(" ", "%20");
       HttpGet get = new HttpGet(urlAddress);
       get.setHeader("Authorization", "Basic " + encodedCredentials);
       response = client.execute(get);
