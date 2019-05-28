@@ -89,7 +89,8 @@ foam.CLASS({
     { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
     { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
     { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
-    { name: 'EnableTwoFactor', message: 'Enter verification code' },
+    { name: 'TWO_FACTOR_BENEFIT', message: 'Two-factor authentication provides an extra layer of security to your account. Two-factor authentication is enabled at all time to prevent potential unauthorized access to your business and financial information.' },
+    { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },
     { name: 'EnterCode', message: 'Enter code' },
     { name: 'Status', message: 'Status' },
     { name: 'Enabled', message: '• Enabled' },
@@ -150,7 +151,7 @@ foam.CLASS({
 
                     .start().addClass('validation-input')
                       .start().addClass(this.myClass('enter-validation-code'))
-                        .add(this.EnableTwoFactor)
+                        .add(this.TWO_FACTOR_LABEL)
                       .end()
                       .start(this.TWO_FACTOR_TOKEN)
                         .attrs({ placeholder: this.EnterCode })
@@ -175,7 +176,7 @@ foam.CLASS({
                     .end()
                   .end()
                   .start()
-                    .add('Two-factor authentication provides an extra layer of security to your account. Two-factor authentication is enabled at all time to prevent potential unauthorized access to your business and financial information.')
+                    .add(this.TWO_FACTOR_BENEFIT)
                   .end()
                   .start(this.DISABLE_TWO_FACTOR, {
                     buttonStyle: 'SECONDARY'

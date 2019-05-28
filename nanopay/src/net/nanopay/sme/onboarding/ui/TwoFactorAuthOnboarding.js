@@ -39,8 +39,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'IOSName', message: 'iOS authenticator download' },
-    { name: 'AndroidName', message: 'Android authenticator download' }
+    { name: 'IOS_LABEL', message: 'iOS authenticator download' },
+    { name: 'ANDROID_LABEL', message: 'Android authenticator download' },
+    { name: 'INSTRCTION', message: 'Download and use your Google Authenticator app on your mobile device to scan the below QR code.' }
   ],
 
   methods: [
@@ -50,16 +51,15 @@ foam.CLASS({
           .start()
             .hide(this.agent.twoFactorEnabled$)
             .addClass('body-paragraph')
-            .add(`Download and use your Google Authenticator app on your mobile 
-              device to scan the below QR code.`)
+            .add(this.INSTRCTION)
           .end()
           .start('a').addClass(this.myClass('two-factor-link'))
-            .add(this.IOSName)
+            .add(this.IOS_LABEL)
             .attrs({ href: this.IOS_LINK, target: '_blank' })
           .end()
           .br()
           .start('a').addClass(this.myClass('two-factor-link'))
-            .add(this.AndroidName)
+            .add(this.ANDROID_LABEL)
             .attrs({ href: this.ANDROID_LINK, target: '_blank' })
           .end()
           .start({
