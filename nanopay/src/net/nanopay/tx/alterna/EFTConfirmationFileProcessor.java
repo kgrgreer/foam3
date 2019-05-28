@@ -7,7 +7,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import net.nanopay.cico.model.EFTConfirmationFileRecord;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.tx.model.Transaction;
@@ -60,7 +60,7 @@ public class EFTConfirmationFileProcessor implements ContextAgent
       channelSftp = (ChannelSftp) channel;
 
       Vector fileList = channelSftp.ls("/Returns/");
-      Pattern pattern = Pattern.compile("UploadLog_[0-9]{8}_B2B.csv.txt");
+      Pattern pattern = Pattern.compile("UploadLog_[0-9]{8}_" + credentials.getIdentifier() + ".csv.txt");
       for ( Object entry : fileList ) {
         ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
         Matcher matcher = pattern.matcher(e.getFilename());
@@ -73,8 +73,8 @@ public class EFTConfirmationFileProcessor implements ContextAgent
         InputStream confirmationFileStream = channelSftp.get("/Returns/" + fileName);
         List<FObject> confirmationFile = eftConfirmationFileParser.parse(confirmationFileStream);
 
-        // UploadLog_yyyyMMdd_B2B.csv.txt -> yyyyMMdd_B2B.csv
-        String uploadCSVFileName = fileName.substring(10, 26);
+        // UploadLog_yyyyMMdd_identifier.csv.txt -> yyyyMMdd_identifier.csv
+        String uploadCSVFileName = fileName.substring(10, fileName.lastIndexOf('.'));
         Vector uploadCSVList = channelSftp.ls("/Archive/");
         boolean uploadCSVExist = false;
         for ( Object entry : uploadCSVList ) {
@@ -171,12 +171,12 @@ public class EFTConfirmationFileProcessor implements ContextAgent
   }
 
   public static void sendEmail(X x, String subject, String content) {
-    EmailService emailService = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
 
     message.setTo(new String[]{"ops@nanopay.net"});
     message.setSubject(subject);
     message.setBody(content);
-    emailService.sendEmail(x, message);
+    
+    EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
   }
 }

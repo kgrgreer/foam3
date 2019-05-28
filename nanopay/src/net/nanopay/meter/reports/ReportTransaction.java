@@ -1,31 +1,30 @@
-package net.nanopay.meter;
+package net.nanopay.meter.reports;
 
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.mlang.MLang;
-import foam.mlang.predicate.Predicate;
+import foam.dao.ArraySink;
 import foam.nanos.auth.User;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import foam.mlang.predicate.Predicate;
+import foam.mlang.MLang;
 import net.nanopay.account.Account;
 import net.nanopay.contacts.Contact;
 import net.nanopay.fx.FXTransaction;
-import net.nanopay.model.Currency;
-import net.nanopay.tx.DigitalTransaction;
-import net.nanopay.tx.cico.CITransaction;
-import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.DigitalTransaction;
+import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.CITransaction;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 // Transaction Summary Report by User
 // Cash-In, Digital, Cash-Out
 // By Account per User
 // Calculate for 'last' month by default
-public class TransactionSummaryReport { 
+public class ReportTransaction { 
   
   // Create the transaction summary report
   public String[] createReport(X x, Date startDate, Date endDate) {
@@ -61,7 +60,6 @@ public class TransactionSummaryReport {
     // retrieve the daos
     DAO accountDAO = (DAO) x.get("accountDAO");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    DAO currencyDAO = (DAO) x.get("currencyDAO");
 
     // per user, get all 
     DAO userDAO = (DAO) x.get("userDAO");
@@ -146,10 +144,6 @@ public class TransactionSummaryReport {
           Account destinationAccount = transaction.findDestinationAccount(x);
           User receiver = (destinationAccount != null) ? destinationAccount.findOwner(x) : null;
 
-          Currency currency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
-          String amount = currency.getAlphabeticCode() + ' ' + currency.format(transaction.getAmount());
-          String total = currency.getAlphabeticCode() + ' ' + currency.format(transaction.getTotal());
-
           trasactionDetailBuffer
             .append(user.getEmail()).append(COMMA_SEPARATOR)
             .append(user.getId()).append(COMMA_SEPARATOR)
@@ -166,8 +160,8 @@ public class TransactionSummaryReport {
             .append(receiver != null ? receiver.getId() : "").append(COMMA_SEPARATOR)
             .append(receiver != null ? receiver.label() : "").append(COMMA_SEPARATOR)
             .append(receiver != null ? receiver.getEmail() : "").append(COMMA_SEPARATOR)
-            .append(amount).append(COMMA_SEPARATOR)
-            .append(total)
+            .append(transaction.getAmount()).append(COMMA_SEPARATOR)
+            .append(transaction.getTotal())
             .append(System.getProperty("line.separator"));
 
           // Update aggregates

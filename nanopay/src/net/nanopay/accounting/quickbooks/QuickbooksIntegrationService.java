@@ -260,9 +260,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     DAO accountingBankDAO = (DAO) x.get("accountingBankAccountCacheDAO");
 
     ResultResponse resultResponse = null;
-    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
-    resultWrapper.setMethod("bankAccountSync");
-    resultWrapper.setUserId(user.getId());
 
     try {
       String query = "select * from account where AccountType = 'Bank'";
@@ -282,9 +279,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         .setResult(true)
         .setBankAccountList(results.toArray(new AccountingBankAccount[accounts.size()]))
         .build();
-      resultWrapper.setResultResponse(resultResponse);
-      resultDAO.inX(x).put(resultWrapper);
-      return resultResponse;
+      return saveResult(x,"bankAccountSync", resultResponse);
 
     } catch ( Exception e ) {
       logger.error(e);
@@ -297,9 +292,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         results = sink.getArray();
       }
       response.setBankAccountList(results.toArray(new AccountingBankAccount[results.size()]));
-      resultWrapper.setResultResponse(resultResponse);
-      resultDAO.inX(x).put(resultWrapper);
-      return response;
+      return saveResult(x,"bankAccountSync", response);
     }
   }
 
@@ -309,9 +302,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     User user = (User) x.get("user");
 
     ResultResponse resultResponse = null;
-    ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
-    resultWrapper.setMethod("invoiceResync");
-    resultWrapper.setUserId(user.getId());
 
     try {
 
@@ -333,17 +323,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
       resultResponse = new ResultResponse.Builder(x)
         .setResult(true).build();
-      resultWrapper.setResultResponse(resultResponse);
-      resultDAO.inX(x).put(resultWrapper);
-      return resultResponse;
+      return saveResult(x,"invoiceResync", resultResponse);
     } catch ( Exception e ) {
       logger.error(e);
       quickInvoice.setDesync(true);
       invoiceDAO.inX(x).put(quickInvoice);
       resultResponse = errorHandler(e);
-      resultWrapper.setResultResponse(resultResponse);
-      resultDAO.inX(x).put(resultWrapper);
-      return resultResponse;
+      return saveResult(x,"bankAccountSync", resultResponse);
     }
   }
 
@@ -1094,7 +1080,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     resultWrapper.setMethod(method);
     resultWrapper.setUserId(user.getId());
     resultWrapper.setResultResponse(resultResponse);
-
+    resultWrapper.setTimeStamp(new Date().getTime());
+    resultDAO.inX(x).put(resultWrapper);
     return resultResponse;
   }
 }
