@@ -140,20 +140,35 @@ foam.CLASS({
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.STREET_NUMBER
+              prop: this.Address.STREET_NUMBER.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.TextField',
+                  mode$: this.mode$
+                }
+              })
             })
           .end()
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.STREET_NAME
+              prop: this.Address.STREET_NAME.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.TextField',
+                  mode$: this.mode$
+                }
+              })
             })
           .end()
         .end()
         .start().addClass('label-input')
           .tag(this.SectionedDetailPropertyView, {
             data$: this.data$,
-            prop: this.Address.SUITE
+            prop: this.Address.SUITE.clone().copyFrom({
+              view: {
+                class: 'foam.u2.TextField',
+                mode$: this.mode$
+              }
+            })
           })
         .end()
         .start()
@@ -162,13 +177,23 @@ foam.CLASS({
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.CITY
+              prop: this.Address.CITY.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.TextField',
+                  mode$: this.mode$
+                }
+              })
             })
           .end()
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.POSTAL_CODE
+              prop: this.Address.POSTAL_CODE.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.TextField',
+                  mode$: this.mode$
+                }
+              })
             })
           .end()
         .end();

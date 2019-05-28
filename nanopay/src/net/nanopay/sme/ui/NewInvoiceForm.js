@@ -397,7 +397,6 @@ foam.CLASS({
             .endContext()
           .end()
           .start()
-            .show(this.isInvalid$)
             .addClass('validation-failure-container')
             .start().show(this.showAddBank$)
               .start('img').addClass('small-error-icon').attrs({ src: 'images/inline-error-icon.svg' }).end()

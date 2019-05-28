@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Agreement form for PAD Authorization',
 
+  requires: [
+    'foam.nanos.auth.Address'
+  ],
+
   imports: [
     'user'
   ],
@@ -193,7 +197,8 @@ foam.CLASS({
 
         .tag({
           class: 'net.nanopay.sme.ui.AddressView',
-          data: this.viewData.user.address
+          data: this.viewData.user.address,
+          mode: this.viewData.user.address.validate() ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW
         })
 
         .start().addClass(this.myClass('divider')).end()
