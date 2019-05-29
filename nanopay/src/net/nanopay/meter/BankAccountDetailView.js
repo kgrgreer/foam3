@@ -36,6 +36,7 @@ foam.CLASS({
           this.BankAccount.INSTITUTION,
           this.USBankAccount.BRANCH,
           this.CABankAccount.BRANCH,
+          this.BankAccount.ACCOUNT_NUMBER,
           this.BankAccount.NAME,
           this.BankAccount.DENOMINATION,
           this.BankAccount.STATUS,

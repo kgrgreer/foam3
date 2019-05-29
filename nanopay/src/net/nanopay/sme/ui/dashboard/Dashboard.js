@@ -20,6 +20,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'ctrl',
     'group',
     'notificationDAO',
     'pushMenu',
@@ -94,12 +95,17 @@ foam.CLASS({
       name: 'myDaoNotification',
       factory: function() {
         return this.notificationDAO.where(
-          this.OR(
-            this.EQ(this.Notification.USER_ID, this.user.id),
-            this.EQ(this.Notification.GROUP_ID, this.group),
-            this.EQ(this.Notification.BROADCASTED, true)
+          this.AND(
+             this.OR(
+              this.EQ(this.Notification.USER_ID, this.user.id),
+              this.EQ(this.Notification.GROUP_ID, this.group.id),
+              this.EQ(this.Notification.BROADCASTED, true)
+            ),
+            this.NOT(this.IN(
+                this.Notification.NOTIFICATION_TYPE,
+                this.user.disabledTopics))
           )
-        );
+        ).orderBy(this.DESC(this.Notification.ISSUED_DATE));
       }
     },
     {
@@ -123,11 +129,12 @@ foam.CLASS({
           });
         return 0;
       }
-    },
+    }
   ],
 
   methods: [
     function initE() {
+      this.ctrl.bannerizeCompliance();
       this.SUPER();
       var self = this;
       var split = this.DashboardBorder.create();
@@ -136,7 +143,7 @@ foam.CLASS({
         .start('h1')
           .add(this.TITLE)
         .end()
-        .tag({ class: 'net.nanopay.sme.ui.dashboard.DynamicSixButtons' });
+        .tag({ class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard' }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
 
       var topL = this.Element.create()
         .start('h2')

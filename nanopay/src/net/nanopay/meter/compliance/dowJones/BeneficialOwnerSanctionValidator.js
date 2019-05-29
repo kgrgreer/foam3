@@ -1,18 +1,20 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
   name: 'BeneficialOwnerSanctionValidator',
-  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
+  extends: 'net.nanopay.meter.compliance.dowJones.AbstractDowJonesComplianceRuleAction',
 
   documentation: 'Validates a beneficial owner using DowJones Risk and Compliance API.',
 
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
-
   javaImports: [
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.model.BeneficialOwner'
+    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
+    'net.nanopay.model.BeneficialOwner',
+    'java.util.Date',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -22,11 +24,27 @@ foam.CLASS({
         BeneficialOwner beneficialOwner = (BeneficialOwner) obj;
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
-          DowJonesResponse response = dowJonesService.personNameSearch(x, beneficialOwner.getFirstName(), beneficialOwner.getLastName(), null, beneficialOwner.getBirthday(), beneficialOwner.getAddress().getCountryId());
+          Date filterLRDFrom = fetchLastExecutionDate(x, beneficialOwner.getId(), "Dow Jones Person");
+          PersonNameSearchData searchData = new PersonNameSearchData.Builder(x)
+            .setSearchId(beneficialOwner.getId())
+            .setFirstName(beneficialOwner.getFirstName())
+            .setSurName(beneficialOwner.getLastName())
+            .setFilterLRDFrom(filterLRDFrom)
+            .setDateOfBirth(beneficialOwner.getBirthday())
+            .setFilterRegion(beneficialOwner.getAddress().getCountryId())
+            .build();
+
+          DowJonesResponse response = dowJonesService.personNameSearch(x, searchData);
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
-          if ( ! response.getTotalMatches().equals("0") ) {
+          if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x, response, "dowJonesResponseDAO");
+            requestApproval(x, 
+              new ComplianceApprovalRequest.Builder(x)
+                .setObjId(Long.toString(beneficialOwner.getId()))
+                .setDaoKey("beneficialOwnerDAO")
+                .setCauseId(response.getId())
+                .setCauseDaoKey("dowJonesResponseDAO")
+                .build());
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
