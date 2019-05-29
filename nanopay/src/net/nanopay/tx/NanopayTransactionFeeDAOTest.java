@@ -143,6 +143,9 @@ public class NanopayTransactionFeeDAOTest
     for ( int i = 0; i < quote.getPlans().length; i++ ) {
       Transaction plan = quote.getPlans()[i];
       if ( null != plan ) {
+        if ( plan instanceof ComplianceTransaction ) {
+          plan = plan.getNext()[0];
+        }
         TransactionLineItem[] lineItems = plan.getLineItems();
         for ( TransactionLineItem lineItem : lineItems ) {
           if ( lineItem instanceof FeeLineItem ) {

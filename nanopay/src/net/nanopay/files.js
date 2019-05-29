@@ -254,6 +254,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionStatus' },
   { name: 'net/nanopay/tx/model/TransactionEntity' },
   { name: 'net/nanopay/tx/model/Transaction' },
+  { name: 'net/nanopay/tx/ComplianceTransaction' },
   { name: 'net/nanopay/tx/GreenfenceTransaction' },
   { name: 'net/nanopay/tx/InvoiceTransaction' },
   { name: 'net/nanopay/tx/RefundTransaction' },
@@ -274,9 +275,12 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
+  { name: 'net/nanopay/tx/JackieRuleOnCreate' },
+  { name: 'net/nanopay/tx/JackieRuleOnPut' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitState' },
   { name: 'net/nanopay/tx/FailedTransactionNotification' },
   { name: 'net/nanopay/tx/DebtTransaction' },
+  { name: 'net/nanopay/tx/CompliancePlanDAO' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -851,7 +855,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/IpHistory' },
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
-  { name: 'net/nanopay/meter/Report' },
+  { name: 'net/nanopay/meter/reports/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/BusinessDetailView', flags: ['web'] },
@@ -875,10 +879,12 @@ FOAM_FILES([
 
   // ruler
   { name: 'net/nanopay/meter/compliance/ruler/CanadianSanctionValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/ClearUserApprovalRequests' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestBeneficialOwnersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactSIDniValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/UserComplianceApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/AbliiSignup' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/B2BTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BeneficialOwnerComplianceRequested' },
@@ -886,8 +892,11 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarding' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/DowJonesApprovalRequested' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/NewEqOld' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/UserCompliancePassedOrFailed' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
 
   // canadian sanction
@@ -937,6 +946,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesResponseBody' },
   { name: 'net/nanopay/meter/compliance/dowJones/BeneficialOwnerSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/dowJones/ClientDowJonesService' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesApprovalRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesApprovalRequestRule' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCall' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCredentials' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJones' },

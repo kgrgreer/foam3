@@ -4,7 +4,6 @@ foam.CLASS({
   extends: 'foam.nanos.auth.email.EmailTokenService',
 
   imports: [
-    'email',
     'localUserDAO',
     'tokenDAO'
   ],
@@ -17,7 +16,7 @@ foam.CLASS({
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'foam.util.Password',
     'java.util.Calendar',
     'java.util.HashMap',
@@ -36,7 +35,7 @@ foam.CLASS({
     .filteredBy(CharacterPredicates.LETTERS, CharacterPredicates.DIGITS)
     .withinRange('0', 'z')
     .build();`
-        }))
+        }));
       }
     }
   ],
@@ -54,7 +53,6 @@ return calendar.getTime();`
       javaCode:
       `try {
         AppConfig config = (AppConfig) getX().get("appConfig");
-        EmailService email = (EmailService) getEmail();
         DAO tokenDAO = (DAO) getTokenDAO();
         DAO userDAO = (DAO) getLocalUserDAO();
         String url = config.getUrl()
@@ -88,7 +86,7 @@ return calendar.getTime();`
         args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
         args.put("password", password);
 
-        email.sendEmailFromTemplate(x, user, message, "welcome-email", args);
+        EmailsUtility.sendEmailFromTemplate(x, user, message, "welcome-email", args);
 
         user = (User) user.fclone();
         user.setInviteAttempts(user.getInviteAttempts() + 1);

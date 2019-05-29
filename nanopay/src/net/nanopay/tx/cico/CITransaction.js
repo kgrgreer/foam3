@@ -156,7 +156,7 @@ foam.CLASS({
           notification.setEmailName("pay-from-bank-account-reject");
 
           HashMap<String, Object> args = new HashMap<>();
-          AppConfig config = (AppConfig) x.get("appConfig");
+          AppConfig config = (AppConfig) (sender.findGroup(x)).getAppConfig(x);
 
           DAO invoiceDAO = (DAO) x.get("invoiceDAO");
           Invoice invoice = (Invoice) invoiceDAO.find(invoiceId);
@@ -186,7 +186,7 @@ foam.CLASS({
           notification.setEmailName("cashin-reject");
           NumberFormat formatter = NumberFormat.getCurrencyInstance();
           HashMap<String, Object> args = new HashMap<>();
-          AppConfig config       = (AppConfig) x.get("appConfig");
+          AppConfig config = (AppConfig) (receiver.findGroup(x)).getAppConfig(x);
 
           String bankAccountNumber = ((BankAccount)findSourceAccount(x)).getAccountNumber();
           args.put("amount", formatter.format(getAmount() / 100.00));

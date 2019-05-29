@@ -30,6 +30,10 @@ foam.CLASS({
 
   tableColumns: ['userId', 'status'],
 
+  implements: [
+    'foam.nanos.auth.Authorizable'
+  ],
+
   documentation: `Multifunctional model used for business onboarding`,
 
   requires: [
@@ -179,6 +183,12 @@ foam.CLASS({
           if ( this.userId != n ) return;
           this.firstName = user.firstName;
           this.lastName = user.lastName;
+        });
+      },
+      tableCellFormatter: function(id, o) {
+        var e = this.start('span').add(id).end();
+        o.userId$find.then(function(b) {
+          e.add(' - ', b.businessName || b.organization);
         });
       }
     },
@@ -906,5 +916,68 @@ foam.CLASS({
         });
       }
     },
+  ],
+
+  methods: [
+    {
+      name: 'authorizeOnCreate',
+      javaCode: `
+        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
+        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+
+        if ( user.getId() == getUserId() ) return;
+
+        String permission = "businessOnboarding.create." + getId();
+        foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
+        if ( auth.check(x, permission) ) return;
+
+        throw new foam.nanos.auth.AuthorizationException();
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      javaCode: `
+        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
+        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+
+        if ( user.getId() == getUserId() ) return;
+
+        String permission = "businessOnboarding.read." + getId();
+        foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
+        if ( auth.check(x, permission) ) return;
+
+        throw new foam.nanos.auth.AuthorizationException();
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      javaCode: `
+        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
+        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+
+        if ( user.getId() == getUserId() ) return;
+
+        String permission = "businessOnboarding.update." + getId();
+        foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
+        if ( auth.check(x, permission) ) return;
+
+        throw new foam.nanos.auth.AuthorizationException();
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      javaCode: `
+        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
+        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+
+        if ( user.getId() == getUserId() ) return;
+
+        String permission = "businessOnboarding.delete." + getId();
+        foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
+        if ( auth.check(x, permission) ) return;
+
+        throw new foam.nanos.auth.AuthorizationException();
+      `
+    }
   ]
 });

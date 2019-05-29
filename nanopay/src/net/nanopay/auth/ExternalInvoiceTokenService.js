@@ -14,7 +14,6 @@ foam.CLASS({
    imports: [
     'bareUserDAO',
     'currencyDAO',
-    'email',
     'invoiceDAO',
     'userUserDAO',
     'logger',
@@ -32,7 +31,7 @@ foam.CLASS({
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'foam.util.Password',
     'foam.util.SafetyUtil',
     'java.lang.Object',
@@ -67,7 +66,6 @@ foam.CLASS({
         
         String template = (String) parameters.get("template");
 
-        EmailService emailService = (EmailService) getEmail();
         DAO tokenDAO = (DAO) getTokenDAO();
 
         // Create new token and associate passed in external user to token.
@@ -102,7 +100,7 @@ foam.CLASS({
         urlStringB.append("#sign-up");
 
         parameters.put("link", urlStringB.toString());
-        emailService.sendEmailFromTemplate(x, user, message, template, parameters);
+        EmailsUtility.sendEmailFromTemplate(x, user, message, template, parameters);
 
         return true;
       } catch (Throwable t) {
@@ -183,7 +181,7 @@ foam.CLASS({
           // Set token processed to true.
           clone.setProcessed(true);
           tokenDAO.put(clone);
-
+          
           return true;
         } catch (Throwable t) {
           logger.error("Error processing contact token", t);
