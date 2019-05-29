@@ -7,6 +7,8 @@ import static foam.mlang.MLang.INSTANCE_OF;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 
+import net.nanopay.liquidity.Liquidity;
+import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.model.Business;
 
 public class DigitalAccountService
@@ -33,12 +35,25 @@ public class DigitalAccountService
             .setDebtorAccount(overdraft.getId())
             .setCreditorAccount(6)
             .setParent(overdraft.getId())
+            .setOwner(overdraft.getOwner())
             .setName("DebtAccount for: " + overdraft.getId())
             .build()).fclone();
        }
        overdraft.setDebtAccount(debtAccount.getId());
        overdraft = (OverdraftAccount) accountDAO.put(overdraft).fclone();
-
+/*
+       Liquidity liquidity = new Liquidity.Builder(x);
+         .setResetBalance(0)
+         .setThreshold(1)
+         .setEnabled(true)
+         .setPushPullAccount(debtAccount.getId())
+         .setRebalancingEnabled(true)
+         .build();
+       LiquiditySettings ls = new LiquiditySettings.Builder(x)
+       .setHighLiquidity(liquidity)
+       .set
+       .build();
+*/
        return overdraft;
      } else {
        return DigitalAccount.findDefault(getX(), user, denomination);

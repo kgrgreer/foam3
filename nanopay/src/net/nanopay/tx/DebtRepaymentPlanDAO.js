@@ -22,12 +22,12 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       TransactionQuote quote = (TransactionQuote) obj;
-      Transaction request = quote.getRequest();
+      Transaction request = quote.getRequestTransaction();
       if ( ! ( request.findDestinationAccount(x) instanceof DebtAccount ) )
         return super.put_(x, quote);
 
       Transaction repayment = new DebtRepaymentTransaction.Builder(x).build();
-      repayment.copy(request);
+      repayment.copyFrom(request);
       repayment.setIsQuoted(true);
 
       quote.setPlan(repayment);
