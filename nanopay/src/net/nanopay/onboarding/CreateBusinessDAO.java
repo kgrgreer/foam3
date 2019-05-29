@@ -62,7 +62,7 @@ public class CreateBusinessDAO extends ProxyDAO {
     Group employeeGroup = new Group();
     employeeGroup.copyFrom(employeeTemplateGroup);
     employeeGroup.setId(safeBusinessName + ".employee");
-    employeeGroup.setPermissions(generatePermissions(x, employeeTemplateGroup, safeBusinessName));
+    generatePermissions(x, employeeTemplateGroup, safeBusinessName);
     employeeGroup.setBusiness(business.getId());
     employeeGroup.setParent("sme");
     groupDAO.put(employeeGroup);
@@ -70,7 +70,7 @@ public class CreateBusinessDAO extends ProxyDAO {
     Group approverGroup = new Group();
     approverGroup.copyFrom(approverTemplateGroup);
     approverGroup.setId(safeBusinessName + ".approver");
-    approverGroup.setPermissions(generatePermissions(x, approverTemplateGroup, safeBusinessName));
+    generatePermissions(x, approverTemplateGroup, safeBusinessName);
     approverGroup.setBusiness(business.getId());
     approverGroup.setParent(safeBusinessName + ".employee");
     groupDAO.put(approverGroup);
@@ -78,7 +78,7 @@ public class CreateBusinessDAO extends ProxyDAO {
     Group adminGroup = new Group();
     adminGroup.copyFrom(adminTemplateGroup);
     adminGroup.setId(safeBusinessName + ".admin");
-    adminGroup.setPermissions(generatePermissions(x, adminTemplateGroup, safeBusinessName));
+    generatePermissions(x, adminTemplateGroup, safeBusinessName);
     adminGroup.setBusiness(business.getId());
     adminGroup.setParent(safeBusinessName + ".approver");
     groupDAO.put(adminGroup);
@@ -107,19 +107,19 @@ public class CreateBusinessDAO extends ProxyDAO {
   // a unique id for each business. For example, "group.update.id.*" would be
   // changed to "group.update.foobar123.*". Then that permission is added to a
   // new group which gets returned.
-  public Permission[] generatePermissions(X x, Group templateGroup, String safeBusinessName) {
+  public void generatePermissions(X x, Group templateGroup, String safeBusinessName) {
     DAO permissionDAO  = (DAO) x.get("permissionDAO");
-    Permission[] templatePermissions = templateGroup.getPermissions();
-    Permission[] newPermissions = new Permission[templatePermissions.length];
-    for ( int i = 0; i < templatePermissions.length; i++ ) {
-      Permission templatePermission = templatePermissions[i];
+    List<Permission> templatePermissions = ((ArraySink) templateGroup.getPermissions(x).getDAO().select(new ArraySink())).getArray();
+
+    for ( Permission templatePermission : templatePermissions ) {
       Permission newPermission = new Permission(templatePermission.getId().replaceAll("\\.id\\.", "." + safeBusinessName + "."), templatePermission.getDescription());
-      newPermissions[i] = newPermission;
+
+      // Use the system context to pass the auth checks.
+      templateGroup.getPermissions(getX()).add(newPermission);
 
       // Put as the system since permissionDAO is authenticated.
       permissionDAO.inX(getX()).put(newPermission);
     }
-    return newPermissions;
   }
 
   /**
