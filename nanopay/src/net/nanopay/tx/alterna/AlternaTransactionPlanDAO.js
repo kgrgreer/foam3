@@ -31,7 +31,6 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.ComplianceTransaction',
     'static foam.mlang.MLang.*',
     'foam.dao.DAO'
   ],
@@ -84,15 +83,7 @@ foam.CLASS({
       // TODO: use EFT calculation process
       t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
       t.setIsQuoted(true);
-
-      ComplianceTransaction ct = new ComplianceTransaction.Builder(x)
-      .build();
-      ct.setDestinationAccount(t.getDestinationAccount());
-      ct.setSourceAccount(t.getSourceAccount());
-      ct.setAmount(t.getAmount());
-      ct.setIsQuoted(true);
-      ct.addNext(t);
-      quote.addPlan(ct);
+      quote.addPlan(t);
     }
 
     return getDelegate().put_(x, quote);

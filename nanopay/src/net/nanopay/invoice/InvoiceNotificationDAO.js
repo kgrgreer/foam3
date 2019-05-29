@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.auth.token.TokenService',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'java.text.SimpleDateFormat',
     'java.util.*',
     'net.nanopay.invoice.model.Invoice',
@@ -126,7 +126,7 @@ foam.CLASS({
               args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
-
+            
           } catch (Exception e) {
             e.printStackTrace();
           }
@@ -177,7 +177,6 @@ foam.CLASS({
           args.put("invoiceId", invoiceId);
           externalInvoiceToken.generateTokenWithParameters(x, userBeingSentEmail, args);
         } else {
-          EmailService emailService = (EmailService) x.get("email");
           Group group = (Group) userBeingSentEmail.findGroup(x);
           AppConfig appConfig = group.getAppConfig(x);
     
@@ -185,7 +184,7 @@ foam.CLASS({
           EmailMessage message = new EmailMessage.Builder(x)
             .setTo((new String[] { sendTo }))
             .build();
-          emailService.sendEmailFromTemplate(x, userBeingSentEmail, message, emailTemplateName, args);
+          EmailsUtility.sendEmailFromTemplate(x, userBeingSentEmail, message, emailTemplateName, args);
         }
       `
     },

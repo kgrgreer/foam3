@@ -1,4 +1,4 @@
-package net.nanopay.meter;
+package net.nanopay.meter.reports;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -12,7 +12,7 @@ import java.util.List;
 
 // User summary report for users who have passed complaince
 // Used for Dow Jones integration
-public class UserSummaryReport {
+public class ReportDowJonesUserCheck {
 
   public String createReport(X x) {
 

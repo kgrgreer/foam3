@@ -6,7 +6,7 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import net.nanopay.plaid.model.PlaidError;
 import net.nanopay.plaid.model.PlaidItem;
 
@@ -61,8 +61,6 @@ public class PlaidErrorHandler {
   private void handleRateLimitExceededError(PlaidError error) {
     logger.warning("Plaid has exceeded established rate limits");
 
-    EmailService emailService = (EmailService) x.get("email");
-
     String messageBody = "";
     messageBody += "The request has exceeded established rate limits. \n";
     messageBody += error.getError_code()      + "\n";
@@ -74,7 +72,7 @@ public class PlaidErrorHandler {
     message.setBody(messageBody);
     message.setTo(new String[] {"ops@nanopay.net"});
 
-    emailService.sendEmail(x, message);
+    EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
   }
 
 }

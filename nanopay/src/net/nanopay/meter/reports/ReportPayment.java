@@ -1,48 +1,32 @@
-package net.nanopay.meter;
+package net.nanopay.meter.reports;
 
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
 import foam.mlang.MLang;
 import foam.nanos.auth.User;
-import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.model.TransactionEntity;
 import java.util.UUID;
 
 import java.util.*;
 import java.util.function.Function;
 
-public class PaymentSummaryReport {
+public class ReportPayment extends AbstractReport {
 
-  final static char SEPARATOR = ',';
-  final static int NUM_ELEMENTS = 24;
+  public final static int NUM_ELEMENTS = 24;
 
-  public <T> String nullCheckToString(T obj, Function<T, String> fn) {
-    if ( obj != null ) return fn.apply(obj);
-    return "";
-  }
-
-  private String buildCSVLine(String... args) {
-    StringBuilder sb = new StringBuilder();
-    for ( int i = 0; i < NUM_ELEMENTS; i++) {
-      if ( i < args.length) sb.append(args[i]);
-      if ( i < NUM_ELEMENTS - 1 ) sb.append(SEPARATOR);
-      else sb.append('\n');
-    }
-    return sb.toString();
-  }
-
-  private void appendTransaction(X x, StringBuilder builder, String invoiceID, Transaction transaction) {
+  void appendTransaction(X x, StringBuilder builder, String invoiceID, Transaction transaction) {
     // Get the sender and receiver
     Account sourceAccount = transaction.findSourceAccount(x);
     User sender = (sourceAccount != null) ? sourceAccount.findOwner(x) : null;
     Account destinationAccount = transaction.findDestinationAccount(x);
     User receiver = (destinationAccount != null) ? destinationAccount.findOwner(x) : null;
 
+    // Build the CSV line
     builder.append(buildCSVLine(
+      NUM_ELEMENTS,
       invoiceID,
       nullCheckToString(transaction.getStatus(), Object::toString),
       transaction.getId(),
@@ -71,7 +55,7 @@ public class PaymentSummaryReport {
     ));
   }
 
-  private void buildSummaryReport(X x, StringBuilder builder, String invoiceID, Transaction root) {
+  void buildSummaryReport(X x, StringBuilder builder, String invoiceID, Transaction root) {
     // Append the transaction
     appendTransaction(x, builder, invoiceID, root);
 
@@ -140,6 +124,7 @@ public class PaymentSummaryReport {
 
     StringBuilder sb = new StringBuilder();
     sb.append(buildCSVLine(
+      NUM_ELEMENTS,
       "Payment ID",
       "Transaction Status",
       "Transaction ID",
@@ -174,6 +159,7 @@ public class PaymentSummaryReport {
       // Create summary line
       sb.append(
         buildCSVLine(
+          NUM_ELEMENTS,
           entry.getKey(),
           status.getName()
         )

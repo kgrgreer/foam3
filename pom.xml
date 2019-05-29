@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
-  <version>3.0.0</version>
+  <version>3.1.0</version>
 
   <groupId>net.nanopay</groupId>
   <artifactId>nanopay</artifactId>
@@ -31,11 +31,11 @@
       <artifactId>commons-collections</artifactId>
       <version>3.2.2</version>
     </dependency>
-    <dependency>
-      <groupId>commons-beanutils</groupId>
-      <artifactId>commons-beanutils</artifactId>
-      <version>1.9.3</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>commons-beanutils</groupId> -->
+    <!--   <artifactId>commons-beanutils</artifactId> -->
+    <!--   <version>1.9.3</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
@@ -77,11 +77,6 @@
       <version>1.0</version>
     </dependency>
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4.7</version>
-    </dependency>
-    <dependency>
       <groupId>javax.websocket</groupId>
       <artifactId>javax.websocket-api</artifactId>
       <version>1.1</version>
@@ -90,7 +85,7 @@
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>javax.mail-api</artifactId>
-      <version>1.5.5</version>
+      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -106,6 +101,16 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-dbcp2</artifactId>
       <version>2.0.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xerces</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -152,11 +157,11 @@
       <artifactId>mongodb-driver</artifactId>
       <version>3.4.2</version>
     </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.0.0</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>org.postgresql</groupId> -->
+    <!--   <artifactId>postgresql</artifactId> -->
+    <!--   <version>42.0.0</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>org.java-websocket</groupId>
       <artifactId>Java-WebSocket</artifactId>
@@ -182,11 +187,11 @@
       <artifactId>jaxb-api</artifactId>
       <version>2.1</version>
     </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.2.11</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>com.sun.xml.bind</groupId> -->
+    <!--   <artifactId>jaxb-impl</artifactId> -->
+    <!--   <version>2.2.11</version> -->
+    <!-- </dependency> -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
@@ -242,11 +247,11 @@
       <artifactId>html2pdf</artifactId>
       <version>1.0.2</version>
     </dependency>
-    <dependency>
-      <groupId>com.google.oauth-client</groupId>
-      <artifactId>google-oauth-client</artifactId>
-      <version>1.23.0</version>
-    </dependency>
+    <!-- <dependency> -->
+    <!--   <groupId>com.google.oauth-client</groupId> -->
+    <!--   <artifactId>google-oauth-client</artifactId> -->
+    <!--   <version>1.23.0</version> -->
+    <!-- </dependency> -->
   </dependencies>
 
   <build>
