@@ -21,7 +21,7 @@ MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
 VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
 INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
 
-echo "$0 MODE=${MODE} INSTANCE=${INSTANCE} VERSION=${VERSION}"
+echo "INFO :: $0 MODE=${MODE} INSTANCE=${INSTANCE} VERSION=${VERSION}"
 
 # Creates an array of the file names
 declare -a arr=(
