@@ -342,9 +342,9 @@ foam.CLASS({
       if ( this.user.compliance !== this.ComplianceStatus.PASSED
           || bankAccountCount === 0 ) {
         if ( this.user.onboarded && bankAccountCount !== 0 ) {
-          this.notify(this.HAS_NOT_PASSED_COMPLIANCE, 'error');
+          this.notify(this.HAS_NOT_PASSED_COMPLIANCE, 'warning');
         } else {
-          this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'error');
+          this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'warning');
         }
         return false;
       }
