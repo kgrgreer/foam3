@@ -21,7 +21,8 @@ foam.CLASS({
 
   imports: [
     'accountingIntegrationUtil',
-    'checkAbilityToMakePayment',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'stack',
     'user'
   ],
@@ -103,7 +104,7 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                self.checkAbilityToMakePayment(true).then((result) => {
+                self.checkAndNotifyAbilityToReceive().then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.request').then((menu) => {
                       var clone = menu.clone();
@@ -115,7 +116,7 @@ foam.CLASS({
                     });
                   }
                 }).catch((err) => {
-                  console.warn('Error occured when checking the ability to make payment: ', err);
+                  console.warn('Error occured when checking the ability to request payment: ', err);
                 });
               }
             }),
@@ -128,7 +129,7 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                self.checkAbilityToMakePayment(true).then((result) => {
+                self.checkAndNotifyAbilityToPay().then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.send').then((menu) => {
                       var clone = menu.clone();
@@ -140,7 +141,7 @@ foam.CLASS({
                     });
                   }
                 }).catch((err) => {
-                  console.warn('Error occured when checking the ability to make payment: ', err);
+                  console.warn('Error occured when checking the ability to send payment: ', err);
                 });
               }
             }),

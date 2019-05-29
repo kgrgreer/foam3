@@ -16,7 +16,8 @@ foam.CLASS({
     'appConfig',
     'auth',
     'canReceiveCurrencyDAO',
-    'checkAbilityToMakePayment',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'contactDAO',
     'ctrl',
     'fxService',
@@ -182,7 +183,7 @@ foam.CLASS({
     {
       name: 'isLoading',
       value: false,
-      postSet: function(_,n) {
+      postSet: function(_, n) {
         if ( n ) {
           this.loadingSpin.show();
           return;
@@ -309,13 +310,22 @@ foam.CLASS({
     },
 
     function initE() {
-      this.checkAbilityToMakePayment(this.isPayable).then((result) => {
+      var checkAndNotifyAbility;
+      var errorMessage;
+      if ( this.isPayable ) {
+        checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
+        errorMessage = 'Error occured when checking the ability to send payment: ';
+      } else {
+        checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
+        errorMessage = 'Error occured when checking the ability to request payment: ';
+      }
+      checkAndNotifyAbility().then((result) => {
         if ( ! result ) {
           this.pushMenu('sme.main.dashboard');
           return;
         }
       }).catch((err) => {
-        console.warn('Error occured when checking the ability to make payment: ', err);
+        console.warn(errorMessage, err);
       });
 
       this.SUPER();
@@ -353,14 +363,24 @@ foam.CLASS({
 
     async function submit() {
       this.isLoading = true;
+      var checkAndNotifyAbility;
+      var errorMessage;
+
+      if ( this.isPayable ) {
+        checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
+        errorMessage = 'Error occured when checking the ability to send payment: ';
+      } else {
+        checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
+        errorMessage = 'Error occured when checking the ability to request payment: ';
+      }
+
       try {
-        var result = await this.checkAbilityToMakePayment(this.isPayable);
+        var result = await checkAndNotifyAbility();
         if ( ! result ) {
-          this.notify(this.COMPLIANCE_ERROR, 'error');
           return;
         }
       } catch (err) {
-        console.warn('Error occured when checking the ability to make payment: ', err);
+        console.warn(errorMessage, err);
         return;
       }
 

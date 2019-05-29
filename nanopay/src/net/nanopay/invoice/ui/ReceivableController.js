@@ -21,7 +21,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'checkAbilityToMakePayment',
+    'checkAndNotifyAbilityToReceive',
     'currencyDAO',
     'stack',
     'user',
@@ -83,7 +83,7 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function(X) {
-                self.checkAbilityToMakePayment(false).then((result) => {
+                self.checkAndNotifyAbilityToReceive().then((result) => {
                   if ( ! result ) return;
                   X.menuDAO.find('sme.quickAction.request').then((menu) => {
                     var clone = menu.clone();
@@ -96,7 +96,7 @@ foam.CLASS({
                     clone.launch(X, X.controllerView);
                   });
                 }).catch((err) => {
-                  console.warn('Error occured when checking the ability to make payment: ', err);
+                  console.warn('Error occured when checking the ability to request payment: ', err);
                 });
               }
             }),
@@ -143,7 +143,7 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            self.checkAbilityToMakePayment(false).then((result) => {
+            self.checkAndNotifyAbilityToReceive().then((result) => {
               if ( result ) {
                 X.menuDAO.find('sme.quickAction.request').then((menu) => {
                   var clone = menu.clone();
@@ -158,7 +158,7 @@ foam.CLASS({
                 });
               }
             }).catch((err) => {
-              console.warn('Error occured when checking the ability to make payment: ', err);
+              console.warn('Error occured when checking the ability to request payment: ', err);
             });
           }
         });

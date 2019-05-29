@@ -37,7 +37,8 @@ foam.CLASS({
     'as ctrl',
     'bannerData',
     'bannerizeCompliance',
-    'checkAbilityToMakePayment',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'currentAccount',
     'privacyUrl',
     'termsUrl',
@@ -335,44 +336,55 @@ foam.CLASS({
       }
     },
 
-    async function checkAbilityToMakePayment(isPayable) {
+    async function checkComplianceAndBanking() {
       var bankAccountCount = await this.bankingAmount();
-      var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
-
+      
       if ( this.user.compliance !== this.ComplianceStatus.PASSED
-           || bankAccountCount === 0 ) {
+          || bankAccountCount === 0 ) {
         if ( this.user.onboarded && bankAccountCount !== 0 ) {
           this.notify(this.HAS_NOT_PASSED_COMPLIANCE, 'error');
         } else {
           this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'error');
         }
         return false;
-      } else if ( this.user.compliance === this.ComplianceStatus.PASSED
-        && bankAccountCount !== 0
-        && isPayable
-        && canPayInvoice
-        && ! this.agent.twoFactorEnabled ) {
-          // This condition is to check if the user enable the 2FA when the user
-          // have the permission to send a payable after the user passed
-          // the compliance and already add the bank account.
-          // It is only required for payables.
-
-          var TwoFactorNotificationDOM = this.Element.create()
-            .start().style({ 'display': 'inline-block' })
-              .add(this.TWO_FACTOR_REQUIRED_ONE)
-            .end()
-            .start('a').addClass('toast-link')
-              .add(this.TWO_FACTOR_REQUIRED_TWO)
-              .on('click', () => {
-                this.pushMenu('sme.accountProfile.personal-settings');
-              })
-            .end();
-
-          // Pass the customized DOM element into the toast notification
-          this.notify(TwoFactorNotificationDOM, 'warning');
-          return false;
       }
       return true;
+    },
+
+    /**
+     * This condition is to check if the user enable the 2FA when the user
+     * have the permission to send a payable.
+     * It is only required for payables.
+     */
+    async function check2FAEnalbed() {
+      var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
+
+      if ( canPayInvoice && ! this.agent.twoFactorEnabled ) {
+        var TwoFactorNotificationDOM = this.Element.create()
+          .start().style({ 'display': 'inline-block' })
+            .add(this.TWO_FACTOR_REQUIRED_ONE)
+          .end()
+          .start('a').addClass('toast-link')
+            .add(this.TWO_FACTOR_REQUIRED_TWO)
+            .on('click', () => {
+              this.pushMenu('sme.accountProfile.personal-settings');
+            })
+          .end();
+
+        // Pass the customized DOM element into the toast notification
+        this.notify(TwoFactorNotificationDOM, 'warning');
+        return false;
+      }
+      return true;
+    },
+
+    async function checkAndNotifyAbilityToPay() {
+      var result = await this.checkComplianceAndBanking();
+      return result ? await this.check2FAEnalbed() : result;
+    },
+
+    async function checkAndNotifyAbilityToReceive() {
+      return await this.checkComplianceAndBanking();
     },
 
     /**

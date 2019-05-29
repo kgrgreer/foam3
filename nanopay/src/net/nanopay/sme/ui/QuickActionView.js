@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'checkAbilityToMakePayment',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'menuDAO',
     'pushMenu'
   ],
@@ -70,13 +71,23 @@ foam.CLASS({
 
   listeners: [
     function quickActionRedirect(menu) {
-      var isPayable = menu.id === 'sme.quickAction.send';
-      this.checkAbilityToMakePayment(isPayable).then((result) => {
+      var checkAndNotifyAbility;
+      var errorMessage;
+
+      if ( menu.id === 'sme.quickAction.send' ) {
+        checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
+        errorMessage = 'Error occured when checking the ability to send payment: ';
+      } else {
+        checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
+        errorMessage = 'Error occured when checking the ability to request payment: ';
+      }
+
+      checkAndNotifyAbility().then((result) => {
         if ( result ) {
           this.pushMenu(menu.id);
         }
       }).catch((err) => {
-        console.warn('Error occured when checking the ability to make payment: ', err);
+        console.warn(errorMessage, err);
       });
     }
   ]

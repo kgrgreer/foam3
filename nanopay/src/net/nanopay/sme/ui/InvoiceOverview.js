@@ -36,7 +36,8 @@ foam.CLASS({
     'accountDAO',
     'auth',
     'canReceiveCurrencyDAO',
-    'checkAbilityToMakePayment',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'ctrl',
     'currencyDAO',
     'email',
@@ -686,7 +687,18 @@ foam.CLASS({
         return this.invoice.status === this.InvoiceStatus.DRAFT;
       },
       code: function(X) {
-        this.checkAbilityToMakePayment(this.isPayable).then((result) => {
+        var checkAndNotifyAbility;
+        var errorMessage;
+
+        if ( this.isPayable ) {
+          checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
+          errorMessage = 'Error occured when checking the ability to send payment: ';
+        } else {
+          checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
+          errorMessage = 'Error occured when checking the ability to request payment: ';
+        }
+
+        checkAndNotifyAbility().then((result) => {
           if ( ! result ) return;
           var menuName = this.isPayable ? 'send' : 'request';
           X.menuDAO.find(`sme.quickAction.${menuName}`).then((menu) => {
@@ -699,7 +711,7 @@ foam.CLASS({
             clone.launch(X, X.controllerView);
           });
         }).catch((err) => {
-          console.warn('Error occured when checking the ability to make payment: ', err);
+          console.warn(errorMessage, err);
         });
       }
     },
@@ -716,7 +728,18 @@ foam.CLASS({
       },
       code: function(X) {
         var self = this;
-        this.checkAbilityToMakePayment(this.isPayable).then((result) => {
+        var checkAndNotifyAbility;
+        var errorMessage;
+
+        if ( this.isPayable ) {
+          checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
+          errorMessage = 'Error occured when checking the ability to send payment: ';
+        } else {
+          checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
+          errorMessage = 'Error occured when checking the ability to request payment: ';
+        }
+
+        checkAndNotifyAbility().then((result) => {
           if ( result ) {
             // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
             var request = self.CanReceiveCurrency.create({
@@ -738,7 +761,7 @@ foam.CLASS({
                 });
                 clone.launch(X, X.controllerView);
               }).catch((err) => {
-                console.warn('Error occured when checking the ability to make payment: ', err);
+                console.warn(errorMessage, err);
               });
             });
           }
