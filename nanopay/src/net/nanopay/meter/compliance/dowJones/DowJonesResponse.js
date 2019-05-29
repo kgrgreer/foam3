@@ -8,43 +8,62 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      visibility: 'RO'
     },
     {
       class: 'Long',
-      name: 'userId'
+      name: 'userId',
+      visibility: 'RO'
     },
     {
       class: 'Date',
-      name: 'searchDate'
+      name: 'searchDate',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'searchType'
+      name: 'searchType',
+      visibility: 'RO'
     },
     {
       class: 'String',
-      name: 'nameSearched'
+      name: 'nameSearched',
+      visibility: 'RO'
     },
     {
       class: 'Int',
-      name: 'totalMatches'
+      name: 'totalMatches',
+      visibility: 'RO'
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.approval.ApprovalStatus',
+      name: 'status'
+    },
+    {
+      class: 'String',
+      name: 'comments',
+      view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 40 }
     },
     {
       class: 'Int',
       name: 'httpStatusCode',
+      visibility: 'RO',
       documentation: 'HTTP Status Code retrieved from the HTTP GET request to the Dow Jones API'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.MetadataSearchResponse',
       name: 'metadata',
+      visibility: 'RO',
       documentation: 'Metadata retrieved from the head response data'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.DowJonesResponseBody',
       name: 'responseBody',
+      visibility: 'RO',
       documentation: 'Body retreived from the body response data'
     }
   ]
