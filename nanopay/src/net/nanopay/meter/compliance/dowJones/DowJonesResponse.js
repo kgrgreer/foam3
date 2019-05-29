@@ -77,7 +77,7 @@ foam.CLASS({
         return searchType == 'Dow Jones Person';
       },
       code: function(X) {
-        var m = foam.mlang.ExpressionsSingleton.create({});
+        var m = foam.mlang.ExpressionsSingleton.create();
         this.__context__.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
@@ -85,7 +85,7 @@ foam.CLASS({
           title: `${this.nameSearched}'s User Info`,
           data: X.userDAO.where(
             m.EQ(foam.nanos.auth.User.ID, this.userId)
-            )
+          )
         });
       }
     },
@@ -97,7 +97,7 @@ foam.CLASS({
         return searchType == 'Dow Jones Entity';
       },
       code: function(X) {
-        var m = foam.mlang.ExpressionsSingleton.create({});
+        var m = foam.mlang.ExpressionsSingleton.create();
         this.__context__.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
@@ -105,7 +105,7 @@ foam.CLASS({
           title: `${this.nameSearched}'s Business Info`,
           data: X.businessDAO.where(
             m.EQ(net.nanopay.model.Business.ID, this.userId)
-            )
+          )
         });
       }
     }
