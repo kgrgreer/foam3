@@ -66,5 +66,48 @@ foam.CLASS({
       visibility: 'RO',
       documentation: 'Body retreived from the body response data'
     }
+  ],
+
+  actions: [
+    {
+      name: 'viewUser',
+      label: 'View User',
+      tableWidth: 135,
+      isAvailable: function(searchType) {
+        return searchType == 'Dow Jones Person';
+      },
+      code: function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create();
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          exportEnabled: true,
+          title: `${this.nameSearched}'s User Info`,
+          data: X.userDAO.where(
+            m.EQ(foam.nanos.auth.User.ID, this.userId)
+          )
+        });
+      }
+    },
+    {
+      name: 'viewBusiness',
+      label: 'View Business',
+      tableWidth: 135,
+      isAvailable: function(searchType) {
+        return searchType == 'Dow Jones Entity';
+      },
+      code: function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create();
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          exportEnabled: true,
+          title: `${this.nameSearched}'s Business Info`,
+          data: X.businessDAO.where(
+            m.EQ(net.nanopay.model.Business.ID, this.userId)
+          )
+        });
+      }
+    }
   ]
 });
