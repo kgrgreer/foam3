@@ -192,7 +192,7 @@ foam.CLASS({
         .start('p').add('Business Address').addClass(this.myClass('section-header')).end()
 
         .startContext({
-          controllerMode: this.validateAddress(this.viewData.user.address) ?
+          controllerMode: ! this.viewData.user.address.errors_ ?
           foam.u2.ControllerMode.VIEW :
           foam.u2.ControllerMode.EDIT
         })
@@ -285,9 +285,6 @@ foam.CLASS({
             .end();
           })
         .end();
-    },
-    function validateAddress(address) {
-      return address.streetName && address.streetNumber && address.city && address.countryId && address.postalCode && address.regionId;
     }
   ],
 
