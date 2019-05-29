@@ -354,8 +354,7 @@ foam.CLASS({
           // This condition is to check if the user enable the 2FA when the user
           // have the permission to send a payable after the user passed
           // the compliance and already add the bank account.
-          //
-          // It is required and only for payables.
+          // It is only required for payables.
           this.notify(
             // Pass the customized DOM element into the toast notification
             this.Element.create()
