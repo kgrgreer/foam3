@@ -990,5 +990,13 @@ FOAM_FILES([
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
-  { name: 'net/nanopay/approval/ApprovalStatus' }
+  { name: 'net/nanopay/approval/ApprovalStatus' },
+
+  // alarming & monitoring
+  { name: 'net/nanopay/alarming/Alarm' },
+  { name: 'net/nanopay/alarming/AlarmConfig' },
+  { name: 'net/nanopay/alarming/AlarmReason' },
+  { name: 'net/nanopay/alarming/MonitoringReport' },
+  { name: 'net/nanopay/alarming/MonitorType' },
+  { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 ]);
