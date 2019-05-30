@@ -45,18 +45,6 @@ foam.CLASS({
           .build();
         requestApproval(x, req);
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'describe',
-      javaCode: ` return ""; `
-    },
-    {
-      name: 'canExecute',
-      javaCode: ` return true;`
     }
   ]
 });
