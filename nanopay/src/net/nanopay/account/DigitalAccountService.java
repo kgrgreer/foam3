@@ -7,7 +7,10 @@ import static foam.mlang.MLang.INSTANCE_OF;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 
+import net.nanopay.liquidity.Liquidity;
+import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.model.Business;
+import net.nanopay.util.Frequency;
 
 public class DigitalAccountService
   extends ContextAwareSupport
@@ -33,6 +36,7 @@ public class DigitalAccountService
             .setDebtorAccount(overdraft.getId())
             .setCreditorAccount(6)
             .setParent(overdraft.getId())
+            .setOwner(overdraft.getOwner())
             .setName("DebtAccount for: " + overdraft.getId())
             .build()).fclone();
        }
