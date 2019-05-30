@@ -144,11 +144,11 @@ foam.CLASS({
     },
     {
       name: 'ABILITY_TO_PAY_ERROR',
-      message: 'Error occured when checking the ability to send payment'
+      message: 'Error occurred when checking the ability to send payment'
     },
     {
       name: 'ABILITY_TO_RECEIVE_ERROR',
-      message: 'Error occured when checking the ability to receive payment'
+      message: 'Error occurred when checking the ability to receive payment'
     }
   ],
 

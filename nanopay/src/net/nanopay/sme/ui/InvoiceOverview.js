@@ -189,7 +189,7 @@ foam.CLASS({
     { name: 'INVOICE_HISTORY', message: 'History' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
     { name: 'VOID_MESSAGE', message: 'Mark as void' },
-    { name: 'EMAIL_MSG_ERROR', message: 'An error occured while sending a reminder, please try again later.' },
+    { name: 'EMAIL_MSG_ERROR', message: 'An error occurred while sending a reminder, please try again later.' },
     { name: 'EMAIL_MSG', message: 'Invitation sent!' },
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
@@ -781,7 +781,7 @@ foam.CLASS({
           });
           clone.launch(X, X.controllerView);
         }).catch((err) => {
-          console.warn('Error occured when redirecting to approval payment flow: ', err);
+          console.warn('Error occurred when redirecting to approval payment flow: ', err);
         });
       }
     },
