@@ -17,7 +17,12 @@ extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     FObject old = ((DAO)x.get("approvalRequestDAO")).find_(x, obj);
     ApprovalRequest ret = (ApprovalRequest) getDelegate().put_(x, obj);
-    if ( old != null ) return ret;
+    if ( old != null
+      || ApprovalStatus.REQUESTED != ret.getStatus()
+    ) { 
+      return ret;
+    }
+
     Notification notification = new Notification();
     notification.setUserId(ret.getApprover());
     notification.setNotificationType("New approval request");
