@@ -763,6 +763,7 @@ foam.CLASS({
       isEnabled: function(canApproveInvoice) {
         return canApproveInvoice;
       },
+      availablePermissions: ['invoice.pay'],
       code: function(X) {
         X.menuDAO.find('sme.quickAction.send').then((menu) => {
           var clone = menu.clone();
