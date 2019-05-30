@@ -24,6 +24,19 @@ foam.CLASS({
     'net.nanopay.tx.KotakCOTransaction',
   ],
 
+  constants: [
+    {
+      type: 'Long',
+      name: 'KOTAK_OWNER_CA_ID',
+      value: 8006
+    },
+    {
+      type: 'Long',
+      name: 'KOTAK_PARTNER_IN_ID',
+      value: 8007
+    }
+  ],
+
    methods: [
     {
       name: 'put_',
@@ -32,14 +45,18 @@ foam.CLASS({
       Transaction request = quote.getRequestTransaction();
       Account sourceAccount = request.findSourceAccount(getX());
       Account destinationAccount = request.findDestinationAccount(getX());
-      BankAccount kotakCAbank = (CABankAccount) ((DAO) x.get("accountDAO")).find(111L);
-      BankAccount kotakINbank = BankAccount.findDefault(getX(), destinationAccount.findOwner(getX()), "INR");
-       if ( sourceAccount instanceof DigitalAccount && destinationAccount instanceof INBankAccount &&
-        sourceAccount.getDenomination().equalsIgnoreCase("CAD") && destinationAccount.getDenomination().equalsIgnoreCase("INR") &&
-        kotakCAbank != null && kotakCAbank instanceof CABankAccount &&
-        kotakINbank != null && kotakINbank instanceof INBankAccount ) {
+      User kotakOwnerCA = (User) ((DAO) x.get("localUserDAO")).find(KOTAK_OWNER_CA_ID);
+      User KotakPartnerIN = (User) ((DAO) x.get("localUserDAO")).find(KOTAK_PARTNER_IN_ID);
+      BankAccount kotakCAbank = BankAccount.findDefault(getX(), kotakOwnerCA, "CAD");
+      BankAccount kotakINbank = BankAccount.findDefault(getX(), kotakOwnerCA, "INR");
+      BankAccount kotakINPartnerBank = BankAccount.findDefault(getX(), KotakPartnerIN, "INR");
+
+      if ( sourceAccount instanceof DigitalAccount && destinationAccount instanceof INBankAccount &&
+      sourceAccount.getDenomination().equalsIgnoreCase("CAD") && destinationAccount.getDenomination().equalsIgnoreCase("INR") &&
+      kotakCAbank != null && kotakCAbank instanceof CABankAccount &&
+      kotakINbank != null && kotakINbank instanceof INBankAccount ) {
         Transaction txn;
-         // txn 1: CA digital -> Kotak CA bank
+        // txn 1: CA digital -> Kotak CA bank
         TransactionQuote q1 = new TransactionQuote.Builder(x).build();
         q1.copyFrom(quote);
         Transaction t1 = new Transaction.Builder(x).build();
@@ -54,7 +71,7 @@ foam.CLASS({
         } else {
           return super.put_(x, quote);
         }
-         // txn 2: Kotak CA bank -> Kotak IN bank (manual FX rate)
+        // txn 2: Kotak CA bank -> Kotak IN bank (manual FX rate)
         KotakFxTransaction t2 = new KotakFxTransaction.Builder(x).build();
         t2.copyFrom(request);
         t2.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
@@ -62,12 +79,12 @@ foam.CLASS({
         t2.setSourceAccount(kotakCAbank.getId());
         t2.setDestinationAccount(kotakINbank.getId());
         txn.addNext(t2);
-         // txn 3: Kotak IN bank -> destination IN bank
+        // txn 3: Kotak IN bank -> destination IN bank
         KotakCOTransaction t3 = new KotakCOTransaction.Builder(x).build();
         t3.copyFrom(request);
         t3.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
         t3.setIsQuoted(true);
-        t3.setSourceAccount(kotakINbank.getId());
+        t3.setSourceAccount(kotakINPartnerBank.getId());
         t3.setSourceCurrency(request.getDestinationCurrency());
         txn.addNext(t3);
         txn.setIsQuoted(true);
