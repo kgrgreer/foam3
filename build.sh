@@ -582,7 +582,7 @@ fi
 
 if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     echo "INFO :: Checking dependencies for vulnerabilities..."
-    if [ ! -f "~/.m2/repository/com/redhat/victims/maven/security-versions/1.0.6/ecurity-versions-1.0.6.jar" ]; then
+    if [[ ! -f ~/.m2/repository/com/redhat/victims/maven/security-versions/1.0.6/security-versions-1.0.6.jar ]]; then
         mvn dependency:get -DgroupId=com.redhat.victims.maven -DartifactId=security-versions -Dversion=1.0.6
     fi
     mvn com.redhat.victims.maven:security-versions:check
