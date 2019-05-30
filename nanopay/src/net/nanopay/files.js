@@ -891,6 +891,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/DowJonesApprovalRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsComplianceTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/NewEqOld' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
