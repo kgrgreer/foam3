@@ -30,24 +30,6 @@ foam.CLASS({
         dowJonesResponse_.setComments(approvalRequest.getComments());
         dowJonesResponseDAO.put(dowJonesResponse_);
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'canExecute',
-      javaCode: `
-      // TODO: add an actual implementation
-      return true;
-      `
-    },
-    {
-      name: 'describe',
-      javaCode: `
-      // TODO: add an actual implementation
-      return "";
-      `
     }
   ]
 });
