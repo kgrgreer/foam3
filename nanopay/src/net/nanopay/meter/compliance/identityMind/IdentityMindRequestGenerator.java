@@ -118,13 +118,12 @@ public class IdentityMindRequestGenerator {
     User receiver = (User) localUserDAO.inX(x).find(destinationAccount.getOwner());
 
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
+      .setEntityType(transaction.getClass().getName())
+      .setEntityId(transaction.getId())
+      .setTid(transaction.getId())
       .setIp(getRemoteAddr(x))
       .build();
 
-    if ( transaction.getInvoiceId() != 0 ) {
-      request.setEntityType(Invoice.class.getName());
-      request.setEntityId(transaction.getInvoiceId());
-    }
     request.setAmt(Double.toString(transaction.getAmount() / 100.0));
     request.setCcy(sourceAccount.getDenomination());
 
