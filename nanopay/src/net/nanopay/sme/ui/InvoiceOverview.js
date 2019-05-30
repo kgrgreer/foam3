@@ -774,7 +774,7 @@ foam.CLASS({
           });
           clone.launch(X, X.controllerView);
         }).catch((err) => {
-          console.warn('Error occured when checking the compliance: ', err);
+          console.warn('Error occured when redirecting to approval payment flow: ', err);
         });
       }
     },
