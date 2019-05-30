@@ -48,7 +48,6 @@ foam.CLASS({
           update(rule);
 
           if ( amount <= rule.getLimit() - getLastSpentAmount() ) {
-            //setLastSpentAmount(Math.max(0, getLastSpentAmount() + amount));
             return true;
           }
           return false;
