@@ -138,7 +138,6 @@ foam.CLASS({
 
             foam.core.Action.create({
               name: 'approve',
-              lable: 'Approve',
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.PENDING_APPROVAL;
               },
