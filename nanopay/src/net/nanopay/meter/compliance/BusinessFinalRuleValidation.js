@@ -18,10 +18,12 @@
   ],
 
   javaImports: [
-    'foam.dao.DAO',
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.ArraySink',
-    'foam.nanos.ruler.RuleHistory',
+    'foam.dao.DAO',
     'foam.nanos.ruler.Rule',
+    'foam.nanos.ruler.RuleHistory',
     'java.util.Date',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -33,7 +35,7 @@
     {
       name: 'applyAction',
       javaCode: `
-        Business business = (Business) obj;
+        final Business business = (Business) obj;
         DAO ruleHistoryDAO = (DAO) x.get("ruleHistoryDAO");
         Date previousExecutionDate = new Date();
         RuleHistory failedRuleHistory;
@@ -72,8 +74,14 @@
         if ( failedRuleHistory == null ) {
           // get localUserDAO and put the new user into the dao (due to permission issues)
           business.setCompliance(ComplianceStatus.PASSED);
-          DAO localUserDAO = (DAO) x.get("localUserDAO");
-          localUserDAO.put(business.fclone());
+
+          agent.submit(x, new ContextAgent() {
+            @Override
+            public void execute(X x) {
+              DAO localUserDAO = (DAO) x.get("localUserDAO");
+              localUserDAO.put(business.fclone());
+            }
+          });
         }
       `
     }
