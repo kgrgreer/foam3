@@ -27,6 +27,8 @@ foam.CLASS({
     REJECTED/MANUAL_REVIEW). Then it updates the user compliance to FAILED.`,
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -42,7 +44,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        User user = (User) obj.fclone();
+        final User user = (User) obj.fclone();
         DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
             EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
@@ -82,7 +84,13 @@ foam.CLASS({
               ApprovalStatus.APPROVED == approvalRequest.getStatus()
                 ? ComplianceStatus.PASSED
                 : ComplianceStatus.FAILED);
-            localUserDAO.inX(x).put(user);
+          agent.submit(x, new ContextAgent() {
+            @Override
+            public void execute(X x) {
+              DAO localUserDAO = (DAO) x.get("localUserDAO");
+              localUserDAO.inX(x).put(user);
+            }
+          });
           }
         }
       `

@@ -9,6 +9,8 @@ foam.CLASS({
   documentation: 'Clears pending approval requests for a user.',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.approval.ApprovalRequest',
@@ -20,13 +22,19 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        User user = (User) obj;
-        ((DAO) x.get("approvalRequestDAO"))
-          .where(AND(
-            EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
-            EQ(ApprovalRequest.OBJ_ID, Long.toString(user.getId())),
-            EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
-          .removeAll();
+        final User user = (User) obj;
+        
+        agent.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            ((DAO) x.get("approvalRequestDAO"))
+            .where(AND(
+              EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
+              EQ(ApprovalRequest.OBJ_ID, Long.toString(user.getId())),
+              EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
+            .removeAll();
+          }
+        });
       `
     }
   ]
