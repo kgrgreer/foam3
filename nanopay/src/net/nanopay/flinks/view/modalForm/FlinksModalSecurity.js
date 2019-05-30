@@ -16,7 +16,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UNKNOWN_SECURITY_TYPE', message: 'An unknown error occured. Please try again.' },
+    { name: 'UNKNOWN_SECURITY_TYPE', message: 'An unknown error occurred. Please try again.' },
     { name: 'CONNECTING_SECURITY', message: 'Securely connecting to your account. This may take up to 10 minutes. Please do not close this window.' },
     { name: 'CONNECTING_POLLING_1', message: 'Still connecting to your account. Thank you for your patience. Please do not close this window.' }
   ],

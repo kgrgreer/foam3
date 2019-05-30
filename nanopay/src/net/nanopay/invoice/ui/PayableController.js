@@ -24,7 +24,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
     'currencyDAO',
     'stack',
     'user',
@@ -67,6 +67,7 @@ foam.CLASS({
             this.Invoice.STATUS.clone().copyFrom({ tableWidth: 145 }),
             'invoiceFile'
           ],
+
           contextMenuActions: [
             foam.core.Action.create({
               name: 'viewDetails',
@@ -80,6 +81,7 @@ foam.CLASS({
                 });
               }
             }),
+
             foam.core.Action.create({
               name: 'payNow',
               label: 'Pay now',
@@ -93,7 +95,7 @@ foam.CLASS({
                 if (! updatedInvoice) {
                   return;
                 }
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAndNotifyAbilityToPay().then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.send').then((menu) => {
                       var clone = menu.clone();
@@ -107,11 +109,10 @@ foam.CLASS({
                       clone.launch(X, X.controllerView);
                     });
                   }
-                }).catch((err) => {
-                  console.warn('Error occured when checking the compliance: ', err);
                 });
               }
             }),
+
             foam.core.Action.create({
               name: 'edit',
               label: 'Edit',
@@ -132,6 +133,29 @@ foam.CLASS({
                 });
               }
             }),
+
+            foam.core.Action.create({
+              name: 'approve',
+              isAvailable: function() {
+                return this.status === self.InvoiceStatus.PENDING_APPROVAL;
+              },
+              availablePermissions: ['invoice.pay'],
+              code: function(X) {
+                X.menuDAO.find('sme.quickAction.send').then((menu) => {
+                  var clone = menu.clone();
+                  Object.assign(clone.handler.view, {
+                    isApproving: true,
+                    isForm: false,
+                    isDetailView: true,
+                    invoice: this
+                  });
+                  clone.launch(X, X.controllerView);
+                }).catch((err) => {
+                  console.warn('Error occurred when redirecting to approval payment flow: ', err);
+                });
+              }
+            }),
+
             foam.core.Action.create({
               name: 'markVoid',
               label: 'Mark as Void',
@@ -147,11 +171,12 @@ foam.CLASS({
                   this.status === self.InvoiceStatus.PENDING ||
                   this.status === self.InvoiceStatus.OVERDUE;
               },
-              code: function(X) {
+              code: function() {
                 this.paymentMethod = self.PaymentStatus.VOID;
                 self.user.expenses.put(this);
               }
             }),
+
             foam.core.Action.create({
               name: 'delete',
               label: 'Delete',
@@ -159,7 +184,7 @@ foam.CLASS({
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.DRAFT;
               },
-              code: function(X) {
+              code: function() {
                 self.user.expenses.remove(this);
               }
             })
@@ -175,7 +200,7 @@ foam.CLASS({
           name: 'sendMoney',
           label: 'Send payment',
           code: function(X) {
-            self.checkComplianceAndBanking().then((result) => {
+            self.checkAndNotifyAbilityToPay().then((result) => {
               if ( result ) {
                 X.menuDAO.find('sme.quickAction.send').then((menu) => {
                   var clone = menu.clone();
@@ -189,8 +214,6 @@ foam.CLASS({
                   clone.launch(X, X.controllerView);
                 });
               }
-            }).catch((err) => {
-              console.warn('Error occured when checking the compliance: ', err);
             });
           }
         });

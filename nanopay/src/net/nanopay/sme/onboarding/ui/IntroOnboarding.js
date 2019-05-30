@@ -101,7 +101,7 @@ foam.CLASS({
 						.addClass('table-content')
 						.add(this.INTRO_SUB_TEXT_3)
 					.end()
-        .end()
+        .end();
     }
   ]
-}) 
+});

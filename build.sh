@@ -106,9 +106,9 @@ function deploy_journals {
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
     if [ "$GRADLE_BUILD" -eq 0 ]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$INSTANCE"
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
     else
-        gradle --daemon findSH -Pmode=${MODE} -Pjournal.config=${JOURNAL_CONFIG} --rerun-tasks
+        gradle findSH -DjournalConfig=${JOURNAL_CONFIG} -DprojectMode=${MODE} --rerun-tasks --daemon
     fi
 
     if [[ ! -f $JOURNALS ]]; then
@@ -582,6 +582,9 @@ fi
 
 if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     echo "INFO :: Checking dependencies for vulnerabilities..."
+    if [[ ! -f ~/.m2/repository/com/redhat/victims/maven/security-versions/1.0.6/security-versions-1.0.6.jar ]]; then
+        mvn dependency:get -DgroupId=com.redhat.victims.maven -DartifactId=security-versions -Dversion=1.0.6
+    fi
     mvn com.redhat.victims.maven:security-versions:check
     quit 0
 fi
