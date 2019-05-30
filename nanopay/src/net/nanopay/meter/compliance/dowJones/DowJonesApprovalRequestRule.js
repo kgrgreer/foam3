@@ -9,6 +9,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'net.nanopay.approval.ApprovalRequest',
     'static foam.mlang.MLang.*'
@@ -25,10 +27,17 @@ foam.CLASS({
             EQ(DowJonesResponse.ID,      approvalRequest.getCauseId())
         );
 
-        DowJonesResponse dowJonesResponse_ = (DowJonesResponse) dowJonesResponse.fclone();
+        final DowJonesResponse dowJonesResponse_ = (DowJonesResponse) dowJonesResponse.fclone();
         dowJonesResponse_.setStatus(approvalRequest.getStatus());
         dowJonesResponse_.setComments(approvalRequest.getComments());
-        dowJonesResponseDAO.put(dowJonesResponse_);
+
+        agent.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            DAO downJonesResponseDAO = (DAO) x.get("dowJonesResponseDAO");
+            downJonesResponseDAO.put(dowJonesResponse_);
+          }
+        });
       `
     }
   ]
