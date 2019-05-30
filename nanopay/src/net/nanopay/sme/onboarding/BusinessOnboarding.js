@@ -251,7 +251,17 @@ foam.CLASS({
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
-      isAvailable: function (signingOfficer) { return signingOfficer }
+      isAvailable: function(signingOfficer) {
+        return signingOfficer;
+      }
+    },
+    {
+      name: 'twoFactorSection',
+      title: 'Protect your account against fraud with two-factor authentication',
+      help: 'Alright, it looks like that is all of the information we need! Last thing I’ll ask is that you enable two factor authentication. We want to make sure your account is safe!',
+      isAvailable: function(signingOfficer) {
+        return true;
+      }
     }
   ],
 
@@ -424,7 +434,7 @@ foam.CLASS({
       documentation: 'More info on signing officer',
       label: '',
       section: 'signingOfficerEmailSection',
-      view: function(){
+      view: function() {
         return foam.u2.Element.create()
           .start('div')
             .add('Invite a signing officer to complete the onboarding for your business.  Once the signing officer completes their onboarding, your business can start using Ablii.')
@@ -795,6 +805,14 @@ foam.CLASS({
       label2: 'I am one of these owners',
       postSet: function(_, n) {
         this.clearProperty('owner1');
+      }
+    },
+    {
+      name: 'twoFactorAuth',
+      section: 'twoFactorSection',
+      label: '',
+      view: {
+        class: 'net.nanopay.sme.onboarding.ui.TwoFactorAuthOnboarding'
       }
     },
     {

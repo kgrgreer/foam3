@@ -24,7 +24,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
     'currencyDAO',
     'stack',
     'user',
@@ -93,7 +93,7 @@ foam.CLASS({
                 if (! updatedInvoice) {
                   return;
                 }
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAndNotifyAbilityToPay().then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.send').then((menu) => {
                       var clone = menu.clone();
@@ -107,8 +107,6 @@ foam.CLASS({
                       clone.launch(X, X.controllerView);
                     });
                   }
-                }).catch((err) => {
-                  console.warn('Error occured when checking the compliance: ', err);
                 });
               }
             }),
@@ -175,7 +173,7 @@ foam.CLASS({
           name: 'sendMoney',
           label: 'Send payment',
           code: function(X) {
-            self.checkComplianceAndBanking().then((result) => {
+            self.checkAndNotifyAbilityToPay().then((result) => {
               if ( result ) {
                 X.menuDAO.find('sme.quickAction.send').then((menu) => {
                   var clone = menu.clone();
@@ -189,8 +187,6 @@ foam.CLASS({
                   clone.launch(X, X.controllerView);
                 });
               }
-            }).catch((err) => {
-              console.warn('Error occured when checking the compliance: ', err);
             });
           }
         });
