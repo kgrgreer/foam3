@@ -687,16 +687,9 @@ foam.CLASS({
         return this.invoice.status === this.InvoiceStatus.DRAFT;
       },
       code: function(X) {
-        var checkAndNotifyAbility;
-        var errorMessage;
-
-        if ( this.isPayable ) {
-          checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
-          errorMessage = 'Error occured when checking the ability to send payment: ';
-        } else {
-          checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
-          errorMessage = 'Error occured when checking the ability to request payment: ';
-        }
+        var checkAndNotifyAbility = this.isPayable ?
+          this.checkAndNotifyAbilityToPay :
+          this.checkAndNotifyAbilityToReceive;
 
         checkAndNotifyAbility().then((result) => {
           if ( ! result ) return;
@@ -710,8 +703,6 @@ foam.CLASS({
             });
             clone.launch(X, X.controllerView);
           });
-        }).catch((err) => {
-          console.warn(errorMessage, err);
         });
       }
     },
@@ -727,28 +718,20 @@ foam.CLASS({
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
-        var self = this;
-        var checkAndNotifyAbility;
-        var errorMessage;
-
-        if ( this.isPayable ) {
-          checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
-          errorMessage = 'Error occured when checking the ability to send payment: ';
-        } else {
-          checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
-          errorMessage = 'Error occured when checking the ability to request payment: ';
-        }
+        var checkAndNotifyAbility = this.isPayable ?
+          this.checkAndNotifyAbilityToPay :
+          this.checkAndNotifyAbilityToReceive;
 
         checkAndNotifyAbility().then((result) => {
           if ( result ) {
             // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
-            var request = self.CanReceiveCurrency.create({
-              userId: self.invoice.payeeId,
-              currencyId: self.invoice.destinationCurrency
+            var request = this.CanReceiveCurrency.create({
+              userId: this.invoice.payeeId,
+              currencyId: this.invoice.destinationCurrency
             });
-            self.canReceiveCurrencyDAO.put(request).then((responseObj) => {
+            this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
               if ( ! responseObj.response ) {
-                self.notify(responseObj.message, 'error');
+                this.notify(responseObj.message, 'error');
                 return;
               }
               X.menuDAO.find('sme.quickAction.send').then((menu) => {
@@ -760,8 +743,6 @@ foam.CLASS({
                   invoice: this.invoice.clone()
                 });
                 clone.launch(X, X.controllerView);
-              }).catch((err) => {
-                console.warn(errorMessage, err);
               });
             });
           }

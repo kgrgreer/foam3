@@ -311,21 +311,16 @@ foam.CLASS({
 
     function initE() {
       var checkAndNotifyAbility;
-      var errorMessage;
-      if ( this.isPayable ) {
-        checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
-        errorMessage = 'Error occured when checking the ability to send payment: ';
-      } else {
-        checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
-        errorMessage = 'Error occured when checking the ability to request payment: ';
-      }
+
+      var checkAndNotifyAbility = this.isPayable ?
+        this.checkAndNotifyAbilityToPay :
+        this.checkAndNotifyAbilityToReceive;
+
       checkAndNotifyAbility().then((result) => {
         if ( ! result ) {
           this.pushMenu('sme.main.dashboard');
           return;
         }
-      }).catch((err) => {
-        console.warn(errorMessage, err);
       });
 
       this.SUPER();
@@ -364,23 +359,13 @@ foam.CLASS({
     async function submit() {
       this.isLoading = true;
       var checkAndNotifyAbility;
-      var errorMessage;
 
-      if ( this.isPayable ) {
-        checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
-        errorMessage = 'Error occured when checking the ability to send payment: ';
-      } else {
-        checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
-        errorMessage = 'Error occured when checking the ability to request payment: ';
-      }
+      var checkAndNotifyAbility = this.isPayable ?
+        this.checkAndNotifyAbilityToPay :
+        this.checkAndNotifyAbilityToReceive;
 
-      try {
-        var result = await checkAndNotifyAbility();
-        if ( ! result ) {
-          return;
-        }
-      } catch (err) {
-        console.warn(errorMessage, err);
+      var result = await checkAndNotifyAbility();
+      if ( ! result ) {
         return;
       }
 

@@ -107,8 +107,6 @@ foam.CLASS({
                       clone.launch(X, X.controllerView);
                     });
                   }
-                }).catch((err) => {
-                  console.warn('Error occured when checking the ability to send payment: ', err);
                 });
               }
             }),
@@ -189,8 +187,6 @@ foam.CLASS({
                   clone.launch(X, X.controllerView);
                 });
               }
-            }).catch((err) => {
-              console.warn('Error occured when checking the ability to send payment:', err);
             });
           }
         });

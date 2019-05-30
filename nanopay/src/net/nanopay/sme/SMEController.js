@@ -141,6 +141,14 @@ foam.CLASS({
     {
       name: 'ADDED_TO_BUSINESS_2',
       message: '. Welcome to Ablii!'
+    },
+    {
+      name: 'ABILITY_TO_PAY_ERROR',
+      message: 'Error occured when checking the ability to send payment'
+    },
+    {
+      name: 'ABILITY_TO_RECEIVE_ERROR',
+      message: 'Error occured when checking the ability to receive payment'
     }
   ],
 
@@ -379,12 +387,22 @@ foam.CLASS({
     },
 
     async function checkAndNotifyAbilityToPay() {
-      var result = await this.checkComplianceAndBanking();
-      return result ? await this.check2FAEnalbed() : result;
+      try {
+        var result = await this.checkComplianceAndBanking();
+        return result ? await this.check2FAEnalbed() : result;
+      } catch (err) {
+        console.warn(`${this.ABILITY_TO_PAY_ERROR}: `, err);
+        this.notify(`${this.ABILITY_TO_PAY_ERROR}.`, 'error');
+      }
     },
 
     async function checkAndNotifyAbilityToReceive() {
-      return await this.checkComplianceAndBanking();
+      try {
+        return await this.checkComplianceAndBanking();
+      } catch (err) {
+        console.warn(`${this.ABILITY_TO_RECEIVE_ERROR}: `, err);
+        this.notify(`${this.ABILITY_TO_RECEIVE_ERROR}.`, 'error');
+      }
     },
 
     /**

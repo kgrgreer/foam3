@@ -72,22 +72,15 @@ foam.CLASS({
   listeners: [
     function quickActionRedirect(menu) {
       var checkAndNotifyAbility;
-      var errorMessage;
 
-      if ( menu.id === 'sme.quickAction.send' ) {
-        checkAndNotifyAbility = this.checkAndNotifyAbilityToPay;
-        errorMessage = 'Error occured when checking the ability to send payment: ';
-      } else {
-        checkAndNotifyAbility = this.checkAndNotifyAbilityToReceive;
-        errorMessage = 'Error occured when checking the ability to request payment: ';
-      }
+      var checkAndNotifyAbility = menu.id === 'sme.quickAction.send' ?
+        this.checkAndNotifyAbilityToPay :
+        this.checkAndNotifyAbilityToReceive;
 
       checkAndNotifyAbility().then((result) => {
         if ( result ) {
           this.pushMenu(menu.id);
         }
-      }).catch((err) => {
-        console.warn(errorMessage, err);
       });
     }
   ]

@@ -95,8 +95,6 @@ foam.CLASS({
                     });
                     clone.launch(X, X.controllerView);
                   });
-                }).catch((err) => {
-                  console.warn('Error occured when checking the ability to request payment: ', err);
                 });
               }
             }),
@@ -157,8 +155,6 @@ foam.CLASS({
                   clone.launch(X, X.controllerView);
                 });
               }
-            }).catch((err) => {
-              console.warn('Error occured when checking the ability to request payment: ', err);
             });
           }
         });
