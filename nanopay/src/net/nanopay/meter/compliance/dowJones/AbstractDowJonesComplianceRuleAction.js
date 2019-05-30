@@ -45,10 +45,6 @@ foam.CLASS({
         }
         return null;
       `
-    },
-    {	
-      name: 'applyAction',	
-      javaCode: ` `	
     }
   ]
 });
