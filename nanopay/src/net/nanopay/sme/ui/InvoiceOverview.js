@@ -769,6 +769,7 @@ foam.CLASS({
       isEnabled: function(canApproveInvoice) {
         return canApproveInvoice;
       },
+      availablePermissions: ['invoice.pay'],
       code: function(X) {
         X.menuDAO.find('sme.quickAction.send').then((menu) => {
           var clone = menu.clone();
@@ -780,7 +781,7 @@ foam.CLASS({
           });
           clone.launch(X, X.controllerView);
         }).catch((err) => {
-          console.warn('Error occured when checking the compliance: ', err);
+          console.warn('Error occured when redirecting to approval payment flow: ', err);
         });
       }
     },
