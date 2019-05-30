@@ -28,18 +28,6 @@ foam.CLASS({
             EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
           .removeAll();
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
     }
   ]
 });
