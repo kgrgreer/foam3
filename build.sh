@@ -106,9 +106,9 @@ function deploy_journals {
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
     if [ "$GRADLE_BUILD" -eq 0 ]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$INSTANCE"
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
     else
-        gradle --daemon findSH -Pmode=${MODE} -Pjournal.config=${JOURNAL_CONFIG} --rerun-tasks
+        gradle findSH -DjournalConfig=${JOURNAL_CONFIG} -DprojectMode=${MODE} --rerun-tasks --daemon
     fi
 
     if [[ ! -f $JOURNALS ]]; then
