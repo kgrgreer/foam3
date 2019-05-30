@@ -6,9 +6,19 @@ foam.CLASS({
   documentation: 'Validates bank to bank transaction via IdentityMind Transfer API.',
 
   javaImports: [
+    'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
+  ],
+
+  properties: [
+    {
+      name: 'identityMindUserId',
+      class: 'Long',
+      value: 1013
+    }
   ],
 
   methods: [
@@ -16,21 +26,26 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         Transaction transaction = (Transaction) obj;
-        IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-        IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
-        ComplianceValidationStatus status = response.getComplianceValidationStatus();
+        ComplianceValidationStatus status = ComplianceValidationStatus.PENDING;
+        ComplianceApprovalRequest approvalRequest =
+          new ComplianceApprovalRequest.Builder(x)
+            .setObjId(transaction.getId())
+            .setDaoKey("localTransactionDAO")
+            .build();
 
-        if ( status != ComplianceValidationStatus.VALIDATED ) {
-          requestApproval(x,
-            new ComplianceApprovalRequest.Builder(x)
-              .setObjId(transaction.getId())
-              .setDaoKey("localTransactionDAO")
-              .setCauseId(response.getId())
-              .setCauseDaoKey("identityMindResponseDAO")
-              .build()
-          );
+        IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
+        try {
+          IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
+          status = response.getComplianceValidationStatus();
+          transaction.setStatus(getTransactionStatus(status));
+          approvalRequest.setCauseId(response.getId());
+          approvalRequest.setCauseDaoKey("identityMindResponseDAO");
+          approvalRequest.setStatus(getApprovalStatus(status));
+          approvalRequest.setApprover(getApprover(status));
+        } finally {
+          requestApproval(x, approvalRequest);
+          ruler.putResult(status);
         }
-        ruler.putResult(status);
       `
     },
     {
@@ -44,6 +59,60 @@ foam.CLASS({
     {
       name: 'describe',
       javaCode: 'return "";'
+    },
+    {
+      name: 'getTransactionStatus',
+      type: 'net.nanopay.tx.model.TransactionStatus',
+      args: [
+        {
+          name: 'status',
+          type: 'net.nanopay.meter.compliance.ComplianceValidationStatus'
+        }
+      ],
+      javaCode: `
+        if ( ComplianceValidationStatus.VALIDATED == status ) {
+          return TransactionStatus.COMPLETED;
+        } else if ( ComplianceValidationStatus.REJECTED == status ) {
+          return TransactionStatus.DECLINED;
+        }
+        return ComplianceValidationStatus.PENDING;
+      `
+    },
+    {
+      name: 'getApprovalStatus',
+      type: 'net.nanopay.approval.ApprovalStatus',
+      args: [
+        {
+          name: 'status',
+          type: 'net.nanopay.meter.compliance.ComplianceValidationStatus'
+        }
+      ],
+      javaCode: `
+        if ( ComplianceValidationStatus.VALIDATED == status ) {
+          return ApprovalStatus.APPROVED;
+        } else if ( ComplianceValidationStatus.REJECTED == status ) {
+          return ApprovalStatus.REJECTED;
+        }
+        return ApprovalStatus.REQUESTED;
+      `
+    },
+    {
+      name: 'getApprover',
+      type: 'Long',
+      args: [
+        {
+          name: 'status',
+          type: 'net.nanopay.meter.compliance.ComplianceValidationStatus'
+        }
+      ],
+      javaCode: `
+        if ( ComplianceValidationStatus.VALIDATED == status
+          || ComplianceValidationStatus.REJECTED == status
+        ) {
+          return getIdentityMindUserId();
+        }
+        return null;
+      `
     }
   ]
 });
