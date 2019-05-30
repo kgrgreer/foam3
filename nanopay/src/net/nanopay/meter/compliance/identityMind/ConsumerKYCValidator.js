@@ -42,18 +42,6 @@ foam.CLASS({
         }
         ruler.putResult(status);
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
     }
   ]
 });
