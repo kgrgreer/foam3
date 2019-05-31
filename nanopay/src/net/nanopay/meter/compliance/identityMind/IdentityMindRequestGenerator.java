@@ -197,7 +197,7 @@ public class IdentityMindRequestGenerator {
       .setMan(Long.toString(user.getId()))
       .setTid(getUUID(user))
       .setTea(user.getEmail())
-      .setIp(getRemoteAddr(x))
+      .setIp(prepareString(getRemoteAddr(x)))
       .setBfn(prepareString(user.getFirstName()))
       .setBln(prepareString(user.getLastName()))
       .setAccountCreationTime(timestampSdf.get().format(user.getCreated()))
@@ -216,7 +216,10 @@ public class IdentityMindRequestGenerator {
       request.setPhn(prepareString(phone.getNumber()));
     }
     request.setTitle(prepareString(user.getJobTitle()));
-    request.setDob(isoDateSdf.get().format(user.getBirthday()));
+    Date birthDay = user.getBirthday();
+    if ( birthDay != null ) {
+      request.setDob(isoDateSdf.get().format(birthDay));
+    }
     return request;
   }
 
