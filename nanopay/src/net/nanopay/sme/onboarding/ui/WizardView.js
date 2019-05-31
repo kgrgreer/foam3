@@ -166,8 +166,9 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
-      isAvailable: function(data$errors_) {
-        return ! data$errors_;
+      label: 'Finish',
+      isAvailable: function(data$errors_, nextIndex) {
+        return ! data$errors_ && nextIndex === -1;
       },
       // TODO: Find a better place for this. It shouldnt be baked into WizardView.
       code: function(x) {

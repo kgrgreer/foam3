@@ -191,10 +191,16 @@ foam.CLASS({
 
         .start('p').add('Business Address').addClass(this.myClass('section-header')).end()
 
-        .tag({
-          class: 'net.nanopay.sme.ui.AddressView',
-          data: this.viewData.user.address
+        .startContext({
+          controllerMode: ! this.viewData.user.address.errors_ ?
+          foam.u2.ControllerMode.VIEW :
+          foam.u2.ControllerMode.EDIT
         })
+          .tag({
+            class: 'net.nanopay.sme.ui.AddressView',
+            data: this.viewData.user.address,
+          })
+        .endContext()
 
         .start().addClass(this.myClass('divider')).end()
 

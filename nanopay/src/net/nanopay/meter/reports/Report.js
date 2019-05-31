@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.meter',
+  package: 'net.nanopay.meter.reports',
   name: 'Report',
   extends: 'foam.nanos.script.Script',
 

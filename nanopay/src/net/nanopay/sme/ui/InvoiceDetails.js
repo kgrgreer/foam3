@@ -85,6 +85,10 @@ foam.CLASS({
       cursor: pointer;
       display: inline-block;
       vertical-align: middle;
+      white-space: nowrap;
+      width: 400px;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     ^attachment-icon {
       margin-right: 8px;

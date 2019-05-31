@@ -9,8 +9,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
-    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
+    'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest',
     'net.nanopay.meter.compliance.dowJones.EntityNameSearchData',
     'net.nanopay.model.Business',
     'java.util.Date',
@@ -37,11 +37,12 @@ foam.CLASS({
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;
             requestApproval(x,
-              new ComplianceApprovalRequest.Builder(x)
+              new DowJonesApprovalRequest.Builder(x)
                 .setObjId(Long.toString(business.getId()))
                 .setDaoKey("localUserDAO")
                 .setCauseId(response.getId())
                 .setCauseDaoKey("dowJonesResponseDAO")
+                .setMatches(response.getResponseBody().getMatches())
                 .build());
           }
           ruler.putResult(status);
