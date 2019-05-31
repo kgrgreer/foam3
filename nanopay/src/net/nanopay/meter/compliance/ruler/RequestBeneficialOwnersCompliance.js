@@ -28,13 +28,13 @@ foam.CLASS({
         beneficialOwnerDAO.select(new AbstractSink() {
           @Override
           public void put(Object obj, Detachable sub) {
-            final BeneficialOwner owner = (BeneficialOwner) ((BeneficialOwner) obj).fclone();
-            
-            owner.setCompliance(ComplianceStatus.REQUESTED);
 
             agent.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
+                BeneficialOwner owner = (BeneficialOwner) ((BeneficialOwner) obj).fclone();
+                owner.setCompliance(ComplianceStatus.REQUESTED);
+
                 DAO beneficialOwnerDAO = (DAO) business.getBeneficialOwners(x);
                 beneficialOwnerDAO.put(owner);
               }
