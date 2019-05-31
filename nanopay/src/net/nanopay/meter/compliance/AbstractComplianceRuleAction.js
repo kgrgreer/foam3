@@ -51,7 +51,7 @@ foam.CLASS({
         }
 
         // When the approval request does not have approver, create
-        // approval requests for each user in the `approverGroupId` group.
+        // approval requests for each user in the approver group.
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = (Group) groupDAO.find(getApproverGroupId());
         if ( group != null ) {
