@@ -4,6 +4,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'foam.nanos.analytics.Foldable'
   ],
 
   requires: [
@@ -84,5 +85,12 @@ foam.CLASS({
         return this.name;
       },
     },
+    {
+      name: 'doFolds',
+      javaCode: `
+fm.foldForState(getId()+":high", new java.util.Date(), getHighLiquidity().getThreshold());
+fm.foldForState(getId()+":low", new java.util.Date(), getLowLiquidity().getThreshold());
+      `
+    }
   ]
 });
