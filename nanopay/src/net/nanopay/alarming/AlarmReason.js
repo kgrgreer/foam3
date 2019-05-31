@@ -4,8 +4,8 @@ foam.ENUM({
 
   values: [
     { name: 'NONE', label: ' No alarm' },
-    { name: 'MISSING_PAIR', label: 'No responses receieved for sent requests'},
-    { name: 'SEND_RECEIVE_MISMATCH', label: 'More sends then recieves' },
+    { name: 'CONGESTION', label: 'Congestion' },
     { name: 'TIMEOUT', label: 'A request timed out' },
+    { name: 'MANUAL', label: 'Manually started alarm' },
   ]
 });

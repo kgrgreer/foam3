@@ -4,10 +4,15 @@ foam.CLASS({
 
   documentation: 'A config for OM on when an alarm should be raised',
 
+  imports: [
+    'om1minDAO'
+  ],
+
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      visibility: 'RO',
     },
     {
       class: 'String',
@@ -16,35 +21,93 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'sendName',
-      documentation: 'Name of the OM before a request is sent'
+      name: 'preRequest',
+      documentation: 'Name of the OM before a request is sent',
+      view: function(om1minDAO, X) {
+        return foam.u2.view.ChoiceView.create({
+          objToChoice: function(candlestick) {
+            return [candlestick.key, candlestick.key];
+          },
+          dao$: X.om1minDAO$,
+          placeholder: '--'
+        });
+      }
     },
     {
       class: 'String',
-      name: 'receiveName',
-      documentation: 'Name of the OM after a request is received'
+      name: 'postRequest',
+      documentation: 'Name of the OM after a request is received',
+      view: function(om1minDAO, X) {
+        return foam.u2.view.ChoiceView.create({
+          objToChoice: function(candlestick) {
+            return [candlestick.key, candlestick.key];
+          },
+          dao$: X.om1minDAO$,
+          placeholder: '--'
+        });
+      }
     },
     {
       class: 'String',
-      name: 'timeOutName',
-      documentation: 'Name of the OM after a request has timed out'
+      name: 'timeOutRequest',
+      documentation: 'Name of the OM after a request has timed out',
+      view: function(om1minDAO, X) {
+        return foam.u2.view.ChoiceView.create({
+          objToChoice: function(candlestick) {
+            return [candlestick.key, candlestick.key];
+          },
+          dao$: X.om1minDAO$,
+          placeholder: '--'
+        });
+      }
     },
     {
       class: 'Int',
       name: 'alarmValue',
-      documentation: 'When the alarm should trigger, 0 - 100 number to represent mismatch percentage'
+      documentation: 'Percentage of # of response received / # of send requests needed to trigger an alarm.',
+      value: 75
+    },
+    {
+      class: 'Int',
+      name: 'timeoutValue',
+      documentation: 'Percentage of # of timeout / # of sent requests needed to trigger an alarm.',
+      value: 10
     },
     {
       class: 'Int',
       name: 'cycleTime',
-      value: 1000,
+      value: 60000,
       documentation: 'Time in ms between runs'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.alarming.MonitorType',
       name: 'monitorType'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Group',
+      name: 'alertGroup'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'alertUser'
+    },
+    {
+      class: 'Boolean',
+      name: 'sendEmail',
+      value: true
     }
   ],
 
+  actions: [
+    {
+      name: 'start',
+      label: 'Start Alarm',
+      code: function() {
+        console.log(this.timeOutRequest);
+      }
+    }
+  ]
 });

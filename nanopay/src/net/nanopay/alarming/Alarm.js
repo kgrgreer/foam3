@@ -4,31 +4,39 @@ foam.CLASS({
 
   documentation: 'A config for OM on when an alarm should be raised',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   tableColumns: [
     'name',
     'lastUpdated',
     'isActive',
-    'stop'
+    'stop',
+    'start'
   ],
 
   requires: [
     'foam.dao.AbstractDAO',
+    'net.nanopay.alarming.AlarmReason',
+    'net.nanopay.alarming.MonitoringReport',
     'net.nanopay.alarming.AlarmReason'
   ],
 
   imports: [
-    'alarmDAO'
+    'alarmDAO',
+    'monitoringReportDAO'
   ],
 
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      visibility: 'RO',
     },
     {
       class: 'String',
       name: 'name',
-      documentation: 'What this alarm is for'
     },
     {
       class: 'DateTime',
@@ -54,9 +62,27 @@ foam.CLASS({
       name: 'stop',
       label: 'Stop Alarm',
       code: function() {
+        let self = this;
         this.isActive = false;
-        this.alarmDAO.put(this);
         this.reason = this.AlarmReason.NONE;
+        this.alarmDAO.put(this);
+        this.alarmDAO.cmd(this.AbstractDAO.RESET_CMD);
+
+        this.monitoringReportDAO.find(this.EQ(this.MonitoringReport.NAME, this.name)).then((monitorReport)=> {
+          monitorReport.startCount = 0;
+          monitorReport.endCount = 0;
+          monitorReport.timeoutCount = 0;
+          self.monitoringReportDAO.put(monitorReport);
+        });
+      }
+    },
+    {
+      name: 'start',
+      label: 'Start Alarm',
+      code: function() {
+        this.isActive = true;
+        this.reason = this.AlarmReason.MANUAL;
+        this.alarmDAO.put(this);
         this.alarmDAO.cmd(this.AbstractDAO.RESET_CMD);
       }
     }

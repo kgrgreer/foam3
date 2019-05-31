@@ -14,19 +14,15 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'sentRequests'
+      name: 'startCount',
     },
     {
       class: 'Int',
-      name: 'receivedResponses'
+      name: 'endCount',
     },
     {
-      class: 'Boolean',
-      name: 'alarm'
-    },
-    {
-      class: 'DateTime',
-      name: 'date'
+      class: 'Int',
+      name: 'timeoutCount',
     }
   ],
 

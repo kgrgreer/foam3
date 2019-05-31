@@ -5,7 +5,7 @@ foam.ENUM({
   documentation: 'Types of monitoring',
 
   values: [
-    { name: 'SEND_RECEIVE', label: 'Send and Receive OM Monitoring' },
+    { name: 'CONGESTION', label: 'Congestion monitoring' },
     { name: 'OTHER', label: 'Other OM Monitoring' },
   ]
 });
