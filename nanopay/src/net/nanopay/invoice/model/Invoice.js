@@ -93,6 +93,7 @@ foam.CLASS({
       documentation: `The date and time that the invoice was issued (created).`,
       label: 'Date Issued',
       required: true,
+      view: { class: 'foam.u2.DateView' },
       factory: function() {
         if ( this.draft ) {
           return null;

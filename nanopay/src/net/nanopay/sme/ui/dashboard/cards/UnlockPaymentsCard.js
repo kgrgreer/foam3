@@ -62,25 +62,14 @@ foam.CLASS({
       font-size: 14px;
       line-height: 1.5;
       color: #525455;
-      margin-bottom: 25px;
     }
 
-    ^ .net-nanopay-ui-ActionView-getStarted {
-      width: 96px;
-      height: 36px;
+    ^ .net-nanopay-sme-ui-AbliiActionView-getStarted {
       margin-top: 16px;
-
-      background-color: white;
-      border: solid 1px #604aff;
-      color: #604aff;
-    }
-
-    ^ .net-nanopay-ui-ActionView-getStarted:hover {
-      color: white;
     }
 
     ^complete-container {
-      margin-top: 24px !important;
+      margin-top: 24px;
     }
 
     ^icon {
@@ -96,7 +85,6 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
       margin: 0;
-
 
       font-size: 14px;
       line-height: 1.71;
@@ -207,22 +195,20 @@ foam.CLASS({
           .start('p').addClass(this.myClass('description')).add(this.info).end()
           .add(this.slot(function(isComplete, type) {
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL ) {
-              return this.E().start('p')
-                .addClass(self.myClass('complete-container'))
-                .addClass(self.myClass('complete'))
-                .add(self.PENDING)
+              return this.E().start().addClass(self.myClass('complete-container'))
+                .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
             }
 
             if ( ! isComplete ) {
               return this.E()
                 .startContext({ data: self })
-                  .start(self.GET_STARTED).end()
+                  .start(self.GET_STARTED, { buttonStyle: 'SECONDARY' }).end()
                 .endContext();
             }
 
             return this.E().start().addClass(self.myClass('complete-container'))
-              .start({ class: 'foam.u2.tag.Image', data: 'images/c-yes.png'}).addClass(self.myClass('icon')).end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/check-green-circle.png'}).addClass(self.myClass('icon')).end()
               .start('p').addClass(self.myClass('complete')).add(self.COMPLETE).end()
             .end();
           }))
@@ -239,7 +225,7 @@ foam.CLASS({
           if ( ! this.user.onboarded ) {
             var userId = this.agent.id;
             var businessId = this.user.id;
-            x.businessOnboardingDAO.find(businessId).then((o) => {
+            x.businessOnboardingDAO.find(userId).then((o) => {
               o = o || this.BusinessOnboarding.create({
                 userId: userId,
                 businessId: businessId

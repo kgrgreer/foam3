@@ -9,10 +9,11 @@ foam.CLASS({
   name: 'DebtablePlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: ``,
+  documentation: 'Plans debt transactions for Debtable Accounts',
 
   javaImports: [
     'net.nanopay.account.Account',
+    'net.nanopay.account.OverdraftAccount',
     'net.nanopay.account.Debtable',
     'net.nanopay.account.DebtAccount',
     'net.nanopay.tx.model.Transaction',
@@ -35,13 +36,17 @@ foam.CLASS({
       Account sourceAccount = plan.findSourceAccount(x);
       Account destinationAccount = plan.findDestinationAccount(x);
 
-      if ( sourceAccount instanceof Debtable ) {
-        DebtAccount debtAccount = ((Debtable) sourceAccount).findDebtAccount(x);
+      if (sourceAccount instanceof Debtable &&
+          ((Debtable) sourceAccount).findDebtAccount(x) != null &&
+          ((Debtable) sourceAccount).findDebtAccount(x).getLimit() > 0 ) {
+
+        DebtAccount debtAccount = ((OverdraftAccount) sourceAccount).findDebtAccount(x);
         Account creditorAccount = debtAccount.findCreditorAccount(x);
 
         Transaction d = new DebtTransaction.Builder(x)
           .setSourceAccount(creditorAccount.getId())
           .setDestinationAccount(sourceAccount.getId())
+          .setAmount(plan.getAmount())
           .setIsQuoted(true)
           .build();
         d.addNext(plan);

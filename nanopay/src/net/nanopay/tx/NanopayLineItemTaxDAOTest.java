@@ -160,11 +160,11 @@ public class NanopayLineItemTaxDAOTest
     Logger logger = (Logger) x_.get("logger");
     TransactionQuote quote = new TransactionQuote.Builder(x_).build();
     Transaction transaction = new Transaction.Builder(x_).build();
-    transaction.setPayerId(1002);
-    transaction.setPayeeId(payee_.getId());
+    transaction.setPayeeId(1002);
+    transaction.setPayerId(payee_.getId());
     transaction.setAmount(1000L);
-    transaction.setSourceCurrency("CAD");
-    transaction.setDestinationAccount(payeeBankAccount_.getId());
+    transaction.setDestinationCurrency("CAD");
+    transaction.setSourceAccount(payeeBankAccount_.getId());
 
     DAO typeDAO = (DAO) x_.get("lineItemTypeDAO");
     LineItemType service = (LineItemType) typeDAO

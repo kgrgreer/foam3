@@ -21,6 +21,7 @@ foam.CLASS({
       label: 'Debtor',
       class: 'Reference',
       of: 'net.nanopay.account.Account',
+      targetDAOKey:'localAccountDAO',
       documentation: 'The account which owes this debt.',
       visibility: 'RO',
       view: function(_, X) {
@@ -41,6 +42,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       documentation: 'The account which is owned this debt.',
+      targetDAOKey: 'localAccountDAO',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.accountDAO.where(
@@ -81,11 +83,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      long bal = balance == null ? 0L : balance.getBalance();
         if ( amount > 0 &&
-             amount > -balance.getBalance() ||
+             amount > -bal ||
              amount < 0 &&
-             amount + balance.getBalance() < getLimit() ) {
-          throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain between [limit, 0]" + this.getClass().getSimpleName()+"."+getName());
+             amount + bal < -this.getLimit() ) {
+              throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain between ["+this.getLimit()+", 0]" + this.getClass().getSimpleName()+"."+getName()+ "would be... "+ amount + bal) ;
         }
       `
     }

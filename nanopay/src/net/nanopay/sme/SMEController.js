@@ -27,20 +27,21 @@ foam.CLASS({
     'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
     'net.nanopay.sme.ui.VerifyEmailView',
-    'net.nanopay.accounting.AccountingIntegrationUtil'
+    'foam.u2.Element',
   ],
 
   exports: [
+    'accountingIntegrationUtil',
     'agent',
     'appConfig',
     'as ctrl',
     'bannerData',
     'bannerizeCompliance',
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'currentAccount',
     'privacyUrl',
     'termsUrl',
-    'accountingIntegrationUtil'
   ],
 
   implements: [
@@ -96,12 +97,18 @@ foam.CLASS({
     max-width: 450px;
     text-overflow: ellipsis;
   }
+  ^ .toast-link {
+    color: #604aff;
+    cursor: pointer;
+    margin-left: 5px;
+    text-decoration: underline;
+  }
   `,
 
   messages: [
     {
       name: 'REQUESTED_BANNER',
-      message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 2-3 business days.'
+      message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 1-3 business days.'
     },
     {
       name: 'PASSED_BANNER',
@@ -110,6 +117,14 @@ foam.CLASS({
     {
       name: 'INCOMPLETE_BUSINESS_REGISTRATION',
       message: `You must complete your business profile and add banking first.`
+    },
+    {
+      name: 'TWO_FACTOR_REQUIRED_ONE',
+      message: `For your security, two factor authentication is required to send payment.`
+    },
+    {
+      name: 'TWO_FACTOR_REQUIRED_TWO',
+      message: 'Click here to set up.'
     },
     {
       name: 'HAS_NOT_PASSED_COMPLIANCE',
@@ -126,6 +141,14 @@ foam.CLASS({
     {
       name: 'ADDED_TO_BUSINESS_2',
       message: '. Welcome to Ablii!'
+    },
+    {
+      name: 'ABILITY_TO_PAY_ERROR',
+      message: 'Error occurred when checking the ability to send payment'
+    },
+    {
+      name: 'ABILITY_TO_RECEIVE_ERROR',
+      message: 'Error occurred when checking the ability to receive payment'
     }
   ],
 
@@ -300,8 +323,9 @@ foam.CLASS({
       });
     },
 
-    function bannerizeCompliance() {
-      switch ( this.user.compliance ) {
+    async function bannerizeCompliance() {
+      var user = await this.client.userDAO.find(this.user.id);
+      switch ( user.compliance ) {
         case this.ComplianceStatus.NOTREQUESTED:
           break;
         case this.ComplianceStatus.REQUESTED:
@@ -322,17 +346,63 @@ foam.CLASS({
 
     async function checkComplianceAndBanking() {
       var bankAccountCount = await this.bankingAmount();
-
+      
       if ( this.user.compliance !== this.ComplianceStatus.PASSED
-           || bankAccountCount === 0 ) {
+          || bankAccountCount === 0 ) {
         if ( this.user.onboarded && bankAccountCount !== 0 ) {
-          this.notify(this.HAS_NOT_PASSED_COMPLIANCE, 'error');
+          this.notify(this.HAS_NOT_PASSED_COMPLIANCE, 'warning');
         } else {
-          this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'error');
+          this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'warning');
         }
         return false;
       }
       return true;
+    },
+
+    /**
+     * This condition is to check if the user enable the 2FA when the user
+     * have the permission to send a payable.
+     * It is only required for payables.
+     */
+    async function check2FAEnalbed() {
+      var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
+
+      if ( canPayInvoice && ! this.agent.twoFactorEnabled ) {
+        var TwoFactorNotificationDOM = this.Element.create()
+          .start().style({ 'display': 'inline-block' })
+            .add(this.TWO_FACTOR_REQUIRED_ONE)
+          .end()
+          .start('a').addClass('toast-link')
+            .add(this.TWO_FACTOR_REQUIRED_TWO)
+            .on('click', () => {
+              this.pushMenu('sme.accountProfile.personal-settings');
+            })
+          .end();
+
+        // Pass the customized DOM element into the toast notification
+        this.notify(TwoFactorNotificationDOM, 'warning');
+        return false;
+      }
+      return true;
+    },
+
+    async function checkAndNotifyAbilityToPay() {
+      try {
+        var result = await this.checkComplianceAndBanking();
+        return result ? await this.check2FAEnalbed() : result;
+      } catch (err) {
+        console.warn(`${this.ABILITY_TO_PAY_ERROR}: `, err);
+        this.notify(`${this.ABILITY_TO_PAY_ERROR}.`, 'error');
+      }
+    },
+
+    async function checkAndNotifyAbilityToReceive() {
+      try {
+        return await this.checkComplianceAndBanking();
+      } catch (err) {
+        console.warn(`${this.ABILITY_TO_RECEIVE_ERROR}: `, err);
+        this.notify(`${this.ABILITY_TO_RECEIVE_ERROR}.`, 'error');
+      }
     },
 
     /**

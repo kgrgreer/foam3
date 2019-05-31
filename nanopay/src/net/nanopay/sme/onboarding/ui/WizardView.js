@@ -166,17 +166,20 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
-      isAvailable: function(data$errors_) {
-        return ! data$errors_;
+      label: 'Finish',
+      isAvailable: function(data$errors_, nextIndex) {
+        return ! data$errors_ && nextIndex === -1;
       },
       // TODO: Find a better place for this. It shouldnt be baked into WizardView.
       code: function(x) {
         x.businessOnboardingDAO.
           put(this.data.clone().copyFrom({ status: 'SUBMITTED' })).
           then(function() {
+            // TODO: Instead of manually setting to true, we should pull the latest
+            // user from the userDAO.
+            x.user.onboarded = true;
             x.ctrl.notify('Business profile complete.');
             x.stack.back();
-//            x.pushMenu('sme.main.dashboard');
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
             x.ctrl.notify('Business profile submission failed.  ' +
