@@ -37,7 +37,11 @@ foam.CLASS({
         try {
           IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
           status = response.getComplianceValidationStatus();
-          transaction.setStatus(getTransactionStatus(status));
+          TransactionStatus transactionStatus = getTransactionStatus(status);
+          if ( transactionStatus != null ) {
+            transaction.setStatus(transactionStatus);
+          }
+
           approvalRequest.setCauseId(response.getId());
           approvalRequest.setCauseDaoKey("identityMindResponseDAO");
           approvalRequest.setStatus(getApprovalStatus(status));
@@ -75,7 +79,7 @@ foam.CLASS({
         } else if ( ComplianceValidationStatus.REJECTED == status ) {
           return TransactionStatus.DECLINED;
         }
-        return ComplianceValidationStatus.PENDING;
+        return null;
       `
     },
     {
@@ -111,7 +115,7 @@ foam.CLASS({
         ) {
           return getIdentityMindUserId();
         }
-        return null;
+        return 0L;
       `
     }
   ]
