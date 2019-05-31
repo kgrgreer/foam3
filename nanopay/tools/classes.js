@@ -487,6 +487,7 @@ var classes = [
   // ruler
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
   'net.nanopay.meter.compliance.ruler.ClearUserApprovalRequests',
+  'net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval',
   'net.nanopay.meter.compliance.ruler.RequestBeneficialOwnersCompliance',
   'net.nanopay.meter.compliance.ruler.RequestSigningOfficersCompliance',
   'net.nanopay.meter.compliance.ruler.SecurefactLEVValidator',
@@ -501,6 +502,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.DowJonesApprovalRequested',
   'net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction',
+  'net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
   'net.nanopay.meter.compliance.ruler.predicate.NewEqOld',
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
