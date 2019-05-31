@@ -66,7 +66,7 @@ foam.CLASS({
     }
     ^ .empty-state {
       text-align: center;
-      padding: 27px;
+      padding: 45px 27px;
       border: 1px solid #e2e2e3;
       background: inherit;
       border-radius: 3px;
@@ -81,12 +81,16 @@ foam.CLASS({
       class: 'Int',
       name: 'countRequiresApproval',
       factory: function() {
-        this.user.expenses
-          .where(
-            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
-          .select(this.COUNT()).then((c) => {
-            this.countRequiresApproval = c.value;
-          });
+        this.isUserAbleToPay$.map((result) => {
+        if ( result ) {
+          this.user.expenses
+            .where(
+              this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
+            .select(this.COUNT()).then((c) => {
+              this.countRequiresApproval = c.value;
+            });
+        }
+        });
         return 0;
       }
     },
@@ -227,10 +231,10 @@ foam.CLASS({
         .start()
           .hide(this.actionsCheck$)
           .tag(this.RequireActionView.create({
-            countRequiresApproval: this.countRequiresApproval$,
-            countOverdueAndUpcoming: this.countOverdueAndUpcoming$,
-            countDepositPayment: this.countDepositPayment$,
-            isUserAbleToPay: this.isUserAbleToPay$
+            countRequiresApproval$: this.countRequiresApproval$,
+            countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
+            countDepositPayment$: this.countDepositPayment$,
+            isUserAbleToPay$: this.isUserAbleToPay$
           }))
         .end();
 

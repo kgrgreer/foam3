@@ -62,9 +62,9 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start().show(this.isUserAbleToPay)
+          .start().show(this.isUserAbleToPay$)
             .start()
-              .hide(this.countRequiresApproval.map((value) => value == 0))
+              .hide(this.countRequiresApproval$.map((value) => value == 0))
               .addClass(this.myClass('item'))
               .start()
                 .start('img')
@@ -76,7 +76,7 @@ foam.CLASS({
               .end()
               .start()
                 .addClass(this.myClass('number'))
-                .add(this.countRequiresApproval)
+                .add(this.countRequiresApproval$)
               .end()
               .on('click', function() {
                 view.stack.push({
@@ -93,7 +93,7 @@ foam.CLASS({
             .end()
           .end()
           .start()
-            .show(this.countOverdueAndUpcoming.map((value) => value > 0))
+            .show(this.countOverdueAndUpcoming$.map((value) => value > 0))
             .addClass(this.myClass('item'))
             .start()
               .start('img')
@@ -105,7 +105,7 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('number'))
-              .add(this.countOverdueAndUpcoming)
+              .add(this.countOverdueAndUpcoming$)
             .end()
             .on('click', function() {
               view.stack.push({
@@ -122,7 +122,7 @@ foam.CLASS({
             })
           .end()
           .start()
-            .show(this.countDepositPayment.map((value) => value > 0))
+            .show(this.countDepositPayment$.map((value) => value > 0))
             .addClass(this.myClass('item'))
             .start()
               .start('img')
@@ -134,7 +134,7 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('number'))
-              .add(this.countDepositPayment)
+              .add(this.countDepositPayment$)
             .end()
             .on('click', function() {
               // TODO
