@@ -21,9 +21,9 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      width: 500px;
+      min-width: 100%;
       height: 173px;
-
       box-sizing: border-box;
 
       border-radius: 4px;
@@ -31,6 +31,7 @@ foam.CLASS({
 
       position: relative;
       padding: 24px;
+      margin-bottom: 2px;
 
       background-size: cover;
       background-repeat: no-repeat;
