@@ -223,6 +223,17 @@ foam.CLASS({
     },
     {
       class: 'Currency',
+      name: 'chequeAmount',
+      documentation: `The amount paid for an invoice using an external transaction system.`
+    },
+    {
+      class: 'String',
+      name: 'chequeCurrency',
+      documentation: `The amount paid for an invoice using an external transaction system.`,
+      value: 'CAD'
+    },
+    {
+      class: 'Currency',
       name: 'amount',
       documentation: `
         The amount transferred or paid as per the invoice. The amount of money that will be 
