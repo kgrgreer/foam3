@@ -34,7 +34,6 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'static foam.mlang.MLang.*'
   ],
 
@@ -59,16 +58,6 @@ foam.CLASS({
 
         if ( ! sink.getArray().isEmpty() ) {
           ApprovalRequest approvalRequest = (ApprovalRequest) sink.getArray().get(0);
-
-          // Remove existing pending approval requests
-          dao
-            .where(AND(
-              EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED),
-              OR(
-                EQ(approvalRequest.getStatus(), ApprovalStatus.REJECTED),
-                getCauseEq((ComplianceApprovalRequest) approvalRequest)),
-              LT(ApprovalRequest.CREATED, approvalRequest.getLastModified())))
-            .removeAll();
 
           // Get pending approval requests count
           Count requested = (Count) dao
@@ -98,23 +87,6 @@ foam.CLASS({
     {
       name: 'describe',
       javaCode: 'return "";'
-    },
-    {
-      name: 'getCauseEq',
-      type: 'foam.mlang.predicate.Predicate',
-      args: [
-        {
-          name: 'approvalRequest',
-          type: 'net.nanopay.meter.compliance.ComplianceApprovalRequest'
-        }
-      ],
-      javaCode: `
-        return approvalRequest != null
-          ? AND(
-              EQ(ComplianceApprovalRequest.CAUSE_ID, approvalRequest.getCauseId()),
-              EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, approvalRequest.getCauseDaoKey()))
-          : TRUE;
-      `
     }
   ]
 });
