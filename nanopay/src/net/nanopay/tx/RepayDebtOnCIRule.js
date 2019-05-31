@@ -8,6 +8,8 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.model.Transaction',
@@ -32,30 +34,23 @@ foam.CLASS({
               if ( OD != null ) {
                 DebtAccount DA = OD.findDebtAccount(x);
                 if ( DA != null && DA.getLimit() > 0 && ( (long) DA.findBalance(x) ) < 0 ) {
-                  Transaction repayment = new Transaction.Builder(x)
-                    .setDestinationAccount(DA.getId())
-                    .setSourceAccount(OD.getId())
-                    .setAmount(cashIn.getAmount())
-                    .build();
-                  ((DAO) x.get("localTransactionDAO")).put(repayment);
+                  agent.submit(x, new ContextAgent() {
+                    @Override
+                    public void execute(X x) {
+                      Transaction repayment = new Transaction.Builder(x)
+                      .setDestinationAccount(DA.getId())
+                      .setSourceAccount(OD.getId())
+                      .setAmount(cashIn.getAmount())
+                      .build();
+                      ((DAO) x.get("localTransactionDAO")).put(repayment);
+                    }
+                  });   
                 }
               }
             }
           }
         }
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'describe',
-      javaCode: ` return "Creates a debt repayment txn after a successful CI for a FastPay user."; `
-    },
-    {
-      name: 'canExecute',
-      javaCode: ` return true;`
     }
   ]
 });
