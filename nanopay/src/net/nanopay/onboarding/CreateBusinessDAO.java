@@ -5,10 +5,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.nanos.auth.Group;
-import foam.nanos.auth.Permission;
-import foam.nanos.auth.User;
-import foam.nanos.auth.UserUserJunction;
+import foam.nanos.auth.*;
 import net.nanopay.contacts.Contact;
 import net.nanopay.contacts.ContactStatus;
 import net.nanopay.invoice.model.Invoice;
@@ -62,26 +59,26 @@ public class CreateBusinessDAO extends ProxyDAO {
     Group employeeGroup = new Group();
     employeeGroup.copyFrom(employeeTemplateGroup);
     employeeGroup.setId(safeBusinessName + ".employee");
-    generatePermissions(x, employeeTemplateGroup, safeBusinessName);
     employeeGroup.setBusiness(business.getId());
     employeeGroup.setParent("sme");
-    groupDAO.put(employeeGroup);
+    employeeGroup = (Group) groupDAO.put(employeeGroup);
+    generatePermissions(x, employeeTemplateGroup, employeeGroup, safeBusinessName);
 
     Group approverGroup = new Group();
     approverGroup.copyFrom(approverTemplateGroup);
     approverGroup.setId(safeBusinessName + ".approver");
-    generatePermissions(x, approverTemplateGroup, safeBusinessName);
     approverGroup.setBusiness(business.getId());
     approverGroup.setParent(safeBusinessName + ".employee");
-    groupDAO.put(approverGroup);
+    approverGroup = (Group) groupDAO.put(approverGroup);
+    generatePermissions(x, approverTemplateGroup, approverGroup, safeBusinessName);
 
     Group adminGroup = new Group();
     adminGroup.copyFrom(adminTemplateGroup);
     adminGroup.setId(safeBusinessName + ".admin");
-    generatePermissions(x, adminTemplateGroup, safeBusinessName);
     adminGroup.setBusiness(business.getId());
     adminGroup.setParent(safeBusinessName + ".approver");
-    groupDAO.put(adminGroup);
+    adminGroup = (Group) groupDAO.put(adminGroup);
+    generatePermissions(x, adminTemplateGroup, adminGroup, safeBusinessName);
 
     // Put the business itself in the admin group for the business.
     business = (Business) business.fclone();
@@ -107,18 +104,14 @@ public class CreateBusinessDAO extends ProxyDAO {
   // a unique id for each business. For example, "group.update.id.*" would be
   // changed to "group.update.foobar123.*". Then that permission is added to a
   // new group which gets returned.
-  public void generatePermissions(X x, Group templateGroup, String safeBusinessName) {
-    DAO permissionDAO  = (DAO) x.get("permissionDAO");
-    List<Permission> templatePermissions = ((ArraySink) templateGroup.getPermissions(x).getDAO().select(new ArraySink())).getArray();
+  public void generatePermissions(X x, Group templateGroup, Group realGroup, String safeBusinessName) {
+    List<GroupPermissionJunction> junctions = ((ArraySink) templateGroup.getPermissions(x).getJunctionDAO().where(EQ(GroupPermissionJunction.SOURCE_ID, templateGroup.getId())).select(new ArraySink())).getArray();
 
-    for ( Permission templatePermission : templatePermissions ) {
-      Permission newPermission = new Permission(templatePermission.getId().replaceAll("\\.id\\.", "." + safeBusinessName + "."), templatePermission.getDescription());
+    for ( GroupPermissionJunction junction : junctions ) {
+      Permission newPermission = new Permission.Builder(x).setId(junction.getTargetId().replaceAll("\\.id\\.", "." + safeBusinessName + ".")).build();
 
       // Use the system context to pass the auth checks.
-      templateGroup.getPermissions(getX()).add(newPermission);
-
-      // Put as the system since permissionDAO is authenticated.
-      permissionDAO.inX(getX()).put(newPermission);
+      realGroup.getPermissions(getX()).add(newPermission);
     }
   }
 
