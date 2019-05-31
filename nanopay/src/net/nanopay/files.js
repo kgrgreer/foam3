@@ -876,6 +876,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/refinements' },
 
   // ruler
+  { name: 'net/nanopay/meter/compliance/ruler/AbstractComplianceApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/CanadianSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/ClearUserApprovalRequests' },
   { name: 'net/nanopay/meter/compliance/ruler/ComplianceTransactionApproval' },

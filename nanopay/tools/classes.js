@@ -485,6 +485,7 @@ var classes = [
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
 
   // ruler
+  'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
   'net.nanopay.meter.compliance.ruler.ClearUserApprovalRequests',
   'net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval',

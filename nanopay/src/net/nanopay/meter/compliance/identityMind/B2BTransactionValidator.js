@@ -39,7 +39,7 @@ foam.CLASS({
           status = response.getComplianceValidationStatus();
           TransactionStatus transactionStatus = getTransactionStatus(status);
           if ( transactionStatus != null ) {
-            transaction.setStatus(transactionStatus);
+            transaction.setInitialStatus(transactionStatus);
           }
 
           approvalRequest.setCauseId(response.getId());
