@@ -441,6 +441,12 @@ foam.CLASS({
               this.isCrossBorder = true;
             }
           });
+        } else {
+          this.currencyDAO.find(this.invoice.chequeCurrency).then((currency) => {
+            this.formattedAmountPaid =
+              `${currency.format(this.invoice.chequeAmount)} ` +
+              `${currency.alphabeticCode}`;
+          });
         }
       });
     },

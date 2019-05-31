@@ -21,20 +21,11 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'Currency',
-      name: 'amount'
-    },
-    {
-      class: 'Date',
-      name: 'paymentDate'
-    },
-    {
-      name: 'note',
-      view: 'foam.u2.tag.TextArea',
-      value: '',
-      placeholder: '(i.e. What method of payment was it paid in?)'
-    },
+    net.nanopay.invoice.model.Invoice.CHEQUE_AMOUNT,
+    net.nanopay.invoice.model.Invoice.PAYMENT_DATE.clone().copyFrom({
+      view: { class: 'foam.u2.DateView' }
+    }),
+    net.nanopay.invoice.model.Invoice.NOTE,
     {
       name: 'currencyType',
       view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
@@ -46,6 +37,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Mark as Complete?' },
     { name: 'MSG_1', message: 'Once this invoice is marked as complete, it cannot be edited.' },
+    { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked completed.' },
     { name: 'DATE_LABEL', message: 'Date Paid' },
     { name: 'AMOUNT_LABEL', message: 'Amount Paid' },
     { name: 'NOTE_LABEL', message: 'Notes' }
@@ -84,7 +76,7 @@ foam.CLASS({
       float: right;
       margin: 20px;
     }
-    ^ .property-amount {
+    ^ .property-chequeAmount {
       display: inline-block;
       height: 40px;
       width: 70%;
@@ -127,7 +119,7 @@ foam.CLASS({
         .start()
           .start().addClass('label').add(this.AMOUNT_LABEL).end()
           .start(this.CURRENCY_TYPE).end()
-          .start(this.AMOUNT).end()
+          .start(this.CHEQUE_AMOUNT).end()
         .end()
         .start()
           .start().addClass('label').add(this.NOTE_LABEL).end()
@@ -167,14 +159,14 @@ foam.CLASS({
         }
         
         paymentDate = paymentDate.setMinutes(this.paymentDate.getMinutes() + new Date().getTimezoneOffset());
-        
+
         this.invoice.paymentDate = paymentDate;
-        this.invoice.chequeAmount = X.data.amount;
-        this.invoice.chequeCurrency = X.data.currencyType;
+        this.invoice.chequeAmount = X.data.chequeAmount;
+        this.invoice.chequeCurrency = X.data.currencyType.alphabeticCode;
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        this.notify(this.MSG_3);
+        this.notify(this.SUCCESS_MESSAGE);
         X.closeDialog();
       }
     }
