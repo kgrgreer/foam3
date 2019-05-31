@@ -229,7 +229,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'chequeCurrency',
-      documentation: `The amount paid for an invoice using an external transaction system.`,
+      documentation: `The currency of a transaction using by external transaction system.`,
       value: 'CAD'
     },
     {
