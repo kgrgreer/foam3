@@ -1,9 +1,9 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind',
-  name: 'B2BTransactionValidator',
+  name: 'ComplianceTransactionValidator',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
-  documentation: 'Validates bank to bank transaction via IdentityMind Transfer API.',
+  documentation: 'Validates transaction via IdentityMind Transfer API.',
 
   javaImports: [
     'net.nanopay.approval.ApprovalStatus',

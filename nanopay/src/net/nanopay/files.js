@@ -976,7 +976,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
 
   // identitymind
-  { name: 'net/nanopay/meter/compliance/identityMind/B2BTransactionValidator' },
+  { name: 'net/nanopay/meter/compliance/identityMind/ComplianceTransactionValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/ConsumerKYCValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/EntityLoginValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/MerchantKYCValidator' },
