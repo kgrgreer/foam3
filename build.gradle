@@ -197,10 +197,20 @@ task packageFoam(type: NodeTask) {
     script = file('./tools/js_build/build.js')
 }
 
-task foamCopy(type: Copy) {
+task foamNodeModulesCopy(type: Copy) {
     dependsOn tasks.packageFoam
+    
+    from "foam2"
+    into "$targetDir/classes/webroot"
+    include "node_modules/ace-builds/src-min-noconflict/*.js"
+}
+
+task foamCopy(type: Copy) {
+    dependsOn tasks.foamNodeModulesCopy
+    
     from "tools/js_build/foam-bin.js"
     into "$targetDir/classes/webroot"
+    from "foam2/node_modules/ace-builds/src-min-noconflict/ace.js"
 }
 
 task copyLib(type: Copy) {
