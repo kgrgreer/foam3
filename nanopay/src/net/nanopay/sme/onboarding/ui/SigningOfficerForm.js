@@ -617,19 +617,19 @@ foam.CLASS({
       try {
         this.triPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementCAD', '');
       } catch (error) {
-        console.warn('Error occured finding Tri-Party Agreement CAD: ', error);
+        console.warn('Error occurred finding Tri-Party Agreement CAD: ', error);
       }
 
       try {
         this.triPartyAgreementUsd = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementUSD', '');
       } catch (error) {
-        console.warn('Error occured finding Tri-Party Agreement USD: ', error);
+        console.warn('Error occurred finding Tri-Party Agreement USD: ', error);
       }
 
       try {
         this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'dualPartyAgreementCAD', '');
       } catch (error) {
-        console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
+        console.warn('Error occurred finding Dual-Party Agreement CAD: ', error);
       }
     },
 

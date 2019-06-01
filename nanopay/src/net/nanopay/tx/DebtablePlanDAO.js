@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'DebtablePlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: ``,
+  documentation: 'Plans debt transactions for Debtable Accounts',
 
   javaImports: [
     'net.nanopay.account.Account',
