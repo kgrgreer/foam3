@@ -1,15 +1,16 @@
 #!/bin/bash
-echo $0 $@
 # Super simple launcher.
+# Run as ubuntu on staging and production
+target_user="ubuntu"
+if [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "$target_user" ]; then
+  exec sudo -u "$target_user" -- "$0" "$@"
+fi
 
 NANOPAY_HOME="/opt/nanopay"
 WEB_PORT=8080
 HOST_NAME=`hostname -s`
 INSTALL=0
 export DEBUG=
-if [ -z "$NANOS_PIDFILE" ]; then
-    NANOS_PIDFILE="/tmp/nanos.pid"
-fi
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
@@ -59,11 +60,11 @@ case $MODE in
     'production') MEMORY_MODEL=LARGE;;
 esac
 
+# load instance specific deployment options
 if [ -f "$NANOPAY_HOME/etc/shrc.local" ]; then
     . "$NANOPAY_HOME/etc/shrc.local"
 fi
 
-# TODO: assertions, java_home
 JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
 export RES_JAR_HOME="${JAR}"
 
@@ -71,6 +72,6 @@ export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
 #java -server -jar "${JAR}"
 nohup java -server -jar "${JAR}" &>/dev/null &
-echo $! > "$NANOS_PIDFILE"
+echo $! > "/tmp/nanos.pid"
 
 exit 0
