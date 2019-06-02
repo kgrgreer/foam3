@@ -111,12 +111,12 @@ do
     done
   done
 
-  if  [[ -f "deployment/$file" ]]; then
-      cat "deployment/$file" >> "$OUT_DIR/$journal_file"
-  fi
-  if  [[ -f "deployment/${file}.jrl" ]]; then
-      cat "deployment/${file}.jrl" >> "$OUT_DIR/$journal_file"
-  fi
+  # if  [[ -f "deployment/$file" ]]; then
+  #     cat "deployment/$file" >> "$OUT_DIR/$journal_file"
+  # fi
+  # if  [[ -f "deployment/${file}.jrl" ]]; then
+  #     cat "deployment/${file}.jrl" >> "$OUT_DIR/$journal_file"
+  # fi
   if [[ ! -z "$MODE" ]]; then
       if  [[ -f "deployment/$MODE/$file" ]]; then
           cat "deployment/$MODE/$file" >> "$OUT_DIR/$journal_file"
