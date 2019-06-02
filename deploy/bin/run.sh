@@ -50,12 +50,11 @@ if [ "${INSTALL}" -eq 1 ]; then
     cp -r "etc" "${NANOPAY_HOME}"
 fi
 
-export MEMORY_MODEL=MEDIUM
+export MEMORY_MODEL=SMALL
 case $MODE in
-    'development') MEMORY_MODEL=SMALL;;
+    'staging')   MEMORY_MODEL=MEDIUM;;
     'production') MEMORY_MODEL=LARGE;;
 esac
-echo MEMORY_MODEL=$MEMORY_MODEL
 
 if [ -f "$NANOPAY_HOME/etc/shrc.local" ]; then
     . "$NANOPAY_HOME/etc/shrc.local"
