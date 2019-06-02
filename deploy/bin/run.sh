@@ -7,6 +7,9 @@ WEB_PORT=8080
 HOST_NAME=`hostname -s`
 INSTALL=0
 export DEBUG=
+if [ -z "$NANOS_PIDFILE" ]; then
+    NANOS_PIDFILE="/tmp/nanos.pid"
+fi
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
@@ -65,7 +68,9 @@ JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
 export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
-nohup java -server -jar "${JAR}" &>/dev/null &
+
 #java -server -jar "${JAR}"
+nohup java -server -jar "${JAR}" &>/dev/null &
+echo $! > "$NANOS_PIDFILE"
 
 exit 0

@@ -233,15 +233,20 @@ function stop_nanos {
     echo "INFO :: Stopping nanos..."
 
     # TODO: with instances there may be more than one.
+    # development
     RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
-    if [[ -f $NANOS_PIDFILE ]]; then
+    if [ -z "$RUNNING_PID" ]; then
+        # production
+        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar /opt/nanopay/lib/nanopay" | awk '{print $2}')
+    fi
+    if [ -f "$NANOS_PIDFILE" ]; then
         PID=$(cat "$NANOS_PIDFILE")
         if [[ "$PID" != "$RUNNING_PID" ]] && [ "$STOP_ONLY" -eq 1 ]; then
             PID=$RUNNING_PID
         fi
     fi
 
-    if [[ -z "$PID" ]]; then
+    if [ -z "$PID" ]; then
         echo "INFO :: PID and/or file $NANOS_PIDFILE not found, nothing to stop?"
     else
         TRIES=0
