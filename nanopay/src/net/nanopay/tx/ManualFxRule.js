@@ -18,6 +18,7 @@ foam.CLASS({
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.KotakFxTransaction',
     'net.nanopay.fx.ManualFxApprovalRequest',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
@@ -33,7 +34,7 @@ foam.CLASS({
         .where(
           MLang.AND(
             MLang.INSTANCE_OF(KotakFxTransaction.class),
-            MLang.EQ(KotakFxTransaction.ID, request.getObjId())
+            MLang.EQ(Transaction.ID, request.getObjId())
           )
         )
         .select(sink);
@@ -48,6 +49,7 @@ foam.CLASS({
         } else {
           kotakFxTransaction.setFxRate(request.getRate());
           kotakFxTransaction.setStatus(TransactionStatus.COMPLETED);
+          transactionDAO.put_(x, kotakFxTransaction);
           approvalRequestDAO
             .where(
               MLang.AND(

@@ -133,6 +133,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
 
     KotakFxTransaction kotakTxn = (KotakFxTransaction) txnDAO.find(txn5.getId());
     test(kotakTxn.getFxRate() != 0, "Fx rate is successfully added through approval request");
+    test(kotakTxn.getStatus().equals(TransactionStatus.COMPLETED), "Transaction updated to completed after fetching fx rate.");
   }
 
   public User addUserIfNotFound(X x, String email) {
