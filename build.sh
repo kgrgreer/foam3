@@ -108,8 +108,10 @@ function deploy_journals {
     if [ "$GRADLE_BUILD" -eq 0 ]; then
         ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
     else
-        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
+        # gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
     fi
+    # exit 0
 
     if [[ $? -eq 1 ]]; then
         quit 1
@@ -141,17 +143,6 @@ function clean {
            [ "$RESTART_ONLY" -eq 0 ]; then
         echo "INFO :: Cleaning Up"
 
-        if [ "$GRADLE_BUILD" -eq 0 ]; then
-            if [ -d "build/" ]; then
-                rm -rf build
-                mkdir build
-            fi
-            if [ -d "target/" ]; then
-                rm -rf target
-                mkdir target
-            fi
-        fi
-
         if [ "${RUN_JAR}" -eq 1 ]; then
             tmp=$PWD
             echo PWD=$tmp
@@ -163,6 +154,14 @@ function clean {
         fi
 
         if [ "$GRADLE_BUILD" -eq 0 ]; then
+            if [ -d "build/" ]; then
+                rm -rf build
+                mkdir build
+            fi
+            if [ -d "target/" ]; then
+                rm -rf target
+                mkdir target
+            fi
             mvn clean
         else
             gradle clean
@@ -653,4 +652,5 @@ fi
 if [ "${BUILD_ONLY}" -eq 0 ]; then
    start_nanos
 fi
+
 quit 0

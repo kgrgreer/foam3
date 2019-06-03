@@ -132,19 +132,18 @@ class IncrementalTask extends DefaultTask {
 
     @TaskAction
     void execute(IncrementalTaskInputs inputs) {
-        println inputs.incremental ? "CHANGED inputs considered out of date"
-                                : "ALL inputs considered out of date"
-
-        if (!inputs.incremental)
+        if (inputs.incremental) {
+            println "CHANGED inputs considered out of date"
+            inputs.outOfDate { change ->
+                println "out of date: ${change.file.name}"
+            }
+            inputs.removed { change ->
+                println "removed: ${change.file.name}"
+            }
+        } else {
+            println "ALL inputs considered out of date"
             project.delete(outputDir.listFiles())
-
-        inputs.outOfDate { change ->
-            println "out of date: ${change.file.name}"
         }
-
-        // inputs.removed { change ->
-        //    println "removed: ${change.file.name}"
-        // }
     }
 }
 

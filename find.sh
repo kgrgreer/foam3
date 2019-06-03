@@ -7,7 +7,7 @@ MODE=$3
 VERSION=$4
 INSTANCE=$5
 
-if [[ ! -d "deployment/$MODE" ]]; then
+if [[ ! -d "deployment/${MODE}" ]]; then
     echo "ERROR :: deployment/${MODE} doesn't exist! Exiting"
     exit 1
 fi
@@ -26,7 +26,7 @@ MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
 VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
 INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
 
-echo "INFO :: $0 MODE=${MODE} INSTANCE=${INSTANCE} VERSION=${VERSION}"
+echo "INFO :: $0 IN_DIR=${IN_DIR} OUT_DIR=${OUT_DIR} MODE=${MODE} INSTANCE=${INSTANCE} VERSION=${VERSION}"
 
 # Creates an array of the file names
 declare -a arr=(
