@@ -1,4 +1,4 @@
-package net.nanopay.meter;
+package net.nanopay.meter.reports;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -24,7 +24,7 @@ import java.util.HashMap;
 // Cash-In, Digital, Cash-Out
 // By Account per User
 // Calculate for 'last' month by default
-public class TransactionSummaryReport { 
+public class ReportTransaction { 
   
   // Create the transaction summary report
   public String[] createReport(X x, Date startDate, Date endDate) {

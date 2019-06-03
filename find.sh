@@ -21,7 +21,7 @@ MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
 VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
 INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
 
-echo "$0 MODE=${MODE} INSTANCE=${INSTANCE} VERSION=${VERSION}"
+echo "INFO :: $0 MODE=${MODE} INSTANCE=${INSTANCE} VERSION=${VERSION}"
 
 # Creates an array of the file names
 declare -a arr=(
@@ -111,12 +111,6 @@ do
     done
   done
 
-  if  [[ -f "deployment/$file" ]]; then
-      cat "deployment/$file" >> "$OUT_DIR/$journal_file"
-  fi
-  if  [[ -f "deployment/${file}.jrl" ]]; then
-      cat "deployment/${file}.jrl" >> "$OUT_DIR/$journal_file"
-  fi
   if [[ ! -z "$MODE" ]]; then
       if  [[ -f "deployment/$MODE/$file" ]]; then
           cat "deployment/$MODE/$file" >> "$OUT_DIR/$journal_file"

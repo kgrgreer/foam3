@@ -33,6 +33,7 @@ foam.CLASS({
       border: 1px solid #03cf1f;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
     @keyframes fade {
       0% { opacity: 0; }
@@ -44,7 +45,7 @@ foam.CLASS({
       margin-right: 10px;
       vertical-align: middle;
     }
-    ^message {
+    ^content {
       display: inline-block;
       vertical-align: middle;
     }
@@ -82,16 +83,14 @@ foam.CLASS({
       class: 'String',
       name: 'type'
     },
-    {
-      class: 'String',
-      name: 'message'
-    },
-    'data'
+    'message'
   ],
 
   methods: [
 
     function initE() {
+      var self = this;
+
       var img;
       if ( this.type === 'error' ) {
         img = 'images/inline-error-icon.svg';
@@ -111,15 +110,18 @@ foam.CLASS({
               .attrs({ src: img })
             .end()
             .start()
-              .addClass(this.myClass('message'))
-              .add(this.message)
+              .addClass(this.myClass('content'))
+              .callIfElse(foam.String.isInstance(this.message), function() {
+                this.add(self.message);
+              }, function() {
+                this.tag(self.message);
+              })
             .end()
           .end()
           .startContext({ data: this })
             .start()
               .addClass(this.myClass('link-icon'))
               .start()
-                .addClass(this.myClass('align-top'))
                 .addClass(this.myClass('close-icon'))
                 .on('click', () => this.remove())
               .end()

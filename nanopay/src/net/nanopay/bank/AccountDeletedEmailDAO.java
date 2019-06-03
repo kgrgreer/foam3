@@ -8,7 +8,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.contacts.Contact;
@@ -34,7 +34,6 @@ public class AccountDeletedEmailDAO
     BankAccount  account = (BankAccount) super.remove_(x, obj);
     AppConfig    config  = (AppConfig) x.get("appConfig");
     User         owner   = (User) userDAO_.find_(x, account.getOwner());
-    EmailService email   = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
 
     if ( owner instanceof Contact ) {
@@ -48,7 +47,7 @@ public class AccountDeletedEmailDAO
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
 
     try{
-      email.sendEmailFromTemplate(x, owner, message, "deletedBank", args);
+      EmailsUtility.sendEmailFromTemplate(x, owner, message, "deletedBank", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
     }
