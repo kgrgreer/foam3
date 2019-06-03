@@ -111,6 +111,10 @@ function deploy_journals {
         gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
     fi
 
+    if [[ $? -eq 1 ]]; then
+        quit 1
+    fi
+
     if [[ ! -f $JOURNALS ]]; then
         echo "ERROR :: Missing $JOURNALS file."
         quit 1

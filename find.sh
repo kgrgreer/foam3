@@ -7,6 +7,11 @@ MODE=$3
 VERSION=$4
 INSTANCE=$5
 
+if [[ ! -d "deployment/$MODE" ]]; then
+    echo "ERROR :: deployment/${MODE} doesn't exist! Exiting"
+    exit 1
+fi
+
 if [[ -d $IN_DIR ]]; then
     cd $IN_DIR
 fi
