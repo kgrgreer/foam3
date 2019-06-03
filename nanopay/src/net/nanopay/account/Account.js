@@ -48,6 +48,7 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Shadow Accounts',
       predicateFactory: function(e) {
+        return e.TRUE;
         return e.INSTANCE_OF(net.nanopay.account.ShadowAccount);
       }
     },
@@ -55,6 +56,7 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Aggregate Accounts',
       predicateFactory: function(e) {
+        return e.TRUE;
         return e.INSTANCE_OF(net.nanopay.account.AggregateAccount);
       }
     },
@@ -62,6 +64,7 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Virtual Accounts',
       predicateFactory: function(e) {
+        return e.TRUE;
         return e.INSTANCE_OF(net.nanopay.account.DigitalAccounts);
       }
     }
