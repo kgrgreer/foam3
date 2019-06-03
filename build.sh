@@ -108,8 +108,7 @@ function deploy_journals {
     if [ "$GRADLE_BUILD" -eq 0 ]; then
         ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
     else
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
-        # gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
+        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
     fi
     # exit 0
 
@@ -303,12 +302,10 @@ function start_nanos {
             JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
         fi
 
-        if [ -z "$MODE" ]; then
-            # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
-            # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
-            # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
-            JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
-        fi
+        # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
+        # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
+        # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
+        JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
 
         CLASSPATH=$(JARS=("target/lib"/*.jar); IFS=:; echo "${JARS[*]}")
         CLASSPATH="build/classes/java/main:$CLASSPATH"
