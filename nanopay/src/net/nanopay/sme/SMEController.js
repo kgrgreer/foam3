@@ -211,7 +211,7 @@ foam.CLASS({
 
     function initE() {
       this.clientPromise.then(() => {
-        this.fetchLookAndFeel().then(() => {
+        this.fetchTheme().then(() => {
           this.client.nSpecDAO.find('appConfig').then((config) => {
             this.appConfig.copyFrom(config.service);
           });
@@ -375,7 +375,7 @@ foam.CLASS({
 
       // Update the look and feel now that the user is logged in since there
       // might be a more specific one to use now.
-      this.fetchLookAndFeel();
+      this.fetchTheme();
     }
   ]
 });

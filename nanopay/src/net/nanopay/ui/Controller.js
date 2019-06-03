@@ -158,10 +158,10 @@ foam.CLASS({
       this.sessionTimer.enable = true;
       this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
 
-      // If we don't wait for the LookAndFeel object to load then we'll get
+      // If we don't wait for the Theme object to load then we'll get
       // errors when trying to expand the CSS macros in these models.
       this.clientPromise.then(() => {
-        this.fetchLookAndFeel().then(() => {
+        this.fetchTheme().then(() => {
           this.AppStyles.create();
           this.NanoConnectStyles.create();
           this.InvoiceStyles.create();

@@ -5,7 +5,7 @@ foam.CLASS({
 
   imports: [
     'copyright',
-    'lookAndFeel',
+    'theme',
     'showAbout',
     'toolbarIcon',
     'toolbarTitle',
@@ -59,7 +59,7 @@ foam.CLASS({
           .start('div').addClass('about-mintchip')
             .start('div').addClass('mintchip-logo')
               .attrs({ 'aria-hidden': true })
-              .tag({ class: 'foam.u2.tag.Image', data: this.lookAndFeel.logo })
+              .tag({ class: 'foam.u2.tag.Image', data: this.theme.logo })
             .end()
             .start('h3').add(this.webApp).end()
             .start().add('Version ' + this.version).end().br()
