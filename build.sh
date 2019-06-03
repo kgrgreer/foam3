@@ -634,8 +634,6 @@ if [ "$STOP_ONLY" -eq 1 ]; then
 fi
 
 if [ "$RESTART_ONLY" -eq 0 ] ||
-#       [ "$COMPILE_ONLY" -eq 0 ] ||
-#       [ "$BUILD_ONLY" -eq 0 ] ||
        [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
     deploy_journals
 fi
@@ -647,12 +645,6 @@ fi
 if [ "${PACKAGE}" -eq 1 ]; then
     package_tar
 fi
-
-#if [ "${BUILD_ONLY}" -eq 1 ] || [ ! -z "${MODE}" ]; then
-#    if [ -z "${INSTANCE}" ] && [ "${TEST}" -eq 0 ]; then
-#        quit 0
-#    fi
-#fi
 
 if [ "${BUILD_ONLY}" -eq 0 ]; then
    start_nanos
