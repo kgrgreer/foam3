@@ -184,7 +184,7 @@ task findSH(type: Exec) {
     onlyIf {
         !tasks.incrementalFindTask.state.upToDate
     }
-    commandLine 'bash', './find.sh', workingDir, journalOut, System.getProperty("projectMode", ""), project.version, System.getProperty("journalConfig", "")
+    commandLine 'bash', './find.sh', workingDir, journalOut, project.hasProperty("projectMode") ? "${projectMode}": "", "${project.version}", project.hasProperty("journalConfig") ? "${journalConfig}" : ""
 }
 
 task packageFoam(type: NodeTask) {
@@ -197,10 +197,20 @@ task packageFoam(type: NodeTask) {
     script = file('./tools/js_build/build.js')
 }
 
-task foamCopy(type: Copy) {
+task foamNodeModulesCopy(type: Copy) {
     dependsOn tasks.packageFoam
+    
+    from "foam2"
+    into "$targetDir/classes/webroot"
+    include "node_modules/ace-builds/src-min-noconflict/*.js"
+}
+
+task foamCopy(type: Copy) {
+    dependsOn tasks.foamNodeModulesCopy
+    
     from "tools/js_build/foam-bin.js"
     into "$targetDir/classes/webroot"
+    from "foam2/node_modules/ace-builds/src-min-noconflict/ace.js"
 }
 
 task copyLib(type: Copy) {
@@ -252,10 +262,10 @@ jar {
   manifest {
     attributes "Main-Class": "foam.nanos.boot.Boot"
     attributes "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(" ")
-    attributes "Implementation-Title": "nanopay"
+    attributes "Implementation-Title": "${project.name}"
     /* version - see settings.gradle and override on the command line
         with -Pversion=x.y.z */
-    attributes "Implementation-Version": version
+    attributes "Implementation-Version": "${project.version}"
     attributes "Implementation-Timestamp": new Date()
     attributes "Implementation-Vendor-Id": group
     attributes "Implementation-Vendor": "nanopay"
@@ -275,6 +285,9 @@ task tarz(type: Tar) {
     }
     into("${tarName}/lib/") {
         from "target/lib"
+    }
+    into("${tarName}/etc/") {
+        from "deploy/etc"
     }
 
     destinationDirectory = file("target/package")
