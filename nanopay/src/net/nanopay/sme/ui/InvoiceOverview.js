@@ -36,7 +36,8 @@ foam.CLASS({
     'accountDAO',
     'auth',
     'canReceiveCurrencyDAO',
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'ctrl',
     'currencyDAO',
     'email',
@@ -188,7 +189,7 @@ foam.CLASS({
     { name: 'INVOICE_HISTORY', message: 'History' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
     { name: 'VOID_MESSAGE', message: 'Mark as void' },
-    { name: 'EMAIL_MSG_ERROR', message: 'An error occured while sending a reminder, please try again later.' },
+    { name: 'EMAIL_MSG_ERROR', message: 'An error occurred while sending a reminder, please try again later.' },
     { name: 'EMAIL_MSG', message: 'Invitation sent!' },
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
@@ -686,7 +687,11 @@ foam.CLASS({
         return this.invoice.status === this.InvoiceStatus.DRAFT;
       },
       code: function(X) {
-        this.checkComplianceAndBanking().then((result) => {
+        var checkAndNotifyAbility = this.isPayable ?
+          this.checkAndNotifyAbilityToPay :
+          this.checkAndNotifyAbilityToReceive;
+
+        checkAndNotifyAbility().then((result) => {
           if ( ! result ) return;
           var menuName = this.isPayable ? 'send' : 'request';
           X.menuDAO.find(`sme.quickAction.${menuName}`).then((menu) => {
@@ -713,17 +718,20 @@ foam.CLASS({
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
-        var self = this;
-        this.checkComplianceAndBanking().then((result) => {
+        var checkAndNotifyAbility = this.isPayable ?
+          this.checkAndNotifyAbilityToPay :
+          this.checkAndNotifyAbilityToReceive;
+
+        checkAndNotifyAbility().then((result) => {
           if ( result ) {
             // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
-            var request = self.CanReceiveCurrency.create({
-              userId: self.invoice.payeeId,
-              currencyId: self.invoice.destinationCurrency
+            var request = this.CanReceiveCurrency.create({
+              userId: this.invoice.payeeId,
+              currencyId: this.invoice.destinationCurrency
             });
-            self.canReceiveCurrencyDAO.put(request).then((responseObj) => {
+            this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
               if ( ! responseObj.response ) {
-                self.notify(responseObj.message, 'error');
+                this.notify(responseObj.message, 'error');
                 return;
               }
               X.menuDAO.find('sme.quickAction.send').then((menu) => {
@@ -735,8 +743,6 @@ foam.CLASS({
                   invoice: this.invoice.clone()
                 });
                 clone.launch(X, X.controllerView);
-              }).catch((err) => {
-                console.warn('Error occured when checking the compliance: ', err);
               });
             });
           }
@@ -763,6 +769,7 @@ foam.CLASS({
       isEnabled: function(canApproveInvoice) {
         return canApproveInvoice;
       },
+      availablePermissions: ['invoice.pay'],
       code: function(X) {
         X.menuDAO.find('sme.quickAction.send').then((menu) => {
           var clone = menu.clone();
@@ -774,7 +781,7 @@ foam.CLASS({
           });
           clone.launch(X, X.controllerView);
         }).catch((err) => {
-          console.warn('Error occured when checking the compliance: ', err);
+          console.warn('Error occurred when redirecting to approval payment flow: ', err);
         });
       }
     },

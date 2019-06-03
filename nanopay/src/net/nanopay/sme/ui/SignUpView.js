@@ -493,7 +493,7 @@ foam.CLASS({
         this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
         this.privacyDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.PRIVACY_DOCUMENT_NAME, '');
       } catch (error) {
-        console.warn('Error occured finding Terms Agreement: ', error);
+        console.warn('Error occurred finding Terms Agreement: ', error);
       }
     }
   ]

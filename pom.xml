@@ -23,7 +23,7 @@
     <dependency>
       <groupId>org.jtwig</groupId>
       <artifactId>jtwig-core</artifactId>
-      <version>5.86.1.RELEASE</version>
+      <version>5.87.0.RELEASE</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -59,17 +59,59 @@
     <dependency>
       <groupId>com.intuit.quickbooks-online</groupId>
       <artifactId>ipp-v3-java-data</artifactId>
-      <version>4.0.8</version>
+      <version>5.0.4</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>asm</artifactId>
+          <groupId>asm</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>asm-tree</artifactId>
+          <groupId>asm</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>asm-commons</artifactId>
+          <groupId>asm</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.intuit.quickbooks-online</groupId>
       <artifactId>ipp-v3-java-devkit</artifactId>
-      <version>4.0.8</version>
+      <version>5.0.4</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>asm</artifactId>
+          <groupId>asm</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>asm-tree</artifactId>
+          <groupId>asm</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>asm-commons</artifactId>
+          <groupId>asm</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.intuit.quickbooks-online</groupId>
       <artifactId>oauth2-platform-api</artifactId>
-      <version>4.0.8</version>
+      <version>5.0.4</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>asm</artifactId>
+          <groupId>asm</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>asm-tree</artifactId>
+          <groupId>asm</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>asm-commons</artifactId>
+          <groupId>asm</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -207,11 +249,11 @@
       <artifactId>websocket-server</artifactId>
       <version>${jetty.version}</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>com.redhat.victims.maven</groupId>
       <artifactId>security-versions</artifactId>
       <version>1.0.6</version>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
@@ -252,6 +294,21 @@
     <!--   <artifactId>google-oauth-client</artifactId> -->
     <!--   <version>1.23.0</version> -->
     <!-- </dependency> -->
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>5.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-tree</artifactId>
+      <version>5.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-commons</artifactId>
+      <version>5.0.3</version>
+    </dependency>
   </dependencies>
 
   <build>
