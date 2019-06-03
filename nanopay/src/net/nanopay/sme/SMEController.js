@@ -48,6 +48,12 @@ foam.CLASS({
   ],
 
   css: `
+  ^ {
+    display: flex;
+  }
+  ^ > .stack-wrapper {
+    flex-grow: 1;
+  }
   ^ .foam-u2-view-TableView tbody > tr > td {
     white-space: nowrap;
     max-width: 280px;
