@@ -601,6 +601,14 @@ var classes = [
   // approval
   'net.nanopay.approval.ApprovalRequest',
   'net.nanopay.approval.ApprovalStatus',
+
+  // alarming & monitoring
+  'net.nanopay.alarming.Alarm',
+  'net.nanopay.alarming.AlarmConfig',
+  'net.nanopay.alarming.AlarmReason',
+  'net.nanopay.alarming.MonitoringReport',
+  'net.nanopay.alarming.MonitorType',
+  'net.nanopay.alarming.AlarmAndMonitoring',
 ];
 
 var abstractClasses = [
