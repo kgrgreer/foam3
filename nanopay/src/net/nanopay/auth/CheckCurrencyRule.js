@@ -18,10 +18,6 @@ foam.CLASS({
     {
       name: 'LACKS_PERMISSION',
       message: 'You do not have permission to work with this currency: '
-    },
-    {
-      name: 'DESCRIBE_TEXT',
-      message: 'Checks if the user has permission to work with a currency.'
     }
   ],
 
@@ -46,18 +42,6 @@ foam.CLASS({
           throw new AuthorizationException(LACKS_PERMISSION + currency);
         }
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '// No-op'
-    },
-    {
-      name: 'canExecute',
-      javaCode: `return hasPermission(x, obj);`
-    },
-    {
-      name: 'describe',
-      javaCode: `return DESCRIBE_TEXT;`
     },
     {
       name: 'hasPermission',
