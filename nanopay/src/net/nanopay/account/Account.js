@@ -36,6 +36,18 @@ foam.CLASS({
     'balance'
   ],
 
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Shadow Accounts',
+      predicateFactory: function(e) {
+        console.log(e.INSTANCE_OF(net.nanopay.account.ShadowAccount));
+        debugger;
+        return e.INSTANCE_OF(net.nanopay.account.ShadowAccount);
+      }
+    }
+  ],
+
   properties: [
     {
       class: 'Long',
