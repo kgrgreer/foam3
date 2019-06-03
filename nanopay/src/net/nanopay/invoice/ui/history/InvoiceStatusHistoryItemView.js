@@ -142,9 +142,6 @@ foam.CLASS({
       // Only show updates to the status.
       if ( attributes === null ) return;
 
-      console.log(record.user.id, record.user.name);
-      console.log(ctrl.user.id, ctrl.user.name);
-
       return parentView
         .addClass(this.myClass())
         .style({ 'padding-left': '20px' })
