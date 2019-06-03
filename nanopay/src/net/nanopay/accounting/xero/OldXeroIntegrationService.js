@@ -160,7 +160,7 @@ try {
   e.printStackTrace();
   logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new ResultResponse(false, "An error has occured please sync again ");
+    return new ResultResponse(false, "An error has occurred please sync again ");
   }
   return new ResultResponse(false, e.getMessage() + " ");
 }`
@@ -342,7 +342,7 @@ try {
   e.printStackTrace();
   logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new ResultResponse(false, "An error has occured please sync again");
+    return new ResultResponse(false, "An error has occurred please sync again");
   }
   return new ResultResponse(false, e.getMessage() + " ");
 }`
@@ -552,7 +552,7 @@ try {
   e.printStackTrace();
   logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new ResultResponse(false, "An error has occured please sync again");
+    return new ResultResponse(false, "An error has occurred please sync again");
   }
   return new ResultResponse(false, e.getMessage() + " ");
 }`
@@ -598,7 +598,7 @@ if ( user.getId() == nano.getPayeeId() ) {
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   if ( SafetyUtil.isEmpty(account.getIntegrationId()) ) {
-    return new ResultResponse(false, "The follow error has occured: Bank Account not linked to Xero");
+    return new ResultResponse(false, "The follow error has occurred: Bank Account not linked to Xero");
   }
   com.xero.model.Account           xeroAccount = client_.getAccount(account.getIntegrationId());
   List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
@@ -624,7 +624,7 @@ try {
 } catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, "The follow error has occured: " + e.getMessage() + " ");
+  return new ResultResponse(false, "The follow error has occurred: " + e.getMessage() + " ");
 }`
     },
     {
