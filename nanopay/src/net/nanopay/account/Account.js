@@ -39,11 +39,30 @@ foam.CLASS({
   axioms: [
     {
       class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
       label: 'Shadow Accounts',
       predicateFactory: function(e) {
-        console.log(e.INSTANCE_OF(net.nanopay.account.ShadowAccount));
-        debugger;
         return e.INSTANCE_OF(net.nanopay.account.ShadowAccount);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Aggregate Accounts',
+      predicateFactory: function(e) {
+        return e.INSTANCE_OF(net.nanopay.account.AggregateAccount);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Virtual Accounts',
+      predicateFactory: function(e) {
+        return e.INSTANCE_OF(net.nanopay.account.DigitalAccounts);
       }
     }
   ],
