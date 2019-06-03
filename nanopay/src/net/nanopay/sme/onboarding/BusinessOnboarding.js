@@ -349,10 +349,15 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: '(555)-555-5555'
+      },
       label: 'Phone #',
       autoValidate: true
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
+      label: 'Date of birth',
       section: 'personalInformationSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
