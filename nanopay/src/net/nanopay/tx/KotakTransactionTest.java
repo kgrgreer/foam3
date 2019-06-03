@@ -118,7 +118,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
         EQ(ApprovalRequest.DAO_KEY, "transactionDAO"),
         EQ(ApprovalRequest.OBJ_ID, txn5.getId()),
         EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)
-      ));
+      )).fclone();
     test(approval != null, "Approval request for fx rate has been created by CreateManualFxRule");
 
     // enter an fx rate
