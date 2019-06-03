@@ -5,12 +5,14 @@ foam.CLASS({
   documentation: 'A config for OM on when an alarm should be raised',
 
   implements: [
-    'foam.mlang.Expressions'
+    'foam.nanos.auth.CreatedAware',
+    'foam.mlang.Expressions',
+    'foam.nanos.auth.LastModifiedAware',
   ],
 
   tableColumns: [
     'name',
-    'lastUpdated',
+    'lastModified',
     'isActive',
     'stop',
     'start'
@@ -39,14 +41,6 @@ foam.CLASS({
       name: 'name',
     },
     {
-      class: 'DateTime',
-      name: 'created'
-    },
-    {
-      class: 'DateTime',
-      name: 'lastUpdated'
-    },
-    {
       class: 'Boolean',
       name: 'isActive'
     },
@@ -54,6 +48,16 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.alarming.AlarmReason',
       name: 'reason'
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      visibility: 'RO'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      visibility: 'RO'
     }
   ],
 

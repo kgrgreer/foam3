@@ -27,6 +27,10 @@ foam.CLASS({
       MonitoringReport report = (MonitoringReport) obj;
       AlarmConfig config = (AlarmConfig) configDAO.find(EQ(AlarmConfig.NAME, report.getName()));
       
+      if ( config == null || ! config.getEnabled() ) {
+        return;
+      }
+
       DAO omDAO = (DAO) x.get("om1minDAO");
 
       Date currentCloseTime = new Date();
@@ -48,8 +52,6 @@ foam.CLASS({
       if ( alarm == null ) {
         alarm = new Alarm.Builder(x)
           .setName(config.getName())
-          .setCreated(new Date())
-          .setLastUpdated(new Date())
           .setIsActive(false)
           .build();
       } else {
@@ -99,7 +101,6 @@ foam.CLASS({
           alarm.setIsActive(false);
         }
       }
-      alarm.setLastUpdated(new Date());
       alarmDAO.put(alarm);
       `
     },

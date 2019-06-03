@@ -4,6 +4,10 @@ foam.CLASS({
 
   documentation: 'A config for OM on when an alarm should be raised',
 
+  implements: [
+    'foam.nanos.auth.EnabledAware'
+  ],
+
   imports: [
     'om1minDAO'
   ],
@@ -18,6 +22,11 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       documentation: 'What this alarm config is for'
+    },
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      value: true
     },
     {
       class: 'String',
@@ -98,16 +107,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'sendEmail',
       value: true
-    }
-  ],
-
-  actions: [
-    {
-      name: 'start',
-      label: 'Start Alarm',
-      code: function() {
-        console.log(this.timeOutRequest);
-      }
     }
   ]
 });
