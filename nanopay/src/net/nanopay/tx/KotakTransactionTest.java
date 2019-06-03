@@ -3,11 +3,14 @@ package net.nanopay.tx;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import net.nanopay.approval.ApprovalRequest;
+import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
 import net.nanopay.fx.KotakFxTransaction;
+import net.nanopay.fx.ManualFxApprovalRequest;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.ComplianceTransaction;
@@ -22,12 +25,16 @@ import static foam.mlang.MLang.INSTANCE_OF;
 import foam.dao.ArraySink;
 import foam.util.SafetyUtil;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class KotakTransactionTest extends foam.nanos.test.Test {
   CABankAccount sourceAccount;
   INBankAccount destinationAccount;
   User sender, receiver;
-  DAO userDAO, accountDAO, txnDAO;
+  DAO userDAO, accountDAO, txnDAO, approvalDAO;
   Transaction txn, txn2, txn3, txn4, txn5, txn6;
+  ManualFxApprovalRequest approval;
   String senderEmail = "senderca@nanopay.net", receiverEmail = "receiverin@nanopay.net";
   ArraySink sink;
 
@@ -35,12 +42,21 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     userDAO = ((DAO) x.get("localUserDAO"));
     accountDAO = (DAO) x.get("localAccountDAO");
     txnDAO = ((DAO) x.get("localTransactionDAO"));
+    approvalDAO = (DAO) x.get("approvalRequestDAO");
     sender = addUserIfNotFound(x, senderEmail);
     receiver = addUserIfNotFound(x, receiverEmail);
     addCAAccountIfNotFound(x);
     addINAccountIfNotFound(x);
     createTxn(x);
 
+    // test txn chain
+    testTxnChain(x);
+
+    // test approval requests for manual fx rate
+    testApprovalRequests(x);
+  }
+
+  public void testTxnChain(X x) {
     // test top level txn
     test( "".equals(txn.getParent()), "top level txn has no parent");
     test(txn.getClass() == SummaryTransaction.class, "top level txn is a SummaryTransaction");
@@ -95,6 +111,30 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     test(SafetyUtil.equals(txn6.getDestinationCurrency(), "INR"), "txn6 has destination currency INR");
   }
 
+  public void testApprovalRequests(X x) {
+    approval = (ManualFxApprovalRequest) approvalDAO.find(
+      AND(
+        INSTANCE_OF(ManualFxApprovalRequest.class),
+        EQ(ApprovalRequest.DAO_KEY, "transactionDAO"),
+        EQ(ApprovalRequest.OBJ_ID, txn5.getId()),
+        EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)
+      ));
+    test(approval != null, "Approval request for fx rate has been created by CreateManualFxRule");
+
+    // enter an fx rate
+    approval.setRate(52);
+    approval.setDealId("abcde");
+    approval.setValueDate(new Date());
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    cal.add(Calendar.DATE, 1);
+    approval.setExpiryDate(cal.getTime());
+    approvalDAO.put_(x, approval);
+
+    KotakFxTransaction kotakTxn = (KotakFxTransaction) txnDAO.find(txn5.getId());
+    test(kotakTxn.getFxRate() != 0, "Fx rate is successfully added through approval request");
+  }
+
   public User addUserIfNotFound(X x, String email) {
     User user = (User) userDAO.find(EQ(User.EMAIL, email));
     if ( user == null ) {
@@ -146,4 +186,4 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     txn.setAmount(200);
     txn = (Transaction) txnDAO.put_(x, txn);
   }
- }
+}
