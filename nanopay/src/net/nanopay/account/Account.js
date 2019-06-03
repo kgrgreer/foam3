@@ -48,7 +48,6 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Shadow Accounts',
       predicateFactory: function(e) {
-        return e.TRUE;
         return e.INSTANCE_OF(net.nanopay.account.ShadowAccount);
       }
     },
@@ -56,7 +55,6 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Aggregate Accounts',
       predicateFactory: function(e) {
-        return e.TRUE;
         return e.INSTANCE_OF(net.nanopay.account.AggregateAccount);
       }
     },
@@ -64,9 +62,21 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Virtual Accounts',
       predicateFactory: function(e) {
-        return e.TRUE;
-        return e.INSTANCE_OF(net.nanopay.account.DigitalAccounts);
+        return e.EQ(net.nanopay.account.Account.TYPE, net.nanopay.account.DigitalAccount.name);
       }
+    },
+    // TODO: Figure out how to distinguish between viewViews and browseViews since they both use foam.comics.v2.NamedView
+    {
+      class: 'foam.comics.v2.NamedView',
+      name: 'Table',
+      view: { class: 'foam.u2.view.ScrollTableView' },
+      icon: 'images/list-view-enabled.svg',
+    },
+    {
+      class: 'foam.comics.v2.NamedView',
+      name: 'Tree',
+      view: { class: 'foam.u2.view.ScrollTableView' },
+      icon: 'images/account-structure-enabled.svg',
     }
   ],
 
