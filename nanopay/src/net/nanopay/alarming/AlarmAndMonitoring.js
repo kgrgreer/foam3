@@ -105,18 +105,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'applyReverseAction',
-      javaCode: '// do nothing'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
-    },
-    {
       name: 'createNotification',
       args: [
         {
