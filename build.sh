@@ -106,9 +106,9 @@ function deploy_journals {
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
     if [ "$GRADLE_BUILD" -eq 0 ]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$INSTANCE"
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
     else
-        gradle --daemon findSH -Pmode=${MODE} -Pjournal.config=${JOURNAL_CONFIG} --rerun-tasks
+        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
     fi
 
     if [[ ! -f $JOURNALS ]]; then
@@ -202,6 +202,7 @@ function build_jar {
 
     if [ "${RUN_JAR}" -eq 1 ] || [ "$TEST" -eq 1 ]; then
         cp -r deploy/bin/* "${NANOPAY_HOME}/bin/"
+        cp -r deploy/etc/* "${NANOPAY_HOME}/etc/"
         cp -r target/lib/* "${NANOPAY_HOME}/lib/"
 
         export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
@@ -232,15 +233,20 @@ function stop_nanos {
     echo "INFO :: Stopping nanos..."
 
     # TODO: with instances there may be more than one.
+    # development
     RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
-    if [[ -f $NANOS_PIDFILE ]]; then
+    if [ -z "$RUNNING_PID" ]; then
+        # production
+        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar /opt/nanopay/lib/nanopay" | awk '{print $2}')
+    fi
+    if [ -f "$NANOS_PIDFILE" ]; then
         PID=$(cat "$NANOS_PIDFILE")
         if [[ "$PID" != "$RUNNING_PID" ]] && [ "$STOP_ONLY" -eq 1 ]; then
             PID=$RUNNING_PID
         fi
     fi
 
-    if [[ -z "$PID" ]]; then
+    if [ -z "$PID" ]; then
         echo "INFO :: PID and/or file $NANOS_PIDFILE not found, nothing to stop?"
     else
         TRIES=0
@@ -281,8 +287,8 @@ function status_nanos {
 
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
-        echo NANOPAY_HOME=$NANOPAY_HOME
-        "${NANOPAY_HOME}/bin/run.sh" "-N${NANOPAY_HOME}" "-H${HOST_NAME}" "-W${WEB_PORT}"
+  #      echo NANOPAY_HOME=$NANOPAY_HOME
+        "${NANOPAY_HOME}/bin/run.sh" "-D${DEBUG}" "-H${HOST_NAME}" "-M${MODE}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
     else
         cd "$PROJECT_HOME"
 
@@ -325,6 +331,7 @@ function start_nanos {
         elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
         else
+            echo JAVA_OPTS="$JAVA_OPTS"
             nohup java -cp "$CLASSPATH" foam.nanos.boot.Boot &> /dev/null &
             echo $! > "$NANOS_PIDFILE"
         fi
@@ -333,7 +340,14 @@ function start_nanos {
 
 function beginswith {
     # https://stackoverflow.com/a/18558871
-    case $2 in "$1"*) true;; *) false;; esac;
+    case $2 in
+      "$1"*)
+        true
+        ;;
+      *)
+        false
+        ;;
+    esac
 }
 
 function setenv {
@@ -384,6 +398,9 @@ function setenv {
     if [ ! -d "${NANOPAY_HOME}/bin" ]; then
         mkdir -p "${NANOPAY_HOME}/bin"
     fi
+    if [ ! -d "${NANOPAY_HOME}/etc" ]; then
+        mkdir -p "${NANOPAY_HOME}/etc"
+    fi
     if [ ! -d "${LOG_HOME}" ]; then
         mkdir -p "${LOG_HOME}"
     fi
@@ -431,6 +448,18 @@ function setenv {
                 ./tools/keystore.sh
             fi
         fi
+    fi
+
+    # HSM setup
+    if [[ $IS_MAC -eq 1 ]]; then
+      HSM_HOME=$PROJECT_HOME/tools/hsm
+      HSM_CONFIG_PATH='/opt/nanopay/keys/pkcs11.cfg'
+
+      #softhsm setup
+      if [[ -f $HSM_HOME/development.sh ]]; then
+        printf "INFO :: Setting up SoftHSM...\n"
+        $HSM_HOME/development.sh -r $HSM_HOME -d $HSM_CONFIG_PATH
+      fi
     fi
 
     if [[ -z $JAVA_HOME ]]; then
@@ -494,6 +523,7 @@ HOST_NAME=`hostname -s`
 GRADLE_BUILD=0
 VERSION=
 MODE=
+#MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
@@ -530,7 +560,8 @@ while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
         i) INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         J) JOURNAL_CONFIG=$OPTARG ;;
-        k) PACKAGE=1 ;;
+        k) PACKAGE=1
+           BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
         M) MODE=$OPTARG
@@ -558,7 +589,6 @@ while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
            TESTS=$OPTARG
            MODE=TEST
            CLEAN_BUILD=1
-           echo "$TESTS=${TESTS}"
            ;;
         u) RUN_JAR=1;;
         v) COMPILE_ONLY=1 ;;
@@ -582,6 +612,9 @@ fi
 
 if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     echo "INFO :: Checking dependencies for vulnerabilities..."
+    if [[ ! -f ~/.m2/repository/com/redhat/victims/maven/security-versions/1.0.6/security-versions-1.0.6.jar ]]; then
+        mvn dependency:get -DgroupId=com.redhat.victims.maven -DartifactId=security-versions -Dversion=1.0.6
+    fi
     mvn com.redhat.victims.maven:security-versions:check
     quit 0
 fi
@@ -603,8 +636,6 @@ if [ "$STOP_ONLY" -eq 1 ]; then
 fi
 
 if [ "$RESTART_ONLY" -eq 0 ] ||
-       [ "$COMPILE_ONLY" -eq 0 ] ||
-       [ "$BUILD_ONLY" -eq 0 ] ||
        [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
     deploy_journals
 fi
@@ -615,15 +646,9 @@ fi
 
 if [ "${PACKAGE}" -eq 1 ]; then
     package_tar
-    quit 0
 fi
 
-if [ "$BUILD_ONLY" -eq 1 ] || [ ! -z "$MODE" ]; then
-    if [ -z "$INSTANCE" ] && [ "$TEST" -eq 0 ]; then
-        quit 0
-    fi
+if [ "${BUILD_ONLY}" -eq 0 ]; then
+   start_nanos
 fi
-
-start_nanos
-
 quit 0

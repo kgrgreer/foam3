@@ -37,7 +37,7 @@ class SecurityTestUtil {
     try {
       // create new test token
       Process process = new ProcessBuilder("softhsm2-util",
-        "--init-token", "--slot", "0",
+        "--init-token", "--free",
         "--label", "SecurityTestUtil",
         "--so-pin", "test",
         "--pin", "test")

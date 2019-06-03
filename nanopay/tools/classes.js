@@ -271,6 +271,7 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.AccountTransactionLimitRule',
+  'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
@@ -292,6 +293,8 @@ var classes = [
   'net.nanopay.tx.AbliiTransaction',
   'net.nanopay.tx.InterestTransaction',
   'net.nanopay.tx.FailedTransactionNotification',
+  'net.nanopay.tx.DebtRepaymentTransaction',
+  'net.nanopay.tx.DebtRepaymentPlanDAO',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -604,6 +607,14 @@ var classes = [
   // approval
   'net.nanopay.approval.ApprovalRequest',
   'net.nanopay.approval.ApprovalStatus',
+
+  // alarming & monitoring
+  'net.nanopay.alarming.Alarm',
+  'net.nanopay.alarming.AlarmConfig',
+  'net.nanopay.alarming.AlarmReason',
+  'net.nanopay.alarming.MonitoringReport',
+  'net.nanopay.alarming.MonitorType',
+  'net.nanopay.alarming.AlarmAndMonitoring',
 ];
 
 var abstractClasses = [

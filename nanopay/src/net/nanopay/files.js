@@ -285,6 +285,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FailedTransactionNotification' },
   { name: 'net/nanopay/tx/DebtTransaction' },
   { name: 'net/nanopay/tx/CompliancePlanDAO' },
+  { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
+  { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
+  { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -760,6 +763,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/TwoFactorAuthView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiOverlayActionListView', flags: ['web'] },
@@ -810,6 +814,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
   { name: 'net/nanopay/sme/onboarding/ui/WizardView' },
   { name: 'net/nanopay/sme/onboarding/ui/WizardPageView' },
+  { name: 'net/nanopay/sme/onboarding/ui/TwoFactorAuthOnboarding', flags: ['web'] },
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
@@ -998,5 +1003,13 @@ FOAM_FILES([
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
-  { name: 'net/nanopay/approval/ApprovalStatus' }
+  { name: 'net/nanopay/approval/ApprovalStatus' },
+
+  // alarming & monitoring
+  { name: 'net/nanopay/alarming/Alarm' },
+  { name: 'net/nanopay/alarming/AlarmConfig' },
+  { name: 'net/nanopay/alarming/AlarmReason' },
+  { name: 'net/nanopay/alarming/MonitoringReport' },
+  { name: 'net/nanopay/alarming/MonitorType' },
+  { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 ]);

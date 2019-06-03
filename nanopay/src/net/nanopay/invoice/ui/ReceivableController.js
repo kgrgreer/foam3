@@ -21,11 +21,17 @@ foam.CLASS({
   ],
 
   imports: [
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToReceive',
     'currencyDAO',
+    'notify',
     'stack',
     'user',
     'accountingIntegrationUtil'
+  ],
+
+  messages: [
+    { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.' },
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' }
   ],
 
   properties: [
@@ -83,7 +89,7 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function(X) {
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAndNotifyAbilityToReceive().then((result) => {
                   if ( ! result ) return;
                   X.menuDAO.find('sme.quickAction.request').then((menu) => {
                     var clone = menu.clone();
@@ -115,7 +121,13 @@ foam.CLASS({
               },
               code: function(X) {
                 this.paymentMethod = self.PaymentStatus.VOID;
-                self.user.sales.put(this);
+                self.user.sales.put(this).then((invoice)=> {
+                  if (invoice.paymentMethod == self.PaymentStatus.VOID) {
+                    self.notify(self.VOID_SUCCESS, 'success');
+                  }
+                }).catch((err) => {
+                  if ( err ) self.notify(self.VOID_ERROR, 'error');
+                });;
               }
             }),
             foam.core.Action.create({
@@ -141,7 +153,7 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            self.checkComplianceAndBanking().then((result) => {
+            self.checkAndNotifyAbilityToReceive().then((result) => {
               if ( result ) {
                 X.menuDAO.find('sme.quickAction.request').then((menu) => {
                   var clone = menu.clone();
@@ -155,8 +167,6 @@ foam.CLASS({
                   clone.launch(X, X.controllerView);
                 });
               }
-            }).catch((err) => {
-              console.warn('Error occured when checking the compliance: ', err);
             });
           }
         });
