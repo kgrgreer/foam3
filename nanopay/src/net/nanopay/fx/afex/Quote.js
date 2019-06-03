@@ -4,27 +4,27 @@ foam.CLASS({
   properties: [
     {
       class: 'Double',
-      name: "rate"
+      name: "Rate"
     },
     {
       class: 'Double',
-      name: "invertedRate"
+      name: "InvertedRate"
     },
     {
       class: 'Date',
-      name: "valueDate"
+      name: "ValueDate"
     },
     {
       class: 'Date',
-      name: "optionDate"
+      name: "OptionDate"
     },
     {
       class: 'String',
-      name: "quoteId"
+      name: "QuoteId"
     },
     {
       class: 'String',
-      name: "terms"
+      name: "Terms"
     },
     {
       class: 'Double',
@@ -32,7 +32,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: "isAmountSettlement"
+      name: "IsAmountSettlement"
     }
   ]
 });

@@ -7,18 +7,20 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getToken',
+      documentation: 'Get token',
       async: true,
       type: 'net.nanopay.fx.afex.Token'
     },
     {
       name: 'getQuote',
+      documentation: 'Get quote',
       async: true,
-      type: 'net.nanopay.fx.afex.GetQuoteResponse',
+      type: 'net.nanopay.fx.afex.Quote',
       args: [
-        // {
-        //   type: 'net.nanopay.fx.ascendantfx.model.GetQuoteRequest',
-        //   name: 'request'
-        // }
+        {
+          type: 'net.nanopay.fx.afex.GetQuoteRequest',
+          name: 'request'
+        }
       ]
     },
     {

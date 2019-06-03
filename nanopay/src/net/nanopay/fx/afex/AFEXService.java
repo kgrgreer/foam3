@@ -26,22 +26,24 @@ import java.util.List;
 
 public class AFEXService extends ContextAwareSupport implements AFEX {
 
-  private AFEXCredentials credentials;
   private String apiKey;
   private String apiPassword;
   private String partnerApi;
   private String AFEXAPI;
   private CloseableHttpClient httpClient;
-  protected Logger logger;
+  private JSONParser jsonParser;
+  private Logger logger;
 
   public AFEXService(X x) {
     setX(x);
-    credentials = getCredentials();
+    AFEXCredentials credentials = getCredentials();
     apiKey = credentials.getApiKey();
     apiPassword = credentials.getApiPassword();
     partnerApi = credentials.getPartnerApi();
     AFEXAPI = credentials.getAFEXApi();
     httpClient = HttpClients.createDefault();
+    jsonParser = new JSONParser();
+    jsonParser.setX(x);
     logger = (Logger) x.get("logger");
   }
 
@@ -74,8 +76,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
       String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      JSONParser jsonParser = new JSONParser();
-      jsonParser.setX(getX());
       Token token = (Token) jsonParser.parseString(response, Token.class);
       System.out.println("parsed token: " + token.getAccess_token());
       System.out.println(token.getToken_type());
@@ -90,29 +90,31 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public GetQuoteResponse getQuote() {
+  public Quote getQuote(GetQuoteRequest request) {
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/quote");
-      uriBuilder.setParameter("CurrencyPair", "USDCAD")
-                .setParameter("ValueDate", "2019/06/03")
-                .setParameter("OptionDate", "2019/05/31");
+      uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair())
+                .setParameter("ValueDate", request.getValueDate())
+                .setParameter("OptionDate", request.getOptionDate());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
-
       httpGet.addHeader("API-Key", apiKey);
       httpGet.addHeader("Content-Type", "application/json");
-
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-      StringBuilder sb = new StringBuilder();
-      String line;
-      while ( (line = rd.readLine()) != null ) {
-        sb.append(line);
-      }
+      Quote quote = (Quote) jsonParser.parseString(response, Quote.class);
+      System.out.println("quote: ");
+      System.out.println(quote.getRate());
+      System.out.println(quote.getInvertedRate());
+      System.out.println(quote.getValueDate());
+      System.out.println(quote.getOptionDate());
+      System.out.println(quote.getQuoteId());
+      System.out.println(quote.getTerms());
+      System.out.println(quote.getAmount());
+      System.out.println(quote.getIsAmountSettlement());
 
-      System.out.println("quote response: " + sb.toString());
-
+      return quote;
     } catch (IOException | URISyntaxException e) {
       e.printStackTrace();
     }
