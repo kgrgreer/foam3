@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: `Validates a business using SecureFact LEV api.`,
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -25,14 +27,19 @@ foam.CLASS({
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.hasCloseMatches() ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x,
-              new ComplianceApprovalRequest.Builder(x)
-                .setObjId(Long.toString(business.getId()))
-                .setDaoKey("localUserDAO")
-                .setCauseId(response.getId())
-                .setCauseDaoKey("securefactLEVDAO")
-                .build()
-            );
+            agent.submit(x, new ContextAgent() {
+              @Override
+              public void execute(X x) {
+                requestApproval(x,
+                  new ComplianceApprovalRequest.Builder(x)
+                    .setObjId(Long.toString(business.getId()))
+                    .setDaoKey("localUserDAO")
+                    .setCauseId(response.getId())
+                    .setCauseDaoKey("securefactLEVDAO")
+                    .build()
+                );
+              }
+            });
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {

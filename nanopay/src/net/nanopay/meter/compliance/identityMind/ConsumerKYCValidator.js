@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: 'Validates a user using IdentityMind Consumer KYC Evaluation API.',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.nanos.auth.User',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus'
@@ -31,14 +33,19 @@ foam.CLASS({
         if ( obj instanceof User
           && status != ComplianceValidationStatus.VALIDATED
         ) {
-          requestApproval(x,
-            new ComplianceApprovalRequest.Builder(x)
-              .setObjId(String.valueOf(obj.getProperty("id")))
-              .setDaoKey("localUserDAO")
-              .setCauseId(response.getId())
-              .setCauseDaoKey("identityMindResponseDAO")
-              .build()
-          );
+          agent.submit(x, new ContextAgent() {
+            @Override
+            public void execute(X x) {
+              requestApproval(x,
+                new ComplianceApprovalRequest.Builder(x)
+                  .setObjId(String.valueOf(obj.getProperty("id")))
+                  .setDaoKey("localUserDAO")
+                  .setCauseId(response.getId())
+                  .setCauseDaoKey("identityMindResponseDAO")
+                  .build()
+              );
+            }
+          });
         }
         ruler.putResult(status);
       `

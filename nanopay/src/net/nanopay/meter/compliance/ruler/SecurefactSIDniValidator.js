@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: `Validates a user using SecureFact SIDni api.`,
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
@@ -25,14 +27,19 @@ foam.CLASS({
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.getVerified() ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x,
-              new ComplianceApprovalRequest.Builder(x)
-                .setObjId(Long.toString(user.getId()))
-                .setDaoKey("localUserDAO")
-                .setCauseId(response.getId())
-                .setCauseDaoKey("securefactSIDniDAO")
-                .build()
-            );
+            agent.submit(x, new ContextAgent() {
+              @Override
+              public void execute(X x) {
+                requestApproval(x,
+                  new ComplianceApprovalRequest.Builder(x)
+                    .setObjId(Long.toString(user.getId()))
+                    .setDaoKey("localUserDAO")
+                    .setCauseId(response.getId())
+                    .setCauseDaoKey("securefactSIDniDAO")
+                    .build()
+                );
+              }
+            });
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
