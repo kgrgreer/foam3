@@ -349,10 +349,6 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
-      view: {
-        class: 'foam.u2.TextField',
-        placeholder: '(555)-555-5555'
-      },
       label: 'Phone #',
       autoValidate: true
     }),
