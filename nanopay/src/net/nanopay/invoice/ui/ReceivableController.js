@@ -23,16 +23,9 @@ foam.CLASS({
   imports: [
     'checkAndNotifyAbilityToReceive',
     'currencyDAO',
-    'notify',
     'stack',
     'user',
     'accountingIntegrationUtil'
-  ],
-
-  messages: [
-    { name: 'PART_ONE_SAVE', message: 'Invoice #' },
-    { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
-    { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
   ],
 
   properties: [
@@ -122,13 +115,7 @@ foam.CLASS({
               },
               code: function(X) {
                 this.paymentMethod = self.PaymentStatus.VOID;
-                self.user.sales.put(this)
-                  .then(() => {
-                    self.notify(`${self.PART_ONE_SAVE}${this.invoiceNumber} ${self.PART_TWO_SAVE_SUCCESS}`);
-                  })
-                  .catch(() => {
-                    self.notify(`${self.PART_ONE_SAVE}${this.invoiceNumber} ${self.PART_TWO_SAVE_ERROR}`);
-                  });
+                self.user.sales.put(this);
               }
             }),
             foam.core.Action.create({
