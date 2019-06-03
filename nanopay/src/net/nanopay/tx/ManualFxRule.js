@@ -25,35 +25,40 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: ` 
-      KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) obj;
+      ManualFxApprovalRequest request = (ManualFxApprovalRequest) obj;
       DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+      DAO transactionDAO = ((DAO) x.get("transactionDAO"));
       Sink sink = new ArraySink();
-      sink = approvalRequestDAO
+      sink = transactionDAO
         .where(
           MLang.AND(
-            MLang.INSTANCE_OF(ManualFxApprovalRequest.class),
-            MLang.EQ(ManualFxApprovalRequest.DAO_KEY, "transactionDAO"),
-            MLang.EQ(ManualFxApprovalRequest.OBJ_ID, kotakFxTransaction.getId()),
-            MLang.EQ(ManualFxApprovalRequest.STATUS, 1)
+            MLang.INSTANCE_OF(KotakFxTransaction.class),
+            MLang.EQ(KotakFxTransaction.ID, request.getObjId())
           )
         )
         .select(sink);
       List list = ((ArraySink) sink).getArray();
       if ( list != null && list.size() > 0 ) {
         // approval request with rate exists
-        ManualFxApprovalRequest request = (ManualFxApprovalRequest) list.get(0);
-        kotakFxTransaction.setFxRate(request.getRate());
-        kotakFxTransaction.setStatus(TransactionStatus.COMPLETED);
-        approvalRequestDAO
-          .where(
-            MLang.AND(
-              MLang.INSTANCE_OF(ManualFxApprovalRequest.class),
-              MLang.EQ(ManualFxApprovalRequest.DAO_KEY, "transactionDAO"),
-              MLang.EQ(ManualFxApprovalRequest.OBJ_ID, kotakFxTransaction.getId()),
-              MLang.NEQ(ManualFxApprovalRequest.ID, request.getId())
+        KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) list.get(0);
+        double rate = request.getRate();
+        if ( rate <= 0 ) {
+          request.setStatus(ApprovalStatus.REQUESTED);
+          request = (ManualFxApprovalRequest) approvalRequestDAO.put_(x, request);
+        } else {
+          kotakFxTransaction.setFxRate(request.getRate());
+          kotakFxTransaction.setStatus(TransactionStatus.COMPLETED);
+          approvalRequestDAO
+            .where(
+              MLang.AND(
+                MLang.INSTANCE_OF(ManualFxApprovalRequest.class),
+                MLang.EQ(ManualFxApprovalRequest.DAO_KEY, "transactionDAO"),
+                MLang.EQ(ManualFxApprovalRequest.OBJ_ID, kotakFxTransaction.getId()),
+                MLang.NEQ(ManualFxApprovalRequest.ID, request.getId())
+              )
             )
-          )
-          .removeAll();
+            .removeAll();
+        }
       }
       `
     },
