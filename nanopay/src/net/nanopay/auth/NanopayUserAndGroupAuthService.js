@@ -82,7 +82,6 @@ foam.CLASS({
         // TODO: modify line to allow actual setting of password expiry in cases where users are required to periodically update their passwords
         user.setPasswordExpiry(null);
         user = (User) ((DAO) getLocalUserDAO()).put(user);
-        session.setContext(session.getContext().put("user", user));
         return user;
       `
     },
