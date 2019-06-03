@@ -9,6 +9,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.accounting.AccountingIntegrationUtil',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
@@ -107,20 +108,36 @@ foam.CLASS({
 
   messages: [
     {
-      name: 'REQUESTED_BANNER',
-      message: 'We\'re currently reviewing your business profile to enable payments. This typically takes 1-3 business days.'
+      name: 'COMPLIANCE_NOT_REQUESTED_NO_BANK',
+      message: 'Please complete your business profile and add a bank account.'
+    },
+    {
+      name: 'COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY',
+      message: 'Please verify your bank account and complete your business profile to submit your account for review.'
+    },
+    {
+      name: 'COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED',
+      message: 'Please complete your business profile to submit your account for review.'
+    },
+    {
+      name: 'COMPLIANCE_REQUESTED_NO_BANK',
+      message: 'Please add a bank account to submit your account for review.'
+    },
+    {
+      name: 'COMPLIANCE_REQUESTED_BANK_NEED_VERIFY',
+      message: 'Please verify your bank account to submit your account for review.'
+    },
+    {
+      name: 'BUSINESS_INFO_UNDER_REVIEW',
+      message: 'Our compliance team is reviewing the information you have submitted. Your account will be updated in 1-3 business days.'
     },
     {
       name: 'PASSED_BANNER',
       message: 'Congratulations! Your business is now fully verified and ready to make domestic payments!'
     },
     {
-      name: 'INCOMPLETE_BUSINESS_REGISTRATION',
-      message: `You must complete your business profile and add banking first.`
-    },
-    {
       name: 'TWO_FACTOR_REQUIRED_ONE',
-      message: `For your security, two factor authentication is required to send payment.`
+      message: 'For your security, two factor authentication is required to send payment.'
     },
     {
       name: 'TWO_FACTOR_REQUIRED_TWO',
@@ -189,6 +206,85 @@ foam.CLASS({
       name: 'accountingIntegrationUtil',
       factory: function() {
         return this.AccountingIntegrationUtil.create();
+      }
+    },
+    {
+      class: 'Array',
+      name: 'complianceStatusArray',
+      factory: function() {
+        var self = this;
+        return [
+          {
+            msg: this.COMPLIANCE_NOT_REQUESTED_NO_BANK,
+            bannerMode: this.ComplianceBannerMode.NOTICE,
+            condition: function(user, accountArray) {
+              return user.compliance === self.ComplianceStatus.NOTREQUESTED
+                && accountArray.length === 0;
+            }
+          },
+          {
+            msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
+            bannerMode: this.ComplianceBannerMode.NOTICE,
+            condition: function(user, accountArray) {
+              if ( accountArray.length === 0 ) {
+                return false;
+              } else {
+                return user.compliance === self.ComplianceStatus.NOTREQUESTED
+                  && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
+              }
+            },
+            passed: false
+          },
+          {
+            msg: this.COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED,
+            bannerMode: this.ComplianceBannerMode.NOTICE,
+            condition: function(user, accountArray) {
+              if ( accountArray.length === 0 ) {
+                return false;
+              } else {
+                return user.compliance === self.ComplianceStatus.NOTREQUESTED
+                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+              }
+            },
+            passed: false
+          },
+          {
+            msg: this.COMPLIANCE_REQUESTED_NO_BANK,
+            bannerMode: this.ComplianceBannerMode.NOTICE,
+            condition: function(user, accountArray) {
+              return user.compliance === self.ComplianceStatus.REQUESTED
+                && accountArray.length === 0;
+            },
+            passed: false
+          },
+          {
+            msg: this.COMPLIANCE_REQUESTED_BANK_NEED_VERIFY,
+            bannerMode: this.ComplianceBannerMode.NOTICE,
+            condition: function(user, accountArray) {
+              return user.compliance === self.ComplianceStatus.REQUESTED
+                && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
+            },
+            passed: false
+          },
+          {
+            msg: this.BUSINESS_INFO_UNDER_REVIEW,
+            bannerMode: this.ComplianceBannerMode.NOTICE,
+            condition: function(user, accountArray) {
+              return user.compliance === self.ComplianceStatus.REQUESTED
+                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+            },
+            passed: false
+          },
+          {
+            msg: this.PASSED_BANNER,
+            bannerMode: this.ComplianceBannerMode.ACCOMPLISHED,
+            condition: function(user, accountArray) {
+              return user.compliance === self.ComplianceStatus.PASSED
+                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+            },
+            passed: true
+          }
+        ];
       }
     }
   ],
@@ -325,38 +421,43 @@ foam.CLASS({
 
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
-      switch ( user.compliance ) {
-        case this.ComplianceStatus.NOTREQUESTED:
-          break;
-        case this.ComplianceStatus.REQUESTED:
-          this.bannerData.isDismissed = false;
-          this.bannerData.mode = this.ComplianceBannerMode.NOTICE;
-          this.bannerData.message = this.REQUESTED_BANNER;
-          break;
-        case this.ComplianceStatus.PASSED:
-          this.bannerData.isDismissed = false;
-          this.bannerData.mode = this.ComplianceBannerMode.ACCOMPLISHED;
-          this.bannerData.message = this.PASSED_BANNER;
-          break;
-        default:
-          this.bannerData.isDismissed = true;
-          break;
+      var accountArray = await this.getBankAccountArray();
+
+      var e = this.complianceStatusArray.find((v) => {
+        return v.condition(user, accountArray) &&
+          ! (
+            user.compliance === this.ComplianceStatus.NOTREQUESTED
+              && accountArray.length === 0
+            );
+      });
+
+      if ( e ) {
+        this.setBanner(e.bannerMode, e.msg);
       }
     },
 
+    function setBanner(bannerMode, message) {
+      this.bannerData.isDismissed = false;
+      this.bannerData.mode = bannerMode;
+      this.bannerData.message = message;
+    },
+
     async function checkComplianceAndBanking() {
-      var bankAccountCount = await this.bankingAmount();
-      
-      if ( this.user.compliance !== this.ComplianceStatus.PASSED
-          || bankAccountCount === 0 ) {
-        if ( this.user.onboarded && bankAccountCount !== 0 ) {
-          this.notify(this.HAS_NOT_PASSED_COMPLIANCE, 'warning');
-        } else {
-          this.notify(this.INCOMPLETE_BUSINESS_REGISTRATION, 'warning');
+      var user = await this.client.userDAO.find(this.user.id);
+      var accountArray = await this.getBankAccountArray();
+
+      var e = this.complianceStatusArray.find((v) => {
+        return v.condition(user, accountArray);
+      });
+
+      if ( e ) {
+        if ( ! e.passed ) {
+          this.notify(e.msg, 'warning');
         }
+        return e.passed;
+      } else {
         return false;
       }
-      return true;
     },
 
     /**
@@ -406,17 +507,17 @@ foam.CLASS({
     },
 
     /**
-     * Returns a promise that resolves to the number of bank accounts that the
+     * Returns an array sink containing all the Canadian and US bank accounts
      * user owns.
      */
-    async function bankingAmount() {
+    async function getBankAccountArray() {
       try {
         return (await this.user.accounts
           .where(this.OR(
             this.EQ(this.Account.TYPE, this.CABankAccount.name),
             this.EQ(this.Account.TYPE, this.USBankAccount.name)
           ))
-          .select(this.COUNT())).value;
+          .select()).array;
       } catch (err) {
         console.warn(this.QUERY_BANK_AMOUNT_ERROR, err);
       }
