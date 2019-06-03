@@ -213,6 +213,14 @@ FOAM_FILES([
   { name: 'net/nanopay/kotak/KotakCredentials' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
 
+  // AFEX
+  { name: "net/nanopay/fx/afex/AFEX" },
+  { name: "net/nanopay/fx/afex/AFEXCredentials"},
+  { name: "net/nanopay/fx/afex/Token"},
+  { name: "net/nanopay/fx/afex/Quote"},
+  { name: "net/nanopay/fx/afex/GetQuoteRequest"},
+  { name: "net/nanopay/fx/afex/GetQuoteResponse"},
+
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },

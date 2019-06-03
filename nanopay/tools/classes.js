@@ -121,6 +121,14 @@ var classes = [
   'net.nanopay.kotak.Kotak',
   'net.nanopay.kotak.KotakCredentials',
 
+  // AFEX
+  'net.nanopay.fx.afex.AFEX',
+  'net.nanopay.fx.afex.AFEXCredentials',
+  'net.nanopay.fx.afex.Token',
+  'net.nanopay.fx.afex.Quote',
+  'net.nanopay.fx.afex.GetQuoteRequest',
+  'net.nanopay.fx.afex.GetQuoteResponse',
+
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
