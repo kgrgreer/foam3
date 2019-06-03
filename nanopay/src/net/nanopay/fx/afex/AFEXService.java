@@ -1,14 +1,18 @@
 package net.nanopay.fx.afex;
 
 import foam.core.ContextAwareSupport;
+import foam.core.X;
+import foam.lib.json.JSONParser;
+import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import net.nanopay.fx.ascendantfx.model.PayeeOperationResult;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -16,27 +20,48 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AFEXService extends ContextAwareSupport implements AFEX {
 
-  private String apiKey = "00005838Ve1b47397-8772-e911-9608-892613e8802f";
-  private String apiPassword = "4e48a0ab-8272-e911-80df-0050569b43ff";
-  private String testPartnerApi = "https://demo.api.afex.com:7885/";
-  private String testAFEXAPI = "https://demo.api.afex.com:7890/";
-  private String testToken = "xKW2S2_OvaOyaqih1npJ3mbL813Dgng4TR6WY9JyslEWe4mYNjcez5IBLEgZ8gx1Fjsn5bUcZST3DCJ3yZgADU8MBy6wpgVSsWtLvkn7F6zAz46m-jNpieCzbJBiZTyG2rmhXKjPECl_-1l1_znQ3jD8_T9rMQvo7svVZxQkqKG0bAseNFaS3fYSBedGEiTM2-fRJ6Hs5G21hC7M2j0ooZViVDScjwnKevsreLi3ghMmkZCMH8zJ-jUYT2-uVqnojL6X4NDIKD8qcPtatu7HjA";
+  private AFEXCredentials credentials;
+  private String apiKey;
+  private String apiPassword;
+  private String partnerApi;
+  private String AFEXAPI;
+  private CloseableHttpClient httpClient;
+  protected Logger logger;
 
-  private CloseableHttpClient httpClient = HttpClients.createDefault();
+  public AFEXService(X x) {
+    setX(x);
+    credentials = getCredentials();
+    apiKey = credentials.getApiKey();
+    apiPassword = credentials.getApiPassword();
+    partnerApi = credentials.getPartnerApi();
+    AFEXAPI = credentials.getAFEXApi();
+    httpClient = HttpClients.createDefault();
+    logger = (Logger) x.get("logger");
+  }
+
+  protected AFEXCredentials getCredentials() {
+    AFEXCredentials credentials = (AFEXCredentials) getX().get("AFEXCredentials");
+    if ( credentials == null ||
+      SafetyUtil.isEmpty(credentials.getApiKey()) ||
+      SafetyUtil.isEmpty(credentials.getApiPassword()) ||
+      SafetyUtil.isEmpty(credentials.getPartnerApi()) ||
+      SafetyUtil.isEmpty(credentials.getAFEXApi()) ) {
+      logger.error(this.getClass().getSimpleName(), "invalid credentials");
+      throw new RuntimeException("AFEX invalid credentials");
+    }
+    return credentials;
+  }
 
   @Override
-  public String getToken() {
-//    CloseableHttpClient httpClient = HttpClients.createDefault();
-
+  public Token getToken() {
     try {
-      HttpPost httpPost = new HttpPost(testPartnerApi + "token");
+      HttpPost httpPost = new HttpPost(partnerApi + "token");
 
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
@@ -46,20 +71,19 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("Password", apiPassword));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
-
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-      StringBuilder sb = new StringBuilder();
-      String line;
-      while ( (line = rd.readLine()) != null ) {
-        sb.append(line);
-      }
+      JSONParser jsonParser = new JSONParser();
+      jsonParser.setX(getX());
+      Token token = (Token) jsonParser.parseString(response, Token.class);
+      System.out.println("parsed token: " + token.getAccess_token());
+      System.out.println(token.getToken_type());
+      System.out.println(token.getExpires_in());
 
-      System.out.println("token response: " + sb.toString());
-
+      return token;
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
@@ -67,11 +91,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   @Override
   public GetQuoteResponse getQuote() {
-
-    //CloseableHttpClient httpClient = HttpClients.createDefault();
-
     try {
-      URIBuilder uriBuilder = new URIBuilder(testAFEXAPI + "api/quote");
+      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/quote");
       uriBuilder.setParameter("CurrencyPair", "USDCAD")
                 .setParameter("ValueDate", "2019/06/03")
                 .setParameter("OptionDate", "2019/05/31");
@@ -101,10 +122,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   @Override
   public GetQuoteResponse getValueDate() {
-    //CloseableHttpClient httpClient = HttpClients.createDefault();
-
     try {
-      URIBuilder uriBuilder = new URIBuilder(testAFEXAPI + "api/valuedates");
+      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/valuedates");
       uriBuilder.setParameter("CurrencyPair", "USDCAD")
         .setParameter("ValueType", "CASH");
 
@@ -134,7 +153,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   @Override
   public PayeeOperationResult addPayee() {
     try {
-      HttpPost httpPost = new HttpPost(testAFEXAPI + "api/beneficiaryCreate");
+      HttpPost httpPost = new HttpPost(AFEXAPI + "api/beneficiaryCreate");
 
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
