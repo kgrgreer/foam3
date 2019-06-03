@@ -3,14 +3,7 @@
 
 IN_DIR=$1
 OUT_DIR=$2
-# MODE=$3
-VERSION=$4
-INSTANCE=$5
-
-# if [[ ! -d "deployment/${MODE}" ]]; then
-#     echo "ERROR :: deployment/${MODE} doesn't exist! Exiting"
-#     exit 1
-# fi
+INSTANCE=$3
 
 if [[ -d $IN_DIR ]]; then
     cd $IN_DIR
@@ -22,11 +15,9 @@ fi
 mkdir -p "$OUT_DIR"
 
 # Sets varuables to lowercase
-# MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
-VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
 INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
 
-echo "INFO :: $0 IN_DIR=${IN_DIR} OUT_DIR=${OUT_DIR} INSTANCE=${INSTANCE} VERSION=${VERSION}"
+echo "INFO :: $0 IN_DIR=${IN_DIR} OUT_DIR=${OUT_DIR} INSTANCE=${INSTANCE}"
 
 # Creates an array of the file names
 declare -a arr=(

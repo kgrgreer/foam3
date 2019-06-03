@@ -183,7 +183,7 @@ task findSH(type: Exec) {
     onlyIf {
         !tasks.incrementalFindTask.state.upToDate
     }
-    commandLine 'bash', './find.sh', workingDir, journalOut, project.hasProperty("projectMode") ? "${projectMode}": "", "${project.version}", project.hasProperty("journalConfig") ? "${journalConfig}" : ""
+    commandLine 'bash', './find.sh', workingDir, journalOut, project.hasProperty("journalConfig") ? "${journalConfig}" : ""
 }
 
 task packageFoam(type: NodeTask) {
