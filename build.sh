@@ -302,10 +302,12 @@ function start_nanos {
             JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
         fi
 
-        # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
-        # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
-        # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
-        JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
+        if [ -z "$MODE" ]; then
+            # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
+            # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
+            # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
+            JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
+        fi
 
         CLASSPATH=$(JARS=("target/lib"/*.jar); IFS=:; echo "${JARS[*]}")
         CLASSPATH="build/classes/java/main:$CLASSPATH"
@@ -521,7 +523,7 @@ INSTANCE=
 HOST_NAME=`hostname -s`
 GRADLE_BUILD=0
 VERSION=
-MODE=DEVELOPMENT
+MODE=
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
