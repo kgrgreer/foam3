@@ -220,7 +220,9 @@ foam.CLASS({
             condition: function(user, accountArray) {
               return user.compliance === self.ComplianceStatus.NOTREQUESTED
                 && accountArray.length === 0;
-            }
+            },
+            passed: false,
+            showBanner: false
           },
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
@@ -233,7 +235,8 @@ foam.CLASS({
                   && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
               }
             },
-            passed: false
+            passed: false,
+            showBanner: true
           },
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED,
@@ -246,7 +249,8 @@ foam.CLASS({
                 && accountArray[0].status === self.BankAccountStatus.VERIFIED;
               }
             },
-            passed: false
+            passed: false,
+            showBanner: true
           },
           {
             msg: this.COMPLIANCE_REQUESTED_NO_BANK,
@@ -255,7 +259,8 @@ foam.CLASS({
               return user.compliance === self.ComplianceStatus.REQUESTED
                 && accountArray.length === 0;
             },
-            passed: false
+            passed: false,
+            showBanner: true
           },
           {
             msg: this.COMPLIANCE_REQUESTED_BANK_NEED_VERIFY,
@@ -264,7 +269,8 @@ foam.CLASS({
               return user.compliance === self.ComplianceStatus.REQUESTED
                 && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
             },
-            passed: false
+            passed: false,
+            showBanner: true
           },
           {
             msg: this.BUSINESS_INFO_UNDER_REVIEW,
@@ -273,7 +279,8 @@ foam.CLASS({
               return user.compliance === self.ComplianceStatus.REQUESTED
                 && accountArray[0].status === self.BankAccountStatus.VERIFIED;
             },
-            passed: false
+            passed: false,
+            showBanner: true
           },
           {
             msg: this.PASSED_BANNER,
@@ -282,7 +289,8 @@ foam.CLASS({
               return user.compliance === self.ComplianceStatus.PASSED
                 && accountArray[0].status === self.BankAccountStatus.VERIFIED;
             },
-            passed: true
+            passed: true,
+            showBanner: true
           }
         ];
       }
@@ -419,16 +427,16 @@ foam.CLASS({
       });
     },
 
+    /**
+     * This function is to set up the banner based on the condition of
+     * business onboarding status and bank account status.
+     */
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
 
       var e = this.complianceStatusArray.find((v) => {
-        return v.condition(user, accountArray) &&
-          ! (
-            user.compliance === this.ComplianceStatus.NOTREQUESTED
-              && accountArray.length === 0
-            );
+        return v.condition(user, accountArray) && showBanner;
       });
 
       if ( e ) {
