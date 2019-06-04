@@ -446,7 +446,7 @@ foam.CLASS({
        * and bank account status, also when showBanner is true.
        */
       var bannerElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray) && showBanner;
+        return complianceStatus.condition(user, accountArray) && complianceStatus.showBanner;
       });
 
       if ( bannerElement ) {
