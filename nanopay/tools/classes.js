@@ -494,8 +494,10 @@ var classes = [
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
 
   // ruler
+  'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
-  'net.nanopay.meter.compliance.ruler.ClearUserApprovalRequests',
+  'net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval',
+  'net.nanopay.meter.compliance.ruler.PruneApprovalRequests',
   'net.nanopay.meter.compliance.ruler.RequestBeneficialOwnersCompliance',
   'net.nanopay.meter.compliance.ruler.RequestSigningOfficersCompliance',
   'net.nanopay.meter.compliance.ruler.SecurefactLEVValidator',
@@ -509,6 +511,8 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.DowJonesApprovalRequested',
+  'net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction',
+  'net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
   'net.nanopay.meter.compliance.ruler.predicate.NewEqOld',
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
@@ -582,7 +586,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
   // identitymind
-  'net.nanopay.meter.compliance.identityMind.B2BTransactionValidator',
+  'net.nanopay.meter.compliance.identityMind.ComplianceTransactionValidator',
   'net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator',
   'net.nanopay.meter.compliance.identityMind.EntityLoginValidator',
   'net.nanopay.meter.compliance.identityMind.MerchantKYCValidator',
