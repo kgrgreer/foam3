@@ -104,17 +104,17 @@ foam.CLASS({
         String accountNumber = this.getAccountNumber();
         
         if ( SafetyUtil.isEmpty(branchId) ) {
-          throw new IllegalStateException("Please enter a branch id/routing number.");
+          throw new IllegalStateException("Please enter a routing number.");
         }
         if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-          throw new IllegalStateException("Please enter a valid branch id/routing number.");
+          throw new IllegalStateException("Routing number must be 9 digits long.");
         }
 
         if ( SafetyUtil.isEmpty(accountNumber) ) {
           throw new IllegalStateException("Please enter an account number.");
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-          throw new IllegalStateException("Please enter a valid account number.");
+          throw new IllegalStateException("Account number must be between 6 and 17 digits long.");
         }
       `
     },

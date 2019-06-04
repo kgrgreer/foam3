@@ -128,7 +128,7 @@ foam.CLASS({
         throw new IllegalStateException("Please enter an account number.");
       }
       if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-        throw new IllegalStateException("Please enter a valid account number.");
+        throw new IllegalStateException("Account number must be between 7 and 12 digits long.");
       }
       `
     },
@@ -184,10 +184,10 @@ foam.CLASS({
       // when the branchId is provided and not the branch
       String branchId = this.getBranchId();
       if ( SafetyUtil.isEmpty(branchId) ) {
-        throw new IllegalStateException("Please enter a branch id/transit number.");
+        throw new IllegalStateException("Please enter a transit number.");
       }
       if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-        throw new IllegalStateException("Please enter a valid branch id/transit number.");
+        throw new IllegalStateException("Transit number must be 5 digits long.");
       }
       `
     }
