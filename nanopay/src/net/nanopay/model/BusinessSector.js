@@ -22,7 +22,7 @@ foam.CLASS({
     }
   ],
 
-  method: [
+  methods: [
     {
       name: 'toSummary',
       code: function(x) {

@@ -21,8 +21,7 @@ foam.CLASS({
   requires: [
     'foam.dao.AbstractDAO',
     'net.nanopay.alarming.AlarmReason',
-    'net.nanopay.alarming.MonitoringReport',
-    'net.nanopay.alarming.AlarmReason'
+    'net.nanopay.alarming.MonitoringReport'
   ],
 
   imports: [
