@@ -57,7 +57,7 @@ foam.CLASS({
                 .setDaoKey("localTransactionDAO")
                 .setObjId(ct.getId())
                 .setApprover(getJackieId())
-                //.setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId()+ )
+                .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId()+ )
                 .build();
               requestApproval(x, req);
             }
