@@ -75,7 +75,7 @@ foam.CLASS({
     {
       class: 'foam.comics.v2.NamedView',
       name: 'Tree',
-      view: { class: 'foam.u2.view.ScrollTableView' },
+      view: { class: 'net.nanopay.account.ui.AccountTreeView' },
       icon: 'images/account-structure-enabled.svg',
     }
   ],
