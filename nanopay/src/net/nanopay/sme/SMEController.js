@@ -211,6 +211,11 @@ foam.CLASS({
     {
       class: 'Array',
       name: 'complianceStatusArray',
+      documentation: `
+        A customized array contains objects for the toast notification 
+        and banner to handle different cases of the business onboarding status
+        and the bank account status.
+      `,
       factory: function() {
         var self = this;
         return [
@@ -435,6 +440,11 @@ foam.CLASS({
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
 
+      /*
+       * Get the complianceStatus object from the complianceStatusArray
+       * when it matches the condition of business onboarding status
+       * and bank account status, also when showBanner is true.
+       */
       var e = this.complianceStatusArray.find((v) => {
         return v.condition(user, accountArray) && showBanner;
       });
@@ -469,7 +479,7 @@ foam.CLASS({
     },
 
     /**
-     * This condition is to check if the user enable the 2FA when the user
+     * This function is to check if the user enable the 2FA when the user
      * have the permission to send a payable.
      * It is only required for payables.
      */
@@ -515,8 +525,8 @@ foam.CLASS({
     },
 
     /**
-     * Returns an array sink containing all the Canadian and US bank accounts
-     * user owns.
+     * Returns an array containing all the Canadian and US bank accounts
+     * that user owns.
      */
     async function getBankAccountArray() {
       try {
