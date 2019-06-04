@@ -3,22 +3,6 @@ foam.CLASS({
   name: 'RequireActionView',
   extends: 'foam.u2.View',
 
-  implements: [
-    'foam.mlang.Expressions',
-  ],
-
-  requires: [
-    'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.invoice.model.InvoiceStatus',
-  ],
-
-  imports: [
-    'auth',
-    'invoiceDAO',
-    'stack',
-    'user'
-  ],
-
   css: `
     ^item {
       display: flex;
@@ -59,63 +43,10 @@ foam.CLASS({
   `,
 
   properties: [
-    {
-      class: 'Int',
-      name: 'countRequiresApproval',
-      factory: function() {
-        this.user.expenses
-          .where(
-            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
-          .select(this.COUNT()).then((c) => {
-            this.countRequiresApproval = c.value;
-          });
-        return 0;
-      }
-    },
-    {
-      class: 'Int',
-      name: 'countOverdueAndUpcoming',
-      factory: function() {
-        this.user.expenses
-          .where(this.OR(
-            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
-            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
-          ))
-          .select(this.COUNT()).then((c) => {
-            this.countOverdueAndUpcoming = c.value;
-          });
-        return 0;
-      }
-    },
-    {
-      class: 'Int',
-      name: 'countDepositPayment',
-      factory: function() {
-        this.user.sales
-          .where(this.OR(
-            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_ACCEPTANCE),
-          ))
-          .select(this.COUNT()).then((c) => {
-            this.countDepositPayment = c.value;
-          });
-        return 0;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'actionsCheck',
-      expression: function(countRequiresApproval, countOverdueAndUpcoming, countDepositPayment) {
-        return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'isUserAbleToPay',
-      documentation: `True if the user has permission to make payments on behalf of the business.`,
-      factory: function() {
-        this.checkGroupPermissionToPay();
-      }
-    }
+    'countRequiresApproval',
+    'countOverdueAndUpcoming',
+    'countDepositPayment',
+    'isUserAbleToPay'
   ],
 
   messages: [
@@ -131,7 +62,6 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .hide(this.actionsCheck$)
           .start().show(this.isUserAbleToPay$)
             .start()
               .hide(this.countRequiresApproval$.map((value) => value == 0))
@@ -204,21 +134,13 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('number'))
-              .add(this.countDepositPayment)
+              .add(this.countDepositPayment$)
             .end()
             .on('click', function() {
               // TODO
             })
           .end()
-        .end()
-        .start()
-          .show(this.actionsCheck$)
-          .addClass('empty-state')
-          .add(this.NO_ACTIONS)
         .end();
-    },
-    async function checkGroupPermissionToPay() {
-      this.isUserAbleToPay = await this.auth.check(this.user, 'invoice.pay');
     }
   ]
 });

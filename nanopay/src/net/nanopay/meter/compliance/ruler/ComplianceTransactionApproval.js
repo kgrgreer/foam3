@@ -1,25 +1,24 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler',
-  name: 'UserComplianceApproval',
+  name: 'ComplianceTransactionApproval',
   extends: 'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
+
+  documentation: 'Updates compliance transaction according to approval.',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: 'Updates user compliance according to approval.',
-
   javaImports: [
-    'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [
     {
       name: 'objDaoKey',
-      value: 'localUserDAO'
+      value: 'localTransactionDAO'
     }
   ],
 
@@ -27,12 +26,11 @@ foam.CLASS({
     {
       name: 'updateObj',
       javaCode: `
-        User user = (User) obj;
-        user.setCompliance(
+        Transaction transaction = (Transaction) obj;
+        transaction.setInitialStatus(
           ApprovalStatus.APPROVED == approvalStatus
-            ? ComplianceStatus.PASSED
-            : ComplianceStatus.FAILED);
-        ((DAO) x.get(getObjDaoKey())).inX(x).put(user);
+            ? TransactionStatus.COMPLETED
+            : TransactionStatus.DECLINED);
       `
     }
   ]
