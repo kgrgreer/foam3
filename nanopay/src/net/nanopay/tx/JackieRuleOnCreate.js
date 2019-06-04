@@ -42,6 +42,7 @@ foam.CLASS({
           .setDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
           .setApprover(getJackieId())
+          .setRequestReference("Jackie Rule Approval Request")
           .build();
         requestApproval(x, req);
       `

@@ -37,6 +37,7 @@ foam.CLASS({
               .setDaoKey("localUserDAO")
               .setCauseId(response.getId())
               .setCauseDaoKey("identityMindResponseDAO")
+              .setRequestReference("Validate User Using IdentityMind")
               .build()
           );
         }

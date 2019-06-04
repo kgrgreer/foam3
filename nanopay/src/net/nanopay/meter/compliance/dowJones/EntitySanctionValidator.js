@@ -42,6 +42,7 @@ foam.CLASS({
                 .setDaoKey("localUserDAO")
                 .setCauseId(response.getId())
                 .setCauseDaoKey("dowJonesResponseDAO")
+                .setRequestReference("Validate Entity Using Down Jones")
                 .build());
           }
           ruler.putResult(status);

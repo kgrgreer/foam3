@@ -44,6 +44,7 @@ foam.CLASS({
                 .setDaoKey("localUserDAO")
                 .setCauseId(response.getId())
                 .setCauseDaoKey("dowJonesResponseDAO")
+                .setRequestReference("Validate User Using Dow Jones")
                 .build());
           }
           ruler.putResult(status);
