@@ -3,21 +3,20 @@ package net.nanopay.tx;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import net.nanopay.approval.ApprovalRequest;
 import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
+import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.KotakFxTransaction;
 import net.nanopay.fx.ManualFxApprovalRequest;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
-import net.nanopay.tx.ComplianceTransaction;
-import net.nanopay.tx.KotakCOTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import net.nanopay.tx.SummaryTransaction;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -32,9 +31,11 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   CABankAccount sourceAccount;
   INBankAccount destinationAccount;
   User sender, receiver;
-  DAO userDAO, accountDAO, txnDAO, approvalDAO;
+  DAO userDAO, accountDAO, txnDAO, approvalDAO, fxQuoteDAO;
   Transaction txn, txn2, txn3, txn4, txn5, txn6;
+  KotakFxTransaction kotakTxn;
   ManualFxApprovalRequest approval;
+  net.nanopay.fx.FXQuote quote;
   String senderEmail = "senderca@nanopay.net", receiverEmail = "receiverin@nanopay.net";
   ArraySink sink;
 
@@ -43,6 +44,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     accountDAO = (DAO) x.get("localAccountDAO");
     txnDAO = ((DAO) x.get("localTransactionDAO"));
     approvalDAO = (DAO) x.get("approvalRequestDAO");
+    fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
     sender = addUserIfNotFound(x, senderEmail);
     receiver = addUserIfNotFound(x, receiverEmail);
     addCAAccountIfNotFound(x);
@@ -54,6 +56,9 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
 
     // test approval requests for manual fx rate
     testApprovalRequests(x);
+
+    // test fx quote
+    testFXQuote(x);
   }
 
   public void testTxnChain(X x) {
@@ -131,9 +136,16 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     approval.setExpiryDate(cal.getTime());
     approvalDAO.put_(x, approval);
 
-    KotakFxTransaction kotakTxn = (KotakFxTransaction) txnDAO.find(txn5.getId());
+    kotakTxn = (KotakFxTransaction) txnDAO.find(txn5.getId());
     test(kotakTxn.getFxRate() != 0, "Fx rate is successfully added through approval request");
     test(kotakTxn.getStatus().equals(TransactionStatus.COMPLETED), "Transaction updated to completed after fetching fx rate.");
+  }
+
+  public void testFXQuote(X x) {
+    String id = kotakTxn.getFxQuoteId();
+    test( ! SafetyUtil.isEmpty(id), "A quote id exists for kotak txn.");
+    quote = (FXQuote) fxQuoteDAO.find(id);
+    test(quote != null && quote.getRate() != 0, "A quote with non-zero fx rate exists for kotak txn.");
   }
 
   public User addUserIfNotFound(X x, String email) {

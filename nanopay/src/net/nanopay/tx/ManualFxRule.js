@@ -12,9 +12,11 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'foam.mlang.MLang',
     'static foam.mlang.MLang.*',
+    'java.util.Date',
     'java.util.List',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
+    'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.KotakFxTransaction',
     'net.nanopay.fx.ManualFxApprovalRequest',
@@ -29,6 +31,7 @@ foam.CLASS({
       ManualFxApprovalRequest request = (ManualFxApprovalRequest) obj;
       DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
       DAO transactionDAO = ((DAO) x.get("transactionDAO"));
+      DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
       Sink sink = new ArraySink();
       sink = transactionDAO
         .where(
@@ -47,7 +50,17 @@ foam.CLASS({
           request.setStatus(ApprovalStatus.REQUESTED);
           request = (ManualFxApprovalRequest) approvalRequestDAO.put_(x, request);
         } else {
-          kotakFxTransaction.setFxRate(request.getRate());
+          FXQuote quote = new FXQuote();
+          quote.setRate(rate);
+          quote.setSourceCurrency("CAD");
+          quote.setTargetCurrency("INR");
+          quote.setSourceAmount(kotakFxTransaction.getAmount());
+          quote.setExpiryTime(request.getExpiryDate());
+          quote.setQuoteDateTime(request.getValueDate());
+          String id = Long.toString(((FXQuote) fxQuoteDAO.put_(x, quote)).getId());
+
+          kotakFxTransaction.setFxQuoteId(id);
+          kotakFxTransaction.setFxRate(rate);
           kotakFxTransaction.setStatus(TransactionStatus.COMPLETED);
           transactionDAO.put_(x, kotakFxTransaction);
           approvalRequestDAO

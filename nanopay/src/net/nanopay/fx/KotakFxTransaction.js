@@ -42,6 +42,7 @@ foam.CLASS({
        javaCode: `
        super.limitedCopyFrom(other);
        setFxRate(((KotakFxTransaction) other).getFxRate());
+       setFxQuoteId(((KotakFxTransaction) other).getFxQuoteId());
        `
      },
   ]
