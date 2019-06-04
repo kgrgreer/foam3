@@ -16,7 +16,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{6,17}$")'
+      javaValue: 'Pattern.compile("^[0-9]{7,12}$")'
     },
     {
       name: 'BRANCH_ID_PATTERN',
