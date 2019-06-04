@@ -880,8 +880,10 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/refinements' },
 
   // ruler
+  { name: 'net/nanopay/meter/compliance/ruler/AbstractComplianceApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/CanadianSanctionValidator' },
-  { name: 'net/nanopay/meter/compliance/ruler/ClearUserApprovalRequests' },
+  { name: 'net/nanopay/meter/compliance/ruler/ComplianceTransactionApproval' },
+  { name: 'net/nanopay/meter/compliance/ruler/PruneApprovalRequests' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestBeneficialOwnersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
@@ -895,6 +897,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/DowJonesApprovalRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsComplianceTransaction' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsPendingTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/NewEqOld' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
@@ -976,7 +980,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
 
   // identitymind
-  { name: 'net/nanopay/meter/compliance/identityMind/B2BTransactionValidator' },
+  { name: 'net/nanopay/meter/compliance/identityMind/ComplianceTransactionValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/ConsumerKYCValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/EntityLoginValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/MerchantKYCValidator' },
