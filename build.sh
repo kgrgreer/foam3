@@ -106,9 +106,13 @@ function deploy_journals {
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
     if [ "$GRADLE_BUILD" -eq 0 ]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$JOURNAL_CONFIG"
     else
-        gradle findSH -DjournalConfig=${JOURNAL_CONFIG} -DprojectMode=${MODE} --rerun-tasks --daemon
+        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
+    fi
+
+    if [[ $? -eq 1 ]]; then
+        quit 1
     fi
 
     if [[ ! -f $JOURNALS ]]; then
@@ -137,17 +141,6 @@ function clean {
            [ "$RESTART_ONLY" -eq 0 ]; then
         echo "INFO :: Cleaning Up"
 
-        if [ "$GRADLE_BUILD" -eq 0 ]; then
-            if [ -d "build/" ]; then
-                rm -rf build
-                mkdir build
-            fi
-            if [ -d "target/" ]; then
-                rm -rf target
-                mkdir target
-            fi
-        fi
-
         if [ "${RUN_JAR}" -eq 1 ]; then
             tmp=$PWD
             echo PWD=$tmp
@@ -159,6 +152,14 @@ function clean {
         fi
 
         if [ "$GRADLE_BUILD" -eq 0 ]; then
+            if [ -d "build/" ]; then
+                rm -rf build
+                mkdir build
+            fi
+            if [ -d "target/" ]; then
+                rm -rf target
+                mkdir target
+            fi
             mvn clean
         else
             gradle clean
@@ -202,6 +203,7 @@ function build_jar {
 
     if [ "${RUN_JAR}" -eq 1 ] || [ "$TEST" -eq 1 ]; then
         cp -r deploy/bin/* "${NANOPAY_HOME}/bin/"
+        cp -r deploy/etc/* "${NANOPAY_HOME}/etc/"
         cp -r target/lib/* "${NANOPAY_HOME}/lib/"
 
         export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
@@ -232,15 +234,20 @@ function stop_nanos {
     echo "INFO :: Stopping nanos..."
 
     # TODO: with instances there may be more than one.
+    # development
     RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
-    if [[ -f $NANOS_PIDFILE ]]; then
+    if [ -z "$RUNNING_PID" ]; then
+        # production
+        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar /opt/nanopay/lib/nanopay" | awk '{print $2}')
+    fi
+    if [ -f "$NANOS_PIDFILE" ]; then
         PID=$(cat "$NANOS_PIDFILE")
         if [[ "$PID" != "$RUNNING_PID" ]] && [ "$STOP_ONLY" -eq 1 ]; then
             PID=$RUNNING_PID
         fi
     fi
 
-    if [[ -z "$PID" ]]; then
+    if [ -z "$PID" ]; then
         echo "INFO :: PID and/or file $NANOS_PIDFILE not found, nothing to stop?"
     else
         TRIES=0
@@ -281,8 +288,8 @@ function status_nanos {
 
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
-        echo NANOPAY_HOME=$NANOPAY_HOME
-        "${NANOPAY_HOME}/bin/run.sh" "-N${NANOPAY_HOME}" "-H${HOST_NAME}" "-W${WEB_PORT}"
+  #      echo NANOPAY_HOME=$NANOPAY_HOME
+        "${NANOPAY_HOME}/bin/run.sh" "-D${DEBUG}" "-H${HOST_NAME}" "-M${MODE}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
     else
         cd "$PROJECT_HOME"
 
@@ -294,12 +301,10 @@ function start_nanos {
             JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
         fi
 
-        if [ -z "$MODE" ]; then
-            # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
-            # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
-            # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
-            JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
-        fi
+        # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
+        # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
+        # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
+        JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
 
         CLASSPATH=$(JARS=("target/lib"/*.jar); IFS=:; echo "${JARS[*]}")
         CLASSPATH="build/classes/java/main:$CLASSPATH"
@@ -325,6 +330,7 @@ function start_nanos {
         elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
         else
+            echo JAVA_OPTS="$JAVA_OPTS"
             nohup java -cp "$CLASSPATH" foam.nanos.boot.Boot &> /dev/null &
             echo $! > "$NANOS_PIDFILE"
         fi
@@ -390,6 +396,9 @@ function setenv {
     fi
     if [ ! -d "${NANOPAY_HOME}/bin" ]; then
         mkdir -p "${NANOPAY_HOME}/bin"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/etc" ]; then
+        mkdir -p "${NANOPAY_HOME}/etc"
     fi
     if [ ! -d "${LOG_HOME}" ]; then
         mkdir -p "${LOG_HOME}"
@@ -513,6 +522,7 @@ HOST_NAME=`hostname -s`
 GRADLE_BUILD=0
 VERSION=
 MODE=
+#MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
@@ -549,7 +559,8 @@ while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
         i) INSTALL=1 ;;
         j) DELETE_RUNTIME_JOURNALS=1 ;;
         J) JOURNAL_CONFIG=$OPTARG ;;
-        k) PACKAGE=1 ;;
+        k) PACKAGE=1
+           BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
         m) RUN_MIGRATION=1 ;;
         M) MODE=$OPTARG
@@ -624,8 +635,6 @@ if [ "$STOP_ONLY" -eq 1 ]; then
 fi
 
 if [ "$RESTART_ONLY" -eq 0 ] ||
-       [ "$COMPILE_ONLY" -eq 0 ] ||
-       [ "$BUILD_ONLY" -eq 0 ] ||
        [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
     deploy_journals
 fi
@@ -636,15 +645,10 @@ fi
 
 if [ "${PACKAGE}" -eq 1 ]; then
     package_tar
-    quit 0
 fi
 
-if [ "$BUILD_ONLY" -eq 1 ] || [ ! -z "$MODE" ]; then
-    if [ -z "$INSTANCE" ] && [ "$TEST" -eq 0 ]; then
-        quit 0
-    fi
+if [ "${BUILD_ONLY}" -eq 0 ]; then
+   start_nanos
 fi
-
-start_nanos
 
 quit 0
