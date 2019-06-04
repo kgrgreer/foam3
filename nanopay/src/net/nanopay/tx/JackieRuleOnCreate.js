@@ -61,7 +61,7 @@ foam.CLASS({
               requestApproval(x, req);
             }
           }
-        });
+        }, "Submits an Approval Request to the compliance team for this Compliance transaction");
       `
     }
   ]
