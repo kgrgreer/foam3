@@ -445,12 +445,12 @@ foam.CLASS({
        * when it matches the condition of business onboarding status
        * and bank account status, also when showBanner is true.
        */
-      var e = this.complianceStatusArray.find((v) => {
-        return v.condition(user, accountArray) && showBanner;
+      var bannerElement = this.complianceStatusArray.find((complianceStatus) => {
+        return complianceStatus.condition(user, accountArray) && showBanner;
       });
 
-      if ( e ) {
-        this.setBanner(e.bannerMode, e.msg);
+      if ( bannerElement ) {
+        this.setBanner(bannerElement.bannerMode, bannerElement.msg);
       }
     },
 
@@ -464,15 +464,15 @@ foam.CLASS({
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
 
-      var e = this.complianceStatusArray.find((v) => {
-        return v.condition(user, accountArray);
+      var toastElement = this.complianceStatusArray.find((complianceStatus) => {
+        return complianceStatus.condition(user, accountArray);
       });
 
-      if ( e ) {
-        if ( ! e.passed ) {
-          this.notify(e.msg, 'warning');
+      if ( toastElement ) {
+        if ( ! toastElement.passed ) {
+          this.notify(toastElement.msg, 'warning');
         }
-        return e.passed;
+        return toastElement.passed;
       } else {
         return false;
       }
