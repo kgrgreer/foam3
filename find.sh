@@ -50,6 +50,7 @@ declare -a arr=(
   "lineItemTypeAccounts"
   "lineItemFees"
   "lineItemTax"
+  "themes"
   "menus"
   "notificationTemplates"
   "payoutOptions"

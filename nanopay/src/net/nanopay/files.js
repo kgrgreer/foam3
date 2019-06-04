@@ -652,7 +652,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/transfer/PlanSelectionWizard', flags: ['web'] },
 
   // ui
-  { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/CurrencyChoiceView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/NoMenuTopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/SubMenuBar', flags: ['web'] },
