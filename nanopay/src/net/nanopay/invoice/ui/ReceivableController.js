@@ -23,9 +23,15 @@ foam.CLASS({
   imports: [
     'checkAndNotifyAbilityToReceive',
     'currencyDAO',
+    'notify',
     'stack',
     'user',
     'accountingIntegrationUtil'
+  ],
+
+  messages: [
+    { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.' },
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' }
   ],
 
   properties: [
@@ -115,7 +121,13 @@ foam.CLASS({
               },
               code: function(X) {
                 this.paymentMethod = self.PaymentStatus.VOID;
-                self.user.sales.put(this);
+                self.user.sales.put(this).then((invoice)=> {
+                  if (invoice.paymentMethod == self.PaymentStatus.VOID) {
+                    self.notify(self.VOID_SUCCESS, 'success');
+                  }
+                }).catch((err) => {
+                  if ( err ) self.notify(self.VOID_ERROR, 'error');
+                });;
               }
             }),
             foam.core.Action.create({

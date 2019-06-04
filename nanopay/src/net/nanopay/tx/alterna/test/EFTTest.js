@@ -56,9 +56,10 @@ String lastName = user.getLastName();
 Date now            = new Date();
 String processDate = CsvUtil.csvSdf.get().format(CsvUtil.generateProcessDate(x, now));
 String completionDate = CsvUtil.csvSdf.get().format(CsvUtil.generateCompletionDate(x, now));
+boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
 
 StringBuilder sb = new StringBuilder();
-sb.append("Business,");
+sb.append(isOrganization ? "Business," : "Personal,");
 if ( SafetyUtil.isEmpty(user.getOrganization()) ) {
   sb.append(user.getFirstName());
   sb.append(",");

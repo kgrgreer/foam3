@@ -49,6 +49,12 @@ foam.CLASS({
   ],
 
   css: `
+  ^ {
+    display: flex;
+  }
+  ^ > .stack-wrapper {
+    flex-grow: 1;
+  }
   ^ .foam-u2-view-TableView tbody > tr > td {
     white-space: nowrap;
     max-width: 280px;
@@ -233,59 +239,59 @@ foam.CLASS({
     },
 
     function initE() {
-      var self = this;
+      this.clientPromise.then(() => {
+        this.fetchTheme().then(() => {
+          this.client.nSpecDAO.find('appConfig').then((config) => {
+            this.appConfig.copyFrom(config.service);
+          });
+          this.fetchAgent();
 
-      self.clientPromise.then(function() {
-        self.client.nSpecDAO.find('appConfig').then(function(config) {
-          self.appConfig.copyFrom(config.service);
-        });
-        self.fetchAgent();
+          this.AppStyles.create();
+          this.SMEStyles.create();
+          this.InvoiceStyles.create();
+          this.ModalStyling.create();
 
-        self.AppStyles.create();
-        self.SMEStyles.create();
-        self.InvoiceStyles.create();
-        self.ModalStyling.create();
+          // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
+          this.BankPadAuthorization.create();
 
-        // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
-        self.BankPadAuthorization.create();
+          this.__subContext__.register(this.AbliiActionView, 'foam.u2.ActionView');
+          this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
+          this.__subContext__.register(this.SMEModal, 'foam.u2.dialog.Popup');
+          this.__subContext__.register(this.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
+          this.__subContext__.register(this.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
+          this.__subContext__.register(this.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
+          this.__subContext__.register(this.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
+          this.__subContext__.register(this.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
+          this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
+          this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
+          this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
 
-        self.__subContext__.register(self.AbliiActionView, 'foam.u2.ActionView');
-        self.__subContext__.register(self.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
-        self.__subContext__.register(self.SMEModal, 'foam.u2.dialog.Popup');
-        self.__subContext__.register(self.ResetPasswordView, 'foam.nanos.auth.resetPassword.EmailView');
-        self.__subContext__.register(self.ResendPasswordView, 'foam.nanos.auth.resetPassword.ResendView');
-        self.__subContext__.register(self.ChangePasswordView, 'foam.nanos.auth.resetPassword.ResetView');
-        self.__subContext__.register(self.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
-        self.__subContext__.register(self.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
-        self.__subContext__.register(self.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
-        self.__subContext__.register(self.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
-        self.__subContext__.register(self.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
-
-        self.findBalance();
-        self.addClass(self.myClass())
-          .tag('div', null, self.topNavigation_$)
-          .start()
-            .addClass('stack-wrapper')
-            .start({
-              class: 'net.nanopay.sme.ui.banner.ComplianceBanner',
-              data$: self.bannerData$
-            })
+          this.findBalance();
+          this.addClass(this.myClass())
+            .tag('div', null, this.topNavigation_$)
+            .start()
+              .addClass('stack-wrapper')
+              .start({
+                class: 'net.nanopay.sme.ui.banner.ComplianceBanner',
+                data$: this.bannerData$
+              })
+              .end()
+              .tag({
+                class: 'foam.u2.stack.StackView',
+                data: this.stack,
+                showActions: false
+              })
             .end()
-            .tag({
-              class: 'foam.u2.stack.StackView',
-              data: self.stack,
-              showActions: false
-            })
-          .end()
-          .tag('div', null, self.footerView_$);
+            .tag('div', null, this.footerView_$);
 
-          /*
-            This is mandatory.
-            'topNavigation_' & 'footerView' need empty view when initialize,
-            otherwise they won't toggle after signin.
-          */
-          self.topNavigation_.add(foam.u2.View.create());
-          self.footerView_.hide();
+            /*
+              This is mandatory.
+              'topNavigation_' & 'footerView' need empty view when initialize,
+              otherwise they won't toggle after signin.
+            */
+            this.topNavigation_.add(foam.u2.View.create());
+            this.footerView_.hide();
+        });
       });
     },
 
@@ -432,12 +438,6 @@ foam.CLASS({
       }
 
       this.bannerizeCompliance();
-      this.setPortalView(this.group);
-
-      for ( var i = 0; i < this.MACROS.length; i++ ) {
-        var m = this.MACROS[i];
-        if ( this.group[m] ) this[m] = this.group[m];
-      }
 
       var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
@@ -447,6 +447,10 @@ foam.CLASS({
       } else if ( this.group ) {
         this.window.location.hash = this.group.defaultMenu;
       }
+
+      // Update the look and feel now that the user is logged in since there
+      // might be a more specific one to use now.
+      this.fetchTheme();
     }
   ]
 });
