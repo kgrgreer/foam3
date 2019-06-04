@@ -219,7 +219,7 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/Token"},
   { name: "net/nanopay/fx/afex/Quote"},
   { name: "net/nanopay/fx/afex/GetQuoteRequest"},
-  { name: "net/nanopay/fx/afex/GetQuoteResponse"},
+  { name: "net/nanopay/fx/afex/AddPayeeRequest"},
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
