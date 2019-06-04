@@ -84,7 +84,6 @@ foam.CLASS({
         {
           name: 'formatNode',
           value: function() {
-            debugger;
             var isShadow = this.data.name.indexOf('Shadow') != -1;
             var leftPos  = -this.width/2+8;
             var type     = this.data.type.replace('Account', '');
