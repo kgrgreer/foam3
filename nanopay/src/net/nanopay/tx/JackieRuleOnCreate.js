@@ -34,13 +34,12 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        ComplianceTransaction ct = (ComplianceTransaction) obj;
-        Transaction headTx = ct;
 
-        agent.submit(x, ContextAgent() {
+        agent.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-
+            ComplianceTransaction ct = (ComplianceTransaction) obj;
+            Transaction headTx = ct;
             Count count = (Count) ((DAO) x.get("approvalRequestDAO"))
               .where(AND(
                 EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
