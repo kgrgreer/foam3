@@ -16,10 +16,10 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -D 0 or 1             : Debug mode."
+    echo "  -D 0 or 1           : Debug mode."
     echo "  -H <host_name>      : Hostname or IP."
-    echo "  -M <mode>            : Run Mode - STAGING, PRODUCTION"
-    echo "  -N <nanopay_home>  : Nanopay home directory."
+    echo "  -M <mode>           : Run Mode - STAGING, PRODUCTION"
+    echo "  -N <nanopay_home>   : Nanopay home directory."
     echo "  -W <web_port>       : HTTP Port."
     echo "  -i                  : Install files to Nanopay home."
 }
@@ -41,23 +41,24 @@ JAVA_OPTS=""
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
 JAVA_OPTS="${JAVA_OPTS} -Dhostname=${HOST_NAME}"
 JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
-JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
+JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
 
-if [ "${INSTALL}" -eq 1 ]; then
-    if [ ! -d "${NANOPAY_HOME}" ]; then
-        mkdir -p "${NANOPAY_HOME}"
-    fi
-    cp -r "bin" "${NANOPAY_HOME}"
-    cp -r "lib" "${NANOPAY_HOME}"
-    cp -r "etc" "${NANOPAY_HOME}"
-fi
+#if [ "${INSTALL}" -eq 1 ]; then
+#    if [ ! -d "${NANOPAY_HOME}" ]; then
+#        mkdir -p "${NANOPAY_HOME}"
+#    fi
+#    cp -r "bin" "${NANOPAY_HOME}"
+#    cp -r "lib" "${NANOPAY_HOME}"
+#    cp -r "etc" "${NANOPAY_HOME}"
+#fi
 
+export MEMORY_MODEL=SMALL
 
 # load instance specific deployment options
-if [ -f "$NANOPAY_HOME/etc/shrc.local" ]; then
-    . "$NANOPAY_HOME/etc/shrc.local"
+if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
+    . "${NANOPAY_HOME}/etc/shrc.local"
 fi
 
 JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
