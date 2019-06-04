@@ -8,18 +8,13 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'foam.dao.DAO',
-    'static foam.mlang.MLang.*',
-    'foam.mlang.sink.Count',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.app.Mode',
-    'foam.nanos.auth.Group',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
+    'foam.core.ContextAgent',
+    'foam.core.X',
+    'foam.util.SafetyUtil',
     'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.tx.ComplianceTransaction',
-    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.model.Transaction',
+
   ],
 
   properties: [
@@ -37,26 +32,25 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         ComplianceTransaction ct = (ComplianceTransaction) obj;
+        Transaction headTx = ct;
 
-        ApprovalRequest req = new ApprovalRequest.Builder(x)
-          .setDaoKey("localTransactionDAO")
-          .setObjId(ct.getId())
-          .setApprover(getJackieId())
-          .build();
-        requestApproval(x, req);
+        agent.submit(x, ContextAgent() {
+          @Override
+          public void execute(X x) {
+
+            while ( ! SafetyUtil.isEmpty(headTx.getParent())) {
+              headTx = headTx.findParent(x);
+            }
+            ApprovalRequest req = new ApprovalRequest.Builder(x)
+              .setDaoKey("localTransactionDAO")
+              .setObjId(ct.getId())
+              .setApprover(getJackieId())
+              //.setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId()+ )
+              .build();
+            requestApproval(x, req);
+          }
+        });
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'describe',
-      javaCode: ` return ""; `
-    },
-    {
-      name: 'canExecute',
-      javaCode: ` return true;`
     }
   ]
 });
