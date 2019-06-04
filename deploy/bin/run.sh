@@ -29,7 +29,7 @@ while getopts "D:H:iM:N:W:" opt ; do
         D) DEBUG=$OPTARG;;
         h) usage; exit 0;;
         H) HOST_NAME=$OPTARG;;
-        N) MODE=$OPTARG;;
+        M) MODE=$OPTARG;;
         N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
         i) INSTALL=1;;
@@ -54,11 +54,6 @@ if [ "${INSTALL}" -eq 1 ]; then
     cp -r "etc" "${NANOPAY_HOME}"
 fi
 
-export MEMORY_MODEL=SMALL
-case $MODE in
-    'staging')   MEMORY_MODEL=MEDIUM;;
-    'production') MEMORY_MODEL=LARGE;;
-esac
 
 # load instance specific deployment options
 if [ -f "$NANOPAY_HOME/etc/shrc.local" ]; then
