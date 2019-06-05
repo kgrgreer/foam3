@@ -506,7 +506,11 @@ foam.CLASS({
 
         // Pass the customized DOM element into the toast notification
         this.notify(TwoFactorNotificationDOM, 'warning');
-        return false;
+        if ( this.appConfig.mode == foam.nanos.app.Mode.STAGING) {
+          return true;
+        } else {
+          return false;
+        }
       }
       return true;
     },
