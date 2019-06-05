@@ -56,7 +56,7 @@ foam.CLASS({
     {
       type: 'String',
       name: 'AFEX_SERVICE_NSPEC_ID',
-      value: 'AEXService'
+      value: 'AFEXService'
     }
   ],
 
@@ -84,41 +84,15 @@ foam.CLASS({
     // Check if AFEX can handle this transaction
     if ( ! (sourceAccount instanceof BankAccount) || ! (destinationAccount instanceof BankAccount) ) return getDelegate().put_(x, obj);
 
-    // Create and execute AFEXTransaction to get Rate
-    // store in plan
-
     // Check if AFEXTransactionPlanDAO can handle the currency combination
     FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
       request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
     if ( fxService instanceof AFEXServiceProvider  ) {
 
-      try {
-        // Validate that Payer is provisioned for AFX before proceeding
-        AFEXUser.getUserAFEXOrgId(x, sourceAccount.getOwner());
-      } catch (Exception e) {
-        logger.info(e.getMessage());
-        return getDelegate().put_(x, quote);
-      }
-
-      // Add Disclosure line item
-      AcceptanceDocument disclosure = null;
-      User payer = User.findUser(x, sourceAccount.getOwner());
-      if ( payer != null && null != payer.getAddress() ) {
-        AcceptanceDocumentService acceptanceDocumentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
-        disclosure = acceptanceDocumentService.getTransactionRegionDocuments(x, "AFEXTransaction",
-          AcceptanceDocumentType.DISCLOSURE, payer.getAddress().getCountryId(), payer.getAddress().getRegionId());
-      }
-
-      // TODO: test if fx already done
       FXQuote fxQuote = new FXQuote.Builder(x).build();
-      FXQuote requestFXQuote = getFXQuoteFromReferenceData(request);
-      if ( requestFXQuote != null  ) {
-        fxQuote = requestFXQuote;
-      } else {
-        String pacsEndToEndId = getPacs008EndToEndId(request);
-        if ( ! SafetyUtil.isEmpty(pacsEndToEndId) ) {
-          fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
-        }
+      String pacsEndToEndId = getPacs008EndToEndId(request);
+      if ( ! SafetyUtil.isEmpty(pacsEndToEndId) ) {
+        fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
       }
 
       // FX Rate has not yet been fetched
@@ -126,20 +100,7 @@ foam.CLASS({
         try {
           AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
           if ( SafetyUtil.isEmpty(request.getPaymentMethod()) ) {
-            for ( AFEXPaymentMethodType paymentMethod : AFEXPaymentMethodType.values() ) {
-              fxQuote = afexService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
-                request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
-                FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null, paymentMethod.getName());
-              if ( fxQuote != null && fxQuote.getId() > 0 ) {
-                AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
-                afexTransaction.setPayerId(sourceAccount.getOwner());
-                afexTransaction.setPayeeId(destinationAccount.getOwner());
-                if ( disclosure != null ) {
-                  afexTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
-                }
-                quote.addPlan(afexTransaction);
-              }
-            }
+         
           } else {
             fxQuote = afexService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
               request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
@@ -148,9 +109,6 @@ foam.CLASS({
                 AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
                 afexTransaction.setPayerId(sourceAccount.getOwner());
                 afexTransaction.setPayeeId(destinationAccount.getOwner());
-                if ( disclosure != null) {
-                  afexTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
-                }
                 quote.addPlan(afexTransaction);
               }
           }
@@ -167,9 +125,6 @@ foam.CLASS({
         AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
         afexTransaction.setPayerId(sourceAccount.getOwner());
         afexTransaction.setPayeeId(destinationAccount.getOwner());
-        if ( disclosure != null ) {
-          afexTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
-        }
         quote.addPlan(afexTransaction);
       }
 
@@ -233,19 +188,6 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
 
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
   return afexTransaction;
-}
-
-protected FXQuote getFXQuoteFromReferenceData(Transaction request) {
-  FXQuote fxQuote = null;
-  if ( request.getReferenceData() != null && request.getReferenceData().length > 0 ) {
-    for ( Object obj : request.getReferenceData() ) {
-      if ( obj instanceof FXQuote ) {
-        fxQuote = (FXQuote) obj;
-        break;
-      }
-    }
-  }
-  return fxQuote;
 }
         `);
       },
