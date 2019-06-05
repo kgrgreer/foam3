@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
@@ -50,7 +51,11 @@ foam.CLASS({
         }
 
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          return getDelegate().put_(x, obj);
+          Session session = x.get(Session.class);
+          if ( session != null ) {
+            businessOnboarding.setRemoteHost(session.getRemoteHost());
+          }
+          return getDelegate().put_(x, businessOnboarding);
         }
 
         businessOnboarding.validate(x);
