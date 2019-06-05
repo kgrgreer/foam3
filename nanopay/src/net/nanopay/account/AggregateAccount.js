@@ -30,7 +30,7 @@ foam.CLASS({
     {
       name: 'findBalance',
       async: true,
-      type: 'Long',
+      type: 'Any',
       args: [
         {
           name: 'x',
