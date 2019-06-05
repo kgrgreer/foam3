@@ -134,7 +134,9 @@ foam.CLASS({
   tableColumns: ['userId', 'status'],
 
   implements: [
-    'foam.nanos.auth.Authorizable'
+    'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.LastModifiedAware'
   ],
 
   documentation: `Multifunctional model used for business onboarding`,
@@ -299,6 +301,20 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'Creation date.',
+      name: 'created',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
+      documentation: 'Last modified date.',
+      name: 'lastModified',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
       class: 'String',
       name: 'firstName',
       flags: ['web'],
@@ -314,7 +330,11 @@ foam.CLASS({
       section: 'adminReferenceSection',
       minLength: 1
     },
-
+    {
+      class: 'String',
+      name: 'remoteHost',
+      section: 'adminReferenceSection'
+    },
     {
       name: 'welcome',
       section: 'gettingStartedSection',
