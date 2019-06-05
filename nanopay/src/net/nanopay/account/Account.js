@@ -62,7 +62,7 @@ foam.CLASS({
       class: 'foam.comics.v2.CannedQuery',
       label: 'Virtual Accounts',
       predicateFactory: function(e) {
-        return e.EQ(net.nanopay.account.Account.TYPE, net.nanopay.account.DigitalAccount.name);
+        return foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' });
       }
     },
     // TODO: Figure out how to distinguish between viewViews and browseViews since they both use foam.comics.v2.NamedView

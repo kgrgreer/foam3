@@ -118,6 +118,7 @@ foam.CLASS({
                 if ( !balance || type === 'Aggregate' ) {
                   treeTagColour = '#9ba1a6';
                 }
+                // TODO: TBD
                 else if ( /* new tree */ false ) {
                   treeTagColour = treeTagColourSequence[treeTagColourPointer++];
                   if (treeTagColourPointer > treeTagColourSequence.length) treeTagColourPointer = 0;
