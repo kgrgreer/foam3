@@ -14,19 +14,17 @@ foam.CLASS({
       documentation: `
         DAO for all accounts in the ecosystem.
       `,
-      expression: function(accountDAO) {
-        return accountDAO;
+      factory: function() {
+        return this.accountDAO;
       }
     },
     {
-      class: 'foam.dao.DAOProperty',
       name: 'liquidityCandlestickDAO',
       documentation: `
         DAO for liquidity candlesticks
       `
     },
     {
-      class: 'foam.dao.DAOProperty',
       name: 'cicoCandlestickDAO',
       documentation: `
         DAO for CICO candlesticks to and from shadow accounts
@@ -38,8 +36,8 @@ foam.CLASS({
       documentation: `
         DAO for recent transactions in entire ecosystem
       `,
-      expression: function(transactionDAO) {
-        return transactionDAO;
+      factory: function() {
+        return this.transactionDAO;
       }
     }
   ]
