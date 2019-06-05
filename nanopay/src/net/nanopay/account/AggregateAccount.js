@@ -29,14 +29,6 @@ foam.CLASS({
   methods: [
     {
       name: 'findBalance',
-      async: true,
-      type: 'Any',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
       code: async function(x) {
         var balance = 0;
         var sink = await x.accountDAO.where(
