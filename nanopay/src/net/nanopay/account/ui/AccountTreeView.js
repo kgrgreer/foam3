@@ -3,8 +3,31 @@ foam.CLASS({
   name: 'AccountTreeView',
   extends: 'foam.u2.Element',
 
+  css: `
+    ^header {
+      border-bottom: solid 1px #e7eaec;
+      height: 39px;
+      width: 100%;
+      text-align: center;
+      padding-top: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #1e1f21;
+    }
+  `,
+
+  messages: [
+    {
+      name: 'VIEW_HEADER',
+      message: 'ACCOUNT HIERARCHY VIEW',
+    },
+  ],
+
   methods: [
       function initE(){
+        this.addClass(this.myClass());
+        this.start().addClass(this.myClass('header')).add(this.VIEW_HEADER).end();
         this.tag(this.AccountTreeCView);
       }
   ],
@@ -33,13 +56,6 @@ foam.CLASS({
         'accountDAO'
       ],
 
-      css: `
-        ^ canvas {
-          border: 1px solid black;
-          margin-top: 20px;
-        }
-      `,
-
       properties: [
         { 
           name: 'nodeWidth',
@@ -55,11 +71,11 @@ foam.CLASS({
         },
         {
           name: 'width',
-          value: 1350
+          value: 1614
         },
         {
           name: 'height',
-          value:1000
+          value: 1000
         },
         {
           name: 'x', 
@@ -84,36 +100,49 @@ foam.CLASS({
         {
           name: 'formatNode',
           value: function() {
-            var isShadow = this.data.name.indexOf('Shadow') != -1;
-            var leftPos  = -this.width/2+8;
-            var type     = this.data.type.replace('Account', '');
+            // var isShadow = this.data.name.indexOf('Shadow') != -1;
+            const leftPos  = -this.width/2+8;
+            let type     = this.data.type.replace('Account', '');
+            const treeTagColourSequence = ['#406dea', '#32bf5e', '#eedc00', '#d9170e'];
+            let treeTagColourPointer = 0;
 
-            if ( isShadow || type == 'Aggregate' ) { this.color = '#edf0f5'; }
             // Account Name
-            this.add(this.Label.create({color: 'black', x: leftPos, y: 7, text: this.data.name, font: 'bold 12px sans-serif'}));
+            this.add(this.Label.create({color: '#1d1f21', x: leftPos, y: 7, text: this.data.name, font: '500 12px sans-serif'}));
 
             // Balance and Denomination Indicator
             this.data.findBalance(this.__subContext__).then(function(balance) {
               this.__subContext__.currencyDAO.find(this.data.denomination).then(function(denom) {
-                var c = denom.color;
+
+                let treeTagColour;
+                // check parents
+                if ( !balance || type === 'Aggregate' ) {
+                  treeTagColour = '#9ba1a6';
+                }
+                else if ( /* new tree */ false ) {
+                  treeTagColour = treeTagColourSequence[treeTagColourPointer++];
+                  if (treeTagColourPointer > treeTagColourSequence.length) treeTagColourPointer = 0;
+                } else {
+                  treeTagColour = treeTagColourSequence[treeTagColourPointer];
+                }
+
                 this.add(this.Line.create({
                   startX: -this.width/2+1,
                   startY: 0,
                   endX: -this.width/2+1,
                   endY: this.height,
-                  color: c,
-                  lineWidth: 4
+                  color: treeTagColour,
+                  lineWidth: 6
                 }));
 
-                var circleColour = balance && ! type == 'Aggregate' ? '#080' : '#ddd';
+                const circleColour = balance && ! (type === 'Aggregate') ? '#32bf5e' : '#cbcfd4';
                 this.add(foam.graphics.Circle.create({color: circleColour, x: this.width/2-14, y: this.height-14, radius: 5, border: null}));
 
                 // Account Type
                 if ( type == 'Digital' ) type = 'Virtual';
                 this.add(this.Label.create({color: 'gray',  x: leftPos, y: 22, text: type + ' (' + denom.alphabeticCode + ')'}));
 
-                var balanceColour = type == 'Aggregate' ? 'gray' : 'black';
-                var balanceFont   = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
+                const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
+                const balanceFont   = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
                 this.add(this.Label.create({color: balanceColour, font: balanceFont, x: leftPos,  y: this.height-21, text: denom.format(balance)}));
               }.bind(this));
             }.bind(this));
