@@ -26,8 +26,6 @@ import static foam.mlang.MLang.OR;
  * user creating the business is in the admin group for the business.
  */
 public class CreateBusinessDAO extends ProxyDAO {
-  public DAO contactDAO;
-  public DAO invoiceDAO;
   public DAO groupDAO;
   public DAO agentJunctionDAO;
 
@@ -40,13 +38,6 @@ public class CreateBusinessDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    // There's some sort of race condition with the way DAO services are started.
-    // By getting these DAOs here instead of in the constructor, we can avoid
-    // the race condition. These can be moved back to the constructor when we
-    // fix that bug.
-    contactDAO = ((DAO) x.get("localContactDAO")).inX(getX());
-    invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(getX());
-
     if ( super.find_(x, obj) != null || ! ( obj instanceof Business ) ) {
       return super.put_(x, obj);
     }
@@ -63,7 +54,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     employeeGroup.copyFrom(employeeTemplateGroup);
     employeeGroup.setId(safeBusinessName + ".employee");
     employeeGroup.setPermissions(generatePermissions(x, employeeTemplateGroup, safeBusinessName));
-    employeeGroup.setBusiness(business.getId());
     employeeGroup.setParent("sme");
     groupDAO.put(employeeGroup);
 
@@ -71,7 +61,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     approverGroup.copyFrom(approverTemplateGroup);
     approverGroup.setId(safeBusinessName + ".approver");
     approverGroup.setPermissions(generatePermissions(x, approverTemplateGroup, safeBusinessName));
-    approverGroup.setBusiness(business.getId());
     approverGroup.setParent(safeBusinessName + ".employee");
     groupDAO.put(approverGroup);
 
@@ -79,7 +68,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     adminGroup.copyFrom(adminTemplateGroup);
     adminGroup.setId(safeBusinessName + ".admin");
     adminGroup.setPermissions(generatePermissions(x, adminTemplateGroup, safeBusinessName));
-    adminGroup.setBusiness(business.getId());
     adminGroup.setParent(safeBusinessName + ".approver");
     groupDAO.put(adminGroup);
 
@@ -96,8 +84,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     junction.setSourceId(user.getId());
     junction.setTargetId(business.getId());
     agentJunctionDAO.put(junction);
-
-    updateContacts(user, business);
 
     return business;
   }
@@ -120,49 +106,5 @@ public class CreateBusinessDAO extends ProxyDAO {
       permissionDAO.inX(getX()).put(newPermission);
     }
     return newPermissions;
-  }
-
-  /**
-   * Update the contacts in the system that reference the user that is creating
-   * this Business.
-   * @param {User} user The user creating the business.
-   * @param {Business} business The business being created.
-   */
-  public void updateContacts(User user, Business business) {
-    ArraySink sink = (ArraySink) contactDAO.where(EQ(Contact.EMAIL, user.getEmail())).select(new ArraySink());
-    List<Contact> contacts = sink.getArray();
-    for ( Contact contact : contacts ) {
-      Contact updatedContact = (Contact) contact.fclone();
-      updatedContact.setBusinessId(business.getId());
-      updatedContact.setSignUpStatus(ContactStatus.ACTIVE);
-      updatedContact.setEmail(business.getEmail());
-      contactDAO.put(updatedContact);
-      updateInvoices(contact, business);
-    }
-  }
-
-  /**
-   * Update the invoices in the system that reference the contact that
-   * references (via matching email) the user that is creating this Business.
-   * @param {User} user The user creating the business.
-   * @param {Business} business The business being created.
-   */
-  public void updateInvoices(Contact contact, Business business) {
-    long contactId = contact.getId();
-    ArraySink sink = (ArraySink) invoiceDAO
-      .where(OR(
-        EQ(Invoice.PAYEE_ID, contactId),
-        EQ(Invoice.PAYER_ID, contactId)))
-      .select(new ArraySink());
-    List<Invoice> invoices = sink.getArray();
-    for ( Invoice invoice : invoices ) {
-      Invoice updatedInvoice = (Invoice) invoice.fclone();
-      if ( invoice.getPayerId() == contactId ) {
-        updatedInvoice.setPayerId(business.getId());
-      } else {
-        updatedInvoice.setPayeeId(business.getId());
-      }
-      invoiceDAO.put(updatedInvoice);
-    }
   }
 }

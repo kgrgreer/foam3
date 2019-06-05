@@ -265,7 +265,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
   { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
-  { name: 'net/nanopay/tx/ruler/BusinessTransactionLimitRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
@@ -442,6 +441,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/alterna/AlternaTransactionPlanDAO' },
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeTransaction' },
+  { name: 'net/nanopay/tx/stripe/StripeCustomer' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardType' },
@@ -693,6 +693,7 @@ FOAM_FILES([
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
   { name: 'net/nanopay/contacts/ContactStatus' },
+  { name: 'net/nanopay/contacts/ContactMigrationRule', flags: ['java'] },
   { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/ContactWizardModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
@@ -874,7 +875,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
   { name: 'net/nanopay/meter/compliance/ComplianceService' },
   { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
-  { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
   { name: 'net/nanopay/meter/compliance/BusinessFinalRuleValidation' },
   { name: 'net/nanopay/meter/compliance/refinements' },
   { name: 'net/nanopay/meter/compliance/UserFinalRuleValidation' },

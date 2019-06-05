@@ -209,7 +209,6 @@ task foamCopy(type: Copy) {
     
     from "tools/js_build/foam-bin.js"
     into "$targetDir/classes/webroot"
-    from "foam2/node_modules/ace-builds/src-min-noconflict/ace.js"
 }
 
 task copyLib(type: Copy) {

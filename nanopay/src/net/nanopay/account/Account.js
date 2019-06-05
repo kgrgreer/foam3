@@ -225,6 +225,14 @@ foam.CLASS({
     },
     {
       name: 'findBalance',
+      type: 'Any',
+      async: true,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
       code: function(x) {
         var self = this;
         return new Promise(function(resolve, reject) {
@@ -233,13 +241,6 @@ foam.CLASS({
           });
         });
       },
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      type: 'Any',
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());

@@ -111,7 +111,7 @@ foam.CLASS({
 
   properties: [
     {
-      Class: 'Int',
+      class: 'Int',
       name: 'passwordStrength',
       value: 0
     },

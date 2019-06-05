@@ -26,25 +26,9 @@ foam.CLASS({
     'net.nanopay.fx.ExchangeRate'
   ],
 
-  imports: [
-    'accountDAO'
-  ],
-
-  properties: [
-
-  ],
-
   methods: [
     {
       name: 'findBalance',
-      javaReturns: 'long',
-      returns: 'Promise',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
       code: async function(x) {
         var balance = 0;
         var sink = await x.accountDAO.where(

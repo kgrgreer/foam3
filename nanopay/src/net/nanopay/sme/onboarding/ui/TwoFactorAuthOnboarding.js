@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
-    'agent'
+    'agent?'
   ],
 
   css: `
@@ -49,7 +49,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start()
           .start()
-            .hide(this.agent.twoFactorEnabled$)
+            .hide(! this.agent || this.agent.twoFactorEnabled$)
             .addClass('body-paragraph')
             .add(this.INSTRCTION)
           .end()
