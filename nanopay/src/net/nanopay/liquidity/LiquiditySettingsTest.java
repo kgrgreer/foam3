@@ -13,7 +13,6 @@ import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.util.Frequency;
 import net.nanopay.liquidity.Liquidity;
 import net.nanopay.liquidity.LiquiditySettings;
@@ -166,7 +165,6 @@ public class LiquiditySettingsTest
     balance = (Long) senderDigitalDefault.findBalance(x);
     test(SafetyUtil.equals(balance, CASH_IN_AMOUNT+high.getResetBalance()), "testAffectOfCICO: Cash-In, expecting: "+CASH_IN_AMOUNT+high.getResetBalance()+", found: "+balance);
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
-
     DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
     ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
     request.setStatus(ApprovalStatus.APPROVED);

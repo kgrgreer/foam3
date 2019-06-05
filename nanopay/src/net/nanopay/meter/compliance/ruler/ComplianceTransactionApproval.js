@@ -37,7 +37,6 @@ foam.CLASS({
           ApprovalStatus.APPROVED == approvalStatus
             ? TransactionStatus.COMPLETED
             : TransactionStatus.DECLINED);
-
       }
       `
     }
