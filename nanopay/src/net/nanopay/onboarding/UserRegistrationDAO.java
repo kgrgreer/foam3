@@ -57,7 +57,7 @@ public class UserRegistrationDAO
     if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
       throw new RuntimeException("Email required");
     }
-    
+
     // Set user SPID and group defined by service.
     user.setSpid(spid_);
     user.setGroup(group_);
@@ -89,17 +89,20 @@ public class UserRegistrationDAO
 
       Map<String, Object> params = (Map) token.getParameters();
 
+      // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
       // Check if user is internal ( already a registered user ), which will happen if adding a user to
       // a business.
-      isInternal = params.containsKey("internal" ) && ((Boolean) params.get("internal"));
+      isInternal = params.containsKey("internal") && ((Boolean) params.get("internal"));
       if ( ! isInternal ) {
         checkUserDuplication(x, user);
       }
 
       // Make sure the email the user is signing up with matches the email the invite was sent to
       if ( params.containsKey("inviteeEmail") ) {
-        if ( ! params.get("inviteeEmail").equals(user.getEmail()) ) {
-          throw new RuntimeException(("Email does not match invited email."));
+        if ( ! ((String) params.get("inviteeEmail")).equalsIgnoreCase(user.getEmail()) ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.warning(String.format("A user was signing up via an email invitation. The email address we expected them to use was '%s' but the email address of the user in the context was actually '%s'. The user in the context's id was %d.", params.get("inviteeEmail"), user.getEmail(), user.getId()));
+          throw new RuntimeException("Email does not match invited email.");
         }
       } else {
         throw new RuntimeException("Cannot process without an invited email.");
@@ -134,6 +137,8 @@ public class UserRegistrationDAO
         }
       }
     }
+
+    // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
     if ( ! isInternal ) checkUserDuplication(x, user);
 
     Address businessAddress = user.getBusinessAddress();

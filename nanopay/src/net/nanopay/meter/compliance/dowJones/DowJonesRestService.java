@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Base64;
 import java.util.Date;
+import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
 // apache
@@ -41,9 +42,9 @@ import java.text.SimpleDateFormat;
     DowJonesResponseMsg response = request(msg);
 
     if ( response.getHttpStatusCode() == 200 ) {
-      response.setModelInfo(BaseSearchResponse.getOwnClassInfo());
+      response.setModelInfo(DowJonesResponse.getOwnClassInfo());
     } else {
-      response.setModelInfo(BaseSearchInvalidResponse.getOwnClassInfo());
+      response.setModelInfo(DowJonesInvalidResponse.getOwnClassInfo());
     }
     return response;
   }
@@ -68,31 +69,46 @@ import java.text.SimpleDateFormat;
       client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
       client = HttpClientBuilder.create().build();
 
-      String urlAddress = "";
+      String urlAddress = baseUrl;
       String pattern = "yyyy-MM-dd";
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+      SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
       if ( req.getRequestInfo().equals(PERSON_NAME) ) {
+        urlAddress += req.getRequestInfo();
         String firstName = ((PersonNameSearchRequest) req.getModel()).getFirstName();
         String surName = ((PersonNameSearchRequest) req.getModel()).getSurName();
         Date filterLRDFrom = ((PersonNameSearchRequest) req.getModel()).getFilterLRDFrom();
-        if ( filterLRDFrom != null ) {
-          String formattedFilter = simpleDateFormat.format(filterLRDFrom);
-          urlAddress = baseUrl + req.getRequestInfo() + "first-name=" + firstName + "&surname=" + surName + "&filter-lrd-from=" + formattedFilter;
-        } else {
-          urlAddress = baseUrl + req.getRequestInfo() + "first-name=" + firstName + "&surname=" + surName;
+        Date dateOfBirth = ((PersonNameSearchRequest) req.getModel()).getDateOfBirth();
+        String filterRegion = ((PersonNameSearchRequest) req.getModel()).getFilterRegion();
+        urlAddress += "first-name=" + firstName + "&surname=" + surName;
+        if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
+          String formattedLRDFilter = sdf.format(filterLRDFrom);
+          urlAddress += "&filter-lrd-from=" + formattedLRDFilter;
+        }
+        if ( dateOfBirth != null && ! dateOfBirth.equals("") ) {
+          String formattedDOBFilter = sdf.format(dateOfBirth);
+          urlAddress += "&date-of-birth=" + formattedDOBFilter;
+        }
+        if ( filterRegion != null && ! filterRegion.equals("") ) {
+          urlAddress += "&filter-region=" + filterRegion;
         }
       } else if ( req.getRequestInfo().equals(ENTITY_NAME) ) {
+        urlAddress += req.getRequestInfo();
         String entityName = ((EntityNameSearchRequest) req.getModel()).getEntityName();
         Date filterLRDFrom = ((EntityNameSearchRequest) req.getModel()).getFilterLRDFrom();
-        if ( filterLRDFrom != null ) {
-          String formattedFilter = simpleDateFormat.format(filterLRDFrom);
-          urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName + "&filter-lrd-from=" + formattedFilter;
-        } else {
-          urlAddress = baseUrl + req.getRequestInfo() + "entity-name=" + entityName;
+        String filterRegion = ((EntityNameSearchRequest) req.getModel()).getFilterRegion();
+        urlAddress += "entity-name=" + entityName;
+        if ( filterLRDFrom != null && ! filterLRDFrom.equals("") ) {
+          String formattedFilter = sdf.format(filterLRDFrom);
+          urlAddress += "&filter-lrd-from=" + formattedFilter;
+        }
+        if ( filterRegion != null && ! filterRegion.equals("") ) {
+          urlAddress += "&filter-region=" + filterRegion;
         }
       }
 
+      urlAddress = urlAddress.replaceAll("  *", "%20");
       HttpGet get = new HttpGet(urlAddress);
       get.setHeader("Authorization", "Basic " + encodedCredentials);
       response = client.execute(get);

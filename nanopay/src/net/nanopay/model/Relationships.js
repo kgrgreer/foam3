@@ -99,25 +99,6 @@ foam.RELATIONSHIP({
     }
   }
 });
-foam.RELATIONSHIP({
-  sourceModel: 'net.nanopay.account.Account',
-  targetModel: 'net.nanopay.account.OverdraftAccount',
-  inverseName: 'backingAccount',
-  forwardName: 'fundedAccounts',
-  cardinality: '1:*',
-  targetDAOKey: 'accountDAO',
-  targetProperty: {
-    view: function(_, X) {
-      var E = foam.mlang.Expressions.create();
-      return {
-        class: 'foam.u2.view.ReferenceView',
-        dao: X.accountDAO.orderBy(net.nanopay.account.Account.NAME),
-        placeholder: 'select Backing Account',
-        objToChoice: function(o) { return [o.id, o.name ? o.name : '' + o.id]; }
-      };
-    }
-  }
-});
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.liquidity.LiquiditySettings',
@@ -487,17 +468,6 @@ foam.RELATIONSHIP({
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
-});
-
-foam.RELATIONSHIP({
-  cardinality: '1:*',
-  sourceModel: 'net.nanopay.model.Business',
-  targetModel: 'foam.nanos.auth.Group',
-  forwardName: 'groups',
-  inverseName: 'business',
-  targetProperty: {
-    hidden: true
-  }
 });
 
 foam.RELATIONSHIP({

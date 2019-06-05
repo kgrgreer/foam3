@@ -15,7 +15,7 @@ foam.CLASS({
     'foam.nanos.auth.token.TokenService',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'java.text.SimpleDateFormat',
     'java.util.*',
     'net.nanopay.invoice.model.Invoice',
@@ -43,9 +43,14 @@ foam.CLASS({
       javaCode: `
         // Gathering Variables and checking null objects
         if ( obj == null || ((Invoice) obj).getStatus() == null ) return obj;
-    
-        Invoice invoice  = (Invoice) obj;
+
+        Invoice invoice = (Invoice) obj;
         Invoice oldInvoice = (Invoice) super.find(invoice.getId());
+
+        // CPF-1322 showed an issue with an invoice not being saved in dao due to error down chain
+        // thus confirm invoice put first.
+        invoice = (Invoice) super.put_(x, invoice);
+        if ( invoice == null ) return invoice;
     
         User payerUser = (User) invoice.findPayerId(x);
         User payeeUser = (User) invoice.findPayeeId(x);
@@ -60,7 +65,9 @@ foam.CLASS({
           && 
           ( newInvoiceStatus == InvoiceStatus.PENDING )
           && 
-          invoice.getPaymentDate() != null;
+          invoice.getPaymentDate() != null
+          &&
+          invoice.isPropertySet("paymentId");
         boolean invoiceIsBeingPaidAndCompleted = 
           ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PAID )
           &&
@@ -119,12 +126,12 @@ foam.CLASS({
               args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
-
+            
           } catch (Exception e) {
             e.printStackTrace();
           }
         }
-        return super.put_(x, invoice);
+        return invoice;
       `
     },
     {
@@ -170,7 +177,6 @@ foam.CLASS({
           args.put("invoiceId", invoiceId);
           externalInvoiceToken.generateTokenWithParameters(x, userBeingSentEmail, args);
         } else {
-          EmailService emailService = (EmailService) x.get("email");
           Group group = (Group) userBeingSentEmail.findGroup(x);
           AppConfig appConfig = group.getAppConfig(x);
     
@@ -178,7 +184,7 @@ foam.CLASS({
           EmailMessage message = new EmailMessage.Builder(x)
             .setTo((new String[] { sendTo }))
             .build();
-          emailService.sendEmailFromTemplate(x, userBeingSentEmail, message, emailTemplateName, args);
+          EmailsUtility.sendEmailFromTemplate(x, userBeingSentEmail, message, emailTemplateName, args);
         }
       `
     },

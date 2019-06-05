@@ -20,6 +20,7 @@ foam.CLASS({
     'bank',
     'ctrl',
     'isConnecting',
+    'notify',
     'padCaptureDAO',
     'user',
     'validateAccountNumber',
@@ -88,15 +89,6 @@ foam.CLASS({
     { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking.\nPlease ensure your details are entered properly.' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
     { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
-    { name: 'ERROR_FIRST', message: 'First name cannot be empty.' },
-    { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
-    { name: 'ERROR_FLENGTH', message: 'First name cannot exceed 70 characters.' },
-    { name: 'ERROR_LLENGTH', message: 'Last name cannot exceed 70 characters.' },
-    { name: 'ERROR_STREET_NAME', message: 'Invalid street number.' },
-    { name: 'ERROR_STREET_NUMBER', message: 'Invalid street name.' },
-    { name: 'ERROR_CITY', message: 'Invalid city name.' },
-    { name: 'ERROR_POSTAL', message: 'Invalid postal code.' },
-    { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' },
     { name: 'SUCCESS', message: 'Your bank account has been added, please verify the deposited amount. It should appear in this account in 2-3 business days.' }
   ],
 
@@ -128,74 +120,22 @@ foam.CLASS({
         }).end();
     },
 
-    function validateForm() {
-      var nameRegEx = /^[a-z0-9 ]{1,32}$/i;
-      if ( ! this.bank.branchId ||
-           ! this.bank.institutionNumber ||
-           ! this.bank.accountNumber ||
-           ! this.bank.name ) {
-        ctrl.notify(this.INVALID_FORM, 'error');
-        return false;
-      }
-
-      if ( ! this.validateTransitNumber(this.bank.branchId) ) {
-        ctrl.notify(this.InvalidTransit, 'error');
-        return false;
-      }
-      if ( ! this.validateInstitutionNumber(this.bank.institutionNumber) ) {
-        ctrl.notify(this.InvalidInstitution, 'error');
-        return false;
-      }
-      if ( ! this.validateAccountNumber(this.bank.accountNumber) ) {
-        ctrl.notify(this.InvalidAccount, 'error');
-        return false;
-      }
-      if ( ! nameRegEx.test(this.bank.name) ) {
-        ctrl.notify(this.InvalidName, 'error');
-        return false;
-      }
-
-      return true;
-    },
-
     function validateInputs() {
-      var user = this.viewData.user;
-      if ( user.firstName.trim() === '' ) {
-        ctrl.notify(this.ERROR_FIRST, 'error');
-        return false;
+      if ( this.viewData.user.errors_ ) {
+        this.ctrl.notify(this.viewData.user.errors_[0][1], 'error');
+        return;
       }
-      if ( user.lastName.trim() === '' ) {
-        ctrl.notify(this.ERROR_LAST, 'error');
-        return false;
+
+      if ( this.bank.errors_ ) {
+        this.ctrl.notify(this.bank.errors_[0][1], 'error');
+        return;
       }
-      if ( user.firstName.length > 70 ) {
-        ctrl.notify(this.ERROR_FLENGTH, 'error');
-        return false;
+
+      if ( this.bank.address.errors_ ) {
+        this.ctrl.notify(this.bank.address.errors_[0][1], 'error');
+        return;
       }
-      if ( user.lastName.length > 70 ) {
-        ctrl.notify(this.ERROR_LLENGTH, 'error');
-        return false;
-      }
-      if ( ! user.businessName ) {
-        ctrl.notify(this.ERROR_BUSINESS_NAME_REQUIRED, 'error');
-        return false;
-      }
-      if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
-        ctrl.notify(this.ERROR_STREET_NAME, 'error');
-        return false;
-      }
-      if ( ! this.validateAddress(user.address.streetName) ) {
-        ctrl.notify(this.ERROR_STREET_NUMBER, 'error');
-        return false;
-      }
-      if ( ! this.validateCity(user.address.city) ) {
-        ctrl.notify(this.ERROR_CITY, 'error');
-        return false;
-      }
-      if ( ! this.validatePostalCode(user.address.postalCode, user.address.countryId) ) {
-        ctrl.notify(this.ERROR_POSTAL, 'error');
-        return false;
-      }
+
       return true;
     },
 
@@ -218,7 +158,7 @@ foam.CLASS({
           accountNumber: this.bank.accountNumber,
           companyName: this.viewData.padCompanyName
         }));
-        this.bank.address = user.address;
+
         this.bank = await this.bankAccountDAO.put(this.bank);
       } catch (error) {
         ctrl.notify(error.message, 'error');
@@ -226,8 +166,6 @@ foam.CLASS({
       } finally {
         this.isConnecting = false;
       }
-
-      this.pushToId('microCheck');
     }
   ],
 
@@ -245,7 +183,7 @@ foam.CLASS({
       code: function(X) {
         var model = X.pad;
         if ( model.isConnecting ) return;
-
+        this.bank.address = this.viewData.user.address;
         if ( ! model.validateInputs() ) return;
         model.capturePADAndPutBankAccounts();
         this.ctrl.stack.back();

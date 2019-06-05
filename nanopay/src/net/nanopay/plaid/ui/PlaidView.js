@@ -125,51 +125,37 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE(){
+    function initE() {
       this.SUPER();
       var self = this;
 
       this
         .start().addClass(this.myClass())
-        .start('div').addClass('plaid-container')
+        .start().addClass('plaid-container')
 
-          .start("p").addClass('plaid-header')
+          .start('p').addClass('plaid-header')
             .add('Connect to your account with Plaid')
           .end()
 
           .start().show(self.isLoading$.map(v => v === true)).addClass('plaid-loading-container')
-            .start({class: 'foam.u2.tag.Image', data: 'images/ic-loading.svg'})
+            .start({ class: 'foam.u2.tag.Image', data: 'images/ic-loading.svg' })
               .addClass('plaid-loading')
             .end()
           .end()
 
           .start().show(self.isLoading$.map(v => v === false))
-            .start('div').addClass('plaid-logo-container')
-              .start({class: 'foam.u2.tag.Image', data: this.logoPath}).addClass('plaid-logo').end()
-              .start({class: 'foam.u2.tag.Image', data: 'images/plus-no-bg-black.svg'}).addClass('plaid-logo-plus').end()
-              .start({class: 'foam.u2.tag.Image', data: 'images/plaid-logo-black.png'}).addClass('plaid-log-right').end()
+            .start().addClass('plaid-logo-container')
+              .start({ class: 'foam.u2.tag.Image', data: this.logoPath }).addClass('plaid-logo').end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/plus-no-bg-black.svg' }).addClass('plaid-logo-plus').end()
+              .start({ class: 'foam.u2.tag.Image', data: 'images/plaid-logo-black.png' }).addClass('plaid-log-right').end()
             .end()
           .end()
 
-          .start("p").show(false)
+          .start('p').show(false)
             .add(this.hint$)
           .end()
 
           .add(this.CONNECT)
-
-          .start('div').addClass('otherbank-container')
-            .start('p').add('Don\'t see your bank here? ').end()
-            .start('p').addClass('link-text')
-              .add('Connect with a void check')
-              .on('click', function() {
-                self.ctrl.add(self.Popup.create().tag({
-                  class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
-                  onComplete: self.onComplete
-                }));
-              })
-            .end()
-          .end()
-
         .end()
         .end();
     },
@@ -196,10 +182,10 @@ foam.CLASS({
         onExit: this.onExit.bind(this)
       };
 
-      if ( credential.token !== null && credential.token !== "" ) {
+      if ( credential.token !== null && credential.token !== '' ) {
         param['token'] = credential.token;
         this.isUpdateMode = true;
-        alert("It seems like you have changed your credential recently, re-login required");
+        alert('It seems like you have changed your credential recently, re-login required');
       }
 
       const handler = Plaid.create(param);
@@ -220,7 +206,7 @@ foam.CLASS({
         );
 
       if ( Object.keys(selectedAccount).length > 1 ) {
-        this.showNotification('Only 1 bank account can be added during the beta.', 'warning');
+        this.showNotification('Only 1 bank account can be added.', 'warning');
         this.isLoading = false;
         return;
       }

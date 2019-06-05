@@ -13,11 +13,21 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
+      label: 'Business Sector',
       documentation: 'Name of business sector.'
     },
     {
       class: 'Long',
       name: 'parent'
     }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      code: function(x) {
+        return this.name;
+      },
+    },
   ]
 });

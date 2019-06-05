@@ -39,6 +39,7 @@
                     "VariableDeclarator": true
                 }
             }
-        ]
+        ],
+        "indent": "off"
     }
 }

@@ -24,9 +24,14 @@ foam.CLASS({
 
   css: `
     ^ .iconPosition {
-      margin-left: -6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50px;
+      background-color: #2e227f;
+      margin-left: -1px;
     }
     ^ .statusBox {
+      height: 100px;
       margin-top: -20px;
       padding-bottom: 22px;
     }
@@ -64,7 +69,6 @@ foam.CLASS({
         .addClass(this.myClass())
         .style({ 'padding-left': '20px' })
         .start('div').addClass('iconPosition')
-          .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-created.svg' })
         .end()
         .start('div').addClass('statusBox')
           .start('div')

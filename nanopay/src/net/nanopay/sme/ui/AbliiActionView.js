@@ -22,7 +22,7 @@ foam.CLASS({
     }
 
     ^ img {
-      margin-right: 4px;
+      margin-right: 8px;
     }
 
     ^:hover:not(:disabled) {

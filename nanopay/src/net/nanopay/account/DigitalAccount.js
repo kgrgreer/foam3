@@ -46,6 +46,9 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
           static public DigitalAccount findDefault(X x, User user, String currency) {
+            return (DigitalAccount) findDefault(x, user, currency, null).fclone();
+          }
+          static public DigitalAccount findDefault(X x, User user, String currency, DigitalAccount instance) {
             Logger logger = (Logger) x.get("logger");
             DigitalAccount account = null;
 
@@ -81,7 +84,7 @@ foam.CLASS({
                 .where(
                   AND(
                     EQ(Account.ENABLED, true),
-                    INSTANCE_OF(DigitalAccount.class),
+                    INSTANCE_OF(instance == null ? DigitalAccount.class : instance.getClass()),
                     EQ(Account.DENOMINATION, denomination),
                     EQ(Account.IS_DEFAULT, true)
                   )
@@ -89,7 +92,7 @@ foam.CLASS({
                 .select(new ArraySink())).getArray();
 
               if ( accounts.size() == 0 ) {
-                account = new DigitalAccount();
+                account = instance == null ? new DigitalAccount() : instance;
                 account.setDenomination(denomination);
                 account.setIsDefault(true);
                 account.setOwner(user.getId()); // required until user.getAccounts()

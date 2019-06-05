@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   imports: [
-    'user'
+    'user',
+    'pushMenu'
   ],
 
   requires: [
@@ -53,7 +54,7 @@ foam.CLASS({
       color: #525455;
     }
     
-    ^ .foam-u2-ActionView-cancelTimeOutModal {
+    ^ .cancel-button {
       width: 96px !important;
       height: 36px !important;
       color: #525455;
@@ -64,13 +65,13 @@ foam.CLASS({
       border: none;
     }
 
-    ^ .foam-u2-ActionView-cancelTimeOutModal:hover {
+    ^ .cancel-button:hover {
       background: #fafafa !important;
       border: none;
       color: #525455;
     }
     
-    ^ .foam-u2-ActionView-syncTimeOutModal {
+    ^ .sync-button {
       width: 96px !important;
       height: 36px !important;
       color: white;
@@ -81,7 +82,7 @@ foam.CLASS({
       float: none !important;
     }
 
-    ^ .foam-u2-ActionView-syncTimeOutModal:hover {
+    ^ .sync-button:hover {
       background-color: #4D38E1 !important;
       color: white;
     }
@@ -96,6 +97,11 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'goDashboard',
+      value: false
+    }
   ],
 
   methods: [
@@ -110,8 +116,8 @@ foam.CLASS({
             .add(' Sync again with ' + this.user.integrationCode.label  + ' so your data in Ablii remains synced.')
           .end()
           .start().addClass('actions')
-            .start(this.CANCEL_TIME_OUT_MODAL).addClass('cancel').addClass('ignoreFloat').end()
-            .start(this.SYNC_TIME_OUT_MODAL).addClass('sync').addClass('ignoreFloat').end()
+            .start(this.CANCEL_TIME_OUT_MODAL).addClass('cancel-button').addClass('ignoreFloat').end()
+            .start(this.SYNC_TIME_OUT_MODAL).addClass('sync-button').addClass('ignoreFloat').end()
           .end()
         .end()
         .end()
@@ -124,6 +130,9 @@ foam.CLASS({
       label: 'Cancel',
       code: function(X) {
         X.closeDialog();
+        if ( this.goDashboard ) {
+          this.pushMenu('sme.main.dashboard');
+        }
       }
     },
     {

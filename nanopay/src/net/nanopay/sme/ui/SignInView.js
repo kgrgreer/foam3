@@ -202,9 +202,6 @@ foam.CLASS({
 
       this.addClass(this.myClass()).addClass('full-screen')
       .start().addClass('top-bar')
-        .start().addClass('top-bar-message')
-            .add(this.TOP_MESSAGE)
-        .end()
         .start().addClass('top-bar-inner')
           .start().addClass(this.myClass('button'))
             .start()
@@ -283,7 +280,7 @@ foam.CLASS({
       if ( returnedTempUser ) {
         this.user.copyFrom(returnedTempUser);
       } else {
-        this.notify('User was invited to a business however an error has occured during processing.', 'error');
+        this.notify('User was invited to a business however an error has occurred during processing.', 'error');
       }
     }
   ]

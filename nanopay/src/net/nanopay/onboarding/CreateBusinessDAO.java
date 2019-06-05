@@ -63,7 +63,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     employeeGroup.copyFrom(employeeTemplateGroup);
     employeeGroup.setId(safeBusinessName + ".employee");
     employeeGroup.setPermissions(generatePermissions(x, employeeTemplateGroup, safeBusinessName));
-    employeeGroup.setBusiness(business.getId());
     employeeGroup.setParent("sme");
     groupDAO.put(employeeGroup);
 
@@ -71,7 +70,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     approverGroup.copyFrom(approverTemplateGroup);
     approverGroup.setId(safeBusinessName + ".approver");
     approverGroup.setPermissions(generatePermissions(x, approverTemplateGroup, safeBusinessName));
-    approverGroup.setBusiness(business.getId());
     approverGroup.setParent(safeBusinessName + ".employee");
     groupDAO.put(approverGroup);
 
@@ -79,7 +77,6 @@ public class CreateBusinessDAO extends ProxyDAO {
     adminGroup.copyFrom(adminTemplateGroup);
     adminGroup.setId(safeBusinessName + ".admin");
     adminGroup.setPermissions(generatePermissions(x, adminTemplateGroup, safeBusinessName));
-    adminGroup.setBusiness(business.getId());
     adminGroup.setParent(safeBusinessName + ".approver");
     groupDAO.put(adminGroup);
 

@@ -12,7 +12,8 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Region',
-    'foam.nanos.auth.Country'
+    'foam.nanos.auth.Country',
+    'foam.u2.detail.SectionedDetailPropertyView'
   ],
 
   imports: [
@@ -59,9 +60,9 @@ foam.CLASS({
     { name: 'COUNTRY_LABEL', message: 'Country' },
     { name: 'STREET_NUMBER_LABEL', message: 'Street Number' },
     { name: 'STREET_NAME_LABEL', message: 'Street Name' },
-    { name: 'ADDRESS_LABEL', message: 'Address Line 2' },
-    { name: 'ADDRESS_HINT', message: 'Apartment, suite, unit, building, floor, etc.' },
-    { name: 'PROVINCE_LABEL', message: 'State/Province' },
+    { name: 'ADDRESS_LABEL', message: 'Address Line 2 (Optional)' },
+    { name: 'ADDRESS_HINT', message: 'Apartment, suite, etc.' },
+    { name: 'PROVINCE_LABEL', message: 'Province/State' },
     { name: 'CITY_LABEL', message: 'City' },
     { name: 'POSTAL_CODE_LABEL', message: 'Postal Code/Zip Code' }
   ],
@@ -96,11 +97,9 @@ foam.CLASS({
           this.start()
             .addClass('two-column')
             .start().addClass('label-input')
-              .start()
-                .addClass('label')
-                .add(this.COUNTRY_LABEL)
-              .end()
-              .start(this.Address.COUNTRY_ID.clone().copyFrom({
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.COUNTRY_ID.clone().copyFrom({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
                   placeholder: 'Select...',
@@ -114,87 +113,64 @@ foam.CLASS({
                   },
                   mode$: this.mode$
                 }
-              }))
-              .end()
+                })
+              })
             .end()
             .start().addClass('label-input')
-              .start()
-                .addClass('label')
-                .add(this.PROVINCE_LABEL)
-              .end()
-              .start(this.Address.REGION_ID.clone().copyFrom({
-                view: {
-                  class: 'foam.u2.view.ChoiceView',
-                  placeholder: 'Select...',
-                  objToChoice: function(region) {
-                    return [region.id, region.name];
+              .tag(this.SectionedDetailPropertyView, {
+                data$: this.data$,
+                prop: this.Address.REGION_ID.clone().copyFrom({
+                  view: {
+                    class: 'foam.u2.view.ChoiceView',
+                    placeholder: 'Select...',
+                    objToChoice: function(region) {
+                      return [region.id, region.name];
+                    },
+                    dao$: choices,
+                    mode$: this.mode$
                   },
-                  dao$: choices,
-                  mode$: this.mode$
-                }
-              }))
-              .end()
+                  label: this.PROVINCE_LABEL
+                })
+              })
             .end()
           .end();
         })
         .start()
           .addClass('two-column')
           .start().addClass('label-input')
-            .start().addClass('label').add(this.STREET_NUMBER_LABEL).end()
-            .start(this.Address.STREET_NUMBER, { mode$: this.mode$ })
-              .addClass('input-field')
-            .end()
+            .tag(this.SectionedDetailPropertyView, {
+              data$: this.data$,
+              prop: this.Address.STREET_NUMBER
+            })
           .end()
           .start().addClass('label-input')
-            .start().addClass('label').add(this.STREET_NAME_LABEL).end()
-            .start(this.Address.STREET_NAME, { mode$: this.mode$ })
-              .addClass('input-field')
-            .end()
+            .tag(this.SectionedDetailPropertyView, {
+              data$: this.data$,
+              prop: this.Address.STREET_NAME
+            })
           .end()
         .end()
         .start().addClass('label-input')
-          .start().addClass('label').add(this.ADDRESS_LABEL).end()
-          .start(this.Address.SUITE, { mode$: this.mode$ })
-            .addClass('input-field')
-            .setAttribute('placeholder', 'Optional')
-          .end()
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.Address.SUITE
+          })
         .end()
         .start()
           .enableClass('three-column', this.withoutCountrySelection)
           .enableClass('two-column', ! this.withoutCountrySelection)
           .start().addClass('label-input')
-            .start().addClass('label').add(this.CITY_LABEL).end()
-            .start(this.Address.CITY, { mode$: this.mode$ })
-              .addClass('input-field')
-            .end()
+            .tag(this.SectionedDetailPropertyView, {
+              data$: this.data$,
+              prop: this.Address.CITY
+            })
           .end()
           .start().addClass('label-input')
-            .start().addClass('label').add(this.POSTAL_CODE_LABEL).end()
-            .start(this.Address.POSTAL_CODE, { mode$: this.mode$ })
-              .addClass('input-field')
-            .end()
+            .tag(this.SectionedDetailPropertyView, {
+              data$: this.data$,
+              prop: this.Address.POSTAL_CODE
+            })
           .end()
-          .callIf(this.withoutCountrySelection, function() {
-            this.start()
-              .addClass('label-input')
-              .start()
-                .addClass('label')
-                .add(self.PROVINCE_LABEL)
-              .end()
-              .start(self.Address.REGION_ID.clone().copyFrom({
-                view: {
-                  class: 'foam.u2.view.ChoiceView',
-                  placeholder: 'Select ...',
-                  objToChoice: function(region) {
-                    return [region.id, region.name];
-                  },
-                  dao$: choices,
-                  mode$: self.mode$
-                }
-              }))
-              .end()
-            .end();
-          })
         .end();
     }
   ]

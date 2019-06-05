@@ -38,20 +38,24 @@ foam.CLASS({
           type: 'Context'
         },
         {
-          name: 'obj',
-          type: 'FObject'
-        },
-        {
-          name: 'objDaoKey',
-          type: 'String'
+          name: 'approvalRequest',
+          type: 'net.nanopay.approval.ApprovalRequest'
         }
       ],
       javaCode: `
+        // When approval request already contains approver, create
+        // the approval request only.
+        if ( approvalRequest.getApprover() != 0 ) {
+          ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
+          return;
+        }
+
+        // When the approval request does not have approver, create
+        // approval requests for each user in the approver group.
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = (Group) groupDAO.find(getApproverGroupId());
         if ( group != null ) {
           DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
-          String objId = String.valueOf(obj.getProperty("id"));
           DAO localUserDAO = (DAO) x.get("localUserDAO");
 
           localUserDAO.inX(x)
@@ -60,14 +64,10 @@ foam.CLASS({
               @Override
               public void put(Object o, Detachable d) {
                 User approver = (User) o;
-                approvalRequestDAO.put(
-                  new ApprovalRequest.Builder(x)
-                    .setApprover(approver.getId())
-                    .setObjId(objId)
-                    .setDaoKey(objDaoKey)
-                    .setStatus(ApprovalStatus.REQUESTED)
-                    .build()
-                );
+                ApprovalRequest ar = (ApprovalRequest) approvalRequest.fclone();
+
+                ar.setApprover(approver.getId());
+                approvalRequestDAO.put(ar);
               }
             });
         }

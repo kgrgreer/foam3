@@ -24,10 +24,15 @@ foam.CLASS({
 
   css: `
     ^ .iconPosition {
-      margin-left: -6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50px;
+      background-color: #2e227f;
+      margin-left: -1px;
     }
     ^ .statusBox {
-      margin-top: -20px;
+      height: 75px;
+      margin-top: -15px;
       padding-bottom: 22px;
     }
     ^ .statusContent {
@@ -60,55 +65,59 @@ foam.CLASS({
       switch ( status.newValue ) {
         case this.InvoiceStatus.VOID:
           return {
-            labelText: 'Void',
+            labelText: this.InvoiceStatus.VOID.label,
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
         case this.InvoiceStatus.PENDING:
           return {
-            labelText: 'Pending',
+            labelText: this.InvoiceStatus.PENDING.label,
             labelDecoration: 'Invoice-Status-Pending',
             icon: 'images/ic-pending.svg',
           };
         case this.InvoiceStatus.PAID:
           return {
-            labelText: 'Paid',
+            labelText: this.InvoiceStatus.PAID.label,
             labelDecoration: 'Invoice-Status-Paid',
             icon: 'images/ic-approve.svg'
           };
         case this.InvoiceStatus.SCHEDULED:
           return {
-            labelText: 'Scheduled',
+            labelText: this.InvoiceStatus.SCHEDULED.label,
             labelDecoration: 'Invoice-Status-Scheduled',
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.OVERDUE:
           return {
-            labelText: 'Overdue',
+            labelText: this.InvoiceStatus.OVERDUE.label,
             labelDecoration: 'Invoice-Status-Overdue',
             icon: 'images/ic-overdue.svg'
           };
         case this.InvoiceStatus.UNPAID:
           return {
-            labelText: 'Unpaid',
+            labelText: this.InvoiceStatus.UNPAID.label,
             labelDecoration: 'Invoice-Status-Unpaid',
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.PENDING_APPROVAL:
-          return {
-            labelText: 'Pending approval',
-            labelDecoration: 'Invoice-Status-Pending-approval',
-            icon: 'images/ic-scheduled.svg'
-          };
+          var user = ctrl.user;
+          var currentUser = `${user.lastName}, ${user.firstName}(${user.id})`;
+          if (record.user === currentUser)
+            return {
+              labelText: this.InvoiceStatus.PENDING_APPROVAL.label,
+              labelDecoration: 'Invoice-Status-Pending-approval',
+              icon: 'images/ic-scheduled.svg'
+            };
+          else return null;
         case this.InvoiceStatus.PENDING_ACCEPTANCE:
           return {
-            labelText: 'Pending acceptance',
+            labelText: this.InvoiceStatus.PENDING_ACCEPTANCE.label,
             labelDecoration: 'Invoice-Status-Pending-approval',
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.DEPOSITING_MONEY:
           return {
-            labelText: 'Depositing money',
+            labelText: this.InvoiceStatus.DEPOSITING_MONEY.label,
             labelDecoration: 'Invoice-Status-Pending-approval',
             icon: 'images/ic-scheduled.svg'
           };
@@ -137,15 +146,14 @@ foam.CLASS({
         .addClass(this.myClass())
         .style({ 'padding-left': '20px' })
         .start('div').addClass('iconPosition')
-          .tag({ class: 'foam.u2.tag.Image', data: attributes.icon })
         .end()
         .start('div').addClass('statusBox')
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add('Invoice has been marked as ', )
+              .add('Invoice status changed to ', )
             .end()
-            .start('div').addClass(attributes.labelDecoration)
+            .start('div').addClass('inline')
               .start('span').add(attributes.labelText)
                 .start('span').style({ 'margin-left': '4px' })
                   .callIf(hasDisplayDate && attributes.labelText == 'Scheduled', function() {

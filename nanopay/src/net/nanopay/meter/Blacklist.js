@@ -5,6 +5,11 @@ foam.CLASS({
 
   documentation: 'Blacklist entity associated to a users group',
 
+  tableColumns: [
+    'id',
+    'description',
+  ],
+
   properties: [
     {
       class: 'String',

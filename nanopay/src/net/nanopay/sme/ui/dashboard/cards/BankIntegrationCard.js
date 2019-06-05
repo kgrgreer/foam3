@@ -8,9 +8,15 @@ foam.CLASS({
     Actions are provided for both scenarios (attached or not).
   `,
 
+  implements: [
+    'foam.mlang.Expressions',
+  ],
+
   requires: [
     'net.nanopay.account.Account',
-    'net.nanopay.sme.ui.dashboard.cards.IntegrationCard',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.payment.Institution',
+    'net.nanopay.sme.ui.dashboard.cards.IntegrationCard'
   ],
 
   implements: [
@@ -18,10 +24,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
+    'branchDAO',
+    'institutionDAO',
     'pushMenu',
     'stack',
-    'user'
+    'user',
   ],
 
   messages: [
@@ -59,54 +66,59 @@ foam.CLASS({
       value: 'images/ablii/ic-dashboardBank.svg'
     },
     {
-      class: 'Boolean',
-      name: 'isLoading',
-      value: true
+      class: 'String',
+      name: 'subtitleToUse',
+      expression: function(isAccountThere) {
+        if ( isAccountThere ) {
+          var subtitle = this.SUBTITLE_LINKED + ' ';
+          subtitle += this.abbreviation ? this.abbreviation : (this.bankname ? this.bankname : this.account.name);
+          subtitle += ' ****' + this.account.accountNumber.slice(4)
+          return subtitle;
+        }
+        return this.SUBTITLE_EMPTY;
+      }
     },
     {
       class: 'Boolean',
-      name: 'isErrored',
-      value: false
+      name: 'isAccountThere',
+      expression: function(account) {
+        return account != undefined && account.id != 0;
+      }
     },
     {
       class: 'String',
-      name: 'subtitleToUse',
-      expression: function(account, isLoading, isErrored) {
-        if ( isLoading )  return this.SUBTITLE_LOADING;
-        if ( isErrored )  return this.SUBTITLE_ERROR;
-        if ( account )    return this.SUBTITLE_LINKED + ' ' + account.name;
-
-        return this.SUBTITLE_EMPTY;
-      }
+      name: 'abbreviation'
+    },
+    {
+      class: 'String',
+      name: 'bankName'
     }
   ],
 
   methods: [
-    function init() {
-      var self = this;
-      this.accountDAO.where(this.EQ(this.Account.OWNER, this.user.id)).limit(1).select().then(function(accounts) {
-        if ( accounts.length > 0 ) {
-          self.account = accounts[0];
+    async function getInstitution() {
+      if ( this.isAccountThere ) {      
+        let branch = await this.branchDAO.find(this.account.branch);
+        let institution = await this.institutionDAO.find(branch.institution);
+        if ( institution ) {
+          this.abbreviation = institution.abbreviation;
+          this.bankName = institution.name;
         }
-        self.isErrored = false;
-      }).catch(function(error) {
-        self.isErrored = true;
-      }).finally(function() {
-        self.isLoading = false;
-      });
-    },
+      } 
+    }, 
 
     function initE() {
-      var self = this;
-      this.add(this.slot(function(account, subtitleToUse) {
-        return this.E()
-          .start(self.IntegrationCard, {
-            iconPath: self.iconPath,
-            title: self.TITLE,
-            subtitle: subtitleToUse,
-            action: account ? self.VIEW_ACCOUNT : self.ADD_BANK
-          }).end();
-      }));
+      this.getInstitution().then(() => {
+        this.add(this.slot((subtitleToUse, isAccountThere) => {
+          return this.E()
+            .start(this.IntegrationCard, {
+              iconPath: this.iconPath,
+              title: this.TITLE,
+              subtitle: subtitleToUse,
+              action: isAccountThere ? this.VIEW_ACCOUNT : this.ADD_BANK
+            }).end();
+        }));
+      })
     }
   ],
 
@@ -114,17 +126,6 @@ foam.CLASS({
     {
       name: 'viewAccount',
       label: 'View',
-      isEnabled: function(isLoading, isErrored) {
-        if ( isLoading ) {
-          return false;
-        }
-
-        if ( isErrored ) {
-          return false;
-        }
-
-        return true;
-      },
       code: function() {
         this.pushMenu('sme.main.banking');
       }
@@ -132,22 +133,8 @@ foam.CLASS({
     {
       name: 'addBank',
       label: 'Add',
-      isEnabled: function(isLoading, isErrored) {
-        if ( isLoading ) {
-          return false;
-        }
-
-        if ( isErrored ) {
-          return false;
-        }
-
-        return true;
-      },
       code: function() {
-        this.stack.push({
-          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-          cadAvailable: true
-        });
+        this.pushMenu('sme.main.banking');
       }
     }
   ]

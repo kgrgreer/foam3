@@ -687,7 +687,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
           return saveResult(x, "invoiceResync", new ResultResponse.Builder(x)
             .setResult(false)
-            .setReason("An Error has occured.")
+            .setReason("An Error has occurred.")
             .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
             .build());
         }

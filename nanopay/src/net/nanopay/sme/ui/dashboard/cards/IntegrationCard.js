@@ -14,9 +14,9 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      width: 500px;
       height: 72px;
-
+      min-width: 100%;
       box-sizing: border-box;
 
       border-radius: 3px;
@@ -25,6 +25,7 @@ foam.CLASS({
       background-color: #ffffff;
 
       padding: 16px 24px;
+      margin-bottom: 2px;
     }
 
     ^flex-container {
@@ -51,7 +52,7 @@ foam.CLASS({
 
       font-size: 14px;
       font-weight: 900;
-      line-height: 1.5
+      line-height: 1.5;
       color: #2b2b2b;
     }
 
@@ -63,28 +64,9 @@ foam.CLASS({
       color: #8e9090;
     }
 
-    ^ .net-nanopay-sme-ui-AbliiActionView-primary {
-      vertical-align: middle;
-
+    ^button {
       width: 96px;
       margin-left: auto;
-
-      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-      border: solid 1px #604aff;
-      background-color: #ffffff;
-      color: #604aff;
-    }
-
-    ^ .net-nanopay-sme-ui-AbliiActionView-primary:disabled {
-      border: solid 1px #bdb4fd;
-      background-color: #ffffff;
-      color: #bdb4fd;
-    }
-
-    ^ .net-nanopay-sme-ui-AbliiActionView-primary:hover:not(:disabled) {
-      border: solid 1px #604aff;
-      background-color: #ffffff;
-      color: #604aff;
     }
   `,
 
@@ -122,7 +104,9 @@ foam.CLASS({
               .start('p').addClass(self.myClass('subtitle')).add(self.subtitle).end()
             .end()
             .startContext({ data: self.data })
-              .tag(self.action)
+              .start(self.action, { buttonStyle: 'SECONDARY' })
+                .addClass(this.myClass('button'))
+              .end()
             .endContext();
         }));
     }

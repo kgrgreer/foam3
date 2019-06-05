@@ -24,6 +24,7 @@ foam.CLASS({
   imports: [
     'acceptanceDocumentService',
     'agent',
+    'ctrl',
     'isSigningOfficer',
     'menuDAO',
     'user'
@@ -123,6 +124,7 @@ foam.CLASS({
       padding-top: 30px;
     }
     ^ .checkBoxes input{
+      margin-right: 20px;
       vertical-align: middle;
     }
     ^ .checkBoxes span{
@@ -296,18 +298,20 @@ foam.CLASS({
         this.viewData.agent.additionalDocuments = n;
       }
     },
-    {
-      class: 'FObjectProperty',
-      name: 'identification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
-      factory: function() {
-        return this.viewData.agent.identification ? this.viewData.agent.identification : this.PersonalIdentification.create({});
-      },
-      postSet: function(o, n) {
-        this.viewData.agent.identification = n;
-      },
-    },
+    // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
+    //
+    // {
+    //   class: 'FObjectProperty',
+    //   name: 'identification',
+    //   of: 'net.nanopay.model.PersonalIdentification',
+    //   view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
+    //   factory: function() {
+    //     return this.viewData.agent.identification ? this.viewData.agent.identification : this.PersonalIdentification.create({});
+    //   },
+    //   postSet: function(o, n) {
+    //     this.viewData.agent.identification = n;
+    //   },
+    // },
     {
       class: 'Boolean',
       name: 'termsCheckBox',
@@ -433,11 +437,6 @@ foam.CLASS({
           family member of any such person?`
     },
     {
-      name: 'INVITE_INFO',
-      message: `Invite a signing officer or other employees in your business.
-          Recipients will receive a link to join your business on Ablii`
-    },
-    {
       name: 'SIGNING_INFORMATION',
       message: `A signing officer is a person legally authorized to act
           on behalf of the business. (e.g. CEO, COO, board director)`
@@ -452,7 +451,7 @@ foam.CLASS({
     },
     {
       name: 'INVITE_USERS_EXP',
-      message: `Invite a signing officer or other employees in your business.
+      message: `Invite a signing officer to your business.
           Recipients will receive a link to join your business on Ablii`
     },
     {
@@ -460,12 +459,18 @@ foam.CLASS({
       message: `Please provide a copy of your government issued drivers license or passport. 
           The image must be clear, or will require resubmission. If your name differs from what 
           the ID shows, please provide sufficient documentation (marriage certificate, name change documentation, etc)`
+    },
+    {
+      name: 'QUEBEC_DISCLAIMER',
+      message: 'Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.'
     }
   ],
 
   methods: [
     function init() {
       this.loadAcceptanceDocuments();
+
+      this.onDetach(this.viewData.agent.address.regionId$.sub(this.checkQuebec));
     },
     function initE() {
       this.nextLabel = 'Next';
@@ -514,11 +519,12 @@ foam.CLASS({
             .start().addClass('inline').addClass('label-width').add(this.DOMESTIC_QUESTION).end()
             .start(this.POLITICALLY_EXPOSED).addClass('radio-button').end()
           .end()
-          .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
-          .start(this.IDENTIFICATION).end()
-            // Terms and Services and Compliance stuff
-            //
             // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
+            // 
+            // .start().addClass('medium-header').add(this.IDENTIFICATION_TITLE).end()
+            // .start(this.IDENTIFICATION).end()
+            //
+            // Terms and Services and Compliance stuff
             //
             // .start(this.TRI_PARTY_AGREEMENT_CAD).style({ 'margin-top': '30px', 'margin-bottom': '30px' })
             //   .show(this.isCanadian$)
@@ -611,21 +617,28 @@ foam.CLASS({
       try {
         this.triPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementCAD', '');
       } catch (error) {
-        console.warn('Error occured finding Tri-Party Agreement CAD: ', error);
+        console.warn('Error occurred finding Tri-Party Agreement CAD: ', error);
       }
 
       try {
         this.triPartyAgreementUsd = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementUSD', '');
       } catch (error) {
-        console.warn('Error occured finding Tri-Party Agreement USD: ', error);
+        console.warn('Error occurred finding Tri-Party Agreement USD: ', error);
       }
 
       try {
         this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'dualPartyAgreementCAD', '');
       } catch (error) {
-        console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
+        console.warn('Error occurred finding Dual-Party Agreement CAD: ', error);
       }
     },
+
+    function checkQuebec(detachable, eventName, propName, propSlot) {
+      var regionId = propSlot.get();
+      if ( regionId === 'QC' ) {
+        this.ctrl.notify(this.QUEBEC_DISCLAIMER, 'error');
+      }
+    }
   ],
 
   actions: [

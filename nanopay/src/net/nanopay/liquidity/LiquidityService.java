@@ -6,12 +6,17 @@ import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.mlang.sink.Sum;
 import foam.nanos.app.AppConfig;
+import foam.nanos.app.Mode;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
+import net.nanopay.approval.ApprovalRequest;
+import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.tx.CompletedTransactionDAO;
+import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.util.Frequency;
 import net.nanopay.liquidity.Liquidity;
 import net.nanopay.liquidity.LiquiditySettings;
@@ -220,7 +225,14 @@ public class LiquidityService
         .setSourceAccount(source)
         .build();
     try {
-      getLocalTransactionDAO().put_(x_, transaction);
+      Transaction tx = (Transaction) getLocalTransactionDAO().put_(x_, transaction);
+      if ( tx instanceof ComplianceTransaction &&
+        ( ( (AppConfig) x_.get("appConfig") ).getMode() == Mode.TEST || ( (AppConfig) x_.get("appConfig") ).getMode() == Mode.DEVELOPMENT ) ) {
+        DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
+        ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, tx.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+        request.setStatus(ApprovalStatus.APPROVED);
+        approvalDAO.put_(x_, request);
+      }
     } catch (Exception e) {
       getLogger().error("Error generating Liquidity transactions.", e);
       Notification notification = new Notification();
