@@ -58,8 +58,8 @@ export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
-java -server -jar "${JAR}"
-#nohup java -server -jar "${JAR}" &>/dev/null &
-#echo $! > "${NANOS_PIDFILE}"
+#java -server -jar "${JAR}"
+nohup java -server -jar "${JAR}" &>/dev/null &
+echo $! > "${NANOS_PIDFILE}"
 
 exit 0
