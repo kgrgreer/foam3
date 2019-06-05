@@ -52,20 +52,21 @@ foam.CLASS({
         ).select();
         var accounts = [];
         var list1 = sink.array;
-        while( list1.size() > 0) {
-          var next = list1.get(0);
-          if (! ( next instanceof net.nanopay.account.AggregateAccount ) ) {
+        while( list1.length > 0) {
+          var next = list1[0];
+          if (! ( next.cls_ === net.nanopay.account.AggregateAccount ) ) {
             var childsSink = await x.accountDAO.where(
               this.EQ(net.nanopay.account.AggregateAccount.PARENT, next.id)
-            ).select().array;
-            for( var i = 0; i < childsSink.length; i++ ) {
-              if ( ! accounts.contains(childsSink[i]) )
-                list1.push(childsSink[i]);
+            ).select();
+            const childsSinkArray = childsSink.array;
+            for( var i = 0; i < childsSinkArray.length; i++ ) {
+              if ( ! accounts.includes(childsSinkArray[i]) )
+                list1.push(childsSinkArray[i]);
             }
           }
-          if ( ! accounts.contains(next) )
-            accounts.add(next)
-          list1.remove(next);
+          if ( ! accounts.includes(next) )
+            accounts.push(next)
+          list1 = list1.filter(val => val !== next)
         }
 
         for ( var i = 0; i < accounts.length; i++ ) {
