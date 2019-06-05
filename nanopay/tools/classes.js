@@ -128,6 +128,7 @@ var classes = [
   'net.nanopay.fx.afex.Quote',
   'net.nanopay.fx.afex.GetQuoteRequest',
   'net.nanopay.fx.afex.AddPayeeRequest',
+  'net.nanopay.fx.afex.AddPayeeResponse',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',

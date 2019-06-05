@@ -5,7 +5,6 @@ import foam.core.X;
 import foam.lib.json.JSONParser;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
-import net.nanopay.fx.ascendantfx.model.PayeeOperationResult;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -116,14 +115,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       return quote;
     } catch (IOException | URISyntaxException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
   }
 
   @Override
-  public GetQuoteResponse getValueDate() {
+  public Quote getValueDate() {
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/valuedates");
       uriBuilder.setParameter("CurrencyPair", "USDCAD")
@@ -153,46 +152,50 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public PayeeOperationResult addPayee() {
+  public AddPayeeResponse addPayee(AddPayeeRequest request) {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/beneficiaryCreate");
 
+      httpPost.addHeader("API-Key", apiKey);
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
-      nvps.add(new BasicNameValuePair("BankAccountNumber", "58926481025163"));
-      nvps.add(new BasicNameValuePair("BankAddress1", "Association 926 W College Ave"));
-      nvps.add(new BasicNameValuePair("BankAddress3", "Appleton"));
-      nvps.add(new BasicNameValuePair("BankCountryCode", "US"));
-      nvps.add(new BasicNameValuePair("BankName", "Associated Bank, National"));
-      nvps.add(new BasicNameValuePair("BankRoutingCode", "075900575"));
-      nvps.add(new BasicNameValuePair("BeneficiaryAddressLine1", "200 King St"));
-      nvps.add(new BasicNameValuePair("BeneficiaryCity", "New York"));
-      nvps.add(new BasicNameValuePair("BeneficiaryCountryCode", "US"));
-      nvps.add(new BasicNameValuePair("BeneficiaryName", "Jack2"));
-      nvps.add(new BasicNameValuePair("BeneficiaryPostalCode", "10019"));
-      nvps.add(new BasicNameValuePair("BeneficiaryRegion", "New York"));
-      nvps.add(new BasicNameValuePair("Corporate", "true"));
-      nvps.add(new BasicNameValuePair("Currency", "USD"));
-      nvps.add(new BasicNameValuePair("HighLowValue", "1"));
-      nvps.add(new BasicNameValuePair("RemittanceLine1", "BOF NanoPay X-border Corporation"));
-
+      nvps.add(new BasicNameValuePair("BankAccountNumber", request.getBankAccountNumber()));
+      //nvps.add(new BasicNameValuePair("BankAddress1", "Association 926 W College Ave"));
+      //nvps.add(new BasicNameValuePair("BankAddress3", "Appleton"));
+      nvps.add(new BasicNameValuePair("BankCountryCode", request.getBankCountryCode()));
+      nvps.add(new BasicNameValuePair("BankName", request.getBankName()));
+      nvps.add(new BasicNameValuePair("BankRoutingCode", request.getBankRoutingCode()));
+      nvps.add(new BasicNameValuePair("BeneficiaryAddressLine1", request.getBeneficiaryAddressLine1()));
+      nvps.add(new BasicNameValuePair("BeneficiaryCity", request.getBeneficiaryCity()));
+      nvps.add(new BasicNameValuePair("BeneficiaryCountryCode", request.getBeneficiaryCountryCode()));
+      nvps.add(new BasicNameValuePair("BeneficiaryName", request.getBeneficiaryName()));
+      nvps.add(new BasicNameValuePair("BeneficiaryPostalCode", request.getBeneficiaryPostalCode()));
+      nvps.add(new BasicNameValuePair("BeneficiaryRegion", request.getBeneficiaryRegion()));
+      nvps.add(new BasicNameValuePair("Corporate", request.getCorporate()));
+      nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
+      nvps.add(new BasicNameValuePair("HighLowValue",  request.getHighLowValue()));
+      // nvps.add(new BasicNameValuePair("RemittanceLine1", "BOF NanoPay X-border Corporation"));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
-
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-      StringBuilder sb = new StringBuilder();
-      String line;
-      while ( (line = rd.readLine()) != null ) {
-        sb.append(line);
+      Object[] respArr = jsonParser.parseStringForArray(response, AddPayeeResponse.class);
+
+      if ( respArr.length != 0 ) {
+        AddPayeeResponse addPayeeResponse = (AddPayeeResponse) respArr[0];
+        System.out.println("Add Payee response: ");
+        System.out.println(addPayeeResponse.getName());
+        System.out.println(addPayeeResponse.getCode());
+        System.out.println(addPayeeResponse.getInformationMessage());
+        System.out.println(addPayeeResponse.getInformationCode());
+        System.out.println(addPayeeResponse.getStatus());
+
+        return addPayeeResponse;
       }
-
-      System.out.println("addPayee response: " + sb.toString());
-
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;

@@ -26,7 +26,7 @@ foam.INTERFACE({
     {
       name: 'getValueDate',
       async: true,
-      type: 'net.nanopay.fx.afex.GetQuoteResponse',
+      type: 'net.nanopay.fx.afex.Quote',
       args: [
         // {
         //   type: 'net.nanopay.fx.ascendantfx.model.GetQuoteRequest',
@@ -38,12 +38,12 @@ foam.INTERFACE({
       name: 'addPayee',
       documentation: 'To add a new payee',
       async: true,
-      type: 'net.nanopay.fx.ascendantfx.model.PayeeOperationResult',
+      type: 'net.nanopay.fx.afex.AddPayeeResponse',
       args: [
-        // {
-        //   name: 'request',
-        //   type: 'net.nanopay.fx.ascendantfx.model.PayeeOperationRequest'
-        // }
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.AddPayeeRequest'
+        }
       ]
     }
   ]
