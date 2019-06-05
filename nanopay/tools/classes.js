@@ -127,6 +127,7 @@ var classes = [
   // Contacts
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
+  'net.nanopay.contacts.ContactMigrationRule',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
