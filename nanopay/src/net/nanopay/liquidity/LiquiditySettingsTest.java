@@ -53,8 +53,6 @@ public class LiquiditySettingsTest
     ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
     request.setStatus(ApprovalStatus.APPROVED);
     approvalDAO.put_(x_, request);
-    co.setStatus(TransactionStatus.COMPLETED);
-    txnDAO.put(co);
     balance = (Long)senderDigitalDefault.findBalance(x);
     test(balance == CASH_IN_AMOUNT + initialBalance - CASH_OUT_AMOUNT, "Balance with PENDING Cash-Out "+(initialBalance + CASH_IN_AMOUNT-CASH_OUT_AMOUNT));
 
@@ -162,19 +160,6 @@ public class LiquiditySettingsTest
     ls_ = (LiquiditySettings) ((DAO) x.get("liquiditySettingsDAO")).put(ls_).fclone();
     LiquiditySettingsCheckCron cron = new LiquiditySettingsCheckCron(Frequency.DAILY);
     cron.execute(x_);
-
-    DAO txnDAO = (DAO) x_.get("localTransactionDAO");
-    ArraySink transaction = new ArraySink();
-    txnDAO.select(transaction);
-    List<Transaction> tList = transaction.getArray();
-    for ( Transaction txn : tList.toArray(new Transaction[tList.size()])) {
-      if ( txn instanceof ComplianceTransaction ) {
-        txn = (Transaction) txn.fclone();
-        txn.setStatus(TransactionStatus.COMPLETED);
-        txnDAO.put_(x_, txn);
-      }
-    }
-
     balance = (Long) senderDigitalDefault.findBalance(x);
     test(SafetyUtil.equals(balance, 3L), "testAffectOfCICO: Cron Cash-Out reset balance, expecting: "+high.getResetBalance()+", found: "+balance);
     Transaction ci = createCompletedCashIn(x, (Account) senderBankAccount_, (Account) senderDigitalDefault, CASH_IN_AMOUNT);
@@ -182,8 +167,10 @@ public class LiquiditySettingsTest
     test(SafetyUtil.equals(balance, CASH_IN_AMOUNT+high.getResetBalance()), "testAffectOfCICO: Cash-In, expecting: "+CASH_IN_AMOUNT+high.getResetBalance()+", found: "+balance);
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
 
-    co.setStatus(TransactionStatus.COMPLETED);
-    txnDAO.put(co);
+    DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
+    ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+    request.setStatus(ApprovalStatus.APPROVED);
+    approvalDAO.put_(x_, request);
 
     balance = (Long) senderDigitalDefault.findBalance(x);
     test(SafetyUtil.equals(balance, CASH_IN_AMOUNT - CASH_OUT_AMOUNT+high.getResetBalance()), "testAffectOfCICO: PENDING Cash-Out, expecting: "+(CASH_IN_AMOUNT - CASH_OUT_AMOUNT)+high.getResetBalance()+", found: "+balance);
