@@ -214,7 +214,9 @@ public class TransactionDAOTest
 
     tx = (Transaction) txnDAO.find_(x_, tx).fclone();
     test(tx instanceof ComplianceTransaction, "Transaction type is ComplianceTransaction" );
-    test(tx.getStatus() == TransactionStatus.COMPLETED, "tx was completed automatically as approval request was approved." );
+    test(tx.getStatus() == TransactionStatus.PENDING, "tx is waiting for approval." );
+    tx.setStatus(TransactionStatus.COMPLETED);
+    txnDAO.put(tx);
 
     ArraySink s = new ArraySink.Builder(x_).build();
     tx.getChildren(x_).select(s);
