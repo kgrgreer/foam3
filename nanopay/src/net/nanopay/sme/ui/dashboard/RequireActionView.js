@@ -3,6 +3,18 @@ foam.CLASS({
   name: 'RequireActionView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'stack'
+  ],
+
+  requires: [
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus'
+  ],
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   css: `
     ^item {
       display: flex;
@@ -46,7 +58,6 @@ foam.CLASS({
     'countRequiresApproval',
     'countOverdueAndUpcoming',
     'countDepositPayment',
-    'isUserAbleToPay'
   ],
 
   messages: [
@@ -62,7 +73,6 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start().show(this.isUserAbleToPay$)
             .start()
               .hide(this.countRequiresApproval$.map((value) => value == 0))
               .addClass(this.myClass('item'))
@@ -91,7 +101,6 @@ foam.CLASS({
                 });
               })
             .end()
-          .end()
           .start()
             .show(this.countOverdueAndUpcoming$.map((value) => value > 0))
             .addClass(this.myClass('item'))
