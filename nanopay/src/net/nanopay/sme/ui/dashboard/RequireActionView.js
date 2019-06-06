@@ -58,7 +58,6 @@ foam.CLASS({
     'countRequiresApproval',
     'countOverdueAndUpcoming',
     'countDepositPayment',
-    'isUserAbleToPay'
   ],
 
   messages: [
@@ -74,7 +73,6 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start().show(this.isUserAbleToPay$)
             .start()
               .hide(this.countRequiresApproval$.map((value) => value == 0))
               .addClass(this.myClass('item'))
@@ -103,7 +101,6 @@ foam.CLASS({
                 });
               })
             .end()
-          .end()
           .start()
             .show(this.countOverdueAndUpcoming$.map((value) => value > 0))
             .addClass(this.myClass('item'))
