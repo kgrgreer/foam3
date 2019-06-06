@@ -105,6 +105,7 @@ foam.CLASS({
           SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
           suggestedUserTransactionInfo.setBaseCurrency("CAD");
           suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
+          suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
           suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
           suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
           suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");

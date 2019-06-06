@@ -26,11 +26,18 @@ foam.CLASS({
     {
       name: 'updateObj',
       javaCode: `
-        Transaction transaction = (Transaction) obj;
+      Transaction transaction = (Transaction) obj;
+      if ( transaction.getStatus() == TransactionStatus.PENDING ) {
+        transaction.setStatus(
+          ApprovalStatus.APPROVED == approvalStatus
+            ? TransactionStatus.COMPLETED
+            : TransactionStatus.DECLINED);
+      } else {
         transaction.setInitialStatus(
           ApprovalStatus.APPROVED == approvalStatus
             ? TransactionStatus.COMPLETED
             : TransactionStatus.DECLINED);
+      }
       `
     }
   ]
