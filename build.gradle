@@ -152,6 +152,8 @@ task incrementalGenTask(type: IncrementalTask) {
     trees.matching{include "**/*.js"}.each { File f ->
         includeDirs.add(f)
     }
+    includeDirs.add(file("foam2/tools/classes.js"))
+    includeDirs.add(file("nanopay/tools/classes.js"))
     outputDir = file(genJavaDir)
     inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
