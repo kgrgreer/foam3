@@ -4,6 +4,8 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'accountBalanceCandlestickDAO as accountBalancesOverTime',
+    'liquidityThresholdCandlestickDAO',
     'transactionDAO'
   ],
 
@@ -14,20 +16,37 @@ foam.CLASS({
       documentation: `
         DAO for all accounts in the ecosystem.
       `,
-      factory: function() {
-        return this.accountDAO;
+      expression: function(accountDAO) {
+        return accountDAO;
       }
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'accountBalanceCandlestickDAO',
+      documentation: `
+        DAO for all account balance over time in the ecosystem.
+      `,
+      expression: function(accountBalancesOverTime) {
+        return accountBalancesOverTime;
+      },
+      view: {
+        class: 'org.chartjs.CandlestickDAOChartView',
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
       name: 'liquidityCandlestickDAO',
       documentation: `
         DAO for liquidity candlesticks
-      `
+      `,
+      expression: function(liquidityThresholdCandlestickDAO) {
+        return liquidityThresholdCandlestickDAO;
+      }
     },
     {
       name: 'cicoCandlestickDAO',
       documentation: `
-        DAO for CICO candlesticks to and from shadow accounts
+        TODO: DAO for CICO candlesticks to and from shadow accounts
       `
     },
     {
@@ -36,8 +55,8 @@ foam.CLASS({
       documentation: `
         DAO for recent transactions in entire ecosystem
       `,
-      factory: function() {
-        return this.transactionDAO;
+      expression: function(transactionDAO) {
+        return transactionDAO;
       }
     }
   ]
