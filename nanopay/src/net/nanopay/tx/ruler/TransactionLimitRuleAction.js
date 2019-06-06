@@ -31,7 +31,7 @@ foam.CLASS({
       if ( ! limitState.check(rule_, txn.getAmount()) ) {
         throw new RuntimeException("LIMIT");
       }
-      agent.submit(x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "ppppp");
+      agent.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "ppppp");
       `
     }
   ],

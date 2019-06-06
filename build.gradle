@@ -132,19 +132,18 @@ class IncrementalTask extends DefaultTask {
 
     @TaskAction
     void execute(IncrementalTaskInputs inputs) {
-        println inputs.incremental ? "CHANGED inputs considered out of date"
-                                : "ALL inputs considered out of date"
-
-        if (!inputs.incremental)
+        if (inputs.incremental) {
+            println "CHANGED inputs considered out of date"
+            inputs.outOfDate { change ->
+                println "out of date: ${change.file.name}"
+            }
+            inputs.removed { change ->
+                println "removed: ${change.file.name}"
+            }
+        } else {
+            println "ALL inputs considered out of date"
             project.delete(outputDir.listFiles())
-
-        inputs.outOfDate { change ->
-            println "out of date: ${change.file.name}"
         }
-
-        // inputs.removed { change ->
-        //    println "removed: ${change.file.name}"
-        // }
     }
 }
 
@@ -153,6 +152,8 @@ task incrementalGenTask(type: IncrementalTask) {
     trees.matching{include "**/*.js"}.each { File f ->
         includeDirs.add(f)
     }
+    includeDirs.add(file("foam2/tools/classes.js"))
+    includeDirs.add(file("nanopay/tools/classes.js"))
     outputDir = file(genJavaDir)
     inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
@@ -184,7 +185,7 @@ task findSH(type: Exec) {
     onlyIf {
         !tasks.incrementalFindTask.state.upToDate
     }
-    commandLine 'bash', './find.sh', workingDir, journalOut, project.hasProperty("projectMode") ? "${projectMode}": "", "${project.version}", project.hasProperty("journalConfig") ? "${journalConfig}" : ""
+    commandLine 'bash', './find.sh', workingDir, journalOut, project.hasProperty("journalConfig") ? "${journalConfig}" : ""
 }
 
 task packageFoam(type: NodeTask) {
@@ -198,19 +199,23 @@ task packageFoam(type: NodeTask) {
 }
 
 task foamNodeModulesCopy(type: Copy) {
-    dependsOn tasks.packageFoam
-    
-    from "foam2"
+    from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict"
     into "$targetDir/classes/webroot"
-    include "node_modules/ace-builds/src-min-noconflict/*.js"
+    include "*.js"
+}
+
+task nanopayNodeModulesCopy(type: Copy) {
+    from "$rootDir/node_modules/html2canvas/dist/html2canvas.min.js", "node_modules/jspdf/dist/jspdf.min.js", "node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"
+    into "$targetDir/classes/webroot"
 }
 
 task foamCopy(type: Copy) {
+    dependsOn tasks.packageFoam
     dependsOn tasks.foamNodeModulesCopy
+    dependsOn tasks.nanopayNodeModulesCopy
     
     from "tools/js_build/foam-bin.js"
     into "$targetDir/classes/webroot"
-    from "foam2/node_modules/ace-builds/src-min-noconflict/ace.js"
 }
 
 task copyLib(type: Copy) {

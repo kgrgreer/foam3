@@ -118,13 +118,12 @@ public class IdentityMindRequestGenerator {
     User receiver = (User) localUserDAO.inX(x).find(destinationAccount.getOwner());
 
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
+      .setEntityType(transaction.getClass().getName())
+      .setEntityId(transaction.getId())
+      .setTid(transaction.getId())
       .setIp(getRemoteAddr(x))
       .build();
 
-    if ( transaction.getInvoiceId() != 0 ) {
-      request.setEntityType(Invoice.class.getName());
-      request.setEntityId(transaction.getInvoiceId());
-    }
     request.setAmt(Double.toString(transaction.getAmount() / 100.0));
     request.setCcy(sourceAccount.getDenomination());
 
@@ -136,7 +135,8 @@ public class IdentityMindRequestGenerator {
     request.setTags(tags);
 
     // Sender information
-    request.setMerchantAid(getUUID(sourceAccount.findOwner(x)));
+    User owner = (User) localUserDAO.find(sourceAccount.getOwner());
+    request.setMerchantAid(getUUID(owner));
     request.setMan(Long.toString(sender.getId()));
     request.setPach(getBankAccountHash(x, (BankAccount) sourceAccount));
     request.setBfn(prepareString(sender.getFirstName()));
@@ -198,7 +198,7 @@ public class IdentityMindRequestGenerator {
       .setMan(Long.toString(user.getId()))
       .setTid(getUUID(user))
       .setTea(user.getEmail())
-      .setIp(getRemoteAddr(x))
+      .setIp(prepareString(getRemoteAddr(x)))
       .setBfn(prepareString(user.getFirstName()))
       .setBln(prepareString(user.getLastName()))
       .setAccountCreationTime(timestampSdf.get().format(user.getCreated()))
@@ -217,7 +217,10 @@ public class IdentityMindRequestGenerator {
       request.setPhn(prepareString(phone.getNumber()));
     }
     request.setTitle(prepareString(user.getJobTitle()));
-    request.setDob(isoDateSdf.get().format(user.getBirthday()));
+    Date birthDay = user.getBirthday();
+    if ( birthDay != null ) {
+      request.setDob(isoDateSdf.get().format(birthDay));
+    }
     return request;
   }
 

@@ -39,6 +39,13 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         ComplianceTransaction ct = (ComplianceTransaction) obj;
+        Count count = (Count) ((DAO) x.get("approvalRequestDAO"))
+          .where(AND(
+            EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
+            EQ(ApprovalRequest.OBJ_ID, ct.getId()),
+            EQ(ApprovalRequest.APPROVER, getJackieId())))
+          .limit(1)
+          .select(new Count());
 
         ApprovalRequest req = new ApprovalRequest.Builder(x)
           .setDaoKey("localTransactionDAO")

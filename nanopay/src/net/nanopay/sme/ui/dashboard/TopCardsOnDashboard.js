@@ -38,15 +38,18 @@ foam.CLASS({
   css: `
   ^ .cards {
     margin-top: 20px;
-    display: inline-flex;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
   }
   ^ .lower-cards {
     margin-top: 20px;
-    display: inline-flex;
+    display: flex;
+    flex-wrap: wrap;
     margin-bottom: 20px;
-  }
-  ^ .inner-card {
-    margin-left: 20px;
+    width: 100%;
+    justify-content: space-between;
   }
   ^ .divider {
     background-color: #e2e2e3;
@@ -162,7 +165,7 @@ foam.CLASS({
                        businessOnboarding.status === this.OnboardingStatus.SUBMITTED &&
                        ! businessOnboarding.signingOfficer, () => {
             this
-              .start('span').addClass('card')
+              .start('span').addClass('cards')
                 .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.SigningOfficerSentEmailCard' })
               .end();
           }, () => {
@@ -173,8 +176,9 @@ foam.CLASS({
               .start().addClass('cards').hide(this.hidePaymentCards$)
                 .start('span')
                   .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: this.user.onboarded })
+                  .style({ 'margin-bottom': '20px' })
                 .end()
-                .start('span').addClass('inner-card')
+                .start('span')
                   .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL })
                 .end()
               .end();
@@ -182,8 +186,9 @@ foam.CLASS({
           .start().addClass('lower-cards')
             .start('span')
               .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard', account: bankAccount })
+              .style({ 'margin-bottom': '20px' })
             .end()
-            .start('span').addClass('inner-card')
+            .start('span')
               .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: userHasPermissionsForAccounting && userHasPermissionsForAccounting[0], hasIntegration: user.hasIntegrated })
             .end()
           .end()
