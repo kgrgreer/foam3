@@ -153,7 +153,12 @@ foam.CLASS({
       javaCode: `
         Transaction head = transaction;
         while ( ! SafetyUtil.isEmpty(head.getParent()) ) {
-          head = head.findParent(x);
+          Transaction parent = head.findParent(x);
+          if ( parent != null ) {
+            head = parent;
+          } else {
+            break;
+          }
         }
         IdentityMindRequest request = IdentityMindRequestGenerator.getTransferRequest(x, head);
         request.setUrl(getBaseUrl() + "/account/transfer");
