@@ -10,26 +10,13 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.nanos.auth.EnabledAware',
-    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.dao.DAO',
-    'foam.mlang.MLang',
-    'foam.dao.AbstractSink',
-    'foam.core.Detachable',
     'foam.util.SafetyUtil',
     'foam.core.FObject',
     'foam.nanos.notification.Notification',
-
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.INBankAccount',
-    'net.nanopay.bank.USBankAccount',
-    'net.nanopay.documents.AcceptanceDocument',
-    'net.nanopay.documents.AcceptanceDocumentService',
-    'net.nanopay.documents.AcceptanceDocumentType',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
@@ -48,8 +35,6 @@ foam.CLASS({
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
-    'net.nanopay.tx.DisclosureLineItem'
-
   ],
 
   constants: [
@@ -99,19 +84,17 @@ foam.CLASS({
       if ( fxQuote.getId() < 1 ) {
         try {
           AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
-          if ( SafetyUtil.isEmpty(request.getPaymentMethod()) ) {
-         
-          } else {
-            fxQuote = afexService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
-              request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
-              FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null, request.getPaymentMethod());
-              if ( fxQuote != null && fxQuote.getId() > 0 ) {
-                AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
-                afexTransaction.setPayerId(sourceAccount.getOwner());
-                afexTransaction.setPayeeId(destinationAccount.getOwner());
-                quote.addPlan(afexTransaction);
-              }
+
+          fxQuote = afexService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
+            request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
+            FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null);
+          if ( fxQuote != null && fxQuote.getId() > 0 ) {
+            AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
+            afexTransaction.setPayerId(sourceAccount.getOwner());
+            afexTransaction.setPayeeId(destinationAccount.getOwner());
+            quote.addPlan(afexTransaction);
           }
+          
         } catch (Throwable t) {
           String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AFEX" ;
           Notification notification = new Notification.Builder(x)
@@ -167,26 +150,26 @@ foam.CLASS({
         cls.extras.push(`
 protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction request, FXQuote fxQuote) {
   AFEXTransaction afexTransaction = new AFEXTransaction.Builder(x).build();
-  afexTransaction.copyFrom(request);
-  afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
-  afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
-  afexTransaction.setFxRate(fxQuote.getRate());
-  afexTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
-  afexTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
-  FeesFields fees = new FeesFields.Builder(x).build();
-  fees.setTotalFees(fxQuote.getFee());
-  fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-  afexTransaction.addLineItems(new TransactionLineItem[] {new AFEXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
-  afexTransaction.setFxFees(fees);
-  afexTransaction.setIsQuoted(true);
-  afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
-  if ( afexTransaction.getAmount() < 1 ) afexTransaction.setAmount(fxQuote.getSourceAmount());
-  if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
-  {
-    afexTransaction.setAccepted(true);
-  }
+  // afexTransaction.copyFrom(request);
+  // afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
+  // afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
+  // afexTransaction.setFxRate(fxQuote.getRate());
+  // afexTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+  // afexTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
+  // FeesFields fees = new FeesFields.Builder(x).build();
+  // fees.setTotalFees(fxQuote.getFee());
+  // fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+  // afexTransaction.addLineItems(new TransactionLineItem[] {new AFEXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+  // afexTransaction.setFxFees(fees);
+  // afexTransaction.setIsQuoted(true);
+  // afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
+  // if ( afexTransaction.getAmount() < 1 ) afexTransaction.setAmount(fxQuote.getSourceAmount());
+  // if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
+  // {
+  //   afexTransaction.setAccepted(true);
+  // }
 
-  afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+  // afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
   return afexTransaction;
 }
         `);
