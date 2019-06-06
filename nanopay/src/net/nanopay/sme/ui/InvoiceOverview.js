@@ -29,7 +29,8 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
-    'net.nanopay.model.Invitation'
+    'net.nanopay.model.Invitation',
+    'net.nanopay.model.Business'
   ],
 
   imports: [
@@ -195,7 +196,10 @@ foam.CLASS({
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
     { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' },
-    { name: 'ANNOTATION', message: '* The dates above are estimates and are subject to change.' }
+    { name: 'ANNOTATION', message: '* The dates above are estimates and are subject to change.' },
+    { name: 'CONTACT_MISSING_BANK', message: 'Banking information for this contact must be provided' },
+    { name: 'UNSUPPORTED_CURRENCY1', message: `Sorry, we don't support ` },
+    { name: 'UNSUPPORTED_CURRENCY2', message: ' for this contact' }
   ],
 
   constants: [
@@ -717,36 +721,39 @@ foam.CLASS({
           );
         // TODO: auth.check(this.user, 'invoice.pay');
       },
-      code: function(X) {
+      code: async function(X) {
         var checkAndNotifyAbility = this.isPayable ?
           this.checkAndNotifyAbilityToPay :
           this.checkAndNotifyAbilityToReceive;
 
-        checkAndNotifyAbility().then((result) => {
-          if ( result ) {
-            // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
-            var request = this.CanReceiveCurrency.create({
-              userId: this.invoice.payeeId,
-              currencyId: this.invoice.destinationCurrency
-            });
-            this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
-              if ( ! responseObj.response ) {
-                this.notify(responseObj.message, 'error');
-                return;
-              }
-              X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                var clone = menu.clone();
-                Object.assign(clone.handler.view, {
-                  isPayable: this.isPayable,
-                  isForm: false,
-                  isDetailView: true,
-                  invoice: this.invoice.clone()
-                });
-                clone.launch(X, X.controllerView);
-              });
-            });
+        let result = checkAndNotifyAbility();
+        if ( result ) {
+          // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
+          var request = await this.CanReceiveCurrency.create({
+            userId: this.invoice.payeeId,
+            currencyId: this.invoice.destinationCurrency
+          });
+          let canReceiveCurrency = await this.canReceiveCurrencyDAO.put(request);
+          if ( ! canReceiveCurrency.response ) {
+            let user = await this.userDAO.find(this.invoice.payeeId);
+            if ( user && ! user.bankAccount ) {
+              this.notify(this.CONTACT_MISSING_BANK, 'error');
+              return;
+            } else {
+              this.notify(this.UNSUPPORTED_CURRENCY1 + this.invoice.destinationCurrency + this.UNSUPPORTED_CURRENCY2, 'error');
+              return;
+            }
           }
-        });
+          let menu = await X.menuDAO.find('sme.quickAction.send');
+          var clone = menu.clone();
+          Object.assign(clone.handler.view, {
+            isPayable: this.isPayable,
+            isForm: false,
+            isDetailView: true,
+            invoice: this.invoice.clone()
+          });
+          clone.launch(X, X.controllerView);
+        }
       }
     },
     {
