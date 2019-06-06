@@ -1,55 +1,65 @@
 #!/bin/bash
-
 # Super simple launcher.
+# Run as ubuntu on staging and production
+target_user="ubuntu"
+if [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "$target_user" ]; then
+  exec sudo -u "$target_user" -- "$0" "$@"
+fi
 
-NANOPAY_HOME="/opt/nanopay"
-WEB_PORT=8080
 HOST_NAME=`hostname -s`
-INSTALL=0
+export DEBUG=
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -H <host_name>      : Hostname or IP."
+    echo "  -D 0 or 1            : Debug mode."
+    echo "  -N <nanopay_home>  : Nanopay home directory."
     echo "  -W <web_port>       : HTTP Port."
-    echo "  -N <nanopay_home>   : Nanopay home directory."
-    echo "  -i                  : Install files to Nanopay home."
 }
 
-while getopts "H:iN:W:" opt ; do
+while getopts "D:hN:W:" opt ; do
     case $opt in
-        H) HOST_NAME=$OPTARG;;
+        D) DEBUG=$OPTARG;;
+        h) usage; exit 0;;
         N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
-        i) INSTALL=1;;
-        ?) usage ; quit 1 ;;
+#        ?) usage ; exit 0 ;;
    esac
 done
+
+if [ -z "$NANOPAY_HOME" ]; then
+    NANOPAY_HOME="/opt/nanopay"
+fi
+if [ -z "$WEB_PORT" ]; then
+    WEB_PORT=8080
+fi
+if [ -z "${NANOS_PIDFILE}" ]; then
+    NANOS_PIDFILE="/tmp/nanos.pid"
+fi
 
 JAVA_OPTS=""
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
 JAVA_OPTS="${JAVA_OPTS} -Dhostname=${HOST_NAME}"
 JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
-JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
+JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
 
-if [ "${INSTALL}" -eq 1 ]; then
-    if [ ! -d "${NANOPAY_HOME}" ]; then
-        mkdir -p "${NANOPAY_HOME}"
-    fi
-    cp -r "bin" "${NANOPAY_HOME}"
-    cp -r "lib" "${NANOPAY_HOME}"
+export MEMORY_MODEL=SMALL
+
+# load instance specific deployment options
+if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
+    . "${NANOPAY_HOME}/etc/shrc.local"
 fi
 
-# TODO: assertions, java_home
 JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
 export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
-#nohup java -jar "${JAR}" &>/dev/null &
-#java -jar ${JAR}" &>/dev/null
-java -jar "${JAR}"
+
+#java -server -jar "${JAR}"
+nohup java -server -jar "${JAR}" &>/dev/null &
+echo $! > "${NANOS_PIDFILE}"
 
 exit 0

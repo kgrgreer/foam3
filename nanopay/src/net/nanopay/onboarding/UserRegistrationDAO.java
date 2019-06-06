@@ -99,7 +99,7 @@ public class UserRegistrationDAO
 
       // Make sure the email the user is signing up with matches the email the invite was sent to
       if ( params.containsKey("inviteeEmail") ) {
-        if ( ! params.get("inviteeEmail").equals(user.getEmail()) ) {
+        if ( ! ((String) params.get("inviteeEmail")).equalsIgnoreCase(user.getEmail()) ) {
           Logger logger = (Logger) x.get("logger");
           logger.warning(String.format("A user was signing up via an email invitation. The email address we expected them to use was '%s' but the email address of the user in the context was actually '%s'. The user in the context's id was %d.", params.get("inviteeEmail"), user.getEmail(), user.getId()));
           throw new RuntimeException("Email does not match invited email.");
