@@ -45,6 +45,18 @@ foam.INTERFACE({
           type: 'net.nanopay.fx.afex.AddPayeeRequest'
         }
       ]
+    },
+    {
+      name: 'updatePayee',
+      documentation: 'To update a given payee\'s information',
+      async: true,
+      type: 'net.nanopay.fx.afex.UpdatePayeeResponse',
+      args: [
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.UpdatePayeeRequest'
+        }
+      ]
     }
   ]
 });

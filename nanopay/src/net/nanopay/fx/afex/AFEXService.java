@@ -161,8 +161,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("BankAccountNumber", request.getBankAccountNumber()));
-      //nvps.add(new BasicNameValuePair("BankAddress1", "Association 926 W College Ave"));
-      //nvps.add(new BasicNameValuePair("BankAddress3", "Appleton"));
       nvps.add(new BasicNameValuePair("BankCountryCode", request.getBankCountryCode()));
       nvps.add(new BasicNameValuePair("BankName", request.getBankName()));
       nvps.add(new BasicNameValuePair("BankRoutingCode", request.getBankRoutingCode()));
@@ -172,13 +170,16 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("BeneficiaryName", request.getBeneficiaryName()));
       nvps.add(new BasicNameValuePair("BeneficiaryPostalCode", request.getBeneficiaryPostalCode()));
       nvps.add(new BasicNameValuePair("BeneficiaryRegion", request.getBeneficiaryRegion()));
-      nvps.add(new BasicNameValuePair("Corporate", request.getCorporate()));
       nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
-      nvps.add(new BasicNameValuePair("HighLowValue",  request.getHighLowValue()));
-      // nvps.add(new BasicNameValuePair("RemittanceLine1", "BOF NanoPay X-border Corporation"));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+        throw new RuntimeException("Add AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          + httpResponse.getStatusLine().getReasonPhrase());
+      }
+
       String response = new BasicResponseHandler().handleResponse(httpResponse);
 
       Object[] respArr = jsonParser.parseStringForArray(response, AddPayeeResponse.class);
@@ -193,6 +194,61 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         System.out.println(addPayeeResponse.getStatus());
 
         return addPayeeResponse;
+      }
+    } catch (IOException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public UpdatePayeeResponse updatePayee(UpdatePayeeRequest request) {
+    try {
+      HttpPost httpPost = new HttpPost(AFEXAPI + "api/beneficiaryUpdate");
+
+      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+      List<NameValuePair> nvps = new ArrayList<>();
+      nvps.add(new BasicNameValuePair("BankAccountNumber", request.getBankAccountNumber()));
+      nvps.add(new BasicNameValuePair("BankCountryCode", request.getBankCountryCode()));
+      nvps.add(new BasicNameValuePair("BankName", request.getBankName()));
+      nvps.add(new BasicNameValuePair("BankRoutingCode", request.getBankRoutingCode()));
+      nvps.add(new BasicNameValuePair("BeneficiaryAddressLine1", request.getBeneficiaryAddressLine1()));
+      nvps.add(new BasicNameValuePair("BeneficiaryCity", request.getBeneficiaryCity()));
+      nvps.add(new BasicNameValuePair("BeneficiaryCountryCode", request.getBeneficiaryCountryCode()));
+      nvps.add(new BasicNameValuePair("BeneficiaryName", request.getBeneficiaryName()));
+      nvps.add(new BasicNameValuePair("BeneficiaryPostalCode", request.getBeneficiaryPostalCode()));
+      nvps.add(new BasicNameValuePair("BeneficiaryRegion", request.getBeneficiaryRegion()));
+      nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
+      nvps.add(new BasicNameValuePair("VendorId",  request.getVendorId()));
+
+      httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+      CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+        throw new RuntimeException("Update AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          + httpResponse.getStatusLine().getReasonPhrase());
+      }
+
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+      Object[] respArr = jsonParser.parseStringForArray(response, UpdatePayeeResponse.class);
+
+      if ( respArr.length != 0 ) {
+        for ( Object resp : respArr) {
+          UpdatePayeeResponse updatePayeeResponse = (UpdatePayeeResponse) resp;
+          if ( updatePayeeResponse.getName().equals("Beneficiary has been updated") ) {
+            System.out.println("Update Payee response: ");
+            System.out.println(updatePayeeResponse.getName());
+            System.out.println(updatePayeeResponse.getCode());
+            System.out.println(updatePayeeResponse.getInformationMessage());
+            System.out.println(updatePayeeResponse.getInformationCode());
+            System.out.println(updatePayeeResponse.getStatus());
+
+            return updatePayeeResponse;
+          }
+        }
       }
     } catch (IOException e) {
       logger.error(e);

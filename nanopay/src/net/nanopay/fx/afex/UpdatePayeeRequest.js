@@ -1,6 +1,6 @@
 foam.CLASS({
   package: "net.nanopay.fx.afex",
-  name: "AddPayeeRequest",
+  name: "UpdatePayeeRequest",
   properties: [
     {
       class: 'String',
