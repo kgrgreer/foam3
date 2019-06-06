@@ -3,6 +3,18 @@ foam.CLASS({
   name: 'RequireActionView',
   extends: 'foam.u2.View',
 
+  imports: [
+    'stack'
+  ],
+
+  requires: [
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.invoice.model.InvoiceStatus'
+  ],
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   css: `
     ^item {
       display: flex;
