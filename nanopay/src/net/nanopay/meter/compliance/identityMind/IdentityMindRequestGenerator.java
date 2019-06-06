@@ -135,7 +135,7 @@ public class IdentityMindRequestGenerator {
     request.setTags(tags);
 
     // Sender information
-    User owner = (User) ((DAO)x.get("localAccountDAO")).inX(x).find(sourceAccount.getOwner());
+    User owner = (User) localUserDAO.find(sourceAccount.getOwner());
     request.setMerchantAid(getUUID(owner));
     request.setMan(Long.toString(sender.getId()));
     request.setPach(getBankAccountHash(x, (BankAccount) sourceAccount));
