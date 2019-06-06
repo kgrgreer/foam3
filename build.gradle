@@ -202,6 +202,9 @@ task foamNodeModulesCopy(type: Copy) {
     from "foam2"
     into "$targetDir/classes/webroot"
     include "node_modules/ace-builds/src-min-noconflict/*.js"
+    include "node_modules/html2canvas/dist/html2canvas.min.js"
+    include "node_modules/jspdf/dist/jspdf.min.js"
+    include "node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"
 }
 
 task foamCopy(type: Copy) {
