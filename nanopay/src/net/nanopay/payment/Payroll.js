@@ -9,14 +9,26 @@ foam.CLASS({
   ],
 
   properties: [
-     'timePeriod', 'executedBy',
+    {
+      class: 'String',
+      name: 'id'
+    },
+    {
+      class: 'String',
+      name: 'timePeriod',
+      javaFactory: `
+      Formatter fmt = new Formatter();
+      Calendar cal = Calendar.getInstance();
+      return fmt.format("%tb", cal) + " " + cal.get(Calendar.YEAR);
+       `
+    },
     {
       class: 'String',
       name: 'note',
       javaFactory: `
      Formatter fmt = new Formatter();
      Calendar cal = Calendar.getInstance();
-     return "nanopay " + fmt.format("%tb", cal) + " " + cal.get(Calendar.YEAR) + " Payroll";
+     return "nanopay " + getTimePeriod() + " Payroll";
       `
     },
     {
@@ -42,6 +54,10 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'executedAt'
+    },
+    {
+      class: 'String',
+      name: 'executedBy'
     },
     {
       class: 'Double',

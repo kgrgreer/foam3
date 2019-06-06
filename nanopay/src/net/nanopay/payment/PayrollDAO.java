@@ -1,4 +1,4 @@
-package nanopay.src.net.nanopay.payment;
+package net.nanopay.payment;
 
 import foam.core.FObject;
 import foam.core.X;
@@ -40,39 +40,47 @@ public class PayrollDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     Payroll payroll = (Payroll) obj;
-    PayrollEntry[] payees = payroll.getPayrollEntries();
-    logger.log("Processing ", payees.length, " employees");
+    PayrollEntry[] payrollEntries = payroll.getPayrollEntries();
+    logger.log("Processing ", payrollEntries.length, " employees");
     prepareSPID(payroll);
     double totalPayroll = 0;
-    int i = 0;
     String group = payroll.getGroup();
     String spid = payroll.getSpid();
     long sourceAccount = payroll.getSourceAccount();
     String note = payroll.getNote();
     String firstName, lastName, institutionNo, branchId, bankAccountNo;
-    long id;
+    long payeeId, dcaNo;
     double pay;
     Transaction transaction;
-    for( PayrollEntry payee : payees ) {
-      id = payee.getEmployeeId();
-      pay = payee.getAmount();
-      firstName = payee.getFirstName();
-      lastName = payee.getLastName();
-      bankAccountNo = payee.getBankAccountNo();
-      institutionNo = payee.getInstitutionNo();
-      branchId = payee.getBranchId();
-      logger.info("Processing User ", i, ", id: ", id, ", email: ", payee.getEmail());
-      ++i;
+    String transactionId;
+    for( int i = 0; i < payrollEntries.length; ++i ) {
+      PayrollEntry entry = payrollEntries[i];
+      payeeId = entry.getOwner();
+      pay = entry.getAmount();
+      firstName = entry.getFirstName();
+      lastName = entry.getLastName();
+      bankAccountNo = entry.getBankAccountNo();
+      institutionNo = entry.getInstitutionNo();
+      branchId = entry.getBranchId();
+      logger.info("Processing User ", i, ", id: ", payeeId, ", email: ", entry.getEmail());
 
       totalPayroll += pay;
-      findOrCreateUser(id, group, firstName, lastName, spid, bankAccountNo);
-      transaction = createTransaction(sourceAccount, id, (long) pay, note);
-      findOrCreateBankAccount(id, institutionNo, branchId, bankAccountNo, transaction.getDestinationAccount());
+      findOrCreateUser(payeeId, group, firstName, lastName, spid, bankAccountNo);
+      transaction = createTransaction(sourceAccount, payeeId, (long) pay, note);
+      transactionId = transaction.getId();
+      dcaNo = transaction.getDestinationAccount();
+      findOrCreateBankAccount(payeeId, institutionNo, branchId, bankAccountNo, dcaNo);
+
+      entry.setDcaNo(dcaNo);
+      entry.setTransactionId(transactionId);
+      entry.setStatus(transaction.getStatus());
+      payrollEntries[i] = entry;
     }
 
     logger.log("Total payroll: ", totalPayroll);
 
-    return payroll;
+    payroll.setPayrollEntries(payrollEntries);
+    return getDelegate().put_(x, payroll);
   }
 
   @Override
@@ -116,14 +124,14 @@ public class PayrollDAO extends ProxyDAO {
     transaction.setPayeeId(payeeId);
     transaction.setAmount(amount);
     transaction.setSummary(note);
-    Transaction newTransaction = (Transaction) transactionDAO_.put(transaction);
-    logger.log("Created transaction: ", newTransaction.getId(), ", to: ", newTransaction.getDestinationAmount(), ", for: ", amount);
-    return newTransaction;
+    Transaction addedTransaction = (Transaction) transactionDAO_.put(transaction);
+    logger.log("Created transaction: ", addedTransaction.getId(), ", to: ", addedTransaction.getDestinationAmount(), ", for: ", amount);
+    return addedTransaction;
   }
 
   public void findOrCreateBankAccount(long id, String institutionNo, String branchId, String bankAccountNo, long destinationAccount) {
     CABankAccount account = (CABankAccount) accountDAO_
-      .where(
+      .find(
         AND(
           INSTANCE_OF(CABankAccount.class),
           EQ(BankAccount.OWNER, id),
@@ -140,9 +148,9 @@ public class PayrollDAO extends ProxyDAO {
       account.setBranchId(branchId);
       account.setAccountNumber(bankAccountNo);
       account.setStatus(BankAccountStatus.VERIFIED);
-      CABankAccount newAccount = (CABankAccount) accountDAO_.put(account);
-      logger.log("Created bank account for ", id, " : ", newAccount.getId());
-      setupLiquidity(newAccount, destinationAccount);
+      CABankAccount addedAccount = (CABankAccount) accountDAO_.put(account);
+      logger.log("Created bank account for ", id, " : ", addedAccount.getId());
+      setupLiquidity(addedAccount, destinationAccount);
     } else {
       logger.log("Found bank account for ", id, " : ", account.getId());
     }
@@ -161,8 +169,8 @@ public class PayrollDAO extends ProxyDAO {
     liquiditySettings.setCashOutFrequency(Frequency.DAILY);
     liquiditySettings.setHighLiquidity(highLiquidity);
     liquiditySettings.setUserToEmail(bankAccount.getOwner());
-    LiquiditySettings newLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO_.put(liquiditySettings);
-    digitalAccount.setLiquiditySetting(newLiquiditySettings.getId());
+    LiquiditySettings addedLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO_.put(liquiditySettings);
+    digitalAccount.setLiquiditySetting(addedLiquiditySettings.getId());
     accountDAO_.put(digitalAccount);
     logger.log("Setting liquidity from ", destinationAccount, " to ", bankAccount.getId());
   }
