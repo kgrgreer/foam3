@@ -54,6 +54,8 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
       }
     }
 
+    // Checks if the contact has a bank account
+    // Needed for a better error message to improve user experience
     Count hasBankAccount = (Count) accountDAO
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
@@ -67,6 +69,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
       return response;
     }
 
+    // Checks if the contact can receive the currency
     Count count = (Count) accountDAO
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
@@ -79,7 +82,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     boolean isCompliant = !(user instanceof Business) || user.getCompliance().equals(ComplianceStatus.PASSED);
 
     response.setResponse((count.getValue() > 0) && isCompliant);
-    if ( count.getValue() == 0 ) response.setMessage("Sorry, we don't support " + request.getCurrencyId() + "for this contact.");
+    if ( count.getValue() == 0 ) response.setMessage("Sorry, we don't support " + request.getCurrencyId() + " for this contact.");
     if ( ! isCompliant ) response.setMessage("The user you've chosen hasn't passed our compliance check.");
     return response;
   }
