@@ -38,7 +38,6 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'notificationDAO',
-    'notify',
     'stack',
     'user',
     'xeroService',
@@ -144,10 +143,7 @@ foam.CLASS({
 
   messages: [
     { name: 'REMINDER_SENT_SUCCESSFULLY', message: 'Reminder was successfully sent to ${0}.' },
-    { name: 'REMINDER_ERROR_MESSAGE', message: 'An error occurred while sending a reminder to ${0}' },
-    { name: 'CONTACT_MISSING_BANK', message: 'Banking information for this contact must be provided' },
-    { name: 'UNSUPPORTED_CURRENCY1', message: `Sorry, we don't support ` },
-    { name: 'UNSUPPORTED_CURRENCY2', message: ' for this contact' }
+    { name: 'REMINDER_ERROR_MESSAGE', message: 'An error occurred while sending a reminder to ${0}' }
   ],
 
   methods: [
@@ -202,14 +198,8 @@ foam.CLASS({
       });
       let responseObj = await this.canReceiveCurrencyDAO.put(request);
       if ( ! responseObj.response ) {
-        let user = await this.userDAO.find(this.data.payeeId);
-        if ( user && ! user.bankAccount ) {
-          this.notify(this.CONTACT_MISSING_BANK, 'error');
-          return;
-        } else {
-          this.notify(this.UNSUPPORTED_CURRENCY1 + this.data.destinationCurrency + this.UNSUPPORTED_CURRENCY2, 'error');
-          return;
-        }
+        this.ctrl.notify(responseObj.message, 'error');
+        return;
       }
       let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(this.data);
       if ( updatedInvoice === null || updatedInvoice === undefined ) return;

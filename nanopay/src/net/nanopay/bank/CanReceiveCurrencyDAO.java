@@ -54,6 +54,19 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
       }
     }
 
+    Count hasBankAccount = (Count) accountDAO
+      .where(AND(
+        INSTANCE_OF(BankAccount.getOwnClassInfo()),
+        EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
+        EQ(Account.OWNER, user.getId())))
+      .select(new Count());
+
+    if ( hasBankAccount.getValue() == 0 ) {
+      response.setMessage("Banking information for this contact must be provided.");
+      response.setResponse(false);
+      return response;
+    }
+
     Count count = (Count) accountDAO
       .where(AND(
         INSTANCE_OF(BankAccount.getOwnClassInfo()),
@@ -66,7 +79,7 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     boolean isCompliant = !(user instanceof Business) || user.getCompliance().equals(ComplianceStatus.PASSED);
 
     response.setResponse((count.getValue() > 0) && isCompliant);
-    if ( count.getValue() == 0 ) response.setMessage("The user you've chosen is unable to receive money in that currency.");
+    if ( count.getValue() == 0 ) response.setMessage("Sorry, we don't support " + request.getCurrencyId() + "for this contact.");
     if ( ! isCompliant ) response.setMessage("The user you've chosen hasn't passed our compliance check.");
     return response;
   }
