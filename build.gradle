@@ -197,17 +197,14 @@ task packageFoam(type: NodeTask) {
 }
 
 task foamNodeModulesCopy(type: Copy) {
-    from "$rootDir/foam2"
+    from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict"
     into "$targetDir/classes/webroot"
-    include "node_modules/ace-builds/src-min-noconflict/*.js"
+    include "*.js"
 }
 
 task nanopayNodeModulesCopy(type: Copy) {
-    from "$rootDir"
+    from "$rootDir/node_modules/html2canvas/dist/html2canvas.min.js", "node_modules/jspdf/dist/jspdf.min.js", "node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"
     into "$targetDir/classes/webroot"
-    include "node_modules/html2canvas/dist/html2canvas.min.js"
-    include "node_modules/jspdf/dist/jspdf.min.js"
-    include "node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"
 }
 
 task foamCopy(type: Copy) {
