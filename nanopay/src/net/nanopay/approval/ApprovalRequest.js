@@ -22,7 +22,7 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'objId',
+    'refObj',
     'approver',
     'status',
     'memo',
@@ -105,6 +105,15 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'refObj',
+      transient: true,
+      expression: function(daoKey, objId){
+        return daoKey + ':' + objId;
+      },
+      hidden: true
     }
   ],
 
