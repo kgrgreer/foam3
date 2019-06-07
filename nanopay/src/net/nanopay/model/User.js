@@ -533,7 +533,25 @@ foam.CLASS({
           data: this.sales
         });
       }
-    }
+    },
+    {
+      name: 'viewComplianceHistory',
+      label: 'View Compliance History',
+      availablePermissions: ['foam.nanos.auth.User.permission.viewComplianceHistory'],
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.label()}'s Compliance History`,
+          data: X.identityMindResponseDAO.where(
+              m.EQ(foam.nanos.ruler.RuleHistory.ID, this.id)
+          )
+        });
+      }
+    },
   ],
 
   axioms: [
