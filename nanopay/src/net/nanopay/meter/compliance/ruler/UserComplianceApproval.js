@@ -10,12 +10,9 @@ foam.CLASS({
   documentation: 'Updates user compliance according to approval.',
 
   javaImports: [
-<<<<<<< HEAD
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.ArraySink',
-=======
->>>>>>> c45bac687c2a346d813a54f527f58718a90d0314
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.approval.ApprovalStatus',
@@ -24,7 +21,6 @@ foam.CLASS({
 
   properties: [
     {
-<<<<<<< HEAD
       name: 'applyAction',
       javaCode: `
         agent.submit(x, new ContextAgent() {
@@ -87,16 +83,6 @@ foam.CLASS({
           type: 'net.nanopay.meter.compliance.ComplianceApprovalRequest'
         }
       ],
-=======
-      name: 'objDaoKey',
-      value: 'localUserDAO'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'updateObj',
->>>>>>> c45bac687c2a346d813a54f527f58718a90d0314
       javaCode: `
         User user = (User) obj;
         user.setCompliance(

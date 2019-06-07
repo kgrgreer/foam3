@@ -95,18 +95,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
-    },
-    {
       name: 'getCauseEq',
       type: 'foam.mlang.predicate.Predicate',
       args: [

@@ -113,18 +113,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'applyReverseAction',
-      javaCode: '// NOOP'
-    },
-    {
-      name: 'canExecute',
-      javaCode: `return true;`
-    },
-    {
-      name: 'describe',
-      javaCode: `return DESCRIBE_TEXT;`
-    },
-    {
       name: 'migrateContactsAndInvoices',
       args: [
         {
