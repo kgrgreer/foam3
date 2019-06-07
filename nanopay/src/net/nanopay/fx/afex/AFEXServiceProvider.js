@@ -17,8 +17,7 @@ foam.CLASS({
     {
       name: 'getFXRate',
       javaCode: `
-        return getFXRateWithPaymentMethod(sourceCurrency, targetCurrency, sourceAmount, destinationAmount,
-          fxDirection, valueDate, user, fxProvider);
+        return new FXQuote();
       `
     },
     {
@@ -43,50 +42,6 @@ foam.CLASS({
       // }
 
       return result;
-      `
-    },
-    {
-      name: 'getFXRateWithPaymentMethod',
-      type: 'net.nanopay.fx.FXQuote',
-      javaThrows: [ 'java.lang.RuntimeException ' ],
-      args: [
-        {
-          type: 'String',
-          name: 'sourceCurrency'
-        },
-        {
-          type: 'String',
-          name: 'targetCurrency'
-        },
-        {
-          type: 'Long',
-          name: 'sourceAmount'
-        },
-        {
-          type: 'Long',
-          name: 'destinationAmount'
-        },
-        {
-          type: 'String',
-          name: 'fxDirection'
-        },
-        {
-          type: 'String',
-          name: 'valueDate'
-        },
-        {
-          type: 'Long',
-          name: 'user'
-        },
-        {
-          type: 'String',
-          name: 'fxProvider'
-        }
-      ],
-      javaCode: `
-      FXQuote fxQuote = new FXQuote();
-  
-      return fxQuote;
       `
     },
     {

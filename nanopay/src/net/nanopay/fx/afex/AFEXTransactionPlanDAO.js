@@ -74,6 +74,8 @@ foam.CLASS({
       request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
     if ( fxService instanceof AFEXServiceProvider  ) {
 
+      // Validate that Payer is provisioned for AFEX before proceeding
+
       FXQuote fxQuote = new FXQuote.Builder(x).build();
       String pacsEndToEndId = getPacs008EndToEndId(request);
       if ( ! SafetyUtil.isEmpty(pacsEndToEndId) ) {
@@ -85,7 +87,7 @@ foam.CLASS({
         try {
           AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
 
-          fxQuote = afexService.getFXRateWithPaymentMethod(request.getSourceCurrency(),
+          fxQuote = afexService.getFXRate(request.getSourceCurrency(),
             request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
             FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null);
           if ( fxQuote != null && fxQuote.getId() > 0 ) {
