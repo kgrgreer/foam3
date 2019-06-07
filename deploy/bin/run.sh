@@ -6,36 +6,37 @@ if [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "$target_user" ]; then
   exec sudo -u "$target_user" -- "$0" "$@"
 fi
 
-NANOPAY_HOME="/opt/nanopay"
-WEB_PORT=8080
 HOST_NAME=`hostname -s`
-INSTALL=0
 export DEBUG=
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -D 0 or 1           : Debug mode."
-    echo "  -H <host_name>      : Hostname or IP."
-    echo "  -M <mode>           : Run Mode - STAGING, PRODUCTION"
-    echo "  -N <nanopay_home>   : Nanopay home directory."
+    echo "  -D 0 or 1            : Debug mode."
+    echo "  -N <nanopay_home>  : Nanopay home directory."
     echo "  -W <web_port>       : HTTP Port."
-    echo "  -i                  : Install files to Nanopay home."
 }
 
-while getopts "D:H:iM:N:W:" opt ; do
+while getopts "D:hN:W:" opt ; do
     case $opt in
         D) DEBUG=$OPTARG;;
         h) usage; exit 0;;
-        H) HOST_NAME=$OPTARG;;
-        M) MODE=$OPTARG;;
         N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
-        i) INSTALL=1;;
 #        ?) usage ; exit 0 ;;
    esac
 done
+
+if [ -z "$NANOPAY_HOME" ]; then
+    NANOPAY_HOME="/opt/nanopay"
+fi
+if [ -z "$WEB_PORT" ]; then
+    WEB_PORT=8080
+fi
+if [ -z "${NANOS_PIDFILE}" ]; then
+    NANOS_PIDFILE="/tmp/nanos.pid"
+fi
 
 JAVA_OPTS=""
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
@@ -44,15 +45,6 @@ JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
 JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
-
-#if [ "${INSTALL}" -eq 1 ]; then
-#    if [ ! -d "${NANOPAY_HOME}" ]; then
-#        mkdir -p "${NANOPAY_HOME}"
-#    fi
-#    cp -r "bin" "${NANOPAY_HOME}"
-#    cp -r "lib" "${NANOPAY_HOME}"
-#    cp -r "etc" "${NANOPAY_HOME}"
-#fi
 
 export MEMORY_MODEL=SMALL
 
@@ -68,6 +60,6 @@ export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
 #java -server -jar "${JAR}"
 nohup java -server -jar "${JAR}" &>/dev/null &
-echo $! > "/tmp/nanos.pid"
+echo $! > "${NANOS_PIDFILE}"
 
 exit 0

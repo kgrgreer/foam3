@@ -288,8 +288,8 @@ function status_nanos {
 
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
-  #      echo NANOPAY_HOME=$NANOPAY_HOME
-        "${NANOPAY_HOME}/bin/run.sh" "-D${DEBUG}" "-H${HOST_NAME}" "-M${MODE}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
+        "${NANOPAY_HOME}/bin/run.sh" "-D${DEBUG}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
+#        "${NANOPAY_HOME}/bin/run.sh" "-D${DEBUG}" "-H${HOST_NAME}" "-M${MODE}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
     else
         cd "$PROJECT_HOME"
 
