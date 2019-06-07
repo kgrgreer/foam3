@@ -28,16 +28,19 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     userDAO = (DAO) x.get("localUserDAO");
     accountDAO = (DAO) x.get("localAccountDAO");
     test(payrollDAO != null, "payrollDAO has been configured.");
+
     addSourceAccountIfNotFound(x);
     addPayeesIfNotFound(x);
     addPayrollEntries(x);
-
     payroll = new Payroll();
     payroll.setPayrollEntries(entries);
+
     Payroll addedPayroll = (Payroll) payrollDAO.put_(x, payroll);
-    test( addedPayroll != null, "payrollDAO put is successful.");
-    Payroll addedPayroll2 = (Payroll) payrollDAO.find_(x, payroll.getId());
-    String payrollId = addedPayroll2.getId();
+    test( addedPayroll != null && addedPayroll.getId() == payroll.getId() ,"payrollDAO put_ is successful.");
+    Payroll foundPayroll = (Payroll) payrollDAO.find_(x, payroll.getId());
+    test( foundPayroll != null && foundPayroll.getId() == payroll.getId(), "payrollDAO find_ is successful" );
+    Payroll removedPayroll = (Payroll) payrollDAO.remove_(x, payroll);
+    test( payrollDAO.find_(x, removedPayroll.getId()) == null, "payrollDAO remove_ is successful.");
   }
 
   public void addSourceAccountIfNotFound(X x) {
@@ -53,6 +56,9 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       createPayerIfNotFound(x);
       account = new CABankAccount();
       account.setId(PAYER_ACCOUNT);
+      account.setBranchId("12345");
+      account.setInstitutionNumber("123");
+      account.setAccountNumber("1234543");
       account.setStatus(BankAccountStatus.VERIFIED);
       account.setOwner(PAYER_ID);
       account.setDenomination("CAD");

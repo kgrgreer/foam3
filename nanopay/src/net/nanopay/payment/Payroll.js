@@ -19,7 +19,7 @@ foam.CLASS({
       javaFactory: `
       Formatter fmt = new Formatter();
       Calendar cal = Calendar.getInstance();
-      return fmt.format("%tb", cal) + " " + cal.get(Calendar.YEAR);
+      return fmt.format("%tB", cal) + " " + cal.get(Calendar.YEAR);
        `
     },
     {
