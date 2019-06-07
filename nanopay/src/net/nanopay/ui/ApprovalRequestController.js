@@ -22,7 +22,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'dao',
+    'dao'
   ],
 
   properties: [
@@ -36,13 +36,13 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function(approvalRequest) {
-        // FIXME: Is there a better way to get an arbitrary DAO out of the
-        // context by name?
-        this.dao = this.__subContext__[approvalRequest.daoKey];
+        this.dao = this.__subContext__.approvalRequestDAO;
+        console.log(approvalRequest.id);
         this.stack.push({
           class: 'foam.comics.DAOUpdateControllerView',
           detailView: 'foam.u2.DetailView',
-          key: approvalRequest.objId
+          key: approvalRequest.id,
+          dao: this.dao
         }, this);
       }
     }
