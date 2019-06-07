@@ -106,9 +106,13 @@ function deploy_journals {
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
     if [ "$GRADLE_BUILD" -eq 0 ]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$MODE" "$VERSION" "$JOURNAL_CONFIG"
+        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$JOURNAL_CONFIG"
     else
         gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
+    fi
+
+    if [[ $? -eq 1 ]]; then
+        quit 1
     fi
 
     if [[ ! -f $JOURNALS ]]; then
@@ -137,17 +141,6 @@ function clean {
            [ "$RESTART_ONLY" -eq 0 ]; then
         echo "INFO :: Cleaning Up"
 
-        if [ "$GRADLE_BUILD" -eq 0 ]; then
-            if [ -d "build/" ]; then
-                rm -rf build
-                mkdir build
-            fi
-            if [ -d "target/" ]; then
-                rm -rf target
-                mkdir target
-            fi
-        fi
-
         if [ "${RUN_JAR}" -eq 1 ]; then
             tmp=$PWD
             echo PWD=$tmp
@@ -159,6 +152,14 @@ function clean {
         fi
 
         if [ "$GRADLE_BUILD" -eq 0 ]; then
+            if [ -d "build/" ]; then
+                rm -rf build
+                mkdir build
+            fi
+            if [ -d "target/" ]; then
+                rm -rf target
+                mkdir target
+            fi
             mvn clean
         else
             gradle clean
@@ -287,8 +288,8 @@ function status_nanos {
 
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
-  #      echo NANOPAY_HOME=$NANOPAY_HOME
-        "${NANOPAY_HOME}/bin/run.sh" "-D${DEBUG}" "-H${HOST_NAME}" "-M${MODE}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
+        "${NANOPAY_HOME}/bin/run.sh" "-D${DEBUG}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
+#        "${NANOPAY_HOME}/bin/run.sh" "-D${DEBUG}" "-H${HOST_NAME}" "-M${MODE}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
     else
         cd "$PROJECT_HOME"
 
@@ -300,12 +301,10 @@ function start_nanos {
             JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=$WEB_PORT"
         fi
 
-        if [ -z "$MODE" ]; then
-            # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
-            # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
-            # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
-            JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
-        fi
+        # New versions of FOAM require the new nanos.webroot property to be explicitly set to figure out Jetty's resource-base.
+        # To maintain the expected familiar behaviour of using the root-dir of the NP proj as the webroot we set the property
+        # to be the same as the $PWD -- which at this point is the $PROJECT_HOME
+        JAVA_OPTS="-Dnanos.webroot=${PWD} ${JAVA_OPTS}"
 
         CLASSPATH=$(JARS=("target/lib"/*.jar); IFS=:; echo "${JARS[*]}")
         CLASSPATH="build/classes/java/main:$CLASSPATH"
@@ -331,6 +330,7 @@ function start_nanos {
         elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
         else
+            echo JAVA_OPTS="$JAVA_OPTS"
             nohup java -cp "$CLASSPATH" foam.nanos.boot.Boot &> /dev/null &
             echo $! > "$NANOS_PIDFILE"
         fi
@@ -521,7 +521,8 @@ INSTANCE=
 HOST_NAME=`hostname -s`
 GRADLE_BUILD=0
 VERSION=
-MODE=DEVELOPMENT
+MODE=
+#MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
 DEBUG=0
@@ -649,4 +650,5 @@ fi
 if [ "${BUILD_ONLY}" -eq 0 ]; then
    start_nanos
 fi
+
 quit 0

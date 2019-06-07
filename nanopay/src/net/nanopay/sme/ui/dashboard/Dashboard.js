@@ -20,8 +20,10 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'ctrl',
     'group',
+    'invoiceDAO',
     'notificationDAO',
     'pushMenu',
     'stack',
@@ -40,6 +42,10 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'NO_ACTION_REQUIRED', message: 'You\'re all caught up!' },
+    { name: 'NO_LATEST_ACTIVITY', message: 'No latest activity to display' },
+    { name: 'NO_RECENT_PAYABLES', message: 'No recent payables to display' },
+    { name: 'NO_RECENT_RECEIVABLES', message: 'No recent receivables to display' },
     { name: 'TITLE', message: 'Dashboard' },
     { name: 'SUBTITLE1', message: 'Action Required' },
     { name: 'SUBTITLE2', message: 'Recent Payables' },
@@ -58,13 +64,12 @@ foam.CLASS({
       cursor: pointer;
       font-size: 16px;
     }
-    ^ .invoice-empty-state {
+    ^ .empty-state {
       text-align: center;
-      padding: 27px;
+      padding: 45px 27px;
       border: 1px solid #e2e2e3;
-      background: #fff;
+      background: inherit;
       border-radius: 3px;
-      box-shadow: 0 1px 1px 0 #dae1e9;
       font-size: 14px;
       line-height: 25px;
       color: #8e9090;
@@ -72,6 +77,55 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'Int',
+      name: 'countRequiresApproval',
+      factory: function() {
+        this.user.expenses
+          .where(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
+          .select(this.COUNT()).then((c) => {
+            this.countRequiresApproval = c.value;
+          });
+        return 0;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'countOverdueAndUpcoming',
+      factory: function() {
+        this.user.expenses
+          .where(this.OR(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
+          ))
+          .select(this.COUNT()).then((c) => {
+            this.countOverdueAndUpcoming = c.value; 
+          });
+        return 0;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'countDepositPayment',
+      factory: function() {
+        this.user.sales
+          .where(this.OR(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_ACCEPTANCE),
+          ))
+          .select(this.COUNT()).then((c) => {
+            this.countDepositPayment = c.value;
+          });
+        return 0;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'actionsCheck',
+      expression: function(countRequiresApproval, countOverdueAndUpcoming, countDepositPayment) {
+        return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
+      }
+    },
     {
       class: 'foam.dao.DAOProperty',
       name: 'myDAOReceivables',
@@ -129,6 +183,16 @@ foam.CLASS({
           });
         return 0;
       }
+    },
+    {
+      class: 'Int',
+      name: 'notificationsCount',
+      factory: function() {
+        this.myDaoNotification$proxy.select(this.COUNT()).then((c) => {
+          this.notificationsCount = c.value;
+        })
+        return 0;
+      }
     }
   ],
 
@@ -138,7 +202,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
       var split = this.DashboardBorder.create();
-
       var top = this.Element.create()
         .start('h1')
           .add(this.TITLE)
@@ -149,7 +212,18 @@ foam.CLASS({
         .start('h2')
           .add(this.SUBTITLE1)
         .end()
-        .tag(this.RequireActionView.create());
+        .start()
+          .show(this.actionsCheck$)
+          .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
+        .end()
+        .start()
+          .hide(this.actionsCheck$)
+          .tag(this.RequireActionView.create({
+            countRequiresApproval$: this.countRequiresApproval$,
+            countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
+            countDepositPayment$: this.countDepositPayment$
+          }))
+        .end();
 
       var topR = this.Element.create()
         .start()
@@ -189,7 +263,7 @@ foam.CLASS({
         .end()
         .start()
           .hide(this.payablesCount$.map((value) => value > 0))
-          .addClass('invoice-empty-state').add('No recent payables to show')
+          .addClass('empty-state').add(this.NO_RECENT_PAYABLES)
         .end();
 
       var botL = this.Element.create()
@@ -197,6 +271,7 @@ foam.CLASS({
           .add(this.SUBTITLE3)
         .end()
         .start()
+          .show(this.notificationsCount$.map((value) => value > 0))
           .select(this.myDaoNotification$proxy, function(notif) {
             return this.E().start({
               class: 'net.nanopay.sme.ui.dashboard.NotificationDashboardView',
@@ -207,6 +282,10 @@ foam.CLASS({
               })
             .end();
           })
+        .end()
+        .start()
+          .hide(this.notificationsCount$.map((value) => value > 0))
+          .addClass('empty-state').add(this.NO_LATEST_ACTIVITY)
         .end();
 
       var botR = this.Element.create()
@@ -242,7 +321,7 @@ foam.CLASS({
         .end()
         .start()
           .hide(this.receivablesCount$.map((value) => value > 0))
-          .addClass('invoice-empty-state').add('No recent receivables to show')
+          .addClass('empty-state').add(this.NO_RECENT_RECEIVABLES)
         .end();
 
       split.topButtons.add(top);
