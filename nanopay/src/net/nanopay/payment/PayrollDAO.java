@@ -82,16 +82,6 @@ public class PayrollDAO extends ProxyDAO {
     payroll.setPayrollEntries(payrollEntries);
     return getDelegate().put_(x, payroll);
   }
-//
-//  @Override
-//  public FObject remove_(X x, FObject fObject) {
-//    return null;
-//  }
-//
-//  @Override
-//  public FObject find_(X x, Object o) {
-//    return getDelegate().find_(x, o);
-//  }
 
   public void prepareSPID(Payroll payroll) {
     ServiceProvider sp = new ServiceProvider();
