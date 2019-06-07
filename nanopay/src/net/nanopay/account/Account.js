@@ -67,13 +67,13 @@ foam.CLASS({
     },
     // TODO: Figure out how to distinguish between viewViews and browseViews since they both use foam.comics.v2.NamedView
     {
-      class: 'foam.comics.v2.NamedView',
+      class: 'foam.comics.v2.namedViews.NamedViewCollection',
       name: 'Table',
       view: { class: 'foam.comics.v2.DAOBrowserView' },
       icon: 'images/list-view-enabled.svg',
     },
     {
-      class: 'foam.comics.v2.NamedView',
+      class: 'foam.comics.v2.namedViews.NamedViewCollection',
       name: 'Tree',
       view: { class: 'net.nanopay.account.ui.AccountTreeView' },
       icon: 'images/account-structure-enabled.svg',

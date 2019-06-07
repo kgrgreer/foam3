@@ -81,16 +81,12 @@ foam.CLASS({
       class: 'Int',
       name: 'countRequiresApproval',
       factory: function() {
-        this.isUserAbleToPay$.map((result) => {
-        if ( result ) {
-          this.user.expenses
-            .where(
-              this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
-            .select(this.COUNT()).then((c) => {
-              this.countRequiresApproval = c.value;
-            });
-        }
-        });
+        this.user.expenses
+          .where(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
+          .select(this.COUNT()).then((c) => {
+            this.countRequiresApproval = c.value;
+          });
         return 0;
       }
     },
@@ -128,14 +124,6 @@ foam.CLASS({
       name: 'actionsCheck',
       expression: function(countRequiresApproval, countOverdueAndUpcoming, countDepositPayment) {
         return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'isUserAbleToPay',
-      documentation: `True if the user has permission to make payments on behalf of the business.`,
-      factory: function() {
-        this.checkGroupPermissionToPay();
       }
     },
     {
@@ -233,8 +221,7 @@ foam.CLASS({
           .tag(this.RequireActionView.create({
             countRequiresApproval$: this.countRequiresApproval$,
             countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
-            countDepositPayment$: this.countDepositPayment$,
-            isUserAbleToPay$: this.isUserAbleToPay$
+            countDepositPayment$: this.countDepositPayment$
           }))
         .end();
 
@@ -344,9 +331,6 @@ foam.CLASS({
       split.rightBottomPanel.add(botR);
 
       this.addClass(this.myClass()).add(split).end();
-    },
-    async function checkGroupPermissionToPay() {
-      this.isUserAbleToPay = await this.auth.check(this.user, 'invoice.pay');
     }
   ]
 });
