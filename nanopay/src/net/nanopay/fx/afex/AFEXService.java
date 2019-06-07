@@ -256,4 +256,35 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
     return null;
   }
+
+  @Override
+  public String deletePayee(String vendorId) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/beneficiaryDisable");
+      uriBuilder.setParameter("VendorId", vendorId);
+
+      HttpPost httpPost = new HttpPost(uriBuilder.build());
+
+      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+
+      CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+        throw new RuntimeException("Delete AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          + httpResponse.getStatusLine().getReasonPhrase());
+      }
+
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+
+      System.out.println("delete payee response: " + response.substring(1, response.length() - 1));
+
+      return response.substring(1, response.length() - 1);
+    } catch (IOException | URISyntaxException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
 }

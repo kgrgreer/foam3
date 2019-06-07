@@ -57,6 +57,18 @@ foam.INTERFACE({
           type: 'net.nanopay.fx.afex.UpdatePayeeRequest'
         }
       ]
+    },
+    {
+      name: 'deletePayee',
+      documentation: 'To delete a given payee',
+      async: true,
+      type: 'String',
+      args: [
+        {
+          name: 'vendorId',
+          type: 'String'
+        }
+      ]
     }
   ]
 });

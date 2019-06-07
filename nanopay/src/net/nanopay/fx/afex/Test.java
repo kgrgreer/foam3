@@ -11,8 +11,9 @@ public class Test implements ContextAgent {
 
     // testGetToken(afexService);
     // testGetQuote(afexService);
-    testAddPayee(afexService);
+    // testAddPayee(afexService);
     // testUpdatePayee(afexService);
+    testDeletePayee(afexService);
 
   }
 
@@ -64,5 +65,9 @@ public class Test implements ContextAgent {
     updatePayeeRequest.setVendorId("USD636953226987573100");
 
     afexService.updatePayee(updatePayeeRequest);
+  }
+
+  private void testDeletePayee(AFEXService afexService) {
+    afexService.deletePayee("USD636952334062247928");
   }
 }
