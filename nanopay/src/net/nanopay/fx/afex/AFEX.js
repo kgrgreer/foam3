@@ -69,6 +69,18 @@ foam.INTERFACE({
           type: 'String'
         }
       ]
-    }
+    },
+    {
+      name: 'getPayeeInfo',
+      documentation: 'Get information for a given payee',
+      async: true,
+      type: 'net.nanopay.fx.afex.GetPayeeInfoResponse',
+      args: [
+        {
+          name: 'vendorId',
+          type: 'String'
+        }
+      ]
+    },
   ]
 });

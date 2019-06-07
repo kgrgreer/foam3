@@ -131,6 +131,7 @@ var classes = [
   'net.nanopay.fx.afex.AddPayeeResponse',
   'net.nanopay.fx.afex.UpdatePayeeRequest',
   'net.nanopay.fx.afex.UpdatePayeeResponse',
+  'net.nanopay.fx.afex.GetPayeeInfoResponse',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',

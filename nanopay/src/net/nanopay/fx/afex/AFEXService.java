@@ -287,4 +287,40 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
     return null;
   }
+
+  @Override
+  public GetPayeeInfoResponse getPayeeInfo(String vendorId) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/beneficiary/find");
+      uriBuilder.setParameter("VendorId", vendorId);
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+      httpGet.addHeader("API-Key", apiKey);
+      httpGet.addHeader("Content-Type", "application/json");
+
+      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+        throw new RuntimeException("Get AFEX payee information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          + httpResponse.getStatusLine().getReasonPhrase());
+      }
+
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+      GetPayeeInfoResponse getPayeeInfoResponse = (GetPayeeInfoResponse) jsonParser.parseString(response, GetPayeeInfoResponse.class);
+      System.out.println("Get Payee information response: ");
+      System.out.println(getPayeeInfoResponse.getCurrency());
+      System.out.println(getPayeeInfoResponse.getVendorId());
+      System.out.println(getPayeeInfoResponse.getBeneficiaryName());
+      System.out.println(getPayeeInfoResponse.getBeneficiaryAddressLine1());
+      System.out.println(getPayeeInfoResponse.getBeneficiaryCity());
+      System.out.println(getPayeeInfoResponse.getBeneficiaryCountryCode());
+
+      return getPayeeInfoResponse;
+    } catch (IOException | URISyntaxException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
 }
