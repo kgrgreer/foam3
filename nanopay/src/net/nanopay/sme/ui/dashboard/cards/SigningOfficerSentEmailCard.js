@@ -21,7 +21,8 @@ foam.CLASS({
   css: `
     ^ {
       width: 100%;
-      max-height: 135px;
+      min-height: 135px;
+      height: auto;
       box-sizing: border-box;
 
       border-radius: 4px;
@@ -30,17 +31,22 @@ foam.CLASS({
       position: relative;
       padding: 24px;
 
-      background-size: cover;
-      background-repeat: no-repeat;
+      // option 1
+      // background-image: url('/images/ablii/dashboard/contacts-4.png');
+      // background-repeat: no-repeat;
+      // background-position: 98% 100%;
+      // background-size: 28% 90%;
     }
 
     ^ .info-box {
       display: inline-block;
       width: 70%;
+      max-width: 80%
     }
 
     ^ .title {
-      height: 24px;
+      min-height: 24px;
+      height: auto;
       margin: 0;
 
       font-family: Lato;
@@ -60,9 +66,14 @@ foam.CLASS({
       color: #525455;
     }
     ^ .img-right-corner {
-      float: right;
+
       width: 28%;
-      margin-top: -1.5%;
+      position: absolute;
+      bottom: 0px;
+      right: 24px;
+      height: 90%;
+      // max-height: 126px;
+      // min-width: 264px;
     }
   `,
 
@@ -82,12 +93,12 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start('img').addClass('img-right-corner')
-          .attrs({ src: '/images/ablii/dashboard/contacts-4.png' })
-        .end()
         .start().addClass('info-box')
           .start('p').addClass('title').add(this.TITLE).end()
           .start('p').addClass('description').add(this.DESCRIPTION).end()
+        .end()
+        .start('img').addClass('img-right-corner') 
+          .attrs({ src: '/images/ablii/dashboard/contacts-4.png' })
         .end();
     }
   ]
