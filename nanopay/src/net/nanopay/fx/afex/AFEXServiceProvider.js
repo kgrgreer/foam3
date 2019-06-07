@@ -32,7 +32,7 @@ foam.CLASS({
       validateDealExpiryDate(quote.getExpiryTime());
   
       //Build AFEX Request
-      AcceptQuoteRequest request = new AcceptQuoteRequest();
+      //AcceptQuoteRequest request = new AcceptQuoteRequest();
       
   
      // AcceptQuoteResult acceptQuoteResult = this.ascendantFX.acceptQuote(request);
