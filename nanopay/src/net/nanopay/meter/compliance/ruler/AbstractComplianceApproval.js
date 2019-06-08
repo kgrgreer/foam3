@@ -58,7 +58,7 @@ foam.CLASS({
         }
 
         // Remove existing pending approval requests
-        agent.submit(x, new ContextAgent() {
+        agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
             DAO dao = ((DAO) x.get("approvalRequestDAO"))

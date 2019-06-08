@@ -34,7 +34,7 @@ foam.CLASS({
               if ( OD != null ) {
                 DebtAccount DA = OD.findDebtAccount(x);
                 if ( DA != null && DA.getLimit() > 0 && ( (long) DA.findBalance(x) ) < 0 ) {
-                  agent.submit(x, new ContextAgent() {
+                  agency.submit(x, new ContextAgent() {
                     @Override
                     public void execute(X x) {
                       Transaction repayment = new Transaction.Builder(x)

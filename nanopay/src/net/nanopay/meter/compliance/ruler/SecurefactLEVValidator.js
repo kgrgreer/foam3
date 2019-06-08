@@ -27,7 +27,7 @@ foam.CLASS({
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.hasCloseMatches() ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            agent.submit(x, new ContextAgent() {
+            agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
                 requestApproval(x,

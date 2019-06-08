@@ -29,7 +29,7 @@ foam.CLASS({
           @Override
           public void put(Object obj, Detachable sub) {
 
-            agent.submit(x, new ContextAgent() {
+            agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
                 BeneficialOwner owner = (BeneficialOwner) ((BeneficialOwner) obj).fclone();

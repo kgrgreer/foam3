@@ -75,7 +75,7 @@ foam.CLASS({
         // get localUserDAO and put the new user into the dao (due to permission issues)
         user.setCompliance(ComplianceStatus.PASSED);
 
-        agent.submit(x, new ContextAgent() {
+        agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
             DAO localUserDAO = (DAO) x.get("localUserDAO");

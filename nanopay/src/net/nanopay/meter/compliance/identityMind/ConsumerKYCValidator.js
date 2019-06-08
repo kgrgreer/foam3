@@ -33,7 +33,7 @@ foam.CLASS({
         if ( obj instanceof User
           && status != ComplianceValidationStatus.VALIDATED
         ) {
-          agent.submit(x, new ContextAgent() {
+          agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
               requestApproval(x,

@@ -31,7 +31,7 @@ foam.CLASS({
         dowJonesResponse_.setStatus(approvalRequest.getStatus());
         dowJonesResponse_.setComments(approvalRequest.getComments());
 
-        agent.submit(x, new ContextAgent() {
+        agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
             DAO downJonesResponseDAO = (DAO) x.get("dowJonesResponseDAO");
