@@ -80,6 +80,7 @@ foam.CLASS({
           x.save();
 
           /*
+          Needed to comment the shadow out in order to match the Liquid specifications
           // Add shadow blur to box
           x.shadowBlur    = 5;
           x.shadowOffsetX = 5;
