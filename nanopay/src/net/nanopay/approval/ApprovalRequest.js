@@ -105,6 +105,11 @@ foam.CLASS({
       Deafults to 1 meaning only one approval of any approver rank is required by default.`
     },
     {
+      class: 'Int',
+      name: 'requiredRejectedPoints',
+      value: 1
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
       name: 'group',

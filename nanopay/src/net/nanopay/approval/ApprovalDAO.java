@@ -27,18 +27,16 @@ public class ApprovalDAO
     ApprovalRequest old = (ApprovalRequest) requestDAO.find(obj);
     ApprovalRequest request = (ApprovalRequest) getDelegate().put(obj);
     if ( old != null && old.getStatus() != request.getStatus() && request.getStatus() == ApprovalStatus.APPROVED ) {
-
       DAO requests = ApprovalRequestUtil.getAllRequests(x, request.getObjId(), request.getRequestReference());
-
       // if points are sufficient to consider object approved
-      if ( getCurrentPoints(requests) >= request.getRequiredPoints() ) {
-
+      if ( getCurrentPoints(requests) >= request.getRequiredPoints() ||
+      getCurrentRejectedPoints(requests) >= request.getRequiredRejectedPoints() ) {
         //puts object to its original dao
         rePutObject(request);
 
         //removes all the requests that were not approved to clean up approvalRequestDAO
         removeUnusedRequests(requests);
-      }
+      } 
     }
     return request;
   }
@@ -57,6 +55,15 @@ public class ApprovalDAO
     return ((Double)
       ((Sum) dao
         .where(EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED))
+        .select(SUM(ApprovalRequest.POINTS))
+      ).getValue()
+    ).longValue();
+  }
+
+  private long getCurrentRejectedPoints(DAO dao) {
+    return ((Double)
+      ((Sum) dao
+        .where(EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED))
         .select(SUM(ApprovalRequest.POINTS))
       ).getValue()
     ).longValue();
