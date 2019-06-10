@@ -276,9 +276,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showBankAccount',
       expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
+        return ( invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
           invoice.status === this.InvoiceStatus.PENDING ||
-          invoice.status === this.InvoiceStatus.PAID;
+          invoice.status === this.InvoiceStatus.PAID ) &&
+          ( invoice.payeeId === this.user.id && invoice.destinationAccount != 0 );
       },
       documentation: `Only show bank accounts when it is requires
         approval, processing & complete`
@@ -440,6 +441,12 @@ foam.CLASS({
             } else {
               this.isCrossBorder = true;
             }
+          });
+        } else {
+          this.currencyDAO.find(this.invoice.chequeCurrency).then((currency) => {
+            this.formattedAmountPaid =
+              `${currency.format(this.invoice.chequeAmount)} ` +
+              `${currency.alphabeticCode}`;
           });
         }
       });
