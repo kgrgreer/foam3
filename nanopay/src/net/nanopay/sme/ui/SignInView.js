@@ -96,6 +96,14 @@ foam.CLASS({
       width: 80%;
       margin: 10px;
     }
+    ^ .password-link {
+      display: inline-block;
+      margin: 0;
+      font-size: 12px;
+      float: right;
+      color: #604aff;
+      cursor: pointer;
+    }
   `,
 
   properties: [
@@ -172,7 +180,19 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('input-wrapper')
-            .start().addClass('input-label').add(this.PASSWORD_LABEL).end()
+            .start()
+              .addClass('input-label')
+              .addClass('inline')
+              .add(this.PASSWORD_LABEL)
+            .end()
+            .start('p').addClass('password-link')
+              .add(this.FORGET_PASSWORD_LABEL)
+              .on('click', function() {
+                self.stack.push({
+                  class: 'foam.nanos.auth.resetPassword.EmailView'
+                });
+              })
+            .end()
             .add(this.PASSWORD)
           .end()
           .start(this.LOG_IN).addClass('sme-button').addClass('block').addClass('login').end()
@@ -186,14 +206,6 @@ foam.CLASS({
                 self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
               })
             .end()
-          .end()
-          .start('p').addClass('forgot-link')
-            .add(this.FORGET_PASSWORD_LABEL)
-            .on('click', function() {
-              self.stack.push({
-                class: 'foam.nanos.auth.resetPassword.EmailView'
-              });
-            })
           .end()
         .end();
 
