@@ -26,13 +26,15 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: ` 
       KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) obj;
-      DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
-      approvalRequestDAO.put_(x,
-        new ManualFxApprovalRequest.Builder(x)
-          .setDaoKey("transactionDAO")
-          .setObjId(kotakFxTransaction.getId())
-          .setApprover(1348)
-          .setStatus(ApprovalStatus.REQUESTED).build());
+      if ( kotakFxTransaction.getStatus().equals(TransactionStatus.PENDING) ) {
+        DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+        approvalRequestDAO.put_(x,
+          new ManualFxApprovalRequest.Builder(x)
+            .setDaoKey("transactionDAO")
+            .setObjId(kotakFxTransaction.getId())
+            .setApprover("payment-ops")
+            .setStatus(ApprovalStatus.REQUESTED).build());
+      }
       `
     },
     {

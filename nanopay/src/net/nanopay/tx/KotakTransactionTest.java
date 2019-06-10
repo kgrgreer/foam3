@@ -123,6 +123,18 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
         EQ(ApprovalRequest.DAO_KEY, "transactionDAO"),
         EQ(ApprovalRequest.OBJ_ID, txn5.getId()),
         EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)
+      ));
+    test( approval == null, "Approval request for fx rate should not exist before fx transaction becomes PENDING.");
+
+    txn5 = (KotakFxTransaction) txn5.fclone();
+    txn5.setStatus(TransactionStatus.PENDING);
+    txnDAO.put_(x, txn5);
+    approval = (ManualFxApprovalRequest) approvalDAO.find(
+      AND(
+        INSTANCE_OF(ManualFxApprovalRequest.class),
+        EQ(ApprovalRequest.DAO_KEY, "transactionDAO"),
+        EQ(ApprovalRequest.OBJ_ID, txn5.getId()),
+        EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)
       )).fclone();
     test(approval != null, "Approval request for fx rate has been created by CreateManualFxRule");
 

@@ -21,6 +21,7 @@ foam.CLASS({
     'net.nanopay.fx.KotakFxTransaction',
     'net.nanopay.fx.ManualFxApprovalRequest',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.KotakCOTransaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
@@ -63,6 +64,17 @@ foam.CLASS({
           kotakFxTransaction.setFxRate(rate);
           kotakFxTransaction.setStatus(TransactionStatus.COMPLETED);
           transactionDAO.put_(x, kotakFxTransaction);
+
+          // update amount of child transaction
+          Sink sink2 = new ArraySink();
+          sink2 = kotakFxTransaction.getChildren(x).select(sink2);
+          list = ((ArraySink) sink2).getArray();
+          if ( list != null && list.size() > 0 ) {
+            KotakCOTransaction kotakCOTransaction = (KotakCOTransaction) list.get(0);
+            kotakCOTransaction.setAmount(kotakFxTransaction.getAmount() * Math.round(rate));
+            transactionDAO.put_(x, kotakCOTransaction);
+          }
+
           approvalRequestDAO
             .where(
               MLang.AND(

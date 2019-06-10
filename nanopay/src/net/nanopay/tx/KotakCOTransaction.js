@@ -85,5 +85,18 @@ foam.CLASS({
       return false;
       `
     },
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      javaCode: `
+      super.limitedCopyFrom(other);
+      setAmount(((KotakCOTransaction) other).getAmount());
+      `
+    }
   ]
 });
