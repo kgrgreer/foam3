@@ -31,6 +31,7 @@ declare -a arr=(
   "businessSectors"
   "identificationTypes"
   "businessTypes"
+  "complianceItems"
   "corridors"
   "countries"
   "cronjobs"
