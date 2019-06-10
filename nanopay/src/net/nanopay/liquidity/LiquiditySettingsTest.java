@@ -52,7 +52,6 @@ public class LiquiditySettingsTest
     ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
     request.setStatus(ApprovalStatus.APPROVED);
     approvalDAO.put_(x_, request);
-
     balance = (Long)senderDigitalDefault.findBalance(x);
     test(balance == CASH_IN_AMOUNT + initialBalance - CASH_OUT_AMOUNT, "Balance with PENDING Cash-Out "+(initialBalance + CASH_IN_AMOUNT-CASH_OUT_AMOUNT));
 

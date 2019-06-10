@@ -159,7 +159,7 @@ try {
   synchronized ( this ) {
     if ( getRetryCount() < getMaxRetry() ) {
       setRetryCount(getRetryCount() + 1);
-      getTimer().cancel();
+      if ( getTimer() != null ) getTimer().cancel();
       setTimer(new Timer());
       TimerTask task = new TimerTask() {
         public void run() {
@@ -168,7 +168,7 @@ try {
       };
       getTimer().schedule(task, getRetryDelay());
     } else {
-      getTimer().cancel();
+      if ( getTimer() != null ) getTimer().cancel();
       setRetryCount(0);
       final Logger logger = (Logger) getX().get("logger");
       logger.debug("Maximum SFTP retry exceeded.");

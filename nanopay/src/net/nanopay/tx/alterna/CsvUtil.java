@@ -256,11 +256,11 @@ public class CsvUtil {
           if ( t instanceof AlternaCITransaction ) {
             AlternaCITransaction txn = (AlternaCITransaction) t;
 
-            // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+            // if transaction padType is set, write it to csv. Otherwise set padType based on if it has organization
             if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
               alternaFormat.setPadType(txn.getPadType());
-            }
-            else {
+            } else {
+              alternaFormat.setPadType(isOrganization ? "Business" : "Personal");
               txn.setPadType(alternaFormat.getPadType());
             }
 
@@ -284,11 +284,11 @@ public class CsvUtil {
           } else if ( t instanceof AlternaCOTransaction ) {
             AlternaCOTransaction txn = (AlternaCOTransaction) t;
 
-            // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+            // if transaction padType is set, write it to csv. Otherwise set padType based on if it has organization
             if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
               alternaFormat.setPadType(txn.getPadType());
-            }
-            else {
+            } else {
+              alternaFormat.setPadType(isOrganization ? "Business" : "Personal");
               txn.setPadType(alternaFormat.getPadType());
             }
 
@@ -312,11 +312,11 @@ public class CsvUtil {
           } else if ( t instanceof AlternaVerificationTransaction ) {
             AlternaVerificationTransaction txn = (AlternaVerificationTransaction) t;
 
-            // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+            // if transaction padType is set, write it to csv. Otherwise set padType based on if it has organization
             if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
               alternaFormat.setPadType(txn.getPadType());
-            }
-            else {
+            } else {
+              alternaFormat.setPadType(isOrganization ? "Business" : "Personal");
               txn.setPadType(alternaFormat.getPadType());
             }
 

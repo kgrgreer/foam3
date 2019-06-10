@@ -10,16 +10,20 @@ foam.CLASS({
       padding: 12px 24px 24px 24px;
     }
     ^ .two-column-grid {
-      display: grid;
-      grid-column-gap: 32px;
       margin-top: 32px;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      flex-basis: 100%;
+      justify-content: space-between;
     }
     ^ .left-column {
+      width: 500px;
       grid-column-start: 1;
       grid-row-start: 1;
     }
     ^ .right-column {
+      width: 500px;
       grid-column-start: 2;
       grid-row-start: 1;
     }
