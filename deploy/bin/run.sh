@@ -8,6 +8,7 @@ fi
 
 HOST_NAME=`hostname -s`
 export DEBUG=
+DAEMONIZE=1
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
@@ -18,12 +19,13 @@ function usage {
     echo "  -W <web_port>       : HTTP Port."
 }
 
-while getopts "D:hN:W:" opt ; do
+while getopts "D:hN:W:Z:" opt ; do
     case $opt in
         D) DEBUG=$OPTARG;;
         h) usage; exit 0;;
         N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
+        Z) DAEMONIZE=$OPTARG;;
 #        ?) usage ; exit 0 ;;
    esac
 done
@@ -59,7 +61,11 @@ export RES_JAR_HOME="${JAR}"
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
 #java -server -jar "${JAR}"
-nohup java -server -jar "${JAR}" &>/dev/null &
-echo $! > "${NANOS_PIDFILE}"
+if [ "$DAEMONIZE" -eq 1 ]; then
+    nohup java -server -jar "${JAR}" &>/dev/null &
+    echo $! > "${NANOS_PIDFILE}"
+else
+    java -server -jar "${JAR}"
+fi
 
 exit 0
