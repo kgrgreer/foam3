@@ -45,10 +45,6 @@ foam.CLASS({
     }
   ],
 
-  tableColumns: [
-
-  ],
-
   properties: [
     {
       class: 'String',
