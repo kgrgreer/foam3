@@ -31,7 +31,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'alphabeticCode',
-      label: 'Currency',
+      label: 'Code',
       documentation: 'The alphabetic code associated with a type of currency.',
       required: true
     },
