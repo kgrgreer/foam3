@@ -7,7 +7,8 @@ foam.CLASS({
   properties: [
     {
       name: 'id',
-      class: 'Long'
+      class: 'String',
+      documentation: 'CAD-DEBIT or CAD-CREDIT'
     },
     {
       name: 'originatorId',
@@ -54,8 +55,8 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'env',
-      class: 'String'
+      name: 'production',
+      class: 'Boolean'
     }
   ]
 

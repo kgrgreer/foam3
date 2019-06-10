@@ -9,6 +9,10 @@ foam.CLASS({
     'java.time.LocalDate'
   ],
 
+  implements: [
+    'foam.core.Validatable'
+  ],
+
   properties: [
     {
       name: 'logicalRecordTypeId',
@@ -44,9 +48,23 @@ foam.CLASS({
         + this.getOriginatorId() 
         + BmoFormatUtil.addLeftZeros(this.getFileCreationNumber(), 4)
         + getFileCreationDate()
-        + getDestinationDataCentreCode()
+        + BmoFormatUtil.addLeftZeros(getDestinationDataCentreCode(), 5)
         + BmoFormatUtil.blanks(54);
       `
-    }
+    },
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaCode: `
+      if ( this.getFileCreationNumber() > 9999 ) {
+        throw new RuntimeException("File creation number can not be larger than 9999");
+      }
+      `
+    },
   ]
 });

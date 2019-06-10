@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class BmoFormatUtil {
@@ -45,6 +46,25 @@ public class BmoFormatUtil {
 
   public static String blanks(int size) {
     return StringUtils.rightPad("", size, " ");
+  }
+
+  public static String fieldAt(String target, int position) {
+    return target.substring(position - 1, position);
+  }
+
+  public static String fieldAt(String target, int start, int end) {
+    return target.substring(start -1 , end);
+  }
+
+  public static ArrayList<String> splitRecord(String records) {
+    int size = 240;
+    int index = 0;
+    ArrayList<String> result = new ArrayList<>();
+    while ( index < records.length()) {
+      result.add(records.substring(index, index + size));
+      index = index + size;
+    }
+    return result;
   }
 
 

@@ -59,7 +59,7 @@ foam.CLASS({
         + this.getPayableDate()
         + BmoFormatUtil.addRightBlanks(this.getOriginatorShortName(), 15)
         + BmoFormatUtil.addRightBlanks(this.getOriginatorLongName(), 30)
-        + "0" + this.getInstitutionIdForReturns()
+        + this.getInstitutionIdForReturns()
         + BmoFormatUtil.addRightBlanks(this.getAccountNumberForReturns(), 12)
         + BmoFormatUtil.blanks(3);
       `

@@ -5,7 +5,7 @@ foam.CLASS({
   documentation: `BMO EFT file`,
 
   tableColumns: [
-    'id', 'fileName', 'env'
+    'id', 'fileName', 'production'
   ],
 
   properties: [
@@ -18,9 +18,8 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'env',
-      class: 'String',
-      documentation: 'value could be "sandbox" or "production". '
+      name: 'production',
+      class: 'Boolean',
     },
     {
       name: 'fileCreationTimeEST',

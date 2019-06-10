@@ -6,7 +6,12 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.bmo.BmoFormatUtil',
-    'java.time.LocalDate'
+    'java.time.LocalDate',
+    'org.apache.commons.lang3.StringUtils'
+  ],
+
+  implements: [
+    'foam.core.Validatable'
   ],
 
   properties: [
@@ -52,6 +57,28 @@ foam.CLASS({
         + BmoFormatUtil.addRightBlanks(this.getClientName(), 29)
         + BmoFormatUtil.addRightBlanks(this.getReferenceNumber(), 19);
       `
-    }
+    },
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaCode: `
+      if ( this.getAmount() > 9999999999L ) {
+        throw new RuntimeException("Transaction amount is larger than the max.");
+      }
+  
+      //if ( ! StringUtils.isAlphanumericSpace(this.getClientName()) ) {
+      //  throw new RuntimeException("User name contains invalid characters.");
+      //}
+  
+      if ( this.getReferenceNumber().length() > 19 ) {
+        throw new RuntimeException("Transaction reference number is longer than 19 char.");
+      }
+      `
+    },
   ]
 });

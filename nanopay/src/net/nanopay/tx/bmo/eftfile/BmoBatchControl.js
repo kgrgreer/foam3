@@ -8,6 +8,10 @@ foam.CLASS({
     'net.nanopay.tx.bmo.BmoFormatUtil'
   ],
 
+  implements: [
+    'foam.core.Validatable'
+  ],
+
   properties: [
     {
       name: 'logicalRecordTypeId',
@@ -40,6 +44,24 @@ foam.CLASS({
         + BmoFormatUtil.addLeftZeros(this.getBatchAmount(), 14)
         + BmoFormatUtil.blanks(56);
       `
-    }
+    },
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaCode: `
+      if ( this.getBatchRecordCount() > 99999999 ) {
+        throw new RuntimeException("Batch record count bigger than 99999999." );
+      }
+  
+      if ( this.getBatchAmount() > 99999999999999L ) {
+        throw new RuntimeException("Batch amount larger than 99999999999999." );
+      }
+      `
+    },
   ]
 });
