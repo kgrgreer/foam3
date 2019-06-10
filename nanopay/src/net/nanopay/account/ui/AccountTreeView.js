@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'AccountTreeView',
   extends: 'foam.u2.Element',
 
+  documentation: `
+    A customized Tree View for accounts based on the Liquid design
+  `,
+
   css: `
     ^header {
       border-bottom: solid 1px #e7eaec;
