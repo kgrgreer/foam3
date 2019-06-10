@@ -58,7 +58,7 @@ foam.CLASS({
         DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
             EQ(ApprovalRequest.DAO_KEY, getObjDaoKey()),
-            EQ(ApprovalRequest.OBJ_ID, obj.getProperty("id"))
+            EQ(ApprovalRequest.OBJ_ID, String.valueOf(obj.getProperty("id")))
           ));
 
         // Get approval request that was updated
