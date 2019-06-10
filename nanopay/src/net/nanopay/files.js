@@ -693,7 +693,7 @@ FOAM_FILES([
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
   { name: 'net/nanopay/contacts/ContactStatus' },
-  { name: 'net/nanopay/contacts/ContactMigrationRule', flags: ['java'] },
+  { name: 'net/nanopay/contacts/ContactMigrationRule' },
   { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/ContactWizardModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
