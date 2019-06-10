@@ -21,7 +21,8 @@ foam.CLASS({
     'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.nanos.ruler.Operations'
   ],
 
   messages: [
@@ -37,11 +38,12 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'createOrRemove',
+      class: 'Enum',
+      of: 'foam.nanos.ruler.Operations',
+      name: 'operation',
       documentation: `
-        Either 'create' or 'remove' depending on whether a compliance item is
-        being created or removed.
+        Describes whether a compliance item is being created or removed. Only
+        supports create or remove at the moment.
       `
     },
     {
@@ -58,7 +60,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        if(this.getCreateOrRemove().equals("create")) {
+        if(this.getOperation() == Operations.CREATE) {
           if ( obj instanceof DowJonesResponse ) {
             DowJonesResponse response = (DowJonesResponse) obj;
             DAO userDAO = (DAO) x.get("userDAO");
@@ -95,7 +97,7 @@ foam.CLASS({
             DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
             complianceItemDAO.inX(x).put(complianceItem);
           }
-        } else if(this.getCreateOrRemove().equals("remove")) {
+        } else if(this.getOperation() == Operations.REMOVE) {
           if ( obj instanceof DowJonesResponse ) {
             DowJonesResponse response = (DowJonesResponse) obj;
             ComplianceItem complianceItem = new ComplianceItem.Builder(x)
