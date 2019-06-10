@@ -2,6 +2,7 @@ package net.nanopay.business;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.UserUserJunction;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Map;
 
@@ -101,7 +103,7 @@ public class JoinBusinessWebAgent implements WebAgent {
       throw new RuntimeException(e);
     }
 
-    if ( foam.util.SafetyUtil.isEmpty(redirect) ) redirect = url + "?email=" + encodedEmail;
+    if ( redirect.equals("/") ) redirect = url + "?email=" + encodedEmail;
 
     EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(x, "join-business-splash-page", user.getGroup());
     JtwigTemplate template = JtwigTemplate.inlineTemplate(emailTemplate.getBody(), config_);
