@@ -38,13 +38,6 @@ foam.CLASS({
   ],
 
   properties: [
-    // TODO: Remove this after migration.
-    {
-      class: 'Int',
-      name: 'ownershipPercent',
-      documentation: `Defines the percentage of ownership if the user is a principal
-        owner.`
-    },
     {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
