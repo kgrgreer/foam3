@@ -27,7 +27,7 @@ foam.CLASS({
     {
       name: 'updateObj',
       javaCode: `
-        User user = (User) obj;
+        User user = (User) obj.fclone();
         user.setCompliance(
           ApprovalStatus.APPROVED == approvalStatus
             ? ComplianceStatus.PASSED

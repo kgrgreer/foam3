@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.contacts',
   name: 'ContactMigrationRule',
-  flags: ['java'],
 
   documentation: `
     Migrates contacts and invoices to a newly onboarded Business with a bank
