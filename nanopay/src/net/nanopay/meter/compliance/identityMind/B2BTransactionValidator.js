@@ -27,7 +27,7 @@ foam.CLASS({
               .setDaoKey("localTransactionDAO")
               .setCauseId(response.getId())
               .setCauseDaoKey("identityMindResponseDAO")
-              .setRequestReference("Validate B2B Transaction")
+              .setClassification("Validate B2B Transaction")
               .build()
           );
         }

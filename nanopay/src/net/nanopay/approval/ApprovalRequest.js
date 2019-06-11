@@ -76,10 +76,10 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'requestReference',
+      name: 'classification',
       documentation: `Should be unique to a certain type of requests and created within a single rule.
       For example "IdentityMind Business approval".
-      When retrieving approval requests from a dao, do not use daoKey, use requestReference instead:
+      When retrieving approval requests from a dao, do not use daoKey, use classification instead:
       mlang.AND(
         EQ(ApprovalRequest.OBJ_ID, objectId),
         EQ(ApprovalRequest.REQUEST_REFERENCE, "reference")
