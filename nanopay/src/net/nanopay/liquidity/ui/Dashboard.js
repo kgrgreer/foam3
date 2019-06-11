@@ -40,7 +40,18 @@ foam.CLASS({
         DAO for liquidity candlesticks
       `,
       expression: function(liquidityThresholdCandlestickDAO) {
-        return liquidityThresholdCandlestickDAO;
+        liquidityThresholdCandlestickDAO;
+      },
+      view: {
+        class: 'org.chartjs.CandlestickDAOChartView',
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'combinedCandlestickDAO',
+      label: 'Liquidity',
+      factory: function() {
+        var  this.accountBalanceCandlestickDAO
       }
     },
     {
