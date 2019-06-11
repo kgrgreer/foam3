@@ -42,17 +42,9 @@ foam.CLASS({
       expression: function(liquidityThresholdCandlestickDAO) {
         liquidityThresholdCandlestickDAO;
       },
-      view: {
-        class: 'org.chartjs.CandlestickDAOChartView',
-      }
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'combinedCandlestickDAO',
-      label: 'Liquidity',
-      factory: function() {
-        var  this.accountBalanceCandlestickDAO
-      }
+      // view: {
+      //   class: 'org.chartjs.CandlestickDAOChartView',
+      // }
     },
     {
       name: 'cicoCandlestickDAO',
