@@ -8,6 +8,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 
 /**
  * Populates "points" property for new requests based on approver user.
@@ -42,6 +43,8 @@ extends ProxyDAO {
     Group group = request.findGroup(getX());
 
     if ( group == null ) {
+      Logger logger = (Logger) x.get("logger");
+      logger.error("Approver or approver group must be set for approval request");
       throw new RuntimeException("Approver or approver group must be set for approval request");
     }
 

@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'foam.core.X',
     'foam.core.FObject',
     'foam.dao.DAO'
@@ -172,12 +173,15 @@ foam.CLASS({
           type: 'Context'
         }
       ],
-      javaCode: `DAO dao = (DAO) x.get(getDaoKey());
+      javaCode: `Logger logger = (Logger) x.get("logger");
+DAO dao = (DAO) x.get(getDaoKey());
 if ( dao == null ) {
+  logger.error("Invalid dao key for the approval request object.");
   throw new RuntimeException("Invalid dao key for the approval request object.");
 }
 FObject obj = dao.inX(x).find(getObjId());
 if ( obj == null ) {
+  logger.error("Invalid object id.");
   throw new RuntimeException("Invalid object id.");
 }
       `
