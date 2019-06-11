@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'CheckCurrencyRule',
-  flags: ['java'],
 
   documentation: 'Checks if user has permission to work with a currency.',
 
