@@ -4,8 +4,8 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
-    'accountBalanceCandlestickDAO as accountBalancesOverTime',
-    'liquidityThresholdCandlestickDAO',
+    'accountBalanceWeeklyCandlestickDAO as accountBalancesOverTime',
+    'liquidityThresholdWeeklyCandlestickDAO',
     'transactionDAO'
   ],
 
@@ -39,8 +39,8 @@ foam.CLASS({
       documentation: `
         DAO for liquidity candlesticks
       `,
-      expression: function(liquidityThresholdCandlestickDAO) {
-        return liquidityThresholdCandlestickDAO;
+      expression: function(liquidityThresholdWeeklyCandlestickDAO) {
+        return liquidityThresholdWeeklyCandlestickDAO;
       },
       view: {
         class: 'org.chartjs.CandlestickDAOChartView',
