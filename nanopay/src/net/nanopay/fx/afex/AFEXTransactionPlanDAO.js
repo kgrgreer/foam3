@@ -74,13 +74,9 @@ foam.CLASS({
       request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
     if ( fxService instanceof AFEXServiceProvider  ) {
 
-      // Validate that Payer is provisioned for AFEX before proceeding
+      // TODO: Validate that Payer is provisioned for AFEX before proceeding
 
       FXQuote fxQuote = new FXQuote.Builder(x).build();
-      String pacsEndToEndId = getPacs008EndToEndId(request);
-      if ( ! SafetyUtil.isEmpty(pacsEndToEndId) ) {
-        fxQuote = FXQuote.lookUpFXQuote(x, pacsEndToEndId, request.getPayerId());
-      }
 
       // FX Rate has not yet been fetched
       if ( fxQuote.getId() < 1 ) {
@@ -116,34 +112,7 @@ foam.CLASS({
     }
     return getDelegate().put_(x, quote);
     `
-  },
-  {
-    name: 'getPacs008EndToEndId',
-    args: [
-      {
-        type: 'net.nanopay.tx.model.Transaction',
-        name: 'transaction'
-      }
-    ],
-    type: 'String',
-    javaCode: `
-    String pacsEndToEndId = null;
-    if ( transaction.getReferenceData() != null && transaction.getReferenceData().length > 0 ) {
-      for ( FObject obj : transaction.getReferenceData() ) {
-        if ( obj instanceof Pacs00800106 ) {
-          Pacs00800106 pacs = (Pacs00800106) obj;
-          FIToFICustomerCreditTransferV06 fi = pacs.getFIToFICstmrCdtTrf();
-          if ( fi != null && fi.getCreditTransferTransactionInformation() != null && fi.getCreditTransferTransactionInformation().length > 0 ) {
-            PaymentIdentification3 pi = fi.getCreditTransferTransactionInformation()[0].getPaymentIdentification();
-            pacsEndToEndId =  pi != null ? pi.getEndToEndIdentification() : null ;
-          }
-          break;
-        }
-      }
-    }
-    return pacsEndToEndId;
-      `
-    }
+  }
   ],
 
   axioms: [
@@ -152,26 +121,31 @@ foam.CLASS({
         cls.extras.push(`
 protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction request, FXQuote fxQuote) {
   AFEXTransaction afexTransaction = new AFEXTransaction.Builder(x).build();
-  // afexTransaction.copyFrom(request);
-  // afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
-  // afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
-  // afexTransaction.setFxRate(fxQuote.getRate());
-  // afexTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
-  // afexTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
-  // FeesFields fees = new FeesFields.Builder(x).build();
-  // fees.setTotalFees(fxQuote.getFee());
-  // fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-  // afexTransaction.addLineItems(new TransactionLineItem[] {new AFEXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
-  // afexTransaction.setFxFees(fees);
-  // afexTransaction.setIsQuoted(true);
-  // afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
-  // if ( afexTransaction.getAmount() < 1 ) afexTransaction.setAmount(fxQuote.getSourceAmount());
-  // if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
-  // {
-  //   afexTransaction.setAccepted(true);
-  // }
+  afexTransaction.copyFrom(request);
+ 
+  afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
+  afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
+  afexTransaction.setFxRate(fxQuote.getRate());
+  afexTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+  afexTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
+ 
+  FeesFields fees = new FeesFields.Builder(x).build();
+  fees.setTotalFees(fxQuote.getFee());
+  fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+  afexTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+  afexTransaction.setFxFees(fees);
+  
+  afexTransaction.setIsQuoted(true);
+  afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
+  if ( afexTransaction.getAmount() < 1 ) {
+    afexTransaction.setAmount(fxQuote.getSourceAmount());
+  }
+  if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
+  {
+    afexTransaction.setAccepted(true);
+  }
 
-  // afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+  afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
   return afexTransaction;
 }
         `);
