@@ -101,12 +101,13 @@ function deploy_journals {
         # remove journal file that find.sh was previously creating
         rm "$JOURNAL_HOME"
     fi
-
+    
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
 
     if [ "$GRADLE_BUILD" -eq 0 ]; then
+        ./tools/findJournals.sh "$PROJECT_HOME" "tools/journals" "$JOURNAL_CONFIG" > target/journal_files
         ./find.sh "$PROJECT_HOME" "target/journal_files" "tools/journals" "$JOURNAL_OUT" "$JOURNAL_CONFIG"
     else
         ./tools/findJournals.sh "$PROJECT_HOME" "tools/journals" "$JOURNAL_CONFIG" > target/journal_files

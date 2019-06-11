@@ -26,3 +26,5 @@ for file in $lines; do
         done
     done
 done
+
+exit 0
