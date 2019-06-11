@@ -105,11 +105,12 @@ function deploy_journals {
     mkdir -p "$JOURNAL_OUT"
     JOURNALS="$JOURNAL_OUT/journals"
     touch "$JOURNALS"
+
     if [ "$GRADLE_BUILD" -eq 0 ]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$JOURNAL_CONFIG"
+        ./find.sh "$PROJECT_HOME" "target/journal_files" "tools/journals" "$JOURNAL_OUT" "$JOURNAL_CONFIG"
     else
-        ./tools/findJournals.sh "$PROJECT_HOME" "$JOURNAL_CONFIG" > target/journal_files
-        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} --daemon
+        ./tools/findJournals.sh "$PROJECT_HOME" "tools/journals" "$JOURNAL_CONFIG" > target/journal_files
+        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files -PjournalFiles=tools/journals --daemon
     fi
 
     if [[ $? -eq 1 ]]; then

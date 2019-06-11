@@ -81,8 +81,6 @@ libsDirName = "lib"
 def genJavaDir = "build"
 def targetDir = "target"
 def workingDir = System.getProperty("user.dir")
-def journalOut = workingDir + "/target/journals"
-def jc = ""
 
 publishing {
     publications {
@@ -108,26 +106,12 @@ sourceSets {
     }
 }
 
-class IncrementalTask extends DefaultTask {
-// https://android.googlesource.com/platform/tools/base/+/studio-master-dev/build-system/gradle-core/src/main/java/com/android/build/gradle/internal/tasks/IncrementalTask.java
-// https://mrhaki.blogspot.com/2017/04/gradle-goodness-using-incremental-task.html
-
-    @Input
-    List<File> includeFiles = new ArrayList<>();
-
+abstract class IncrementalTask extends DefaultTask {
     @InputFiles
-    @Incremental
-    FileCollection getIncludedFiles() {
-        FileCollection files = getProject().files();
-        for(File f : includeFiles) {
-            files = files + getProject().fileTree(f);
-        }
-
-        return files;
-    }
+    abstract FileCollection getIncludedFiles()
 
     @OutputDirectory
-    File outputDir
+    abstract File getOutputDirectory()
 
     @TaskAction
     void execute(IncrementalTaskInputs inputs) {
@@ -141,12 +125,60 @@ class IncrementalTask extends DefaultTask {
             }
         } else {
             println "ALL inputs considered out of date"
-            project.delete(outputDir.listFiles())
         }
     }
 }
 
-task incrementalGenTask(type: IncrementalTask) {
+class IncrementalGenTask extends IncrementalTask {
+    List<File> includeFiles = new ArrayList<>();
+    File outputDir
+
+    @InputFiles
+    FileCollection getIncludedFiles() {
+        FileCollection files = getProject().files();
+        for(File f : includeFiles) {
+            files = files + getProject().fileTree(f);
+        }
+
+        return files;
+    }
+
+    @OutputDirectory
+    File getOutputDirectory() {
+        return outputDir
+    }
+
+    @TaskAction
+    void execute(IncrementalTaskInputs inputs) {
+        super.execute(inputs);
+    }
+}
+
+class IncrementalFindTask extends IncrementalTask {
+    String journalIn = ""
+    String journalOut = ""
+
+    @OutputDirectory
+    File getOutputDirectory() {
+        return new File(journalOut);
+    }
+
+    @InputFiles
+    FileCollection getIncludedFiles() {
+        FileCollection files = getProject().files();
+        new File(journalIn).text.split("\n").each { String f ->
+            files = files + getProject().fileTree(new File(f));
+        }
+        return files;
+    }
+
+    @TaskAction
+    void execute(IncrementalTaskInputs inputs) {
+        super.execute(inputs);
+    }
+}
+
+task incrementalGenTask(type: IncrementalGenTask) {
     FileTree trees = fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")
     trees.matching{include "**/*.js"}.each { File f ->
         includeFiles.add(f)
@@ -167,22 +199,21 @@ task genJava(type: Exec) {
     commandLine 'bash', './gen.sh', genJavaDir
 }
 
-task incrementalFindTask(type: IncrementalTask) {
-    new File("target/journal_files").text.split("\n").each { String f ->
-      includeFiles.add(file(f))
-    }
-
-    outputDir = file(journalOut)
-}
-
 task findSH(type: Exec) {
     dependsOn {
-        tasks.incrementalFindTask
+        task incrementalFindTask(type: IncrementalFindTask) {
+            journalIn = project.findProperty("journalIn") ?: ""
+            journalOut = project.findProperty("journalOut") ?: ""
+        }
     }
     onlyIf {
         !tasks.incrementalFindTask.state.upToDate
     }
-    commandLine 'bash', './find.sh', workingDir, journalOut, project.hasProperty("journalConfig") ? "${journalConfig}" : ""
+    commandLine 'bash', './find.sh', workingDir,
+        project.findProperty("journalIn") ?: "",
+        project.findProperty("journalFiles") ?: "",
+        project.findProperty("journalOut") ?: "",
+        project.findProperty("journalConfig") ?: ""
 }
 
 task packageFoam(type: NodeTask) {
