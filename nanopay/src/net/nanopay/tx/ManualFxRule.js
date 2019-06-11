@@ -46,7 +46,7 @@ foam.CLASS({
       if ( list != null && list.size() > 0 ) {
         // approval request with rate exists
         KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) list.get(0);
-        double rate = request.getRate();
+        double rate = request.getFxRate();
         if ( rate <= 0 ) {
           request.setStatus(ApprovalStatus.REQUESTED);
           request = (ManualFxApprovalRequest) approvalRequestDAO.put_(x, request);

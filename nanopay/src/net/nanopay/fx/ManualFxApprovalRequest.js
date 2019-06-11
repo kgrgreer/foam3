@@ -13,7 +13,7 @@ foam.CLASS({
     },
     {
       class: 'Double',
-      name: 'rate'
+      name: 'fxRate'
     },
     {
       class: 'DateTime',

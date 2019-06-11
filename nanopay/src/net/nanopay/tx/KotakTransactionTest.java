@@ -139,7 +139,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     test(approval != null, "Approval request for fx rate has been created by CreateManualFxRule");
 
     // enter an fx rate
-    approval.setRate(52);
+    approval.setFxRate(52);
     approval.setDealId("abcde");
     approval.setValueDate(new Date());
     Calendar cal = Calendar.getInstance();
