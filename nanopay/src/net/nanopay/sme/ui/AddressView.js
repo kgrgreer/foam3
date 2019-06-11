@@ -53,6 +53,12 @@ foam.CLASS({
       name: 'withoutCountrySelection',
       value: false,
       documentation: `If the value of this property is true, then hide country selection dropdown.`
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'customCountryDAO',
+      documentation: 'Can be set if you want a filtered version of countryDAO.',
+      factory: function() { return this.countryDAO; }
     }
   ],
 
@@ -103,11 +109,7 @@ foam.CLASS({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
                   placeholder: 'Select...',
-                  dao: self.countryDAO.where(self.OR(
-                    self.EQ(self.Country.NAME, 'Canada')
-                    // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
-                    // self.EQ(self.Country.NAME, 'USA')
-                  )),
+                  dao: this.customCountryDAO,
                   objToChoice: function(a) {
                     return [a.id, a.name];
                   },

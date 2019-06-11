@@ -2,6 +2,11 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'TransactionPurpose',
   documentation: 'Purpose of the transaction',
+
+  tableColumns: [
+    'id', 'purposeCode', 'country', 'description'
+  ],
+
   // relationships: Processor
   properties: [
     {
@@ -11,6 +16,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'purposeCode',
+      label: 'Purpose',
       documentation: 'A code indicating the purpose of a transaction.',
       required: true
     },

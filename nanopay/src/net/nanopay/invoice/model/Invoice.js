@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'invoiceNumber', 'purchaseOrder', 'payerId',
+    'id', 'invoiceNumber', 'payerId',
     'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
   ],
 
