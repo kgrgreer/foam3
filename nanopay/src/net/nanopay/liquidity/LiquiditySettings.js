@@ -4,6 +4,7 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
+    'foam.nanos.analytics.Foldable'
   ],
 
   requires: [
@@ -46,6 +47,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'cashOutFrequency',
+      factory: function() { return net.nanopay.util.Frequency.DAILY; },
       documentation: 'Determines how often an automatic cash out can occur.'
     },
     {
@@ -83,5 +85,12 @@ foam.CLASS({
         return this.name;
       },
     },
+    {
+      name: 'doFolds',
+      javaCode: `
+fm.foldForState(getId()+":high", new java.util.Date(), getHighLiquidity().getThreshold());
+fm.foldForState(getId()+":low", new java.util.Date(), getLowLiquidity().getThreshold());
+      `
+    }
   ]
 });

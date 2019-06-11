@@ -3,10 +3,9 @@ foam.CLASS({
   name: 'NatureOfBusiness',
   extends: 'foam.u2.View',
   requires: [
-    'net.nanopay.model.BusinessSector',
     'foam.u2.layout.Cols',
     'foam.u2.view.RichChoiceView',
-    'foam.u2.layout.Item'
+    'net.nanopay.model.BusinessSector'
   ],
   implements: [
     'foam.mlang.Expressions'
@@ -53,12 +52,9 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start(this.Cols, {
-          defaultChildStyle: {
-            'flex' : 1
-          }})
-          .start(this.Item)
-            .style({ 'flex' : 1, 'margin-right' : '16px' })
+        .start(this.Cols)
+          .start()
+            .style({ 'flex': 1, 'margin-right': '16px' })
             .tag(this.RichChoiceView, {
               data$: this.parentChoice$,
               sections: [
@@ -74,22 +70,25 @@ foam.CLASS({
 
           .end()
 
-          .add(this.parentChoice$.map((id) => {
-            return this.E()
-              .tag(this.RichChoiceView, {
-                visibility: id != 0 ? 'RW' : 'DISABLED',
-                data$: this.data$,
-                sections: [
-                  {
-                    heading: 'Specific Industries',
-                    dao: this.filteredDAO$proxy
-                  }
-                ],
-                search: true,
-                searchPlaceholder: 'Search...',
-                choosePlaceholder: 'Select...'
-              });
-          }))
+          .start()
+            .style({ flex: 1 })
+            .add(this.parentChoice$.map((id) => {
+              return this.E()
+                .tag(this.RichChoiceView, {
+                  visibility: id != 0 ? 'RW' : 'DISABLED',
+                  data$: this.data$,
+                  sections: [
+                    {
+                      heading: 'Specific Industries',
+                      dao: this.filteredDAO$proxy
+                    }
+                  ],
+                  search: true,
+                  searchPlaceholder: 'Search...',
+                  choosePlaceholder: 'Select...'
+                });
+            }))
+          .end()
         .end();
     }
   ]

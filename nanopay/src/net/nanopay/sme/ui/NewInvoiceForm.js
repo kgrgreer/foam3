@@ -200,6 +200,9 @@ foam.CLASS({
     ^ .date-input-field .date-display-text {
       color: #2b2b2b;
     }
+    ^ .foam-u2-DateView {
+      width: 100%;
+    }
   `,
 
   messages: [

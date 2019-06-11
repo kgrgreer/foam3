@@ -12,7 +12,7 @@ foam.CLASS({
       name: 'userId'
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'time'
     },
     {

@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.Base64',
+    'net.nanopay.tx.model.Transaction',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
     'org.apache.http.entity.StringEntity',
@@ -150,7 +151,16 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        IdentityMindRequest request = IdentityMindRequestGenerator.getTransferRequest(x, transaction);
+        Transaction head = transaction;
+        while ( ! SafetyUtil.isEmpty(head.getParent()) ) {
+          Transaction parent = head.findParent(x);
+          if ( parent != null ) {
+            head = parent;
+          } else {
+            break;
+          }
+        }
+        IdentityMindRequest request = IdentityMindRequestGenerator.getTransferRequest(x, head);
         request.setUrl(getBaseUrl() + "/account/transfer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
         request.setProfile(getDefaultProfile());

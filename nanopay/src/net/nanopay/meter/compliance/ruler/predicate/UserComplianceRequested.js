@@ -12,12 +12,22 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
   ],
 
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'strict',
+      value: false
+    }
+  ],
+
   methods: [
     {
       name: 'f',
       javaCode: `
         return AND(
-          EQ(DOT(NEW_OBJ, CLASS_OF(User.class)), true),
+          EQ(DOT(NEW_OBJ, getStrict()
+            ? CLASS_OF(User.class)
+            : INSTANCE_OF(User.class)), true),
           EQ(DOT(NEW_OBJ, User.COMPLIANCE), ComplianceStatus.REQUESTED)
         ).f(obj);
       `

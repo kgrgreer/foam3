@@ -4,8 +4,7 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   imports: [
-    'group',
-    'logo'
+    'theme'
   ],
 
   axioms: [
@@ -60,7 +59,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var logoSlot = this.group.logo$.map(function(logo) { return logo || self.logo; });
+      var logoSlot = this.theme.logo$.map(function(logo) { return logo || self.logo; });
       this
       .addClass(this.myClass())
       .start('div').addClass('verticalCenter')

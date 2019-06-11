@@ -184,6 +184,9 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      if ( ! this.reportResult ) {
+        return null;
+      }
       this
         .start().addClass(this.myClass())
 

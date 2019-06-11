@@ -7,8 +7,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'padType',
-      value: 'Business'
+      name: 'padType'
     },
     {
       class: 'String',
