@@ -10,10 +10,15 @@ foam.CLASS({
     'java.time.ZoneId'
   ],
 
+  tableColumns: [
+    'id', 'type', 'cardholderName', 'number' , 'network', 
+  ],
+
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 50
     },
     {
       class: 'Enum',
