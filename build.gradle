@@ -82,6 +82,7 @@ def genJavaDir = "build"
 def targetDir = "target"
 def workingDir = System.getProperty("user.dir")
 def journalOut = workingDir + "/target/journals"
+def jc = ""
 
 publishing {
     publications {
@@ -112,12 +113,13 @@ class IncrementalTask extends DefaultTask {
 // https://mrhaki.blogspot.com/2017/04/gradle-goodness-using-incremental-task.html
 
     @Input
-    List<File> includeDirs = new ArrayList<>();
+    List<File> includeFiles = new ArrayList<>();
 
     @InputFiles
+    @Incremental
     FileCollection getIncludedFiles() {
         FileCollection files = getProject().files();
-        for(File f : includeDirs) {
+        for(File f : includeFiles) {
             files = files + getProject().fileTree(f);
         }
 
@@ -126,9 +128,6 @@ class IncrementalTask extends DefaultTask {
 
     @OutputDirectory
     File outputDir
-
-    @Input
-    def inputProperty
 
     @TaskAction
     void execute(IncrementalTaskInputs inputs) {
@@ -150,12 +149,11 @@ class IncrementalTask extends DefaultTask {
 task incrementalGenTask(type: IncrementalTask) {
     FileTree trees = fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")
     trees.matching{include "**/*.js"}.each { File f ->
-        includeDirs.add(f)
+        includeFiles.add(f)
     }
-    includeDirs.add(file("foam2/tools/classes.js"))
-    includeDirs.add(file("nanopay/tools/classes.js"))
+    includeFiles.add(file("foam2/tools/classes.js"))
+    includeFiles.add(file("nanopay/tools/classes.js"))
     outputDir = file(genJavaDir)
-    inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
 
 task genJava(type: Exec) {
@@ -170,12 +168,11 @@ task genJava(type: Exec) {
 }
 
 task incrementalFindTask(type: IncrementalTask) {
-    FileTree trees = fileTree(dir: "deployment") + fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src") + fileTree(dir: "interac/src")
-    trees.matching{include "**/*.jrl"}.each { File f ->
-        includeDirs.add(f)
+    new File("target/journal_files").text.split("\n").each { String f ->
+      includeFiles.add(file(f))
     }
+
     outputDir = file(journalOut)
-    inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
 
 task findSH(type: Exec) {

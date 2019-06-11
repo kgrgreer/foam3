@@ -19,62 +19,6 @@ INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
 
 echo "INFO :: $0 IN_DIR=${IN_DIR} OUT_DIR=${OUT_DIR} INSTANCE=${INSTANCE}"
 
-# Creates an array of the file names
-declare -a arr=(
-  "acceptanceDocuments"
-  "accounts"
-  "ascendantfxusers"
-  "ascendantUserPayeeJunctions"
-  "blacklists"
-  "branches"
-  "brokers"
-  "businessSectors"
-  "identificationTypes"
-  "businessTypes"
-  "corridors"
-  "countries"
-  "cronjobs"
-  "currencies"
-  "currencyfxServices"
-  "dugs"
-  "emailTemplates"
-  "exportDriverRegistrys"
-  "fundTransferSystems"
-  "groupPermissionJunctions"
-  "groups"
-  "htmlDoc"
-  "institutions"
-  "institutionPurposeCodes"
-  "languages"
-  "lineItemTypes"
-  "lineItemTypeAccounts"
-  "lineItemFees"
-  "lineItemTax"
-  "themes"
-  "menus"
-  "notificationTemplates"
-  "payoutOptions"
-  "permissions"
-  "questionnaires"
-  "quickbooksConfig"
-  "quickbooksToken"
-  "regions"
-  "reports"
-  "rules"
-  "scripts"
-  "services"
-  "spids"
-  "tests"
-  "transactionfees"
-  "transactionLimits"
-  "transactionPurposes"
-  "zeroAccountUserAssociations"
-  "txnProcessors"
-  "users"
-  "xeroConfig"
-  "xeroToken"
-  )
-
 # Array of source directories
 declare -a sources=(
   "foam2/src"
@@ -82,13 +26,15 @@ declare -a sources=(
  # "interac/src"
 )
 
-# Go through the array and check each location for the file and concatenate into one JDAO
-# create journals file used by build.sh
-# FIXME: this printf is generating two files, one at OUT_DIR/journals, but another in the current directory.
-printf "%s\n" "${arr[@]}" > "$OUT_DIR"/journals
+> "${OUT_DIR}/journals"
+IN_FILE="tools/journals"
+lines=`cat $IN_FILE`
+for file in $lines; do
+  # Go through the array and check each location for the file and concatenate into one JDAO
+  # create journals file used by build.sh
+  # FIXME: this printf is generating two files, one at OUT_DIR/journals, but another in the current directory.
+  echo "${file}" >> "$OUT_DIR"/journals
 
-for file in "${arr[@]}"
-do
   journal_file="$file".0
 
   # Emptys the file
@@ -99,13 +45,9 @@ do
   # If they do, then concatenate the files into one.
   for s in ${sources[*]}
   do
-    for f in $(find $s -name "$file")
+    for f in $(find $s -name "$file" -o -name "${file}.jrl")
     do
         cat $f >> "$OUT_DIR/$journal_file"
-    done
-    for f in $(find $s -name "${file}.jrl")
-    do
-      cat "$f" >> "$OUT_DIR/$journal_file"
     done
   done
 
@@ -117,6 +59,17 @@ do
           cat "deployment/$INSTANCE/${file}.jrl" >> "$OUT_DIR/$journal_file"
       fi
   fi
+done
+
+cp $IN_FILE ${OUT_DIR}/journals
+INFILE=target/journal_files
+lines=`cat $INFILE`
+for filePath in $lines; do
+  file=$(basename "${filePath%.*}")
+  journal_file="$file".0
+
+  > "$OUT_DIR/$journal_file"
+  echo "cat ${filePath} >> ${OUT_DIR}/${journal_file}"
 done
 
 exit 0
