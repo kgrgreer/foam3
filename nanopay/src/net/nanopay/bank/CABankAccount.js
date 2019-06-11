@@ -16,7 +16,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{4,30}$")'
+      javaValue: 'Pattern.compile("^[0-9]{5,12}$")'
     },
     {
       name: 'BRANCH_ID_PATTERN',
@@ -92,6 +92,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'accountNumber',
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{5,12}$/;
+
+        if ( accountNumber === '' ) {
+          return 'Please enter an account number.';
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Account number must be between 5 and 12 digits long.';
+        }
+      }
+    },
+    {
       name: 'country',
       value: 'CA'
     },
@@ -124,12 +136,11 @@ foam.CLASS({
       javaCode: `
       String accountNumber = this.getAccountNumber();
 
-      // is empty
       if ( SafetyUtil.isEmpty(accountNumber) ) {
         throw new IllegalStateException("Please enter an account number.");
       }
       if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-        throw new IllegalStateException("Please enter a valid account number.");
+        throw new IllegalStateException("Account number must be between 5 and 12 digits long.");
       }
       `
     },
@@ -155,6 +166,7 @@ foam.CLASS({
       if ( institution != null ) {
         return;
       }
+
       // when the institutionNumber is provided and not the institution
       String institutionNumber = this.getInstitutionNumber();
       if ( SafetyUtil.isEmpty(institutionNumber) ) {
@@ -184,10 +196,10 @@ foam.CLASS({
       // when the branchId is provided and not the branch
       String branchId = this.getBranchId();
       if ( SafetyUtil.isEmpty(branchId) ) {
-        throw new IllegalStateException("Please enter a branch Id/ Transit Number.");
+        throw new IllegalStateException("Please enter a transit number.");
       }
       if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-        throw new IllegalStateException("Please enter a valid branch Id/ Transit Number.");
+        throw new IllegalStateException("Transit number must be 5 digits long.");
       }
       `
     }

@@ -20,7 +20,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccount',
@@ -39,7 +39,6 @@ foam.CLASS({
 
         // Send email only when user property onboarded is changed from false to true
         if ( oldUser != null && ! oldUser.getOnboarded() && newUser.getOnboarded() ) {
-          EmailService emailService = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage();
           Map<String, Object>  args = new HashMap<>();
 
@@ -77,7 +76,7 @@ foam.CLASS({
           }
           
           try {
-            emailService.sendEmailFromTemplate(x, newUser, message, "notification-to-onboarding-team", args);
+            EmailsUtility.sendEmailFromTemplate(x, newUser, message, "notification-to-onboarding-team", args);
           } catch (Throwable t) {
             String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has finished onboarding.", newUser.getId());
             ((Logger) x.get("logger")).error(msg, t);

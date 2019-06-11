@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'DebtTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
 
-  documentation: ``,
+  documentation: 'transaction that incurs debt on a debtAccount',
 
   javaImports: [
     'net.nanopay.account.Account',
@@ -34,7 +34,7 @@ foam.CLASS({
       // If Detable/Overdraft account does not have sufficient balance
       // then incur debt.
 
-      Long amount = getTotal();
+      Long amount = getAmount();
       Account sourceAccount = findSourceAccount(x);
       Account destinationAccount = findDestinationAccount(x);
       DebtAccount debtAccount = ((Debtable) destinationAccount).findDebtAccount(x);
@@ -45,6 +45,7 @@ foam.CLASS({
       bal.setAccount(destinationAccount.getId());
       destinationAccount.validateAmount(x, bal, amount);
       Long debt = amount > balance ? amount - balance : 0L;
+      this.setAmount(debt);
 
       List transfers = new ArrayList();
 

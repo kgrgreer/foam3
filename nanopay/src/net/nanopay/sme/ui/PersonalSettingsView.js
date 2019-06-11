@@ -3,21 +3,18 @@ foam.CLASS({
   name: 'PersonalSettingsView',
   extends: 'foam.u2.Controller',
 
-  documentation: 'Personal settings page for sme',
+  documentation: 'Personal settings page for Ablii',
 
   imports: [
     'agent',
     'auth',
     'ctrl',
-    'notify',
-    'stack',
     'twofactor',
     'user'
   ],
 
   requires: [
     'foam.u2.dialog.Popup',
-    'net.nanopay.ui.ExpandContainer',
     'net.nanopay.ui.NewPasswordView'
   ],
 
@@ -84,68 +81,6 @@ foam.CLASS({
       vertical-align: top;
       margin-top: 30px;
     }
-    ^two-factor-qr-code {
-      display: inline-block;
-      width: 141px;
-      height: 141px;
-      padding-right: 32px;
-    }
-    ^two-factor-enable {
-      display: inline-block;
-      vertical-align: top;
-      width: 325px;
-
-    }
-    ^two-factor-disable {
-      display: flex;
-      flex-direction: row;
-    }
-    ^status-container {
-      flex-direction: column;
-    }
-    ^status {
-      font-size: 14px;
-      line-height: 1.5;
-      color: #2b2b2b;
-    }
-    ^two-factor-enabled {
-      font-size: 11px;
-      line-height: 1.36;
-      color: #03cf1f;
-    }
-    ^two-factor-disabled {
-      font-size: 11px;
-      line-height: 1.36;
-      color: #f91c1c;
-    }
-    ^enter-validation-code {
-      color: #2b2b2b;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    ^ .property-twoFactorToken {
-      width: 219px;
-    }
-    ^ .foam-u2-ActionView-enableTwoFactor {
-      width: 96px;
-      margin-left: 8px;
-    }
-    ^ .foam-u2-ActionView-disableTwoFactor {
-      width: 96px;
-      color: #f91c1c;
-      background-color: transparent;
-      border: 1px solid #f91c1c;
-      margin-left: auto;
-    }
-    ^ .foam-u2-ActionView-disableTwoFactor:hover {
-      color: #f91c1c;
-      background-color: transparent !important;
-      border: 1px solid #f91c1c;
-    }
-    ^ .validation-input {
-      margin-top: 42px;
-    }
     @media only screen and (max-width: 767px) {
       ^ .validation-input {
         margin-top: 15px;
@@ -176,7 +111,7 @@ foam.CLASS({
 
   properties: [
     {
-      Class: 'Int',
+      class: 'Int',
       name: 'passwordStrength',
       value: 0
     },
@@ -219,18 +154,10 @@ foam.CLASS({
     { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor Authentication' },
     { name: 'TwoFactorInstr1', message: 'Download the authenticator app on your mobile device' },
     { name: 'TwoFactorInstr2', message: 'Open the authenticator app on your mobile device and scan the QR code to retrieve your validation code then enter it in into the field on the right.' },
-    { name: 'EnableTwoFactor', message: 'Enter validation code' },
     { name: 'IOSName', message: 'iOS authenticator download' },
     { name: 'AndroidName', message: 'Android authenticator download' },
-    { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
-    { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
-    { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
     { name: 'StepOne', message: 'Step 1' },
-    { name: 'StepTwo', message: 'Step 2' },
-    { name: 'EnterCode', message: 'Enter code' },
-    { name: 'Status', message: 'Status' },
-    { name: 'Enabled', message: '• Enabled' },
-    { name: 'Disabled', message: '• Disabled' }
+    { name: 'StepTwo', message: 'Step 2' }
   ],
 
   methods: [
@@ -280,11 +207,6 @@ foam.CLASS({
         .add(this.slot(function(twoFactorEnabled) {
           if ( ! twoFactorEnabled ) {
             // two factor disabled
-            var self = this;
-            this.twofactor.generateKey(null, true)
-            .then(function(qrCode) {
-              self.twoFactorQrCode = qrCode;
-            });
 
             return this.E()
               .br()
@@ -311,50 +233,20 @@ foam.CLASS({
                     .start('span').add(this.TwoFactorInstr2).end()
                   .end()
                 .end()
-
-                .start().addClass(this.myClass('two-factor-instr-right'))
-                  .start().addClass(this.myClass('two-factor-qr-code'))
-                    .start('img').attrs({ src: this.twoFactorQrCode$ }).end()
-                  .end()
-
-                  .start().addClass(this.myClass('two-factor-enable'))
-                    .start('b').addClass(this.myClass('status'))
-                      .add(this.Status)
-                    .end()
-                    .start().addClass(this.myClass('two-factor-disabled'))
-                      .add(this.Disabled)
-                    .end()
-
-                    .start().addClass('validation-input')
-                      .start().addClass(this.myClass('enter-validation-code'))
-                        .add(this.EnableTwoFactor)
-                      .end()
-                      .start(this.TWO_FACTOR_TOKEN)
-                        .attrs({ placeholder: this.EnterCode })
-                      .end()
-                      .start(this.ENABLE_TWO_FACTOR)
-                        .addClass('sme').addClass('button').addClass('primary')
-                      .end()
-                    .end()
-                  .end()
+                .start({
+                  class: 'net.nanopay.sme.ui.TwoFactorAuthView',
+                  hideDisableButton: false
+                })
+                  .addClass(this.myClass('two-factor-instr-right'))
                 .end()
               .end();
           } else {
             // two factor enabled
             return this.E()
-              .br()
-              .start().addClass(this.myClass('two-factor-disable'))
-                .start().addClass(this.myClass('status-container'))
-                  .start('b').addClass(this.myClass('status'))
-                    .add(this.Status)
-                  .end()
-                  .start().addClass(this.myClass('two-factor-enabled'))
-                    .add(this.Enabled)
-                  .end()
-                .end()
-                .tag(this.DISABLE_TWO_FACTOR, {
-                  buttonStyle: 'SECONDARY'
-                })
+              .start({
+                class: 'net.nanopay.sme.ui.TwoFactorAuthView',
+                hideDisableButton: false
+              })
               .end();
           }
         }, this.agent.twoFactorEnabled$))
@@ -411,43 +303,6 @@ foam.CLASS({
           .catch(function(err) {
             self.ctrl.notify(err.message, 'error');
           });
-      }
-    },
-    {
-      name: 'enableTwoFactor',
-      label: 'Enable',
-      code: function(X) {
-        var self = this;
-
-        if ( ! this.twoFactorToken ) {
-          this.ctrl.notify(this.TwoFactorNoTokenError, 'error' );
-          return;
-        }
-
-        this.twofactor.verifyToken(null, this.twoFactorToken)
-        .then(function(result) {
-          if ( ! result ) {
-            self.ctrl.notify(self.TwoFactorEnableError, 'error');
-            return;
-          }
-
-          self.twoFactorToken = null;
-          self.agent.twoFactorEnabled = true;
-          self.ctrl.notify(self.TwoFactorEnableSuccess);
-        })
-        .catch(function(err) {
-          console.warn(err);
-          self.ctrl.notify(self.TwoFactorEnableError, 'error');
-        });
-      }
-    },
-    {
-      name: 'disableTwoFactor',
-      label: 'Disable',
-      code: function() {
-        this.add(this.Popup.create().tag({
-          class: 'net.nanopay.sme.ui.ConfirmDisable2FAModal',
-        }));
       }
     }
   ]

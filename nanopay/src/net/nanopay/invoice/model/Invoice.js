@@ -93,6 +93,7 @@ foam.CLASS({
       documentation: `The date and time that the invoice was issued (created).`,
       label: 'Date Issued',
       required: true,
+      view: { class: 'foam.u2.DateView' },
       factory: function() {
         if ( this.draft ) {
           return null;
@@ -219,6 +220,17 @@ foam.CLASS({
       name: 'note',
       documentation: `A written note that the user may add to the invoice.`,
       view: 'foam.u2.tag.TextArea'
+    },
+    {
+      class: 'Currency',
+      name: 'chequeAmount',
+      documentation: `The amount paid for an invoice using an external transaction system.`
+    },
+    {
+      class: 'String',
+      name: 'chequeCurrency',
+      documentation: `The currency of a transaction using by external transaction system.`,
+      value: 'CAD'
     },
     {
       class: 'Currency',

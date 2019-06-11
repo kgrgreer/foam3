@@ -21,7 +21,8 @@ foam.CLASS({
 
   imports: [
     'accountingIntegrationUtil',
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'stack',
     'user'
   ],
@@ -103,7 +104,7 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAndNotifyAbilityToReceive().then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.request').then((menu) => {
                       var clone = menu.clone();
@@ -114,8 +115,6 @@ foam.CLASS({
                       clone.launch(X, X.controllerView);
                     });
                   }
-                }).catch((err) => {
-                  console.warn('Error occured when checking the compliance: ', err);
                 });
               }
             }),
@@ -128,7 +127,7 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAndNotifyAbilityToPay().then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.send').then((menu) => {
                       var clone = menu.clone();
@@ -139,8 +138,6 @@ foam.CLASS({
                       clone.launch(X, X.controllerView);
                     });
                   }
-                }).catch((err) => {
-                  console.warn('Error occured when checking the compliance: ', err);
                 });
               }
             }),
