@@ -22,13 +22,15 @@ foam.CLASS({
   ],
 
   exports: [
-    'dao'
+    'data as dao'
   ],
 
   properties: [
     {
-      class: 'foam.dao.DAOProperty',
-      name: 'dao'
+      name: 'data',
+      factory: function() {
+        return this.approvalRequestDAO;
+      }
     }
   ],
 
@@ -36,13 +38,10 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function(approvalRequest) {
-        this.dao = this.__subContext__.approvalRequestDAO;
-        console.log(approvalRequest.id);
         this.stack.push({
           class: 'foam.comics.DAOUpdateControllerView',
           detailView: 'foam.u2.DetailView',
-          key: approvalRequest.id,
-          dao: this.dao
+          key: approvalRequest.id
         }, this);
       }
     }
