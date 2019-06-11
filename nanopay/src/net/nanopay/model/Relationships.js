@@ -88,6 +88,7 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   targetProperty: {
+    section: 'accountDetails',
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
       return {

@@ -79,6 +79,17 @@ foam.CLASS({
     }
   ],
 
+  sections: [
+    {
+      name: 'accountType',
+      title: 'Account type',
+    },
+    {
+      name: 'accountDetails',
+      title: 'Account details'
+    },
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -113,14 +124,16 @@ foam.CLASS({
         if ( /^\s+$/.test(name) ) {
           return 'Account name may not consist of only whitespace.';
         }
-      }
+      },
+      section: 'accountDetails'
     },
     {
       class: 'String',
       name: 'desc',
       documentation: `The given description of the account, provided by
         the individual person, or real user.`,
-      label: 'Description'
+      label: 'Memo',
+      section: 'accountDetails'
     },
     {
       class: 'Boolean',
@@ -162,7 +175,8 @@ foam.CLASS({
       javaFactory: `
         return getClass().getSimpleName();
       `,
-      tableWidth: 125
+      tableWidth: 125,
+      section: 'accountType'
     },
     {
       class: 'Long',
