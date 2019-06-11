@@ -58,20 +58,14 @@ foam.CLASS({
           DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
           DAO localUserDAO = (DAO) x.get("localUserDAO");
 
-          localUserDAO.inX(x)
-            .where(EQ(User.GROUP, group.getId()))
-            .select(new AbstractSink() {
-              @Override
-              public void put(Object o, Detachable d) {
-                User approver = (User) o;
-                ApprovalRequest ar = (ApprovalRequest) approvalRequest.fclone();
+          ApprovalRequest ar = (ApprovalRequest) approvalRequest.fclone();
+          
+          ar.setGroup(group.getId());
+          approvalRequestDAO.put(ar);
 
-                ar.setApprover(approver.getId());
-                approvalRequestDAO.put(ar);
-              }
-            });
         }
       `
     }
   ]
 });
+ 
