@@ -9,6 +9,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'java.util.Date',
     'foam.nanos.analytics.Candlestick',
@@ -22,99 +24,93 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-    
-      DAO configDAO = (DAO) x.get("alarmConfigDAO");
-      MonitoringReport report = (MonitoringReport) obj;
-      AlarmConfig config = (AlarmConfig) configDAO.find(EQ(AlarmConfig.NAME, report.getName()));
       
-      if ( config == null || ! config.getEnabled() ) {
-        return;
-      }
+      agency.submit(x, new ContextAgent() {
+        @Override
+        public void execute(X x) {
+          DAO configDAO = (DAO) x.get("alarmConfigDAO");
+          MonitoringReport report = (MonitoringReport) obj;
+          AlarmConfig config = (AlarmConfig) configDAO.find(EQ(AlarmConfig.NAME, report.getName()));
+          
+          if ( config == null || ! config.getEnabled() ) {
+            return;
+          }
 
-      DAO omDAO = (DAO) x.get("om1minDAO");
+          DAO omDAO = (DAO) x.get("om1minDAO");
 
-      Date currentCloseTime = new Date();
-      currentCloseTime.setSeconds(0);
-      Candlestick receiveResponses = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
-        EQ(Candlestick.KEY, config.getPreRequest())
-      );
+          Date currentCloseTime = new Date();
+          currentCloseTime.setSeconds(0);
+          Candlestick receiveResponses = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
+            EQ(Candlestick.KEY, config.getPreRequest())
+          );
 
-      Candlestick sentRequest = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
-        EQ(Candlestick.KEY, config.getPostRequest())
-      );
-  
-      Candlestick timeout = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
-        EQ(Candlestick.KEY, config.getTimeOutRequest())
-      );
+          Candlestick sentRequest = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
+            EQ(Candlestick.KEY, config.getPostRequest())
+          );
+      
+          Candlestick timeout = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
+            EQ(Candlestick.KEY, config.getTimeOutRequest())
+          );
 
-      DAO alarmDAO = (DAO) x.get("alarmDAO");
-      Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, config.getName()));
-      if ( alarm == null ) {
-        alarm = new Alarm.Builder(x)
-          .setName(config.getName())
-          .setIsActive(false)
-          .build();
-      } else {
-        alarm = (Alarm) alarm.fclone();
-      }
+          DAO alarmDAO = (DAO) x.get("alarmDAO");
+          Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, config.getName()));
+          if ( alarm == null ) {
+            alarm = new Alarm.Builder(x)
+              .setName(config.getName())
+              .setIsActive(false)
+              .build();
+          } else {
+            alarm = (Alarm) alarm.fclone();
+          }
 
-      boolean updateAlarm = false;
+          boolean updateAlarm = false;
 
-      // check to see if the sent candlestick is the latest one
-      if ( sentRequest != null && Math.abs(sentRequest.getCloseTime().getTime() - currentCloseTime.getTime()) < config.getCycleTime() ) {
-        updateAlarm = true;
-        report.setStartCount(report.getStartCount() + (int) sentRequest.getCount());
-      }
+          // check to see if the sent candlestick is the latest one
+          if ( sentRequest != null && Math.abs(sentRequest.getCloseTime().getTime() - currentCloseTime.getTime()) < config.getCycleTime() ) {
+            updateAlarm = true;
+            report.setStartCount(report.getStartCount() + (int) sentRequest.getCount());
+          }
 
-      // check to see if the response candlestick is the latest one
-      if ( receiveResponses != null && Math.abs(receiveResponses.getCloseTime().getTime() - currentCloseTime.getTime()) < config.getCycleTime() ) {
-          updateAlarm = true;
-          report.setEndCount(report.getEndCount() + (int) receiveResponses.getCount());
-      }
+          // check to see if the response candlestick is the latest one
+          if ( receiveResponses != null && Math.abs(receiveResponses.getCloseTime().getTime() - currentCloseTime.getTime()) < config.getCycleTime() ) {
+              updateAlarm = true;
+              report.setEndCount(report.getEndCount() + (int) receiveResponses.getCount());
+          }
 
-      if ( timeout != null && (Math.abs(timeout.getCloseTime().getTime() - currentCloseTime.getTime()) < config.getCycleTime()) ) {
-          updateAlarm = true;
-          report.setTimeoutCount(report.getTimeoutCount() + (int) timeout.getCount());
-      }
+          if ( timeout != null && (Math.abs(timeout.getCloseTime().getTime() - currentCloseTime.getTime()) < config.getCycleTime()) ) {
+              updateAlarm = true;
+              report.setTimeoutCount(report.getTimeoutCount() + (int) timeout.getCount());
+          }
 
-      if ( ! updateAlarm ) {
-        return;
-      }
-      if ( report.getTimeoutCount() != 0 && report.getStartCount() != 0  && ((float) report.getTimeoutCount() /(float) report.getStartCount()) > (float) config.getTimeoutValue() / 100 ) {
-        if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.TIMEOUT) ) {
-          alarm.setReason(AlarmReason.TIMEOUT);
-          alarm.setIsActive(true);
-          createNotification(x,config);
+          if ( ! updateAlarm ) {
+            return;
+          }
+          if ( report.getTimeoutCount() != 0 && report.getStartCount() != 0  && ((float) report.getTimeoutCount() /(float) report.getStartCount()) > (float) config.getTimeoutValue() / 100 ) {
+            if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.TIMEOUT) ) {
+              alarm.setReason(AlarmReason.TIMEOUT);
+              alarm.setIsActive(true);
+              createNotification(x,config);
+            }
+          } else if ( report.getStartCount() != 0  && report.getEndCount() != 0  && ((float) report.getEndCount() /(float) report.getStartCount()) < (float) config.getAlarmValue() / 100 ) {
+            if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CONGESTION) ) {        
+              alarm.setReason(AlarmReason.CONGESTION);
+              alarm.setIsActive(true);
+              createNotification(x,config);
+            }
+          } else {
+            if ( alarm.getIsActive() ) {
+              report.setStartCount(0);
+              report.setEndCount(0);
+              report.setTimeoutCount(0);
+              alarm.setReason(AlarmReason.NONE);
+              alarm.setIsActive(false);
+            }
+          }
+          alarmDAO.put(alarm);
         }
-      } else if ( report.getStartCount() != 0  && report.getEndCount() != 0  && ((float) report.getEndCount() /(float) report.getStartCount()) < (float) config.getAlarmValue() / 100 ) {
-        if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CONGESTION) ) {        
-          alarm.setReason(AlarmReason.CONGESTION);
-          alarm.setIsActive(true);
-          createNotification(x,config);
-        }
-      } else {
-        if ( alarm.getIsActive() ) {
-          report.setStartCount(0);
-          report.setEndCount(0);
-          report.setTimeoutCount(0);
-          alarm.setReason(AlarmReason.NONE);
-          alarm.setIsActive(false);
-        }
-      }
-      alarmDAO.put(alarm);
+      });
+
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '// do nothing'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
     },
     {
       name: 'createNotification',

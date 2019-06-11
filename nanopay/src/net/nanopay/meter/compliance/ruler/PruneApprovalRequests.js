@@ -9,10 +9,13 @@ foam.CLASS({
   documentation: 'Remove pending approval requests.',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
-    'static foam.mlang.MLang.*'
+    'static foam.mlang.MLang.*',
+    'foam.nanos.auth.User'
   ],
 
   properties: [
@@ -26,25 +29,20 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        ((DAO) x.get("approvalRequestDAO"))
-          .where(AND(
-            EQ(ApprovalRequest.DAO_KEY, getObjDaoKey()),
-            EQ(ApprovalRequest.OBJ_ID, String.valueOf(obj.getProperty("id"))),
-            EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
-          .removeAll();
-      `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
+        
+      agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            User user = (User) obj;
+            ((DAO) x.get("approvalRequestDAO"))
+              .where(AND(
+                EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
+                EQ(ApprovalRequest.OBJ_ID, String.valueOf(obj.getProperty("id"))),
+                EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
+              .removeAll();
+          }
+        });
+git status      `
     }
   ]
 });

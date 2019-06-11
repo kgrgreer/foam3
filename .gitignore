@@ -99,5 +99,6 @@ tools/js_build/foam-bin.js
 # gradle
 .gradle
 
-# Ignore bin
-/bin
+node_modules
+
+bin/

@@ -8,6 +8,8 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
     'foam.mlang.sink.Count',
@@ -45,26 +47,19 @@ foam.CLASS({
           .limit(1)
           .select(new Count());
 
-        if ( count.getValue() == 0 ) {
-          requestApproval(x, new ApprovalRequest.Builder(x)
-            .setDaoKey("localTransactionDAO")
-            .setObjId(ct.getId())
-            .setApprover(getJackieId())
-            .build());
-        }
+        ApprovalRequest req = new ApprovalRequest.Builder(x)
+          .setDaoKey("localTransactionDAO")
+          .setObjId(ct.getId())
+          .setApprover(getJackieId())
+          .build();
+
+          agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            requestApproval(x, req);
+          }
+        });
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'describe',
-      javaCode: ` return ""; `
-    },
-    {
-      name: 'canExecute',
-      javaCode: ` return true;`
     }
   ]
 });
