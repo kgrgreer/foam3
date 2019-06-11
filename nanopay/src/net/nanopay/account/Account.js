@@ -88,6 +88,10 @@ foam.CLASS({
       name: 'accountDetails',
       title: 'Account details'
     },
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    }
   ],
 
   properties: [
