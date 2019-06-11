@@ -3,6 +3,11 @@ foam.CLASS({
   name: 'QuickbooksConfig',
   documentation: 'Abstract Model for Xero Config',
   ids: ['url'],
+
+  tableColumns: [
+    'url', 'clientId', 'appRedirect', 'intuitAccountingAPIHost'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -23,6 +28,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'intuitAccountingAPIHost',
+      label: 'Intuit Accounting API Host'
     },
     {
       class: 'String',

@@ -48,8 +48,6 @@ foam.CLASS({
     'organization',
     'legalName',
     'email',
-    'signUpStatus',
-    'deleted'
   ],
 
   properties: [
