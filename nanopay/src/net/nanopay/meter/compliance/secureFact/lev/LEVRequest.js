@@ -54,6 +54,11 @@ foam.CLASS({
       documentation: 'Reccomended postal code only.'
     },
     {
+      class: 'String',
+      name: 'suite',
+      documentation: 'Suite / unit of Entity'
+    },
+    {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.lev.LEVApplicant',
       name: 'applicant',

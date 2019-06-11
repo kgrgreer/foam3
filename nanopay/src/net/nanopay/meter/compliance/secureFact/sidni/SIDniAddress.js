@@ -19,6 +19,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'suite',
+      documentation: 'Individuals suite / unit if living in apartment or condo.'
+    },
+    {
+      class: 'String',
       name: 'city',
       required: true
     },

@@ -40,6 +40,7 @@ public class SecurefactRequestGenerator {
     request.setCountry(address.getCountryId());
     request.setJurisdiction(address.getRegionId());
     request.setAddress(address.getPostalCode().replaceAll(" ", ""));
+    request.setSuite(address.getSuite());
 
     BusinessType businessType = business.findBusinessTypeId(x);
     if ( businessType != null ) {
@@ -96,6 +97,7 @@ public class SecurefactRequestGenerator {
         .setCity(userAddress.getCity())
         .setProvince(userAddress.getRegionId())
         .setPostalCode(userAddress.getPostalCode().replaceAll(" ", ""))
+        .setSuite(userAddress.getSuite())
         .build()
     };
   }
