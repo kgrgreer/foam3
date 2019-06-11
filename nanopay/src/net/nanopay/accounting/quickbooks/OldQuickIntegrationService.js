@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.lib.json.JSONParser',
-    'foam.lib.json.Outputter',
+    'foam.lib.json.NetworkTransientOutputter',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'foam.nanos.auth.Address',
@@ -1009,21 +1009,21 @@ return files;`,
         },
       ],
       javaCode:
-`DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-DAO               userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
-User              user         = (User) x.get("user");
-DAO               currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
-QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
-Group             group        = user.findGroup(x);
-AppConfig         app          = group.getAppConfig(x);
-DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
-QuickConfig       config       = (QuickConfig)configDAO.find(app.getUrl());
-Logger            logger       = (Logger) x.get("logger");
-HttpClient        httpclient   = HttpClients.createDefault();
-Outputter         outputter    = new Outputter(foam.lib.json.OutputterMode.NETWORK);
-QuickContact      sUser;
-BankAccount       account;
-HttpPost          httpPost;
+`DAO                       store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+DAO                        userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
+User                       user         = (User) x.get("user");
+DAO                        currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
+QuickTokenStorage          tokenStorage = (QuickTokenStorage) store.find(user.getId());
+Group                      group        = user.findGroup(x);
+AppConfig                  app          = group.getAppConfig(x);
+DAO                        configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
+QuickConfig                config       = (QuickConfig)configDAO.find(app.getUrl());
+Logger                     logger       = (Logger) x.get("logger");
+HttpClient                 httpclient   = HttpClients.createDefault();
+NetworkTransientOutputter  outputter    = new NetworkTransientOutputter(x);
+QuickContact               sUser;
+BankAccount                account;
+HttpPost                   httpPost;
 outputter.setOutputClassNames(false);
 
 // Determines if the user is making a payment or bill payment and creates the right request to POST to QuickBooks

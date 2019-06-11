@@ -2,13 +2,12 @@ package net.nanopay.flinks;
 
 import foam.core.*;
 import net.nanopay.flinks.model.*;
-import foam.lib.json.Outputter;
-import foam.lib.json.OutputterMode;
+import foam.lib.json.PermissionedOutputter;
 
 public class RequestMsg 
   extends Msg
 {
-  private static Outputter jsonOutputter = new Outputter();
+  private PermissionedOutputter jsonOutputter = new PermissionedOutputter(getX());
   private String requestInfo_;
   private String httpMethod_;
   private boolean isJsonSet_ = false;

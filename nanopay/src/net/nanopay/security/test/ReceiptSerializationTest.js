@@ -9,8 +9,7 @@ foam.CLASS({
     'java.util.Arrays',
 
     'foam.core.FObject',
-    'foam.lib.json.Outputter',
-    'foam.lib.json.OutputterMode',
+    'foam.lib.json.StorageTransientOutputter',
     'foam.lib.json.JSONParser',
 
     'net.nanopay.security.MerkleTree',
@@ -67,7 +66,7 @@ foam.CLASS({
           Receipt receipt = new Receipt();
           MerkleTreeHelper.SetPath(mkTree, node3, receipt);
 
-          Outputter o = new Outputter(OutputterMode.STORAGE);
+          StorageTransientOutputter o = new StorageTransientOutputter(getX());
 
           test(serializedJSON.equals(o.stringify(receipt)), "JSON serialized correctly for the Receipt class.");
 

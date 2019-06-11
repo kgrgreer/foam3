@@ -1,7 +1,6 @@
 package net.nanopay.security;
 
 import foam.core.FObject;
-import foam.lib.json.OutputterMode;
 import foam.util.SafetyUtil;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -10,16 +9,17 @@ import org.bouncycastle.util.encoders.Hex;
  * to the end of the output
  */
 public class HashingOutputter
-  extends foam.lib.json.Outputter
+  extends foam.lib.json.StorageTransientOutputter
 {
   protected HashingWriter hashingWriter_ = null;
   protected HashingJournal hashingJournal_ = null;
 
-  public HashingOutputter(HashingJournal hashingJournal, OutputterMode mode)
+  public HashingOutputter(foam.core.X x, HashingJournal hashingJournal)
     throws java.security.NoSuchAlgorithmException
   {
-    // set mode and hashing journal
-    this.mode_ = mode;
+    super(x);
+
+    // set hashing journal
     this.hashingJournal_ = hashingJournal;
 
     // create writers

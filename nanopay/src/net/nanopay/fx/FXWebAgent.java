@@ -66,7 +66,7 @@ public class FXWebAgent
         JSONParser jsonParser = new JSONParser();
         jsonParser.setX(x);
 
-        foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
+        foam.lib.json.Outputter outputterJson = new foam.lib.json.PermissionedNetworkOutputter(x);
         outputterJson.setOutputDefaultValues(true);
         outputterJson.setOutputClassNames(false);
 

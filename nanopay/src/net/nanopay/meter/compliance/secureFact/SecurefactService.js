@@ -14,7 +14,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
-    'foam.lib.json.OutputterMode',
+    'foam.lib.json.PermissionedNetworkOutputter',
     'foam.nanos.logger.Logger',
     'java.util.Arrays',
     'java.util.Base64',
@@ -133,8 +133,7 @@ foam.CLASS({
         HttpResponse httpResponse = null;
 
         try {
-          Outputter jsonOutputter =
-            new Outputter(OutputterMode.NETWORK).setOutputClassNames(false);
+          PermissionedNetworkOutputter jsonOutputter = (PermissionedNetworkOutputter) new PermissionedNetworkOutputter(x).setOutputClassNames(false);
           String requestJson = jsonOutputter.stringify(request);
           StringEntity entity = new StringEntity(requestJson);
           entity.setContentType("application/json");

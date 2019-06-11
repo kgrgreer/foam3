@@ -70,7 +70,7 @@ public class PacsWebAgent
         JSONParser jsonParser = new JSONParser();
         jsonParser.setX(x);
 
-        foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(OutputterMode.NETWORK);
+        foam.lib.json.PermissionedNetworkOutputter outputterJson = new foam.lib.json.PermissionedNetworkOutputter(x);
         outputterJson.setOutputDefaultValues(true);
         outputterJson.setOutputShortNames(true);
         outputterJson.setOutputClassNames(false);

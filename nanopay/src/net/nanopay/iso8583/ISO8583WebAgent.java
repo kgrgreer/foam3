@@ -1,8 +1,7 @@
 package net.nanopay.iso8583;
 
 import foam.core.X;
-import foam.lib.json.Outputter;
-import foam.lib.json.OutputterMode;
+import foam.lib.json.NetworkTransientOutputter;
 import net.nanopay.iso8583.packager.ISO87Packager;
 import net.nanopay.iso8583.packager.ISO93Packager;
 
@@ -14,13 +13,14 @@ import java.io.PushbackInputStream;
 public class ISO8583WebAgent
   implements foam.nanos.http.WebAgent
 {
-  protected static ThreadLocal<Outputter> outputter_ = ThreadLocal.withInitial(() -> new Outputter(OutputterMode.NETWORK));
 
   @Override
   public void execute(X x) {
     HttpServletRequest   req = x.get(HttpServletRequest.class);
     HttpServletResponse resp = x.get(HttpServletResponse.class);
     PrintWriter out = x.get(PrintWriter.class);
+
+    NetworkTransientOutputter outputter_ = new NetworkTransientOutputter(x);
 
     ISOMessage message;
     try ( PushbackInputStream in = new PushbackInputStream(req.getInputStream()) ) {
@@ -38,12 +38,12 @@ public class ISO8583WebAgent
     } catch ( Throwable t ) {
       outputException(resp, out, new ISO8583Exception.Builder(x)
         .setCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
-        .setMessage(t.getMessage()).build());
+        .setMessage(t.getMessage()).build(), outputter_);
       return;
     }
 
     // output iso 8583 message in JSON format
-    out.println(outputter_.get().stringify(message));
+    out.println(outputter_.stringify(message));
   }
 
   /**
@@ -70,8 +70,8 @@ public class ISO8583WebAgent
    * @param out PrintWriter to write to
    * @param exception ISO8583Exception to output
    */
-  protected void outputException(HttpServletResponse resp, PrintWriter out, ISO8583Exception exception) {
+  protected void outputException(HttpServletResponse resp, PrintWriter out, ISO8583Exception exception, NetworkTransientOutputter outputter) {
     resp.setStatus(exception.getCode());
-    out.println(outputter_.get().stringify(exception));
+    out.println(outputter.stringify(exception));
   }
 }
