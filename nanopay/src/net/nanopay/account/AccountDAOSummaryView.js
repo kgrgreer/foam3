@@ -5,14 +5,13 @@
  */
 
 foam.CLASS({
-  package: 'foam.comics.v2',
+  package: 'net.nanopay.account',
   name: 'AccountDAOSummaryView',
   extends: 'foam.u2.View',
 
   implements: [
     'foam.mlang.Expressions'
   ],
-
 
   documentation: `
     A configurable summary view for a specific instance
