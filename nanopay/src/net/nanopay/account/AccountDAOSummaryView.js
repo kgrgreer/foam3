@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.comics.v2',
-  name: 'DAOSummaryView',
+  name: 'AccountDAOSummaryView',
   extends: 'foam.u2.View',
 
   implements: [
