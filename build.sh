@@ -107,13 +107,9 @@ function deploy_journals {
     touch "$JOURNALS"
 
     if [ "$GRADLE_BUILD" -eq 0 ]; then
-        if [ -z $JOURNAL_CONFIG ]; then
-            ./tools/findJournals.sh "tools/journals" "$JOURNAL_CONFIG" | ./find.sh -Ftools/journals -O${JOURNAL_OUT}
-        else
-            ./tools/findJournals.sh "tools/journals" "$JOURNAL_CONFIG" | ./find.sh -Ftools/journals -O${JOURNAL_OUT} -J${JOURNAL_CONFIG}
-        fi
+        ./tools/findJournals.sh -Itools/journals -J${JOURNAL_CONFIG} | ./find.sh -Ftools/journals -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh "tools/journals" "$JOURNAL_CONFIG" > target/journal_files
+        ./tools/findJournals.sh -Itools/journals -J${JOURNAL_CONFIG} > target/journal_files
         gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files -PjournalFiles=tools/journals --daemon
     fi
 
@@ -522,7 +518,7 @@ function usage {
 
 ############################
 
-JOURNAL_CONFIG=
+JOURNAL_CONFIG=default
 INSTANCE=
 HOST_NAME=`hostname -s`
 GRADLE_BUILD=0

@@ -4,7 +4,6 @@
 IN_FILE=
 JOURNAL_FILE=
 OUT_DIR=
-INSTANCE=
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
@@ -13,15 +12,13 @@ function usage {
     echo "  -I : Input File, no option defaults to stdin"
     echo "  -O : Output Directory"
     echo "  -F : Journal List File"
-    echo "  -J : Instance"
 }
 
-while getopts "F:I:O:J:" opt ; do
+while getopts "F:I:O:" opt ; do
     case $opt in
         F) JOURNAL_FILE=$OPTARG ;;
         I) IN_FILE=$OPTARG ;;
         O) OUT_DIR=$OPTARG ;;
-        J) INSTANCE=$OPTARG ;;
         ?) usage ; exit 1;;
     esac
 done
@@ -32,9 +29,8 @@ fi
 mkdir -p "$OUT_DIR"
 
 # Sets varuables to lowercase
-INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
 
-echo "INFO :: $0 IN_FILE=${IN_FILE} JOURNAL_FILE=${JOURNAL_FILE} OUT_DIR=${OUT_DIR} INSTANCE=${INSTANCE}"
+echo "INFO :: $0 IN_FILE=${IN_FILE} JOURNAL_FILE=${JOURNAL_FILE} OUT_DIR=${OUT_DIR}"
 cp $JOURNAL_FILE ${OUT_DIR}/journals
 
 # Delete current runtime journals

@@ -211,12 +211,10 @@ task findSH(type: Exec) {
         !tasks.incrementalFindTask.state.upToDate
     }
 
-    def journalConfig = project.findProperty("journalConfig")
     commandLine 'bash', './find.sh',
         "-I${project.findProperty("journalIn") ?: ""}", 
         "-F${project.findProperty("journalFiles") ?: ""}", 
-        "-O${project.findProperty("journalOut") ?: ""}", 
-        journalConfig ? "-J${journalConfig}" : ""
+        "-O${project.findProperty("journalOut") ?: ""}"
 }
 
 task packageFoam(type: NodeTask) {
