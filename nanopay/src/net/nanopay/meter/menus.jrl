@@ -42,3 +42,6 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.BusinessOnboarding","label":"B
 
 // IdentityMind Responses
 p({"class":"foam.nanos.menu.Menu","id":"operation.identitymind","label":"IdentityMind Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"identityMindResponseDAO"},"order":3600,"parent":"operation"})
+
+// ComplianceItem
+p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Items","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"order":1000,"parent":"operation"})

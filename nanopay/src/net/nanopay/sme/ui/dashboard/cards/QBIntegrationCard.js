@@ -20,6 +20,7 @@ foam.CLASS({
 
   imports: [
     'user',
+    'userDAO',
     'pushMenu'
   ],
 
@@ -45,36 +46,31 @@ foam.CLASS({
       value: 'images/ablii/QBO@2x.png'
     },
     {
-      class: 'String',
-      name: 'subtitleToUse',
-      expression: function(user$integrationCode) {
-        if ( user$integrationCode === this.IntegrationCode.QUICKBOOKS ) {
-          return this.SUBTITLE_LINKED;
-        }
-
-        return this.SUBTITLE_EMPTY;
-      }
-    },
-    {
       class: 'Boolean',
       name: 'hasPermission'
     },
     {
       class: 'Boolean',
       name: 'hasIntegration'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.User',
+      name: 'updatedUser'
     }
   ],
 
   methods: [
-    function initE() {
+    async function init() {
+      this.updatedUser = await this.userDAO.find(this.user.id);
       var self = this;
-      this.add(this.slot(function(subtitleToUse) {
+      this.add(this.slot(function(updatedUser) {
         return this.E()
           .start(self.IntegrationCard, {
             iconPath: self.iconPath,
             title: self.TITLE,
-            subtitle: subtitleToUse,
-            action: self.user.integrationCode === self.IntegrationCode.QUICKBOOKS && self.hasIntegration ? self.SYNC : self.CONNECT
+            subtitle: updatedUser.integrationCode === this.IntegrationCode.QUICKBOOKS ? self.SUBTITLE_LINKED: self.SUBTITLE_EMPTY,
+            action: updatedUser.integrationCode === self.IntegrationCode.QUICKBOOKS && self.hasIntegration ? self.SYNC : self.CONNECT
           }).end();
       }));
     },

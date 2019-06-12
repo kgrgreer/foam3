@@ -693,7 +693,7 @@ FOAM_FILES([
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
   { name: 'net/nanopay/contacts/ContactStatus' },
-  { name: 'net/nanopay/contacts/ContactMigrationRule', flags: ['java'] },
+  { name: 'net/nanopay/contacts/ContactMigrationRule' },
   { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/ContactWizardModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
@@ -879,6 +879,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/refinements' },
   { name: 'net/nanopay/meter/compliance/UserFinalRuleValidation' },
   { name: 'net/nanopay/meter/compliance/refinements' },
+  { name: 'net/nanopay/meter/compliance/ComplianceItem' },
+  { name: 'net/nanopay/meter/compliance/ui/ComplianceItemController'},
 
   // ruler
   { name: 'net/nanopay/meter/compliance/ruler/AbstractComplianceApproval' },
@@ -905,6 +907,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserCompliancePassedOrFailed' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/CreateRemoveComplianceItemRule' },
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
