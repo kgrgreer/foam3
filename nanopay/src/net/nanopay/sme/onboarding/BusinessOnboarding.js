@@ -262,7 +262,7 @@ foam.CLASS({
       title: 'Protect your account against fraud with two-factor authentication',
       help: 'Alright, it looks like that is all of the information we need! Last thing I’ll ask is that you enable two factor authentication. We want to make sure your account is safe!',
       isAvailable: function(signingOfficer) {
-        return true;
+        return signingOfficer;
       }
     }
   ],

@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler',
   name: 'CreateRemoveComplianceItemRule',
-  flags: ['java'],
 
   documentation: 'Creates or removes ComplianceItems to reflect existence of compliance responses.',
 
