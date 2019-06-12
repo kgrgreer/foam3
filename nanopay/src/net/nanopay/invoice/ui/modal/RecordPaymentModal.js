@@ -21,7 +21,11 @@ foam.CLASS({
   ],
 
   properties: [
-    net.nanopay.invoice.model.Invoice.CHEQUE_AMOUNT,
+    net.nanopay.invoice.model.Invoice.CHEQUE_AMOUNT.clone().copyFrom({
+      expression: function(invoice) {
+        return invoice.amount;
+      }
+    }),
     net.nanopay.invoice.model.Invoice.PAYMENT_DATE.clone().copyFrom({
       view: { class: 'foam.u2.DateView' }
     }),
@@ -30,6 +34,10 @@ foam.CLASS({
       name: 'currencyType',
       view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
       value: 'CAD'
+    },
+    {
+      name: 'mode',
+      value: foam.u2.DisplayMode.DISABLED
     },
     'invoice'
   ],
@@ -65,7 +73,7 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-CurrencyChoice-carrot {
       margin-top: 0px;
     }
-    ^ .foam-u2-ActionView-close{
+    ^ .foam-u2-ActionView-close {
       right: -280px !important;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice-container {
@@ -118,8 +126,8 @@ foam.CLASS({
         .end()
         .start()
           .start().addClass('label').add(this.AMOUNT_LABEL).end()
-          .start(this.CURRENCY_TYPE).end()
-          .start(this.CHEQUE_AMOUNT).end()
+          .start(this.CURRENCY_TYPE, { mode$: this.mode$ }).end()
+          .start(this.CHEQUE_AMOUNT, { mode$: this.mode$ }).end()
         .end()
         .start()
           .start().addClass('label').add(this.NOTE_LABEL).end()
