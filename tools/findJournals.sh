@@ -11,7 +11,7 @@ function usage {
     echo "  -J : Instance"
 }
 
-while getopts "F:I:O:J:" opt ; do
+while getopts "I:J:" opt ; do
     case $opt in
         I) IN_FILE=$OPTARG ;;
         J) INSTANCE=$OPTARG ;;
