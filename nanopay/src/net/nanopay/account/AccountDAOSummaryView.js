@@ -283,13 +283,8 @@ foam.CLASS({
                 .start(foam.comics.v2.DAOBrowserView, {
                   data: self.transactionDAO
                           .where
-                            (self.OR
-                              (
-                                self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id)
-                              ),
-                              (
-                                self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id)
-                              )  
+                            (self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id)),
+                                    (self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id))  
                             ),
                 })
                 .addClass(this.myClass('transactions-table'))
