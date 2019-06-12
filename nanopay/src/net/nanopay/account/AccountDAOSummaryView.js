@@ -40,6 +40,7 @@ foam.CLASS({
       font-size: 12px;
       color: #5e6061;
       line-height: 1.5;
+      font-style: italic;
     }
 
     ^denom-flag {
@@ -49,7 +50,7 @@ foam.CLASS({
     ^card-header {
       font-weight: 600;
       font-size: 12px;
-      margin-bottom: 32px;
+      margin-bottom: 52px;
     }
 
     ^ .foam-u2-ActionView-back {
