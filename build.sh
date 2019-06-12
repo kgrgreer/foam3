@@ -112,7 +112,7 @@ function deploy_journals {
         mkdir -p target
     fi
 
-    if [ "$GRADLE_BUILD" -eq 0 ]; then
+    if [ "$GRADLE_BUILD" -eq 0 ] || [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
         ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
         ./tools/findJournals.sh -Itools/journals -J${JOURNAL_CONFIG} < $JOURNALS > target/journal_files
@@ -640,14 +640,6 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
-if [ "${DELETE_RUNTIME_JOURNALS}" -eq 1 ]; then
-    if [ -d ${PROJECT_HOME}/target/journals ]; then
-        rm -rf ${PROJECT_HOME}/target/journals
-    fi
-    if [ -f ${PROJECT_HOME}/target/journal_files ]; then
-        rm ${PROJECT_HOME}/target/journal_files
-    fi
-fi
 deploy_journals
 
 if [ "${RESTART_ONLY}" -eq 0 ]; then
