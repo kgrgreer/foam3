@@ -42,7 +42,7 @@ foam.CLASS({
               .removeAll();
           }
         });
-git status      `
+      `
     }
   ]
 });
