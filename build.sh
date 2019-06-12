@@ -116,7 +116,7 @@ function deploy_journals {
         ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
         ./tools/findJournals.sh -Itools/journals -J${JOURNAL_CONFIG} < $JOURNALS > target/journal_files
-        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
+        gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
     fi
 
     if [[ $? -eq 1 ]]; then
