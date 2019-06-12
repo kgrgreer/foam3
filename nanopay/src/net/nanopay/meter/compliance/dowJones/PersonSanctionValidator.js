@@ -44,6 +44,7 @@ foam.CLASS({
                 .setDaoKey("localUserDAO")
                 .setCauseId(response.getId())
                 .setCauseDaoKey("dowJonesResponseDAO")
+                .setClassification("Validate User Using Dow Jones")
                 .setMatches(response.getResponseBody().getMatches())
                 .build());
           }

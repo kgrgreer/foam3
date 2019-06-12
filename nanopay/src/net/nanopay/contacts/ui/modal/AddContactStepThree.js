@@ -55,19 +55,7 @@ foam.CLASS({
 
     ^ .foam-u2-tag-Select,
     ^ .foam-u2-TextField {
-      border: solid 1px #8e9090 !important;
       margin-bottom: 0 !important;
-
-      -webkit-transition: all .15s ease-in-out;
-      -moz-transition: all .15s ease-in-out;
-      -ms-transition: all .15s ease-in-out;
-      -o-transition: all .15s ease-in-out;
-      transition: all .15s ease-in-out;
-    }
-
-    ^ .foam-u2-tag-Select:focus,
-    ^ .foam-u2-TextField:focus {
-      border: solid 1px %SECONDARYCOLOR% !important;
     }
   `,
 

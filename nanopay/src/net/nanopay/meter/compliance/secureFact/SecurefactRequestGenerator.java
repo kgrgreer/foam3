@@ -84,15 +84,19 @@ public class SecurefactRequestGenerator {
 
   private static SIDniAddress[] buildAddress(X x, User user) {
     Address userAddress = user.getAddress();
+    String address = userAddress.getAddress();
     if (userAddress == null
-      || SafetyUtil.isEmpty(userAddress.getAddress())
+      || SafetyUtil.isEmpty(address)
     ) {
       throw new IllegalStateException("User address can't be blank");
+    }
+    if ( ! SafetyUtil.isEmpty(userAddress.getSuite()) ) {
+      address = userAddress.getSuite() + " - " + userAddress.getAddress();
     }
     return new SIDniAddress[] {
       new SIDniAddress.Builder(x)
         .setAddressType("Current")
-        .setAddressLine(userAddress.getAddress())
+        .setAddressLine(address)
         .setCity(userAddress.getCity())
         .setProvince(userAddress.getRegionId())
         .setPostalCode(userAddress.getPostalCode().replaceAll(" ", ""))
