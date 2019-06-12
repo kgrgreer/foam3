@@ -1,20 +1,13 @@
 #!/bin/bash
 
-IN_DIR=$1
-IN_FILE=$2
-INSTANCE=$3
-
-if [[ -d $IN_DIR ]]; then
-    cd $IN_DIR
-fi
+IN_FILE=$1
+INSTANCE=$2
 
 # Sets varuables to lowercase
-INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
-
 declare -a sources=(
   "foam2/src"
   "nanopay/src"
-  "deployment/${INSTANCE}"
+  "deployment/$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')"
  # "interac/src"
 )
 
