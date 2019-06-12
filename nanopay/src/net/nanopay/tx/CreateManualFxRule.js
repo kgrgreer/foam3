@@ -26,7 +26,6 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: ` 
       KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) obj;
-      if ( kotakFxTransaction.getStatus().equals(TransactionStatus.PENDING) ) {
         DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
         approvalRequestDAO.put_(x,
           new ManualFxApprovalRequest.Builder(x)
@@ -34,7 +33,6 @@ foam.CLASS({
             .setObjId(kotakFxTransaction.getId())
             .setApprover(1348)
             .setStatus(ApprovalStatus.REQUESTED).build());
-      }
       `
     },
     {
