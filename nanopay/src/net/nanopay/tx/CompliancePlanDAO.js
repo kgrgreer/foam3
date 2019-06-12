@@ -11,7 +11,6 @@ foam.CLASS({
     'net.nanopay.account.Debtable',
     'net.nanopay.account.DebtAccount',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.cico.COTransaction',
     'foam.nanos.logger.Logger',
     'java.util.ArrayList'
   ],
@@ -25,15 +24,17 @@ foam.CLASS({
         ArrayList<Transaction> newPlans = new ArrayList();
 
         for ( Transaction plan : plans ) {
-          if ( plan instanceof COTransaction ) {
+          if ( plan instanceof SummaryTransaction ) {
             ComplianceTransaction ct = new ComplianceTransaction.Builder(x)
               .setDestinationAccount(plan.getDestinationAccount())
               .setSourceAccount(plan.getSourceAccount())
               .setAmount(plan.getAmount())
               .setIsQuoted(true)
               .build();
-            ct.addNext(plan);
-            plan = ct;
+            ct.setNext(plan.getNext());
+            Transaction [] ctArray = new Transaction [1];
+            ctArray[0] = ct;
+            plan.setNext(ctArray);
           }
           newPlans.add(plan);
         }
