@@ -120,7 +120,9 @@ foam.CLASS({
     {
       class: 'Enum',
       of: 'net.nanopay.approval.ApprovalStatus',
-      name: 'status'
+      name: 'status',
+      value: 'REQUESTED',
+      javaFactory: 'return net.nanopay.approval.ApprovalStatus.REQUESTED;',
     },
     {
       class: 'String',
