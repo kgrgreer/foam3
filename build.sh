@@ -97,28 +97,29 @@ function deploy_journals {
     # prepare journals
     cd "$PROJECT_HOME"
 
+    JOURNALS=tools/journals
+    if [[ ! -f  $JOURNALS ]]; then
+        echo "ERROR :: Missing ${JOURNALS} file."
+        quit 1
+    fi
+
     if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
         # remove journal file that find.sh was previously creating
         rm "$JOURNAL_HOME"
     fi
-    
-    mkdir -p "$JOURNAL_OUT"
-    JOURNALS="$JOURNAL_OUT/journals"
-    touch "$JOURNALS"
+
+    if [ ! -d target ]; then
+        mkdir -p target
+    fi
 
     if [ "$GRADLE_BUILD" -eq 0 ]; then
-        ./tools/findJournals.sh -Itools/journals -J${JOURNAL_CONFIG} | ./find.sh -Ftools/journals -O${JOURNAL_OUT}
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh -Itools/journals -J${JOURNAL_CONFIG} > target/journal_files
-        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files -PjournalFiles=tools/journals --daemon
+        ./tools/findJournals.sh -Itools/journals -J${JOURNAL_CONFIG} < $JOURNALS > target/journal_files
+        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
     fi
 
     if [[ $? -eq 1 ]]; then
-        quit 1
-    fi
-
-    if [[ ! -f $JOURNALS ]]; then
-        echo "ERROR :: Missing $JOURNALS file."
         quit 1
     fi
 
@@ -164,7 +165,7 @@ function clean {
             fi
             mvn clean
         else
-            gradle clean
+            gradle clean $GRADLE_FLAGS
         fi
     fi
 }
@@ -179,12 +180,12 @@ function build_jar {
         if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
             #gradle --daemon "${GRADLE_ARGS}" build
             if [ ! -z "${VERSION}" ]; then
-                gradle --daemon -Pversion=${VERSION} build
+                gradle --daemon -Pversion=${VERSION} build $GRADLE_FLAGS
             else
-                gradle --daemon build
+                gradle --daemon build $GRADLE_FLAGS
             fi
         else
-           gradle --daemon build -x jar
+           gradle --daemon build -x jar $GRADLE_FLAGS
         fi
     else
         # maven
@@ -213,7 +214,7 @@ function build_jar {
 }
 
 function package_tar {
-    gradle --daemon tarz
+    gradle --daemon tarz $GRADLE_FLAGS
 }
 
 function delete_runtime_journals {
@@ -547,11 +548,14 @@ DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
+GRADLE_FLAGS=
 
 while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) CLEAN_BUILD=1 ;;
+        c) CLEAN_BUILD=1 
+           GRADLE_FLAGS="--rerun-tasks"
+           ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
@@ -636,10 +640,15 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
-if [ "$RESTART_ONLY" -eq 0 ] ||
-       [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
-    deploy_journals
+if [ "${DELETE_RUNTIME_JOURNALS}" -eq 1 ]; then
+    if [ -d ${PROJECT_HOME}/target/journals ]; then
+        rm -rf ${PROJECT_HOME}/target/journals
+    fi
+    if [ -f ${PROJECT_HOME}/target/journal_files ]; then
+        rm ${PROJECT_HOME}/target/journal_files
+    fi
 fi
+deploy_journals
 
 if [ "${RESTART_ONLY}" -eq 0 ]; then
     build_jar

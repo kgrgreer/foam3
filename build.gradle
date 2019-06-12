@@ -107,13 +107,10 @@ sourceSets {
 }
 
 abstract class IncrementalTask extends DefaultTask {
-    @InputFiles
     abstract FileCollection getIncludedFiles()
 
-    @OutputDirectory
     abstract File getOutputDirectory()
 
-    @TaskAction
     void execute(IncrementalTaskInputs inputs) {
         if (inputs.incremental) {
             println "CHANGED inputs considered out of date"
@@ -212,8 +209,7 @@ task findSH(type: Exec) {
     }
 
     commandLine 'bash', './find.sh',
-        "-I${project.findProperty("journalIn") ?: ""}", 
-        "-F${project.findProperty("journalFiles") ?: ""}", 
+        "-I${project.findProperty("journalIn") ?: ""}",
         "-O${project.findProperty("journalOut") ?: ""}"
 }
 
