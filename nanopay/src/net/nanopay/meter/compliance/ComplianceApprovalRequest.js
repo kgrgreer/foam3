@@ -15,6 +15,24 @@ foam.CLASS({
     {
       class: 'String',
       name: 'causeDaoKey'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'causeObjectHelper',
+      transient: true,
+      visibility: 'HIDDEN',
+      expression: function(causeId, causeDaoKey) {
+        this.__subContext__[causeDaoKey].find(causeId).then((obj) => {
+          this.causeObject = obj;
+        });
+        return null;
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'causeObject',
+      transient: true,
+      visibility: 'RO'
     }
   ]
 });
