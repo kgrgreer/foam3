@@ -70,6 +70,12 @@ foam.CLASS({
     ^view-container {
       margin: auto;
     }
+
+    ^table-header {
+      padding: 32px 0px 12px 16px;
+      font-weight: 600;
+      font-size: 12px;
+    }
   `,
 
   requires: [
@@ -144,13 +150,6 @@ foam.CLASS({
         }
       }
     },
-    // {
-    //   class: 'Long',
-    //   name: 'balance',
-    //   expression: async function(data, x){
-    //     return await data.getBalance(x);
-    //   }
-    // },
     {
       name: 'primary',
       expression: function(config$of){
@@ -190,6 +189,10 @@ foam.CLASS({
       name: 'BALANCE_NOTE',
       message: 'Total value shown in home currency',
     },
+    {
+      name: 'TABLE_HEADER',
+      message: 'TRANSACTIONS'
+    }
   ],
 
   methods: [
@@ -280,6 +283,7 @@ foam.CLASS({
                 .end()
               .end()
               .start(self.CardBorder)
+                .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
                 .start(foam.comics.v2.DAOBrowserView, {
                   data: self.transactionDAO
                           .where
