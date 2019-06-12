@@ -1,43 +1,33 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind',
-  name: 'ConsumerKYCValidator',
+  name: 'B2BTransactionValidator',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
-  documentation: 'Validates a user using IdentityMind Consumer KYC Evaluation API.',
+  documentation: 'Validates bank to bank transaction via IdentityMind Transfer API.',
 
   javaImports: [
-    'foam.nanos.auth.User',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
-    'net.nanopay.meter.compliance.ComplianceValidationStatus'
-  ],
-
-  properties: [
-    {
-      class: 'Int',
-      name: 'stage',
-      value: 1
-    }
+    'net.nanopay.meter.compliance.ComplianceValidationStatus',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
+        Transaction transaction = (Transaction) obj;
         IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-        IdentityMindResponse response = identityMindService.evaluateConsumer(
-          x, obj, getStage());
+        IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
         ComplianceValidationStatus status = response.getComplianceValidationStatus();
 
-        if ( obj instanceof User
-          && status != ComplianceValidationStatus.VALIDATED
-        ) {
+        if ( status != ComplianceValidationStatus.VALIDATED ) {
           requestApproval(x,
             new ComplianceApprovalRequest.Builder(x)
-              .setObjId(String.valueOf(obj.getProperty("id")))
-              .setDaoKey("localUserDAO")
+              .setObjId(transaction.getId())
+              .setDaoKey("localTransactionDAO")
               .setCauseId(response.getId())
               .setCauseDaoKey("identityMindResponseDAO")
-              .setClassification("Validate User Using IdentityMind")
+              .setClassification("Validate B2B Transaction")
               .build()
           );
         }
