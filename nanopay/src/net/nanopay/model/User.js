@@ -25,6 +25,10 @@ foam.CLASS({
     'net.nanopay.contacts.Contact'
   ],
 
+  imports: [
+    'complianceHistoryDAO'
+  ],
+
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -537,7 +541,7 @@ foam.CLASS({
     {
       name: 'viewComplianceHistory',
       label: 'View Compliance History',
-      availablePermissions: ['foam.nanos.auth.User.permission.viewComplianceHistory'],
+      availablePermissions: ['service.compliancehistorydao'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         this.__context__.stack.push({
@@ -546,9 +550,10 @@ foam.CLASS({
           editEnabled: true,
           exportEnabled: true,
           title: `${this.label()}'s Compliance History`,
-          data: X.identityMindResponseDAO.where(
-              m.EQ(foam.nanos.ruler.RuleHistory.ID, this.id)
-          )
+          data: this.complianceHistoryDAO.where(m.AND(
+              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id), 
+              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localUserDAO')
+          ))
         });
       }
     },

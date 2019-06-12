@@ -8,13 +8,15 @@ foam.CLASS({
     'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.analytics.Foldable'
+    'foam.nanos.analytics.Foldable',
+    'foam.mlang.Expressions',
   ],
 
   imports: [
     'addCommas',
     'currencyDAO',
-    'userDAO'
+    'userDAO',
+    'complianceHistoryDAO'
   ],
 
   javaImports: [
@@ -872,7 +874,7 @@ for ( Balance b : getBalances() ) {
     {
       name: 'viewComplianceHistory',
       label: 'View Compliance History',
-      availablePermissions: ['foam.nanos.auth.User.permission.viewComplianceHistory'],
+      availablePermissions: ['service.compliancehistorydao'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         this.__context__.stack.push({
@@ -880,10 +882,11 @@ for ( Balance b : getBalances() ) {
           createEnabled: false,
           editEnabled: true,
           exportEnabled: true,
-          title: `${this.legalName}'s Compliance History`,
-          data: X.identityMindResponseDAO.where(
-              m.EQ(foam.nanos.ruler.RuleHistory.ID, this.id)
-          )
+          title: `${this.id}'s Compliance History`,
+          data: this.complianceHistoryDAO.where(m.AND(
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id), 
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
+          ))
         });
       }
     }
