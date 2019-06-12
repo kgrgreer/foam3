@@ -51,6 +51,11 @@ foam.CLASS({
           name: 'expanded',
           value: true
         },
+        {
+          class: 'Boolean',
+          name: 'useShadow',
+          value: false
+        },
         [ 'color', 'white' ]
       ],
 
@@ -79,14 +84,13 @@ foam.CLASS({
         function paintSelf(x) {
           x.save();
 
-          /*
-          Needed to comment the shadow out in order to match the Liquid specifications
-          // Add shadow blur to box
-          x.shadowBlur    = 5;
-          x.shadowOffsetX = 5;
-          x.shadowOffsetY = 5;
-          x.shadowColor   = "gray";
-          */
+          if (this.useShadow){
+            // Add shadow blur to box
+            x.shadowBlur    = 5;
+            x.shadowOffsetX = 5;
+            x.shadowOffsetY = 5;
+            x.shadowColor   = "gray";
+          }
 
           x.translate(-this.width/2, 0);
           this.SUPER(x);
