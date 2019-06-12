@@ -6,12 +6,11 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id',
-      class: 'String',
-      documentation: 'CAD-DEBIT or CAD-CREDIT'
+      name: 'creditOriginatorId',
+      class: 'String'
     },
     {
-      name: 'originatorId',
+      name: 'debitOriginatorId',
       class: 'String'
     },
     {
@@ -57,6 +56,10 @@ foam.CLASS({
     {
       name: 'production',
       class: 'Boolean'
+    },
+    {
+      name: 'fileCreationNumberOffset',
+      class: 'Int'
     }
   ]
 

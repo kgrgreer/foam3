@@ -21,10 +21,8 @@ import java.util.stream.Collectors;
 public class BmoReportProcessor {
 
   private static final String PATH = System.getenv("JOURNAL_HOME") + "/bmo_eft/";
-  private static final String RECEIPT_DOWNLOAD_FOLDER = PATH + "/receipt/";
   private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
-
-  private static final String REPORT_DOWNLOAD_FOLDER = PATH + "/report/";
+  private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
 
   private X x;
   private DAO transactionDAO;
@@ -52,78 +50,99 @@ public class BmoReportProcessor {
     }
   }
 
-  public void processReportFile(File file) {
+  public boolean processReports() {
 
     try {
-      List<String> strings = FileUtils.readLines(file, "US-ASCII");
 
-      if ( strings.get(0).startsWith("A") && BmoFormatUtil.fieldAt(strings.get(0), 68, 48).equals("STL") ) {
-        // process settlement file 220
+      Collection<File> files = FileUtils.listFiles(new File(BmoSFTPClient.REPORT_DOWNLOAD_FOLDER), null, false);
 
-
-        return;
+      for ( File file : files ) {
+        FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + file.getName()));
       }
+    } catch ( Exception e ) {
 
-      if ( strings.get(0).startsWith("A") ) {
-        // process rejects 210/211
-
-
-        return;
-      }
-
-
-    } catch (IOException e) {
-      e.printStackTrace();
     }
 
+    return true;
   }
 
-  public void process210And211(List<String> strings) {
+  /**
+   *
+   * Comment out below for now, once I get the right report format, will remove or modify it.
+   *
+   */
 
-    for (String s : strings) {
-      if ( s.startsWith("C") || s.startsWith("I") || s.startsWith("D") || s.startsWith("J") ) {
-
-      }
-    }
-  }
-
-  public void process210And211Detail(String record) {
-    String repeatSegments = BmoFormatUtil.fieldAt(record, 25, 1464);
-    List<String> segments = BmoFormatUtil.splitRecord(repeatSegments);
-
-    for ( String segment : segments ) {
-      String referenceNumber = BmoFormatUtil.fieldAt(segment, 175, 193);
-      String rejectType = BmoFormatUtil.fieldAt(segment, 25, 27);
-
-      Transaction transaction = getTransactionBy(referenceNumber);
-      transaction.setStatus(TransactionStatus.DECLINED);
-      ((BmoTransaction)transaction).setRejectType(rejectType);
-
-      this.transactionDAO.inX(x).put(transaction);
-    }
-  }
-
-  public Transaction getTransactionBy(String referenceNumber) {
-
-    Predicate condition1 = MLang.OR(
-      MLang.INSTANCE_OF(BmoCITransaction.class),
-      MLang.INSTANCE_OF(BmoCITransaction.class)
-    );
-
-    Predicate condition2 = MLang.OR(
-      MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-      MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber)
-    );
-
-    Predicate condition3 = MLang.EQ(Transaction.STATUS, TransactionStatus.SENT);
-
-    Transaction transaction = (Transaction) transactionDAO.inX(this.x).find(MLang.AND(
-      condition1,
-      condition2,
-      condition3
-    ));
-
-    return (Transaction) transaction.fclone();
-  }
+//  public void processReportFile(File file) {
+//
+//    try {
+//      List<String> strings = FileUtils.readLines(file, "US-ASCII");
+//
+//      if ( strings.get(0).startsWith("A") && BmoFormatUtil.fieldAt(strings.get(0), 68, 48).equals("STL") ) {
+//        // process settlement file 220
+//
+//
+//        return;
+//      }
+//
+//      if ( strings.get(0).startsWith("A") ) {
+//        // process rejects 210/211
+//
+//        return;
+//      }
+//
+//
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+//
+//  }
+//
+//  public void process210And211(List<String> strings) {
+//
+//    for (String s : strings) {
+//      if ( s.startsWith("C") || s.startsWith("I") || s.startsWith("D") || s.startsWith("J") ) {
+//
+//      }
+//    }
+//  }
+//
+//  public void process210And211Detail(String record) {
+//    String repeatSegments = BmoFormatUtil.fieldAt(record, 25, 1464);
+//    List<String> segments = BmoFormatUtil.splitRecord(repeatSegments);
+//
+//    for ( String segment : segments ) {
+//      String referenceNumber = BmoFormatUtil.fieldAt(segment, 175, 193);
+//      String rejectType = BmoFormatUtil.fieldAt(segment, 25, 27);
+//
+//      Transaction transaction = getTransactionBy(referenceNumber);
+//      transaction.setStatus(TransactionStatus.DECLINED);
+//      ((BmoTransaction)transaction).setRejectType(rejectType);
+//
+//      this.transactionDAO.inX(x).put(transaction);
+//    }
+//  }
+//
+//  public Transaction getTransactionBy(String referenceNumber) {
+//
+//    Predicate condition1 = MLang.OR(
+//      MLang.INSTANCE_OF(BmoCITransaction.class),
+//      MLang.INSTANCE_OF(BmoCITransaction.class)
+//    );
+//
+//    Predicate condition2 = MLang.OR(
+//      MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
+//      MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber)
+//    );
+//
+//    Predicate condition3 = MLang.EQ(Transaction.STATUS, TransactionStatus.SENT);
+//
+//    Transaction transaction = (Transaction) transactionDAO.inX(this.x).find(MLang.AND(
+//      condition1,
+//      condition2,
+//      condition3
+//    ));
+//
+//    return (Transaction) transaction.fclone();
+//  }
 
 }

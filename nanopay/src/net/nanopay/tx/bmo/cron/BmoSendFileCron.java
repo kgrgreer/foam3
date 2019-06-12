@@ -51,6 +51,11 @@ public class BmoSendFileCron implements ContextAgent {
       Transaction.STATUS, TransactionStatus.PENDING
     );
 
+    Predicate condition3 = MLang.OR(
+      MLang.EQ(BmoCITransaction.POTENTIALLY_UNDELIVERED, false),
+      MLang.EQ(BmoCOTransaction.POTENTIALLY_UNDELIVERED, false)
+    );
+
     ArraySink sink = (ArraySink) transactionDAO.where(
       MLang.AND(condition1, condition2)
     ).select(new ArraySink());
@@ -60,6 +65,8 @@ public class BmoSendFileCron implements ContextAgent {
   }
 
   public void send(X x, List<Transaction> transactions) {
+    Logger logger = (Logger) x.get("logger");
+
     // batch record
     List<Transaction> ciTransactions = transactions.stream()
       .filter(transaction -> transaction instanceof CITransaction)
@@ -69,14 +76,19 @@ public class BmoSendFileCron implements ContextAgent {
       .filter(transaction -> transaction instanceof COTransaction)
       .collect(Collectors.toList());
 
+    logger.info("Sending CI transactions.");
     doEFT(x, ciTransactions);
-    System.out.println("co");
+    logger.info("Finishing send CI transaction.");
+
     try {
       Thread.sleep(30 * 1000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
+
+    logger.info("Sending CO transactions.");
     doEFT(x, coTransactions);
+    logger.info("Finishing send CO transactions.");
   }
 
   private void doEFT(X x, List<Transaction> transactions) {
@@ -115,13 +127,14 @@ public class BmoSendFileCron implements ContextAgent {
       // 3. send file through sftp
       if ( ! sftpCredential.getSkipSendFile() ) {
 
+        /* we will need to lock the sending process. We want to make sure only send one file at a time.*/
         SEND_LOCK.lock();
 
         new BmoSFTPClient(x, sftpCredential).upload(readyToSend);
         passedTransaction.forEach(transaction -> {
           ((BmoTransaction)transaction).addHistory("Sending...");
           ((BmoTransaction)transaction).setPotentiallyUndelivered(true);
-          transaction.setStatus(TransactionStatus.PAUSED);
+          transaction.setStatus(TransactionStatus.FAILED);
         });
 
         File receipt = new BmoSFTPClient(x, sftpCredential).downloadReceipt();

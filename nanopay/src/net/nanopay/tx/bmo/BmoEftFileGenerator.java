@@ -37,10 +37,10 @@ import java.util.stream.Collectors;
 public class BmoEftFileGenerator {
 
   X x;
-  DAO clientValueDAO;
   DAO currencyDAO;
   DAO bmoEftFileDAO;
   Logger logger;
+  BmoAssignedClientValue clientValue;
   private ArrayList<Transaction> passedTransactions = new ArrayList<>();
 
   public static final String SEND_FOLDER = System.getenv("JOURNAL_HOME") + "/bmo_eft/send/";
@@ -48,9 +48,9 @@ public class BmoEftFileGenerator {
 
   public BmoEftFileGenerator(X x) {
     this.x = x;
-    this.clientValueDAO = (DAO) x.get("bmoClientValueDAO");
     this.currencyDAO = (DAO) x.get("currencyDAO");
     this.bmoEftFileDAO = (DAO) x.get("bmoEftFileDAO");
+    this.clientValue = (BmoAssignedClientValue) x.get("bmoAssignedClientValue");
     this.logger = (Logger) x.get("logger");
   }
 
@@ -74,17 +74,18 @@ public class BmoEftFileGenerator {
     BmoFileHeader fileHeader = null;
     List<BmoBatchRecord> records = new ArrayList<>();
     BmoFileControl fileControl = new BmoFileControl();
-    BmoAssignedClientValue clientValue = null;
+    String originatorID = "";
 
     if ( transactions.get(0) instanceof CITransaction ) {
-      clientValue = (BmoAssignedClientValue) this.clientValueDAO.inX(x).find("CAD-DEBIT");
+      originatorID = this.clientValue.getDebitOriginatorId();
     } else {
-      clientValue = (BmoAssignedClientValue) this.clientValueDAO.inX(x).find("CAD-CREDIT");
+      originatorID = this.clientValue.getCreditOriginatorId();
     }
 
     try {
       // file header
-      fileHeader = createFileHeader(clientValue);
+      fileHeader = createFileHeader(originatorID);
+
       fileHeader.validate(x);
 
       // batch record
@@ -96,8 +97,8 @@ public class BmoEftFileGenerator {
         .filter(transaction -> transaction instanceof COTransaction)
         .collect(Collectors.toList());
 
-      BmoBatchRecord ciBatchRecord = createBatchRecord(ciTransactions, clientValue);
-      BmoBatchRecord coBatchRecord = createBatchRecord(coTransactions, clientValue);
+      BmoBatchRecord ciBatchRecord = createBatchRecord(ciTransactions);
+      BmoBatchRecord coBatchRecord = createBatchRecord(coTransactions);
       if ( ciBatchRecord != null ) records.add(ciBatchRecord);
       if ( coBatchRecord != null ) records.add(coBatchRecord);
       if ( records.size() == 0 ) throw new RuntimeException("No transactions for BMO EFT");
@@ -119,31 +120,31 @@ public class BmoEftFileGenerator {
     file.setHeaderRecord(fileHeader);
     file.setBatchRecords(records.toArray(new BmoBatchRecord[records.size()]));
     file.setTrailerRecord(fileControl);
-    file.setProduction(clientValue.getProduction());
-    file.setFileName(fileHeader.getFileCreationNumber() + "-" + clientValue.getId() + ".txt");
+    file.setProduction(this.clientValue.getProduction());
+    file.setFileName(fileHeader.getFileCreationNumber() + "-" + originatorID + ".txt");
     file.setBeautifyString(file.beautify());
     file.setFileCreationTimeEST(BmoFormatUtil.getCurrentDateTimeEST());
 
     return file;
   }
 
-  public BmoFileHeader createFileHeader(BmoAssignedClientValue clientValue) {
+  public BmoFileHeader createFileHeader(String originatorId) {
     int fileCreationNumber = 0;
 
-    if ( clientValue.getProduction() ) {
+    if ( this.clientValue.getProduction() ) {
       Count count = (Count) bmoEftFileDAO.inX(x).where(MLang.EQ(BmoEftFile.PRODUCTION, true)).select(new Count());
-      fileCreationNumber = (int) (count.getValue() + 1);
+      fileCreationNumber = (int) (this.clientValue.getFileCreationNumberOffset() + count.getValue() + 1);
     }
 
     BmoFileHeader fileHeader = new BmoFileHeader();
-    fileHeader.setOriginatorId(clientValue.getOriginatorId());
+    fileHeader.setOriginatorId(originatorId);
     fileHeader.setFileCreationNumber(fileCreationNumber);
-    fileHeader.setDestinationDataCentreCode(clientValue.getDestinationDataCentre());
+    fileHeader.setDestinationDataCentreCode(this.clientValue.getDestinationDataCentre());
     fileHeader.setFileCreationDate(BmoFormatUtil.getCurrentJulianDateEST());
     return fileHeader;
   }
 
-  public BmoBatchRecord createBatchRecord(List<Transaction> transactions, BmoAssignedClientValue clientValue) {
+  public BmoBatchRecord createBatchRecord(List<Transaction> transactions) {
     if ( transactions == null || transactions.size() == 0 ) {
       return null;
     }
@@ -160,10 +161,10 @@ public class BmoEftFileGenerator {
       batchHeader.setBatchPaymentType(type);
       batchHeader.setTransactionTypeCode(430);
       batchHeader.setPayableDate(BmoFormatUtil.getCurrentJulianDateEST());
-      batchHeader.setOriginatorShortName(clientValue.getOriginatorShortName());
-      batchHeader.setOriginatorLongName(clientValue.getOriginatorLongName());
-      batchHeader.setInstitutionIdForReturns(clientValue.getInstitutionIdForReturns());
-      batchHeader.setAccountNumberForReturns(clientValue.getAccountNumberForReturns());
+      batchHeader.setOriginatorShortName(this.clientValue.getOriginatorShortName());
+      batchHeader.setOriginatorLongName(this.clientValue.getOriginatorLongName());
+      batchHeader.setInstitutionIdForReturns(this.clientValue.getInstitutionIdForReturns());
+      batchHeader.setAccountNumberForReturns(this.clientValue.getAccountNumberForReturns());
 
       /**
        * batch details

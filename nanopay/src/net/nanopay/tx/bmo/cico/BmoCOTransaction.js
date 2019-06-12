@@ -15,8 +15,8 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'completionTime',
-      class: 'Long'
+      name: 'CompletedTimeEST',
+      class: 'String'
     },
     {
       name: 'transactionHistory',
@@ -66,7 +66,7 @@ foam.CLASS({
       javaCode: `
         super.limitedCopyFrom(other);
         setTransactionHistory( ((BmoCOTransaction) other).getTransactionHistory() );
-        setCompletionTime(((BmoCOTransaction) other).getCompletionTime() );
+        setCompletedTimeEST(((BmoCOTransaction) other).getCompletedTimeEST() );
         setPotentiallyUndelivered( ((BmoCOTransaction) other).getPotentiallyUndelivered() );
         setBmoReferenceNumber( ((BmoCITransaction) other).getBmoReferenceNumber() );
         setBmoFileCreationNumber( ((BmoCITransaction) other).getBmoFileCreationNumber() );
