@@ -30,9 +30,7 @@ declare -a sources=(
 lines=`cat ${IN_FILE:-/dev/stdin}`
 for file in $lines; do
     for s in ${sources[*]}; do
-        for f in $(find $s -name "$file" -o -name "${file}.jrl"); do
-            echo "$f"
-        done
+        find $s -name "$file" -o -name "${file}.jrl"
     done
 done
 
