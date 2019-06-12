@@ -86,11 +86,11 @@ public class SecurefactRequestGenerator {
     Address userAddress = user.getAddress();
     String address = userAddress.getAddress();
     if (userAddress == null
-      || SafetyUtil.isEmpty(userAddress.getAddress())
+      || SafetyUtil.isEmpty(address)
     ) {
       throw new IllegalStateException("User address can't be blank");
     }
-    if ( ! userAddress.getSuite().isEmpty() ) {
+    if ( ! SafetyUtil.isEmpty(userAddress.getSuite()) ) {
       address = userAddress.getSuite() + " - " + userAddress.getAddress();
     }
     return new SIDniAddress[] {
