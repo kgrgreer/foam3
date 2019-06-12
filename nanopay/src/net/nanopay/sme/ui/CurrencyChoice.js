@@ -192,8 +192,14 @@ foam.CLASS({
   listeners: [
     {
       name: 'onClick',
-      code: function() {
+      code: function(e) {
         var self = this;
+        if (
+          mode === foam.u2.DisplayMode.DISABLED ||
+          mode === foam.u2.DisplayMode.RO
+        ) {
+          e.preventDefault();
+        }
 
         this.optionPopup_ = this.View.create({});
 

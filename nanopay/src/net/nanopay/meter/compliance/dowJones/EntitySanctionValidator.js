@@ -42,6 +42,7 @@ foam.CLASS({
                 .setDaoKey("localUserDAO")
                 .setCauseId(response.getId())
                 .setCauseDaoKey("dowJonesResponseDAO")
+                .setClassification("Validate Entity Using Down Jones")
                 .setMatches(response.getResponseBody().getMatches())
                 .build());
           }

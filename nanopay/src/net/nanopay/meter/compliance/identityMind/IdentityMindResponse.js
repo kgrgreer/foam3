@@ -4,9 +4,8 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'apiName',
-    'statusCode',
     'entityId',
+    'apiName',
     'frp',
     'res'
   ],
@@ -19,7 +18,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 50
     },
     {
       class: 'String',
@@ -27,7 +27,8 @@ foam.CLASS({
     },
     {
       class: 'Object',
-      name: 'entityId'
+      name: 'entityId',
+      tableWidth: 100
     },
     {
       class: 'Int',

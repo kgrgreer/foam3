@@ -21,6 +21,14 @@ foam.CLASS({
       </record>
   `,
 
+  tableColumns: [
+    'id',
+    'Country',
+    'LastName',
+    'GivenName',
+    'DateOfBirth',
+  ],
+
   properties: [
     {
       class: 'Long',
