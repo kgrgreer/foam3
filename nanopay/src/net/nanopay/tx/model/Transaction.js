@@ -85,6 +85,31 @@ foam.CLASS({
     'completionDate'
   ],
 
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Pending',
+      predicateFactory: function(e) {
+        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.PENDING);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Completed',
+      predicateFactory: function(e) {
+        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      }
+    }
+  ],
+
+
   // relationships: parent, children
 
   properties: [
