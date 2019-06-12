@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
@@ -49,8 +50,12 @@ foam.CLASS({
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), document.getId(), businessOnboarding.getDualPartyAgreement());
         }
 
+        Session session = x.get(Session.class);
+        if ( session != null ) {
+          businessOnboarding.setRemoteHost(session.getRemoteHost());
+        }
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
-          return getDelegate().put_(x, obj);
+          return getDelegate().put_(x, businessOnboarding);
         }
 
         businessOnboarding.validate(x);
@@ -100,6 +105,7 @@ foam.CLASS({
           SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
           suggestedUserTransactionInfo.setBaseCurrency("CAD");
           suggestedUserTransactionInfo.setAnnualRevenue(businessOnboarding.getAnnualRevenue());
+          suggestedUserTransactionInfo.setAnnualTransactionFrequency(businessOnboarding.getAnnualTransactionFrequency());
           suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
           suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
           suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
@@ -153,7 +159,7 @@ foam.CLASS({
           businessInvitationDAO.put(invitation);
         }
 
-        return getDelegate().put_(x, obj);
+        return getDelegate().put_(x, businessOnboarding);
       `
     }
   ]

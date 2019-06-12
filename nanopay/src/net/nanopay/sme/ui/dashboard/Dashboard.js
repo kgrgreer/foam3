@@ -7,30 +7,39 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
+    'net.nanopay.account.Account',
     'net.nanopay.accounting.AccountingErrorCodes',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.USBankAccount',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
+    'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
   imports: [
     'auth',
+    'accountingIntegrationUtil',
+    'agent',
+    'businessOnboardingDAO',
+    'businessInvitationDAO',
     'ctrl',
     'group',
     'invoiceDAO',
     'notificationDAO',
     'pushMenu',
     'stack',
-    'user',
-    'xeroService',
     'quickbooksService',
-    'accountingIntegrationUtil'
+    'user',
+    'userDAO',
+    'xeroService'
   ],
 
   exports: [
@@ -81,16 +90,12 @@ foam.CLASS({
       class: 'Int',
       name: 'countRequiresApproval',
       factory: function() {
-        this.isUserAbleToPay$.map((result) => {
-        if ( result ) {
-          this.user.expenses
-            .where(
-              this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
-            .select(this.COUNT()).then((c) => {
-              this.countRequiresApproval = c.value;
-            });
-        }
-        });
+        this.user.expenses
+          .where(
+            this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
+          .select(this.COUNT()).then((c) => {
+            this.countRequiresApproval = c.value;
+          });
         return 0;
       }
     },
@@ -128,14 +133,6 @@ foam.CLASS({
       name: 'actionsCheck',
       expression: function(countRequiresApproval, countOverdueAndUpcoming, countDepositPayment) {
         return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'isUserAbleToPay',
-      documentation: `True if the user has permission to make payments on behalf of the business.`,
-      factory: function() {
-        this.checkGroupPermissionToPay();
       }
     },
     {
@@ -205,148 +202,178 @@ foam.CLASS({
         })
         return 0;
       }
-    }
+    },
+    'bankAccount',
+    'userHasPermissionsForAccounting',
+    'businessOnboarding',
+    'onboardingStatus'
   ],
 
   methods: [
+    async function getUserAccounts() {
+      await this.user.accounts
+        .where(
+          this.AND(
+            this.OR(
+              this.EQ(this.Account.TYPE, this.BankAccount.name),
+              this.EQ(this.Account.TYPE, this.CABankAccount.name),
+              this.EQ(this.Account.TYPE, this.USBankAccount.name)
+            ), 
+            this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED)
+          )
+        ).select()
+        .then((sink) => {
+          this.bankAccount = sink.array[0];
+        });
+      this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
+      this.businessOnboarding = await this.businessOnboardingDAO.find(this.agent.id);
+      this.onboardingStatus = this.user.onboarded;
+    },
+
     function initE() {
       this.ctrl.bannerizeCompliance();
       this.SUPER();
-      var self = this;
-      var split = this.DashboardBorder.create();
-      var top = this.Element.create()
-        .start('h1')
-          .add(this.TITLE)
-        .end()
-        .tag({ class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard' }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
+      this.getUserAccounts().then(() => {
+        var self = this;
+        var split = this.DashboardBorder.create();
 
-      var topL = this.Element.create()
-        .start('h2')
-          .add(this.SUBTITLE1)
-        .end()
-        .start()
-          .show(this.actionsCheck$)
-          .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
-        .end()
-        .start()
-          .hide(this.actionsCheck$)
-          .tag(this.RequireActionView.create({
-            countRequiresApproval$: this.countRequiresApproval$,
-            countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
-            countDepositPayment$: this.countDepositPayment$,
-            isUserAbleToPay$: this.isUserAbleToPay$
-          }))
-        .end();
+        var top = this.Element.create()
+          .start('h1')
+            .add(this.TITLE)
+          .end()
+          .tag({ 
+            class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard',
+            bankAccount: this.bankAccount,
+            userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
+            userData: this.user,
+            businessOnboarding: this.businessOnboarding,
+            onboardingStatus: this.onboardingStatus
+          }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
 
-      var topR = this.Element.create()
-        .start()
-          .addClass(this.myClass('separate'))
+        var topL = this.Element.create()
           .start('h2')
-            .add(this.SUBTITLE2)
+            .add(this.SUBTITLE1)
           .end()
-          .start('span')
-            .addClass(this.myClass('clickable'))
-            .add(this.VIEW_ALL)
-            .on('click', function() {
-              self.pushMenu('sme.main.invoices.payables');
-            })
+          .start()
+            .show(this.actionsCheck$)
+            .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
           .end()
-        .end()
-        .start()
-          .show(this.payablesCount$.map((value) => value > 0))
-          .addClass('invoice-list-wrapper')
-          .select(this.myDAOPayables$proxy, (invoice) => {
-            return this.E().start({
-              class: 'net.nanopay.sme.ui.InvoiceRowView',
-              data: invoice,
-              notificationDiv: this
+          .start()
+            .hide(this.actionsCheck$)
+            .tag(this.RequireActionView.create({
+              countRequiresApproval$: this.countRequiresApproval$,
+              countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
+              countDepositPayment$: this.countDepositPayment$
+            }))
+          .end();
 
-            })
-              .on('click', async () => {
-                let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
-                if ( updatedInvoice === null || updatedInvoice === undefined ) return;
-                this.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceOverview',
-                  invoice: updatedInvoice,
-                  isPayable: true
-                });
-              })
-            .end();
-          })
-        .end()
-        .start()
-          .hide(this.payablesCount$.map((value) => value > 0))
-          .addClass('empty-state').add(this.NO_RECENT_PAYABLES)
-        .end();
-
-      var botL = this.Element.create()
-        .start('h2')
-          .add(this.SUBTITLE3)
-        .end()
-        .start()
-          .show(this.notificationsCount$.map((value) => value > 0))
-          .select(this.myDaoNotification$proxy, function(notif) {
-            return this.E().start({
-              class: 'net.nanopay.sme.ui.dashboard.NotificationDashboardView',
-              data: notif
-            })
+        var topR = this.Element.create()
+          .start()
+            .addClass(this.myClass('separate'))
+            .start('h2')
+              .add(this.SUBTITLE2)
+            .end()
+            .start('span')
+              .addClass(this.myClass('clickable'))
+              .add(this.VIEW_ALL)
               .on('click', function() {
-                // Do something with the notification if you want.
+                self.pushMenu('sme.main.invoices.payables');
               })
-            .end();
-          })
-        .end()
-        .start()
-          .hide(this.notificationsCount$.map((value) => value > 0))
-          .addClass('empty-state').add(this.NO_LATEST_ACTIVITY)
-        .end();
+            .end()
+          .end()
+          .start()
+            .show(this.payablesCount$.map((value) => value > 0))
+            .addClass('invoice-list-wrapper')
+            .select(this.myDAOPayables$proxy, (invoice) => {
+              return this.E().start({
+                class: 'net.nanopay.sme.ui.InvoiceRowView',
+                data: invoice,
+                notificationDiv: this
 
-      var botR = this.Element.create()
-        .start()
-          .addClass(this.myClass('separate'))
+              })
+                .on('click', async () => {
+                  let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+                  if ( updatedInvoice === null || updatedInvoice === undefined ) return;
+                  this.stack.push({
+                    class: 'net.nanopay.sme.ui.InvoiceOverview',
+                    invoice: updatedInvoice,
+                    isPayable: true
+                  });
+                })
+              .end();
+            })
+          .end()
+          .start()
+            .hide(this.payablesCount$.map((value) => value > 0))
+            .addClass('empty-state').add(this.NO_RECENT_PAYABLES)
+          .end();
+
+        var botL = this.Element.create()
           .start('h2')
-            .add(this.SUBTITLE4)
+            .add(this.SUBTITLE3)
           .end()
-          .start('span')
-            .addClass(this.myClass('clickable'))
-            .add(this.VIEW_ALL)
-            .on('click', function() {
-              self.pushMenu('sme.main.invoices.receivables');
-            })
-          .end()
-        .end()
-        .start()
-          .show(this.receivablesCount$.map((value) => value > 0))
-          .addClass('invoice-list-wrapper')
-          .select(this.myDAOReceivables$proxy, (invoice) => {
-            return this.E().start({
-              class: 'net.nanopay.sme.ui.InvoiceRowView',
-              data: invoice
-            })
-              .on('click', () => {
-                this.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceOverview',
-                  invoice: invoice
-                });
+          .start()
+          .show(this.notificationsCount$.map((value) => value > 0))
+            .select(this.myDaoNotification$proxy, function(notif) {
+              return this.E().start({
+                class: 'net.nanopay.sme.ui.dashboard.NotificationDashboardView',
+                data: notif
               })
-            .end();
-          })
-        .end()
-        .start()
-          .hide(this.receivablesCount$.map((value) => value > 0))
-          .addClass('empty-state').add(this.NO_RECENT_RECEIVABLES)
-        .end();
+                .on('click', function() {
+                  // Do something with the notification if you want.
+                })
+              .end();
+            })
+            .end()
+            .start()
+              .hide(this.notificationsCount$.map((value) => value > 0))
+              .addClass('empty-state').add(this.NO_LATEST_ACTIVITY)
+          .end();
 
-      split.topButtons.add(top);
-      split.leftTopPanel.add(topL);
-      split.leftBottomPanel.add(botL);
-      split.rightTopPanel.add(topR);
-      split.rightBottomPanel.add(botR);
+        var botR = this.Element.create()
+          .start()
+            .addClass(this.myClass('separate'))
+            .start('h2')
+              .add(this.SUBTITLE4)
+            .end()
+            .start('span')
+              .addClass(this.myClass('clickable'))
+              .add(this.VIEW_ALL)
+              .on('click', function() {
+                self.pushMenu('sme.main.invoices.receivables');
+              })
+            .end()
+          .end()
+          .start()
+            .show(this.receivablesCount$.map((value) => value > 0))
+            .addClass('invoice-list-wrapper')
+            .select(this.myDAOReceivables$proxy, (invoice) => {
+              return this.E().start({
+                class: 'net.nanopay.sme.ui.InvoiceRowView',
+                data: invoice
+              })
+                .on('click', () => {
+                  this.stack.push({
+                    class: 'net.nanopay.sme.ui.InvoiceOverview',
+                    invoice: invoice
+                  });
+                })
+              .end();
+            })
+          .end()
+          .start()
+            .hide(this.receivablesCount$.map((value) => value > 0))
+            .addClass('empty-state').add(this.NO_RECENT_RECEIVABLES)
+          .end();
 
-      this.addClass(this.myClass()).add(split).end();
-    },
-    async function checkGroupPermissionToPay() {
-      this.isUserAbleToPay = await this.auth.check(this.user, 'invoice.pay');
+        split.topButtons.add(top);
+        split.leftTopPanel.add(topL);
+        split.leftBottomPanel.add(botL);
+        split.rightTopPanel.add(topR);
+        split.rightBottomPanel.add(botR);
+
+        this.addClass(this.myClass()).add(split).end();
+      })
     }
   ]
 });

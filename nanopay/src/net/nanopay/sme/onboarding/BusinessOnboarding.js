@@ -134,7 +134,9 @@ foam.CLASS({
   tableColumns: ['userId', 'status'],
 
   implements: [
-    'foam.nanos.auth.Authorizable'
+    'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.LastModifiedAware'
   ],
 
   documentation: `Multifunctional model used for business onboarding`,
@@ -299,6 +301,20 @@ foam.CLASS({
       }
     },
     {
+      documentation: 'Creation date.',
+      name: 'created',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
+      documentation: 'Last modified date.',
+      name: 'lastModified',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
       class: 'String',
       name: 'firstName',
       flags: ['web'],
@@ -314,7 +330,11 @@ foam.CLASS({
       section: 'adminReferenceSection',
       minLength: 1
     },
-
+    {
+      class: 'String',
+      name: 'remoteHost',
+      section: 'adminReferenceSection'
+    },
     {
       name: 'welcome',
       section: 'gettingStartedSection',
@@ -401,10 +421,26 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'homeAddressSection',
-      view: {
-        class: 'net.nanopay.sme.ui.AddressView'
+      view: function(args, X) {
+        // Temporarily only allow businesses in Canada to sign up.
+        var m = foam.mlang.Expressions.create();
+        return {
+          class: 'net.nanopay.sme.ui.AddressView',
+          customCountryDAO: X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA'))
+        };
       },
       validationPredicates: [
+        {
+          // Temporarily only allow businesses in Canada to sign up.
+          args: ['signingOfficer', 'address', 'address$countryId', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA')
+            );
+          },
+          errorString: 'Ablii does not currently support businesses outside of Canada. We are working hard to change this! If you are based outside of Canada, check back for updates.'
+        },
         {
           args: ['signingOfficer', 'address', 'address$regionId', 'address$errors_'],
           predicateFactory: function(e) {
@@ -464,10 +500,26 @@ foam.CLASS({
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
-      view: {
-        class: 'net.nanopay.sme.ui.AddressView',
+      view: function(args, X) {
+        // Temporarily only allow businesses in Canada to sign up.
+        var m = foam.mlang.Expressions.create();
+        return {
+          class: 'net.nanopay.sme.ui.AddressView',
+          customCountryDAO: X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA'))
+        };
       },
       validationPredicates: [
+        {
+          // Temporarily only allow businesses in Canada to sign up.
+          args: ['signingOfficer', 'businessAddress', 'businessAddress$countryId', 'businessAddress$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA')
+            );
+          },
+          errorString: 'Ablii does not currently support businesses outside of Canada. We are working hard to change this! If you are based outside of Canada, check back for updates.'
+        },
         {
           args: ['signingOfficer', 'businessAddress', 'businessAddress$regionId', 'businessAddress$errors_'],
           predicateFactory: function(e) {

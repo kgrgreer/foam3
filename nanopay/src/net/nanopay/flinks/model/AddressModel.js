@@ -8,8 +8,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'CivicAddress',
-      validateObj: function(addressLine) {
-        if ( ! addressLine || addressLine > 70 ) {
+      validateObj: function(CivicAddress) {
+        if ( ! CivicAddress || CivicAddress > 70 ) {
           return this.AddressError;
         }
       }
@@ -17,8 +17,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'City',
-      validateObj: function(city) {
-        if ( ! city || city.length > 35 ) {
+      validateObj: function(City) {
+        if ( ! City || City.length > 35 ) {
           return this.AddressCityError;
         }
       }
@@ -26,8 +26,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'Province',
-      validateObj: function(province) {
-        if ( ! province || province.name.length > 35 ) {
+      validateObj: function(Province) {
+        if ( ! Province || ! Province.name || Province.name.length > 35 ) {
           return this.AddressProvinceError;
         }
       }
@@ -35,10 +35,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'PostalCode',
-      validateObj: function(postalCode) {
+      validateObj: function(PostalCode) {
         var postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
 
-        if ( ! postalCodeRegex.test(postalCode) ) {
+        if ( ! postalCodeRegex.test(PostalCode) ) {
           return this.AddressPostalCodeError;
         }
       }

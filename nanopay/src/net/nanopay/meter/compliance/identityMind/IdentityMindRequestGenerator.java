@@ -109,12 +109,20 @@ public class IdentityMindRequestGenerator {
   }
 
   public static IdentityMindRequest getTransferRequest(X x, Transaction transaction) {
+    DAO localUserDAO = (DAO) x.get("localUserDAO");
     Account sourceAccount = transaction.findSourceAccount(x);
     Account destinationAccount = transaction.findDestinationAccount(x);
     // The owner of destination account is a business but we need to know
     // the person who actually sends the payment therefore uses agent as sender.
     User sender = (User) x.get("agent");
-    DAO localUserDAO = (DAO) x.get("localUserDAO");
+    if ( sender == null ) {
+      // REVIEW: it is not always the case that a user is logged in when
+      // Transactions are created. Also, this logic fails the transaction
+      // pipeline during non-ablii tests as they have no knowledge of
+      // user/agent setup.
+      ((Logger) x.get("logger")).warning("IdentityMindRequestGenerator.getTransferRequest agent not found in context, using sourceAccount owner.");
+      sender = (User) localUserDAO.inX(x).find(sourceAccount.getOwner());
+    }
     User receiver = (User) localUserDAO.inX(x).find(destinationAccount.getOwner());
 
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
@@ -135,7 +143,8 @@ public class IdentityMindRequestGenerator {
     request.setTags(tags);
 
     // Sender information
-    request.setMerchantAid(getUUID(sourceAccount.findOwner(x)));
+    User owner = (User) localUserDAO.find(sourceAccount.getOwner());
+    request.setMerchantAid(getUUID(owner));
     request.setMan(Long.toString(sender.getId()));
     request.setPach(getBankAccountHash(x, (BankAccount) sourceAccount));
     request.setBfn(prepareString(sender.getFirstName()));
