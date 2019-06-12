@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
@@ -167,7 +168,8 @@ public class BmoSendFileCron implements ContextAgent {
 
       if ( readyToSend != null ) {
         try {
-          FileUtils.moveFile(readyToSend, new File(BmoEftFileGenerator.SEND_FAILED + readyToSend.getName()));
+          FileUtils.moveFile(readyToSend, new File(BmoEftFileGenerator.SEND_FAILED +
+            readyToSend.getName() + "_" + Instant.now().toEpochMilli()));
         } catch (IOException ex) {
           ex.printStackTrace();
         }
