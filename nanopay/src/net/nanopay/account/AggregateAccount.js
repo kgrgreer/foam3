@@ -48,9 +48,8 @@ foam.CLASS({
                 list1.push(childsSinkArray[i]);
             }
           }
-          if ( ! accounts.includes(next) )
-            accounts.push(next)
-          list1 = list1.filter(val => val !== next)
+          if ( ! accounts.includes(next) ) accounts.push(next);
+          list1 = list1.filter(val => val !== next);
         }
 
         for ( var i = 0; i < accounts.length; i++ ) {
@@ -94,6 +93,7 @@ foam.CLASS({
 
           long balance = 0;
           for(Object obj: childrenList) {
+            if ( obj instanceof ShadowAccount )
             Account child = (Account) obj;
             long childBalance = (Long) child.findBalance(x);
             if( ! getDenomination().equals(child.getDenomination()) )
