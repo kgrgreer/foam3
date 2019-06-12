@@ -31,6 +31,7 @@ foam.CLASS({
                   .setObjId(transaction.getId())
                   .setDaoKey("localTransactionDAO")
                   .setCauseId(response.getId())
+                  .setClassification("Validate B2B Transaction")
                   .setCauseDaoKey("identityMindResponseDAO")
                   .build()
               );

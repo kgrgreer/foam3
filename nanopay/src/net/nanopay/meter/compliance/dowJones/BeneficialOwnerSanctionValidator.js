@@ -49,6 +49,7 @@ foam.CLASS({
                     .setDaoKey("beneficialOwnerDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
+                    .setClassification("Validate Beneficial Owner Using Dow Jones")
                     .setMatches(response.getResponseBody().getMatches())
                     .build());
               }

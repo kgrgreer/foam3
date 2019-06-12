@@ -11,6 +11,13 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  javaImports: [
+    'foam.nanos.logger.Logger',
+    'foam.core.X',
+    'foam.core.FObject',
+    'foam.dao.DAO'
+  ],
+
   requires: [
     'foam.dao.AbstractDAO',
     'net.nanopay.approval.ApprovalStatus'
@@ -42,7 +49,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'approver',
       visibility: 'RO',
-      documentation: 'the user that is requested for approval.',
+      documentation: `The user that is requested for approval. When set, "group" property is ignored.`,
       tableCellFormatter: function(approver) {
         let self = this;
         this.__subSubContext__.userDAO.find(approver).then((user)=> {
@@ -64,19 +71,70 @@ foam.CLASS({
       class: 'String',
       name: 'daoKey',
       visibility: 'RO',
-      documentation: 'dao where the object can be found(based on objId).'
+      documentation: `Used internally in approvalDAO to point where requested object can be found.
+      Should not be used to retrieve approval requests for a given objects
+      since an object can have multiple requests of different nature.`
+    },
+    {
+      class: 'String',
+      name: 'classification',
+      documentation: `Should be unique to a certain type of requests and created within a single rule.
+      For example "IdentityMind Business approval".
+      When retrieving approval requests from a dao, do not use daoKey, use classification instead:
+      mlang.AND(
+        EQ(ApprovalRequest.OBJ_ID, objectId),
+        EQ(ApprovalRequest.REQUEST_REFERENCE, "reference")
+      )`
+    },
+    {
+      class: 'Int',
+      name: 'points',
+      documentation: `Specific to each ApprovalRequest object.
+      Determines the weight of the approved request depending on the approver's role.
+      Future: populated in approvalRequestDAO pipeline based on configurations.
+      Currentely populated as 1.`
+    },
+    {
+      class: 'Int',
+      name: 'requiredPoints',
+      value: 1,
+      documentation: `Defines how many approvers required and approvers' ranks.
+      E.g. when set to 10:
+      1) 10 approval requests with "points" set to 1.
+      2) 2 approval requests with "points" set to 3 and 1 approval request with "points" set to 5.
+      etc.
+      Deafults to 1 meaning only one approval of any approver rank is required by default.`
+    },
+    {
+      class: 'Int',
+      name: 'requiredRejectedPoints',
+      value: 1
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Group',
+      name: 'group',
+      documentation: `When set, each user in the group will receive a request for approval.
+      If "approver" property is set, "group" property is ignored.`
     },
     {
       class: 'Enum',
       of: 'net.nanopay.approval.ApprovalStatus',
-      name: 'status'
+      name: 'status',
+      value: 'REQUESTED',
+      javaFactory: 'return net.nanopay.approval.ApprovalStatus.REQUESTED;',
     },
     {
       class: 'String',
       name: 'memo',
       label: 'Notes',
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 },
-      documentation: 'description of the request.'
+      documentation: 'Meant to be used for explanation on why request was approved/rejected'
+    },
+    {
+      class: 'String',
+      name: 'description',
+      documentation: `Approval request description.`
     },
     {
       class: 'String',
@@ -108,6 +166,30 @@ foam.CLASS({
     }
   ],
 
+  methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `Logger logger = (Logger) x.get("logger");
+DAO dao = (DAO) x.get(getDaoKey());
+if ( dao == null ) {
+  logger.error("Invalid dao key for the approval request object.");
+  throw new RuntimeException("Invalid dao key for the approval request object.");
+}
+FObject obj = dao.inX(x).find(getObjId());
+if ( obj == null ) {
+  logger.error("Invalid object id.");
+  throw new RuntimeException("Invalid object id.");
+}
+      `
+    }
+  ],
+
   actions: [
     {
       name: 'approve',
@@ -126,6 +208,7 @@ foam.CLASS({
         this.approvalRequestDAO.put(this);
         this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
       },
+
     }
   ]
 });
