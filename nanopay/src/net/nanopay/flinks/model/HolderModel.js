@@ -20,10 +20,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'Email',
-      validateObj: function(email) {
+      validateObj: function(Email) {
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        if ( ! emailRegex.test(email) ) {
+        if ( ! emailRegex.test(Email) ) {
           return this.EmailError;
         }
       }
@@ -31,10 +31,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'PhoneNumber',
-      validateObj: function(phoneNumber) {
-        var hasOkLength = phoneNumber.length >= 10 && phoneNumber.length <= 30;
+      validateObj: function(PhoneNumber) {
+        var hasOkLength = PhoneNumber.length >= 10 && PhoneNumber.length <= 30;
 
-        if ( ! phoneNumber || ! hasOkLength ) {
+        if ( ! PhoneNumber || ! hasOkLength ) {
           return this.PhoneError;
         }
       }

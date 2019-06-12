@@ -31,6 +31,7 @@ foam.CLASS({
                 .setDaoKey("localUserDAO")
                 .setCauseId(response.getId())
                 .setCauseDaoKey("securefactSIDniDAO")
+                .setClassification("Validate User Using SecureFact")
                 .build()
             );
           }
