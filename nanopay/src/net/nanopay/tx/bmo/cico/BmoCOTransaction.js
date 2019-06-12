@@ -68,9 +68,9 @@ foam.CLASS({
         setTransactionHistory( ((BmoCOTransaction) other).getTransactionHistory() );
         setCompletedTimeEST(((BmoCOTransaction) other).getCompletedTimeEST() );
         setPotentiallyUndelivered( ((BmoCOTransaction) other).getPotentiallyUndelivered() );
-        setBmoReferenceNumber( ((BmoCITransaction) other).getBmoReferenceNumber() );
-        setBmoFileCreationNumber( ((BmoCITransaction) other).getBmoFileCreationNumber() );
-        setRejectType( ((BmoCITransaction) other).getRejectType() );
+        setBmoReferenceNumber( ((BmoCOTransaction) other).getBmoReferenceNumber() );
+        setBmoFileCreationNumber( ((BmoCOTransaction) other).getBmoFileCreationNumber() );
+        setRejectType( ((BmoCOTransaction) other).getRejectType() );
       `
     }
   ]
