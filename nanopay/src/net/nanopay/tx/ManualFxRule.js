@@ -43,8 +43,9 @@ foam.CLASS({
         )
         .select(sink);
       List list = ((ArraySink) sink).getArray();
+      
+      // approval request with rate exists
       if ( list != null && list.size() > 0 ) {
-        // approval request with rate exists
         KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) list.get(0);
         double rate = request.getFxRate();
         if ( rate <= 0 ) {

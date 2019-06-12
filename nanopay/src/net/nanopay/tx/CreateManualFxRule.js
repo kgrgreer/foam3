@@ -32,7 +32,7 @@ foam.CLASS({
           new ManualFxApprovalRequest.Builder(x)
             .setDaoKey("transactionDAO")
             .setObjId(kotakFxTransaction.getId())
-            .setApprover("payment-ops")
+            .setApprover(1348)
             .setStatus(ApprovalStatus.REQUESTED).build());
       }
       `

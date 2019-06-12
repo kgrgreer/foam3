@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'AddContactStepThree',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   documentation: `
     This is the third step of the adding contact flow to allow user to 
     add related business address for inviting a contact.
@@ -11,8 +15,10 @@ foam.CLASS({
   imports: [
     'accountDAO as bankAccountDAO',
     'addContact',
+    'auth',
     'caAccount',
     'closeDialog',
+    'countryDAO',
     'ctrl',
     'isCABank',
     'isConnecting',
@@ -22,7 +28,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Country',
     'net.nanopay.contacts.Contact'
   ],
 
@@ -97,7 +105,19 @@ foam.CLASS({
           .add(this.INSTRUCTION)
         .end()
         .startContext({ data: this.wizard.data })
-          .tag(this.wizard.data.BUSINESS_ADDRESS)
+          .tag(this.wizard.data.BUSINESS_ADDRESS, {
+            customCountryDAO: this.PromisedDAO.create({
+              promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
+                var q = hasPermission
+                  ? this.OR(
+                      this.EQ(this.Country.ID, 'CA'),
+                      this.EQ(this.Country.ID, 'US')
+                    )
+                  : this.EQ(this.Country.ID, 'CA');
+                return this.countryDAO.where(q);
+              })
+            })
+          })
         .endContext()
         .tag({
           class: 'net.nanopay.sme.ui.wizardModal.WizardModalNavigationBar',

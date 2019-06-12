@@ -2,9 +2,6 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
-  requires: [
-    'foam.u2.layout.Item'
-  ],
   css: `
     ^ {
       display: flex;
@@ -137,13 +134,16 @@ foam.CLASS({
               });
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })
-            .start(self.Cols).addClass(this.myClass('footer'))
-              .tag(this.PREV, {
-                buttonStyle: 'TERTIARY',
-                icon: '/images/ablii/gobackarrow-grey.svg',
-                size: 'LARGE'
-              })
-              .start(this.Item)
+            .start(self.Cols)
+              .addClass(this.myClass('footer'))
+              .start()
+                .tag(this.PREV, {
+                  buttonStyle: 'TERTIARY',
+                  icon: '/images/ablii/gobackarrow-grey.svg',
+                  size: 'LARGE'
+                })
+              .end()
+              .start()
                 .tag(this.NEXT, { size: 'LARGE' })
                 .tag(this.SUBMIT, { size: 'LARGE' })
               .end()

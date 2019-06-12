@@ -34,7 +34,6 @@ var classes = [
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
   'net.nanopay.tx.ruler.UserTransactionLimitRule',
-  'net.nanopay.tx.ruler.BusinessTransactionLimitRule',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -128,6 +127,7 @@ var classes = [
   // Contacts
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
+  'net.nanopay.contacts.ContactMigrationRule',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -492,6 +492,7 @@ var classes = [
   'net.nanopay.meter.compliance.NanopayComplianceService',
   'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
+  'net.nanopay.meter.compliance.ComplianceItem',
 
   // ruler
   'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
@@ -518,6 +519,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
+  'net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',

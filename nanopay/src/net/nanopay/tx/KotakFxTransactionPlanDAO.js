@@ -28,12 +28,12 @@ foam.CLASS({
     {
       type: 'Long',
       name: 'KOTAK_OWNER_CA_ID',
-      value: 8006
+      value: 1020
     },
     {
       type: 'Long',
       name: 'KOTAK_PARTNER_IN_ID',
-      value: 8007
+      value: 1021
     }
   ],
 
