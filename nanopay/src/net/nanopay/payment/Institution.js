@@ -6,7 +6,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 50
     },
     {
       class: 'String',

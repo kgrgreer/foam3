@@ -157,6 +157,9 @@ foam.CLASS({
       var emailDisplayMode = this.disableEmail ?
       foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
+      var searchParams = new URLSearchParams(location.search);
+      this.email = searchParams.get('email');
+
       var left = this.Element.create()
         .addClass('cover-img-block')
         .start('img')

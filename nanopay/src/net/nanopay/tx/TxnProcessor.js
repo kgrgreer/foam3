@@ -5,6 +5,10 @@ foam.CLASS({
 
   searchColumns: [],
 
+  tableColumns: [
+    'id', 'name', 'user', 'enabled'
+  ],
+
   constants: [
     {
       type: 'String',
