@@ -75,7 +75,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
     try {
       // create a temporary folder to save files before zipping
-      FileUtils.forceMkdir(new File("/opt/nanopay/AFXReportsTemp/"));
+      FileUtils.forceMkdir(new File("/tmp/ComplianceReport/"));
 
       File[] signingOfficerReports = generateSigningOfficersReports(x, business);
       File[] signingOfficerIDs = getSigningOfficerIDs(x, business);
@@ -94,7 +94,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       downloadZipFile(x, business, srcFiles);
 
       // delete the temporary folder. Later if we want to archive those files, we can keep the folder.
-      FileUtils.deleteDirectory(new File("/opt/nanopay/AFXReportsTemp/"));
+      FileUtils.deleteDirectory(new File("/tmp/ComplianceReport/"));
     } catch (IOException e) {
       logger.error(e);
       try {
@@ -242,7 +242,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
 
-    String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]CompanyInfo.pdf";
+    String path = "/tmp/ComplianceReport/[" + businessName + "]CompanyInfo.pdf";
 
     try {
       Document document = new Document();
@@ -421,7 +421,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd, HH:mm:ss");
     String reportGeneratedDate = df.format(new Date());
 
-    String path = "/opt/nanopay/AFXReportsTemp/[" + business.getBusinessName() + "]SigningOfficer" + Long.toString(number) + ".pdf";
+    String path = "/tmp/ComplianceReport/[" + business.getBusinessName() + "]SigningOfficer" + Long.toString(number) + ".pdf";
 
     try {
       Document document = new Document();
@@ -483,7 +483,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     Logger logger = (Logger) x.get("logger");
 
     String businessName = business.getBusinessName();
-    String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwners.pdf";
+    String path = "/tmp/ComplianceReport/[" + businessName + "]BeneficialOwners.pdf";
 
     try {
       java.util.List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x).select(new ArraySink())).getArray();
@@ -575,7 +575,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       return null;
     }
 
-    String path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BankInfo.pdf";
+    String path = "/tmp/ComplianceReport/[" + businessName + "]BankInfo.pdf";
 
     try {
       Document document = new Document();
@@ -714,7 +714,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         String fileName = businessFile.getFilename();
         String fileType = fileName.substring(fileName.lastIndexOf("."));
 
-        path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BusinessDoc" + fileType;
+        path = "/tmp/ComplianceReport/[" + businessName + "]BusinessDoc" + fileType;
         OutputStream os = new FileOutputStream(path);
 
         blob.read(os, 0, size);
@@ -761,7 +761,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         String fileName = signingOfficerFile.getFilename();
         String fileType = fileName.substring(fileName.lastIndexOf("."));
 
-        path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]SigningOfficer" + Long.toString(number) + "ID" + fileType;
+        path = "/tmp/ComplianceReport/[" + businessName + "]SigningOfficer" + Long.toString(number) + "ID" + fileType;
         OutputStream os = new FileOutputStream(path);
 
         blob.read(os, 0, size);
@@ -796,7 +796,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         String fileName = beneficialOwnerFile.getFilename();
         String fileType = fileName.substring(fileName.lastIndexOf("."));
 
-        path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BeneficialOwnersDoc" + fileType;
+        path = "/tmp/ComplianceReport/[" + businessName + "]BeneficialOwnersDoc" + fileType;
         OutputStream os = new FileOutputStream(path);
 
         blob.read(os, 0, size);
@@ -846,7 +846,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
         String fileName = voidCheckImage.getFilename();
         String fileType = fileName.substring(fileName.lastIndexOf("."));
 
-        path = "/opt/nanopay/AFXReportsTemp/[" + businessName + "]BankAccountProof" + fileType;
+        path = "/tmp/ComplianceReport/[" + businessName + "]BankAccountProof" + fileType;
         OutputStream os = new FileOutputStream(path);
 
         blob.read(os, 0, size);
