@@ -32,7 +32,7 @@ rm ${OUT_DIR}/*.0
 
 lines=`cat ${IN_FILE:-/dev/stdin}`
 for filePath in $lines; do
-  cat ${filePath} >> ${OUT_DIR}/"$(basename "${filePath%.*}")".0
+  cat ${filePath} >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
 done
 
 exit 0
