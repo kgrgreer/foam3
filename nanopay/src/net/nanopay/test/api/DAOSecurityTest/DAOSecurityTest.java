@@ -1,4 +1,4 @@
-package net.nanopay.scripts.DAOSecurityTest;
+package net.nanopay.test.api.DAOSecurityTest;
 
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
@@ -15,12 +15,22 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import net.nanopay.test.api.ApiTestBase;
+
+import foam.core.X;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.mlang.MLang;
+import foam.nanos.boot.NSpec;
+import foam.util.SafetyUtil;
+
 import static java.lang.System.exit;
 
-public class DAOSecurityTest {
+public class DAOSecurityTest extends ApiTestBase {
 
   private static final String USER_AGENT = "Mozilla/5.0";
 
+  // Helper class for holding results
   static class TestDAOFailed extends Exception {
     private String msgBody;
     private String response;
@@ -39,8 +49,8 @@ public class DAOSecurityTest {
     }
   }
 
-  private static boolean testDAO(String dao, String request) throws ParseException, IOException, TestDAOFailed {
-    String urlString = "http://localhost:8080/service/" + dao;
+  private boolean testDAO(X x, String dao, String request) throws ParseException, IOException, TestDAOFailed {
+    String urlString = getBaseUrl(x) + "/service/" + dao;
     URL url = new URL(urlString);
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
@@ -93,64 +103,67 @@ public class DAOSecurityTest {
 
     if ( ! sid.equals("foam.nanos.auth.AuthenticationException") ) {
       throw new TestDAOFailed(response.toString(), responseCode + "/" + responseMessage);
-    } else {
-      return true;
-    }
+    } 
+
+    // Successful (i.e. transaction failed with authentication exception)
+    return true;
   }
 
-  public static String runTest(String testBody, String services, List<String> ignores) {
-
+  private String getRequestString(String testBody) throws IOException {
     File file = new File(testBody);
-    FileInputStream fis;
-    byte[] data;
+    FileInputStream fis = new FileInputStream(file);
+    byte[] data = new byte[(int) file.length()];
+    fis.read(data);
+    fis.close();
+    return new String(data, StandardCharsets.UTF_8); 
+  }
 
+  // Run the test
+  public String runTest(X x, String testBody) {
+    List<String> ignores = new ArrayList<>();
+    return runTest(x, testBody, ignores);
+  }
+
+  // Run the test with a list of DAOs to ignore
+  public String runTest(X x, String testBody, List<String> ignores) {
+
+    DAO nspecDAO = (DAO) x.get("nSpecDAO");
+    List nspecs = ((ArraySink) nspecDAO.where(MLang.EQ(NSpec.SERVE, true)).select(new ArraySink())).getArray();
+
+    String request;
     try {
-      fis = new FileInputStream(file);
-      data = new byte[(int) file.length()];
-      fis.read(data);
-      fis.close();
+      request = getRequestString(testBody);
     } catch (IOException e) {
       e.printStackTrace();
       return e.getMessage();
     }
 
-    String request = new String(data, StandardCharsets.UTF_8);
-
-    List<String> lines = Collections.emptyList();
-
-    try {
-      lines = Files.readAllLines(Paths.get(services), StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    String pattern = "p\\((.*)\\)";
-    Pattern r = Pattern.compile(pattern);
-    JSONParser parser = new JSONParser();
-
     Map<String, String> failedDAOs = new HashMap<>();
 
-    for (String line : lines) {
-        Matcher m = r.matcher(line);
-        if (m.find()) {
-          try {
-            JSONObject jso = (JSONObject) parser.parse(m.group(1));
-            Boolean serve = (Boolean) jso.get("serve");
-            if ( serve != null && serve) {
-              String dao = (String) jso.get("name");
-              if ( ! dao.endsWith("DAO") || ignores.contains(dao) ) continue;
-              try {
-                testDAO(dao, request);
-              } catch (TestDAOFailed testDAOFailed) {
-                failedDAOs.put(dao, testDAOFailed.getMsgBody());
-              } catch (IOException e) {
-                e.printStackTrace();
-                failedDAOs.put(dao, "IOException: " + e.getMessage());
-              }
-            }
-          } catch (NullPointerException | ParseException e) {
-            e.printStackTrace();
-          }
+    for (Object obj : nspecs) {
+        NSpec nspec = (NSpec)obj;
+        
+        // Skip anything that is not a DAO
+        if (!nspec.getName().endsWith("DAO"))
+          continue;
+
+        // Skip anything in the ignores list
+        if (ignores.contains(nspec.getName()))
+          continue;
+        
+        // Test the DAO
+        try
+        {
+          testDAO(x, nspec.getName(), request);
+        }
+        catch (TestDAOFailed testDAOFailed) {
+          failedDAOs.put(nspec.getName(), testDAOFailed.getMsgBody());
+        } catch (IOException e) {
+          e.printStackTrace();
+          failedDAOs.put(nspec.getName(), "IOException: " + e.getMessage());
+        } catch (ParseException e) {
+          e.printStackTrace();
+          failedDAOs.put(nspec.getName(), "ParseException: " + e.getMessage());
         }
     }
 
@@ -162,9 +175,36 @@ public class DAOSecurityTest {
     return ret.toString();
   }
 
-  public static String runTest(String testBody, String services) {
-    List<String> ignores = new ArrayList<>();
-    return runTest(testBody, services, ignores);
-  }
+  // Run an individual test for debugging
+  public String runIndividualTest(X x, String testBody, String dao, boolean force)
+  {
+    String request;
+    try {
+      request = getRequestString(testBody);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return e.getMessage();
+    }
 
+    // Skip anything that is not a DAO
+    if (!dao.endsWith("DAO") && !force)
+      return "Not a DAO - Skipping";
+  
+    // Test the DAO
+    try
+    {
+      testDAO(x, dao, request);
+    }
+    catch (TestDAOFailed testDAOFailed) {
+      return testDAOFailed.getMsgBody();
+    } catch (IOException e) {
+      e.printStackTrace();
+      return e.getMessage();
+    } catch (ParseException e) {
+      e.printStackTrace();
+      return e.getMessage();
+    }
+
+    return "Success";
+  }
 }
