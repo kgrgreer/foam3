@@ -26,8 +26,6 @@ declare -a sources=(
  # "interac/src"
 )
 
-echo "${sources[@]}"
-
 while read -r file; do
     find ${sources[@]} -name "${file}" -o -name "${file}.jrl"
 done < "${IN_FILE:-/dev/stdin}"

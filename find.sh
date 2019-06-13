@@ -25,8 +25,6 @@ if [[ ! -d $OUT_DIR ]]; then
 fi
 mkdir -p "$OUT_DIR"
 
-# Sets varuables to lowercase
-
 echo "INFO :: $0 IN_FILE=${IN_FILE} OUT_DIR=${OUT_DIR}"
 
 # Delete current runtime journals
