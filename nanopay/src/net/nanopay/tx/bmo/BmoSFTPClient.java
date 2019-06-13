@@ -31,7 +31,7 @@ public class BmoSFTPClient {
   private StatefulSFTPClient statefulSFTPClient = null;
   private BmoSFTPCredential credential = null;
 
-  private static final String PATH = System.getenv("JOURNAL_HOME") + "/bmo_eft/";
+  private static final String PATH = System.getProperty("JOURNAL_HOME") + "/bmo_eft/";
   public static final String RECEIPT_DOWNLOAD_FOLDER = PATH + "/receipt/";
   public static final String REPORT_DOWNLOAD_FOLDER = PATH + "/report/";
 

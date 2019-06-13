@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class BmoReportProcessor {
 
-  private static final String PATH = System.getenv("JOURNAL_HOME") + "/bmo_eft/";
+  private static final String PATH = System.getProperty("JOURNAL_HOME") + "/bmo_eft/";
   private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
   private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
 
