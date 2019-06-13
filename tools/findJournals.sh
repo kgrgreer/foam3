@@ -29,7 +29,7 @@ declare -a sources=(
 echo "${sources[@]}"
 
 while read -r file; do
-    find ${sources[@]}  -name "${file}" -o -name "${file}.jrl"
+    find ${sources[@]} -name "${file}" -o -name "${file}.jrl"
 done < "${IN_FILE:-/dev/stdin}"
 
 exit 0
