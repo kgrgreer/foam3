@@ -94,6 +94,8 @@ function setup_jce {
 }
 
 function deploy_journals {
+    echo "INFO :: Deploying Journals"
+    
     # prepare journals
     cd "$PROJECT_HOME"
 

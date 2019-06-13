@@ -30,9 +30,8 @@ echo "INFO :: $0 IN_FILE=${IN_FILE} OUT_DIR=${OUT_DIR}"
 # Delete current runtime journals
 rm ${OUT_DIR}/*.0
 
-lines=`cat ${IN_FILE:-/dev/stdin}`
-for filePath in $lines; do
+while read -r filePath; do
   cat ${filePath} >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
-done
+done < ${IN_FILE:-/dev/stdin}
 
 exit 0
