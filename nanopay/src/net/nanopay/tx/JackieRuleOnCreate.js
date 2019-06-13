@@ -62,6 +62,7 @@ foam.CLASS({
             requestApproval(x, req);
           }
         });
+      }
       `
     }
   ]
