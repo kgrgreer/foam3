@@ -100,12 +100,12 @@ foam.CLASS({
         return this.Action.create({
           name: 'addBank',
           label: 'Add bank account',
-          code: async function() {
+          code: async function(X) {
             await self.checkAvailability();
             if ( ! self.availableCAD || ! self.availableUSD ) {
               self.ctrl.notify(self.SINGULAR_BANK, 'warning');
             } else {
-              self.stack.push({
+              X.controllerView.stack.push({
                 class: 'net.nanopay.bank.ui.BankPickCurrencyView',
                 usdAvailable: self.availableUSD,
                 cadAvailable: self.availableCAD
