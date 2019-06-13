@@ -33,6 +33,7 @@ foam.CLASS({
           this.User.LEGAL_NAME,
           this.User.EMAIL,
           this.User.STATUS,
+          this.User.COMPLIANCE,
           this.User.BIRTHDAY,
           this.User.PHONE_NUMBER,
           this.User.ADDRESS,

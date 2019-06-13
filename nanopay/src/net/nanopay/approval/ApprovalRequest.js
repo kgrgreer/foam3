@@ -29,12 +29,13 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'objId',
+    'refObj',
+    'referenceObj',
     'approver',
     'status',
     'memo',
     'approve',
-    'reject',
+    'reject'
   ],
 
   properties: [
@@ -163,6 +164,15 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
       visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'refObj',
+      transient: true,
+      expression: function(daoKey, objId){
+        return daoKey + ':' + objId;
+      },
+      hidden: true
     }
   ],
 
@@ -193,7 +203,7 @@ if ( obj == null ) {
   actions: [
     {
       name: 'approve',
-      label: 'Approve Request',
+      label: 'Approve',
       code: function() {
         this.status = this.ApprovalStatus.APPROVED;
         this.approvalRequestDAO.put(this);
@@ -202,13 +212,27 @@ if ( obj == null ) {
     },
     {
       name: 'reject',
-      label: 'Reject Request',
+      label: 'Reject',
       code: function() {
         this.status = this.ApprovalStatus.REJECTED;
         this.approvalRequestDAO.put(this);
         this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-      },
-
+      }
+    },
+    {
+      name: 'referenceObj',
+      label: 'View Ref',
+      code: function(approvalRequest) {
+        console.log(this.__context__);
+        var service = this.__context__[approvalRequest.data.daoKey];
+        // this.proxyOfDAO.delegate = service;
+        this.__context__.stack.push({
+          class: 'foam.comics.DAOUpdateControllerView',
+          detailView: 'foam.u2.DetailView',
+          key: approvalRequest.data.objId,
+          dao: service
+        }, this);
+      }
     }
   ]
 });
