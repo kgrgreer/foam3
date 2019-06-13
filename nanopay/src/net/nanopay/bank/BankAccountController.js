@@ -59,6 +59,15 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          columns: [
+            'name',
+            'flagImage',
+            'denomination',
+            'institution',
+            'branch',
+            'accountNumber',
+            'status'
+          ],
           contextMenuActions: [
             foam.core.Action.create({
               name: 'verifyAccount',
