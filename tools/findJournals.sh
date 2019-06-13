@@ -19,7 +19,6 @@ while getopts "I:J:" opt ; do
     esac
 done
 
-# Sets varuables to lowercase
 declare -a sources=(
   "foam2/src"
   "nanopay/src"
@@ -27,11 +26,10 @@ declare -a sources=(
  # "interac/src"
 )
 
-lines=`cat ${IN_FILE:-/dev/stdin}`
-for file in $lines; do
-    for s in ${sources[*]}; do
-        find $s -name "$file" -o -name "${file}.jrl"
-    done
-done
+echo "${sources[@]}"
+
+while read -r file; do
+    find ${sources[@]}  -name "${file}" -o -name "${file}.jrl"
+done < "${IN_FILE:-/dev/stdin}"
 
 exit 0
