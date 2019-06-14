@@ -31,10 +31,7 @@ foam.CLASS({
     { name: 'BUSINESS_NAME_LABEL', message: 'Registered business name' },
     { name: 'PHONE_LABEL', message: 'Business phone #' },
     { name: 'ADDRESS_LABEL', message: 'Business address' },
-    { name: 'WEBSITE_LABEL', message: 'Website' },
-    { name: 'REGISTRATION_NUMBER_LABEL', message: 'Business registration #' },
-    { name: 'REGISTRATION_AUTHORITY_LABEL', message: 'Registration authority' },
-    { name: 'REGISTRATION_DATE_LABEL', message: 'Registration date' }
+    { name: 'WEBSITE_LABEL', message: 'Website' }
   ],
 
   methods: [
@@ -58,18 +55,6 @@ foam.CLASS({
           .start().addClass('table-content').add(this.WEBSITE_LABEL).end()
           .start().addClass('table-content').addClass('subdued-text').add(this.user.website).end()
         .end()
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.REGISTRATION_NUMBER_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.businessRegistrationNumber).end()
-        .end()
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.REGISTRATION_AUTHORITY_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.businessRegistrationAuthority).end()
-        .end()
-        .start().addClass('info-container')
-          .start().addClass('table-content').add(this.REGISTRATION_DATE_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.businessRegistrationDate).end()
-        .end();
     }
   ]
 });

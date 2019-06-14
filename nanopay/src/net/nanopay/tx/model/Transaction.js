@@ -8,13 +8,15 @@ foam.CLASS({
     'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.analytics.Foldable'
+    'foam.nanos.analytics.Foldable',
+    'foam.mlang.Expressions',
   ],
 
   imports: [
     'addCommas',
     'currencyDAO',
-    'userDAO'
+    'userDAO',
+    'complianceHistoryDAO'
   ],
 
   javaImports: [
@@ -78,6 +80,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
+    'id',
     'type',
     'status',
     'summary',
@@ -448,9 +451,9 @@ foam.CLASS({
     {
       name: 'doFolds',
       javaCode: `
-        for ( Transfer t : getTransfers() ) {
-          fm.foldForState(t.getAccount(),getLastModified(),t.getAmount());
-        }
+for ( Balance b : getBalances() ) {
+  fm.foldForState(b.getAccount(), getLastModified(), b.getBalance());
+}
       `
     },
     {
@@ -867,5 +870,26 @@ foam.CLASS({
     javaCode: `
     `
   }
-]
+],
+  actions: [
+    {
+      name: 'viewComplianceHistory',
+      label: 'View Compliance History',
+      availablePermissions: ['service.compliancehistorydao'],
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.id}'s Compliance History`,
+          data: this.complianceHistoryDAO.where(m.AND(
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id), 
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
+          ))
+        });
+      }
+    }
+  ]
 });

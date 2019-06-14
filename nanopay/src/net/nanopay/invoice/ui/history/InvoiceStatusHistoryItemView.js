@@ -100,11 +100,15 @@ foam.CLASS({
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.PENDING_APPROVAL:
-          return {
-            labelText: this.InvoiceStatus.PENDING_APPROVAL.label,
-            labelDecoration: 'Invoice-Status-Pending-approval',
-            icon: 'images/ic-scheduled.svg'
-          };
+          var user = ctrl.user;
+          var currentUser = `${user.lastName}, ${user.firstName}(${user.id})`;
+          if (record.user === currentUser)
+            return {
+              labelText: this.InvoiceStatus.PENDING_APPROVAL.label,
+              labelDecoration: 'Invoice-Status-Pending-approval',
+              icon: 'images/ic-scheduled.svg'
+            };
+          else return null;
         case this.InvoiceStatus.PENDING_ACCEPTANCE:
           return {
             labelText: this.InvoiceStatus.PENDING_ACCEPTANCE.label,

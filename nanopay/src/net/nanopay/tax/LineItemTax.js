@@ -12,10 +12,15 @@ foam.CLASS({
     'foam.nanos.auth.Region'
   ],
 
+  tableColumns: [
+    'id', 'taxType', 'rate', 'countryId', 'regionId'
+  ],
+
   properties: [
     {
       class: 'String',
       name: 'id',
+      tableWidth: 50,
       visibility: foam.u2.Visibility.RO
     },
     {
