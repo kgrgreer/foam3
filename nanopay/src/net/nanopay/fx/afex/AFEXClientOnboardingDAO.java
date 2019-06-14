@@ -31,14 +31,24 @@ public class AFEXClientOnboardingDAO
     }
 
     BankAccount account = (BankAccount) obj;
-    AuthService auth = (AuthService) x.get("auth");
-    DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
-    User accountOwner = (User) localBusinessDAO.find(account.getOwner());
-    boolean hasFXProvisionPayerPermission = auth.checkUser(getX(), accountOwner, "fx.provision.payer");
-    boolean hasCurrencyReadUSDPermission = auth.checkUser(getX(), accountOwner, "currency.read.USD");
-    if ( hasFXProvisionPayerPermission && hasCurrencyReadUSDPermission ) {
+    BankAccount existingAccount = (BankAccount) getDelegate().find(account.getId());
+    if ( existingAccount != null && existingAccount.getStatus == BankAccountStatus.UNVERIFIED 
+          &&  account.getStatus == BankAccountStatus.VERIFIED ) {
+      
+      // TODO: Check if business is already pushed to AFEX?
+
+      AuthService auth = (AuthService) x.get("auth");
+      DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+      User accountOwner = (User) localBusinessDAO.find(account.getOwner());
+      boolean hasFXProvisionPayerPermission = auth.checkUser(getX(), accountOwner, "fx.provision.payer");
+      boolean hasCurrencyReadUSDPermission = auth.checkUser(getX(), accountOwner, "currency.read.USD");
+      if ( hasFXProvisionPayerPermission && hasCurrencyReadUSDPermission ) {
+  
+      }
 
     }
+
+
 
     return super.put_(x, obj);
   }
