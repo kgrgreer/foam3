@@ -1,6 +1,17 @@
+/**
+ * @license
+ * Copyright 2019 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui',
   name: 'Dashboard',
+  extends: 'foam.u2.View',
+
+  requires: [
+    'net.nanopay.liquidity.ui.DashboardAccounts'
+  ],
 
   imports: [
     'accountDAO',
@@ -18,6 +29,9 @@ foam.CLASS({
       `,
       expression: function(accountDAO) {
         return accountDAO;
+      },
+      view: {
+        class: 'net.nanopay.liquidity.ui.DashboardAccounts'
       }
     },
     {
@@ -61,6 +75,15 @@ foam.CLASS({
       expression: function(transactionDAO) {
         return transactionDAO;
       }
+    }
+  ],
+
+  methods: [
+    function initE() {
+      this.SUPER();
+      this
+        .addClass(this.myClass())
+          .tag(this.DashboardAccounts, { data: this.data })
     }
   ]
 });
