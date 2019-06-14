@@ -21,6 +21,7 @@ echo "INFO :: $0 IN_DIR=${IN_DIR} OUT_DIR=${OUT_DIR} INSTANCE=${INSTANCE}"
 
 # Creates an array of the file names
 declare -a arr=(
+  "alarmConfig"
   "acceptanceDocuments"
   "accounts"
   "ascendantfxusers"
