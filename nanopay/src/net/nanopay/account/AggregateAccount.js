@@ -71,11 +71,9 @@ foam.CLASS({
         return balance;
       },
       javaCode: `
-
         List<Account> childrenList = new ArrayList();
         ArraySink childrenSink = (ArraySink) getChildren(x).select(new ArraySink());
         List<Account> list1 = childrenSink.getArray();
-
           while( list1.size() > 0 ) {
             Account next = list1.get(0);
             if ( ! ( next instanceof AggregateAccount ) ) {
@@ -90,10 +88,8 @@ foam.CLASS({
             childrenList.add(next);
             list1.remove(next);
           }
-
           long balance = 0;
           for(Object obj: childrenList) {
-            if ( obj instanceof ShadowAccount )
             Account child = (Account) obj;
             long childBalance = (Long) child.findBalance(x);
             if( ! getDenomination().equals(child.getDenomination()) )
