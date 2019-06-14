@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'invoiceNumber', 'purchaseOrder', 'payerId',
+    'id', 'invoiceNumber', 'payerId',
     'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
   ],
 
@@ -220,6 +220,17 @@ foam.CLASS({
       name: 'note',
       documentation: `A written note that the user may add to the invoice.`,
       view: 'foam.u2.tag.TextArea'
+    },
+    {
+      class: 'Currency',
+      name: 'chequeAmount',
+      documentation: `The amount paid for an invoice using an external transaction system.`
+    },
+    {
+      class: 'String',
+      name: 'chequeCurrency',
+      documentation: `The currency of a transaction using by external transaction system.`,
+      value: 'CAD'
     },
     {
       class: 'Currency',

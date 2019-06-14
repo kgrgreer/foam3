@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'AbliiTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.SummaryTransaction',
 
   documentation: `Transaction to be created specifically for ablii users, enforces source/destination to always be bank accounts`,
 

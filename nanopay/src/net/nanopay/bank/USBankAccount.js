@@ -58,6 +58,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'accountNumber',
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{6,17}$/;
+
+        if ( accountNumber === '' ) {
+          return 'Please enter an account number.';
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Account number must be between 6 and 17 digits long.';
+        }
+      }
+    },
+    {
       name: 'branch',
       //visibility: 'HIDDEN'
       label: 'Routing No.',

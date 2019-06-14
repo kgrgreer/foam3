@@ -3,10 +3,15 @@ foam.CLASS({
   name: 'P2PTxnRequest',
   documentation: `This is the request object that is created when a peer request money from another peer.`,
 
+  tableColumns: [
+    'id', 'requestorEmail', 'requesteeEmail', 'dateRequested', 'amount'
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id',
+      tableWidth: 50,
       visibility: foam.u2.Visibility.RO,
     },
     {

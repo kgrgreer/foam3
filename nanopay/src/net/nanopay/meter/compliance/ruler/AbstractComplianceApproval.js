@@ -58,7 +58,7 @@ foam.CLASS({
         DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
             EQ(ApprovalRequest.DAO_KEY, getObjDaoKey()),
-            EQ(ApprovalRequest.OBJ_ID, obj.getProperty("id"))
+            EQ(ApprovalRequest.OBJ_ID, String.valueOf(obj.getProperty("id")))
           ));
 
         // Get approval request that was updated
@@ -71,16 +71,6 @@ foam.CLASS({
 
         if ( ! sink.getArray().isEmpty() ) {
           ApprovalRequest approvalRequest = (ApprovalRequest) sink.getArray().get(0);
-
-          // Remove existing pending approval requests
-          dao
-            .where(AND(
-              EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED),
-              OR(
-                EQ(approvalRequest.getStatus(), ApprovalStatus.REJECTED),
-                getCauseEq(approvalRequest)),
-              LT(ApprovalRequest.CREATED, approvalRequest.getLastModified())))
-            .removeAll();
 
           // Get pending approval requests count
           Count requested = (Count) dao
@@ -105,26 +95,6 @@ foam.CLASS({
     {
       name: 'describe',
       javaCode: 'return "";'
-    },
-    {
-      name: 'getCauseEq',
-      type: 'foam.mlang.predicate.Predicate',
-      args: [
-        {
-          name: 'approvalRequest',
-          type: 'net.nanopay.approval.ApprovalRequest'
-        }
-      ],
-      javaCode: `
-        if ( approvalRequest instanceof ComplianceApprovalRequest ) {
-          ComplianceApprovalRequest ar = (ComplianceApprovalRequest) approvalRequest;
-          return AND(
-            EQ(ComplianceApprovalRequest.CAUSE_ID, ar.getCauseId()),
-            EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, ar.getCauseDaoKey())
-          );
-        }
-        return TRUE;
-      `
     },
     {
       name: 'updateObj',
