@@ -20,12 +20,12 @@ while getopts "I:O:" opt ; do
     esac
 done
 
+echo "INFO :: $0 IN_FILE=${IN_FILE} OUT_DIR=${OUT_DIR}"
+
 if [[ ! -d $OUT_DIR ]]; then
     OUT_DIR=target/journals
 fi
 mkdir -p "$OUT_DIR"
-
-echo "INFO :: $0 IN_FILE=${IN_FILE} OUT_DIR=${OUT_DIR}"
 
 # Delete current runtime journals
 rm ${OUT_DIR}/*.0

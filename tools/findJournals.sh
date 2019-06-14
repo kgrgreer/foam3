@@ -19,6 +19,8 @@ while getopts "I:J:" opt ; do
     esac
 done
 
+echo "INFO :: $0 IN_FILE=${IN_FILE} OUT_DIR=${OUT_DIR}"
+
 declare -a sources=(
   "foam2/src"
   "nanopay/src"
