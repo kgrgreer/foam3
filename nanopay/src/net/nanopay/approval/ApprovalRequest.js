@@ -224,14 +224,14 @@ if ( obj == null ) {
       label: 'View Ref',
       code: function(approvalRequest) {
         console.log(this.__context__[approvalRequest.data.daoKey]);
-        var DaoKey = approvalRequest.data.daoKey;
+        var key = approvalRequest.data.daoKey;
         if(!this.__context__[approvalRequest.data.daoKey]) {
           // if DAO doesn't exist in context, change daoKey from localMyDAO
           // (server-side) to myDAO (accessible on front-end)
-          DaoKey = DaoKey.substring(5,6).toLowerCase() + DaoKey.substring(6);
-          console.log(DaoKey);
+          key = key.substring(5,6).toLowerCase() + key.substring(6);
+          console.log(key);
         }
-        var service = this.__context__[DaoKey];
+        var service = this.__context__[key];
         // this.proxyOfDAO.delegate = service;
         this.__context__.stack.push({
           class: 'foam.comics.DAOUpdateControllerView',
