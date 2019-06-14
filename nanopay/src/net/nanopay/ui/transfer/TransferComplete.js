@@ -22,19 +22,19 @@ foam.CLASS({
           font-size: 12px;
           line-height: 1.45;
           letter-spacing: 0.3px;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ h3{
           font-family: Roboto;
           font-size: 12px;
           letter-spacing: 0.2px;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ h2{
           width: 600px;
           font-size: 14px;
           letter-spacing: 0.4px;
-          color: #093649;
+          color: %BLACK%;
         }
         ^status-check p {
           display: inline-block;

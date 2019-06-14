@@ -36,7 +36,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .input {
           width: 100%;
@@ -65,7 +65,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.3px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
           margin-top: 15px;
         }
         ^ .question:first-child {
@@ -80,7 +80,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .foam-u2-ActionView-nextButton {
           float: right;

@@ -45,7 +45,7 @@ foam.CLASS({
           opacity: 0.6;
           font-size: 20px;
           font-weight: 300;
-          color: #093649;
+          color: %BLACK%;
           margin: 0;
         }
         ^ .enable-recurring-text {
@@ -72,7 +72,7 @@ foam.CLASS({
         ^ .vendor-name {
           opacity: 0.6;
           font-size: 14px;
-          color: #093649;
+          color: %BLACK%;
           margin: 0;
           margin-bottom: 6px;
         }

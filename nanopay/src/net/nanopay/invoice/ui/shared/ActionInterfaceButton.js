@@ -79,7 +79,7 @@ foam.CLASS({
           padding-left: 18px;
           font-size: 14px;
           font-weight: 300;
-          color: #093649;
+          color: %BLACK%;
           line-height: 30px;
         }
         ^ .optionsDropDown > div:hover {

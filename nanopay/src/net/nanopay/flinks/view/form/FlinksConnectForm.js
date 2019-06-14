@@ -36,7 +36,7 @@ foam.CLASS({
       font-weight: 300;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
       margin: 0px;
     }
     ^ .input,
@@ -60,7 +60,7 @@ foam.CLASS({
       line-height: 0.1;
       letter-spacing: 0.1px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
       border: 1px solid red;
     }
     ^ .foam-u2-ActionView-nextButton {
@@ -124,7 +124,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
       word-wrap: break-word;
     }
     ^ .foam-u2-view-PasswordView {

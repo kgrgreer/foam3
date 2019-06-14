@@ -82,7 +82,7 @@ foam.CLASS({
     margin: auto;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .foam-u2-ActionView {
-    background-color: %SECONDARYCOLOR%;
+    background-color: %PRIMARY3%;
   }
   .foam-u2-ActionView-closeModal {
     background-color: transparent !important;
@@ -108,14 +108,14 @@ foam.CLASS({
   }
   ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .optionSpacer.selected,
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account:hover {
-    border: solid 1px %SECONDARYCOLOR%;
+    border: solid 1px %PRIMARY3%;
   }
   ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .foam-u2-ActionView-closeButton,
   ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .foam-u2-ActionView-nextButton {
     display: none;
   }
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account.selected {
-    border: solid 3px %SECONDARYCOLOR%;
+    border: solid 3px %PRIMARY3%;
   }
   .net-nanopay-flinks-view-form-FlinksForm .institution,
   .net-nanopay-flinks-view-form-FlinksForm .subContent,
@@ -152,7 +152,7 @@ foam.CLASS({
     padding-left: 36px;
   }
   ^link-text {
-    color: %SECONDARYCOLOR%;
+    color: %PRIMARY3%;
     margin-top: 0px;
     cursor: pointer;
     margin-left: 3px;

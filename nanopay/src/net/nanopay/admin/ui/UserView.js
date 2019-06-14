@@ -70,8 +70,8 @@ foam.CLASS({
       margin-right: 5px;
     }
     ^ .foam-u2-ActionView-addUser {
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: %PRIMARY3%;
+      border: solid 1px %PRIMARY3%;
       color: white;
       float: right;
     }
@@ -99,11 +99,11 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: %BLACK%;
       line-height: 30px;
     }
     ^ .popUpDropDown > div:hover {
-      background-color: %SECONDARYCOLOR%;
+      background-color: %PRIMARY3%;
       color: white;
       cursor: pointer;
     }
@@ -112,7 +112,7 @@ foam.CLASS({
     }
     ^ .foam-u2-view-TableView-row:hover {
       cursor: pointer;
-      background: %TABLEHOVERCOLOR%;
+      background: %GREY4%;
     }
     ^ .foam-u2-view-TableView-row {
       height: 40px;

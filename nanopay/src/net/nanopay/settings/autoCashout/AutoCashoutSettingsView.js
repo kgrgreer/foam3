@@ -12,7 +12,7 @@ foam.CLASS({
       code: function CSS() {/*
         ^{
           width: 100%;
-          background-color: %BACKGROUNDCOLOR%;
+          background-color: %GREY5%;
         }
         ^ .autoCashOutContainer {
           width: 992px;
@@ -28,14 +28,14 @@ foam.CLASS({
           opacity: 0.6;
           font-size: 20px;
           font-weight: 300;
-          color: #093649;
+          color: %BLACK%;
           margin: 0;
         }
         ^ .instructions {
           font-size: 12px;
           margin: 0;
           line-height: 12px;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .updateContainer {
           height: inherit;
@@ -85,7 +85,7 @@ foam.CLASS({
           letter-spacing: 0.3px;
           font-weight: normal;
           padding-top: 21px;
-          color: #093649;
+          color: %BLACK%;
           margin: 0;
           display: inline-block;
         }
@@ -151,7 +151,7 @@ foam.CLASS({
           font-size: 12px;
           line-height: 16px;
           letter-spacing: 0.3px;
-          color: #093649;
+          color: %BLACK%;
           display: inline-block;
         }
       */}

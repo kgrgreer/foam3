@@ -39,14 +39,14 @@ foam.CLASS({
      */
 
     ^primary {
-      background-color: %SECONDARYCOLOR%;
+      background-color: %PRIMARY3%;
       color: white;
       border: 1px solid #4a33f4;
     }
 
     ^primary:hover:not(:disabled) {
       border: 1px solid #294798;
-      background-color: %SECONDARYHOVERCOLOR%;
+      background-color: %PRIMARY2%;
     }
 
     ^primary:focus:not(:hover) {
@@ -55,8 +55,8 @@ foam.CLASS({
     }
 
     ^primary:disabled {
-      border: 1px solid %SECONDARYDISABLEDCOLOR%;
-      background-color: %SECONDARYDISABLEDCOLOR%;
+      border: 1px solid %PRIMARY5%;
+      background-color: %PRIMARY5%;
     }
 
 
@@ -65,13 +65,13 @@ foam.CLASS({
      */
 
     ^primary-destructive {
-      background-color: %DESTRUCTIVECOLOR%;
-      border: 1px solid %DESTRUCTIVECOLOR%;
+      background-color: %DESTRUCTIVE3%;
+      border: 1px solid %DESTRUCTIVE3%;
       color: white;
     }
 
     ^primary-destructive:hover {
-      background-color: %DESTRUCTIVEHOVERCOLOR%;
+      background-color: %DESTRUCTIVE2%;
       border-color: #a61414;
     }
 
@@ -82,7 +82,7 @@ foam.CLASS({
     }
 
     ^primary-destructive:disabled {
-      background-color: %DESTRUCTIVEDISABLEDCOLOR%;
+      background-color: %DESTRUCTIVE5%;
       border-color: #ed8e8d;
     }
 
@@ -92,25 +92,25 @@ foam.CLASS({
      */
 
     ^secondary {
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid %PRIMARY3%;
       background-color: white;
-      color: %SECONDARYCOLOR%;
+      color: %PRIMARY3%;
     }
 
     ^secondary:hover {
-      border-color: %SECONDARYHOVERCOLOR%;
+      border-color: %PRIMARY2%;
       background-color: white;
-      color: %SECONDARYHOVERCOLOR%;
+      color: %PRIMARY2%;
     }
 
     ^secondary:focus:not(:hover) {
       border-color: #432de7;
-      color: %SECONDARYHOVERCOLOR%;
+      color: %PRIMARY2%;
     }
 
     ^secondary:disabled {
-      border-color: %SECONDARYDISABLEDCOLOR%;
-      color: %SECONDARYDISABLEDCOLOR%;
+      border-color: %PRIMARY5%;
+      color: %PRIMARY5%;
     }
 
 
@@ -119,20 +119,20 @@ foam.CLASS({
      */
 
     ^secondary-destructive {
-      border: 1px solid %DESTRUCTIVECOLOR%;
+      border: 1px solid %DESTRUCTIVE3%;
       background-color: white;
-      color: %DESTRUCTIVECOLOR%;
+      color: %DESTRUCTIVE3%;
     }
 
     ^secondary-destructive:hover {
-      border-color: %DESTRUCTIVEHOVERCOLOR%;
+      border-color: %DESTRUCTIVE2%;
       background-color: white;
-      color: %DESTRUCTIVEHOVERCOLOR%;
+      color: %DESTRUCTIVE2%;
     }
 
     ^secondary-destructive:disabled {
-      border-color: %DESTRUCTIVEDISABLEDCOLOR%;
-      color: %DESTRUCTIVEDISABLEDCOLOR%;
+      border-color: %DESTRUCTIVE5%;
+      color: %DESTRUCTIVE5%;
     }
 
 
@@ -148,7 +148,7 @@ foam.CLASS({
     }
 
     ^tertiary:hover {
-      color: %SECONDARYCOLOR%;
+      color: %PRIMARY3%;
     }
 
     ^tertiary:focus:not(:hover) {

@@ -26,7 +26,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ p {
           margin: 0;
@@ -49,7 +49,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.3px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .forgetAnswer {
           width: 450px;

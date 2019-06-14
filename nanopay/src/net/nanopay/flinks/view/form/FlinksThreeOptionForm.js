@@ -29,7 +29,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .foam-u2-view-StringArrayView {
           width: 450px;
@@ -48,7 +48,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .foam-u2-ActionView-closeButton {
           float: right;

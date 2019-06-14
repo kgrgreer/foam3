@@ -92,7 +92,7 @@ foam.CLASS({
 
       ^ p {
         margin: 0;
-        color: #093649;
+        color: %BLACK%;
         font-size: 14px;
         font-weight: 300;
         letter-spacing: 0.2px;
@@ -104,7 +104,7 @@ foam.CLASS({
         font-size: 12px;
         line-height: 1.17;
         letter-spacing: 0.2px;
-        color: #093649;
+        color: %BLACK%;
       }
 
       ^ .bold {
@@ -183,7 +183,7 @@ foam.CLASS({
         font-size: 12px;
         padding-top: 2px;
         letter-spacing: 0.2px;
-        color: #093649;
+        color: %BLACK%;
         margin: 0;
       }
 

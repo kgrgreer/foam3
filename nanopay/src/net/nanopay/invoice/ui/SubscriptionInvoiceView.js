@@ -27,7 +27,7 @@ foam.CLASS({
           font-size: 20px;
           font-weight: 300;
           line-height: 1;
-          color: #093649;
+          color: %BLACK%;
           padding-top: 70px;
         }
         */

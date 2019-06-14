@@ -68,7 +68,7 @@ foam.CLASS({
     }
     ^ .bankAction.selected {
       background-image: url(images/ablii/radio-active.svg);
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid %PRIMARY3%;
     }
     ^ .bankAction:first-child {
       margin-left: 0;

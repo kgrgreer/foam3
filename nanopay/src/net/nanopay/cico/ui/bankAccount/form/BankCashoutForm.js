@@ -29,7 +29,7 @@ foam.CLASS({
           height: 40px;
           background-color: #FFFFFF;
           box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
-          color: #093649;
+          color: %BLACK%;
           margin-top: 15px;
         }
 
@@ -66,7 +66,7 @@ foam.CLASS({
         ^ .autoCashoutLabel {
           font-size: 12px;
           letter-spacing: 0.3px;
-          color: #093649;
+          color: %BLACK%;
           margin: 0;
           margin-top: 10px;
         }
@@ -127,7 +127,7 @@ foam.CLASS({
         ^ .foam-u2-view-RadioView label span {
           font-size: 12px;
           letter-spacing: 0.3px;
-          color: #093649;
+          color: %BLACK%;
         }
 
         ^ .promoContainer {

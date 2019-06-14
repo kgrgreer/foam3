@@ -37,12 +37,12 @@ foam.CLASS({
           cursor: pointer;
         }
         ^ .optionSpacer.selected {
-          border: solid 1px %ACCENTCOLOR%;
+          border: solid 1px %PRIMARY5%;
         }
         ^ .subContent {
           display: contents;
-          background-color: %BACKGROUNDCOLOR%;
-          border: 1px solid %BACKGROUNDCOLOR%;
+          background-color: %GREY5%;
+          border: 1px solid %GREY5%;
         }
         ^ .image {
           width: 170px;
@@ -52,7 +52,7 @@ foam.CLASS({
           float: right;
           margin: 0;
           box-sizing: border-box;
-          background-color: %PRIMARYCOLOR%;
+          background-color: %BLACK%;
           outline: none;
           border: none;
           width: 136px;

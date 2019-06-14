@@ -50,7 +50,7 @@ foam.CLASS({
         font-stretch: normal;
         line-height: 1.5;
         letter-spacing: normal;
-        color: %PRIMARYCOLOR%;
+        color: %BLACK%;
       }
       ^business-location {
         font-size: 10px;

@@ -47,7 +47,7 @@ foam.CLASS({
           display: inline;
         }
         .Invoice-Status-Pending{
-          border: solid 1px #093649;
+          border: solid 1px %BLACK%;
           border-radius: 30px;
           padding: 3px;
           padding-left: 9px;

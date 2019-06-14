@@ -25,7 +25,7 @@ foam.CLASS({
         ^ .popUpHeader {
           width: 448px;
           height: 40px;
-          background-color: %PRIMARYCOLOR%;
+          background-color: %BLACK%;
         }
         ^ .popUpTitle {
           width: 198px;
@@ -57,7 +57,7 @@ foam.CLASS({
           font-size: 12px;
           line-height: 16px;
           letter-spacing: 0.3px;
-          color: #093649;
+          color: %BLACK%;
           display: inline-block;
         }
         ^ .foam-u2-ActionView-closeButton {
@@ -84,8 +84,8 @@ foam.CLASS({
           height: 40px;
           position: static;
           border-radius: 2px;
-          background: %SECONDARYCOLOR%;
-          border: solid 1px %SECONDARYCOLOR%;
+          background: %PRIMARY3%;
+          border: solid 1px %PRIMARY3%;
           display: inline-block;
           color: white;
           text-align: center;
@@ -97,8 +97,8 @@ foam.CLASS({
           font-weight: normal;
         }
         ^ .foam-u2-ActionView-okButton:hover {
-          background: %SECONDARYCOLOR%;
-          border-color: %SECONDARYCOLOR%;
+          background: %PRIMARY3%;
+          border-color: %PRIMARY3%;
           opacity: 0.9;
         }
         ^ .amount {
@@ -112,7 +112,7 @@ foam.CLASS({
           font-size: 12px;
           line-height: 16px;
           letter-spacing: 0.3px;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .okButtonDiv {
           width: 100%;

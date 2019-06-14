@@ -7,7 +7,7 @@ foam.CLASS({
     ^ {
       width: 456px;
       height: 56px;
-      border: 1px solid %BACKGROUNDCOLOR%;
+      border: 1px solid %GREY5%;
       border-radius: 3px;
       background-color: white;
       padding: 12px 13px;

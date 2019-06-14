@@ -9,7 +9,7 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: function CSS() {/*
         ^ {
-          background: #093649;
+          background: %BLACK%;
           width: 100%;
           height: 60px;
           color: white;

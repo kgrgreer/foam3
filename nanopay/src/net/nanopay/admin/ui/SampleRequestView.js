@@ -45,7 +45,7 @@ foam.CLASS({
     }
     ^ .line {
       height: 10px;
-      background: %PRIMARYCOLOR%;
+      background: %BLACK%;
       width: 85%;
     }
     ^ .foam-u2-ActionView-apiLink {

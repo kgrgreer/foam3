@@ -26,7 +26,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .input {
           width: 450px;
@@ -46,7 +46,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.3px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .forgetAnswer {
           width: 450px;
@@ -69,7 +69,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .foam-u2-ActionView-closeButton {
           float: right;

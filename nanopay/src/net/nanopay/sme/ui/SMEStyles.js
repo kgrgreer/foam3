@@ -76,7 +76,7 @@ foam.CLASS({
       background-position: 8px;
       border-radius: 2px;
       border: 1px solid #dce0e7;
-      color: #093649;
+      color: %BLACK%;
       font-size: 14px;
       height: 40px;
       padding: 0 21px 0 38px;
@@ -377,13 +377,13 @@ foam.CLASS({
       background-position-x: 25px;
       background-position-y: 13px;
       background-image: url(images/ablii/radio-resting.svg);
-      color: %PRIMARYCOLOR% !important;
+      color: %BLACK% !important;
       background-color: white !important;
       font-size: 16px !important;
       font-family: 'Lato', sans-serif;
     }
     .white-radio.selected {
-      border: 1px solid %SECONDARYCOLOR% !important;
+      border: 1px solid %PRIMARY3% !important;
       background-image: url(images/ablii/radio-active.svg);
     }
     .white-radio:disabled {
@@ -557,7 +557,7 @@ foam.CLASS({
     .card {
       border-radius: 2px;
       box-shadow: 0 1px 1px 0 #dae1e9;
-      border: solid 1px %BACKGROUNDCOLOR%;
+      border: solid 1px %GREY5%;
       background-color: #ffffff;
     }
 
@@ -1079,7 +1079,7 @@ foam.CLASS({
     .navigationBar {
       height: 72px !important;
       box-shadow: 0 1px 1px 0 #dae1e9 !important;
-      border-top: 1px solid %BACKGROUNDCOLOR% !important;
+      border-top: 1px solid %GREY5% !important;
     }
 
     .foam-u2-ActionView-unavailable {

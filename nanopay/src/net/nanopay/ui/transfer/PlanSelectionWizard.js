@@ -95,7 +95,7 @@ foam.CLASS({
       display: inline-block;
       letter-spacing: 0.2px;
       margin-left: 20px;
-      color: #093649;
+      color: %BLACK%;
       padding-bottom: 10px;
     }
   `,

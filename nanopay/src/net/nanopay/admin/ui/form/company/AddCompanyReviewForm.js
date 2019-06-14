@@ -32,7 +32,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: %BLACK%;
       display: inline-block;
       margin-left: 25px;
       vertical-align: middle;
@@ -41,14 +41,14 @@ foam.CLASS({
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.3px;
-      color: #093649;
+      color: %BLACK%;
       margin-bottom: 15px;
     }
     ^ .infoText {
       width: 150px;
       font-size: 12px;
       letter-spacing: 0.3px;
-      color: #093649;
+      color: %BLACK%;
     }
     ^ .rightMargin {
       margin-right: 80px;

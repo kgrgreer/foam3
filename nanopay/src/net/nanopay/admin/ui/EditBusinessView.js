@@ -37,7 +37,7 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
       margin-left: 0;
     }
     ^ .nameDisplayContainer {
@@ -136,7 +136,7 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 12px;
       font-size: 12px;
-      color: #093649;
+      color: %BLACK%;
       outline: none;
     }
     ^ .marginLeft {
@@ -148,7 +148,7 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 12px;
       font-size: 12px;
-      color: #093649;
+      color: %BLACK%;
       outline: none;
     }
     ^ .phoneNumberInput {
@@ -157,13 +157,13 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 12px;
       font-size: 12px;
-      color: #093649;
+      color: %BLACK%;
       outline: none;
     }
     ^ .buttonDiv {
       width: 100%;
       height: 60px;
-      background-color: %BACKGROUNDCOLOR%;
+      background-color: %GREY5%;
       position: relative;
       bottom: 0;
       z-index: 200;
@@ -180,12 +180,12 @@ foam.CLASS({
     ^ .foam-u2-ActionView-saveButton {
       float: right;
       border-radius: 2px;
-      background-color: %SECONDARYCOLOR%;
+      background-color: %PRIMARY3%;
       color: white;
       margin-top: 30px;
     }
     ^ .foam-u2-ActionView-saveButton:hover {
-      background: %SECONDARYCOLOR%;
+      background: %PRIMARY3%;
       opacity: 0.9;
     }
     ^ .property-confirmEmailAddress {

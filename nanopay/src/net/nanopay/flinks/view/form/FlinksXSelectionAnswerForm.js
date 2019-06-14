@@ -35,7 +35,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .foam-u2-tag-Input {
           width: 100%;
@@ -65,7 +65,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .foam-u2-ActionView-nextButton {
           float: right;

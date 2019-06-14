@@ -41,7 +41,7 @@ foam.CLASS({
       font-weight: bold;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
       margin-bottom: 15px;
     }
     ^ .businessHourLabels {
@@ -50,7 +50,7 @@ foam.CLASS({
       font-weight: bold;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
       margin-bottom: 15px;
       display: inline-block;
       visibility: visible !important;
@@ -70,13 +70,13 @@ foam.CLASS({
       text-align: center;
       color: #ffffff;
       cursor: pointer;
-      border: 1px solid %SECONDARYCOLOR%;
-      background-color: %SECONDARYCOLOR%;
+      border: 1px solid %PRIMARY3%;
+      background-color: %PRIMARY3%;
       margin-top: 30px;
     }
     ^ .foam-u2-ActionView-saveButton:hover {
       opacity: 0.9;
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid %PRIMARY3%;
     }
     ^ .toggleDiv {
       position: relative;
@@ -93,7 +93,7 @@ foam.CLASS({
     ^ .foam-u2-TimeView {
       font-family: Roboto;
       font-size: 12px;
-      color: #093649;
+      color: %BLACK%;
       height: 30px;
       outline: none;
       margin-left: 20px;
@@ -104,7 +104,7 @@ foam.CLASS({
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
-      color: #093649;
+      color: %BLACK%;
     }
     ^ .box-width {
       width: 600px;

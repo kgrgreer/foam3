@@ -129,7 +129,7 @@ css: `
       border-radius: 2px;
       // background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px rgba(164, 179, 184, 0.3);
-      color: #093649;
+      color: %BLACK%;
       padding: 1px 5px;
       box-sizing: border-box;
     }
@@ -142,7 +142,7 @@ css: `
     ^ .deleteButton .buttonLabel, ^ .editButton .buttonLabel {
       width: 29px;
       font-size: 10px;
-      color: #093649;
+      color: %BLACK%;
       display: inline-block;
       vertical-align: middle;
       text-align: center;
@@ -257,7 +257,7 @@ css: `
       line-height: 1.17;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
       margin-top: 5px;
       margin-bottom: 0px;
     }

@@ -28,7 +28,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: %BLACK%;
     }
     ^ .businessImage {
       width: 80px;

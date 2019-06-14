@@ -42,7 +42,7 @@ foam.CLASS({
         ^ .popUpHeader {
           width: 448px;
           height: 40px;
-          background-color: %PRIMARYCOLOR%;
+          background-color: %BLACK%;
         }
         ^ .popUpTitle {
           width: 198px;
@@ -79,7 +79,7 @@ foam.CLASS({
           background: rgba(164, 179, 184, 0.1);
           border: solid 1px #ebebeb;
           display: inline-block;
-          color: #093649;
+          color: %BLACK%;
           margin: 0;
           float: left;
         }
@@ -89,8 +89,8 @@ foam.CLASS({
         ^ .foam-u2-ActionView-verifyButton {
           width: 136px;
           height: 40px;
-          background: %SECONDARYCOLOR%;
-          border: solid 1px %SECONDARYCOLOR%;
+          background: %PRIMARY3%;
+          border: solid 1px %PRIMARY3%;
           display: inline-block;
           color: white;
           margin: 0;
@@ -98,16 +98,16 @@ foam.CLASS({
           float: right;
         }
         ^ .foam-u2-ActionView-verifyButton:hover {
-          background: %SECONDARYCOLOR%;
-          border-color: %SECONDARYCOLOR%;
+          background: %PRIMARY3%;
+          border-color: %PRIMARY3%;
           opacity: 0.9;
         }
         ^ .foam-u2-ActionView-defaultButton {
           position: relative;
           width: 136px;
           height: 40px;
-          background: %SECONDARYCOLOR%;
-          border: solid 1px %SECONDARYCOLOR%;
+          background: %PRIMARY3%;
+          border: solid 1px %PRIMARY3%;
           display: inline-block;
           color: white;
           margin: 0;
@@ -115,8 +115,8 @@ foam.CLASS({
           float: right;
         }
         ^ .foam-u2-ActionView-defaultButton:hover {
-          background: %SECONDARYCOLOR%;
-          border-color: %SECONDARYCOLOR%;
+          background: %PRIMARY3%;
+          border-color: %PRIMARY3%;
           opacity: 0.9;
         }
         ^ .descriptionStyle {

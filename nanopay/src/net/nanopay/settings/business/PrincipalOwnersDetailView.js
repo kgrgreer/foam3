@@ -14,7 +14,7 @@ foam.CLASS({
   css: `
   ^{
     width: 100%;
-    background-color: %BACKGROUNDCOLOR%;
+    background-color: %GREY5%;
     margin: auto;
   }
   ^ .businessSettingsContainer {
@@ -44,7 +44,7 @@ foam.CLASS({
     font-size: 14px;
     font-weight: 300;
     letter-spacing: 0.2px;
-    color: #093649;
+    color: %BLACK%;
     margin-left: 140px;
     display: inline-block;
     line-height: 16px;
@@ -70,7 +70,7 @@ foam.CLASS({
     font-weight: bold;
     letter-spacing: 0.2px;
     text-align: left;
-    color: #093649;
+    color: %BLACK%;
     margin-bottom: 15px;
   }
   ^ .businessHourLabels {
@@ -79,7 +79,7 @@ foam.CLASS({
     font-weight: bold;
     letter-spacing: 0.2px;
     text-align: left;
-    color: #093649;
+    color: %BLACK%;
     margin-bottom: 15px;
     display: inline-block;
   }
@@ -88,7 +88,7 @@ foam.CLASS({
     font-size: 14px;
     font-weight: 300;
     letter-spacing: 0.2px;
-    color: #093649;
+    color: %BLACK%;
     display: flex;
     width: 185px;
     height: 20px;
@@ -126,7 +126,7 @@ foam.CLASS({
   ^ .sub-title{
     position: relative;
     top: -15px;
-    color: #093649;
+    color: %BLACK%;
     font-size: 14px;
     font-weight: 300;
   }

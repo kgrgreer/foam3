@@ -27,7 +27,7 @@ foam.CLASS({
       font-weight: 300;
       line-height: 1;
       letter-spacing: 0.5px;
-      color: #093649;
+      color: %BLACK%;
       position: relative;
       top: 6px;
     }
@@ -83,7 +83,7 @@ foam.CLASS({
 
     ^ .property-cent:focus {
       border: none !important;
-      border-bottom: 2px solid %SECONDARYCOLOR% !important;
+      border-bottom: 2px solid %PRIMARY3% !important;
     }
   `,
 

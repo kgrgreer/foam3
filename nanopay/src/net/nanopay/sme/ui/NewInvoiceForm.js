@@ -53,7 +53,7 @@ foam.CLASS({
     }
     ^ .labels {
       font-size: 14px;
-      color: #093649;
+      color: %BLACK%;
     }
     ^ .customer-div {
       vertical-align: top;

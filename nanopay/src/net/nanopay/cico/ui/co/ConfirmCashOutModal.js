@@ -41,7 +41,7 @@ foam.CLASS({
         ^ .popUpHeader {
           width: 448px;
           height: 40px;
-          background-color: %PRIMARYCOLOR%;
+          background-color: %BLACK%;
         }
         ^ .popUpTitle {
           width: 198px;
@@ -78,7 +78,7 @@ foam.CLASS({
           font-size: 14px;
           font-weight: bold;
           letter-spacing: 0.2px;
-          color: #093649;
+          color: %BLACK%;
           margin-top: 20px;
           margin-bottom: 0;
           display: inline-block;
@@ -101,21 +101,21 @@ foam.CLASS({
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
-          color: #093649;
+          color: %BLACK%;
           clear: both;
         }
         ^ .accountNumber {
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
-          color: #093649;
+          color: %BLACK%;
           margin-top: 5px;
         }
         ^ .amount {
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
-          color: #093649;
+          color: %BLACK%;
           display: inline-block;
           margin-top: 22px;
           margin-left: 75px;
@@ -126,8 +126,8 @@ foam.CLASS({
           height: 40px;
           position: static;
           border-radius: 2px;
-          background: %SECONDARYCOLOR%;
-          border: solid 1px %SECONDARYCOLOR%;
+          background: %PRIMARY3%;
+          border: solid 1px %PRIMARY3%;
           display: inline-block;
           color: white;
           text-align: center;
@@ -140,8 +140,8 @@ foam.CLASS({
           font-weight: normal;
         }
         ^ .foam-u2-ActionView-cashOutBtn:hover {
-          background: %SECONDARYCOLOR%;
-          border-color: %SECONDARYCOLOR%;
+          background: %PRIMARY3%;
+          border-color: %PRIMARY3%;
           opacity: 0.9;
         }
         ^ .foam-u2-ActionView-back {
@@ -153,7 +153,7 @@ foam.CLASS({
           border-radius: 2px;
           border: solid 1px #ebebeb;
           display: inline-block;
-          color: #093649;
+          color: %BLACK%;
           text-align: center;
           cursor: pointer;
           font-size: 14px;

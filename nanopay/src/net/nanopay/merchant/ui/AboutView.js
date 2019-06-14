@@ -18,7 +18,7 @@ foam.CLASS({
       height: 480px;
       display: table;
       position: absolute;
-      background-color: %PRIMARYCOLOR%;
+      background-color: %BLACK%;
       margin-top: -56px;
     }
     ^ .wrapper {

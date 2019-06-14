@@ -24,7 +24,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.5px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
     }
 
     ^ .link {
@@ -54,7 +54,7 @@ foam.CLASS({
       line-height: 1.67;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
     }
 
     ^ .wrong-account {
@@ -67,7 +67,7 @@ foam.CLASS({
       line-height: 1.5;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
     }
 
     ^ .foam-u2-ActionView-signIn{

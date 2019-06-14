@@ -64,7 +64,7 @@ foam.CLASS({
     font-size: 14px;
     font-weight: 300;
     letter-spacing: 0.2px;
-    color: #093649;
+    color: %BLACK%;
     line-height: 30px;
   }
   ^ .foam-u2-PopupView {

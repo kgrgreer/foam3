@@ -48,7 +48,7 @@ foam.CLASS({
     ^ .job-title{
       font-size: 12px;
       font-weight: normal;
-      color: #093649;
+      color: %BLACK%;
       opacity: 0.7;
       margin-top: 5px;
     }

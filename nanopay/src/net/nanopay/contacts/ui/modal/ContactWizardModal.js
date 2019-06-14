@@ -72,7 +72,7 @@ foam.CLASS({
       width: 100%;
     }
     ^ .foam-u2-ActionView-back {
-      color: %SECONDARYCOLOR% !important;
+      color: %PRIMARY3% !important;
       float: left;
     }
     ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {

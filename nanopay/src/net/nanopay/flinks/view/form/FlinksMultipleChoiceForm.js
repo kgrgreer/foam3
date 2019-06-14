@@ -32,7 +32,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .header1 {
           font-family: Roboto;
@@ -43,7 +43,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
         }
         ^ .qa-block {
           border: 2px solid #ffffff;
@@ -107,7 +107,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.3px;
           text-align: left;
-          color: #093649;
+          color: %BLACK%;
           margin-top: 10px;
         }
         ^ .question:first-child {

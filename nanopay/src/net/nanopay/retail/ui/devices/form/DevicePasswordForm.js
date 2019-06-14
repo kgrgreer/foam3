@@ -11,7 +11,7 @@ foam.CLASS({
         ^ .passwordLabel {
           font-size: 45px;
           letter-spacing: 24px;
-          color: #093649;
+          color: %BLACK%;
         }
       */}
     })

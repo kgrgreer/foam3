@@ -43,7 +43,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.5px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
     }
     ^ .description {
       font-size: 12px;
@@ -53,7 +53,7 @@ foam.CLASS({
       line-height: 1.5;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
     }
     ^ .label {
       font-size: 14px;
@@ -63,7 +63,7 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: %BLACK%;
       margin-left: 0;
     }
     ^ .nameDisplayContainer {
@@ -162,7 +162,7 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 12px;
       font-size: 12px;
-      color: #093649;
+      color: %BLACK%;
       outline: none;
     }
     ^ .marginLeft {
@@ -174,7 +174,7 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 12px;
       font-size: 12px;
-      color: #093649;
+      color: %BLACK%;
       outline: none;
     }
     ^ .phoneNumberInput {
@@ -183,7 +183,7 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 12px;
       font-size: 12px;
-      color: #093649;
+      color: %BLACK%;
       outline: none;
     }
     ^ .foam-u2-ActionView-closeButton {
@@ -199,13 +199,13 @@ foam.CLASS({
     ^ .foam-u2-ActionView-addButton {
       float: right;
       border-radius: 2px;
-      background-color: %SECONDARYCOLOR%;
+      background-color: %PRIMARY3%;
       color: white;
       margin-right: 60px;
       margin-top: 10px;
     }
     ^ .foam-u2-ActionView-addButton:hover {
-      background: %SECONDARYCOLOR%;
+      background: %PRIMARY3%;
       opacity: 0.9;
     }
     ^ .property-confirmEmailAddress {

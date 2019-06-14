@@ -55,7 +55,7 @@ foam.CLASS({
       width: 218px;
       height: 100px;
       float: right;
-      background-color: %SECONDARYCOLOR%;
+      background-color: %PRIMARY3%;
       letter-spacing: 0.3px;
       color: #FFFFFF;
       border-radius: 2px;
@@ -72,14 +72,14 @@ foam.CLASS({
     ^ .foam-u2-ActionView-addDevice:hover {
       background: none;
       cursor: pointer;
-      background: %SECONDARYCOLOR%;
+      background: %PRIMARY3%;
       opacity: 0.9;
     }
     ^ .foam-u2-dialog-Popup-inner {
       background-color: transparent !important;
     }
     ^ .foam-u2-view-TableView-row:hover {
-      background: %TABLEHOVERCOLOR%;
+      background: %GREY4%;
     }
     ^ .foam-u2-view-TableView-row {
       height: 40px;
