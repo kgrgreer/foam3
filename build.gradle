@@ -73,11 +73,11 @@ configurations.all {
     }
 }
 
-group = "net.nanopay"
 description = "nanopay"
 sourceCompatibility = "1.8"
 libsDirName = "lib"
 
+def group = "net.nanopay"
 def genJavaDir = "build"
 def targetDir = "target"
 def workingDir = System.getProperty("user.dir")
@@ -281,7 +281,7 @@ task copyFavicon(type: Copy) {
     include "**"
 }
 
-jar {
+task buildJar(type: Jar) {
   dependsOn tasks.withType(Copy)
   destinationDirectory = file("$targetDir/lib")
 
@@ -332,4 +332,5 @@ clean {
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
+    options.incremental = true
 }
