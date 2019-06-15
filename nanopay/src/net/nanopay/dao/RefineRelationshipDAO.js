@@ -6,6 +6,14 @@ foam.CLASS({
   properties: [
     {
       name: 'delegate',
+      factory: function() {
+        var key      = this.targetDAOKey;
+        var delegate = this.__context__[key];
+
+        foam.assert(delegate, 'Missing relationship DAO:', key);
+
+        return delegate;
+      },
       javaFactory:`
       try {
         String daoKey = getTargetDAOKey();
@@ -30,7 +38,8 @@ foam.CLASS({
         logger.error("TargetDAOKey", getTargetDAOKey(), "not found.", e);
         throw e;
       }
-      `
+      `,
+      swiftFactory: `return __context__[targetDAOKey] as! foam_dao_DAO`,
     }
   ]
 });
