@@ -14,7 +14,7 @@ foam.CLASS({
              user.getId() == 1L &&
              ! daoKey.startsWith("local") ) {
           // By convention 'local' DAOs are unauthenticated.
-          // If invoked by system user, then avoid the unnessary
+          // If invoked by system user, then avoid the unnecessary
           // overhead of authentication checks
           String localDAOKey = "local"+daoKey.substring(0, 1).toUpperCase() + daoKey.substring(1);
           foam.dao.DAO dao = (foam.dao.DAO) getX().get(localDAOKey);
