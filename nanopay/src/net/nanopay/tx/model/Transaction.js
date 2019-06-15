@@ -80,6 +80,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
+    'id',
     'type',
     'status',
     'summary',
