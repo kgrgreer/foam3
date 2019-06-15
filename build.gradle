@@ -228,6 +228,7 @@ task copyResources(type: Copy) {
     from "$rootDir/nanopay/src/resources"
     from "$rootDir/foam2/src/resources"
     into "$targetDir/classes"
+    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION:project.version] )
 }
 
 task copyJournals(type: Copy) {
@@ -237,12 +238,10 @@ task copyJournals(type: Copy) {
 }
 
 task copyImages(type: Copy) {
-    from {
-        "$rootDir/foam2/src/foam/u2"
-        "$rootDir/foam2/src/foam/nanos"
-        "$rootDir/foam2/src/foam/support"
-        "$rootDir/nanopay/src/net/nanopay"
-    }
+    from "$rootDir/foam2/src/foam/u2"
+    from "$rootDir/foam2/src/foam/nanos"
+    from "$rootDir/foam2/src/foam/support"
+    from "$rootDir/nanopay/src/net/nanopay"
     into "$targetDir/classes"
     include "images/**"
 }
@@ -259,15 +258,8 @@ task copyFavicon(type: Copy) {
     include "**"
 }
 
-task setIndexHtmlVersion(type: Exec) {
-    // println "WHAT'S GOOD NIGGA"
-    dependsOn tasks.copyResources
-    commandLine "sed", "-i", ".bak", "s/foam-bin.js/foam-bin-3.1.1.js/", "target/classes/webroot/index.html"
-}
-
 jar {
   dependsOn tasks.withType(Copy)
-  dependsOn tasks.setIndexHtmlVersion
   destinationDirectory = file("$targetDir/lib")
 
   from "$buildDir/classes/java/main"
