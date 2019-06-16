@@ -125,13 +125,14 @@ var classes = [
   'net.nanopay.fx.afex.AFEX',
   'net.nanopay.fx.afex.AFEXCredentials',
   'net.nanopay.fx.afex.Token',
-  'net.nanopay.fx.afex.Quote',
-  'net.nanopay.fx.afex.GetQuoteRequest',
   'net.nanopay.fx.afex.AddPayeeRequest',
   'net.nanopay.fx.afex.AddPayeeResponse',
   'net.nanopay.fx.afex.UpdatePayeeRequest',
   'net.nanopay.fx.afex.UpdatePayeeResponse',
   'net.nanopay.fx.afex.GetPayeeInfoResponse',
+  'net.nanopay.fx.afex.GetValueDateRequest',
+  'net.nanopay.fx.afex.Quote',
+  'net.nanopay.fx.afex.GetQuoteRequest',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',

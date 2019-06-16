@@ -212,13 +212,14 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/AFEX" },
   { name: "net/nanopay/fx/afex/AFEXCredentials"},
   { name: "net/nanopay/fx/afex/Token"},
-  { name: "net/nanopay/fx/afex/Quote"},
-  { name: "net/nanopay/fx/afex/GetQuoteRequest"},
   { name: "net/nanopay/fx/afex/AddPayeeRequest"},
   { name: "net/nanopay/fx/afex/AddPayeeResponse"},
   { name: "net/nanopay/fx/afex/UpdatePayeeRequest"},
   { name: "net/nanopay/fx/afex/UpdatePayeeResponse"},
   { name: "net/nanopay/fx/afex/GetPayeeInfoResponse"},
+  { name: "net/nanopay/fx/afex/GetValueDateRequest"},
+  { name: "net/nanopay/fx/afex/Quote"},
+  { name: "net/nanopay/fx/afex/GetQuoteRequest"},
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },

@@ -12,29 +12,6 @@ foam.INTERFACE({
       type: 'net.nanopay.fx.afex.Token'
     },
     {
-      name: 'getQuote',
-      documentation: 'Get quote',
-      async: true,
-      type: 'net.nanopay.fx.afex.Quote',
-      args: [
-        {
-          type: 'net.nanopay.fx.afex.GetQuoteRequest',
-          name: 'request'
-        }
-      ]
-    },
-    {
-      name: 'getValueDate',
-      async: true,
-      type: 'net.nanopay.fx.afex.Quote',
-      args: [
-        // {
-        //   type: 'net.nanopay.fx.ascendantfx.model.GetQuoteRequest',
-        //   name: 'request'
-        // }
-      ]
-    },
-    {
       name: 'addPayee',
       documentation: 'To add a new payee',
       async: true,
@@ -82,5 +59,28 @@ foam.INTERFACE({
         }
       ]
     },
+    {
+      name: 'getValueDate',
+      async: true,
+      type: 'String',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.GetValueDateRequest',
+          name: 'request'
+        }
+      ]
+    },
+    {
+      name: 'getQuote',
+      documentation: 'Get quote',
+      async: true,
+      type: 'net.nanopay.fx.afex.Quote',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.GetQuoteRequest',
+          name: 'request'
+        }
+      ]
+    }
   ]
 });

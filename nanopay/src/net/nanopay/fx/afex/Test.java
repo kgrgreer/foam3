@@ -14,7 +14,8 @@ public class Test implements ContextAgent {
     // testAddPayee(afexService);
     // testUpdatePayee(afexService);
     // testDeletePayee(afexService);
-    testGetPayeeInfo(afexService);
+    // testGetPayeeInfo(afexService);
+    testGetValueDate(afexService);
 
   }
 
@@ -74,5 +75,11 @@ public class Test implements ContextAgent {
 
   private void testGetPayeeInfo(AFEXService afexService) {
     afexService.getPayeeInfo("USD636954085609328569");
+  }
+
+  private void testGetValueDate(AFEXService afexService) {
+    GetValueDateRequest getValueDateRequest = new GetValueDateRequest();
+    getValueDateRequest.setCurrencyPair("USDCAD");
+    afexService.getValueDate(getValueDateRequest);
   }
 }

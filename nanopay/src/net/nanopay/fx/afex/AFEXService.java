@@ -16,9 +16,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,69 +81,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       return token;
     } catch (IOException e) {
       logger.error(e);
-    }
-
-    return null;
-  }
-
-  @Override
-  public Quote getQuote(GetQuoteRequest request) {
-    try {
-      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/quote");
-      uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair())
-                .setParameter("ValueDate", request.getValueDate())
-                .setParameter("OptionDate", request.getOptionDate());
-
-      HttpGet httpGet = new HttpGet(uriBuilder.build());
-      httpGet.addHeader("API-Key", apiKey);
-      httpGet.addHeader("Content-Type", "application/json");
-      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-
-      Quote quote = (Quote) jsonParser.parseString(response, Quote.class);
-      System.out.println("quote: ");
-      System.out.println(quote.getRate());
-      System.out.println(quote.getInvertedRate());
-      System.out.println(quote.getValueDate());
-      System.out.println(quote.getOptionDate());
-      System.out.println(quote.getQuoteId());
-      System.out.println(quote.getTerms());
-      System.out.println(quote.getAmount());
-      System.out.println(quote.getIsAmountSettlement());
-
-      return quote;
-    } catch (IOException | URISyntaxException e) {
-      logger.error(e);
-    }
-
-    return null;
-  }
-
-  @Override
-  public Quote getValueDate() {
-    try {
-      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/valuedates");
-      uriBuilder.setParameter("CurrencyPair", "USDCAD")
-        .setParameter("ValueType", "CASH");
-
-      HttpGet httpGet = new HttpGet(uriBuilder.build());
-
-      httpGet.addHeader("API-Key", apiKey);
-      httpGet.addHeader("Content-Type", "application/json");
-
-      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
-
-      BufferedReader rd = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-      StringBuilder sb = new StringBuilder();
-      String line;
-      while ( (line = rd.readLine()) != null ) {
-        sb.append(line);
-      }
-
-      System.out.println("value date response: " + sb.toString());
-
-    } catch (IOException | URISyntaxException e) {
-      e.printStackTrace();
     }
 
     return null;
@@ -317,6 +252,69 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       System.out.println(getPayeeInfoResponse.getBeneficiaryCountryCode());
 
       return getPayeeInfoResponse;
+    } catch (IOException | URISyntaxException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public String getValueDate(GetValueDateRequest request) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/valuedates");
+      uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair())
+                .setParameter("ValueType", request.getValueType());
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+      httpGet.addHeader("API-Key", apiKey);
+      httpGet.addHeader("Content-Type", "application/json");
+
+      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+        throw new RuntimeException("Get AFEX value date information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          + httpResponse.getStatusLine().getReasonPhrase());
+      }
+
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+      System.out.println("value date response: " + response.substring(1, response.length() - 1));
+
+      return response.substring(1, response.length() - 1);
+    } catch (IOException | URISyntaxException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+  @Override
+  public Quote getQuote(GetQuoteRequest request) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/quote");
+      uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair())
+        .setParameter("ValueDate", request.getValueDate())
+        .setParameter("OptionDate", request.getOptionDate());
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+      httpGet.addHeader("API-Key", apiKey);
+      httpGet.addHeader("Content-Type", "application/json");
+      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+
+      Quote quote = (Quote) jsonParser.parseString(response, Quote.class);
+      System.out.println("quote: ");
+      System.out.println(quote.getRate());
+      System.out.println(quote.getInvertedRate());
+      System.out.println(quote.getValueDate());
+      System.out.println(quote.getOptionDate());
+      System.out.println(quote.getQuoteId());
+      System.out.println(quote.getTerms());
+      System.out.println(quote.getAmount());
+      System.out.println(quote.getIsAmountSettlement());
+
+      return quote;
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
     }
