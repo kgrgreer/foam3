@@ -219,6 +219,7 @@ var classes = [
   'net.nanopay.fx.FXUserStatus',
   'net.nanopay.fx.afex.AFEXTransaction',
   'net.nanopay.fx.afex.AFEXTransactionPlanDAO',
+  'net.nanopay.fx.afex.AFEXBMOTransactionPlanDAO',
   'net.nanopay.fx.afex.AFEXServiceProvider',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
