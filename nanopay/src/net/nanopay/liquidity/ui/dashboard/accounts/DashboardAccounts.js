@@ -9,6 +9,10 @@ foam.CLASS({
   name: 'DashboardAccounts',
   extends: 'foam.u2.View',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   documentation: `
     A configurable view to to render a card with 
     configurable contents and rich choice view dropdowns
@@ -21,13 +25,27 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
+    'foam.comics.v2.DAOBrowserView',
+    'foam.u2.borders.CardBorder'
   ],
   exports: [
     'controllerMode'
   ],
+
+  messages: [
+    {
+      name: 'CARD_HEADER',
+      message: 'ACCOUNTS',
+    },
+    {
+      name: 'BALANCE_NOTE',
+      message: 'Total value shown in home currency',
+    },
+  ],
+
   properties: [
     {
-      class: 'FObjectProperty',
+      class: 'foam.dao.DAOProperty',
       name: 'data'
     },
     {
@@ -40,12 +58,11 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      debugger;
+      var self = this;
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start('h1').add('test').end()
-        .add(self.slot(function(data, config, data$id, data$denomination) {
+        .add(self.slot(function(data) {
           return self.E()
             .start(self.Rows)
               .start(self.CardBorder).addClass(this.myClass('balance-card'))
@@ -54,24 +71,20 @@ foam.CLASS({
                     .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
                   .end()
                   .start().addClass(this.myClass('balance'))
-                    .add(data.findBalance(self.__context__).then(balance => self.parseBalanceToDollarString(balance)))
+                    // TODO: Work with exchange rates
+                    // .add(data.findBalance(self.__context__).then(balance => self.parseBalanceToDollarString(balance)))
                   .end()
                   .start().addClass(this.myClass('balance-note'))
                     .add(self.BALANCE_NOTE)
-                    .add(` (${data$denomination})`)
+                    // .add(` (${data$denomination})`)
                   .end()
                 .end()
               .end()
               .start(self.CardBorder)
-                .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
                 .start(foam.comics.v2.DAOBrowserView, {
-                  data: self.transactionDAO
-                          .where
-                            (self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id)),
-                                    (self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id))  
-                            ),
+                  data: data.where(self.TRUE)
                 })
-                  .addClass(this.myClass('transactions-table'))
+                  .addClass(this.myClass('accounts-table'))
                 .end()
               .end()
             .end();
