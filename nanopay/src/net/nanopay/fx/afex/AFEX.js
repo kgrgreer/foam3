@@ -65,8 +65,12 @@ foam.INTERFACE({
       type: 'String',
       args: [
         {
-          type: 'net.nanopay.fx.afex.GetValueDateRequest',
-          name: 'request'
+          type: 'String',
+          name: 'currencyPair'
+        },
+        {
+          type: 'String',
+          name: 'valueType'
         }
       ]
     },
@@ -78,6 +82,18 @@ foam.INTERFACE({
       args: [
         {
           type: 'net.nanopay.fx.afex.GetQuoteRequest',
+          name: 'request'
+        }
+      ]
+    },
+    {
+      name: 'createTrade',
+      documentation: 'Create a trade or outright forward to convert from one currency to another',
+      async: true,
+      type: 'net.nanopay.fx.afex.CreateTradeResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CreateTradeRequest',
           name: 'request'
         }
       ]

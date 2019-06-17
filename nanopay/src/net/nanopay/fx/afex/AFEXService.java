@@ -110,7 +110,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
         throw new RuntimeException("Add AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
           + httpResponse.getStatusLine().getReasonPhrase());
       }
@@ -162,7 +162,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
         throw new RuntimeException("Update AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
           + httpResponse.getStatusLine().getReasonPhrase());
       }
@@ -206,7 +206,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
         throw new RuntimeException("Delete AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
           + httpResponse.getStatusLine().getReasonPhrase());
       }
@@ -236,7 +236,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 
-      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
         throw new RuntimeException("Get AFEX payee information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
           + httpResponse.getStatusLine().getReasonPhrase());
       }
@@ -260,11 +260,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String getValueDate(GetValueDateRequest request) {
+  public String getValueDate(String currencyPair, String valueType) {
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/valuedates");
-      uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair())
-                .setParameter("ValueType", request.getValueType());
+      uriBuilder.setParameter("CurrencyPair", currencyPair)
+                .setParameter("ValueType", valueType);
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
 
@@ -273,7 +273,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 
-      if ( httpResponse.getStatusLine().getStatusCode() != 200 ) {
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
         throw new RuntimeException("Get AFEX value date information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
           + httpResponse.getStatusLine().getReasonPhrase());
       }
@@ -316,6 +316,50 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       return quote;
     } catch (IOException | URISyntaxException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public CreateTradeResponse createTrade(CreateTradeRequest request) {
+    try {
+      HttpPost httpPost = new HttpPost(AFEXAPI + "api/trades/create");
+
+      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+      List<NameValuePair> nvps = new ArrayList<>();
+      nvps.add(new BasicNameValuePair("Amount", request.getAmount()));
+      // todo: need quote id?
+      //nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
+      nvps.add(new BasicNameValuePair("SettlementCcy", request.getSettlementCcy()));
+      nvps.add(new BasicNameValuePair("TradeCcy", request.getTradeCcy()));
+      nvps.add(new BasicNameValuePair("ValueDate", getValueDate(request.getTradeCcy() + request.getSettlementCcy(), "CASH")));
+
+      httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+      CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+        throw new RuntimeException("Add AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          + httpResponse.getStatusLine().getReasonPhrase());
+      }
+
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+
+      CreateTradeResponse createTradeResponse = (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
+
+      System.out.println(createTradeResponse.getTradeNumber());
+      System.out.println(createTradeResponse.getAmount());
+      System.out.println(createTradeResponse.getRate());
+      System.out.println(createTradeResponse.getTradeCcy());
+      System.out.println(createTradeResponse.getSettlementAmt());
+      System.out.println(createTradeResponse.getSettlementCcy());
+      System.out.println(createTradeResponse.getValueDate());
+
+      return createTradeResponse;
+    } catch (IOException e) {
       logger.error(e);
     }
 

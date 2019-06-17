@@ -3,6 +3,9 @@ package net.nanopay.fx.afex;
 import foam.core.ContextAgent;
 import foam.core.X;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Test implements ContextAgent {
 
   @Override
@@ -10,26 +13,18 @@ public class Test implements ContextAgent {
     AFEXService afexService = new AFEXService(x);
 
     // testGetToken(afexService);
-    // testGetQuote(afexService);
     // testAddPayee(afexService);
     // testUpdatePayee(afexService);
     // testDeletePayee(afexService);
     // testGetPayeeInfo(afexService);
-    testGetValueDate(afexService);
+    // testGetValueDate(afexService);
+    // testGetQuote(afexService);
+    testCreateTrade(afexService);
 
   }
 
   private void testGetToken(AFEXService afexService) {
     afexService.getToken();
-  }
-
-  private void testGetQuote(AFEXService afexService) {
-    GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
-    getQuoteRequest.setCurrencyPair("USDCAD");
-    getQuoteRequest.setValueDate("2019/06/05");
-    getQuoteRequest.setOptionDate("2019/06/03");
-
-    afexService.getQuote(getQuoteRequest);
   }
 
   private void testAddPayee(AFEXService afexService) {
@@ -78,8 +73,26 @@ public class Test implements ContextAgent {
   }
 
   private void testGetValueDate(AFEXService afexService) {
-    GetValueDateRequest getValueDateRequest = new GetValueDateRequest();
-    getValueDateRequest.setCurrencyPair("USDCAD");
-    afexService.getValueDate(getValueDateRequest);
+    afexService.getValueDate("USDCAD", "CASH");
   }
+
+  private void testGetQuote(AFEXService afexService) {
+    GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
+    getQuoteRequest.setCurrencyPair("USDCAD");
+    getQuoteRequest.setValueDate("2019/06/19");
+    getQuoteRequest.setOptionDate("2019/06/17");
+
+    afexService.getQuote(getQuoteRequest);
+  }
+
+  private void testCreateTrade(AFEXService afexService) {
+    CreateTradeRequest createTradeRequest = new CreateTradeRequest();
+    createTradeRequest.setAmount("100");
+    createTradeRequest.setSettlementCcy("CAD");
+    createTradeRequest.setTradeCcy("USD");
+
+    afexService.createTrade(createTradeRequest);
+  }
+
+
 }

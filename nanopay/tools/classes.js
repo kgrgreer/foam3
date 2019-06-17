@@ -130,9 +130,10 @@ var classes = [
   'net.nanopay.fx.afex.UpdatePayeeRequest',
   'net.nanopay.fx.afex.UpdatePayeeResponse',
   'net.nanopay.fx.afex.GetPayeeInfoResponse',
-  'net.nanopay.fx.afex.GetValueDateRequest',
   'net.nanopay.fx.afex.Quote',
   'net.nanopay.fx.afex.GetQuoteRequest',
+  'net.nanopay.fx.afex.CreateTradeRequest',
+  'net.nanopay.fx.afex.CreateTradeResponse',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
