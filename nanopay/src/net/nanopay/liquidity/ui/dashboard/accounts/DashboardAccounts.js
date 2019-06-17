@@ -45,6 +45,37 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start('h1').add('test').end()
+        .add(self.slot(function(data, config, data$id, data$denomination) {
+          return self.E()
+            .start(self.Rows)
+              .start(self.CardBorder).addClass(this.myClass('balance-card'))
+                .start(self.Rows)
+                  .start()
+                    .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
+                  .end()
+                  .start().addClass(this.myClass('balance'))
+                    .add(data.findBalance(self.__context__).then(balance => self.parseBalanceToDollarString(balance)))
+                  .end()
+                  .start().addClass(this.myClass('balance-note'))
+                    .add(self.BALANCE_NOTE)
+                    .add(` (${data$denomination})`)
+                  .end()
+                .end()
+              .end()
+              .start(self.CardBorder)
+                .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
+                .start(foam.comics.v2.DAOBrowserView, {
+                  data: self.transactionDAO
+                          .where
+                            (self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id)),
+                                    (self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id))  
+                            ),
+                })
+                  .addClass(this.myClass('transactions-table'))
+                .end()
+              .end()
+            .end();
+        }));
     }
   ]
 });
