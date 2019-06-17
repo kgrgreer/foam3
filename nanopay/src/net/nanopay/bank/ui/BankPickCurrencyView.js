@@ -24,7 +24,7 @@ foam.CLASS({
 
   css: `
   ^ {
-    background-color: #f9fbff;
+    background-color: %GREY5%;
   }
   ^ .bank-currency-pick-height {
     height: 100%;
@@ -63,7 +63,7 @@ foam.CLASS({
     margin-right: 22px;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm {
-    background-color: #f9fbff;
+    background-color: %GREY5%;
     margin-left: 28px;
     height: auto;
     padding: 0;

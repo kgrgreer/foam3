@@ -18,12 +18,10 @@ foam.CLASS({
     }
     body {
       font-family: 'Lato', sans-serif;
-      background: #f9fbff;
     }
     .stack-wrapper {
       height: 100%;
       padding: 0;
-      background: #f9fbff;
     }
     .full-screen {
       position: fixed;
@@ -1008,7 +1006,6 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background-color: #f9fbff !important;
     }
 
     .net-nanopay-cico-ui-bankAccount-form-BankForm input {
@@ -1020,14 +1017,6 @@ foam.CLASS({
     }
 
     /* Wizards */
-    .net-nanopay-sme-onboarding-ui-BusinessRegistrationWizard {
-      background-color: #f9fbff !important;
-    }
-
-    .net-nanopay-sme-ui-SendRequestMoney {
-      background-color: #f9fbff !important;
-    }
-
     .foam-u2-ActionView-save {
       color: #525455 !important;
       background: none !important;

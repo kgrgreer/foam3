@@ -61,7 +61,7 @@ foam.CLASS({
   
   .error-table-container .foam-u2-view-TableView tbody > tr {
     text-align: center;
-    background-color: #f9fbff;
+    background-color: %GREY5%;
   }
   
   .error-table-container .arrow-icon {
