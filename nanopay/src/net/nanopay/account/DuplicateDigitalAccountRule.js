@@ -22,7 +22,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         if ( obj instanceof DigitalAccount &&
-             ((DigitalAccount) obj).getId() == 0L ) {
+             oldObj == null ) {
           DigitalAccount digitalAccount = (DigitalAccount) obj;
           Count count = (Count) ((DAO) x.get("accountDAO"))
             .where(
