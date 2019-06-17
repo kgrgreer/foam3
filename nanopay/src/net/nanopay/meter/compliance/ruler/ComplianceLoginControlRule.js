@@ -37,18 +37,6 @@ foam.CLASS({
           localUserDAO.put(user);
         }
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '// No-op'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: `return DESCRIBE_TEXT;`
     }
   ]
 });
