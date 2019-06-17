@@ -79,6 +79,7 @@ public class Test implements ContextAgent {
     getQuoteRequest.setCurrencyPair("USDCAD");
     getQuoteRequest.setValueDate("2019/06/19");
     getQuoteRequest.setOptionDate("2019/06/17");
+    getQuoteRequest.setAmount("100");
 
     afexService.getQuote(getQuoteRequest);
   }
