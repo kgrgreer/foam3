@@ -3,6 +3,7 @@ package net.nanopay.meter.compliance.identityMind;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
+import foam.nanos.http.HttpParameters;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 
@@ -20,16 +21,17 @@ public class IdentityMindWebAgent implements WebAgent {
   public void execute(X x) {
     DAO identityMindResponseDAO = (DAO) x.get("identityMindResponseDAO");
     DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+    HttpParameters p = x.get(HttpParameters.class);
+    String data = p.getParameter("data");
     HttpServletRequest request = x.get(HttpServletRequest.class);
     JSONParser jsonParser = new JSONParser();
     jsonParser.setX(x);
 
     try {
-    String webhookBody = request.getReader().lines().collect(Collectors.joining());
     IdentityMindResponse webhookResponse = (IdentityMindResponse)
-        jsonParser.parseString(webhookBody, IdentityMindResponse.class);
+        jsonParser.parseString(data, IdentityMindResponse.class);
 
-    System.out.println("IDMWEBHOOKBODY###: " + webhookBody);
+    System.out.println("IDMWEBHOOKBODY###: " + data);
     System.out.println("IDMWEBHOOKRESPONSE###: " + webhookResponse.toString());
 
     ComplianceApprovalRequest approvalRequest = (ComplianceApprovalRequest) approvalRequestDAO.find(
