@@ -1016,8 +1016,6 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/AlarmReason' },
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
-  { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
+  { name: 'net/nanopay/alarming/AlarmAndMonitoring' }
 
-  // dao
-  { name: 'net/nanopay/dao/RefineRelationshipDAO' }
 ]);
