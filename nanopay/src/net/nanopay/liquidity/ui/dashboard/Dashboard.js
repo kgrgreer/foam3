@@ -83,7 +83,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-          .tag(this.DashboardAccounts, { data: this.data })
+          .tag(this.DashboardAccounts, { data: this.accounts })
     }
   ]
 });

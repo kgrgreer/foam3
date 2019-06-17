@@ -35,11 +35,12 @@ foam.CLASS({
       factory: function() {
         return this.ControllerMode.VIEW;
       }
-    }
+    },
   ],
 
   methods: [
     function initE() {
+      debugger;
       this.SUPER();
       this
         .addClass(this.myClass())
