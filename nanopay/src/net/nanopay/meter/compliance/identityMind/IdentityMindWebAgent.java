@@ -58,7 +58,7 @@ public class IdentityMindWebAgent implements WebAgent {
       logger.error(message, e);
       try {
 		    response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-	    } catch (IOException e1) {
+	     } catch (IOException e1) {
         logger.error(message, e1);
 	    }
     }
