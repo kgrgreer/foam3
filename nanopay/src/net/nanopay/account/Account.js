@@ -23,6 +23,10 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount'
   ],
 
+  imports: [
+    'controllerMode?'
+  ],
+
   searchColumns: [
     'name', 'id', 'denomination', 'type'
   ],
@@ -83,6 +87,10 @@ foam.CLASS({
     {
       name: 'accountType',
       title: 'Account type',
+      isAvailable: function( controllerMode ){
+        if ( controllerMode === foam.u2.ControllerMode.CREATE ) return false;
+        return true;
+      },
     },
     {
       name: 'accountDetails',
@@ -172,7 +180,6 @@ foam.CLASS({
       name: 'type',
       documentation: 'The type of the account.',
       transient: true,
-      visibility: 'RO',
       factory: function() {
         return this.cls_.name;
       },

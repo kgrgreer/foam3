@@ -58,7 +58,7 @@ foam.CLASS({
       name: 'controllerMode',
       factory: function() {
         return this.ControllerMode.CREATE;
-      }
+      },
     },
     {
       class: 'foam.u2.ViewSpecWithJava',
@@ -92,7 +92,6 @@ foam.CLASS({
   ],
   methods: [
     function initE() {
-      debugger;
       var self = this;
       this.SUPER();
       this
