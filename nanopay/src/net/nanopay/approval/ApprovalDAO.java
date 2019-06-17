@@ -31,11 +31,11 @@ public class ApprovalDAO
       // if points are sufficient to consider object approved
       if ( getCurrentPoints(requests) >= request.getRequiredPoints() ||
       getCurrentRejectedPoints(requests) >= request.getRequiredRejectedPoints() ) {
-        //puts object to its original dao
-        rePutObject(request);
-
         //removes all the requests that were not approved to clean up approvalRequestDAO
         removeUnusedRequests(requests);
+        
+        //puts object to its original dao
+        rePutObject(request);
       }
     }
     return request;

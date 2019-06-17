@@ -14,8 +14,7 @@ foam.CLASS({
     'foam.nanos.analytics.Candlestick',
     'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
-    'foam.nanos.notification.Notification'
+    'static foam.mlang.MLang.EQ'
   ],
 
   methods: [
@@ -36,11 +35,11 @@ foam.CLASS({
       Date currentCloseTime = new Date();
       currentCloseTime.setSeconds(0);
       Candlestick receiveResponses = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
-        EQ(Candlestick.KEY, config.getPreRequest())
+        EQ(Candlestick.KEY, config.getPostRequest())
       );
 
       Candlestick sentRequest = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
-        EQ(Candlestick.KEY, config.getPostRequest())
+        EQ(Candlestick.KEY, config.getPreRequest())
       );
   
       Candlestick timeout = (Candlestick) omDAO.orderBy(new foam.mlang.order.Desc(Candlestick.CLOSE_TIME)).find(
@@ -72,6 +71,12 @@ foam.CLASS({
           report.setEndCount(report.getEndCount() + (int) receiveResponses.getCount());
       }
 
+      if ( config.getMonitorType() == MonitorType.CREDENTIALS  && updateAlarm ) {
+        alarm = this.checkCredentials(x, config, report, alarm);
+        alarmDAO.put(alarm);
+        return;
+      }
+
       if ( timeout != null && (Math.abs(timeout.getCloseTime().getTime() - currentCloseTime.getTime()) < config.getCycleTime()) ) {
           updateAlarm = true;
           report.setTimeoutCount(report.getTimeoutCount() + (int) timeout.getCount());
@@ -84,13 +89,11 @@ foam.CLASS({
         if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.TIMEOUT) ) {
           alarm.setReason(AlarmReason.TIMEOUT);
           alarm.setIsActive(true);
-          createNotification(x,config);
         }
       } else if ( report.getStartCount() != 0  && report.getEndCount() != 0  && ((float) report.getEndCount() /(float) report.getStartCount()) < (float) config.getAlarmValue() / 100 ) {
         if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CONGESTION) ) {        
           alarm.setReason(AlarmReason.CONGESTION);
           alarm.setIsActive(true);
-          createNotification(x,config);
         }
       } else {
         if ( alarm.getIsActive() ) {
@@ -117,7 +120,8 @@ foam.CLASS({
       javaCode: 'return "";'
     },
     {
-      name: 'createNotification',
+      name: 'checkCredentials',
+      type: 'net.nanopay.alarming.Alarm',
       args: [
         {
           type: 'Context',
@@ -126,21 +130,35 @@ foam.CLASS({
         {
           type: 'net.nanopay.alarming.AlarmConfig',
           name: 'config'
+        },
+        {
+          type: 'net.nanopay.alarming.MonitoringReport',
+          name: 'report',
+        },
+        {
+          type: 'net.nanopay.alarming.Alarm',
+          name: 'alarm'
         }
       ],
       javaCode: `
-      try {
-        Notification notification = new Notification();
-        notification.setUserId(config.getAlertUser());
-        notification.setGroupId(config.getAlertGroup());
-        notification.setEmailIsEnabled(true);
-        notification.setNotificationType("Alarm");
-        notification.setBody("An alarm has been triggered for " + config.getName());
-        ((DAO)x.get("notificationDAO")).put(notification);
-      } catch (Exception e) {
-        Logger logger = (Logger) x.get("logger");
-        logger.error(e);
+      if ( report.getStartCount() != 0  && report.getEndCount() != 0  && ((float) report.getEndCount() /(float) report.getStartCount()) < (float) config.getAlarmValue() / 100 ) {
+        if ( ! alarm.getIsActive() || !( alarm.getReason() == AlarmReason.CREDENTIALS) ) {        
+          alarm.setReason(AlarmReason.CREDENTIALS);
+          alarm.setIsActive(true);
+        }
+      }  else if ( report.getStartCount() != 0  && report.getEndCount() == 0  ) {
+        alarm.setReason(AlarmReason.CREDENTIALS);
+        alarm.setIsActive(true);
+      } else {
+        if ( alarm.getIsActive() ) {
+          report.setStartCount(0);
+          report.setEndCount(0);
+          report.setTimeoutCount(0);
+          alarm.setReason(AlarmReason.NONE);
+          alarm.setIsActive(false);
+        }
       }
+      return alarm;
       `
     }
   ]
