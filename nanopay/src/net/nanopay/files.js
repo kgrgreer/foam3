@@ -978,8 +978,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
 
   // liquidity
-  { name: 'net/nanopay/liquidity/ui/Dashboard' },
-  { name: 'net/nanopay/liquidity/ui/DashboardAccounts' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
   { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/Overview' },

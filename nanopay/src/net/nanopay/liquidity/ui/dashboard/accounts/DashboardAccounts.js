@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.liquidity.ui',
+  package: 'net.nanopay.liquidity.ui.dashboard.accounts',
   name: 'DashboardAccounts',
   extends: 'foam.u2.View',
 
@@ -21,7 +21,6 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
-    'foam.comics.v2.DataSummaryCard'
   ],
   exports: [
     'controllerMode'
@@ -36,22 +35,6 @@ foam.CLASS({
       factory: function() {
         return this.ControllerMode.VIEW;
       }
-    },
-    {
-      class: 'FObjectArray',
-      of: 'foam.dao.DAOProperty',
-      name: 'selectors',
-      factory: function() {
-        return [
-          {
-            class: '',
-            name: ''
-          },
-          {
-            class: ''
-          }
-        ]
-      }
     }
   ],
 
@@ -60,7 +43,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .start(this.DataSummaryCard, { data: data }).addClass(this.myClass('summary-card')).end()
+        .start('h1').add('test').end()
     }
   ]
 });

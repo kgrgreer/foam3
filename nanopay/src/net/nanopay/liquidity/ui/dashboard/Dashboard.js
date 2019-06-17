@@ -5,12 +5,12 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.liquidity.ui',
+  package: 'net.nanopay.liquidity.ui.dashboard',
   name: 'Dashboard',
   extends: 'foam.u2.View',
 
   requires: [
-    'net.nanopay.liquidity.ui.DashboardAccounts'
+    'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts'
   ],
 
   imports: [
