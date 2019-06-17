@@ -11,10 +11,10 @@ foam.CLASS({
 
   tableColumns: [
     'responseId',
-    'created',
     'type',
     'user',
-    'userLabel'
+    'userLabel',
+    'created'
   ],
 
   searchColumns: [
