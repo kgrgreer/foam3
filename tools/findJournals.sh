@@ -19,8 +19,6 @@ while getopts "I:J:" opt ; do
     esac
 done
 
-echo "INFO :: $0 IN_FILE=${IN_FILE} OUT_DIR=${OUT_DIR}"
-
 declare -a sources=(
   "foam2/src"
   "nanopay/src"
@@ -28,8 +26,8 @@ declare -a sources=(
  # "interac/src"
 )
 
-while read -r file; do
+grep -v '^#' < "${IN_FILE:-/dev/stdin}" | while read -r file; do
     find ${sources[@]} -name "${file}" -o -name "${file}.jrl"
-done < "${IN_FILE:-/dev/stdin}"
+done
 
 exit 0
