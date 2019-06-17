@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'KotakCOTransaction',
-  extends: 'net.nanopay.tx.cico.COTransaction',
+  extends: 'net.nanopay.tx.model.Transaction',
 
   documentation: `Hold Kotak Bank specific properties`,
 
@@ -64,6 +64,39 @@ foam.CLASS({
     {
       class: 'String',
       name: 'UTRNumber'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'canTransfer',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'oldTxn',
+          type: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      type: 'Boolean',
+      javaCode: `
+      return false;
+      `
+    },
+    {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      javaCode: `
+      super.limitedCopyFrom(other);
+      setAmount(((KotakCOTransaction) other).getAmount());
+      `
     }
   ]
 });
