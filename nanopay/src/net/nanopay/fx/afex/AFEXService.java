@@ -30,6 +30,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   private CloseableHttpClient httpClient;
   private JSONParser jsonParser;
   private Logger logger;
+  private String valueDate;
 
   public AFEXService(X x) {
     setX(x);
@@ -325,6 +326,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   @Override
   public CreateTradeResponse createTrade(CreateTradeRequest request) {
     try {
+      valueDate = getValueDate(request.getTradeCcy() + request.getSettlementCcy(), "CASH");
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/trades/create");
 
       httpPost.addHeader("API-Key", apiKey);
@@ -336,13 +338,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       //nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
       nvps.add(new BasicNameValuePair("SettlementCcy", request.getSettlementCcy()));
       nvps.add(new BasicNameValuePair("TradeCcy", request.getTradeCcy()));
-      nvps.add(new BasicNameValuePair("ValueDate", getValueDate(request.getTradeCcy() + request.getSettlementCcy(), "CASH")));
+      nvps.add(new BasicNameValuePair("ValueDate", valueDate));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Add AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+        throw new RuntimeException("Create AFEX trade failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
           + httpResponse.getStatusLine().getReasonPhrase());
       }
 
@@ -359,6 +361,46 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       System.out.println(createTradeResponse.getValueDate());
 
       return createTradeResponse;
+    } catch (IOException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public net.nanopay.fx.afex.CreatePaymentResponse createPayment(CreatePaymentRequest request) {
+    try {
+      HttpPost httpPost = new HttpPost(AFEXAPI + "api/payments/create");
+
+      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+      List<NameValuePair> nvps = new ArrayList<>();
+      nvps.add(new BasicNameValuePair("Amount", request.getAmount()));
+      nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
+      nvps.add(new BasicNameValuePair("PaymentDate", valueDate));
+      nvps.add(new BasicNameValuePair("VendorId", request.getVendorId()));
+
+      httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+      CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+        throw new RuntimeException("Create AFEX payment failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          + httpResponse.getStatusLine().getReasonPhrase());
+      }
+
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+
+      CreatePaymentResponse createPaymentResponse = (CreatePaymentResponse) jsonParser.parseString(response, CreatePaymentResponse.class);
+
+      System.out.println(createPaymentResponse.getReferenceNumber());
+      System.out.println(createPaymentResponse.getAmount());
+      System.out.println(createPaymentResponse.getCcy());
+      System.out.println(createPaymentResponse.getPaymentDate());
+      System.out.println(createPaymentResponse.getMessage());
+
+      return createPaymentResponse;
     } catch (IOException e) {
       logger.error(e);
     }

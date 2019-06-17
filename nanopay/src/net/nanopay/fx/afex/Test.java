@@ -3,9 +3,6 @@ package net.nanopay.fx.afex;
 import foam.core.ContextAgent;
 import foam.core.X;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class Test implements ContextAgent {
 
   @Override
@@ -20,6 +17,7 @@ public class Test implements ContextAgent {
     // testGetValueDate(afexService);
     // testGetQuote(afexService);
     testCreateTrade(afexService);
+    testCreatePayment(afexService);
 
   }
 
@@ -94,5 +92,13 @@ public class Test implements ContextAgent {
     afexService.createTrade(createTradeRequest);
   }
 
+  private void testCreatePayment(AFEXService afexService) {
+    CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+    createPaymentRequest.setAmount("50");
+    createPaymentRequest.setCurrency("USD");
+    createPaymentRequest.setVendorId("CADAmy");
+
+    afexService.createPayment(createPaymentRequest);
+  }
 
 }

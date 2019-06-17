@@ -97,6 +97,18 @@ foam.INTERFACE({
           name: 'request'
         }
       ]
+    },
+    {
+      name: 'createPayment',
+      documentation: 'Create scheduled payment',
+      async: true,
+      type: 'net.nanopay.fx.afex.CreatePaymentResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CreatePaymentRequest',
+          name: 'request'
+        }
+      ]
     }
   ]
 });
