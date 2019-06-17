@@ -197,6 +197,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/Corridor' },
   { name: 'net/nanopay/fx/FXProvider' },
   { name: 'net/nanopay/fx/FXUserStatus' },
+  { name: 'net/nanopay/fx/KotakFxTransaction' },
+  { name: 'net/nanopay/fx/ManualFxApprovalRequest' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
@@ -227,7 +229,9 @@ FOAM_FILES([
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },
+  { name: 'net/nanopay/tx/CreateManualFxRule' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
+  { name: 'net/nanopay/tx/ManualFxRule' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
@@ -280,7 +284,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
   { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
-  { name: 'net/nanopay/tx/ruler/BusinessTransactionLimitRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
@@ -297,6 +300,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FailedTransactionNotification' },
   { name: 'net/nanopay/tx/DebtTransaction' },
   { name: 'net/nanopay/tx/CompliancePlanDAO' },
+  { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
+  { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
+  { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -454,6 +460,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/alterna/AlternaTransactionPlanDAO' },
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeTransaction' },
+  { name: 'net/nanopay/tx/stripe/StripeCustomer' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardType' },
@@ -665,7 +672,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/transfer/PlanSelectionWizard', flags: ['web'] },
 
   // ui
-  { name: 'net/nanopay/ui/topNavigation/BusinessLogoView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/CurrencyChoiceView', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/NoMenuTopNav', flags: ['web'] },
   { name: 'net/nanopay/ui/topNavigation/SubMenuBar', flags: ['web'] },
@@ -687,6 +693,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/ui/ApprovalRequestController', flags: ['web'] },
 
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
@@ -706,6 +713,7 @@ FOAM_FILES([
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
   { name: 'net/nanopay/contacts/ContactStatus' },
+  { name: 'net/nanopay/contacts/ContactMigrationRule' },
   { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/ContactWizardModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
@@ -772,6 +780,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/TwoFactorAuthView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiOverlayActionListView', flags: ['web'] },
@@ -822,6 +831,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
   { name: 'net/nanopay/sme/onboarding/ui/WizardView' },
   { name: 'net/nanopay/sme/onboarding/ui/WizardPageView' },
+  { name: 'net/nanopay/sme/onboarding/ui/TwoFactorAuthOnboarding', flags: ['web'] },
 
   // xero
   { name: 'net/nanopay/accounting/ResultResponse' },
@@ -869,7 +879,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/IpHistory' },
   { name: 'net/nanopay/meter/AdditionalDocumentsUpdatedIpHistoryDAO' },
   { name: 'net/nanopay/meter/SigningOfficerAssignedIpHistoryDAO' },
-  { name: 'net/nanopay/meter/Report' },
+  { name: 'net/nanopay/meter/reports/Report' },
   { name: 'net/nanopay/meter/SkipNullReferencedPropertyDAO' },
   { name: 'net/nanopay/meter/BusinessStatusContactDAO' },
   { name: 'net/nanopay/meter/BusinessDetailView', flags: ['web'] },
@@ -885,15 +895,18 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
   { name: 'net/nanopay/meter/compliance/ComplianceService' },
   { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
-  { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
   { name: 'net/nanopay/meter/compliance/BusinessFinalRuleValidation' },
   { name: 'net/nanopay/meter/compliance/refinements' },
   { name: 'net/nanopay/meter/compliance/UserFinalRuleValidation' },
   { name: 'net/nanopay/meter/compliance/refinements' },
+  { name: 'net/nanopay/meter/compliance/ComplianceItem' },
+  { name: 'net/nanopay/meter/compliance/ui/ComplianceItemController'},
 
   // ruler
+  { name: 'net/nanopay/meter/compliance/ruler/AbstractComplianceApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/CanadianSanctionValidator' },
-  { name: 'net/nanopay/meter/compliance/ruler/ClearUserApprovalRequests' },
+  { name: 'net/nanopay/meter/compliance/ruler/ComplianceTransactionApproval' },
+  { name: 'net/nanopay/meter/compliance/ruler/PruneApprovalRequests' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestBeneficialOwnersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
@@ -906,11 +919,17 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/BusinessOnboarding' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/DowJonesApprovalRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsComplianceTransaction' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsPendingTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/NewEqOld' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserCompliancePassedOrFailed' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/CreateRemoveComplianceItemRule' },
+  { name: 'net/nanopay/meter/compliance/ruler/RemoveComplianceApprovalRequest' },
+  { name: 'net/nanopay/meter/compliance/ruler/ComplianceLoginControlRule' },
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
@@ -959,6 +978,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesResponseBody' },
   { name: 'net/nanopay/meter/compliance/dowJones/BeneficialOwnerSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/dowJones/ClientDowJonesService' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesApprovalRequest' },
+  { name: 'net/nanopay/meter/compliance/dowJones/DowJonesApprovalRequestRule' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCall' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJonesCredentials' },
   { name: 'net/nanopay/meter/compliance/dowJones/DowJones' },
@@ -985,7 +1006,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
 
   // identitymind
-  { name: 'net/nanopay/meter/compliance/identityMind/B2BTransactionValidator' },
+  { name: 'net/nanopay/meter/compliance/identityMind/ComplianceTransactionValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/ConsumerKYCValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/EntityLoginValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/MerchantKYCValidator' },
@@ -1007,5 +1028,14 @@ FOAM_FILES([
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
-  { name: 'net/nanopay/approval/ApprovalStatus' }
+  { name: 'net/nanopay/approval/ApprovalStatus' },
+
+  // alarming & monitoring
+  { name: 'net/nanopay/alarming/Alarm' },
+  { name: 'net/nanopay/alarming/AlarmConfig' },
+  { name: 'net/nanopay/alarming/AlarmReason' },
+  { name: 'net/nanopay/alarming/MonitoringReport' },
+  { name: 'net/nanopay/alarming/MonitorType' },
+  { name: 'net/nanopay/alarming/AlarmAndMonitoring' }
+
 ]);

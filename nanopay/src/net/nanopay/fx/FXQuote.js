@@ -13,6 +13,16 @@ foam.CLASS({
       'foam.core.Detachable',
       'foam.util.SafetyUtil'
     ],
+
+    tableColumns: [
+      'id',
+      'user',
+      'sourceCurrency',
+      'targetCurrency',
+      'rate',
+      'fee'
+    ],
+
     properties: [{
             class: 'foam.core.Date',
             name: 'expiryTime'

@@ -16,7 +16,8 @@ foam.CLASS({
     'appConfig',
     'auth',
     'canReceiveCurrencyDAO',
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'contactDAO',
     'ctrl',
     'fxService',
@@ -182,7 +183,7 @@ foam.CLASS({
     {
       name: 'isLoading',
       value: false,
-      postSet: function(_,n) {
+      postSet: function(_, n) {
         if ( n ) {
           this.loadingSpin.show();
           return;
@@ -309,13 +310,17 @@ foam.CLASS({
     },
 
     function initE() {
-      this.checkComplianceAndBanking().then((result) => {
+      var checkAndNotifyAbility;
+
+      var checkAndNotifyAbility = this.isPayable ?
+        this.checkAndNotifyAbilityToPay :
+        this.checkAndNotifyAbilityToReceive;
+
+      checkAndNotifyAbility().then((result) => {
         if ( ! result ) {
           this.pushMenu('sme.main.dashboard');
           return;
         }
-      }).catch((err) => {
-        console.warn('Error occured when checking the compliance: ', err);
       });
 
       this.SUPER();
@@ -353,14 +358,14 @@ foam.CLASS({
 
     async function submit() {
       this.isLoading = true;
-      try {
-        var result = await this.checkComplianceAndBanking();
-        if ( ! result ) {
-          this.notify(this.COMPLIANCE_ERROR, 'error');
-          return;
-        }
-      } catch (err) {
-        console.warn('Error occured when checking the compliance: ', err);
+      var checkAndNotifyAbility;
+
+      var checkAndNotifyAbility = this.isPayable ?
+        this.checkAndNotifyAbilityToPay :
+        this.checkAndNotifyAbilityToReceive;
+
+      var result = await checkAndNotifyAbility();
+      if ( ! result ) {
         return;
       }
 

@@ -34,7 +34,6 @@ var classes = [
   'net.nanopay.tx.realex.RealexTransaction',
   'net.nanopay.tx.ruler.TransactionLimitState',
   'net.nanopay.tx.ruler.UserTransactionLimitRule',
-  'net.nanopay.tx.ruler.BusinessTransactionLimitRule',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',
@@ -144,6 +143,7 @@ var classes = [
   // Contacts
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
+  'net.nanopay.contacts.ContactMigrationRule',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -217,6 +217,7 @@ var classes = [
    'net.nanopay.accounting.resultresponse.InvoiceResponseItem',
 
   // fx
+  'net.nanopay.tx.CreateManualFxRule',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
@@ -233,6 +234,7 @@ var classes = [
   'net.nanopay.fx.FXTransfer',
   'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.fx.FXUserStatus',
+  'net.nanopay.fx.KotakFxTransaction',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -241,6 +243,8 @@ var classes = [
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ExpiryLineItem',
+  'net.nanopay.fx.ManualFxApprovalRequest',
+  'net.nanopay.tx.ManualFxRule',
   'net.nanopay.util.Frequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
@@ -283,6 +287,7 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.AccountTransactionLimitRule',
+  'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
   'net.nanopay.tx.TransactionPurpose',
@@ -292,7 +297,9 @@ var classes = [
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
+  'net.nanopay.tx.KotakFxTransactionPlanDAO',
   'net.nanopay.tx.KotakTransactionPlanDAO',
+  'net.nanopay.tx.KotakSplitTransactionPlanDAO',
   'net.nanopay.tx.NanopayFXTransactionPlanDAO',
   'net.nanopay.tx.AbliiTransactionDAO',
   'net.nanopay.tx.DebtablePlanDAO',
@@ -302,6 +309,8 @@ var classes = [
   'net.nanopay.tx.AbliiTransaction',
   'net.nanopay.tx.InterestTransaction',
   'net.nanopay.tx.FailedTransactionNotification',
+  'net.nanopay.tx.DebtRepaymentTransaction',
+  'net.nanopay.tx.DebtRepaymentPlanDAO',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -487,7 +496,7 @@ var classes = [
   'net.nanopay.meter.IpHistory',
   'net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO',
   'net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO',
-  'net.nanopay.meter.Report',
+  'net.nanopay.meter.reports.Report',
   'net.nanopay.meter.SkipNullReferencedPropertyDAO',
   'net.nanopay.meter.BusinessStatusContactDAO',
   'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
@@ -499,10 +508,14 @@ var classes = [
   'net.nanopay.meter.compliance.NanopayComplianceService',
   'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
+  'net.nanopay.meter.compliance.ComplianceItem',
 
   // ruler
+  'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
+  'net.nanopay.meter.compliance.ruler.RemoveComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
-  'net.nanopay.meter.compliance.ruler.ClearUserApprovalRequests',
+  'net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval',
+  'net.nanopay.meter.compliance.ruler.PruneApprovalRequests',
   'net.nanopay.meter.compliance.ruler.RequestBeneficialOwnersCompliance',
   'net.nanopay.meter.compliance.ruler.RequestSigningOfficersCompliance',
   'net.nanopay.meter.compliance.ruler.SecurefactLEVValidator',
@@ -515,11 +528,16 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarding',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianBusinessOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
+  'net.nanopay.meter.compliance.ruler.predicate.DowJonesApprovalRequested',
+  'net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction',
+  'net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
   'net.nanopay.meter.compliance.ruler.predicate.NewEqOld',
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
+  'net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule',
+  'net.nanopay.meter.compliance.ruler.ComplianceLoginControlRule',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
@@ -568,6 +586,8 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.DowJonesResponseBody',
   'net.nanopay.meter.compliance.dowJones.BeneficialOwnerSanctionValidator',
   'net.nanopay.meter.compliance.dowJones.ClientDowJonesService',
+  'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest',
+  'net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequestRule',
   'net.nanopay.meter.compliance.dowJones.DowJonesCall',
   'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
   'net.nanopay.meter.compliance.dowJones.DowJones',
@@ -586,7 +606,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
   // identitymind
-  'net.nanopay.meter.compliance.identityMind.B2BTransactionValidator',
+  'net.nanopay.meter.compliance.identityMind.ComplianceTransactionValidator',
   'net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator',
   'net.nanopay.meter.compliance.identityMind.EntityLoginValidator',
   'net.nanopay.meter.compliance.identityMind.MerchantKYCValidator',
@@ -611,6 +631,16 @@ var classes = [
   // approval
   'net.nanopay.approval.ApprovalRequest',
   'net.nanopay.approval.ApprovalStatus',
+
+  // alarming & monitoring
+  'net.nanopay.alarming.Alarm',
+  'net.nanopay.alarming.AlarmConfig',
+  'net.nanopay.alarming.AlarmReason',
+  'net.nanopay.alarming.MonitoringReport',
+  'net.nanopay.alarming.MonitorType',
+  'net.nanopay.alarming.AlarmAndMonitoring',
+  'net.nanopay.alarming.Alarming',
+
 ];
 
 var abstractClasses = [

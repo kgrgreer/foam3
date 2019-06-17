@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
+ * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'DebtablePlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: ``,
+  documentation: 'Plans debt transactions for Debtable Accounts',
 
   javaImports: [
     'net.nanopay.account.Account',
@@ -25,32 +25,29 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-      Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
       Transaction plan = quote.getPlan();
 
       if (plan instanceof VerificationTransaction) return quote;
 
-      logger.debug(this.getClass().getSimpleName(), "put", quote);
-
       Account sourceAccount = plan.findSourceAccount(x);
       Account destinationAccount = plan.findDestinationAccount(x);
 
-      if (sourceAccount instanceof Debtable &&
-          ((Debtable) sourceAccount).findDebtAccount(x) != null &&
-          ((Debtable) sourceAccount).findDebtAccount(x).getLimit() > 0 ) {
+      if ( sourceAccount instanceof Debtable) {
+        DebtAccount debtAccount = ((Debtable) sourceAccount).findDebtAccount(x);
+        if ( debtAccount != null &&
+             debtAccount.getLimit() > 0 ) {
+          Account creditorAccount = debtAccount.findCreditorAccount(x);
 
-        DebtAccount debtAccount = ((OverdraftAccount) sourceAccount).findDebtAccount(x);
-        Account creditorAccount = debtAccount.findCreditorAccount(x);
-
-        Transaction d = new DebtTransaction.Builder(x)
-          .setSourceAccount(creditorAccount.getId())
-          .setDestinationAccount(sourceAccount.getId())
-          .setAmount(plan.getAmount())
-          .setIsQuoted(true)
-          .build();
-        d.addNext(plan);
-        quote.setPlan(d);
+          Transaction d = new DebtTransaction.Builder(x).build();
+          d.copyFrom(plan);
+          d.setSourceAccount(creditorAccount.getId());
+          d.setDestinationAccount(sourceAccount.getId());
+          d.setIsQuoted(true);
+          d.addNext(plan);
+          quote.setPlan(d);
+((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Transaction", d.getType(), d.getId(), "invoice", d.getInvoiceId());
+        }
       }
       return quote;
       `

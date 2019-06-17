@@ -43,27 +43,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        DAO groupDAO = (DAO) x.get("groupDAO");
-        Group group = (Group) groupDAO.find(getApproverGroupId());
-        if ( group != null ) {
-          DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
-          DAO localUserDAO = (DAO) x.get("localUserDAO");
-
-          // Create an approval request for each user in the approver group
-          localUserDAO.inX(x)
-            .where(EQ(User.GROUP, group.getId()))
-            .select(new AbstractSink() {
-              @Override
-              public void put(Object o, Detachable d) {
-                User approver = (User) o;
-                ApprovalRequest ar = (ApprovalRequest) approvalRequest.fclone();
-
-                ar.setApprover(approver.getId());
-                approvalRequestDAO.put(ar);
-              }
-            });
-        }
+        approvalRequest.setGroup(getApproverGroupId());
+        ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
       `
     }
   ]
 });
+ 

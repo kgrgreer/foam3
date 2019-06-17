@@ -230,6 +230,7 @@ foam.CLASS({
               .start('p')
                 .addClass(this.myClass('link-text'))
                 .add(this.CONNECT_LABEL)
+                .attrs({name: "connectWithVoidCheck"})
                 .on('click', function() {
                   var bankModal = self.selection == 1 ? 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal' :
                       'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard';

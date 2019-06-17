@@ -3,9 +3,7 @@
 
 IN_DIR=$1
 OUT_DIR=$2
-MODE=$3
-VERSION=$4
-INSTANCE=$5
+INSTANCE=$3
 
 if [[ -d $IN_DIR ]]; then
     cd $IN_DIR
@@ -17,14 +15,13 @@ fi
 mkdir -p "$OUT_DIR"
 
 # Sets varuables to lowercase
-MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
-VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
 INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
 
-echo "$0 MODE=${MODE} INSTANCE=${INSTANCE} VERSION=${VERSION}"
+echo "INFO :: $0 IN_DIR=${IN_DIR} OUT_DIR=${OUT_DIR} INSTANCE=${INSTANCE}"
 
 # Creates an array of the file names
 declare -a arr=(
+  "alarmConfig"
   "acceptanceDocuments"
   "accounts"
   "ascendantfxusers"
@@ -35,6 +32,7 @@ declare -a arr=(
   "businessSectors"
   "identificationTypes"
   "businessTypes"
+  "complianceItems"
   "corridors"
   "countries"
   "cronjobs"
@@ -44,6 +42,7 @@ declare -a arr=(
   "emailTemplates"
   "exportDriverRegistrys"
   "fundTransferSystems"
+  "groupPermissionJunctions"
   "groups"
   "htmlDoc"
   "institutions"
@@ -53,6 +52,7 @@ declare -a arr=(
   "lineItemTypeAccounts"
   "lineItemFees"
   "lineItemTax"
+  "themes"
   "menus"
   "notificationTemplates"
   "payoutOptions"
@@ -111,41 +111,12 @@ do
     done
   done
 
-  if  [[ -f "deployment/$file" ]]; then
-      cat "deployment/$file" >> "$OUT_DIR/$journal_file"
-  fi
-  if  [[ -f "deployment/${file}.jrl" ]]; then
-      cat "deployment/${file}.jrl" >> "$OUT_DIR/$journal_file"
-  fi
-  if [[ ! -z "$MODE" ]]; then
-      if  [[ -f "deployment/$MODE/$file" ]]; then
-          cat "deployment/$MODE/$file" >> "$OUT_DIR/$journal_file"
-      fi
-      if  [[ -f "deployment/$MODE/${file}.jrl" ]]; then
-          cat "deployment/$MODE/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      fi
-  fi
   if [[ ! -z "$INSTANCE" ]]; then
-      if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
-          cat "deployment/$MODE/$INSTANCE/$file" >> "$OUT_DIR/$journal_file"
+      if  [[ -f "deployment/$INSTANCE/$file" ]]; then
+          cat "deployment/$INSTANCE/$file" >> "$OUT_DIR/$journal_file"
       fi
-      if  [[ -f "deployment/$MODE/$INSTANCE/${file}.jrl" ]]; then
-          cat "deployment/$MODE/$INSTANCE/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      fi
-  fi
-  if [[ ! -z "$VERSION" ]]; then
-      if  [[ -f "deployment/$MODE/$VERSION/$file" ]]; then
-          cat "deployment/$MODE/$VERSION/$file" >> "$OUT_DIR/$journal_file"
-      fi
-      if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
-          cat "deployment/$MODE/$INSTANCE/$VERSION/$file" >> "$OUT_DIR/$journal_file"
-      fi
-      if  [[ -f "deployment/$MODE/$VERSION/${file}.jrl" ]]; then
-          cat "deployment/$MODE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      fi
-
-      if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" ]]; then
-          cat "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
+      if  [[ -f "deployment/$INSTANCE/${file}.jrl" ]]; then
+          cat "deployment/$INSTANCE/${file}.jrl" >> "$OUT_DIR/$journal_file"
       fi
   fi
 done

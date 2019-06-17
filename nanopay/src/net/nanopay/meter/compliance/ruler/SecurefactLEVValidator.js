@@ -31,6 +31,7 @@ foam.CLASS({
                 .setDaoKey("localUserDAO")
                 .setCauseId(response.getId())
                 .setCauseDaoKey("securefactLEVDAO")
+                .setClassification("Validate Business Using SecureFact")
                 .build()
             );
           }

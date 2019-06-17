@@ -21,9 +21,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      width: 500px;
       height: 173px;
-
       box-sizing: border-box;
 
       border-radius: 4px;
@@ -208,8 +207,16 @@ foam.CLASS({
             }
 
             return this.E().start().addClass(self.myClass('complete-container'))
-              .start({ class: 'foam.u2.tag.Image', data: 'images/check-green-circle.png'}).addClass(self.myClass('icon')).end()
-              .start('p').addClass(self.myClass('complete')).add(self.COMPLETE).end()
+              .start({
+                class: 'foam.u2.tag.Image',
+                data: 'images/checkmark-small-green.svg'
+              })
+                .addClass(self.myClass('icon'))
+              .end()
+              .start('p')
+                .addClass(self.myClass('complete'))
+                .add(self.COMPLETE)
+              .end()
             .end();
           }))
         .end();
