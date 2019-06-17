@@ -210,6 +210,22 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
+  // AFEX
+  { name: "net/nanopay/fx/afex/AFEX" },
+  { name: "net/nanopay/fx/afex/AFEXCredentials"},
+  { name: "net/nanopay/fx/afex/Token"},
+  { name: "net/nanopay/fx/afex/AddPayeeRequest"},
+  { name: "net/nanopay/fx/afex/AddPayeeResponse"},
+  { name: "net/nanopay/fx/afex/UpdatePayeeRequest"},
+  { name: "net/nanopay/fx/afex/UpdatePayeeResponse"},
+  { name: "net/nanopay/fx/afex/GetPayeeInfoResponse"},
+  { name: "net/nanopay/fx/afex/Quote"},
+  { name: "net/nanopay/fx/afex/GetQuoteRequest"},
+  { name: "net/nanopay/fx/afex/CreateTradeRequest"},
+  { name: "net/nanopay/fx/afex/CreateTradeResponse"},
+  { name: "net/nanopay/fx/afex/CreatePaymentRequest"},
+  { name: "net/nanopay/fx/afex/CreatePaymentResponse"},
+
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },

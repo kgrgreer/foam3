@@ -120,6 +120,22 @@ var classes = [
   'net.nanopay.kotak.Kotak',
   'net.nanopay.kotak.KotakCredentials',
 
+  // AFEX
+  'net.nanopay.fx.afex.AFEX',
+  'net.nanopay.fx.afex.AFEXCredentials',
+  'net.nanopay.fx.afex.Token',
+  'net.nanopay.fx.afex.AddPayeeRequest',
+  'net.nanopay.fx.afex.AddPayeeResponse',
+  'net.nanopay.fx.afex.UpdatePayeeRequest',
+  'net.nanopay.fx.afex.UpdatePayeeResponse',
+  'net.nanopay.fx.afex.GetPayeeInfoResponse',
+  'net.nanopay.fx.afex.Quote',
+  'net.nanopay.fx.afex.GetQuoteRequest',
+  'net.nanopay.fx.afex.CreateTradeRequest',
+  'net.nanopay.fx.afex.CreateTradeResponse',
+  'net.nanopay.fx.afex.CreatePaymentRequest',
+  'net.nanopay.fx.afex.CreatePaymentResponse',
+
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
