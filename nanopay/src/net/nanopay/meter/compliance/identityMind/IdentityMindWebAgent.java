@@ -23,6 +23,7 @@ public class IdentityMindWebAgent implements WebAgent {
   public void execute(X x) {
     DAO identityMindResponseDAO = (DAO) x.get("identityMindResponseDAO");
     DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+    Logger logger = (Logger) x.get("logger");
     HttpParameters p = x.get(HttpParameters.class);
     String data = p.getParameter("data");
     HttpServletRequest request = x.get(HttpServletRequest.class);
@@ -35,30 +36,30 @@ public class IdentityMindWebAgent implements WebAgent {
         jsonParser.parseString(data, IdentityMindResponse.class);
       identityMindResponseDAO.put(webhookResponse);
 
-      System.out.println("IDMWEBHOOKBODY###: " + data);
-      System.out.println("IDMWEBHOOKRESPONSE###: " + webhookResponse.toString());
+      logger.debug("webAgentIdmWebhookBody : " + data);
+      logger.debug("webAgentIdmWebhookResponse : " + webhookResponse.toString());
 
       ComplianceApprovalRequest approvalRequest = (ComplianceApprovalRequest) approvalRequestDAO.find(
         EQ(ComplianceApprovalRequest.CAUSE_ID, webhookResponse.getId())
       );
 
       if ( approvalRequest != null ) {
-        System.out.println("APPROVALREQUEST###: " + approvalRequest.toString());
+        logger.debug("webAgentApprovalRequest : " + approvalRequest.toString());
         if (webhookResponse.getComplianceValidationStatus() == ComplianceValidationStatus.VALIDATED) {
           approvalRequest.setStatus(ApprovalStatus.APPROVED);
         } else if (webhookResponse.getComplianceValidationStatus() == ComplianceValidationStatus.REJECTED) {
           approvalRequest.setStatus(ApprovalStatus.REJECTED);
         }
-        System.out.println("UPDATEDAPPROVALREQUEST###: " + approvalRequest.toString());
+        logger.debug("webAgentUpdatedApprovalRequest : " + approvalRequest.toString());
         approvalRequestDAO.put(approvalRequest);
       }
     } catch (Exception e) {
       String message = String.format("IdentityMindWebAgent failed.", request.getClass().getSimpleName());
-      ((Logger) x.get("logger")).error(message, e);
+      logger.error(message, e);
       try {
 		    response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
 	    } catch (IOException e1) {
-		    e1.printStackTrace();
+        logger.error(message, e1);
 	    }
     }
   }
