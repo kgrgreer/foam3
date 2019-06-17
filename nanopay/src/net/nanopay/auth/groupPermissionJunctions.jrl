@@ -51,7 +51,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"business.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"cabankaccount.rw.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"cabankaccount.rw.verificationattempts"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"complianceItems.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"complianceItem.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"contact.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"digitalaccount.rw.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"emailMessage.read.*"})
