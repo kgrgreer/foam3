@@ -37,27 +37,17 @@ foam.CLASS({
 
         ComplianceTransaction ct = (ComplianceTransaction) obj;
         Transaction headTx = ct;
-        Count count = (Count) ((DAO) x.get("approvalRequestDAO"))
-          .where(AND(
-            EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
-            EQ(ApprovalRequest.OBJ_ID, ct.getId()),
-            EQ(ApprovalRequest.APPROVER, getJackieId())))
-          .limit(1)
-          .select(new Count());
-
-        if ( count.getValue() == 0 ) {
-          while ( ! SafetyUtil.isEmpty(headTx.getParent())) {
-            headTx = headTx.findParent(x);
-          }
-          ApprovalRequest req = new ApprovalRequest.Builder(x)
-            .setDaoKey("localTransactionDAO")
-            .setObjId(ct.getId())
-            .setApprover(getJackieId())
-            .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
-            .build();
-
-          requestApproval(x, req);
+        while ( ! SafetyUtil.isEmpty(headTx.getParent())) {
+          headTx = headTx.findParent(x);
         }
+        ApprovalRequest req = new ApprovalRequest.Builder(x)
+          .setDaoKey("localTransactionDAO")
+          .setObjId(ct.getId())
+          .setApprover(getJackieId())
+          .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
+          .build();
+
+        requestApproval(x, req);
       `
     },
     {

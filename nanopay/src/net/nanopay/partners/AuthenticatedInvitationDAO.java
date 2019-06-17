@@ -180,11 +180,13 @@ public class AuthenticatedInvitationDAO
 
     long createdBy = invite.getCreatedBy();
     String email = invite.getEmail();
+    String message = invite.getMessage();
     this.copyReadOnlyFields(new Invitation(), invite);
     invite.setCreatedBy(createdBy);
     invite.setEmail(email);
     invite.setInternal(internal);
     invite.setIsContact(isContact);
+    invite.setMessage(message);
     invite.setStatus(InvitationStatus.SENT);
 
     // Set to date in distant past so that SendInvitationDAO will send the
