@@ -8,6 +8,11 @@ foam.CLASS({
   package: 'net.nanopay.account',
   name: 'AccountDAOCreateView',
   extends: 'foam.u2.View',
+
+  topics: [
+    'finished',
+    'throwError'
+  ],
   
   documentation: `
     A configurable view to create an instance of a specified model
@@ -79,6 +84,7 @@ foam.CLASS({
     {
       name: 'save',
       code: function() {
+        debugger;
         var self = this;
         this.config.dao.put(this.data.clone()).then(function() {
           self.finished.pub();
@@ -117,7 +123,7 @@ foam.CLASS({
               .end()
               .start(config$viewBorder)
                 .start().addClass(this.myClass('create-view-container'))
-                  .tag(this.viewView, { data: data })
+                  .tag(this.viewView, { data$: data })
                 .end()
               .end()
         }));
