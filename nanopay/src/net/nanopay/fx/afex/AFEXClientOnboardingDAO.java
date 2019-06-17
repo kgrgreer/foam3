@@ -32,8 +32,8 @@ public class AFEXClientOnboardingDAO
 
     BankAccount account = (BankAccount) obj;
     BankAccount existingAccount = (BankAccount) getDelegate().find(account.getId());
-    if ( existingAccount != null && existingAccount.getStatus == BankAccountStatus.UNVERIFIED 
-          &&  account.getStatus == BankAccountStatus.VERIFIED ) {
+    if ( existingAccount != null && existingAccount.getStatus() == BankAccountStatus.UNVERIFIED 
+          &&  account.getStatus() == BankAccountStatus.VERIFIED ) {
       
       // TODO: Check if business is already pushed to AFEX?
 
