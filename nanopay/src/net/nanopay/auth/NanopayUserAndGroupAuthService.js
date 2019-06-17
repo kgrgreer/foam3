@@ -49,6 +49,7 @@ foam.CLASS({
         // This case is for business user of sme
         if ( user instanceof Business) {
           user = (User) x.get("agent");
+          user = (User) ((DAO) getLocalUserDAO()).find(user.getId());
         }
 
         if ( user == null ) {

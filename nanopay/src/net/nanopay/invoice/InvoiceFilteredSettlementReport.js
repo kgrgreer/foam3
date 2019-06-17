@@ -154,7 +154,7 @@ foam.CLASS({
 
         try {
           // create a temporary folder to save files before zipping
-          FileUtils.forceMkdir(new File("/opt/nanopay/SettlementReport/"));
+          FileUtils.forceMkdir(new File("/tmp/SettlementReport/"));
     
           File settlementReport = collectInvoiceDataAndWriteToData(x, business);
     
@@ -166,7 +166,7 @@ foam.CLASS({
           downloadZipFile(x, (Business)business, settlementReport);
     
           // delete the temporary folder.
-          FileUtils.deleteDirectory(new File("/opt/nanopay/SettlementReport/"));
+          FileUtils.deleteDirectory(new File("/tmp/SettlementReport/"));
 
         } catch (IOException e) {
           logger.error("Error generating settlementReport: ", e);
@@ -283,7 +283,7 @@ foam.CLASS({
           title.append("Settlement report\\n for Business ID: ").append(user.getId()).append("\\n\\n");
         }
     
-        String path = "/opt/nanopay/SettlementReport/[" + user.getOrganization() + "]SettlementReport.pdf";
+        String path = "/tmp/SettlementReport/[" + user.getOrganization() + "]SettlementReport.pdf";
     
         try {
           Document document = new Document();

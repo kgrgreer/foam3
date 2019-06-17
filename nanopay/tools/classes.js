@@ -486,9 +486,11 @@ var classes = [
   'net.nanopay.meter.compliance.NanopayComplianceService',
   'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
+  'net.nanopay.meter.compliance.ComplianceItem',
 
   // ruler
   'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
+  'net.nanopay.meter.compliance.ruler.RemoveComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
   'net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval',
   'net.nanopay.meter.compliance.ruler.PruneApprovalRequests',
@@ -512,6 +514,8 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
+  'net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule',
+  'net.nanopay.meter.compliance.ruler.ComplianceLoginControlRule',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
@@ -613,6 +617,8 @@ var classes = [
   'net.nanopay.alarming.MonitoringReport',
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
+  'net.nanopay.alarming.Alarming',
+
 ];
 
 var abstractClasses = [

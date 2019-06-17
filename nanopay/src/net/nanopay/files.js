@@ -673,6 +673,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/ui/ApprovalRequestController', flags: ['web'] },
 
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
@@ -878,6 +879,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/refinements' },
   { name: 'net/nanopay/meter/compliance/UserFinalRuleValidation' },
   { name: 'net/nanopay/meter/compliance/refinements' },
+  { name: 'net/nanopay/meter/compliance/ComplianceItem' },
+  { name: 'net/nanopay/meter/compliance/ui/ComplianceItemController'},
 
   // ruler
   { name: 'net/nanopay/meter/compliance/ruler/AbstractComplianceApproval' },
@@ -904,6 +907,9 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserCompliancePassedOrFailed' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/CreateRemoveComplianceItemRule' },
+  { name: 'net/nanopay/meter/compliance/ruler/RemoveComplianceApprovalRequest' },
+  { name: 'net/nanopay/meter/compliance/ruler/ComplianceLoginControlRule' },
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
@@ -1010,5 +1016,6 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/AlarmReason' },
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
-  { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
+  { name: 'net/nanopay/alarming/AlarmAndMonitoring' }
+
 ]);

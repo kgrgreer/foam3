@@ -8,19 +8,22 @@ foam.CLASS({
     'foam.nanos.auth.DeletedAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.analytics.Foldable'
+    'foam.nanos.analytics.Foldable',
+    'foam.mlang.Expressions',
   ],
 
   imports: [
     'addCommas',
     'currencyDAO',
-    'userDAO'
+    'userDAO',
+    'complianceHistoryDAO'
   ],
 
   javaImports: [
     'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'static foam.mlang.MLang.EQ',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
@@ -78,6 +81,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
+    'id',
     'type',
     'status',
     'summary',
@@ -647,11 +651,6 @@ for ( Balance b : getBalances() ) {
         throw new RuntimeException("Destination currency is not supported");
       }
 
-      if ( appConfig.getMode() == Mode.PRODUCTION ) {
-        if ( getTotal() > 10000000 ) {
-          throw new AuthorizationException("Transaction limit exceeded.");
-        }
-      }
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.SCHEDULED && getStatus() == TransactionStatus.SCHEDULED ) {
         throw new RuntimeException("Only new transaction can be scheduled");
@@ -687,12 +686,15 @@ for ( Balance b : getBalances() ) {
       if ( getStatus() != TransactionStatus.COMPLETED ) {
         return getStatus();
       }
-      List children = ((ArraySink) getChildren(x).select(new ArraySink())).getArray();
+      DAO dao = (DAO) x.get("localTransactionDAO");
+      List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, getId())).select(new ArraySink())).getArray();
+// REVIEW: the following is very slow going through authenticated transactionDAO rather than unauthenticated localTransactionDAO
+//      List children = ((ArraySink) getChildren(x).select(new ArraySink())).getArray();
       for ( Object obj : children ) {
-        Transaction txn = (Transaction) obj;
-        TransactionStatus curState = txn.getState(x);
-        if ( curState != TransactionStatus.COMPLETED ) {
-          return curState;
+        Transaction child = (Transaction) obj;
+        TransactionStatus status = child.getState(x);
+        if ( status != TransactionStatus.COMPLETED ) {
+          return status;
         }
       }
       return getStatus();
@@ -867,5 +869,26 @@ for ( Balance b : getBalances() ) {
     javaCode: `
     `
   }
-]
+],
+  actions: [
+    {
+      name: 'viewComplianceHistory',
+      label: 'View Compliance History',
+      availablePermissions: ['service.compliancehistorydao'],
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.id}'s Compliance History`,
+          data: this.complianceHistoryDAO.where(m.AND(
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id), 
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
+          ))
+        });
+      }
+    }
+  ]
 });

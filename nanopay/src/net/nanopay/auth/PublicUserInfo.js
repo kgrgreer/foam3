@@ -8,10 +8,15 @@ foam.CLASS({
     'foam.util.SafetyUtil',
   ],
 
+  tableColumns: [
+    'id', 'firstName', 'lastName', 'organization', 'email'
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id',
+      tableWidth: 50,
       documentation: `The unique identifier for the User.`,
       visibility: foam.u2.Visibility.RO
     },

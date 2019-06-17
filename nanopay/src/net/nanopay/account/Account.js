@@ -129,9 +129,9 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj, id) {
         var self = this;
-        this.__subSubContext__.balanceDAO.find(obj.id).then( function( balance ) {
+        obj.findBalance(this.__subSubContext__).then( function( balance ) {
           self.__subSubContext__.currencyDAO.find(obj.denomination).then(function(curr) {
-            self.add(balance != null ?  curr.format(balance.balance) : 0);
+            self.add(balance != null ?  curr.format(balance) : 0);
           });
         });
       },

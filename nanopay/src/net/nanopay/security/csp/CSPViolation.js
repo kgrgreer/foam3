@@ -4,10 +4,17 @@ foam.CLASS({
 
   documentation: `Content Security Policy violation report.`,
 
+  tableColumns: [
+    'id',
+    'date',
+    'ip'
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id',
+      tableWidth: 40,
       documentation: 'Sequence number.'
     },
     {
@@ -43,6 +50,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'effectiveDirective',
+      label: 'Violating Directive',
       documentation: 'The directive whose enforcement caused the violation.'
     },
     {

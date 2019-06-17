@@ -4,10 +4,15 @@ foam.CLASS({
 
   documentation: 'Model to hold the token data for QuickBooks users.',
 
+  tableColumns: [
+    'id', 'businessName', 'appRedirect', 'portalRedirect', 'quickBank'
+  ],
+
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 50
     },
     {
       class: 'String',
