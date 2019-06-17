@@ -10,10 +10,10 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
-import net.nanopay.fx.ExchangeRatesCron;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.fx.FXUserStatus;
+import net.nanopay.fx.ExchangeRate;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -36,12 +36,20 @@ public class ChainedTransactionTest
     userDAO = (DAO) x.get("localUserDAO");
     accountDAO = (DAO) x.get("localAccountDAO");
     txnDAO = ((DAO) x.get("localTransactionDAO"));
-    ExchangeRatesCron cron = new ExchangeRatesCron();
-    cron.execute(x);
+    setupRates(x);
     createAccounts(x);
     populateBrokerAccount(x);
     testCADBankINBankTxn(x);
   }
+
+   public void setupRates(X x) {
+    DAO rates = (DAO) x.get("exchangeRateDAO");
+    ExchangeRate rate = new ExchangeRate.Builder(x).setFromCurrency("USD").setToCurrency("INR").setRate(0.1).build();
+    rates.put(rate);
+    rate = new ExchangeRate.Builder(x).setFromCurrency("CAD").setToCurrency("INR").setRate(0.1).build();
+    rates.put(rate);
+  }
+
   public void testCADBankINBankTxn(X x) {
     createTxn(x);
     ArraySink sink;

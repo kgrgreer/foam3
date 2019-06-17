@@ -25,12 +25,9 @@ foam.CLASS({
 
         for ( Transaction plan : plans ) {
           if ( plan instanceof SummaryTransaction ) {
-            ComplianceTransaction ct = new ComplianceTransaction.Builder(x)
-              .setDestinationAccount(plan.getDestinationAccount())
-              .setSourceAccount(plan.getSourceAccount())
-              .setAmount(plan.getAmount())
-              .setIsQuoted(true)
-              .build();
+            ComplianceTransaction ct = new ComplianceTransaction.Builder(x).build();
+            ct.copyFrom(plan);
+            ct.setIsQuoted(true);
             ct.setNext(plan.getNext());
             Transaction [] ctArray = new Transaction [1];
             ctArray[0] = ct;
@@ -39,8 +36,8 @@ foam.CLASS({
           newPlans.add(plan);
         }
 
-         plans = newPlans.toArray(new Transaction[newPlans.size()]);
-         quote.setPlans(plans);
+        plans = newPlans.toArray(new Transaction[newPlans.size()]);
+        quote.setPlans(plans);
         return quote;
       `
     }
