@@ -46,6 +46,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       Invoice invoice = getInvoice(x, transaction);
       if ( invoice != null ) {
         invoice.setPaymentId(transaction.getId());
+        invoice.setPaymentMethod(PaymentStatus.PENDING);
         invoice.setPaymentDate(generateEstimatedCreditDate(x, transaction));
         invoiceDAO.put(invoice);
 
