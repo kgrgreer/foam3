@@ -174,20 +174,10 @@ function clean {
 
 function build_jar {
     if [ "$GRADLE_BUILD" -eq 1 ]; then
-        # GRADLE_ARGS=""
-        # if [ ! -z "${VERSION}" ]; then
-        #     GRADLE_ARGS="$GRADLE_ARGS -Pversion=${VERSION}"
-        # fi
-
         if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
-            #gradle --daemon "${GRADLE_ARGS}" build
-            if [ ! -z "${VERSION}" ]; then
-                gradle --daemon -Pversion=${VERSION} build $GRADLE_FLAGS
-            else
-                gradle --daemon build $GRADLE_FLAGS
-            fi
+            gradle --daemon buildJar $GRADLE_FLAGS
         else
-           gradle --daemon build -x jar $GRADLE_FLAGS
+            gradle --daemon build $GRADLE_FLAGS
         fi
     else
         # maven
@@ -210,8 +200,7 @@ function build_jar {
         cp -r deploy/bin/* "${NANOPAY_HOME}/bin/"
         cp -r deploy/etc/* "${NANOPAY_HOME}/etc/"
         cp -r target/lib/* "${NANOPAY_HOME}/lib/"
-
-        export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
+        # export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
     fi
 }
 
@@ -355,7 +344,6 @@ function beginswith {
 }
 
 function setenv {
-
     if [ -z "$NANOPAY_HOME" ]; then
         NANOPAY_ROOT="/opt"
         if [ "$TEST" -eq 1 ]; then
