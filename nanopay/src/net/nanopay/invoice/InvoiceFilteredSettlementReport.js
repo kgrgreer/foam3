@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'java.io.*',
     'java.text.SimpleDateFormat',
     'java.util.Date',
@@ -25,6 +26,7 @@ foam.CLASS({
     'javax.servlet.http.HttpServletResponse',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Business',
+    'net.nanopay.model.Currency',
     'org.apache.commons.io.FileUtils',
     'org.apache.commons.io.IOUtils',
     'static foam.mlang.MLang.*',
@@ -356,12 +358,17 @@ foam.CLASS({
           exRate            = invoice.getExchangeRate() != 1 ? Long.toString(invoice.getExchangeRate()) : null;
           invoiceStatus          = invoice.getStatus().getLabel();
           transactionID          = invoice.getReferenceId();
-          invoicePurchaseOrder   = invoice.getPurchaseOrder();
+          invoicePurchaseOrder   = SafetyUtil.isEmpty(invoice.getPurchaseOrder())
+            ? "n/a" : invoice.getPurchaseOrder();
           invoiceID              = Long.toString(invoice.getId());
-          invoiceAmount          = Long.toString(invoice.getAmount());
+
+          DAO currencyDAO = (DAO) x.get("currencyDAO");
+          Currency currency = (Currency) currencyDAO.find(dstCurrency);
+          invoiceAmount = currency.format(invoice.getAmount()) + " " + dstCurrency;
 
           // Put all variables with text for each line, for write to doc.pdf(settlementReport) 
-          list.add(new ListItem("Invoice ID: " + invoiceID + " PO: " + invoicePurchaseOrder ));
+          list.add(new ListItem("Invoice ID: " + invoiceID ));
+          list.add(new ListItem("PO: " + invoicePurchaseOrder));
           list.add(new ListItem("\tTransaction Date: " + transDate));
           list.add(new ListItem("\tInvoice was established by: " + createdBy_String));
           list.add(new ListItem("\tPayer: " + businessNamePayer));
