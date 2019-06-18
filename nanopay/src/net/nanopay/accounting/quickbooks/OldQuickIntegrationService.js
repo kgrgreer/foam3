@@ -17,7 +17,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.lib.json.JSONParser',
-    'foam.lib.json.NetworkTransientOutputter',
+    'foam.lib.json.Outputter',
+    'foam.lib.NetworkPropertyPredicate',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'foam.nanos.auth.Address',
@@ -1020,11 +1021,11 @@ DAO                        configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x)
 QuickConfig                config       = (QuickConfig)configDAO.find(app.getUrl());
 Logger                     logger       = (Logger) x.get("logger");
 HttpClient                 httpclient   = HttpClients.createDefault();
-NetworkTransientOutputter  outputter    = new NetworkTransientOutputter(x);
+Outputter                  outputter    = new Outputter(x);
 QuickContact               sUser;
 BankAccount                account;
 HttpPost                   httpPost;
-outputter.setOutputClassNames(false);
+outputter.setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
 
 // Determines if the user is making a payment or bill payment and creates the right request to POST to QuickBooks
 try {

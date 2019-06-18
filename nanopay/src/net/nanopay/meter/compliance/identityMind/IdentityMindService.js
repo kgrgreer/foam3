@@ -5,8 +5,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.lib.json.JSONParser',
-    'foam.lib.json.NetworkTransientOutputter',
     'foam.lib.json.Outputter',
+    'foam.lib.NetworkPropertyPredicate',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -183,7 +183,7 @@ foam.CLASS({
         HttpResponse httpResponse = null;
 
         try {
-          NetworkTransientOutputter jsonOutputter = (NetworkTransientOutputter) new NetworkTransientOutputter(x).setOutputClassNames(false);
+          Outputter jsonOutputter = new Outputter(x).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
           String requestJson = jsonOutputter.stringify(request);
           StringEntity entity = new StringEntity(requestJson);
           entity.setContentType("application/json");

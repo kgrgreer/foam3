@@ -1,7 +1,8 @@
 package net.nanopay.iso8583;
 
 import foam.core.X;
-import foam.lib.json.NetworkTransientOutputter;
+import foam.lib.json.Outputter;
+import foam.lib.NetworkPropertyPredicate;
 import net.nanopay.iso8583.packager.ISO87Packager;
 import net.nanopay.iso8583.packager.ISO93Packager;
 
@@ -20,7 +21,7 @@ public class ISO8583WebAgent
     HttpServletResponse resp = x.get(HttpServletResponse.class);
     PrintWriter out = x.get(PrintWriter.class);
 
-    NetworkTransientOutputter outputter_ = new NetworkTransientOutputter(x);
+    Outputter outputter_ = new Outputter(x).setPropertyPredicate(new NetworkPropertyPredicate());
 
     ISOMessage message;
     try ( PushbackInputStream in = new PushbackInputStream(req.getInputStream()) ) {
@@ -70,7 +71,7 @@ public class ISO8583WebAgent
    * @param out PrintWriter to write to
    * @param exception ISO8583Exception to output
    */
-  protected void outputException(HttpServletResponse resp, PrintWriter out, ISO8583Exception exception, NetworkTransientOutputter outputter) {
+  protected void outputException(HttpServletResponse resp, PrintWriter out, ISO8583Exception exception, Outputter outputter) {
     resp.setStatus(exception.getCode());
     out.println(outputter.stringify(exception));
   }
