@@ -175,7 +175,6 @@ foam.CLASS({
 
     function style(keyMap) {
       var datasetStyling = {};
-
       for ( var key in keyMap ) {
         if ( key.includes(':') ) {
           var label = key.includes('high') ? this.LABEL_HIGH_THRESHOLD : this.LABEL_LOW_THRESHOLD
@@ -197,7 +196,7 @@ foam.CLASS({
             label: this.account
           }
         }
-      };
+      }
       this.styling = datasetStyling;
     }
   ],
