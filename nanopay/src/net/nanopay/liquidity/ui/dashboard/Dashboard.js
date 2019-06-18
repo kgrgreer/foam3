@@ -90,8 +90,8 @@ foam.CLASS({
       this
         .addClass(this.myClass())
           .start().add(this.cls_.name).addClass(this.myClass('header')).end()
-          .start(this.DashboardAccounts, { data: this.accounts }).addClass().end()
-          .start(this.AggregatedLiquidityChartView).addClass().end();
+          .start(this.DashboardAccounts, { data: this.accounts }).addClass(this.myClass('accounts')).end()
+          .start(this.AggregatedLiquidityChartView).addClass(this.myClass('chart')).end();
     }
   ]
 });
