@@ -19,6 +19,23 @@ foam.CLASS({
   `,
 
   css:`
+    ^card-header {
+      margin-bottom: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    ^card-container {
+      padding: 34px 16px;
+    }
+
+    ^balance-note {
+      font-style: italic;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #5e6061;
+    }
   `,
 
   requires: [
@@ -64,27 +81,29 @@ foam.CLASS({
         .addClass(this.myClass())
         .add(self.slot(function(data) {
           return self.E()
-            .start(self.Rows)
-              .start(self.CardBorder).addClass(this.myClass('balance-card'))
-                .start(self.Rows)
-                  .start()
-                    .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
-                  .end()
-                  .start().addClass(this.myClass('balance'))
-                    // TODO: Work with exchange rates
-                    // .add(data.findBalance(self.__context__).then(balance => self.parseBalanceToDollarString(balance)))
-                  .end()
-                  .start().addClass(this.myClass('balance-note'))
-                    .add(self.BALANCE_NOTE)
-                    // .add(` (${data$denomination})`)
+            .start(self.CardBorder)
+              .start(self.Rows).addClass(this.myClass('card-container'))
+                .start().addClass(this.myClass('balance-card'))
+                  .start(self.Rows)
+                    .start()
+                      .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
+                    .end()
+                    .start().addClass(this.myClass('balance'))
+                      // TODO: Work with exchange rates
+                      // .add(data.findBalance(self.__context__).then(balance => self.parseBalanceToDollarString(balance)))
+                    .end()
+                    .start().addClass(this.myClass('balance-note'))
+                      .add(self.BALANCE_NOTE)
+                      // .add(` (${data$denomination})`)
+                    .end()
                   .end()
                 .end()
-              .end()
-              .start(self.CardBorder)
-                .start(foam.comics.v2.DAOBrowserView, {
-                  data: data.where(self.TRUE)
-                })
-                  .addClass(this.myClass('accounts-table'))
+                .start()
+                  .start(foam.comics.v2.DAOBrowserView, {
+                    data: data.where(self.TRUE)
+                  })
+                    .addClass(this.myClass('accounts-table'))
+                  .end()
                 .end()
               .end()
             .end();
