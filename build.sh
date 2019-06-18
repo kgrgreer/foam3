@@ -121,6 +121,14 @@ function deploy_journals {
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
     fi
 
+    if [ "$LIQUID_DEMO" -eq 1 ]; then
+        node tools/liquid_journal_script.js
+    fi
+
+    if [[ $? -eq 1 ]]; then
+        quit 1
+    fi
+
     if [[ $? -eq 1 ]]; then
         quit 1
     fi
@@ -541,9 +549,13 @@ DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
+<<<<<<< HEAD
 GRADLE_FLAGS=
+=======
+LIQUID_DEMO=0
+>>>>>>> development
 
-while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 
@@ -575,6 +587,8 @@ while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
         q) MODE=STAGING
            CLEAN_BUILD=1
            echo "MODE=${MODE}"
+           ;;
+        Q) LIQUID_DEMO=1
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
