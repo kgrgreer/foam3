@@ -26,7 +26,7 @@ while getopts "D:hN:W:Z:" opt ; do
         N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
         Z) DAEMONIZE=$OPTARG;;
-#        ?) usage ; exit 0 ;;
+        ?) usage ; exit 0 ;;
    esac
 done
 
@@ -56,7 +56,7 @@ if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
 fi
 
 JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
-export RES_JAR_HOME="${JAR}"
+# export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
