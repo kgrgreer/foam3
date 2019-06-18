@@ -29,9 +29,6 @@ foam.CLASS({
       `,
       expression: function(accountDAO) {
         return accountDAO;
-      },
-      view: {
-        class: 'net.nanopay.liquidity.ui.DashboardAccounts'
       }
     },
     {
