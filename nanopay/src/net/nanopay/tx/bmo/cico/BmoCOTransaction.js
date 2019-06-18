@@ -36,7 +36,7 @@ foam.CLASS({
       class: 'Int'
     },
     {
-      name: 'rejectType',
+      name: 'rejectReason',
       class: 'String'
     }
   ],
@@ -70,7 +70,7 @@ foam.CLASS({
         setPotentiallyUndelivered( ((BmoCOTransaction) other).getPotentiallyUndelivered() );
         setBmoReferenceNumber( ((BmoCOTransaction) other).getBmoReferenceNumber() );
         setBmoFileCreationNumber( ((BmoCOTransaction) other).getBmoFileCreationNumber() );
-        setRejectType( ((BmoCOTransaction) other).getRejectType() );
+        setRejectReason( ((BmoCOTransaction) other).getRejectReason() );
       `
     }
   ]

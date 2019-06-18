@@ -13,9 +13,11 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BmoReportProcessor {
@@ -53,17 +55,107 @@ public class BmoReportProcessor {
   public boolean processReports() {
 
     try {
-
       Collection<File> files = FileUtils.listFiles(new File(BmoSFTPClient.REPORT_DOWNLOAD_FOLDER), null, false);
 
       for ( File file : files ) {
-        FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + file.getName()));
+        this.processReport(file);
+        FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + file.getName() + "_" + Instant.now().toEpochMilli()));
       }
     } catch ( Exception e ) {
 
     }
 
     return true;
+  }
+
+  public void processReport(File file) throws IOException {
+
+    List<String> strings = FileUtils.readLines(file, "US-ASCII");
+
+    String firstLine = strings.get(0);
+
+    if ( firstLine.contains("DEFR210") || firstLine.contains("DEFR211") ) {
+      // process rejected file
+      this.processRejectReport(strings);
+
+      return;
+    }
+
+    if ( firstLine.contains("DEFR220") ) {
+      // process settled file
+
+      return;
+    }
+
+  }
+
+  public void processRejectReport(List<String> report) {
+
+    ArrayList<String> rejectedItem = new ArrayList<>();
+    String fileCreationNumber = "";
+
+    for ( String line : report ) {
+
+      if ( line.contains("FILE CREATION NO.") ) {
+        fileCreationNumber = line.substring(27, 31);
+      }
+
+      if ( line.contains("LOG. REC. TYPE") ) {
+        // process old reject item
+        processRejectRecord(rejectedItem, fileCreationNumber);
+
+        // creat new reject item
+        rejectedItem = new ArrayList<>();
+      }
+
+      if ( line.contains("TOTAL REJECTS BY VALUE DATE") ) {
+        processRejectRecord(rejectedItem, fileCreationNumber);
+        return;
+      }
+
+      rejectedItem.add(line);
+    }
+
+  }
+
+  public void processRejectRecord(ArrayList<String> rejectedItem, String fileCreationNumber) {
+
+    if ( rejectedItem.size() == 0 ) {
+      return;
+    }
+
+    if ( ! rejectedItem.get(0).contains("LOG. REC. TYPE") ) {
+      return;
+    }
+
+    String rejectReason = rejectedItem.subList(5, rejectedItem.size() - 1).stream()
+      .filter(line -> !line.trim().equals(""))
+      .map(line -> line.substring(28, 73))
+      .reduce("", (pre, post) -> pre + post + ";");
+
+
+    String referenceNumber = rejectedItem.get(0).substring(108, 127).trim();
+
+    Transaction transaction = (Transaction) this.transactionDAO.find(MLang.AND(
+      MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
+      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+    ));
+
+    if ( transaction == null ) {
+      transaction = (Transaction) this.transactionDAO.find(MLang.AND(
+        MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
+        MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+      ));
+    }
+
+    transaction = (Transaction) transaction.fclone();
+
+    transaction.setStatus(TransactionStatus.DECLINED);
+    ((BmoTransaction)transaction).setRejectReason(rejectReason);
+
+    transactionDAO.inX(this.x).put(transaction);
   }
 
   /**

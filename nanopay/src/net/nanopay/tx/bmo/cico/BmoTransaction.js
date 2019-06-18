@@ -57,17 +57,17 @@ foam.INTERFACE({
       javaType: 'int'
     },
     {
-      name: 'setRejectType',
+      name: 'setRejectReason',
       args: [
         {
           type: 'String',
-          name: 'rejectType'
+          name: 'rejectReason'
         }
       ],
       type: 'void'
     },
     {
-      name: 'getRejectType',
+      name: 'getRejectReason',
       type: 'String',
     },
   ]
