@@ -78,7 +78,7 @@ sourceCompatibility = "1.8"
 libsDirName = "lib"
 
 def group = "net.nanopay"
-def genJavaDir = "build"
+def genJavaDir = "generatedJava"
 def targetDir = "target"
 def workingDir = System.getProperty("user.dir")
 
@@ -96,7 +96,7 @@ sourceSets {
             srcDirs = [
                     "$rootDir/foam2/src",
                     "$rootDir/nanopay/src",
-                    "$rootDir/build"
+                    "$rootDir/${genJavaDir}"
             ]
             exclude "com/chrome/**"
             exclude "foam/nanos/tomcat/**"
@@ -308,6 +308,7 @@ task tarz(type: Tar) {
 clean {
     delete "${workingDir}/${targetDir}"
     delete "${buildDir}"
+    delete "${genJavaDir}"
 }
 
 compileJava {

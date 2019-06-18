@@ -114,7 +114,7 @@ function deploy_journals {
         mkdir -p target
     fi
 
-    if [ "$GRADLE_BUILD" -eq 0 ] || [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
+    if [ "$GRADLE_BUILD" -eq 0 ] || [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
         ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
         ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS > target/journal_files
@@ -165,6 +165,10 @@ function clean {
                 rm -rf target
                 mkdir target
             fi
+            if [ -d "generatedJava/" ]; then
+                rm -rf generatedJava
+                mkdir generatedJava
+            fi
             mvn clean
         else
             gradle clean $GRADLE_FLAGS
@@ -183,7 +187,7 @@ function build_jar {
         # maven
         if [ "$COMPILE_ONLY" -eq 0 ]; then
             echo "INFO :: Building nanos..."
-            ./gen.sh
+            ./gen.sh generatedJava
 
             echo "INFO :: Packaging js..."
             ./tools/js_build/build.js
