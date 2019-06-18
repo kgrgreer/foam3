@@ -10,13 +10,6 @@ foam.CLASS({
     'net.nanopay.account.Account'
   ],
 
-  messages: [
-    {
-      name: 'DESCRIBE_TEXT',
-      message: 'Creates a default digital account when a user is created.'
-    }
-  ],
-
   methods: [
     {
       name: 'applyAction',
