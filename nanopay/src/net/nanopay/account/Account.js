@@ -180,10 +180,10 @@ foam.CLASS({
       name: 'type',
       documentation: 'The type of the account.',
       transient: true,
-      factory: function() {
+      getter: function() {
         return this.cls_.name;
       },
-      javaFactory: `
+      javaGetter: `
         return getClass().getSimpleName();
       `,
       tableWidth: 125,

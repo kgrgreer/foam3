@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'AccountDAOSummaryView',
-  extends: 'foam.u2.View',
+  extends: 'foam.comics.v2.DAOSummaryView',
 
   implements: [
     'foam.mlang.Expressions'
@@ -79,35 +79,13 @@ foam.CLASS({
   `,
 
   requires: [
-    'foam.u2.layout.Cols',
-    'foam.u2.layout.Rows',
-    'foam.u2.ControllerMode',
     'foam.comics.v2.DAOBrowserView',
     'foam.u2.borders.CardBorder'
   ],
   imports: [
-    'stack',
     'transactionDAO'
   ],
-  exports: [
-    'controllerMode'
-  ],
   properties: [
-    {
-      class: 'FObjectProperty',
-      name: 'data'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.comics.v2.DAOControllerConfig',
-      name: 'config'
-    },
-    {
-      name: 'controllerMode',
-      factory: function() {
-        return this.ControllerMode.VIEW;
-      }
-    },
     {
       class: 'String',
       name: 'denominationFlag',
@@ -148,34 +126,6 @@ foam.CLASS({
           default:
             return '＄';
         }
-      }
-    },
-    {
-      name: 'primary',
-      expression: function(config$of){
-        var allActions = config$of.getAxiomsByClass(foam.core.Action)
-        var defaultAction = allActions.filter(a => a.isDefault);
-        return defaultAction.length >= 1 ? defaultAction[0] : allActions[0];
-      }
-    }
-  ],
-  actions: [
-    {
-      name: 'edit',
-      code: function() {
-        if ( ! this.stack ) return;
-        this.stack.push({
-          class: 'foam.comics.v2.DAOUpdateView',
-          data: this.data,
-          config: this.config,
-          of: this.config.of
-        });
-      }
-    },
-    {
-      name: 'delete',
-      code: function() {
-        alert('TODO');
       }
     }
   ],
@@ -232,7 +182,6 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-      this.SUPER();
       this
         .addClass(this.myClass())
         .add(self.slot(function(data, config, data$id, data$denomination) {
