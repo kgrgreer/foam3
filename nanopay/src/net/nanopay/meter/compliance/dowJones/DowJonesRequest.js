@@ -32,7 +32,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterRegionKeysOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterRegionKeys values.'
     },
     {
@@ -43,7 +42,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterRegionOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterRegion values.'
     },
     {
@@ -55,7 +53,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterPEPOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterPEP values.'
     },
     {
@@ -72,7 +69,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterSICOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Filter to combine filterSIC values.'
     },
     {
@@ -84,7 +80,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterAMCOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterAMC values.'
     },
     {
@@ -101,7 +96,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterSLOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterSL values.'
     },
     {
@@ -128,7 +122,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterOOLOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterOOL values.'
     },
     {
@@ -155,7 +148,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterOELOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterOEL values.'
     },
     {
