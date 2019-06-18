@@ -20,6 +20,7 @@ foam.CLASS({
     'accountBalanceMonthlyCandlestickDAO',
     'accountBalanceQuarterlyCandlestickDAO',
     'accountBalanceAnnuallyCandlestickDAO',
+    'currencyDAO',
     'liquidityThresholdWeeklyCandlestickDAO',
     'liquidityThresholdMonthlyCandlestickDAO',
     'liquidityThresholdQuarterlyCandlestickDAO',
@@ -60,6 +61,10 @@ foam.CLASS({
     {
       name: 'LABEL_LOW_THRESHOLD',
       message: 'Low Threshold'
+    },
+    {
+      name: 'LABEL_MILLIONS',
+      message: 'Millions'
     }
   ],
 
@@ -91,12 +96,14 @@ foam.CLASS({
       }
     },
     {
+      name: 'accountCurrency'
+    },
+    {
       class: 'foam.dao.DAOProperty',
       hidden: true,
       name: 'balanceCandlestickDAO',
       expression: function(account, timeFrame) {
         var pred = this.EQ(this.Candlestick.KEY, account.id);
-        console.log(`${account.id} || ${timeFrame}`)
         switch (timeFrame) {
           case this.WEEKLY:
             return this.accountBalanceCandlestickDAO.where(pred);
@@ -145,6 +152,26 @@ foam.CLASS({
     },
     {
       class: 'Map',
+      name: 'config',
+      factory: function() {
+        return {
+          type: 'line',
+          data: { datasets: [] },
+          options: {
+            // responsive: false,
+            maintainAspectRatio: false,
+            scales: {
+              xAxes: [{
+                type: 'time',
+                distribution: 'linear'
+              }]
+            }
+          }
+        }
+      }
+    },
+    {
+      class: 'Map',
       name: 'styling',
       value: {}
     }
@@ -165,6 +192,7 @@ foam.CLASS({
         .start().style({ 'width': '700px', 'height': '500px' })
           .add(this.CandlestickDAOChartView.create({
             data$: this.aggregatedDAO$,
+            config$: this.config$,
             customDatasetStyling$: this.styling$,
             width: 600,
             height: 500
@@ -186,17 +214,37 @@ foam.CLASS({
             label: label
           }
         } else {
+          var datasetLabel = this.accountCurrency ? `[${this.accountCurrency.alphabeticCode}] ${this.account.name}` : this.account.name;
           datasetStyling[key] = {
             steppedLine: true,
             borderColor: [
               '#406dea'
             ],
             backgroundColor: 'rgba(0, 0, 0, 0.0)',
-            label: this.account.name
+            label: datasetLabel
           }
         }
       }
       this.styling = datasetStyling;
+      this.formatYAxis();
+    },
+
+    function formatYAxis() {
+      if ( ! this.accountCurrency ) return;
+      var self = this;
+      var config = foam.Object.clone(this.config);
+      config['options']['scales']['yAxes'] = [{
+        ticks: {
+          callback: function(label, index, labels) {
+            return self.accountCurrency.format(Math.floor(parseFloat(label)));
+          }
+        },
+        scaleLabel: {
+          display: true,
+          labelString: this.accountCurrency.name
+        }
+      }];
+      this.config = config;
     }
   ],
 
@@ -210,12 +258,14 @@ foam.CLASS({
           of: 'foam.nanos.analytics.Candlestick',
           daoType: 'ARRAY'
         });
+        this.accountCurrency = await this.currencyDAO.find(this.account.denomination);
         var balanceSink = await this.balanceCandlestickDAO.select();
         var keyMap = {};
-        balanceSink.array.forEach(function(b) {
+        balanceSink.array.forEach(b => {
           aggregate.put(b);
           keyMap[b.key] = 1;
         });
+
         if ( this.liquidityThresholdCandlestickDAO ) {
           var liquiditySink = await this.liquidityThresholdCandlestickDAO.select();
           liquiditySink.array.forEach(function(l) {
