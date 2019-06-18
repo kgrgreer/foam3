@@ -129,7 +129,7 @@ abstract class IncrementalTask extends DefaultTask {
 
 class IncrementalGenTask extends IncrementalTask {
     Set<File> includeFiles;
-    List<File> extraFiles = new ArrayList<>();
+    List<File> classFiles = new ArrayList<>();
     File outputDir
 
     @InputFiles
@@ -138,7 +138,7 @@ class IncrementalGenTask extends IncrementalTask {
         for(File f : includeFiles) {
             files = files + getProject().fileTree(f);
         }
-        for(File f : extraFiles) {
+        for(File f : classFiles) {
             files = files + getProject().fileTree(f);
         }
         return files;
@@ -179,23 +179,18 @@ class IncrementalFindTask extends IncrementalTask {
     }
 }
 
-task incrementalGenTask(type: IncrementalGenTask) {
-    FileTree trees = fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")
-    includeFiles = trees.matching{include "**/*.js"}.getFiles()
-    extraFiles.add(file("foam2/tools/classes.js"))
-    extraFiles.add(file("nanopay/tools/classes.js"))
-    outputDir = file(genJavaDir)
-}
-
 task genJava(type: Exec) {
-    // https://stackoverflow.com/a/43358562 - flags for controller tasks
     dependsOn {
-        tasks.incrementalGenTask
+        task incrementalGenTask(type: IncrementalGenTask) {
+            includeFiles = (fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")).matching{include "**/*.js"}.getFiles()
+            classFiles.add(file("nanopay/tools/classes.js"))
+            outputDir = file(genJavaDir)
+        }
     }
-    onlyIf { 
+    onlyIf {
         !tasks.incrementalGenTask.state.upToDate
     }
-    commandLine 'bash', './gen.sh', genJavaDir
+    commandLine 'bash', './gen.sh', 'tools/classes.js', "${genJavaDir}"
 }
 
 task findSH(type: Exec) {
@@ -216,10 +211,7 @@ task findSH(type: Exec) {
 
 task packageFoam(type: NodeTask) {
     dependsOn {
-        tasks.incrementalGenTask
-    }
-    onlyIf { 
-        !tasks.incrementalGenTask.state.upToDate
+        tasks.genJava
     }
     script = file('./tools/js_build/build.js')
     args = [project.version]
