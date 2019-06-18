@@ -20,6 +20,10 @@ foam.CLASS({
     'transactionDAO'
   ],
 
+  css: `
+    
+  `,
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -80,7 +84,8 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-          .tag(this.DashboardAccounts, { data: this.accounts })
+          .start().add(this.cls_.name).addClass(this.myClass('header')).end()
+          .start(this.DashboardAccounts, { data: this.accounts }).addClass().end()
     }
   ]
 });

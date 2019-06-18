@@ -41,6 +41,13 @@ foam.CLASS({
       line-height: 1.5;
       color: #5e6061;
     }
+
+    ^balance {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
   `,
 
   requires: [
@@ -79,12 +86,75 @@ foam.CLASS({
         return this.ControllerMode.VIEW;
       }
     },
+    {
+      class: 'String',
+      name: 'denomination',
+      factory: function() {
+        return 'CAD';
+      }
+    },
+    {
+      class: 'String',
+      name: 'denominationSymbol',
+      expression: function(denomination) {
+        /**
+         * TODO: we might want to make flags a property of currencies/denominations
+         * and use images instead of emojis
+         */
+        switch(denomination){
+          case 'USD':
+            return 'US＄';
+          case 'CAD':
+            return 'C＄';
+          case 'EUR':
+            return '€';
+          case 'GBP':
+            return '£';
+          case 'INR':
+            return '₹'
+          default:
+            return '＄';
+        }
+      }
+    }
   ],
 
   methods: [
+    function parseBalanceToDollarString(balanceLong){
+      let balanceString = balanceLong.toString();
+
+      // 1. prepend a . before the second last index
+      if (balanceString.length > 2) {
+        balanceString = `${balanceString.substr(0, balanceString.length - 2)}.${balanceString.substr(balanceString.length - 2)}`;
+
+        // 2. moving from the back, prepend a comma before every 3 digits
+        if (balanceString.length > 6) {
+          let moduloDigit = 1;
+          let stringIndex = balanceString.length - 3;
+
+          while (stringIndex > 1) {
+            if (moduloDigit % 3 === 0){
+              balanceString = `${balanceString.substr(0, stringIndex - 1)},${balanceString.substr(stringIndex - 1)}`;
+              moduloDigit = 1;
+            } else {
+              moduloDigit++;
+            }
+            stringIndex--;
+          }
+        }
+      } else {
+        balanceString = `0.${balanceString}`;
+      }
+      // 3. prepend denominationSymbol to the entire string
+      balanceString = `${this.denominationSymbol}${balanceString}`;
+
+      return balanceString;
+    },
+
     function calcTotalBalance() {
       const self = this;
-      const promisesArray = [];
+      const denomPromises = {};
+      const denomBalances = {};
       return this.user.accounts.where(this.EQ(this.Account.OWNER, this.user.id))
         .select(this.GroupBy.create({
           arg1: this.Account.DENOMINATION,
@@ -95,18 +165,22 @@ foam.CLASS({
 
             denomKeys.forEach(denomKey => {
               const denominatedAccountsArray = result.groups[denomKey].array;
+              denomPromises[denomKey] = [];
+
 
               denominatedAccountsArray.forEach(account => {
                 if ( account.type !== net.nanopay.account.AggregateAccount.name ){
-                  promisesArray.push(account.findBalance(self.__context__));
+                  denomPromises[denomKey].push(account.findBalance(self.__context__));
                 }
+              })
+
+              Promise.all(denomPromises[denomKey]).then(function(denomBalances){ 
+                denomBalances[denomKey] = self.parseBalanceToDollarString(denomBalances.reduce((total, num) => total + num));
               })
             })
 
+
             // TODO: Account for currency conversion
-            return Promise.all(promisesArray).then(function(balances) {
-              return balances.reduce((total, num) => total + num);
-            });
           });
 
     },
@@ -116,7 +190,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(self.slot(function(data) {
+        .add(self.slot(function(data, denomination) {
           return self.E()
             .start(self.CardBorder)
               .start(self.Rows).addClass(this.myClass('card-container'))
@@ -130,7 +204,7 @@ foam.CLASS({
                     .end()
                     .start().addClass(this.myClass('balance-note'))
                       .add(self.BALANCE_NOTE)
-                      .add(` (${data$denomination})`)
+                      .add(` (${denomination})`)
                     .end()
                   .end()
                 .end()
