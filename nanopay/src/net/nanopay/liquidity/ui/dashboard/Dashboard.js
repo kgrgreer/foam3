@@ -14,11 +14,20 @@ foam.CLASS({
     'net.nanopay.liquidity.ui.dashboard.AggregatedLiquidityChartView'
   ],
 
+  requires: [
+    'net.nanopay.liquidity.ui.CurrencyExposureDAO',
+  ],
+
   imports: [
     'accountDAO',
     'accountBalanceWeeklyCandlestickDAO as accountBalancesOverTime',
     'liquidityThresholdWeeklyCandlestickDAO',
     'transactionDAO'
+  ],
+
+  exports: [
+    'baseDenomination',
+    'conversionService'
   ],
 
   css: `
@@ -73,6 +82,27 @@ foam.CLASS({
       },
       view: {
         class: 'org.chartjs.CandlestickDAOChartView',
+      }
+    },
+    {
+      class: 'String',
+      name: 'baseDenomination',
+      value: 'USD'
+    },
+    {
+      name: 'conversionService',
+      hidden: true,
+      value: {
+        getRate: function(from, to) {
+          return Promise.resolve(1);
+        }
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'currencyExposureDAO',
+      factory: function() {
+        return this.CurrencyExposureDAO.create();
       }
     },
     {
