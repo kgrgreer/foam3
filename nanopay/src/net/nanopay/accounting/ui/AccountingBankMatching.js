@@ -136,7 +136,7 @@ foam.CLASS({
       font-size: 16px;
       font-weight: lighter;
     }
-    ^ .foam-u2-ActionView-cancel:hover {
+    ^ .cancel-button:hover {
       cursor : selector;
       background-color: transparent !important
     }

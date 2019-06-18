@@ -96,6 +96,14 @@ foam.CLASS({
       width: 80%;
       margin: 10px;
     }
+    ^ .password-link {
+      display: inline-block;
+      margin: 0;
+      font-size: 12px;
+      float: right;
+      color: #604aff;
+      cursor: pointer;
+    }
   `,
 
   properties: [
@@ -149,6 +157,9 @@ foam.CLASS({
       var emailDisplayMode = this.disableEmail ?
       foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
+      var searchParams = new URLSearchParams(location.search);
+      this.email = searchParams.get('email');
+
       var left = this.Element.create()
         .addClass('cover-img-block')
         .start('img')
@@ -172,7 +183,19 @@ foam.CLASS({
             .end()
           .end()
           .start().addClass('input-wrapper')
-            .start().addClass('input-label').add(this.PASSWORD_LABEL).end()
+            .start()
+              .addClass('input-label')
+              .addClass('inline')
+              .add(this.PASSWORD_LABEL)
+            .end()
+            .start('p').addClass('password-link')
+              .add(this.FORGET_PASSWORD_LABEL)
+              .on('click', function() {
+                self.stack.push({
+                  class: 'foam.nanos.auth.resetPassword.EmailView'
+                });
+              })
+            .end()
             .add(this.PASSWORD)
           .end()
           .start(this.LOG_IN).addClass('sme-button').addClass('block').addClass('login').end()
@@ -186,14 +209,6 @@ foam.CLASS({
                 self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
               })
             .end()
-          .end()
-          .start('p').addClass('forgot-link')
-            .add(this.FORGET_PASSWORD_LABEL)
-            .on('click', function() {
-              self.stack.push({
-                class: 'foam.nanos.auth.resetPassword.EmailView'
-              });
-            })
           .end()
         .end();
 
@@ -280,7 +295,7 @@ foam.CLASS({
       if ( returnedTempUser ) {
         this.user.copyFrom(returnedTempUser);
       } else {
-        this.notify('User was invited to a business however an error has occured during processing.', 'error');
+        this.notify('User was invited to a business however an error has occurred during processing.', 'error');
       }
     }
   ]

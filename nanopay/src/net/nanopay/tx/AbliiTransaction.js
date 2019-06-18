@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'AbliiTransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.SummaryTransaction',
 
   documentation: `Transaction to be created specifically for ablii users, enforces source/destination to always be bank accounts`,
 
@@ -9,6 +9,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.lang.StringBuilder',
@@ -39,9 +40,11 @@ foam.CLASS({
           .append(" just initiated a payment to ")
           .append(receiver.label())
           .append(" for ")
-          .append(formatter.format(getAmount()/100.00))
-          .append(" on Invoice#: ")
-          .append(invoice.getInvoiceNumber());
+          .append(formatter.format(getAmount()/100.00));
+        if ( invoice.getInvoiceNumber() != null && ! SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
+          sb.append(" on Invoice#: ")
+            .append(invoice.getInvoiceNumber());
+        }
         if(invoice.getPurchaseOrder().length() > 0) {
           sb.append(" and P.O: ");
           sb.append(invoice.getPurchaseOrder());

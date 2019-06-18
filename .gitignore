@@ -94,4 +94,10 @@ sha256/
 
 # yarn
 yarn-error.log
-tools/js_build/foam-bin.js
+tools/js_build/foam-bin*.js
+
+# gradle
+.gradle
+
+# Ignore bin
+/bin

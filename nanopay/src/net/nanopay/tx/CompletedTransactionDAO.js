@@ -35,7 +35,7 @@ foam.CLASS({
         oldTxn == null && txn.getStatus() == TransactionStatus.COMPLETED ) {
         DAO children = txn.getChildren(x);
         for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
-          Transaction child = (Transaction) o;
+          Transaction child = (Transaction) ((Transaction) o).fclone();
           child.setStatus(child.getInitialStatus());
 
           /**

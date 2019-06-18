@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.Base64',
+    'net.nanopay.tx.model.Transaction',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
     'org.apache.http.entity.StringEntity',
