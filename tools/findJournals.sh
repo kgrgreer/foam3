@@ -26,8 +26,10 @@ declare -a sources=(
  # "interac/src"
 )
 
-grep -v '^#' < "${IN_FILE:-/dev/stdin}" | while read -r file; do
-    find ${sources[@]} -name "${file}" -o -name "${file}.jrl"
+sed 's/#.*//;s/^[ \t]*//;s/[ \t]*$//' < "${IN_FILE:-/dev/stdin}" | while read -r file; do
+    if [ ! -z $file ]; do
+        find ${sources[@]} -name "${file}" -o -name "${file}.jrl"
+    fi
 done
 
 exit 0
