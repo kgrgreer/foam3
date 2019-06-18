@@ -75,12 +75,10 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     }
 
     Invoice invoice = getInvoice(x, transaction);
-    if ( transaction.getStatus() == TransactionStatus.SENT ) {
-      // only update the estimated completion date on the last CO leg.
-      if ( transaction instanceof COTransaction ) {
-        invoice.setPaymentDate(transaction.getCompletionDate());
-      }
-      invoice.setPaymentMethod(PaymentStatus.PENDING);
+    if ( transaction.getStatus() == TransactionStatus.SENT &&
+         transaction instanceof COTransaction ) {
+        // only update the estimated completion date on the last CO leg.
+      invoice.setPaymentDate(transaction.getCompletionDate());
       invoiceDAO.put(invoice);
       //logger_.debug(transaction.getId(), transaction.getType(), transaction.getStatus(), state, transaction.getInvoiceId(), "SENT/PENDING");
       return getDelegate().put_(x, obj);
