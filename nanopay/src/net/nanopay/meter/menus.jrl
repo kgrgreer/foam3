@@ -34,4 +34,4 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Provid
 p({"class":"foam.nanos.menu.Menu","id":"operation.BusinessOnboarding","label":"Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
 
 // ComplianceItem
-p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Items","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"order":1000,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"order":1550,"parent":"operation"})
