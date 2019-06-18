@@ -549,11 +549,8 @@ DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
-<<<<<<< HEAD
 GRADLE_FLAGS=
-=======
 LIQUID_DEMO=0
->>>>>>> development
 
 while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
     case $opt in
