@@ -9,6 +9,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
     'net.nanopay.approval.ApprovalStatus',
@@ -21,16 +23,21 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-      ApprovalRequest request = (ApprovalRequest) obj;
-      if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REJECTED ) {
-        //remove all requested compliance approval requests for this specific object
-        ((DAO)x.get("approvalRequestDAO")).where(AND(
-          INSTANCE_OF(ComplianceApprovalRequest.class),
-          EQ(ApprovalRequest.OBJ_ID, request.getObjId()),
-          EQ(ApprovalRequest.DAO_KEY, request.getDaoKey())
-          )
-        ).removeAll();
-      }
+      agency.submit(x, new ContextAgent() {
+        @Override
+        public void execute(X x) {
+          ApprovalRequest request = (ApprovalRequest) obj;
+          if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REJECTED ) {
+            //remove all requested compliance approval requests for this specific object
+            ((DAO)x.get("approvalRequestDAO")).where(AND(
+              INSTANCE_OF(ComplianceApprovalRequest.class),
+              EQ(ApprovalRequest.OBJ_ID, request.getObjId()),
+              EQ(ApprovalRequest.DAO_KEY, request.getDaoKey())
+              )
+            ).removeAll();
+          }
+        }
+      });
       `
     }
   ]
