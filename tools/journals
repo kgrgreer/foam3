@@ -47,6 +47,7 @@ themes
 transactionfees
 transactionLimits
 transactionPurposes
+transactions
 txnProcessors
 users
 xeroConfig
