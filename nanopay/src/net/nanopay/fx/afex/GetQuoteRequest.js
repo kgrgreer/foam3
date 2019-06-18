@@ -13,6 +13,10 @@ foam.CLASS({
     {
       class: "String",
       name: "optionDate"
+    },
+    {
+      class: "String",
+      name: "amount"
     }
   ]
 });
