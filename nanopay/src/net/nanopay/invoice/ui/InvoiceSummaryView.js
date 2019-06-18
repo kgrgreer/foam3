@@ -259,7 +259,7 @@ foam.CLASS({
         this.calculatePropertiesForStatus(this.InvoiceStatus.UNPAID, 'unpaid');
         this.calculatePropertiesForStatus(this.InvoiceStatus.SCHEDULED, 'scheduled');
         this.calculatePropertiesForStatus(this.InvoiceStatus.PAID, 'paid');
-        this.calculatePropertiesForStatus(this.InvoiceStatus.PENDING, 'pending');
+        this.calculatePropertiesForStatus(this.InvoiceStatus.PROCESSING, 'pending');
       }
     }
   ]

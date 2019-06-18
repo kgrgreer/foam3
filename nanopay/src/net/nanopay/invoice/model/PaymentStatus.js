@@ -27,11 +27,11 @@ foam.ENUM({
       label: 'Void'
     },
     {
-      name: 'PENDING',
+      name: 'PROCESSING',
       documentation: `A status that indicates that the invoice has been paid, 
         but that payment hasn't been confirmed yet.
       `,
-      label: 'Pending'
+      label: 'Processing'
     },
     {
       name: 'TRANSIT_PAYMENT',

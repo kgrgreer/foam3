@@ -69,9 +69,9 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
-        case this.InvoiceStatus.PENDING:
+        case this.InvoiceStatus.PROCESSING:
           return {
-            labelText: this.InvoiceStatus.PENDING.label,
+            labelText: this.InvoiceStatus.PROCESSING.label,
             labelDecoration: 'Invoice-Status-Pending',
             icon: 'images/ic-pending.svg',
           };

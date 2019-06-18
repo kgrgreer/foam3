@@ -54,11 +54,11 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoiceDAO.put(invoice);
       } else if ( status == TransactionStatus.SENT && transaction instanceof AscendantFXTransaction ) {
         invoice.setPaymentDate(transaction.getCompletionDate());
-        invoice.setPaymentMethod(PaymentStatus.PENDING);
+        invoice.setPaymentMethod(PaymentStatus.PROCESSING);
         invoiceDAO.put(invoice);
       } else if ( status == TransactionStatus.PENDING_PARENT_COMPLETED || status == TransactionStatus.PENDING ) {
         invoice.setPaymentDate(generateEstimatedCreditDate());
-        invoice.setPaymentMethod(PaymentStatus.PENDING);
+        invoice.setPaymentMethod(PaymentStatus.PROCESSING);
         invoiceDAO.put(invoice);
       } else if ( status == TransactionStatus.DECLINED || status == TransactionStatus.REVERSE || status == TransactionStatus.REVERSE_FAIL ) {
         // Do nothing. Our team will investigate and then manually set the status of the invoice.
