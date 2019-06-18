@@ -128,7 +128,8 @@ abstract class IncrementalTask extends DefaultTask {
 }
 
 class IncrementalGenTask extends IncrementalTask {
-    List<File> includeFiles = new ArrayList<>();
+    Set<File> includeFiles;
+    List<File> extraFiles = new ArrayList<>();
     File outputDir
 
     @InputFiles
@@ -137,7 +138,9 @@ class IncrementalGenTask extends IncrementalTask {
         for(File f : includeFiles) {
             files = files + getProject().fileTree(f);
         }
-
+        for(File f : extraFiles) {
+            files = files + getProject().fileTree(f);
+        }
         return files;
     }
 
@@ -178,11 +181,9 @@ class IncrementalFindTask extends IncrementalTask {
 
 task incrementalGenTask(type: IncrementalGenTask) {
     FileTree trees = fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")
-    trees.matching{include "**/*.js"}.each { File f ->
-        includeFiles.add(f)
-    }
-    includeFiles.add(file("foam2/tools/classes.js"))
-    includeFiles.add(file("nanopay/tools/classes.js"))
+    includeFiles = trees.matching{include "**/*.js"}.getFiles()
+    extraFiles.add(file("foam2/tools/classes.js"))
+    extraFiles.add(file("nanopay/tools/classes.js"))
     outputDir = file(genJavaDir)
 }
 
