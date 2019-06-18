@@ -24,18 +24,6 @@ foam.CLASS({
         DigitalAccountService service = (DigitalAccountService) x.get("digitalAccount");
         service.findDefault(x, null);
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '// No-op'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return DESCRIBE_TEXT;'
     }
   ]
 });
