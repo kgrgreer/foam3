@@ -9,13 +9,15 @@ foam.CLASS({
   name: 'Dashboard',
   extends: 'foam.u2.View',
 
-  requires: [
-    'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
-    'net.nanopay.liquidity.ui.dashboard.AggregatedLiquidityChartView'
+  implements: [
+    'foam.mlang.Expressions'
   ],
 
   requires: [
-    'net.nanopay.liquidity.ui.CurrencyExposureDAO',
+    'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
+    'net.nanopay.liquidity.ui.dashboard.liquidity.AggregatedLiquidityChartView',
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
+    'foam.comics.v2.DAOBrowserView',
   ],
 
   imports: [
@@ -125,6 +127,8 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      debugger;
+      const self = this;
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -135,6 +139,9 @@ foam.CLASS({
             .end()
             .start(this.AggregatedLiquidityChartView)
               .addClass(this.myClass('chart'))
+            .end()
+            .start(this.DAOBrowserView, { data: this.currencyExposureDAO.where(self.TRUE) })
+              .addClass(this.myClass('currency-exposure'))
             .end()
           .end();
     }
