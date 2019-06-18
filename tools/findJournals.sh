@@ -2,6 +2,7 @@
 
 IN_FILE=
 INSTANCE=
+OUT_FILE=
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
@@ -9,12 +10,14 @@ function usage {
     echo "Options are:"
     echo "  -I : Input File, no option defaults to stdin"
     echo "  -J : Instance"
+    echo "  -O : Output File, no option defaults to stdout"
 }
 
-while getopts "I:J:" opt ; do
+while getopts "I:J:O:" opt ; do
     case $opt in
         I) IN_FILE=$OPTARG ;;
         J) INSTANCE=$OPTARG ;;
+        O) OUT_FILE=$OPTARG ;;
         ?) usage ; exit 1;;
     esac
 done
@@ -26,9 +29,13 @@ declare -a sources=(
  # "interac/src"
 )
 
+if [ ! -z $OUT_FILE ]; then
+    rm $OUT_FILE
+fi
+
 sed 's/#.*//;s/^[ \t]*//;s/[ \t]*$//' < "${IN_FILE:-/dev/stdin}" | while read -r file; do
-    if [ ! -z $file ]; do
-        find ${sources[@]} -name "${file}" -o -name "${file}.jrl"
+    if [ ! -z $file ]; then
+        find ${sources[@]} -name "${file}" -o -name "${file}.jrl" >> "${OUT_FILE:-/dev/stdout}"
     fi
 done
 
