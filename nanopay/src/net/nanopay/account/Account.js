@@ -187,7 +187,10 @@ foam.CLASS({
         return getClass().getSimpleName();
       `,
       tableWidth: 125,
-      section: 'accountType'
+      section: 'accountType',
+      visibilityExpression: function( controllerMode ){
+        return controllerMode === foam.u2.ControllerMode.EDIT ? foam.u2.Visibility.RO : foam.u2.Visibility.RW
+      }
     },
     {
       class: 'Long',

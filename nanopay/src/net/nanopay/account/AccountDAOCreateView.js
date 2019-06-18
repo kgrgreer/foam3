@@ -85,11 +85,11 @@ foam.CLASS({
       name: 'save',
       code: function() {
         var self = this;
-        this.config.dao.put(this.data.clone()).then(function() {
+        // TODO: make this grab the user's id and sets as the owner
+        this.config.dao.put(this.data.clone(this.__subContext__)).then(function() {
           self.finished.pub();
           self.stack.back();
         }, function() {
-
           self.throwError.pub();
         });
       }
