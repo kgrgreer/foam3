@@ -283,27 +283,6 @@ task copyFavicon(type: Copy) {
     include "**"
 }
 
-task buildJar(type: Jar) {
-  dependsOn tasks.withType(Copy)
-  destinationDirectory = file("$targetDir/lib")
-
-  from "$buildDir/classes/java/main"
-  from "$targetDir/classes"
-  include "**"
-
-  manifest {
-    attributes "Main-Class": "foam.nanos.boot.Boot"
-    attributes "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(" ")
-    attributes "Implementation-Title": "${project.name}"
-    /* version - see settings.gradle and override on the command line
-        with -Pversion=x.y.z */
-    attributes "Implementation-Version": "${project.version}"
-    attributes "Implementation-Timestamp": new Date()
-    attributes "Implementation-Vendor-Id": group
-    attributes "Implementation-Vendor": "nanopay"
-  }
-}
-
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
@@ -335,4 +314,26 @@ compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
     options.incremental = true
+}
+
+task buildJar(type: Jar) {
+    dependsOn tasks.withType(Copy)
+    dependsOn compileJava
+    destinationDirectory = file("$targetDir/lib")
+
+    from "$buildDir/classes/java/main"
+    from "$targetDir/classes"
+    include "**"
+
+    manifest {
+        attributes "Main-Class": "foam.nanos.boot.Boot"
+        attributes "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(" ")
+        attributes "Implementation-Title": "${project.name}"
+        /* version - see settings.gradle and override on the command line
+            with -Pversion=x.y.z */
+        attributes "Implementation-Version": "${project.version}"
+        attributes "Implementation-Timestamp": new Date()
+        attributes "Implementation-Vendor-Id": group
+        attributes "Implementation-Vendor": "nanopay"
+    }
 }
