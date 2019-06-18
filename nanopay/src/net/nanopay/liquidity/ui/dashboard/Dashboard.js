@@ -26,6 +26,15 @@ foam.CLASS({
       font-size: 36px;
       font-weight: 600;
       line-height: 1.33;
+      padding: 32px 0px 0px 32px;;
+    }
+
+    ^dashboard-container {
+      padding: 32px;
+    }
+
+    ^ .foam-u2-borders-CardBorder {
+      margin-bottom: 32px;
     }
   `,
 
@@ -90,8 +99,14 @@ foam.CLASS({
       this
         .addClass(this.myClass())
           .start().add(this.cls_.name).addClass(this.myClass('header')).end()
-          .start(this.DashboardAccounts, { data: this.accounts }).addClass(this.myClass('accounts')).end()
-          .start(this.AggregatedLiquidityChartView).addClass(this.myClass('chart')).end();
+          .start().addClass(this.myClass('dashboard-container'))
+            .start(this.DashboardAccounts, { data: this.accounts })
+              .addClass(this.myClass('accounts'))
+            .end()
+            .start(this.AggregatedLiquidityChartView)
+              .addClass(this.myClass('chart'))
+            .end()
+          .end();
     }
   ]
 });

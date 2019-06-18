@@ -10,7 +10,8 @@ foam.CLASS({
   requires: [
     'foam.dao.EasyDAO',
     'foam.nanos.analytics.Candlestick',
-    'org.chartjs.CandlestickDAOChartView'
+    'org.chartjs.CandlestickDAOChartView',
+    'foam.u2.borders.CardBorder',
   ],
 
   imports: [
@@ -188,18 +189,20 @@ foam.CLASS({
       this.dataUpdate();
 
       this.addClass(this.myClass())
-        .startContext({ data: this })
-          .add(this.ACCOUNT)
-          .add(this.TIME_FRAME)
-        .endContext()
-        .start().style({ 'width': '700px', 'height': '500px' })
-          .add(this.CandlestickDAOChartView.create({
-            data$: this.aggregatedDAO$,
-            config$: this.config$,
-            customDatasetStyling$: this.styling$,
-            width: 600,
-            height: 500
-          }))
+        .start(this.CardBorder)
+          .startContext({ data: this })
+            .add(this.ACCOUNT)
+            .add(this.TIME_FRAME)
+          .endContext()
+          .start().style({ 'width': '700px', 'height': '500px' })
+            .add(this.CandlestickDAOChartView.create({
+              data$: this.aggregatedDAO$,
+              config$: this.config$,
+              customDatasetStyling$: this.styling$,
+              width: 600,
+              height: 500
+            }))
+          .end()
         .end();
     },
 
