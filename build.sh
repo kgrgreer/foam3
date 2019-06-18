@@ -324,7 +324,6 @@ function start_nanos {
         elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
         else
-            echo JAVA_OPTS="$JAVA_OPTS"
             nohup java -cp "$CLASSPATH" foam.nanos.boot.Boot &> /dev/null &
             echo $! > "$NANOS_PIDFILE"
         fi
