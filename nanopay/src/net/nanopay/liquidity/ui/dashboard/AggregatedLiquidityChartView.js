@@ -65,14 +65,13 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
       name: 'account',
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.accountDAO,
           placeholder: 'Please select',
           objToChoice: function(a) {
-            return [a.id, a.name];
+            return [a, a.name];
           }
         });
       }
@@ -96,8 +95,8 @@ foam.CLASS({
       hidden: true,
       name: 'balanceCandlestickDAO',
       expression: function(account, timeFrame) {
-        var pred = this.EQ(this.Candlestick.KEY, account);
-        console.log(`${account} || ${timeFrame}`)
+        var pred = this.EQ(this.Candlestick.KEY, account.id);
+        console.log(`${account.id} || ${timeFrame}`)
         switch (timeFrame) {
           case this.WEEKLY:
             return this.accountBalanceCandlestickDAO.where(pred);
@@ -117,8 +116,8 @@ foam.CLASS({
       hidden: true,
       name: 'liquidityThresholdCandlestickDAO',
       expression: function(account, timeFrame) {
-        var high = `${account}:high`;
-        var low = `${account}:low`;
+        var high = `${account.id}:high`;
+        var low = `${account.id}:low`;
         var pred = this.OR(this.EQ(this.Candlestick.KEY, high), this.EQ(this.Candlestick.KEY, low));
         switch (timeFrame) {
           case this.WEEKLY:
@@ -193,7 +192,7 @@ foam.CLASS({
               '#406dea'
             ],
             backgroundColor: 'rgba(0, 0, 0, 0.0)',
-            label: this.account
+            label: this.account.name
           }
         }
       }
