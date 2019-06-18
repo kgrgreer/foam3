@@ -64,6 +64,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/NoBalanceRule' },
   { name: 'net/nanopay/account/NoPendingTransactionsRule' },
   { name: 'net/nanopay/account/NoChildrenRule' },
+  { name: 'net/nanopay/account/CreateDefaultDigitalAccountOnUserCreateRule' },
   { name: 'net/nanopay/account/Relationships' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
@@ -197,6 +198,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/Corridor' },
   { name: 'net/nanopay/fx/FXProvider' },
   { name: 'net/nanopay/fx/FXUserStatus' },
+  { name: 'net/nanopay/fx/KotakFxTransaction' },
+  { name: 'net/nanopay/fx/ManualFxApprovalRequest' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
@@ -208,10 +211,28 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
+  // AFEX
+  { name: "net/nanopay/fx/afex/AFEX" },
+  { name: "net/nanopay/fx/afex/AFEXCredentials"},
+  { name: "net/nanopay/fx/afex/Token"},
+  { name: "net/nanopay/fx/afex/AddPayeeRequest"},
+  { name: "net/nanopay/fx/afex/AddPayeeResponse"},
+  { name: "net/nanopay/fx/afex/UpdatePayeeRequest"},
+  { name: "net/nanopay/fx/afex/UpdatePayeeResponse"},
+  { name: "net/nanopay/fx/afex/GetPayeeInfoResponse"},
+  { name: "net/nanopay/fx/afex/Quote"},
+  { name: "net/nanopay/fx/afex/GetQuoteRequest"},
+  { name: "net/nanopay/fx/afex/CreateTradeRequest"},
+  { name: "net/nanopay/fx/afex/CreateTradeResponse"},
+  { name: "net/nanopay/fx/afex/CreatePaymentRequest"},
+  { name: "net/nanopay/fx/afex/CreatePaymentResponse"},
+
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
   { name: 'net/nanopay/kotak/KotakCredentials' },
+  { name: 'net/nanopay/tx/CreateManualFxRule' },
   { name: 'net/nanopay/tx/KotakCOTransaction' },
+  { name: 'net/nanopay/tx/ManualFxRule' },
 
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
@@ -673,6 +694,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserSelectionView', flags: ['web'] },
+  { name: 'net/nanopay/ui/ApprovalRequestController', flags: ['web'] },
 
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
@@ -907,6 +929,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserCompliancePassedOrFailed' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
   { name: 'net/nanopay/meter/compliance/ruler/CreateRemoveComplianceItemRule' },
+  { name: 'net/nanopay/meter/compliance/ruler/RemoveComplianceApprovalRequest' },
+  { name: 'net/nanopay/meter/compliance/ruler/ComplianceLoginControlRule' },
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
@@ -1013,5 +1037,6 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/AlarmReason' },
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
-  { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
+  { name: 'net/nanopay/alarming/AlarmAndMonitoring' }
+
 ]);

@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler',
   name: 'CreateRemoveComplianceItemRule',
-  flags: ['java'],
 
   documentation: 'Creates or removes ComplianceItems to reflect existence of compliance responses.',
 
@@ -63,7 +62,7 @@ foam.CLASS({
         if(this.getOperation() == Operations.CREATE) {
           if ( obj instanceof DowJonesResponse ) {
             DowJonesResponse response = (DowJonesResponse) obj;
-            DAO userDAO = (DAO) x.get("userDAO");
+            DAO userDAO = (DAO) x.get("localUserDAO");
             User user = (User) userDAO.find(response.getUserId());
             ComplianceItem complianceItem = new ComplianceItem.Builder(x)
               .setDowJones(response.getId())
