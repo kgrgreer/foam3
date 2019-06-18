@@ -75,7 +75,7 @@ foam.CLASS({
             IdentityMindResponse response = (IdentityMindResponse) obj;
             ComplianceItem complianceItem = new ComplianceItem.Builder(x)
               .setIdentityMind(response.getId())
-              .setUser(Long.parseLong(response.getEntityId().toString()))
+              .setUser((long)response.getEntityId())
               .build();
             DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
             complianceItemDAO.inX(x).put(complianceItem);
@@ -109,7 +109,7 @@ foam.CLASS({
             IdentityMindResponse response = (IdentityMindResponse) obj;
             ComplianceItem complianceItem = new ComplianceItem.Builder(x)
               .setIdentityMind(response.getId())
-              .setUser(Long.parseLong(response.getEntityId().toString()))
+              .setUser((long)response.getEntityId())
               .build();
             DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
             complianceItemDAO.inX(x).remove(complianceItem);
