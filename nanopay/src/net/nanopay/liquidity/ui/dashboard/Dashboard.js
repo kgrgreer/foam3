@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts'
+    'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
+    'net.nanopay.liquidity.ui.dashboard.AggregatedLiquidityChartView'
   ],
 
   imports: [
@@ -21,7 +22,11 @@ foam.CLASS({
   ],
 
   css: `
-    
+    ^header {
+      font-size: 36px;
+      font-weight: 600;
+      line-height: 1.33;
+    }
   `,
 
   properties: [
@@ -86,6 +91,7 @@ foam.CLASS({
         .addClass(this.myClass())
           .start().add(this.cls_.name).addClass(this.myClass('header')).end()
           .start(this.DashboardAccounts, { data: this.accounts }).addClass().end()
+          .start(this.AggregatedLiquidityChartView).addClass().end();
     }
   ]
 });
