@@ -155,6 +155,7 @@ foam.CLASS({
       class: 'Map',
       name: 'config',
       factory: function() {
+        var self = this;
         return {
           type: 'line',
           data: { datasets: [] },
@@ -165,10 +166,21 @@ foam.CLASS({
               xAxes: [{
                 type: 'time',
                 time: {
-                  min: new Date().setTime(new Date().getTime() - (24*60*60*1000*30))
+                  min: new Date().setTime(new Date().getTime() - (24*60*60*1000*30)) // TODO: Change this to be determined by the dropdown
                 },
                 distribution: 'linear'
               }]
+            },
+            tooltips: {
+              displayColors: false,
+              callbacks: {
+                title: function(_, _) {
+                  return self.account.name;
+                },
+                label: function(tooltipItem, _) {
+                  return `${self.account.denomination} ${self.accountCurrency.format(Math.floor(parseFloat(tooltipItem.yLabel)))}`;
+                }
+              }
             }
           }
         }
@@ -238,8 +250,9 @@ foam.CLASS({
     function formatYAxis() {
       if ( ! this.accountCurrency ) return;
       var self = this;
+      this.config.data = {}; // Prevent cloning infinite loop. Will be repopulated.
       var config = foam.Object.clone(this.config);
-      config['options']['scales']['yAxes'] = [{
+      config.options.scales.yAxes = [{
         ticks: {
           callback: function(label, index, labels) {
             return self.accountCurrency.format(Math.floor(parseFloat(label)));
