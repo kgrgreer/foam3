@@ -35,13 +35,14 @@ foam.CLASS({
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
+    'net.nanopay.model.Currency'
   ],
 
   constants: [
     {
       type: 'String',
       name: 'AFEX_SERVICE_NSPEC_ID',
-      value: 'AFEXService'
+      value: 'afexService'
     }
   ],
 
@@ -83,9 +84,8 @@ foam.CLASS({
         try {
           AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
 
-          fxQuote = afexService.getFXRate(request.getSourceCurrency(),
-            request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
-            FXDirection.Buy.getName(), null, request.findSourceAccount(x).getOwner(), null);
+          fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
+            null, null, request.findSourceAccount(x).getOwner(), null);
           if ( fxQuote != null && fxQuote.getId() > 0 ) {
             AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
             afexTransaction.setPayerId(sourceAccount.getOwner());
@@ -127,8 +127,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
   afexTransaction.setFxRate(fxQuote.getRate());
   afexTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
-  afexTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
- 
+
   FeesFields fees = new FeesFields.Builder(x).build();
   fees.setTotalFees(fxQuote.getFee());
   fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
@@ -137,9 +136,17 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   
   afexTransaction.setIsQuoted(true);
   afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
-  if ( afexTransaction.getAmount() < 1 ) {
-    afexTransaction.setAmount(fxQuote.getSourceAmount());
-  }
+
+  // Currency conversion
+  DAO currencyDAO = (DAO) x.get("currencyDAO");
+  Currency currency = (Currency) currencyDAO.find(request.getSourceCurrency());
+  double amount = request.getAmount() > 0 ? request.getAmount() : request.getDestinationAmount();
+  double sourceAmount = amount / Math.pow(10, currency.getPrecision()) * fxQuote.getRate();
+  Long sourceAmountWithRate = Math.round(sourceAmount * 100);
+
+  afexTransaction.setAmount( sourceAmountWithRate );
+  afexTransaction.setDestinationAmount(request.getAmount() > 0 ? request.getAmount() : request.getDestinationAmount());
+  
   if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
   {
     afexTransaction.setAccepted(true);
