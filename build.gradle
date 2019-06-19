@@ -206,6 +206,9 @@ task packageFoam(type: NodeTask) {
     dependsOn {
         tasks.genJava
     }
+    onlyIf {
+        !tasks.incrementalGenTask.state.upToDate
+    }
     script = file('./tools/js_build/build.js')
     args = [project.version]
 }
