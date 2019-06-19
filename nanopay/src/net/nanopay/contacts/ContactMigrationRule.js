@@ -10,6 +10,7 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAgent',
     'foam.core.PropertyInfo',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -54,7 +55,7 @@ foam.CLASS({
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
 
         long businessId = (Long) getProperty().get(obj);
-        Business business = (Business) localBusinessDAO.find(businessId);
+        final Business business = (Business) localBusinessDAO.find(businessId);
 
         if ( business == null ) return;
 
@@ -107,21 +108,14 @@ foam.CLASS({
           (hasVerifiedBankAccount && justPassedCompliance) ||
           (passedCompliance && justVerifiedBankAccount)
         ) {
-          migrateContactsAndInvoices(x, business);
+          agency.submit(x, new ContextAgent() {
+            @Override
+            public void execute(X x) {
+              migrateContactsAndInvoices(x, business);
+            }
+          });
         }
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '// NOOP'
-    },
-    {
-      name: 'canExecute',
-      javaCode: `return true;`
-    },
-    {
-      name: 'describe',
-      javaCode: `return DESCRIBE_TEXT;`
     },
     {
       name: 'migrateContactsAndInvoices',

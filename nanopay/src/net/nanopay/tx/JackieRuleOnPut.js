@@ -48,18 +48,6 @@ foam.CLASS({
           }
         // ((Logger) x.get("logger")).debug("JackieRuleOnPut status OUT", ct.getStatus());
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'describe',
-      javaCode: ` return "Creates an approval request if a Compliance Transaction is encountered."; `
-    },
-    {
-      name: 'canExecute',
-      javaCode: ` return true;`
     }
   ]
 });

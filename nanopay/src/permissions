@@ -351,3 +351,6 @@ p({"class":"foam.nanos.auth.Permission","id":"spid.delete.goldman-sachs","descri
 p({"class":"foam.nanos.auth.Permission","id":"spid.read.goldman-sachs","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"spid.read.nanopay","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"spid.update.goldman-sachs","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.approvalRequestDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"approval.read.*","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"approval.update.*","description":""})
