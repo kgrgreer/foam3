@@ -188,9 +188,7 @@ foam.CLASS({
       `,
       tableWidth: 125,
       section: 'accountType',
-      visibilityExpression: function( controllerMode ){
-        return controllerMode === foam.u2.ControllerMode.EDIT ? foam.u2.Visibility.RO : foam.u2.Visibility.RW
-      }
+      visibility: 'RO'
     },
     {
       class: 'Long',
