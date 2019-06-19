@@ -81,116 +81,31 @@ foam.CLASS({
       name: 'data'
     },
     {
-      name: 'controllerMode',
-      factory: function() {
-        return this.ControllerMode.VIEW;
-      }
+      class: 'foam.dao.DAOProperty',
+      name: 'currency'
     },
     {
       class: 'String',
       name: 'denomination',
-      factory: function() {
-        return 'CAD';
-      }
     },
     {
-      class: 'String',
-      name: 'denominationSymbol',
-      expression: function(denomination) {
-        /**
-         * TODO: we might want to make flags a property of currencies/denominations
-         * and use images instead of emojis
-         */
-        switch(denomination){
-          case 'USD':
-            return 'US＄';
-          case 'CAD':
-            return 'C＄';
-          case 'EUR':
-            return '€';
-          case 'GBP':
-            return '£';
-          case 'INR':
-            return '₹'
-          default:
-            return '＄';
-        }
+      name: 'conversionService',
+    },
+    {
+      name: 'controllerMode',
+      factory: function() {
+        return this.ControllerMode.VIEW;
       }
     }
   ],
 
   methods: [
-    function parseBalanceToDollarString(balanceLong){
-      let balanceString = balanceLong.toString();
-
-      // 1. prepend a . before the second last index
-      if (balanceString.length > 2) {
-        balanceString = `${balanceString.substr(0, balanceString.length - 2)}.${balanceString.substr(balanceString.length - 2)}`;
-
-        // 2. moving from the back, prepend a comma before every 3 digits
-        if (balanceString.length > 6) {
-          let moduloDigit = 1;
-          let stringIndex = balanceString.length - 3;
-
-          while (stringIndex > 1) {
-            if (moduloDigit % 3 === 0){
-              balanceString = `${balanceString.substr(0, stringIndex - 1)},${balanceString.substr(stringIndex - 1)}`;
-              moduloDigit = 1;
-            } else {
-              moduloDigit++;
-            }
-            stringIndex--;
-          }
-        }
-      } else {
-        balanceString = `0.${balanceString}`;
-      }
-      // 3. prepend denominationSymbol to the entire string
-      balanceString = `${this.denominationSymbol}${balanceString}`;
-
-      return balanceString;
-    },
-
-    function calcTotalBalance() {
-      const self = this;
-      const denomPromises = {};
-      const denomBalances = {};
-      return this.user.accounts.where(this.EQ(this.Account.OWNER, this.user.id))
-        .select(this.GroupBy.create({
-          arg1: this.Account.DENOMINATION,
-          arg2: this.ArraySink.create()
-        }))
-          .then((result) => {
-            const denomKeys = result.groupKeys;
-
-            denomKeys.forEach(denomKey => {
-              const denominatedAccountsArray = result.groups[denomKey].array;
-              denomPromises[denomKey] = [];
-
-
-              denominatedAccountsArray.forEach(account => {
-                if ( account.type !== net.nanopay.account.AggregateAccount.name ){
-                  denomPromises[denomKey].push(account.findBalance(self.__context__));
-                }
-              })
-
-              Promise.all(denomPromises[denomKey]).then(function(denomBalances){ 
-                denomBalances[denomKey] = self.parseBalanceToDollarString(denomBalances.reduce((total, num) => total + num));
-              })
-            })
-
-
-            // TODO: Account for currency conversion
-          });
-
-    },
-
     function initE() {
       var self = this;
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(self.slot(function(data, denomination) {
+        .add(self.slot(function(data, denomination, currency) {
           return self.E()
             .start(self.CardBorder)
               .start(self.Rows).addClass(this.myClass('card-container'))
@@ -200,7 +115,15 @@ foam.CLASS({
                       .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
                     .end()
                     .start().addClass(this.myClass('balance'))
-                      .add(self.calcTotalBalance())
+                      .add(
+                            currency.select().then(denomBalances => {
+                              let baseTotal = 0;
+                              denomBalances.array.forEach(denomBalance => {
+                                baseTotal += denomBalance.total;
+                              })
+                              return self.__subSubContext__.currencyDAO.find(denomination).then(curr => baseTotal != null ?  curr.format(baseTotal) : 0);
+                            })
+                          )
                     .end()
                     .start().addClass(this.myClass('balance-note'))
                       .add(self.BALANCE_NOTE)

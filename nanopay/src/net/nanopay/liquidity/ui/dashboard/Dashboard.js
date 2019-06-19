@@ -90,7 +90,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'baseDenomination',
-      value: 'USD'
+      value: 'CAD'
     },
     {
       name: 'conversionService',
@@ -133,7 +133,12 @@ foam.CLASS({
         .addClass(this.myClass())
           .start().add(this.cls_.name).addClass(this.myClass('header')).end()
           .start().addClass(this.myClass('dashboard-container'))
-            .start(this.DashboardAccounts, { data: this.accounts })
+            .start(this.DashboardAccounts, { 
+              data: this.accounts,
+              currency: this.currencyExposureDAO,
+              denomination: this.baseDenomination,
+              conversion: this.conversionService
+            })
               .addClass(this.myClass('accounts'))
             .end()
             .start(this.AggregatedLiquidityChartView)
