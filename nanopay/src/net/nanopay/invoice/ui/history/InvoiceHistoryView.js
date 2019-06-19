@@ -51,8 +51,12 @@ foam.CLASS({
         var previousStatus;
         var mdao = foam.dao.MDAO.create({ of: this.HistoryRecord });
         filteredInvoiceHistoryDAO.select(function(o) {
+          mdao.put(o);
           var status = o.updates.find((u) => u.name === 'status');
           if ( status === undefined ) return null;
+          // Add a failed invoice status history record if invoice status went from pending to unpaid.
+          // This state change indicates that the transaction chain failed at some point.
+          // CI -> Compliance -> DIGITAL -> CO
           if (
             previousStatus &&
             status.newValue === self.InvoiceStatus.UNPAID &&
@@ -73,7 +77,6 @@ foam.CLASS({
             }));
           }
           previousStatus = status;
-          mdao.put(o);
         });
 
         // Load the invoice and check the status to see if it's overDue. If it
