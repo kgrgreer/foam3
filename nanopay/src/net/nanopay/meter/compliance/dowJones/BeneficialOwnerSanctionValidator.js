@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: 'Validates a beneficial owner using DowJones Risk and Compliance API.',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
@@ -38,39 +40,26 @@ foam.CLASS({
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x, 
-              new DowJonesApprovalRequest.Builder(x)
-                .setObjId(Long.toString(beneficialOwner.getId()))
-                .setDaoKey("beneficialOwnerDAO")
-                .setCauseId(response.getId())
-                .setCauseDaoKey("dowJonesResponseDAO")
-                .setClassification("Validate Beneficial Owner Using Dow Jones")
-                .setMatches(response.getResponseBody().getMatches())
-                .build());
+            agency.submit(x, new ContextAgent() {
+              @Override
+              public void execute(X x) {
+                requestApproval(x, 
+                  new DowJonesApprovalRequest.Builder(x)
+                    .setObjId(Long.toString(beneficialOwner.getId()))
+                    .setDaoKey("beneficialOwnerDAO")
+                    .setCauseId(response.getId())
+                    .setCauseDaoKey("dowJonesResponseDAO")
+                    .setClassification("Validate Beneficial Owner Using Dow Jones")
+                    .setMatches(response.getResponseBody().getMatches())
+                    .build());
+              }
+            });
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
           ((Logger) x.get("logger")).warning("BeneficialOwnerSanctionValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }
-      `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'canExecute',
-      javaCode: `
-      // TODO: add an actual implementation
-      return true;
-      `
-    },
-    {
-      name: 'describe',
-      javaCode: `
-      // TODO: add an actual implementation
-      return "";
       `
     }
   ]

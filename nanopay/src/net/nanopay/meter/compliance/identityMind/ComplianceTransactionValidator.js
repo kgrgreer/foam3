@@ -67,18 +67,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
-    },
-    {
       name: 'getTransactionStatus',
       type: 'net.nanopay.tx.model.TransactionStatus',
       args: [
