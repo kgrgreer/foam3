@@ -9,6 +9,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'java.util.Date',
     'foam.nanos.analytics.Candlestick',
@@ -35,31 +37,24 @@ foam.CLASS({
       }
       
       if ( old == null && newAlarm.getIsActive() || old != null && (! old.getIsActive()) && newAlarm.getIsActive() ) {
-        try {
-          Notification notification = new Notification();
-          notification.setUserId(config.getAlertUser());
-          notification.setGroupId(config.getAlertGroup());
-          notification.setEmailIsEnabled(config.getSendEmail());
-          notification.setNotificationType("Alarm");
-          notification.setBody("An alarm has been triggered for " + config.getName());
-          ((DAO) x.get("notificationDAO")).put(notification);
-        } catch (Exception e) {
-          logger.error(e);
-        }
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            try {
+              Notification notification = new Notification();
+              notification.setUserId(config.getAlertUser());
+              notification.setGroupId(config.getAlertGroup());
+              notification.setEmailIsEnabled(config.getSendEmail());
+              notification.setNotificationType("Alarm");
+              notification.setBody("An alarm has been triggered for " + config.getName());
+              ((DAO) x.get("notificationDAO")).put(notification);
+            } catch (Exception e) {
+              logger.error(e);
+            }
+          }
+        });
       }
      `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '// do nothing'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
     }
   ]
 
