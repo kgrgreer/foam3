@@ -33,13 +33,12 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            User user = (User) obj;
             ((DAO) x.get("approvalRequestDAO"))
-              .where(AND(
-                EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
-                EQ(ApprovalRequest.OBJ_ID, String.valueOf(obj.getProperty("id"))),
-                EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
-              .removeAll();
+            .where(AND(
+              EQ(ApprovalRequest.DAO_KEY, getObjDaoKey()),
+              EQ(ApprovalRequest.OBJ_ID, String.valueOf(obj.getProperty("id"))),
+              EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
+            .removeAll();
           }
         });
       `
