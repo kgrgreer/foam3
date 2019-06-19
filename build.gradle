@@ -73,14 +73,7 @@ configurations.all {
     }
 }
 
-description = "nanopay"
 sourceCompatibility = "1.8"
-libsDirName = "lib"
-
-def group = "net.nanopay"
-def genJavaDir = "generatedJava"
-def targetDir = "target"
-def workingDir = System.getProperty("user.dir")
 
 publishing {
     publications {
@@ -96,7 +89,7 @@ sourceSets {
             srcDirs = [
                     "$rootDir/foam2/src",
                     "$rootDir/nanopay/src",
-                    "$rootDir/${genJavaDir}"
+                    "$rootDir/${project.genJavaDir}"
             ]
             exclude "com/chrome/**"
             exclude "foam/nanos/tomcat/**"
@@ -184,13 +177,13 @@ task genJava(type: Exec) {
         task incrementalGenTask(type: IncrementalGenTask) {
             includeFiles = (fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")).matching{include "**/*.js"}.getFiles()
             classFiles.add(file("nanopay/tools/classes.js"))
-            outputDir = file(genJavaDir)
+            outputDir = file(project.genJavaDir)
         }
     }
     onlyIf {
         !tasks.incrementalGenTask.state.upToDate
     }
-    commandLine 'bash', './gen.sh', 'tools/classes.js', "${genJavaDir}"
+    commandLine 'bash', './gen.sh', 'tools/classes.js', "${project.genJavaDir}"
 }
 
 task findSH(type: Exec) {
@@ -219,13 +212,13 @@ task packageFoam(type: NodeTask) {
 
 task foamNodeModulesCopy(type: Copy) {
     from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict"
-    into "$targetDir/classes/webroot"
+    into "${project.targetDir}/classes/webroot"
     include "*.js"
 }
 
 task nanopayNodeModulesCopy(type: Copy) {
     from "$rootDir/node_modules/html2canvas/dist/html2canvas.min.js", "node_modules/jspdf/dist/jspdf.min.js", "node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"
-    into "$targetDir/classes/webroot"
+    into "${project.targetDir}/classes/webroot"
 }
 
 task foamCopy(type: Copy) {
@@ -234,24 +227,24 @@ task foamCopy(type: Copy) {
     dependsOn tasks.nanopayNodeModulesCopy
     
     from "tools/js_build/foam-bin-${project.version}.js"
-    into "$targetDir/classes/webroot"
+    into "${project.targetDir}/classes/webroot"
 }
 
 task copyLib(type: Copy) {
     from configurations.runtime
-    into "$targetDir/lib"
+    into "${project.targetDir}/lib"
 }
 
 task copyResources(type: Copy) {
     from "$rootDir/nanopay/src/resources"
     from "$rootDir/foam2/src/resources"
-    into "$targetDir/classes"
+    into "${project.targetDir}/classes"
     filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION:project.version] )
 }
 
 task copyJournals(type: Copy) {
-    from "$targetDir/journals"
-    into "$targetDir/classes/journals"
+    from "${project.targetDir}/journals"
+    into "${project.targetDir}/classes/journals"
     include "*.0"
 }
 
@@ -260,19 +253,19 @@ task copyImages(type: Copy) {
     from "$rootDir/foam2/src/foam/nanos"
     from "$rootDir/foam2/src/foam/support"
     from "$rootDir/nanopay/src/net/nanopay"
-    into "$targetDir/classes"
+    into "${project.targetDir}/classes"
     include "images/**"
 }
 
 task copyFlows(type: Copy) {
     from "$rootDir/documents"
-    into "$targetDir/classes/documents"
+    into "${project.targetDir}/classes/documents"
     include "**"
 }
 
 task copyFavicon(type: Copy) {
     from "$rootDir/favicon"
-    into "$targetDir/classes/webroot/favicon"
+    into "${project.targetDir}/classes/webroot/favicon"
     include "**"
 }
 
@@ -299,9 +292,9 @@ task tarz(type: Tar) {
 }
 
 clean {
-    delete "${workingDir}/${targetDir}"
-    delete "${buildDir}"
-    delete "${genJavaDir}"
+    delete project.targetDir
+    delete project.buildDir
+    delete project.genJavaDir
 }
 
 compileJava {
@@ -313,21 +306,20 @@ compileJava {
 task buildJar(type: Jar) {
     dependsOn tasks.withType(Copy)
     dependsOn compileJava
-    destinationDirectory = file("$targetDir/lib")
+    destinationDirectory = file("${project.targetDir}/lib")
 
-    from "$buildDir/classes/java/main"
-    from "$targetDir/classes"
-    include "**"
+    from sourceSets.main.java.outputDir
+    from "${project.targetDir}/classes"
 
     manifest {
         attributes "Main-Class": "foam.nanos.boot.Boot"
         attributes "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(" ")
-        attributes "Implementation-Title": "${project.name}"
+        attributes "Implementation-Title": project.name
         /* version - see settings.gradle and override on the command line
             with -Pversion=x.y.z */
-        attributes "Implementation-Version": "${project.version}"
+        attributes "Implementation-Version": project.version
         attributes "Implementation-Timestamp": new Date()
-        attributes "Implementation-Vendor-Id": group
+        attributes "Implementation-Vendor-Id": project.group
         attributes "Implementation-Vendor": "nanopay"
     }
 }
