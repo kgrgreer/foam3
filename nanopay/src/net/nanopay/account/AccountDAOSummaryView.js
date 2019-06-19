@@ -225,7 +225,14 @@ foam.CLASS({
                     .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
                   .end()
                   .start().addClass(this.myClass('balance'))
-                    .add(data.findBalance(self.__context__).then(balance => self.parseBalanceToDollarString(balance)))
+                    .add(data.findBalance(self.__context__)
+                          .then(balance => self.__subSubContext__.currencyDAO.find(self.data.denomination)
+                            .then(curr => balance != null 
+                              ? `${curr.format(balance)}  ${this.denominationFlag}` 
+                              : `0 ${this.denominationFlag}`
+                            )
+                          )
+                        )
                   .end()
                   .start().addClass(this.myClass('balance-note'))
                     .add(self.BALANCE_NOTE)
