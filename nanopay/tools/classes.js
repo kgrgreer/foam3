@@ -130,6 +130,8 @@ var classes = [
   'net.nanopay.fx.afex.CreateBeneficiaryResponse',
   'net.nanopay.fx.afex.UpdateBeneficiaryRequest',
   'net.nanopay.fx.afex.UpdateBeneficiaryResponse',
+  'net.nanopay.fx.afex.DisableBeneficiaryRequest',
+  'net.nanopay.fx.afex.FindBeneficiaryRequest',
   'net.nanopay.fx.afex.FindBeneficiaryResponse',
   'net.nanopay.fx.afex.Quote',
   'net.nanopay.fx.afex.GetQuoteRequest',

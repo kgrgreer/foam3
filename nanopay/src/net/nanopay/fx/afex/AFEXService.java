@@ -143,7 +143,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/beneficiaryCreate");
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
@@ -194,7 +194,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/beneficiaryUpdate");
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
@@ -245,14 +245,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String disableBeneficiary(String vendorId) {
+  public String disableBeneficiary(DisableBeneficiaryRequest request) {
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/beneficiaryDisable");
-      uriBuilder.setParameter("VendorId", vendorId);
+      uriBuilder.setParameter("VendorId", request.getVendorId());
 
       HttpPost httpPost = new HttpPost(uriBuilder.build());
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
 
@@ -276,14 +276,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public FindBeneficiaryResponse findBeneficiary(String vendorId) {
+  public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request) {
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/beneficiary/find");
-      uriBuilder.setParameter("VendorId", vendorId);
+      uriBuilder.setParameter("VendorId", request.getVendorId());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
 
-      httpGet.addHeader("API-Key", apiKey);
+      httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
@@ -351,7 +351,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         .setParameter("Amount", request.getAmount());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
-      httpGet.addHeader("API-Key", apiKey);
+      httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
       String response = new BasicResponseHandler().handleResponse(httpResponse);
@@ -381,7 +381,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       valueDate = getValueDate(request.getTradeCcy() + request.getSettlementCcy(), "CASH");
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/trades/create");
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
@@ -425,7 +425,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/payments/create");
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();

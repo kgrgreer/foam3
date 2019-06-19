@@ -220,6 +220,8 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/CreateBeneficiaryResponse"},
   { name: "net/nanopay/fx/afex/UpdateBeneficiaryRequest"},
   { name: "net/nanopay/fx/afex/UpdateBeneficiaryResponse"},
+  { name: "net/nanopay/fx/afex/DisableBeneficiaryRequest"},
+  { name: "net/nanopay/fx/afex/FindBeneficiaryRequest"},
   { name: "net/nanopay/fx/afex/FindBeneficiaryResponse"},
   { name: "net/nanopay/fx/afex/Quote"},
   { name: "net/nanopay/fx/afex/GetQuoteRequest"},

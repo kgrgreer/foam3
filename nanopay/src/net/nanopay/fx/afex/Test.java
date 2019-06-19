@@ -8,19 +8,16 @@ public class Test implements ContextAgent {
   @Override
   public void execute(X x) {
     AFEXService afexService = new AFEXService(x);
-
-    // testGetToken(afexService);
-    testOnboardCorporateClient(afexService);
-    // testCreateBeneficiary(afexService);
-    // testUpdateBeneficiary(afexService);
-    // testDisableBeneficiary(afexService);
-    // testFindBeneficiary(afexService);
-    // testGetValueDate(afexService);
-    // testGetQuote(afexService);
-//    testCreateTrade(afexService);
-//    testCreatePayment(afexService);
-
-
+      testGetToken(afexService);
+      testOnboardCorporateClient(afexService);
+      testCreateBeneficiary(afexService);
+      testUpdateBeneficiary(afexService);
+      testDisableBeneficiary(afexService);
+      testFindBeneficiary(afexService);
+      testGetValueDate(afexService);
+      testGetQuote(afexService);
+      testCreateTrade(afexService);
+      testCreatePayment(afexService);
   }
 
   private void testGetToken(AFEXService afexService) {
@@ -51,6 +48,7 @@ public class Test implements ContextAgent {
 
   private void testCreateBeneficiary(AFEXService afexService) {
     CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();
+    createBeneficiaryRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
     createBeneficiaryRequest.setBankAccountNumber("58926481025163");
     createBeneficiaryRequest.setBankCountryCode("US");
     createBeneficiaryRequest.setBankName("Associated Bank, National");
@@ -68,6 +66,7 @@ public class Test implements ContextAgent {
 
   private void testUpdateBeneficiary(AFEXService afexService) {
     UpdateBeneficiaryRequest updateBeneficiaryRequest = new UpdateBeneficiaryRequest();
+    updateBeneficiaryRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
     updateBeneficiaryRequest.setBankAccountNumber("58926481025162");
     updateBeneficiaryRequest.setBankCountryCode("US");
     updateBeneficiaryRequest.setBankName("Associated Bank, National");
@@ -85,11 +84,19 @@ public class Test implements ContextAgent {
   }
 
   private void testDisableBeneficiary(AFEXService afexService) {
-    afexService.disableBeneficiary("USD636954086321337916");
+    DisableBeneficiaryRequest disableBeneficiaryRequest = new DisableBeneficiaryRequest();
+    disableBeneficiaryRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    disableBeneficiaryRequest.setVendorId("USD636954085609328569");
+
+    afexService.disableBeneficiary(disableBeneficiaryRequest);
   }
 
   private void testFindBeneficiary(AFEXService afexService) {
-    afexService.findBeneficiary("USD636952327284361125");
+    FindBeneficiaryRequest findBeneficiaryRequest = new FindBeneficiaryRequest();
+    findBeneficiaryRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    findBeneficiaryRequest.setVendorId("USD636952327284361125");
+
+    afexService.findBeneficiary(findBeneficiaryRequest);
   }
 
   private void testGetValueDate(AFEXService afexService) {
@@ -98,9 +105,10 @@ public class Test implements ContextAgent {
 
   private void testGetQuote(AFEXService afexService) {
     GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
+    getQuoteRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
     getQuoteRequest.setCurrencyPair("USDCAD");
-    getQuoteRequest.setValueDate("2019/06/19");
-    getQuoteRequest.setOptionDate("2019/06/17");
+    getQuoteRequest.setValueDate("2019/06/21");
+    getQuoteRequest.setOptionDate("2019/06/20");
     getQuoteRequest.setAmount("100");
 
     afexService.getQuote(getQuoteRequest);
@@ -108,6 +116,7 @@ public class Test implements ContextAgent {
 
   private void testCreateTrade(AFEXService afexService) {
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
+    createTradeRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
     createTradeRequest.setAmount("100");
     createTradeRequest.setSettlementCcy("CAD");
     createTradeRequest.setTradeCcy("USD");
@@ -117,6 +126,8 @@ public class Test implements ContextAgent {
 
   private void testCreatePayment(AFEXService afexService) {
     CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+    createPaymentRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    createPaymentRequest.setPaymentDate("2019/06/21");
     createPaymentRequest.setAmount("50");
     createPaymentRequest.setCurrency("USD");
     createPaymentRequest.setVendorId("CADAmy");

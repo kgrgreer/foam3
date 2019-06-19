@@ -54,8 +54,8 @@ foam.INTERFACE({
       type: 'String',
       args: [
         {
-          name: 'vendorId',
-          type: 'String'
+          name: 'request',
+          type: 'net.nanopay.fx.afex.DisableBeneficiaryRequest'
         }
       ]
     },
@@ -66,8 +66,8 @@ foam.INTERFACE({
       type: 'net.nanopay.fx.afex.FindBeneficiaryResponse',
       args: [
         {
-          name: 'vendorId',
-          type: 'String'
+          name: 'request',
+          type: 'net.nanopay.fx.afex.FindBeneficiaryRequest'
         }
       ]
     },
