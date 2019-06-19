@@ -146,40 +146,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function parseBalanceToDollarString(balanceLong){
-      let balanceString = balanceLong.toString();
-
-      // 1. prepend a . before the second last index
-      if (balanceString.length > 2) {
-        balanceString = `${balanceString.substr(0, balanceString.length - 2)}.${balanceString.substr(balanceString.length - 2)}`;
-
-        // 2. moving from the back, prepend a comma before every 3 digits
-        if (balanceString.length > 6) {
-          let moduloDigit = 1;
-          let stringIndex = balanceString.length - 3;
-
-          while (stringIndex > 1) {
-            if (moduloDigit % 3 === 0){
-              balanceString = `${balanceString.substr(0, stringIndex - 1)},${balanceString.substr(stringIndex - 1)}`;
-              moduloDigit = 1;
-            } else {
-              moduloDigit++;
-            }
-            stringIndex--;
-          }
-        }
-      } else {
-        balanceString = `0.${balanceString}`;
-      }
-      // 3. prepend denominationSymbol to the entire string
-      balanceString = `${this.denominationSymbol}${balanceString}`;
-
-      // 4. append denominationFlag to the entire string
-      balanceString = `${balanceString} ${this.denominationFlag}`
-
-      return balanceString;
-    },
-
     function initE() {
       var self = this;
       this
