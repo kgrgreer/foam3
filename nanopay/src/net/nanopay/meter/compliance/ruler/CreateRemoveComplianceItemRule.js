@@ -23,6 +23,7 @@ foam.CLASS({
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.ruler.Operations'
   ],
 
@@ -61,92 +62,96 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        agency.submit(x, new ContextAgent() {
-          @Override
-          public void execute(X x) {
-            if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.CREATE) {
-              if ( obj instanceof DowJonesResponse ) {
-                DowJonesResponse response = (DowJonesResponse) obj;
-                DAO userDAO = (DAO) x.get("localUserDAO");
-                User user = (User) userDAO.find(response.getUserId());
-                ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                  .setDowJones(response.getId())
-                  .setUser(response.getUserId())
-                  .setUserLabel(user.label())
-                  .build();
-                DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                complianceItemDAO.inX(x).put(complianceItem);
-              } else if ( obj instanceof IdentityMindResponse ) {
-                IdentityMindResponse response = (IdentityMindResponse) obj;
-                ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                  .setIdentityMind(response.getId())
-                  .setUser(Long.parseLong(response.getEntityId().toString()))
-                  .build();
-                DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                complianceItemDAO.inX(x).put(complianceItem);
-              } else if ( obj instanceof LEVResponse ) {
-                LEVResponse response = (LEVResponse) obj;
-                ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                  .setLevResponse(response.getId())
-                  .setUser(response.getEntityId())
-                  .build();
-                DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                complianceItemDAO.inX(x).put(complianceItem);
-              } else if ( obj instanceof SIDniResponse ) {
-                SIDniResponse response = (SIDniResponse) obj;
-                ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                  .setSidniResponse(response.getId())
-                  .setUser(response.getEntityId())
-                  .build();
-                DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                complianceItemDAO.inX(x).put(complianceItem);
+        try {
+          agency.submit(x, new ContextAgent() {
+            @Override
+            public void execute(X x) {
+              if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.CREATE) {
+                if ( obj instanceof DowJonesResponse ) {
+                  DowJonesResponse response = (DowJonesResponse) obj;
+                  DAO userDAO = (DAO) x.get("localUserDAO");
+                  User user = (User) userDAO.find(response.getUserId());
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setDowJones(response.getId())
+                    .setUser(response.getUserId())
+                    .setUserLabel(user.label())
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).put(complianceItem);
+                } else if ( obj instanceof IdentityMindResponse ) {
+                  IdentityMindResponse response = (IdentityMindResponse) obj;
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setIdentityMind(response.getId())
+                    .setUser(Long.parseLong(response.getEntityId().toString()))
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).put(complianceItem);
+                } else if ( obj instanceof LEVResponse ) {
+                  LEVResponse response = (LEVResponse) obj;
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setLevResponse(response.getId())
+                    .setUser(response.getEntityId())
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).put(complianceItem);
+                } else if ( obj instanceof SIDniResponse ) {
+                  SIDniResponse response = (SIDniResponse) obj;
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setSidniResponse(response.getId())
+                    .setUser(response.getEntityId())
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).put(complianceItem);
+                }
+              } else if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.REMOVE) {
+                if ( obj instanceof DowJonesResponse ) {
+                  DowJonesResponse response = (DowJonesResponse) obj;
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setDowJones(response.getId())
+                    .setUser(response.getUserId())
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).remove(complianceItem);
+                } else if ( obj instanceof IdentityMindResponse ) {
+                  IdentityMindResponse response = (IdentityMindResponse) obj;
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setIdentityMind(response.getId())
+                    .setUser(Long.parseLong(response.getEntityId().toString()))
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).remove(complianceItem);
+                } else if ( obj instanceof LEVResponse ) {
+                  LEVResponse response = (LEVResponse) obj;
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setLevResponse(response.getId())
+                    .setUser(response.getEntityId())
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).remove(complianceItem);
+                } else if ( obj instanceof SIDniResponse ) {
+                  SIDniResponse response = (SIDniResponse) obj;
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setSidniResponse(response.getId())
+                    .setUser(response.getEntityId())
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).remove(complianceItem);
+                }
+              } else {
+                /*this.NotificationMessage.create({
+                  message: ILLEGAL_ACTION,
+                  type: 'error'
+                });
+                DigErrorMessage = new GeneralException.Builder(x)
+                  .setMessage(ILLEGAL_ACTION)
+                  .build();*/
               }
-            } else if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.REMOVE) {
-              if ( obj instanceof DowJonesResponse ) {
-                DowJonesResponse response = (DowJonesResponse) obj;
-                ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                  .setDowJones(response.getId())
-                  .setUser(response.getUserId())
-                  .build();
-                DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                complianceItemDAO.inX(x).remove(complianceItem);
-              } else if ( obj instanceof IdentityMindResponse ) {
-                IdentityMindResponse response = (IdentityMindResponse) obj;
-                ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                  .setIdentityMind(response.getId())
-                  .setUser(Long.parseLong(response.getEntityId().toString()))
-                  .build();
-                DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                complianceItemDAO.inX(x).remove(complianceItem);
-              } else if ( obj instanceof LEVResponse ) {
-                LEVResponse response = (LEVResponse) obj;
-                ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                  .setLevResponse(response.getId())
-                  .setUser(response.getEntityId())
-                  .build();
-                DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                complianceItemDAO.inX(x).remove(complianceItem);
-              } else if ( obj instanceof SIDniResponse ) {
-                SIDniResponse response = (SIDniResponse) obj;
-                ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                  .setSidniResponse(response.getId())
-                  .setUser(response.getEntityId())
-                  .build();
-                DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                complianceItemDAO.inX(x).remove(complianceItem);
-              }
-            } else {
-              /*this.NotificationMessage.create({
-                message: ILLEGAL_ACTION,
-                type: 'error'
-              });
-              DigErrorMessage = new GeneralException.Builder(x)
-                .setMessage(ILLEGAL_ACTION)
-                .build();*/
             }
-
-          }
-        });
+          });
+        } catch (Exception e) {
+          Logger logger = (Logger) x.get("logger");
+          logger.error("CreateRemoveComplianceItemRule Error: ", e);
+        }
       `
     }
   ]
