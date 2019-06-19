@@ -33,7 +33,7 @@ if [ ! -z $OUT_FILE ]; then
     rm $OUT_FILE
 fi
 
-sed 's/#.*//;s/^[ \t]*//;s/[ \t]*$//' < "${IN_FILE:-/dev/stdin}" | while read -r file; do
+sed 's/#.*//;s/^[[:space:]]*//;s/[[:space:]]*$//' < "${IN_FILE:-/dev/stdin}" | while read -r file; do
     if [ ! -z $file ]; then
         find ${sources[@]} -name "${file}" -o -name "${file}.jrl" >> "${OUT_FILE:-/dev/stdout}"
     fi
