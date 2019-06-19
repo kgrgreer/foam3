@@ -17,6 +17,7 @@ foam.CLASS({
     'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
     'net.nanopay.liquidity.ui.dashboard.liquidity.AggregatedLiquidityChartView',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureView',
     'foam.comics.v2.DAOBrowserView',
   ],
 
@@ -127,8 +128,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      debugger;
-      const self = this;
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -140,7 +139,7 @@ foam.CLASS({
             .start(this.AggregatedLiquidityChartView)
               .addClass(this.myClass('chart'))
             .end()
-            .start(this.DAOBrowserView, { data: this.currencyExposureDAO.where(self.TRUE) })
+            .start(this.CurrencyExposureView, { data: this.currencyExposureDAO })
               .addClass(this.myClass('currency-exposure'))
             .end()
           .end();
