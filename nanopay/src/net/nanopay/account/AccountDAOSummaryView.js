@@ -207,14 +207,16 @@ foam.CLASS({
 
               .start(self.Cols)
                 .start(self.Cols).addClass(this.myClass('actions-header'))
-                  .startContext({data: self}).tag(self.EDIT, {
-                    buttonStyle: foam.u2.ButtonStyle.TERTIARY,
-                    icon: 'images/edit-icon.svg'
-                  }).endContext()
-                  .startContext({data: self}).tag(self.DELETE, {
-                    buttonStyle: foam.u2.ButtonStyle.TERTIARY,
-                    icon: 'images/delete-icon.svg'
-                  }).endContext()
+                  .startContext({data: self})
+                    .tag(self.EDIT, {
+                      buttonStyle: foam.u2.ButtonStyle.TERTIARY,
+                      icon: 'images/edit-icon.svg'
+                    })
+                    .tag(self.DELETE, {
+                      buttonStyle: foam.u2.ButtonStyle.TERTIARY,
+                      icon: 'images/delete-icon.svg'
+                    })  
+                  .endContext()
                 .end()
               .end()
               .start(self.CardBorder).addClass(this.myClass('balance-card'))
