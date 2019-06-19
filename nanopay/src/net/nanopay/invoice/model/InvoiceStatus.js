@@ -39,7 +39,7 @@ foam.ENUM({
         label: 'Transaction failed'
       },
       {
-        name: 'PENDING',
+        name: 'PROCESSING',
         documentation: `A status that indicates that the invoice has been paid, 
           but that payment is still in processing.`,
         label: 'Processing'

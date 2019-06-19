@@ -60,7 +60,7 @@ foam.CLASS({
           if (
             previousStatus &&
             status.newValue === self.InvoiceStatus.UNPAID &&
-            previousStatus.newValue === self.InvoiceStatus.PENDING
+            previousStatus.newValue === self.InvoiceStatus.PROCESSING
           ) {
             var declinedTimestamp = new Date(o.timestamp);
             declinedTimestamp.setSeconds(declinedTimestamp.getSeconds() - 1) // Failed status will appear before unpaid
@@ -83,7 +83,7 @@ foam.CLASS({
         // is, add it to the MDAO.
         this.invoiceDAO.find(id).then((invoice) => {
           if ( invoice.dueDate && invoice.dueDate.getTime() < Date.now() &&
-              ( invoice.status != this.InvoiceStatus.PAID && invoice.status != this.InvoiceStatus.PENDING ) ) {
+              ( invoice.status != this.InvoiceStatus.PAID && invoice.status != this.InvoiceStatus.PROCESSING ) ) {
             mdao.put(this.HistoryRecord.create({
               objectId: id,
               timestamp: invoice.dueDate,
