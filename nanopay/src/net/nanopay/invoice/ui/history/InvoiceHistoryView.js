@@ -38,6 +38,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       expression: function(id) {
+        var self = this;
         // Filter the invoice history DAO and only take the records that have
         // to do with the invoice we're looking at.
         var filteredInvoiceHistoryDAO = this.invoiceHistoryDAO
@@ -47,8 +48,33 @@ foam.CLASS({
         // change of status to OverDue if it makes sense to do so.
 
         // Create the MDAO and load the relevant existing records into it
+        var previousStatus;
         var mdao = foam.dao.MDAO.create({ of: this.HistoryRecord });
-        filteredInvoiceHistoryDAO.select((o) => mdao.put(o));
+        filteredInvoiceHistoryDAO.select(function(o) {
+          var status = o.updates.find((u) => u.name === 'status');
+          if ( status === undefined ) return null;
+          if (
+            previousStatus &&
+            status.newValue === self.InvoiceStatus.UNPAID &&
+            previousStatus.newValue === self.InvoiceStatus.PENDING
+          ) {
+            var declinedTimestamp = new Date(o.timestamp);
+            declinedTimestamp.setSeconds(declinedTimestamp.getSeconds() - 1) // Failed status will appear before unpaid
+            mdao.put(self.HistoryRecord.create({
+              objectId: id,
+              timestamp: declinedTimestamp,
+              updates: [
+                self.PropertyUpdate.create({
+                  name: 'status',
+                  oldValue: self.InvoiceStatus.UNPAID, // Doesn't matter
+                  newValue: self.InvoiceStatus.FAILED
+                })
+              ]
+            }));
+          }
+          previousStatus = status;
+          mdao.put(o);
+        });
 
         // Load the invoice and check the status to see if it's overDue. If it
         // is, add it to the MDAO.
@@ -89,7 +115,7 @@ foam.CLASS({
         .tag({
           class: 'foam.u2.history.HistoryView',
           title: 'Invoice History',
-          data: this.data,
+          data$: this.data$,
           historyItemView: this.InvoiceHistoryItemView.create()
         });
     }
