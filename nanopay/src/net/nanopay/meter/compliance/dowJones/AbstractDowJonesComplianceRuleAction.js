@@ -46,27 +46,9 @@ foam.CLASS({
         return null;
       `
     },
-    {
-      name: 'applyAction',
-      javaCode: ` `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'canExecute',
-      javaCode: `
-      // TODO: add an actual implementation
-      return true;
-      `
-    },
-    {
-      name: 'describe',
-      javaCode: `
-      // TODO: add an actual implementation
-      return "";
-      `
+    {	
+      name: 'applyAction',	
+      javaCode: ` `	
     }
   ]
 });

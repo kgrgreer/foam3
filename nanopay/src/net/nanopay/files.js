@@ -64,6 +64,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/NoBalanceRule' },
   { name: 'net/nanopay/account/NoPendingTransactionsRule' },
   { name: 'net/nanopay/account/NoChildrenRule' },
+  { name: 'net/nanopay/account/CreateDefaultDigitalAccountOnUserCreateRule' },
   { name: 'net/nanopay/account/Relationships' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
