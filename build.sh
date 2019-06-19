@@ -121,6 +121,10 @@ function deploy_journals {
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
     fi
 
+    if [[ $? -eq 1 ]]; then
+        quit 1
+    fi
+
     if [ "$LIQUID_DEMO" -eq 1 ]; then
         node tools/liquid_journal_script.js
     fi
@@ -129,12 +133,8 @@ function deploy_journals {
         quit 1
     fi
 
-    if [[ $? -eq 1 ]]; then
-        quit 1
-    fi
-
     if [ "$RUN_JAR" -eq 0 ]; then
-        while read file; do
+        while read -r file; do
             journal_file="$file".0
             if [ -f "$JOURNAL_OUT/$journal_file" ]; then
                 cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
