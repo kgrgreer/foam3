@@ -1,11 +1,14 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'CreateManualFxRule',
+  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   implements: ['foam.nanos.ruler.RuleAction'],
 
    documentation: `Creates an approval request when a kotakFxTransaction is created.`,
 
    javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
@@ -25,28 +28,20 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: ` 
-      KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) obj;
-        DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
-        approvalRequestDAO.put_(x,
-          new ManualFxApprovalRequest.Builder(x)
-            .setDaoKey("transactionDAO")
-            .setObjId(kotakFxTransaction.getId())
-            .setGroup("payment-ops")
-            .setStatus(ApprovalStatus.REQUESTED).build());
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) obj;
+            DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+            approvalRequestDAO.put_(x,
+              new ManualFxApprovalRequest.Builder(x)
+                .setDaoKey("transactionDAO")
+                .setObjId(kotakFxTransaction.getId())
+                .setGroup("payment-ops")
+                .setStatus(ApprovalStatus.REQUESTED).build());
+          }
+        });
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` 
-      `
-    },
-    {
-      name: 'describe',
-      javaCode: ` return "Creates an approval request when a kotakFxTransaction is created."; `
-    },
-    {
-      name: 'canExecute',
-      javaCode: ` return true;`
     }
   ]
  });

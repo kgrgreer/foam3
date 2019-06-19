@@ -8,7 +8,7 @@ foam.CLASS({
   ],
 
   documentation: `Updates new object according to approval.
-  
+
     When approval request changes (to APPROVED/REJECTED), the associated
     object is re-put back into DAO without modification.
 
@@ -24,12 +24,14 @@ foam.CLASS({
     If approval request is REJECTED, it will remove all pending approval
     requests including approval requests of other causes (eg., IdentityMind
     MANUAL_REVIEW).
-    
+
     Then, if there is no more pending approval requests for the object it calls
     updateObj(x, obj, approvalStatus) method which can be overridden by its
     sub-class.`,
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -54,7 +56,6 @@ foam.CLASS({
         if ( SafetyUtil.isEmpty(getObjDaoKey()) ) {
           return;
         }
-
         DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
             EQ(ApprovalRequest.DAO_KEY, getObjDaoKey()),
@@ -63,13 +64,13 @@ foam.CLASS({
 
         // Get approval request that was updated
         ArraySink sink = (ArraySink) dao
-          .where(IN(ApprovalRequest.STATUS, new ApprovalStatus[] {
-            ApprovalStatus.APPROVED, ApprovalStatus.REJECTED }))
+          .where(IN(ApprovalRequest.STATUS, new ApprovalStatus[]{
+            ApprovalStatus.APPROVED, ApprovalStatus.REJECTED}))
           .orderBy(DESC(ApprovalRequest.LAST_MODIFIED))
           .limit(1)
           .select(new ArraySink());
 
-        if ( ! sink.getArray().isEmpty() ) {
+        if (!sink.getArray().isEmpty()) {
           ApprovalRequest approvalRequest = (ApprovalRequest) sink.getArray().get(0);
 
           // Get pending approval requests count
@@ -78,23 +79,11 @@ foam.CLASS({
             .limit(1)
             .select(new Count());
 
-          if ( requested.getValue() == 0 ) {
+          if (requested.getValue() == 0) {
             updateObj(x, obj, approvalRequest.getStatus());
           }
         }
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
     },
     {
       name: 'updateObj',
