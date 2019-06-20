@@ -48,7 +48,7 @@ p({"class":"foam.nanos.menu.Menu","id":"set-multi-user","label":"Multi-User","ha
 p({"class":"foam.nanos.menu.Menu","id":"set-integrate","label":"Integration","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.IntegrationView"}},"order":80,"parent":"settings"})
 
 // transactions
-p({"class":"foam.nanos.menu.Menu","id":"operation.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"tableViewTransactionDAO","createEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":502,"parent":""})
+p({"class":"foam.nanos.menu.Menu","id":"transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"tableViewTransactionDAO","createEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":502,"parent":""})
 
 // transfers
 p({"class":"foam.nanos.menu.Menu","id":"transfer","label":"Transfer","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.TransferView"}},"order":1000,"parent":""})
