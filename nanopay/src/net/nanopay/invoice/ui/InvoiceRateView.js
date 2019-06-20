@@ -468,6 +468,7 @@ foam.CLASS({
 
     async function getDomesticQuote() {
       this.viewData.isDomestic = true;
+
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,
@@ -517,12 +518,10 @@ foam.CLASS({
         destinationAmount: fxQuote.targetAmount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
         fxExpiry: fxQuote.expiryTime,
         fxQuoteId: fxQuote.id,
         fxRate: fxQuote.rate,
         fxFees: fees,
-        invoiceId: this.invoice.id,
         isQuoted: true,
         paymentMethod: fxQuote.paymentMethod
       });

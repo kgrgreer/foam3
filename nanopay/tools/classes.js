@@ -74,6 +74,7 @@ var classes = [
   'net.nanopay.account.NoBalanceRule',
   'net.nanopay.account.NoPendingTransactionsRule',
   'net.nanopay.account.NoChildrenRule',
+  'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
@@ -120,6 +121,22 @@ var classes = [
   'net.nanopay.kotak.Kotak',
   'net.nanopay.kotak.KotakCredentials',
 
+  // AFEX
+  'net.nanopay.fx.afex.AFEX',
+  'net.nanopay.fx.afex.AFEXCredentials',
+  'net.nanopay.fx.afex.Token',
+  'net.nanopay.fx.afex.AddPayeeRequest',
+  'net.nanopay.fx.afex.AddPayeeResponse',
+  'net.nanopay.fx.afex.UpdatePayeeRequest',
+  'net.nanopay.fx.afex.UpdatePayeeResponse',
+  'net.nanopay.fx.afex.GetPayeeInfoResponse',
+  'net.nanopay.fx.afex.Quote',
+  'net.nanopay.fx.afex.GetQuoteRequest',
+  'net.nanopay.fx.afex.CreateTradeRequest',
+  'net.nanopay.fx.afex.CreateTradeResponse',
+  'net.nanopay.fx.afex.CreatePaymentRequest',
+  'net.nanopay.fx.afex.CreatePaymentResponse',
+
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
   'net.nanopay.auth.PublicUserInfo',
@@ -127,6 +144,7 @@ var classes = [
   // Contacts
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
+  'net.nanopay.contacts.ContactMigrationRule',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -200,6 +218,7 @@ var classes = [
    'net.nanopay.accounting.resultresponse.InvoiceResponseItem',
 
   // fx
+  'net.nanopay.tx.CreateManualFxRule',
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
@@ -216,6 +235,7 @@ var classes = [
   'net.nanopay.fx.FXTransfer',
   'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.fx.FXUserStatus',
+  'net.nanopay.fx.KotakFxTransaction',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -224,6 +244,8 @@ var classes = [
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ExpiryLineItem',
+  'net.nanopay.fx.ManualFxApprovalRequest',
+  'net.nanopay.tx.ManualFxRule',
   'net.nanopay.util.Frequency',
   'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.model.FeeInterface',
@@ -276,7 +298,9 @@ var classes = [
   'net.nanopay.tx.PlanComparator',
   'net.nanopay.tx.SplitTransactionPlanDAO',
   'net.nanopay.tx.KotakCOTransaction',
+  'net.nanopay.tx.KotakFxTransactionPlanDAO',
   'net.nanopay.tx.KotakTransactionPlanDAO',
+  'net.nanopay.tx.KotakSplitTransactionPlanDAO',
   'net.nanopay.tx.NanopayFXTransactionPlanDAO',
   'net.nanopay.tx.AbliiTransactionDAO',
   'net.nanopay.tx.DebtablePlanDAO',
@@ -485,9 +509,11 @@ var classes = [
   'net.nanopay.meter.compliance.NanopayComplianceService',
   'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
+  'net.nanopay.meter.compliance.ComplianceItem',
 
   // ruler
   'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
+  'net.nanopay.meter.compliance.ruler.RemoveComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
   'net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval',
   'net.nanopay.meter.compliance.ruler.PruneApprovalRequests',
@@ -511,6 +537,8 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.RecurringUserComplianceCheck',
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
+  'net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule',
+  'net.nanopay.meter.compliance.ruler.ComplianceLoginControlRule',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
@@ -612,6 +640,8 @@ var classes = [
   'net.nanopay.alarming.MonitoringReport',
   'net.nanopay.alarming.MonitorType',
   'net.nanopay.alarming.AlarmAndMonitoring',
+  'net.nanopay.alarming.Alarming',
+
 ];
 
 var abstractClasses = [

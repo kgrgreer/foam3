@@ -13,6 +13,13 @@ foam.CLASS({
     'foam.util.SafetyUtil'
   ],
 
+  tableColumns: [
+    'name',
+    'alphabeticCode',
+    'country',
+    'symbol'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -24,6 +31,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'alphabeticCode',
+      label: 'Code',
       documentation: 'The alphabetic code associated with a type of currency.',
       required: true
     },

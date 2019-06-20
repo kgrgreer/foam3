@@ -151,11 +151,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        Transaction head = transaction;
-        while ( ! SafetyUtil.isEmpty(head.getParent()) ) {
-          head = head.findParent(x);
-        }
-        IdentityMindRequest request = IdentityMindRequestGenerator.getTransferRequest(x, head);
+        IdentityMindRequest request = IdentityMindRequestGenerator.getTransferRequest(x, transaction);
         request.setUrl(getBaseUrl() + "/account/transfer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
         request.setProfile(getDefaultProfile());

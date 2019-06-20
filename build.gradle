@@ -152,6 +152,8 @@ task incrementalGenTask(type: IncrementalTask) {
     trees.matching{include "**/*.js"}.each { File f ->
         includeDirs.add(f)
     }
+    includeDirs.add(file("foam2/tools/classes.js"))
+    includeDirs.add(file("nanopay/tools/classes.js"))
     outputDir = file(genJavaDir)
     inputProperty = project.properties['taskInputProperty'] ?: "original"
 }
@@ -194,32 +196,39 @@ task packageFoam(type: NodeTask) {
         !tasks.incrementalGenTask.state.upToDate
     }
     script = file('./tools/js_build/build.js')
+    args = [project.version]
 }
 
 task foamNodeModulesCopy(type: Copy) {
-    dependsOn tasks.packageFoam
-    
-    from "foam2"
+    from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict"
     into "$targetDir/classes/webroot"
-    include "node_modules/ace-builds/src-min-noconflict/*.js"
+    include "*.js"
+}
+
+task nanopayNodeModulesCopy(type: Copy) {
+    from "$rootDir/node_modules/html2canvas/dist/html2canvas.min.js", "node_modules/jspdf/dist/jspdf.min.js", "node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"
+    into "$targetDir/classes/webroot"
 }
 
 task foamCopy(type: Copy) {
+    dependsOn tasks.packageFoam
     dependsOn tasks.foamNodeModulesCopy
+    dependsOn tasks.nanopayNodeModulesCopy
     
-    from "tools/js_build/foam-bin.js"
+    from "tools/js_build/foam-bin-${project.version}.js"
     into "$targetDir/classes/webroot"
 }
 
 task copyLib(type: Copy) {
-    into "$targetDir/lib"
     from configurations.runtime
+    into "$targetDir/lib"
 }
 
 task copyResources(type: Copy) {
-    into "$targetDir/classes"
     from "$rootDir/nanopay/src/resources"
     from "$rootDir/foam2/src/resources"
+    into "$targetDir/classes"
+    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION:project.version] )
 }
 
 task copyJournals(type: Copy) {

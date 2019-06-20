@@ -53,7 +53,8 @@ foam.CLASS({
         // Load the invoice and check the status to see if it's overDue. If it
         // is, add it to the MDAO.
         this.invoiceDAO.find(id).then((invoice) => {
-          if ( invoice.dueDate && invoice.dueDate.getTime() < Date.now() ) {
+          if ( invoice.dueDate && invoice.dueDate.getTime() < Date.now() &&
+              ( invoice.status != this.InvoiceStatus.PAID && invoice.status != this.InvoiceStatus.PROCESSING ) ) {
             mdao.put(this.HistoryRecord.create({
               objectId: id,
               timestamp: invoice.dueDate,

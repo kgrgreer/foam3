@@ -16,7 +16,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{7,12}$")'
+      javaValue: 'Pattern.compile("^[0-9]{5,12}$")'
     },
     {
       name: 'BRANCH_ID_PATTERN',
@@ -92,6 +92,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'accountNumber',
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{5,12}$/;
+
+        if ( accountNumber === '' ) {
+          return 'Please enter an account number.';
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
+          return 'Account number must be between 5 and 12 digits long.';
+        }
+      }
+    },
+    {
       name: 'country',
       value: 'CA'
     },
@@ -128,7 +140,7 @@ foam.CLASS({
         throw new IllegalStateException("Please enter an account number.");
       }
       if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-        throw new IllegalStateException("Account number must be between 7 and 12 digits long.");
+        throw new IllegalStateException("Account number must be between 5 and 12 digits long.");
       }
       `
     },
