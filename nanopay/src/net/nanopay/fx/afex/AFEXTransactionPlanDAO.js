@@ -59,8 +59,13 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
 
-    Logger logger = (Logger) x.get("logger");
     TransactionQuote quote = (TransactionQuote) obj;
+
+    if ( ! this.getEnabled() ) {
+      getDelegate().put_(x, quote);
+    }
+
+    Logger logger = (Logger) x.get("logger");
     Transaction request = quote.getRequestTransaction();
     logger.debug(this.getClass().getSimpleName(), "put", quote);
 
@@ -89,7 +94,9 @@ foam.CLASS({
           if ( fxQuote != null && fxQuote.getId() > 0 ) {
             AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
             afexTransaction.setPayerId(sourceAccount.getOwner());
+            afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setPayeeId(destinationAccount.getOwner());
+            afexTransaction.setDestinationAccount(destinationAccount.getId());
             quote.addPlan(afexTransaction);
           }
           
@@ -145,7 +152,9 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   Long sourceAmountWithRate = Math.round(sourceAmount * 100);
 
   afexTransaction.setAmount( sourceAmountWithRate );
+  afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
   afexTransaction.setDestinationAmount(request.getAmount() > 0 ? request.getAmount() : request.getDestinationAmount());
+  afexTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
   
   if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
   {
