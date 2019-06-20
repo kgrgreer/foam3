@@ -1,6 +1,6 @@
 foam.CLASS({
   package: "net.nanopay.fx.afex",
-  name: "AddPayeeResponse",
+  name: "UpdateBeneficiaryResponse",
   properties: [
     {
       class: 'String',

@@ -4,6 +4,10 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: "clientAPIKey"
+    },
+    {
+      class: 'String',
       name: "amount"
     },
     {
