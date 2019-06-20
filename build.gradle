@@ -282,7 +282,7 @@ task getVersion() {
 
 task getClasspath() {
     doLast {
-        def classes = new HashSet<String>();
+        def classes = new ArrayList<String>();
         sourceSets.main.runtimeClasspath.each { classes.add(it.toString()) }
         println String.join(";", classes);
     }
