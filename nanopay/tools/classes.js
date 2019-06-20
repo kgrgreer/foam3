@@ -124,6 +124,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEX',
   'net.nanopay.fx.afex.AFEXCredentials',
   'net.nanopay.fx.afex.Token',
+  'net.nanopay.fx.afex.AFEXBeneficiary',
   'net.nanopay.fx.afex.AddPayeeRequest',
   'net.nanopay.fx.afex.AddPayeeResponse',
   'net.nanopay.fx.afex.UpdatePayeeRequest',

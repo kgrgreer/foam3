@@ -106,6 +106,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {}
 
+  public GetPayeeInfoResponse getPayeeInfo(String payeeUserId) throws RuntimeException { return null; }
+
   public Transaction submitPayment(Transaction transaction) throws RuntimeException{
     // TODO
     return null;
