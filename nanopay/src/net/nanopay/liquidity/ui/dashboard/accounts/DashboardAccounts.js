@@ -24,11 +24,14 @@ foam.CLASS({
   `,
 
   css:`
-    ^card-header {
-      margin-bottom: 16px;
+    ^card-header-title {
       font-size: 12px;
       font-weight: 600;
       line-height: 1.5;
+    }
+
+    ^card-header-container {
+      margin-bottom: 8px;
     }
 
     ^card-container {
@@ -112,12 +115,12 @@ foam.CLASS({
               .start(self.Rows).addClass(this.myClass('card-container'))
                 .start().addClass(this.myClass('balance-card'))
                   .start(self.Rows)
-                    .start()
-                      .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
+                    .start(self.Cols).style({'align-items': 'center'}).addClass(this.myClass('card-header-container'))
+                      .start().add(self.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
+                      .startContext({ data: this, controllerMode: self.ControllerMode.EDIT })
+                        .tag(this.DENOMINATION)
+                      .endContext()
                     .end()
-                    .startContext({ data: this, controllerMode: self.ControllerMode.EDIT })
-                      .tag(this.DENOMINATION)
-                    .endContext()
                     .start().addClass(this.myClass('balance'))
                       .add(
                             currency.select().then(denomBalances => {

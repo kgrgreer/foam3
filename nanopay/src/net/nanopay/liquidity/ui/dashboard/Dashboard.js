@@ -91,7 +91,6 @@ foam.CLASS({
       class: 'String',
       name: 'baseDenomination',
       expression: function(denominations) {
-        debugger;
         return denominations.alphabeticCode;
       }
     },
@@ -100,7 +99,7 @@ foam.CLASS({
       hidden: true,
       value: {
         getRate: function(from, to) {
-          return Promise.resolve(1.5);
+          return Promise.resolve(1);
         }
       }
     },
