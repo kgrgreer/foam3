@@ -195,7 +195,7 @@ function build_jar {
         # maven
         if [ "$COMPILE_ONLY" -eq 0 ]; then
             echo "INFO :: Building nanos..."
-            ./gen.sh generatedJava
+            ./gen.sh tools/classes.js generatedJava
 
             echo "INFO :: Packaging js..."
             ./tools/js_build/build.js
