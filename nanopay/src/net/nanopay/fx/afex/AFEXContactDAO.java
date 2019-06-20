@@ -103,7 +103,7 @@ public class AFEXContactDAO
     );
     if ( null != afexBeneficiary ) return true;
     try {
-      GetPayeeInfoResponse existingBeneficiary = afexServiceProvider.getPayeeInfo(String.valueOf(contactId));
+      FindBeneficiaryResponse existingBeneficiary = afexServiceProvider.getPayeeInfo(String.valueOf(contactId), ownerId);
       if ( existingBeneficiary != null ) {
         beneficiaryExists = true;
         afexBeneficiary = new AFEXBeneficiary();

@@ -10,6 +10,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
@@ -26,18 +28,23 @@ foam.CLASS({
     {
       name: 'updateObj',
       javaCode: `
-      Transaction transaction = (Transaction) obj;
-      if ( transaction.getStatus() == TransactionStatus.PENDING ) {
-        transaction.setStatus(
-          ApprovalStatus.APPROVED == approvalStatus
-            ? TransactionStatus.COMPLETED
-            : TransactionStatus.DECLINED);
-      } else {
-        transaction.setInitialStatus(
-          ApprovalStatus.APPROVED == approvalStatus
-            ? TransactionStatus.COMPLETED
-            : TransactionStatus.DECLINED);
-      }
+      agency.submit(x, new ContextAgent() {
+        @Override
+        public void execute(X x) {
+          Transaction transaction = (Transaction) obj;
+          if ( transaction.getStatus() == TransactionStatus.PENDING ) {
+            transaction.setStatus(
+              ApprovalStatus.APPROVED == approvalStatus
+                ? TransactionStatus.COMPLETED
+                : TransactionStatus.DECLINED);
+          } else {
+            transaction.setInitialStatus(
+              ApprovalStatus.APPROVED == approvalStatus
+                ? TransactionStatus.COMPLETED
+                : TransactionStatus.DECLINED);
+          }
+        }}, 
+        "Update transaction status");
       `
     }
   ]
