@@ -85,15 +85,98 @@ foam.CLASS({
     {
       class: 'String',
       name: 'timeFrame',
+      value: 'Weekly',
       view: {
         class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
         choices: [
           'Weekly',
           'Monthly',
           'Quarterly',
           'Annually'
         ]
+      },
+      postSet: function(_,_) {
+        this.rewindFactor = 1;
+      }
+    },
+    {
+      class: 'Int',
+      name: 'rewindFactor',
+      value: 1
+    },
+    {
+      name: 'dateRange',
+      expression: function(timeFrame, rewindFactor) {
+        var today = new Date();
+        switch( timeFrame ) {
+          case 'Weekly':
+            var daysToRewind = 7 * ( this.rewindFactor - 1 );
+
+            var sun = new Date();
+            sun.setHours(0,0,0,0);
+            sun.setDate(sun.getDate() - sun.getDay());
+            sun.setDate(sun.getDate() - daysToRewind);
+
+            var sat = new Date(sun.getTime());
+            sat.setDate(sat.getDate() + 6);
+            sat.setHours(23,59,59,999);
+
+            return {
+              min: sun,
+              max: sat
+            };
+          case 'Monthly':
+            var monthsToRewind = rewindFactor - 1;
+
+            var min = new Date();
+            min.setMonth(min.getMonth() - monthsToRewind);
+            min.setDate(1);
+            min.setHours(0,0,0,0);
+
+            var max = new Date(min.getTime());
+            max.setMonth(max.getMonth() + 1);
+            max.setDate(0);
+            max.setHours(23,59,59,999);
+
+            return {
+              min: min,
+              max: max
+            };
+          case 'Quarterly':
+            var monthsToRewind = rewindFactor * 3;
+
+            var currQuarterEndMonth = today.getMonth() + (2 - today.getMonth() % 3) + 1;
+            var currQuarterEnd = new Date(today.getFullYear(), currQuarterEndMonth, 0);
+
+            var min = new Date(currQuarterEnd.getTime());
+            min.setMonth(min.getMonth() - (monthsToRewind - 1));
+            min.setDate(1);
+            var max = new Date(min.getTime());
+            max.setMonth(max.getMonth() + 3);
+            max.setDate(0);
+            max.setHours(23,59,59,999);
+
+            return {
+              min: min,
+              max: max
+            };
+          case 'Annually':
+            var start = new Date();
+            start.setFullYear(start.getFullYear() - this.rewindFactor + 1);
+            start.setMonth(0);
+            start.setDate(1);
+            start.setHours(0,0,0,0);
+
+            var end = new Date(start.getTime());
+            end.setMonth(11);
+            end.setDate(31);
+            end.setHours(23,59,59,999);
+
+            return {
+              min: start,
+              max: end
+            };
+        }
       }
     },
     {
@@ -105,40 +188,18 @@ foam.CLASS({
       name: 'balanceCandlestickDAO',
       expression: function(account, timeFrame) {
         var pred = this.EQ(this.Candlestick.KEY, account.id);
-        switch (timeFrame) {
-          case this.WEEKLY:
-            return this.accountBalanceCandlestickDAO.where(pred);
-          case this.MONTHLY:
-            return this.accountBalanceCandlestickDAO.where(pred);
-          case this.QUARTERLY:
-            return this.accountBalanceCandlestickDAO.where(pred);
-          case this.ANNUALLY:
-            return this.accountBalanceCandlestickDAO.where(pred);
-          default:
-            return this.accountBalanceCandlestickDAO.where(pred);
-        }
+        return this.accountBalanceCandlestickDAO.where(pred);
       }
     },
     {
       class: 'foam.dao.DAOProperty',
       hidden: true,
       name: 'liquidityThresholdCandlestickDAO',
-      expression: function(account, timeFrame) {
+      expression: function(account) {
         var high = `${account.id}:high`;
         var low = `${account.id}:low`;
         var pred = this.OR(this.EQ(this.Candlestick.KEY, high), this.EQ(this.Candlestick.KEY, low));
-        switch (timeFrame) {
-          case this.WEEKLY:
-            return this.liquidityThresholdWeeklyCandlestickDAO.where(pred);
-          case this.MONTHLY:
-            return this.liquidityThresholdMonthlyCandlestickDAO.where(pred);
-          case this.QUARTERLY:
-            return this.liquidityThresholdQuarterlyCandlestickDAO.where(pred);
-          case this.ANNUALLY:
-            return this.liquidityThresholdAnnuallyCandlestickDAO.where(pred);
-          default:
-            return null;
-        }
+        return this.liquidityThresholdWeeklyCandlestickDAO.where(pred);
       }
     },
     {
@@ -166,22 +227,27 @@ foam.CLASS({
               xAxes: [{
                 type: 'time',
                 time: {
-                  min: new Date().setTime(new Date().getTime() - (24*60*60*1000*30)) // TODO: Change this to be determined by the dropdown
+                  min: this.dateRange.min,
+                  max: this.dateRange.max,
+                  displayFormats: {
+                    hour: 'MMM D',
+                    quarter: 'MMM YYYY'
+                  }
                 },
                 distribution: 'linear'
               }]
             },
-            tooltips: {
-              displayColors: false,
-              callbacks: {
-                title: function(_, _) {
-                  return self.account.name;
-                },
-                label: function(tooltipItem, _) {
-                  return `${self.account.denomination} ${self.accountCurrency.format(Math.floor(parseFloat(tooltipItem.yLabel)))}`;
-                }
-              }
-            }
+            // tooltips: {
+            //   displayColors: false,
+            //   callbacks: {
+            //     title: function(_, _) {
+            //       return self.account.name;
+            //     },
+            //     label: function(tooltipItem, _) {
+            //       return `${self.account.denomination} ${self.accountCurrency.format(Math.floor(parseFloat(tooltipItem.yLabel)))}`;
+            //     }
+            //   }
+            // }
           }
         }
       }
@@ -197,7 +263,7 @@ foam.CLASS({
     function initE() {
       var self = this;
       this.account$.sub(this.dataUpdate);
-      this.timeFrame$.sub(this.dataUpdate);
+      this.dateRange$.sub(this.dataUpdate);
       this.dataUpdate();
 
       this.addClass(this.myClass())
@@ -215,6 +281,11 @@ foam.CLASS({
               height: 500
             }))
           .end()
+          .startContext({ data: this })
+            .add(this.REWIND)
+            .add(this.rewindFactor$)
+            .add(this.FORWARD)
+          .endContext()
         .end();
     },
 
@@ -244,25 +315,38 @@ foam.CLASS({
         }
       }
       this.styling = datasetStyling;
-      this.formatYAxis();
     },
 
     function formatYAxis() {
-      if ( ! this.accountCurrency ) return;
       var self = this;
       this.config.data = {}; // Prevent cloning infinite loop. Will be repopulated.
       var config = foam.Object.clone(this.config);
-      config.options.scales.yAxes = [{
-        ticks: {
-          callback: function(label, index, labels) {
-            return self.accountCurrency.format(Math.floor(parseFloat(label)));
+      config.options.scales.xAxes = [{
+        type: 'time',
+        time: {
+          min: this.dateRange.min,
+          max: this.dateRange.max,
+          displayFormats: {
+            hour: 'MMM D',
+            quarter: 'MMM YYYY'
           }
         },
-        scaleLabel: {
-          display: true,
-          labelString: this.accountCurrency.name
-        }
+        distribution: 'linear'
       }];
+
+      if ( this.accountCurrency && this.account ) {
+        config.options.scales.yAxes = [{
+          ticks: {
+            callback: function(label, index, labels) {
+              return self.accountCurrency.format(Math.floor(parseFloat(label)));
+            }
+          },
+          scaleLabel: {
+            display: true,
+            labelString: this.accountCurrency.name
+          }
+        }];
+      }
       this.config = config;
     }
   ],
@@ -272,6 +356,7 @@ foam.CLASS({
       name: 'dataUpdate',
       isFramed: true,
       code: async function() {
+        this.formatYAxis();
         if ( ! this.account ) return;
         var aggregate = this.EasyDAO.create({
           of: 'foam.nanos.analytics.Candlestick',
@@ -281,19 +366,39 @@ foam.CLASS({
         var balanceSink = await this.balanceCandlestickDAO.select();
         var keyMap = {};
         balanceSink.array.forEach(b => {
-          aggregate.put(b);
-          keyMap[b.key] = 1;
+          if ( b.closeTime >= this.dateRange.min && b.closeTime <= this.dateRange.max ) {
+            aggregate.put(b);
+            keyMap[b.key] = 1;
+          }
         });
 
         if ( this.liquidityThresholdCandlestickDAO ) {
           var liquiditySink = await this.liquidityThresholdCandlestickDAO.select();
           liquiditySink.array.forEach(function(l) {
-            aggregate.put(l);
-            keyMap[l.key] = 1;
+            if ( l.closeTime >= this.dateRange.min && l.closeTime <= this.dateRange.max ) {
+              aggregate.put(l);
+              keyMap[l.key] = 1;
+            }
           });
         }
         this.style(keyMap);
         this.aggregatedDAO = aggregate;
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'rewind',
+      code: function() {
+        this.rewindFactor++;
+      }
+    },
+    {
+      name: 'forward',
+      code: function() {
+        if ( this.rewindFactor === 1 ) return;
+        this.rewindFactor--;
       }
     }
   ]
