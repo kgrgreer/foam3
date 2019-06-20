@@ -47,20 +47,13 @@ foam.CLASS({
           .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
           .build();
 
-        requestApproval(x, req);
+          agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            requestApproval(x, req);
+          }
+        });
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
     }
   ]
 });
