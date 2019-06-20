@@ -80,7 +80,7 @@ foam.CLASS({
             .select(new Count());
 
           if (requested.getValue() == 0) {
-            updateObj(x, obj, approvalRequest.getStatus());
+            updateObj(x, obj, approvalRequest.getStatus(), agency);
           }
         }
       `
@@ -88,18 +88,10 @@ foam.CLASS({
     {
       name: 'updateObj',
       args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'obj',
-          type: 'FObject'
-        },
-        {
-          name: 'approvalStatus',
-          type: 'net.nanopay.approval.ApprovalStatus'
-        }
+        { name: 'x', type: 'Context' },
+        { name: 'obj', type: 'FObject' },
+        { name: 'approvalStatus', type: 'net.nanopay.approval.ApprovalStatus' },
+        { name: 'agency', type: 'foam.core.Agency' }
       ],
       javaCode: '// Override updateObj in sub-class'
     }

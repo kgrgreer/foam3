@@ -123,7 +123,9 @@ var classes = [
 
   // AFEX
   'net.nanopay.fx.afex.AFEX',
+  'net.nanopay.fx.afex.AFEXBusiness',
   'net.nanopay.fx.afex.AFEXCredentials',
+  'net.nanopay.fx.afex.AFEXBeneficiary',
   'net.nanopay.fx.afex.Token',
   'net.nanopay.fx.afex.OnboardCorporateClientRequest',
   'net.nanopay.fx.afex.OnboardCorporateClientResponse',
