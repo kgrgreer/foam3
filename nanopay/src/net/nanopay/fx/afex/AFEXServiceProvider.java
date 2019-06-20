@@ -75,27 +75,29 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( null == bankAddress ) throw new RuntimeException("Bank Account Address is null " + bankAccountId );
 
     // Check payee does not already exists on AFEX
-    GetPayeeInfoResponse payeeInfoResponse = this.afexClient.getPayeeInfo(String.valueOf(userId));
-    if ( null == payeeInfoResponse ) {
-      AddPayeeRequest addPayeeRequest = new AddPayeeRequest();
-      addPayeeRequest.setBankAccountNumber(bankAccount.getAccountNumber());
-      addPayeeRequest.setBankCountryCode(bankAddress.getCountryId());
-      //addPayeeRequest.setBankName(bankAccount.get);
-      addPayeeRequest.setBankRoutingCode(bankAccount.getRoutingCode(this.x));
-      addPayeeRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
-      addPayeeRequest.setBeneficiaryCity(userAddress.getCity());
-      addPayeeRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
-      addPayeeRequest.setBeneficiaryName(user.getLegalName());
-      addPayeeRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
-      addPayeeRequest.setBeneficiaryRegion(userAddress.getRegionId());
-      addPayeeRequest.setCurrency(bankAccount.getDenomination());
-      addPayeeRequest.setVendorId(String.valueOf(userId));
+    FindBeneficiaryRequest findBeneficiaryRequest = new FindBeneficiaryRequest();
+    findBeneficiaryRequest.setVendorId(String.valueOf(userId));
+    findBeneficiaryRequest.setClientAPIKey(""); // TODO
+    FindBeneficiaryResponse beneficiaryResponse = this.afexClient.findBeneficiary(findBeneficiaryRequest);
+    if ( null == beneficiaryResponse ) {
+      CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();
+      createBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
+      createBeneficiaryRequest.setBankCountryCode(bankAddress.getCountryId());
+      //createBeneficiaryRequest.setBankName(bankAccount.get);
+      createBeneficiaryRequest.setBankRoutingCode(bankAccount.getRoutingCode(this.x));
+      createBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
+      createBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
+      createBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
+      createBeneficiaryRequest.setBeneficiaryName(user.getLegalName());
+      createBeneficiaryRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
+      createBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId());
+      createBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
+      createBeneficiaryRequest.setVendorId(String.valueOf(userId));
 
       try {
-        AddPayeeResponse addPayeeResponse = this.afexClient.addPayee(addPayeeRequest);
-        if ( null == addPayeeResponse ) throw new RuntimeException("Null response got for remote system." );
-        if ( addPayeeResponse.getCode() != 200 ) throw new RuntimeException("Unable to create Beneficiary at this time. " +  addPayeeResponse.getInformationMessage());
-
+        CreateBeneficiaryResponse createBeneficiaryResponse = this.afexClient.createBeneficiary(createBeneficiaryRequest);
+        if ( null == createBeneficiaryResponse ) throw new RuntimeException("Null response got for remote system." );
+        if ( createBeneficiaryResponse.getCode() != 200 ) throw new RuntimeException("Unable to create Beneficiary at this time. " +  createBeneficiaryResponse.getInformationMessage());
       } catch(Exception e) {
         //Log here
       }
