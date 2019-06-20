@@ -9,23 +9,28 @@ fi
 HOST_NAME=`hostname -s`
 export DEBUG=
 DAEMONIZE=1
+VERSION=
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -D 0 or 1            : Debug mode."
-    echo "  -N <nanopay_home>  : Nanopay home directory."
+    echo "  -D 0 or 1           : Debug mode."
+    echo "  -Z 0 or 1           : Daemonize."
+    echo "  -N <nanopay_home>   : Nanopay home directory."
     echo "  -W <web_port>       : HTTP Port."
+    echo "  -V <version>        : Version."
+    echo "  -h                  : Display help."
 }
 
-while getopts "D:hN:W:Z:" opt ; do
+while getopts "D:hN:W:Z:V:" opt ; do
     case $opt in
         D) DEBUG=$OPTARG;;
         h) usage; exit 0;;
         N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
         Z) DAEMONIZE=$OPTARG;;
+        V) VERSION=$OPTARG;;
         ?) usage ; exit 0 ;;
    esac
 done
@@ -55,7 +60,11 @@ if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
     . "${NANOPAY_HOME}/etc/shrc.local"
 fi
 
-JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
+if [ ! -z $VERSION ]; then
+    JAR="${NANOPAY_HOME}/lib/nanopay-${VERSION}.jar"
+else
+    JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
+fi
 # export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"

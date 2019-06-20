@@ -196,7 +196,6 @@ task findSH(type: Exec) {
     onlyIf {
         !tasks.incrementalFindTask.state.upToDate
     }
-
     commandLine 'bash', './find.sh',
         "-I${project.findProperty("journalIn") ?: ""}",
         "-O${project.findProperty("journalOut") ?: ""}"
@@ -228,7 +227,6 @@ task foamCopy(type: Copy) {
     dependsOn tasks.packageFoam
     dependsOn tasks.foamNodeModulesCopy
     dependsOn tasks.nanopayNodeModulesCopy
-    
     from "tools/js_build/foam-bin-${project.version}.js"
     into "${project.targetDir}/classes/webroot"
 }
@@ -242,7 +240,7 @@ task copyResources(type: Copy) {
     from "$rootDir/nanopay/src/resources"
     from "$rootDir/foam2/src/resources"
     into "${project.targetDir}/classes"
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION:project.version] )
+    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION:project.version])
 }
 
 task copyJournals(type: Copy) {
@@ -274,6 +272,12 @@ task copyFavicon(type: Copy) {
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+task getVersion() {
+    doLast {
+        println project.version
+    }
 }
 
 task tarz(type: Tar) {
