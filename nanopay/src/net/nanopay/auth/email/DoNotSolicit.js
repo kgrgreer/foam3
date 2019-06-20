@@ -23,17 +23,25 @@ foam.CLASS({
     'userDAO',
   ],
 
+  tableColumns: [
+    'firstName',
+    'lastName',
+    'id',
+    'doNotSolicit',
+    'doNotContact',
+  ],
+
   properties: [
     {
       documentation: 'email of user opting out of solitations.',
       name: 'id',
       class: 'String',
-      label: 'email',
+      label: 'Email',
       aliases: ['email'],
       required: true
     },
     {
-      name: 'fisrtName',
+      name: 'firstName',
       class: 'String',
     },
     {

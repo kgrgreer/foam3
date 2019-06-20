@@ -10,7 +10,9 @@ foam.CLASS({
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.bank.BankAccount',
+    'foam.util.SafetyUtil',
   ],
 
   properties: [
@@ -34,35 +36,35 @@ foam.CLASS({
             .build();
 
         IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-        try {
-          IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
-          status = response.getComplianceValidationStatus();
-          TransactionStatus transactionStatus = getTransactionStatus(status);
-          if ( transactionStatus != null ) {
-            transaction.setInitialStatus(transactionStatus);
-          }
 
-          approvalRequest.setCauseId(response.getId());
-          approvalRequest.setCauseDaoKey("identityMindResponseDAO");
-          approvalRequest.setStatus(getApprovalStatus(status));
-          approvalRequest.setApprover(getApprover(status));
-        } finally {
-          requestApproval(x, approvalRequest);
-          ruler.putResult(status);
+        while ( ! SafetyUtil.isEmpty(transaction.getParent()) ) {
+          Transaction parent = transaction.findParent(x);
+          if ( parent != null ) {
+            transaction = parent;
+          } else {
+            break;
+          }
+        }
+
+        if ( transaction.findSourceAccount(x) instanceof BankAccount ) {
+          try {
+            IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
+            status = response.getComplianceValidationStatus();
+            TransactionStatus transactionStatus = getTransactionStatus(status);
+            if ( transactionStatus != null ) {
+              transaction.setInitialStatus(transactionStatus);
+            }
+
+            approvalRequest.setCauseId(response.getId());
+            approvalRequest.setCauseDaoKey("identityMindResponseDAO");
+            approvalRequest.setStatus(getApprovalStatus(status));
+            approvalRequest.setApprover(getApprover(status));
+          } finally {
+            requestApproval(x, approvalRequest);
+            ruler.putResult(status);
+          }
         }
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
     },
     {
       name: 'getTransactionStatus',

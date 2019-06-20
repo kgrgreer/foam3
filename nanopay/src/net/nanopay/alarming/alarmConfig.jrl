@@ -1,0 +1,2 @@
+p({"class":"net.nanopay.alarming.AlarmConfig","id":1,"name":"QuickBooks Online service","preRequest":"Quickbooks pre request","postRequest":"Quickbooks post request","timeOutRequest":"Quickbooks timeout","alarmValue":75,"sendEmail":false})
+p({"class":"net.nanopay.alarming.AlarmConfig","id":2,"name":"SMTP EMail Service ","preRequest":"Pre send email request","postRequest":"Post send email request","alarmValue":95,"monitorType":1,"sendEmail":false})

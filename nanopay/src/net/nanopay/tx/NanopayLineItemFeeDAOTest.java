@@ -206,7 +206,7 @@ public class NanopayLineItemFeeDAOTest
     FeeLineItem feeApplied = null;
     for ( int i = 0; i < quote.getPlans().length; i++ ) {
       Transaction plan = quote.getPlans()[i];
-      if ( null != plan ) {
+      if ( null != plan && plan.getNext() != null && plan.getNext().length > 0 ) {
         plan = plan.getNext()[0];
         TransactionLineItem[] lineItems = plan.getLineItems();
         test( lineItems != null && lineItems.length > 0, "Transaction has LineItems");

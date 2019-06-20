@@ -61,9 +61,9 @@ foam.CLASS({
         // Various condition checks
         boolean isARecievable = invoice.getCreatedBy() == invoice.getPayeeId();
         boolean invoiceIsBeingPaidButNotComplete = 
-          ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PENDING )
+          ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PROCESSING )
           && 
-          ( newInvoiceStatus == InvoiceStatus.PENDING )
+          ( newInvoiceStatus == InvoiceStatus.PROCESSING )
           && 
           invoice.getPaymentDate() != null
           &&

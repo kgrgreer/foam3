@@ -630,46 +630,6 @@ foam.CLASS({
       line-height: 15px !important;
     }
 
-    .foam-u2-tag-Select:focus {
-      border: 1px solid #604aff;
-    }
-
-    .foam-u2-tag-Select {
-      margin-bottom: 10px;
-      background: #fff;
-      box-shadow: none;
-      height: 40px !important;
-      border: solid 1px #8e9090;
-      border-radius: 3px;
-      font-size: 14px;
-    }
-
-    .foam-u2-TextField {
-      font-size: 14px;
-      height: 40px;
-      border: solid 1px #8e9090;
-      background: #fff;
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-      border-radius: 3px;
-      font-weight: 400;
-      padding: 12px;
-    }
-
-    .foam-u2-DateView {
-      font-size: 14px;
-      height: 40px;
-      border: solid 1px #8e9090;
-      background: #fff;
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-      border-radius: 3px;
-      font-weight: 400;
-      padding: 12px;
-    }
-
-    .foam-u2-ActionView-submitButton {
-      background-color: #604aff !important;
-    }
-
     /* DAO controller */
 
     .foam-comics-DAOControllerView-top-row .foam-u2-ActionView {

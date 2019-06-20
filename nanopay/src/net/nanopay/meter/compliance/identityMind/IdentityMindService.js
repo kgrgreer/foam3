@@ -78,6 +78,7 @@ foam.CLASS({
         response.setApiName("Consumer KYC Evaluation");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -106,6 +107,7 @@ foam.CLASS({
         User user = login.findLoginAttemptedFor(x);
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -133,6 +135,7 @@ foam.CLASS({
         response.setApiName("Merchant KYC Evaluation");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -151,16 +154,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        Transaction head = transaction;
-        while ( ! SafetyUtil.isEmpty(head.getParent()) ) {
-          Transaction parent = head.findParent(x);
-          if ( parent != null ) {
-            head = parent;
-          } else {
-            break;
-          }
-        }
-        IdentityMindRequest request = IdentityMindRequestGenerator.getTransferRequest(x, head);
+        IdentityMindRequest request = IdentityMindRequestGenerator.getTransferRequest(x, transaction);
         request.setUrl(getBaseUrl() + "/account/transfer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
         request.setProfile(getDefaultProfile());
@@ -169,6 +163,7 @@ foam.CLASS({
         response.setApiName("Transfer");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `

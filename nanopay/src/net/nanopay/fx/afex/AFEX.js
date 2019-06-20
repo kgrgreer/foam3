@@ -1,0 +1,126 @@
+foam.INTERFACE({
+  package: 'net.nanopay.fx.afex',
+  name: 'AFEX',
+
+  documentation: 'Interface to the AFEX service',
+
+  methods: [
+    {
+      name: 'getToken',
+      documentation: 'Get token',
+      async: true,
+      type: 'net.nanopay.fx.afex.Token'
+    },
+    {
+      name: 'onboardCorporateClient',
+      documentation: 'Create a new corporate client account',
+      async: true,
+      type: 'net.nanopay.fx.afex.OnboardCorporateClientResponse',
+      args: [
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.OnboardCorporateClientRequest'
+        }
+      ]
+    },
+    {
+      name: 'createBeneficiary',
+      documentation: 'Create a new beneficiary',
+      async: true,
+      type: 'net.nanopay.fx.afex.CreateBeneficiaryResponse',
+      args: [
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.CreateBeneficiaryRequest'
+        }
+      ]
+    },
+    {
+      name: 'updateBeneficiary',
+      documentation: 'Update an existing beneficiary record',
+      async: true,
+      type: 'net.nanopay.fx.afex.UpdateBeneficiaryResponse',
+      args: [
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.UpdateBeneficiaryRequest'
+        }
+      ]
+    },
+    {
+      name: 'disableBeneficiary',
+      documentation: 'Disable an existing beneficiary record by VendorID',
+      async: true,
+      type: 'String',
+      args: [
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.DisableBeneficiaryRequest'
+        }
+      ]
+    },
+    {
+      name: 'findBeneficiary',
+      documentation: 'Search for beneficiary using unique VendorId',
+      async: true,
+      type: 'net.nanopay.fx.afex.FindBeneficiaryResponse',
+      args: [
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.FindBeneficiaryRequest'
+        }
+      ]
+    },
+    {
+      name: 'getValueDate',
+      async: true,
+      type: 'String',
+      args: [
+        {
+          type: 'String',
+          name: 'currencyPair'
+        },
+        {
+          type: 'String',
+          name: 'valueType'
+        }
+      ]
+    },
+    {
+      name: 'getQuote',
+      documentation: 'Get quote',
+      async: true,
+      type: 'net.nanopay.fx.afex.Quote',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.GetQuoteRequest',
+          name: 'request'
+        }
+      ]
+    },
+    {
+      name: 'createTrade',
+      documentation: 'Create a trade or outright forward to convert from one currency to another',
+      async: true,
+      type: 'net.nanopay.fx.afex.CreateTradeResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CreateTradeRequest',
+          name: 'request'
+        }
+      ]
+    },
+    {
+      name: 'createPayment',
+      documentation: 'Create scheduled payment',
+      async: true,
+      type: 'net.nanopay.fx.afex.CreatePaymentResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CreatePaymentRequest',
+          name: 'request'
+        }
+      ]
+    }
+  ]
+});

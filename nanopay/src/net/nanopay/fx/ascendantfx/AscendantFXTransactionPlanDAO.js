@@ -88,7 +88,12 @@ foam.CLASS({
     Account sourceAccount = request.findSourceAccount(x);
     Account destinationAccount = request.findDestinationAccount(x);
 
-    if ( ! (sourceAccount instanceof BankAccount) || ! (destinationAccount instanceof BankAccount) ) return getDelegate().put_(x, obj);
+    if ( ! (sourceAccount instanceof BankAccount) ||
+         ! (destinationAccount instanceof BankAccount) ||
+         ( sourceAccount.getDenomination().equals("CAD") &&
+           destinationAccount.getDenomination().equals("CAD") ) ) {
+       return getDelegate().put_(x, obj);
+    }
 
     // Create and execute AscendantFXTransaction to get Rate
     // store in plan
