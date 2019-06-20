@@ -127,26 +127,9 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, ((Long)userToTe
     rule.setAfter(true);
     Predicate predicate = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate);
-    RuleAction action = new RuleAction() {
-      @Override
-      public void applyAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
-        initialRequest.setObjId(((Long)((User)obj).getId()).toString());
-        initialRequest = (ApprovalRequest) requestDAO.inX(ctx).put(initialRequest);
-      }
-
-      @Override
-      public void applyReverseAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
-      }
-
-      @Override
-      public boolean canExecute(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
-        return true;
-      }
-
-      @Override
-      public String describe() {
-        return "";
-      }
+    RuleAction action = (x, obj, oldObj, ruler, agency) -> {
+      initialRequest.setObjId(((Long)((User)obj).getId()).toString());
+      initialRequest = (ApprovalRequest) requestDAO.inX(ctx).put(initialRequest);
     };
     rule.setAction(action);
     ruleDAO.put(rule);
@@ -160,29 +143,12 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, ((Long)userToTe
     rule2.setAfter(false);
     Predicate predicate2 = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate2);
-    RuleAction action2 = new RuleAction() {
-      @Override
-      public void applyAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
-        User user = (User) obj;
-        long points = ApprovalRequestUtil.getApprovedPoints(ctx, ((Long)userToTest.getId()).toString(), initialRequest.getClassification());
+    RuleAction action2 = (RuleAction) (x, obj, oldObj, ruler, agency) -> {
+      User user = (User) obj;
+      long points = ApprovalRequestUtil.getApprovedPoints(ctx, ((Long)userToTest.getId()).toString(), initialRequest.getClassification());
 
-        if ( points >= initialRequest.getRequiredPoints() ) {
-          user.setFirstName("Approved");
-        }
-      }
-
-      @Override
-      public void applyReverseAction(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
-      }
-
-      @Override
-      public boolean canExecute(X x, FObject obj, FObject oldObj, RuleEngine ruler) {
-        return true;
-      }
-
-      @Override
-      public String describe() {
-        return "";
+      if ( points >= initialRequest.getRequiredPoints() ) {
+        user.setFirstName("Approved");
       }
     };
     rule2.setAction(action2);

@@ -46,6 +46,8 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       Invoice invoice = getInvoice(x, transaction);
       if ( invoice != null ) {
         invoice.setPaymentId(transaction.getId());
+        // Invoice status should be processing as default when the trasaction is created
+        invoice.setPaymentMethod(PaymentStatus.PROCESSING);
         invoice.setPaymentDate(generateEstimatedCreditDate(x, transaction));
         invoiceDAO.put(invoice);
 
@@ -74,12 +76,10 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     }
 
     Invoice invoice = getInvoice(x, transaction);
-    if ( transaction.getStatus() == TransactionStatus.SENT ) {
-      // only update the estimated completion date on the last CO leg.
-      if ( transaction instanceof COTransaction ) {
-        invoice.setPaymentDate(transaction.getCompletionDate());
-      }
-      invoice.setPaymentMethod(PaymentStatus.PENDING);
+    if ( transaction.getStatus() == TransactionStatus.SENT &&
+         transaction instanceof COTransaction ) {
+        // only update the estimated completion date on the last CO leg.
+      invoice.setPaymentDate(transaction.getCompletionDate());
       invoiceDAO.put(invoice);
       //logger_.debug(transaction.getId(), transaction.getType(), transaction.getStatus(), state, transaction.getInvoiceId(), "SENT/PENDING");
       return getDelegate().put_(x, obj);
