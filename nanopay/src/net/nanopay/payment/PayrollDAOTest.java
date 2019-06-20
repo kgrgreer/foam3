@@ -82,17 +82,17 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
   }
 
   public void addPayeesIfNotFound(X x) {
-    addPayeeIfNotFound(x, "francis1@nanopay.net", "001", "12345", "1234567");
-    addPayeeIfNotFound(x, "francis2@nanopay.net", "002", "12346", "1234568");
-    addPayeeIfNotFound(x, "francis3@nanopay.net", "003", "12347", "1234569");
+    addPayeeIfNotFound(x, "FrancisOne", "francis1@nanopay.net", "001", "12345", "1234567");
+    addPayeeIfNotFound(x, "FrancisTwo", "francis2@nanopay.net", "002", "12346", "1234568");
+    addPayeeIfNotFound(x, "FrancisThree", "francis3@nanopay.net", "003", "12347", "1234569");
   }
 
-  public void addPayeeIfNotFound(X x, String email, String institutionNo, String branchId, String bankAccountNo) {
+  public void addPayeeIfNotFound(X x, String firstName, String email, String institutionNo, String branchId, String bankAccountNo) {
     User user = (User) userDAO.find(EQ(User.EMAIL, email));
     if ( user == null ) {
       user = new User();
       user.setEmail(email);
-      user.setFirstName("Francis");
+      user.setFirstName(firstName);
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user = (User) userDAO.put_(x, user);
@@ -148,6 +148,4 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     entries[entryIndex] = entry;
     ++entryIndex;
   }
-
-
  }

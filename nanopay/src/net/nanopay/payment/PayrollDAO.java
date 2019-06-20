@@ -29,39 +29,39 @@ public class PayrollDAO extends ProxyDAO {
   public PayrollDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
-    serviceProviderDAO_ = (DAO) x.get("serviceProviderDAO");
-    userDAO_ = (DAO) x.get("userDAO");
-    transactionDAO_ = (DAO) x.get("transactionDAO");
-    accountDAO_ = (DAO) x.get("accountDAO");
+    serviceProviderDAO_   = (DAO) x.get("serviceProviderDAO");
+    userDAO_              = (DAO) x.get("userDAO");
+    transactionDAO_       = (DAO) x.get("transactionDAO");
+    accountDAO_           = (DAO) x.get("accountDAO");
     liquiditySettingsDAO_ = (DAO) x.get("liquiditySettingsDAO");
-    logger = (Logger) x.get("logger");
+    logger                = (Logger) x.get("logger");
   }
 
   @Override
   public FObject put_(X x, FObject obj) {
-    Payroll payroll = (Payroll) obj;
+    Payroll payroll               = (Payroll) obj;
     PayrollEntry[] payrollEntries = payroll.getPayrollEntries();
     logger.log("Processing ", payrollEntries.length, " employees");
     prepareSPID(payroll);
     double totalPayroll = 0;
-    String group = payroll.getGroup();
-    String spid = payroll.getSpid();
-    long sourceAccount = payroll.getSourceAccount();
-    String note = payroll.getNote();
+    String group        = payroll.getGroup();
+    String spid         = payroll.getSpid();
+    long sourceAccount  = payroll.getSourceAccount();
+    String note         = payroll.getNote();
     String firstName, lastName, institutionNo, branchId, bankAccountNo;
     long payeeId, dcaNo;
     double pay;
     Transaction transaction;
     String transactionId;
-    for( int i = 0; i < payrollEntries.length; ++i ) {
+    for ( int i = 0; i < payrollEntries.length; ++i ) {
       PayrollEntry entry = payrollEntries[i];
-      payeeId = entry.getOwner();
-      pay = entry.getAmount();
-      firstName = entry.getFirstName();
-      lastName = entry.getLastName();
-      bankAccountNo = entry.getBankAccountNo();
-      institutionNo = entry.getInstitutionNo();
-      branchId = entry.getBranchId();
+      payeeId            = entry.getOwner();
+      pay                = entry.getAmount();
+      firstName          = entry.getFirstName();
+      lastName           = entry.getLastName();
+      bankAccountNo      = entry.getBankAccountNo();
+      institutionNo      = entry.getInstitutionNo();
+      branchId           = entry.getBranchId();
       logger.info("Processing User ", i, ", id: ", payeeId, ", email: ", entry.getEmail());
 
       totalPayroll += pay;
@@ -94,7 +94,7 @@ public class PayrollDAO extends ProxyDAO {
 
   public void findOrCreateUser(long id, String group, String firstName, String lastName, String spid, String bankAccountNo) {
     User user = (User) userDAO_.find(id);
-    if (user == null) {
+    if ( user == null ) {
       user = new User();
       user.setId(id);
       user.setGroup(group);
