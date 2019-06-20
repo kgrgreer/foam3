@@ -280,6 +280,14 @@ task getVersion() {
     }
 }
 
+task getClasspath() {
+    doLast {
+        def classes = new HashSet<String>();
+        sourceSets.main.runtimeClasspath.each { classes.add(it.toString()) }
+        println String.join(";", classes);
+    }
+}
+
 task tarz(type: Tar) {
     def tarName = "${project.name}-${project.version}"
     archiveFileName = "${tarName}.tgz"
