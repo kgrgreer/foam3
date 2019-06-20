@@ -85,7 +85,8 @@ foam.CLASS({
       name: 'currency'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
       name: 'denomination',
     },
     {
@@ -114,6 +115,9 @@ foam.CLASS({
                     .start()
                       .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
                     .end()
+                    .startContext({ data: this, controllerMode: self.ControllerMode.EDIT })
+                      .tag(this.DENOMINATION)
+                    .endContext()
                     .start().addClass(this.myClass('balance'))
                       .add(
                             currency.select().then(denomBalances => {

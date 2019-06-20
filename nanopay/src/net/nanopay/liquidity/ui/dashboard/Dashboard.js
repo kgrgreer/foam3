@@ -82,16 +82,25 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
+      name: 'denominations',
+      targetDAOKey: 'currencyDAO',
+    },
+    {
       class: 'String',
       name: 'baseDenomination',
-      value: 'CAD'
+      expression: function(denominations) {
+        debugger;
+        return denominations.alphabeticCode;
+      }
     },
     {
       name: 'conversionService',
       hidden: true,
       value: {
         getRate: function(from, to) {
-          return Promise.resolve(1);
+          return Promise.resolve(1.5);
         }
       }
     },
@@ -130,7 +139,7 @@ foam.CLASS({
             .start(this.DashboardAccounts, { 
               data: this.accounts,
               currency$: this.currencyExposureDAO$,
-              denomination: this.baseDenomination,
+              denomination$: this.denominations$,
             })
               .addClass(this.myClass('accounts'))
             .end()
