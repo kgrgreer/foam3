@@ -86,6 +86,7 @@ foam.CLASS({
       of: 'net.nanopay.model.Currency',
       name: 'denominations',
       targetDAOKey: 'currencyDAO',
+      value: 'CAD'
     },
     {
       class: 'String',
