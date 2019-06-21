@@ -105,11 +105,6 @@ function deploy_journals {
         quit 1
     fi
 
-    if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
-        # remove journal file that find.sh was previously creating
-        rm "$JOURNAL_HOME"
-    fi
-
     if [ ! -d target ]; then
         mkdir -p target
     fi
@@ -127,10 +122,10 @@ function deploy_journals {
 
     if [ "$LIQUID_DEMO" -eq 1 ]; then
         node tools/liquid_journal_script.js
-    fi
 
-    if [[ $? -eq 1 ]]; then
-        quit 1
+        if [[ $? -eq 1 ]]; then
+            quit 1
+        fi
     fi
 
     if [ "$RUN_JAR" -eq 0 ]; then
