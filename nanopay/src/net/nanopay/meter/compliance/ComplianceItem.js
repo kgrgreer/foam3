@@ -7,6 +7,10 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware'
   ],
 
+  requires: [
+    'foam.dao.DAO'
+  ],
+
   documentation: `The Compliance Item`,
 
   tableColumns: [
@@ -19,7 +23,8 @@ foam.CLASS({
 
   searchColumns: [
     'user',
-    'userLabel'
+    'userLabel',
+    'type'
   ],
 
   properties: [
@@ -91,14 +96,17 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'String',
       name: 'type',
       transient: true,
       expression: function(dowJones, identityMind, levResponse, sidniResponse) {
         if ( dowJones ) {
-          return "DOW Jones";
+          return this.dowJones$find.then(o => {
+            return o.searchType;
+          })
         } else if ( identityMind ) {
-          return "Identity Mind";
+          return this.identityMind$find.then(o => {
+            return "Identity Mind (" + o.apiName + ")";
+          })
         } else if ( levResponse ) {
           return "Secure Fact (LEV)";
         } else if ( sidniResponse ) {
@@ -107,7 +115,7 @@ foam.CLASS({
           return "";
         }
       },
-      hidden: true
+      tableWidth: 300
     }
   ]
 });
