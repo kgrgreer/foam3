@@ -514,6 +514,8 @@ var classes = [
   'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
   'net.nanopay.meter.compliance.ComplianceItem',
+  'net.nanopay.meter.reports.DateColumnOfReports',
+  'net.nanopay.meter.reports.RowOfBusSumReports',
 
   // ruler
   'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
