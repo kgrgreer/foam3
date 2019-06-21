@@ -29,4 +29,20 @@ foam.CLASS({
       }
     }
   ],
+
+  actions: [
+    {
+      name: 'save',
+      code: function() {
+        this.data.owner = this.__subContext__.user.id;
+        this.config.dao.put(this.data).then(o => {
+          this.data = o;
+          this.finished.pub();
+          this.stack.back();
+        }, e => {
+          this.throwError.pub(e);
+        });
+      }
+    },
+  ],
 });

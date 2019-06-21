@@ -219,7 +219,7 @@ foam.CLASS({
               .end()
               .end()
               .start(foam.u2.detail.SectionedDetailView, {
-                data: data.clone(self.__subContext__)
+                data: data
               })
                 .addClass(this.myClass('detail-view'))
               .end()
