@@ -244,8 +244,8 @@ public class CsvUtil {
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
 
-          alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
-          alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
+          alternaFormat.setFirstName( removeComma(!isOrganization ? user.getFirstName() : user.getOrganization()) );
+          alternaFormat.setLastName(  removeComma(!isOrganization ? user.getLastName() : "") );
           alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf(( branch.getBranchId() )), 5));
           alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((    institution.getInstitutionNumber() )), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
@@ -355,5 +355,9 @@ public class CsvUtil {
         }
       }
     });
+  }
+
+  public static String removeComma(String str) {
+    return str.replace("," , " ");
   }
 }

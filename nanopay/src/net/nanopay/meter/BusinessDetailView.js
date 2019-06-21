@@ -40,6 +40,7 @@ foam.CLASS({
           this.Business.ACCOUNTS,
           this.Business.CONTACTS,
           this.Business.AGENTS,
+          this.Business.COMPLIANCE_ITEMS,
         ];
       }
     }
