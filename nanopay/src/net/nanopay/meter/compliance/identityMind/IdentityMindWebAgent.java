@@ -22,7 +22,6 @@ public class IdentityMindWebAgent implements WebAgent {
   
   public IdentityMindWebAgent() {}
 
-  @Override
   public void execute(X x) {
     DAO identityMindResponseDAO = (DAO) x.get("identityMindResponseDAO");
     DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
@@ -35,7 +34,6 @@ public class IdentityMindWebAgent implements WebAgent {
     jsonParser.setX(x);
 
     try {
-      System.out.println("WEBHOOK: " + data);
       IdentityMindResponse webhookResponse = (IdentityMindResponse)
         jsonParser.parseString(data, IdentityMindResponse.class);
       identityMindResponseDAO.put(webhookResponse);
