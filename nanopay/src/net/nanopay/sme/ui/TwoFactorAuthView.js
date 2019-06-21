@@ -39,6 +39,7 @@ foam.CLASS({
       align-items: center;
     }
     ^status-container {
+      display: flex;
       min-width: 140px;
     }
     ^status {
@@ -90,6 +91,9 @@ foam.CLASS({
     ^ .validation-input {
       margin-top: 12px;
       min-width: 215px;
+    }
+    ^two-factor-benefit {
+      padding-right: 25px;
     }
   `,
 
@@ -205,7 +209,7 @@ foam.CLASS({
                       .add(this.Enabled)
                     .end()
                   .end()
-                  .start()
+                  .start().addClass(this.myClass('two-factor-benefit'))
                     .add(this.TWO_FACTOR_BENEFIT)
                   .end()
                   .start(this.DISABLE_TWO_FACTOR, {
