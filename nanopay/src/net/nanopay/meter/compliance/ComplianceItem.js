@@ -1,7 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance',
   name: 'ComplianceItem',
-  labe: 'Compliance Responses',
+  label: 'Compliance Responses',
+
+  implements: [
+    'foam.nanos.auth.CreatedAware'
+  ],
 
   documentation: `The Compliance Item`,
 
@@ -9,7 +13,8 @@ foam.CLASS({
     'responseId',
     'type',
     'user',
-    'userLabel'
+    'userLabel',
+    'created'
   ],
 
   searchColumns: [
@@ -58,6 +63,11 @@ foam.CLASS({
       class: 'String',
       name: 'userLabel',
       label: 'Entity Name'
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      documentation: 'Creation date'
     },
     {
       class: 'Long',

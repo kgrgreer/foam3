@@ -26,6 +26,11 @@ foam.CLASS({
       name: 'entityType'
     },
     {
+      class: 'String',
+      name: 'daoKey',
+      documentation: 'Name of DAO that contains the entity (eg. userDAO)'
+    },
+    {
       class: 'Object',
       name: 'entityId',
       tableWidth: 100
