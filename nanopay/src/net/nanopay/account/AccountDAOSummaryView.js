@@ -99,32 +99,12 @@ foam.CLASS({
             return '🇺🇸';
           case 'CAD':
             return '🇨🇦';
+          case 'INR':
+            return '🇮🇳';
+          case 'PKR':
+            return '🇵🇰';
           default:
             return '💰';
-        }
-      }
-    },
-    {
-      class: 'String',
-      name: 'denominationSymbol',
-      factory: function() {
-        /**
-         * TODO: we might want to make flags a property of currencies/denominations
-         * and use images instead of emojis
-         */
-        switch(this.data.denomination){
-          case 'USD':
-            return 'US＄';
-          case 'CAD':
-            return 'C＄';
-          case 'EUR':
-            return '€';
-          case 'GBP':
-            return '£';
-          case 'INR':
-            return '₹'
-          default:
-            return '＄';
         }
       }
     }
