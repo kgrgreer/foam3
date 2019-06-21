@@ -29,7 +29,11 @@ foam.CLASS({
     net.nanopay.invoice.model.Invoice.PAYMENT_DATE.clone().copyFrom({
       view: { class: 'foam.u2.DateView' }
     }),
-    net.nanopay.invoice.model.Invoice.NOTE,
+    net.nanopay.invoice.model.Invoice.NOTE.clone().copyFrom({
+      expression: function(invoice) {
+        return invoice.note;
+      }
+    }),
     {
       name: 'currencyType',
       view: { class: 'net.nanopay.sme.ui.CurrencyChoice' },
