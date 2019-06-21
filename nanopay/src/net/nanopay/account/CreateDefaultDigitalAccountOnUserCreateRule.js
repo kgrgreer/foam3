@@ -7,15 +7,22 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'net.nanopay.account.Account'
+    'net.nanopay.account.Account',
+    'foam.core.ContextAgent',
+    'foam.core.X'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        DigitalAccountService service = (DigitalAccountService) x.get("digitalAccount");
-        service.findDefault(x, null);
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            DigitalAccountService service = (DigitalAccountService) x.get("digitalAccount");
+            service.findDefault(x.put("user", obj), null);
+         }
+        },"Finding default account");
       `
     }
   ]

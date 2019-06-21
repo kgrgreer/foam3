@@ -605,3 +605,14 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   targetProperty: { visibility: 'RO' }
 });
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
+  forwardName: 'complianceItems',
+  inverseName: 'entityId',
+  cardinality: '1:*',
+  sourceDAOKey: 'userDAO',
+  targetDAOKey: 'complianceItemDAO',
+  targetProperty: {visibility: 'RO'}
+});
