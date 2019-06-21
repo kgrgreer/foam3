@@ -139,7 +139,8 @@ foam.CLASS({
       label: 'eDNA score card',
       view: {
         class: 'foam.u2.view.AnyView'
-      }
+      },
+      hidden: true
     }
   ],
 
