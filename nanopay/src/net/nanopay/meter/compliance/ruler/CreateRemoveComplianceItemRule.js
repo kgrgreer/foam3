@@ -13,18 +13,24 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
-    'foam.core.X',
+    'foam.core.FObject',
     'foam.core.PropertyInfo',
+    'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.mlang.MLang',
+    'foam.nanos.auth.User',
     'foam.nanos.dig.exception.GeneralException',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.ruler.Operations',
+    'java.util.List',
     'net.nanopay.meter.compliance.ComplianceItem',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
     'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations'
+    'net.nanopay.model.BeneficialOwner',
+    'net.nanopay.model.Business',
   ],
 
   messages: [
@@ -69,73 +75,102 @@ foam.CLASS({
               if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.CREATE) {
                 if ( obj instanceof DowJonesResponse ) {
                   DowJonesResponse response = (DowJonesResponse) obj;
-                  DAO userDAO = (DAO) x.get("localUserDAO");
-                  User user = (User) userDAO.find(response.getUserId());
+                  // entity could be User or Beneficial Owner
+                  DAO entityDAO = (DAO) x.get(response.getDaoKey());
+                  FObject entity = (FObject) entityDAO.find(response.getUserId());
+                  String label = "";
+                  if ( entity instanceof User ) { label = ((User) entity).label(); }
+                  if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setDowJones(response.getId())
                     .setUser(response.getUserId())
+                    .setEntityId(response.getUserId())
+                    .setUserLabel(label)
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).put(complianceItem);
+                } else if ( obj instanceof IdentityMindResponse ) {
+                  IdentityMindResponse response = (IdentityMindResponse) obj;
+                  // entity could be User or Beneficial Owner
+                  DAO entityDAO = (DAO) x.get(response.getDaoKey());
+                  FObject entity = (FObject) entityDAO.find(response.getEntityId().toString());
+                  String label = "";
+                  if ( entity instanceof User ) { label = ((User) entity).label(); }
+                  if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setIdentityMind(response.getId())
+                    .setUser(Long.parseLong(response.getEntityId().toString()))
+                    .setEntityId(Long.parseLong(response.getEntityId().toString()))
+                    .setUserLabel(label)
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).put(complianceItem);
+                } else if ( obj instanceof LEVResponse ) {
+                  LEVResponse response = (LEVResponse) obj;
+                  DAO businessDAO = (DAO) x.get("businessDAO");
+                  Business business = (Business) businessDAO.find(response.getEntityId());
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setLevResponse(response.getId())
+                    .setUser(response.getEntityId())
+                    .setEntityId(response.getEntityId())
+                    .setUserLabel(business.label())
+                    .build();
+                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
+                  complianceItemDAO.inX(x).put(complianceItem);
+                } else if ( obj instanceof SIDniResponse ) {
+                  SIDniResponse response = (SIDniResponse) obj;
+                  DAO userDAO = (DAO) x.get("userDAO");
+                  User user = (User) userDAO.find(response.getEntityId());
+                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
+                    .setSidniResponse(response.getId())
+                    .setUser(response.getEntityId())
+                    .setEntityId(response.getEntityId())
                     .setUserLabel(user.label())
                     .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);
-                } else if ( obj instanceof IdentityMindResponse ) {
-                  IdentityMindResponse response = (IdentityMindResponse) obj;
-                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                    .setIdentityMind(response.getId())
-                    .setUser(Long.parseLong(response.getEntityId().toString()))
-                    .build();
-                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                  complianceItemDAO.inX(x).put(complianceItem);
-                } else if ( obj instanceof LEVResponse ) {
-                  LEVResponse response = (LEVResponse) obj;
-                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                    .setLevResponse(response.getId())
-                    .setUser(response.getEntityId())
-                    .build();
-                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                  complianceItemDAO.inX(x).put(complianceItem);
-                } else if ( obj instanceof SIDniResponse ) {
-                  SIDniResponse response = (SIDniResponse) obj;
-                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                    .setSidniResponse(response.getId())
-                    .setUser(response.getEntityId())
-                    .build();
-                  DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                  complianceItemDAO.inX(x).put(complianceItem);
                 }
-              } else if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.REMOVE) {
+              } else if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.REMOVE && obj != null) {
                 if ( obj instanceof DowJonesResponse ) {
                   DowJonesResponse response = (DowJonesResponse) obj;
-                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                    .setDowJones(response.getId())
-                    .setUser(response.getUserId())
-                    .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                  complianceItemDAO.inX(x).remove(complianceItem);
+                  List <ComplianceItem> complianceItems = ((ArraySink) complianceItemDAO
+                    .where(MLang.EQ(ComplianceItem.DOW_JONES, response.getId()))
+                    .select(new ArraySink()))
+                    .getArray();
+                  for(int i = 0; i < complianceItems.size(); i++) {
+                    complianceItemDAO.inX(x).remove((ComplianceItem) complianceItems.get(i));
+                  }
                 } else if ( obj instanceof IdentityMindResponse ) {
                   IdentityMindResponse response = (IdentityMindResponse) obj;
-                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                    .setIdentityMind(response.getId())
-                    .setUser(Long.parseLong(response.getEntityId().toString()))
-                    .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                  complianceItemDAO.inX(x).remove(complianceItem);
+                  List <ComplianceItem> complianceItems = ((ArraySink) complianceItemDAO
+                    .where(MLang.EQ(ComplianceItem.IDENTITY_MIND, response.getId()))
+                    .select(new ArraySink()))
+                    .getArray();
+                  for(int i = 0; i < complianceItems.size(); i++) {
+                    complianceItemDAO.inX(x).remove((ComplianceItem) complianceItems.get(i));
+                  }
                 } else if ( obj instanceof LEVResponse ) {
                   LEVResponse response = (LEVResponse) obj;
-                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                    .setLevResponse(response.getId())
-                    .setUser(response.getEntityId())
-                    .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                  complianceItemDAO.inX(x).remove(complianceItem);
+                  List <ComplianceItem> complianceItems = ((ArraySink) complianceItemDAO
+                    .where(MLang.EQ(ComplianceItem.LEV_RESPONSE, response.getId()))
+                    .select(new ArraySink()))
+                    .getArray();
+                  for(int i = 0; i < complianceItems.size(); i++) {
+                    complianceItemDAO.inX(x).remove((ComplianceItem) complianceItems.get(i));
+                  }
                 } else if ( obj instanceof SIDniResponse ) {
                   SIDniResponse response = (SIDniResponse) obj;
-                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                    .setSidniResponse(response.getId())
-                    .setUser(response.getEntityId())
-                    .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
-                  complianceItemDAO.inX(x).remove(complianceItem);
+                  List <ComplianceItem> complianceItems = ((ArraySink) complianceItemDAO
+                    .where(MLang.EQ(ComplianceItem.SIDNI_RESPONSE, response.getId()))
+                    .select(new ArraySink()))
+                    .getArray();
+                  for(int i = 0; i < complianceItems.size(); i++) {
+                    complianceItemDAO.inX(x).remove((ComplianceItem) complianceItems.get(i));
+                  }
                 }
               } else {
                 /*this.NotificationMessage.create({
