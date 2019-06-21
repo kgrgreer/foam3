@@ -18,7 +18,8 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.util.SafetyUtil'
   ],
 
   imports: [
@@ -181,6 +182,17 @@ foam.CLASS({
           throw new AuthorizationException("Permission denied: Cannot remove beneficial owners owned by other businesses.");
         }
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function toSummary() {
+        return this.lastName ? this.firstName + " " + this.lastName : this.firstName;
+      },
+      javaCode: `
+        if ( ! SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
+        return getFirstName() + " " + getLastName();
+      `
     }
   ],
   actions: [
@@ -197,7 +209,7 @@ foam.CLASS({
           exportEnabled: true,
           title: `${this.legalName}'s Compliance History`,
           data: this.complianceHistoryDAO.where(m.AND(
-              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id + ''), 
+              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id + ''),
               m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'beneficialOwnerDAO')
           ))
         });

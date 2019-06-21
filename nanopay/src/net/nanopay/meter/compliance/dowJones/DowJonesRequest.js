@@ -14,6 +14,11 @@ foam.CLASS({
       documentation: 'The content sets included in the search.'
     },
     {
+      class: 'String',
+      name: 'daoKey',
+      documentation: 'Name of DAO that contains user (eg. beneficialOwnerDAO or userDAO)'
+    },
+    {
       class: 'Int',
       name: 'hitsFrom',
       documentation: 'The starting index (zero-indexed, lower bound inclusive) of the range of matches to return.'
