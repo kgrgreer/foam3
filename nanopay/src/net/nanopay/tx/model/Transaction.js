@@ -312,20 +312,30 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of Transactions.
       `,
+      tableWidth: 320,
       tableCellFormatter: async function(_, obj) {
         var [srcCurrency, dstCurrency] = await Promise.all([
           obj.currencyDAO.find(obj.sourceCurrency),
           obj.currencyDAO.find(obj.destinationCurrency)
         ]);
 
-        this.add(
-          obj.sourceCurrency + ' ' +
-          srcCurrency.format(obj.amount) + ' → ' +
-          obj.destinationCurrency + ' ' +
-          dstCurrency.format(obj.destinationAmount) + '  |  ' +
-          obj.payer.displayName + ' → ' +
-          obj.payee.displayName
-        );
+        if ( obj.payer ) {
+          this.add(
+            obj.sourceCurrency + ' ' +
+              srcCurrency.format(obj.amount) + ' → ' +
+              obj.destinationCurrency + ' ' +
+              dstCurrency.format(obj.destinationAmount) + '  |  ' +
+              obj.payer.displayName + ' → ' +
+              obj.payee.displayName
+          );
+        } else {
+          this.add(
+            obj.sourceCurrency + ' ' +
+              srcCurrency.format(obj.amount) + ' → ' +
+              obj.destinationCurrency + ' ' +
+              dstCurrency.format(obj.destinationAmount)
+          );
+        }
       }
     },
     {
