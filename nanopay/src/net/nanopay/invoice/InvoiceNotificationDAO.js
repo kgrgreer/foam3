@@ -59,6 +59,11 @@ foam.CLASS({
         InvoiceStatus oldInvoiceStatus = oldInvoice != null ? oldInvoice.getStatus() : null;
     
         // Various condition checks
+        boolean invoiceHasBeenMarkedComplete =
+          ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PAID )
+          &&
+          invoice.getPaymentMethod() == PaymentStatus.CHEQUE; //PaymentStatus.CHEQUE is used when we 'Mark as Complete'
+
         boolean isARecievable = invoice.getCreatedBy() == invoice.getPayeeId();
         boolean invoiceIsBeingPaidButNotComplete = 
           ( oldInvoiceStatus == null || oldInvoiceStatus != InvoiceStatus.PROCESSING )
@@ -88,8 +93,8 @@ foam.CLASS({
           isARecievable;
     
         // Performing Actions based on whats been set to true.
-        if ( invoiceIsBeingPaidButNotComplete || invoiceIsARecievable || invoiceNeedsApproval || invoiceIsBeingPaidAndCompleted ) {
-          String[] emailTemplates = { "payable", "receivable", "invoice-approval-email", "invoice-transaction-completed" };
+        if ( invoiceIsBeingPaidButNotComplete || invoiceIsARecievable || invoiceNeedsApproval || invoiceIsBeingPaidAndCompleted || invoiceHasBeenMarkedComplete ) {
+          String[] emailTemplates = { "payable", "receivable", "invoice-approval-email", "invoice-transaction-completed", "mark-as-complete" };
           HashMap<String, Object> args = null;
           boolean invoiceIsToAnExternalUser = invoice.getExternal();
           DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -125,6 +130,10 @@ foam.CLASS({
             if ( invoiceIsBeingPaidAndCompleted ) {
               args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
+            }
+            if ( invoiceHasBeenMarkedComplete ) {
+              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO);
+              sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             
           } catch (Exception e) {
@@ -229,7 +238,8 @@ foam.CLASS({
         args.put("fromName", fromName);
         args.put("account", invoice.getInvoiceNumber());
         args.put("transId", invoice.getPaymentId());
-    
+        args.put("note", invoice.getNote());
+
         String amount = ((Currency) currencyDAO.find(invoice.getDestinationCurrency()))
           .format(invoice.getAmount());
     
