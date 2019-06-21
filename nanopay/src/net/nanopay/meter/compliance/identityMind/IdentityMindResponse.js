@@ -137,10 +137,10 @@ foam.CLASS({
       class: 'Map',
       name: 'ednaScoreCard',
       label: 'eDNA score card',
+      hidden: true,
       view: {
         class: 'foam.u2.view.AnyView'
-      },
-      hidden: true
+      }
     }
   ],
 
