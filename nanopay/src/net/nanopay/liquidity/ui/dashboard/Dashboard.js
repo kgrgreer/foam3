@@ -12,7 +12,11 @@ foam.CLASS({
     'net.nanopay.liquidity.ui.dashboard.liquidity.AggregatedLiquidityChartView',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
+    'net.nanopay.liquidity.ui.dashboard.recentTransactions.DashboardRecentTransactions',
     'foam.comics.v2.DAOBrowserView',
+    'foam.u2.layout.Cards',
+    'foam.u2.layout.Card',
+    'foam.u2.layout.Rows',
   ],
 
   imports: [
@@ -39,7 +43,7 @@ foam.CLASS({
       padding: 32px;
     }
 
-    ^ .foam-u2-borders-CardBorder {
+    ^dashboard-container .foam-u2-layout-Cards {
       margin-bottom: 32px;
     }
   `,
@@ -137,19 +141,28 @@ foam.CLASS({
       this
         .addClass(this.myClass())
           .start().add(this.cls_.name).addClass(this.myClass('header')).end()
-          .start().addClass(this.myClass('dashboard-container'))
-            .start(this.DashboardAccounts, { 
-              data: this.accounts,
-              currency$: this.currencyExposureDAO$,
-              denomination$: this.denominations$,
-            })
-              .addClass(this.myClass('accounts'))
+          .start(this.Rows).addClass(this.myClass('dashboard-container'))
+            .start(this.Cards)
+              .start(this.Card, { def: 7 }).addClass(this.myClass('accounts'))
+                .tag(this.DashboardAccounts, { 
+                  data: this.accounts,
+                  currency$: this.currencyExposureDAO$,
+                  denomination$: this.denominations$,
+                })
+              .end()
+              .start(this.Card, { def: 5 }).addClass(this.myClass('liquidity'))
+                .tag(this.AggregatedLiquidityChartView)
+              .end()
             .end()
-            .start(this.AggregatedLiquidityChartView)
-              .addClass(this.myClass('chart'))
+            .start(this.Cards)
+              .start(this.Card, { def: 12 }).addClass(this.myClass('currency-exposure'))
+                .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
+              .end()
             .end()
-            .start(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
-              .addClass(this.myClass('currency-exposure'))
+            .start(this.Cards)
+              .start(this.Card, { def: 12 }).addClass(this.myClass('recent-transactions'))
+                .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
+              .end()
             .end()
           .end();
     }
