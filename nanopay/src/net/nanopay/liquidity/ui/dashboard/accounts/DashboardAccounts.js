@@ -111,7 +111,6 @@ foam.CLASS({
         .addClass(this.myClass())
         .add(self.slot(function(data, denomination, currency) {
           return self.E()
-            .start(self.CardBorder)
               .start(self.Rows).addClass(this.myClass('card-container'))
                 .start().addClass(this.myClass('balance-card'))
                   .start(self.Rows)
@@ -145,7 +144,6 @@ foam.CLASS({
                     .addClass(this.myClass('accounts-table'))
                   .end()
                 .end()
-              .end()
             .end();
         }));
     }

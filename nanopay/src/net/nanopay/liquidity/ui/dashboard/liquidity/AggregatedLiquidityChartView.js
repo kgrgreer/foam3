@@ -12,6 +12,8 @@ foam.CLASS({
     'foam.nanos.analytics.Candlestick',
     'org.chartjs.CandlestickDAOChartView',
     'foam.u2.borders.CardBorder',
+    'foam.u2.layout.Rows',
+    'foam.u2.layout.Cols'
   ],
 
   imports: [
@@ -29,12 +31,30 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      padding: 32px 16px;
+    }
+
     ^ .property-account {
       display: inline-block;
     }
 
     ^ .property-timeFrame {
       display: inline-block;
+    }
+
+    ^card-header-title {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    ^ .foam-u2-tag-Select {
+      margin-left: 16px;
+    }
+
+    ^chart {
+      margin-top: 32px;
     }
   `,
 
@@ -66,6 +86,10 @@ foam.CLASS({
     {
       name: 'LABEL_MILLIONS',
       message: 'Millions'
+    },
+    {
+      name: 'CARD_HEADER',
+      message: 'LIQUIDITY',
     }
   ],
 
@@ -261,32 +285,34 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var self = this;
       this.account$.sub(this.dataUpdate);
       this.dateRange$.sub(this.dataUpdate);
       this.dataUpdate();
 
       this.addClass(this.myClass())
-        .start(this.CardBorder)
-          .startContext({ data: this })
-            .add(this.ACCOUNT)
-            .add(this.TIME_FRAME)
-          .endContext()
-          .start().style({ 'width': '700px', 'height': '500px' })
-            .add(this.CandlestickDAOChartView.create({
-              data$: this.aggregatedDAO$,
-              config$: this.config$,
-              customDatasetStyling$: this.styling$,
-              width: 600,
-              height: 500
-            }))
+        .start(this.Cols).style({ 'align-items': 'center' })
+          .start().add(this.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
+          .start(this.Cols)
+            .startContext({ data: this })
+              .add(this.ACCOUNT)
+              .add(this.TIME_FRAME)
+            .endContext()
           .end()
-          .startContext({ data: this })
-            .add(this.REWIND)
-            .add(this.rewindFactor$)
-            .add(this.FORWARD)
-          .endContext()
-        .end();
+        .end()
+        .start().style({ 'width': '700px', 'height': '500px' }).addClass(this.myClass('chart'))
+          .add(this.CandlestickDAOChartView.create({
+            data$: this.aggregatedDAO$,
+            config$: this.config$,
+            customDatasetStyling$: this.styling$,
+            width: 600,
+            height: 500
+          }))
+        .end()
+        .startContext({ data: this })
+          .add(this.REWIND)
+          .add(this.rewindFactor$)
+          .add(this.FORWARD)
+        .endContext();
     },
 
     function style(keyMap) {
