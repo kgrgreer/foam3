@@ -17,13 +17,14 @@ foam.CLASS({
     'responseId',
     'type',
     'user',
-    'userLabel',
+    'transaction',
+    'entityLabel',
     'created'
   ],
 
   searchColumns: [
     'user',
-    'userLabel',
+    'entityLabel',
     'type'
   ],
 
@@ -65,8 +66,15 @@ foam.CLASS({
       label: 'User/Business ID'
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
+      targetDAOKey: 'userDAO',
+      name: 'transaction',
+      label: 'Transaction ID'
+    },
+    {
       class: 'String',
-      name: 'userLabel',
+      name: 'entityLabel',
       label: 'Entity Name'
     },
     {
