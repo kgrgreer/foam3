@@ -36,7 +36,13 @@ public class IdentityMindWebAgent implements WebAgent {
     try {
       IdentityMindResponse webhookResponse = (IdentityMindResponse)
         jsonParser.parseString(data, IdentityMindResponse.class);
-      identityMindResponseDAO.put(webhookResponse);
+
+      IdentityMindResponse idmResponse = (IdentityMindResponse) identityMindResponseDAO.find(
+        EQ(IdentityMindResponse.TID, webhookResponse.getTid())
+      );
+
+      idmResponse.copyFrom(webhookResponse);
+      identityMindResponseDAO.put(idmResponse);
 
       logger.debug("webAgentIdmWebhookBody : " + data);
       logger.debug("webAgentIdmWebhookResponse : " + webhookResponse.toString());
