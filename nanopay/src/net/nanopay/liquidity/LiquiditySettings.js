@@ -59,7 +59,13 @@ foam.CLASS({
           rebalancingEnabled: false,
           enabled: false,
         });
-      }
+      },
+      javaFactory: `
+        net.nanopay.liquidity.Liquidity high = new net.nanopay.liquidity.Liquidity();
+        high.setRebalancingEnabled(false);
+        high.setEnabled(false);
+        return high;
+      `,
     },
     {
       class: 'FObjectProperty',
@@ -70,7 +76,13 @@ foam.CLASS({
           rebalancingEnabled: false,
           enabled: false,
         });
-      }
+      },
+      javaFactory: `
+        net.nanopay.liquidity.Liquidity low = new net.nanopay.liquidity.Liquidity();
+        low.setRebalancingEnabled(false);
+        low.setEnabled(false);
+        return low;
+      `,
     }
   ],
   methods: [
