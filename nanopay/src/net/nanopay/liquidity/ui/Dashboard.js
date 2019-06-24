@@ -22,6 +22,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'accounts',
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
       documentation: `
         DAO for all accounts in the ecosystem.
       `,
@@ -74,6 +75,15 @@ foam.CLASS({
       name: 'currencyExposureDAO',
       factory: function() {
         return this.CurrencyExposureDAO.create();
+      },
+      view: function(_, x) {
+        return {
+          class: 'org.chartjs.PieDAOChartView',
+          keyExpr: net.nanopay.liquidity.ui.CurrencyExposure.DENOMINATION,
+          valueExpr: net.nanopay.liquidity.ui.CurrencyExposure.TOTAL,
+          height: 300,
+          width: 300
+        };
       }
     },
     {
@@ -85,6 +95,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'recentTransactionsDAO',
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
       documentation: `
         DAO for recent transactions in entire ecosystem
       `,
