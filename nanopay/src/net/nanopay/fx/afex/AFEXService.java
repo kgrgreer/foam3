@@ -25,7 +25,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   private String apiKey;
   private String apiPassword;
-  private String partnerApi;
+  private String partnerAPI;
   private String AFEXAPI;
   private CloseableHttpClient httpClient;
   private JSONParser jsonParser;
@@ -37,7 +37,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     AFEXCredentials credentials = getCredentials();
     apiKey = credentials.getApiKey();
     apiPassword = credentials.getApiPassword();
-    partnerApi = credentials.getPartnerApi();
+    partnerAPI = credentials.getPartnerApi();
     AFEXAPI = credentials.getAFEXApi();
     httpClient = HttpClients.createDefault();
     jsonParser = new JSONParser();
@@ -61,7 +61,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   @Override
   public Token getToken() {
     try {
-      HttpPost httpPost = new HttpPost(partnerApi + "token");
+      HttpPost httpPost = new HttpPost(partnerAPI + "token");
 
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
@@ -88,11 +88,62 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public AddPayeeResponse addPayee(AddPayeeRequest request) {
+  public OnboardCorporateClientResponse onboardCorporateClient(OnboardCorporateClientRequest request) {
+    try {
+      HttpPost httpPost = new HttpPost(partnerAPI + "api/v1/corporateClient");
+
+      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+
+      List<NameValuePair> nvps = new ArrayList<>();
+      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationExpirationDate", request.getAccountPrimaryIdentificationExpirationDate()));
+      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationNumber", request.getAccountPrimaryIdentificationNumber()));
+      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationType", request.getAccountPrimaryIdentificationType()));
+      nvps.add(new BasicNameValuePair("BusinessAddress1", request.getBusinessAddress1()));
+      nvps.add(new BasicNameValuePair("BusinessCity", request.getBusinessCity()));
+      nvps.add(new BasicNameValuePair("BusinessCountryCode", request.getBusinessCountryCode()));
+      nvps.add(new BasicNameValuePair("BusinessName", request.getBusinessName()));
+      nvps.add(new BasicNameValuePair("BusinessZip", request.getBusinessZip()));
+      nvps.add(new BasicNameValuePair("CompanyType", request.getCompanyType()));
+      nvps.add(new BasicNameValuePair("ContactBusinessPhone", request.getContactBusinessPhone()));
+      nvps.add(new BasicNameValuePair("DateOfIncorporation", request.getDateOfIncorporation()));
+      nvps.add(new BasicNameValuePair("FirstName", request.getFirstName()));
+      nvps.add(new BasicNameValuePair("Gender", request.getGender()));
+      nvps.add(new BasicNameValuePair("LastName", request.getLastName()));
+      nvps.add(new BasicNameValuePair("PrimaryEmailAddress", request.getPrimaryEmailAddress()));
+      nvps.add(new BasicNameValuePair("TermsAndConditions", request.getTermsAndConditions()));
+
+      httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+      CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+        throw new RuntimeException("Onboard AFEX corporate client failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          + httpResponse.getStatusLine().getReasonPhrase());
+      }
+
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+
+      OnboardCorporateClientResponse onboardCorporateClientResponse = (OnboardCorporateClientResponse) jsonParser.parseString(response, OnboardCorporateClientResponse.class);
+
+      System.out.println(onboardCorporateClientResponse.getAPIKey());
+      System.out.println(onboardCorporateClientResponse.getAccountNumber());
+      System.out.println(onboardCorporateClientResponse.getMessage());
+
+      return onboardCorporateClientResponse;
+    } catch (IOException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public CreateBeneficiaryResponse createBeneficiary(CreateBeneficiaryRequest request) {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/beneficiaryCreate");
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
@@ -112,24 +163,24 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Add AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+        throw new RuntimeException("Create AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
           + httpResponse.getStatusLine().getReasonPhrase());
       }
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      Object[] respArr = jsonParser.parseStringForArray(response, AddPayeeResponse.class);
+      Object[] respArr = jsonParser.parseStringForArray(response, CreateBeneficiaryResponse.class);
 
       if ( respArr.length != 0 ) {
-        AddPayeeResponse addPayeeResponse = (AddPayeeResponse) respArr[0];
-        System.out.println("Add Payee response: ");
-        System.out.println(addPayeeResponse.getName());
-        System.out.println(addPayeeResponse.getCode());
-        System.out.println(addPayeeResponse.getInformationMessage());
-        System.out.println(addPayeeResponse.getInformationCode());
-        System.out.println(addPayeeResponse.getStatus());
+        CreateBeneficiaryResponse createBeneficiaryResponse = (CreateBeneficiaryResponse) respArr[0];
+        System.out.println("Add beneficiary response: ");
+        System.out.println(createBeneficiaryResponse.getName());
+        System.out.println(createBeneficiaryResponse.getCode());
+        System.out.println(createBeneficiaryResponse.getInformationMessage());
+        System.out.println(createBeneficiaryResponse.getInformationCode());
+        System.out.println(createBeneficiaryResponse.getStatus());
 
-        return addPayeeResponse;
+        return createBeneficiaryResponse;
       }
     } catch (IOException e) {
       logger.error(e);
@@ -139,11 +190,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public UpdatePayeeResponse updatePayee(UpdatePayeeRequest request) {
+  public UpdateBeneficiaryResponse updateBeneficiary(UpdateBeneficiaryRequest request) {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/beneficiaryUpdate");
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
@@ -164,25 +215,25 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Update AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+        throw new RuntimeException("Update AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
           + httpResponse.getStatusLine().getReasonPhrase());
       }
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
-      Object[] respArr = jsonParser.parseStringForArray(response, UpdatePayeeResponse.class);
+      Object[] respArr = jsonParser.parseStringForArray(response, UpdateBeneficiaryResponse.class);
 
       if ( respArr.length != 0 ) {
         for ( Object resp : respArr) {
-          UpdatePayeeResponse updatePayeeResponse = (UpdatePayeeResponse) resp;
-          if ( updatePayeeResponse.getName().equals("Beneficiary has been updated") ) {
+          UpdateBeneficiaryResponse updateBeneficiaryResponse = (UpdateBeneficiaryResponse) resp;
+          if ( updateBeneficiaryResponse.getName().equals("Beneficiary has been updated") ) {
             System.out.println("Update Payee response: ");
-            System.out.println(updatePayeeResponse.getName());
-            System.out.println(updatePayeeResponse.getCode());
-            System.out.println(updatePayeeResponse.getInformationMessage());
-            System.out.println(updatePayeeResponse.getInformationCode());
-            System.out.println(updatePayeeResponse.getStatus());
+            System.out.println(updateBeneficiaryResponse.getName());
+            System.out.println(updateBeneficiaryResponse.getCode());
+            System.out.println(updateBeneficiaryResponse.getInformationMessage());
+            System.out.println(updateBeneficiaryResponse.getInformationCode());
+            System.out.println(updateBeneficiaryResponse.getStatus());
 
-            return updatePayeeResponse;
+            return updateBeneficiaryResponse;
           }
         }
       }
@@ -194,27 +245,27 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String deletePayee(String vendorId) {
+  public String disableBeneficiary(DisableBeneficiaryRequest request) {
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/beneficiaryDisable");
-      uriBuilder.setParameter("VendorId", vendorId);
+      uriBuilder.setParameter("VendorId", request.getVendorId());
 
       HttpPost httpPost = new HttpPost(uriBuilder.build());
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Delete AFEX payee failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+        throw new RuntimeException("Disable AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
           + httpResponse.getStatusLine().getReasonPhrase());
       }
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      System.out.println("delete payee response: " + response.substring(1, response.length() - 1));
+      System.out.println("disable beneficiary response: " + response.substring(1, response.length() - 1));
 
       return response.substring(1, response.length() - 1);
     } catch (IOException | URISyntaxException e) {
@@ -225,14 +276,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public GetPayeeInfoResponse getPayeeInfo(String vendorId) {
+  public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request) {
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/beneficiary/find");
-      uriBuilder.setParameter("VendorId", vendorId);
+      uriBuilder.setParameter("VendorId", request.getVendorId());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
 
-      httpGet.addHeader("API-Key", apiKey);
+      httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
@@ -243,16 +294,16 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
-      GetPayeeInfoResponse getPayeeInfoResponse = (GetPayeeInfoResponse) jsonParser.parseString(response, GetPayeeInfoResponse.class);
-      System.out.println("Get Payee information response: ");
-      System.out.println(getPayeeInfoResponse.getCurrency());
-      System.out.println(getPayeeInfoResponse.getVendorId());
-      System.out.println(getPayeeInfoResponse.getBeneficiaryName());
-      System.out.println(getPayeeInfoResponse.getBeneficiaryAddressLine1());
-      System.out.println(getPayeeInfoResponse.getBeneficiaryCity());
-      System.out.println(getPayeeInfoResponse.getBeneficiaryCountryCode());
+      FindBeneficiaryResponse findBeneficiaryResponse = (FindBeneficiaryResponse) jsonParser.parseString(response, FindBeneficiaryResponse.class);
+      System.out.println("find beneficiary response: ");
+      System.out.println(findBeneficiaryResponse.getCurrency());
+      System.out.println(findBeneficiaryResponse.getVendorId());
+      System.out.println(findBeneficiaryResponse.getBeneficiaryName());
+      System.out.println(findBeneficiaryResponse.getBeneficiaryAddressLine1());
+      System.out.println(findBeneficiaryResponse.getBeneficiaryCity());
+      System.out.println(findBeneficiaryResponse.getBeneficiaryCountryCode());
 
-      return getPayeeInfoResponse;
+      return findBeneficiaryResponse;
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
     }
@@ -300,7 +351,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         .setParameter("Amount", request.getAmount());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
-      httpGet.addHeader("API-Key", apiKey);
+      httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
       String response = new BasicResponseHandler().handleResponse(httpResponse);
@@ -330,7 +381,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       valueDate = getValueDate(request.getTradeCcy() + request.getSettlementCcy(), "CASH");
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/trades/create");
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
@@ -374,7 +425,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/payments/create");
 
-      httpPost.addHeader("API-Key", apiKey);
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();

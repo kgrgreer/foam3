@@ -309,7 +309,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     try {
 
       // if it's receivable, skip it for now
-      if ( invoice.getPayeeId() == user.getId() && invoice.getStatus() == InvoiceStatus.PENDING ) {
+      if ( invoice.getPayeeId() == user.getId() && invoice.getStatus() == InvoiceStatus.PROCESSING ) {
         quickInvoice.setDesync(true);
         invoiceDAO.inX(x).put(quickInvoice);
         return new ResultResponse.Builder(x)
