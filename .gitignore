@@ -99,4 +99,4 @@ tools/js_build/foam-bin*.js
 # gradle
 .gradle
 
-bin/
+./bin/
