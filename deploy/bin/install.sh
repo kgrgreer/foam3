@@ -11,10 +11,12 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
+    echo "  -h : Print usage information."
     echo "  -N <nanopay_home>   : Nanopay home directory."
+    echo ""
 }
 
-while getopts "D:hN:W:Z:" opt ; do
+while getopts "hN:" opt ; do
     case $opt in
         N) NANOPAY_HOME=$OPTARG;;
         h) usage; exit 0;;
@@ -22,16 +24,18 @@ while getopts "D:hN:W:Z:" opt ; do
    esac
 done
 
+NANOPAY_HOME_PARENT = $(realpath $(dirname ${NANOPAY_HOME}))
+
 if [ -z "$NANOPAY_HOME" ]; then
     NANOPAY_HOME="/opt/nanopay"
 fi
 
 if [ ! -d $NANOPAY_HOME ]; then
-    if [ ! -w ${NANOPAY_HOME}/../ ]; then
-        echo "ERROR :: Can't write to $(realpath $(dirname ${NANOPAY_HOME}))";
+    if [ ! -w ${NANOPAY_HOME_PARENT} ]; then
+        echo "ERROR :: Can't write to ${NANOPAY_HOME_PARENT}"
         quit 1;
     fi
-    mkdir -p ${NANOPAY_HOME}/../
+    mkdir -p ${NANOPAY_HOME}
 fi
 
 if [ ! -w $NANOPAY_HOME ]; then
