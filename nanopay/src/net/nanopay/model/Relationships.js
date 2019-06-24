@@ -88,6 +88,7 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   targetProperty: {
+    section: 'accountDetails',
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
       return {
@@ -604,4 +605,26 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
   targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
+  forwardName: 'complianceItems',
+  inverseName: 'entityId',
+  cardinality: '1:*',
+  sourceDAOKey: 'userDAO',
+  targetDAOKey: 'complianceItemDAO',
+  targetProperty: {visibility: 'RO'}
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
+  forwardName: 'complianceItems',
+  inverseName: 'transactionId',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  targetDAOKey: 'complianceItemDAO',
+  targetProperty: {visibility: 'RO'}
 });

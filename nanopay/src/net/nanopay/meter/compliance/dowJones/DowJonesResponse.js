@@ -5,6 +5,22 @@ foam.CLASS({
 
   documentation: 'Base class model for a search response from the Dow Jones Risk Database.',
 
+  tableColumns: [
+    'id',
+    'userId',
+    'daoKey',
+    'searchDate',
+    'status'
+  ],
+
+  searchColumns: [
+    'id',
+    'userId',
+    'daoKey',
+    'searchDate',
+    'status'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -15,6 +31,12 @@ foam.CLASS({
       class: 'Long',
       name: 'userId',
       visibility: 'RO'
+    },
+    {
+      class: 'String',
+      name: 'daoKey',
+      visibility: 'RO',
+      documentation: 'Name of DAO that contains user (eg. beneficialOwnerDAO or userDAO)'
     },
     {
       class: 'Date',

@@ -24,7 +24,7 @@ foam.CLASS({
     'foam.dao.ProxyDAO',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
-    'foam.lib.json.OutputterMode',
+    'foam.lib.StoragePropertyPredicate',
     'foam.nanos.boot.NSpec',
     'foam.nanos.fs.Storage',
     'foam.nanos.logger.Logger',
@@ -511,7 +511,7 @@ foam.CLASS({
               dao.select(new AbstractSink() {
                 @Override
                 public void put(Object obj, Detachable sub) {
-                  Outputter outputter = new Outputter(OutputterMode.STORAGE);
+                  Outputter outputter = new Outputter(getX()).setPropertyPredicate(new StoragePropertyPredicate());
                   String record = outputter.stringify((FObject) obj);
 
                   image.getWriterQueue().offer(sb.get()

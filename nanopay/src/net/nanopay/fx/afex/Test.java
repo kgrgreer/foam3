@@ -8,66 +8,95 @@ public class Test implements ContextAgent {
   @Override
   public void execute(X x) {
     AFEXService afexService = new AFEXService(x);
-
-    // testGetToken(afexService);
-    // testAddPayee(afexService);
-    // testUpdatePayee(afexService);
-    // testDeletePayee(afexService);
-    // testGetPayeeInfo(afexService);
-    // testGetValueDate(afexService);
-    // testGetQuote(afexService);
-    testCreateTrade(afexService);
-    testCreatePayment(afexService);
-
+      testGetToken(afexService);
+      testOnboardCorporateClient(afexService);
+      testCreateBeneficiary(afexService);
+      testUpdateBeneficiary(afexService);
+      testDisableBeneficiary(afexService);
+      testFindBeneficiary(afexService);
+      testGetValueDate(afexService);
+      testGetQuote(afexService);
+      testCreateTrade(afexService);
+      testCreatePayment(afexService);
   }
 
   private void testGetToken(AFEXService afexService) {
     afexService.getToken();
   }
 
-  private void testAddPayee(AFEXService afexService) {
-    AddPayeeRequest addPayeeRequest = new AddPayeeRequest();
-    addPayeeRequest.setBankAccountNumber("58926481025163");
-    addPayeeRequest.setBankCountryCode("US");
-    addPayeeRequest.setBankName("Associated Bank, National");
-    addPayeeRequest.setBankRoutingCode("075900575");
-    addPayeeRequest.setBeneficiaryAddressLine1("200 King St");
-    addPayeeRequest.setBeneficiaryCity("New York");
-    addPayeeRequest.setBeneficiaryCountryCode("US");
-    addPayeeRequest.setBeneficiaryName("Jack2");
-    addPayeeRequest.setBeneficiaryPostalCode("10019");
-    addPayeeRequest.setBeneficiaryRegion("New York");
-    //addPayeeRequest.setCorporate("true");
-    addPayeeRequest.setCurrency("USD");
-    //addPayeeRequest.setHighLowValue("1");
+  private void testOnboardCorporateClient(AFEXService afexService) {
+    OnboardCorporateClientRequest onboardCorporateClientRequest = new OnboardCorporateClientRequest();
+    onboardCorporateClientRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2021");
+    onboardCorporateClientRequest.setAccountPrimaryIdentificationNumber("123456789");
+    onboardCorporateClientRequest.setAccountPrimaryIdentificationType("Passport");
+    onboardCorporateClientRequest.setBusinessAddress1("300 king st");
+    onboardCorporateClientRequest.setBusinessCity("Toronto");
+    onboardCorporateClientRequest.setBusinessCountryCode("CA");
+    onboardCorporateClientRequest.setBusinessName("Nanopay");
+    onboardCorporateClientRequest.setBusinessZip("M2B1N7");
+    onboardCorporateClientRequest.setCompanyType("Partnership");
+    onboardCorporateClientRequest.setContactBusinessPhone("1234567891");
+    onboardCorporateClientRequest.setDateOfIncorporation("01/01/2001");
+    onboardCorporateClientRequest.setFirstName("Test");
+    onboardCorporateClientRequest.setGender("Male");
+    onboardCorporateClientRequest.setLastName("Abc");
+    onboardCorporateClientRequest.setPrimaryEmailAddress("test@abc.com");
+    onboardCorporateClientRequest.setTermsAndConditions("True");
 
-    afexService.addPayee(addPayeeRequest);
+    afexService.onboardCorporateClient(onboardCorporateClientRequest);
   }
 
-  private void testUpdatePayee(AFEXService afexService) {
-    UpdatePayeeRequest updatePayeeRequest = new UpdatePayeeRequest();
-    updatePayeeRequest.setBankAccountNumber("58926481025162");
-    updatePayeeRequest.setBankCountryCode("US");
-    updatePayeeRequest.setBankName("Associated Bank, National");
-    updatePayeeRequest.setBankRoutingCode("075900575");
-    updatePayeeRequest.setBeneficiaryAddressLine1("100 King St");
-    updatePayeeRequest.setBeneficiaryCity("New York");
-    updatePayeeRequest.setBeneficiaryCountryCode("US");
-    updatePayeeRequest.setBeneficiaryName("Olivia");
-    updatePayeeRequest.setBeneficiaryPostalCode("10019");
-    updatePayeeRequest.setBeneficiaryRegion("New York");
-    updatePayeeRequest.setCurrency("USD");
-    updatePayeeRequest.setVendorId("USD636953226987573100");
+  private void testCreateBeneficiary(AFEXService afexService) {
+    CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();
+    createBeneficiaryRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    createBeneficiaryRequest.setBankAccountNumber("58926481025163");
+    createBeneficiaryRequest.setBankCountryCode("US");
+    createBeneficiaryRequest.setBankName("Associated Bank, National");
+    createBeneficiaryRequest.setBankRoutingCode("075900575");
+    createBeneficiaryRequest.setBeneficiaryAddressLine1("200 King St");
+    createBeneficiaryRequest.setBeneficiaryCity("New York");
+    createBeneficiaryRequest.setBeneficiaryCountryCode("US");
+    createBeneficiaryRequest.setBeneficiaryName("Jack2");
+    createBeneficiaryRequest.setBeneficiaryPostalCode("10019");
+    createBeneficiaryRequest.setBeneficiaryRegion("New York");
+    createBeneficiaryRequest.setCurrency("USD");
 
-    afexService.updatePayee(updatePayeeRequest);
+    afexService.createBeneficiary(createBeneficiaryRequest);
   }
 
-  private void testDeletePayee(AFEXService afexService) {
-    afexService.deletePayee("USD636952334062247928");
+  private void testUpdateBeneficiary(AFEXService afexService) {
+    UpdateBeneficiaryRequest updateBeneficiaryRequest = new UpdateBeneficiaryRequest();
+    updateBeneficiaryRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    updateBeneficiaryRequest.setBankAccountNumber("58926481025162");
+    updateBeneficiaryRequest.setBankCountryCode("US");
+    updateBeneficiaryRequest.setBankName("Associated Bank, National");
+    updateBeneficiaryRequest.setBankRoutingCode("075900575");
+    updateBeneficiaryRequest.setBeneficiaryAddressLine1("100 King St");
+    updateBeneficiaryRequest.setBeneficiaryCity("New York");
+    updateBeneficiaryRequest.setBeneficiaryCountryCode("US");
+    updateBeneficiaryRequest.setBeneficiaryName("Olivia");
+    updateBeneficiaryRequest.setBeneficiaryPostalCode("10019");
+    updateBeneficiaryRequest.setBeneficiaryRegion("New York");
+    updateBeneficiaryRequest.setCurrency("USD");
+    updateBeneficiaryRequest.setVendorId("USD636964592845797184");
+
+    afexService.updateBeneficiary(updateBeneficiaryRequest);
   }
 
-  private void testGetPayeeInfo(AFEXService afexService) {
-    afexService.getPayeeInfo("USD636954085609328569");
+  private void testDisableBeneficiary(AFEXService afexService) {
+    DisableBeneficiaryRequest disableBeneficiaryRequest = new DisableBeneficiaryRequest();
+    disableBeneficiaryRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    disableBeneficiaryRequest.setVendorId("USD636954085609328569");
+
+    afexService.disableBeneficiary(disableBeneficiaryRequest);
+  }
+
+  private void testFindBeneficiary(AFEXService afexService) {
+    FindBeneficiaryRequest findBeneficiaryRequest = new FindBeneficiaryRequest();
+    findBeneficiaryRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    findBeneficiaryRequest.setVendorId("USD636952327284361125");
+
+    afexService.findBeneficiary(findBeneficiaryRequest);
   }
 
   private void testGetValueDate(AFEXService afexService) {
@@ -76,9 +105,10 @@ public class Test implements ContextAgent {
 
   private void testGetQuote(AFEXService afexService) {
     GetQuoteRequest getQuoteRequest = new GetQuoteRequest();
+    getQuoteRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
     getQuoteRequest.setCurrencyPair("USDCAD");
-    getQuoteRequest.setValueDate("2019/06/19");
-    getQuoteRequest.setOptionDate("2019/06/17");
+    getQuoteRequest.setValueDate("2019/06/21");
+    getQuoteRequest.setOptionDate("2019/06/20");
     getQuoteRequest.setAmount("100");
 
     afexService.getQuote(getQuoteRequest);
@@ -86,6 +116,7 @@ public class Test implements ContextAgent {
 
   private void testCreateTrade(AFEXService afexService) {
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
+    createTradeRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
     createTradeRequest.setAmount("100");
     createTradeRequest.setSettlementCcy("CAD");
     createTradeRequest.setTradeCcy("USD");
@@ -95,6 +126,8 @@ public class Test implements ContextAgent {
 
   private void testCreatePayment(AFEXService afexService) {
     CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+    createPaymentRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    createPaymentRequest.setPaymentDate("2019/06/21");
     createPaymentRequest.setAmount("50");
     createPaymentRequest.setCurrency("USD");
     createPaymentRequest.setVendorId("CADAmy");
