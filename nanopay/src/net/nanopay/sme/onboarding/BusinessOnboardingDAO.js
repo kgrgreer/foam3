@@ -16,11 +16,16 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Invitation',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
-    'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
+    'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.INSTANCE_OF',
   ],
 
   methods: [
@@ -81,6 +86,7 @@ foam.CLASS({
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
+          user.setIdentification(businessOnboarding.getPersonalIdentification());
           business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
 
           localUserDAO.put(user);
@@ -96,6 +102,9 @@ foam.CLASS({
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
           business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
           business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
+          business.setBusinessRegistrationDate(businessOnboarding.getBusinessRegistration().getBusinessFormationDate());
+          business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistration().getBusinessRegistrationNumber());
+          business.setCountryOfBusinessRegistration(businessOnboarding.getBusinessRegistration().getCountryOfBusinessFormation());         
 
           if ( businessOnboarding.getOperatingUnderDifferentName() ) {
             business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
@@ -126,6 +135,11 @@ foam.CLASS({
           }
 
           localBusinessDAO.put(business);
+
+          // Do AFEX onboarding if Bank Account already exists for business
+          DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
+          BankAccount bankAccount = (BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class)));
+          if ( bankAccount != null ) localAccountDAO.put(bankAccount); // Should be a better way to do this?
         } else {
           // If the user needs to invite the signing officer
           String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();

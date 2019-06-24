@@ -15,6 +15,8 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -52,7 +54,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       SafetyUtil.isEmpty(credentials.getApiPassword()) ||
       SafetyUtil.isEmpty(credentials.getPartnerApi()) ||
       SafetyUtil.isEmpty(credentials.getAFEXApi()) ) {
-      logger.error(this.getClass().getSimpleName(), "invalid credentials");
+      logger.error("AFEXCredentials", "invalid credentials");
       throw new RuntimeException("AFEX invalid credentials");
     }
     return credentials;
@@ -115,6 +117,22 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("TermsAndConditions", request.getTermsAndConditions()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+
+      HttpEntity entity = httpPost.getEntity();
+      String content = "";
+      StringBuilder sb = new StringBuilder();
+      sb.append("\nRequestLine:");
+      if(entity != null){
+          try {
+              content = IOUtils.toString(entity.getContent());
+          } catch (Exception e) {
+              e.printStackTrace();
+          } 
+      }
+      sb.append("\nContent:");
+      sb.append(content);
+      System.out.println(sb.toString());
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
