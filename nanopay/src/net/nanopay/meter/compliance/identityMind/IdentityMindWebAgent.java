@@ -45,22 +45,17 @@ public class IdentityMindWebAgent implements WebAgent {
       idmResponse.copyFrom(webhookResponse);
       identityMindResponseDAO.put(idmResponse);
 
-      logger.debug("idmResponse : " + idmResponse.toString());
-      logger.debug("webAgentIdmWebhookBody : " + data);
-      logger.debug("webAgentIdmWebhookResponse : " + webhookResponse.toString());
-
       ComplianceApprovalRequest approvalRequest = (ComplianceApprovalRequest) approvalRequestDAO.find(
         EQ(ComplianceApprovalRequest.CAUSE_ID, idmResponse.getId())
       );
 
       if ( approvalRequest != null ) {
-        logger.debug("webAgentApprovalRequest : " + approvalRequest.toString());
+        approvalRequest = (ComplianceApprovalRequest) approvalRequest.fclone();
         if (idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.VALIDATED) {
           approvalRequest.setStatus(ApprovalStatus.APPROVED);
         } else if (idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.REJECTED) {
           approvalRequest.setStatus(ApprovalStatus.REJECTED);
         }
-        logger.debug("webAgentUpdatedApprovalRequest : " + approvalRequest.toString());
         approvalRequestDAO.put(approvalRequest);
       }
     } catch (Exception e) {
