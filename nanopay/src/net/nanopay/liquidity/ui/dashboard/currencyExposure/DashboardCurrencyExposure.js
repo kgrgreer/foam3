@@ -5,7 +5,8 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOBrowserView',
-    'foam.u2.borders.CardBorder'
+    'foam.u2.borders.CardBorder',
+    'org.chartjs.PieDAOChartView'
   ],
 
   properties: [
@@ -21,7 +22,15 @@ foam.CLASS({
       this
         .addClass(this.myClass())
           .start(this.CardBorder)
-            .start(this.DAOBrowserView, { data: this.data }).end()
+            .start(this.PieDAOChartView, 
+              {
+                data: this.data,
+                keyExpr: net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure.DENOMINATION,
+                valueExpr: net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure.TOTAL,
+                height: 300,
+                width: 300
+              }
+            ).end()
           .end();
     }
   ]

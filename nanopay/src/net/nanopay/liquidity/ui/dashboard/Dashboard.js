@@ -111,15 +111,6 @@ foam.CLASS({
       factory: function() {
         return this.CurrencyExposureDAO.create();
       },
-      view: function(_, x) {
-        return {
-          class: 'org.chartjs.PieDAOChartView',
-          keyExpr: net.nanopay.liquidity.ui.CurrencyExposure.DENOMINATION,
-          valueExpr: net.nanopay.liquidity.ui.CurrencyExposure.TOTAL,
-          height: 300,
-          width: 300
-        };
-      }
     },
     {
       name: 'cicoCandlestickDAO',
