@@ -7,19 +7,25 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware'
   ],
 
+  requires: [
+    'foam.dao.DAO'
+  ],
+
   documentation: `The Compliance Item`,
 
   tableColumns: [
     'responseId',
     'type',
     'user',
-    'userLabel',
+    'transaction',
+    'entityLabel',
     'created'
   ],
 
   searchColumns: [
     'user',
-    'userLabel'
+    'entityLabel',
+    'type'
   ],
 
   properties: [
@@ -60,8 +66,15 @@ foam.CLASS({
       label: 'User/Business ID'
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
+      targetDAOKey: 'userDAO',
+      name: 'transaction',
+      label: 'Transaction ID'
+    },
+    {
       class: 'String',
-      name: 'userLabel',
+      name: 'entityLabel',
       label: 'Entity Name'
     },
     {
@@ -91,14 +104,17 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'String',
       name: 'type',
       transient: true,
       expression: function(dowJones, identityMind, levResponse, sidniResponse) {
         if ( dowJones ) {
-          return "DOW Jones";
+          return this.dowJones$find.then(o => {
+            return o.searchType;
+          })
         } else if ( identityMind ) {
-          return "Identity Mind";
+          return this.identityMind$find.then(o => {
+            return "Identity Mind (" + o.apiName + ")";
+          })
         } else if ( levResponse ) {
           return "Secure Fact (LEV)";
         } else if ( sidniResponse ) {
@@ -107,7 +123,7 @@ foam.CLASS({
           return "";
         }
       },
-      hidden: true
+      tableWidth: 300
     }
   ]
 });
