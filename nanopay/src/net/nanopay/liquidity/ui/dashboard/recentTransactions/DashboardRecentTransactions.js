@@ -32,31 +32,13 @@ foam.CLASS({
     ^card-container {
       padding: 34px 16px;
     }
-
-    ^balance-note {
-      font-style: italic;
-      font-size: 12px;
-      line-height: 1.5;
-      color: #5e6061;
-    }
-
-    ^balance {
-      font-size: 20px;
-      font-weight: 600;
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
   `,
 
   requires: [
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
-    'foam.comics.v2.DAOBrowserView',
-    'foam.u2.borders.CardBorder',
-    'foam.dao.ArraySink',
-    'foam.mlang.sink.GroupBy',
-    'net.nanopay.account.Account'
+    'foam.comics.v2.DAOBrowserView'
   ],
   exports: [
     'controllerMode'
@@ -100,11 +82,9 @@ foam.CLASS({
                   .end()
                 .end()
                 .start()
-                  .start(foam.comics.v2.DAOBrowserView, {
+                  .tag(foam.comics.v2.DAOBrowserView, {
                     data: data.where(self.TRUE)
                   })
-                    .addClass(this.myClass('accounts-table'))
-                  .end()
                 .end()
               .end()
             .end();
