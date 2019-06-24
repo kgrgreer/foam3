@@ -42,7 +42,6 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     if ( SafetyUtil.isEmpty(transaction.getId()) &&
       ( transaction instanceof AbliiTransaction || transaction instanceof AscendantFXTransaction )
     ) {
-
       transaction = (Transaction) super.put_(x, obj);
 
       Invoice invoice = getInvoice(x, transaction);
@@ -50,7 +49,12 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentId(transaction.getId());
         // Invoice status should be processing as default when the trasaction is created
         invoice.setPaymentMethod(PaymentStatus.PROCESSING);
-        invoice.setPaymentDate(generateEstimatedCreditDate(x, transaction));
+        // AscendantFXTransaction has its own completion date
+        if ( transaction instanceof AscendantFXTransaction ) {
+          invoice.setPaymentDate(transaction.getCompletionDate());
+        } else {
+          invoice.setPaymentDate(generateEstimatedCreditDate(x, transaction));
+        }
         invoiceDAO.put(invoice);
 
         // The invoice is not saved until after the transaction quoting
