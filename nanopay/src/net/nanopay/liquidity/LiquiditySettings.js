@@ -59,7 +59,13 @@ foam.CLASS({
           rebalancingEnabled: false,
           enabled: false,
         });
-      }
+      },
+      javaFactory: `
+        return new net.nanopay.liquidity.Liquidity.Builder(getX())
+          .setRebalancingEnabled(false)
+          .setEnabled(false)
+          .build();
+      `,
     },
     {
       class: 'FObjectProperty',
@@ -70,7 +76,13 @@ foam.CLASS({
           rebalancingEnabled: false,
           enabled: false,
         });
-      }
+      },
+      javaFactory: `
+        return new net.nanopay.liquidity.Liquidity.Builder(getX())
+          .setRebalancingEnabled(false)
+          .setEnabled(false)
+          .build();
+      `,
     }
   ],
   methods: [
