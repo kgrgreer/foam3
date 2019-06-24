@@ -61,10 +61,10 @@ foam.CLASS({
         });
       },
       javaFactory: `
-        net.nanopay.liquidity.Liquidity high = new net.nanopay.liquidity.Liquidity();
-        high.setRebalancingEnabled(false);
-        high.setEnabled(false);
-        return high;
+        return new net.nanopay.liquidity.Liquidity.Builder(getX())
+          .setRebalancingEnabled(false)
+          .setEnabled(false)
+          .build();
       `,
     },
     {
@@ -78,10 +78,10 @@ foam.CLASS({
         });
       },
       javaFactory: `
-        net.nanopay.liquidity.Liquidity low = new net.nanopay.liquidity.Liquidity();
-        low.setRebalancingEnabled(false);
-        low.setEnabled(false);
-        return low;
+        return new net.nanopay.liquidity.Liquidity.Builder(getX())
+          .setRebalancingEnabled(false)
+          .setEnabled(false)
+          .build();
       `,
     }
   ],
