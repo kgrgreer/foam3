@@ -22,6 +22,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'accounts',
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
       documentation: `
         DAO for all accounts in the ecosystem.
       `,
@@ -94,6 +95,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'recentTransactionsDAO',
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
       documentation: `
         DAO for recent transactions in entire ecosystem
       `,
