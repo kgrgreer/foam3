@@ -23,9 +23,6 @@ foam.CLASS({
       font-size: 12px;
       font-weight: 600;
       line-height: 1.5;
-    }
-
-    ^card-header-container {
       margin-bottom: 8px;
     }
 
@@ -72,22 +69,14 @@ foam.CLASS({
         .addClass(this.myClass())
         .add(self.slot(function(data) {
           return self.E()
-            .start(self.CardBorder)
               .start(self.Rows).addClass(this.myClass('card-container'))
-                .start().addClass(this.myClass('balance-card'))
-                  .start(self.Rows)
-                    .start(self.Cols).style({'align-items': 'center'}).addClass(this.myClass('card-header-container'))
-                      .start().add(self.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
-                    .end()
-                  .end()
-                .end()
                 .start()
-                  .tag(foam.comics.v2.DAOBrowserView, {
-                    data: data.where(self.TRUE)
-                  })
+                  .add(self.CARD_HEADER).addClass(this.myClass('card-header-title'))
                 .end()
-              .end()
-            .end();
+                .tag(foam.comics.v2.DAOBrowserView, {
+                  data: data.where(self.TRUE)
+                })
+              .end();
         }));
     }
   ]
