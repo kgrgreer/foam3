@@ -177,9 +177,9 @@ foam.RELATIONSHIP({
         rowView: { class: 'net.nanopay.ui.UserRowView' },
         sections: [
           {
-            dao: X.userDAO,
+            dao: X.userDAO
           }
-        ],
+        ]
       });
     },
     tableCellFormatter: function(value, obj, axiom) {
