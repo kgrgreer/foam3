@@ -294,6 +294,7 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.AccountTransactionLimitRule',
+  'net.nanopay.tx.ruler.InvoicePaymentRule',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -516,6 +517,8 @@ var classes = [
   'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
   'net.nanopay.meter.compliance.ComplianceItem',
+  'net.nanopay.meter.reports.DateColumnOfReports',
+  'net.nanopay.meter.reports.RowOfBusSumReports',
 
   // ruler
   'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
