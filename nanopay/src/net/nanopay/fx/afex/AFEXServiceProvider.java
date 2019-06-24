@@ -3,12 +3,14 @@ package net.nanopay.fx.afex;
 import foam.core.X;
 import foam.core.ContextAwareSupport;
 import foam.dao.DAO;
+import foam.nanos.auth.Address;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import static foam.mlang.MLang.*;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.payment.PaymentService;
-import foam.nanos.auth.User;
-import foam.nanos.auth.Address;
 import net.nanopay.tx.model.Transaction;
 import java.util.Date;
 
@@ -74,41 +76,106 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Address bankAddress = bankAccount.getBankAddress(); 
     if ( null == bankAddress ) throw new RuntimeException("Bank Account Address is null " + bankAccountId );
 
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
+    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
+
     // Check payee does not already exists on AFEX
-    GetPayeeInfoResponse payeeInfoResponse = this.afexClient.getPayeeInfo(String.valueOf(userId));
-    if ( null == payeeInfoResponse ) {
-      AddPayeeRequest addPayeeRequest = new AddPayeeRequest();
-      addPayeeRequest.setBankAccountNumber(bankAccount.getAccountNumber());
-      addPayeeRequest.setBankCountryCode(bankAddress.getCountryId());
-      //addPayeeRequest.setBankName(bankAccount.get);
-      addPayeeRequest.setBankRoutingCode(bankAccount.getRoutingCode(this.x));
-      addPayeeRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
-      addPayeeRequest.setBeneficiaryCity(userAddress.getCity());
-      addPayeeRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
-      addPayeeRequest.setBeneficiaryName(user.getLegalName());
-      addPayeeRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
-      addPayeeRequest.setBeneficiaryRegion(userAddress.getRegionId());
-      addPayeeRequest.setCurrency(bankAccount.getDenomination());
-      addPayeeRequest.setVendorId(String.valueOf(userId));
+    FindBeneficiaryRequest findBeneficiaryRequest = new FindBeneficiaryRequest();
+    findBeneficiaryRequest.setVendorId(String.valueOf(userId));
+    findBeneficiaryRequest.setClientAPIKey(""); // TODO
+    FindBeneficiaryResponse beneficiaryResponse = this.afexClient.findBeneficiary(findBeneficiaryRequest);
+    if ( null == beneficiaryResponse ) {
+      CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();
+      createBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
+      createBeneficiaryRequest.setBankCountryCode(bankAddress.getCountryId());
+      //createBeneficiaryRequest.setBankName(bankAccount.get);
+      createBeneficiaryRequest.setBankRoutingCode(bankAccount.getRoutingCode(this.x));
+      createBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
+      createBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
+      createBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
+      createBeneficiaryRequest.setBeneficiaryName(user.getLegalName());
+      createBeneficiaryRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
+      createBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId());
+      createBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
+      createBeneficiaryRequest.setVendorId(String.valueOf(userId));
+      createBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
 
       try {
-        AddPayeeResponse addPayeeResponse = this.afexClient.addPayee(addPayeeRequest);
-        if ( null == addPayeeResponse ) throw new RuntimeException("Null response got for remote system." );
-        if ( addPayeeResponse.getCode() != 200 ) throw new RuntimeException("Unable to create Beneficiary at this time. " +  addPayeeResponse.getInformationMessage());
-
-      } catch(Exception e) {
-        //Log here
+        CreateBeneficiaryResponse createBeneficiaryResponse = this.afexClient.createBeneficiary(createBeneficiaryRequest);
+        if ( null == createBeneficiaryResponse ) throw new RuntimeException("Null response got for remote system." );
+        if ( createBeneficiaryResponse.getCode() != 200 ) throw new RuntimeException("Unable to create Beneficiary at this time. " +  createBeneficiaryResponse.getInformationMessage());
+      } catch(Throwable t) {
+        ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
       }
     }
   }
 
-  public void updatePayee(long userId, long bankAccount, long sourceUser) throws RuntimeException {}
+  public void updatePayee(long userId, long bankAccountId, long sourceUser) throws RuntimeException {
+    User user = User.findUser(x, userId);
+    if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
+
+    Address userAddress = user.getAddress(); 
+    if ( null == userAddress ) throw new RuntimeException("User Address is null " + userId );
+    
+    BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
+    if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
+
+    Address bankAddress = bankAccount.getBankAddress(); 
+    if ( null == bankAddress ) throw new RuntimeException("Bank Account Address is null " + bankAccountId );
+
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
+    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
+
+    UpdateBeneficiaryRequest updateBeneficiaryRequest = new UpdateBeneficiaryRequest();
+    updateBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
+    updateBeneficiaryRequest.setBankCountryCode(bankAddress.getCountryId());
+    //updateBeneficiaryRequest.setBankName(bankAccount.get);
+    updateBeneficiaryRequest.setBankRoutingCode(bankAccount.getRoutingCode(this.x));
+    updateBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
+    updateBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
+    updateBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
+    updateBeneficiaryRequest.setBeneficiaryName(user.getLegalName());
+    updateBeneficiaryRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
+    updateBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId());
+    updateBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
+    updateBeneficiaryRequest.setVendorId(String.valueOf(userId));
+    updateBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
+
+    try {
+      UpdateBeneficiaryResponse updateBeneficiaryResponse = this.afexClient.updateBeneficiary(updateBeneficiaryRequest);
+      if ( null == updateBeneficiaryResponse ) throw new RuntimeException("Null response got for remote system." );
+      if ( updateBeneficiaryResponse.getCode() != 0 ) throw new RuntimeException("Unable to update Beneficiary at this time. " +  updateBeneficiaryResponse.getInformationMessage());
+    } catch(Throwable t) {
+      ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
+    }    
+
+  }
 
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {}
+
+  public FindBeneficiaryResponse getPayeeInfo(String payeeUserId, Long businessId) throws RuntimeException {
+    FindBeneficiaryResponse payeeInfo = null;
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, businessId);
+    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + businessId);
+    FindBeneficiaryRequest request = new FindBeneficiaryRequest();
+    request.setVendorId(payeeUserId);
+    request.setClientAPIKey(afexBusiness.getApiKey());
+    try {
+      payeeInfo = this.afexClient.findBeneficiary(request);
+    } catch(Throwable t) {
+      ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
+    }
+    return payeeInfo;
+  }
 
   public Transaction submitPayment(Transaction transaction) throws RuntimeException{
     // TODO
     return null;
+  }
+
+  protected AFEXBusiness getAFEXBusiness(X x, Long userId) {
+    DAO dao = (DAO) x.get("afexBusinessDAO");
+    return (AFEXBusiness) dao.find(AND(EQ(AFEXBusiness.USER, userId), EQ(AFEXBusiness.STATUS, "Active")));
   }
 
 }
