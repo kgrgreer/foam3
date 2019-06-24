@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: 'Validates a business using IdentityMind Merchant KYC Evaluation API.',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.model.Business'
@@ -21,30 +23,23 @@ foam.CLASS({
         ComplianceValidationStatus status = response.getComplianceValidationStatus();
 
         if ( status != ComplianceValidationStatus.VALIDATED ) {
-          requestApproval(x,
-            new ComplianceApprovalRequest.Builder(x)
-              .setObjId(Long.toString(business.getId()))
-              .setDaoKey("localUserDAO")
-              .setCauseId(response.getId())
-              .setCauseDaoKey("identityMindResponseDAO")
-              .setClassification("Validate Business Using IdentityMind")
-              .build()
-          );
+          agency.submit(x, new ContextAgent() {
+            @Override
+            public void execute(X x) {
+              requestApproval(x,
+                new ComplianceApprovalRequest.Builder(x)
+                  .setObjId(Long.toString(business.getId()))
+                  .setDaoKey("localUserDAO")
+                  .setCauseId(response.getId())
+                  .setCauseDaoKey("identityMindResponseDAO")
+                  .setClassification("Validate Business Using IdentityMind")
+                  .build()
+              );
+            }
+          });
         }
         ruler.putResult(status);
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
     }
   ]
 });

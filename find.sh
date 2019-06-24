@@ -27,7 +27,6 @@ if [[ ! -d $OUT_DIR ]]; then
 fi
 mkdir -p "$OUT_DIR"
 
-# Delete current runtime journals
 rm ${OUT_DIR}/*.0
 
 while read -r filePath; do

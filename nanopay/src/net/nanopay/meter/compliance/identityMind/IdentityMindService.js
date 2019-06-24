@@ -6,7 +6,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
-    'foam.lib.json.OutputterMode',
+    'foam.lib.NetworkPropertyPredicate',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -78,6 +78,7 @@ foam.CLASS({
         response.setApiName("Consumer KYC Evaluation");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -106,6 +107,7 @@ foam.CLASS({
         User user = login.findLoginAttemptedFor(x);
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -133,6 +135,7 @@ foam.CLASS({
         response.setApiName("Merchant KYC Evaluation");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -160,6 +163,7 @@ foam.CLASS({
         response.setApiName("Transfer");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -183,7 +187,7 @@ foam.CLASS({
         HttpResponse httpResponse = null;
 
         try {
-          Outputter jsonOutputter = new Outputter(OutputterMode.NETWORK).setOutputClassNames(false);
+          Outputter jsonOutputter = new Outputter(x).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
           String requestJson = jsonOutputter.stringify(request);
           StringEntity entity = new StringEntity(requestJson);
           entity.setContentType("application/json");

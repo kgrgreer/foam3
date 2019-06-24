@@ -14,6 +14,11 @@ foam.CLASS({
       documentation: 'The content sets included in the search.'
     },
     {
+      class: 'String',
+      name: 'daoKey',
+      documentation: 'Name of DAO that contains user (eg. beneficialOwnerDAO or userDAO)'
+    },
+    {
       class: 'Int',
       name: 'hitsFrom',
       documentation: 'The starting index (zero-indexed, lower bound inclusive) of the range of matches to return.'
@@ -32,7 +37,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterRegionKeysOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterRegionKeys values.'
     },
     {
@@ -43,7 +47,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterRegionOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterRegion values.'
     },
     {
@@ -55,7 +58,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterPEPOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterPEP values.'
     },
     {
@@ -72,7 +74,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterSICOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Filter to combine filterSIC values.'
     },
     {
@@ -84,7 +85,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterAMCOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterAMC values.'
     },
     {
@@ -101,7 +101,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterSLOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterSL values.'
     },
     {
@@ -128,7 +127,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterOOLOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterOOL values.'
     },
     {
@@ -155,7 +153,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'filterOELOperator',
-      choices: ['AND', 'OR'],
       documentation: 'Operator to combine filterOEL values.'
     },
     {
