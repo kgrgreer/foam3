@@ -522,7 +522,6 @@ foam.CLASS({
     },
 
     function initE() {
-      debugger;
       this.auth.check(null, 'transfer.to.contact').then((result) => {
         this.hasContactPermission = result;
       });
