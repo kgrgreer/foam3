@@ -21,6 +21,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
@@ -100,14 +101,16 @@ foam.CLASS({
     ],
     javaCode: `
     // Deposit USD into CAD BMO using AFEX, CADBMO to CAD bank
+    // TODO use bmo account
     DigitalAccount bmoAccount = TrustAccount.findDefault(x,sourceAccount.findOwner(x),"CAD");
 
     Transaction request = quote.getRequestTransaction();
 
-    AFEXTransaction afexTransaction = getAFEXTransaction(x, "USD", "CAD", request.getAmount(), request.getDestinationAmount(), destAccount, bmoAccount); 
+    AFEXTransaction afexTransaction = getAFEXTransaction(x, "USD", "CAD", request.getAmount(), request.getDestinationAmount(), sourceAccount, bmoAccount); 
 
     if ( afexTransaction != null ) {
       // create BMO CO transaction
+      // TODO change to BMOTransaction
       AlternaCOTransaction bmoCO = new AlternaCOTransaction();
       bmoCO.copyFrom(request);
       bmoCO.setSourceAccount(bmoAccount.getId());//set to bmo
@@ -118,8 +121,13 @@ foam.CLASS({
       // add BMO CO as child of afexTransaction
       afexTransaction.addNext(bmoCO);
 
-      // add afexTransaction to quote
-      quote.addPlan(afexTransaction);
+      // create summary transaction and add to quote
+      FXSummaryTransaction summary = this.limitedCopyFrom(new FXSummaryTransaction(), afexTransaction);
+      summary.setSourceAccount(sourceAccount.getId());
+      summary.setDestinationAccount(destAccount.getId());
+      summary.setFxRate(afexTransaction.getFxRate());
+      summary.addNext(afexTransaction);
+      quote.addPlan(summary);
     }
 
     return getDelegate().put_(x, quote);
@@ -137,6 +145,7 @@ foam.CLASS({
     javaCode: `
 
     // Deposit CAD into CAD BMO using AFEX, BMO transaction to USD bank
+    // TODO use bmo account
     DigitalAccount bmoAccount = TrustAccount.findDefault(x,sourceAccount.findOwner(x),"CAD");
 
     Transaction request = quote.getRequestTransaction();
@@ -145,6 +154,7 @@ foam.CLASS({
 
     if ( afexTransaction != null ) {
       // create BMO CI transaction
+      // TODO change to BMOTransaction
       AlternaCITransaction bmoCI = new AlternaCITransaction();
       bmoCI.copyFrom(request);
       bmoCI.setSourceAccount(sourceAccount.getId());
@@ -155,8 +165,13 @@ foam.CLASS({
       // set afexTransaction as child of bmo
       bmoCI.addNext(afexTransaction);
 
-      // add afexTransaction to quote
-      quote.addPlan(bmoCI);
+      // create summary transaction and add to quote
+      FXSummaryTransaction summary = this.limitedCopyFrom(new FXSummaryTransaction(), afexTransaction);
+      summary.setSourceAccount(sourceAccount.getId());
+      summary.setDestinationAccount(destinationAccount.getId());
+      summary.setFxRate(afexTransaction.getFxRate());
+      summary.addNext(bmoCI);
+      quote.addPlan(summary);
     }
     return getDelegate().put_(x, quote);
     `
@@ -244,6 +259,15 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
 
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
   return afexTransaction;
+}
+
+public FXSummaryTransaction limitedCopyFrom (FXSummaryTransaction summary, AFEXTransaction tx) {
+  summary.setAmount(tx.getAmount());
+  summary.setDestinationAmount(tx.getDestinationAmount());
+  summary.setSourceCurrency(tx.getSourceCurrency());
+  summary.setDestinationCurrency(tx.getDestinationCurrency());
+  summary.setFxQuoteId(tx.getFxQuoteId());
+  return summary;
 }
         `);
       },
