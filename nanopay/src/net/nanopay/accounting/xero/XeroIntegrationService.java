@@ -592,7 +592,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
     if ( invoice != null ) {
       XeroInvoice nanoInvoice =  (XeroInvoice) invoice;
-      if ( invoice.getStatus() == InvoiceStatus.PENDING  ) {
+      if ( invoice.getStatus() == InvoiceStatus.PROCESSING  ) {
         nanoInvoice.setDesync(true);
         invoiceDAO.put(nanoInvoice.fclone());
       }

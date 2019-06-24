@@ -239,12 +239,9 @@ foam.CLASS({
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
             bannerMode: this.ComplianceBannerMode.NOTICE,
             condition: function(user, accountArray) {
-              if ( accountArray.length === 0 ) {
-                return false;
-              } else {
-                return user.compliance === self.ComplianceStatus.NOTREQUESTED
-                  && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
-              }
+              return accountArray.length > 0
+                && user.compliance === self.ComplianceStatus.NOTREQUESTED
+                && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
             },
             passed: false,
             showBanner: true
@@ -253,12 +250,9 @@ foam.CLASS({
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED,
             bannerMode: this.ComplianceBannerMode.NOTICE,
             condition: function(user, accountArray) {
-              if ( accountArray.length === 0 ) {
-                return false;
-              } else {
-                return user.compliance === self.ComplianceStatus.NOTREQUESTED
+              return accountArray.length > 0 
+                && user.compliance === self.ComplianceStatus.NOTREQUESTED
                 && accountArray[0].status === self.BankAccountStatus.VERIFIED;
-              }
             },
             passed: false,
             showBanner: true
@@ -277,7 +271,8 @@ foam.CLASS({
             msg: this.COMPLIANCE_REQUESTED_BANK_NEED_VERIFY,
             bannerMode: this.ComplianceBannerMode.NOTICE,
             condition: function(user, accountArray) {
-              return user.compliance === self.ComplianceStatus.REQUESTED
+              return accountArray.length > 0
+                && user.compliance === self.ComplianceStatus.REQUESTED
                 && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
             },
             passed: false,
@@ -287,7 +282,8 @@ foam.CLASS({
             msg: this.BUSINESS_INFO_UNDER_REVIEW,
             bannerMode: this.ComplianceBannerMode.NOTICE,
             condition: function(user, accountArray) {
-              return user.compliance === self.ComplianceStatus.REQUESTED
+              return accountArray.length > 0
+                && user.compliance === self.ComplianceStatus.REQUESTED
                 && accountArray[0].status === self.BankAccountStatus.VERIFIED;
             },
             passed: false,
@@ -297,7 +293,8 @@ foam.CLASS({
             msg: this.PASSED_BANNER,
             bannerMode: this.ComplianceBannerMode.ACCOMPLISHED,
             condition: function(user, accountArray) {
-              return user.compliance === self.ComplianceStatus.PASSED
+              return accountArray.length > 0
+                && user.compliance === self.ComplianceStatus.PASSED
                 && accountArray[0].status === self.BankAccountStatus.VERIFIED;
             },
             passed: true,

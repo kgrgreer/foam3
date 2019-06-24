@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: 'Validates an entity using Dow Jones Risk and Compliance API.',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
@@ -36,38 +38,27 @@ foam.CLASS({
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x,
-              new DowJonesApprovalRequest.Builder(x)
-                .setObjId(Long.toString(business.getId()))
-                .setDaoKey("localUserDAO")
-                .setCauseId(response.getId())
-                .setCauseDaoKey("dowJonesResponseDAO")
-                .setMatches(response.getResponseBody().getMatches())
-                .build());
+            agency.submit(x, new ContextAgent() {
+              @Override
+              public void execute(X x) {
+                requestApproval(x,
+                  new DowJonesApprovalRequest.Builder(x)
+                    .setObjId(Long.toString(business.getId()))
+                    .setDaoKey("localUserDAO")
+                    .setCauseId(response.getId())
+                    .setCauseDaoKey("dowJonesResponseDAO")
+                    .setClassification("Validate Entity Using Down Jones")
+                    .setMatches(response.getResponseBody().getMatches())
+                    .build());
+              }
+            });
+            
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
           ((Logger) x.get("logger")).warning("EntitySanctionValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }
-      `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'canExecute',
-      javaCode: `
-      // TODO: add an actual implementation
-      return true;
-      `
-    },
-    {
-      name: 'describe',
-      javaCode: `
-      // TODO: add an actual implementation
-      return "";
       `
     }
   ]

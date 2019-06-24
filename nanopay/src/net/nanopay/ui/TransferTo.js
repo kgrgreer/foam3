@@ -28,7 +28,8 @@ foam.CLASS({
     'type',
     'groupDAO',
     'invoice',
-    'invoiceMode'
+    'invoiceMode',
+    'auth'
   ],
 
   css: `
@@ -521,7 +522,9 @@ foam.CLASS({
     },
 
     function initE() {
-      this.checkPermission();
+      this.auth.check(null, 'transfer.to.contact').then((result) => {
+        this.hasContactPermission = result;
+      });
       this.SUPER();
       
       this
@@ -612,19 +615,6 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.payee$ })
           .end()
         .end();
-    },
-
-    // TODO: Use AuthService.checkUserPermission instead.
-    function checkPermission() {
-      var self = this;
-      this.groupDAO.find(this.group).then(function(group) {
-        if ( group )  {
-          var permissions = group.permissions;
-          self.hasContactPermission = permissions.filter(function(p) {
-            return p.id == '*' || p.id == 'transfer.to.contact';
-          }).length > 0;
-        }
-      })
     }
   ],
 

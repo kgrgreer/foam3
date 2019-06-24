@@ -18,6 +18,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'dueDate'
+    },
+    {
+      class: 'String',
+      name: 'message'
     }
   ]
 });

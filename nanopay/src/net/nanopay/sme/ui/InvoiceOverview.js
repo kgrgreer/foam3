@@ -276,9 +276,10 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showBankAccount',
       expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
-          invoice.status === this.InvoiceStatus.PENDING ||
-          invoice.status === this.InvoiceStatus.PAID;
+        return ( invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
+          invoice.status === this.InvoiceStatus.PROCESSING ||
+          invoice.status === this.InvoiceStatus.PAID ) &&
+          ( invoice.payeeId === this.user.id && invoice.destinationAccount != 0 );
       },
       documentation: `Only show bank accounts when it is requires
         approval, processing & complete`
@@ -313,14 +314,14 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isProcess',
       expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.PENDING;
+        return invoice.status === this.InvoiceStatus.PROCESSING;
       }
     },
     {
       class: 'Boolean',
       name: 'isProcessOrComplete',
       expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.PENDING ||
+        return invoice.status === this.InvoiceStatus.PROCESSING ||
           invoice.status === this.InvoiceStatus.PAID;
       }
     },
@@ -440,6 +441,12 @@ foam.CLASS({
             } else {
               this.isCrossBorder = true;
             }
+          });
+        } else {
+          this.currencyDAO.find(this.invoice.chequeCurrency).then((currency) => {
+            this.formattedAmountPaid =
+              `${currency.format(this.invoice.chequeAmount)} ` +
+              `${currency.alphabeticCode}`;
           });
         }
       });

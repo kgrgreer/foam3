@@ -3,10 +3,6 @@ foam.CLASS({
   name: 'HashingJournal',
   extends: 'foam.dao.FileJournal',
 
-  javaImports: [
-    'foam.lib.json.OutputterMode',
-  ],
-
   properties: [
     {
       class: 'String',
@@ -36,7 +32,7 @@ foam.CLASS({
       name: 'outputter',
       javaFactory: `
         try {
-          return new HashingOutputter(this, OutputterMode.STORAGE);
+          return new HashingOutputter(getX(), this);
         } catch ( Throwable t ) {
           throw new RuntimeException(t);
         }

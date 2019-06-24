@@ -122,6 +122,10 @@ foam.CLASS({
       width: 200px;
     }
 
+    .invoice-tables .error-table-container .other .foam-u2-view-TableView .foam-u2-view-TableView-th-invoiceNumber, .foam-u2-view-TableView-th-Amount, .foam-u2-view-TableView-th-dueDate {
+      width: 150px;
+    }
+
     .contact-mismatch-table .error-table-container .foam-u2-view-TableView .foam-u2-view-TableView-th-name, .foam-u2-view-TableView-th-businessName, .foam-u2-view-TableView-th-message {
       width: 200px;
     }
@@ -346,7 +350,8 @@ foam.CLASS({
           id: x,
           invoiceNumber: arrData[x].invoiceNumber,
           Amount: arrData[x].Amount,
-          dueDate: arrData[x].dueDate
+          dueDate: arrData[x].dueDate,
+          message: arrData[x].message != null ? arrData[x].message : null
         }))
         this.invoiceCount++;
       }

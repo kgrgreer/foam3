@@ -13,10 +13,15 @@ foam.CLASS({
     'viewRequestStatus'
    ],
 
+  tableColumns: [
+    'id', 'createdBy', 'approvedBy'
+  ],
+
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 50
     },
     {
       class: 'Reference',

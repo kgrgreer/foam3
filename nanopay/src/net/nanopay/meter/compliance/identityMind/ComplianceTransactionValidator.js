@@ -10,7 +10,11 @@ foam.CLASS({
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.bank.BankAccount',
+    'foam.util.SafetyUtil',
+    'foam.core.ContextAgent',
+    'foam.core.X'
   ],
 
   properties: [
@@ -25,44 +29,49 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        Transaction transaction = (Transaction) obj;
-        ComplianceValidationStatus status = ComplianceValidationStatus.PENDING;
-        ComplianceApprovalRequest approvalRequest =
-          new ComplianceApprovalRequest.Builder(x)
-            .setObjId(transaction.getId())
-            .setDaoKey("localTransactionDAO")
-            .build();
+      agency.submit(x, new ContextAgent() {
+        @Override
+        public void execute(X x) {
+          Transaction transaction = (Transaction) obj;
+          ComplianceValidationStatus status = ComplianceValidationStatus.PENDING;
+          ComplianceApprovalRequest approvalRequest =
+            new ComplianceApprovalRequest.Builder(x)
+              .setObjId(transaction.getId())
+              .setDaoKey("localTransactionDAO")
+              .build();
 
-        IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-        try {
-          IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
-          status = response.getComplianceValidationStatus();
-          TransactionStatus transactionStatus = getTransactionStatus(status);
-          if ( transactionStatus != null ) {
-            transaction.setInitialStatus(transactionStatus);
+          IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
+
+          while ( ! SafetyUtil.isEmpty(transaction.getParent()) ) {
+            Transaction parent = transaction.findParent(x);
+            if ( parent != null ) {
+              transaction = parent;
+            } else {
+              break;
+            }
           }
 
-          approvalRequest.setCauseId(response.getId());
-          approvalRequest.setCauseDaoKey("identityMindResponseDAO");
-          approvalRequest.setStatus(getApprovalStatus(status));
-          approvalRequest.setApprover(getApprover(status));
-        } finally {
-          requestApproval(x, approvalRequest);
-          ruler.putResult(status);
+          if ( transaction.findSourceAccount(x) instanceof BankAccount ) {
+            try {
+              IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
+              status = response.getComplianceValidationStatus();
+              TransactionStatus transactionStatus = getTransactionStatus(status);
+              if ( transactionStatus != null ) {
+                transaction.setInitialStatus(transactionStatus);
+              }
+
+              approvalRequest.setCauseId(response.getId());
+              approvalRequest.setCauseDaoKey("identityMindResponseDAO");
+              approvalRequest.setStatus(getApprovalStatus(status));
+              approvalRequest.setApprover(getApprover(status));
+            } finally {
+              requestApproval(x, approvalRequest);
+              ruler.putResult(status);
+            }
+          }
         }
+      },"Compliance Transaction Validator");
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return "";'
     },
     {
       name: 'getTransactionStatus',

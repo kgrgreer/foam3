@@ -15,6 +15,7 @@ foam.CLASS({
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.payment.Institution',
     'net.nanopay.sme.ui.dashboard.cards.IntegrationCard'
   ],
@@ -69,10 +70,10 @@ foam.CLASS({
       class: 'String',
       name: 'subtitleToUse',
       expression: function(isAccountThere) {
-        if ( isAccountThere ) {
+        if ( isAccountThere && this.isVerified ) {
           var subtitle = this.SUBTITLE_LINKED + ' ';
           subtitle += this.abbreviation ? this.abbreviation : (this.bankname ? this.bankname : this.account.name);
-          subtitle += ' ****' + this.account.accountNumber.slice(4)
+          subtitle += ' ****' + this.account.accountNumber.slice(-4)
           return subtitle;
         }
         return this.SUBTITLE_EMPTY;
@@ -92,12 +93,17 @@ foam.CLASS({
     {
       class: 'String',
       name: 'bankName'
+    },
+    {
+      class: 'Boolean',
+      name: 'isVerified'
     }
   ],
 
   methods: [
     async function getInstitution() {
       if ( this.isAccountThere ) {      
+        this.isVerified = this.account.status == this.BankAccountStatus.VERIFIED;
         let branch = await this.branchDAO.find(this.account.branch);
         let institution = await this.institutionDAO.find(branch.institution);
         if ( institution ) {
@@ -115,7 +121,7 @@ foam.CLASS({
               iconPath: this.iconPath,
               title: this.TITLE,
               subtitle: subtitleToUse,
-              action: isAccountThere ? this.VIEW_ACCOUNT : this.ADD_BANK
+              action: isAccountThere ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : this.ADD_BANK
             }).end();
         }));
       })
@@ -131,10 +137,21 @@ foam.CLASS({
       }
     },
     {
-      name: 'addBank',
+      name: 'verifyAccount',
       label: 'Add',
       code: function() {
         this.pushMenu('sme.main.banking');
+      }
+    },
+    {
+      name: 'addBank',
+      label: 'Add',
+      code: function() {
+        this.stack.push({
+          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
+          cadAvailable: true,
+          usdAvailable: true
+        })
       }
     }
   ]

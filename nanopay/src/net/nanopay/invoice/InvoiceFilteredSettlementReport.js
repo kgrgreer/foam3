@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'java.io.*',
     'java.text.SimpleDateFormat',
     'java.util.Date',
@@ -25,6 +26,7 @@ foam.CLASS({
     'javax.servlet.http.HttpServletResponse',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.model.Business',
+    'net.nanopay.model.Currency',
     'org.apache.commons.io.FileUtils',
     'org.apache.commons.io.IOUtils',
     'static foam.mlang.MLang.*',
@@ -154,7 +156,7 @@ foam.CLASS({
 
         try {
           // create a temporary folder to save files before zipping
-          FileUtils.forceMkdir(new File("/opt/nanopay/SettlementReport/"));
+          FileUtils.forceMkdir(new File("/tmp/SettlementReport/"));
     
           File settlementReport = collectInvoiceDataAndWriteToData(x, business);
     
@@ -166,7 +168,7 @@ foam.CLASS({
           downloadZipFile(x, (Business)business, settlementReport);
     
           // delete the temporary folder.
-          FileUtils.deleteDirectory(new File("/opt/nanopay/SettlementReport/"));
+          FileUtils.deleteDirectory(new File("/tmp/SettlementReport/"));
 
         } catch (IOException e) {
           logger.error("Error generating settlementReport: ", e);
@@ -283,7 +285,7 @@ foam.CLASS({
           title.append("Settlement report\\n for Business ID: ").append(user.getId()).append("\\n\\n");
         }
     
-        String path = "/opt/nanopay/SettlementReport/[" + user.getOrganization() + "]SettlementReport.pdf";
+        String path = "/tmp/SettlementReport/[" + user.getOrganization() + "]SettlementReport.pdf";
     
         try {
           Document document = new Document();
@@ -356,12 +358,17 @@ foam.CLASS({
           exRate            = invoice.getExchangeRate() != 1 ? Long.toString(invoice.getExchangeRate()) : null;
           invoiceStatus          = invoice.getStatus().getLabel();
           transactionID          = invoice.getReferenceId();
-          invoicePurchaseOrder   = invoice.getPurchaseOrder();
+          invoicePurchaseOrder   = SafetyUtil.isEmpty(invoice.getPurchaseOrder())
+            ? "n/a" : invoice.getPurchaseOrder();
           invoiceID              = Long.toString(invoice.getId());
-          invoiceAmount          = Long.toString(invoice.getAmount());
+
+          DAO currencyDAO = (DAO) x.get("currencyDAO");
+          Currency currency = (Currency) currencyDAO.find(dstCurrency);
+          invoiceAmount = currency.format(invoice.getAmount()) + " " + dstCurrency;
 
           // Put all variables with text for each line, for write to doc.pdf(settlementReport) 
-          list.add(new ListItem("Invoice ID: " + invoiceID + " PO: " + invoicePurchaseOrder ));
+          list.add(new ListItem("Invoice ID: " + invoiceID ));
+          list.add(new ListItem("PO: " + invoicePurchaseOrder));
           list.add(new ListItem("\tTransaction Date: " + transDate));
           list.add(new ListItem("\tInvoice was established by: " + createdBy_String));
           list.add(new ListItem("\tPayer: " + businessNamePayer));

@@ -8,12 +8,13 @@ foam.CLASS({
     'foam.nanos.auth.Address',
   ],
   tableColumns: [
-    'id', 'firstName', 'lastName', 'acceptanceTime', 'institutionNumber', 'transitNumber', 'accountNumber'
+    'id', 'firstName', 'lastName', 'institutionNumber', 'branchId', 'accountNumber'
   ],
   properties: [
     {
       class: 'Long',
       name: 'id',
+      tableWidth: 50,
       max: 999,
     },
     {

@@ -36,6 +36,65 @@ foam.CLASS({
     'balance'
   ],
 
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Shadow Accounts',
+      predicateFactory: function(e) {
+        return e.INSTANCE_OF(net.nanopay.account.ShadowAccount);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Aggregate Accounts',
+      predicateFactory: function(e) {
+        return e.INSTANCE_OF(net.nanopay.account.AggregateAccount);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Virtual Accounts',
+      predicateFactory: function(e) {
+        return foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' });
+      }
+    },
+    {
+      class: 'foam.comics.v2.namedViews.NamedViewCollection',
+      name: 'Table',
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
+      icon: 'images/list-view.svg',
+    },
+    {
+      class: 'foam.comics.v2.namedViews.NamedViewCollection',
+      name: 'Tree',
+      view: { class: 'net.nanopay.account.ui.AccountTreeView' },
+      icon: 'images/tree-view.svg',
+    }
+  ],
+
+  sections: [
+    {
+      name: 'accountType',
+      title: 'Account type',
+      isAvailable: function(id) { return !! id; }
+    },
+    {
+      name: 'accountDetails',
+      title: 'Account details'
+    },
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    }
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -70,14 +129,16 @@ foam.CLASS({
         if ( /^\s+$/.test(name) ) {
           return 'Account name may not consist of only whitespace.';
         }
-      }
+      },
+      section: 'accountDetails'
     },
     {
       class: 'String',
       name: 'desc',
       documentation: `The given description of the account, provided by
         the individual person, or real user.`,
-      label: 'Description'
+      label: 'Memo',
+      section: 'accountDetails'
     },
     {
       class: 'Boolean',
@@ -112,14 +173,15 @@ foam.CLASS({
       name: 'type',
       documentation: 'The type of the account.',
       transient: true,
-      visibility: 'RO',
-      factory: function() {
+      getter: function() {
         return this.cls_.name;
       },
-      javaFactory: `
+      javaGetter: `
         return getClass().getSimpleName();
       `,
-      tableWidth: 125
+      tableWidth: 125,
+      section: 'accountType',
+      visibility: 'RO'
     },
     {
       class: 'Long',
@@ -129,9 +191,9 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj, id) {
         var self = this;
-        this.__subSubContext__.balanceDAO.find(obj.id).then( function( balance ) {
+        obj.findBalance(this.__subSubContext__).then( function( balance ) {
           self.__subSubContext__.currencyDAO.find(obj.denomination).then(function(curr) {
-            self.add(balance != null ?  curr.format(balance.balance) : 0);
+            self.add(balance != null ?  curr.format(balance) : 0);
           });
         });
       },

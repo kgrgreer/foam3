@@ -71,7 +71,7 @@ public class Test {
       calendar.set(2017, 0, 3, 0, 0, 0);
       Date date = calendar.getTime();
 
-      Outputter outputter = new Outputter();
+      Outputter outputter = new Outputter(x);
       System.out.println(outputter.stringify(service.downloadPreProcessResult(date, "123456789", "000000001")));
       System.out.println(outputter.stringify(service.downloadReconciliation(date, "123456789")));
       System.out.println(outputter.stringify(service.downloadStatement(date, "123456789")));
