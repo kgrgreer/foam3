@@ -61,7 +61,7 @@ public class IdentityMindRequestGenerator {
     return new IdentityMindRequest.Builder(x)
       .setEntityType(user.getClass().getName())
       .setEntityId(user.getId())
-      .setDaoKey("loginAttemptDAO")
+      .setDaoKey("localUserDAO")
       .setMan(Long.toString(login.getLoginAttemptedFor()))
       .setTea(login.getEmail())
       .setIp(login.getIpAddress())
