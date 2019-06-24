@@ -17,6 +17,7 @@ import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
 import net.nanopay.fx.FXTransaction;
 
 import java.util.*;
@@ -39,7 +40,8 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Transaction transaction = (Transaction) obj;
 
     if ( SafetyUtil.isEmpty(transaction.getId()) &&
-         transaction instanceof AbliiTransaction ) {
+      ( transaction instanceof AbliiTransaction || transaction instanceof AscendantFXTransaction )
+    ) {
 
       transaction = (Transaction) super.put_(x, obj);
 
