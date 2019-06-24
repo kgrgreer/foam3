@@ -32,6 +32,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.fx.FXTransaction',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
@@ -97,7 +98,8 @@ foam.CLASS({
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setPayeeId(destinationAccount.getOwner());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
-            quote.addPlan(afexTransaction);
+            FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
+            quote.addPlan(summary);
           }
           
         } catch (Throwable t) {
@@ -113,7 +115,10 @@ foam.CLASS({
         AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
         afexTransaction.setPayerId(sourceAccount.getOwner());
         afexTransaction.setPayeeId(destinationAccount.getOwner());
-        quote.addPlan(afexTransaction);
+
+        // create summary transaction and add to quote
+        FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
+        quote.addPlan(summary);
       }
 
     }
@@ -163,6 +168,21 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
 
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
   return afexTransaction;
+}
+
+
+public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAccount, Account destinationAccount ) {
+  FXSummaryTransaction summary = new FXSummaryTransaction();
+  summary.setAmount(tx.getAmount());
+  summary.setDestinationAmount(tx.getDestinationAmount());
+  summary.setSourceCurrency(tx.getSourceCurrency());
+  summary.setDestinationCurrency(tx.getDestinationCurrency());
+  summary.setFxQuoteId(tx.getFxQuoteId());
+  summary.setSourceAccount(sourceAccount.getId());
+  summary.setDestinationAccount(destinationAccount.getId());
+  summary.setFxRate(tx.getFxRate());
+  summary.addNext(tx);
+  return summary;
 }
         `);
       },
