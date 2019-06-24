@@ -41,9 +41,11 @@ public class IdentityMindWebAgent implements WebAgent {
         EQ(IdentityMindResponse.TID, webhookResponse.getTid())
       );
 
+      idmResponse = (IdentityMindResponse) idmResponse.fclone();
       idmResponse.copyFrom(webhookResponse);
       identityMindResponseDAO.put(idmResponse);
 
+      logger.debug("idmResponse : " + idmResponse.toString());
       logger.debug("webAgentIdmWebhookBody : " + data);
       logger.debug("webAgentIdmWebhookResponse : " + webhookResponse.toString());
 
