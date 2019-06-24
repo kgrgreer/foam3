@@ -1008,6 +1008,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
 
   // liquidity
+  { name: 'net/nanopay/liquidity/ui/CurrencyExposure' },
+  { name: 'net/nanopay/liquidity/ui/CurrencyExposureDAO' },
   { name: 'net/nanopay/liquidity/ui/Dashboard' },
   { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
