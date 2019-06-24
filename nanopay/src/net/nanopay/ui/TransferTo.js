@@ -28,7 +28,8 @@ foam.CLASS({
     'type',
     'groupDAO',
     'invoice',
-    'invoiceMode'
+    'invoiceMode',
+    'auth'
   ],
 
   css: `
