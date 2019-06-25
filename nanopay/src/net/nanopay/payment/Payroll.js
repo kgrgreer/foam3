@@ -43,8 +43,7 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'sourceAccount',
-      value: 193
+      name: 'sourceAccount'
     },
     {
       class: 'String',
