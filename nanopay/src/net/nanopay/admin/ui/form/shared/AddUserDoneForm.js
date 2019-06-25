@@ -15,7 +15,7 @@ foam.CLASS({
     ^ .description {
       font-size: 12px;
       letter-spacing: 0.3px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-top: 20px;
     }
     ^ .referenceNumber {

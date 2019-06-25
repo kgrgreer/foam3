@@ -56,7 +56,7 @@ foam.CLASS({
       display: inline-block;
       font-size: 12px;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
 
       vertical-align: top;
       margin: 5px 0;

@@ -37,7 +37,7 @@ foam.CLASS({
       height: 100%;
       display: table;
       position: absolute;
-      background-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
       margin-top: -56px;
     }
     ^ .wrapper {
@@ -48,7 +48,7 @@ foam.CLASS({
       width: 100%;
     }
     ^ .qr-code {
-      background-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
       margin: 0 auto;
     }
     ^ .qr-code:focus {
