@@ -30,7 +30,7 @@ foam.CLASS({
   css: `
     ^ .container{
       height: 600px;
-      background-color: #093649;
+      background-color: /*%BLACK%*/ #1e1f21;
       margin-bottom: 20px;
     }
     ^ .document-input {
@@ -43,7 +43,7 @@ foam.CLASS({
     }
     ^ .box-for-drag-drop {
       margin: 20px;
-      border: dashed 4px %BACKGROUNDCOLOR%;
+      border: dashed 4px /*%GREY5%*/ #f5f7fa;
       height: 300px;
       width: 560px;
       overflow: scroll;
@@ -70,7 +70,7 @@ foam.CLASS({
       line-height: 1.43;
       letter-spacing: 0.2px;
       text-align: center;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .inputRestrictText{
       width: 480px;
@@ -84,7 +84,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-left: -140px;
     }
     ^ .buttonBox{
@@ -99,8 +99,8 @@ foam.CLASS({
       width: 136px;
       height: 40px;
       border-radius: 2px;
-      background: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       display: inline-block;
       color: white;
       text-align: center;
@@ -121,7 +121,7 @@ foam.CLASS({
       background: rgba(164, 179, 184, 0.1);
       border: solid 1px #8C92AC;
       display: inline-block;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       text-align: center;
       cursor: pointer;
       font-size: 14px;

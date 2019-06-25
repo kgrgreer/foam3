@@ -35,7 +35,6 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background: #f9fbff;
       overflow-y: scroll;
     }
     ^ {
@@ -60,7 +59,7 @@ foam.CLASS({
       padding-right: 24px;
     }
     ^ .bank-matching-box {
-      background-color: #f9fbff;
+      background-color: /*%GREY5%*/ #f5f7fa;
       padding: 24px;
       border-top-right-radius: 5px;
       border-top-left-radius: 5px;
