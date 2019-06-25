@@ -98,14 +98,14 @@ foam.CLASS({
   }
   ^ .divider-half {
     font-size: 14px;
-    background-color: %GREY5%;
+    background-color: /*%GREY5%*/ #f5f7fa;
     padding: 0 10px;
     text-align: center;
     color: #8e9090;
   }
   ^ .foam-u2-CheckBox {
     -webkit-appearance: none;
-    background-color: %PRIMARY3%;
+    background-color: /*%PRIMARY3%*/ #406dea;
     border-radius: 50%;
     z-index: 10000;
 

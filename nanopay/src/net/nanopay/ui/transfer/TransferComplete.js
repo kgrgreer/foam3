@@ -10,75 +10,71 @@ foam.CLASS({
     'complete'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          height: 355px;
-        }
-        ^ p{
-          width: 464px;
-          font-family: Roboto;
-          font-size: 12px;
-          line-height: 1.45;
-          letter-spacing: 0.3px;
-          color: %BLACK%;
-        }
-        ^ h3{
-          font-family: Roboto;
-          font-size: 12px;
-          letter-spacing: 0.2px;
-          color: %BLACK%;
-        }
-        ^ h2{
-          width: 600px;
-          font-size: 14px;
-          letter-spacing: 0.4px;
-          color: %BLACK%;
-        }
-        ^status-check p {
-          display: inline-block;
-          margin-left: 10px;
-          font-size: 12px;
-          letter-spacing: 0.2px;
-          color: grey;
-          margin-top: 5px;
-        }
-        ^status-check img {
-          position: relative;
-          top: 5;
-          display: none;
-        }
-        ^status-check-container{
-          margin-top: 35px;
-          margin-bottom: 35px;
-        }
-        ^ .show-green{
-          color: #2cab70;
-        }
-        ^status-check-container{
-          height: 170px;
-        }
-        ^status-check{
-          height: 32px;
-        }
-        ^ .show{
-          display: inline-block;
-        }
-        ^ .hide{
-          display: none;
-        }
-        ^ .show-yes{
-          display: inline-block;
-        }
-        ^ .foam-u2-ActionView-exportButton{
-          position: relative;
-          top: -55px;
-          float: none;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      height: 355px;
+    }
+    ^ p{
+      width: 464px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.45;
+      letter-spacing: 0.3px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ h3{
+      font-family: Roboto;
+      font-size: 12px;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ h2{
+      width: 600px;
+      font-size: 14px;
+      letter-spacing: 0.4px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^status-check p {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 12px;
+      letter-spacing: 0.2px;
+      color: grey;
+      margin-top: 5px;
+    }
+    ^status-check img {
+      position: relative;
+      top: 5;
+      display: none;
+    }
+    ^status-check-container{
+      margin-top: 35px;
+      margin-bottom: 35px;
+    }
+    ^ .show-green{
+      color: #2cab70;
+    }
+    ^status-check-container{
+      height: 170px;
+    }
+    ^status-check{
+      height: 32px;
+    }
+    ^ .show{
+      display: inline-block;
+    }
+    ^ .hide{
+      display: none;
+    }
+    ^ .show-yes{
+      display: inline-block;
+    }
+    ^ .foam-u2-ActionView-exportButton{
+      position: relative;
+      top: -55px;
+      float: none;
+    }
+  `,
 
   properties: [
     {

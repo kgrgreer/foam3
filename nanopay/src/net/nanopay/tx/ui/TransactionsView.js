@@ -42,7 +42,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       margin: 0;
       display: inline-block;
       vertical-align: top;
@@ -70,7 +70,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       float: right;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
     }
     ^ .tableBarDiv {
@@ -121,7 +121,7 @@ foam.CLASS({
       font-family: 'Roboto';
       font-size: 14px;
       background: white;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 1.14;
       letter-spacing: 0.3px;
       border-spacing: 0;
@@ -133,7 +133,7 @@ foam.CLASS({
       font-size: 12px;
       letter-spacing: 0.2px;
       text-align: left;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       padding-left: 15px;
       height: 60px;
     }
@@ -152,7 +152,7 @@ foam.CLASS({
     }
     ^ .foam-u2-view-TableView-row:hover {
       cursor: pointer;
-      background: %GREY4%;
+      background: /*%GREY4%*/ #e7eaec;
     }
     ^ .foam-u2-view-TableView-row {
       height: 40px;

@@ -56,7 +56,7 @@ foam.CLASS({
       font-stretch: normal;
       letter-spacing: 0.2px;
       text-align: left;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       margin: 0;
       margin-bottom: 8px;
       padding: 0 !important;

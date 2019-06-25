@@ -26,10 +26,10 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.5px;
       text-align: left;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .closeIcon {
-      background-color: %BLACK%;
+      background-color: /*%BLACK%*/ #1e1f21;
       width: 20px;
       height: 20px;
       float: right;
@@ -50,7 +50,7 @@ foam.CLASS({
     }
     ^ .foam-u2-ActionView-backToHome {
       color: white;
-      background: %PRIMARY3%;
+      background: /*%PRIMARY3%*/ #406dea;
       margin-top: 20px;
     }
     ^ .principalOwnerLabel {
@@ -61,7 +61,7 @@ foam.CLASS({
       font-style: normal;
       font-stretch: normal;
       letter-spacing: 0.2px;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       width: 540px;
     }
     ^ .principalOwnerContainer {

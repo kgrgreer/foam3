@@ -147,7 +147,7 @@ foam.CLASS({
       font-size: 25px;
       margin: 30px 0px;
       font-weight: 500;
-      border-bottom: 1px solid %BLACK%;
+      border-bottom: 1px solid /*%BLACK%*/ #1e1f21;
       width: fit-content;
     }
     ^ .foam-u2-view-TableView td {
@@ -172,7 +172,7 @@ foam.CLASS({
     }
     ^ .line {
       height: 10px;
-      background: %BLACK%;
+      background: /*%BLACK%*/ #1e1f21;
       width: 700px;
     }
     ^ .foam-u2-view-TableView-foam-doc-PropertyInfo{
@@ -443,7 +443,7 @@ foam.CLASS({
     }
     ^ .line {
       height: 10px;
-      background: %BLACK%;
+      background: /*%BLACK%*/ #1e1f21;
       width: 700px;
     }
   `,
@@ -800,7 +800,7 @@ foam.CLASS({
       line-height: 20px;
       letter-spacing: 0.3px;
       text-align: left;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
       position: relative;
       top: 10px;
@@ -835,7 +835,7 @@ foam.CLASS({
       line-height: 2.86;
       letter-spacing: 0.2px;
       text-align: center;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       cursor: pointer;
       display: inline-block;
       float: right;

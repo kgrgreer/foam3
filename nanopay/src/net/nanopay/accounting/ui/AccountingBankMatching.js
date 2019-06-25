@@ -59,7 +59,7 @@ foam.CLASS({
       padding-right: 24px;
     }
     ^ .bank-matching-box {
-      background-color: %GREY5%;
+      background-color: /*%GREY5%*/ #f5f7fa;
       padding: 24px;
       border-top-right-radius: 5px;
       border-top-left-radius: 5px;

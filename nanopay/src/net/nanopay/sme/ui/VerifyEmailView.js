@@ -41,7 +41,7 @@ foam.CLASS({
       line-height: 48px;
       letter-spacing: 0.5px;
       text-align: left;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       font-weight: 900;
       margin-bottom: 8px;
     }

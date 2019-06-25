@@ -26,7 +26,7 @@ foam.CLASS({
     ^ p {
       margin: 0;
       font-size: 12px;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 1.33;
     }
 

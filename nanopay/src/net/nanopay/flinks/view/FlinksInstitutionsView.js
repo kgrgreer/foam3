@@ -83,7 +83,7 @@ foam.CLASS({
     }
 
     ^link-text {
-      color: %PRIMARY3%;
+      color: /*%PRIMARY3%*/ #406dea;
       cursor: pointer;
     }
   `,

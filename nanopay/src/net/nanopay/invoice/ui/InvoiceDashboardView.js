@@ -97,7 +97,7 @@ foam.CLASS({
       margin-left: 100px;
     }
     ^ .blue-card-title{
-      background: %PRIMARY3%;
+      background: /*%PRIMARY3%*/ #406dea;
     }
   `,
 

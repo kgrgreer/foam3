@@ -40,7 +40,7 @@ foam.CLASS({
       font-size: 20px;
       font-weight: 300;
       line-height: 1;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .foam-u2-ActionView-backAction {
       border: 1px solid lightgrey;
@@ -53,13 +53,13 @@ foam.CLASS({
       background: rgba(164, 179, 184, 0.3);
     }
     ^ .foam-u2-ActionView-recordPayment:hover {
-      background: %PRIMARY2%;
+      background: /*%PRIMARY2%*/ #144794;
     }
     ^ .foam-u2-ActionView-voidDropDown:focus {
-      background: %PRIMARY2%;
+      background: /*%PRIMARY2%*/ #144794;
     }
     ^ .foam-u2-ActionView-voidDropDown:hover {
-      background: %PRIMARY2%;
+      background: /*%PRIMARY2%*/ #144794;
     }
     ^ .foam-u2-ActionView-recordPayment {
       background-color: #59A5D5;
@@ -99,7 +99,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 30px;
     }
     ^ .popUpDropDown > div:hover {

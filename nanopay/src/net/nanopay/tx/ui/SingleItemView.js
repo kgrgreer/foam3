@@ -23,7 +23,7 @@ foam.CLASS({
       line-height: 1;
       font-weight: 500;
       text-align: center;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^table-body{
       width: 962px;

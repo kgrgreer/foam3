@@ -58,7 +58,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background: %GREY5%;
+      background: /*%GREY5%*/ #f5f7fa;
     }
     ^ .wizardBody {
       width: 1000px;

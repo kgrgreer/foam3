@@ -59,7 +59,7 @@ foam.CLASS({
     ^link {
       display: inline-block;
       cursor: pointer;
-      color: %PRIMARY3%;
+      color: /*%PRIMARY3%*/ #406dea;
       margin: 0;
       margin-left: 5px;
     }

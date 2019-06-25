@@ -11,7 +11,7 @@ foam.CLASS({
       height: 16px;
       font-size: 14px;
       font-weight: bold;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       margin: 3% 15% 0 5%;
       display: inline-block;
     }
@@ -19,7 +19,7 @@ foam.CLASS({
       height: 16px;
       font-size: 12px;
       line-height: 1.33;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
     }
     .key-value-container {

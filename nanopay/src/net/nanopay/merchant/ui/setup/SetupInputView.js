@@ -32,7 +32,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      background: %BLACK%;
+      background: /*%BLACK%*/ #1e1f21;
     }
     ^ h4{
       width: 259px;

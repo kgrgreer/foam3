@@ -7,7 +7,7 @@ foam.CLASS({
       name: 'code',
       value: `
         ^{
-          background-color: %GREY5%;
+          background-color: /*%GREY5%*/ #f5f7fa;
           height: calc(100% - 20px - 60px - 60px);
           margin: auto;
           padding-top: 30px;
@@ -30,7 +30,7 @@ foam.CLASS({
           font-weight: bold;
           font-style: normal;
           font-stretch: normal;
-          color: %BLACK%;
+          color: /*%BLACK%*/ #1e1f21;
 
           margin-bottom: 30px;
         }

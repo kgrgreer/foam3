@@ -15,7 +15,7 @@ foam.CLASS({
 
   css: `
     ^ .editImage {
-      background-color: %BLACK%;
+      background-color: /*%BLACK%*/ #1e1f21;
       width: fit-content;
       height: 20px;
       float: right;
@@ -45,7 +45,7 @@ foam.CLASS({
       font-style: normal;
       font-stretch: normal;
       letter-spacing: 0.2px;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .principalOwnerContainer {
       padding-left: 25px;
@@ -66,7 +66,7 @@ foam.CLASS({
       height: 16px;
       font-size: 14px;
       letter-spacing: 0.2px;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       margin: 20px;
     }
     ^ .termAndConditionBox {
@@ -96,7 +96,7 @@ foam.CLASS({
       margin-left: 5px;
     }
     ^ .checkBoxLabel.enabled {
-      color: %BLACK%
+      color: /*%BLACK%*/ #1e1f21
     }
     ^ .foam-u2-md-CheckBox {
       width: 14px;
@@ -106,10 +106,10 @@ foam.CLASS({
       border: solid 1px #a4b3b8;
     }
     ^ .foam-u2-md-CheckBox.enabled {
-      border: solid 1px %BLACK%;
+      border: solid 1px /*%BLACK%*/ #1e1f21;
     }
     ^ .foam-u2-md-CheckBox:checked {
-      background-color: %BLACK%;
+      background-color: /*%BLACK%*/ #1e1f21;
     }
     ^ .foam-u2-md-CheckBox:checked:after {
       background-image: url("images/check-mark.png");

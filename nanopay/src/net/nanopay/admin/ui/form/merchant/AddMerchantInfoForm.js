@@ -16,7 +16,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.2px;
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       margin-bottom: 20px;
     }
     ^ .topMargin {

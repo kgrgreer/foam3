@@ -32,7 +32,7 @@ foam.CLASS({
       padding: 24px;
     }
     ^confirm-explaination {
-      color: %BLACK%;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
       line-height: 1.5;
       margin-top: -25px;
@@ -45,7 +45,7 @@ foam.CLASS({
     }
     /* Customized checkbox */
     .foam-u2-CheckBox-label {
-      color: %BLACK% !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
       margin-left: 8px !important;
     }
     .foam-u2-CheckBox {
