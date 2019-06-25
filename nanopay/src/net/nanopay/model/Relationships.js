@@ -160,6 +160,41 @@ foam.RELATIONSHIP({
   }
 });
 
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.payment.PayrollEntry',
+  forwardName: 'payrolls',
+  inverseName: 'owner',
+  cardinality: '1:*',
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.RichChoiceView.create({
+        search: true,
+        selectionView: { class: 'net.nanopay.ui.UserSelectionView', userDAO: X.userDAO },
+        rowView: { class: 'net.nanopay.ui.UserRowView' },
+        sections: [
+          {
+            dao: X.userDAO
+          }
+        ]
+      });
+    },
+    tableCellFormatter: function(value, obj, axiom) {
+      this.__subSubContext__.userDAO
+        .find(value)
+        .then((user) => {
+          this.add('[', user.cls_.name, '] ', user.label());
+        })
+        .catch((error) => {
+          this.add(value);
+        });
+    }
+  }
+});
+
 // foam.RELATIONSHIP({
 //   sourceModel: 'foam.nanos.auth.User',
 //   targetModel: 'net.nanopay.bank.BankAccount',
