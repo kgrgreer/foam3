@@ -283,6 +283,12 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
+task getVersion() {
+    doLast {
+        println project.version
+    }
+}
+
 task tarz(type: Tar) {
     into("bin/") {
         from "deploy/bin"
