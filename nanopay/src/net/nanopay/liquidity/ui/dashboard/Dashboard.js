@@ -155,8 +155,11 @@ foam.CLASS({
               .end()
             .end()
             .start(this.Cards)
-              .start(this.Card, { def: 12 }).addClass(this.myClass('currency-exposure'))
+              .start(this.Card, { def: 1 }).addClass(this.myClass('currency-exposure'))
                 .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
+              .end()
+              .start(this.Card, { def: 11 })
+                // TODO: Add CICO Chart
               .end()
             .end()
             .start(this.Cards)
