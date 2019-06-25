@@ -1,7 +1,8 @@
 package net.nanopay.meter.compliance.identityMind;
 
 import foam.core.X;
-import foam.dao.ArraySink;
+import foam.core.Detachable;
+import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.nanos.http.HttpParameters;
@@ -35,33 +36,33 @@ public class IdentityMindWebAgent implements WebAgent {
       IdentityMindResponse webhookResponse = (IdentityMindResponse)
         jsonParser.parseString(data, IdentityMindResponse.class);
 
-      ArraySink sink = (ArraySink) identityMindResponseDAO.where(
+      identityMindResponseDAO.where(
         EQ(IdentityMindResponse.TID, webhookResponse.getTid())
-      ).select(new ArraySink());
+      ).select(new AbstractSink() {
+        @Override
+        public void put(Object obj, Detachable sub) {
+          IdentityMindResponse idmResponse = (IdentityMindResponse) ((IdentityMindResponse) obj).fclone();
+          idmResponse.copyFrom(webhookResponse);
+          identityMindResponseDAO.put(idmResponse);
 
-      for ( int i = 0; i < sink.getArray().size(); i++ ) {
-        IdentityMindResponse idmResponse = (IdentityMindResponse) sink.getArray().get(i);
-        idmResponse = (IdentityMindResponse) idmResponse.fclone();
-        idmResponse.copyFrom(webhookResponse);
-        identityMindResponseDAO.put(idmResponse);
+          ComplianceApprovalRequest approvalRequest = (ComplianceApprovalRequest) approvalRequestDAO.find(
+            AND(
+              EQ(ComplianceApprovalRequest.CAUSE_ID, idmResponse.getId()),
+              EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, "identityMindResponseDAO")
+            )
+          );
 
-        ComplianceApprovalRequest approvalRequest = (ComplianceApprovalRequest) approvalRequestDAO.find(
-          AND(
-            EQ(ComplianceApprovalRequest.CAUSE_ID, idmResponse.getId()),
-            EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, idmResponse.getDaoKey())
-          )
-        );
-
-        if ( approvalRequest != null ) {
-          approvalRequest = (ComplianceApprovalRequest) approvalRequest.fclone();
-          if (idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.VALIDATED) {
-            approvalRequest.setStatus(ApprovalStatus.APPROVED);
-          } else if (idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.REJECTED) {
-            approvalRequest.setStatus(ApprovalStatus.REJECTED);
+          if ( approvalRequest != null ) {
+            approvalRequest = (ComplianceApprovalRequest) approvalRequest.fclone();
+            if (idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.VALIDATED) {
+              approvalRequest.setStatus(ApprovalStatus.APPROVED);
+            } else if (idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.REJECTED) {
+              approvalRequest.setStatus(ApprovalStatus.REJECTED);
+            }
+            approvalRequestDAO.put(approvalRequest);
           }
-          approvalRequestDAO.put(approvalRequest);
         }
-      }
+      });
     } catch (Exception e) {
       String message = String.format("IdentityMindWebAgent failed.", request.getClass().getSimpleName());
       logger.error(message, e);
