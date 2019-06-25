@@ -294,7 +294,8 @@ task tarz(type: Tar) {
         from "deploy/etc"
     }
 
-    archiveFileName = "nanopay-deploy.tar.gz"
+    archiveBaseName = "nanopay-deploy"
+    archiveExtension = "tar.gz"
     destinationDirectory = file("target/package")
     compression = Compression.GZIP
 }

@@ -39,13 +39,13 @@ done
 NANOPAY_TARBALL_PATH="target/package/${NANOPAY_TARBALL}"
 
 if [ ! -f $NANOPAY_TARBALL_PATH ]; then
-    echo "ERROR :: Tarball $(realpath ${NANOPAY_TARBALL_PATH}) doesn't exist"
+    echo "ERROR :: Tarball ${NANOPAY_TARBALL_PATH} doesn't exist"
     quit 1
 fi
 
 echo "INFO :: Copying ${NANOPAY_TARBALL_PATH} to ${REMOTE_URL}:${NANOPAY_REMOTE_OUTPUT}"
 
-scp -i ${SSH_KEY} ${NANOPAY_TARBALL_PATH} "${REMOTE_URL}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}"
+scp -i ${SSH_KEY} ${NANOPAY_TARBALL_PATH} ${REMOTE_URL}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}
 
 if [ ! $? -eq 0 ]; then
     echo "ERROR :: Failed copying tarball to remote server"
@@ -54,6 +54,12 @@ else
     echo "INFO :: Successfully copied tarball to remote server"
 fi
 
-echo "INFO :: Running ssh -i ${SSH_KEY} ${REMOTE_URL} ./tools/deployment/installremote.sh -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME} -O tar_extract"
+ssh -i ${SSH_KEY} ${REMOTE_URL} "bash -s" -- < ./deploy/bin/install.sh -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME} -O tar_extract
 
-ssh -i ${SSH_KEY} ${REMOTE_URL} "bash -s" -- < ./tools/deployment/installremote.sh -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME} -O tar_extract
+if [ ! $? -eq 0 ]; then
+    quit 1;
+else
+    echo "INFO :: Remote install successful"
+fi
+
+exit 0;

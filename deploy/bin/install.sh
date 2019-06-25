@@ -5,8 +5,8 @@ NANOPAY_TARBALL=\~/nanopay-deploy.tar.gz
 NANOPAY_REMOTE_OUTPUT=\~/tar_extract
 
 function quit {
-    echo "ERROR :: Install Failed"
-    exit $1
+    echo "ERROR :: Remote Install Failed"
+    exit 1
 }
 
 function usage {
@@ -29,6 +29,8 @@ while getopts "hN:O:I:" opt ; do
         ?) usage; exit 0;;
    esac
 done
+
+echo "INFO :: Installing nanopay on remote server"
 
 if [ ! -f ${NANOPAY_TARBALL} ]; then
     echo "ERROR :: Tarball ${NANOPAY_TARBALL} doesn't exist on remote server"
@@ -79,3 +81,5 @@ if [ ! -d ${NANOPAY_HOME}/etc ]; then
 fi
 
 cp -r ${NANOPAY_REMOTE_OUTPUT}/etc/* ${NANOPAY_HOME}/etc
+
+exit 0
