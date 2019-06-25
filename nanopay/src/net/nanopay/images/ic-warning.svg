@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
-    <g fill="#093649" fill-rule="evenodd">
+    <g fill="/*%BLACK%*/ #1e1f21" fill-rule="evenodd">
         <path fill-rule="nonzero" d="M9.804 17.647a7.843 7.843 0 1 0 0-15.686 7.843 7.843 0 0 0 0 15.686zm0 1.96C4.389 19.608 0 15.219 0 9.805 0 4.389 4.39 0 9.804 0c5.414 0 9.804 4.39 9.804 9.804 0 5.414-4.39 9.804-9.804 9.804z"/>
         <rect width="1.961" height="6.863" x="8.824" y="7.843" rx=".98"/>
         <rect width="1.961" height="1.961" x="8.824" y="4.902" rx=".98"/>

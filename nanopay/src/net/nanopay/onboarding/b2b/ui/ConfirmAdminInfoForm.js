@@ -35,7 +35,7 @@ foam.CLASS({
     line-height: 1.5;
     letter-spacing: 0.2px;
     text-align: left;
-    color: #093649;
+    color: /*%BLACK%*/ #1e1f21;
   }
   ^ .label {
     font-size: 14px;
@@ -45,7 +45,7 @@ foam.CLASS({
     line-height: normal;
     letter-spacing: 0.2px;
     text-align: left;
-    color: #093649;
+    color: /*%BLACK%*/ #1e1f21;
     margin-left: 0;
   }
   ^ .nameDisplayContainer {
@@ -144,7 +144,7 @@ foam.CLASS({
     border: solid 1px rgba(164, 179, 184, 0.5);
     padding: 12px;
     font-size: 12px;
-    color: #093649;
+    color: /*%BLACK%*/ #1e1f21;
     outline: none;
   }
   ^ .countryCodeInput {
@@ -153,7 +153,7 @@ foam.CLASS({
     border: solid 1px rgba(164, 179, 184, 0.5);
     padding: 12px;
     font-size: 12px;
-    color: #093649;
+    color: /*%BLACK%*/ #1e1f21;
     outline: none;
   }
   ^ .phoneNumberInput {
@@ -162,7 +162,7 @@ foam.CLASS({
     border: solid 1px rgba(164, 179, 184, 0.5);
     padding: 12px;
     font-size: 12px;
-    color: #093649;
+    color: /*%BLACK%*/ #1e1f21;
     outline: none;
   }
   ^ .property-emailAddress {

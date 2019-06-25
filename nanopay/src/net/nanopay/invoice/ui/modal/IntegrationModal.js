@@ -31,7 +31,7 @@ foam.CLASS({
     font-size: 14px;
     font-weight: 300;
     letter-spacing: 0.2px;
-    color: #093649;
+    color: /*%BLACK%*/ #1e1f21;
     min-height: 15px;
   }
   ^ .headerTitle{
@@ -115,7 +115,7 @@ foam.CLASS({
     background-color: #ffffff;
     border: solid 1.5px #ffffff;
     box-shadow: 0 1px 1px 0 #dae1e9;
-    border: solid 1px %BACKGROUNDCOLOR%;
+    border: solid 1px /*%GREY5%*/ #f5f7fa;
     width: 190px;
     padding: 20px;
     display: inline-block;

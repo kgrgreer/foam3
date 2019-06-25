@@ -3,7 +3,6 @@ package net.nanopay.payment;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
-import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
@@ -13,8 +12,8 @@ import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
 
 public class PayrollDAOTest extends foam.nanos.test.Test {
-  static final long PAYER_ACCOUNT = 193;
-  static final long PAYER_ID = 3333;
+  long PAYER_ID, PAYER_ACCOUNT;
+  String PAYER_EMAIL = "payroll@nanopay.net";
   DAO payrollDAO, userDAO, accountDAO;
   Payroll payroll;
   long[] payeeIds = new long[3];
@@ -29,10 +28,12 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     accountDAO = (DAO) x.get("localAccountDAO");
     test(payrollDAO != null, "payrollDAO has been configured.");
 
+    createPayerIfNotFound(x);
     addSourceAccountIfNotFound(x);
     addPayeesIfNotFound(x);
     addPayrollEntries(x);
     payroll = new Payroll();
+    payroll.setSourceAccount(PAYER_ACCOUNT);
     payroll.setPayrollEntries(entries);
 
     Payroll addedPayroll = (Payroll) payrollDAO.put_(x, payroll);
@@ -46,16 +47,14 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
   public void addSourceAccountIfNotFound(X x) {
     CABankAccount account = (CABankAccount) accountDAO.find(
       AND(
-        EQ(BankAccount.ID, PAYER_ACCOUNT),
+        EQ(BankAccount.OWNER, PAYER_ID),
         INSTANCE_OF(CABankAccount.class),
         EQ(BankAccount.IS_DEFAULT, true),
         EQ(BankAccount.DENOMINATION, "CAD")
       )
     );
     if ( account == null ) {
-      createPayerIfNotFound(x);
       account = new CABankAccount();
-      account.setId(PAYER_ACCOUNT);
       account.setBranchId("12345");
       account.setInstitutionNumber("123");
       account.setAccountNumber("1234543");
@@ -64,21 +63,22 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       account.setDenomination("CAD");
       account.setEnabled(true);
       account.setIsDefault(true);
-      accountDAO.put_(x, account);
+      account = (CABankAccount) accountDAO.put_(x, account);
     }
+    PAYER_ACCOUNT = account.getId();
   }
 
   public void createPayerIfNotFound(X x) {
-    User user = (User) userDAO.find(PAYER_ID);
+    User user = (User) userDAO.find(EQ(User.EMAIL, PAYER_EMAIL));
     if ( user == null ) {
       user = new User();
-      user.setId(PAYER_ID);
       user.setFirstName("payroll");
       user.setLastName("payer");
-      user.setEmail("payroll@nanopay.net");
+      user.setEmail(PAYER_EMAIL);
       user.setEmailVerified(true);
-      userDAO.put_(x, user);
+      user = (User) userDAO.put_(x, user);
     }
+    PAYER_ID = user.getId();
   }
 
   public void addPayeesIfNotFound(X x) {

@@ -76,7 +76,7 @@ foam.CLASS({
           line-height: normal;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
           padding-bottom: 6px;
           margin: 14px 0px ;
 
@@ -90,7 +90,7 @@ foam.CLASS({
           line-height: 1.5;
           letter-spacing: 0.3px;
           text-align: left;
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
           margin-top:0px
         }
         ^ .full-width-input{
@@ -220,7 +220,7 @@ foam.CLASS({
           line-height: 1.17;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
           margin-top: -15px;
           margin-bottom: 15px;
         }
