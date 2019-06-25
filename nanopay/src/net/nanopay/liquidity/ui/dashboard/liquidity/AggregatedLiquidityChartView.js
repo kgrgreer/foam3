@@ -65,6 +65,10 @@ foam.CLASS({
     ^ .foam-u2-ActionView img {
       margin-right: 0;
     }
+
+    ^ .foam-u2-ActionView-secondary:disabled {
+      opacity: 0.4;
+    }
   `,
 
   messages: [
@@ -441,8 +445,10 @@ foam.CLASS({
     },
     {
       name: 'forward',
+      isEnabled: function(rewindFactor) {
+        return rewindFactor !== 1;
+      },
       code: function() {
-        if ( this.rewindFactor === 1 ) return;
         this.rewindFactor--;
       }
     }
