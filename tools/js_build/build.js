@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 
 var npRoot = __dirname + '/../../';
+let version = process.argv[2];
+
+if ( version == null ) target = '/foam-bin.js'
+else target = `/foam-bin-${version}.js`
 
 global.FOAM_FLAGS = {
   js: true,
@@ -37,7 +41,7 @@ Promise.all([
 ].map(classloader.load.bind(classloader))).then(function() {
   foam.build.Builder.create({
     enabledFeatures: ['js', 'web'],
-    targetFile: __dirname + '/foam-bin.js',
+    targetFile: __dirname + target,
     blacklist: [], // todo
   }).execute();
 });

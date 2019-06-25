@@ -111,6 +111,10 @@ function deploy_journals {
         gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
     fi
 
+    if [ "$LIQUID_DEMO" -eq 1 ]; then
+        node tools/liquid_journal_script.js
+    fi
+
     if [[ $? -eq 1 ]]; then
         quit 1
     fi
@@ -400,6 +404,9 @@ function setenv {
     if [ ! -d "${NANOPAY_HOME}/etc" ]; then
         mkdir -p "${NANOPAY_HOME}/etc"
     fi
+    if [ ! -d "${NANOPAY_HOME}/keys" ]; then
+        mkdir -p "${NANOPAY_HOME}/keys"
+    fi
     if [ ! -d "${LOG_HOME}" ]; then
         mkdir -p "${LOG_HOME}"
     fi
@@ -545,8 +552,9 @@ DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
+LIQUID_DEMO=0
 
-while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -576,6 +584,8 @@ while getopts "bcdD:ghijJ:klmM:nN:pqrsStT:uvV:W:xz" opt ; do
         q) MODE=STAGING
            CLEAN_BUILD=1
            echo "MODE=${MODE}"
+           ;;
+        Q) LIQUID_DEMO=1
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;

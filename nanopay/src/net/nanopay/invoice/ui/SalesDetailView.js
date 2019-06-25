@@ -128,7 +128,7 @@ foam.CLASS({
       name: 'verbTenseMsg',
       documentation: 'Past or present message on invoice status notification',
       expression: function(data) {
-        return data.paymentMethod === this.PaymentStatus.PENDING ?
+        return data.paymentMethod === this.PaymentStatus.PROCESSING ?
             'Invoice is' :
             'Invoice has been';
       }

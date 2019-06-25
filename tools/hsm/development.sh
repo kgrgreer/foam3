@@ -24,9 +24,10 @@ function create_slot {
 
 function migrate_slot {
   # Check if the slots already exist and add them if they don't
-  for d in ./hsm/dev/*; do
-    if [[ ! -d "/usr/local/var/lib/softhsm/tokens/{$d}" ]]; then
-      cp -r $ROOT/dev/2c994c25-5565-55f2-0f4f-9458ac0f1537 /usr/local/var/lib/softhsm/tokens
+  for d in $ROOT/dev/*/; do
+    SLOT_DIR=`basename "$d"`
+    if [[ ! -d "/usr/local/var/lib/softhsm/tokens/${SLOT_DIR}" ]]; then
+      cp -r ${d} /usr/local/var/lib/softhsm/tokens
     fi
   done
 

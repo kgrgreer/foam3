@@ -19,6 +19,11 @@ foam.CLASS({
       transient: true
     },
     {
+      class: 'String',
+      name: 'daoKey',
+      transient: true
+    },
+    {
       class: 'Object',
       name: 'entityId',
       transient: true

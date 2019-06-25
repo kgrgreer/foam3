@@ -174,7 +174,7 @@ foam.CLASS({
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.UNPAID ||
                   this.status === self.InvoiceStatus.PAID ||
-                  this.status === self.InvoiceStatus.PENDING ||
+                  this.status === self.InvoiceStatus.PROCESSING ||
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: function() {

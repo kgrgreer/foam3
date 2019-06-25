@@ -195,8 +195,8 @@ foam.CLASS({
       code: function(e) {
         var self = this;
         if (
-          mode === foam.u2.DisplayMode.DISABLED ||
-          mode === foam.u2.DisplayMode.RO
+          this.mode === foam.u2.DisplayMode.DISABLED ||
+          this.mode === foam.u2.DisplayMode.RO
         ) {
           e.preventDefault();
         }

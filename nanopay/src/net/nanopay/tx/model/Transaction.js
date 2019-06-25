@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'static foam.mlang.MLang.EQ',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
@@ -80,12 +81,38 @@ foam.CLASS({
   ],
 
   tableColumns: [
+    'id',
     'type',
     'status',
     'summary',
     'created',
     'completionDate'
   ],
+
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Pending',
+      predicateFactory: function(e) {
+        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.PENDING);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Completed',
+      predicateFactory: function(e) {
+        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      }
+    }
+  ],
+
 
   // relationships: parent, children
 
@@ -310,20 +337,30 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of Transactions.
       `,
+      tableWidth: 320,
       tableCellFormatter: async function(_, obj) {
         var [srcCurrency, dstCurrency] = await Promise.all([
           obj.currencyDAO.find(obj.sourceCurrency),
           obj.currencyDAO.find(obj.destinationCurrency)
         ]);
 
-        this.add(
-          obj.sourceCurrency + ' ' +
-          srcCurrency.format(obj.amount) + ' → ' +
-          obj.destinationCurrency + ' ' +
-          dstCurrency.format(obj.destinationAmount) + '  |  ' +
-          obj.payer.displayName + ' → ' +
-          obj.payee.displayName
-        );
+        if ( obj.payer ) {
+          this.add(
+            obj.sourceCurrency + ' ' +
+              srcCurrency.format(obj.amount) + ' → ' +
+              obj.destinationCurrency + ' ' +
+              dstCurrency.format(obj.destinationAmount) + '  |  ' +
+              obj.payer.displayName + ' → ' +
+              obj.payee.displayName
+          );
+        } else {
+          this.add(
+            obj.sourceCurrency + ' ' +
+              srcCurrency.format(obj.amount) + ' → ' +
+              obj.destinationCurrency + ' ' +
+              dstCurrency.format(obj.destinationAmount)
+          );
+        }
       }
     },
     {
@@ -649,11 +686,6 @@ for ( Balance b : getBalances() ) {
         throw new RuntimeException("Destination currency is not supported");
       }
 
-      if ( appConfig.getMode() == Mode.PRODUCTION ) {
-        if ( getTotal() > 10000000 ) {
-          throw new AuthorizationException("Transaction limit exceeded.");
-        }
-      }
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.SCHEDULED && getStatus() == TransactionStatus.SCHEDULED ) {
         throw new RuntimeException("Only new transaction can be scheduled");
@@ -689,12 +721,15 @@ for ( Balance b : getBalances() ) {
       if ( getStatus() != TransactionStatus.COMPLETED ) {
         return getStatus();
       }
-      List children = ((ArraySink) getChildren(x).select(new ArraySink())).getArray();
+      DAO dao = (DAO) x.get("localTransactionDAO");
+      List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, getId())).select(new ArraySink())).getArray();
+// REVIEW: the following is very slow going through authenticated transactionDAO rather than unauthenticated localTransactionDAO
+//      List children = ((ArraySink) getChildren(x).select(new ArraySink())).getArray();
       for ( Object obj : children ) {
-        Transaction txn = (Transaction) obj;
-        TransactionStatus curState = txn.getState(x);
-        if ( curState != TransactionStatus.COMPLETED ) {
-          return curState;
+        Transaction child = (Transaction) obj;
+        TransactionStatus status = child.getState(x);
+        if ( status != TransactionStatus.COMPLETED ) {
+          return status;
         }
       }
       return getStatus();

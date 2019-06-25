@@ -58,16 +58,6 @@ foam.CLASS({
       border: none;
       outline: none;
     }
-    .foam-u2-ActionView-back {
-      position: absolute;
-      top: 110px;
-      width: 135px;
-      height: 40px;
-      border-radius: 2px;
-      // background-color: rgba(164, 179, 184, 0.1);
-      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      color: black;
-    }
     .foam-u2-search-TextSearchView input {
       background-image: url("images/ic-search.svg");
       background-repeat: no-repeat;
