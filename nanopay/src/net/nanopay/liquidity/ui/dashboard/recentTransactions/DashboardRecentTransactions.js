@@ -74,7 +74,7 @@ foam.CLASS({
                   .add(self.CARD_HEADER).addClass(this.myClass('card-header-title'))
                 .end()
                 .tag(foam.comics.v2.DAOBrowserView, {
-                  data: data.where(self.TRUE)
+                  data: data.where(self.TRUE).orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED)).limit(20)
                 })
               .end();
         }));
