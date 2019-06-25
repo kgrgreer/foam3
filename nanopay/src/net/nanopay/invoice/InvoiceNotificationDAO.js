@@ -46,6 +46,8 @@ foam.CLASS({
 
         Invoice invoice = (Invoice) obj;
         Invoice oldInvoice = (Invoice) super.find(invoice.getId());
+        User agent = (User) x.get("agent");
+        String agentName = agent != null ? agent.getFirstName() + agent.getLastName() : null;
 
         // CPF-1322 showed an issue with an invoice not being saved in dao due to error down chain
         // thus confirm invoice put first.
@@ -106,11 +108,11 @@ foam.CLASS({
 
           try {
             if ( invoiceIsBeingPaidButNotComplete ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getIssueDate(), currencyDAO);
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getIssueDate(), currencyDAO, agentName);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO);
+              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getDueDate(), currencyDAO, agentName);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(),  payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceNeedsApproval ) {
@@ -122,17 +124,17 @@ foam.CLASS({
                 if ( args != null ) args.clear();
                 tempApprover = (User) userDAO.find(approver.getTargetId());
                 if ( tempApprover == null ) continue;
-                args = populateArgsForEmail(args, invoice, tempApprover.label(), payeeUser.label(), tempApprover.getEmail(), invoice.getDueDate(), currencyDAO);
+                args = populateArgsForEmail(args, invoice, tempApprover.label(), payeeUser.label(), tempApprover.getEmail(), invoice.getDueDate(), currencyDAO, agentName);
                 args.put("paymentTo", currentUser.label());
                 sendEmailFunction(x, false, emailTemplates[2], invoice.getId(),  payeeUser, args, tempApprover.getEmail(), externalInvoiceToken);
               }
             }
             if ( invoiceIsBeingPaidAndCompleted ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO);
+              args = populateArgsForEmail(args, invoice, payeeUser.label(), payerUser.label(), payeeUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(),  payeeUser, args, payeeUser.getEmail(), externalInvoiceToken );
             }
             if ( invoiceHasBeenMarkedComplete ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO);
+              args = populateArgsForEmail(args, invoice, payerUser.label(), payeeUser.label(), payerUser.getEmail(), invoice.getPaymentDate(), currencyDAO, agentName);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, payerUser.getEmail(), externalInvoiceToken );
             }
             
@@ -229,12 +231,17 @@ foam.CLASS({
         {
           name: 'currencyDAO',
           type: 'DAO'
+        },
+        {
+          class: 'String',
+          name: 'agentName'
         }
       ],
       javaCode: `
         args = new HashMap<>();
         args.put("sendTo", sendTo);
         args.put("name", name);
+        args.put("agentName", agentName);
         args.put("fromName", fromName);
         args.put("account", invoice.getInvoiceNumber());
         args.put("transId", invoice.getPaymentId());
