@@ -115,8 +115,6 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
           .setEmailArgs(args)
           .build();
 
-        // SEND NOTIFICATION TO PAYER THAT TRANSACTION FAILED
-
         DAO notificationDAO = ((DAO) x.get("notificationDAO")).inX(x);
         notificationDAO.put(notification);
       } else if ( state == TransactionStatus.COMPLETED ) {
