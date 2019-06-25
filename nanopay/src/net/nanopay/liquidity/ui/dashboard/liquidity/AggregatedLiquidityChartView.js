@@ -56,6 +56,15 @@ foam.CLASS({
     ^chart {
       margin-top: 32px;
     }
+
+    ^shifter {
+      margin: 36px 0;
+      padding: 0px 16px;
+    }
+
+    ^ .foam-u2-ActionView img {
+      margin-right: 0;
+    }
   `,
 
   messages: [
@@ -299,19 +308,29 @@ foam.CLASS({
             .endContext()
           .end()
         .end()
-        .start().style({ 'width': '700px', 'height': '500px' }).addClass(this.myClass('chart'))
+        .start().style({ 'width': '700px', 'height': '600px' }).addClass(this.myClass('chart'))
           .add(this.CandlestickDAOChartView.create({
             data$: this.aggregatedDAO$,
             config$: this.config$,
             customDatasetStyling$: this.styling$,
-            width: 600,
-            height: 500
+            width: 700,
+            height: 600
           }))
         .end()
         .startContext({ data: this })
-          .add(this.REWIND)
-          .add(this.rewindFactor$)
-          .add(this.FORWARD)
+          .start(this.Cols).style({ 'align-items': 'center' }).addClass(this.myClass('shifter'))
+            .tag(this.REWIND, {
+              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              label: '',
+              icon: 'images/arrow-left-black.svg'
+            })
+            .add(this.rewindFactor$)
+            .tag(this.FORWARD, {
+              buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+              label: '',
+              icon: 'images/arrow-right-black.svg'
+            })
+          .end()
         .endContext();
     },
 
