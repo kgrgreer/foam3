@@ -5,9 +5,25 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOBrowserView',
-    'foam.u2.borders.CardBorder',
-    'org.chartjs.PieDAOChartView'
+    'org.chartjs.PieDAOChartView',
+    'foam.u2.layout.Cols'
   ],
+
+  css: `
+    ^ {
+      padding: 32px 16px;
+    }
+
+    ^card-header {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    ^pie-chart {
+      padding: 34px; 
+    }
+  `,
 
   properties: [
     {
@@ -16,12 +32,20 @@ foam.CLASS({
     },
   ],
 
+  messages: [
+    {
+      name: 'CARD_HEADER',
+      message: 'CURRENCY EXPOSURE',
+    }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
       this
         .addClass(this.myClass())
-          .start(this.CardBorder)
+          .start().add(this.CARD_HEADER).addClass(this.myClass('card-header')).end()
+          .start(this.Cols).style({ 'align-items': 'center', 'justify-content': 'center' })
             .start(this.PieDAOChartView, 
               {
                 data: this.data,
@@ -30,7 +54,7 @@ foam.CLASS({
                 height: 300,
                 width: 300
               }
-            ).end()
+            ).addClass(this.myClass('pie-chart')).end()
           .end();
     }
   ]
