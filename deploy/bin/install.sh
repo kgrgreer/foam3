@@ -1,6 +1,7 @@
 #!/bin/bash
 
 NANOPAY_HOME=
+NANOPAY_ROOT=/opt/nanopay
 NANOPAY_TARBALL=
 NANOPAY_REMOTE_OUTPUT=/tmp/tar_extract
 
@@ -30,27 +31,45 @@ while getopts "hN:O:I:" opt ; do
    esac
 done
 
-function setupUserAndPermissions {
-    id -u name > /dev/null
-    if [ ! $? -eq 0 ]; then
-        echo "INFO :: User nanopay not found, creating user nanopay"
-        sudo useradd nanopay
-        sudo usermod -s /bin/false -L nanopay
+echo "INFO :: ${NANOPAY_HOME} ${NANOPAY_TARBALL}"
+
+function setupNanopaySymLink {
+    echo "INFO :: Linking ${NANOPAY_HOME} to ${NANOPAY_ROOT}"
+    if [ -h ${NANOPAY_ROOT} ]; then
+        unlink ${NANOPAY_ROOT}
     fi
 
-    sudo chown -R nanopay:nanopay $NANOPAY_HOME
+    ln -s ${NANOPAY_HOME} ${NANOPAY_ROOT}
+}
+
+function setupUserAndPermissions {
+    echo "INFO :: Setting file permissions"
+
+    id -u nanopay > /dev/null
+    if [ ! $? -eq 0 ]; then
+        echo "INFO :: User nanopay not found, creating user nanopay"
+        useradd nanopay
+        usermod -s /bin/false -L nanopay
+    fi
+
+    chown -R nanopay:nanopay $NANOPAY_HOME
 }
 
 function installFiles {
-    NANOPAY_HOME_PARENT = $(realpath $(dirname ${NANOPAY_HOME}))
-
-    if [ -z "$NANOPAY_HOME" ]; then
-        NANOPAY_HOME="/opt/nanopay"
+    if [ -z $NANOPAY_HOME ]; then
+        echo "ERROR :: NANOPAY_HOME is undefined"
     fi
 
+    if [ -d $NANOPAY_HOME ]; then
+        echo "INFO :: Old ${NANOPAY_HOME} found, deleting"
+        rm -rf $NANOPAY_HOME
+    fi
+
+    echo "INFO :: Installing nanopay to ${NANOPAY_HOME}"
+
     if [ ! -d $NANOPAY_HOME ]; then
-        sudo mkdir -p ${NANOPAY_HOME}
-        sudo chown nanopay:nanopay $NANOPAY_HOME
+        mkdir -p ${NANOPAY_HOME}
+        chown nanopay:nanopay $NANOPAY_HOME
     fi
 
     if [ ! -d ${NANOPAY_HOME}/lib ]; then
@@ -94,8 +113,10 @@ if [ ! $? -eq 0 ]; then
     quit 1
 fi
 
-# installFiles
+installFiles
 
-# setupUserAndPermissions
+setupUserAndPermissions
+
+setupNanopaySymLink
 
 exit 0
