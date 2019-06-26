@@ -6,6 +6,7 @@ import foam.lib.json.JSONParser;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -13,7 +14,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
@@ -39,7 +40,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     apiPassword = credentials.getApiPassword();
     partnerAPI = credentials.getPartnerApi();
     AFEXAPI = credentials.getAFEXApi();
-    httpClient = HttpClients.createDefault();
+    RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(5000).build();
+    httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
     jsonParser = new JSONParser();
     jsonParser.setX(x);
     logger = (Logger) x.get("logger");
@@ -71,15 +73,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("Password", apiPassword));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
       String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      Token token = (Token) jsonParser.parseString(response, Token.class);
-      System.out.println("parsed token: " + token.getAccess_token());
-      System.out.println(token.getToken_type());
-      System.out.println(token.getExpires_in());
-
-      return token;
+      return (Token) jsonParser.parseString(response, Token.class);
     } catch (IOException e) {
       logger.error(e);
     }
@@ -124,13 +122,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      OnboardCorporateClientResponse onboardCorporateClientResponse = (OnboardCorporateClientResponse) jsonParser.parseString(response, OnboardCorporateClientResponse.class);
-
-      System.out.println(onboardCorporateClientResponse.getAPIKey());
-      System.out.println(onboardCorporateClientResponse.getAccountNumber());
-      System.out.println(onboardCorporateClientResponse.getMessage());
-
-      return onboardCorporateClientResponse;
+      return (OnboardCorporateClientResponse) jsonParser.parseString(response, OnboardCorporateClientResponse.class);
     } catch (IOException e) {
       logger.error(e);
     }
@@ -172,15 +164,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       Object[] respArr = jsonParser.parseStringForArray(response, CreateBeneficiaryResponse.class);
 
       if ( respArr.length != 0 ) {
-        CreateBeneficiaryResponse createBeneficiaryResponse = (CreateBeneficiaryResponse) respArr[0];
-        System.out.println("Add beneficiary response: ");
-        System.out.println(createBeneficiaryResponse.getName());
-        System.out.println(createBeneficiaryResponse.getCode());
-        System.out.println(createBeneficiaryResponse.getInformationMessage());
-        System.out.println(createBeneficiaryResponse.getInformationCode());
-        System.out.println(createBeneficiaryResponse.getStatus());
-
-        return createBeneficiaryResponse;
+        return (CreateBeneficiaryResponse) respArr[0];
       }
     } catch (IOException e) {
       logger.error(e);
@@ -226,13 +210,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         for ( Object resp : respArr) {
           UpdateBeneficiaryResponse updateBeneficiaryResponse = (UpdateBeneficiaryResponse) resp;
           if ( updateBeneficiaryResponse.getName().equals("Beneficiary has been updated") ) {
-            System.out.println("Update Payee response: ");
-            System.out.println(updateBeneficiaryResponse.getName());
-            System.out.println(updateBeneficiaryResponse.getCode());
-            System.out.println(updateBeneficiaryResponse.getInformationMessage());
-            System.out.println(updateBeneficiaryResponse.getInformationCode());
-            System.out.println(updateBeneficiaryResponse.getStatus());
-
             return updateBeneficiaryResponse;
           }
         }
@@ -264,9 +241,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
-
-      System.out.println("disable beneficiary response: " + response.substring(1, response.length() - 1));
-
       return response.substring(1, response.length() - 1);
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
@@ -294,22 +268,15 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
-      FindBeneficiaryResponse findBeneficiaryResponse = (FindBeneficiaryResponse) jsonParser.parseString(response, FindBeneficiaryResponse.class);
-      System.out.println("find beneficiary response: ");
-      System.out.println(findBeneficiaryResponse.getCurrency());
-      System.out.println(findBeneficiaryResponse.getVendorId());
-      System.out.println(findBeneficiaryResponse.getBeneficiaryName());
-      System.out.println(findBeneficiaryResponse.getBeneficiaryAddressLine1());
-      System.out.println(findBeneficiaryResponse.getBeneficiaryCity());
-      System.out.println(findBeneficiaryResponse.getBeneficiaryCountryCode());
-
-      return findBeneficiaryResponse;
+      return (FindBeneficiaryResponse) jsonParser.parseString(response, FindBeneficiaryResponse.class);
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
     }
 
     return null;
   }
+
+
 
   @Override
   public String getValueDate(String currencyPair, String valueType) {
@@ -331,8 +298,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
-      System.out.println("value date response: " + response.substring(1, response.length() - 1));
-
       return response.substring(1, response.length() - 1);
     } catch (IOException | URISyntaxException e) {
       e.printStackTrace();
@@ -356,18 +321,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
       String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      Quote quote = (Quote) jsonParser.parseString(response, Quote.class);
-      System.out.println("quote: ");
-      System.out.println(quote.getRate());
-      System.out.println(quote.getInvertedRate());
-      System.out.println(quote.getValueDate());
-      System.out.println(quote.getOptionDate());
-      System.out.println(quote.getQuoteId());
-      System.out.println(quote.getTerms());
-      System.out.println(quote.getAmount());
-      System.out.println(quote.getIsAmountSettlement());
-
-      return quote;
+      return (Quote) jsonParser.parseString(response, Quote.class);
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
     }
@@ -402,17 +356,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      CreateTradeResponse createTradeResponse = (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
-
-      System.out.println(createTradeResponse.getTradeNumber());
-      System.out.println(createTradeResponse.getAmount());
-      System.out.println(createTradeResponse.getRate());
-      System.out.println(createTradeResponse.getTradeCcy());
-      System.out.println(createTradeResponse.getSettlementAmt());
-      System.out.println(createTradeResponse.getSettlementCcy());
-      System.out.println(createTradeResponse.getValueDate());
-
-      return createTradeResponse;
+      return (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
     } catch (IOException e) {
       logger.error(e);
     }
@@ -421,7 +365,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public net.nanopay.fx.afex.CreatePaymentResponse createPayment(CreatePaymentRequest request) {
+  public CreatePaymentResponse createPayment(CreatePaymentRequest request) {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/payments/create");
 
@@ -444,15 +388,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      CreatePaymentResponse createPaymentResponse = (CreatePaymentResponse) jsonParser.parseString(response, CreatePaymentResponse.class);
-
-      System.out.println(createPaymentResponse.getReferenceNumber());
-      System.out.println(createPaymentResponse.getAmount());
-      System.out.println(createPaymentResponse.getCcy());
-      System.out.println(createPaymentResponse.getPaymentDate());
-      System.out.println(createPaymentResponse.getMessage());
-
-      return createPaymentResponse;
+      return (CreatePaymentResponse) jsonParser.parseString(response, CreatePaymentResponse.class);
     } catch (IOException e) {
       logger.error(e);
     }
