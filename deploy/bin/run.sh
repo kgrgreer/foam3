@@ -1,5 +1,6 @@
 #!/bin/bash
 # Super simple launcher.
+
 # Run as ubuntu on staging and production
 target_user="ubuntu"
 if [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "$target_user" ]; then
@@ -26,7 +27,7 @@ while getopts "D:hN:W:Z:" opt ; do
         N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
         Z) DAEMONIZE=$OPTARG;;
-#        ?) usage ; exit 0 ;;
+        ?) usage ; exit 0 ;;
    esac
 done
 
