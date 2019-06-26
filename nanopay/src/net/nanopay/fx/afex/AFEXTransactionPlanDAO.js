@@ -10,6 +10,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.app.Mode',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.logger.Logger',
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
@@ -80,8 +82,16 @@ foam.CLASS({
     FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
       request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
     if ( fxService instanceof AFEXServiceProvider  ) {
+      fxService = (AFEXServiceProvider) fxService;
 
       // TODO: Validate that Payer is provisioned for AFEX before proceeding
+      if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
+        AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
+        if (afexBusiness == null) {
+          logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
+          return getDelegate().put_(x, quote);
+        }
+      }
 
       FXQuote fxQuote = new FXQuote.Builder(x).build();
 
@@ -98,6 +108,7 @@ foam.CLASS({
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setPayeeId(destinationAccount.getOwner());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
+            // TODO: check and add value date
             FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
             quote.addPlan(summary);
           }
@@ -167,6 +178,10 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   }
 
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+
+  // TODO ADD FEES
+  afexTransaction.setIsQuoted(true);
+
   return afexTransaction;
 }
 
@@ -182,6 +197,7 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setDestinationAccount(destinationAccount.getId());
   summary.setFxRate(tx.getFxRate());
   summary.addNext(tx);
+  summary.setIsQuoted(true);
   return summary;
 }
         `);

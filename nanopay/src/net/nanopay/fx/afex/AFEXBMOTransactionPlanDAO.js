@@ -10,6 +10,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.app.Mode',
+    'foam.nanos.app.AppConfig',
     'foam.nanos.logger.Logger',
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
@@ -78,16 +80,40 @@ foam.CLASS({
   
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
+      Boolean isUSDCAD = null;
   
       // Check if AFEX can handle this transaction
-  
+
       if ( sourceAccount instanceof USBankAccount && destinationAccount instanceof CABankAccount ) {
-        return createUSDCAD(x, quote, sourceAccount, destinationAccount);
+        isUSDCAD = true;
       } else if( sourceAccount instanceof CABankAccount && destinationAccount instanceof USBankAccount ) {
-        return createCADUSD(x, quote, sourceAccount, destinationAccount);
+        isUSDCAD = false;
       } else {
         return getDelegate().put_(x, quote);
       }
+
+      // Check if AFEXTransactionPlanDAO can handle the currency combination
+      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
+        request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
+      if ( fxService instanceof AFEXServiceProvider  ) {
+        fxService = (AFEXServiceProvider) fxService;
+  
+        // TODO: Validate that Payer is provisioned for AFEX before proceeding
+        if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
+          AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
+          if (afexBusiness == null) {
+            logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
+            return getDelegate().put_(x, quote);
+          }
+        }
+  
+        if ( isUSDCAD ) {
+          return createUSDCAD(x, quote, sourceAccount, destinationAccount);
+        } else {
+          return createCADUSD(x, quote, sourceAccount, destinationAccount);
+        }
+      }
+    return getDelegate().put_(x, quote);
     `
   },
   {
@@ -202,6 +228,7 @@ foam.CLASS({
         afexTransaction.setSourceAccount(sourceAccount.getId());
         afexTransaction.setPayeeId(destinationAccount.getOwner());
         afexTransaction.setDestinationAccount(destinationAccount.getId());
+        // TODO: check and add value date
         return afexTransaction;
       }
     } catch (Throwable t) {
@@ -258,6 +285,9 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   }
 
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+  // TODO ADD FEES
+  afexTransaction.setIsQuoted(true);
+
   return afexTransaction;
 }
 
@@ -267,6 +297,7 @@ public FXSummaryTransaction limitedCopyFrom (FXSummaryTransaction summary, AFEXT
   summary.setSourceCurrency(tx.getSourceCurrency());
   summary.setDestinationCurrency(tx.getDestinationCurrency());
   summary.setFxQuoteId(tx.getFxQuoteId());
+  summary.setIsQuoted(true);
   return summary;
 }
         `);
