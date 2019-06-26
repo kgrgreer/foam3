@@ -182,7 +182,9 @@ foam.CLASS({
                           .where
                             (self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id)),
                                     (self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id))  
-                            ),
+                            )
+                          .orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED))
+                          .limit(20),
                 })
                 .addClass(this.myClass('transactions-table'))
               .end()
