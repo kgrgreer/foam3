@@ -126,7 +126,29 @@ public class Test implements ContextAgent {
     System.out.println(findBeneficiaryResponse.getBeneficiaryCountryCode());
   }
 
+  private void testFindBankByNationalID(AFEXService afexService) {
+    FindBankByNationalIDRequest findBankByNationalIDRequest = new FindBankByNationalIDRequest();
+    findBankByNationalIDRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    findBankByNationalIDRequest.setCity("Acme");
+    findBankByNationalIDRequest.setCountryCode("CA");
+    findBankByNationalIDRequest.setInstitution("0002");
+    findBankByNationalIDRequest.setNationalID("000125039");
 
+    FindBankByNationalIDResponse findBankByNationalIDResponse = afexService.findBankByNationalID(findBankByNationalIDRequest);
+    System.out.println("FindBankByNationalIDResponse: ");
+    System.out.println(findBankByNationalIDResponse.getNationalIdentifier());
+    System.out.println(findBankByNationalIDResponse.getNationalIdType());
+    System.out.println(findBankByNationalIDResponse.getInstitutionName());
+    System.out.println(findBankByNationalIDResponse.getBranchInformation());
+    System.out.println(findBankByNationalIDResponse.getStreetAddress1());
+    System.out.println(findBankByNationalIDResponse.getStreetAddress2());
+    System.out.println(findBankByNationalIDResponse.getStreetAddress3());
+    System.out.println(findBankByNationalIDResponse.getStreetAddress4());
+    System.out.println(findBankByNationalIDResponse.getCity());
+    System.out.println(findBankByNationalIDResponse.getZipCode());
+    System.out.println(findBankByNationalIDResponse.getCountryName());
+    System.out.println(findBankByNationalIDResponse.getIsoCountryCode());
+  }
 
   private void testGetValueDate(AFEXService afexService) {
     String response = afexService.getValueDate("USDCAD", "CASH");

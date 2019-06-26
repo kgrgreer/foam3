@@ -276,7 +276,41 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     return null;
   }
 
+  @Override
+  public FindBankByNationalIDResponse findBankByNationalID(FindBankByNationalIDRequest request) {
+    try {
+      HttpPost httpPost = new HttpPost(AFEXAPI + "api/nationalid/find");
 
+      httpPost.addHeader("API-Key", request.getClientAPIKey());
+      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+      List<NameValuePair> nvps = new ArrayList<>();
+      nvps.add(new BasicNameValuePair("City", request.getCity()));
+      nvps.add(new BasicNameValuePair("CountryCode", request.getCountryCode()));
+      nvps.add(new BasicNameValuePair("Institution", request.getInstitution()));
+      nvps.add(new BasicNameValuePair("NationalID", request.getNationalID()));
+
+      httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+      CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+        throw new RuntimeException("Create AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          + httpResponse.getStatusLine().getReasonPhrase());
+      }
+
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+
+      Object[] respArr = jsonParser.parseStringForArray(response, FindBankByNationalIDResponse.class);
+
+      if ( respArr.length != 0 ) {
+        return (FindBankByNationalIDResponse) respArr[0];
+      }
+    } catch (IOException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
 
   @Override
   public String getValueDate(String currencyPair, String valueType) {
