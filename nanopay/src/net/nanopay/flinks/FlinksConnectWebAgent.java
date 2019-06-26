@@ -4,7 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
-import foam.lib.json.OutputterMode;
+import foam.lib.StoragePropertyPredicate;
 import foam.nanos.app.AppConfig;
 import foam.nanos.http.WebAgent;
 import net.nanopay.flinks.model.FlinksAuthRequest;
@@ -70,7 +70,7 @@ public class FlinksConnectWebAgent
 
       writer = new BufferedWriter(new OutputStreamWriter(
           conn.getOutputStream(), StandardCharsets.UTF_8));
-      writer.write(new Outputter(OutputterMode.STORAGE).stringify(authRequest));
+      writer.write(new Outputter(x).setPropertyPredicate(new StoragePropertyPredicate()).stringify(authRequest));
       writer.flush();
       writer.close();
 

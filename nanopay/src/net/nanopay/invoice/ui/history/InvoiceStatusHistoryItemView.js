@@ -52,7 +52,7 @@ foam.CLASS({
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
   `,
 
@@ -66,6 +66,12 @@ foam.CLASS({
         case this.InvoiceStatus.VOID:
           return {
             labelText: this.InvoiceStatus.VOID.label,
+            labelDecoration: 'Invoice-Status-Void',
+            icon: 'images/ic-void.svg'
+          };
+        case this.InvoiceStatus.FAILED:
+          return {
+            labelText: this.InvoiceStatus.FAILED.label,
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
