@@ -319,6 +319,10 @@ FOAM_FILES([
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
 
+  // exposure views
+  { name: 'net/nanopay/tx/ui/exposure/ExposureOverview', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/exposure/ValueCard', flags: ['web'] },
+
   { name: 'net/nanopay/model/Broker' },
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionFeesTableView', flags: ['web'] },
