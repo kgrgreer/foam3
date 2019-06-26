@@ -328,7 +328,6 @@ foam.CLASS({
               label: '',
               icon: 'images/arrow-left-black.svg'
             })
-            .add(this.rewindFactor$)
             .tag(this.FORWARD, {
               buttonStyle: foam.u2.ButtonStyle.SECONDARY,
               label: '',
