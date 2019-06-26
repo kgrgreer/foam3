@@ -28,8 +28,17 @@ foam.CLASS({
     'java.util.List'
   ],
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'net.nanopay.account.DebtAccount'
+  ],
+
   imports: [
-    'accountDAO'
+    'accountDAO',
+    'debtAccountDAO'
   ],
 
   properties: [
@@ -39,6 +48,19 @@ foam.CLASS({
       aliases: ['currencyCode', 'currency'],
       value: 'CAD',
       section: 'accountDetails'
+    }
+  ],
+
+  actions: [
+    {
+      name: 'viewExposure',
+      isAvailable: async function() {
+        var account = await this.debtAccountDAO.find(this.EQ(this.DebtAccount.CREDITOR_ACCOUNT, this.id));
+        return (account != null);
+      },
+      code: function(X) {
+        X.stack.push({ class: 'net.nanopay.tx.ui.exposure.ExposureOverview', data: this });
+      }
     }
   ],
 
