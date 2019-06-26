@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXCredentials',
 
-  axioms: [foam.pattern.Singleton.create()],
+  //axioms: [foam.pattern.Singleton.create()],
 
   properties: [
     {

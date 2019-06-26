@@ -118,20 +118,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      HttpEntity entity = httpPost.getEntity();
-      String content = "";
-      StringBuilder sb = new StringBuilder();
-      sb.append("\nRequestLine:");
-      if(entity != null){
-          try {
-              content = IOUtils.toString(entity.getContent());
-          } catch (Exception e) {
-              e.printStackTrace();
-          } 
-      }
-      sb.append("\nContent:");
-      sb.append(content);
-      System.out.println(sb.toString());
+      logRequest(httpPost);
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
@@ -176,8 +163,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("BeneficiaryPostalCode", request.getBeneficiaryPostalCode()));
       nvps.add(new BasicNameValuePair("BeneficiaryRegion", request.getBeneficiaryRegion()));
       nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
+      nvps.add(new BasicNameValuePair("VendorId", request.getVendorId()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+      logRequest(httpPost);
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -295,16 +284,20 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   @Override
   public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request) {
+    CloseableHttpResponse httpResponse = null;
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/beneficiary/find");
-      uriBuilder.setParameter("VendorId", request.getVendorId());
+      uriBuilder.setParameter("VendorID", request.getVendorId());
+      System.out.println("VendorId: " + request.getVendorId());
+      System.out.println("APIKey: " + request.getClientAPIKey());
+      System.out.println("URI: " + uriBuilder.build().toASCIIString());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
 
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
 
-      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+      httpResponse = httpClient.execute(httpGet);
 
       if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
         throw new RuntimeException("Get AFEX payee information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
@@ -324,6 +317,15 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       return findBeneficiaryResponse;
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
+    } finally {
+      if ( httpResponse != null ) {
+        try {
+          httpResponse.close();
+        } catch(IOException io) {
+          logger.error(io);
+        }
+      }
+
     }
 
     return null;
@@ -476,5 +478,22 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     }
 
     return null;
+  }
+
+  private void logRequest(HttpPost httpPost) {
+    HttpEntity entity = httpPost.getEntity();
+    String content = "";
+    StringBuilder sb = new StringBuilder();
+    sb.append("\nRequestLine:");
+    if(entity != null){
+        try {
+            content = IOUtils.toString(entity.getContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
+    }
+    sb.append("\nContent:");
+    sb.append(content);
+    System.out.println(sb.toString());
   }
 }

@@ -24,6 +24,7 @@ declare -a arr=(
   "alarmConfig"
   "acceptanceDocuments"
   "accounts"
+  "afexBeneficiaries"
   "afexBusinesses"
   "ascendantfxusers"
   "ascendantUserPayeeJunctions"

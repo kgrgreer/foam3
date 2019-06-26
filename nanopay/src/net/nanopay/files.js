@@ -214,6 +214,7 @@ FOAM_FILES([
   // AFEX
   { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: "net/nanopay/fx/afex/AFEX" },
+  { name: "net/nanopay/fx/afex/AFEXBeneficiary" },
   { name: "net/nanopay/fx/afex/AFEXBusiness" },
   { name: "net/nanopay/fx/afex/AFEXCredentials"},
   { name: "net/nanopay/fx/afex/Token"},
