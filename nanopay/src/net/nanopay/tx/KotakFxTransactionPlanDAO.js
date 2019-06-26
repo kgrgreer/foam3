@@ -54,9 +54,9 @@ foam.CLASS({
             BankAccount kotakCAbank = BankAccount.findDefault(x, kotakOwnerCA, "CAD");
             BankAccount kotakINbank = BankAccount.findDefault(x, kotakOwnerCA, "INR");
             BankAccount kotakINPartnerBank = BankAccount.findDefault(x, KotakPartnerIN, "INR");
-            
-            if (kotakCAbank != null && kotakCAbank instanceof CABankAccount &&
-              kotakINbank != null && kotakINbank instanceof INBankAccount ) return getDelegate().put_(x, quote);
+
+            if (kotakCAbank == null || ! ( kotakCAbank instanceof CABankAccount ) ||
+              kotakINbank == null || ! ( kotakINbank instanceof INBankAccount ) ) return getDelegate().put_(x, quote);
             Transaction txn;
             // txn 1: CA digital -> Kotak CA bank
             TransactionQuote q1 = new TransactionQuote.Builder(x).build();

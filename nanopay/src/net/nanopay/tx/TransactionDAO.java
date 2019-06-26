@@ -161,9 +161,10 @@ public class TransactionDAO
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
     Balance [] finalBalanceArr = new Balance[ts.length];
+    DAO localAccountDAO = (DAO) x.get("localAccountDAO");
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
-      Account account = t.findAccount(getX());
+      Account account = (Account) localAccountDAO.find(t.getAccount());
       Balance balance = (Balance) getBalanceDAO().find(account.getId());
       if ( balance == null ) {
         balance = new Balance();
@@ -187,7 +188,7 @@ public class TransactionDAO
       t.validate();
       Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
       t.execute(balance);
-      finalBalanceArr[i] = (Balance) writableBalanceDAO_.put(balance).fclone();
+      finalBalanceArr[i] = (Balance) writableBalanceDAO_.put(balance);
     }
     txn.setBalances(finalBalanceArr);
 

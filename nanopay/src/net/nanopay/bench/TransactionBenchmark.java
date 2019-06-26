@@ -72,8 +72,8 @@ public class TransactionBenchmark
         user = new User();
         user.setId(id);
         String s = String.valueOf(id);
-        user.setFirstName(s);
-        user.setLastName(s);
+        user.setFirstName("k");
+        user.setLastName("s");
         user.setEmail(s+"@nanopay.net");
         user.setEmailVerified(true);
         user.setGroup("nanopay");
