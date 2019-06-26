@@ -217,6 +217,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
   // AFEX
+  { name: 'net/nanopay/fx/FXSummaryTransaction' },
+  { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: "net/nanopay/fx/afex/AFEX" },
   { name: "net/nanopay/fx/afex/AFEXCredentials"},
   { name: "net/nanopay/fx/afex/Token"},
@@ -318,6 +320,10 @@ FOAM_FILES([
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
+
+  // exposure views
+  { name: 'net/nanopay/tx/ui/exposure/ExposureOverview', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/exposure/ValueCard', flags: ['web'] },
 
   { name: 'net/nanopay/model/Broker' },
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
