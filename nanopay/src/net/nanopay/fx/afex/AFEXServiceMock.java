@@ -20,6 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -71,9 +72,12 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   @Override
   public Quote getQuote(GetQuoteRequest request) {
 
+    Calendar oneDay = Calendar.getInstance();
+    oneDay.add(Calendar.HOUR,24);
     Quote quote = new Quote.Builder(getX())
       .setAmount(Double.parseDouble(request.getAmount()))
       .setQuoteId(request.getAmount()+1)
+      .setValueDate(oneDay.getTime())
       .build();
     if ( request.getCurrencyPair().equals("CADUSD") ) {
       quote.setRate(0.75);

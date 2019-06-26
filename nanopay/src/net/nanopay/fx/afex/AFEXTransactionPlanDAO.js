@@ -38,7 +38,8 @@ foam.CLASS({
     'net.nanopay.iso20022.FIToFICustomerCreditTransferV06',
     'net.nanopay.iso20022.Pacs00800106',
     'net.nanopay.iso20022.PaymentIdentification3',
-    'net.nanopay.model.Currency'
+    'net.nanopay.model.Currency',
+    'java.util.Date'
   ],
 
   constants: [
@@ -91,19 +92,16 @@ foam.CLASS({
       fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
       request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
     }
-    System.out.println("NOLAG");
     if ( fxService instanceof AFEXServiceProvider  ) {
       fxService = (AFEXServiceProvider) fxService;
-      System.out.println("INSIDEIFFF");
 
-      // TODO: Validate that Payer is provisioned for AFEX before proceeding
+      // Validate that Payer is provisioned for AFEX before proceeding
       if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
         AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
         if (afexBusiness == null) {
           logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
           return getDelegate().put_(x, quote);
         }
-    System.out.println("SHOULD NOT BE HERE");
 
       }
 
@@ -112,7 +110,6 @@ foam.CLASS({
       // FX Rate has not yet been fetched
       if ( fxQuote.getId() < 1 ) {
         try {
-    System.out.println("INSIDETRY");
 
           AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
 
@@ -124,7 +121,6 @@ foam.CLASS({
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setPayeeId(destinationAccount.getOwner());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
-            // TODO: check and add value date
             FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
             quote.addPlan(summary);
           }
@@ -193,7 +189,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
     afexTransaction.setAccepted(true);
   }
 
-  afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+  afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(fxQuote.getValueDate().getTime() - new Date().getTime()).build()}, null);
 
   // TODO ADD FEES
   afexTransaction.setIsQuoted(true);

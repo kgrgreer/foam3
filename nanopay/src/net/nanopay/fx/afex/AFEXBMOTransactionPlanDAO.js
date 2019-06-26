@@ -98,7 +98,7 @@ foam.CLASS({
       if ( fxService instanceof AFEXServiceProvider  ) {
         fxService = (AFEXServiceProvider) fxService;
   
-        // TODO: Validate that Payer is provisioned for AFEX before proceeding
+        // Validate that Payer is provisioned for AFEX before proceeding
         if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
           AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
           if (afexBusiness == null) {
@@ -228,7 +228,6 @@ foam.CLASS({
         afexTransaction.setSourceAccount(sourceAccount.getId());
         afexTransaction.setPayeeId(destinationAccount.getOwner());
         afexTransaction.setDestinationAccount(destinationAccount.getId());
-        // TODO: check and add value date
         return afexTransaction;
       }
     } catch (Throwable t) {
@@ -284,6 +283,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
     afexTransaction.setAccepted(true);
   }
 
+  // TODO change estimate based on bmo and afex
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
   // TODO ADD FEES
   afexTransaction.setIsQuoted(true);
