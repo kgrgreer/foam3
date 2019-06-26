@@ -53,7 +53,7 @@ public class TransactionDAO
 
   protected DAO balanceDAO_;
   protected DAO userDAO_;
-  private   DAO writableBalanceDAO_ = new foam.dao.MDAO(Balance.getOwnClassInfo());
+  private   DAO writableBalanceDAO_ = new foam.dao.MutableMDAO(Balance.getOwnClassInfo());
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
