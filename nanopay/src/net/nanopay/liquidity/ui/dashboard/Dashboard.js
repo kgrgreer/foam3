@@ -143,27 +143,27 @@ foam.CLASS({
           .start().add(this.cls_.name).addClass(this.myClass('header')).end()
           .start(this.Rows).addClass(this.myClass('dashboard-container'))
             .start(this.Cards)
-              .start(this.Card, { cols: 7 }).addClass(this.myClass('accounts'))
+              .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
                 .tag(this.DashboardAccounts, { 
                   data: this.accounts,
                   currency$: this.currencyExposureDAO$,
                   denomination$: this.denominations$,
                 })
               .end()
-              .start(this.Card, { cols: 5 }).addClass(this.myClass('liquidity'))
+              .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
                 .tag(this.AggregatedLiquidityChartView)
               .end()
             .end()
             .start(this.Cards)
-              .start(this.Card, { cols: 1 }).addClass(this.myClass('currency-exposure'))
+              .start(this.Card, { columns: 1 }).addClass(this.myClass('currency-exposure'))
                 .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
               .end()
-              .start(this.Card, { cols: 11 })
+              .start(this.Card, { columns: 11 })
                 // TODO: Add CICO Chart
               .end()
             .end()
             .start(this.Cards)
-              .start(this.Card, { cols: 12 }).addClass(this.myClass('recent-transactions'))
+              .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
                 .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
               .end()
             .end()
