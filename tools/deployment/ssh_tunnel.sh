@@ -8,17 +8,21 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -h                  : Print usage information."
-    echo "  -s                  : Start ssh tunnel"
     echo "  -e                  : Exit ssh tunnel"
+    echo "  -h                  : Print usage information."
+    echo "  -R <filepath>       : remoterc file to load, default to ./tools/deployment/remote"
+    echo "  -s                  : Start ssh tunnel"
+    echo "  -S <filepath>       : socket file location to use, default to ./tools/deployment/socket"
     echo ""
 }
 
-while getopts "hse" opt ; do
+while getopts "ehR:sS:" opt ; do
     case $opt in
-        h) usage; exit 0;;
-        s) MODE=0;;
         e) MODE=1;;
+        h) usage; exit 0;;
+        R) RC_FILE=$OPTARG;;
+        s) MODE=0;;
+        S) SOCKET_FILE=$OPTARG;;
         ?) usage; exit 0;;
    esac
 done
