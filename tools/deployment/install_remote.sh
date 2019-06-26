@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NANOPAY_TARBALL=nanopay-deploy.tar.gz
+NANOPAY_TARBALL=
 NANOPAY_REMOTE_OUTPUT=/tmp
 INSTALL_ONLY=0
 
@@ -24,7 +24,7 @@ function usage {
     echo "  -i                  : Install only"
     echo "  -I <ssh-key>        : SSH Key to use to connect to remote server"
     echo "  -O <path>           : Remote Location to put tarball, default to /tmp"
-    echo "  -T <tarball>        : Name of tarball, looks in target/package, default to nanopay-deploy.tar.gz"
+    echo "  -T <tarball>        : Name of tarball, looks in target/package"
     echo "  -U <user>           : Remote user to connect to"
     echo "  -W <web-address>    : Remote url to connect to"
     echo ""
@@ -32,11 +32,13 @@ function usage {
 
 while getopts "hiN:T:W:O:I:" opt ; do
     case $opt in
+        C) RC_FILE=$OPTARG;;
         h) usage; exit 0;;
         i) INSTALL_ONLY=1;;
-        O) NANOPAY_REMOTE_OUTPUT=${OPTARG};;
-        T) NANOPAY_TARBALL=${OPTARG};;
         I) SSH_KEY=${OPTARG};;
+        O) NANOPAY_REMOTE_OUTPUT=${OPTARG};;
+        T) NANOPAY_TARBALL_PATH=${OPTARG};;
+        U) REMOTE_USER=${OPTARG};;
         W) REMOTE_URL=${OPTARG};;
         ?) usage; exit 0;;
    esac
@@ -47,8 +49,14 @@ if [ -f $RC_FILE ]; then
     . $RC_FILE
 fi
 
-NANOPAY_TARBALL_PATH=target/package/${NANOPAY_TARBALL}
-NANOPAY_HOME=/opt/nanopay-$(gradle -q getVersion)
+VERSION=$(gradle -q getVersion)
+
+if [ -z $NANOPAY_TARBALL_PATH ]; then
+    NANOPAY_TARBALL_PATH=target/package/nanopay-deploy-${VERSION}.tar.gz
+fi
+
+NANOPAY_TARBALL=$(basename $NANOPAY_TARBALL_PATH)
+NANOPAY_HOME=/opt/nanopay-${VERSION}
 
 if [ ! -f $NANOPAY_TARBALL_PATH ]; then
     echo "ERROR :: Tarball ${NANOPAY_TARBALL_PATH} doesn't exist"
