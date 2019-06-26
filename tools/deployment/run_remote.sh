@@ -20,16 +20,18 @@ function usage {
     echo "  -I <ssh-key>        : SSH Key to use to connect to remote server"
     echo "  -U <user>           : Remote user to connect to"
     echo "  -W <web-address>    : Remote url to connect to"
+    echo "  -Z <0 or 1>         : Daemonize process"
     echo ""
 }
-
-while getopts "C:hI:U:W:" opt ; do
+ 
+while getopts "C:hI:U:W:Z:" opt ; do
     case $opt in
         C) RC_FILE=$OPTARG;;
         h) usage; exit 0;;
         I) SSH_KEY=${OPTARG};;
         U) REMOTE_USER=${OPTARG};;
         W) REMOTE_URL=${OPTARG};;
+        Z) DAEMONIZE=$OPTARG;;
         ?) usage; exit 0;;
    esac
 done

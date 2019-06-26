@@ -76,7 +76,7 @@ if [ $MODE -eq 0 ]; then
         echo "ERROR :: ${SOCKET_FILE} already exists, close connection first"
         exit 1
     fi
-    ssh -f -N -M -S $SOCKET_FILE -L ${LOCAL_PORT}:127.0.0.1:${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_URL} -i ${SSH_KEY} > /dev/null 2>&1
+    ssh -f -N -M -S $SOCKET_FILE -L ${LOCAL_PORT}:127.0.0.1:${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_URL} -i ${SSH_KEY} &> /dev/null
     if [ $? -eq 0 ]; then
         echo "INFO :: Connection started"
     else
@@ -89,7 +89,7 @@ elif [ $MODE -eq 1 ]; then
         echo "ERROR :: ${SOCKET_FILE} doesn't exist, can't close connection"
         exit 1
     fi
-    ssh -S $SOCKET_FILE -O exit ${REMOTE_USER}@${REMOTE_URL} > /dev/null 2>&1
+    ssh -S $SOCKET_FILE -O exit ${REMOTE_USER}@${REMOTE_URL} &> /dev/null
     if [ $? -eq 0 ]; then
         echo "INFO :: Connection exited"
     else

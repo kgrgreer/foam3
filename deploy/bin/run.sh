@@ -58,7 +58,7 @@ export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
 #java -server -jar "${JAR}"
 if [ "$DAEMONIZE" -eq 1 ]; then
-    nohup java -server -jar "${JAR}" &>/dev/null &
+    nohup java -server -jar "${JAR}" &> /dev/null &
     echo $! > "${NANOS_PIDFILE}"
 else
     java -server -jar "${JAR}"
