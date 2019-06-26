@@ -9,10 +9,11 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
-    'net.nanopay.liquidity.ui.dashboard.liquidity.AggregatedLiquidityChartView',
-    'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
-    'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
+    'net.nanopay.liquidity.ui.dashboard.liquidity.DashboardLiquidity',
+    'net.nanopay.liquidity.ui.dashboard.cicoShadow.DashboardCicoShadow',
     'net.nanopay.liquidity.ui.dashboard.recentTransactions.DashboardRecentTransactions',
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
     'foam.comics.v2.DAOBrowserView',
     'foam.u2.layout.Cards',
     'foam.u2.layout.Card',
@@ -61,32 +62,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.dao.DAOProperty',
-      name: 'accountBalanceCandlestickDAO',
-      documentation: `
-        DAO for all account balance over time in the ecosystem.
-      `,
-      expression: function(accountBalancesOverTime) {
-        return accountBalancesOverTime;
-      },
-      view: {
-        class: 'org.chartjs.CandlestickDAOChartView',
-      }
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'liquidityCandlestickDAO',
-      documentation: `
-        DAO for liquidity candlesticks
-      `,
-      expression: function(liquidityThresholdWeeklyCandlestickDAO) {
-        return liquidityThresholdWeeklyCandlestickDAO;
-      },
-      view: {
-        class: 'org.chartjs.CandlestickDAOChartView',
-      }
-    },
-    {
       class: 'Reference',
       of: 'net.nanopay.model.Currency',
       name: 'denominations',
@@ -117,12 +92,6 @@ foam.CLASS({
       },
     },
     {
-      name: 'cicoCandlestickDAO',
-      documentation: `
-        TODO: DAO for CICO candlesticks to and from shadow accounts
-      `
-    },
-    {
       class: 'foam.dao.DAOProperty',
       name: 'recentTransactionsDAO',
       view: { class: 'foam.comics.v2.DAOBrowserView' },
@@ -151,7 +120,7 @@ foam.CLASS({
                 })
               .end()
               .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
-                .tag(this.AggregatedLiquidityChartView)
+                .tag(this.DashboardLiquidity)
               .end()
             .end()
             .start(this.Cards)
@@ -159,7 +128,7 @@ foam.CLASS({
                 .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
               .end()
               .start(this.Card, { columns: 11 })
-                // TODO: Add CICO Chart
+                .tag(this.DashboardCicoShadow)
               .end()
             .end()
             .start(this.Cards)

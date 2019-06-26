@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.liquidity',
-  name: 'AggregatedLiquidityChartView',
+  name: 'DashboardLiquidity',
   extends: 'foam.u2.Element',
 
   implements: [
