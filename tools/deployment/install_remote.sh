@@ -30,7 +30,7 @@ function usage {
     echo ""
 }
 
-while getopts "hiN:T:W:O:I:" opt ; do
+while getopts "C:hiI:O:T:U:W:" opt ; do
     case $opt in
         C) RC_FILE=$OPTARG;;
         h) usage; exit 0;;

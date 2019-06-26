@@ -2,22 +2,27 @@
 # Super simple launcher.
 
 # Run as ubuntu on staging and production
-target_user="ubuntu"
+target_user="nanopay"
 if [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "$target_user" ]; then
   exec sudo -u "$target_user" -- "$0" "$@"
 fi
 
 HOST_NAME=`hostname -s`
-export DEBUG=
+NANOPAY_HOME=/opt/nanopay
+WEB_PORT=8080
+NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
+
+export DEBUG=0
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -D 0 or 1            : Debug mode."
-    echo "  -N <nanopay_home>  : Nanopay home directory."
+    echo "  -D <0 or 1>         : Debug mode."
+    echo "  -N <nanopay_home>   : Nanopay home directory."
     echo "  -W <web_port>       : HTTP Port."
+    echo "  -Z <0 or 1>         : Daemonize"
 }
 
 while getopts "D:hN:W:Z:" opt ; do
@@ -30,16 +35,6 @@ while getopts "D:hN:W:Z:" opt ; do
         ?) usage ; exit 0 ;;
    esac
 done
-
-if [ -z "$NANOPAY_HOME" ]; then
-    NANOPAY_HOME="/opt/nanopay"
-fi
-if [ -z "$WEB_PORT" ]; then
-    WEB_PORT=8080
-fi
-if [ -z "${NANOS_PIDFILE}" ]; then
-    NANOS_PIDFILE="/tmp/nanos.pid"
-fi
 
 JAVA_OPTS=""
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
