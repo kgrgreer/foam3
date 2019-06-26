@@ -79,10 +79,22 @@ foam.CLASS({
     if ( ! (sourceAccount instanceof BankAccount) || ! (destinationAccount instanceof BankAccount) ) return getDelegate().put_(x, obj);
 
     // Check if AFEXTransactionPlanDAO can handle the currency combination
-    FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
+    FXService fxService = null;
+    if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.DEVELOPMENT ) {
+      if ( (request.getSourceCurrency().equals("CAD") && request.getDestinationCurrency().equals("USD")) ||
+      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("CAD")) ||
+      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("USD")) ) {
+        AFEX afex = new AFEXServiceMock(x);
+        fxService = new AFEXServiceProvider(x, afex);
+      }
+    } else {
+      fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
       request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
+    }
+    System.out.println("NOLAG");
     if ( fxService instanceof AFEXServiceProvider  ) {
       fxService = (AFEXServiceProvider) fxService;
+      System.out.println("INSIDEIFFF");
 
       // TODO: Validate that Payer is provisioned for AFEX before proceeding
       if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
@@ -91,6 +103,8 @@ foam.CLASS({
           logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
           return getDelegate().put_(x, quote);
         }
+    System.out.println("SHOULD NOT BE HERE");
+
       }
 
       FXQuote fxQuote = new FXQuote.Builder(x).build();
@@ -98,6 +112,8 @@ foam.CLASS({
       // FX Rate has not yet been fetched
       if ( fxQuote.getId() < 1 ) {
         try {
+    System.out.println("INSIDETRY");
+
           AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
 
           fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
