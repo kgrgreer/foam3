@@ -3,18 +3,18 @@ package net.nanopay.payment;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.tx.model.Transaction;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
+import static foam.mlang.MLang.*;
 
 public class PayrollDAOTest extends foam.nanos.test.Test {
   long PAYER_ID, PAYER_ACCOUNT;
   String PAYER_EMAIL = "payroll@nanopay.net";
-  DAO payrollDAO, userDAO, accountDAO;
+  DAO payrollDAO, userDAO, accountDAO, txnDAO;
   Payroll payroll;
   long[] payeeIds = new long[3];
   int payeeIndex = 0;
@@ -26,6 +26,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     payrollDAO = (DAO) x.get("payrollDAO");
     userDAO = (DAO) x.get("localUserDAO");
     accountDAO = (DAO) x.get("localAccountDAO");
+    txnDAO = (DAO) x.get("localTransactionDAO");
     test(payrollDAO != null, "payrollDAO has been configured.");
 
     createPayerIfNotFound(x);
@@ -38,8 +39,23 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
 
     Payroll addedPayroll = (Payroll) payrollDAO.put_(x, payroll);
     test( addedPayroll != null && addedPayroll.getId() == payroll.getId() ,"payrollDAO put_ is successful.");
+
     Payroll foundPayroll = (Payroll) payrollDAO.find_(x, payroll.getId());
     test( foundPayroll != null && foundPayroll.getId() == payroll.getId(), "payrollDAO find_ is successful" );
+
+    amount = 100;
+    for( long payeeId : payeeIds ) {
+      Transaction txn = (Transaction) txnDAO.find(
+        AND(
+          EQ(Transaction.SOURCE_ACCOUNT, PAYER_ACCOUNT),
+          EQ(Transaction.DESTINATION_ACCOUNT, DigitalAccount.findDefault(x, (User) userDAO.find(payeeId), "CAD").getId()),
+          EQ(Transaction.AMOUNT, amount)
+        )
+      );
+      test (txn != null, "Transaction paid to " + payeeId + " exists.");
+      amount += 100;
+    }
+
     Payroll removedPayroll = (Payroll) payrollDAO.remove_(x, payroll);
     test( payrollDAO.find_(x, removedPayroll.getId()) == null, "payrollDAO remove_ is successful.");
   }

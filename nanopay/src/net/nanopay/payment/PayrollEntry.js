@@ -4,10 +4,6 @@ foam.CLASS({
   documentation: 'Payroll entry for a single payee',
 
   properties: [
-//    {
-//      class: 'Long',
-//      name: 'employeeId',
-//    },
     {
       class: 'String',
       name: 'email',
@@ -40,10 +36,6 @@ foam.CLASS({
       class: 'String',
       name: 'transactionId',
     },
-//    {
-//      class: 'Long',
-//      name: 'account',
-//    },
     {
       class: 'Double',
       name: 'amount'
