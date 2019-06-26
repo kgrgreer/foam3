@@ -39,7 +39,7 @@ foam.CLASS({
         line-height: 48px;
         letter-spacing: 0.5px;
         text-align: left;
-        color: #093649;
+        color: /*%BLACK%*/ #1e1f21;
         text-align: center;
         font-weight: 900;
         margin-bottom: 8px;
@@ -78,7 +78,7 @@ foam.CLASS({
         font-weight: 300;
         letter-spacing: 0.2px;
         text-align: left;
-        color: #093649;
+        color: /*%BLACK%*/ #1e1f21;
         margin-top: 30px;
         margin-bottom: 8px;
         margin-left: 0px;
@@ -97,7 +97,7 @@ foam.CLASS({
         font-family: Roboto;
         font-size: 14px;
         text-align: left;
-        color: #093649;
+        color: /*%BLACK%*/ #1e1f21;
         font-weight: 300;
         letter-spacing: 0.2px;
         border-radius: 3px;

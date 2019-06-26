@@ -26,6 +26,11 @@ foam.CLASS({
       name: 'entityType'
     },
     {
+      class: 'String',
+      name: 'daoKey',
+      documentation: 'Name of DAO that contains the entity (eg. userDAO)'
+    },
+    {
       class: 'Object',
       name: 'entityId',
       tableWidth: 100
@@ -132,6 +137,7 @@ foam.CLASS({
       class: 'Map',
       name: 'ednaScoreCard',
       label: 'eDNA score card',
+      hidden: true,
       view: {
         class: 'foam.u2.view.AnyView'
       }

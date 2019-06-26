@@ -13,7 +13,7 @@ foam.CLASS({
     body {
       font-family: 'Roboto';
       color: #FFFFFF;
-      background-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
       margin: 0;
       min-width: 320px;
       min-height: 480px;
@@ -65,7 +65,7 @@ foam.CLASS({
     .toolbar {
       width: 100%;
       height: 56px;
-      background-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
       -webkit-box-shadow: none;
       box-shadow: none;
       position: fixed;

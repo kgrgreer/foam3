@@ -5,75 +5,71 @@ foam.CLASS({
 
   documentation: 'Form for just the device type.',
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .deviceTypeOption {
-          box-sizing: border-box;
-          position: relative;
-          vertical-align: top;
-          width: 80px;
-          height: 80px;
-          background-color: #FFFFFF;
-          box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
-          border: solid 1px %BACKGROUNDCOLOR%;
-          margin-top: 8px;
-        }
+  css: `
+    ^ .deviceTypeOption {
+      box-sizing: border-box;
+      position: relative;
+      vertical-align: top;
+      width: 80px;
+      height: 80px;
+      background-color: #FFFFFF;
+      box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
+      border: solid 1px /*%GREY5%*/ #f5f7fa;
+      margin-top: 8px;
+    }
 
-        ^ .deviceTypeOption.selected {
-          border: solid 1px #1CC2B7;
-        }
+    ^ .deviceTypeOption.selected {
+      border: solid 1px #1CC2B7;
+    }
 
-        ^ .deviceTypeOption:hover {
-          cursor: pointer;
-          background-color: #f1f1f1;
-        }
+    ^ .deviceTypeOption:hover {
+      cursor: pointer;
+      background-color: #f1f1f1;
+    }
 
-        ^ .imageCenter {
-          display: block;
-          margin: auto;
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-        }
+    ^ .imageCenter {
+      display: block;
+      margin: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
 
-        ^ .optionSpacer {
-          margin-right: 40px;
-          display: inline-block;
-        }
+    ^ .optionSpacer {
+      margin-right: 40px;
+      display: inline-block;
+    }
 
-        ^ .optionSpacer:last-child {
-          margin-right: 0;
-        }
+    ^ .optionSpacer:last-child {
+      margin-right: 0;
+    }
 
-        ^ .optionTitleContainer {
-          display: inline-block;
-          width: 80px;
-          height: 16px;
-          margin-right: 40px;
-        }
+    ^ .optionTitleContainer {
+      display: inline-block;
+      width: 80px;
+      height: 16px;
+      margin-right: 40px;
+    }
 
-        ^ .optionTitleContainer:last-child {
-          margin-right: 0;
-        }
+    ^ .optionTitleContainer:last-child {
+      margin-right: 0;
+    }
 
-        ^ .optionTitle {
-          margin: auto;
-          width: fit-content;
-          font-size: 10px;
-          line-height: 16px;
-          letter-spacing: 0.3px;
-          color: #8F8F8F;
-        }
+    ^ .optionTitle {
+      margin: auto;
+      width: fit-content;
+      font-size: 10px;
+      line-height: 16px;
+      letter-spacing: 0.3px;
+      color: #8F8F8F;
+    }
 
-        ^ .descRow {
-          margin-top: 8px;
-        }
-      */}
-    })
-  ],
+    ^ .descRow {
+      margin-top: 8px;
+    }
+  `,
 
   messages: [
     { name: 'Step',             message: 'Step 2: Select your device type.' },

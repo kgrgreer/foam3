@@ -1,7 +1,11 @@
 foam.CLASS({
   package: "net.nanopay.fx.afex",
-  name: "UpdatePayeeRequest",
+  name: "UpdateBeneficiaryRequest",
   properties: [
+    {
+      class: 'String',
+      name: "clientAPIKey"
+    },
     {
       class: 'String',
       name: "BankAccountNumber"

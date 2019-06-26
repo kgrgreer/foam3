@@ -36,14 +36,14 @@ foam.CLASS({
             .setFilterRegion(beneficialOwner.getAddress().getCountryId())
             .build();
 
-          DowJonesResponse response = dowJonesService.personNameSearch(x, searchData);
+          DowJonesResponse response = dowJonesService.beneficialOwnerNameSearch(x, searchData);
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( response.getTotalMatches() > 0 ) {
             status = ComplianceValidationStatus.INVESTIGATING;
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
-                requestApproval(x, 
+                requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(Long.toString(beneficialOwner.getId()))
                     .setDaoKey("beneficialOwnerDAO")
