@@ -2,7 +2,7 @@
 # Super simple launcher.
 
 # Run as ubuntu on staging and production
-target_user="nanopay"
+target_user="ubuntu"
 if [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "$target_user" ]; then
   exec sudo -u "$target_user" -- "$0" "$@"
 fi
