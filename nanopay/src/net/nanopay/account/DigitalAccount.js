@@ -69,7 +69,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
           static public DigitalAccount findDefault(X x, User user, String currency) {
-            return (DigitalAccount) findDefault(x, user, currency, null).fclone();
+            return (DigitalAccount) findDefault(x, user, currency, null);
           }
           static public DigitalAccount findDefault(X x, User user, String currency, DigitalAccount instance) {
             Logger logger = (Logger) x.get("logger");
