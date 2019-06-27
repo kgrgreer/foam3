@@ -84,6 +84,7 @@ foam.CLASS({
                   if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setDowJones(response.getId())
+                    .setType("Dow Jones (" + response.getSearchType() + ")")
                     .setUser(response.getUserId())
                     .setEntityId(response.getUserId())
                     .setEntityLabel(label)
@@ -102,6 +103,7 @@ foam.CLASS({
                   if ( entity instanceof Transaction ) {
                     complianceItem = new ComplianceItem.Builder(x)
                       .setIdentityMind(response.getId())
+                      .setType("IdentityMind (" + response.getApiName() + ")")
                       .setTransaction(response.getEntityId().toString())
                       .setTransactionId(response.getEntityId().toString())
                       .setEntityLabel(((Transaction) entity).getSummary())
@@ -109,6 +111,7 @@ foam.CLASS({
                   } else {
                     complianceItem = new ComplianceItem.Builder(x)
                       .setIdentityMind(response.getId())
+                      .setType("IdentityMind (" + response.getApiName() + ")")
                       .setUser(Long.parseLong(response.getEntityId().toString()))
                       .setEntityId(Long.parseLong(response.getEntityId().toString()))
                       .setEntityLabel(label)
@@ -122,6 +125,7 @@ foam.CLASS({
                   Business business = (Business) businessDAO.find(response.getEntityId());
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setLevResponse(response.getId())
+                    .setType("Secure Fact (LEV)")
                     .setUser(response.getEntityId())
                     .setEntityId(response.getEntityId())
                     .setEntityLabel(business.label())
@@ -134,6 +138,7 @@ foam.CLASS({
                   User user = (User) userDAO.find(response.getEntityId());
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setSidniResponse(response.getId())
+                    .setType("Secure Fact (SIDni)")
                     .setUser(response.getEntityId())
                     .setEntityId(response.getEntityId())
                     .setEntityLabel(user.label())
