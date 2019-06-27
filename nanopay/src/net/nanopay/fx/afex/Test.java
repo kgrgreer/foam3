@@ -8,15 +8,15 @@ public class Test implements ContextAgent {
   @Override
   public void execute(X x) {
     AFEXService afexService = new AFEXService(x);
-      //testGetToken(afexService);
-      //testOnboardCorporateClient(afexService);
-      //testCreateBeneficiary(afexService);
-      //testUpdateBeneficiary(afexService);
-      //testDisableBeneficiary(afexService);
-      //testFindBeneficiary(afexService);
-      //testFindBankByNationalID(afexService);
-      //testGetValueDate(afexService);
-      //testGetQuote(afexService);
+      testGetToken(afexService);
+      testOnboardCorporateClient(afexService);
+      testCreateBeneficiary(afexService);
+      testUpdateBeneficiary(afexService);
+      testDisableBeneficiary(afexService);
+      testFindBeneficiary(afexService);
+      testFindBankByNationalID(afexService);
+      testGetValueDate(afexService);
+      testGetQuote(afexService);
       testCreateTrade(afexService);
       testCreatePayment(afexService);
   }
