@@ -83,7 +83,7 @@ foam.CLASS({
               String country = address.getCountryId();
               DAO currencyDAO = (DAO) x.get("currencyDAO");
               List currencies = ((ArraySink) currencyDAO
-                .where(EQ(Currency.COUNTRY, country))
+                .where(EQ(Currency.COUNTRY, country)).limit(2)
                 .select(new ArraySink())).getArray();
               if ( currencies.size() == 1 ) {
                 denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
@@ -92,16 +92,12 @@ foam.CLASS({
               }
             }
           }
-
           synchronized(String.valueOf(user.getId()).intern()) {
-            logger.info(DigitalAccount.class.getSimpleName(), "findDefault", "user", user.getId(), "currency", currency);
-
             DAO accountDAO  = new foam.dao.RelationshipDAO.Builder(x)
               .setSourceId(user.getId())
               .setTargetProperty(net.nanopay.account.Account.OWNER)
               .setTargetDAOKey("localAccountDAO")
               .build();
-
             account = (DigitalAccount) accountDAO
               .find(
                 AND(
@@ -111,7 +107,6 @@ foam.CLASS({
                   EQ(Account.IS_DEFAULT, true)
                 )
               );
-
             if ( account == null ) {
               account = instance == null ? new DigitalAccount() : instance;
               account.setDenomination(denomination);
