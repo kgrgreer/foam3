@@ -385,8 +385,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/quote");
       uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair())
         .setParameter("ValueDate", request.getValueDate())
-        .setParameter("OptionDate", request.getOptionDate())
         .setParameter("Amount", request.getAmount());
+      if ( !request.getOptionDate().equals("") ) uriBuilder.setParameter("OptionDate", request.getOptionDate());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
       httpGet.addHeader("API-Key", request.getClientAPIKey());
