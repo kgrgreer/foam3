@@ -75,9 +75,19 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      return (Token) jsonParser.parseString(response, Token.class);
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("AFEX get token failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return (Token) jsonParser.parseString(response, Token.class);
+      } finally {
+        httpResponse.close();
+      }
+
     } catch (IOException e) {
       logger.error(e);
     }
@@ -115,14 +125,18 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Onboard AFEX corporate client failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
-          + httpResponse.getStatusLine().getReasonPhrase());
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Onboard AFEX corporate client failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return (OnboardCorporateClientResponse) jsonParser.parseString(response, OnboardCorporateClientResponse.class);
+      } finally {
+        httpResponse.close();
       }
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-
-      return (OnboardCorporateClientResponse) jsonParser.parseString(response, OnboardCorporateClientResponse.class);
     } catch (IOException e) {
       logger.error(e);
     }
@@ -154,18 +168,21 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Create AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
-          + httpResponse.getStatusLine().getReasonPhrase());
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Create AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        Object[] respArr = jsonParser.parseStringForArray(response, CreateBeneficiaryResponse.class);
+        if ( respArr.length != 0 ) {
+          return (CreateBeneficiaryResponse) respArr[0];
+        }
+      } finally {
+        httpResponse.close();
       }
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-
-      Object[] respArr = jsonParser.parseStringForArray(response, CreateBeneficiaryResponse.class);
-
-      if ( respArr.length != 0 ) {
-        return (CreateBeneficiaryResponse) respArr[0];
-      }
     } catch (IOException e) {
       logger.error(e);
     }
@@ -198,22 +215,26 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Update AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
-          + httpResponse.getStatusLine().getReasonPhrase());
-      }
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Update AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-      Object[] respArr = jsonParser.parseStringForArray(response, UpdateBeneficiaryResponse.class);
-
-      if ( respArr.length != 0 ) {
-        for ( Object resp : respArr) {
-          UpdateBeneficiaryResponse updateBeneficiaryResponse = (UpdateBeneficiaryResponse) resp;
-          if ( updateBeneficiaryResponse.getName().equals("Beneficiary has been updated") ) {
-            return updateBeneficiaryResponse;
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        Object[] respArr = jsonParser.parseStringForArray(response, UpdateBeneficiaryResponse.class);
+        if ( respArr.length != 0 ) {
+          for ( Object resp : respArr) {
+            UpdateBeneficiaryResponse updateBeneficiaryResponse = (UpdateBeneficiaryResponse) resp;
+            if ( updateBeneficiaryResponse.getName().equals("Beneficiary has been updated") ) {
+              return updateBeneficiaryResponse;
+            }
           }
         }
+      } finally {
+        httpResponse.close();
       }
+
     } catch (IOException e) {
       logger.error(e);
     }
@@ -232,16 +253,20 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Disable AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
-          + httpResponse.getStatusLine().getReasonPhrase());
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Disable AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return response.substring(1, response.length() - 1);
+      } finally {
+        httpResponse.close();
       }
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-      return response.substring(1, response.length() - 1);
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
     }
@@ -262,13 +287,18 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Get AFEX payee information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
-          + httpResponse.getStatusLine().getReasonPhrase());
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Get AFEX payee information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return (FindBeneficiaryResponse) jsonParser.parseString(response, FindBeneficiaryResponse.class);
+      } finally {
+        httpResponse.close();
       }
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-      return (FindBeneficiaryResponse) jsonParser.parseString(response, FindBeneficiaryResponse.class);
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
     }
@@ -293,18 +323,22 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Create AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
-          + httpResponse.getStatusLine().getReasonPhrase());
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Create AFEX beneficiary failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        Object[] respArr = jsonParser.parseStringForArray(response, FindBankByNationalIDResponse.class);
+
+        if ( respArr.length != 0 ) {
+          return (FindBankByNationalIDResponse) respArr[0];
+        }
+      } finally {
+        httpResponse.close();
       }
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-
-      Object[] respArr = jsonParser.parseStringForArray(response, FindBankByNationalIDResponse.class);
-
-      if ( respArr.length != 0 ) {
-        return (FindBankByNationalIDResponse) respArr[0];
-      }
     } catch (IOException e) {
       logger.error(e);
     }
@@ -326,15 +360,20 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Get AFEX value date information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
-          + httpResponse.getStatusLine().getReasonPhrase());
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Get AFEX value date information failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return response.substring(1, response.length() - 1);
+      } finally {
+        httpResponse.close();
       }
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-      return response.substring(1, response.length() - 1);
     } catch (IOException | URISyntaxException e) {
-      e.printStackTrace();
+      logger.error(e);
     }
 
     return null;
@@ -353,9 +392,19 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
 
-      return (Quote) jsonParser.parseString(response, Quote.class);
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Get AFEX quote failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return (Quote) jsonParser.parseString(response, Quote.class);
+      } finally {
+        httpResponse.close();
+      }
+
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
     }
@@ -383,14 +432,18 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Create AFEX trade failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
-          + httpResponse.getStatusLine().getReasonPhrase());
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Create AFEX trade failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
+      } finally {
+        httpResponse.close();
       }
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-
-      return (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
     } catch (IOException e) {
       logger.error(e);
     }
@@ -415,14 +468,18 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        throw new RuntimeException("Create AFEX payment failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
-          + httpResponse.getStatusLine().getReasonPhrase());
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Create AFEX payment failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return (CreatePaymentResponse) jsonParser.parseString(response, CreatePaymentResponse.class);
+      } finally {
+        httpResponse.close();
       }
 
-      String response = new BasicResponseHandler().handleResponse(httpResponse);
-
-      return (CreatePaymentResponse) jsonParser.parseString(response, CreatePaymentResponse.class);
     } catch (IOException e) {
       logger.error(e);
     }
