@@ -138,26 +138,27 @@ public class AuthenticatedTransactionDAO
       throw new AuthenticationException();
     }
 
-    boolean global = auth.check(x, GLOBAL_TXN_READ);
+    boolean hasGlobalReadPermission = auth.check(x, GLOBAL_TXN_READ);
+    DAO dao;
 
-    ArraySink arraySink = (ArraySink) user.getAccounts(x).select(new ArraySink());
-    List accountsArray =  arraySink.getArray();
-    Long[] ids = new Long[accountsArray.size()];
-    for (int i =0; i < accountsArray.size(); i++)
-      ids[i] = ((Account)accountsArray.get(i)).getId();
-    DAO dao = global ?
-      getDelegate() :
-      getDelegate().where(
-                          OR(
-                             IN(Transaction.SOURCE_ACCOUNT, ids),
-                             IN(Transaction.DESTINATION_ACCOUNT, ids)
-                             )
-                          );
+    if ( hasGlobalReadPermission ) {
+      dao = getDelegate();
+    } else {
+      foam.mlang.sink.Map map = new foam.mlang.sink.Map.Builder(x)
+        .setArg1(Account.ID)
+        .setDelegate(new ArraySink())
+        .build();
+      user.getAccounts(x).select(map);
+      List ids = ((ArraySink) map.getDelegate()).getArray();
+      dao = getDelegate().where(
+        OR(
+          IN(Transaction.SOURCE_ACCOUNT, ids),
+          IN(Transaction.DESTINATION_ACCOUNT, ids)
+        ));
+    }
 
-    boolean verification = auth.check(x, VERIFICATION_TXN_READ);
-
-    dao = verification ? dao : dao.where(NOT(INSTANCE_OF(VerificationTransaction.class)));
-
+    boolean hasVerificationReadPermission = auth.check(x, VERIFICATION_TXN_READ);
+    dao = hasVerificationReadPermission ? dao : dao.where(NOT(INSTANCE_OF(VerificationTransaction.class)));
 
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
