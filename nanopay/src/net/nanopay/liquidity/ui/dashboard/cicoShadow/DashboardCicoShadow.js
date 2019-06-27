@@ -8,14 +8,59 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  css: `
+  ^ {
+    padding: 32px 16px;
+  }
+
+  ^ .property-account {
+    display: inline-block;
+  }
+
+  ^ .property-timeFrame {
+    display: inline-block;
+  }
+
+  ^card-header-title {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  ^ .foam-u2-tag-Select {
+    margin-left: 16px;
+  }
+
+  ^chart {
+    margin-top: 32px;
+  }
+
+  ^shifter {
+    margin: 36px 0;
+    padding: 0px 16px;
+  }
+
+  ^ .foam-u2-ActionView img {
+    margin-right: 0;
+  }
+
+  ^ .foam-u2-ActionView-secondary:disabled {
+    opacity: 0.4;
+  }
+`,
+
   requires: [
     'net.nanopay.tx.model.Transaction',
+    'foam.nanos.analytics.Candlestick',
+    'net.nanopay.account.ShadowAccount',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.account.ShadowAccount'
+    'org.chartjs.HorizontalBarDAOChartView',
+    'foam.u2.layout.Rows',
+    'foam.u2.layout.Cols'
   ],
 
   exports: [
-    'shadowAccountDAO',
+    'shadowAccountDAO'
   ],
   imports: [
     'accountDAO',
@@ -45,15 +90,20 @@ foam.CLASS({
     },
     {
       name: 'CARD_HEADER',
-      message: 'DEBITS AND CREDITS',
+      message: 'CASH IN / OUT OF SHADOW ACCOUNTS',
     }
   ],
 
   properties: [
     {
+      class: 'Int',
+      name: 'yItemsLimit',
+      value: 3
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
-      name: 'chosenAccount',
+      name: 'account',
       targetDAOKey: 'shadowAccountDAO',
     },
     {
@@ -68,29 +118,84 @@ foam.CLASS({
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'CICOTransactionsDAO',
+      name: 'cicoTransactionsDAO',
       documentation: `
       DAO for recent transactions in entire ecosystem
     `,
-      expression: function (chosenAccount) {
+      expression: function (account) {
         return this.transactionDAO.where(
-          this.AND(
-            //this.GT(this.Transaction.completionDate,start),
-            //this.LT(this.Transaction.completionDate,end),
-            this.EQ(this.Transaction.STATUS, this.TransactionStatus.COMPLETED),
-            this.OR(
-              this.AND(
-                this.INSTANCE_OF(this.CITransaction),
-                this.EQ(this.Transaction.DESTINATION_ACCOUNT, chosenAccount)
-              ),
-              this.AND(
-                this.INSTANCE_OF(this.COTransaction),
-                this.EQ(this.Transaction.SOURCE_ACCOUNT, chosenAccount)
-              )
-            )
-          )
+          this.TRUE
+          // this.AND(
+          //   //this.GT(this.Transaction.completionDate,start),
+          //   //this.LT(this.Transaction.completionDate,end),
+          //   this.EQ(this.Transaction.STATUS, this.TransactionStatus.COMPLETED),
+          //   this.OR(
+          //     this.AND(
+          //       this.INSTANCE_OF(this.CITransaction),
+          //       this.EQ(this.Transaction.DESTINATION_ACCOUNT, account)
+          //     ),
+          //     this.AND(
+          //       this.INSTANCE_OF(this.COTransaction),
+          //       this.EQ(this.Transaction.SOURCE_ACCOUNT, account)
+          //     )
+          //   )
+          // )
         );
       }
+    },
+    {
+      class: 'Map',
+      name: 'config',
+      factory: function() {
+        var self = this;
+        return {
+          type: 'horizontalBar',
+          data: {
+            labels: [ 'test1', 'test2', 'tings'],
+            datasets: [
+              {
+                label: 'Dataset 1',
+                backgroundColor: '#b8e5b3',
+                data: [
+                  0.4,
+                  0.3,
+                  0.1,
+                ]
+              }, {
+                label: 'Dataset 2',
+                backgroundColor: '#f79393',
+                data: [
+                  0.4,
+                  0.3,
+                  0.6,
+                ]
+              }
+            ] 
+          },
+          options: {
+            elements: {
+              rectangle: {
+                borderWidth: 2,
+              }
+            }, 
+            scales: {
+              xAxes: [{
+                barPercentage: 0.5,
+                barThickness: 6,
+                maxBarThickness: 8,
+                gridLines: {
+                    offsetGridLines: true
+                }
+            }]
+            } 
+          }
+        }
+      }
+    },
+    {
+      class: 'Map',
+      name: 'styling',
+      value: {}
     },
     {
       class: 'String',
@@ -104,23 +209,15 @@ foam.CLASS({
           'Quarterly',
           'Annually'
         ]
-      },
-      postSet: function (_, _) {
-        this.rewindFactor = 1;
       }
     },
     {
-      class: 'Int',
-      name: 'rewindFactor',
-      value: 1
-    },
-    {
       name: 'dateRange',
-      expression: function (timeFrame, rewindFactor) {
+      expression: function (timeFrame, yItemsLimit) {
         var today = new Date();
         switch (timeFrame) {
           case 'Weekly':
-            var daysToRewind = 7 * (this.rewindFactor - 1);
+            var daysToRewind = 7 * (yItemsLimit - 1);
 
             var sun = new Date();
             sun.setHours(0, 0, 0, 0);
@@ -136,7 +233,7 @@ foam.CLASS({
               max: sat
             };
           case 'Monthly':
-            var monthsToRewind = rewindFactor - 1;
+            var monthsToRewind = yItemsLimit - 1;
 
             var min = new Date();
             min.setMonth(min.getMonth() - monthsToRewind);
@@ -153,7 +250,7 @@ foam.CLASS({
               max: max
             };
           case 'Quarterly':
-            var monthsToRewind = rewindFactor * 3;
+            var monthsToRewind = yItemsLimit * 3;
 
             var currQuarterEndMonth = today.getMonth() + (2 - today.getMonth() % 3) + 1;
             var currQuarterEnd = new Date(today.getFullYear(), currQuarterEndMonth, 0);
@@ -193,59 +290,37 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.SUPER();
-      this.start()
-        .startContext({ data: this })
-          .add(this.CHOSEN_ACCOUNT)
-        .endContext()
-        .start(foam.comics.v2.DAOBrowserView, {
-          data: this.CICOTransactionsDAO
-        })
-          .addClass(this.myClass('accounts-table'))
+      // this.account$.sub(this.dataUpdate);
+      // this.dateRange$.sub(this.dataUpdate);
+      // this.dataUpdate();
+
+      this.addClass(this.myClass())
+        .start(this.Cols).style({ 'align-items': 'center' })
+          .start().add(this.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
+          .start(this.Cols)
+            .startContext({ data: this })
+            // TODO: Add a read-only Start Date?
+            // TODO: Add End Date
+              .add(this.ACCOUNT)
+              .add(this.TIME_FRAME)
+            .endContext()
+          .end()
         .end()
-      .end();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'dataUpdate',
-      isFramed: true,
-      code: async function () {
-        this.formatYAxis();
-        if (!this.chosenAccount) return;
-        var txns = this.EasyDAO.create({
-          of: 'net.nanopay.tx.model.Transactions',
-          daoType: 'ARRAY'
-        });
-        this.accountCurrency = await this.currencyDAO.find(this.account.denomination);
-        var txnSink = await this.data.select();
-        var keyMap = {};
-        txnSink.array.forEach(b => {
-          if (b.completedTime >= this.dateRange.min && b.completedTime <= this.dateRange.max) {
-            txns.put(b);
-            keyMap[b.key] = 1;
-          }
-        });
-      }
-    }
-  ],
-
-
-  actions: [
-    {
-      name: 'rewind',
-      code: function () {
-        this.rewindFactor++;
-      }
+        .start().style({ 'width': '930px', 'height': '266px' }).addClass(this.myClass('chart'))
+          .add(this.HorizontalBarDAOChartView.create({
+            data$: this.cicoTransactionsDAO$,
+            config$: this.config$,
+            customDatasetStyling$: this.styling$,
+            width: 920,
+            height: 240
+          }))
+        .end()
     },
-    {
-      name: 'forward',
-      code: function () {
-        if (this.rewindFactor === 1) return;
-        this.rewindFactor--;
-      }
+
+    function formatYAxis() {
+      var self = this;
+      this.config.data = {}; // Prevent cloning infinite loop. Will be repopulated.
+      var config = foam.Object.clone(this.config);
     }
   ]
-
 });
