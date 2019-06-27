@@ -11,6 +11,8 @@ foam.CLASS({
     'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
     'net.nanopay.liquidity.ui.dashboard.liquidity.DashboardLiquidity',
     'net.nanopay.liquidity.ui.dashboard.cicoShadow.DashboardCicoShadow',
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
     'net.nanopay.liquidity.ui.dashboard.recentTransactions.DashboardRecentTransactions',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
@@ -21,7 +23,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
     'accountBalanceWeeklyCandlestickDAO as accountBalancesOverTime',
     'liquidityThresholdWeeklyCandlestickDAO',
     'transactionDAO'
@@ -50,17 +51,6 @@ foam.CLASS({
   `,
 
   properties: [
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'accounts',
-      view: { class: 'foam.comics.v2.DAOBrowserView' },
-      documentation: `
-        DAO for all accounts in the ecosystem.
-      `,
-      expression: function(accountDAO) {
-        return accountDAO;
-      }
-    },
     {
       class: 'Reference',
       of: 'net.nanopay.model.Currency',
@@ -114,7 +104,6 @@ foam.CLASS({
             .start(this.Cards)
               .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
                 .tag(this.DashboardAccounts, { 
-                  data: this.accounts,
                   currency$: this.currencyExposureDAO$,
                   denomination$: this.denominations$,
                 })
