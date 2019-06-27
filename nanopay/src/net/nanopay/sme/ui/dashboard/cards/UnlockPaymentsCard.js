@@ -235,8 +235,7 @@ foam.CLASS({
             x.businessOnboardingDAO.find(userId).then((o) => {
               o = o || this.BusinessOnboarding.create({
                 userId: userId,
-                businessId: businessId,
-                enableInternationalPayment: true
+                businessId: businessId
               });
               this.stack.push({
                 class: 'net.nanopay.sme.onboarding.ui.WizardView',

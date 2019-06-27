@@ -27,7 +27,6 @@ public class CheckContactExistsDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     Contact contact = (Contact) obj;
-    System.out.println("CheckContactExistsDAO run first");
 
     if ( contact == null ) {
       throw new RuntimeException("Cannot put null!");
