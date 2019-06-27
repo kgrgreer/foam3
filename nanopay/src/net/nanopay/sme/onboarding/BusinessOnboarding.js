@@ -279,7 +279,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'businessId',
-      section: 'adminReferenceSection'
+      section: 'adminReferenceSection',
+      label: 'Business Name'
     },
     {
       class: 'Reference',
