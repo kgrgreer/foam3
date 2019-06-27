@@ -31,10 +31,20 @@ while getopts "hN:O:I:" opt ; do
    esac
 done
 
-echo "INFO :: ${NANOPAY_HOME} ${NANOPAY_TARBALL}"
+NANOPAY_CURRENT_VERSION=$(ls -l /opt | grep 'nanopay ->' | awk -F- '{print $NF}')
+NANOPAY_NEW_VERSION=$(echo ${NANOPAY_HOME} | awk -F- '{print $NF}')
 
 function setupNanopaySymLink {
-    echo "INFO :: Linking ${NANOPAY_HOME} to ${NANOPAY_ROOT}"
+    if [ ! -z $NANOPAY_CURRENT_VERSION ]; then
+        if [ "$NANOPAY_CURRENT_VERSION" = "$NANOPAY_NEW_VERSION" ]; then
+            echo "INFO :: Found v${NANOPAY_CURRENT_VERSION}, leaving installed"
+            return 0
+        fi
+        echo "INFO :: Found v${NANOPAY_CURRENT_VERSION}, replacing with v${NANOPAY_NEW_VERSION}"
+    else
+        echo "INFO :: No version found, installing v${NANOPAY_NEW_VERSION}"
+    fi
+
     if [ -h ${NANOPAY_ROOT} ]; then
         unlink ${NANOPAY_ROOT}
     fi

@@ -66,7 +66,7 @@ fi
 if [ $INSTALL_ONLY -eq 0 ]; then
     echo "INFO :: Copying ${NANOPAY_TARBALL_PATH} to ${REMOTE_USER}@${REMOTE_URL}:${NANOPAY_REMOTE_OUTPUT}"
 
-    scp -i ${SSH_KEY} ${NANOPAY_TARBALL_PATH} ${REMOTE_USER}@${REMOTE_URL}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}
+    scp -q -i ${SSH_KEY} ${NANOPAY_TARBALL_PATH} ${REMOTE_USER}@${REMOTE_URL}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}
 
     if [ ! $? -eq 0 ]; then
         echo "ERROR :: Failed copying tarball to remote server"
