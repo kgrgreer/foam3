@@ -90,9 +90,6 @@ foam.CLASS({
       name: 'denomination',
     },
     {
-      name: 'conversionService',
-    },
-    {
       name: 'controllerMode',
       factory: function() {
         return this.ControllerMode.VIEW;
