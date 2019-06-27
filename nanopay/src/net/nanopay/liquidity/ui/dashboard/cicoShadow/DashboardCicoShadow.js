@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.cicoShadow',
   name: 'DashboardCicoShadow',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.Element',
   description: 'Displays a horizontal bar graph for the cash flow of shadow accounts',
 
   implements: [
@@ -14,6 +14,9 @@ foam.CLASS({
     'net.nanopay.account.ShadowAccount'
   ],
 
+  exports: [
+    'shadowAccountDAO',
+  ],
   imports: [
     'accountDAO',
     'transactionDAO'
@@ -48,37 +51,27 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'foam.dao.DAOProperty',
-      name: 'shadowAccountDAO',
-      //hidden: true,
-      documentation: `
-            A predicatedAccountDAO which only pulls shadow accounts
-          `,
-      expression: function (accountDAO) {
-        return accountDAO.where(this.INSTANCE_OF(this.ShadowAccount));
-      }
-    },
-    {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'chosenAccount',
-      view: function (_, X) {
-        return foam.u2.view.ChoiceView.create({
-          dao: X.data.shadowAccountDAO,
-          placeholder: 'Please select an account',
-          objToChoice: function (a) {
-            return [a, a.name];
-          }
-        });
+      targetDAOKey: 'shadowAccountDAO',
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'shadowAccountDAO',
+      documentation: `
+        A predicatedAccountDAO which only pulls shadow accounts
+      `,
+      expression: function () {
+        return this.accountDAO.where(this.INSTANCE_OF(this.ShadowAccount));
       }
     },
     {
       class: 'foam.dao.DAOProperty',
       name: 'CICOTransactionsDAO',
-      // view: { class: 'foam.comics.v2.DAOBrowserView' },
       documentation: `
-                DAO for recent transactions in entire ecosystem
-              `,
+      DAO for recent transactions in entire ecosystem
+    `,
       expression: function (chosenAccount) {
         return this.transactionDAO.where(
           this.AND(
@@ -97,11 +90,6 @@ foam.CLASS({
             )
           )
         );
-      },
-      view: {
-        class: 'net.nanopay.liquidity.ui.account.HorizontalBarGraphView',
-        account$: this.chosenAccount$,
-
       }
     },
     {
@@ -205,7 +193,17 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.add("test");
+      this.SUPER();
+      this.start()
+        .startContext({ data: this })
+          .add(this.CHOSEN_ACCOUNT)
+        .endContext()
+        .start(foam.comics.v2.DAOBrowserView, {
+          data: this.CICOTransactionsDAO
+        })
+          .addClass(this.myClass('accounts-table'))
+        .end()
+      .end();
     }
   ],
 
