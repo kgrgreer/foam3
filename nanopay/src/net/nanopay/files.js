@@ -304,7 +304,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/PayeeTransactionDAO' },
   { name: 'net/nanopay/tx/AbliiTransaction' },
-  { name: 'net/nanopay/tx/InterestTransaction' },
+  { name: 'net/nanopay/tx/interesttransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
   { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
@@ -317,6 +317,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
+  { name: 'net/nanopay/tx/cico/ReverseCIRule'},
+  { name: 'net/nanopay/tx/cico/ReverseCORule'},
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },

@@ -468,8 +468,8 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
       visibility: 'RO'
-   },
-   {
+    },
+    {
       class: 'DateTime',
       name: 'scheduledTime',
       documentation: `The scheduled date when transaction should be processed.`
