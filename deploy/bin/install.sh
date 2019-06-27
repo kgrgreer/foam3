@@ -31,7 +31,7 @@ while getopts "hN:O:I:" opt ; do
    esac
 done
 
-NANOPAY_CURRENT_VERSION=$(ls -l /opt | grep 'nanopay ->' | awk -F- '{print $NF}')
+NANOPAY_CURRENT_VERSION=$(readlink -f ${NANOPAY_ROOT} | awk -F- '{print $NF}')
 NANOPAY_NEW_VERSION=$(echo ${NANOPAY_HOME} | awk -F- '{print $NF}')
 
 function setupNanopaySymLink {
