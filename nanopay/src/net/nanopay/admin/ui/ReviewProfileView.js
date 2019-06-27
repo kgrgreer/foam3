@@ -25,7 +25,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .principalOwnerLabel {
       margin: 0 auto;
@@ -35,7 +35,7 @@ foam.CLASS({
       font-style: normal;
       font-stretch: normal;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       width: 540px;
     }
     ^ .principalOwnerContainer {

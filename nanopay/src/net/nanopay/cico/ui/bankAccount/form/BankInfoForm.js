@@ -72,7 +72,7 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^ .messageBody {
@@ -83,7 +83,7 @@ foam.CLASS({
       line-height: 1.5;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^ .medium-header {

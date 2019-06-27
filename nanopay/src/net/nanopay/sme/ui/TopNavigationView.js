@@ -15,7 +15,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      background: %PRIMARYCOLOR%;
+      background: /*%BLACK%*/ #1e1f21;
       width: 100%;
       height: 60px;
       color: white;

@@ -44,6 +44,8 @@ var classes = [
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.payment.Payroll',
+  'net.nanopay.payment.PayrollEntry',
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
   'net.nanopay.account.Balance',
@@ -122,6 +124,10 @@ var classes = [
   'net.nanopay.kotak.KotakCredentials',
 
   // AFEX
+  'net.nanopay.fx.FXSummaryTransaction',
+  'net.nanopay.fx.afex.AFEXTransaction',
+  'net.nanopay.fx.afex.AFEXTransactionPlanDAO',
+  'net.nanopay.fx.afex.AFEXBMOTransactionPlanDAO',
   'net.nanopay.fx.afex.AFEX',
   'net.nanopay.fx.afex.AFEXBusiness',
   'net.nanopay.fx.afex.AFEXCredentials',
@@ -242,7 +248,6 @@ var classes = [
   'net.nanopay.fx.FXTransfer',
   'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.fx.FXUserStatus',
-  'net.nanopay.fx.afex.AFEXTransaction',
   'net.nanopay.fx.KotakFxTransaction',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
@@ -296,6 +301,7 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionLimitRuleAction',
   'net.nanopay.tx.ruler.AccountTransactionLimitRule',
+  'net.nanopay.tx.ruler.InvoicePaymentRule',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -518,6 +524,8 @@ var classes = [
   'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
   'net.nanopay.meter.compliance.UserFinalRuleValidation',
   'net.nanopay.meter.compliance.ComplianceItem',
+  'net.nanopay.meter.reports.DateColumnOfReports',
+  'net.nanopay.meter.reports.RowOfBusSumReports',
 
   // ruler
   'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',

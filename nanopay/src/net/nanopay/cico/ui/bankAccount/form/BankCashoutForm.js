@@ -12,142 +12,138 @@ foam.CLASS({
     'goNext'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .link {
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.3px;
-          text-align: left;
-          color: #2CAB70;
-        }
+  css: `
+    ^ .link {
+      font-size: 12px;
+      line-height: 1.33;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: #2CAB70;
+    }
 
-        ^ .cashoutOption {
-          display: inline-block;
-          width: 466px;
-          height: 40px;
-          background-color: #FFFFFF;
-          box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
-          color: #093649;
-          margin-top: 15px;
-        }
+    ^ .cashoutOption {
+      display: inline-block;
+      width: 466px;
+      height: 40px;
+      background-color: #FFFFFF;
+      box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.01);
+      color: /*%BLACK%*/ #1e1f21;
+      margin-top: 15px;
+    }
 
-        ^ .cashoutOption:hover {
-          cursor: pointer;
-          background-color: #F1F1F1;
-        }
+    ^ .cashoutOption:hover {
+      cursor: pointer;
+      background-color: #F1F1F1;
+    }
 
-        ^ .cashoutOption.selected {
-          background-color: #23C2B7;
-          box-shadow: none;
-          color: #FFFFFF;
-        }
+    ^ .cashoutOption.selected {
+      background-color: #23C2B7;
+      box-shadow: none;
+      color: #FFFFFF;
+    }
 
-        ^ .cashoutOptionLabel {
-          display: inline;
-          margin-left: 60px;
-          line-height: 40px;
-          font-size: 12px;
-          letter-spacing: 0.3px;
-        }
+    ^ .cashoutOptionLabel {
+      display: inline;
+      margin-left: 60px;
+      line-height: 40px;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+    }
 
-        ^ .pricingContainer {
-          display: inline;
-          float: right;
-          width: 100px;
-          margin-right: 60px;
-        }
+    ^ .pricingContainer {
+      display: inline;
+      float: right;
+      width: 100px;
+      margin-right: 60px;
+    }
 
-        ^ .pricingContainer .cashoutOptionLabel {
-          margin-left: 0;
-        }
+    ^ .pricingContainer .cashoutOptionLabel {
+      margin-left: 0;
+    }
 
-        ^ .autoCashoutLabel {
-          font-size: 12px;
-          letter-spacing: 0.3px;
-          color: #093649;
-          margin: 0;
-          margin-top: 10px;
-        }
+    ^ .autoCashoutLabel {
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      color: /*%BLACK%*/ #1e1f21;
+      margin: 0;
+      margin-top: 10px;
+    }
 
-        ^ .choiceContainer {
-          margin-top: 20px;
-          margin-left: 60px;
-        }
+    ^ .choiceContainer {
+      margin-top: 20px;
+      margin-left: 60px;
+    }
 
-        ^ .choiceContainer input[type="radio"],
-        ^ .choiceContainer input[type="checkbox"]{
-          display: none;
-        }
+    ^ .choiceContainer input[type="radio"],
+    ^ .choiceContainer input[type="checkbox"]{
+      display: none;
+    }
 
-        ^ .foam-u2-view-RadioView label {
-          position: relative;
-          padding-left: 38px;
-        }
+    ^ .foam-u2-view-RadioView label {
+      position: relative;
+      padding-left: 38px;
+    }
 
-        ^ .foam-u2-view-RadioView {
-          margin: 11px 0;
-        }
+    ^ .foam-u2-view-RadioView {
+      margin: 11px 0;
+    }
 
-        ^ .foam-u2-view-RadioView label span::before,
-        ^ .foam-u2-view-RadioView label span::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          margin: auto;
-        }
+    ^ .foam-u2-view-RadioView label span::before,
+    ^ .foam-u2-view-RadioView label span::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
 
-        ^ .foam-u2-view-RadioView label span:hover {
-          cursor: pointer;
-        }
+    ^ .foam-u2-view-RadioView label span:hover {
+      cursor: pointer;
+    }
 
-        ^ .foam-u2-view-RadioView label span::before {
-          left: 0;
-          width: 15px;
-          height: 15px;
-          border: solid 1px #2d4088;
-          border-radius: 7.5px;
-          box-sizing: border-box;
-        }
+    ^ .foam-u2-view-RadioView label span::before {
+      left: 0;
+      width: 15px;
+      height: 15px;
+      border: solid 1px #2d4088;
+      border-radius: 7.5px;
+      box-sizing: border-box;
+    }
 
-        ^ .foam-u2-view-RadioView label span::after {
-          left: 5px;
-          width: 5px;
-          height: 5px;
-          border-radius: 2.5px;
-          background-color: transaparent;
-        }
+    ^ .foam-u2-view-RadioView label span::after {
+      left: 5px;
+      width: 5px;
+      height: 5px;
+      border-radius: 2.5px;
+      background-color: transaparent;
+    }
 
-        input[type="radio"]:checked + label span::after {
-          background-color: #2d4088;
-        }
+    input[type="radio"]:checked + label span::after {
+      background-color: #2d4088;
+    }
 
-        ^ .foam-u2-view-RadioView label span {
-          font-size: 12px;
-          letter-spacing: 0.3px;
-          color: #093649;
-        }
+    ^ .foam-u2-view-RadioView label span {
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
 
-        ^ .promoContainer {
-          position: relative;
-          margin-top: 20px;
-          height: 40px;
-        }
+    ^ .promoContainer {
+      position: relative;
+      margin-top: 20px;
+      height: 40px;
+    }
 
-        ^ .promoContainer .pDefault{
-          display: inline-block;
-        }
+    ^ .promoContainer .pDefault{
+      display: inline-block;
+    }
 
-        ^ .promoContainer .property-promoCode {
-          margin-left: 30px;
-          display: inline-block;
-          height: 40px;
-        }
-      */}
-    })
-  ],
+    ^ .promoContainer .property-promoCode {
+      margin-left: 30px;
+      display: inline-block;
+      height: 40px;
+    }
+  `,
 
   messages: [
     { name: 'Step',         message: 'Step 3: Please select your cashout plan.' },
