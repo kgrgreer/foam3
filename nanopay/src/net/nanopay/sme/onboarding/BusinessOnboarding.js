@@ -154,6 +154,7 @@ foam.CLASS({
   imports: [
     'ctrl',
     'pushMenu',
+    'appConfig'
   ],
 
   sections: [
@@ -181,7 +182,7 @@ foam.CLASS({
       name: 'personalIdentificationSection',
       title: 'Enter your personal identification',
       help: `Thanks, now I’ll need a bit more of your personal identification so I can verify your identity…`,
-      isAvailable: function (signingOfficer) { return signingOfficer && this.enableInternationalPayment }
+      isAvailable: function (signingOfficer) { return signingOfficer && this.appConfig.enableInternationalPayment }
     },
     {
       name: 'homeAddressSection',
@@ -218,7 +219,7 @@ foam.CLASS({
       name: 'internationalTransactionSection',
       title: 'Are you going to be sending International Payments?',
       help: `Thanks! That’s all the details I need to setup local transactions. Now let’s get some more details on your foreign transactions`,
-      isAvailable: function (signingOfficer) { return signingOfficer && this.enableInternationalPayment }
+      isAvailable: function (signingOfficer) { return signingOfficer && this.appConfig.enableInternationalPayment }
     },
     {
       name: 'ownershipYesOrNoSection',
@@ -833,19 +834,12 @@ foam.CLASS({
       ]
     }),
     {
-      class: 'Boolean',
-      name: 'enableInternationalPayment',
-      factory: function() {
-        return false;
-      }
-    },
-    {
       section: 'internationalTransactionSection',
       class: 'FObjectProperty',
       name: 'businessRegistration',
       of: 'net.nanopay.sme.onboarding.USBusinessOnboarding',
-      visibilityExpression: function(enableInternationalPayment) {
-        return enableInternationalPayment ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(appConfig) {
+        return appConfig.enableInternationalPayment ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       factory: function() {
         return this.USBusinessOnboarding.create({});

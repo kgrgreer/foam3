@@ -7,6 +7,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -45,24 +46,23 @@ public class AFEXClientOnboardingDAO
     Logger logger = (Logger) x.get("logger");
     logger.debug(this.getClass().getSimpleName(), "put", obj);
 
+    AppConfig appConfig = (AppConfig) x.get("appConfig");
+    if ( null == appConfig || ! appConfig.getEnableInternationalPayment()) return getDelegate().put_(x, obj);
+
     BankAccount account = (BankAccount) obj;
     BankAccount existingAccount = (BankAccount) getDelegate().find(account.getId());
     if ( existingAccount != null && (existingAccount.getStatus() == BankAccountStatus.VERIFIED  
         ||  account.getStatus() == BankAccountStatus.VERIFIED) ) {
-      System.out.println("A verified bank account exists");
       AuthService auth = (AuthService) x.get("auth");
       DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
       Business business = (Business) localBusinessDAO.find(account.getOwner());
       if  ( null != business && business.getOnboarded() ) {
-        System.out.println("A business exists and onboarded");
         // TODO: Check if business is already pushed to AFEX?
         DAO afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
         if ( afexBusiness != null ) return super.put_(x, obj);
 
-        System.out.println("Business hass not being onboarded to AFEX before now");
-
-        boolean hasFXProvisionPayerPermission = true; //auth.checkUser(getX(), business, "fx.provision.payer");
+        boolean hasFXProvisionPayerPermission = auth.checkUser(getX(), business, "fx.provision.payer");
         //boolean hasCurrencyReadUSDPermission = auth.checkUser(getX(), business, "currency.read.USD");
         if ( hasFXProvisionPayerPermission ) {
           User signingOfficer = getSigningOfficer(x, business);
@@ -99,7 +99,6 @@ public class AFEXClientOnboardingDAO
             onboardingRequest.setTermsAndConditions("true");
             OnboardCorporateClientResponse newClient = afexService.onboardCorporateClient(onboardingRequest);
             if ( newClient != null ) {
-              System.out.println("Business is now onboarded to afex");
               afexBusiness  = new AFEXBusiness();
               afexBusiness.setUser(business.getId());
               afexBusiness.setApiKey(newClient.getAPIKey());

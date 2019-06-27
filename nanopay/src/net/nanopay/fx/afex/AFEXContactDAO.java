@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -32,7 +33,9 @@ public class AFEXContactDAO
     if ( ! (obj instanceof Contact) ) {
       return getDelegate().put_(x, obj);
     }
-    System.out.println("AFEXContactDAO run first");
+
+    AppConfig appConfig = (AppConfig) x.get("appConfig");
+    if ( null == appConfig || ! appConfig.getEnableInternationalPayment()) return getDelegate().put_(x, obj);
 
     DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
@@ -45,16 +48,13 @@ public class AFEXContactDAO
       ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, contact.getId()), INSTANCE_OF(BankAccount.class)))) 
       : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
     if ( contactBankAccount != null ) {
-      System.out.println("Contact has bank account");
       // Check if beneficiary already added
       if ( ! afexBeneficiaryExists(x, contact.getId(), contact.getOwner()) ) {
-        System.out.println("Contact has not being linked on AFEX");
         createAFEXBeneficiary(x, contact.getId(), contactBankAccount.getId(),  contact.getOwner());
       } else {
         // Check if this is an update
         if ( contactNeedsUpdateChanged(contact) ) {
           try {
-            System.out.println("Contact details has changed");
             afexServiceProvider.updatePayee(contact.getId(), contactBankAccount.getId(),  contact.getOwner());
           } catch(Throwable t) {
             ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
@@ -67,14 +67,11 @@ public class AFEXContactDAO
     if ( business != null ) {
       BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class))));
       if ( null != businessBankAccount ) {
-        System.out.println("Business Contact has a bank account");
         if ( ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
-          System.out.println("Business Contact not yet creates");
           createAFEXBeneficiary(x, business.getId(), businessBankAccount.getId(),  contact.getOwner());
         } else {
           // Check if this is an update
           if ( businessNeedsUpdateChanged(business) ) {
-            System.out.println("Business Contact details has changed");
             try {
               afexServiceProvider.updatePayee(business.getId(), businessBankAccount.getId(),  contact.getOwner());
             } catch(Throwable t) {
