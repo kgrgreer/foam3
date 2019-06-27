@@ -131,6 +131,7 @@ public class AuthenticatedTransactionDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
+    DAO dao;
     User user = (User) x.get("user");
     AuthService auth = (AuthService) x.get("auth");
 
@@ -138,10 +139,7 @@ public class AuthenticatedTransactionDAO
       throw new AuthenticationException();
     }
 
-    boolean hasGlobalReadPermission = auth.check(x, GLOBAL_TXN_READ);
-    DAO dao;
-
-    if ( hasGlobalReadPermission ) {
+    if ( auth.check(x, GLOBAL_TXN_READ) ) {
       dao = getDelegate();
     } else {
       foam.mlang.sink.Map map = new foam.mlang.sink.Map.Builder(x)
@@ -157,8 +155,9 @@ public class AuthenticatedTransactionDAO
         ));
     }
 
-    boolean hasVerificationReadPermission = auth.check(x, VERIFICATION_TXN_READ);
-    dao = hasVerificationReadPermission ? dao : dao.where(NOT(INSTANCE_OF(VerificationTransaction.class)));
+    dao = auth.check(x, VERIFICATION_TXN_READ)
+      ? dao
+      : dao.where(NOT(INSTANCE_OF(VerificationTransaction.class)));
 
     return dao.select_(x, sink, skip, limit, order, predicate);
   }
