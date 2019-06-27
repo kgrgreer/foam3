@@ -163,7 +163,7 @@ task genJava(type: Exec) {
     dependsOn {
         tasks.incrementalGenTask
     }
-    onlyIf { 
+    onlyIf {
         !tasks.incrementalGenTask.state.upToDate
     }
     commandLine 'bash', './gen.sh', genJavaDir
@@ -192,7 +192,7 @@ task packageFoam(type: NodeTask) {
     dependsOn {
         tasks.incrementalGenTask
     }
-    onlyIf { 
+    onlyIf {
         !tasks.incrementalGenTask.state.upToDate
     }
     script = file('./tools/js_build/build.js')
@@ -214,7 +214,7 @@ task foamCopy(type: Copy) {
     dependsOn tasks.packageFoam
     dependsOn tasks.foamNodeModulesCopy
     dependsOn tasks.nanopayNodeModulesCopy
-    
+
     from "tools/js_build/foam-bin-${project.version}.js"
     into "$targetDir/classes/webroot"
 }
@@ -309,4 +309,5 @@ clean {
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
+    options.compilerArgs += ["-parameters"]
 }

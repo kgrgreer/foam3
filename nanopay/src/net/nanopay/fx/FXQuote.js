@@ -87,6 +87,10 @@ foam.CLASS({
         {
           class: 'String',
           name: 'paymentMethod'
+        },
+        {
+          class: 'Date',
+          name: 'valueDate'
         }
     ],
     axioms: [
