@@ -21,7 +21,7 @@ var classes = [
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.COTransaction',
   'net.nanopay.tx.cico.ReverseCORule',
-  'net.nanopay.tx.cico.ReverseCORule',
+  'net.nanopay.tx.cico.ReverseCIRule',
   'net.nanopay.tx.alterna.AlternaFormat',
   'net.nanopay.tx.alterna.SFTPService',
   'net.nanopay.tx.alterna.AlternaSFTPService',

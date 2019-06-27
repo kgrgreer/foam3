@@ -34,7 +34,7 @@ foam.CLASS({
             @Override
             public void execute(X x) {
               DigitalTransaction revTxn = new DigitalTransaction.Builder(x)
-                .setDestinationAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
+                .setDestinationAccount(TrustAccount.find(x, txn.findSourceAccount(x)).getId())
                 .setSourceAccount(txn.getDestinationAccount())
                 .setAmount(txn.getAmount())
                 .setName("Reversal of: "+txn.getId())
