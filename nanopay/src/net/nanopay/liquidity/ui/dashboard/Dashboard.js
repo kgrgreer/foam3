@@ -26,7 +26,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'baseDenomination',
     'conversionService'
   ],
 
@@ -51,16 +50,9 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.model.Currency',
-      name: 'denominations',
+      name: 'baseDenominations',
       targetDAOKey: 'currencyDAO',
       value: 'CAD'
-    },
-    {
-      class: 'String',
-      name: 'baseDenomination',
-      expression: function(denominations) {
-        return denominations.alphabeticCode;
-      }
     },
     {
       name: 'conversionService',
