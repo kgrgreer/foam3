@@ -404,6 +404,9 @@ function setenv {
     if [ ! -d "${NANOPAY_HOME}/etc" ]; then
         mkdir -p "${NANOPAY_HOME}/etc"
     fi
+    if [ ! -d "${NANOPAY_HOME}/keys" ]; then
+        mkdir -p "${NANOPAY_HOME}/keys"
+    fi
     if [ ! -d "${LOG_HOME}" ]; then
         mkdir -p "${LOG_HOME}"
     fi

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
     <g fill="none" fill-rule="evenodd">
         <rect width="24" height="24" fill="#A4B3B8" fill-opacity=".3" rx="2"/>
-        <g fill="#093649" opacity=".7" transform="translate(10 2)">
+        <g fill="/*%BLACK%*/ #1e1f21" opacity=".7" transform="translate(10 2)">
             <circle cx="2" cy="2" r="2"/>
             <circle cx="2" cy="10" r="2"/>
             <circle cx="2" cy="18" r="2"/>

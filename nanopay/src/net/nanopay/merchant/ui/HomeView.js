@@ -23,7 +23,7 @@ foam.CLASS({
   css: `
     ^ {
       width: 100%;
-      background-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
       position: relative;
     }
     ^ .amount-label {
@@ -36,7 +36,7 @@ foam.CLASS({
     }
     ^ .amount-field {
       border: none;
-      background-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
       height: 90px;
       overflow-x: hidden;
       font-size: 75px;

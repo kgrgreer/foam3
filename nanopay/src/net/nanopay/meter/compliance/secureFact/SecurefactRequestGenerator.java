@@ -109,7 +109,7 @@ public class SecurefactRequestGenerator {
     boolean hasMobile = false;
 
     Phone mobile = user.getMobile();
-    if ( ! SafetyUtil.isEmpty(mobile.getNumber()) ) {
+    if ( mobile != null && ! SafetyUtil.isEmpty(mobile.getNumber()) ) {
       list.add(
         new SIDniPhone.Builder(x)
           .setType("MOBILE")
@@ -119,7 +119,7 @@ public class SecurefactRequestGenerator {
       hasMobile = true;
     }
     Phone phone = user.getPhone();
-    if ( ! SafetyUtil.isEmpty(phone.getNumber()) ) {
+    if ( phone != null && ! SafetyUtil.isEmpty(phone.getNumber()) ) {
       list.add(
         new SIDniPhone.Builder(x)
           .setType("HOME")

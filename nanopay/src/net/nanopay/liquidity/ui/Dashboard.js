@@ -2,6 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.liquidity.ui',
   name: 'Dashboard',
 
+  requires: [
+    'net.nanopay.liquidity.ui.CurrencyExposureDAO',
+  ],
+
   imports: [
     'accountDAO',
     'accountBalanceWeeklyCandlestickDAO as accountBalancesOverTime',
@@ -9,10 +13,16 @@ foam.CLASS({
     'transactionDAO'
   ],
 
+  exports: [
+    'baseDenomination',
+    'conversionService'
+  ],
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
       name: 'accounts',
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
       documentation: `
         DAO for all accounts in the ecosystem.
       `,
@@ -47,6 +57,36 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'baseDenomination',
+      value: 'USD'
+    },
+    {
+      name: 'conversionService',
+      hidden: true,
+      value: {
+        getRate: function(from, to) {
+          return Promise.resolve(1);
+        }
+      }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'currencyExposureDAO',
+      factory: function() {
+        return this.CurrencyExposureDAO.create();
+      },
+      view: function(_, x) {
+        return {
+          class: 'org.chartjs.PieDAOChartView',
+          keyExpr: net.nanopay.liquidity.ui.CurrencyExposure.DENOMINATION,
+          valueExpr: net.nanopay.liquidity.ui.CurrencyExposure.TOTAL,
+          height: 300,
+          width: 300
+        };
+      }
+    },
+    {
       name: 'cicoCandlestickDAO',
       documentation: `
         TODO: DAO for CICO candlesticks to and from shadow accounts
@@ -55,6 +95,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'recentTransactionsDAO',
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
       documentation: `
         DAO for recent transactions in entire ecosystem
       `,

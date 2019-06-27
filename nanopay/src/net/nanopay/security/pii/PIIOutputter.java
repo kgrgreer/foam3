@@ -3,8 +3,8 @@ package net.nanopay.security.pii;
 public class PIIOutputter
   extends foam.lib.json.Outputter
 {
-  public PIIOutputter() {
-    super();
+  public PIIOutputter(foam.core.X x) {
+    super(x);
     outputClassNames_ = false;
   }
 
