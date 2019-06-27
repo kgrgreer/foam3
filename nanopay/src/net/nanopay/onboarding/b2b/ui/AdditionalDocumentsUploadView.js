@@ -57,7 +57,7 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .net-nanopay-invoice-ui-InvoiceFileView {
       margin-top: 10px;
