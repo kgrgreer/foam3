@@ -9,6 +9,11 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  imports: [
+    'afexBeneficiaryDAO',
+    'userDAO',
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -58,5 +63,32 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy'
     }
+  ],
+
+  actions: [
+    {
+      name: 'viewBeneficiaries',
+      label: 'View Beneficiaries',
+      tableWidth: 135,
+      code: function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        var self = this;
+          X.userDAO.find(this.user).then(function(user) {
+            debugger
+            if ( user ) {
+              self.__context__.stack.push({
+                class: 'foam.comics.BrowserView',
+                createEnabled: false,
+                editEnabled: true,
+                exportEnabled: true,
+                title: `${user.businessName}'s Beneficiaries`,
+                data: X.afexBeneficiaryDAO.where(m.EQ(net.nanopay.fx.afex.AFEXBeneficiary.OWNER, self.user))
+              });
+            }
+          });
+
+
+      }
+    },
   ]
 });

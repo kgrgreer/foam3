@@ -147,6 +147,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
+    'net.nanopay.model.PersonalIdentification',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding',
   ],
 
   imports: [
@@ -174,6 +176,12 @@ foam.CLASS({
       name: 'personalInformationSection',
       title: 'Enter your personal information',
       help: 'Thanks, now I’ll need a bit of personal information so I can verify your identity…'
+    },
+    {
+      name: 'personalIdentificationSection',
+      title: 'Enter your personal identification',
+      help: `Thanks, now I’ll need a bit more of your personal identification so I can verify your identity…`,
+      isAvailable: function (signingOfficer) { return signingOfficer && this.enableInternationalPayment }
     },
     {
       name: 'homeAddressSection',
@@ -205,6 +213,12 @@ foam.CLASS({
       title: 'Enter your transaction details',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
       isAvailable: function (signingOfficer) { return signingOfficer }
+    },
+    {
+      name: 'internationalTransactionSection',
+      title: 'Are you going to be sending International Payments?',
+      help: `Thanks! That’s all the details I need to setup local transactions. Now let’s get some more details on your foreign transactions`,
+      isAvailable: function (signingOfficer) { return signingOfficer && this.enableInternationalPayment }
     },
     {
       name: 'ownershipYesOrNoSection',
@@ -497,6 +511,16 @@ foam.CLASS({
           errorString: 'Please provide an email for the signing officer.'
         }
       ]
+    },
+    {
+      section: 'personalIdentificationSection',
+      class: 'FObjectProperty',
+      name: 'personalIdentification',
+      of: 'net.nanopay.model.PersonalIdentification',
+      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
+      factory: function() {
+        return this.PersonalIdentification.create({});
+      },
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
@@ -808,6 +832,26 @@ foam.CLASS({
         }
       ]
     }),
+    {
+      class: 'Boolean',
+      name: 'enableInternationalPayment',
+      factory: function() {
+        return false;
+      }
+    },
+    {
+      section: 'internationalTransactionSection',
+      class: 'FObjectProperty',
+      name: 'businessRegistration',
+      of: 'net.nanopay.sme.onboarding.USBusinessOnboarding',
+      visibilityExpression: function(enableInternationalPayment) {
+        return enableInternationalPayment ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      factory: function() {
+        return this.USBusinessOnboarding.create({});
+      },
+    },
+
     {
       class: 'Boolean',
       name: 'ownershipAbovePercent',

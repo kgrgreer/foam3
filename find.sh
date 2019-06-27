@@ -24,6 +24,8 @@ declare -a arr=(
   "acceptanceDocuments"
   "accounts"
   "alarmConfig"
+  "afexBeneficiaries"
+  "afexBusinesses"
   "ascendantfxusers"
   "ascendantUserPayeeJunctions"
   "blacklists"

@@ -248,6 +248,12 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'countryOfBusinessRegistration',
+      documentation: `Country where business was registered.`,
+    },
+    {
       class: 'Date',
       name: 'businessRegistrationDate',
       documentation: 'The date that the business was registered by their issuing authority.'
