@@ -26,6 +26,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'baseDenomination',
     'conversionService'
   ],
 
@@ -50,7 +51,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.model.Currency',
-      name: 'baseDenominations',
+      name: 'baseDenomination',
       targetDAOKey: 'currencyDAO',
       value: 'CAD'
     },
@@ -94,7 +95,7 @@ foam.CLASS({
               .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
                 .tag(this.DashboardAccounts, { 
                   currency$: this.currencyExposureDAO$,
-                  denomination$: this.denominations$,
+                  denomination$: this.baseDenomination$,
                 })
               .end()
               .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
