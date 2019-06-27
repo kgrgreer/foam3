@@ -188,7 +188,7 @@ public class TransactionDAO
       t.validate();
       Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
       t.execute(balance);
-      finalBalanceArr[i] = (Balance) writableBalanceDAO_.put(balance);
+      finalBalanceArr[i] = balance;
     }
     txn.setBalances(finalBalanceArr);
 
