@@ -9,7 +9,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
-    'net.nanopay.liquidity.ui.dashboard.liquidity.AggregatedLiquidityChartView',
+    'net.nanopay.liquidity.ui.dashboard.liquidity.DashboardLiquidity',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
     'net.nanopay.liquidity.ui.dashboard.recentTransactions.DashboardRecentTransactions',
@@ -20,7 +20,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
     'accountBalanceWeeklyCandlestickDAO as accountBalancesOverTime',
     'liquidityThresholdWeeklyCandlestickDAO',
     'transactionDAO'
@@ -49,43 +48,6 @@ foam.CLASS({
   `,
 
   properties: [
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'accounts',
-      view: { class: 'foam.comics.v2.DAOBrowserView' },
-      documentation: `
-        DAO for all accounts in the ecosystem.
-      `,
-      expression: function(accountDAO) {
-        return accountDAO;
-      }
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'accountBalanceCandlestickDAO',
-      documentation: `
-        DAO for all account balance over time in the ecosystem.
-      `,
-      expression: function(accountBalancesOverTime) {
-        return accountBalancesOverTime;
-      },
-      view: {
-        class: 'org.chartjs.CandlestickDAOChartView',
-      }
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'liquidityCandlestickDAO',
-      documentation: `
-        DAO for liquidity candlesticks
-      `,
-      expression: function(liquidityThresholdWeeklyCandlestickDAO) {
-        return liquidityThresholdWeeklyCandlestickDAO;
-      },
-      view: {
-        class: 'org.chartjs.CandlestickDAOChartView',
-      }
-    },
     {
       class: 'Reference',
       of: 'net.nanopay.model.Currency',
@@ -117,12 +79,6 @@ foam.CLASS({
       },
     },
     {
-      name: 'cicoCandlestickDAO',
-      documentation: `
-        TODO: DAO for CICO candlesticks to and from shadow accounts
-      `
-    },
-    {
       class: 'foam.dao.DAOProperty',
       name: 'recentTransactionsDAO',
       view: { class: 'foam.comics.v2.DAOBrowserView' },
@@ -145,13 +101,12 @@ foam.CLASS({
             .start(this.Cards)
               .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
                 .tag(this.DashboardAccounts, { 
-                  data: this.accounts,
                   currency$: this.currencyExposureDAO$,
                   denomination$: this.denominations$,
                 })
               .end()
               .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
-                .tag(this.AggregatedLiquidityChartView)
+                .tag(this.DashboardLiquidity)
               .end()
             .end()
             .start(this.Cards)

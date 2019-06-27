@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountDAO',
     'balanceDAO',
     'user'
   ],
@@ -81,10 +82,6 @@ foam.CLASS({
   properties: [
     {
       class: 'foam.dao.DAOProperty',
-      name: 'data'
-    },
-    {
-      class: 'foam.dao.DAOProperty',
       name: 'currency'
     },
     {
@@ -109,7 +106,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(self.slot(function(data, denomination, currency) {
+        .add(self.slot(function(accountDAO, denomination, currency) {
           return self.E()
               .start(self.Rows).addClass(this.myClass('card-container'))
                 .start().addClass(this.myClass('balance-card'))
@@ -139,7 +136,7 @@ foam.CLASS({
                 .end()
                 .start()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    data: data.where(self.TRUE)
+                    data: accountDAO.where(self.TRUE)
                   })
                     .addClass(this.myClass('accounts-table'))
                   .end()
