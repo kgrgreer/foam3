@@ -57,7 +57,7 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
         .setCurrency( theLoanAccount.getDenomination() )
         .build();
       txn.setSourceAccount( theLoanAccount.getLenderAccount() );
-      quote.setSourceAccount(theLoanAccount);
+      quote.setSourceAccount(theLoanAccount.findLenderAccount(getX()));
     }
 
     if ( destinationAccount instanceof LoanAccount ) {
@@ -77,7 +77,7 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
         .setCurrency( theLoanAccount.getDenomination() )
         .build();
       txn.setDestinationAccount(theLoanAccount.getLenderAccount());
-      quote.setDestinationAccount(theLoanAccount);
+      quote.setDestinationAccount(theLoanAccount.findLenderAccount(getX()));
     }
 
     quote.setRequestTransaction(txn);
