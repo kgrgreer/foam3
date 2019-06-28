@@ -47,7 +47,7 @@ foam.CLASS({
     'accountBalanceQuarterlyCandlestickDAO',
     'accountBalanceAnnuallyCandlestickDAO',
     'currencyDAO',
-    'liquidityThresholdHourlyCandlestickDAO as liquidityThresholdCandlestickDAO',
+    'liquidityThresholdCandlestickDAO',
   ],
 
   css: `
