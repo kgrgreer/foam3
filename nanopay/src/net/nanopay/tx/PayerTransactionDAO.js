@@ -30,27 +30,22 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-       Logger logger = (Logger) x.get("logger");
         if ( ! ( obj instanceof TransactionQuote ) ) {
           return getDelegate().put_(x, obj);
         }
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
         Account account = txn.findSourceAccount(x);
-        logger.info("txn.findSourceAccount(x) " + txn.findSourceAccount(x));
         if ( account == null ) {
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
           if ( user == null ) {
             throw new RuntimeException("Payer not found");
           }
           DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
-          txn = (Transaction) txn.fclone();
           txn.setSourceAccount(digitalAccount.getId());
-          quote.setRequestTransaction(txn);
           return getDelegate().put_(x, quote);
         }
         txn.setSourceCurrency(account.getDenomination());
-        quote.setRequestTransaction(txn);
         return getDelegate().put_(x, quote);
 `
     },
