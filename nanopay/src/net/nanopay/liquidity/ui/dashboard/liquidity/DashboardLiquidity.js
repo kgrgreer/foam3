@@ -47,7 +47,7 @@ foam.CLASS({
     'accountBalanceQuarterlyCandlestickDAO',
     'accountBalanceAnnuallyCandlestickDAO',
     'currencyDAO',
-    'liquidityThresholdCandlestickDAO',
+    'liquidityThresholdHourlyCandlestickDAO as liquidityThresholdCandlestickDAO',
   ],
 
   css: `
@@ -310,49 +310,43 @@ foam.CLASS({
     {
       name: 'updateStyling',
       isFramed: true,
-      code: function() {
-        this.account$find
-          .then(a => {
-            return Promise.all([
-              Promise.resolve(a),
-              this.currencyDAO.find(a.denomination)
-            ]);
-          })
-          .then(ar => {
-            var c = ar[1];
-            this.config.options.scales.yAxes = [{
-                ticks: {
-                  callback: function(v) {
-                    return c.format(Math.floor(v));
-                  }
-                }
-            }];
-            this.config.options.tooltips.callbacks.label = function(v) {
-              return c.format(Math.floor(v.yLabel));
-            };
+      code: async function() {
+        var a = await this.account$find;
+        if ( ! a ) return;
 
-            var a = ar[0];
-            var style = {};
-            style[a.id] = {
-              lineTension: 0,
-              borderColor: ['#406dea'],
-              backgroundColor: 'rgba(0, 0, 0, 0.0)',
-              label: `[${a.denomination}] ${a.name}`
+        var c = await this.currencyDAO.find(a.denomination)
+
+        this.config.options.scales.yAxes = [{
+            ticks: {
+              callback: function(v) {
+                return c.format(Math.floor(v));
+              }
             }
-            style[a.liquiditySetting+':low'] = {
-              steppedLine: true,
-              borderColor: ['#a61414'],
-              backgroundColor: 'rgba(0, 0, 0, 0.0)',
-              label: this.LABEL_LOW_THRESHOLD
-            }
-            style[a.liquiditySetting+':high'] = {
-              steppedLine: true,
-              borderColor: ['#a61414'],
-              backgroundColor: 'rgba(0, 0, 0, 0.0)',
-              label: this.LABEL_HIGH_THRESHOLD
-            }
-            this.styling = style;
-          });
+        }];
+        this.config.options.tooltips.callbacks.label = function(v) {
+          return c.format(Math.floor(v.yLabel));
+        };
+
+        var style = {};
+        style[a.id] = {
+          lineTension: 0,
+          borderColor: ['#406dea'],
+          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+          label: `[${a.denomination}] ${a.name}`
+        }
+        style[a.liquiditySetting+':low'] = {
+          steppedLine: true,
+          borderColor: ['#a61414'],
+          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+          label: this.LABEL_LOW_THRESHOLD
+        }
+        style[a.liquiditySetting+':high'] = {
+          steppedLine: true,
+          borderColor: ['#a61414'],
+          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+          label: this.LABEL_HIGH_THRESHOLD
+        }
+        this.styling = style;
       }
     }
   ]
