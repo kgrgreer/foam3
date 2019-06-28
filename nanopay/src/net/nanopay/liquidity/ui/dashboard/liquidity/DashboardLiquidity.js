@@ -265,12 +265,12 @@ foam.CLASS({
             this.config.options.scales.yAxes = [{
                 ticks: {
                   callback: function(v) {
-                    return c.format(v);
+                    return c.format(Math.floor(v));
                   }
                 }
             }];
             this.config.options.tooltips.callbacks.label = function(v) {
-              return c.format(v.yLabel);
+              return c.format(Math.floor(v.yLabel));
             };
 
             var a = ar[0];
