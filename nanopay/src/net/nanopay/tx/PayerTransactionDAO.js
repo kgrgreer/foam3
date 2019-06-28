@@ -6,24 +6,11 @@ foam.CLASS({
   documentation: `Determine source account based on payer, when account is not provided.`,
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.Account',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger'
-  ],
-
-  imports: [
-    'bareUserDAO'
-  ],
-
-  requires: [
-    'foam.nanos.auth.User',
-  ],
-
-  implements: [
-    'foam.mlang.Expressions',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [
@@ -41,8 +28,8 @@ foam.CLASS({
           if ( user == null ) {
             throw new RuntimeException("Payer not found");
           }
-          DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
-          txn.setSourceAccount(digitalAccount.getId());
+          account = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
+          txn.setSourceAccount(account.getId());
           return getDelegate().put_(x, quote);
         }
         txn.setSourceCurrency(account.getDenomination());

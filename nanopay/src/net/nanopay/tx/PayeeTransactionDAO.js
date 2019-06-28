@@ -10,22 +10,9 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction'
-  ],
-
-  imports: [
-    'bareUserDAO'
-  ],
-
-  requires: [
-    'foam.nanos.auth.User'
-  ],
-
-  implements: [
-    'foam.mlang.Expressions'
   ],
 
   methods: [
@@ -43,8 +30,8 @@ foam.CLASS({
           if ( user == null ) {
             throw new RuntimeException("Payee not found");
           }
-          DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
-          txn.setDestinationAccount(digitalAccount.getId());
+          account = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
+          txn.setDestinationAccount(account.getId());
           return getDelegate().put_(x, quote);
         }
         txn.setDestinationCurrency(account.getDenomination());
