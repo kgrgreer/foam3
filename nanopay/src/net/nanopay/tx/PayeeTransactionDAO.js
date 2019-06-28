@@ -32,9 +32,11 @@ foam.CLASS({
           }
           account = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
           txn.setDestinationAccount(account.getId());
+          quote.setDestinationAccount(account);
           return getDelegate().put_(x, quote);
         }
         txn.setDestinationCurrency(account.getDenomination());
+        quote.setDestinationAccount(account);
         return getDelegate().put_(x, quote);
       `
     },

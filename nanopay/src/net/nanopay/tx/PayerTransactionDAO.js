@@ -30,9 +30,11 @@ foam.CLASS({
           }
           account = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
           txn.setSourceAccount(account.getId());
+          quote.setSourceAccount(account);
           return getDelegate().put_(x, quote);
         }
         txn.setSourceCurrency(account.getDenomination());
+        quote.setSourceAccount(account);
         return getDelegate().put_(x, quote);
 `
     },
