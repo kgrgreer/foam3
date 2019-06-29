@@ -171,7 +171,7 @@ public class TransactionDAO
         balance.setId(account.getId());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-
+      finalBalanceArr[i] = balance;
       try {
         account.validateAmount(x, balance, t.getAmount());
       } catch (RuntimeException e) {
@@ -186,9 +186,9 @@ public class TransactionDAO
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
       t.validate();
-      Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
+      Balance balance = finalBalanceArr[i];
       t.execute(balance);
-      finalBalanceArr[i] = balance;
+      finalBalanceArr[i] = (Balance) balance.fclone();
     }
     txn.setBalances(finalBalanceArr);
 
