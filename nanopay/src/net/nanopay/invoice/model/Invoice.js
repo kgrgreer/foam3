@@ -259,7 +259,18 @@ foam.CLASS({
             .end();
           });
       },
-      tableWidth: 120
+      tableWidth: 120,
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        String dstCurrency = ((Invoice)obj).getDestinationCurrency();
+        Currency currency = (Currency) currencyDAO.find(dstCurrency);
+        StringBuilder sb = new StringBuilder();
+        sb.append(currency.format(get_(obj)));
+        sb.append(" ");
+        sb.append(dstCurrency);
+        outputter.output(sb.toString());
+        sb.setLength(0);
+      `
     },
     { // How is this used? - display only?,
       class: 'Currency',
@@ -431,7 +442,19 @@ foam.CLASS({
           hoverImageURL: '/images/attachment.svg',
           disabledImageURL: '/images/attachment.svg',
         });
-      }
+      },
+      javaToCSV: `
+        StringBuilder sb = new StringBuilder();
+        foam.nanos.fs.File[] filesList = get_(obj);
+        sb.append("[");
+        for(foam.nanos.fs.File file: filesList) {
+          sb.append(file.isPropertySet("address") ? file.getAddress() : file.getFilename());
+          sb.append(",");
+        }
+        if ( filesList.length > 0 ) sb.deleteCharAt(sb.length() - 1);
+        sb.append("]");
+        outputter.output(sb.toString());
+      `
     },
     {
       class: 'Boolean',
@@ -637,7 +660,14 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payee ? obj.payee.label() : 'N/A');
-    }
+    },
+    javaToCSV: `
+      User payee = ((Invoice)obj).findPayeeId(x);
+      outputter.output(payee.label());
+    `,
+    javaToCSVLabel: `
+      outputter.output("Payee");
+    `
   },
 });
 
@@ -684,6 +714,13 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payer ? obj.payer.label() : 'N/A');
-    }
+    },
+    javaToCSV: `
+    User payer = ((Invoice)obj).findPayerId(x);
+    outputter.output(payer.label());
+    `,
+    javaToCSVLabel: `
+    outputter.output("Payer");
+    `
   },
 });
