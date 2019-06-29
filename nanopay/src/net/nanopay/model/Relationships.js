@@ -109,7 +109,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
   targetProperty: {
-    value: null,
+    value: 0,
     view: function(_, X) {
       return foam.u2.view.RichChoiceView.create({
         search: true,
