@@ -107,7 +107,6 @@ foam.CLASS({
         onboarding.setAnnualDomesticVolume("88560");
         onboarding.setTransactionPurpose("Payables for products and/or services");
         onboarding.setTargetCustomers("Small manufacturing businesses in North America");
-        onboarding.setOwnershipAbovePercent(false);
         try {
           onboardService.put_(x, onboarding);
         } catch (RuntimeException ex) {
