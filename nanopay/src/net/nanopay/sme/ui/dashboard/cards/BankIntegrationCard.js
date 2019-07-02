@@ -73,7 +73,7 @@ foam.CLASS({
         if ( isAccountThere && this.isVerified ) {
           var subtitle = this.SUBTITLE_LINKED + ' ';
           subtitle += this.abbreviation ? this.abbreviation : (this.bankname ? this.bankname : this.account.name);
-          subtitle += ' ****' + this.account.accountNumber.slice(4)
+          subtitle += ' ****' + this.account.accountNumber.slice(-4)
           return subtitle;
         }
         return this.SUBTITLE_EMPTY;

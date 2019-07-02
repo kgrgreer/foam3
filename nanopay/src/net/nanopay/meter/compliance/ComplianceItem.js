@@ -7,19 +7,25 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware'
   ],
 
+  requires: [
+    'foam.dao.DAO'
+  ],
+
   documentation: `The Compliance Item`,
 
   tableColumns: [
     'responseId',
     'type',
     'user',
-    'userLabel',
+    'transaction',
+    'entityLabel',
     'created'
   ],
 
   searchColumns: [
     'user',
-    'userLabel'
+    'entityLabel',
+    'type'
   ],
 
   properties: [
@@ -60,8 +66,15 @@ foam.CLASS({
       label: 'User/Business ID'
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
+      targetDAOKey: 'transactionDAO',
+      name: 'transaction',
+      label: 'Transaction ID'
+    },
+    {
       class: 'String',
-      name: 'userLabel',
+      name: 'entityLabel',
       label: 'Entity Name'
     },
     {
@@ -91,23 +104,27 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'String',
+      class:'String',
       name: 'type',
       transient: true,
-      expression: function(dowJones, identityMind, levResponse, sidniResponse) {
-        if ( dowJones ) {
-          return "DOW Jones";
-        } else if ( identityMind ) {
-          return "Identity Mind";
-        } else if ( levResponse ) {
+      tableWidth: 300,
+      getter: function() {
+        if ( this.dowJones ) {
+          return this.dowJones$find.then(o => {
+            return "Dow Jones (" + o.searchType + ")";
+          })
+        } else if ( this.identityMind ) {
+          return this.identityMind$find.then(o => {
+            return "IdentityMind (" + o.apiName + ")";
+          })
+        } else if ( this.levResponse ) {
           return "Secure Fact (LEV)";
-        } else if ( sidniResponse ) {
+        } else if ( this.sidniResponse ) {
           return "Secure Fact (SIDni)";
         } else {
-          return "";
+        return "";
         }
-      },
-      hidden: true
-    }
+      }
+    },
   ]
 });

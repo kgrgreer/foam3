@@ -88,6 +88,7 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   targetProperty: {
+    section: 'accountDetails',
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
       return {
@@ -108,7 +109,8 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
   targetProperty: {
-    value: null,
+    section: 'liquiditySettings',
+    value: 0,
     view: function(_, X) {
       return foam.u2.view.RichChoiceView.create({
         search: true,
@@ -144,6 +146,41 @@ foam.RELATIONSHIP({
             dao: X.userDAO,
           }
         ],
+      });
+    },
+    tableCellFormatter: function(value, obj, axiom) {
+      this.__subSubContext__.userDAO
+        .find(value)
+        .then((user) => {
+          this.add('[', user.cls_.name, '] ', user.label());
+        })
+        .catch((error) => {
+          this.add(value);
+        });
+    }
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.payment.PayrollEntry',
+  forwardName: 'payrolls',
+  inverseName: 'owner',
+  cardinality: '1:*',
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.RichChoiceView.create({
+        search: true,
+        selectionView: { class: 'net.nanopay.ui.UserSelectionView', userDAO: X.userDAO },
+        rowView: { class: 'net.nanopay.ui.UserRowView' },
+        sections: [
+          {
+            dao: X.userDAO
+          }
+        ]
       });
     },
     tableCellFormatter: function(value, obj, axiom) {
@@ -613,6 +650,17 @@ foam.RELATIONSHIP({
   inverseName: 'entityId',
   cardinality: '1:*',
   sourceDAOKey: 'userDAO',
+  targetDAOKey: 'complianceItemDAO',
+  targetProperty: {visibility: 'RO'}
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
+  forwardName: 'complianceItems',
+  inverseName: 'transactionId',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
   targetDAOKey: 'complianceItemDAO',
   targetProperty: {visibility: 'RO'}
 });

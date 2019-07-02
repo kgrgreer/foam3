@@ -43,7 +43,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background: #f9fbff;
+      background: /*%GREY5%*/ #f5f7fa;
     }
   .net-nanopay-accounting-ui-AccountingCallbackPage {
       margin: auto;

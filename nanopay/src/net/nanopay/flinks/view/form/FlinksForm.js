@@ -45,89 +45,89 @@ foam.CLASS({
     foam.u2.CSS.create({
       code: net.nanopay.ui.wizard.WizardView
         .getAxiomsByClass(foam.u2.CSS)[0].code
-    }),
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          max-width: 1420px;
-        }
-        ^ .subTitleFlinks {
-          height: 16px;
-          font-family: Roboto;
-          font-size: 12px;
-          font-weight: normal;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: 1.33;
-          letter-spacing: 0.3px;
-          text-align: left;
-          color: #093649;
-        }
-
-        ^ .inputErrorLabel {
-          display: none;
-        }
-        ^ .icConnected {
-          display: inline-block;
-          width: 24px;
-          height: 24px;
-          margin-left: 30px;
-          vertical-align: 20px;
-        }
-        ^ .firstImg {
-          display: inline-block;
-          width: 120px;
-          height: 65px;
-          margin-left: 82px;
-        }
-        ^ .secondImg {
-          display: inline-block;
-          width: 120px;
-          height: 65px;
-          margin-left: 30px;
-        }
-        ^ .subHeader {
-          height: 65px;
-          margin-bottom: 20px;
-          margin-top: 20px;
-        }
-        ^ .subContent {
-          width: 490px;
-          height: 307px;
-          border-radius: 2px;
-          background-color: #ffffff;
-          position: relative;
-        }
-        ^ .loadingSpinner {
-          background-color: #ffffff;
-          width: 490px;
-          height: 210px;
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          text-align: relative;
-        }
-        ^ .loadingSpinner > img {
-          position: absolute;
-          display: block;
-          width: 50px;
-          height: 50px;
-          top: 50;
-          right: 219;
-        }
-        ^ .spinnerText {
-          position: absolute;
-          left: 180;
-          top: 95;
-          font-weight: normal;
-          font-size: 12px;
-          color: rgba(9, 54, 73, 0.7);
-        }
-        ^ p {
-          margin: 0;
-        }
-    */} })
+    })
   ],
+
+  css: `
+    ^ {
+      max-width: 1420px;
+    }
+    ^ .subTitleFlinks {
+      height: 16px;
+      font-family: Roboto;
+      font-size: 12px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.33;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+
+    ^ .inputErrorLabel {
+      display: none;
+    }
+    ^ .icConnected {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      margin-left: 30px;
+      vertical-align: 20px;
+    }
+    ^ .firstImg {
+      display: inline-block;
+      width: 120px;
+      height: 65px;
+      margin-left: 82px;
+    }
+    ^ .secondImg {
+      display: inline-block;
+      width: 120px;
+      height: 65px;
+      margin-left: 30px;
+    }
+    ^ .subHeader {
+      height: 65px;
+      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+    ^ .subContent {
+      width: 490px;
+      height: 307px;
+      border-radius: 2px;
+      background-color: #ffffff;
+      position: relative;
+    }
+    ^ .loadingSpinner {
+      background-color: #ffffff;
+      width: 490px;
+      height: 210px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      text-align: relative;
+    }
+    ^ .loadingSpinner > img {
+      position: absolute;
+      display: block;
+      width: 50px;
+      height: 50px;
+      top: 50;
+      right: 219;
+    }
+    ^ .spinnerText {
+      position: absolute;
+      left: 180;
+      top: 95;
+      font-weight: normal;
+      font-size: 12px;
+      color: rgba(9, 54, 73, 0.7);
+    }
+    ^ p {
+      margin: 0;
+    }
+  `,
 
   methods: [
     function init() {

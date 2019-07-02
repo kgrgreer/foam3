@@ -37,7 +37,7 @@ foam.CLASS({
     width: 135px;
     height: 50px;
     border-radius: 2px;
-    background: %SECONDARYCOLOR%;
+    background: /*%PRIMARY3%*/ #406dea;
     color: white;
     margin: 0;
     padding: 0;

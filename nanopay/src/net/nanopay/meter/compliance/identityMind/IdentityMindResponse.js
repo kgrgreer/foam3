@@ -134,12 +134,10 @@ foam.CLASS({
       label: 'Result codes'
     },
     {
-      class: 'Map',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.meter.compliance.identityMind.IdentityMindResponseEDNA',
       name: 'ednaScoreCard',
-      label: 'eDNA score card',
-      view: {
-        class: 'foam.u2.view.AnyView'
-      }
+      label: 'eDNA Score Card'
     }
   ],
 
