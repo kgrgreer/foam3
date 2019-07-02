@@ -96,8 +96,11 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'timeFrame',
+      factory: function() {
+        return new Date();
+      }
     },
     {
       class: 'Int',
@@ -149,24 +152,15 @@ foam.CLASS({
     },
     // groupBy gLang, SUM
     {
-      class: 'String',
-      name: 'timeFrequency',
-      value: 'Weekly',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          'Weekly',
-          'Monthly',
-          'Quarterly',
-          'Annually'
-        ]
-      }
+      class: 'Enum',
+      of: 'net.nanopay.liquidity.ui.dashboard.DateFrequency',
+      name: 'dateFrequency'
     },
     {
       name: 'dateRange',
       expression: function ( timeFrequency, yItemsLimit, timeFrame ) {
         // TODO: Include timeFrame
-        var max = new Date();
+        var max = timeFrame;
         var min = new Date();
 
         switch (timeFrequency) {
@@ -218,7 +212,7 @@ foam.CLASS({
           .add(this.HorizontalBarDAOChartView.create({
             account$: this.account$,
             timeFrequency$: this.timeFrequency$,
-            timeFrame$: this.dateRange$,
+            dateRange$: this.dateRange$,
             data: this.cicoTransactionsDAO,
             width: 920,
             height: 240

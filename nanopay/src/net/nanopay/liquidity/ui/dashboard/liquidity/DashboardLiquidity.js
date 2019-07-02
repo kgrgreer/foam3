@@ -1,26 +1,3 @@
-foam.ENUM({
-  package: 'net.nanopay.liquidity.ui.dashboard.liquidity',
-  name: 'TimeFrame',
-  values: [
-    {
-      name: 'WEEKLY',
-      label: 'Weekly'
-    },
-    {
-      name: 'MONTHLY',
-      label: 'Monthly'
-    },
-    {
-      name: 'QUARTERLY',
-      label: 'Quarterly'
-    },
-    {
-      name: 'ANNUALLY',
-      label: 'Annually'
-    },
-  ]
-});
-
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.liquidity',
   name: 'DashboardLiquidity',
@@ -111,7 +88,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.liquidity.ui.dashboard.liquidity.TimeFrame',
+      of: 'net.nanopay.liquidity.ui.dashboard.DateFrequency',
       name: 'timeFrame',
       value: 'WEEKLY'
     },
