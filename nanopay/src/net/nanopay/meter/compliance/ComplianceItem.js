@@ -68,7 +68,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.tx.model.Transaction',
-      targetDAOKey: 'userDAO',
+      targetDAOKey: 'transactionDAO',
       name: 'transaction',
       label: 'Transaction ID'
     },
@@ -104,26 +104,27 @@ foam.CLASS({
       hidden: true
     },
     {
+      class:'String',
       name: 'type',
       transient: true,
-      expression: function(dowJones, identityMind, levResponse, sidniResponse) {
-        if ( dowJones ) {
+      tableWidth: 300,
+      getter: function() {
+        if ( this.dowJones ) {
           return this.dowJones$find.then(o => {
-            return o.searchType;
+            return "Dow Jones (" + o.searchType + ")";
           })
-        } else if ( identityMind ) {
+        } else if ( this.identityMind ) {
           return this.identityMind$find.then(o => {
-            return "Identity Mind (" + o.apiName + ")";
+            return "IdentityMind (" + o.apiName + ")";
           })
-        } else if ( levResponse ) {
+        } else if ( this.levResponse ) {
           return "Secure Fact (LEV)";
-        } else if ( sidniResponse ) {
+        } else if ( this.sidniResponse ) {
           return "Secure Fact (SIDni)";
         } else {
-          return "";
+        return "";
         }
-      },
-      tableWidth: 300
-    }
+      }
+    },
   ]
 });
