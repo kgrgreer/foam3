@@ -97,7 +97,7 @@ foam.CLASS({
   properties: [
     {
       class: 'DateTime',
-      name: 'timeFrame',
+      name: 'endDate',
       factory: function() {
         return new Date();
       }
@@ -158,12 +158,12 @@ foam.CLASS({
     },
     {
       name: 'dateRange',
-      expression: function ( timeFrequency, yItemsLimit, timeFrame ) {
-        // TODO: Include timeFrame
-        var max = timeFrame;
+      expression: function ( dateFrequency, yItemsLimit, endDate ) {
+        // TODO: Include endDate
+        var max = endDate;
         var min = new Date();
 
-        switch (timeFrequency) {
+        switch (dateFrequency) {
           case 'Weekly':            
             var daysFromSun = max.getDay();
             var daysToRewind = 7 * (yItemsLimit - 1) + daysFromSun;
@@ -211,7 +211,7 @@ foam.CLASS({
         .start().style({ 'width': '930px', 'height': '266px' }).addClass(this.myClass('chart'))
           .add(this.HorizontalBarDAOChartView.create({
             account$: this.account$,
-            timeFrequency$: this.timeFrequency$,
+            timeFrequency$: this.dateFrequency$,
             dateRange$: this.dateRange$,
             data: this.cicoTransactionsDAO,
             width: 920,

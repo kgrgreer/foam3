@@ -1,6 +1,6 @@
 foam.ENUM({
   package: 'net.nanopay.liquidity.ui.dashboard',
-  name: 'DateFrequency ',
+  name: 'DateFrequency',
 
   properties: [
     {
