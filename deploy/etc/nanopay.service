@@ -1,0 +1,11 @@
+[Unit]
+Description=Nanopay Platform
+
+[Service]
+ExecStart=/opt/nanopay/bin/run.sh -Z0
+User=nanopay
+Group=nanopay
+
+[Install]
+WantedBy=multi-user.target
+Alias=nanopay.service
