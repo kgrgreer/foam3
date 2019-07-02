@@ -130,7 +130,18 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'canPayInvoice',
+      documentation: `Check user's ability to pay.`,
+      factory: function() {
+        this.auth.check(null, 'invoice.pay').then((p) => {
+          this.canPayInvoice = p;
+        });
+      }
+    },
+    {
+      class: 'Boolean',
       name: 'actionsCheck',
+      documentation: 'It returns false if there is any overdue or requires approval payables.',
       expression: function(countRequiresApproval, countOverdueAndUpcoming, countDepositPayment) {
         return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
       }
@@ -255,11 +266,16 @@ foam.CLASS({
             .add(this.SUBTITLE1)
           .end()
           .start()
-            .show(this.actionsCheck$)
+            // .show(this.actionsCheck$)
+            .show(this.slot(function(canPayInvoice, actionsCheck) {
+              return ! canPayInvoice || actionsCheck;
+            }))
             .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
           .end()
           .start()
-            .hide(this.actionsCheck$)
+            .hide(this.slot(function(canPayInvoice, actionsCheck) {
+              return ! canPayInvoice || actionsCheck;
+            }))
             .tag(this.RequireActionView.create({
               countRequiresApproval$: this.countRequiresApproval$,
               countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
