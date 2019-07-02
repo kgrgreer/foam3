@@ -205,17 +205,17 @@ foam.CLASS({
             .startContext({ data: this })
               .add(this.ACCOUNT)
               .add(this.DATE_FREQUENCY)
-              .add(this.END_FRAME)
+              .add(this.END_DATE)
             .endContext()
           .end()
         .end()
-        .start().style({ 'width': '950px', 'height': '266px' }).addClass(this.myClass('chart'))
+        .start().style({ 'width': '930px', 'height': '266px' }).addClass(this.myClass('chart'))
           .add(this.HorizontalBarDAOChartView.create({
             account$: this.account$,
             timeFrequency$: this.dateFrequency$,
             dateRange$: this.dateRange$,
             data: this.cicoTransactionsDAO,
-            width: 940,
+            width: 920,
             height: 240
           }))
         .end()
