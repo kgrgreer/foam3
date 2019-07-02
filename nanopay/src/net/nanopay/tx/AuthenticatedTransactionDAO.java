@@ -146,7 +146,8 @@ public class AuthenticatedTransactionDAO
         .setArg1(Account.ID)
         .setDelegate(new ArraySink())
         .build();
-      user.getAccounts(x).select(map);
+      DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
+      localAccountDAO.where(EQ(Account.OWNER, user.getId())).select(map);
       List ids = ((ArraySink) map.getDelegate()).getArray();
       dao = getDelegate().where(
         OR(
