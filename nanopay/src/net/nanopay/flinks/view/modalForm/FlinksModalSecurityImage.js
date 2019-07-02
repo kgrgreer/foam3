@@ -62,7 +62,7 @@ foam.CLASS({
       box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
     }
     ^image-card.selected {
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
     ^card-spacer {
       margin: auto;

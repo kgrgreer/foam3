@@ -9,14 +9,19 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
+  { name: 'net/nanopay/payment/Payroll' },
+  { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
+  { name: 'net/nanopay/account/AccountDAOCreateView' },
+  { name: 'net/nanopay/account/AccountDAOSummaryView' },
   { name: 'net/nanopay/account/Debtable' },
   { name: 'net/nanopay/account/Accountable' },
   { name: 'net/nanopay/account/DuplicateDigitalAccountRule'},
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
+  { name: 'net/nanopay/account/ui/AccountTreeView' },
   { name: 'net/nanopay/account/ui/AccountDetailView', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/accountDetails/AccountDetailsModal', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/accountDetails/AccountDetailsRequirements', flags: ['web'] },
@@ -212,6 +217,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
   // AFEX
+  { name: 'net/nanopay/fx/FXSummaryTransaction' },
+  { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: "net/nanopay/fx/afex/AFEX" },
   { name: "net/nanopay/fx/afex/AFEXCredentials"},
   { name: "net/nanopay/fx/afex/Token"},
@@ -279,6 +286,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionStatus' },
   { name: 'net/nanopay/tx/model/TransactionEntity' },
   { name: 'net/nanopay/tx/model/Transaction' },
+  { name: 'net/nanopay/tx/model/TransactionDAOCreateView' },
   { name: 'net/nanopay/tx/ComplianceTransaction' },
   { name: 'net/nanopay/tx/GreenfenceTransaction' },
   { name: 'net/nanopay/tx/InvoiceTransaction' },
@@ -289,6 +297,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
   { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/InvoicePaymentRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
@@ -311,6 +320,10 @@ FOAM_FILES([
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
+
+  // exposure views
+  { name: 'net/nanopay/tx/ui/exposure/ExposureOverview', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/exposure/ValueCard', flags: ['web'] },
 
   { name: 'net/nanopay/model/Broker' },
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
@@ -704,6 +717,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
    { name: 'net/nanopay/liquidity/LiquidityAuth' },
+   { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
 
@@ -1003,7 +1017,14 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
 
   // liquidity
-  { name: 'net/nanopay/liquidity/ui/Dashboard' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
+  
+  { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposureDAO' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/recentTransactions/DashboardRecentTransactions' },
   { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/Overview' },

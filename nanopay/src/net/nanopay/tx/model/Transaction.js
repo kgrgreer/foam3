@@ -89,6 +89,31 @@ foam.CLASS({
     'completionDate'
   ],
 
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Pending',
+      predicateFactory: function(e) {
+        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.PENDING);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Completed',
+      predicateFactory: function(e) {
+        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      }
+    }
+  ],
+
+
   // relationships: parent, children
 
   properties: [
@@ -864,19 +889,6 @@ for ( Balance b : getBalances() ) {
     javaCode: `
     sendReverseNotification(x, oldTxn);
     sendCompletedNotification(x, oldTxn);
-    checkLiquidity(x);
-    `
-  },
-  {
-    documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
-    name: 'checkLiquidity',
-    args: [
-      {
-        name: 'x',
-        type: 'Context'
-      }
-    ],
-    javaCode: `
     `
   }
 ],

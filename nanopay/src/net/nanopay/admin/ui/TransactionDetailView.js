@@ -49,11 +49,11 @@ foam.CLASS({
     ^ .sideBar {
       width: 6px;
       height: 100%;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       position: absolute;
     }
     ^ .balanceBoxTitle {
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 12px;
       margin-left: 44px;
       padding-top: 14px;
@@ -67,7 +67,7 @@ foam.CLASS({
       letter-spacing: 0.5px;
       overflow-wrap: break-word;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-top: 27px;
       margin-left: 44px;
       margin-right: 44px;
@@ -106,7 +106,7 @@ foam.CLASS({
       font-weight: bold;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-bottom: 15px;
     }
     `,

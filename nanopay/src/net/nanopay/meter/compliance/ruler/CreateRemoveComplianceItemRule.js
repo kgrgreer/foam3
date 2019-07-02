@@ -31,6 +31,7 @@ foam.CLASS({
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   messages: [
@@ -83,26 +84,39 @@ foam.CLASS({
                   if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setDowJones(response.getId())
+                    .setType("Dow Jones (" + response.getSearchType() + ")")
                     .setUser(response.getUserId())
                     .setEntityId(response.getUserId())
-                    .setUserLabel(label)
+                    .setEntityLabel(label)
                     .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);
                 } else if ( obj instanceof IdentityMindResponse ) {
                   IdentityMindResponse response = (IdentityMindResponse) obj;
-                  // entity could be User or Beneficial Owner
+                  // entity could be User, Beneficial Owner, or transaction
                   DAO entityDAO = (DAO) x.get(response.getDaoKey());
                   FObject entity = (FObject) entityDAO.find(response.getEntityId().toString());
                   String label = "";
                   if ( entity instanceof User ) { label = ((User) entity).label(); }
                   if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
-                  ComplianceItem complianceItem = new ComplianceItem.Builder(x)
-                    .setIdentityMind(response.getId())
-                    .setUser(Long.parseLong(response.getEntityId().toString()))
-                    .setEntityId(Long.parseLong(response.getEntityId().toString()))
-                    .setUserLabel(label)
-                    .build();
+                  ComplianceItem complianceItem;
+                  if ( entity instanceof Transaction ) {
+                    complianceItem = new ComplianceItem.Builder(x)
+                      .setIdentityMind(response.getId())
+                      .setType("IdentityMind (" + response.getApiName() + ")")
+                      .setTransaction(response.getEntityId().toString())
+                      .setTransactionId(response.getEntityId().toString())
+                      .setEntityLabel(((Transaction) entity).getSummary())
+                      .build();
+                  } else {
+                    complianceItem = new ComplianceItem.Builder(x)
+                      .setIdentityMind(response.getId())
+                      .setType("IdentityMind (" + response.getApiName() + ")")
+                      .setUser(Long.parseLong(response.getEntityId().toString()))
+                      .setEntityId(Long.parseLong(response.getEntityId().toString()))
+                      .setEntityLabel(label)
+                      .build();
+                  }
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);
                 } else if ( obj instanceof LEVResponse ) {
@@ -111,9 +125,10 @@ foam.CLASS({
                   Business business = (Business) businessDAO.find(response.getEntityId());
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setLevResponse(response.getId())
+                    .setType("Secure Fact (LEV)")
                     .setUser(response.getEntityId())
                     .setEntityId(response.getEntityId())
-                    .setUserLabel(business.label())
+                    .setEntityLabel(business.label())
                     .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);
@@ -123,9 +138,10 @@ foam.CLASS({
                   User user = (User) userDAO.find(response.getEntityId());
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setSidniResponse(response.getId())
+                    .setType("Secure Fact (SIDni)")
                     .setUser(response.getEntityId())
                     .setEntityId(response.getEntityId())
-                    .setUserLabel(user.label())
+                    .setEntityLabel(user.label())
                     .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);
@@ -173,13 +189,9 @@ foam.CLASS({
                   }
                 }
               } else {
-                /*this.NotificationMessage.create({
-                  message: ILLEGAL_ACTION,
-                  type: 'error'
-                });
-                DigErrorMessage = new GeneralException.Builder(x)
-                  .setMessage(ILLEGAL_ACTION)
-                  .build();*/
+                /** To-do: possibly return error if compliance item is being
+                  * updated since compliance items should not be edit
+                  */
               }
             }
           });

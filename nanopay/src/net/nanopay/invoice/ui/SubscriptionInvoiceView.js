@@ -19,22 +19,16 @@ foam.CLASS({
     'foam.mlang.Expressions', 
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ h5{
-          opacity: 0.6;
-          font-size: 20px;
-          font-weight: 300;
-          line-height: 1;
-          color: #093649;
-          padding-top: 70px;
-        }
-        */
-      }
-    })
-  ],
-
+  css: `
+    ^ h5{
+      opacity: 0.6;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1;
+      color: /*%BLACK%*/ #1e1f21;
+      padding-top: 70px;
+    }
+  `,
 
   methods: [
     function initE() {

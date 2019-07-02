@@ -22,7 +22,14 @@ foam.CLASS({
       transient: true,
       visibility: 'HIDDEN',
       expression: function(causeId, causeDaoKey) {
-        this.__subContext__[causeDaoKey].find(causeId).then((obj) => {
+        var key = causeDaoKey;
+        if(!this.__context__[key]) {
+          // if DAO doesn't exist in context, change daoKey from localMyDAO
+          // (server-side) to myDAO (accessible on front-end)
+          key = key.substring(5,6).toLowerCase() + key.substring(6);
+        }
+        console.log(key);
+        this.__subContext__[key].find(causeId).then((obj) => {
           this.causeObject = obj;
         });
         return null;
