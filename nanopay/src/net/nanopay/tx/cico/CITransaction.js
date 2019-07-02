@@ -273,24 +273,6 @@ foam.CLASS({
         throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
       }
       `
-    },
-    {
-      documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
-      name: 'checkLiquidity',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      javaCode: `
-      LiquidityService ls = (LiquidityService) x.get("liquidityService");
-      Account source = findSourceAccount(x);
-      Account destination = findDestinationAccount(x);
-      if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) && getStatus() == TransactionStatus.COMPLETED ) {
-        ls.liquifyAccount(destination.getId(), net.nanopay.util.Frequency.PER_TRANSACTION, getAmount());
-      }
-      `
     }
   ]
 });

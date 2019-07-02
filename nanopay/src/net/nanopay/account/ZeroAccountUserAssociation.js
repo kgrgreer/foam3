@@ -31,7 +31,7 @@ foam.CLASS({
       name: 'user',
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      value: '1'
+      value: 1
     }
   ]
 });

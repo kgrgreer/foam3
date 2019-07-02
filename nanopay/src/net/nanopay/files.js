@@ -719,6 +719,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
    { name: 'net/nanopay/liquidity/LiquidityAuth' },
+   { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
 
@@ -1018,9 +1019,14 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
 
   // liquidity
-  { name: 'net/nanopay/liquidity/ui/CurrencyExposure' },
-  { name: 'net/nanopay/liquidity/ui/CurrencyExposureDAO' },
-  { name: 'net/nanopay/liquidity/ui/Dashboard' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
+  
+  { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposureDAO' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/recentTransactions/DashboardRecentTransactions' },
   { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/Overview' },
