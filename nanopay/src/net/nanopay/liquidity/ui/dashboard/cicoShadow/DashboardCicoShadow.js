@@ -120,7 +120,8 @@ foam.CLASS({
         A predicatedAccountDAO which only pulls shadow accounts
       `,
       expression: function () {
-        return this.accountDAO.where(this.INSTANCE_OF(this.ShadowAccount));
+        // return this.accountDAO.where(this.INSTANCE_OF(this.ShadowAccount));
+        return this.accountDAO.where(this.TRUE);
       }
     },
     {
@@ -203,18 +204,18 @@ foam.CLASS({
           .start(this.Cols)
             .startContext({ data: this })
               .add(this.ACCOUNT)
-              .add(this.TIME_FREQUENCY)
-              .add(this.TIME_FRAME)
+              .add(this.DATE_FREQUENCY)
+              .add(this.END_FRAME)
             .endContext()
           .end()
         .end()
-        .start().style({ 'width': '930px', 'height': '266px' }).addClass(this.myClass('chart'))
+        .start().style({ 'width': '950px', 'height': '266px' }).addClass(this.myClass('chart'))
           .add(this.HorizontalBarDAOChartView.create({
             account$: this.account$,
             timeFrequency$: this.dateFrequency$,
             dateRange$: this.dateRange$,
             data: this.cicoTransactionsDAO,
-            width: 920,
+            width: 940,
             height: 240
           }))
         .end()
