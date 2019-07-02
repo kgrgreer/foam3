@@ -8,14 +8,15 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
-import java.util.UUID;
+import net.nanopay.model.Currency;
 
+import java.util.UUID;
 import java.util.*;
 import java.util.function.Function;
 
 public class ReportPayment extends AbstractReport {
 
-  public final static int NUM_ELEMENTS = 24;
+  public final static int NUM_ELEMENTS = 25;
 
   void appendTransaction(X x, StringBuilder builder, String invoiceID, Transaction transaction) {
     // Get the sender and receiver
@@ -23,6 +24,7 @@ public class ReportPayment extends AbstractReport {
     User sender = (sourceAccount != null) ? sourceAccount.findOwner(x) : null;
     Account destinationAccount = transaction.findDestinationAccount(x);
     User receiver = (destinationAccount != null) ? destinationAccount.findOwner(x) : null;
+    DAO currencyDAO = ((DAO) x.get("currencyDAO"));
 
     // Build the CSV line
     builder.append(buildCSVLine(
@@ -40,13 +42,13 @@ public class ReportPayment extends AbstractReport {
       transaction.getType(),
       "N/A", // dispute status
       nullCheckToString(sender, (s) -> Long.toString(s.getId())),
-      nullCheckToString(sender, User::getEmail),
       nullCheckToString(sender, User::label),
+      nullCheckToString(sender, User::getEmail),
       nullCheckToString(receiver, (r) -> Long.toString(r.getId())),
-      nullCheckToString(receiver, User::getEmail),
       nullCheckToString(receiver, User::label),
-      Long.toString(transaction.getAmount()),
-      Long.toString(transaction.getDestinationAmount()),
+      nullCheckToString(receiver, User::getEmail),
+      ((Currency) currencyDAO.find(transaction.getSourceCurrency())).format(transaction.getAmount()),
+      ((Currency) currencyDAO.find(transaction.getDestinationCurrency())).format(transaction.getDestinationAmount()),
       transaction.getSourceCurrency(),
       transaction.getDestinationCurrency(),
       "N/A", // location name

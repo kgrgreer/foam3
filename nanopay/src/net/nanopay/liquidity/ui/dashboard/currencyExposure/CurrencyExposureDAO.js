@@ -1,5 +1,5 @@
 foam.CLASS({
-  package: 'net.nanopay.liquidity.ui',
+  package: 'net.nanopay.liquidity.ui.dashboard.currencyExposure',
   name: 'CurrencyExposureDAO',
   extends: 'foam.dao.ProxyDAO',
   requires: [
@@ -7,7 +7,7 @@ foam.CLASS({
     'foam.dao.EasyDAO',
     'foam.dao.PromisedDAO',
     'net.nanopay.account.Account',
-    'net.nanopay.liquidity.ui.CurrencyExposure'
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure'
   ],
   implements: [
     'foam.mlang.Expressions'
