@@ -145,6 +145,39 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public GetClientAccountStatusResponse getClientAccountStatus(String clientAPIKey) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder(partnerAPI + "api/v1/clientstatus");
+      uriBuilder.setParameter("ApiKey", clientAPIKey);
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+      httpGet.addHeader("API-Key", apiKey);
+      httpGet.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      httpGet.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+
+      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          throw new RuntimeException("Get AFEX Client Account Status failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase());
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return (GetClientAccountStatusResponse) jsonParser.parseString(response, GetClientAccountStatusResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+
+    } catch (IOException | URISyntaxException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
   public CreateBeneficiaryResponse createBeneficiary(CreateBeneficiaryRequest request) {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/beneficiaryCreate");

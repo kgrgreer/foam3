@@ -224,6 +224,7 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/Token"},
   { name: "net/nanopay/fx/afex/OnboardCorporateClientRequest"},
   { name: "net/nanopay/fx/afex/OnboardCorporateClientResponse"},
+  { name: "net/nanopay/fx/afex/GetClientAccountStatusResponse"},
   { name: "net/nanopay/fx/afex/CreateBeneficiaryRequest"},
   { name: "net/nanopay/fx/afex/CreateBeneficiaryResponse"},
   { name: "net/nanopay/fx/afex/UpdateBeneficiaryRequest"},
@@ -1020,7 +1021,7 @@ FOAM_FILES([
 
   // liquidity
   { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
-  
+
   { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
   { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
   { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },

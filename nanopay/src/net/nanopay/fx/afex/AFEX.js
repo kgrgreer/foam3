@@ -24,6 +24,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getClientAccountStatus',
+      documentation: 'Get the account status of a child account by API key',
+      async: true,
+      type: 'net.nanopay.fx.afex.GetClientAccountStatusResponse',
+      args: [
+        {
+          name: 'clientAPIKey',
+          type: 'String'
+        }
+      ]
+    },
+    {
       name: 'createBeneficiary',
       documentation: 'Create a new beneficiary',
       async: true,

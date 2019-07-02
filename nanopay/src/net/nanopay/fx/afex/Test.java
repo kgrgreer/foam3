@@ -8,17 +8,18 @@ public class Test implements ContextAgent {
   @Override
   public void execute(X x) {
     AFEXService afexService = new AFEXService(x);
-      testGetToken(afexService);
-      testOnboardCorporateClient(afexService);
-      testCreateBeneficiary(afexService);
-      testUpdateBeneficiary(afexService);
-      testDisableBeneficiary(afexService);
-      testFindBeneficiary(afexService);
-      testFindBankByNationalID(afexService);
-      testGetValueDate(afexService);
-      testGetQuote(afexService);
-      testCreateTrade(afexService);
-      testCreatePayment(afexService);
+//      testGetToken(afexService);
+//      testOnboardCorporateClient(afexService);
+      testGetClientAccountStatus(afexService);
+//      testCreateBeneficiary(afexService);
+//      testUpdateBeneficiary(afexService);
+//      testDisableBeneficiary(afexService);
+//      testFindBeneficiary(afexService);
+//      testFindBankByNationalID(afexService);
+//      testGetValueDate(afexService);
+//      testGetQuote(afexService);
+//      testCreateTrade(afexService);
+//      testCreatePayment(afexService);
   }
 
   private void testGetToken(AFEXService afexService) {
@@ -51,6 +52,11 @@ public class Test implements ContextAgent {
     System.out.println(onboardCorporateClientResponse.getAPIKey());
     System.out.println(onboardCorporateClientResponse.getAccountNumber());
     System.out.println(onboardCorporateClientResponse.getMessage());
+  }
+
+  private void testGetClientAccountStatus(AFEXService afexService) {
+    GetClientAccountStatusResponse getClientAccountStatusResponse = afexService.getClientAccountStatus("000058C9V464e2c3a-a796-e911-be2f-0050569b0074");
+    System.out.println(getClientAccountStatusResponse.getAccountStatus());
   }
 
   private void testCreateBeneficiary(AFEXService afexService) {

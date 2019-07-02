@@ -45,6 +45,11 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public GetClientAccountStatusResponse getClientAccountStatus(String clientAPIKey) {
+    return null;
+  }
+
+  @Override
   public CreateBeneficiaryResponse createBeneficiary(CreateBeneficiaryRequest request) {
     return null;
   }
