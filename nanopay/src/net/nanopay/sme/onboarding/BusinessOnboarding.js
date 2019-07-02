@@ -131,7 +131,13 @@ foam.CLASS({
 
   ids: ['userId'],
 
-  tableColumns: ['userId', 'status'],
+  tableColumns: [
+    'userId',
+    'legalName',
+    'status',
+    'created',
+    'lastModified'
+  ],
 
   implements: [
     'foam.nanos.auth.Authorizable',
@@ -293,7 +299,8 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'businessId',
-      section: 'adminReferenceSection'
+      section: 'adminReferenceSection',
+      label: 'Business Name'
     },
     {
       class: 'Reference',
@@ -343,6 +350,19 @@ foam.CLASS({
       transient: true,
       section: 'adminReferenceSection',
       minLength: 1
+    },
+    {
+      class: 'String',
+      name: 'legalName',
+      flags: ['web'],
+      transient: true,
+      hidden: true,
+      getter: function() {
+        return this.userId$find.then((user) => {
+          return user.lastName ? user.firstName + " " + user.lastName : user.firstName;
+        });
+
+      }
     },
     {
       class: 'String',
