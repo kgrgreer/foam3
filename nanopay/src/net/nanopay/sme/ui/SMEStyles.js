@@ -175,7 +175,6 @@ foam.CLASS({
     }
 
     .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-container {
-      border: 1px solid #bdbdbd;
       border-radius: 4px;
       width: 100%;
       z-index: 1;
@@ -208,7 +207,6 @@ foam.CLASS({
       min-height: 40px;
       width: 100%;
       border-radius: 4px;
-      border: solid 1px #8e9090;
       background-color: #ffffff;
       display: flex;
       align-items: center;
@@ -262,26 +260,6 @@ foam.CLASS({
 
     .input-field-wrapper {
       position: relative;
-    }
-
-    .input-field {
-      width: 100%;
-      font-size: 14px !important;
-      height: 40px !important;
-      border: solid 1px #8e9090 !important;
-      background: #fff !important;
-      border-radius: 3px !important;
-      font-weight: 400 !important;
-      padding: 12px !important;
-      box-shadow: none !important;
-    }
-
-    textarea.input-field {
-      height: auto;
-    }
-
-    .input-field.image {
-      padding-right: 30px;
     }
 
     .input-double-left {

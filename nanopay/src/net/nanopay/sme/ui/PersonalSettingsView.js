@@ -33,8 +33,8 @@ foam.CLASS({
       padding: 24px;
       min-width: 350px;
     }
-    ^ .input-field {
-      background: white;
+    ^ input:not([type="checkbox"]) {
+      width: 100%;
     }
     ^two-factor-card {
       padding: 24px;
