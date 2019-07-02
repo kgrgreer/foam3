@@ -34,6 +34,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     quoteRequest.setAmount(String.valueOf(amount));
     quoteRequest.setCurrencyPair(targetCurrency + sourceCurrency);
     quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency));
+    AFEXBusiness business = this.getAFEXBusiness(x, user);
+    quoteRequest.setClientAPIKey(business.getApiKey());
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest);
       if ( null != quote ) {
