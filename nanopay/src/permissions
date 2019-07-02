@@ -316,6 +316,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.supportEmailDAO","descript
 p({"class":"foam.nanos.auth.Permission","id":"service.ticketDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.ticketMessageDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.transactionDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.tableViewTransactionDAO","description":"Permission to access the service named 'tableViewTransactionDAO'."})
 p({"class":"foam.nanos.auth.Permission","id":"service.transactionFeeDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.transactionQuotePlanDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.twofactor","description":""})
