@@ -227,6 +227,7 @@ task foamCopy(type: Copy) {
     dependsOn tasks.packageFoam
     dependsOn tasks.foamNodeModulesCopy
     dependsOn tasks.nanopayNodeModulesCopy
+
     from "tools/js_build/foam-bin-${project.version}.js"
     into "${project.targetDir}/classes/webroot"
 }
@@ -315,7 +316,9 @@ clean {
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
+
     options.incremental = true
+    options.compilerArgs += ["-parameters"]
 }
 
 task buildJar(type: Jar) {

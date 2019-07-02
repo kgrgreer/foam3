@@ -33,8 +33,10 @@ public class ApprovalRequestUtil {
   }
   public static ApprovalStatus getStatus(X x, String id, String classification) {
     ApprovalRequest request = (ApprovalRequest) ((ArraySink)getAllRequests(x, id, classification).select(new ArraySink())).getArray().get(0);
-    return request.getRequiredPoints() >= getApprovedPoints(x, id, classification) ? ApprovalStatus.APPROVED :
-      request.getRequiredRejectedPoints() >= getRejectedPoints(x, id, classification) ?
-      ApprovalStatus.REJECTED : ApprovalStatus.REQUESTED;
+    return getApprovedPoints(x, id, classification) >= request.getRequiredPoints()
+      ? ApprovalStatus.APPROVED
+      : getRejectedPoints(x, id, classification) >= request.getRequiredRejectedPoints()
+        ? ApprovalStatus.REJECTED
+        : ApprovalStatus.REQUESTED;
   }
 }

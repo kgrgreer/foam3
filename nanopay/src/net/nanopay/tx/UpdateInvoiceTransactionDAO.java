@@ -42,7 +42,6 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     if ( SafetyUtil.isEmpty(transaction.getId()) &&
       ( transaction instanceof AbliiTransaction || transaction instanceof AscendantFXTransaction )
     ) {
-
       transaction = (Transaction) super.put_(x, obj);
 
       Invoice invoice = getInvoice(x, transaction);
@@ -50,7 +49,12 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         invoice.setPaymentId(transaction.getId());
         // Invoice status should be processing as default when the trasaction is created
         invoice.setPaymentMethod(PaymentStatus.PROCESSING);
-        invoice.setPaymentDate(generateEstimatedCreditDate(x, transaction));
+        // AscendantFXTransaction has its own completion date
+        if ( transaction instanceof AscendantFXTransaction ) {
+          invoice.setPaymentDate(transaction.getCompletionDate());
+        } else {
+          invoice.setPaymentDate(generateEstimatedCreditDate(x, transaction));
+        }
         invoiceDAO.put(invoice);
 
         // The invoice is not saved until after the transaction quoting
@@ -109,7 +113,9 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
         HashMap<String, Object> args = new HashMap();
         args.put("transactionId", transaction.getId());
         args.put("invoiceId", invoice.getId());
-
+        invoice.setPaymentMethod(null);
+        invoice.setPaymentDate(null);
+        invoiceDAO.put(invoice);
         // Send a notification to the payment-ops team.
         FailedTransactionNotification notification = new FailedTransactionNotification.Builder(x)
           .setTransactionId(transaction.getId())

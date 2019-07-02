@@ -14,108 +14,105 @@ foam.CLASS({
     'foam.u2.view.RadioView',
     'net.nanopay.flinks.view.element.CheckBoxes'
   ],
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 492px;
-        }
-        ^ .subContent {
-          height: 285px;
-        }
-        ^ .sub-header {
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-        }
-        ^ .header1 {
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-        }
-        ^ .qa-block {
-          border: 2px solid #ffffff;
-          width: 436px;
-          height: 155px;
-          margin-left:20px;
-          margin-top: 10px;
-          overflow: auto;
-          padding: 5px;
-        }
-        ^ .foam-u2-ActionView-nextButton {
-          float: right;
-          margin: 0;
-          box-sizing: border-box;
-          background-color: #59a5d5;
-          outline: none;
-          border:none;
-          width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          color: #FFFFFF;
-        }
 
-        ^ .foam-u2-ActionView-closeButton:hover:enabled {
-          cursor: pointer;
-        }
+  css: `
+    ^ {
+      width: 492px;
+    }
+    ^ .subContent {
+      height: 285px;
+    }
+    ^ .sub-header {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: 300;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ .header1 {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: 300;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ .qa-block {
+      border: 2px solid #ffffff;
+      width: 436px;
+      height: 155px;
+      margin-left:20px;
+      margin-top: 10px;
+      overflow: auto;
+      padding: 5px;
+    }
+    ^ .foam-u2-ActionView-nextButton {
+      float: right;
+      margin: 0;
+      box-sizing: border-box;
+      background-color: #59a5d5;
+      outline: none;
+      border:none;
+      width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      color: #FFFFFF;
+    }
 
-        ^ .foam-u2-ActionView-closeButton {
-          float: left;
-          margin: 0;
-          outline: none;
-          min-width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          // background-color: rgba(164, 179, 184, 0.1);
-          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          margin-right: 40px;
-          margin-left: 1px;
-        }
+    ^ .foam-u2-ActionView-closeButton:hover:enabled {
+      cursor: pointer;
+    }
 
-        ^ .foam-u2-ActionView-nextButton:disabled {
-          background-color: #7F8C8D;
-        }
+    ^ .foam-u2-ActionView-closeButton {
+      float: left;
+      margin: 0;
+      outline: none;
+      min-width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      // background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      margin-right: 40px;
+      margin-left: 1px;
+    }
 
-        ^ .foam-u2-ActionView-nextButton:hover:enabled {
-          cursor: pointer;
-        }
-        ^ .question {
-          height: 15px;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: normal;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.3px;
-          text-align: left;
-          color: #093649;
-          margin-top: 10px;
-        }
-        ^ .question:first-child {
-          margin-top: 0px;
-        }
-      */}
-    })
-  ],
+    ^ .foam-u2-ActionView-nextButton:disabled {
+      background-color: #7F8C8D;
+    }
+
+    ^ .foam-u2-ActionView-nextButton:hover:enabled {
+      cursor: pointer;
+    }
+    ^ .question {
+      height: 15px;
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: /*%BLACK%*/ #1e1f21;
+      margin-top: 10px;
+    }
+    ^ .question:first-child {
+      margin-top: 0px;
+    }
+  `,
 
   properties: [
     {

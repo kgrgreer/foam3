@@ -44,6 +44,8 @@ var classes = [
   'net.nanopay.payment.Institution',
   'net.nanopay.payment.InstitutionPurposeCode',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.payment.Payroll',
+  'net.nanopay.payment.PayrollEntry',
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
   'net.nanopay.account.Balance',
@@ -122,8 +124,14 @@ var classes = [
   'net.nanopay.kotak.KotakCredentials',
 
   // AFEX
+  'net.nanopay.fx.FXSummaryTransaction',
+  'net.nanopay.fx.afex.AFEXTransaction',
+  'net.nanopay.fx.afex.AFEXTransactionPlanDAO',
+  'net.nanopay.fx.afex.AFEXBMOTransactionPlanDAO',
   'net.nanopay.fx.afex.AFEX',
+  'net.nanopay.fx.afex.AFEXBusiness',
   'net.nanopay.fx.afex.AFEXCredentials',
+  'net.nanopay.fx.afex.AFEXBeneficiary',
   'net.nanopay.fx.afex.Token',
   'net.nanopay.fx.afex.OnboardCorporateClientRequest',
   'net.nanopay.fx.afex.OnboardCorporateClientResponse',
@@ -210,6 +218,7 @@ var classes = [
    'net.nanopay.liquidity.LiquiditySettings',
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
+   'net.nanopay.liquidity.LiquidityRule',
    'net.nanopay.util.Frequency',
 
    // quick
