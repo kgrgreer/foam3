@@ -131,7 +131,7 @@ foam.CLASS({
         .end()
         .start()
           .addClass(this.myClass('buttons'))
-          .add(this.CANCEL)
+          .tag(this.CANCEL, { buttonStyle: 'TERTIARY' })
           .add(this.SEND)
         .end();
     }
