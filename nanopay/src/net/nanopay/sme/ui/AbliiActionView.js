@@ -55,8 +55,8 @@ foam.CLASS({
     }
 
     ^primary:disabled {
-      border: 1px solid /*%PRIMARY5%*/ #e5f1fc;
-      background-color: /*%PRIMARY5%*/ #e5f1fc;
+      border: 1px solid /*%PRIMARY4%*/ #a7beff;
+      background-color: /*%PRIMARY4%*/ #a7beff;
     }
 
 
@@ -109,8 +109,8 @@ foam.CLASS({
     }
 
     ^secondary:disabled {
-      border-color: /*%PRIMARY5%*/ #e5f1fc;
-      color: /*%PRIMARY5%*/ #e5f1fc;
+      border-color: /*%PRIMARY4%*/ #a7beff;
+      color: /*%PRIMARY4%*/ #a7beff;
     }
 
 
