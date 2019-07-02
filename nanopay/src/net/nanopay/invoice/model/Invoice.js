@@ -458,6 +458,7 @@ foam.CLASS({
       targetDAOKey: 'contactDAO',
       of: 'net.nanopay.contacts.Contact',
       name: 'contactId',
+      value: 0,
       documentation: `The unique identifier for the Contact, representing people who, 
         although they are not registered on the platform, can still receive invoices from
         platform users.`,
