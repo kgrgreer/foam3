@@ -213,7 +213,7 @@ foam.CLASS({
               this.EQ(this.Contact.EMAIL, this.wizard.data.email)
             ).select();
             if ( contact.array.length != 0 ) {
-              this.ctrl.notify(this.CONTACT_EXIST, 'warning');
+              this.ctrl.notify(this.CONTACT_EXIST, 'error');
               return;
             }
           } catch (err) {

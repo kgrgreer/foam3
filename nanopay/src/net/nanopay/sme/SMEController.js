@@ -134,6 +134,14 @@ foam.CLASS({
       message: 'Please verify your bank account to submit your account for review.'
     },
     {
+      name: 'COMPLIANCE_PASSED_NO_BANK',
+      message: 'Please add a bank account.'
+    },
+    {
+      name: 'COMPLIANCE_PASSED_BANK_NEED_VERIFY',
+      message: 'Please verify your bank account.'
+    },
+    {
       name: 'BUSINESS_INFO_UNDER_REVIEW',
       message: 'Our compliance team is reviewing the information you have submitted. Your account will be updated in 1-3 business days.'
     },
@@ -250,7 +258,7 @@ foam.CLASS({
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED,
             bannerMode: this.ComplianceBannerMode.NOTICE,
             condition: function(user, accountArray) {
-              return accountArray.length > 0 
+              return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.NOTREQUESTED
                 && accountArray[0].status === self.BankAccountStatus.VERIFIED;
             },
@@ -273,6 +281,27 @@ foam.CLASS({
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.REQUESTED
+                && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
+            },
+            passed: false,
+            showBanner: true
+          },
+          {
+            msg: this.COMPLIANCE_PASSED_NO_BANK,
+            bannerMode: this.ComplianceBannerMode.NOTICE,
+            condition: function(user, accountArray) {
+              return accountArray.length === 0
+                && user.compliance === self.ComplianceStatus.PASSED;
+            },
+            passed: false,
+            showBanner: true
+          },
+          {
+            msg: this.COMPLIANCE_PASSED_BANK_NEED_VERIFY,
+            bannerMode: this.ComplianceBannerMode.NOTICE,
+            condition: function(user, accountArray) {
+              return accountArray.length > 0
+                && user.compliance === self.ComplianceStatus.PASSED
                 && accountArray[0].status === self.BankAccountStatus.UNVERIFIED;
             },
             passed: false,

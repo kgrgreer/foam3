@@ -154,6 +154,10 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      // adding a listener to track the display width here as well since we don't call super
+      window.addEventListener('resize', this.updateDisplayWidth);
+      this.updateDisplayWidth();
+
       // enable session timer
       this.sessionTimer.enable = true;
       this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);

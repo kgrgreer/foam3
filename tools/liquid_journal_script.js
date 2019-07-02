@@ -363,6 +363,7 @@ function main() {
     balances: {},
     currencyDAO: foam.dao.NullDAO.create(),
     userDAO: foam.dao.NullDAO.create(),
+    complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,
     addCommas: function(a) { return a; }
   });
