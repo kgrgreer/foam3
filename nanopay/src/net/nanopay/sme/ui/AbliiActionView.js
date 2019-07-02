@@ -8,6 +8,7 @@ foam.CLASS({
   inheritCSS: false,
   css: `
     ^ {
+      font-family: 'Lato', sans-serif;
       border-radius: 4px;
       text-align: center;
       display: inline-flex;

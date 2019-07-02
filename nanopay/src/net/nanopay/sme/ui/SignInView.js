@@ -198,7 +198,7 @@ foam.CLASS({
             .end()
             .add(this.PASSWORD)
           .end()
-          .start(this.LOG_IN).addClass('sme-button').addClass('block').addClass('login').end()
+          .start(this.LOG_IN, { size: 'LARGE' }).addClass('block').addClass('login').end()
         .end()
         .start()
           .start().addClass('sme-subtitle')

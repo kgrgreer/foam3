@@ -322,19 +322,6 @@ foam.CLASS({
     .login {
       margin-top: 24px !important;
     }
-    .sme-button {
-      border-radius: 4px !important;
-      background-color: #604aff;
-      font-size: 16px !important;
-      font-family: 'Lato', sans-serif;
-      height: 48px !important;
-      margin-top: 0px;
-      color: #fff;
-    }
-    .sme-button:hover {
-      background: #4d38e1 !important;
-    }
-
     .sme-title {
       font-size: 32px;
       line-height: 1.5;
