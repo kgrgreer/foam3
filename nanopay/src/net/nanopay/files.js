@@ -1034,6 +1034,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
 
   // identitymind
+  { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },
   { name: 'net/nanopay/meter/compliance/identityMind/AutomatedReviewEngineResult' },
   { name: 'net/nanopay/meter/compliance/identityMind/ComplianceTransactionValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/ConditionResult' },
