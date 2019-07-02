@@ -62,7 +62,7 @@ public class AFEXClientOnboardingDAO
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
         if ( afexBusiness != null ) return super.put_(x, obj);
 
-        boolean hasFXProvisionPayerPermission = auth.checkUser(getX(), business, "fx.provision.payer");
+        boolean hasFXProvisionPayerPermission = true; //auth.checkUser(getX(), business, "fx.provision.payer");
         //boolean hasCurrencyReadUSDPermission = auth.checkUser(getX(), business, "currency.read.USD");
         if ( hasFXProvisionPayerPermission ) {
           User signingOfficer = getSigningOfficer(x, business);

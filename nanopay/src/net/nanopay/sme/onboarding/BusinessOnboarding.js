@@ -154,7 +154,8 @@ foam.CLASS({
   imports: [
     'ctrl',
     'pushMenu',
-    'appConfig'
+    'appConfig',
+    'identificationTypeDAO'
   ],
 
   sections: [
