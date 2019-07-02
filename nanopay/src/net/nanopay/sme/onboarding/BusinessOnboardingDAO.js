@@ -139,7 +139,10 @@ foam.CLASS({
           // Do AFEX onboarding if Bank Account already exists for business
           DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
           BankAccount bankAccount = (BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class)));
-          if ( bankAccount != null ) localAccountDAO.put(bankAccount); // Should be a better way to do this?
+          if ( bankAccount != null ) {
+            bankAccount = (BankAccount) bankAccount.fclone();
+            localAccountDAO.put(bankAccount); // Should be a better way to do this?
+          }
         } else {
           // If the user needs to invite the signing officer
           String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();

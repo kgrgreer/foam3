@@ -74,29 +74,20 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
-    Address userAddress = user.getAddress(); 
+    Address userAddress = user.getAddress() == null ? user.getBusinessAddress() : user.getAddress(); 
     if ( null == userAddress ) throw new RuntimeException("User Address is null " + userId );
     
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
 
-    Address bankAddress = bankAccount.getAddress(); 
+    Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress(); 
     if ( null == bankAddress ) throw new RuntimeException("Bank Account Address is null " + bankAccountId );
 
     AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
 
     // Check payee does not already exists on AFEX
-    FindBeneficiaryRequest findBeneficiaryRequest = new FindBeneficiaryRequest();
-    findBeneficiaryRequest.setVendorId(String.valueOf(userId));
-    findBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
-    FindBeneficiaryResponse beneficiaryResponse = null;
-    try {
-      beneficiaryResponse = this.afexClient.findBeneficiary(findBeneficiaryRequest);
-    } catch(Throwable t) {
-      ((Logger) x.get("logger")).error("Error finding AFEX beneficiary.", t);
-    }
-    
+    FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexBusiness.getApiKey());
     if ( null == beneficiaryResponse ) {
       CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();
       createBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
@@ -124,6 +115,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     } else {
       addBeneficiary(x, userId, sourceUser, beneficiaryResponse.getStatus());
     }
+  }
+
+  public FindBeneficiaryResponse findBeneficiary(long beneficiaryId, String clientApiKey) {
+    FindBeneficiaryRequest findBeneficiaryRequest = new FindBeneficiaryRequest();
+    findBeneficiaryRequest.setVendorId(String.valueOf(beneficiaryId));
+    findBeneficiaryRequest.setClientAPIKey(clientApiKey);
+    FindBeneficiaryResponse beneficiaryResponse = null;
+    try {
+      beneficiaryResponse = this.afexClient.findBeneficiary(findBeneficiaryRequest);
+    } catch(Throwable t) {
+      ((Logger) x.get("logger")).error("Error finding AFEX beneficiary.", t);
+    }
+    return beneficiaryResponse;
   }
 
   private void addBeneficiary(X x, long beneficiaryId, long ownerId, String status) {
