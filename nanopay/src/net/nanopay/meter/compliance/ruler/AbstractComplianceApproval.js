@@ -7,26 +7,13 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Updates new object according to approval.
+  documentation: `Updates object according to approval.
 
-    When approval request changes (to APPROVED/REJECTED), the associated
-    object is re-put back into DAO without modification.
+    AbstractComplianceApproval gets the last updated (ACCEPTED/REJECTED)
+    approval request. Then, update the object by calling updateObj() method
+    when there is no more pending approval requests.
 
-    AbstractComplianceApproval gets the last updated approval request and clear
-    the existing pending approval requests.
-
-    If approval request is APPROVED, it will remove other pending approval
-    requests of the same cause. For example, three approval requests were
-    created because Securefact could not verify a user, if one approval
-    request is updated to APPROVED then the other two approval requests will be
-    removed.
-
-    If approval request is REJECTED, it will remove all pending approval
-    requests including approval requests of other causes (eg., IdentityMind
-    MANUAL_REVIEW).
-
-    Then, if there is no more pending approval requests for the object it calls
-    updateObj(x, obj, approvalStatus) method which can be overridden by its
+    updateObj(x, obj, approvalStatus) method is supposed to be overridden by its
     sub-class.`,
 
   javaImports: [
