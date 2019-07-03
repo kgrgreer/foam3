@@ -51,8 +51,8 @@ foam.CLASS({
       name: 'isAvailable',
       factory: function() {
         var i = this.index;
-        return function(signingOfficer, ownershipAbovePercent, amountOfOwners) {
-          return signingOfficer && ownershipAbovePercent && amountOfOwners >= i;
+        return function(signingOfficer, amountOfOwners) {
+          return signingOfficer && amountOfOwners >= i;
         };
       },
     }
@@ -213,34 +213,25 @@ foam.CLASS({
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
-      name: 'ownershipYesOrNoSection',
-      title: 'Does your company have anyone that owns 25% or more of the business?',
+      name: 'ownershipAmountSection',
+      title: 'How many individuals directly or indirectly own 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document
           the percentage of ownership of any individual with a 25% + stake in the company.`,
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
-      name: 'ownershipAmountSection',
-      title: 'How many people own 25% or more of your company?',
-      help: `Great, almost done! In accordance with banking laws, we need to document
-          the percentage of ownership of any individual with a 25% + stake in the company.`,
-      isAvailable: function (signingOfficer, ownershipAbovePercent) {
-        return signingOfficer && ownershipAbovePercent
-      }
-    },
-    {
       name: 'personalOwnershipSection',
-      title: 'Add the job title and percent ownership details for yourself',
+      title: 'Please select your principal type and percentage of ownership',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
-      isAvailable: function(signingOfficer, ownershipAbovePercent, userOwnsPercent) {
-        return signingOfficer && ownershipAbovePercent && userOwnsPercent;
+      isAvailable: function(signingOfficer, amountOfOwners, userOwnsPercent) {
+        return signingOfficer && amountOfOwners > 0 && userOwnsPercent;
       }
     },
     {
       class: 'net.nanopay.sme.onboarding.OwnerSection',
       index: 1,
-      isAvailable: function(signingOfficer, userOwnsPercent, ownershipAbovePercent, amountOfOwners) {
-        return signingOfficer && ownershipAbovePercent && amountOfOwners >= 1 && ! userOwnsPercent;
+      isAvailable: function(signingOfficer, userOwnsPercent, amountOfOwners) {
+        return signingOfficer && amountOfOwners >= 1 && ! userOwnsPercent;
       }
     },
     {
@@ -829,39 +820,25 @@ foam.CLASS({
       ]
     }),
     {
-      class: 'Boolean',
-      name: 'ownershipAbovePercent',
-      label: '',
-      section: 'ownershipYesOrNoSection',
-      postSet: function(_, n) {
-        if ( ! n ) this.amountOfOwners = 0;
-      },
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [false, 'No (or this is a publicly traded company)'],
-          [true, 'Yes, we have owners with 25% +']
-        ],
-      },
-    },
-    {
       class: 'Long',
       name: 'amountOfOwners',
       section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.RadioView',
-        choices: [ 1, 2, 3, 4 ],
+        choices: [ 0, 1, 2, 3, 4 ],
         isHorizontal: true
+      },
+      postSet: function(_, n) {
+        this.publiclyTraded = this.userOwnsPercent = false;
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'amountOfOwners', 'ownershipAbovePercent'],
+          args: ['signingOfficer', 'amountOfOwners'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_ABOVE_PERCENT, false),
               e.AND(
-                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 1),
+                e.GTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 0),
                 e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.AMOUNT_OF_OWNERS, 4)
               )
             );
@@ -878,6 +855,22 @@ foam.CLASS({
       label2: 'I am one of these owners',
       postSet: function(_, n) {
         this.clearProperty('owner1');
+      },
+      visibilityExpression: function(amountOfOwners) {
+        return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'publiclyTraded',
+      section: 'ownershipAmountSection',
+      label: '',
+      label2: 'This is a publicly traded company',
+      postSet: function(_, n) {
+        this.clearProperty('owner1');
+      },
+      visibilityExpression: function(amountOfOwners) {
+        return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     },
     {
@@ -905,11 +898,10 @@ foam.CLASS({
       label: '% of ownership',
       validationPredicates: [
         {
-          args: ['signingOfficer', 'ownershipAbovePercent', 'userOwnsPercent', 'ownershipPercent'],
+          args: ['signingOfficer', 'userOwnsPercent', 'ownershipPercent'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_ABOVE_PERCENT, false),
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.USER_OWNS_PERCENT, false),
               e.AND(
                 e.LTE(net.nanopay.sme.onboarding.BusinessOnboarding.OWNERSHIP_PERCENT, 100),
@@ -974,8 +966,8 @@ foam.CLASS({
           'ownershipPercent'
         ]
       },
-      visibilityExpression: function(ownershipAbovePercent) {
-        return ownershipAbovePercent ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
+      visibilityExpression: function(amountOfOwners) {
+        return amountOfOwners > 0 ? foam.u2.Visibility.RO : foam.u2.Visibility.HIDDEN;
       }
     },
     {
@@ -1048,7 +1040,7 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'ownershipAbovePercent', 'dualPartyAgreement'],
+          args: ['signingOfficer', 'dualPartyAgreement'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
