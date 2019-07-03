@@ -6,15 +6,14 @@ foam.CLASS({
   documentation: 'Validates transaction via IdentityMind Transfer API.',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
+    'foam.util.SafetyUtil',
     'net.nanopay.approval.ApprovalStatus',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.bank.BankAccount',
-    'foam.util.SafetyUtil',
-    'foam.core.ContextAgent',
-    'foam.core.X'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
