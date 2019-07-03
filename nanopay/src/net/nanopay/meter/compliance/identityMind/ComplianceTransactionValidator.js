@@ -39,29 +39,29 @@ foam.CLASS({
               .setDaoKey("localTransactionDAO")
               .build();
 
-          IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-
-          Transaction head = transaction;
-          while ( ! SafetyUtil.isEmpty(head.getParent()) ) {
-            Transaction parent = head.findParent(x);
-            if ( parent == null ) break;
-            head = parent;
-          }
-
-          if ( head.findSourceAccount(x) instanceof BankAccount ) {
+          // NOTE: Only run transaction evaluation through IdentityMind
+          // when it is a bank to bank transaction.
+          if ( transaction.findSourceAccount(x) instanceof BankAccount
+            && transaction.findDestinationAccount(x) instanceof BankAccount
+          ) {
+            IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
             try {
-              IdentityMindResponse response = identityMindService.evaluateTransfer(x, head);
+              IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
               status = response.getComplianceValidationStatus();
-
               approvalRequest.setCauseId(response.getId());
               approvalRequest.setCauseDaoKey("identityMindResponseDAO");
-              approvalRequest.setStatus(getApprovalStatus(status));
-              approvalRequest.setApprover(getApprover(status));
-            } finally {
-              requestApproval(x, approvalRequest);
-              ruler.putResult(status);
+            } catch (Exception ex) {
+              approvalRequest.setMemo(ex.getMessage());
             }
+          } else {
+            approvalRequest.setMemo("IdentityMind transaction check is skipped because it's not a bank-to-bank transaction.");
           }
+
+          // Create approval request
+          approvalRequest.setStatus(getApprovalStatus(status));
+          approvalRequest.setApprover(getApprover(status));
+          requestApproval(x, approvalRequest);
+          ruler.putResult(status);
         }
       }, "Compliance Transaction Validator");
       `
