@@ -72,6 +72,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'findBankByNationalID',
+      documentation: 'Search for bank details relating to a bank national ID',
+      async: true,
+      type: 'net.nanopay.fx.afex.FindBankByNationalIDResponse',
+      args: [
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.FindBankByNationalIDRequest'
+        }
+      ]
+    },
+    {
       name: 'getValueDate',
       async: true,
       type: 'String',

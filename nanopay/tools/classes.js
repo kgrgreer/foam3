@@ -142,6 +142,8 @@ var classes = [
   'net.nanopay.fx.afex.DisableBeneficiaryRequest',
   'net.nanopay.fx.afex.FindBeneficiaryRequest',
   'net.nanopay.fx.afex.FindBeneficiaryResponse',
+  'net.nanopay.fx.afex.FindBankByNationalIDRequest',
+  'net.nanopay.fx.afex.FindBankByNationalIDResponse',
   'net.nanopay.fx.afex.Quote',
   'net.nanopay.fx.afex.GetQuoteRequest',
   'net.nanopay.fx.afex.CreateTradeRequest',
@@ -623,12 +625,18 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
   // identitymind
+  'net.nanopay.meter.compliance.identityMind.AbstractIdentityMindComplianceRuleAction',
+  'net.nanopay.meter.compliance.identityMind.AutomatedReviewEngineResult',
   'net.nanopay.meter.compliance.identityMind.ComplianceTransactionValidator',
+  'net.nanopay.meter.compliance.identityMind.ConditionResult',
   'net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator',
   'net.nanopay.meter.compliance.identityMind.EntityLoginValidator',
+  'net.nanopay.meter.compliance.identityMind.ExternalizedEvaluationResult',
+  'net.nanopay.meter.compliance.identityMind.ExternalizedRule',
   'net.nanopay.meter.compliance.identityMind.MerchantKYCValidator',
   'net.nanopay.meter.compliance.identityMind.IdentityMindRequest',
   'net.nanopay.meter.compliance.identityMind.IdentityMindResponse',
+  'net.nanopay.meter.compliance.identityMind.IdentityMindResponseEDNA',
   'net.nanopay.meter.compliance.identityMind.IdentityMindService',
 
   // meter tests

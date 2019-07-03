@@ -25,7 +25,6 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-
         if ( ! auth.check(x, "invoice.pay") ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
