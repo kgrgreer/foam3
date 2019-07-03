@@ -33,7 +33,7 @@ foam.CLASS({
       padding: 24px;
       min-width: 350px;
     }
-    ^ input:not([type="checkbox"]) {
+    ^change-password-card input {
       width: 100%;
     }
     ^two-factor-card {
