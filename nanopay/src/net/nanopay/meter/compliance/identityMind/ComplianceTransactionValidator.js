@@ -42,23 +42,17 @@ foam.CLASS({
 
           IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
 
-          while ( ! SafetyUtil.isEmpty(transaction.getParent()) ) {
-            Transaction parent = transaction.findParent(x);
-            if ( parent != null ) {
-              transaction = parent;
-            } else {
-              break;
-            }
+          Transaction head = transaction;
+          while ( ! SafetyUtil.isEmpty(head.getParent()) ) {
+            Transaction parent = head.findParent(x);
+            if ( parent == null ) break;
+            head = parent;
           }
 
-          if ( transaction.findSourceAccount(x) instanceof BankAccount ) {
+          if ( head.findSourceAccount(x) instanceof BankAccount ) {
             try {
-              IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
+              IdentityMindResponse response = identityMindService.evaluateTransfer(x, head);
               status = response.getComplianceValidationStatus();
-              TransactionStatus transactionStatus = getTransactionStatus(status);
-              if ( transactionStatus != null ) {
-                transaction.setInitialStatus(transactionStatus);
-              }
 
               approvalRequest.setCauseId(response.getId());
               approvalRequest.setCauseDaoKey("identityMindResponseDAO");
@@ -70,25 +64,7 @@ foam.CLASS({
             }
           }
         }
-      },"Compliance Transaction Validator");
-      `
-    },
-    {
-      name: 'getTransactionStatus',
-      type: 'net.nanopay.tx.model.TransactionStatus',
-      args: [
-        {
-          name: 'status',
-          type: 'net.nanopay.meter.compliance.ComplianceValidationStatus'
-        }
-      ],
-      javaCode: `
-        if ( ComplianceValidationStatus.VALIDATED == status ) {
-          return TransactionStatus.COMPLETED;
-        } else if ( ComplianceValidationStatus.REJECTED == status ) {
-          return TransactionStatus.DECLINED;
-        }
-        return null;
+      }, "Compliance Transaction Validator");
       `
     },
     {
