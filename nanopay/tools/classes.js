@@ -142,6 +142,8 @@ var classes = [
   'net.nanopay.fx.afex.DisableBeneficiaryRequest',
   'net.nanopay.fx.afex.FindBeneficiaryRequest',
   'net.nanopay.fx.afex.FindBeneficiaryResponse',
+  'net.nanopay.fx.afex.FindBankByNationalIDRequest',
+  'net.nanopay.fx.afex.FindBankByNationalIDResponse',
   'net.nanopay.fx.afex.Quote',
   'net.nanopay.fx.afex.GetQuoteRequest',
   'net.nanopay.fx.afex.CreateTradeRequest',
@@ -624,6 +626,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
   // identitymind
+  'net.nanopay.meter.compliance.identityMind.AbstractIdentityMindComplianceRuleAction',
   'net.nanopay.meter.compliance.identityMind.AutomatedReviewEngineResult',
   'net.nanopay.meter.compliance.identityMind.ComplianceTransactionValidator',
   'net.nanopay.meter.compliance.identityMind.ConditionResult',

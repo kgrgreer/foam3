@@ -12,6 +12,9 @@ import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 public class AFEXServiceProvider extends ContextAwareSupport implements FXService, PaymentService {
@@ -206,13 +209,71 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public Transaction submitPayment(Transaction transaction) throws RuntimeException{
-    // TODO
-    return null;
+    if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
+
+    AFEXBusiness afexBusiness = getAFEXBusiness(x,transaction.getPayerId());
+    if ( null == afexBusiness ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x,transaction.getPayeeId(), transaction.getPayerId());
+    if ( null == afexBeneficiary ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+
+    long tradeAmount = 0;
+    boolean isAmountSettlement = transaction.getAmount() > 1 ? true : false;
+    tradeAmount = isAmountSettlement ? transaction.getAmount() : transaction.getDestinationAmount();
+    CreateTradeRequest createTradeRequest = new CreateTradeRequest();
+    createTradeRequest.setClientAPIKey(afexBusiness.getApiKey());
+    createTradeRequest.setAmount(String.valueOf(tradeAmount));
+    createTradeRequest.setIsAmountSettlement(String.valueOf(isAmountSettlement));
+    createTradeRequest.setSettlementCcy(transaction.getSourceCurrency());
+    createTradeRequest.setTradeCcy(transaction.getDestinationCurrency());
+    try {
+      CreateTradeResponse tradeResponse = this.afexClient.createTrade(createTradeRequest);
+      if ( null != tradeResponse && tradeResponse.getTradeNumber() > 0 ) {
+        CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+        createPaymentRequest.setClientAPIKey(afexBusiness.getApiKey());
+        createPaymentRequest.setPaymentDate(tradeResponse.getValueDate());
+        createPaymentRequest.setAmount(String.valueOf(tradeResponse.getAmount()));
+        createPaymentRequest.setCurrency(tradeResponse.getTradeCcy());
+        createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()));
+        try {
+          CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest);
+          if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
+            AFEXTransaction txn = (AFEXTransaction) transaction.fclone();
+            txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
+            return txn;
+          }
+        } catch(Throwable t) {
+          ((Logger) x.get("logger")).error("Error sending payment to AFEX.", t);
+        } 
+      }
+    } catch(Throwable t) {
+      ((Logger) x.get("logger")).error("Error createing AFEX Trade.", t);
+    }
+
+    return transaction;
   }
 
   protected AFEXBusiness getAFEXBusiness(X x, Long userId) {
     DAO dao = (DAO) x.get("afexBusinessDAO");
     return (AFEXBusiness) dao.find(AND(EQ(AFEXBusiness.USER, userId), EQ(AFEXBusiness.STATUS, "Active")));
+  }
+
+  protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
+    DAO dao = (DAO) x.get("afexBeneficiaryDAO");
+    return (AFEXBeneficiary) dao.find(AND(EQ(AFEXBeneficiary.CONTACT, beneficiaryId), EQ(AFEXBeneficiary.OWNER, ownerId), 
+      EQ(AFEXBeneficiary.STATUS, "Active")));
+  }
+
+  private Double toDecimal(Long amount) {
+    BigDecimal x100 = new BigDecimal(100);
+    BigDecimal val = BigDecimal.valueOf(amount).setScale(2,BigDecimal.ROUND_HALF_DOWN);
+    return val.divide(x100).setScale(2,BigDecimal.ROUND_HALF_DOWN).doubleValue();
+  }
+
+  private Long fromDecimal(Double amount) {
+    BigDecimal x100 = new BigDecimal(100);
+    BigDecimal val = BigDecimal.valueOf(amount).setScale(2,BigDecimal.ROUND_HALF_DOWN);
+    return val.multiply(x100).longValueExact();
   }
 
 }
