@@ -47,7 +47,7 @@ foam.CLASS({
     'accountBalanceQuarterlyCandlestickDAO',
     'accountBalanceAnnuallyCandlestickDAO',
     'currencyDAO',
-    'liquidityThresholdHourlyCandlestickDAO',
+    'liquidityThresholdCandlestickDAO',
   ],
 
   css: `
@@ -132,45 +132,8 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'aggregatedDAO',
-      expression: function(startTime, endTime, account, timeFrame) {
-        if ( ! account || ! timeFrame ) return foam.dao.NullDAO.create({ of: this.Candlestick });
-        return this.PromisedDAO.create({
-          of: this.Candlestick,
-          promise: this.account$find
-            .then(a => {
-              var balanceDAO = this['accountBalance' + timeFrame.label + 'CandlestickDAO']
-                .where(this.AND(
-                  this.GTE(this.Candlestick.CLOSE_TIME, startTime),
-                  this.LTE(this.Candlestick.CLOSE_TIME, endTime),
-                  this.EQ(this.Candlestick.KEY, account)
-                ));
-
-              var liquidityDAO = this.liquidityThresholdHourlyCandlestickDAO
-                .where(this.AND(
-                  this.GTE(this.Candlestick.CLOSE_TIME, startTime),
-                  this.LTE(this.Candlestick.CLOSE_TIME, endTime),
-                  this.OR(
-                    this.EQ(this.Candlestick.KEY, a.liquiditySetting+':low'),
-                    this.EQ(this.Candlestick.KEY, a.liquiditySetting+':high')
-                  )
-                ));
-
-              var sink = this.DAOSink.create({
-                dao: this.EasyDAO.create({
-                  of: this.Candlestick,
-                  daoType: 'MDAO'
-                })
-              });
-
-              return Promise.all([
-                balanceDAO.select(sink),
-                liquidityDAO.select(sink)
-              ])
-            })
-            .then(ar => {
-              return ar[0].dao;
-            })
-        })
+      factory: function() {
+        return foam.dao.NullDAO.create({ of: this.Candlestick });
       }
     },
     {
@@ -205,7 +168,11 @@ foam.CLASS({
   ],
 
   reactions: [
-    ['', 'propertyChange.account', 'updateStyling']
+    ['', 'propertyChange.aggregatedDAO', 'updateStyling'],
+    ['', 'propertyChange.startTime', 'updateAggregatedDAO'],
+    ['', 'propertyChange.endTime', 'updateAggregatedDAO'],
+    ['', 'propertyChange.account', 'updateAggregatedDAO'],
+    ['', 'propertyChange.timeFrame', 'updateAggregatedDAO'],
   ],
 
   methods: [
@@ -250,51 +217,136 @@ foam.CLASS({
 
   listeners: [
     {
-      name: 'updateStyling',
+      name: 'updateAggregatedDAO',
       isFramed: true,
       code: function() {
-        this.account$find
-          .then(a => {
-            return Promise.all([
-              Promise.resolve(a),
-              this.currencyDAO.find(a.denomination)
-            ]);
-          })
-          .then(ar => {
-            var c = ar[1];
-            this.config.options.scales.yAxes = [{
-                ticks: {
-                  callback: function(v) {
-                    return c.format(v);
-                  }
-                }
-            }];
-            this.config.options.tooltips.callbacks.label = function(v) {
-              return c.format(v.yLabel);
-            };
+        this.aggregatedDAO = ( this.account && this.timeFrame ) ?
+          this.PromisedDAO.create({
+            of: this.Candlestick,
+            promise: new Promise(async function(resolve) {
 
-            var a = ar[0];
-            var style = {};
-            style[a.id] = {
-              lineTension: 0,
-              borderColor: ['#406dea'],
-              backgroundColor: 'rgba(0, 0, 0, 0.0)',
-              label: `[${a.denomination}] ${a.name}`
+              var dao = this.EasyDAO.create({
+                of: this.Candlestick,
+                daoType: 'MDAO'
+              });
+              var sink = this.DAOSink.create({ dao: dao });
+
+              // Fill the DAO with the account balance history.
+              var account = await this.account$find;
+              await this['accountBalance' + this.timeFrame.label + 'CandlestickDAO']
+                .where(this.AND(
+                  this.GTE(this.Candlestick.CLOSE_TIME, this.startTime),
+                  this.LTE(this.Candlestick.CLOSE_TIME, this.endTime),
+                  this.EQ(this.Candlestick.KEY, account.id)
+                ))
+                .select(sink);
+
+              // If there are no liquidity settings, there's nothing more to do.
+              if ( ! account.liquiditySetting ) {
+                resolve(dao);
+                return;
+              }
+
+              // Only put liquidity history that spans the range of the balance history.
+              // i.e. If the startTime is May 1st but balance histories don't start until
+              // July 1st, we want liquidity settings to start at July 1st but if liquidity
+              // settings haven't been touched since June 1st, we need to render the point
+              // from June 1st at July 1st.
+
+              var minTime = (await dao.select(this.MIN(this.Candlestick.CLOSE_TIME))).value;
+              var maxTime = (await dao.select(this.MAX(this.Candlestick.CLOSE_TIME))).value;
+
+              var fillLiquidityHistory = async function(threshold) {
+                var key = account.liquiditySetting + ':' + threshold;
+                var liquidityHistoryDAO = this.liquidityThresholdCandlestickDAO
+                  .where(this.EQ(this.Candlestick.KEY, key));
+                
+                var first = (await liquidityHistoryDAO
+                  .where(this.LTE(this.Candlestick.CLOSE_TIME, minTime))
+                  .orderBy(this.DESC(this.Candlestick.CLOSE_TIME))
+                  .limit(1)
+                  .select()).array[0];
+                if ( first ) {
+                  first = first.clone();
+                  first.closeTime = minTime;
+                  await dao.put(first);
+                }
+                
+                var last = (await liquidityHistoryDAO
+                  .where(this.GTE(this.Candlestick.CLOSE_TIME, maxTime))
+                  .orderBy(this.Candlestick.CLOSE_TIME)
+                  .limit(1)
+                  .select()).array[0];
+                if ( last ) {
+                  last = last.clone();
+                  last.closeTime = maxTime;
+                  await dao.put(last);
+                } else {
+                  var liquiditySetting = await account.liquiditySetting$find;
+                  await dao.put(this.Candlestick.create({
+                    closeTime: maxTime,
+                    key: key,
+                    total: liquiditySetting[threshold + 'Liquidity'].threshold,
+                    count: 1
+                  }));
+                }
+
+                await liquidityHistoryDAO
+                  .where(this.AND(
+                    this.GTE(this.Candlestick.CLOSE_TIME, minTime),
+                    this.LTE(this.Candlestick.CLOSE_TIME, maxTime)
+                  ))
+                  .select(sink);
+              }.bind(this)
+
+              await fillLiquidityHistory('low');
+              await fillLiquidityHistory('high');
+
+              resolve(dao);
+            }.bind(this))
+          }) : undefined;
+      }
+    },
+    {
+      name: 'updateStyling',
+      isFramed: true,
+      code: async function() {
+        var a = await this.account$find;
+        if ( ! a ) return;
+
+        var c = await this.currencyDAO.find(a.denomination)
+
+        this.config.options.scales.yAxes = [{
+            ticks: {
+              callback: function(v) {
+                return c.format(Math.floor(v));
+              }
             }
-            style[a.liquiditySetting+':low'] = {
-              steppedLine: true,
-              borderColor: ['#a61414'],
-              backgroundColor: 'rgba(0, 0, 0, 0.0)',
-              label: this.LABEL_LOW_THRESHOLD
-            }
-            style[a.liquiditySetting+':high'] = {
-              steppedLine: true,
-              borderColor: ['#a61414'],
-              backgroundColor: 'rgba(0, 0, 0, 0.0)',
-              label: this.LABEL_HIGH_THRESHOLD
-            }
-            this.styling = style;
-          });
+        }];
+        this.config.options.tooltips.callbacks.label = function(v) {
+          return c.format(Math.floor(v.yLabel));
+        };
+
+        var style = {};
+        style[a.id] = {
+          lineTension: 0,
+          borderColor: ['#406dea'],
+          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+          label: `[${a.denomination}] ${a.name}`
+        }
+        style[a.liquiditySetting+':low'] = {
+          steppedLine: true,
+          borderColor: ['#a61414'],
+          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+          label: this.LABEL_LOW_THRESHOLD
+        }
+        style[a.liquiditySetting+':high'] = {
+          steppedLine: true,
+          borderColor: ['#a61414'],
+          backgroundColor: 'rgba(0, 0, 0, 0.0)',
+          label: this.LABEL_HIGH_THRESHOLD
+        }
+        this.styling = style;
       }
     }
   ]
