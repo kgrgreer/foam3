@@ -264,12 +264,15 @@ foam.CLASS({
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String dstCurrency = ((Invoice)obj).getDestinationCurrency();
         Currency currency = (Currency) currencyDAO.find(dstCurrency);
-        StringBuilder sb = new StringBuilder();
-        sb.append(currency.format(get_(obj)));
-        sb.append(" ");
-        sb.append(dstCurrency);
-        outputter.output(sb.toString());
-        sb.setLength(0);
+        
+        // Outputting two columns: "amount", "destination Currency"
+        outputter.output(currency.format(get_(obj)));
+        outputter.output(dstCurrency);
+      `,
+      javaToCSVLabel: `
+        // Outputting two columns: "amount", "destination Currency"
+        outputter.output(getName());
+        outputter.output("Destination Currency");
       `
     },
     { // How is this used? - display only?,
