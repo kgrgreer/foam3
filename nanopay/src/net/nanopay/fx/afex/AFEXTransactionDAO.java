@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import net.nanopay.fx.FXService;
 import net.nanopay.fx.ascendantfx.AscendantFX;
 import net.nanopay.fx.ascendantfx.AscendantFXServiceProvider;
@@ -42,23 +43,16 @@ public class AFEXTransactionDAO
 
     AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("AFEXServiceProvider");
 
-    if ( ! transaction.getAccepted() ) {
-      try{
-        if( afexService.acceptFXRate(transaction.getFxQuoteId(), transaction.getPayerId()) ) {
-          transaction.setAccepted(true);
-        }
-      }catch(Throwable t) {
-        ((Logger) x.get(Logger.class)).error("Error sending Accept Quote Request to AFEX.", t);
-        return getDelegate().put_(x, obj);
-      }
-    }
-
-    //Submit transation to AFEX
+  ///Submit transation to AFEX
     try {
       Transaction txn = afexService.submitPayment(transaction);
-      transaction.setStatus(TransactionStatus.SENT);
-      transaction.setCompletionDate(generateCompletionDate());
-      transaction.setReferenceNumber(txn.getReferenceNumber());
+      if ( SafetyUtil.isEmpty( transaction.getReferenceNumber()) ) {
+        transaction.setStatus(TransactionStatus.SENT);
+        transaction.setReferenceNumber(txn.getReferenceNumber());
+      } else {
+        ((Logger) x.get(Logger.class)).error("Error submitting payment to AFEX.");
+        return getDelegate().put_(x, obj);
+      }
     } catch (Throwable t) {
       transaction.setStatus(TransactionStatus.DECLINED);
       getDelegate().put_(x, transaction);
@@ -68,20 +62,5 @@ public class AFEXTransactionDAO
     return super.put_(x, transaction);
   }
 
-  private Date generateCompletionDate() {
-    List<Integer> cadHolidays = CsvUtil.cadHolidays; // REVIEW: When BankHolidays is tested
-    Calendar curDate = Calendar.getInstance();
-    int businessDays = 2; // next 2 business days
-    int i = 0;
-    while ( i < businessDays ) {
-      curDate.add(Calendar.DAY_OF_YEAR, 1);
-      if ( curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
-        && curDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
-        && ! cadHolidays.contains(curDate.get(Calendar.DAY_OF_YEAR)) ) {
-        i = i + 1;
-      }
-    }
-    return curDate.getTime();
-  }
 
 }
