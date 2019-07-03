@@ -31,6 +31,9 @@ rm ${OUT_DIR}/*.0
 
 while read -r filePath; do
   cat ${filePath} >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
+  # Add a newline if one is missing so we don't put two journal entries on
+  # the same line.
+  test "$(tail -c 1 "${filePath}" | wc -l)" -eq 0 && echo "" >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
 done < ${IN_FILE:-/dev/stdin}
 
 exit 0
