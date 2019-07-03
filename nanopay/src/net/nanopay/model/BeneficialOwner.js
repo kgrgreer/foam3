@@ -23,8 +23,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'complianceHistoryDAO',
-    'complianceItemDAO'
+    'complianceHistoryDAO'
   ],
 
   tableColumns: [
@@ -197,25 +196,6 @@ foam.CLASS({
     }
   ],
   actions: [
-    {
-      name: 'viewComplianceResponse',
-      label: 'View Compliance Response',
-      availablePermissions: ['service.complianceitemdao'],
-      code: async function(X) {
-        console.log(this.id);
-        var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.legalName}'s Compliance Response`,
-          data: this.complianceItemDAO.where(
-            m.EQ(net.nanopay.meter.compliance.ComplianceItem.BENEFICIAL_OWNER, this.id)
-          )
-        });
-      }
-    },
     {
       name: 'viewComplianceHistory',
       label: 'View Compliance History',
