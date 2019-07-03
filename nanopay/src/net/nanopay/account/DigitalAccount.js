@@ -93,11 +93,7 @@ foam.CLASS({
             }
           }
           synchronized(String.valueOf(user.getId()).intern()) {
-            DAO accountDAO  = new foam.dao.RelationshipDAO.Builder(x)
-              .setSourceId(user.getId())
-              .setTargetProperty(net.nanopay.account.Account.OWNER)
-              .setTargetDAOKey("localAccountDAO")
-              .build();
+            DAO accountDAO  = ((DAO) x.get("localAccountDAO")).where(EQ(Account.OWNER, user.getId()));
             account = (DigitalAccount) accountDAO
               .find(
                 AND(
