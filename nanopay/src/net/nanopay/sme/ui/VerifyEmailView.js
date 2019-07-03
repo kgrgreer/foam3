@@ -19,10 +19,10 @@ foam.CLASS({
   ],
 
   css: `
-    ^{
+    ^ {
       margin: auto;
       background: #fff;
-      width: 100%;
+      height: 100vh;
     }
     ^ .text-container{
       width: 350px;
