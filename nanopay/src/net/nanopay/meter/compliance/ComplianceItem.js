@@ -67,13 +67,6 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.BeneficialOwner',
-      targetDAOKey: 'beneficialOwnerDAO',
-      name: 'beneficialOwner',
-      label: 'Beneficial Owner ID'
-    },
-    {
-      class: 'Reference',
       of: 'net.nanopay.tx.model.Transaction',
       targetDAOKey: 'transactionDAO',
       name: 'transaction',
