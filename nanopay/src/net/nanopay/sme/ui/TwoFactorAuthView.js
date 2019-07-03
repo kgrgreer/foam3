@@ -60,7 +60,7 @@ foam.CLASS({
       font-weight: 600;
       margin-bottom: 8px;
     }
-    ^ .property-twoFactorToken {
+    ^ .validation-input .property-twoFactorToken {
       width: 125px;
       margin-right: 10px;
     }
