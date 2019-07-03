@@ -11,11 +11,11 @@ foam.CLASS({
       name: "InvertedRate"
     },
     {
-      class: 'Date',
+      class: 'String',
       name: "ValueDate"
     },
     {
-      class: 'Date',
+      class: 'String',
       name: "OptionDate"
     },
     {

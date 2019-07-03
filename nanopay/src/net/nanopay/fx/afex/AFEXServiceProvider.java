@@ -12,7 +12,11 @@ import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class AFEXServiceProvider extends ContextAwareSupport implements FXService, PaymentService {
 
@@ -39,17 +43,26 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest);
       if ( null != quote ) {
-        fxQuote.setRate(quote.getRate());
+        if ( (targetCurrency + sourceCurrency).equals("CADUSD") ) {
+          fxQuote.setRate(quote.getInvertedRate());
+        } else {
+          fxQuote.setRate(quote.getRate());
+        }
         fxQuote.setTargetAmount(destinationAmount);
         fxQuote.setTargetCurrency(targetCurrency);
         fxQuote.setSourceAmount(sourceAmount);
         fxQuote.setSourceCurrency(sourceCurrency);
-        fxQuote.setValueDate(quote.getValueDate());
+
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+        Date date = format.parse(quote.getValueDate());
+        fxQuote.setValueDate(date);
+
         fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
       }
 
     } catch(Exception e) {
       // Log here
+      ((Logger)x.get("logger")).error("Error occured geting fxQuote for AFEX", e);
     }
 
     return fxQuote;
