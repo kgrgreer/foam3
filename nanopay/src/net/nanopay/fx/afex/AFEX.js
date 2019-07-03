@@ -36,6 +36,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'retrieveClientAccountDetails',
+      documentation: 'Get the account account details for the specified client',
+      async: true,
+      type: 'net.nanopay.fx.afex.RetrieveClientAccountDetailsResponse',
+      args: [
+        {
+          name: 'clientAPIKey',
+          type: 'String'
+        }
+      ]
+    },
+    {
       name: 'createBeneficiary',
       documentation: 'Create a new beneficiary',
       async: true,

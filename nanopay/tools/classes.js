@@ -136,6 +136,7 @@ var classes = [
   'net.nanopay.fx.afex.OnboardCorporateClientRequest',
   'net.nanopay.fx.afex.OnboardCorporateClientResponse',
   'net.nanopay.fx.afex.GetClientAccountStatusResponse',
+  'net.nanopay.fx.afex.RetrieveClientAccountDetailsResponse',
   'net.nanopay.fx.afex.CreateBeneficiaryRequest',
   'net.nanopay.fx.afex.CreateBeneficiaryResponse',
   'net.nanopay.fx.afex.UpdateBeneficiaryRequest',

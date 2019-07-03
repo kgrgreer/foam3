@@ -8,18 +8,19 @@ public class Test implements ContextAgent {
   @Override
   public void execute(X x) {
     AFEXService afexService = new AFEXService(x);
-//      testGetToken(afexService);
-//      testOnboardCorporateClient(afexService);
+      testGetToken(afexService);
+      testOnboardCorporateClient(afexService);
       testGetClientAccountStatus(afexService);
-//      testCreateBeneficiary(afexService);
-//      testUpdateBeneficiary(afexService);
-//      testDisableBeneficiary(afexService);
-//      testFindBeneficiary(afexService);
-//      testFindBankByNationalID(afexService);
-//      testGetValueDate(afexService);
-//      testGetQuote(afexService);
-//      testCreateTrade(afexService);
-//      testCreatePayment(afexService);
+      testRetrieveClientAccountDetails(afexService);
+      testCreateBeneficiary(afexService);
+      testUpdateBeneficiary(afexService);
+      testDisableBeneficiary(afexService);
+      testFindBeneficiary(afexService);
+      testFindBankByNationalID(afexService);
+      testGetValueDate(afexService);
+      testGetQuote(afexService);
+      testCreateTrade(afexService);
+      testCreatePayment(afexService);
   }
 
   private void testGetToken(AFEXService afexService) {
@@ -57,6 +58,35 @@ public class Test implements ContextAgent {
   private void testGetClientAccountStatus(AFEXService afexService) {
     GetClientAccountStatusResponse getClientAccountStatusResponse = afexService.getClientAccountStatus("000058C9V464e2c3a-a796-e911-be2f-0050569b0074");
     System.out.println(getClientAccountStatusResponse.getAccountStatus());
+  }
+
+  private void testRetrieveClientAccountDetails(AFEXService afexService) {
+    RetrieveClientAccountDetailsResponse retrieveClientAccountDetailsResponse = afexService.retrieveClientAccountDetails("000058C9V464e2c3a-a796-e911-be2f-0050569b0074");
+    System.out.println(retrieveClientAccountDetailsResponse.getAccountStatus());
+    System.out.println(retrieveClientAccountDetailsResponse.getCitizenship());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactCity());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactAddress1());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactAddress2());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactAddress3());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactCountryCode());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationExpirationDate());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationIssuingAgency());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationNumber());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationType());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactStateRegion());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactZip());
+    System.out.println(retrieveClientAccountDetailsResponse.getDateOfBirth());
+    System.out.println(retrieveClientAccountDetailsResponse.getExpectedMonthlyPayments());
+    System.out.println(retrieveClientAccountDetailsResponse.getExpectedMonthlyVolume());
+    System.out.println(retrieveClientAccountDetailsResponse.getFirstName());
+    System.out.println(retrieveClientAccountDetailsResponse.getGender());
+    System.out.println(retrieveClientAccountDetailsResponse.getJobTitle());
+    System.out.println(retrieveClientAccountDetailsResponse.getLastName());
+    System.out.println(retrieveClientAccountDetailsResponse.getMiddleName());
+    System.out.println(retrieveClientAccountDetailsResponse.getPhoneNumber());
+    System.out.println(retrieveClientAccountDetailsResponse.getPrimaryEmailAddress());
+    System.out.println(retrieveClientAccountDetailsResponse.getTaxIdentificationNumber());
+    System.out.println(retrieveClientAccountDetailsResponse.getTermsAndConditions());
   }
 
   private void testCreateBeneficiary(AFEXService afexService) {

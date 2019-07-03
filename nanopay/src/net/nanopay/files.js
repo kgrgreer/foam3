@@ -225,6 +225,7 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/OnboardCorporateClientRequest"},
   { name: "net/nanopay/fx/afex/OnboardCorporateClientResponse"},
   { name: "net/nanopay/fx/afex/GetClientAccountStatusResponse"},
+  { name: "net/nanopay/fx/afex/RetrieveClientAccountDetailsResponse"},
   { name: "net/nanopay/fx/afex/CreateBeneficiaryRequest"},
   { name: "net/nanopay/fx/afex/CreateBeneficiaryResponse"},
   { name: "net/nanopay/fx/afex/UpdateBeneficiaryRequest"},
