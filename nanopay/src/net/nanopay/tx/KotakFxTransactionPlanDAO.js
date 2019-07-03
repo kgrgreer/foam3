@@ -38,8 +38,9 @@ foam.CLASS({
       Account destinationAccount = quote.getDestinationAccount();
       if ( sourceAccount instanceof DigitalAccount && destinationAccount instanceof INBankAccount &&
       sourceAccount.getDenomination().equalsIgnoreCase("CAD") && destinationAccount.getDenomination().equalsIgnoreCase("INR") ) {
-        User kotakOwnerCA = (User) ((DAO) x.get("localUserDAO")).find(KOTAK_OWNER_CA_ID);
-        User KotakPartnerIN = (User) ((DAO) x.get("localUserDAO")).find(KOTAK_PARTNER_IN_ID);
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        User kotakOwnerCA = (User) userDAO.find(KOTAK_OWNER_CA_ID);
+        User KotakPartnerIN = (User) userDAO.find(KOTAK_PARTNER_IN_ID);
         BankAccount kotakCAbank = BankAccount.findDefault(x, kotakOwnerCA, "CAD");
         BankAccount kotakINbank = BankAccount.findDefault(x, kotakOwnerCA, "INR");
         BankAccount kotakINPartnerBank = BankAccount.findDefault(x, KotakPartnerIN, "INR");
