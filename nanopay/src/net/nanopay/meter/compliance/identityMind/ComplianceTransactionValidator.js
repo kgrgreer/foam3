@@ -45,14 +45,12 @@ foam.CLASS({
             && transaction.findDestinationAccount(x) instanceof BankAccount
           ) {
             IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-            try {
-              IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
-              status = response.getComplianceValidationStatus();
-              approvalRequest.setCauseId(response.getId());
-              approvalRequest.setCauseDaoKey("identityMindResponseDAO");
-            } catch (Exception ex) {
-              approvalRequest.setMemo(ex.getMessage());
-            }
+            IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
+            status = response.getComplianceValidationStatus();
+            approvalRequest.setCauseId(response.getId());
+            approvalRequest.setCauseDaoKey("identityMindResponseDAO");
+            // Save status in ruleHistory.result
+            ruler.putResult(status);
           } else {
             approvalRequest.setMemo("IdentityMind transaction check is skipped because it's not a bank-to-bank transaction.");
           }
@@ -61,7 +59,6 @@ foam.CLASS({
           approvalRequest.setStatus(getApprovalStatus(status));
           approvalRequest.setApprover(getApprover(status));
           requestApproval(x, approvalRequest);
-          ruler.putResult(status);
         }
       }, "Compliance Transaction Validator");
       `
