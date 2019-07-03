@@ -264,7 +264,7 @@ public class ReportPaymentSummary extends AbstractReport {
     List txLst = ((ArraySink) transactionDAO.select(new ArraySink())).getArray();
 
     for (Object obj : txLst) {
-      Transaction transaction = (Transaction) obj;
+      Transaction transaction = (Transaction) obj;  
       if ((transaction.findSourceAccount(x).findOwner(x).getAddress().getCountryId().equals("CA")) &&
         (transaction.findDestinationAccount(x).findOwner(x).getAddress().getCountryId().equals("CA"))) {
         txDomesticCanada.put(transaction);
