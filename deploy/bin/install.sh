@@ -5,7 +5,9 @@ NANOPAY_ROOT=/opt/nanopay
 NANOPAY_TARBALL=
 NANOPAY_REMOTE_OUTPUT=/tmp/tar_extract
 NANOPAY_SERVICE_FILE=/lib/systemd/system/nanopay.service
-JOURNAL_HOME="/mnt/journals"
+MNT_HOME=/mnt/nanopay
+LOG_HOME=/mnt/nanopay/logs
+JOURNAL_HOME=/mnt/nanopay/journals
 
 function quit {
     echo "ERROR :: Remote Install Failed"
@@ -81,11 +83,17 @@ function installFiles {
     chgrp nanopay ${NANOPAY_HOME}/etc
     chmod -R 750 ${NANOPAY_HOME}/etc
 
-    if [ ! -d ${NANOPAY_HOME}/logs ]; then
-        mkdir -p ${NANOPAY_HOME}/logs
+    if [ ! -d ${MNT_HOME} ]; then
+        mkdir -p ${MNT_HOME}
     fi
-    chgrp nanopay ${NANOPAY_HOME}/logs
-    chmod 770 ${NANOPAY_HOME}/logs
+    chgrp nanopay ${MNT_HOME}
+    chmod 770 ${MNT_HOME}
+
+    if [ ! -d ${LOG_HOME} ]; then
+        mkdir -p ${LOG_HOME}
+    fi
+    chgrp nanopay ${LOG_HOME}
+    chmod 770 ${LOG_HOME}
 
     if [ ! -d ${JOURNAL_HOME} ]; then
         mkdir ${JOURNAL_HOME}
@@ -144,8 +152,21 @@ function setupNanopaySymLink {
     ln -s ${NANOPAY_HOME} ${NANOPAY_ROOT}
 
     # symlink to journals
+    if [ -h ${NANOPAY_HOME}/journals ]; then
+        unlink ${NANOPAY_HOME}/journals
+    fi
+
     if [ -d ${JOURNAL_HOME} ]; then
         ln -s ${JOURNAL_HOME} ${NANOPAY_HOME}/journals
+    fi
+
+    # symlink to logs
+    if [ -h ${NANOPAY_HOME}/logs ]; then
+        unlink ${NANOPAY_HOME}/logs
+    fi
+
+    if [ -d ${LOG_HOME} ]; then
+        ln -s ${LOG_HOME} ${NANOPAY_HOME}/logs
     fi
 }
 
