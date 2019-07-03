@@ -231,6 +231,8 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/DisableBeneficiaryRequest"},
   { name: "net/nanopay/fx/afex/FindBeneficiaryRequest"},
   { name: "net/nanopay/fx/afex/FindBeneficiaryResponse"},
+  { name: "net/nanopay/fx/afex/FindBankByNationalIDRequest"},
+  { name: "net/nanopay/fx/afex/FindBankByNationalIDResponse"},
   { name: "net/nanopay/fx/afex/Quote"},
   { name: "net/nanopay/fx/afex/GetQuoteRequest"},
   { name: "net/nanopay/fx/afex/CreateTradeRequest"},
@@ -717,6 +719,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
    { name: 'net/nanopay/liquidity/LiquidityAuth' },
+   { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
 
@@ -1031,12 +1034,18 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
 
   // identitymind
+  { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },
+  { name: 'net/nanopay/meter/compliance/identityMind/AutomatedReviewEngineResult' },
   { name: 'net/nanopay/meter/compliance/identityMind/ComplianceTransactionValidator' },
+  { name: 'net/nanopay/meter/compliance/identityMind/ConditionResult' },
   { name: 'net/nanopay/meter/compliance/identityMind/ConsumerKYCValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/EntityLoginValidator' },
+  { name: 'net/nanopay/meter/compliance/identityMind/ExternalizedEvaluationResult' },
+  { name: 'net/nanopay/meter/compliance/identityMind/ExternalizedRule' },
   { name: 'net/nanopay/meter/compliance/identityMind/MerchantKYCValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindRequest' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindResponse' },
+  { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindResponseEDNA' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindService' },
 
   // meter tests

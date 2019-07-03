@@ -90,6 +90,10 @@ foam.CLASS({
       title: 'Account details'
     },
     {
+      name: 'liquiditySettings',
+      title: 'Liquidity settings'
+    },
+    {
       name: '_defaultSection',
       permissionRequired: true
     }
