@@ -1066,6 +1066,7 @@ FOAM_FILES([
 
   // alarming & monitoring
   { name: 'net/nanopay/alarming/Alarm' },
+  { name: 'net/nanopay/alarming/Alarming' },
   { name: 'net/nanopay/alarming/AlarmConfig' },
   { name: 'net/nanopay/alarming/AlarmReason' },
   { name: 'net/nanopay/alarming/MonitoringReport' },
