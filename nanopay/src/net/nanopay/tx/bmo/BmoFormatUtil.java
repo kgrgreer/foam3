@@ -12,18 +12,18 @@ import java.util.Date;
 
 public class BmoFormatUtil {
 
-  public static String getCurrentJulianDateEST() {
-    return toJulianDateEST(Instant.now());
+  public static String getCurrentJulianDateEDT() {
+    return toJulianDateEDT(Instant.now());
   }
 
-  public static String toJulianDateEST(Instant instant) {
+  public static String toJulianDateEDT(Instant instant) {
     ZonedDateTime est = instant.atZone(ZoneId.of("America/Toronto"));
     return "0"
       + String.valueOf(est.getYear() % 100)
       + addLeftZeros(est.getDayOfYear(), 3);
   }
 
-  public static String getCurrentDateTimeEST() {
+  public static String getCurrentDateTimeEDT() {
     ZonedDateTime est = ZonedDateTime.now(ZoneId.of("America/Toronto"));
     return est.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
   }

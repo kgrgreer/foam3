@@ -15,7 +15,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'completedTimeEST',
+      name: 'completedTimeEDT',
       class: 'String'
     },
     {
@@ -51,7 +51,7 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
-      String temp = BmoFormatUtil.getCurrentDateTimeEST() + " : " + history + System.lineSeparator();
+      String temp = BmoFormatUtil.getCurrentDateTimeEDT() + " : " + history + System.lineSeparator();
       this.setTransactionHistory(this.getTransactionHistory() + temp);
       `
     },
@@ -66,7 +66,7 @@ foam.CLASS({
       javaCode: `
         super.limitedCopyFrom(other);
         setTransactionHistory( ((BmoCITransaction) other).getTransactionHistory() );
-        setCompletedTimeEST(((BmoCITransaction) other).getCompletedTimeEST() );
+        setCompletedTimeEDT(((BmoCITransaction) other).getCompletedTimeEDT() );
         setPotentiallyUndelivered( ((BmoCITransaction) other).getPotentiallyUndelivered() );
         setBmoReferenceNumber( ((BmoCITransaction) other).getBmoReferenceNumber() );
         setBmoFileCreationNumber( ((BmoCITransaction) other).getBmoFileCreationNumber() );

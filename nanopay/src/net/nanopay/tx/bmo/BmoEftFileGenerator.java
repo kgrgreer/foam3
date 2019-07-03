@@ -123,7 +123,7 @@ public class BmoEftFileGenerator {
     file.setProduction(this.clientValue.getProduction());
     file.setFileName(fileHeader.getFileCreationNumber() + "-" + originatorID + ".txt");
     file.setBeautifyString(file.beautify());
-    file.setFileCreationTimeEST(BmoFormatUtil.getCurrentDateTimeEST());
+    file.setFileCreationTimeEDT(BmoFormatUtil.getCurrentDateTimeEDT());
 
     return file;
   }
@@ -140,7 +140,7 @@ public class BmoEftFileGenerator {
     fileHeader.setOriginatorId(originatorId);
     fileHeader.setFileCreationNumber(fileCreationNumber);
     fileHeader.setDestinationDataCentreCode(this.clientValue.getDestinationDataCentre());
-    fileHeader.setFileCreationDate(BmoFormatUtil.getCurrentJulianDateEST());
+    fileHeader.setFileCreationDate(BmoFormatUtil.getCurrentJulianDateEDT());
     return fileHeader;
   }
 
@@ -159,8 +159,8 @@ public class BmoEftFileGenerator {
        */
       BmoBatchHeader batchHeader = new BmoBatchHeader();
       batchHeader.setBatchPaymentType(type);
-      batchHeader.setTransactionTypeCode(430);
-      batchHeader.setPayableDate(BmoFormatUtil.getCurrentJulianDateEST());
+      batchHeader.setTransactionTypeCode(700);
+      batchHeader.setPayableDate(BmoFormatUtil.getCurrentJulianDateEDT());
       batchHeader.setOriginatorShortName(this.clientValue.getOriginatorShortName());
       batchHeader.setOriginatorLongName(this.clientValue.getOriginatorLongName());
       batchHeader.setInstitutionIdForReturns(this.clientValue.getInstitutionIdForReturns());

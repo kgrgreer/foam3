@@ -70,5 +70,19 @@ foam.INTERFACE({
       name: 'getRejectReason',
       type: 'String',
     },
+    {
+      name: 'setCompletedTimeEDT',
+      args: [
+        {
+          type: 'String',
+          name: 'completedTimeEDT'
+        }
+      ],
+      type: 'void'
+    },
+    {
+      name: 'getCompletedTimeEDT',
+      type: 'String',
+    },
   ]
 });

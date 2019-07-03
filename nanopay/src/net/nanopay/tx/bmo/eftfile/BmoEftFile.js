@@ -22,7 +22,7 @@ foam.CLASS({
       class: 'Boolean',
     },
     {
-      name: 'fileCreationTimeEST',
+      name: 'fileCreationTimeEDT',
       class: 'String'
     },
     {

@@ -4,12 +4,14 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.logger.Logger;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,10 +30,12 @@ public class BmoReportProcessor {
 
   private X x;
   private DAO transactionDAO;
+  private Logger logger;
 
   public BmoReportProcessor(X x) {
     this.x = x;
     transactionDAO = (DAO) x.get("localTransactionDAO");
+    logger = (Logger) x.get("logger");
   }
 
   public boolean processReceipt(File file, int fileCreationNumber) {
@@ -58,7 +62,9 @@ public class BmoReportProcessor {
       Collection<File> files = FileUtils.listFiles(new File(BmoSFTPClient.REPORT_DOWNLOAD_FOLDER), null, false);
 
       for ( File file : files ) {
+        logger.info("start process report " + file.getName());
         this.processReport(file);
+        logger.info("finishing process report " + file.getName());
         FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + file.getName() + "_" + Instant.now().toEpochMilli()));
       }
     } catch ( Exception e ) {
@@ -83,10 +89,66 @@ public class BmoReportProcessor {
 
     if ( firstLine.contains("DEFR220") ) {
       // process settled file
-
+      processSettlementReport(strings);
       return;
     }
 
+  }
+
+  public void processSettlementReport(List<String> report) {
+
+    String fileCreationNumber = "";
+
+    for ( String line : report ) {
+
+      if ( line.contains("FILE CREATION NO.") ) {
+        fileCreationNumber = line.substring(25, 29);
+      }
+
+      if ( isSettlementRecord(line) ) {
+        processSettlementRecord(line, fileCreationNumber);
+      }
+    }
+
+  }
+
+  public void processSettlementRecord(String record, String fileCreationNumber ) {
+
+    String referenceNumber = record.substring(55, 74).trim();
+
+    Transaction transaction = (Transaction) this.transactionDAO.find(MLang.AND(
+      MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
+      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+    ));
+
+    if ( transaction == null ) {
+      transaction = (Transaction) this.transactionDAO.find(MLang.AND(
+        MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
+        MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+      ));
+    }
+
+    if ( transaction == null ) {
+      return;
+    }
+
+    transaction = (Transaction) transaction.fclone();
+
+    ((BmoTransaction)transaction).addHistory("Transaction completed.");
+    ((BmoTransaction)transaction).setCompletedTimeEDT(BmoFormatUtil.getCurrentDateTimeEDT());
+    transaction.setStatus(TransactionStatus.COMPLETED);
+
+    transactionDAO.inX(this.x).put(transaction);
+  }
+
+  public boolean isSettlementRecord(String record) {
+    return StringUtils.isNumeric(record.substring(21, 24) ) &&
+      StringUtils.isNumeric(record.substring(27, 31)) &&
+      record.charAt(31) == '-' &&
+      StringUtils.isNumeric(record.substring(32,37)) &&
+      StringUtils.isNumeric(record.substring(55, 74).trim());
   }
 
   public void processRejectReport(List<String> report) {
@@ -153,6 +215,7 @@ public class BmoReportProcessor {
     transaction = (Transaction) transaction.fclone();
 
     transaction.setStatus(TransactionStatus.DECLINED);
+    ((BmoTransaction)transaction).addHistory("Transaction rejected.");
     ((BmoTransaction)transaction).setRejectReason(rejectReason);
 
     transactionDAO.inX(this.x).put(transaction);
