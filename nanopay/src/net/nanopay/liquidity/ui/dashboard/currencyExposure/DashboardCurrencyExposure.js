@@ -29,12 +29,6 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'data',
-    },
-    {
-      name: 'colorPalette',
-      factory: function() {
-        return ['#202341', '#233e8b', '#406dea', '#a7beff', '#e5f1fc'];
-      }
     }
   ],
 
@@ -79,8 +73,7 @@ foam.CLASS({
                       }
                     }
                   }
-                },
-                colorPalette$: this.colorPalette$
+                }
               }
             ).addClass(this.myClass('pie-chart')).end()
           .end();
