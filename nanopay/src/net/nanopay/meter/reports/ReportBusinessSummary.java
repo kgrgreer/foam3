@@ -9,7 +9,7 @@
 // Locked                |
 
 // Use the following script to run the report:
-// import net.nanopay.meter.reports.ReportBusiness;
+// import net.nanopay.meter.reports.ReportBusinessSummary;
 // rbs = new ReportBusinessSummary();
 // report = rbs.createReport(x);
 // print(report);

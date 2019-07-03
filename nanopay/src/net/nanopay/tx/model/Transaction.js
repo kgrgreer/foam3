@@ -889,19 +889,6 @@ for ( Balance b : getBalances() ) {
     javaCode: `
     sendReverseNotification(x, oldTxn);
     sendCompletedNotification(x, oldTxn);
-    checkLiquidity(x);
-    `
-  },
-  {
-    documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
-    name: 'checkLiquidity',
-    args: [
-      {
-        name: 'x',
-        type: 'Context'
-      }
-    ],
-    javaCode: `
     `
   }
 ],
