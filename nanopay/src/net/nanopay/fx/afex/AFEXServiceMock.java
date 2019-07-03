@@ -65,6 +65,11 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public FindBankByNationalIDResponse findBankByNationalID(FindBankByNationalIDRequest request) {
+    return null;
+  }
+
+  @Override
   public String getValueDate(String currencyPair, String valueType) {
     return null;
   }

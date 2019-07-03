@@ -231,6 +231,8 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/DisableBeneficiaryRequest"},
   { name: "net/nanopay/fx/afex/FindBeneficiaryRequest"},
   { name: "net/nanopay/fx/afex/FindBeneficiaryResponse"},
+  { name: "net/nanopay/fx/afex/FindBankByNationalIDRequest"},
+  { name: "net/nanopay/fx/afex/FindBankByNationalIDResponse"},
   { name: "net/nanopay/fx/afex/Quote"},
   { name: "net/nanopay/fx/afex/GetQuoteRequest"},
   { name: "net/nanopay/fx/afex/CreateTradeRequest"},
@@ -1032,6 +1034,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
 
   // identitymind
+  { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },
   { name: 'net/nanopay/meter/compliance/identityMind/AutomatedReviewEngineResult' },
   { name: 'net/nanopay/meter/compliance/identityMind/ComplianceTransactionValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/ConditionResult' },
