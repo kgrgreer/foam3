@@ -2,10 +2,10 @@
 # Super simple launcher.
 
 # Run as ubuntu on staging and production
-target_user="ubuntu"
-if [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "$target_user" ]; then
-  exec sudo -u "$target_user" -- "$0" "$@"
-fi
+#target_user="ubuntu"
+#if [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "$target_user" ]; then
+#  exec sudo -u "$target_user" -- "$0" "$@"
+#fi
 
 HOST_NAME=`hostname -s`
 NANOPAY_HOME=/opt/nanopay
@@ -66,7 +66,7 @@ export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
 #java -server -jar "${JAR}"
 if [ "$DAEMONIZE" -eq 1 ]; then
-    nohup java -server -jar "${JAR}" &> /dev/null &
+    nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 2>&1
     echo $! > "${NANOS_PIDFILE}"
 else
     java -server -jar "${JAR}"

@@ -5,6 +5,7 @@ NANOPAY_ROOT=/opt/nanopay
 NANOPAY_TARBALL=
 NANOPAY_REMOTE_OUTPUT=/tmp/tar_extract
 NANOPAY_SERVICE_FILE=/lib/systemd/system/nanopay.service
+JOURNAL_HOME="/mnt/journals"
 
 function quit {
     echo "ERROR :: Remote Install Failed"
@@ -40,35 +41,64 @@ function installFiles {
         echo "ERROR :: NANOPAY_HOME is undefined"
     fi
 
+    # Move same/duplicate version installation.
     if [ -d $NANOPAY_HOME ]; then
-        echo "INFO :: Old ${NANOPAY_HOME} found, deleting"
-        rm -rf $NANOPAY_HOME
+        if [ -d $NANOPAY_HOME.bak ]; then
+            echo "INFO :: ${NANOPAY_HOME}.bak found, deleting"
+            rm -rf $NANOPAY_HOME.bak
+        fi
+        echo "INFO :: ${NANOPAY_HOME} found, moving"
+        mv $NANOPAY_HOME $NANOPAY_HOME.bak
     fi
 
     echo "INFO :: Installing nanopay to ${NANOPAY_HOME}"
 
     if [ ! -d $NANOPAY_HOME ]; then
         mkdir -p ${NANOPAY_HOME}
-        chown nanopay:nanopay $NANOPAY_HOME
     fi
+    chgrp nanopay $NANOPAY_HOME
 
     if [ ! -d ${NANOPAY_HOME}/lib ]; then
         mkdir -p ${NANOPAY_HOME}/lib
     fi
+    chgrp nanopay ${NANOPAY_HOME}/lib
+    chmod 750 ${NANOPAY_HOME}/lib
 
     cp -r ${NANOPAY_REMOTE_OUTPUT}/lib/* ${NANOPAY_HOME}/lib
 
     if [ ! -d ${NANOPAY_HOME}/bin ]; then
         mkdir -p ${NANOPAY_HOME}/bin
     fi
+    chgrp nanopay ${NANOPAY_HOME}/bin
+    chmod 750 ${NANOPAY_HOME}/bin
 
     cp -r ${NANOPAY_REMOTE_OUTPUT}/bin/* ${NANOPAY_HOME}/bin
 
     if [ ! -d ${NANOPAY_HOME}/etc ]; then
         mkdir -p ${NANOPAY_HOME}/etc
     fi
-
     cp -r ${NANOPAY_REMOTE_OUTPUT}/etc/* ${NANOPAY_HOME}/etc
+    chgrp nanopay ${NANOPAY_HOME}/etc
+    chmod -R 750 ${NANOPAY_HOME}/etc
+
+    if [ ! -d ${NANOPAY_HOME}/logs ]; then
+        mkdir -p ${NANOPAY_HOME}/logs
+    fi
+    chgrp nanopay ${NANOPAY_HOME}/logs
+    chmod 770 ${NANOPAY_HOME}/logs
+
+    if [ ! -d ${JOURNAL_HOME} ]; then
+        mkdir ${JOURNAL_HOME}
+    fi
+    mkdir -p ${JOURNAL_HOME}/sha256
+    mkdir -p ${JOURNAL_HOME}/migrated
+
+    chgrp -R nanopay ${JOURNAL_HOME}
+    chmod 770 ${JOURNAL_HOME}
+    chmod -R 760 ${JOURNAL_HOME}/*
+    chmod 770 ${JOURNAL_HOME}/sha256
+    chmod 770 ${JOURNAL_HOME}/migrated
+
 }
 
 function setupUserAndPermissions {
@@ -77,29 +107,46 @@ function setupUserAndPermissions {
     id -u nanopay > /dev/null
     if [ ! $? -eq 0 ]; then
         echo "INFO :: User nanopay not found, creating user nanopay"
-        useradd nanopay
-        usermod -s /bin/false -L nanopay
+        groupadd --force --gid 6266 nanopay
+        useradd -g nanopay --uid 6266 -m -s /bin/false nanopay
+        usermod -L nanopay
     fi
 
-    chown -R nanopay:nanopay $NANOPAY_HOME
+    # test and set umask
+    USER_HOME="$(grep nanopay /etc/passwd | cut -d':' -f6)"
+    BASHRC="$USER_HOME/.bashrc"
+    if [ ! -f "$BASHRC" ]; then
+        touch "$BASHRC"
+    fi
+    if grep -Fxq "umask" "$BASHRC"
+    then
+        sed -i 's/umask.*/umask 027/' "$BASHRC"
+    else
+       echo "umask 027" >> "$BASHRC"
+    fi
 }
 
 function setupNanopaySymLink {
-    if [ ! -z ${NANOPAY_CURRENT_VERSION} ]; then
-        if [ "${NANOPAY_CURRENT_VERSION}" = "${NANOPAY_NEW_VERSION}" ]; then
-            echo "INFO :: Found v${NANOPAY_CURRENT_VERSION}, leaving installed"
-            return 0
-        fi
-        echo "INFO :: Found v${NANOPAY_CURRENT_VERSION}, replacing with v${NANOPAY_NEW_VERSION}"
-    else
-        echo "INFO :: No version found, installing v${NANOPAY_NEW_VERSION}"
-    fi
+    # if [ ! -z ${NANOPAY_CURRENT_VERSION} ]; then
+    #     if [ "${NANOPAY_CURRENT_VERSION}" = "${NANOPAY_NEW_VERSION}" ]; then
+    #         echo "INFO :: Found v${NANOPAY_CURRENT_VERSION}, leaving installed"
+    #         return 0
+    #     fi
+    #     echo "INFO :: Found v${NANOPAY_CURRENT_VERSION}, replacing with v${NANOPAY_NEW_VERSION}"
+    # else
+    #     echo "INFO :: No version found, installing v${NANOPAY_NEW_VERSION}"
+    # fi
 
     if [ -h ${NANOPAY_ROOT} ]; then
         unlink ${NANOPAY_ROOT}
     fi
 
     ln -s ${NANOPAY_HOME} ${NANOPAY_ROOT}
+
+    # symlink to journals
+    if [ -d ${JOURNAL_HOME} ]; then
+        ln -s ${JOURNAL_HOME} ${NANOPAY_HOME}/journals
+    fi
 }
 
 function setupSystemd {
@@ -113,6 +160,7 @@ function setupSystemd {
         sudo ln -s ${NANOPAY_HOME}/etc/nanopay.service ${NANOPAY_SERVICE_FILE}
     fi
 
+    sudo systemctl daemon-reload
     sudo systemctl enable nanopay
     sudo systemctl start nanopay
 }
@@ -139,9 +187,9 @@ if [ ! $? -eq 0 ]; then
     quit 1
 fi
 
-installFiles
-
 setupUserAndPermissions
+
+installFiles
 
 setupNanopaySymLink
 
