@@ -97,6 +97,15 @@ foam.CLASS({
   properties: [
     {
       class: 'DateTime',
+      name: 'startDate',
+      factory: function() {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        return oneWeekAgo;
+      }
+    },
+    {
+      class: 'DateTime',
       name: 'endDate',
       factory: function() {
         return new Date();
@@ -120,8 +129,7 @@ foam.CLASS({
         A predicatedAccountDAO which only pulls shadow accounts
       `,
       expression: function () {
-        // return this.accountDAO.where(this.INSTANCE_OF(this.ShadowAccount));
-        return this.accountDAO.where(this.TRUE);
+        return this.accountDAO.where(this.INSTANCE_OF(this.ShadowAccount));
       }
     },
     {
@@ -132,68 +140,28 @@ foam.CLASS({
     `,
       expression: function (account) {
         return this.transactionDAO.where(
-          this.TRUE
-          // this.AND(
-          //   //this.GT(this.Transaction.completionDate,start),
-          //   //this.LT(this.Transaction.completionDate,end),
-          //   this.EQ(this.Transaction.STATUS, this.TransactionStatus.COMPLETED),
-          //   this.OR(
-          //     this.AND(
-          //       this.INSTANCE_OF(this.CITransaction),
-          //       this.EQ(this.Transaction.DESTINATION_ACCOUNT, account)
-          //     ),
-          //     this.AND(
-          //       this.INSTANCE_OF(this.COTransaction),
-          //       this.EQ(this.Transaction.SOURCE_ACCOUNT, account)
-          //     )
-          //   )
-          // )
+          this.AND(
+            this.EQ(this.Transaction.STATUS, this.TransactionStatus.COMPLETED),
+            this.OR(
+              this.AND(
+                this.INSTANCE_OF(net.nanopay.tx.cico.CITransaction),
+                this.EQ(this.Transaction.DESTINATION_ACCOUNT, account)
+              ),
+              this.AND(
+                this.INSTANCE_OF(net.nanopay.tx.cico.COTransaction),
+                this.EQ(this.Transaction.SOURCE_ACCOUNT, account)
+              )
+            )
+          )
         );
       }
     },
-    // groupBy gLang, SUM
     {
       class: 'Enum',
       of: 'net.nanopay.liquidity.ui.dashboard.DateFrequency',
-      name: 'dateFrequency'
-    },
-    {
-      name: 'dateRange',
-      expression: function ( dateFrequency, yItemsLimit, endDate ) {
-        // TODO: Include endDate
-        var max = endDate;
-        var min = new Date();
-
-        switch (dateFrequency) {
-          case 'Weekly':            
-            var daysFromSun = max.getDay();
-            var daysToRewind = 7 * (yItemsLimit - 1) + daysFromSun;
-            min.setDate(max.getDate() - daysToRewind);
-            break;
-
-          case 'Monthly':            
-            min.setDate(1);
-            min.setMonth(max.getMonth() - (yItemsLimit - 1))
-            break;
-
-          case 'Quarterly':
-            var monthsFromQStart = max.getMonth() % 3;
-            var monthsToRewind = 3 * (yItemsLimit - 1) + monthsFromQStart;
-            min.setDate(max.getMonth() - monthsToRewind);
-            break;
-
-          case 'Annually':
-            min.setDate(1);
-            min.setFullYear(max.getFullYear() - (yItemsLimit - 1));
-            break;
-        }
-        
-        return {
-          min,
-          max
-        };
-      }
-    },
+      name: 'dateFrequency',
+      value: 'WEEKLY'
+    }
   ],
 
   methods: [
@@ -205,18 +173,20 @@ foam.CLASS({
             .startContext({ data: this })
               .add(this.ACCOUNT)
               .add(this.DATE_FREQUENCY)
+              .add(this.START_DATE)
               .add(this.END_DATE)
             .endContext()
           .end()
         .end()
-        .start().style({ 'width': '930px', 'height': '266px' }).addClass(this.myClass('chart'))
+        .start().style({ 'width': '1120px', 'height': '320px' }).addClass(this.myClass('chart'))
           .add(this.HorizontalBarDAOChartView.create({
             account$: this.account$,
-            timeFrequency$: this.dateFrequency$,
-            dateRange$: this.dateRange$,
-            data: this.cicoTransactionsDAO,
-            width: 920,
-            height: 240
+            dateFrequency$: this.dateFrequency$,
+            startDate$: this.startDate$,
+            endDate$: this.endDate$,
+            data$: this.cicoTransactionsDAO$,
+            width: 1100,
+            height: 300
           }))
         .end()
     }
