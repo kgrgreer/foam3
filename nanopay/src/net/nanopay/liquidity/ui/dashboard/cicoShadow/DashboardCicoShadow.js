@@ -34,19 +34,6 @@ foam.CLASS({
   ^chart {
     margin-top: 32px;
   }
-
-  ^shifter {
-    margin: 36px 0;
-    padding: 0px 16px;
-  }
-
-  ^ .foam-u2-ActionView img {
-    margin-right: 0;
-  }
-
-  ^ .foam-u2-ActionView-secondary:disabled {
-    opacity: 0.4;
-  }
 `,
 
   requires: [
@@ -56,7 +43,8 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'org.chartjs.HorizontalBarDAOChartView',
     'foam.u2.layout.Rows',
-    'foam.u2.layout.Cols'
+    'foam.u2.layout.Cols',
+    'foam.u2.detail.SectionedDetailPropertyView',
   ],
 
   exports: [
@@ -96,7 +84,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'DateTime',
+      class: 'Date',
       name: 'startDate',
       factory: function() {
         const oneWeekAgo = new Date();
@@ -105,7 +93,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'DateTime',
+      class: 'Date',
       name: 'endDate',
       factory: function() {
         return new Date();
@@ -167,28 +155,41 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start(this.Cols).style({ 'align-items': 'center' })
+        .start(this.Cols)
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
-          .start(this.Cols)
-            .startContext({ data: this })
-              .add(this.ACCOUNT)
-              .add(this.DATE_FREQUENCY)
-              .add(this.START_DATE)
-              .add(this.END_DATE)
-            .endContext()
-          .end()
+          .startContext({ data: this })
+            .start(this.Cols).addClass(this.myClass('buttons'))
+                .start().add(this.ACCOUNT).end()
+                .start().add(this.DATE_FREQUENCY).end()
+            .end()
+          .endContext()
         .end()
-        .start().style({ 'width': '1120px', 'height': '320px' }).addClass(this.myClass('chart'))
+        .start().style({ 'width': '1325px', 'height': '320px' }).addClass(this.myClass('chart'))
           .add(this.HorizontalBarDAOChartView.create({
             account$: this.account$,
             dateFrequency$: this.dateFrequency$,
             startDate$: this.startDate$,
             endDate$: this.endDate$,
             data$: this.cicoTransactionsDAO$,
-            width: 1100,
+            labelExpr: net.nanopay.tx.model.Transaction.TYPE,
+            xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
+            yExpr: net.nanopay.tx.model.Transaction.COMPLETION_DATE,
+            width: 1325,
             height: 300
           }))
         .end()
+        .startContext({ data: this })
+          .start(this.Cols).addClass(this.myClass('buttons'))
+              .tag(this.SectionedDetailPropertyView, {
+                data: this,
+                prop: this.START_DATE
+              })
+              .tag(this.SectionedDetailPropertyView, {
+                data: this,
+                prop: this.END_DATE
+              })
+          .end()
+        .endContext()
     }
   ]
 });
