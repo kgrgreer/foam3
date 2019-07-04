@@ -147,11 +147,11 @@ foam.CLASS({
             if ( ! twoFactorEnabled ) {
               // two factor disabled
               var self = this;
-              this.twofactor.generateKey(null, true)
-              .then(function(array) {
-                self.twoFactorKey = array[0];
-                self.twoFactorQrCode = array[1];
-              });
+              this.twofactor.generateKeyAndQR(null)
+                .then(function(otpKey) {
+                  self.twoFactorKey = otpKey.key;
+                  self.twoFactorQrCode = otpKey.qrCode;
+                });
 
               return this.E().style({ 'display': 'flex' })
                 .start().style({ 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' })
