@@ -39,15 +39,8 @@ foam.CLASS({
       width: 375px;
       margin-top: 20vh;
     }
-    ^ .input-field {
+    ^ input {
       width: 100%;
-      height: 40px;
-      outline: none;
-      padding-top: 10px;
-      padding-left: 10px;
-      padding-bottom: 10px;
-      padding-right: 30px;
-      background: white;
     }
     ^ .login-logo-img {
       height: 19.4;
@@ -176,8 +169,10 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start().addClass('input-field-wrapper')
-              .start(this.EMAIL, { mode: emailDisplayMode })
-                .addClass('input-field')
+              .start(this.EMAIL, {
+                mode: emailDisplayMode,
+                focused: true
+              })
                 .attr('placeholder', 'you@example.com')
               .end()
             .end()
@@ -198,7 +193,7 @@ foam.CLASS({
             .end()
             .add(this.PASSWORD)
           .end()
-          .start(this.LOG_IN).addClass('sme-button').addClass('block').addClass('login').end()
+          .start(this.LOG_IN, { size: 'LARGE' }).addClass('block').addClass('login').end()
         .end()
         .start()
           .start().addClass('sme-subtitle')
