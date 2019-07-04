@@ -93,15 +93,15 @@ foam.CLASS({
       value: 'WEEKLY'
     },
     {
-      class: 'DateTime',
-      name: 'startTime',
+      class: 'Date',
+      name: 'startDate',
       factory: function() {
         return new Date(0);
       }
     },
     {
-      class: 'DateTime',
-      name: 'endTime',
+      class: 'Date',
+      name: 'endDate',
       factory: function() {
         return new Date();
       }
@@ -182,11 +182,11 @@ foam.CLASS({
         .start(this.Cols)
           .tag(this.SectionedDetailPropertyView, {
             data: this,
-            prop: this.START_TIME
+            prop: this.START_DATE
           })
           .tag(this.SectionedDetailPropertyView, {
             data: this,
-            prop: this.END_TIME
+            prop: this.END_DATE
           })
         .end();
     }

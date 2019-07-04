@@ -45,6 +45,7 @@ foam.CLASS({
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
     'foam.u2.detail.SectionedDetailPropertyView',
+    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType'
   ],
 
   exports: [
@@ -86,7 +87,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'startDate',
-      factory: function() {
+      factory: function () {
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
         return oneWeekAgo;
@@ -95,7 +96,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'endDate',
-      factory: function() {
+      factory: function () {
         return new Date();
       }
     },
@@ -159,8 +160,8 @@ foam.CLASS({
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
           .startContext({ data: this })
             .start(this.Cols).addClass(this.myClass('buttons'))
-                .start().add(this.ACCOUNT).end()
-                .start().add(this.DATE_FREQUENCY).end()
+              .start().add(this.ACCOUNT).end()
+              .start().add(this.DATE_FREQUENCY).end()
             .end()
           .endContext()
         .end()
@@ -171,7 +172,7 @@ foam.CLASS({
             startDate$: this.startDate$,
             endDate$: this.endDate$,
             data$: this.cicoTransactionsDAO$,
-            labelExpr: net.nanopay.tx.model.Transaction.TYPE,
+            labelExpr: this.TransactionCICOType.create(),
             xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
             yExpr: net.nanopay.tx.model.Transaction.COMPLETION_DATE,
             width: 1325,
@@ -180,16 +181,54 @@ foam.CLASS({
         .end()
         .startContext({ data: this })
           .start(this.Cols).addClass(this.myClass('buttons'))
-              .tag(this.SectionedDetailPropertyView, {
-                data: this,
-                prop: this.START_DATE
-              })
-              .tag(this.SectionedDetailPropertyView, {
-                data: this,
-                prop: this.END_DATE
-              })
+            .tag(this.SectionedDetailPropertyView, {
+              data: this,
+              prop: this.START_DATE
+            })
+            .tag(this.SectionedDetailPropertyView, {
+              data: this,
+              prop: this.END_DATE
+            })
           .end()
         .endContext()
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'net.nanopay.liquidity.ui.dashboard.cicoShadow',
+  name: 'TransactionCICOType',
+  extends: 'foam.mlang.AbstractExpr',
+  implements: ['foam.core.Serializable'],
+
+  requires: [
+    'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.cico.COTransaction'
+  ],
+
+  javaImports: [
+    'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.cico.COTransaction'
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      code: function (obj) {
+        return this.CITransaction.isInstance(obj) 
+          ? 'CITransaction'
+          : this.COTransaction.isInstance(obj) 
+            ? 'COTransaction' 
+            : 'Other';
+      },
+      javaCode: `
+        return obj instanceof CITransaction 
+          ? "CITransaction"
+          : obj instanceof COTransaction 
+            ? "COTransaction"
+            : "Other";
+      `
     }
   ]
 });
