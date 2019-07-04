@@ -1,3 +1,6 @@
+# SSH Tunnel log
+ssh.log
+
 # Ignore VIM .swp files
 *.swp
 
@@ -100,4 +103,4 @@ tools/js_build/foam-bin*.js
 # gradle
 .gradle
 
-bin/
+./bin/
