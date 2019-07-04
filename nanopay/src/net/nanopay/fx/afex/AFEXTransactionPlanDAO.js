@@ -46,7 +46,7 @@ foam.CLASS({
     {
       type: 'String',
       name: 'AFEX_SERVICE_NSPEC_ID',
-      value: 'afexService'
+      value: 'afexServiceProvider'
     }
   ],
 
@@ -81,29 +81,29 @@ foam.CLASS({
 
     // Check if AFEXTransactionPlanDAO can handle the currency combination
     FXService fxService = null;
-    if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.DEVELOPMENT ) {
-      if ( (request.getSourceCurrency().equals("CAD") && request.getDestinationCurrency().equals("USD")) ||
-      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("CAD")) ||
-      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("USD")) ) {
-        AFEX afex = new AFEXServiceMock(x);
-        fxService = new AFEXServiceProvider(x, afex);
-      }
-    } else {
+    // if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.DEVELOPMENT ) {
+    //   if ( (request.getSourceCurrency().equals("CAD") && request.getDestinationCurrency().equals("USD")) ||
+    //   (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("CAD")) ||
+    //   (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("USD")) ) {
+    //     AFEX afex = new AFEXServiceMock(x);
+    //     fxService = new AFEXServiceProvider(x, afex);
+    //   }
+    // } else {
       fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
       request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
-    }
+    // }
     if ( fxService instanceof AFEXServiceProvider  ) {
       fxService = (AFEXServiceProvider) fxService;
 
       // Validate that Payer is provisioned for AFEX before proceeding
-      if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
+      // if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
         AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
         if (afexBusiness == null) {
           logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
           return getDelegate().put_(x, quote);
         }
 
-      }
+      // }
 
       FXQuote fxQuote = new FXQuote.Builder(x).build();
 
@@ -207,7 +207,7 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setFxQuoteId(tx.getFxQuoteId());
   summary.setSourceAccount(sourceAccount.getId());
   summary.setDestinationAccount(destinationAccount.getId());
-  summary.setFxRate(tx.getFxRate());
+  summary.setFxRate(1/tx.getFxRate());
   summary.addNext(tx);
   summary.setIsQuoted(true);
   return summary;

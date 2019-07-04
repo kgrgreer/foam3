@@ -80,7 +80,7 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   public Quote getQuote(GetQuoteRequest request) {
 
     Date date = Calendar.getInstance().getTime();
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd'T'hh:mm:ss");
     String strDate = dateFormat.format(date);
     Quote quote = new Quote.Builder(getX())
       .setAmount(Double.parseDouble(request.getAmount()))

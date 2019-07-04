@@ -39,7 +39,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     quoteRequest.setCurrencyPair(targetCurrency + sourceCurrency);
     quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency));
     AFEXBusiness business = this.getAFEXBusiness(x, user);
-    quoteRequest.setClientAPIKey(business.getApiKey());
+    if ( business != null ) {
+      quoteRequest.setClientAPIKey(business.getApiKey());
+    }
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest);
       if ( null != quote ) {
@@ -48,10 +50,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         } else {
           fxQuote.setRate(quote.getRate());
         }
-        fxQuote.setTargetAmount(destinationAmount);
         fxQuote.setTargetCurrency(targetCurrency);
-        fxQuote.setSourceAmount(sourceAmount);
         fxQuote.setSourceCurrency(sourceCurrency);
+        fxQuote.setTargetAmount(destinationAmount);
+        fxQuote.setSourceAmount(sourceAmount);
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
         Date date = format.parse(quote.getValueDate());
