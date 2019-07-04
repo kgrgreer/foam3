@@ -1,14 +1,14 @@
 #!/bin/bash
 
-MODE=
+MODE=0
 SOCKET_FILE=~/.ssh/sockets/nanopay
 RC_FILE=~/.config/nanopay/remoterc
 
 REMOTE_USER=
 REMOTE_URL=
 SSH_KEY=
-LOCAL_PORT=
-REMOTE_PORT=
+LOCAL_PORT=8080
+REMOTE_PORT=8080
 
 function usage {
     echo "Usage: $0 [OPTIONS]"
@@ -28,7 +28,7 @@ function usage {
     echo ""
 }
 
-while getopts "ehiR:sS:" opt ; do
+while getopts "ehiI:R:sS:U:W:" opt ; do
     case $opt in
         C) RC_FILE=$OPTARG;;
         e) MODE=1;;
@@ -70,13 +70,22 @@ if [ -f $RC_FILE ]; then
     . $RC_FILE
 fi
 
+# user and ssh key may be specified in .ssh/config
+REMOTE=${REMOTE_URL}
+if [ ! -z ${REMOTE_USER} ]; then
+    REMOTE=${REMOTE_USER}@${REMOTE_URL}
+fi
+if [ ! -z ${SSH_KEY} ]; then
+    REMOTE="${REMOTE} -i ${SSH_KEY}"
+fi
+
 if [ $MODE -eq 0 ]; then
     echo "INFO :: Starting ssh tunnel "
     if [ -S ${SOCKET_FILE} ]; then
         echo "ERROR :: ${SOCKET_FILE} already exists, close connection first"
         exit 1
     fi
-    ssh -f -N -M -S $SOCKET_FILE -L ${LOCAL_PORT}:127.0.0.1:${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_URL} -i ${SSH_KEY} &> /dev/null
+    ssh -f -N -M -S $SOCKET_FILE -L ${LOCAL_PORT}:127.0.0.1:${REMOTE_PORT} ${REMOTE} &> ssh.log
     if [ $? -eq 0 ]; then
         echo "INFO :: Connection started"
     else
@@ -89,7 +98,7 @@ elif [ $MODE -eq 1 ]; then
         echo "ERROR :: ${SOCKET_FILE} doesn't exist, can't close connection"
         exit 1
     fi
-    ssh -S $SOCKET_FILE -O exit ${REMOTE_USER}@${REMOTE_URL} &> /dev/null
+    ssh -S $SOCKET_FILE -O exit ${REMOTE} &> ssh.log
     if [ $? -eq 0 ]; then
         echo "INFO :: Connection exited"
     else
