@@ -63,11 +63,19 @@ if [ ${STATUS} -eq 1 ]; then
 fi
 
 case ${ENABLE} in
-    1) ssh -t ${SSH_KEY_OPT} ${REMOTE} "sudo systemctl enable ${SERVICE_NAME}";;
-    2) ssh -t ${SSH_KEY_OPT} ${REMOTE} "sudo systemctl disable ${SERVICE_NAME}";;
+    1)  ssh -t ${SSH_KEY_OPT} ${REMOTE} "sudo systemctl enable ${SERVICE_NAME}"
+        echo "INFO :: Enabled ${SERVICE_NAME} on ${REMOTE}"
+        ;;
+    2)  ssh -t ${SSH_KEY_OPT} ${REMOTE} "sudo systemctl disable ${SERVICE_NAME}"
+        echo "INFO :: Disabled ${SERVICE_NAME} on ${REMOTE}"
+        ;;
 esac
 
 case ${START} in
-    1) ssh -t ${SSH_KEY_OPT} ${REMOTE} "sudo systemctl start ${SERVICE_NAME}";;
-    2) ssh -t ${SSH_KEY_OPT} ${REMOTE} "sudo systemctl stop ${SERVICE_NAME}";;
+    1)  ssh -t ${SSH_KEY_OPT} ${REMOTE} "sudo systemctl start ${SERVICE_NAME}"
+        echo "INFO :: Started ${SERVICE_NAME} on ${REMOTE}"
+        ;;
+    2)  ssh -t ${SSH_KEY_OPT} ${REMOTE} "sudo systemctl stop ${SERVICE_NAME}"
+        echo "INFO :: Stopped ${SERVICE_NAME} on ${REMOTE}"
+        ;;
 esac
