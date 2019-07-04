@@ -290,19 +290,18 @@ task getClasspath() {
 }
 
 task tarz(type: Tar) {
-    def tarName = "${project.name}-${project.version}"
-    archiveFileName = "${tarName}.tgz"
-
-    into("${tarName}/bin/") {
+    into("bin/") {
         from "deploy/bin"
     }
-    into("${tarName}/lib/") {
+    into("lib/") {
         from "target/lib"
     }
-    into("${tarName}/etc/") {
+    into("etc/") {
         from "deploy/etc"
     }
 
+    archiveBaseName = "nanopay-deploy"
+    archiveExtension = "tar.gz"
     destinationDirectory = file("target/package")
     compression = Compression.GZIP
 }
