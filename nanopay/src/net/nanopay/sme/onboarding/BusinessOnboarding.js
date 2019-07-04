@@ -407,7 +407,7 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'personalInformationSection',
-      label: 'I am a politically exposed persons or head of an international organization (PEP/HIO)',
+      label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',
       help: `
         A political exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity
