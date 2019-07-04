@@ -127,9 +127,13 @@ foam.CLASS({
       documentation: `
       DAO for recent transactions in entire ecosystem
     `,
-      expression: function (account) {
+      expression: function (account, startDate, endDate) {
         return this.transactionDAO.where(
           this.AND(
+            this.AND(
+              this.GTE(net.nanopay.tx.model.Transaction.COMPLETION_DATE, startDate),
+              this.LTE(net.nanopay.tx.model.Transaction.COMPLETION_DATE, endDate)
+            ),
             this.EQ(this.Transaction.STATUS, this.TransactionStatus.COMPLETED),
             this.OR(
               this.AND(
@@ -167,14 +171,12 @@ foam.CLASS({
         .end()
         .start().style({ 'width': '1325px', 'height': '320px' }).addClass(this.myClass('chart'))
           .add(this.HorizontalBarDAOChartView.create({
-            account$: this.account$,
-            dateFrequency$: this.dateFrequency$,
-            startDate$: this.startDate$,
-            endDate$: this.endDate$,
             data$: this.cicoTransactionsDAO$,
-            labelExpr: this.TransactionCICOType.create(),
+            keyExpr: this.TransactionCICOType.create(),
             xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
-            yExpr: net.nanopay.tx.model.Transaction.COMPLETION_DATE,
+            yExpr: this.dateFrequency$.map(d => d.glang.clone().copyFrom({
+              delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
+            })),
             width: 1325,
             height: 300
           }))
