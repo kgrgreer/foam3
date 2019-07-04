@@ -16,7 +16,9 @@ foam.CLASS({
     'addCommas',
     'currencyDAO',
     'userDAO',
-    'complianceHistoryDAO'
+    'complianceHistoryDAO',
+    'localTransactionDAO',
+    'transactionDAO'
   ],
 
   javaImports: [
@@ -46,14 +48,16 @@ foam.CLASS({
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.account.Balance'
+    'net.nanopay.account.Balance',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   requires: [
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
-   'net.nanopay.tx.model.TransactionStatus'
+   'net.nanopay.tx.model.TransactionStatus',
+   'net.nanopay.tx.model.Transaction'
  ],
 
   constants: [
@@ -481,6 +485,13 @@ foam.CLASS({
       permissionRequired: true,
       visibility: 'hidden'
     },
+    {
+      name: 'reverseTransaction',
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
+      permissionRequired: true,
+      visibility: 'RO'
+    },
   ],
 
   methods: [
@@ -526,6 +537,7 @@ for ( Balance b : getBalances() ) {
       setStatus(other.getStatus());
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
+      setReverseTransaction(other.getReverseTransaction());
       `
     },
     {
@@ -911,6 +923,19 @@ for ( Balance b : getBalances() ) {
           ))
         });
       }
-    }
+    },
+//    {
+//      name: 'goToReverse',
+//      label: 'Go to Reverse',
+//      isAvailable:  function(reverseTransaction) {return reverseTransaction},
+//      code: function() {
+//        this.__context__.stack.push({
+//          class: 'foam.comics.v2.DetailView',
+//          data: this.transactionDAO.find(this.reverseTransaction).then(data => data),
+//          config: this.config,
+//          of: this.config.of
+//        });
+//      }
+//    }
   ]
 });

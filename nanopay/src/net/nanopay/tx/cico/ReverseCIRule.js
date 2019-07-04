@@ -30,7 +30,7 @@ foam.CLASS({
         Transaction oldTxn = (Transaction) oldObj;
         Transaction txn = (Transaction) obj;
         if (txn.getStatus() == TransactionStatus.DECLINED && oldTxn.getStatus() == TransactionStatus.COMPLETED){
-          agency.submit(x, new ContextAgent() {
+          agency.submit(getX(), new ContextAgent() {
             @Override
             public void execute(X x) {
               DigitalTransaction revTxn = new DigitalTransaction.Builder(x)
@@ -39,10 +39,13 @@ foam.CLASS({
                 .setAmount(txn.getAmount())
                 .setName("Reversal of: "+txn.getId())
                 .setIsQuoted(true)
+                .setReverseTransaction(txn.getId())
                 .build();
 
               try {
-                ((DAO) x.get("localTransactionDAO")).put_(x, revTxn);
+                Transaction tx = (Transaction) ((DAO) x.get("localTransactionDAO")).put_(x, revTxn);
+                txn.setReverseTransaction(tx.getId());
+                ((DAO) x.get("localTransactionDAO")).put_(x, txn);
               }
               catch (Exception e) {
               //email Support about failure.
