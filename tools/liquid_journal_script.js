@@ -1,3 +1,8 @@
+// TODO: 1. Create liquidity settings
+// TODO: 2. For transfer liquidity settings
+// TODO: 3. Make accounts hold CAD and US accounts hold USD
+// TODO: 4. CICO transactions
+
 var npRoot = __dirname + '/../';
 
 global.FOAM_FLAGS = {
@@ -85,6 +90,8 @@ var accountTree = [
     ]
   }
 ];
+
+var 
 
 function bank(X, a) {
   var cls = a.denomination == 'CAD' ?
@@ -368,6 +375,8 @@ function main() {
     userId: 8005,
     addCommas: function(a) { return a; }
   });
+
+  // TODO: create liquidity settings here
 
   accountTree = accountTree.map(inflate.bind(null, X));
 
