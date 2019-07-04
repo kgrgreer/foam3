@@ -9,6 +9,7 @@ RC_FILE=~/.config/nanopay/remoterc
 REMOTE_USER=
 REMOTE_URL=
 SSH_KEY=
+SSH_KEY_OPT=
 
 function quit {
     echo "ERROR :: Install Failed"
@@ -69,14 +70,13 @@ if [ ! -z ${REMOTE_USER} ]; then
     REMOTE=${REMOTE_USER}@${REMOTE_URL}
 fi
 
+if [ ! -z ${SSH_KEY} ]; then
+    SSH_KEY_OPT="-i ${SSH_KEY}"
+fi
+
 if [ $INSTALL_ONLY -eq 0 ]; then
     echo "INFO :: Copying ${NANOPAY_TARBALL_PATH} to ${REMOTE}:${NANOPAY_REMOTE_OUTPUT}"
-    REMOTE="${NANOPAY_TARBALL_PATH} ${REMOTE}"
-    if [ ! -z ${SSH_KEY} ]; then
-        REMOTE="-i ${SSH_KEY} ${REMOTE}"
-    fi
-
-    scp ${REMOTE}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}
+    scp ${SSH_KEY_OPT} ${NANOPAY_TARBALL_PATH} ${REMOTE}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}
 
     if [ ! $? -eq 0 ]; then
         echo "ERROR :: Failed copying tarball to remote server"
@@ -86,10 +86,7 @@ if [ $INSTALL_ONLY -eq 0 ]; then
     fi
 fi
 
-if [ ! -z ${SSH_KEY} ]; then
-    REMOTE="-i ${SSH_KEY} ${REMOTE}"
-fi
-ssh ${REMOTE} "sudo bash -s -- -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME}" < ./deploy/bin/install.sh
+ssh ${SSH_KEY_OPT} ${REMOTE} "sudo bash -s -- -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME}" < ./deploy/bin/install.sh
 
 if [ ! $? -eq 0 ]; then
     quit 1;
