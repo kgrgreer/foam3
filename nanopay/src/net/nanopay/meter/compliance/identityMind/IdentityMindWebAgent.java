@@ -8,6 +8,7 @@ import foam.lib.json.JSONParser;
 import foam.nanos.http.HttpParameters;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.Notification;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,8 +23,9 @@ import static foam.mlang.MLang.*;
 
 public class IdentityMindWebAgent implements WebAgent {
   public void execute(X x) {
-    DAO identityMindResponseDAO = (DAO) x.get("identityMindResponseDAO");
     DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+    DAO identityMindResponseDAO = (DAO) x.get("identityMindResponseDAO");
+    DAO notificationDAO = ((DAO) x.get("notificationDAO"));
     Logger logger = (Logger) x.get("logger");
     HttpParameters p = x.get(HttpParameters.class);
     String data = p.getParameter("data");
@@ -54,12 +56,27 @@ public class IdentityMindWebAgent implements WebAgent {
 
           if ( approvalRequest != null ) {
             approvalRequest = (ComplianceApprovalRequest) approvalRequest.fclone();
-            if (idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.VALIDATED) {
-              approvalRequest.setStatus(ApprovalStatus.APPROVED);
-            } else if (idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.REJECTED) {
-              approvalRequest.setStatus(ApprovalStatus.REJECTED);
-            }
-            approvalRequestDAO.put(approvalRequest);
+            ApprovalStatus status = approvalRequest.getStatus();
+            if ( idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.VALIDATED ) {
+              if ( status != ApprovalStatus.APPROVED ) {
+                approvalRequest.setStatus(ApprovalStatus.APPROVED);
+                approvalRequestDAO.put(approvalRequest);
+              }
+            } else if ( idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.REJECTED ) {
+              if ( status != ApprovalStatus.REJECTED ) {
+                approvalRequest.setStatus(ApprovalStatus.REJECTED);
+                approvalRequestDAO.put(approvalRequest);
+              }
+            } else {
+              if ( status == ApprovalStatus.APPROVED || status == ApprovalStatus.REJECTED ) {
+                Notification notification = new Notification();
+                notification.setEmailIsEnabled(true);
+                notification.setBody("The approval request has already been rejected or approved.");
+                notification.setNotificationType("Approval request already updated.");
+                notification.setGroupId("fraud-ops");
+                notificationDAO.put(notification);
+              }
+            }    
           }
         }
       });
