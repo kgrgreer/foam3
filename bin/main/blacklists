@@ -1,0 +1,3 @@
+p({"class":"net.nanopay.meter.Blacklist","id":"user.compliance.blacklist","description":"Permission blacklist for a blacklisted user", "entityType": 0})
+p({"class":"net.nanopay.meter.Blacklist","id":"business.compliance.blacklist","description":"Permission blacklist for a blacklisted business", "entityType": 1})
+p({"class":"net.nanopay.meter.Blacklist","id":"account.compliance.blacklist","description":"Permission blacklist for a blacklisted account", "entityType": 2})

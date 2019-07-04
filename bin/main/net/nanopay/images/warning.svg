@@ -1,0 +1,10 @@
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon/Warning</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icon/Warning" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="round-warning-24px" transform="translate(1.333333, 2.000000)" fill="#FFBF58" fill-rule="nonzero">
+            <path d="M1.64666667,12 L11.6866667,12 C12.7133333,12 13.3533333,10.8866667 12.84,10 L7.82,1.32666667 C7.30666667,0.44 6.02666667,0.44 5.51333333,1.32666667 L0.493333333,10 C-0.02,10.8866667 0.62,12 1.64666667,12 Z M6.66666667,7.33333333 C6.3,7.33333333 6,7.03333333 6,6.66666667 L6,5.33333333 C6,4.96666667 6.3,4.66666667 6.66666667,4.66666667 C7.03333333,4.66666667 7.33333333,4.96666667 7.33333333,5.33333333 L7.33333333,6.66666667 C7.33333333,7.03333333 7.03333333,7.33333333 6.66666667,7.33333333 Z M7.33333333,10 L6,10 L6,8.66666667 L7.33333333,8.66666667 L7.33333333,10 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>

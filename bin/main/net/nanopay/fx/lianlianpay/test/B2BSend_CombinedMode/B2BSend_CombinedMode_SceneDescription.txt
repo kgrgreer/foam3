@@ -1,0 +1,17 @@
+Samples reflect the whole payment cycle including two new Payees and total three instructions:  
+
+First Day:
+The request file contains an instruction of payment to Payee A.
+The response file returns the preprocessing result for the whole file, and the preprocessing for each instruction, which in this case returns that Payee A's KYC audit processing. 
+
+Second Day:
+The request file contains two instructions of separated payment to Payee A and Payee B.
+The response file returns the preprocessing result of the whole file, and the preprocessing for each instruction, which in this case returns as: for payment to Payee A, the preprocessing result is success, Payee B's KYC audit processing.   
+
+Third Day:
+The reconciliation file returns the processing result of two payment instructions to Payee A. 
+The statement file returns the account funds in/out record on previous accounting date, which in this case reflects the account funds of Payee A’ two payments. 
+
+Fourth Day:
+The reconciliation file returns the processing result of payment instruction to Payee B. 
+The statement file returns the account funds in/out record on previous accounting date, which in this case reflects the account funds of Payee B’s payment.

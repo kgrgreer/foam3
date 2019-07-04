@@ -1,0 +1,24 @@
+// Greenfence trust
+p({"class":"net.nanopay.account.TrustAccount", "id":10, "owner":110, "denomination":"CAD", "name":"Greenfence Trust Account CAD"})
+
+// Default Digital
+// greenfence
+p({"class":"net.nanopay.account.DigitalAccount","name":"Greenfence Digital","denomination":"CAD","id":509,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013})
+// seller
+p({"class":"net.nanopay.account.DigitalAccount","name":"Seller Digital","denomination":"CAD","id":510,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1014})
+// buyer
+p({"class":"net.nanopay.account.DigitalAccount","name":"Buyer Digital","denomination":"CAD","id":511,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1015})
+// reviewer
+p({"class":"net.nanopay.account.DigitalAccount","name":"Reviewer Digital","denomination":"CAD","id":512,"isDefault":true,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1016})
+
+// Tax - seller
+p({"class":"net.nanopay.account.DigitalAccount","name":"Seller Tax","denomination":"CAD","id":513,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1014,})
+
+// Fee - greenfence
+// Referral
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":514,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013, "name":"Greenfence Referral Fee"})
+// Governance
+p({"class":"net.nanopay.account.DigitalAccount","denomination":"CAD","id":515,"isDefault":false,"created":"2019-01-16T18:54:26.300Z","createdBy":1,"lastModified":"2019-01-16T18:54:26.300Z","lastModifiedBy":1,"owner":1013, "name":"Greenfence Governance Fee"})
+
+// Buyer CA Bank Account
+p({"class":"net.nanopay.bank.CABankAccount","branch":38,"accountNumber":"213141275457645","status":1,"institution":6,"randomDepositAmount":5,"address":{"class":"foam.nanos.auth.Address","suite":"340","city":"Toronto","postalCode":"M6R1V5","countryId":"CA","regionId":"ON","streetNumber":"172","streetName":"East Liberty Stree"},"bankAddress":{"class":"foam.nanos.auth.Address"},"id":518,"name":"Buyer - CA Bank Account","isDefault":true,"owner":1015})

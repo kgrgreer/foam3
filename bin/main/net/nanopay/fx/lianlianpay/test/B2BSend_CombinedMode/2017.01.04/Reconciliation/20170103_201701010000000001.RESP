@@ -1,0 +1,3 @@
+20170103
+orderId|sourceCurrency|sourceAmount|targetCurrency|targetAmount|paymentCurrency|paymentAmount|rate|result
+LLPAY0000000003|USD|44.62|CNY|300.00|CNY|300.00|6.7234|8000
