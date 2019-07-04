@@ -9,7 +9,6 @@ RC_FILE=~/.config/nanopay/remoterc
 REMOTE_USER=
 REMOTE_URL=
 SSH_KEY=
-SSH_KEY_OPT=
 
 function quit {
     echo "ERROR :: Install Failed"
@@ -70,6 +69,7 @@ if [ ! -z ${REMOTE_USER} ]; then
     REMOTE=${REMOTE_USER}@${REMOTE_URL}
 fi
 
+SSH_KEY_OPT=""
 if [ ! -z ${SSH_KEY} ]; then
     SSH_KEY_OPT="-i ${SSH_KEY}"
 fi
