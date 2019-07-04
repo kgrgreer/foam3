@@ -47,16 +47,18 @@ public class AFEXClientOnboardingDAO
     logger.debug(this.getClass().getSimpleName(), "put", obj);
 
     AppConfig appConfig = (AppConfig) x.get("appConfig");
-    if ( null == appConfig || ! appConfig.getEnableInternationalPayment()) return getDelegate().put_(x, obj);
+    if ( null == appConfig || ! appConfig.getEnableInternationalPayment() ) return getDelegate().put_(x, obj);
 
     BankAccount account = (BankAccount) obj;
     BankAccount existingAccount = (BankAccount) getDelegate().find(account.getId());
     if ( existingAccount != null && (existingAccount.getStatus() == BankAccountStatus.VERIFIED  
         ||  account.getStatus() == BankAccountStatus.VERIFIED) ) {
+          System.out.println("There is verified account");
       AuthService auth = (AuthService) x.get("auth");
       DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
       Business business = (Business) localBusinessDAO.find(account.getOwner());
       if  ( null != business && business.getOnboarded() ) {
+        System.out.println("Business exists and already pushed to onboarded");
         // TODO: Check if business is already pushed to AFEX?
         DAO afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
@@ -65,6 +67,7 @@ public class AFEXClientOnboardingDAO
         boolean hasFXProvisionPayerPermission = true; //auth.checkUser(getX(), business, "fx.provision.payer");
         //boolean hasCurrencyReadUSDPermission = auth.checkUser(getX(), business, "currency.read.USD");
         if ( hasFXProvisionPayerPermission ) {
+          System.out.println("Has Permission to push to Partner");
           User signingOfficer = getSigningOfficer(x, business);
           if ( signingOfficer != null ) {
             String identificationExpiryDate = null;

@@ -626,6 +626,7 @@ var classes = [
   'net.nanopay.meter.compliance.dowJones.PersonNameSearchRequest',
 
   // identitymind
+  'net.nanopay.meter.compliance.identityMind.AbstractIdentityMindComplianceRuleAction',
   'net.nanopay.meter.compliance.identityMind.AutomatedReviewEngineResult',
   'net.nanopay.meter.compliance.identityMind.ComplianceTransactionValidator',
   'net.nanopay.meter.compliance.identityMind.ConditionResult',

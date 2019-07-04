@@ -12,6 +12,7 @@ foam.CLASS({
   imports: [
     'afexBeneficiaryDAO',
     'userDAO',
+    'publicBusinessDAO'
   ],
 
   properties: [
@@ -24,7 +25,13 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'user',
-      documentation: `The ID for the user`
+      documentation: `The ID for the user`,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+        this.__subSubContext__.publicBusinessDAO.find(value).then( function( user ) {
+          if ( user ) self.add(user.businessName);
+        });
+      }
     },
     {
       class: 'String',
@@ -86,8 +93,6 @@ foam.CLASS({
               });
             }
           });
-
-
       }
     },
   ]
