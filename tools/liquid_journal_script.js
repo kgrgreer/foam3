@@ -1,6 +1,6 @@
 // TODO: 1. Create liquidity settings
 // TODO: 2. For transfer liquidity settings
-// TODO: 3. Make accounts hold CAD and US accounts hold USD
+// DONE-ish: 3. Make accounts hold CAD and US accounts hold USD (relies on our services)
 // TODO: 4. CICO transactions
 
 var npRoot = __dirname + '/../';
@@ -70,8 +70,8 @@ var accountTree = [
     // TODO: Enable USD and FX transactions.
     // There appears to be no pre-loaded USD trust account so
 
-    // denomination: 'USD',
-    denomination: 'CAD',
+    denomination: 'USD',
+    // denomination: 'CAD',
     children: [
       {
         type: 'Aggregate',
@@ -90,8 +90,6 @@ var accountTree = [
     ]
   }
 ];
-
-var 
 
 function bank(X, a) {
   var cls = a.denomination == 'CAD' ?
@@ -229,7 +227,7 @@ function jdao(journal) {
 }
 
 function cashIn(X, bank, dest, amount) {
-  var tx = net.nanopay.tx.alterna.AlternaCITransaction.create({
+  var tx = net.nanopay.tx.cico.CITransaction.create({
     id: foam.next$UID().toString(),
     name: "Cash In",
     sourceAccount: bank.id,
@@ -255,7 +253,7 @@ function cashIn(X, bank, dest, amount) {
 
   X.transactionDAO.put(tx);
 
-  tx = net.nanopay.tx.alterna.AlternaCITransaction.create({
+  tx = net.nanopay.tx.cico.CITransaction.create({
     id: tx.id,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     lineItems: [
