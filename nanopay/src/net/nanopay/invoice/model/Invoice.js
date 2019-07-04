@@ -449,12 +449,14 @@ foam.CLASS({
       javaToCSV: `
         StringBuilder sb = new StringBuilder();
         foam.nanos.fs.File[] filesList = get_(obj);
+        foam.nanos.fs.File file;
+  
         sb.append("[");
-        for(foam.nanos.fs.File file: filesList) {
+        for(int i = 0; i < filesList.length; i++ ) {
+          if ( i != 0 ) sb.append(",");
+          file = filesList[i];
           sb.append(file.isPropertySet("address") ? file.getAddress() : file.getFilename());
-          sb.append(",");
         }
-        if ( filesList.length > 0 ) sb.deleteCharAt(sb.length() - 1);
         sb.append("]");
         outputter.output(sb.toString());
       `
