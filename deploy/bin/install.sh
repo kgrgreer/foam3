@@ -136,7 +136,7 @@ function setupUser {
     fi
 }
 
-function setupNanopaySymLink {=
+function setupNanopaySymLink {
     if [ -h ${NANOPAY_ROOT} ]; then
         unlink ${NANOPAY_ROOT}
     fi
