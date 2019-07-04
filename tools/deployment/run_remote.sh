@@ -3,12 +3,13 @@
 REMOTE_USER=
 REMOTE_URL=
 SSH_KEY=
-RUN_SCRIPT=/opt/nanopay/bin/run.sh
 RC_FILE=~/.config/nanopay/remoterc
 
 DEBUG=0
 DAEMONIZE=0
 NANOPAY_HOME=/opt/nanopay
+NANOPAY_MNT=/mnt/nanopay
+RUN_SCRIPT=${NANOPAY_HOME}/bin/run.sh
 PORT=8080
 
 function usage {
@@ -41,6 +42,15 @@ if [ -f $RC_FILE ]; then
     . $RC_FILE
 fi
 
-echo "INFO :: Running '${RUN_SCRIPT} -D${DEBUG} -Z${DAEMONIZE} -W${PORT} -N${NANOPAY_HOME}' on ${REMOTE_USER}@${REMOTE_URL}"
+REMOTE=${REMOTE_URL}
+if [ ! -z ${REMOTE_USER} ]; then
+    REMOTE=${REMOTE_USER}@${REMOTE_URL}
+fi
 
-ssh -t -t -i ${SSH_KEY} ${REMOTE_USER}@${REMOTE_URL} "${RUN_SCRIPT} -D${DEBUG} -Z${DAEMONIZE} -W${PORT} -N${NANOPAY_HOME}"
+echo "INFO :: Running '${RUN_SCRIPT} -D${DEBUG} -Z${DAEMONIZE} -W${PORT} -N${NANOPAY_HOME}' on ${REMOTE}"
+
+if [ ! -z ${SSH_KEY} ]; then
+    REMOTE="-i ${SSH_KEY} ${REMOTE}"
+fi
+
+ssh -t ${REMOTE} "${RUN_SCRIPT} -D${DEBUG} -Z${DAEMONIZE} -W${PORT} -M${NANOPAY_MNT} -N${NANOPAY_HOME}"

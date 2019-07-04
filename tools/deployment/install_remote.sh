@@ -63,10 +63,20 @@ if [ ! -f $NANOPAY_TARBALL_PATH ]; then
     quit 1
 fi
 
-if [ $INSTALL_ONLY -eq 0 ]; then
-    echo "INFO :: Copying ${NANOPAY_TARBALL_PATH} to ${REMOTE_USER}@${REMOTE_URL}:${NANOPAY_REMOTE_OUTPUT}"
+# user and ssh key may be specified in .ssh/config
+REMOTE=${REMOTE_URL}
+if [ ! -z ${REMOTE_USER} ]; then
+    REMOTE=${REMOTE_USER}@${REMOTE_URL}
+fi
 
-    scp -q -i ${SSH_KEY} ${NANOPAY_TARBALL_PATH} ${REMOTE_USER}@${REMOTE_URL}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}
+if [ $INSTALL_ONLY -eq 0 ]; then
+    echo "INFO :: Copying ${NANOPAY_TARBALL_PATH} to ${REMOTE}:${NANOPAY_REMOTE_OUTPUT}"
+    REMOTE="${NANOPAY_TARBALL_PATH} ${REMOTE}"
+    if [ ! -z ${SSH_KEY} ]; then
+        REMOTE="-i ${SSH_KEY} ${REMOTE}"
+    fi
+
+    scp ${REMOTE}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}
 
     if [ ! $? -eq 0 ]; then
         echo "ERROR :: Failed copying tarball to remote server"
@@ -76,7 +86,10 @@ if [ $INSTALL_ONLY -eq 0 ]; then
     fi
 fi
 
-ssh -i ${SSH_KEY} ${REMOTE_USER}@${REMOTE_URL} "sudo bash -s -- -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME}" < ./deploy/bin/install.sh
+if [ ! -z ${SSH_KEY} ]; then
+    REMOTE="-i ${SSH_KEY} ${REMOTE}"
+fi
+ssh ${REMOTE} "sudo bash -s -- -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME}" < ./deploy/bin/install.sh
 
 if [ ! $? -eq 0 ]; then
     quit 1;
