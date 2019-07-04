@@ -3,13 +3,13 @@
 REMOTE_USER=
 REMOTE_URL=
 SSH_KEY=
-RUN_SCRIPT=/opt/nanopay/bin/run.sh
 RC_FILE=~/.config/nanopay/remoterc
 
 DEBUG=0
 DAEMONIZE=0
 NANOPAY_HOME=/opt/nanopay
 NANOPAY_MNT=/mnt/nanopay
+RUN_SCRIPT=${NANOPAY_HOME}/bin/run.sh
 PORT=8080
 
 function usage {
