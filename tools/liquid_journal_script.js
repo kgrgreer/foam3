@@ -91,6 +91,10 @@ var accountTree = [
   }
 ];
 
+var liquiditySettings = [
+  
+]
+
 function bank(X, a) {
   var cls = a.denomination == 'CAD' ?
       net.nanopay.bank.CABankAccount :
