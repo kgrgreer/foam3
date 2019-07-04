@@ -16,6 +16,7 @@ import net.nanopay.tx.model.Transaction;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class AFEXServiceProvider extends ContextAwareSupport implements FXService, PaymentService {
 
@@ -240,6 +241,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
             AFEXTransaction txn = (AFEXTransaction) transaction.fclone();
             txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
+            try {
+              Date valueDate = new SimpleDateFormat("yyyy/MM/dd").parse(tradeResponse.getValueDate());
+              txn.setCompletionDate(valueDate); 
+            } catch(Throwable t) {
+              ((Logger) x.get("logger")).error("Error parsing date.", t);
+            } 
             return txn;
           }
         } catch(Throwable t) {

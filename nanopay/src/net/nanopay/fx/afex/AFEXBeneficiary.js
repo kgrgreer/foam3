@@ -19,13 +19,25 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'contact',
-      documentation: `The ID for the contact or underlying business`
+      documentation: `The ID for the contact or underlying business`,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+        this.__subSubContext__.publicBusinessDAO.find(value).then( function( user ) {
+          if ( user ) self.add(user.businessName);
+        });
+      }
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'owner',
-      documentation: `The owner of the contact`
+      documentation: `The owner of the contact`,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+        this.__subSubContext__.publicBusinessDAO.find(value).then( function( user ) {
+          if ( user ) self.add(user.businessName);
+        });
+      }
     },
     {
       class: 'String',
