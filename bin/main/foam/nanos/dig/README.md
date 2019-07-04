@@ -1,1 +1,0 @@
-DIG: Data Interchange Gateway
