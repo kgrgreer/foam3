@@ -75,8 +75,10 @@ REMOTE=${REMOTE_URL}
 if [ ! -z ${REMOTE_USER} ]; then
     REMOTE=${REMOTE_USER}@${REMOTE_URL}
 fi
+
+SSH_KEY_OPT=""
 if [ ! -z ${SSH_KEY} ]; then
-    REMOTE="${REMOTE} -i ${SSH_KEY}"
+    SSH_KEY_OPT="-i ${SSH_KEY}"
 fi
 
 if [ $MODE -eq 0 ]; then
@@ -85,7 +87,7 @@ if [ $MODE -eq 0 ]; then
         echo "ERROR :: ${SOCKET_FILE} already exists, close connection first"
         exit 1
     fi
-    ssh -f -N -M -S $SOCKET_FILE -L ${LOCAL_PORT}:127.0.0.1:${REMOTE_PORT} ${REMOTE} &> ssh.log
+    ssh -f -N -M -S $SOCKET_FILE -L ${LOCAL_PORT}:127.0.0.1:${REMOTE_PORT} ${SSH_KEY_OPT} ${REMOTE} &> ssh.log
     if [ $? -eq 0 ]; then
         echo "INFO :: Connection started"
     else
