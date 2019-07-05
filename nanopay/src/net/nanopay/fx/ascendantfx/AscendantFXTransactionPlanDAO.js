@@ -60,7 +60,7 @@ foam.CLASS({
       javaCode: `TransactionQuote quote = (TransactionQuote) obj;
       Transaction request = quote.getRequestTransaction();
 
-      if ( ! request.getDestinationCurrency().equals("CAD") && ! request.getSourceCurrency().equals("CAD") ) {
+      if ( request.getDestinationCurrency().equals("CAD") && request.getSourceCurrency().equals("CAD") ) {
         return getDelegate().put_(x, obj);
       }
 
