@@ -39,13 +39,11 @@ foam.CLASS({
                 .setAmount(txn.getAmount())
                 .setName("Reversal of: "+txn.getId())
                 .setIsQuoted(true)
-                .setReverseTransaction(txn.getId())
+                .setAssociateTransaction(txn.getId())
                 .build();
 
               try {
-                Transaction tx = (Transaction) ((DAO) x.get("localTransactionDAO")).put_(x, revTxn);
-                txn.setReverseTransaction(tx.getId());
-                ((DAO) x.get("localTransactionDAO")).put_(x, txn);
+                ((DAO) x.get("localTransactionDAO")).put_(x, revTxn);
               }
               catch (Exception e) {
               //email Support about failure.

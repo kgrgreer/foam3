@@ -484,13 +484,6 @@ foam.CLASS({
       value: false,
       permissionRequired: true,
       visibility: 'hidden'
-    },
-    {
-      name: 'reverseTransaction',
-      class: 'Reference',
-      of: 'net.nanopay.tx.model.Transaction',
-      permissionRequired: true,
-      visibility: 'RO'
     }
   ],
 
@@ -537,7 +530,6 @@ for ( Balance b : getBalances() ) {
       setStatus(other.getStatus());
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
-      setReverseTransaction(other.getReverseTransaction());
       `
     },
     {

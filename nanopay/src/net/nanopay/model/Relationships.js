@@ -247,6 +247,15 @@ foam.RELATIONSHIP({
   targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
 });
 
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.tx.model.Transaction',
+  forwardName: 'associatedTransactions',
+  inverseName: 'associateTransaction',
+  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
+  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
+});
 
 foam.RELATIONSHIP({
   cardinality: '1:*',
