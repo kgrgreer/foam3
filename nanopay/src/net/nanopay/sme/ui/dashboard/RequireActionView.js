@@ -4,6 +4,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
+    'actionsCheck',
+    'auth',
     'stack'
   ],
 
@@ -58,9 +60,20 @@ foam.CLASS({
     'countRequiresApproval',
     'countOverdueAndUpcoming',
     'countDepositPayment',
+    {
+      class: 'Boolean',
+      name: 'canPayInvoice',
+      documentation: `Check user's ability to pay.`,
+      factory: function() {
+        this.auth.check(null, 'invoice.pay').then((p) => {
+          this.canPayInvoice = p;
+        });
+      }
+    }
   ],
 
   messages: [
+    { name: 'NO_ACTION_REQUIRED', message: 'You\'re all caught up!' },
     { name: 'UPCOMING_PAYABLES', message: 'Overdue & Upcoming' },
     { name: 'DEPOSIT_PAYMENT', message: 'Deposit payment' },
     { name: 'REQUIRES_APPROVAL', message: 'Requires approval' },
@@ -73,34 +86,42 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
+          .show(this.slot(function(canPayInvoice, actionsCheck) {
+            return ! canPayInvoice || actionsCheck;
+          }))
+          .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
+        .end()
+        .start()
+          .start()
+            .hide(this.slot(function(countRequiresApproval, canPayInvoice) {
+              return ! canPayInvoice || countRequiresApproval === 0;
+            }))
+            .addClass(this.myClass('item'))
             .start()
-              .hide(this.countRequiresApproval$.map((value) => value == 0))
-              .addClass(this.myClass('item'))
-              .start()
-                .start('img')
-                  .attrs({ src: 'images/doublecheckmark.svg' })
-                .end()
-                .start('p')
-                  .add(this.REQUIRES_APPROVAL)
-                .end()
+              .start('img')
+                .attrs({ src: 'images/doublecheckmark.svg' })
               .end()
-              .start()
-                .addClass(this.myClass('number'))
-                .add(this.countRequiresApproval$)
+              .start('p')
+                .add(this.REQUIRES_APPROVAL)
               .end()
-              .on('click', function() {
-                view.stack.push({
-                  class: 'net.nanopay.sme.ui.SendRequestMoney',
-                  isApproving: true,
-                  isForm: false,
-                  isList: true,
-                  isDetailView: false,
-                  predicate: view.EQ(
-                    view.Invoice.STATUS,
-                    view.InvoiceStatus.PENDING_APPROVAL)
-                });
-              })
             .end()
+            .start()
+              .addClass(this.myClass('number'))
+              .add(this.countRequiresApproval$)
+            .end()
+            .on('click', function() {
+              view.stack.push({
+                class: 'net.nanopay.sme.ui.SendRequestMoney',
+                isApproving: true,
+                isForm: false,
+                isList: true,
+                isDetailView: false,
+                predicate: view.EQ(
+                  view.Invoice.STATUS,
+                  view.InvoiceStatus.PENDING_APPROVAL)
+              });
+            })
+          .end()
           .start()
             .show(this.countOverdueAndUpcoming$.map((value) => value > 0))
             .addClass(this.myClass('item'))

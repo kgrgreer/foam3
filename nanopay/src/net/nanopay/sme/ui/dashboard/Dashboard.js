@@ -43,7 +43,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'myDaoNotification'
+    'myDaoNotification',
+    'actionsCheck'
   ],
 
   implements: [
@@ -51,7 +52,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_ACTION_REQUIRED', message: 'You\'re all caught up!' },
     { name: 'NO_LATEST_ACTIVITY', message: 'No latest activity to display' },
     { name: 'NO_RECENT_PAYABLES', message: 'No recent payables to display' },
     { name: 'NO_RECENT_RECEIVABLES', message: 'No recent receivables to display' },
@@ -126,16 +126,6 @@ foam.CLASS({
             this.countDepositPayment = c.value;
           });
         return 0;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'canPayInvoice',
-      documentation: `Check user's ability to pay.`,
-      factory: function() {
-        this.auth.check(null, 'invoice.pay').then((p) => {
-          this.canPayInvoice = p;
-        });
       }
     },
     {
@@ -252,7 +242,7 @@ foam.CLASS({
           .start('h1')
             .add(this.TITLE)
           .end()
-          .tag({ 
+          .tag({
             class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard',
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
@@ -266,16 +256,6 @@ foam.CLASS({
             .add(this.SUBTITLE1)
           .end()
           .start()
-            // .show(this.actionsCheck$)
-            .show(this.slot(function(canPayInvoice, actionsCheck) {
-              return ! canPayInvoice || actionsCheck;
-            }))
-            .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
-          .end()
-          .start()
-            .hide(this.slot(function(canPayInvoice, actionsCheck) {
-              return ! canPayInvoice || actionsCheck;
-            }))
             .tag(this.RequireActionView.create({
               countRequiresApproval$: this.countRequiresApproval$,
               countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
