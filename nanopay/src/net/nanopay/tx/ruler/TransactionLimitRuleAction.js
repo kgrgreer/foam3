@@ -41,7 +41,7 @@ foam.CLASS({
       if ( ! limitState.check(rule_, txn.getAmount()) ) {
         throw new RuntimeException("Your limit is exceeded");
       }
-      agency.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed successfully.");
+      agency.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
       `
     }
   ],
