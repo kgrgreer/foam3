@@ -365,7 +365,7 @@ function jdao(journal) {
     formatDatesAsNumbers: false,
     outputDefaultValues: false,
     useShortNames: false,
-    propertyPredicate: function (o, p) { return !p.storageTransient; }
+    propertyPredicate: function (o, p) { return ! p.storageTransient; }
   });
 
   var stream = require('fs').createWriteStream(journal, { flags: 'a' });
@@ -520,7 +520,7 @@ function virtualAccounts(root) {
   var ret = [];
 
   function collect(node) {
-    if ( !net.nanopay.account.AggregateAccount.isInstance(node.obj) &&
+    if ( ! net.nanopay.account.AggregateAccount.isInstance(node.obj) &&
       net.nanopay.account.DigitalAccount.isInstance(node.obj) ) {
       ret.push(node.obj);
     }
