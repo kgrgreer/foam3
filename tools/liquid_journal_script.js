@@ -131,7 +131,7 @@ function bank(X, a) {
       ? net.nanopay.bank.CABankAccount 
       : a.denomination == 'USD' 
           ? net.nanopay.bank.USBankAccount
-          : net.nanopay.bank.BankACcount
+          : net.nanopay.bank.BankAccount
 
   var bank = cls.create({
     id: foam.next$UID(),
