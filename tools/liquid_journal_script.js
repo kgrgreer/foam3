@@ -39,11 +39,11 @@ var accountTree = [
         children: [
           {
             type: 'Virtual',
-            name: 'Widgets and Things',
+            name: 'Widgets and Things'
           },
           {
             type: 'Virtual',
-            name: 'Odds and Ends',
+            name: 'Odds and Ends'
           }
         ]
       },
@@ -53,7 +53,7 @@ var accountTree = [
         children: [
           {
             type: 'Virtual',
-            name: 'West Coast Communications',
+            name: 'West Coast Communications'
           }
         ]
       }
@@ -74,11 +74,11 @@ var accountTree = [
         children: [
           {
             type: 'Virtual',
-            name: 'Boston Bookends',
+            name: 'Boston Bookends'
           },
           {
             type: 'Virtual',
-            name: 'Purchasable Potables',
+            name: 'Purchasable Potables'
           }
         ]
       }
@@ -240,8 +240,8 @@ function createEmailRebalanceLiquiditySetting(X, s) {
 
 function bank(X, a) {
   var cls = a.denomination == 'CAD' ?
-    net.nanopay.bank.CABankAccount :
-    net.nanopay.bank.USBankAccount;
+  net.nanopay.bank.CABankAccount :
+  net.nanopay.bank.USBankAccount;
 
   var bank = cls.create({
     id: foam.next$UID(),
@@ -432,7 +432,7 @@ function cashIn(X, bank, dest, amount) {
 }
 
 function transfer(X, source, dest, amount) {
-  if (source.id == dest.id) {
+  if ( source.id == dest.id ) {
     throw new Error("Transfer from same account " + source.id);
   }
 
@@ -499,7 +499,7 @@ function randomTransfer(X) {
   var root = randomItem(accountTree);
   var accounts = virtualAccounts(root);
 
-  if (accounts.length < 2) {
+  if ( accounts.length < 2 ) {
     throw new Error("Cannot created transfer in account tree " + root.name + " as there is only one virtual account.");
   }
 
@@ -507,7 +507,7 @@ function randomTransfer(X) {
   var dest;
   do {
     dest = randomItem(accounts);
-  } while (dest === source);
+  } while ( dest === source );
 
   var amount = Math.floor(
     X.balances[source.id] * 0.05 +
@@ -520,12 +520,12 @@ function virtualAccounts(root) {
   var ret = [];
 
   function collect(node) {
-    if (!net.nanopay.account.AggregateAccount.isInstance(node.obj) &&
-      net.nanopay.account.DigitalAccount.isInstance(node.obj)) {
+    if ( !net.nanopay.account.AggregateAccount.isInstance(node.obj) &&
+      net.nanopay.account.DigitalAccount.isInstance(node.obj) ) {
       ret.push(node.obj);
     }
 
-    if (node.children) node.children.forEach(collect);
+    if ( node.children ) node.children.forEach(collect);
   }
 
   collect(root);
@@ -558,14 +558,14 @@ function main() {
   accountTree = accountTree.map(inflate.bind(null, X));
 
   accountTree.forEach(function foo(a) {
-    if (a.bank)
+    if ( a.bank )
       console.log("Bank: ", a.name, a.bank.id, a.shadow.id);
-    else if (a.obj)
+    else if ( a.obj )
       console.log(a.obj.cls_.name, a.name, a.obj.id);
     else
       console.log("Wut:", a);
 
-    if (a.children) a.children.forEach(foo);
+    if ( a.children ) a.children.forEach(foo);
   });
 
   accountTree.forEach(function (root) {
@@ -591,7 +591,7 @@ function main() {
   var targetTransactionCount = 5000;
   var timeStep = Math.floor((end.getTime() - currentDate.getTime()) / targetTransactionCount);
 
-  while (foam.Date.compare(currentDate, end) < 0) {
+  while ( foam.Date.compare(currentDate, end) < 0 ) {
     currentDate.setTime(currentDate.getTime() + timeStep);
     randomTransfer(X);
   }
