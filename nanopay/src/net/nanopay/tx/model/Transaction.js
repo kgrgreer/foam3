@@ -923,19 +923,6 @@ for ( Balance b : getBalances() ) {
           ))
         });
       }
-    },
-//    {
-//      name: 'goToReverse',
-//      label: 'Go to Reverse',
-//      isAvailable:  function(reverseTransaction) {return reverseTransaction},
-//      code: function() {
-//        this.__context__.stack.push({
-//          class: 'foam.comics.v2.DetailView',
-//          data: this.transactionDAO.find(this.reverseTransaction).then(data => data),
-//          config: this.config,
-//          of: this.config.of
-//        });
-//      }
-//    }
+    }
   ]
 });

@@ -357,6 +357,7 @@ function main() {
 
   var X = foam.createSubContext({
     accountDAO: jdao("target/journals/accounts.0"),
+    debtAccountDAO: foam.dao.NullDAO.create(),
     transactionDAO: jdao("target/journals/transactions.0"),
     liquiditySettingsDAO: jdao("target/journals/liquiditySettings.0"),
     currentDate: currentDate,
