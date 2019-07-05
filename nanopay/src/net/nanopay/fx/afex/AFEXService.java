@@ -238,6 +238,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("BeneficiaryPostalCode", request.getBeneficiaryPostalCode()));
       nvps.add(new BasicNameValuePair("BeneficiaryRegion", request.getBeneficiaryRegion()));
       nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
+      if ( !request.getVendorId().equals("") ) nvps.add(new BasicNameValuePair("VendorId", request.getVendorId()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
