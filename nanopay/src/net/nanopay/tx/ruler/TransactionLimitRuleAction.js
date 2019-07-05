@@ -11,9 +11,9 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.nanos.ruler.TestedRule',
     'java.util.HashMap',
-    'net.nanopay.tx.model.Transaction',
-    'foam.nanos.ruler.TestedRule'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [
@@ -41,7 +41,7 @@ foam.CLASS({
       if ( ! limitState.check(rule_, txn.getAmount()) ) {
         throw new RuntimeException("Your limit is exceeded");
       }
-      agency.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "Your transaciton is to be proccessed successfully.");
+      agency.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed successfully.");
       `
     }
   ],
