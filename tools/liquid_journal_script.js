@@ -27,8 +27,11 @@ require(npRoot + 'nanopay/src/net/nanopay/flinks/utils/files.js');
 global.FOAM_FLAGS.src = old;
 global.FOAM_ROOT = oldRoot;
 
-// Manually add the new currencies and new trust accounts that need to be created
-// b/c for now I don't know how we can query the existing currencies or accounts here
+/**
+ * Manually add the new currencies and new trust accounts that need to be created
+ * b/c for now I don't know how we can query the existing currencies or accounts here
+ */
+
 // for new currencies need to create an object defining AT LEAST
 /**
     {
