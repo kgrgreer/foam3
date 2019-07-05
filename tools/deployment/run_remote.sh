@@ -9,8 +9,8 @@ RC_FILE=~/.config/nanopay/remoterc
 NANOPAY_HOME=/opt/nanopay
 NANOPAY_MNT=/mnt/nanopay
 RUN_SCRIPT=${NANOPAY_HOME}/bin/run.sh
-ENABLE=
-START=
+ENABLE=0
+START=0
 STATUS=0
 PORT=8080
 
