@@ -491,7 +491,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.Transaction',
       permissionRequired: true,
       visibility: 'RO'
-    },
+    }
   ],
 
   methods: [
