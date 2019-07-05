@@ -212,6 +212,10 @@ public class BmoReportProcessor {
       ));
     }
 
+    if ( transaction == null ) {
+      return;
+    }
+
     transaction = (Transaction) transaction.fclone();
 
     transaction.setStatus(TransactionStatus.DECLINED);
@@ -220,84 +224,4 @@ public class BmoReportProcessor {
 
     transactionDAO.inX(this.x).put(transaction);
   }
-
-  /**
-   *
-   * Comment out below for now, once I get the right report format, will remove or modify it.
-   *
-   */
-
-//  public void processReportFile(File file) {
-//
-//    try {
-//      List<String> strings = FileUtils.readLines(file, "US-ASCII");
-//
-//      if ( strings.get(0).startsWith("A") && BmoFormatUtil.fieldAt(strings.get(0), 68, 48).equals("STL") ) {
-//        // process settlement file 220
-//
-//
-//        return;
-//      }
-//
-//      if ( strings.get(0).startsWith("A") ) {
-//        // process rejects 210/211
-//
-//        return;
-//      }
-//
-//
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//
-//  }
-//
-//  public void process210And211(List<String> strings) {
-//
-//    for (String s : strings) {
-//      if ( s.startsWith("C") || s.startsWith("I") || s.startsWith("D") || s.startsWith("J") ) {
-//
-//      }
-//    }
-//  }
-//
-//  public void process210And211Detail(String record) {
-//    String repeatSegments = BmoFormatUtil.fieldAt(record, 25, 1464);
-//    List<String> segments = BmoFormatUtil.splitRecord(repeatSegments);
-//
-//    for ( String segment : segments ) {
-//      String referenceNumber = BmoFormatUtil.fieldAt(segment, 175, 193);
-//      String rejectType = BmoFormatUtil.fieldAt(segment, 25, 27);
-//
-//      Transaction transaction = getTransactionBy(referenceNumber);
-//      transaction.setStatus(TransactionStatus.DECLINED);
-//      ((BmoTransaction)transaction).setRejectType(rejectType);
-//
-//      this.transactionDAO.inX(x).put(transaction);
-//    }
-//  }
-//
-//  public Transaction getTransactionBy(String referenceNumber) {
-//
-//    Predicate condition1 = MLang.OR(
-//      MLang.INSTANCE_OF(BmoCITransaction.class),
-//      MLang.INSTANCE_OF(BmoCITransaction.class)
-//    );
-//
-//    Predicate condition2 = MLang.OR(
-//      MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-//      MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber)
-//    );
-//
-//    Predicate condition3 = MLang.EQ(Transaction.STATUS, TransactionStatus.SENT);
-//
-//    Transaction transaction = (Transaction) transactionDAO.inX(this.x).find(MLang.AND(
-//      condition1,
-//      condition2,
-//      condition3
-//    ));
-//
-//    return (Transaction) transaction.fclone();
-//  }
-
 }
