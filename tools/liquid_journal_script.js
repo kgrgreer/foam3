@@ -147,19 +147,17 @@ function createEmailLiquiditySetting(X, s) {
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
-    var lowLiquidity = net.nanopay.liquidity.Liquidity.create({
+    liquiditySettingsObj.lowLiquidity = net.nanopay.liquidity.Liquidity.create({
       enabled: true,
       threshold: s.lowLiquidity
     });
-    liquiditySettingsObj.lowLiquidity = lowLiquidity;
   }
 
   if (s.highLiquidity !== undefined && s.highLiquidity >= 0) {
-    var highLiquidity = net.nanopay.liquidity.Liquidity.create({
+    liquiditySettingsObj.highLiquidity = net.nanopay.liquidity.Liquidity.create({
       enabled: true,
       threshold: s.highLiquidity
     });
-    liquiditySettingsObj.highLiquidity = highLiquidity;
   }
 
   var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
@@ -177,26 +175,26 @@ function createRebalanceLiquiditySetting(X, s) {
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
-    var lowLiquidity = net.nanopay.liquidity.Liquidity.create({
+    liquiditySettingsObj.lowLiquidity = net.nanopay.liquidity.Liquidity.create({
       enabled: true,
       threshold: s.lowLiquidity,
       rebalancingEnabled: true,
-      pushPullAccount: liquidityNamesToId[s.lowPull],
+      pushPullAccount: accountNamesToId[s.lowPull],
       resetBalance: s.lowResetBalance
     });
-    liquiditySettingsObj.lowLiquidity = lowLiquidity;
   }
 
   if (s.highLiquidity !== undefined && s.highLiquidity >= 0) {
-    var highLiquidity = net.nanopay.liquidity.Liquidity.create({
+    liquiditySettingsObj.highLiquidity = net.nanopay.liquidity.Liquidity.create({
       enabled: true,
       threshold: s.highLiquidity,
       rebalancingEnabled: true,
-      pushPullAccount: liquidityNamesToId[s.highPush],
+      pushPullAccount: accountNamesToId[s.highPush],
       resetBalance: s.highResetBalance
     });
-    liquiditySettingsObj.highLiquidity = highLiquidity;
   }
+
+  debugger;
 
   var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
 
@@ -214,25 +212,23 @@ function createEmailRebalanceLiquiditySetting(X, s) {
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
-    var lowLiquidity = net.nanopay.liquidity.Liquidity.create({
+    liquiditySettingsObj.lowLiquidity = net.nanopay.liquidity.Liquidity.create({
       enabled: true,
       threshold: s.lowLiquidity,
       rebalancingEnabled: true,
-      pushPullAccount: liquidityNamesToId[s.lowPull],
+      pushPullAccount: accountNamesToId[s.lowPull],
       resetBalance: s.lowResetBalance
     });
-    liquiditySettingsObj.lowLiquidity = lowLiquidity;
   }
 
   if (s.highLiquidity !== undefined && s.highLiquidity >= 0) {
-    var highLiquidity = net.nanopay.liquidity.Liquidity.create({
+    liquiditySettingsObj.highLiquidity = net.nanopay.liquidity.Liquidity.create({
       enabled: true,
       threshold: s.highLiquidity,
       rebalancingEnabled: true,
-      pushPullAccount: liquidityNamesToId[s.highPush],
+      pushPullAccount: accountNamesToId[s.highPush],
       resetBalance: s.highResetBalance
     });
-    liquiditySettingsObj.highLiquidity = highLiquidity;
   }
 
   var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
