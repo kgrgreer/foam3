@@ -1,8 +1,3 @@
-// TODO: 1. Create liquidity settings
-// TODO: 2. For transfer liquidity settings
-// DONE-ish: 3. Make accounts hold CAD and US accounts hold USD (relies on our services)
-// TODO: 4. CICO transactions
-
 var npRoot = __dirname + '/../';
 
 global.FOAM_FLAGS = {
@@ -32,6 +27,21 @@ require(npRoot + 'nanopay/src/net/nanopay/flinks/utils/files.js');
 global.FOAM_FLAGS.src = old;
 global.FOAM_ROOT = oldRoot;
 
+// Manually add the new currencies and new trust accounts that need to be created
+// b/c for now I don't know how we can query the existing currencies or accounts here
+// for new currencies need to create an object defining AT LEAST
+/**
+    {
+      name,
+      alphabeticCode,
+      numericCode,
+      country
+    }
+ */
+var newCurrencies = [];
+var newTrustAccountDenominations = ['USD'];
+
+// can enter banks with new currencies just by typing the denomination ('alphabetic code')
 var accountTree = [
   {
     type: 'Bank',
@@ -67,11 +77,7 @@ var accountTree = [
   {
     name: 'ABC New York',
     type: 'Bank',
-    // TODO: Enable USD and FX transactions.
-    // There appears to be no pre-loaded USD trust account so
-
     denomination: 'USD',
-    // denomination: 'CAD',
     children: [
       {
         type: 'Aggregate',
@@ -91,10 +97,38 @@ var accountTree = [
   }
 ];
 
+function createCurrency(X, cObj) {
+  var currency = net.nanopay.model.Currency.create({
+    delimiter: ',',
+    decimalCharacter: '.',
+    symbol: '¤',
+    leftOrRight: 'left',
+    showSpace: true,
+    precision: 2,
+    numericCode: 0,
+    ...cObj
+  });
+
+  X.currencyDAO.put(currency);
+}
+
+function createTrustAccount(X, d) {
+  var trust = net.nanopay.account.TrustAccount.create({
+    id: foam.next$UID(),
+    owner: 101,
+    name: `${d} Trust Account`,
+    denomination: d
+  })
+
+  X.accountDAO.put(trust);
+}
+
 function bank(X, a) {
-  var cls = a.denomination == 'CAD' ?
-      net.nanopay.bank.CABankAccount :
-      net.nanopay.bank.USBankAccount;
+  var cls = a.denomination == 'CAD' 
+      ? net.nanopay.bank.CABankAccount 
+      : a.denomination == 'USD' 
+          ? net.nanopay.bank.USBankAccount
+          : net.nanopay.bank.BankACcount
 
   var bank = cls.create({
     id: foam.next$UID(),
@@ -365,16 +399,22 @@ function main() {
     debtAccountDAO: foam.dao.NullDAO.create(),
     transactionDAO: jdao("target/journals/transactions.0"),
     liquiditySettingsDAO: jdao("target/journals/liquiditySettings.0"),
+    currencyDAO: jdao("target/journals/currencies.0"),
     currentDate: currentDate,
     balances: {},
-    currencyDAO: foam.dao.NullDAO.create(),
     userDAO: foam.dao.NullDAO.create(),
     complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,
     addCommas: function(a) { return a; }
   });
 
-  // TODO: create liquidity settings here
+  newCurrencies.forEach(c => {
+    createCurrency(X, c);
+  })
+
+  newTrustAccountDenominations.forEach(d => {
+    createTrustAccount(X, d)
+  })
 
   accountTree = accountTree.map(inflate.bind(null, X));
 
@@ -417,6 +457,7 @@ function main() {
   X.accountDAO.close();
   X.transactionDAO.close();
   X.liquiditySettingsDAO.close();
+  X.currencyDAO.close();
 }
 
 main();
