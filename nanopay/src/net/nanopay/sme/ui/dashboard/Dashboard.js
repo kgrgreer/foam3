@@ -43,8 +43,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'myDaoNotification',
-    'actionsCheck'
+    'actionsCheck',
+    'myDaoNotification'
   ],
 
   implements: [
