@@ -8,6 +8,7 @@ REMOTE_USER=
 REMOTE_URL=
 SSH_KEY=
 
+REDEPLOY_TARBALL=
 LIST_AVAILABLE=0
 
 function quit {
@@ -20,6 +21,7 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -l                  : List available rollbacks"
+    echo "  -R <number>         : Tarball to redeploy to"
     echo "  -U <user>           : Remote user to connect to"
     echo "  -W <web-address>    : Remote url to connect to"
     echo ""
@@ -44,7 +46,17 @@ if [ ! -z ${SSH_KEY} ]; then
     SSH_KEY_OPT="-i ${SSH_KEY}"
 fi
 
+AVAIL_TARBALLS=()
+while IFS= read -r line do;
+    AVAIL_TARBALLS+=( "${line}" )
+done < <(ssh ${SSH_KEY_OPT} ${REMOTE} "ls -1 ${NANOPAY_BACKUP} | grep -e \"nanopay-*.bak.tar.gz\"")
+
 if [ ${LIST_AVAILABLE} -eq 1 ]; then
-    ssh ${SSH_KEY_OPT} ${REMOTE} "ls -1 ${NANOPAY_BACKUP} | grep -e \"nanopay-*.bak.tar.gz\"" 
+    for TARBALL in ${AVAIL_TARBALLS[@]}; do
+        echo "${TARBALL}"
+    done
 fi
 
+# if [ ! -z ${REDEPLOY_TARBALL} ]; then
+
+# fi
