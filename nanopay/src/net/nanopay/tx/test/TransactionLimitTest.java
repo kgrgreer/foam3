@@ -5,7 +5,10 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.MDAO;
 import foam.dao.SequenceNumberDAO;
+import foam.nanos.ruler.Operations;
 import foam.nanos.ruler.RulerDAO;
+import foam.nanos.ruler.RulerProbe;
+import foam.nanos.ruler.TestedRule;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
@@ -14,6 +17,7 @@ import net.nanopay.bank.CABankAccount;
 import net.nanopay.tx.ruler.AccountTransactionLimitRule;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.ruler.TransactionLimitProbeInfo;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -23,7 +27,7 @@ public class TransactionLimitTest extends Test {
 
   DigitalAccount sender_, receiver_;
   CABankAccount senderBank_;
-  AccountTransactionLimitRule rule, rule2;
+  AccountTransactionLimitRule rule;
 
   public void runTest(X x) {
     createAccounts(x);
@@ -34,8 +38,45 @@ public class TransactionLimitTest extends Test {
     txnDAO = new RulerDAO(x, txnDAO, "transactionDAO");
     createRule(x);
     x = x.put("localTransactionDAO", txnDAO);
+    testTransactionLimitProbe(x);
     testRule(x);
     testUpdatedRule(x);
+  }
+
+  public void testTransactionLimitProbe(X x) {
+    DAO txDAO = (DAO) x.get("localTransactionDAO");
+    Transaction tx = new Transaction();
+    tx.setAmount(5000L);
+    tx.setSourceAccount(sender_.getId());
+    tx.setDestinationAccount(receiver_.getId());
+    RulerProbe probe = new RulerProbe();
+    probe.setObject(tx);
+    probe.setOperation(Operations.CREATE);
+    probe = (RulerProbe) txDAO.cmd_(x, probe);
+    TestedRule txRule = null;
+    for ( TestedRule testedRule : probe.getAppliedRules() ) {
+      if ( testedRule.getName() == "transactionLimits" ) {
+        txRule = testedRule;
+        break;
+      }
+    }
+    test(((TransactionLimitProbeInfo)txRule.getProbeInfo()).getRemainingLimit() == 10000, "Remaining limit is 10000");
+    test(txRule != null, "Probe for transaction limit was found");
+    test(txRule.getPassed(), "Transaction is to go through successfully");
+    System.out.println(txRule.getMessage());
+
+    tx.setAmount(20000L);
+    probe.clearAppliedRules();
+    probe = (RulerProbe) txDAO.cmd_(x, probe);
+    for ( TestedRule testedRule : probe.getAppliedRules() ) {
+      if ( testedRule.getName() == "transactionLimits" ) {
+        txRule = testedRule;
+        break;
+      }
+    }
+    test(((TransactionLimitProbeInfo)txRule.getProbeInfo()).getRemainingLimit() == 10000, "Remaining limit is 10000");
+    test(! txRule.getPassed(), "Transaction fails to go through because of the limit.");
+
   }
 
   public void testRule(X x) {
@@ -53,7 +94,7 @@ public class TransactionLimitTest extends Test {
     tx2.setDestinationAccount(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txDAO.put_(x, tx2),
-      "LIMIT",
+      "Your limit is exceeded",
       RuntimeException.class), "next transaction for 100L throws exception");
 
     Transaction tx3 = new Transaction();

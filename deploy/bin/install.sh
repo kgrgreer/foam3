@@ -41,16 +41,19 @@ NANOPAY_NEW_VERSION=$(echo ${NANOPAY_HOME} | awk -F- '{print $NF}')
 function installFiles {
     if [ -z $NANOPAY_HOME ]; then
         echo "ERROR :: NANOPAY_HOME is undefined"
+        quit
     fi
 
     # Move same/duplicate version installation.
     if [ -d $NANOPAY_HOME ]; then
-        if [ -d $NANOPAY_HOME.bak ]; then
-            echo "INFO :: ${NANOPAY_HOME}.bak found, deleting"
-            rm -rf $NANOPAY_HOME.bak
+        NANOPAY_BACKUP=${NANOPAY_HOME}.bak.tar.gz
+        if [ -f ${NANOPAY_BACKUP} ]; then
+            echo "INFO :: ${NANOPAY_BACKUP} found, deleting"
+            rm -f ${NANOPAY_BACKUP}
         fi
-        echo "INFO :: ${NANOPAY_HOME} found, moving"
-        mv $NANOPAY_HOME $NANOPAY_HOME.bak
+        echo "INFO :: ${NANOPAY_HOME} found, backing up to ${NANOPAY_BACKUP}"
+        tar -czf ${NANOPAY_BACKUP} --absolute-names ${NANOPAY_HOME}
+        rm -rf ${NANOPAY_HOME}
     fi
 
     echo "INFO :: Installing nanopay to ${NANOPAY_HOME}"
@@ -109,7 +112,7 @@ function installFiles {
 
 }
 
-function setupUserAndPermissions {
+function setupUser {
     echo "INFO :: Setting file permissions"
 
     id -u nanopay > /dev/null
@@ -126,8 +129,7 @@ function setupUserAndPermissions {
     if [ ! -f "$BASHRC" ]; then
         touch "$BASHRC"
     fi
-    if grep -Fxq "umask" "$BASHRC"
-    then
+    if grep -Fxq "umask" "$BASHRC"; then
         sed -i 's/umask.*/umask 027/' "$BASHRC"
     else
        echo "umask 027" >> "$BASHRC"
@@ -135,16 +137,6 @@ function setupUserAndPermissions {
 }
 
 function setupNanopaySymLink {
-    # if [ ! -z ${NANOPAY_CURRENT_VERSION} ]; then
-    #     if [ "${NANOPAY_CURRENT_VERSION}" = "${NANOPAY_NEW_VERSION}" ]; then
-    #         echo "INFO :: Found v${NANOPAY_CURRENT_VERSION}, leaving installed"
-    #         return 0
-    #     fi
-    #     echo "INFO :: Found v${NANOPAY_CURRENT_VERSION}, replacing with v${NANOPAY_NEW_VERSION}"
-    # else
-    #     echo "INFO :: No version found, installing v${NANOPAY_NEW_VERSION}"
-    # fi
-
     if [ -h ${NANOPAY_ROOT} ]; then
         unlink ${NANOPAY_ROOT}
     fi
@@ -171,14 +163,14 @@ function setupNanopaySymLink {
 }
 
 function setupSystemd {
-    systemctl list-units | grep nanopay.service > /dev/null
+    systemctl list-units | grep nanopay.service &> /dev/null
     if [ $? -eq 0 ]; then
         sudo systemctl stop nanopay
         sudo systemctl disable nanopay
     fi
 
     if [ ! -h ${NANOPAY_SERVICE_FILE} ]; then
-        sudo ln -s ${NANOPAY_HOME}/etc/nanopay.service ${NANOPAY_SERVICE_FILE}
+        sudo ln -s ${NANOPAY_ROOT}/etc/nanopay.service ${NANOPAY_SERVICE_FILE}
     fi
 
     sudo systemctl daemon-reload
@@ -190,7 +182,7 @@ echo "INFO :: Installing nanopay on remote server"
 
 if [ ! -f ${NANOPAY_TARBALL} ]; then
     echo "ERROR :: Tarball ${NANOPAY_TARBALL} doesn't exist on remote server"
-    quit 1
+    quit
 fi
 
 if [ -d ${NANOPAY_REMOTE_OUTPUT} ]; then
@@ -205,10 +197,10 @@ tar -xzf ${NANOPAY_TARBALL} -C ${NANOPAY_REMOTE_OUTPUT}
 
 if [ ! $? -eq 0 ]; then
     echo "ERROR :: Extracting tarball failed"
-    quit 1
+    quit
 fi
 
-setupUserAndPermissions
+setupUser
 
 installFiles
 

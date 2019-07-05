@@ -20,9 +20,17 @@ foam.CLASS({
     }
 
     ^pie-chart {
-      padding: 34px; 
+      padding: 34px;
     }
   `,
+
+
+  properties: [
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'data',
+    }
+  ],
 
   messages: [
     {
@@ -38,13 +46,34 @@ foam.CLASS({
         .addClass(this.myClass())
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header')).end()
           .start(this.Cols).style({ 'align-items': 'center', 'justify-content': 'center' })
-            .start(this.PieDAOChartView, 
+            .start(this.PieDAOChartView,
               {
                 data: this.data,
                 keyExpr: net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure.DENOMINATION,
                 valueExpr: net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure.TOTAL,
                 height: 300,
-                width: 300
+                width: 300,
+                config: {
+                  type: 'pie',
+                  options: {
+                    tooltips: {
+                      displayColors: false,
+                      callbacks: {
+                        label: function(tooltipItem, data) {
+                          var dataset = data.datasets[tooltipItem.datasetIndex];
+                          var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+                          var total = meta.total;
+                          var currentValue = dataset.data[tooltipItem.index];
+                          var percentage = parseFloat((currentValue/total*100).toFixed(1));
+                          return percentage + '%';
+                        },
+                        title: function(tooltipItem, data) {
+                          return data.labels[tooltipItem[0].index];
+                        }
+                      }
+                    }
+                  }
+                }
               }
             ).addClass(this.myClass('pie-chart')).end()
           .end();
