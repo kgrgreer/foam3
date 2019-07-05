@@ -297,6 +297,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
+  { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
   { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/InvoicePaymentRule' },
