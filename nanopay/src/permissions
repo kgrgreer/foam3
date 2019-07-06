@@ -293,7 +293,6 @@ p({"class":"foam.nanos.auth.Permission","id":"service.publicBusinessDAO","descri
 p({"class":"foam.nanos.auth.Permission","id":"service.publicKeyDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.quickbooksService","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.quickbooksService.","description":""})
-p({"class":"foam.nanos.auth.Permission","id":"service.read.*"})
 p({"class":"foam.nanos.auth.Permission","id":"service.read.transactionDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.recurringInvoiceDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.reportDAO","description":""})
