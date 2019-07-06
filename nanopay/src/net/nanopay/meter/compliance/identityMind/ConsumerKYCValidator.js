@@ -29,6 +29,8 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
+            // NOTE: Casting can fail since obj can also be a BeneficialOwner object
+            // as it is also used by beneficial owner KYC rule (id:1431).
             User user = (User) obj;
             IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
             Map <String, Object> memoMap = fetchMemos(x, true, user.getId(), "Dow Jones Person");
