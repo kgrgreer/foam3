@@ -5,6 +5,7 @@ import foam.core.Detachable;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
+import foam.nanos.auth.User;
 import foam.nanos.http.HttpParameters;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
@@ -26,6 +27,7 @@ public class IdentityMindWebAgent implements WebAgent {
     DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
     DAO identityMindResponseDAO = (DAO) x.get("identityMindResponseDAO");
     DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+    DAO userDAO = (DAO) x.get("localUserDAO");
     Logger logger = (Logger) x.get("logger");
     HttpParameters p = x.get(HttpParameters.class);
     String data = p.getParameter("data");
@@ -47,10 +49,15 @@ public class IdentityMindWebAgent implements WebAgent {
           idmResponse.copyFrom(webhookResponse);
           identityMindResponseDAO.put(idmResponse);
 
+          User approver = (User) userDAO.find(
+            EQ(User.EMAIL, "identitymind@nanopay.net")
+          );
+
           ComplianceApprovalRequest approvalRequest = (ComplianceApprovalRequest) approvalRequestDAO.find(
             AND(
               EQ(ComplianceApprovalRequest.CAUSE_ID, idmResponse.getId()),
-              EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, "identityMindResponseDAO")
+              EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, "identityMindResponseDAO"),
+              EQ(ComplianceApprovalRequest.APPROVER, approver.getId())
             )
           );
 
