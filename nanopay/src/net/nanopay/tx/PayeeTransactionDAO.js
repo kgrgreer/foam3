@@ -10,49 +10,33 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction'
-  ],
-
-  imports: [
-    'bareUserDAO'
-  ],
-
-  requires: [
-    'foam.nanos.auth.User'
-  ],
-
-  implements: [
-    'foam.mlang.Expressions'
   ],
 
   methods: [
     {
       name: 'put_',
       javaCode: `
-      Logger logger = (Logger) x.get("logger");
         if ( ! ( obj instanceof TransactionQuote ) ) {
           return getDelegate().put_(x, obj);
         }
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
-        logger.info("txn.findSourceAccount(x) " + txn.findSourceAccount(x));
-        Account account = (Account) txn.findDestinationAccount(x);
+        Account account = txn.findDestinationAccount(x);
         if ( account == null ) {
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
           if ( user == null ) {
             throw new RuntimeException("Payee not found");
           }
-          DigitalAccount digitalAccount = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
-          txn = (Transaction) txn.fclone();
-          txn.setDestinationAccount(digitalAccount.getId());
-          quote.setRequestTransaction(txn);
+          account = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
+          txn.setDestinationAccount(account.getId());
+          quote.setDestinationAccount(account);
           return getDelegate().put_(x, quote);
         }
         txn.setDestinationCurrency(account.getDenomination());
-        quote.setRequestTransaction(txn);
+        quote.setDestinationAccount(account);
         return getDelegate().put_(x, quote);
       `
     },

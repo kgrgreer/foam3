@@ -42,6 +42,7 @@ public class TransactionBenchmark
     logger_ = (Logger) x.get("logger");
     userDAO_ = (DAO) x.get("localUserDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
+    transactionDAO_.removeAll();
     transactionQuotePlanDAO_ = (DAO) x.get("localTransactionQuotePlanDAO");
     accountDAO_ = (DAO)x.get("localAccountDAO");
 
@@ -72,8 +73,8 @@ public class TransactionBenchmark
         user = new User();
         user.setId(id);
         String s = String.valueOf(id);
-        user.setFirstName(s);
-        user.setLastName(s);
+        user.setFirstName("k");
+        user.setLastName("s");
         user.setEmail(s+"@nanopay.net");
         user.setEmailVerified(true);
         user.setGroup("nanopay");
@@ -123,7 +124,7 @@ public class TransactionBenchmark
 
     int fi = (int) (Math.random() * users.size());
     int ti = (int) (Math.random() * users.size());
-    int amount = (int) ((Math.random() + 0.1) * 10000);
+    int amount = (int) ((Math.random() + 0.1) * 100);
 
     long payeeId = ((User) users.get(ti)).getId();
     long payerId = ((User) users.get(fi)).getId();
@@ -134,7 +135,12 @@ public class TransactionBenchmark
       transaction.setPayerId(payerId);
       transaction.setAmount(amount);
       TransactionQuote quote = (TransactionQuote) transactionQuotePlanDAO_.put(new TransactionQuote.Builder(x).setRequestTransaction(transaction).build());
-      transactionDAO_.put(quote.getPlan());
+      try {
+        transactionDAO_.put(quote.getPlan());
+      }
+      catch (Exception e) {
+        System.out.println(e.getMessage());
+      }
     }
   }
 }
