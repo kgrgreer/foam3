@@ -12,26 +12,14 @@ foam.CLASS({
   documentation: ``,
 
   javaImports: [
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
+    'foam.dao.DAO',
     'foam.nanos.notification.Notification',
-
-    'java.util.ArrayList',
-    'java.util.List',
-
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.exception.UnsupportedTransactionException',
-    'net.nanopay.tx.*',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.fx.CurrencyFXService',
-    'net.nanopay.model.Broker',
-    'foam.dao.DAO'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   constants: [
@@ -48,13 +36,10 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      javaCode: `
-      TransactionQuote quote = (TransactionQuote) obj;
-
+      javaCode: `TransactionQuote quote = (TransactionQuote) obj;
       if ( quote.getPlans().length > 0 ) return super.put_(x, quote);
       Transaction request = quote.getRequestTransaction();
       Transaction txn;
-
       // create summary transaction when the request transaction is the base Transaction,
       // otherwise conserve the type of the transaction.
       if ( request.getType().equals("Transaction") ) {
@@ -63,21 +48,16 @@ foam.CLASS({
       } else {
         txn = (Transaction) request.fclone();
       }
-
       txn.setStatus(TransactionStatus.PENDING);
       txn.setInitialStatus(TransactionStatus.COMPLETED);
-
       Transaction cashinPlan = null;
-
-      Account sourceAccount = request.findSourceAccount(x);
-      Account destinationAccount = request.findDestinationAccount(x);
-
+      Account sourceAccount = quote.getSourceAccount();
+      Account destinationAccount = quote.getDestinationAccount();
       if ( sourceAccount instanceof BankAccount &&
         destinationAccount instanceof BankAccount &&
         ! sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
         DigitalAccount sourceDigitalaccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(getX()), sourceAccount.getDenomination());
         DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
-
         // Split 1: XBank -> XDigital.
         TransactionQuote q1 = new TransactionQuote.Builder(x).build();
         q1.copyFrom(quote);
@@ -93,17 +73,14 @@ foam.CLASS({
           txn.addNext(cashinPlan);
           txn.addLineItems(cashinPlan.getLineItems(), cashinPlan.getReverseLineItems());
         }
-
         // Split 2: XDigital -> XDIgital
         Long destinationCurrencyAmount = 0l;
-
         // Check we can handle currency pair
         if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
           destinationDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)) {
           // XDigital -> XDIgital.
           TransactionQuote q2 = new TransactionQuote.Builder(x).build();
           q2.copyFrom(quote);
-
           Transaction t2 = new Transaction.Builder(x).build();
           t2.copyFrom(request);
           t2.setSourceAccount(sourceDigitalaccount.getId());
@@ -122,7 +99,6 @@ foam.CLASS({
           DigitalAccount destinationUSDDigitalaccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), "USD");
           if ( null != CurrencyFXService.getFXServiceByNSpecId(x, sourceDigitalaccount.getDenomination(),
           destinationUSDDigitalaccount.getDenomination(), NANOPAY_FX_SERVICE_NSPEC_ID)){
-
             TransactionQuote q3 = new TransactionQuote.Builder(x).build();
             q3.copyFrom(quote);
             Transaction t3 = new Transaction.Builder(x).build();
@@ -135,7 +111,6 @@ foam.CLASS({
               // USDigital -> INDIgital.
               TransactionQuote q4 = new TransactionQuote.Builder(x).build();
               q4.copyFrom(quote);
-
               Transaction t4 = new Transaction.Builder(x).build();
               t4.copyFrom(request);
               t4.setAmount(c3.getPlan().getAmount());
@@ -159,7 +134,6 @@ foam.CLASS({
             return super.put_(x, quote);
           }
         }
-
         // Split 3: XDigital -> XBank.
         TransactionQuote q5 = new TransactionQuote.Builder(x).build();
         q5.copyFrom(quote);
@@ -180,13 +154,10 @@ foam.CLASS({
         txn.setIsQuoted(true);
         quote.addPlan(txn);
       }
-
-
        //----- Bank -> Bank  TRANSACTION SPLIT -------
       if ( sourceAccount instanceof BankAccount &&
         destinationAccount instanceof BankAccount &&
         sourceAccount.getDenomination().equalsIgnoreCase(destinationAccount.getDenomination())) {
-
         DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(getX(), sourceAccount.findOwner(getX()), sourceAccount.getDenomination());
         DigitalAccount destinationDigitalAccount = DigitalAccount.findDefault(getX(), destinationAccount.findOwner(getX()), destinationAccount.getDenomination());
         // Split 1: ABank -> ADigital
@@ -198,9 +169,7 @@ foam.CLASS({
         // Get Payer Digital Account to fufil CASH-IN
         t1.setDestinationAccount(sourceDigitalAccount.getId());
         q1.setRequestTransaction(t1);
-
         TransactionQuote c1 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q1);
-
         // Split 2: ADigital -> BDigital
         TransactionQuote q2 = new TransactionQuote.Builder(x).build();
         Transaction t2 = new Transaction.Builder(x).build();
@@ -210,7 +179,6 @@ foam.CLASS({
         t2.setDestinationAccount(destinationDigitalAccount.getId());
         q2.setRequestTransaction(t2);
         TransactionQuote c2 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q2);
-
         // Split 3: BDigital -> BBankAccount
         TransactionQuote q3 = new TransactionQuote.Builder(x).build();
         q2.copyFrom(quote);
@@ -220,32 +188,25 @@ foam.CLASS({
         t3.setSourceAccount(destinationDigitalAccount.getId());
         t3.setDestinationAccount(destinationAccount.getId());
         q3.setRequestTransaction(t3);
-
         TransactionQuote c3 = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).put_(x, q3);
 
         // Put chain transaction together. (add cashIn to summary)
        // if ( null != c1.getPlan() && null != c3.getPlan() ||  null != c2.getPlan() )
           //return super.put_(x, quote);
-
         Transaction cashInPlan = c1.getPlan();
         Transaction digitalPlan = c2.getPlan();
         Transaction cashOutPlan = c3.getPlan();
-
         txn.addNext(cashInPlan);
         txn.addLineItems(cashInPlan.getLineItems(), cashInPlan.getReverseLineItems());
-
         digitalPlan.addNext(cashOutPlan);
-
         txn.addNext(digitalPlan);
         txn.addLineItems(digitalPlan.getLineItems(), digitalPlan.getReverseLineItems());
         txn.addLineItems(cashOutPlan.getLineItems(), cashOutPlan.getReverseLineItems());
-
         txn.setStatus(TransactionStatus.COMPLETED);
         txn.setIsQuoted(true);
         quote.addPlan(txn);
       }
-      return super.put_(x, quote);
-    `
+      return super.put_(x, quote);`
     },
     {
       name: 'sendNOC',
@@ -270,7 +231,6 @@ foam.CLASS({
         .setBody(message)
         .build();
     ((DAO) x.get("notificationDAO")).put(notification);
-    ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
 `
     },
     {

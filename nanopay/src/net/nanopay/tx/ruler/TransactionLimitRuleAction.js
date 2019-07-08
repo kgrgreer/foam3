@@ -11,6 +11,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.nanos.ruler.TestedRule',
     'java.util.HashMap',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -19,6 +20,9 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
+      if ( agency instanceof TestedRule) {
+        ((TestedRule)agency).setName("transactionLimits");
+      }
       Transaction txn = (Transaction) obj;
       DAO transactionDAO = (DAO) x.get("localTransactionDAO");
       Transaction oldTxn = (Transaction) transactionDAO.find_(x, obj);
@@ -28,10 +32,16 @@ foam.CLASS({
       Object id = rule_.getObjectToMap(txn, x);
 
       TransactionLimitState limitState = getLimitState(id);
-      if ( ! limitState.check(rule_, txn.getAmount()) ) {
-        throw new RuntimeException("LIMIT");
+      if ( agency instanceof TestedRule ) {
+        TransactionLimitProbeInfo info = new TransactionLimitProbeInfo();
+        info.setRemainingLimit(rule_.getLimit() - limitState.getLastSpentAmount());
+        info.setMessage("Your remaining limit is " + (rule_.getLimit() - limitState.getLastSpentAmount()) );
+        ((TestedRule)agency).setProbeInfo(info);
       }
-      agency.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "ppppp");
+      if ( ! limitState.check(rule_, txn.getAmount()) ) {
+        throw new RuntimeException("Your limit is exceeded");
+      }
+      agency.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
       `
     }
   ],
