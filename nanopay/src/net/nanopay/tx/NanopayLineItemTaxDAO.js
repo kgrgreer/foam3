@@ -13,7 +13,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
     'foam.core.FObject',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
@@ -50,7 +49,6 @@ foam.CLASS({
       ],
       type: 'foam.core.FObject',
       javaCode: `
-      Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
 
       for ( int i = 0; i < quote.getPlans().length; i++ ) {
@@ -77,7 +75,6 @@ foam.CLASS({
      ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-      Logger logger = (Logger) x.get("logger");
       if ( transaction == null ) {
         return transaction;
       }

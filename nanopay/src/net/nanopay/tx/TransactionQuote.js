@@ -26,6 +26,20 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'plan'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.account.Account',
+      name: 'sourceAccount',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning in order to avoid overuse of transaction.findSourceAccount'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.account.Account',
+      name: 'destinationAccount',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning in order to avoid overuse of transaction.findDestinationAccount'
     }
   ],
 
