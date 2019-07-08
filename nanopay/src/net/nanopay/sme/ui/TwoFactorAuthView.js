@@ -151,6 +151,8 @@ foam.CLASS({
                 .then(function(otpKey) {
                   self.twoFactorKey = otpKey.key;
                   self.twoFactorQrCode = otpKey.qrCode;
+                }).catch(function(err) {
+                  self.ctrl.notify(err.message, 'error');
                 });
 
               return this.E().style({ 'display': 'flex' })
