@@ -55,7 +55,7 @@ function backupFiles {
     if [ -d $NANOPAY_HOME ]; then
         NANOPAY_BACKUP=${BACKUP_HOME}/$(basename ${NANOPAY_HOME})-$(date +%s)-backup.tar.gz
         echo "INFO :: ${NANOPAY_HOME} found, backing up to ${NANOPAY_BACKUP}"
-        tar -czf ${NANOPAY_BACKUP} --absolute-names ${NANOPAY_HOME}
+        tar -czf ${NANOPAY_BACKUP} -C ${NANOPAY_HOME} .
         if [ ! $? -eq 0 ]; then
             echo "ERROR :: Couldn't backup ${NANOPAY_HOME} to ${NANOPAY_BACKUP}"
             quit
