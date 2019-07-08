@@ -951,7 +951,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
   { name: 'net/nanopay/meter/compliance/ruler/CreateRemoveComplianceItemRule' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveComplianceApprovalRequest' },
-  { name: 'net/nanopay/meter/compliance/ruler/ComplianceLoginControlRule' },
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
