@@ -100,6 +100,9 @@ var accountNamesToLiquidity = {
 const accountNamesToId = {};
 const accountNamesToAccount = {};
 
+var cashInCounter = 0;
+var cashOutCounter = 0;
+
 // assign to only CAD accounts and push/pull from CAD accounts for now
 const liquiditySettings = [
   {
@@ -196,8 +199,6 @@ function createRebalanceLiquiditySetting(X, s) {
       resetBalance: s.highResetBalance
     });
   }
-
-  debugger;
 
   var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
 
@@ -418,20 +419,54 @@ function cashIn(X, bank, dest, amount) {
     lineItems: [
       net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
     ],
-    balances: [
-      net.nanopay.account.Balance.create({
-        account: 1,
-        balance: amount * -1
-      }),
-      net.nanopay.account.Balance.create({
-        account: tx.destinationAccount,
-        balance: amount
+    lastModified: X.currentDate
+  }, X);
+  
+
+  X.transactionDAO.put(tx);
+
+  X.balances[dest.id] += amount;
+}
+
+function cashOut(X, source, bank, amount) {
+  var tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+    id: foam.next$UID().toString(),
+    name: `Cash Out #${++cashOutCounter}`,
+    sourceAccount: source.id,
+    destinationAccount: bank.id,
+    amount: amount,
+    createdBy: X.userId,
+    payerId: X.userId,
+    payeeId: X.userId,
+    completionDate: X.currentDate,
+    created: X.currentDate,
+    lastModified: X.currentDate,
+    sourceCurrency: source.denomination,
+    destinationCurrency: bank.denomination,
+    status: net.nanopay.tx.model.TransactionStatus.PENDING,
+    initialStatus: net.nanopay.tx.model.TransactionStatus.PENDING,
+    isQuoted: false,
+    lineItems: [
+      net.nanopay.tx.ETALineItem.create({
+        eta: 172800000
       })
+    ]
+  }, X);
+
+  X.transactionDAO.put(tx);
+
+  tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+    id: tx.id,
+    status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+    lineItems: [
+      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
     ],
     lastModified: X.currentDate
   }, X);
 
   X.transactionDAO.put(tx);
+
+  X.balances[source.id] -= amount;
 }
 
 function cashOut(X, source, bank, amount) {
@@ -507,16 +542,6 @@ function transfer(X, source, dest, amount) {
     lastModifiedBy: X.userId,
     created: X.currentDate,
     createdBy: X.userId,
-    balances: [
-      net.nanopay.account.Balance.create({
-        account: source.id,
-        balance: X.balances[source.id]
-      }),
-      net.nanopay.account.Balance.create({
-        account: dest.id,
-        balance: X.balances[dest.id]
-      })
-    ],
   }, X);
 
   X.transactionDAO.put(tx);
