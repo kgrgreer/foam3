@@ -3,6 +3,7 @@ package net.nanopay.security;
 import foam.core.ClassInfo;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.dao.MDAO;
 import foam.dao.MapDAO;
 import foam.dao.java.JDAO;
 import foam.nanos.fs.Storage;
@@ -21,19 +22,19 @@ public class HashingJDAO
   }
 
   public HashingJDAO(X x, ClassInfo classInfo, String filename) {
-    this(x, "SHA-256", false, false, new MapDAO(classInfo), filename);
+    this(x, "SHA-256", false, false, new MDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, String algorithm, ClassInfo classInfo, String filename) {
-    this(x, algorithm, false, false, new MapDAO(classInfo), filename);
+    this(x, algorithm, false, false, new MDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, boolean rollDigests, ClassInfo classInfo, String filename) {
-    this(x, "SHA-256", false, rollDigests, new MapDAO(classInfo), filename);
+    this(x, "SHA-256", false, rollDigests, new MDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, ClassInfo classInfo, String filename) {
-    this(x, algorithm, digestRequired, rollDigests, new MapDAO(classInfo), filename);
+    this(x, algorithm, digestRequired, rollDigests, new MDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, DAO delegate, String filename) {

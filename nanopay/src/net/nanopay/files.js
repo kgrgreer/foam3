@@ -9,14 +9,19 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
+  { name: 'net/nanopay/payment/Payroll' },
+  { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/account/Account' },
+  { name: 'net/nanopay/account/AccountDAOCreateView' },
+  { name: 'net/nanopay/account/AccountDAOSummaryView' },
   { name: 'net/nanopay/account/Debtable' },
   { name: 'net/nanopay/account/Accountable' },
   { name: 'net/nanopay/account/DuplicateDigitalAccountRule'},
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
+  { name: 'net/nanopay/account/ui/AccountTreeView' },
   { name: 'net/nanopay/account/ui/AccountDetailView', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/accountDetails/AccountDetailsModal', flags: ['web'] },
   { name: 'net/nanopay/account/ui/addAccountModal/accountDetails/AccountDetailsRequirements', flags: ['web'] },
@@ -212,14 +217,22 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
   // AFEX
+  { name: 'net/nanopay/fx/FXSummaryTransaction' },
+  { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: "net/nanopay/fx/afex/AFEX" },
   { name: "net/nanopay/fx/afex/AFEXCredentials"},
   { name: "net/nanopay/fx/afex/Token"},
-  { name: "net/nanopay/fx/afex/AddPayeeRequest"},
-  { name: "net/nanopay/fx/afex/AddPayeeResponse"},
-  { name: "net/nanopay/fx/afex/UpdatePayeeRequest"},
-  { name: "net/nanopay/fx/afex/UpdatePayeeResponse"},
-  { name: "net/nanopay/fx/afex/GetPayeeInfoResponse"},
+  { name: "net/nanopay/fx/afex/OnboardCorporateClientRequest"},
+  { name: "net/nanopay/fx/afex/OnboardCorporateClientResponse"},
+  { name: "net/nanopay/fx/afex/CreateBeneficiaryRequest"},
+  { name: "net/nanopay/fx/afex/CreateBeneficiaryResponse"},
+  { name: "net/nanopay/fx/afex/UpdateBeneficiaryRequest"},
+  { name: "net/nanopay/fx/afex/UpdateBeneficiaryResponse"},
+  { name: "net/nanopay/fx/afex/DisableBeneficiaryRequest"},
+  { name: "net/nanopay/fx/afex/FindBeneficiaryRequest"},
+  { name: "net/nanopay/fx/afex/FindBeneficiaryResponse"},
+  { name: "net/nanopay/fx/afex/FindBankByNationalIDRequest"},
+  { name: "net/nanopay/fx/afex/FindBankByNationalIDResponse"},
   { name: "net/nanopay/fx/afex/Quote"},
   { name: "net/nanopay/fx/afex/GetQuoteRequest"},
   { name: "net/nanopay/fx/afex/CreateTradeRequest"},
@@ -275,6 +288,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionStatus' },
   { name: 'net/nanopay/tx/model/TransactionEntity' },
   { name: 'net/nanopay/tx/model/Transaction' },
+  { name: 'net/nanopay/tx/model/TransactionDAOCreateView' },
   { name: 'net/nanopay/tx/ComplianceTransaction' },
   { name: 'net/nanopay/tx/GreenfenceTransaction' },
   { name: 'net/nanopay/tx/InvoiceTransaction' },
@@ -283,8 +297,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
+  { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
   { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/InvoicePaymentRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
@@ -307,6 +323,10 @@ FOAM_FILES([
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
+
+  // exposure views
+  { name: 'net/nanopay/tx/ui/exposure/ExposureOverview', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/exposure/ValueCard', flags: ['web'] },
 
   { name: 'net/nanopay/model/Broker' },
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
@@ -700,6 +720,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
    { name: 'net/nanopay/liquidity/LiquidityAuth' },
+   { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
 
@@ -999,7 +1020,14 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/dowJones/PersonNameSearchRequest' },
 
   // liquidity
-  { name: 'net/nanopay/liquidity/ui/Dashboard' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
+  
+  { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposureDAO' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/recentTransactions/DashboardRecentTransactions' },
   { name: 'net/nanopay/liquidity/ui/account/CreateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/UpdateAccount' },
   { name: 'net/nanopay/liquidity/ui/account/Overview' },
@@ -1007,12 +1035,18 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
 
   // identitymind
+  { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },
+  { name: 'net/nanopay/meter/compliance/identityMind/AutomatedReviewEngineResult' },
   { name: 'net/nanopay/meter/compliance/identityMind/ComplianceTransactionValidator' },
+  { name: 'net/nanopay/meter/compliance/identityMind/ConditionResult' },
   { name: 'net/nanopay/meter/compliance/identityMind/ConsumerKYCValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/EntityLoginValidator' },
+  { name: 'net/nanopay/meter/compliance/identityMind/ExternalizedEvaluationResult' },
+  { name: 'net/nanopay/meter/compliance/identityMind/ExternalizedRule' },
   { name: 'net/nanopay/meter/compliance/identityMind/MerchantKYCValidator' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindRequest' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindResponse' },
+  { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindResponseEDNA' },
   { name: 'net/nanopay/meter/compliance/identityMind/IdentityMindService' },
 
   // meter tests
@@ -1033,6 +1067,7 @@ FOAM_FILES([
 
   // alarming & monitoring
   { name: 'net/nanopay/alarming/Alarm' },
+  { name: 'net/nanopay/alarming/Alarming' },
   { name: 'net/nanopay/alarming/AlarmConfig' },
   { name: 'net/nanopay/alarming/AlarmReason' },
   { name: 'net/nanopay/alarming/MonitoringReport' },

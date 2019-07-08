@@ -19,6 +19,11 @@ foam.CLASS({
       transient: true
     },
     {
+      class: 'String',
+      name: 'daoKey',
+      transient: true
+    },
+    {
       class: 'Object',
       name: 'entityId',
       transient: true
@@ -263,6 +268,21 @@ foam.CLASS({
       class: 'Boolean',
       name: 'memo1',
       documentation: 'Memo1 field - Used as domestic transaction flag.'
+    },
+    {
+      class: 'Int',
+      name: 'memo3',
+      documentation: 'Corresponding Dow Jones matches.'
+    },
+    {
+      class: 'Boolean',
+      name: 'memo4',
+      documentation: 'Corresponding SecurefactSIDni results.'
+    },
+    {
+      class: 'Boolean',
+      name: 'memo5',
+      documentation: 'Corresponding SecurefactLEV results.'
     }
   ]
 });

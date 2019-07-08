@@ -94,38 +94,42 @@ function setup_jce {
 }
 
 function deploy_journals {
+    echo "INFO :: Deploying Journals"
+    
     # prepare journals
     cd "$PROJECT_HOME"
 
-    if [ -f "$JOURNAL_HOME" ] && [ ! -d "$JOURNAL_HOME" ]; then
-        # remove journal file that find.sh was previously creating
-        rm "$JOURNAL_HOME"
+    JOURNALS=tools/journals
+    if [[ ! -f  $JOURNALS ]]; then
+        echo "ERROR :: Missing ${JOURNALS} file."
+        quit 1
     fi
 
-    mkdir -p "$JOURNAL_OUT"
-    JOURNALS="$JOURNAL_OUT/journals"
-    touch "$JOURNALS"
-    if [ "$GRADLE_BUILD" -eq 0 ]; then
-        ./find.sh "$PROJECT_HOME" "$JOURNAL_OUT" "$JOURNAL_CONFIG"
+    if [ ! -d target ]; then
+        mkdir -p target
+    fi
+
+    if [ "$GRADLE_BUILD" -eq 0 ] || [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        gradle findSH -PjournalConfig=${JOURNAL_CONFIG} -PprojectMode=${MODE} --rerun-tasks --daemon
-    fi
-
-    if [ "$LIQUID_DEMO" -eq 1 ]; then
-        node tools/liquid_journal_script.js
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} < $JOURNALS > target/journal_files
+        gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
     fi
 
     if [[ $? -eq 1 ]]; then
         quit 1
     fi
 
-    if [[ ! -f $JOURNALS ]]; then
-        echo "ERROR :: Missing $JOURNALS file."
-        quit 1
+    if [ "$LIQUID_DEMO" -eq 1 ]; then
+        node tools/liquid_journal_script.js
+
+        if [[ $? -eq 1 ]]; then
+            quit 1
+        fi
     fi
 
     if [ "$RUN_JAR" -eq 0 ]; then
-        while read file; do
+        while read -r file; do
             journal_file="$file".0
             if [ -f "$JOURNAL_OUT/$journal_file" ]; then
                 cp "$JOURNAL_OUT/$journal_file" "$JOURNAL_HOME/$journal_file"
@@ -164,35 +168,29 @@ function clean {
                 rm -rf target
                 mkdir target
             fi
+            if [ -d "generatedJava/" ]; then
+                rm -rf generatedJava
+                mkdir generatedJava
+            fi
             mvn clean
         else
-            gradle clean
+            gradle clean $GRADLE_FLAGS
         fi
     fi
 }
 
 function build_jar {
     if [ "$GRADLE_BUILD" -eq 1 ]; then
-        # GRADLE_ARGS=""
-        # if [ ! -z "${VERSION}" ]; then
-        #     GRADLE_ARGS="$GRADLE_ARGS -Pversion=${VERSION}"
-        # fi
-
         if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
-            #gradle --daemon "${GRADLE_ARGS}" build
-            if [ ! -z "${VERSION}" ]; then
-                gradle --daemon -Pversion=${VERSION} build
-            else
-                gradle --daemon build
-            fi
+            gradle --daemon buildJar $GRADLE_FLAGS
         else
-           gradle --daemon build -x jar
+            gradle --daemon build $GRADLE_FLAGS
         fi
     else
         # maven
         if [ "$COMPILE_ONLY" -eq 0 ]; then
             echo "INFO :: Building nanos..."
-            ./gen.sh
+            ./gen.sh tools/classes.js generatedJava
 
             echo "INFO :: Packaging js..."
             ./tools/js_build/build.js
@@ -209,13 +207,12 @@ function build_jar {
         cp -r deploy/bin/* "${NANOPAY_HOME}/bin/"
         cp -r deploy/etc/* "${NANOPAY_HOME}/etc/"
         cp -r target/lib/* "${NANOPAY_HOME}/lib/"
-
-        export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
+        # export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
     fi
 }
 
 function package_tar {
-    gradle --daemon tarz
+    gradle --daemon tarz $GRADLE_FLAGS
 }
 
 function delete_runtime_journals {
@@ -292,8 +289,11 @@ function status_nanos {
 
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
-        "${NANOPAY_HOME}/bin/run.sh" "-Z${DAEMONIZE}" "-D${DEBUG}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
-#        "${NANOPAY_HOME}/bin/run.sh" "-D${DEBUG}" "-H${HOST_NAME}" "-M${MODE}" "-N${NANOPAY_HOME}" "-W${WEB_PORT}"
+        if [ $GRADLE_BUILD -eq 1 ]; then
+            ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT} -Z$(gradle -q --daemon getVersion)
+        else
+            ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT}
+        fi
     else
         cd "$PROJECT_HOME"
 
@@ -334,7 +334,6 @@ function start_nanos {
         elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
         else
-            echo JAVA_OPTS="$JAVA_OPTS"
             nohup java -cp "$CLASSPATH" foam.nanos.boot.Boot &> /dev/null &
             echo $! > "$NANOS_PIDFILE"
         fi
@@ -354,7 +353,6 @@ function beginswith {
 }
 
 function setenv {
-
     if [ -z "$NANOPAY_HOME" ]; then
         NANOPAY_ROOT="/opt"
         if [ "$TEST" -eq 1 ]; then
@@ -403,6 +401,9 @@ function setenv {
     fi
     if [ ! -d "${NANOPAY_HOME}/etc" ]; then
         mkdir -p "${NANOPAY_HOME}/etc"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/keys" ]; then
+        mkdir -p "${NANOPAY_HOME}/keys"
     fi
     if [ ! -d "${LOG_HOME}" ]; then
         mkdir -p "${LOG_HOME}"
@@ -520,7 +521,7 @@ function usage {
 
 ############################
 
-JOURNAL_CONFIG=
+JOURNAL_CONFIG=default
 INSTANCE=
 HOST_NAME=`hostname -s`
 GRADLE_BUILD=0
@@ -549,12 +550,15 @@ DELETE_RUNTIME_LOGS=0
 COMPILE_ONLY=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
+GRADLE_FLAGS=
 LIQUID_DEMO=0
 
 while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) CLEAN_BUILD=1 ;;
+        c) CLEAN_BUILD=1 
+           GRADLE_FLAGS="--rerun-tasks"
+           ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
@@ -609,6 +613,10 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
     esac
 done
 
+if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
+    echo "WARNING :: ${JOURNAL_CONFIG} journal config unsupported for jar deployment";
+fi
+
 setenv
 
 if [[ $INSTALL -eq 1 ]]; then
@@ -641,10 +649,7 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
-if [ "$RESTART_ONLY" -eq 0 ] ||
-       [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ]; then
-    deploy_journals
-fi
+deploy_journals
 
 if [ "${RESTART_ONLY}" -eq 0 ]; then
     build_jar

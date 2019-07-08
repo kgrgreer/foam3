@@ -1,54 +1,54 @@
 foam.CLASS({
   package: "net.nanopay.fx.afex",
-  name: "UpdatePayeeRequest",
+  name: "FindBankByNationalIDResponse",
   properties: [
     {
       class: 'String',
-      name: "BankAccountNumber"
+      name: "NationalIdentifier"
     },
     {
       class: 'String',
-      name: "BankCountryCode"
+      name: "NationalIdType"
     },
     {
       class: 'String',
-      name: "BankName"
+      name: "InstitutionName"
     },
     {
       class: 'String',
-      name: "BankRoutingCode"
+      name: "BranchInformation"
     },
     {
       class: 'String',
-      name: "BeneficiaryAddressLine1"
+      name: "StreetAddress1"
     },
     {
       class: 'String',
-      name: "BeneficiaryCity"
+      name: "StreetAddress2"
     },
     {
       class: 'String',
-      name: "BeneficiaryCountryCode"
+      name: "StreetAddress3"
     },
     {
       class: 'String',
-      name: "BeneficiaryName"
+      name: "StreetAddress4"
     },
     {
       class: 'String',
-      name: "BeneficiaryPostalCode"
+      name: "City"
     },
     {
       class: 'String',
-      name: "BeneficiaryRegion"
+      name: "ZipCode"
     },
     {
       class: 'String',
-      name: "Currency"
+      name: "CountryName"
     },
     {
       class: 'String',
-      name: "VendorId"
+      name: "IsoCountryCode"
     }
   ]
 });

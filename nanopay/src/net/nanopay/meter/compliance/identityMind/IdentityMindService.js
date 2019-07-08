@@ -6,7 +6,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
-    'foam.lib.json.OutputterMode',
+    'foam.lib.NetworkPropertyPredicate',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -65,6 +65,10 @@ foam.CLASS({
         {
           name: 'stage',
           type: 'Integer'
+        },
+        {
+          name: 'memos',
+          type: 'Map'
         }
       ],
       javaCode: `
@@ -74,10 +78,20 @@ foam.CLASS({
         request.setProfile(getProfile(consumer));
         request.setStage(stage);
 
+        Integer memo3 = (Integer) memos.get("memo3");
+        Boolean memo4 = (Boolean) memos.get("memo4");
+        if ( memo3 != null ) {
+          request.setMemo3(memo3);
+        }
+        if ( memo4 != null ) {
+          request.setMemo4(memo4);
+        }
+
         IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Consumer KYC Evaluation");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -106,6 +120,7 @@ foam.CLASS({
         User user = login.findLoginAttemptedFor(x);
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -121,6 +136,10 @@ foam.CLASS({
         {
           name: 'business',
           type: 'net.nanopay.model.Business'
+        },
+        {
+          name: 'memos',
+          type: 'Map'
         }
       ],
       javaCode: `
@@ -129,10 +148,20 @@ foam.CLASS({
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
         request.setProfile(getProfile(business));
 
+        Integer memo3 = (Integer) memos.get("memo3");
+        Boolean memo5 = (Boolean) memos.get("memo5");
+        if ( memo3 != null ) {
+          request.setMemo3(memo3);
+        }
+        if ( memo5 != null ) {
+          request.setMemo5(memo5);
+        }
+    
         IdentityMindResponse response = sendRequest(x, request);
         response.setApiName("Merchant KYC Evaluation");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -160,6 +189,7 @@ foam.CLASS({
         response.setApiName("Transfer");
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
+        response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -183,7 +213,7 @@ foam.CLASS({
         HttpResponse httpResponse = null;
 
         try {
-          Outputter jsonOutputter = new Outputter(OutputterMode.NETWORK).setOutputClassNames(false);
+          Outputter jsonOutputter = new Outputter(x).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
           String requestJson = jsonOutputter.stringify(request);
           StringEntity entity = new StringEntity(requestJson);
           entity.setContentType("application/json");

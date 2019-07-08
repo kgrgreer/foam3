@@ -1,28 +1,24 @@
 package net.nanopay.liquidity;
 
 import foam.core.X;
-import foam.dao.DAO;
 import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.approval.ApprovalRequest;
-import net.nanopay.approval.ApprovalStatus;
-import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.util.Frequency;
-import net.nanopay.liquidity.Liquidity;
 import net.nanopay.liquidity.LiquiditySettings;
-import net.nanopay.liquidity.LiquiditySettingsCheckCron;
-import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.model.*;
-
-import static foam.mlang.MLang.*;
 
 import java.util.List;
+
+import static foam.mlang.MLang.*;
 
 public class LiquiditySettingsTest
   extends foam.nanos.test.Test
@@ -73,7 +69,7 @@ public class LiquiditySettingsTest
     sender_.setFirstName("Francis");
     sender_.setLastName("Filth");
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
-    senderDigitalDefault = DigitalAccount.findDefault(x_, sender_, "CAD");
+    senderDigitalDefault = (DigitalAccount) DigitalAccount.findDefault(x_, sender_, "CAD").fclone();
     senderLiquidityDigital = new DigitalAccount();
     senderLiquidityDigital.setDenomination("CAD");
     senderLiquidityDigital.setOwner(sender_.getId());

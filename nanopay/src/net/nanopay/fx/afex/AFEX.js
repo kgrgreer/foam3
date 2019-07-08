@@ -12,50 +12,74 @@ foam.INTERFACE({
       type: 'net.nanopay.fx.afex.Token'
     },
     {
-      name: 'addPayee',
-      documentation: 'To add a new payee',
+      name: 'onboardCorporateClient',
+      documentation: 'Create a new corporate client account',
       async: true,
-      type: 'net.nanopay.fx.afex.AddPayeeResponse',
+      type: 'net.nanopay.fx.afex.OnboardCorporateClientResponse',
       args: [
         {
           name: 'request',
-          type: 'net.nanopay.fx.afex.AddPayeeRequest'
+          type: 'net.nanopay.fx.afex.OnboardCorporateClientRequest'
         }
       ]
     },
     {
-      name: 'updatePayee',
-      documentation: 'To update a given payee\'s information',
+      name: 'createBeneficiary',
+      documentation: 'Create a new beneficiary',
       async: true,
-      type: 'net.nanopay.fx.afex.UpdatePayeeResponse',
+      type: 'net.nanopay.fx.afex.CreateBeneficiaryResponse',
       args: [
         {
           name: 'request',
-          type: 'net.nanopay.fx.afex.UpdatePayeeRequest'
+          type: 'net.nanopay.fx.afex.CreateBeneficiaryRequest'
         }
       ]
     },
     {
-      name: 'deletePayee',
-      documentation: 'To delete a given payee',
+      name: 'updateBeneficiary',
+      documentation: 'Update an existing beneficiary record',
+      async: true,
+      type: 'net.nanopay.fx.afex.UpdateBeneficiaryResponse',
+      args: [
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.UpdateBeneficiaryRequest'
+        }
+      ]
+    },
+    {
+      name: 'disableBeneficiary',
+      documentation: 'Disable an existing beneficiary record by VendorID',
       async: true,
       type: 'String',
       args: [
         {
-          name: 'vendorId',
-          type: 'String'
+          name: 'request',
+          type: 'net.nanopay.fx.afex.DisableBeneficiaryRequest'
         }
       ]
     },
     {
-      name: 'getPayeeInfo',
-      documentation: 'Get information for a given payee',
+      name: 'findBeneficiary',
+      documentation: 'Search for beneficiary using unique VendorId',
       async: true,
-      type: 'net.nanopay.fx.afex.GetPayeeInfoResponse',
+      type: 'net.nanopay.fx.afex.FindBeneficiaryResponse',
       args: [
         {
-          name: 'vendorId',
-          type: 'String'
+          name: 'request',
+          type: 'net.nanopay.fx.afex.FindBeneficiaryRequest'
+        }
+      ]
+    },
+    {
+      name: 'findBankByNationalID',
+      documentation: 'Search for bank details relating to a bank national ID',
+      async: true,
+      type: 'net.nanopay.fx.afex.FindBankByNationalIDResponse',
+      args: [
+        {
+          name: 'request',
+          type: 'net.nanopay.fx.afex.FindBankByNationalIDRequest'
         }
       ]
     },

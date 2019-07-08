@@ -357,12 +357,14 @@ function main() {
 
   var X = foam.createSubContext({
     accountDAO: jdao("target/journals/accounts.0"),
+    debtAccountDAO: foam.dao.NullDAO.create(),
     transactionDAO: jdao("target/journals/transactions.0"),
     liquiditySettingsDAO: jdao("target/journals/liquiditySettings.0"),
     currentDate: currentDate,
     balances: {},
     currencyDAO: foam.dao.NullDAO.create(),
     userDAO: foam.dao.NullDAO.create(),
+    complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,
     addCommas: function(a) { return a; }
   });

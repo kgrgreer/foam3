@@ -81,7 +81,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 30px;
       padding: 4px 12px;
       border-radius: 3px;
@@ -195,8 +195,8 @@ foam.CLASS({
       code: function(e) {
         var self = this;
         if (
-          mode === foam.u2.DisplayMode.DISABLED ||
-          mode === foam.u2.DisplayMode.RO
+          this.mode === foam.u2.DisplayMode.DISABLED ||
+          this.mode === foam.u2.DisplayMode.RO
         ) {
           e.preventDefault();
         }

@@ -7,35 +7,23 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'net.nanopay.account.Account'
-  ],
-
-  messages: [
-    {
-      name: 'DESCRIBE_TEXT',
-      message: 'Creates a default digital account when a user is created.'
-    }
+    'net.nanopay.account.Account',
+    'foam.core.ContextAgent',
+    'foam.core.X'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        DigitalAccountService service = (DigitalAccountService) x.get("digitalAccount");
-        service.findDefault(x, null);
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            DigitalAccountService service = (DigitalAccountService) x.get("digitalAccount");
+            service.findDefault(x.put("user", obj), null);
+         }
+        },"Finding default account");
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '// No-op'
-    },
-    {
-      name: 'canExecute',
-      javaCode: 'return true;'
-    },
-    {
-      name: 'describe',
-      javaCode: 'return DESCRIBE_TEXT;'
     }
   ]
 });

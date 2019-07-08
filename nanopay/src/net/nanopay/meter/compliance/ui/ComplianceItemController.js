@@ -40,7 +40,6 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function(complianceItem) {
-        console.log(complianceItem);
         if ( complianceItem.dowJones ) {
           this.dao = this.dowJonesResponseDAO;
           this.stack.push({

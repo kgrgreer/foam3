@@ -89,6 +89,31 @@ foam.CLASS({
     'completionDate'
   ],
 
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Pending',
+      predicateFactory: function(e) {
+        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.PENDING);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Completed',
+      predicateFactory: function(e) {
+        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      }
+    }
+  ],
+
+
   // relationships: parent, children
 
   properties: [
@@ -312,20 +337,30 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of Transactions.
       `,
+      tableWidth: 320,
       tableCellFormatter: async function(_, obj) {
         var [srcCurrency, dstCurrency] = await Promise.all([
           obj.currencyDAO.find(obj.sourceCurrency),
           obj.currencyDAO.find(obj.destinationCurrency)
         ]);
 
-        this.add(
-          obj.sourceCurrency + ' ' +
-          srcCurrency.format(obj.amount) + ' → ' +
-          obj.destinationCurrency + ' ' +
-          dstCurrency.format(obj.destinationAmount) + '  |  ' +
-          obj.payer.displayName + ' → ' +
-          obj.payee.displayName
-        );
+        if ( obj.payer ) {
+          this.add(
+            obj.sourceCurrency + ' ' +
+              srcCurrency.format(obj.amount) + ' → ' +
+              obj.destinationCurrency + ' ' +
+              dstCurrency.format(obj.destinationAmount) + '  |  ' +
+              obj.payer.displayName + ' → ' +
+              obj.payee.displayName
+          );
+        } else {
+          this.add(
+            obj.sourceCurrency + ' ' +
+              srcCurrency.format(obj.amount) + ' → ' +
+              obj.destinationCurrency + ' ' +
+              dstCurrency.format(obj.destinationAmount)
+          );
+        }
       }
     },
     {
@@ -854,19 +889,6 @@ for ( Balance b : getBalances() ) {
     javaCode: `
     sendReverseNotification(x, oldTxn);
     sendCompletedNotification(x, oldTxn);
-    checkLiquidity(x);
-    `
-  },
-  {
-    documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
-    name: 'checkLiquidity',
-    args: [
-      {
-        name: 'x',
-        type: 'Context'
-      }
-    ],
-    javaCode: `
     `
   }
 ],

@@ -454,6 +454,20 @@ foam.CLASS({
           throw new IllegalStateException("Invalid email address.");
         }
       `
+    },
+    {
+      name: 'label',
+      type: 'String',
+      code: function label() {
+        return ( this.lastName ? this.firstName + ' ' + this.lastName : this.firstName ) || this.organization || this.businessName;
+      },
+      javaCode: `
+        if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
+        if ( ! SafetyUtil.isEmpty(getLegalName()) ) return getLegalName();
+        if ( ! SafetyUtil.isEmpty(getOrganization()) ) return getOrganization();
+        if ( ! SafetyUtil.isEmpty(getBusinessName()) ) return getBusinessName();
+        return "";
+      `
     }
   ],
 
@@ -530,26 +544,7 @@ foam.CLASS({
           data: this.sales
         });
       }
-    },
-    {
-      name: 'viewComplianceHistory',
-      label: 'View Compliance History',
-      availablePermissions: ['service.compliancehistorydao'],
-      code: async function(X) {
-        var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.label()}'s Compliance History`,
-          data: this.complianceHistoryDAO.where(m.AND(
-              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id), 
-              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localUserDAO')
-          ))
-        });
-      }
-    },
+    }
   ],
 
   axioms: [

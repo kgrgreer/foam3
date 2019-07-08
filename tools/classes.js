@@ -72,7 +72,8 @@ plaid.proxies = plaid.proxies.map(function(element) { return [ 'nanopay/src/', e
 
 var classes = [];
 classes = classes.concat(
-  foam.classes, nanopay.classes,
+  foam.classes, 
+  nanopay.classes,
   merchant.classes,
   interac.classes,
   iso20022.classes,
@@ -145,9 +146,9 @@ blacklist = blacklist.concat(
   plaid.blacklist);
 
 module.exports = {
-    classes: classes,
-    abstractClasses: abstractClasses,
-    skeletons: skeletons,
-    proxies: proxies,
-    blacklist: blacklist
+  classes: classes,
+  abstractClasses: abstractClasses,
+  skeletons: skeletons,
+  proxies: proxies,
+  blacklist: blacklist
 }

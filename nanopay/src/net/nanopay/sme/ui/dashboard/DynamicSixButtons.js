@@ -56,7 +56,7 @@ foam.CLASS({
       background-color: #ffffff;
       border: solid 1.5px #ffffff;
       box-shadow: 0 1px 1px 0 #dae1e9;
-      border: solid 1px %BACKGROUNDCOLOR%;
+      border: solid 1px /*%GREY5%*/ #f5f7fa;
     }
     ^item:hover {
       cursor: pointer;

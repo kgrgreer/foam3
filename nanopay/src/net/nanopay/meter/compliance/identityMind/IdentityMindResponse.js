@@ -26,6 +26,11 @@ foam.CLASS({
       name: 'entityType'
     },
     {
+      class: 'String',
+      name: 'daoKey',
+      documentation: 'Name of DAO that contains the entity (eg. userDAO)'
+    },
+    {
       class: 'Object',
       name: 'entityId',
       tableWidth: 100
@@ -129,12 +134,10 @@ foam.CLASS({
       label: 'Result codes'
     },
     {
-      class: 'Map',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.meter.compliance.identityMind.IdentityMindResponseEDNA',
       name: 'ednaScoreCard',
-      label: 'eDNA score card',
-      view: {
-        class: 'foam.u2.view.AnyView'
-      }
+      label: 'eDNA Score Card'
     }
   ],
 

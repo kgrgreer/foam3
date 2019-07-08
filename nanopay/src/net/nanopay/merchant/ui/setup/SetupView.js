@@ -13,7 +13,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      background: %PRIMARYCOLOR%;
+      background: /*%BLACK%*/ #1e1f21;
     }
     ^ .setup-title {
       height: 30px;

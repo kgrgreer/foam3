@@ -73,15 +73,7 @@ configurations.all {
     }
 }
 
-group = "net.nanopay"
-description = "nanopay"
 sourceCompatibility = "1.8"
-libsDirName = "lib"
-
-def genJavaDir = "build"
-def targetDir = "target"
-def workingDir = System.getProperty("user.dir")
-def journalOut = workingDir + "/target/journals"
 
 publishing {
     publications {
@@ -97,7 +89,7 @@ sourceSets {
             srcDirs = [
                     "$rootDir/foam2/src",
                     "$rootDir/nanopay/src",
-                    "$rootDir/build"
+                    "$rootDir/${project.genJavaDir}"
             ]
             exclude "com/chrome/**"
             exclude "foam/nanos/tomcat/**"
@@ -107,30 +99,11 @@ sourceSets {
     }
 }
 
-class IncrementalTask extends DefaultTask {
-// https://android.googlesource.com/platform/tools/base/+/studio-master-dev/build-system/gradle-core/src/main/java/com/android/build/gradle/internal/tasks/IncrementalTask.java
-// https://mrhaki.blogspot.com/2017/04/gradle-goodness-using-incremental-task.html
+abstract class IncrementalTask extends DefaultTask {
+    abstract FileCollection getIncludedFiles()
 
-    @Input
-    List<File> includeDirs = new ArrayList<>();
+    abstract File getOutputDirectory()
 
-    @InputFiles
-    FileCollection getIncludedFiles() {
-        FileCollection files = getProject().files();
-        for(File f : includeDirs) {
-            files = files + getProject().fileTree(f);
-        }
-
-        return files;
-    }
-
-    @OutputDirectory
-    File outputDir
-
-    @Input
-    def inputProperty
-
-    @TaskAction
     void execute(IncrementalTaskInputs inputs) {
         if (inputs.incremental) {
             println "CHANGED inputs considered out of date"
@@ -142,57 +115,97 @@ class IncrementalTask extends DefaultTask {
             }
         } else {
             println "ALL inputs considered out of date"
-            project.delete(outputDir.listFiles())
+            project.delete(getOutputDirectory().listFiles())
         }
     }
 }
 
-task incrementalGenTask(type: IncrementalTask) {
-    FileTree trees = fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")
-    trees.matching{include "**/*.js"}.each { File f ->
-        includeDirs.add(f)
+class IncrementalGenTask extends IncrementalTask {
+    Set<File> includeFiles;
+    List<File> classFiles = new ArrayList<>();
+    File outputDir
+
+    @InputFiles
+    FileCollection getIncludedFiles() {
+        FileCollection files = getProject().files();
+        for(File f : includeFiles) {
+            files = files + getProject().fileTree(f);
+        }
+        for(File f : classFiles) {
+            files = files + getProject().fileTree(f);
+        }
+        return files;
     }
-    includeDirs.add(file("foam2/tools/classes.js"))
-    includeDirs.add(file("nanopay/tools/classes.js"))
-    outputDir = file(genJavaDir)
-    inputProperty = project.properties['taskInputProperty'] ?: "original"
+
+    @OutputDirectory
+    File getOutputDirectory() {
+        return outputDir
+    }
+
+    @TaskAction
+    void execute(IncrementalTaskInputs inputs) {
+        super.execute(inputs);
+    }
+}
+
+class IncrementalFindTask extends IncrementalTask {
+    String journalIn = ""
+    String journalOut = ""
+
+    @OutputDirectory
+    File getOutputDirectory() {
+        return new File(journalOut);
+    }
+
+    @InputFiles
+    FileCollection getIncludedFiles() {
+        FileCollection files = getProject().files();
+        new File(journalIn).text.split("\n").each { String f ->
+            files = files + getProject().fileTree(new File(f));
+        }
+        return files;
+    }
+
+    @TaskAction
+    void execute(IncrementalTaskInputs inputs) {
+        super.execute(inputs);
+    }
 }
 
 task genJava(type: Exec) {
-    // https://stackoverflow.com/a/43358562 - flags for controller tasks
     dependsOn {
-        tasks.incrementalGenTask
+        task incrementalGenTask(type: IncrementalGenTask) {
+            includeFiles = (fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")).matching{include "**/*.js"}.getFiles()
+            classFiles.add(file("nanopay/tools/classes.js"))
+            outputDir = file(project.genJavaDir)
+        }
     }
-    onlyIf { 
+    onlyIf {
         !tasks.incrementalGenTask.state.upToDate
     }
-    commandLine 'bash', './gen.sh', genJavaDir
-}
-
-task incrementalFindTask(type: IncrementalTask) {
-    FileTree trees = fileTree(dir: "deployment") + fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src") + fileTree(dir: "interac/src")
-    trees.matching{include "**/*.jrl"}.each { File f ->
-        includeDirs.add(f)
-    }
-    outputDir = file(journalOut)
-    inputProperty = project.properties['taskInputProperty'] ?: "original"
+    commandLine 'bash', './gen.sh', 'tools/classes.js', "${project.genJavaDir}"
 }
 
 task findSH(type: Exec) {
     dependsOn {
-        tasks.incrementalFindTask
+        task incrementalFindTask(type: IncrementalFindTask) {
+            journalIn = project.findProperty("journalIn") ?: ""
+            journalOut = project.findProperty("journalOut") ?: ""
+        }
     }
     onlyIf {
         !tasks.incrementalFindTask.state.upToDate
     }
-    commandLine 'bash', './find.sh', workingDir, journalOut, project.hasProperty("journalConfig") ? "${journalConfig}" : ""
+    commandLine 'bash', './find.sh',
+        "-I${project.findProperty("journalIn") ?: ""}",
+        "-O${project.findProperty("journalOut") ?: ""}"
 }
 
 task packageFoam(type: NodeTask) {
     dependsOn {
-        tasks.incrementalGenTask
+        tasks.genJava
     }
-    onlyIf { 
+    onlyIf {
         !tasks.incrementalGenTask.state.upToDate
     }
     script = file('./tools/js_build/build.js')
@@ -201,39 +214,39 @@ task packageFoam(type: NodeTask) {
 
 task foamNodeModulesCopy(type: Copy) {
     from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict"
-    into "$targetDir/classes/webroot"
+    into "${project.targetDir}/classes/webroot"
     include "*.js"
 }
 
 task nanopayNodeModulesCopy(type: Copy) {
     from "$rootDir/node_modules/html2canvas/dist/html2canvas.min.js", "node_modules/jspdf/dist/jspdf.min.js", "node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"
-    into "$targetDir/classes/webroot"
+    into "${project.targetDir}/classes/webroot"
 }
 
 task foamCopy(type: Copy) {
     dependsOn tasks.packageFoam
     dependsOn tasks.foamNodeModulesCopy
     dependsOn tasks.nanopayNodeModulesCopy
-    
+
     from "tools/js_build/foam-bin-${project.version}.js"
-    into "$targetDir/classes/webroot"
+    into "${project.targetDir}/classes/webroot"
 }
 
 task copyLib(type: Copy) {
     from configurations.runtime
-    into "$targetDir/lib"
+    into "${project.targetDir}/lib"
 }
 
 task copyResources(type: Copy) {
     from "$rootDir/nanopay/src/resources"
     from "$rootDir/foam2/src/resources"
-    into "$targetDir/classes"
-    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION:project.version] )
+    into "${project.targetDir}/classes"
+    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION:project.version])
 }
 
 task copyJournals(type: Copy) {
-    from "$targetDir/journals"
-    into "$targetDir/classes/journals"
+    from "${project.targetDir}/journals"
+    into "${project.targetDir}/classes/journals"
     include "*.0"
 }
 
@@ -242,71 +255,88 @@ task copyImages(type: Copy) {
     from "$rootDir/foam2/src/foam/nanos"
     from "$rootDir/foam2/src/foam/support"
     from "$rootDir/nanopay/src/net/nanopay"
-    into "$targetDir/classes"
+    into "${project.targetDir}/classes"
     include "images/**"
 }
 
 task copyFlows(type: Copy) {
     from "$rootDir/documents"
-    into "$targetDir/classes/documents"
+    into "${project.targetDir}/classes/documents"
     include "**"
 }
 
 task copyFavicon(type: Copy) {
     from "$rootDir/favicon"
-    into "$targetDir/classes/webroot/favicon"
+    into "${project.targetDir}/classes/webroot/favicon"
     include "**"
-}
-
-jar {
-  dependsOn tasks.withType(Copy)
-  destinationDirectory = file("$targetDir/lib")
-
-  from "$buildDir/classes/java/main"
-  from "$targetDir/classes"
-  include "**"
-
-  manifest {
-    attributes "Main-Class": "foam.nanos.boot.Boot"
-    attributes "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(" ")
-    attributes "Implementation-Title": "${project.name}"
-    /* version - see settings.gradle and override on the command line
-        with -Pversion=x.y.z */
-    attributes "Implementation-Version": "${project.version}"
-    attributes "Implementation-Timestamp": new Date()
-    attributes "Implementation-Vendor-Id": group
-    attributes "Implementation-Vendor": "nanopay"
-  }
 }
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
-task tarz(type: Tar) {
-    def tarName = "${project.name}-${project.version}"
-    archiveFileName = "${tarName}.tgz"
+task getVersion() {
+    doLast {
+        println project.version
+    }
+}
 
-    into("${tarName}/bin/") {
+task getClasspath() {
+    doLast {
+        def classes = new ArrayList<String>();
+        sourceSets.main.runtimeClasspath.each { classes.add(it.toString()) }
+        println String.join(";", classes);
+    }
+}
+
+task tarz(type: Tar) {
+    into("bin/") {
         from "deploy/bin"
     }
-    into("${tarName}/lib/") {
+    into("lib/") {
         from "target/lib"
     }
-    into("${tarName}/etc/") {
+    into("etc/") {
         from "deploy/etc"
     }
 
+    archiveBaseName = "nanopay-deploy"
+    archiveExtension = "tar.gz"
     destinationDirectory = file("target/package")
     compression = Compression.GZIP
 }
 
 clean {
-    delete "${workingDir}/${targetDir}"
-    delete "${buildDir}"
+    delete project.targetDir
+    delete project.buildDir
+    delete project.genJavaDir
 }
 
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
+
+    options.incremental = true
+    options.compilerArgs += ["-parameters"]
+}
+
+task buildJar(type: Jar) {
+    dependsOn tasks.withType(Copy)
+    dependsOn compileJava
+    destinationDirectory = file("${project.targetDir}/lib")
+
+    from sourceSets.main.java.outputDir
+    from "${project.targetDir}/classes"
+
+    manifest {
+        attributes "Main-Class": "foam.nanos.boot.Boot"
+        attributes "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(" ")
+        attributes "Implementation-Title": project.name
+        /* version - see settings.gradle and override on the command line
+            with -Pversion=x.y.z */
+        attributes "Implementation-Version": project.version
+        attributes "Implementation-Timestamp": new Date()
+        attributes "Implementation-Vendor-Id": project.group
+        attributes "Implementation-Vendor": "nanopay"
+    }
 }
