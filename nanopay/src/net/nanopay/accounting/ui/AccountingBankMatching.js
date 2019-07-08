@@ -36,6 +36,7 @@ foam.CLASS({
       margin: 0 !important;
       padding: 0 !important;
       overflow-y: scroll;
+      background-color: /*%GREY5%*/ #f5f7fa;
     }
     ^ {
       text-align: center
@@ -48,7 +49,7 @@ foam.CLASS({
     ^ .bank-matching-container {
       width: 530px;
       display: inline-block;
-      height: 90vh;
+      height: calc(100vh - 92px);
     }
     ^ .button-bar {
       margin-top:20px;
