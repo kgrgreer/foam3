@@ -43,6 +43,7 @@ foam.CLASS({
   ],
 
   exports: [
+    'actionsCheck',
     'myDaoNotification'
   ],
 
@@ -51,7 +52,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_ACTION_REQUIRED', message: 'You\'re all caught up!' },
     { name: 'NO_LATEST_ACTIVITY', message: 'No latest activity to display' },
     { name: 'NO_RECENT_PAYABLES', message: 'No recent payables to display' },
     { name: 'NO_RECENT_RECEIVABLES', message: 'No recent receivables to display' },
@@ -131,6 +131,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'actionsCheck',
+      documentation: 'It returns false if there is any overdue or requires approval payables.',
       expression: function(countRequiresApproval, countOverdueAndUpcoming, countDepositPayment) {
         return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
       }
@@ -241,7 +242,7 @@ foam.CLASS({
           .start('h1')
             .add(this.TITLE)
           .end()
-          .tag({ 
+          .tag({
             class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard',
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
@@ -255,11 +256,6 @@ foam.CLASS({
             .add(this.SUBTITLE1)
           .end()
           .start()
-            .show(this.actionsCheck$)
-            .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
-          .end()
-          .start()
-            .hide(this.actionsCheck$)
             .tag(this.RequireActionView.create({
               countRequiresApproval$: this.countRequiresApproval$,
               countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
