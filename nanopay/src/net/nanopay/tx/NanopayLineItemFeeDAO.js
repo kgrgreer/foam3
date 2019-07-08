@@ -6,17 +6,13 @@ foam.CLASS({
   documentation: ``,
 
   javaImports: [
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.core.FObject',
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.mlang.MLang',
+    'foam.nanos.auth.User',
+    'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.InvoiceTransaction',
-    'java.util.List'
+    'net.nanopay.account.DigitalAccount'
   ],
 
   properties: [
@@ -37,7 +33,6 @@ foam.CLASS({
       ],
       type: 'foam.core.FObject',
       javaCode: `
-      Logger logger = (Logger) x.get("logger");
       TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
 
       for ( int i = 0; i < quote.getPlans().length; i++ ) {
@@ -63,25 +58,13 @@ foam.CLASS({
         }
       ],
       type: 'net.nanopay.tx.model.Transaction',
-      javaCode: `
-      Logger logger = (Logger) x.get("logger");
-      if ( transaction == null ||
+      javaCode: `if ( transaction == null ||
         ! ( transaction instanceof InvoiceTransaction ) ||
         ! ((InvoiceTransaction) transaction).getPayable() ) {
         return transaction;
       }
-
       DAO lineItemFeeDAO = (DAO) x.get("lineItemFeeDAO");
       DAO typeAccountDAO = (DAO) x.get("lineItemTypeAccountDAO");
-
-      int numFees = 0;
-
-      List allFees = ((ArraySink)lineItemFeeDAO.select(new ArraySink())).getArray();
-      for ( Object af: allFees ) {
-        LineItemFee y = (LineItemFee) af;
-        logger.debug("(ALL) LineItemFee", y);
-      }
-
       for ( TransactionLineItem lineItem : transaction.getLineItems() ) {
         List fees = ((ArraySink) lineItemFeeDAO
           .where(
@@ -91,14 +74,8 @@ foam.CLASS({
             )
           )
           .select(new ArraySink())).getArray();
-
-        if ( fees.size() == 0 ) {
-          logger.debug(this.getClass().getSimpleName(), "applyFees", "no applicable fees found for transaction", transaction, "type", transaction.getType(), "amount", transaction.getAmount(), "LineItem", lineItem);
-        }
-
           for (Object f : fees ) {
             LineItemFee fee = (LineItemFee) f;
-            logger.debug("LineItemFee: ", fee);
             User payee = applyTo.findDestinationAccount(x).findOwner(x);
             Long feeAccountId = 0L;
             LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
@@ -134,12 +111,10 @@ foam.CLASS({
                 };
               }
               applyTo.addLineItems(forward, reverse);
-              logger.debug(this.getClass().getSimpleName(), "applyFees", "forward", forward[0], "reverse", reverse[0], "transaction", transaction);
             }
           }
         }
-      return applyTo;
-    `
+      return applyTo;`
     },
   ]
 });
