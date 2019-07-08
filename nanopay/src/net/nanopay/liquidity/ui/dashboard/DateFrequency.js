@@ -12,6 +12,13 @@ foam.ENUM({
 
   values: [
     {
+      name: 'DAILY',
+      label: 'Daily',
+      glang: {
+        class: 'foam.glang.EndOfDay'
+      }
+    },
+    {
       name: 'WEEKLY',
       label: 'Weekly',
       glang: {
