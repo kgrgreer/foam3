@@ -168,14 +168,16 @@ foam.CLASS({
               isEnabled: function() {
                 return self.user.id === this.createdBy &&
                   ( this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE ) && !
+                  this.status === self.InvoiceStatus.OVERDUE ||
+                  this.status === self.InvoiceStatus.PENDING_APPROVAL ) && !
                   ( self.QuickbooksInvoice.isInstance(this) || self.XeroInvoice.isInstance(this) );
               },
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.UNPAID ||
                   this.status === self.InvoiceStatus.PAID ||
                   this.status === self.InvoiceStatus.PROCESSING ||
-                  this.status === self.InvoiceStatus.OVERDUE;
+                  this.status === self.InvoiceStatus.OVERDUE ||
+                  this.status === self.InvoiceStatus.PENDING_APPROVAL;
               },
               code: function() {
                 this.paymentMethod = self.PaymentStatus.VOID;
