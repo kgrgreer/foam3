@@ -141,7 +141,7 @@ function setupNanopaySymLink {
         unlink ${NANOPAY_ROOT}
     elif [ -d ${NANOPAY_ROOT} ]; then
         BACKUP_DIR="${NANOPAY_ROOT}.$(date +%s).bak"
-        echo "INFO :: Found old ${NANOPAY_ROOR} dir, moving to ${BACKUP_DIR}"
+        echo "INFO :: Found old ${NANOPAY_ROOT} dir, moving to ${BACKUP_DIR}"
         mv ${NANOPAY_ROOT} ${BACKUP_DIR}
     fi
 
