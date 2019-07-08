@@ -26,19 +26,20 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        User user = (User) obj;
-        IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-        Map <String, Object> memoMap = fetchMemos(x, true, user.getId(), "Dow Jones Person");
-        IdentityMindResponse response = identityMindService.evaluateConsumer(
-          x, obj, getStage(), memoMap);
-        ComplianceValidationStatus status = response.getComplianceValidationStatus();
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            // NOTE: Casting can fail since obj can also be a BeneficialOwner object
+            // as it is also used by beneficial owner KYC rule (id:1431).
+            User user = (User) obj;
+            IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
+            Map <String, Object> memoMap = fetchMemos(x, true, user.getId(), "Dow Jones Person");
+            IdentityMindResponse response = identityMindService.evaluateConsumer(x, obj, getStage(), memoMap);
+            ComplianceValidationStatus status = response.getComplianceValidationStatus();
 
-        if ( obj instanceof User
-          && status != ComplianceValidationStatus.VALIDATED
-        ) {
-          agency.submit(x, new ContextAgent() {
-            @Override
-            public void execute(X x) {
+            if ( obj instanceof User
+              && status != ComplianceValidationStatus.VALIDATED
+            ) {
               requestApproval(x,
                 new ComplianceApprovalRequest.Builder(x)
                   .setObjId(String.valueOf(obj.getProperty("id")))
@@ -49,9 +50,9 @@ foam.CLASS({
                   .build()
               );
             }
-          });
-        }
-        ruler.putResult(status);
+            ruler.putResult(status);
+          }
+        });
       `
     }
   ]
