@@ -95,6 +95,14 @@ foam.CLASS({
     ^two-factor-benefit {
       padding-right: 25px;
     }
+    ^flex-div {
+      display: flex;
+    }
+    ^qr-and-key {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   `,
 
   messages: [
@@ -142,7 +150,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass())
-        .start().style({ display: 'flex' })
+        .start().addClass(this.myClass('flex-div'))
           .add(this.realUser$.dot('twoFactorEnabled').map((twoFactorEnabled) => {
             if ( ! twoFactorEnabled ) {
               // two factor disabled
@@ -155,8 +163,9 @@ foam.CLASS({
                   self.ctrl.notify(err.message, 'error');
                 });
 
-              return this.E().style({ 'display': 'flex' })
-                .start().style({ 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' })
+              return this.E().addClass(this.myClass('flex-div'))
+                .start()
+                  .addClass(this.myClass('qr-and-key'))
                   .start().addClass(this.myClass('two-factor-qr-code'))
                     .start('img').attrs({ src: this.twoFactorQrCode$ }).end()
                   .end()
