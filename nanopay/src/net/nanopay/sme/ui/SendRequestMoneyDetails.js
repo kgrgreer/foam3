@@ -189,10 +189,16 @@ foam.CLASS({
               .add(this.DETAILS_SUBTITLE)
             .end()
             .start('span').addClass('resting')
-              .start(this.NEW, { label: newButtonLabel })
+              .start(this.NEW, {
+                label: newButtonLabel,
+                buttonStyle: 'UNSTYLED'
+              })
                 .addClass('white-radio').enableClass('selected', this.newButton$)
               .end()
-              .start(this.EXISTING, { label: existingButtonLabel })
+              .start(this.EXISTING, {
+                label: existingButtonLabel,
+                buttonStyle: 'UNSTYLED'
+              })
                 .addClass('tab-right')
                 .addClass('white-radio').enableClass('selected', this.existingButton$)
               .end()

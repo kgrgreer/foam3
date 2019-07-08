@@ -614,8 +614,7 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
 done
 
 if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
-    echo "ERROR :: ${JOURNAL_CONFIG} journal config invalid for jar deployment";
-    quit 0
+    echo "WARNING :: ${JOURNAL_CONFIG} journal config unsupported for jar deployment";
 fi
 
 setenv

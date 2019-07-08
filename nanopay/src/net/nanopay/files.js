@@ -299,6 +299,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
+  { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
   { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/InvoicePaymentRule' },
@@ -1069,6 +1070,7 @@ FOAM_FILES([
 
   // alarming & monitoring
   { name: 'net/nanopay/alarming/Alarm' },
+  { name: 'net/nanopay/alarming/Alarming' },
   { name: 'net/nanopay/alarming/AlarmConfig' },
   { name: 'net/nanopay/alarming/AlarmReason' },
   { name: 'net/nanopay/alarming/MonitoringReport' },

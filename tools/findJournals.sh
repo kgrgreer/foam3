@@ -35,7 +35,7 @@ fi
 
 sed 's/#.*//;s/^[[:space:]]*//;s/[[:space:]]*$//' < "${IN_FILE:-/dev/stdin}" | while read -r file; do
     if [ ! -z $file ]; then
-        find ${sources[@]} -name "${file}" -o -name "${file}.jrl" >> "${OUT_FILE:-/dev/stdout}"
+        find ${sources[@]} -type f \( -name "${file}" -o -name "${file}.jrl" \) >> "${OUT_FILE:-/dev/stdout}"
     fi
 done
 
