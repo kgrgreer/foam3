@@ -106,6 +106,86 @@ foam.CLASS({
       value: 3
     },
     {
+      class: 'Map',
+      name: 'config',
+      factory: function () {
+        var self = this;
+        return {
+          type: 'horizontalBar',
+          options: {
+            legend: {
+              display: false
+            },
+            elements: {
+              rectangle: {
+                borderWidth: 2,
+              }
+            },
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    // convert to millions
+                    callback: function (value, index, values) {
+                      const dateArray = value.toLocaleDateString('en-US').split('/');
+                      const monthNames = [
+                        "January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"
+                      ];
+                      const quarterNames = ['Q1', 'Q2', 'Q3', 'Q4'];
+
+                      switch (self.dateFrequency) {
+                        case net.nanopay.liquidity.ui.dashboard.DateFrequency.MONTHLY:
+                          return `${monthNames[Number.parseInt(dateArray[0])]} ${dateArray[2]}`
+
+                        case net.nanopay.liquidity.ui.dashboard.DateFrequency.QUARTERLY:
+                          return `${quarterNames[Number.parseInt(dateArray[0]) / 3 - 1]} ${dateArray[2]}`
+
+                        case net.nanopay.liquidity.ui.dashboard.DateFrequency.ANNUALLY:
+                          return dateArray[2];
+
+                        default:
+                          return value.toLocaleDateString('en-US');
+                      }
+                    }
+                  }
+                }
+              ],
+              xAxes:
+                [
+                  {
+                    ticks: {
+                      callback: function (value, index, values) {
+                        return `$${value}`;
+                      }
+                    }
+                  }
+                ]
+            }
+          },
+        };
+      }
+    },
+    {
+      class: 'Map',
+      name: 'customDatasetStyling',
+      documentation: `
+        Property map that would hold the customization for each key type
+        1. Key must equal the candlestick's key.
+        2. Value mapped with key must be a 1:1 mapping defined in chartjs.org's documentation.
+      `,
+      factory: function(){
+        return {
+          CITransaction: {
+            backgroundColor: '#b8e5b3'
+          },
+          COTransaction: {
+            backgroundColor: '#f79393'
+          }
+        }
+      }
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'account',
@@ -173,10 +253,12 @@ foam.CLASS({
           .add(this.HorizontalBarDAOChartView.create({
             data$: this.cicoTransactionsDAO$,
             keyExpr: this.TransactionCICOType.create(),
+            config: this.config,
             xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
-            yExpr: this.dateFrequency$.map(d => d.glang.clone().copyFrom({
+            yExpr$: this.dateFrequency$.map(d => d.glang.clone().copyFrom({
               delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
             })),
+            customDatasetStyling: this.customDatasetStyling,
             width: 1325,
             height: 300
           }))
