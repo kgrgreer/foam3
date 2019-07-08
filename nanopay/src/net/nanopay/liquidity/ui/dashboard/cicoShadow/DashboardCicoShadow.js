@@ -58,26 +58,6 @@ foam.CLASS({
 
   messages: [
     {
-      name: 'TIMEFRAME_WEEKLY',
-      message: 'Weekly'
-    },
-    {
-      name: 'TIMEFRAME_MONTHLY',
-      message: 'Monthly'
-    },
-    {
-      name: 'TIMEFRAME_QUARTERLY',
-      message: 'Quarterly'
-    },
-    {
-      name: 'TIMEFRAME_ANNUALLY',
-      message: 'Annually'
-    },
-    {
-      name: 'LABEL_MILLIONS',
-      message: 'Millions'
-    },
-    {
       name: 'CARD_HEADER',
       message: 'CASH IN / OUT OF SHADOW ACCOUNTS',
     }
@@ -99,11 +79,6 @@ foam.CLASS({
       factory: function () {
         return new Date();
       }
-    },
-    {
-      class: 'Int',
-      name: 'yItemsLimit',
-      value: 3
     },
     {
       class: 'Map',

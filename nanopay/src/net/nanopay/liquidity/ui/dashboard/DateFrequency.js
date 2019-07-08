@@ -1,3 +1,4 @@
+
 foam.ENUM({
   package: 'net.nanopay.liquidity.ui.dashboard',
   name: 'DateFrequency',
@@ -6,6 +7,10 @@ foam.ENUM({
     {
       class: 'foam.mlang.ExprProperty',
       name: 'glang'
+    },
+    {
+      class: 'String',
+      name: 'timeframe'
     }
   ],
 
@@ -13,6 +18,7 @@ foam.ENUM({
     {
       name: 'WEEKLY',
       label: 'Weekly',
+      timeframe: '',
       glang: {
         class: 'foam.glang.EndOfWeek'
       }
