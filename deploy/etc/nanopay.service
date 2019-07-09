@@ -7,7 +7,7 @@ Type=simple
 Restart=always
 RestartSec=1
 StartLimitIntervalSec=0
-ExecStart=/opt/nanopay/bin/run.sh -Z0 -M/mnt/nanopay
+ExecStart=/opt/nanopay/bin/run.sh -Z0
 User=nanopay
 Group=nanopay
 

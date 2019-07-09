@@ -9,8 +9,6 @@
 
 HOST_NAME=`hostname -s`
 NANOPAY_HOME=/opt/nanopay
-#NANOPAY_MNT=/mnt/nanopay
-NANOPAY_MNT=
 WEB_PORT=8080
 NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
@@ -35,7 +33,6 @@ while getopts "D:hM:N:W:Z:V:" opt ; do
     case $opt in
         D) DEBUG=$OPTARG;;
         h) usage; exit 0;;
-        M) NANOPAY_MNT=$OPTARG;;
         N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
         Z) DAEMONIZE=$OPTARG;;
@@ -44,17 +41,13 @@ while getopts "D:hM:N:W:Z:V:" opt ; do
    esac
 done
 
-if [ -z ${NANOPAY_MNT} ]; then
-    NANOPAY_MNT=${NANOPAY_HOME}
-fi
-
 JAVA_OPTS=""
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
 JAVA_OPTS="${JAVA_OPTS} -Dhostname=${HOST_NAME}"
 JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
 JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
-JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_MNT}/journals"
-JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_MNT}/logs"
+JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
+JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
 
 export MEMORY_MODEL=SMALL
 
