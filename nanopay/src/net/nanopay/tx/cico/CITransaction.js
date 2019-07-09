@@ -87,20 +87,11 @@ foam.CLASS({
           ];
         }
         if ( this.status == this.TransactionStatus.PAUSED ) {
-          if ( this.parent > 0 && ! ( this.transactionDAO.find(parent).status == this.TransactionStatus.COMPLETED ) ){
-            return [
-              'choose status',
-              ['PENDING_PARENT_COMPLETED', 'UNPAUSE'],
-              ['CANCELLED', 'CANCELLED']
-            ];
-          }
-          else {
-            return [
-              'choose status',
-              ['PENDING', 'UNPAUSE'],
-              ['CANCELLED', 'CANCELLED']
-            ];
-          }
+          return [
+            'choose status',
+            ['PENDING_PARENT_COMPLETED', 'UNPAUSE'],
+            ['CANCELLED', 'CANCELLED']
+          ];
         }
         return ['No status to choose'];
       }
