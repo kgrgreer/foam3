@@ -8,6 +8,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
+    'foam.core.PropertyInfo',
     'static foam.mlang.MLang.*',
   ],
 
@@ -16,7 +17,7 @@ foam.CLASS({
       name: 'ignores',
       class: 'String',
       documentation: 'Ignored properties separated by comma.',
-      value: 'lastModified'
+      value: 'lastModified, lastModifiedBy'
     }
   ],
 
@@ -24,18 +25,21 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
+        FObject nu  = (FObject) NEW_OBJ.f(obj);  
         FObject old = (FObject) OLD_OBJ.f(obj);
-        FObject nu  = (FObject) NEW_OBJ.f(obj);
         if ( old == null ) {
           return nu == null;
         }
 
+        // clear ignored properties on NEW and OLD objects before comparing
+        nu  = nu.fclone();
         old = old.fclone();
-        nu = nu.fclone();
-        // nullify ignored properties
-        for ( String prop : getIgnores().split(",") ) {
-          nu.setProperty(prop, null);
-          old.setProperty(prop, null);
+        for ( String propName : getIgnores().split("\\\\s*,\\\\s*") ) {
+          PropertyInfo prop = (PropertyInfo) nu.getClassInfo().getAxiomByName(propName);
+          if ( prop != null ) {
+            prop.clear(nu);
+            prop.clear(old);
+          }
         }
         return nu.equals(old);
       `
