@@ -37,25 +37,37 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      javaCode: `
-    // NOTE: for requests such as RetailTransaction, it is
-    // the responsibility of, perhaps a RetailTransactionDAO, to
-    // initiate a Quote request.
+      javaCode: `// NOTE: for requests such as RetailTransaction, it is
+      // the responsibility of, perhaps a RetailTransactionDAO, to
+      // initiate a Quote request.
 
-    Logger logger = (Logger) x.get("logger");
-    TransactionQuote quote = (TransactionQuote) obj;
+      TransactionQuote quote = (TransactionQuote) obj;
 
-    logger.debug(this.getClass().getSimpleName(), "put", quote);
+      //when a planner forces to pick certain plan we do not calculate cost.
+      if ( quote.getPlan() != null ) {
+        return quote;
+      }
+      quote = (TransactionQuote) getDelegate().put_(x, quote);
 
-    if ( quote.getPlan() != null ) {
-      logger.debug(this.getClass().getSimpleName(), "put", "already has plan.");
-      return quote;
-    }
+      //when a planner forces to pick certain plan we do not calculate cost.
+      if (quote.getPlan() != null) {
+        return quote;
+      }
 
-    // Select the best plan.
-    quote = (TransactionQuote) getDelegate().put_(x, quote);
-    if ( quote instanceof TransactionQuote &&
-         ! ( quote instanceof TransactionQuotes ) ) {
+      //if no plans found throw exception
+      if ( quote.getPlans().length == 0 ) {
+        Transaction requestTxn = quote.getRequestTransaction();
+        String message = String.format("Unable to find a plan for transaction with source currency: %s, destination currency: %s, source account: %d, destination account: %d", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
+        sendNOC(x, message);
+        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+      }
+
+      //if there was only one plan added we do not need to calculate the cost.
+      if ( quote.getPlans().length == 1 ) {
+        quote.setPlan(quote.getPlans()[0]);
+        return quote;
+      }
+      // Select the best plan.
       PlanCostComparator costComparator =  new PlanCostComparator.Builder(x).build();
       PlanETAComparator etaComparator =  new PlanETAComparator.Builder(x).build();
       PlanTransactionComparator planComparators = new PlanTransactionComparator.Builder(x).build();
@@ -66,24 +78,10 @@ foam.CLASS({
         transactionPlans.add((Transaction) aTransaction);
       }
       Collections.sort(transactionPlans, planComparators);
-      Transaction plan = null;
-      if ( ! transactionPlans.isEmpty() ) {
-        plan = transactionPlans.get(0);
-      } else {
-        // if no plan, then unsupported Transaction
-        Transaction requestTxn = quote.getRequestTransaction();
-        String message = String.format("Unable to find a plan for transaction with source currency: %s, destination currency: %s, source account: %d, destination account: %d", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
-        sendNOC(x, message);
-        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
-      }
-      logger.debug(this.getClass().getSimpleName(), "put", "setting selected plan.");
+      Transaction plan = transactionPlans.get(0);
       quote.setPlan(plan);
-    }
-    // TransactionQuotes - return all plans.
-    logger.debug(this.getClass().getSimpleName(), "put", "return quote.");
-
-    return quote;
-`
+      // TransactionQuotes - return all plans.
+      return quote;`
     },
     {
       name: 'sendNOC',

@@ -557,7 +557,6 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
   'net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule',
-  'net.nanopay.meter.compliance.ruler.ComplianceLoginControlRule',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
