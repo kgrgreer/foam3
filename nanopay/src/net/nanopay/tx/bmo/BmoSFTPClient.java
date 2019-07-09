@@ -27,17 +27,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class BmoSFTPClient {
 
-  private SSHClient sshClient = null;
+  private SSHClient          sshClient          = null;
   private StatefulSFTPClient statefulSFTPClient = null;
-  private BmoSFTPCredential credential = null;
+  private BmoSFTPCredential  credential         = null;
 
-  private static final String PATH = System.getProperty("JOURNAL_HOME") + "/bmo_eft/";
-  public static final String RECEIPT_DOWNLOAD_FOLDER = PATH + "/receipt/";
-  public static final String REPORT_DOWNLOAD_FOLDER = PATH + "/report/";
-
-
-  private static final String SEND_FOLDER = "DEFT-DEFT-A:/*BIN/NANOPAY";
-  private static final String POLLABLE_FOLDER = "BMOCOM-SEND:/./POLLABLE";
+  private static final String PATH                    = System.getProperty("JOURNAL_HOME") + "/bmo_eft/";
+  public  static final String RECEIPT_DOWNLOAD_FOLDER = PATH + "/receipt/";
+  public  static final String REPORT_DOWNLOAD_FOLDER  = PATH + "/report/";
+  private static final String SEND_FOLDER             = "DEFT-DEFT-A:/*BIN/NANOPAY";
+  private static final String POLLABLE_FOLDER         = "BMOCOM-SEND:/./POLLABLE";
 
   private static ReentrantLock SEND_LOCK = new ReentrantLock();
   private Logger logger;
@@ -56,28 +54,37 @@ public class BmoSFTPClient {
     return this;
   }
 
+  /**
+   * Connect to BMO sftp server
+   */
   private BmoSFTPClient connect(String loginId) throws Exception {
     ChannelSftp sftp = new ChannelSftp();
+    sshClient        = new SSHClient();
 
-    sshClient = new SSHClient();
-    sshClient.addHostKeyVerifier(new PromiscuousVerifier());
-    sshClient.connect(this.credential.getHost());
-    sshClient.authPassword(loginId, this.credential.getPassword());
+    sshClient.addHostKeyVerifier (new PromiscuousVerifier());
+    sshClient.connect            (this.credential.getHost());
+    sshClient.authPassword       (loginId, this.credential.getPassword());
 
     statefulSFTPClient = new StatefulSFTPClient(new SFTPEngine(sshClient).init());
 
     return this;
   }
 
+  /**
+   * Check if the RECEIPT server has POLLABLE file
+   */
   public Boolean unProcessedReceiptFiles() {
     try {
+
       this.logger.info("check unprocessed receipt files.");
-      this.connect(this.credential.getReceiptFileLoginId());
-      this.statefulSFTPClient.cd(POLLABLE_FOLDER);
-      List<RemoteResourceInfo> ls = this.statefulSFTPClient.ls();
-      ls.forEach(l -> System.out.println(l.getName()));
+
+      this.                     connect (this.credential.getReceiptFileLoginId());
+      this.statefulSFTPClient.  cd      (POLLABLE_FOLDER);
+      List<RemoteResourceInfo>  ls =
+      this.statefulSFTPClient.  ls();
 
       return ls.size() > 0;
+
     } catch (Exception e) {
       this.logger.error("BMO: Error when check receipt files.", e);
       throw new BmoSFTPException("BMO: Error when check receipt files.", e.getCause());
@@ -87,19 +94,25 @@ public class BmoSFTPClient {
     }
   }
 
+  /**
+   * Upload the EFT file to BMO SEND server
+   */
   public void upload(File file) {
 
     try {
+
       this.logger.info("Uploading.......");
+
+      // If there still POLLABLE file on RECEIPT Server
       if ( unProcessedReceiptFiles() ) {
         throw new BmoSFTPException(
           "BMO: unprocessed receipt files exist on 'ADW35691-RECEIPT:'. Might cause duplicate transactions." +
           "Please make sure all previous transactions have been successfully delivered.");
       }
 
-      this.connect(this.credential.getSendLoginId());
-      this.statefulSFTPClient.cd(SEND_FOLDER);
-      this.statefulSFTPClient.put(file.getAbsolutePath(), "");
+      this.                    connect (this.credential.getSendLoginId());
+      this.statefulSFTPClient. cd      (SEND_FOLDER);
+      this.statefulSFTPClient. put     (file.getAbsolutePath(), "");
 
     } catch ( BmoSFTPException e ) {
       throw e;
@@ -112,6 +125,9 @@ public class BmoSFTPClient {
     }
   }
 
+  /**
+   * download the receipt file
+   */
   public File downloadReceipt() {
 
     try {
@@ -120,13 +136,13 @@ public class BmoSFTPClient {
 
       List<RemoteResourceInfo> ls = null;
       int re = 0;
+
+      // retry
       while ( re <= 30 ) {
         this.logger.info("start trying download receipt: " + re);
         Thread.sleep(30 * 1000);
         ls = this.statefulSFTPClient.ls();
-        if ( ls.size() != 0 ) {
-          break;
-        }
+        if ( ls.size() != 0 ) { break;}
         re++;
       }
       this.logger.info("finishing downloading receipt" + re);
@@ -165,8 +181,8 @@ public class BmoSFTPClient {
   public void download(String loginId, String downloadPath) {
 
     try {
-      this.connect(loginId);
-      this.statefulSFTPClient.cd(POLLABLE_FOLDER);
+      this.                    connect (loginId);
+      this.statefulSFTPClient. cd      (POLLABLE_FOLDER);
 
       List<RemoteResourceInfo> ls = this.statefulSFTPClient.ls();
 

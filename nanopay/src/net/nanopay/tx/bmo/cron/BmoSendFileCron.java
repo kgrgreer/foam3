@@ -106,9 +106,9 @@ public class BmoSendFileCron implements ContextAgent {
     }
 
     BmoSFTPCredential sftpCredential = (BmoSFTPCredential) x.get("bmoSFTPCredential");
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    DAO bmoEftFileDAO = (DAO) x.get("bmoEftFileDAO");
-    Logger logger = (Logger) x.get("logger");
+    DAO transactionDAO               = (DAO) x.get("localTransactionDAO");
+    DAO bmoEftFileDAO                = (DAO) x.get("bmoEftFileDAO");
+    Logger logger                    = (Logger) x.get("logger");
 
     ArrayList<Transaction> passedTransaction = null;
     File readyToSend = null;
@@ -119,7 +119,7 @@ public class BmoSendFileCron implements ContextAgent {
 
       // 1. init file object
       BmoEftFile eftFile = fileGenerator.initFile(transactions);
-      passedTransaction = fileGenerator.getPassedTransactions();
+      passedTransaction  = fileGenerator.getPassedTransactions();
 
       // 2. creat the file on the disk
       readyToSend = fileGenerator.createEftFile(eftFile);
@@ -155,6 +155,7 @@ public class BmoSendFileCron implements ContextAgent {
         SEND_LOCK.unlock();
       }
 
+      // 4. update the transaction status
       passedTransaction.forEach(transaction -> {
         ((BmoTransaction)transaction).addHistory("Sent to BMO.");
         ((BmoTransaction)transaction).setBmoFileCreationNumber(eftFile.getHeaderRecord().getFileCreationNumber());

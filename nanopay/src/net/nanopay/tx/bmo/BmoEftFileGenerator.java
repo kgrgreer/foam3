@@ -36,11 +36,11 @@ import java.util.stream.Collectors;
 
 public class BmoEftFileGenerator {
 
-  X x;
-  DAO currencyDAO;
-  DAO bmoEftFileDAO;
+  X      x;
+  DAO    currencyDAO;
+  DAO    bmoEftFileDAO;
   Logger logger;
-  BmoAssignedClientValue clientValue;
+  BmoAssignedClientValue         clientValue;
   private ArrayList<Transaction> passedTransactions = new ArrayList<>();
 
   public static final String SEND_FOLDER = System.getProperty("JOURNAL_HOME") + "/bmo_eft/send/";
@@ -48,16 +48,22 @@ public class BmoEftFileGenerator {
 
   public BmoEftFileGenerator(X x) {
     this.x = x;
-    this.currencyDAO = (DAO) x.get("currencyDAO");
-    this.bmoEftFileDAO = (DAO) x.get("bmoEftFileDAO");
-    this.clientValue = (BmoAssignedClientValue) x.get("bmoAssignedClientValue");
-    this.logger = (Logger) x.get("logger");
+    this.currencyDAO    = (DAO) x.get("currencyDAO");
+    this.bmoEftFileDAO  = (DAO) x.get("bmoEftFileDAO");
+    this.clientValue    = (BmoAssignedClientValue) x.get("bmoAssignedClientValue");
+    this.logger         = (Logger) x.get("logger");
   }
 
+  /**
+   * Create the real file object and save it into the disk.
+   * @param eftFile the BmoEftFile Object created from initFile method
+   * @return the real file object
+   */
   public File createEftFile(BmoEftFile eftFile) {
     File file = null;
 
     try {
+
       file = new File(SEND_FOLDER + eftFile.getFileName());
       FileUtils.touch(file);
       FileUtils.writeStringToFile(file, eftFile.toBmoFormat(), false);
@@ -70,11 +76,16 @@ public class BmoEftFileGenerator {
     return file;
   }
 
+  /**
+   * Convert the transaction into the BmoEftFile
+   * @param transactions
+   * @return
+   */
   public BmoEftFile initFile(List<Transaction> transactions) {
-    BmoFileHeader fileHeader = null;
-    List<BmoBatchRecord> records = new ArrayList<>();
-    BmoFileControl fileControl = new BmoFileControl();
-    String originatorID = "";
+    BmoFileHeader        fileHeader  = null;
+    List<BmoBatchRecord> records     = new ArrayList<>();
+    BmoFileControl       fileControl = new BmoFileControl();
+    String               originatorID = "";
 
     if ( transactions.get(0) instanceof CITransaction ) {
       originatorID = this.clientValue.getDebitOriginatorId();
@@ -85,7 +96,6 @@ public class BmoEftFileGenerator {
     try {
       // file header
       fileHeader = createFileHeader(originatorID);
-
       fileHeader.validate(x);
 
       // batch record
@@ -101,13 +111,13 @@ public class BmoEftFileGenerator {
       BmoBatchRecord coBatchRecord = createBatchRecord(coTransactions);
       if ( ciBatchRecord != null ) records.add(ciBatchRecord);
       if ( coBatchRecord != null ) records.add(coBatchRecord);
-      if ( records.size() == 0 ) throw new RuntimeException("No transactions for BMO EFT");
+      if ( records.size() == 0 )   throw new RuntimeException("No transactions for BMO EFT");
 
       // file control
-      fileControl.setTotalNumberOfD(ciBatchRecord == null ? 0 : ciBatchRecord.getBatchControlRecord().getBatchRecordCount());
-      fileControl.setTotalValueOfD(ciBatchRecord == null ? 0 : ciBatchRecord.getBatchControlRecord().getBatchAmount());
-      fileControl.setTotalNumberOfC(coBatchRecord == null ? 0 : coBatchRecord.getBatchControlRecord().getBatchRecordCount());
-      fileControl.setTotalValueOfC(coBatchRecord == null ? 0 : coBatchRecord.getBatchControlRecord().getBatchAmount());
+      fileControl.setTotalNumberOfD (ciBatchRecord == null ? 0 : ciBatchRecord.getBatchControlRecord().getBatchRecordCount());
+      fileControl.setTotalValueOfD  (ciBatchRecord == null ? 0 : ciBatchRecord.getBatchControlRecord().getBatchAmount());
+      fileControl.setTotalNumberOfC (coBatchRecord == null ? 0 : coBatchRecord.getBatchControlRecord().getBatchRecordCount());
+      fileControl.setTotalValueOfC  (coBatchRecord == null ? 0 : coBatchRecord.getBatchControlRecord().getBatchAmount());
 
     } catch ( Exception e ) {
       // if any exception occurs here, no transaction will be sent out
@@ -116,31 +126,34 @@ public class BmoEftFileGenerator {
       throw new BmoEftFileException("Error when init bmo eft file", e);
     }
 
-    BmoEftFile file = new BmoEftFile();
-    file.setHeaderRecord(fileHeader);
-    file.setBatchRecords(records.toArray(new BmoBatchRecord[records.size()]));
-    file.setTrailerRecord(fileControl);
-    file.setProduction(this.clientValue.getProduction());
-    file.setFileName(fileHeader.getFileCreationNumber() + "-" + originatorID + ".txt");
-    file.setBeautifyString(file.beautify());
-    file.setFileCreationTimeEDT(BmoFormatUtil.getCurrentDateTimeEDT());
+    BmoEftFile file =           new BmoEftFile();
+    file.setHeaderRecord        (fileHeader);
+    file.setBatchRecords        (records.toArray(new BmoBatchRecord[records.size()]));
+    file.setTrailerRecord       (fileControl);
+    file.setProduction          (this.clientValue.getProduction());
+    file.setFileName            (fileHeader.getFileCreationNumber() + "-" + originatorID + ".txt");
+    file.setBeautifyString      (file.beautify());
+    file.setFileCreationTimeEDT (BmoFormatUtil.getCurrentDateTimeEDT());
 
     return file;
   }
 
+  /**
+   * Create EFT file header
+   */
   public BmoFileHeader createFileHeader(String originatorId) {
     int fileCreationNumber = 0;
 
     if ( this.clientValue.getProduction() ) {
-      Count count = (Count) bmoEftFileDAO.inX(x).where(MLang.EQ(BmoEftFile.PRODUCTION, true)).select(new Count());
+      Count count        = (Count) bmoEftFileDAO.inX(x).where(MLang.EQ(BmoEftFile.PRODUCTION, true)).select(new Count());
       fileCreationNumber = (int) (this.clientValue.getFileCreationNumberOffset() + count.getValue() + 1);
     }
 
-    BmoFileHeader fileHeader = new BmoFileHeader();
-    fileHeader.setOriginatorId(originatorId);
-    fileHeader.setFileCreationNumber(fileCreationNumber);
-    fileHeader.setDestinationDataCentreCode(this.clientValue.getDestinationDataCentre());
-    fileHeader.setFileCreationDate(BmoFormatUtil.getCurrentJulianDateEDT());
+    BmoFileHeader fileHeader =              new BmoFileHeader();
+    fileHeader.setOriginatorId              (originatorId);
+    fileHeader.setFileCreationNumber        (fileCreationNumber);
+    fileHeader.setDestinationDataCentreCode (this.clientValue.getDestinationDataCentre());
+    fileHeader.setFileCreationDate          (BmoFormatUtil.getCurrentJulianDateEDT());
     return fileHeader;
   }
 
@@ -150,21 +163,22 @@ public class BmoEftFileGenerator {
     }
 
     BmoBatchRecord batchRecord = null;
-    String type = transactions.get(0) instanceof CITransaction ? "D" : "C";
-    ArrayList<Transaction> tempSuccessHolder = new ArrayList<>();
+    String         type        = transactions.get(0) instanceof CITransaction ? "D" : "C";
+    ArrayList<Transaction>
+             tempSuccessHolder = new ArrayList<>();
 
     try {
       /**
        * batch header
        */
-      BmoBatchHeader batchHeader = new BmoBatchHeader();
-      batchHeader.setBatchPaymentType(type);
-      batchHeader.setTransactionTypeCode(700);
-      batchHeader.setPayableDate(BmoFormatUtil.getCurrentJulianDateEDT());
-      batchHeader.setOriginatorShortName(this.clientValue.getOriginatorShortName());
-      batchHeader.setOriginatorLongName(this.clientValue.getOriginatorLongName());
-      batchHeader.setInstitutionIdForReturns(this.clientValue.getInstitutionIdForReturns());
-      batchHeader.setAccountNumberForReturns(this.clientValue.getAccountNumberForReturns());
+      BmoBatchHeader batchHeader =           new BmoBatchHeader();
+      batchHeader.setBatchPaymentType        (type);
+      batchHeader.setTransactionTypeCode     (700);
+      batchHeader.setPayableDate             (BmoFormatUtil.getCurrentJulianDateEDT());
+      batchHeader.setOriginatorShortName     (this.clientValue.getOriginatorShortName());
+      batchHeader.setOriginatorLongName      (this.clientValue.getOriginatorLongName());
+      batchHeader.setInstitutionIdForReturns (this.clientValue.getInstitutionIdForReturns());
+      batchHeader.setAccountNumberForReturns (this.clientValue.getAccountNumberForReturns());
 
       /**
        * batch details
@@ -175,7 +189,6 @@ public class BmoEftFileGenerator {
 
         try {
           isValidTransaction(transaction);
-
           CABankAccount bankAccount = null;
           if ( type.equals("D") ) {
             bankAccount = getAccountById(transaction.getSourceAccount());
@@ -183,20 +196,20 @@ public class BmoEftFileGenerator {
             bankAccount = getAccountById(transaction.getDestinationAccount());
           }
 
-          BmoDetailRecord detailRecord = new BmoDetailRecord();
-          detailRecord.setAmount(transaction.getAmount());
-          detailRecord.setLogicalRecordTypeId(type);
-          detailRecord.setClientName(getNameById(bankAccount.getOwner()));
-          detailRecord.setClientInstitutionId(getInstitutionById(bankAccount.getInstitution()) + getBranchById(bankAccount.getBranch()));
-          detailRecord.setClientAccountNumber(bankAccount.getAccountNumber());
-          detailRecord.setReferenceNumber(String.valueOf(getRefNumber(transaction)));
+          BmoDetailRecord detailRecord =      new BmoDetailRecord();
+          detailRecord.setAmount              (transaction.getAmount());
+          detailRecord.setLogicalRecordTypeId (type);
+          detailRecord.setClientName          (getNameById(bankAccount.getOwner()));
+          detailRecord.setClientInstitutionId (getInstitutionById(bankAccount.getInstitution()) + getBranchById(bankAccount.getBranch()));
+          detailRecord.setClientAccountNumber (bankAccount.getAccountNumber());
+          detailRecord.setReferenceNumber     (String.valueOf(getRefNumber(transaction)));
           detailRecord.validate(x);
 
           sum = sum + transaction.getAmount();
           detailRecords.add(detailRecord);
-          ((BmoTransaction)transaction).addHistory("Transaction added to EFT file");
-          ((BmoTransaction)transaction).setBmoReferenceNumber(detailRecord.getReferenceNumber());
-          tempSuccessHolder.add(transaction);
+          ((BmoTransaction)transaction). addHistory("Transaction added to EFT file");
+          ((BmoTransaction)transaction). setBmoReferenceNumber(detailRecord.getReferenceNumber());
+          tempSuccessHolder.             add(transaction);
 
         } catch ( Exception e ) {
           this.logger.error("Error when add transaction to BMO EFT file", e);
@@ -209,10 +222,10 @@ public class BmoEftFileGenerator {
       /**
        * batch control
        */
-      BmoBatchControl batchControl = new BmoBatchControl();
-      batchControl.setBatchPaymentType(type);
-      batchControl.setBatchRecordCount(detailRecords.size());
-      batchControl.setBatchAmount(sum);
+      BmoBatchControl batchControl =   new BmoBatchControl();
+      batchControl.setBatchPaymentType (type);
+      batchControl.setBatchRecordCount (detailRecords.size());
+      batchControl.setBatchAmount      (sum);
       batchControl.validate(x);
 
       /**
@@ -221,11 +234,11 @@ public class BmoEftFileGenerator {
       if ( detailRecords== null || detailRecords.size() == 0 ) {
         return null;
       }
-      batchRecord = new BmoBatchRecord();
-      batchRecord.setBatchHeaderRecord(batchHeader);
-      batchRecord.setDetailRecords(detailRecords.toArray(new BmoDetailRecord[detailRecords.size()]));
-      batchRecord.setBatchControlRecord(batchControl);
-      this.passedTransactions.addAll(tempSuccessHolder);
+      batchRecord =                     new BmoBatchRecord();
+      batchRecord.setBatchHeaderRecord  (batchHeader);
+      batchRecord.setDetailRecords      (detailRecords.toArray(new BmoDetailRecord[detailRecords.size()]));
+      batchRecord.setBatchControlRecord (batchControl);
+      this.passedTransactions.addAll    (tempSuccessHolder);
 
     } catch ( Exception e ) {
       logger.error("Error when create batch record", e);
@@ -235,6 +248,9 @@ public class BmoEftFileGenerator {
     return batchRecord;
   }
 
+  /**
+   * We have to make sure the ref number is unique for each transaction
+   */
   public long getRefNumber(Transaction transaction) {
     DAO refDAO = (DAO) x.get("bmoRefDAO");
 

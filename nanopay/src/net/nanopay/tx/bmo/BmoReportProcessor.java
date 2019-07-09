@@ -36,11 +36,14 @@ public class BmoReportProcessor {
   private Logger logger;
 
   public BmoReportProcessor(X x) {
-    this.x = x;
+    this.x         = x;
+    logger         = (Logger) x.get("logger");
     transactionDAO = (DAO) x.get("localTransactionDAO");
-    logger = (Logger) x.get("logger");
   }
 
+  /**
+   * Process the receipt report
+   */
   public boolean processReceipt(File file, int fileCreationNumber) {
     if (file == null) {
       return false;
@@ -49,14 +52,18 @@ public class BmoReportProcessor {
     File receipt = null;
 
     try {
+
       String message = FileUtils.readFileToString(file, "US-ASCII");
       boolean result = message.contains("SUCCESSFULLY DELIVERED");
       FileUtils.moveFile(file, new File(RECEIPT_PROCESSED_FOLDER + "_" + fileCreationNumber + "_" +  file.getName()));
       return result;
+
     } catch (Exception e) {
+      this.logger.error("Error when process the receipt file. " + e);
       e.printStackTrace();
       return false;
     }
+
   }
 
   public boolean processReports() {
@@ -64,14 +71,19 @@ public class BmoReportProcessor {
     Collection<File> files = FileUtils.listFiles(new File(BmoSFTPClient.REPORT_DOWNLOAD_FOLDER), null, false);
 
     for ( File file : files ) {
+
       try {
+
         logger.info("start process report " + file.getName());
         this.processReport(file);
         logger.info("finishing process report " + file.getName());
+
         FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + file.getName() + "_" + Instant.now().toEpochMilli()));
+
       } catch ( Exception e ) {
         logger.error("Error when process report ", e);
       }
+
     }
 
     return true;
@@ -83,15 +95,14 @@ public class BmoReportProcessor {
 
     String firstLine = strings.get(0);
 
+    // process rejected file
     if ( firstLine.contains("DEFR210") || firstLine.contains("DEFR211") ) {
-      // process rejected file
       this.processRejectReport(strings);
-
       return;
     }
 
+    // process settled file
     if ( firstLine.contains("DEFR220") ) {
-      // process settled file
       processSettlementReport(strings);
       return;
     }
@@ -147,9 +158,9 @@ public class BmoReportProcessor {
   }
 
   public boolean isSettlementRecord(String record) {
-    return StringUtils.isNumeric(record.substring(21, 24) ) &&
+    return record.charAt(31) == '-' &&
+      StringUtils.isNumeric(record.substring(21, 24) ) &&
       StringUtils.isNumeric(record.substring(27, 31)) &&
-      record.charAt(31) == '-' &&
       StringUtils.isNumeric(record.substring(32,37)) &&
       StringUtils.isNumeric(record.substring(55, 74).trim());
   }
