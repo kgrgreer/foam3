@@ -18,7 +18,9 @@ foam.CLASS({
     'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.account.Account'
   ],
-
+  imports: [
+    'transactionDAO'
+  ],
   properties: [
     {
       name: 'name',
@@ -77,13 +79,22 @@ foam.CLASS({
           ];
         }
         if ( this.status == this.TransactionStatus.PAUSED ) {
-          return [
-            'choose status',
-            ['PENDING', 'PENDING'],
-            ['CANCELLED', 'CANCELLED']
-         ];
+          if ( this.parent > 0 && ! ( this.transactionDAO.find(parent).status == this.TransactionStatus.COMPLETED ) ){
+            return [
+              'choose status',
+              ['PENDING_PARENT_COMPLETED', 'UNPAUSE'],
+              ['CANCELLED', 'CANCELLED']
+            ];
+          }
+          else {
+            return [
+              'choose status',
+              ['PENDING', 'UNPAUSE'],
+              ['CANCELLED', 'CANCELLED']
+            ];
+          }
         }
-       return ['No status to choose'];
+        return ['No status to choose'];
       }
     }
   ],
