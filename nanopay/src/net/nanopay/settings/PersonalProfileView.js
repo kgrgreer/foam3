@@ -486,22 +486,25 @@
       .start(twoFactorProfile)
         .start()
           .addClass('status-Text')
-          .addClass(this.user.twoFactorEnabled$.map(function (e) {
+          .addClass(this.user.twoFactorEnabled$.map(function(e) {
             return e ? 'enabled' : 'disabled';
           }))
-          .add(this.user.twoFactorEnabled$.map(function (e) {
-            return e ? 'Status: Enabled' : 'Status: Disabled'
+          .add(this.user.twoFactorEnabled$.map(function(e) {
+            return e ? 'Status: Enabled' : 'Status: Disabled';
           }))
         .end()
         .start()
-          .add(this.slot(function (twoFactorEnabled) {
+          .add(this.slot(function(twoFactorEnabled) {
             if ( ! twoFactorEnabled ) {
               // two factor not enabled
               var self = this;
-              this.twofactor.generateKey(null, true)
-              .then(function (qrCode) {
-                self.twoFactorQrCode = qrCode;
-              });
+              this.twofactor.generateKeyAndQR(null)
+                .then(function(otpKey) {
+                  self.twoFactorQrCode = otpKey.qrCode;
+                })
+                .catch(function(err) {
+                  self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+                });
 
               return this.E()
                 .start('div').addClass('tfa-desc-container')
