@@ -22,8 +22,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        if ( (obj instanceof ShadowAccount obj instanceof DigitalAccount) &&
-             oldObj == null ) {
+        if ( (obj instanceof ShadowAccount || obj instanceof DigitalAccount) ) {
           Account account = (Account) obj;
           Count count = (Count) ((DAO) x.get("accountDAO"))
             .where(
