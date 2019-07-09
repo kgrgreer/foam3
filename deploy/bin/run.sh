@@ -24,7 +24,7 @@ function usage {
     echo "Options are:"
     echo "  -D 0 or 1           : Debug mode."
     echo "  -h                  : Display help."
-    echo "  -M <nanopay_mnt>   : Nanopay mount directory."
+    echo "  -M <nanopay_mnt>    : Nanopay mount directory."
     echo "  -N <nanopay_home>   : Nanopay home directory."
     echo "  -V <version>        : Version."
     echo "  -W <web_port>       : HTTP Port."

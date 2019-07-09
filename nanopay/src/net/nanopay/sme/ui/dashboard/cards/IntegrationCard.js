@@ -53,7 +53,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 900;
       line-height: 1.5;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^subtitle {
