@@ -21,7 +21,7 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -l                  : List available rollbacks"
-    echo "  -R <epoch>         : Tarball to redeploy to"
+    echo "  -R <epoch>          : Tarball to redeploy to"
     echo "  -U <user>           : Remote user to connect to"
     echo "  -W <web-address>    : Remote url to connect to"
     echo ""

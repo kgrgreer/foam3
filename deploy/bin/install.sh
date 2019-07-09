@@ -6,9 +6,9 @@ NANOPAY_TARBALL=
 NANOPAY_REMOTE_OUTPUT=/tmp/tar_extract
 NANOPAY_SERVICE_FILE=/lib/systemd/system/nanopay.service
 MNT_HOME=/mnt/nanopay
-LOG_HOME=/mnt/nanopay/logs
-JOURNAL_HOME=/mnt/nanopay/journals
-BACKUP_HOME=/mnt/nanopay/backups
+LOG_HOME=${MNT_HOME}/logs
+JOURNAL_HOME=${MNT_HOME}/journals
+BACKUP_HOME=${MNT_HOME}/backups
 
 function quit {
     echo "ERROR :: Remote Install Failed"

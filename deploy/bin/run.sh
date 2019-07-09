@@ -10,7 +10,7 @@
 HOST_NAME=`hostname -s`
 NANOPAY_HOME=/opt/nanopay
 #NANOPAY_MNT=/mnt/nanopay
-NANOPAY_MNT=${NANOPAY_HOME}
+NANOPAY_MNT=
 WEB_PORT=8080
 NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
@@ -24,7 +24,7 @@ function usage {
     echo "Options are:"
     echo "  -D 0 or 1           : Debug mode."
     echo "  -h                  : Display help."
-    echo "  -M <nanopay_mnt>   : Nanopay mount directory."
+    echo "  -M <nanopay_mnt>    : Nanopay mount directory."
     echo "  -N <nanopay_home>   : Nanopay home directory."
     echo "  -V <version>        : Version."
     echo "  -W <web_port>       : HTTP Port."
@@ -43,6 +43,10 @@ while getopts "D:hM:N:W:Z:V:" opt ; do
         ?) usage ; exit 0 ;;
    esac
 done
+
+if [ -z ${NANOPAY_MNT} ]; then
+    NANOPAY_MNT=${NANOPAY_HOME}
+fi
 
 JAVA_OPTS=""
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
