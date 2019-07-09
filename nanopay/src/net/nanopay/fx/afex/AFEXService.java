@@ -585,6 +585,39 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public CheckTradeStatusResponse checkTradeStatus(CheckTradeStatusRequest request) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/trades");
+      uriBuilder.setParameter("Id", request.getId());
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+      httpGet.addHeader("API-Key", request.getClientAPIKey());
+      httpGet.addHeader("Content-Type", "application/json");
+      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = "Check AFEX trade status failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return (CheckTradeStatusResponse) jsonParser.parseString(response, CheckTradeStatusResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+
+    } catch (IOException | URISyntaxException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
   public CreatePaymentResponse createPayment(CreatePaymentRequest request) {
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/payments/create");

@@ -159,6 +159,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'checkTradeStatus',
+      documentation: 'retrieve trade details',
+      async: true,
+      type: 'net.nanopay.fx.afex.CheckTradeStatusResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CheckTradeStatusRequest',
+          name: 'request'
+        }
+      ]
+    },
+    {
       name: 'createPayment',
       documentation: 'Create scheduled payment',
       async: true,

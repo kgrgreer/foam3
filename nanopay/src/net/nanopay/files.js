@@ -241,6 +241,8 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/GetQuoteRequest"},
   { name: "net/nanopay/fx/afex/CreateTradeRequest"},
   { name: "net/nanopay/fx/afex/CreateTradeResponse"},
+  { name: "net/nanopay/fx/afex/CheckTradeStatusRequest"},
+  { name: "net/nanopay/fx/afex/CheckTradeStatusResponse"},
   { name: "net/nanopay/fx/afex/CreatePaymentRequest"},
   { name: "net/nanopay/fx/afex/CreatePaymentResponse"},
 

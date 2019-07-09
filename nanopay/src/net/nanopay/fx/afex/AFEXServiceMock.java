@@ -115,6 +115,11 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public CheckTradeStatusResponse checkTradeStatus(CheckTradeStatusRequest request) {
+    return null;
+  }
+
+  @Override
   public net.nanopay.fx.afex.CreatePaymentResponse createPayment(CreatePaymentRequest request) {
     return null;
   }

@@ -18,9 +18,10 @@ public class Test implements ContextAgent {
 //    testFindBeneficiary(afexService);
 //    testFindBankByNationalID(afexService);
 //    testGetValueDate(afexService);
-    testGetRate(afexService);
+//    testGetRate(afexService);
 //    testGetQuote(afexService);
 //    testCreateTrade(afexService);
+    testCheckTradeStatus(afexService);
 //    testCreatePayment(afexService);
   }
 
@@ -240,6 +241,28 @@ public class Test implements ContextAgent {
     System.out.println(createTradeResponse.getSettlementAmt());
     System.out.println(createTradeResponse.getSettlementCcy());
     System.out.println(createTradeResponse.getValueDate());
+  }
+
+  private void testCheckTradeStatus(AFEXService afexService) {
+    CheckTradeStatusRequest checkTradeStatusRequest = new CheckTradeStatusRequest();
+    checkTradeStatusRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    checkTradeStatusRequest.setId("357496");
+
+    CheckTradeStatusResponse checkTradeStatusResponse = afexService.checkTradeStatus(checkTradeStatusRequest);
+    System.out.println("Trade status: ");
+    System.out.println(checkTradeStatusResponse.getTradeNumber());
+    System.out.println(checkTradeStatusResponse.getAmount());
+    System.out.println(checkTradeStatusResponse.getRemainingBalance());
+    System.out.println(checkTradeStatusResponse.getRate());
+    System.out.println(checkTradeStatusResponse.getBeneficiaryName());
+    System.out.println(checkTradeStatusResponse.getTradeCcy());
+    System.out.println(checkTradeStatusResponse.getSettlementAmt());
+    System.out.println(checkTradeStatusResponse.getSettlementCcy());
+    System.out.println(checkTradeStatusResponse.getTradeDate());
+    System.out.println(checkTradeStatusResponse.getValueDate());
+    System.out.println(checkTradeStatusResponse.getStatus());
+    System.out.println(checkTradeStatusResponse.getFunded());
+    System.out.println(checkTradeStatusResponse.getNote());
   }
 
   private void testCreatePayment(AFEXService afexService) {
