@@ -82,6 +82,7 @@ public class IdentityMindWebAgent implements WebAgent {
                 notification.setNotificationType("Approval request already updated.");
                 notification.setGroupId("fraud-ops");
                 notificationDAO.put(notification);
+                logger.error("Illegal transition approval request has already been rejected or approved.");
               }
             }    
           }
