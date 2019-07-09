@@ -1,3 +1,6 @@
+global.FOAM_FLAGS.src = __dirname + '/../src/';
+require('../src/net/nanopay/flinks/utils/files.js');
+
 var classes = [
   //model
   'net.nanopay.flinks.model.FlinksCall',
