@@ -37,6 +37,7 @@ foam.CLASS({
             new ComplianceApprovalRequest.Builder(x)
               .setObjId(transaction.getId())
               .setDaoKey("localTransactionDAO")
+              .setClassification("Validate Transaction Using IdentityMind")
               .build();
 
           // NOTE: Only run transaction evaluation through IdentityMind

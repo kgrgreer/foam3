@@ -46,6 +46,7 @@ foam.CLASS({
           .setApprover(getJackieId())
           .setGroup("fraud-ops")
           .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
+          .setClassification("Validate Transaction Using Jackie Rule")
           .build();
 
           agency.submit(x, new ContextAgent() {
