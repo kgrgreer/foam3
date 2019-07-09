@@ -45,7 +45,7 @@ foam.CLASS({
     ^status {
       font-size: 14px;
       line-height: 1.5;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^two-factor-enabled {
       font-size: 14px;
@@ -63,7 +63,7 @@ foam.CLASS({
       margin-left: 10px;
     }
     ^enter-validation-code {
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 8px;
