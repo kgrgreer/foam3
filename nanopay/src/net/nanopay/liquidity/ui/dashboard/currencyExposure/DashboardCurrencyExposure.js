@@ -5,8 +5,7 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOBrowserView',
-    'org.chartjs.PieDAOChartView',
-    'foam.u2.layout.Cols'
+    'org.chartjs.PieDAOChartView'
   ],
 
   css: `
@@ -24,6 +23,7 @@ foam.CLASS({
       padding: 34px;
     }
   `,
+
 
   properties: [
     {
