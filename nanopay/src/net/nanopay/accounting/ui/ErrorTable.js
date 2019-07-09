@@ -98,7 +98,7 @@ foam.CLASS({
   }
 
 
-  .error-table-container .table-container .foam-u2-view-TableView-context-menu-cell {
+  .error-table-container .table-container .foam-u2-view-TableView-td:last-child {
     display: none;
   }
 

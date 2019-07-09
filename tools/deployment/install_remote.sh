@@ -60,7 +60,7 @@ NANOPAY_HOME=/opt/nanopay-${VERSION}
 
 if [ ! -f $NANOPAY_TARBALL_PATH ]; then
     echo "ERROR :: Tarball ${NANOPAY_TARBALL_PATH} doesn't exist"
-    quit 1
+    quit
 fi
 
 # user and ssh key may be specified in .ssh/config
@@ -80,7 +80,7 @@ if [ $INSTALL_ONLY -eq 0 ]; then
 
     if [ ! $? -eq 0 ]; then
         echo "ERROR :: Failed copying tarball to remote server"
-        quit 1
+        quit
     else
         echo "INFO :: Successfully copied tarball to remote server"
     fi
@@ -89,7 +89,7 @@ fi
 ssh ${SSH_KEY_OPT} ${REMOTE} "sudo bash -s -- -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME}" < ./deploy/bin/install.sh
 
 if [ ! $? -eq 0 ]; then
-    quit 1;
+    quit;
 else
     echo "INFO :: Remote install successful"
 fi
