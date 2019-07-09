@@ -228,15 +228,8 @@ foam.CLASS({
             line(0, this.height, 0, h);
             for ( var i = 0 ; i < l ; i++ ) {
               var c = this.childNodes[i];
-              var isShadow = c.data.name.indexOf('Shadow') != -1;
-
-              if ( ! isShadow ) {
-                line(0, h, c.x, h);
-                line(c.x, h, c.x, c.y);
-              } else {
-                var c0 = this.childNodes[i-1];
-                line(c0.x, c0.y+c.height/2, c.x, c.y+c.height/2);
-              }
+              line(0, h, c.x, h);
+              line(c.x, h, c.x, c.y);
             }
           }
 
