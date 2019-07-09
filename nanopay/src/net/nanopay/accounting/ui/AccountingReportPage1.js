@@ -46,7 +46,7 @@ foam.CLASS({
     ^ .report-container {
       display: inline-block;
       width: 100%;
-      height: 90vh;
+      height: calc(100vh - 92px);
       overflow-y: scroll;
     }
     ^ .button-bar {

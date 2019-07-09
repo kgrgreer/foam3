@@ -41,6 +41,7 @@ foam.CLASS({
           this.BankAccount.DENOMINATION,
           this.BankAccount.STATUS,
           this.BankAccount.MICRO_VERIFICATION_TIMESTAMP,
+          this.BankAccount.VERIFICATION_ATTEMPTS,
           this.BankAccount.CREATED_BY,
           this.BankAccount.CREATED,
           this.BankAccount.CREDITS,
