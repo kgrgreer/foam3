@@ -30,5 +30,8 @@ public class BmoGetReportCron implements ContextAgent {
     // 2. process
     new BmoReportProcessor(x).processReports();
 
+    // 3. post process
+    new BmoReportProcessor(x).postProcessReport();
+
   }
 }

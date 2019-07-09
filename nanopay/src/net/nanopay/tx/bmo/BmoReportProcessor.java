@@ -5,6 +5,7 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class BmoReportProcessor {
@@ -58,17 +61,17 @@ public class BmoReportProcessor {
 
   public boolean processReports() {
 
-    try {
-      Collection<File> files = FileUtils.listFiles(new File(BmoSFTPClient.REPORT_DOWNLOAD_FOLDER), null, false);
+    Collection<File> files = FileUtils.listFiles(new File(BmoSFTPClient.REPORT_DOWNLOAD_FOLDER), null, false);
 
-      for ( File file : files ) {
+    for ( File file : files ) {
+      try {
         logger.info("start process report " + file.getName());
         this.processReport(file);
         logger.info("finishing process report " + file.getName());
         FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + file.getName() + "_" + Instant.now().toEpochMilli()));
+      } catch ( Exception e ) {
+        logger.error("Error when process report ", e);
       }
-    } catch ( Exception e ) {
-
     }
 
     return true;
@@ -223,5 +226,43 @@ public class BmoReportProcessor {
     ((BmoTransaction)transaction).setRejectReason(rejectReason);
 
     transactionDAO.inX(this.x).put(transaction);
+  }
+
+  public void postProcessReport() {
+
+    Collection<File> files = FileUtils.listFiles(new File(REPORT_PROCESSED_FOLDER), null, false);
+
+    for ( File file : files ) {
+
+      try {
+
+        String fileCreateNumber = this.getFileCreationNumber(file);
+
+        if ( ! SafetyUtil.isEmpty(fileCreateNumber) ) {
+          FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + "/" + fileCreateNumber + "/" + file.getName()));
+        }
+      } catch ( Exception e ) {
+        this.logger.error("Error when post process report, ", e);
+      }
+    }
+
+  }
+
+  public String getFileCreationNumber(File file) throws IOException {
+
+    List<String> strings = FileUtils.readLines(file, "US-ASCII");
+
+    for ( String line : strings ) {
+      if ( line.contains("FILE CREATION NO.") ) {
+        Pattern pattern = Pattern.compile("\\d{4}");
+        Matcher matcher = pattern.matcher(line);
+
+        if ( matcher.find() ) {
+          return line.substring(matcher.start(), matcher.end());
+        }
+      }
+    }
+
+    return null;
   }
 }
