@@ -469,55 +469,6 @@ function cashOut(X, source, bank, amount) {
   X.balances[source.id] -= amount;
 }
 
-function cashOut(X, source, bank, amount) {
-  var tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
-    id: foam.next$UID().toString(),
-    name: `Cash Out #${++cashOutCounter}`,
-    sourceAccount: source.id,
-    destinationAccount: bank.id,
-    amount: amount,
-    createdBy: X.userId,
-    payerId: X.userId,
-    payeeId: X.userId,
-    completionDate: X.currentDate,
-    created: X.currentDate,
-    lastModified: X.currentDate,
-    sourceCurrency: source.denomination,
-    destinationCurrency: bank.denomination,
-    status: net.nanopay.tx.model.TransactionStatus.PENDING,
-    initialStatus: net.nanopay.tx.model.TransactionStatus.PENDING,
-    isQuoted: false,
-    lineItems: [
-      net.nanopay.tx.ETALineItem.create({
-        eta: 172800000
-      })
-    ]
-  }, X);
-
-  X.transactionDAO.put(tx);
-
-  tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
-    id: tx.id,
-    status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
-    lineItems: [
-      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
-    ],
-    balances: [
-      net.nanopay.account.Balance.create({
-        account: 1,
-        balance: amount * 1
-      }),
-      net.nanopay.account.Balance.create({
-        account: tx.sourceAccount,
-        balance: amount
-      })
-    ],
-    lastModified: X.currentDate
-  }, X);
-
-  X.transactionDAO.put(tx);
-}
-
 function transfer(X, source, dest, amount) {
   if ( source.id == dest.id ) {
     throw new Error("Transfer from same account " + source.id);
