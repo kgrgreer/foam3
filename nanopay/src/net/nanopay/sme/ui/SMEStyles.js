@@ -657,41 +657,8 @@ foam.CLASS({
       width: 330px;
     }
 
-    .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
-      height: 48px;
-    }
-
-    .foam-comics-DAOControllerView .foam-u2-view-TableView-row img {
-      border-radius: 2px;
-    }
-
-    .foam-u2-view-TableView {
-      border-style: inherit !important;
-      border-collapse: separate !important;
-      border-spacing: 0px !important;
-      display: inline-table;
-    }
-
-    .foam-u2-view-TableView tbody td {
-      border-radius: 0px !important;
-      border-top: none !important;
-    }
-
-    .foam-u2-view-TableView tbodyt tr {
-      border-top: none !important;
-    }
-
-    .foam-u2-view-TableView tbody tr {
-      background: #fff;
-    }
-
-    .foam-u2-view-TableView tbody tr:hover {
-      background: #fff;
-      cursor: auto;
-    }
-
-    .foam-u2-view-TableView thead th {
-      border-bottom: solid 1px #e2e2e3;
+    .net-nanopay-sme-SMEController .foam-u2-view-TableView-selected {
+      background: initial;
     }
 
     .foam-u2-md-overlaydropdown {
