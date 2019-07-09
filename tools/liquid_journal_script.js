@@ -141,9 +141,6 @@ const liquiditySettings = [
 // to be filled out as liquidity settings get created
 const liquidityNamesToId = {};
 
-var cashInCounter = 0;
-var cashOutCounter = 0;
-
 function createEmailLiquiditySetting(X, s) {
   var liquiditySettingsObj = {
     id: foam.next$UID(),
