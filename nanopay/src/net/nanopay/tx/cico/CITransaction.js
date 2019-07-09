@@ -62,6 +62,12 @@ foam.CLASS({
             ['DECLINED', 'DECLINED']
           ];
         }
+        if ( this.status == this.TransactionStatus.PENDING_PARENT_COMPLETED ) {
+          return [
+            'choose status',
+            ['PAUSED', 'PAUSED']
+          ];
+        }
         if ( this.status == this.TransactionStatus.SENT ) {
           return [
             'choose status',
