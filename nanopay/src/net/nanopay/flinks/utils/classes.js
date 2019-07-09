@@ -1,5 +1,5 @@
-global.FOAM_FLAGS.src = __dirname + '/../src/';
-require('../src/net/nanopay/flinks/utils/files.js');
+var path = require('path');
+require(path.resolve(__dirname, "./files.js"));
 
 var classes = [
   //model
