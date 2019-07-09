@@ -67,10 +67,10 @@ foam.CLASS({
       background-color: #4d38e1 !important;
     }
     
-     ^ .report-2-container {
+    ^ .report-2-container {
       display: inline-block;
       width: 677px;
-      min-height: 90vh;
+      height: calc(100vh - 92px);
     }
     
     ^ .report-2-container .title {
