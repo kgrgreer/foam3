@@ -35,6 +35,7 @@ foam.CLASS({
           this.Business.STATUS,
           this.Business.COMPLIANCE,
           this.Business.ONBOARDED,
+          this.Business.EMAIL,
           this.Business.BUSINESS_PHONE,
           this.Business.BUSINESS_ADDRESS,
           this.Business.ACCOUNTS,
