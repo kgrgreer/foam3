@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.account',
-  name: 'DuplicateDigitalAccountRule',
+  name: 'DuplicateAccountRule',
 
   documentation: `Validator that checks if a previous account
     With same name, description, parent and currency exists.`,
