@@ -644,6 +644,28 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
+  forwardName: 'flinksResponses',
+  inverseName: 'flinksAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  targetDAOKey: 'flinksAccountsDetailResponseDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.plaid.model.PlaidAccountDetail',
+  forwardName: 'plaidResponses',
+  inverseName: 'plaidAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'localAccountDAO',
+  targetDAOKey: 'plaidAccountDetailDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
   forwardName: 'complianceResponses',
