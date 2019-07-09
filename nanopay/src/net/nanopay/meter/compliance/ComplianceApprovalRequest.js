@@ -10,11 +10,21 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'causeId'
+      name: 'causeId',
+      visibilityExpression: function(causeDaoKey) {
+        return causeDaoKey !== ''
+          ? foam.u2.Visibility.RW
+          : foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'String',
-      name: 'causeDaoKey'
+      name: 'causeDaoKey',
+      visibilityExpression: function(causeDaoKey) {
+        return causeDaoKey !== ''
+          ? foam.u2.Visibility.RW
+          : foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'FObjectProperty',
@@ -40,7 +50,11 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'causeObject',
       transient: true,
-      visibility: 'RO'
+      visibilityExpression: function(causeDaoKey) {
+        return causeDaoKey !== ''
+          ? foam.u2.Visibility.RO
+          : foam.u2.Visibility.HIDDEN;
+      }
     }
   ]
 });
