@@ -76,7 +76,7 @@ export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
 #java -server -jar "${JAR}"
 if [ "$DAEMONIZE" -eq 1 ]; then
-    nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 2>&1
+    nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 2>&1 &
     echo $! > "${NANOS_PIDFILE}"
 else
     java -server -jar "${JAR}"
