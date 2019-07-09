@@ -28,6 +28,10 @@ import static java.lang.System.exit;
 
 public class DAOSecurityTest extends ApiTestBase {
 
+  private static final String TEST_BODY1 = "{ \"class\": \"foam.box.Message\", \"attributes\": { \"replyBox\": { \"class\": \"foam.box.HTTPReplyBox\" }, \"sessionId\": \"6d2df1a2-982e-4537-9fcd-randomabc123\" }, \"object\": { \"class\": \"foam.box.RPCMessage\", \"name\": \"select_\", \"args\": [null, {\"class\": \"foam.dao.ArraySink\"}, 0, 9007199254740991, null, {\"class\": \"foam.mlang.predicate.Eq\", \"arg1\": {\"class\": \"__Property__\", \"forClass_\": \"foam.nanos.boot.NSpec\", \"name\": \"serve\"}, \"arg2\": {\"class\": \"foam.mlang.Constant\", \"value\": true}}], \"attributes\": {}}}";
+  private static final String TEST_BODY2 = "{\"class\":\"foam.box.Message\",\"attributes\":{\"replyBox\":{\"class\":\"foam.box.HTTPReplyBox\"},\"sessionId\":\"6d2df1a2-982e-4537-9fcd-randomabc123\"},\"object\":{\"class\":\"foam.box.RPCMessage\",\"name\":\"find_\",\"args\":[null,188],\"attributes\":{}}}";
+  private static final String TEST_BODY3 = "{\"class\":\"foam.box.Message\",\"attributes\":{\"replyBox\":{\"class\":\"foam.box.HTTPReplyBox\"},\"sessionId\":\"6d2df1a2-982e-4537-9fcd-randomabc123\"},\"object\":{\"class\":\"foam.box.RPCMessage\",\"args\":[],\"attributes\":{}}}";
+
   private static final String USER_AGENT = "Mozilla/5.0";
 
   // Helper class for holding results
@@ -109,98 +113,52 @@ public class DAOSecurityTest extends ApiTestBase {
     return true;
   }
 
-  private String getRequestString(String testBody) throws IOException {
-    File file = new File(testBody);
-    FileInputStream fis = new FileInputStream(file);
-    byte[] data = new byte[(int) file.length()];
-    fis.read(data);
-    fis.close();
-    return new String(data, StandardCharsets.UTF_8); 
-  }
-
-  // Run the test
-  public String runTest(X x, String testBody) {
+  @Override
+  public void runTest(X x) {
     List<String> ignores = new ArrayList<>();
-    return runTest(x, testBody, ignores);
+    testAllDAOs(x, TEST_BODY1, ignores);
   }
 
   // Run the test with a list of DAOs to ignore
-  public String runTest(X x, String testBody, List<String> ignores) {
-
+  public void testAllDAOs(X x, String request, List<String> ignores) {
     DAO nspecDAO = (DAO) x.get("nSpecDAO");
     List nspecs = ((ArraySink) nspecDAO.where(MLang.EQ(NSpec.SERVE, true)).select(new ArraySink())).getArray();
 
-    String request;
-    try {
-      request = getRequestString(testBody);
-    } catch (IOException e) {
-      e.printStackTrace();
-      return e.getMessage();
-    }
-
-    Map<String, String> failedDAOs = new HashMap<>();
-
     for (Object obj : nspecs) {
-        NSpec nspec = (NSpec)obj;
-        
-        // Skip anything that is not a DAO
-        if (!nspec.getName().endsWith("DAO"))
-          continue;
+      NSpec nspec = (NSpec)obj;
 
-        // Skip anything in the ignores list
-        if (ignores.contains(nspec.getName()))
-          continue;
+      // Skip anything that is not a DAO
+      if (!nspec.getName().endsWith("DAO"))
+        continue;
+
+      // Skip anything in the ignores list
+      if (ignores.contains(nspec.getName()))
+        continue;
         
         // Test the DAO
-        try
-        {
-          testDAO(x, nspec.getName(), request);
+      boolean DAOFailed;
+        try {
+          DAOFailed = testDAO(x, nspec.getName(), request);
+        } catch (TestDAOFailed | ParseException | IOException testDAOFailed) {
+          DAOFailed = false;
         }
-        catch (TestDAOFailed testDAOFailed) {
-          failedDAOs.put(nspec.getName(), testDAOFailed.getMsgBody());
-        } catch (IOException e) {
-          e.printStackTrace();
-          failedDAOs.put(nspec.getName(), "IOException: " + e.getMessage());
-        } catch (ParseException e) {
-          e.printStackTrace();
-          failedDAOs.put(nspec.getName(), "ParseException: " + e.getMessage());
-        }
-    }
 
-    StringBuilder ret = new StringBuilder();
-    ret.append("Failed DAOs:\n");
-    for(Map.Entry<String, String> dao : failedDAOs.entrySet()) {
-      ret.append(dao.getKey()).append(": ").append(dao.getValue()).append('\n');
+      test(DAOFailed, "DAO " + nspec.getName() + " rejected unauthorized request");
     }
-    return ret.toString();
   }
 
   // Run an individual test for debugging
-  public String runIndividualTest(X x, String testBody, String dao, boolean force)
-  {
-    String request;
-    try {
-      request = getRequestString(testBody);
-    } catch (IOException e) {
-      e.printStackTrace();
-      return e.getMessage();
-    }
-
+  public String testSingleDAO(X x, String request, String dao, boolean force) {
     // Skip anything that is not a DAO
     if (!dao.endsWith("DAO") && !force)
       return "Not a DAO - Skipping";
   
     // Test the DAO
-    try
-    {
+    try {
       testDAO(x, dao, request);
-    }
-    catch (TestDAOFailed testDAOFailed) {
+    } catch (TestDAOFailed testDAOFailed) {
       return testDAOFailed.getMsgBody();
-    } catch (IOException e) {
-      e.printStackTrace();
-      return e.getMessage();
-    } catch (ParseException e) {
+    } catch (IOException | ParseException e) {
       e.printStackTrace();
       return e.getMessage();
     }
