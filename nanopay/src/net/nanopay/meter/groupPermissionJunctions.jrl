@@ -1,0 +1,2 @@
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business.compliance.blacklist","targetId":"invoice.pay"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"user.compliance.blacklist","targetId":"invoice.pay"})
