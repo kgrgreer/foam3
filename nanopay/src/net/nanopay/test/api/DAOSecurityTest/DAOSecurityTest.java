@@ -135,14 +135,13 @@ public class DAOSecurityTest extends ApiTestBase {
       if (ignores.contains(nspec.getName()))
         continue;
         
-        // Test the DAO
+      // Test the DAO
       boolean DAOFailed;
-        try {
-          DAOFailed = testDAO(x, nspec.getName(), request);
-        } catch (TestDAOFailed | ParseException | IOException testDAOFailed) {
-          DAOFailed = false;
-        }
-
+      try {
+        DAOFailed = testDAO(x, nspec.getName(), request);
+      } catch (TestDAOFailed | ParseException | IOException testDAOFailed) {
+        DAOFailed = false;
+      }
       test(DAOFailed, "DAO " + nspec.getName() + " rejected unauthorized request");
     }
   }
