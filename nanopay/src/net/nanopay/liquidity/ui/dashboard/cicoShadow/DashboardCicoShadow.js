@@ -111,7 +111,7 @@ foam.CLASS({
 
                       switch (self.dateFrequency) {
                         case net.nanopay.liquidity.ui.dashboard.DateFrequency.MONTHLY:
-                          return `${monthNames[Number.parseInt(dateArray[0])]} ${dateArray[2]}`
+                          return `${monthNames[Number.parseInt(dateArray[0] - 1)]} ${dateArray[2]}`
 
                         case net.nanopay.liquidity.ui.dashboard.DateFrequency.QUARTERLY:
                           return `${quarterNames[Number.parseInt(dateArray[0]) / 3 - 1]} ${dateArray[2]}`
