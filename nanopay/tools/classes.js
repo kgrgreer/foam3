@@ -156,6 +156,8 @@ var classes = [
   'net.nanopay.fx.afex.CheckTradeStatusResponse',
   'net.nanopay.fx.afex.CreatePaymentRequest',
   'net.nanopay.fx.afex.CreatePaymentResponse',
+  'net.nanopay.fx.afex.CheckPaymentStatusRequest',
+  'net.nanopay.fx.afex.CheckPaymentStatusResponse',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',

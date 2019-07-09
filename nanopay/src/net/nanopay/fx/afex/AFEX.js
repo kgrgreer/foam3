@@ -181,6 +181,18 @@ foam.INTERFACE({
           name: 'request'
         }
       ]
+    },
+    {
+      name: 'checkPaymentStatus',
+      documentation: 'retrieve payment details',
+      async: true,
+      type: 'net.nanopay.fx.afex.CheckPaymentStatusResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CheckPaymentStatusRequest',
+          name: 'request'
+        }
+      ]
     }
   ]
 });
