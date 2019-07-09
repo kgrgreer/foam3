@@ -146,8 +146,8 @@ foam.CLASS({
 
   reactions: [
     ['', 'propertyChange.aggregatedDAO', 'updateStyling'],
-    ['', 'propertyChange.startTime', 'updateAggregatedDAO'],
-    ['', 'propertyChange.endTime', 'updateAggregatedDAO'],
+    ['', 'propertyChange.startDate', 'updateAggregatedDAO'],
+    ['', 'propertyChange.endDate', 'updateAggregatedDAO'],
     ['', 'propertyChange.account', 'updateAggregatedDAO'],
     ['', 'propertyChange.timeFrame', 'updateAggregatedDAO'],
   ],
@@ -212,8 +212,8 @@ foam.CLASS({
               var account = await this.account$find;
               await this['accountBalance' + this.timeFrame.label + 'CandlestickDAO']
                 .where(this.AND(
-                  this.GTE(this.Candlestick.CLOSE_TIME, this.startTime),
-                  this.LTE(this.Candlestick.CLOSE_TIME, this.endTime),
+                  this.GTE(this.Candlestick.CLOSE_TIME, this.startDate),
+                  this.LTE(this.Candlestick.CLOSE_TIME, this.endDate),
                   this.EQ(this.Candlestick.KEY, account.id)
                 ))
                 .select(sink);
@@ -225,7 +225,7 @@ foam.CLASS({
               }
 
               // Only put liquidity history that spans the range of the balance history.
-              // i.e. If the startTime is May 1st but balance histories don't start until
+              // i.e. If the startDate is May 1st but balance histories don't start until
               // July 1st, we want liquidity settings to start at July 1st but if liquidity
               // settings haven't been touched since June 1st, we need to render the point
               // from June 1st at July 1st.
