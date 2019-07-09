@@ -100,6 +100,9 @@ var accountNamesToLiquidity = {
 const accountNamesToId = {};
 const accountNamesToAccount = {};
 
+var cashInCounter = 0;
+var cashOutCounter = 0;
+
 // assign to only CAD accounts and push/pull from CAD accounts for now
 const liquiditySettings = [
   {
@@ -193,8 +196,6 @@ function createRebalanceLiquiditySetting(X, s) {
       resetBalance: s.highResetBalance
     });
   }
-
-  debugger;
 
   var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
 
@@ -385,7 +386,7 @@ function jdao(journal) {
 function cashIn(X, bank, dest, amount) {
   var tx = net.nanopay.tx.alterna.AlternaCITransaction.create({
     id: foam.next$UID().toString(),
-    name: "Cash In",
+    name: `Cash In #${++cashInCounter}`,
     sourceAccount: bank.id,
     destinationAccount: dest.id,
     amount: amount,
@@ -415,20 +416,54 @@ function cashIn(X, bank, dest, amount) {
     lineItems: [
       net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
     ],
-    balances: [
-      net.nanopay.account.Balance.create({
-        account: 1,
-        balance: amount * -1
-      }),
-      net.nanopay.account.Balance.create({
-        account: tx.destinationAccount,
-        balance: amount
+    lastModified: X.currentDate
+  }, X);
+  
+
+  X.transactionDAO.put(tx);
+
+  X.balances[dest.id] += amount;
+}
+
+function cashOut(X, source, bank, amount) {
+  var tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+    id: foam.next$UID().toString(),
+    name: `Cash Out #${++cashOutCounter}`,
+    sourceAccount: source.id,
+    destinationAccount: bank.id,
+    amount: amount,
+    createdBy: X.userId,
+    payerId: X.userId,
+    payeeId: X.userId,
+    completionDate: X.currentDate,
+    created: X.currentDate,
+    lastModified: X.currentDate,
+    sourceCurrency: source.denomination,
+    destinationCurrency: bank.denomination,
+    status: net.nanopay.tx.model.TransactionStatus.PENDING,
+    initialStatus: net.nanopay.tx.model.TransactionStatus.PENDING,
+    isQuoted: false,
+    lineItems: [
+      net.nanopay.tx.ETALineItem.create({
+        eta: 172800000
       })
+    ]
+  }, X);
+
+  X.transactionDAO.put(tx);
+
+  tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+    id: tx.id,
+    status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+    lineItems: [
+      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
     ],
     lastModified: X.currentDate
   }, X);
 
   X.transactionDAO.put(tx);
+
+  X.balances[source.id] -= amount;
 }
 
 function transfer(X, source, dest, amount) {
@@ -455,16 +490,6 @@ function transfer(X, source, dest, amount) {
     lastModifiedBy: X.userId,
     created: X.currentDate,
     createdBy: X.userId,
-    balances: [
-      net.nanopay.account.Balance.create({
-        account: source.id,
-        balance: X.balances[source.id]
-      }),
-      net.nanopay.account.Balance.create({
-        account: dest.id,
-        balance: X.balances[dest.id]
-      })
-    ],
   }, X);
 
   X.transactionDAO.put(tx);
@@ -495,7 +520,7 @@ function addLiquiditySettingsToAccounts(X) {
   })
 }
 
-function randomTransfer(X) {
+function randomDigitalTransfer(X) {
   var root = randomItem(accountTree);
   var accounts = virtualAccounts(root);
 
@@ -514,6 +539,28 @@ function randomTransfer(X) {
     X.balances[source.id] * Math.random() * 0.02);
 
   transfer(X, source, dest, amount);
+}
+
+function randomCICOTransfer(X) {
+  var root = randomItem(accountTree);
+
+  var bank = accountNamesToAccount[`${root.name} Bank Account`];
+  var shadow = accountNamesToAccount[`${root.name} Shadow Account`];
+
+  if (Math.random() < 0.5) {
+    var amount = Math.floor(
+      X.balances[shadow.id] * 0.05 +
+      X.balances[shadow.id] * Math.random() * 0.02);
+
+    cashIn(X, bank, shadow, amount);
+
+  } else {
+    var amount = Math.floor(
+      X.balances[shadow.id] * 0.05 +
+      X.balances[shadow.id] * Math.random() * 0.02);
+
+    cashOut(X, shadow, bank, amount);
+  }
 }
 
 function virtualAccounts(root) {
@@ -591,9 +638,20 @@ function main() {
   var targetTransactionCount = 5000;
   var timeStep = Math.floor((end.getTime() - currentDate.getTime()) / targetTransactionCount);
 
+  // Seeding the shadows with money before the random CICO transactions
+  accountTree.forEach(root => {
+    var amount = 10000000;
+
+    var bank = accountNamesToAccount[`${root.name} Bank Account`];
+    var shadow = accountNamesToAccount[`${root.name} Shadow Account`];
+
+    cashIn(X, bank, shadow, amount);
+  })
+
   while ( foam.Date.compare(currentDate, end) < 0 ) {
     currentDate.setTime(currentDate.getTime() + timeStep);
-    randomTransfer(X);
+    randomDigitalTransfer(X);
+    randomCICOTransfer(X);
   }
 
   X.accountDAO.close();

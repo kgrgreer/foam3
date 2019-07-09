@@ -229,9 +229,10 @@ foam.CLASS({
               // July 1st, we want liquidity settings to start at July 1st but if liquidity
               // settings haven't been touched since June 1st, we need to render the point
               // from June 1st at July 1st.
-
-              var minTime = (await dao.select(this.MIN(this.Candlestick.CLOSE_TIME))).value;
-              var maxTime = (await dao.select(this.MAX(this.Candlestick.CLOSE_TIME))).value;
+              var minTime = await dao.select(this.MIN(this.Candlestick.CLOSE_TIME));
+              minTime = minTime.value || new Date();
+              var maxTime = await dao.select(this.MAX(this.Candlestick.CLOSE_TIME));
+              maxTime = maxTime.value || new Date();
 
               var fillLiquidityHistory = async function(threshold) {
                 var key = account.liquiditySetting + ':' + threshold;
