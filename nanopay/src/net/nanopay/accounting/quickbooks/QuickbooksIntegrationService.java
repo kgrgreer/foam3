@@ -580,6 +580,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
             regionService.getRegion(customerAddress.getCountrySubDivisionCode()) : null;
 
         portalAddress.setSuite(customerAddress.getLine1());
+        portalAddress.setCity(customerAddress.getCity());
         portalAddress.setPostalCode(customerAddress.getPostalCode() != null ? customerAddress.getPostalCode() : "");
         portalAddress.setRegionId(region != null ? region.getCode() : null);
         portalAddress.setCountryId(country != null ? country.getCode() : null);
