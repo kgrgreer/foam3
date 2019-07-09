@@ -499,12 +499,12 @@
               // two factor not enabled
               var self = this;
               this.twofactor.generateKeyAndQR(null)
-              .then(function(otpKey) {
-                self.twoFactorQrCode = otpKey.qrCode;
-              })
-              .catch(function(err) {
-                self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
-              });
+                .then(function(otpKey) {
+                  self.twoFactorQrCode = otpKey.qrCode;
+                })
+                .catch(function(err) {
+                  self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+                });
 
               return this.E()
                 .start('div').addClass('tfa-desc-container')

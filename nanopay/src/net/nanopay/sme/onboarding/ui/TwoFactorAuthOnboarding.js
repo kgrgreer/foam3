@@ -23,9 +23,6 @@ foam.CLASS({
       margin-top: 8px;
       text-decoration: none;
     }
-    ^property-twoFactorToken foam-u2-TextField {
-      width: auto;
-    }
   `,
 
   constants: [
@@ -42,10 +39,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'IOSName', message: 'iOS' },
-    { name: 'AndroidName', message: 'Android' },
-    { name: 'TwoFactorInstr1', message: 'Download and use your Google Authenticator ' },
-    { name: 'TwoFactorInstr2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into Google Authenticator app manually.' },
+    { name: 'IOS_NAME', message: 'iOS' },
+    { name: 'ANDROID_NAME', message: 'Android' },
+    { name: 'TWO_FACTOR_INSTR1', message: 'Download and use your Google Authenticator ' },
+    { name: 'TWO_FACTOR_INSTR2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into Google Authenticator app manually.' },
   ],
 
   methods: [
@@ -56,17 +53,17 @@ foam.CLASS({
             .hide(! this.agent || this.agent.twoFactorEnabled$)
             .addClass('body-paragraph')
             .start('span')
-              .add(this.TwoFactorInstr1)
+              .add(this.TWO_FACTOR_INSTR1)
               .start('a').addClass(this.myClass('two-factor-link'))
-                .add(this.IOSName)
+                .add(this.IOS_NAME)
                 .attrs({ href: this.IOS_LINK, target: '_blank' })
               .end()
               .add(' or ')
               .start('a').addClass(this.myClass('two-factor-link'))
-                .add(this.AndroidName)
+                .add(this.ANDROID_NAME)
                 .attrs({ href: this.ANDROID_LINK, target: '_blank' })
               .end()
-              .add(this.TwoFactorInstr2)
+              .add(this.TWO_FACTOR_INSTR2)
             .end()
           .end()
           .start('a').addClass(this.myClass('two-factor-link'))

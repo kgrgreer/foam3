@@ -172,15 +172,7 @@ foam.CLASS({
                   .start().addClass(this.myClass('two-factor-key'))
                     .add('Key: ')
                     .add(this.slot(function(twoFactorKey) {
-                      var twoFactorKeyArray = twoFactorKey.match(/.{4}/g);
-                      var keyStrinig = '';
-                      if ( twoFactorKeyArray ) {
-                        twoFactorKeyArray.forEach(function(item) {
-                          keyStrinig = keyStrinig
-                            ? keyStrinig + '-' + item : keyStrinig + item;
-                        });
-                      }
-                      return keyStrinig;
+                      return (twoFactorKey.match(/.{4}/g) || []).join('-');
                     }))
                   .end()
                 .end()
