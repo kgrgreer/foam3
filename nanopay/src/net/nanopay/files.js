@@ -235,6 +235,8 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/FindBeneficiaryResponse"},
   { name: "net/nanopay/fx/afex/FindBankByNationalIDRequest"},
   { name: "net/nanopay/fx/afex/FindBankByNationalIDResponse"},
+  { name: "net/nanopay/fx/afex/GetRateRequest"},
+  { name: "net/nanopay/fx/afex/GetRateResponse"},
   { name: "net/nanopay/fx/afex/Quote"},
   { name: "net/nanopay/fx/afex/GetQuoteRequest"},
   { name: "net/nanopay/fx/afex/CreateTradeRequest"},

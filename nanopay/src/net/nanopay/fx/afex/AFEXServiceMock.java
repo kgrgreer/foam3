@@ -85,6 +85,11 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public GetRateResponse getRate(GetRateRequest request) {
+    return null;
+  }
+
+  @Override
   public Quote getQuote(GetQuoteRequest request) {
 
     Calendar oneDay = Calendar.getInstance();

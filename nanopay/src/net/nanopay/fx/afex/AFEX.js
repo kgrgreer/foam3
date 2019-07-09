@@ -123,6 +123,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getRate',
+      documentation: 'Request a rate for a specified currency pair',
+      async: true,
+      type: 'net.nanopay.fx.afex.GetRateResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.GetRateRequest',
+          name: 'request'
+        }
+      ]
+    },
+    {
       name: 'getQuote',
       documentation: 'Get quote',
       async: true,

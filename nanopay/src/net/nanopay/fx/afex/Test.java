@@ -8,19 +8,20 @@ public class Test implements ContextAgent {
   @Override
   public void execute(X x) {
     AFEXService afexService = new AFEXService(x);
-    testGetToken(afexService);
-    testOnboardCorporateClient(afexService);
-    testGetClientAccountStatus(afexService);
-    testRetrieveClientAccountDetails(afexService);
-    testCreateBeneficiary(afexService);
-    testUpdateBeneficiary(afexService);
-    testDisableBeneficiary(afexService);
-    testFindBeneficiary(afexService);
-    testFindBankByNationalID(afexService);
-    testGetValueDate(afexService);
-    testGetQuote(afexService);
-    testCreateTrade(afexService);
-    testCreatePayment(afexService);
+//    testGetToken(afexService);
+//    testOnboardCorporateClient(afexService);
+//    testGetClientAccountStatus(afexService);
+//    testRetrieveClientAccountDetails(afexService);
+//    testCreateBeneficiary(afexService);
+//    testUpdateBeneficiary(afexService);
+//    testDisableBeneficiary(afexService);
+//    testFindBeneficiary(afexService);
+//    testFindBankByNationalID(afexService);
+//    testGetValueDate(afexService);
+    testGetRate(afexService);
+//    testGetQuote(afexService);
+//    testCreateTrade(afexService);
+//    testCreatePayment(afexService);
   }
 
   private void testGetToken(AFEXService afexService) {
@@ -209,6 +210,18 @@ public class Test implements ContextAgent {
     System.out.println(quote.getTerms());
     System.out.println(quote.getAmount());
     System.out.println(quote.getIsAmountSettlement());
+  }
+
+  private void testGetRate(AFEXService afexService) {
+    GetRateRequest getRateRequest = new GetRateRequest();
+    getRateRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    getRateRequest.setCurrencyPair("USDCAD");
+
+    GetRateResponse getRateResponse = afexService.getRate(getRateRequest);
+    System.out.println("rate: ");
+    System.out.println(getRateResponse.getRate());
+    System.out.println(getRateResponse.getInvertedRate());
+    System.out.println(getRateResponse.getTerms());
   }
 
   private void testCreateTrade(AFEXService afexService) {

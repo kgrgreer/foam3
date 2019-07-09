@@ -473,6 +473,40 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public GetRateResponse getRate(GetRateRequest request) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/rates");
+      uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair());
+      if ( !request.getValueType().equals("") ) uriBuilder.setParameter("ValueType", request.getValueType());
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+      httpGet.addHeader("API-Key", request.getClientAPIKey());
+      httpGet.addHeader("Content-Type", "application/json");
+      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = "Get AFEX rate failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+            + httpResponse.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        return (GetRateResponse) jsonParser.parseString(response, GetRateResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+
+    } catch (IOException | URISyntaxException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
   public Quote getQuote(GetQuoteRequest request) {
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/quote");
