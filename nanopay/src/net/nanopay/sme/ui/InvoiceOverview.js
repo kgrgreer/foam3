@@ -272,10 +272,9 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showBankAccount',
       expression: function(invoice) {
-        return ( invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
+        return invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
           invoice.status === this.InvoiceStatus.PROCESSING ||
-          invoice.status === this.InvoiceStatus.PAID ) &&
-          ( invoice.payeeId === this.user.id && invoice.destinationAccount != 0 );
+          invoice.status === this.InvoiceStatus.PAID;
       },
       documentation: `Only show bank accounts when it is requires
         approval, processing & complete`
