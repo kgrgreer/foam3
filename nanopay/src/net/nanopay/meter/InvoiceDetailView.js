@@ -69,9 +69,12 @@ foam.CLASS({
                 return x.data.account$find.then((a) => a.toSummary());
               }))
               .on('click', function() {
-                x.data.account$find.then((a) => {
-                  x.stack.push({ class: 'net.nanopay.meter.BankAccountDetailView', data: a });
-                });
+                x.stack.push({
+                  class: 'foam.comics.DAOUpdateControllerView',
+                  detailView: 'net.nanopay.meter.BankAccountDetailView',
+                  dao: x.accountDAO,
+                  key: x.data.account
+                }, this);
               });
             }
           }),
@@ -83,9 +86,12 @@ foam.CLASS({
                 return x.data.destinationAccount$find.then((a) => a.toSummary());
               }))
               .on('click', function() {
-                x.data.destinationAccount$find.then((a) => {
-                  x.stack.push({ class: 'net.nanopay.meter.BankAccountDetailView', data: a });
-                });
+                x.stack.push({
+                  class: 'foam.comics.DAOUpdateControllerView',
+                  detailView: 'net.nanopay.meter.BankAccountDetailView',
+                  dao: x.accountDAO,
+                  key: x.data.destinationAccount
+                }, this);
               });
             }
           }),
