@@ -82,8 +82,7 @@ public class TransactionDAO
     return ( ! SafetyUtil.isEmpty(txn.getId()) ||
       txn instanceof DigitalTransaction ) &&
       (txn.getNext() == null || txn.getNext().length == 0 ) &&
-      (txn.canTransfer(x, oldTxn) ||
-        txn.canReverseTransfer(x, oldTxn));
+      (txn.canTransfer(x, oldTxn));
   }
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
