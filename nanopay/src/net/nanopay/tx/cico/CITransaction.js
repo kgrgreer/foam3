@@ -26,9 +26,6 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer'
   ],
-  imports: [
-    'transactionDAO'
-  ],
   properties: [
     {
       name: 'name',

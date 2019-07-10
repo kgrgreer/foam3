@@ -18,9 +18,6 @@ foam.CLASS({
     'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.account.Account'
   ],
-  imports: [
-    'transactionDAO'
-  ],
   properties: [
     {
       name: 'name',
