@@ -103,6 +103,9 @@ const accountNamesToAccount = {};
 var cashInCounter = 0;
 var cashOutCounter = 0;
 
+// creation date liquidity settings
+var liquidityLastModifiedDate = new Date(new Date().setFullYear(new Date().getFullYear() - 5))
+
 // assign to only CAD accounts and push/pull from CAD accounts for now
 const liquiditySettings = [
   {
@@ -147,6 +150,7 @@ function createEmailLiquiditySetting(X, s) {
     name: s.name,
     userToEmail: s.userToEmail,
     cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+    lastModified: liquidityLastModifiedDate
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
@@ -175,6 +179,7 @@ function createRebalanceLiquiditySetting(X, s) {
     id: foam.next$UID(),
     name: s.name,
     cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+    lastModified: liquidityLastModifiedDate
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
@@ -210,6 +215,7 @@ function createEmailRebalanceLiquiditySetting(X, s) {
     name: s.name,
     userToEmail: s.userToEmail,
     cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+    lastModified: liquidityLastModifiedDate
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
