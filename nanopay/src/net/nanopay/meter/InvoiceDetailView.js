@@ -55,6 +55,7 @@ foam.CLASS({
           this.Invoice.SOURCE_AMOUNT,
           this.Invoice.DESTINATION_CURRENCY,
           this.Invoice.AMOUNT,
+          this.Invoice.EXCHANGE_RATE,
           this.Invoice.PAYER_ID.clone().copyFrom({
             label: 'Payer'
           }),
