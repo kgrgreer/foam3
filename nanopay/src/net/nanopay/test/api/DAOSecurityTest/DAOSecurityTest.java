@@ -116,7 +116,7 @@ public class DAOSecurityTest extends ApiTestBase {
   @Override
   public void runTest(X x) {
     List<String> ignores = new ArrayList<>();
-    testAllDAOs(x, TEST_BODY1, ignores);
+    testAllDAOs(x, TEST_BODY2, ignores);
   }
 
   // Run the test with a list of DAOs to ignore
