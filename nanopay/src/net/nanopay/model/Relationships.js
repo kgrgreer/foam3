@@ -649,7 +649,7 @@ foam.RELATIONSHIP({
   forwardName: 'flinksResponses',
   inverseName: 'flinksAccount',
   cardinality: '1:*',
-  sourceDAOKey: 'localAccountDAO',
+  sourceDAOKey: 'accountDAO',
   targetDAOKey: 'flinksAccountsDetailResponseDAO',
   targetProperty: { visibility: 'RO' }
 });
@@ -660,7 +660,7 @@ foam.RELATIONSHIP({
   forwardName: 'plaidResponses',
   inverseName: 'plaidAccount',
   cardinality: '1:*',
-  sourceDAOKey: 'localAccountDAO',
+  sourceDAOKey: 'accountDAO',
   targetDAOKey: 'plaidAccountDetailDAO',
   targetProperty: { visibility: 'RO' }
 });
