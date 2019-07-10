@@ -4,7 +4,8 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'foam.nanos.analytics.Foldable'
+    'foam.nanos.analytics.Foldable',
+    'foam.nanos.auth.LastModifiedAware'
   ],
 
   requires: [
@@ -75,6 +76,11 @@ foam.CLASS({
           .setEnabled(false)
           .build();
       `,
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: 'Last modified date'
     }
   ],
   methods: [
@@ -92,8 +98,8 @@ foam.CLASS({
     {
       name: 'doFolds',
       javaCode: `
-fm.foldForState(getId()+":high", new java.util.Date(), getHighLiquidity().getThreshold());
-fm.foldForState(getId()+":low", new java.util.Date(), getLowLiquidity().getThreshold());
+fm.foldForState(getId()+":high", getLastModified(), getHighLiquidity().getThreshold());
+fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshold());
       `
     }
   ]

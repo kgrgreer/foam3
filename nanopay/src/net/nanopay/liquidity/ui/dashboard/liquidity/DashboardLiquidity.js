@@ -103,7 +103,7 @@ foam.CLASS({
       class: 'Date',
       name: 'endDate',
       factory: function() {
-        return new Date();
+        return new Date().setHours(23,59,59,999);
       }
     },
     {
@@ -320,9 +320,9 @@ foam.CLASS({
         }
         style[a.liquiditySetting+':high'] = {
           steppedLine: true,
-          borderColor: ['#a61414'],
+          borderColor: ['#32bf5e'],
           backgroundColor: 'rgba(0, 0, 0, 0.0)',
-          label: this.LABEL_HIGH_THRESHOLD
+          label: this.LABEL_HIGH_THRESHOLD,
         }
         this.styling = style;
       }

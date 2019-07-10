@@ -112,32 +112,32 @@ const liquiditySettings = [
     type: 'email',
     name: 'Low and High Email Only',
     userToEmail: 8005,
-    highLiquidity: 1000000,
-    lowLiquidity: 200000
+    highLiquidity: 10000000,
+    lowLiquidity: 1500000
   },
   {
     type: 'rebalance',
     name: 'Low Rebalance Only',
-    lowLiquidity: 200000,
+    lowLiquidity: 1500000,
     lowPull: 'ABC Toronto Shadow Account',
-    lowResetBalance: 300000
+    lowResetBalance: 2000000
   },
   {
     type: 'rebalance',
     name: 'High Rebalance Only',
-    highLiquidity: 1000000,
+    highLiquidity: 10000000,
     highPush: 'ABC Toronto Shadow Account',
-    highResetBalance: 500000
+    highResetBalance: 8000000
   },
   {
     type: 'emailRebalance',
     name: 'Low And High Rebalance Email',
-    highLiquidity: 1000000,
+    highLiquidity: 10000000,
     highPush: 'ABC Toronto Shadow Account',
-    highResetBalance: 500000,
-    lowLiquidity: 200000,
+    highResetBalance: 8000000,
+    lowLiquidity: 1500000,
     lowPull: 'ABC Toronto Shadow Account',
-    lowResetBalance: 300000
+    lowResetBalance: 2000000
   }
 ];
 
