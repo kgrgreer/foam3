@@ -150,6 +150,10 @@ foam.CLASS({
       ^ .input-field-container {
         position: relative;
       }
+
+      ^ .full-width-input-password {
+        width:100%;
+      }
     `,
 
     properties: [
