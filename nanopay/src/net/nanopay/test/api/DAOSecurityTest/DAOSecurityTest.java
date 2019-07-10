@@ -31,6 +31,49 @@ public class DAOSecurityTest extends ApiTestBase {
   private static final String TEST_BODY1 = "{ \"class\": \"foam.box.Message\", \"attributes\": { \"replyBox\": { \"class\": \"foam.box.HTTPReplyBox\" }, \"sessionId\": \"6d2df1a2-982e-4537-9fcd-randomabc123\" }, \"object\": { \"class\": \"foam.box.RPCMessage\", \"name\": \"select_\", \"args\": [null, {\"class\": \"foam.dao.ArraySink\"}, 0, 9007199254740991, null, {\"class\": \"foam.mlang.predicate.Eq\", \"arg1\": {\"class\": \"__Property__\", \"forClass_\": \"foam.nanos.boot.NSpec\", \"name\": \"serve\"}, \"arg2\": {\"class\": \"foam.mlang.Constant\", \"value\": true}}], \"attributes\": {}}}";
   private static final String TEST_BODY2 = "{\"class\":\"foam.box.Message\",\"attributes\":{\"replyBox\":{\"class\":\"foam.box.HTTPReplyBox\"},\"sessionId\":\"6d2df1a2-982e-4537-9fcd-randomabc123\"},\"object\":{\"class\":\"foam.box.RPCMessage\",\"name\":\"find_\",\"args\":[null,188],\"attributes\":{}}}";
   private static final String TEST_BODY3 = "{\"class\":\"foam.box.Message\",\"attributes\":{\"replyBox\":{\"class\":\"foam.box.HTTPReplyBox\"},\"sessionId\":\"6d2df1a2-982e-4537-9fcd-randomabc123\"},\"object\":{\"class\":\"foam.box.RPCMessage\",\"args\":[],\"attributes\":{}}}";
+  private static final String TEST_FIND = "{\n" +
+    "\t\"class\":\"foam.box.Message\",\n" +
+    "\t\"attributes\":{\n" +
+    "\t\t\"replyBox\":{\n" +
+    "\t\t\t\"class\":\"foam.box.HTTPReplyBox\"\n" +
+    "\t\t},\n" +
+    "\t\t\"sessionId\":\"6d2df1a2-982e-4537-9fcd-randomabc123\"\n" +
+    "\t},\n" +
+    "\t\"object\":{\n" +
+    "\t\t\"class\":\"foam.box.RPCMessage\",\n" +
+    "\t\t\"name\":\"find\",\n" +
+    "\t\t\"args\":[\n" +
+    "\t\t\tnull,\n" +
+    "\t\t\t0\n" +
+    "\t\t],\n" +
+    "\t\t\"attributes\":{}\n" +
+    "\t}\n" +
+    "}";
+
+  private static final String TEST_SELECT = "{\n" +
+    "\t\"class\":\"foam.box.Message\",\n" +
+    "\t\"attributes\":{\n" +
+    "\t\t\"replyBox\":{\n" +
+    "\t\t\t\"class\":\"foam.box.HTTPReplyBox\"\n" +
+    "\t\t},\n" +
+    "\t\t\"sessionId\":\"6d2df1a2-982e-4537-9fcd-randomabc123\"\n" +
+    "\t},\n" +
+    "\t\"object\":{\n" +
+    "\t\t\"class\":\"foam.box.RPCMessage\",\n" +
+    "\t\t\"name\":\"select\",\n" +
+    "\t\t\"args\":[\n" +
+    "\t\t\tnull,\n" +
+    "\t\t\t{\n" +
+    "\t\t\t\t\"class\":\"foam.dao.ArraySink\"\n" +
+    "\t\t\t},\n" +
+    "\t\t\t0,\n" +
+    "\t\t\t10,\n" +
+    "\t\t\tnull,\n" +
+    "\t\t\tnull\n" +
+    "\t\t],\n" +
+    "\t\t\"attributes\":{}\n" +
+    "\t}\n" +
+    "}";
 
   private static final String USER_AGENT = "Mozilla/5.0";
 
@@ -55,10 +98,12 @@ public class DAOSecurityTest extends ApiTestBase {
 
   private boolean testDAO(X x, String dao, String request) throws ParseException, IOException, TestDAOFailed {
     String urlString = getBaseUrl(x) + "/service/" + dao;
+//    String urlString = getBaseUrl(x) + "service/dig?dao=" + dao+ "&cmd=select&format=json";
     URL url = new URL(urlString);
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
     con.setRequestMethod("POST");
+//    con.setRequestMethod("GET");
     con.setRequestProperty("User-Agent", USER_AGENT);
     con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
@@ -116,7 +161,7 @@ public class DAOSecurityTest extends ApiTestBase {
   @Override
   public void runTest(X x) {
     List<String> ignores = new ArrayList<>();
-    testAllDAOs(x, TEST_BODY2, ignores);
+    testAllDAOs(x, TEST_SELECT, ignores);
   }
 
   // Run the test with a list of DAOs to ignore
