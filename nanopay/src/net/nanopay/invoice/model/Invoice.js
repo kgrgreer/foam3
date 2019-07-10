@@ -266,13 +266,13 @@ foam.CLASS({
         Currency currency = (Currency) currencyDAO.find(dstCurrency);
         
         // Outputting two columns: "amount", "destination Currency"
-        outputter.output(currency.format(get_(obj)));
-        outputter.output(dstCurrency);
+        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(dstCurrency);
       `,
       javaToCSVLabel: `
         // Outputting two columns: "amount", "destination Currency"
-        outputter.output(getName());
-        outputter.output("Destination Currency");
+        outputter.outputValue(getName());
+        outputter.outputValue("Destination Currency");
       `
     },
     { // How is this used? - display only?,
@@ -458,7 +458,7 @@ foam.CLASS({
           sb.append(file.isPropertySet("address") ? file.getAddress() : file.getFilename());
         }
         sb.append("]");
-        outputter.output(sb.toString());
+        outputter.outputValue(sb.toString());
       `
     },
     {
@@ -668,10 +668,10 @@ foam.RELATIONSHIP({
     },
     javaToCSV: `
       User payee = ((Invoice)obj).findPayeeId(x);
-      outputter.output(payee.label());
+      outputter.outputValue(payee.label());
     `,
     javaToCSVLabel: `
-      outputter.output("Payee");
+      outputter.outputValue("Payee");
     `
   },
 });
@@ -722,10 +722,10 @@ foam.RELATIONSHIP({
     },
     javaToCSV: `
     User payer = ((Invoice)obj).findPayerId(x);
-    outputter.output(payer.label());
+    outputter.outputValue(payer.label());
     `,
     javaToCSVLabel: `
-    outputter.output("Payer");
+    outputter.outputValue("Payer");
     `
   },
 });
