@@ -38,7 +38,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
 
-    if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.PRODUCTION )
+    if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.PRODUCTION  || getEnabled() == false )
       return getDelegate().put_(x, quote);
 
     TransactionQuote quote = (TransactionQuote) obj;
