@@ -23,7 +23,8 @@ foam.CLASS({
       font-weight: bold;
     }
 
-    ^ .property-account {
+    ^ .property-account,
+    ^ .property-destinationAccount {
       cursor: pointer;
       text-decoration: underline;
       color: blue;
