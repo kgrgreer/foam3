@@ -6,22 +6,15 @@ foam.CLASS({
    documentation: `Planner for transaction from CA Digital Account (CAD) to IN Bank Account (INR)`,
 
    javaImports: [
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.bank.INBankAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
+    'net.nanopay.bank.INBankAccount',
     'net.nanopay.fx.KotakFxTransaction',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.*',
-    'foam.dao.DAO',
-    'net.nanopay.tx.KotakCOTransaction',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   constants: [
@@ -40,21 +33,21 @@ foam.CLASS({
    methods: [
     {
       name: 'put_',
-      javaCode: `
-      TransactionQuote quote = (TransactionQuote) obj;
-      Transaction request = quote.getRequestTransaction();
-      Account sourceAccount = (Account) ((DAO) x.get("localAccountDAO")).inX(x).find(request.getSourceAccount());
-      Account destinationAccount = (Account) ((DAO) x.get("localAccountDAO")).inX(x).find(request.getDestinationAccount());
-      User kotakOwnerCA = (User) ((DAO) x.get("localUserDAO")).find(KOTAK_OWNER_CA_ID);
-      User KotakPartnerIN = (User) ((DAO) x.get("localUserDAO")).find(KOTAK_PARTNER_IN_ID);
-      BankAccount kotakCAbank = BankAccount.findDefault(x, kotakOwnerCA, "CAD");
-      BankAccount kotakINbank = BankAccount.findDefault(x, kotakOwnerCA, "INR");
-      BankAccount kotakINPartnerBank = BankAccount.findDefault(x, KotakPartnerIN, "INR");
-
+      javaCode: `TransactionQuote quote = (TransactionQuote) obj;
+      Account sourceAccount = quote.getSourceAccount();
+      Account destinationAccount = quote.getDestinationAccount();
       if ( sourceAccount instanceof DigitalAccount && destinationAccount instanceof INBankAccount &&
-      sourceAccount.getDenomination().equalsIgnoreCase("CAD") && destinationAccount.getDenomination().equalsIgnoreCase("INR") &&
-      kotakCAbank != null && kotakCAbank instanceof CABankAccount &&
-      kotakINbank != null && kotakINbank instanceof INBankAccount ) {
+      sourceAccount.getDenomination().equalsIgnoreCase("CAD") && destinationAccount.getDenomination().equalsIgnoreCase("INR") ) {
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        User kotakOwnerCA = (User) userDAO.find(KOTAK_OWNER_CA_ID);
+        User KotakPartnerIN = (User) userDAO.find(KOTAK_PARTNER_IN_ID);
+        BankAccount kotakCAbank = BankAccount.findDefault(x, kotakOwnerCA, "CAD");
+        BankAccount kotakINbank = BankAccount.findDefault(x, kotakOwnerCA, "INR");
+        BankAccount kotakINPartnerBank = BankAccount.findDefault(x, KotakPartnerIN, "INR");
+
+        if (kotakCAbank == null || ! ( kotakCAbank instanceof CABankAccount ) ||
+          kotakINbank == null || ! ( kotakINbank instanceof INBankAccount ) ) return getDelegate().put_(x, quote);
+        Transaction request = quote.getRequestTransaction();
         Transaction txn;
         // txn 1: CA digital -> Kotak CA bank
         TransactionQuote q1 = new TransactionQuote.Builder(x).build();
@@ -90,8 +83,7 @@ foam.CLASS({
         txn.setIsQuoted(true);
         quote.addPlan(txn);
       }
-       return super.put_(x, quote);
-      `
+      return super.put_(x, quote);`
     },
   ]
 });

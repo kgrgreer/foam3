@@ -448,12 +448,12 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       new AccountingContactEmailCache.Builder(x)
         .setQuickId(importContact.getId())
         .setRealmId(token.getRealmId())
-        .setEmail(email.getAddress())
+        .setEmail(email.getAddress().toLowerCase())
         .build()
     );
 
     Contact existContact = (Contact) contactDAO.inX(x).find(AND(
-      EQ(Contact.EMAIL, email.getAddress()),
+      EQ(Contact.EMAIL, email.getAddress().toLowerCase()),
       EQ(Contact.OWNER, user.getId())
     ));
 
@@ -465,7 +465,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     // existing user
     User existUser = (User) userDAO.find(
-      EQ(User.EMAIL, email.getAddress())
+      EQ(User.EMAIL, email.getAddress().toLowerCase())
     );
 
     // If the contact is a existing contact
@@ -527,7 +527,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         if ( sink.getArray().size() > 1) {
           QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true);
           temp.setChooseBusiness(true);
-          temp.setEmail(email.getAddress());
+          temp.setEmail(email.getAddress().toLowerCase());
           temp.setFirstName(existUser.getFirstName());
           temp.setLastName(existUser.getLastName());
           temp.setOrganization("MULTI_BUSINESS");
@@ -581,7 +581,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
         portalAddress.setSuite(customerAddress.getLine1());
         portalAddress.setCity(customerAddress.getCity());
-        portalAddress.setPostalCode(customerAddress.getPostalCode());
+        portalAddress.setPostalCode(customerAddress.getPostalCode() != null ? customerAddress.getPostalCode() : "");
         portalAddress.setRegionId(region != null ? region.getCode() : null);
         portalAddress.setCountryId(country != null ? country.getCode() : null);
 
@@ -621,7 +621,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     }
 
 
-    newContact.setEmail(email.getAddress());
+    newContact.setEmail(email.getAddress().toLowerCase());
     newContact.setType("Contact");
     newContact.setGroup("sme");
     newContact.setQuickId(importContact.getId());

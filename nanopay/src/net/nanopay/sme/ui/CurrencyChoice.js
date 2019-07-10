@@ -57,7 +57,7 @@ foam.CLASS({
       margin-left: 5px;
     }
     ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice > span {
-      color: #2b2b2b !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
       font-family: lato !important;
       font-size: 12px;
       font-weight: 300;

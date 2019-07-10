@@ -544,26 +544,7 @@ foam.CLASS({
           data: this.sales
         });
       }
-    },
-    {
-      name: 'viewComplianceHistory',
-      label: 'View Compliance History',
-      availablePermissions: ['service.compliancehistorydao'],
-      code: async function(X) {
-        var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.label()}'s Compliance History`,
-          data: this.complianceHistoryDAO.where(m.AND(
-              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
-              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localUserDAO')
-          ))
-        });
-      }
-    },
+    }
   ],
 
   axioms: [

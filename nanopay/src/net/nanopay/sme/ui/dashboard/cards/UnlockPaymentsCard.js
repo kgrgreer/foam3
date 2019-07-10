@@ -50,7 +50,7 @@ foam.CLASS({
       font-size: 16px;
       font-weight: 900;
       line-height: 1.5;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^description {
@@ -87,7 +87,7 @@ foam.CLASS({
 
       font-size: 14px;
       line-height: 1.71;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
   `,
 

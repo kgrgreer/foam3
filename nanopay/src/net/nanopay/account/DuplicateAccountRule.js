@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.account',
-  name: 'DuplicateDigitalAccountRule',
+  name: 'DuplicateAccountRule',
 
   documentation: `Validator that checks if a previous account
     With same name, description, parent and currency exists.`,
@@ -14,25 +14,23 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.*',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.ShadowAccount'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        if ( obj instanceof DigitalAccount &&
-             oldObj == null ) {
-          DigitalAccount digitalAccount = (DigitalAccount) obj;
+        if ( (obj instanceof ShadowAccount || obj instanceof DigitalAccount) ) {
+          Account account = (Account) obj;
           Count count = (Count) ((DAO) x.get("accountDAO"))
             .where(
               AND(
-                INSTANCE_OF(DigitalAccount.class),
-                EQ(DigitalAccount.NAME, digitalAccount.getName()),
-                EQ(DigitalAccount.DENOMINATION, digitalAccount.getDenomination()),
-                HAS(DigitalAccount.PARENT),
-                EQ(DigitalAccount.PARENT, digitalAccount.getParent()),
-                EQ(DigitalAccount.DESC, digitalAccount.getDesc())
+                EQ(Account.NAME, account.getName()),
+                EQ(Account.DENOMINATION, account.getDenomination()),
+                EQ(Account.PARENT, account.getParent()),
+                EQ(Account.DESC, account.getDesc())
               )
             )
             .limit(1)

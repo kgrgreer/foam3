@@ -1,3 +1,6 @@
+var path = require('path');
+require(path.resolve(__dirname, "./files.js"));
+
 var classes = [
   //model
   'net.nanopay.flinks.model.FlinksCall',
@@ -35,7 +38,7 @@ var classes = [
   'net.nanopay.flinks.ClientFlinksAuthService',
   'net.nanopay.flinks.MaskedFlinksAccountDAO',
   'net.nanopay.flinks.RefinedFlinksAccountDAO',
-]
+];
 var abstractClasses = [];
 var skeletons = [
   'net.nanopay.flinks.FlinksAuth'

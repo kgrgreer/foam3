@@ -100,6 +100,7 @@ var accountTree = [
   }
 ];
 
+<<<<<<< HEAD
 function createCurrency(X, cObj) {
   var currency = net.nanopay.model.Currency.create({
     delimiter: ',',
@@ -132,6 +133,165 @@ function bank(X, a) {
       : a.denomination == 'USD' 
           ? net.nanopay.bank.USBankAccount
           : net.nanopay.bank.BankAccount
+=======
+// need this declared outside of the tree because we first create the accounts, then add the settings after they have an initial balance
+var accountNamesToLiquidity = {
+  'Widgets and Things': 'Low And High Rebalance Email',
+  'Odds and Ends': 'Low Rebalance Only',
+  'West Coast Communications': 'Low and High Email Only',
+  'Boston Bookends': 'High Rebalance Only',
+  'Purchasable Potables': 'Low And High Rebalance Email'
+}
+
+
+// to be filled out as accounts are created
+const accountNamesToId = {};
+const accountNamesToAccount = {};
+
+var cashInCounter = 0;
+var cashOutCounter = 0;
+
+// assign to only CAD accounts and push/pull from CAD accounts for now
+const liquiditySettings = [
+  {
+    type: 'email',
+    name: 'Low and High Email Only',
+    userToEmail: 8005,
+    highLiquidity: 1000000,
+    lowLiquidity: 200000
+  },
+  {
+    type: 'rebalance',
+    name: 'Low Rebalance Only',
+    lowLiquidity: 200000,
+    lowPull: 'ABC Toronto Shadow Account',
+    lowResetBalance: 300000
+  },
+  {
+    type: 'rebalance',
+    name: 'High Rebalance Only',
+    highLiquidity: 1000000,
+    highPush: 'ABC Toronto Shadow Account',
+    highResetBalance: 500000
+  },
+  {
+    type: 'emailRebalance',
+    name: 'Low And High Rebalance Email',
+    highLiquidity: 1000000,
+    highPush: 'ABC Toronto Shadow Account',
+    highResetBalance: 500000,
+    lowLiquidity: 200000,
+    lowPull: 'ABC Toronto Shadow Account',
+    lowResetBalance: 300000
+  }
+];
+
+// to be filled out as liquidity settings get created
+const liquidityNamesToId = {};
+
+function createEmailLiquiditySetting(X, s) {
+  var liquiditySettingsObj = {
+    id: foam.next$UID(),
+    name: s.name,
+    userToEmail: s.userToEmail,
+    cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+  };
+
+  if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
+    liquiditySettingsObj.lowLiquidity = net.nanopay.liquidity.Liquidity.create({
+      enabled: true,
+      threshold: s.lowLiquidity
+    });
+  }
+
+  if (s.highLiquidity !== undefined && s.highLiquidity >= 0) {
+    liquiditySettingsObj.highLiquidity = net.nanopay.liquidity.Liquidity.create({
+      enabled: true,
+      threshold: s.highLiquidity
+    });
+  }
+
+  var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
+
+  liquidityNamesToId[liquiditySettings.name] = liquiditySettings.id;
+
+  X.liquiditySettingsDAO.put(liquiditySettings);
+}
+
+function createRebalanceLiquiditySetting(X, s) {
+  var liquiditySettingsObj = {
+    id: foam.next$UID(),
+    name: s.name,
+    cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+  };
+
+  if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
+    liquiditySettingsObj.lowLiquidity = net.nanopay.liquidity.Liquidity.create({
+      enabled: true,
+      threshold: s.lowLiquidity,
+      rebalancingEnabled: true,
+      pushPullAccount: accountNamesToId[s.lowPull],
+      resetBalance: s.lowResetBalance
+    });
+  }
+
+  if (s.highLiquidity !== undefined && s.highLiquidity >= 0) {
+    liquiditySettingsObj.highLiquidity = net.nanopay.liquidity.Liquidity.create({
+      enabled: true,
+      threshold: s.highLiquidity,
+      rebalancingEnabled: true,
+      pushPullAccount: accountNamesToId[s.highPush],
+      resetBalance: s.highResetBalance
+    });
+  }
+
+  var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
+
+  liquidityNamesToId[liquiditySettings.name] = liquiditySettings.id;
+
+  X.liquiditySettingsDAO.put(liquiditySettings);
+}
+
+function createEmailRebalanceLiquiditySetting(X, s) {
+  var liquiditySettingsObj = {
+    id: foam.next$UID(),
+    name: s.name,
+    userToEmail: s.userToEmail,
+    cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+  };
+
+  if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
+    liquiditySettingsObj.lowLiquidity = net.nanopay.liquidity.Liquidity.create({
+      enabled: true,
+      threshold: s.lowLiquidity,
+      rebalancingEnabled: true,
+      pushPullAccount: accountNamesToId[s.lowPull],
+      resetBalance: s.lowResetBalance
+    });
+  }
+
+  if (s.highLiquidity !== undefined && s.highLiquidity >= 0) {
+    liquiditySettingsObj.highLiquidity = net.nanopay.liquidity.Liquidity.create({
+      enabled: true,
+      threshold: s.highLiquidity,
+      rebalancingEnabled: true,
+      pushPullAccount: accountNamesToId[s.highPush],
+      resetBalance: s.highResetBalance
+    });
+  }
+
+  var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
+
+  liquidityNamesToId[liquiditySettings.name] = liquiditySettings.id;
+
+  X.liquiditySettingsDAO.put(liquiditySettings);
+}
+
+function bank(X, a) {
+  var cls = a.denomination == 'CAD' ?
+  net.nanopay.bank.CABankAccount :
+  net.nanopay.bank.USBankAccount;
+>>>>>>> origin
 
   var bank = cls.create({
     id: foam.next$UID(),
@@ -155,6 +315,11 @@ function bank(X, a) {
     lastModifiedBy: X.userId,
     owner: X.userId
   }, X);
+
+  accountNamesToId[bank.name] = bank.id;
+  accountNamesToId[shadow.name] = shadow.id;
+  accountNamesToAccount[shadow.name] = shadow;
+  accountNamesToAccount[bank.name] = bank;
 
   X.accountDAO.put(bank);
   X.accountDAO.put(shadow);
@@ -191,6 +356,8 @@ function virtual(X, a) {
   }, X);
 
   a.obj = obj;
+  accountNamesToId[obj.name] = obj.id;
+  accountNamesToAccount[obj.name] = obj;
 
   X.accountDAO.put(obj);
 
@@ -216,6 +383,8 @@ function aggregate(X, a) {
   X.accountDAO.put(obj);
 
   a.obj = obj;
+  accountNamesToId[obj.name] = obj.id;
+  accountNamesToAccount[obj.name] = obj;
 
   X = X.createSubContext({
     parentAccount: obj.id
@@ -230,12 +399,12 @@ function aggregate(X, a) {
 
 function inflate(X, a) {
   switch (a.type) {
-  case "Bank":
-    return bank(X, a);
-  case "Aggregate":
-    return aggregate(X, a);
-  case "Virtual":
-    return virtual(X, a);
+    case "Bank":
+      return bank(X, a);
+    case "Aggregate":
+      return aggregate(X, a);
+    case "Virtual":
+      return virtual(X, a);
   }
 }
 
@@ -246,18 +415,18 @@ function jdao(journal) {
     formatDatesAsNumbers: false,
     outputDefaultValues: false,
     useShortNames: false,
-    propertyPredicate: function(o, p) { return ! p.storageTransient; }
+    propertyPredicate: function (o, p) { return ! p.storageTransient; }
   });
 
   var stream = require('fs').createWriteStream(journal, { flags: 'a' });
 
   return {
-    put: function(o) {
+    put: function (o) {
       stream.write('p(', 'utf8');
       stream.write(stringifier.stringify(o), 'utf8');
       stream.write(');\n', 'utf8');
     },
-    close: function() {
+    close: function () {
       stream.end();
     }
   };
@@ -266,7 +435,7 @@ function jdao(journal) {
 function cashIn(X, bank, dest, amount) {
   var tx = net.nanopay.tx.cico.CITransaction.create({
     id: foam.next$UID().toString(),
-    name: "Cash In",
+    name: `Cash In #${++cashInCounter}`,
     sourceAccount: bank.id,
     destinationAccount: dest.id,
     amount: amount,
@@ -296,20 +465,54 @@ function cashIn(X, bank, dest, amount) {
     lineItems: [
       net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
     ],
-    balances: [
-      net.nanopay.account.Balance.create({
-        account: 1,
-        balance: amount * -1
-      }),
-      net.nanopay.account.Balance.create({
-        account: tx.destinationAccount,
-        balance: amount
+    lastModified: X.currentDate
+  }, X);
+  
+
+  X.transactionDAO.put(tx);
+
+  X.balances[dest.id] += amount;
+}
+
+function cashOut(X, source, bank, amount) {
+  var tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+    id: foam.next$UID().toString(),
+    name: `Cash Out #${++cashOutCounter}`,
+    sourceAccount: source.id,
+    destinationAccount: bank.id,
+    amount: amount,
+    createdBy: X.userId,
+    payerId: X.userId,
+    payeeId: X.userId,
+    completionDate: X.currentDate,
+    created: X.currentDate,
+    lastModified: X.currentDate,
+    sourceCurrency: source.denomination,
+    destinationCurrency: bank.denomination,
+    status: net.nanopay.tx.model.TransactionStatus.PENDING,
+    initialStatus: net.nanopay.tx.model.TransactionStatus.PENDING,
+    isQuoted: false,
+    lineItems: [
+      net.nanopay.tx.ETALineItem.create({
+        eta: 172800000
       })
+    ]
+  }, X);
+
+  X.transactionDAO.put(tx);
+
+  tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+    id: tx.id,
+    status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
+    lineItems: [
+      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
     ],
     lastModified: X.currentDate
   }, X);
 
   X.transactionDAO.put(tx);
+
+  X.balances[source.id] -= amount;
 }
 
 function transfer(X, source, dest, amount) {
@@ -336,22 +539,37 @@ function transfer(X, source, dest, amount) {
     lastModifiedBy: X.userId,
     created: X.currentDate,
     createdBy: X.userId,
-    balances: [
-      net.nanopay.account.Balance.create({
-        account: source.id,
-        balance: X.balances[source.id]
-      }),
-      net.nanopay.account.Balance.create({
-        account: dest.id,
-        balance: X.balances[dest.id]
-      })
-    ],
   }, X);
 
   X.transactionDAO.put(tx);
 }
 
-function randomTransfer(X) {
+function createLiquiditySettings(X) {
+  liquiditySettings.forEach(s => {
+    switch (s.type) {
+      case 'email':
+        return createEmailLiquiditySetting(X, s);
+      case 'rebalance':
+        return createRebalanceLiquiditySetting(X, s);
+      case 'emailRebalance':
+        return createEmailRebalanceLiquiditySetting(X, s);
+    }
+  })
+}
+
+function addLiquiditySettingsToAccounts(X) {
+  Object.keys(accountNamesToLiquidity).forEach(accountName => {
+    var account = accountNamesToAccount[accountName];
+
+    var liquiditySettingName = accountNamesToLiquidity[accountName];
+
+    account.liquiditySetting = liquidityNamesToId[liquiditySettingName];
+
+    X.accountDAO.put(account);
+  })
+}
+
+function randomDigitalTransfer(X) {
   var root = randomItem(accountTree);
   var accounts = virtualAccounts(root);
 
@@ -367,9 +585,31 @@ function randomTransfer(X) {
 
   var amount = Math.floor(
     X.balances[source.id] * 0.05 +
-      X.balances[source.id] * Math.random() * 0.02);
+    X.balances[source.id] * Math.random() * 0.02);
 
   transfer(X, source, dest, amount);
+}
+
+function randomCICOTransfer(X) {
+  var root = randomItem(accountTree);
+
+  var bank = accountNamesToAccount[`${root.name} Bank Account`];
+  var shadow = accountNamesToAccount[`${root.name} Shadow Account`];
+
+  if (Math.random() < 0.5) {
+    var amount = Math.floor(
+      X.balances[shadow.id] * 0.05 +
+      X.balances[shadow.id] * Math.random() * 0.02);
+
+    cashIn(X, bank, shadow, amount);
+
+  } else {
+    var amount = Math.floor(
+      X.balances[shadow.id] * 0.05 +
+      X.balances[shadow.id] * Math.random() * 0.02);
+
+    cashOut(X, shadow, bank, amount);
+  }
 }
 
 function virtualAccounts(root) {
@@ -377,7 +617,7 @@ function virtualAccounts(root) {
 
   function collect(node) {
     if ( ! net.nanopay.account.AggregateAccount.isInstance(node.obj) &&
-         net.nanopay.account.DigitalAccount.isInstance(node.obj) ) {
+      net.nanopay.account.DigitalAccount.isInstance(node.obj) ) {
       ret.push(node.obj);
     }
 
@@ -408,7 +648,7 @@ function main() {
     userDAO: foam.dao.NullDAO.create(),
     complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,
-    addCommas: function(a) { return a; }
+    addCommas: function (a) { return a; }
   });
 
   newCurrencies.forEach(c => {
@@ -432,8 +672,7 @@ function main() {
     if ( a.children ) a.children.forEach(foo);
   });
 
-
-  accountTree.forEach(function(root) {
+  accountTree.forEach(function (root) {
     var balance = 10000000;
 
     cashIn(X, root.bank, root.shadow, balance);
@@ -442,19 +681,34 @@ function main() {
 
     var amount = Math.floor(balance / virtuals.length);
 
-    virtuals.forEach(function(v) {
+    virtuals.forEach(function (v) {
       transfer(X, root.shadow, v, amount);
     });
   });
+
+  createLiquiditySettings(X);
+
+  addLiquiditySettingsToAccounts(X);
 
   var end = new Date();
 
   var targetTransactionCount = 5000;
   var timeStep = Math.floor((end.getTime() - currentDate.getTime()) / targetTransactionCount);
 
+  // Seeding the shadows with money before the random CICO transactions
+  accountTree.forEach(root => {
+    var amount = 10000000;
+
+    var bank = accountNamesToAccount[`${root.name} Bank Account`];
+    var shadow = accountNamesToAccount[`${root.name} Shadow Account`];
+
+    cashIn(X, bank, shadow, amount);
+  })
+
   while ( foam.Date.compare(currentDate, end) < 0 ) {
     currentDate.setTime(currentDate.getTime() + timeStep);
-    randomTransfer(X);
+    randomDigitalTransfer(X);
+    randomCICOTransfer(X);
   }
 
   X.accountDAO.close();
