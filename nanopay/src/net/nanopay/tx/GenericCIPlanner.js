@@ -16,24 +16,12 @@ foam.CLASS({
   ],
 
   javaImports: [
-  'net.nanopay.bank.BankAccountStatus',
-    'foam.nanos.auth.EnabledAware',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.mlang.sink.Count',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.CABankAccount',
-    'net.nanopay.tx.ETALineItem',
-    'net.nanopay.tx.cico.CITransaction',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'static foam.mlang.MLang.*',
-    'foam.dao.DAO'
+    'net.nanopay.tx.cico.CITransaction'
   ],
 
   properties: [
