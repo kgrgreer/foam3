@@ -22,18 +22,16 @@ function usage {
     echo "Options are:"
     echo "  -D 0 or 1           : Debug mode."
     echo "  -h                  : Display help."
-    echo "  -M <nanopay_mnt>    : Nanopay mount directory."
     echo "  -N <nanopay_home>   : Nanopay home directory."
     echo "  -V <version>        : Version."
     echo "  -W <web_port>       : HTTP Port."
     echo "  -Z 0 or 1           : Daemonize."
 }
 
-while getopts "D:hM:N:W:Z:V:" opt ; do
+while getopts "D:h:N:W:Z:V:" opt ; do
     case $opt in
         D) DEBUG=$OPTARG;;
         h) usage; exit 0;;
-        N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
         Z) DAEMONIZE=$OPTARG;;
         V) VERSION=$OPTARG;;
