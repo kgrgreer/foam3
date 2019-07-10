@@ -98,12 +98,10 @@ public class DAOSecurityTest extends ApiTestBase {
 
   private boolean testDAO(X x, String dao, String request) throws ParseException, IOException, TestDAOFailed {
     String urlString = getBaseUrl(x) + "/service/" + dao;
-//    String urlString = getBaseUrl(x) + "service/dig?dao=" + dao+ "&cmd=select&format=json";
     URL url = new URL(urlString);
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
     con.setRequestMethod("POST");
-//    con.setRequestMethod("GET");
     con.setRequestProperty("User-Agent", USER_AGENT);
     con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
@@ -161,11 +159,12 @@ public class DAOSecurityTest extends ApiTestBase {
   @Override
   public void runTest(X x) {
     List<String> ignores = new ArrayList<>();
-    testAllDAOs(x, TEST_SELECT, ignores);
+    testAllDAOs(x, TEST_SELECT, "select", ignores);
+    testAllDAOs(x, TEST_SELECT, "find", ignores);
   }
 
   // Run the test with a list of DAOs to ignore
-  public void testAllDAOs(X x, String request, List<String> ignores) {
+  public void testAllDAOs(X x, String request, String command, List<String> ignores) {
     DAO nspecDAO = (DAO) x.get("nSpecDAO");
     List nspecs = ((ArraySink) nspecDAO.where(MLang.EQ(NSpec.SERVE, true)).select(new ArraySink())).getArray();
 
@@ -187,7 +186,7 @@ public class DAOSecurityTest extends ApiTestBase {
       } catch (TestDAOFailed | ParseException | IOException testDAOFailed) {
         DAOFailed = false;
       }
-      test(DAOFailed, "DAO " + nspec.getName() + " rejected unauthorized request");
+      test(DAOFailed, "DAO " + nspec.getName() + " " + command + " rejected unauthorized request");
     }
   }
 
