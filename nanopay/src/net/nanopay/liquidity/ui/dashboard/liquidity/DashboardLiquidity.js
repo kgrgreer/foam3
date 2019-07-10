@@ -19,6 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountBalanceDailyCandlestickDAO',
     'accountBalanceWeeklyCandlestickDAO',
     'accountBalanceMonthlyCandlestickDAO',
     'accountBalanceQuarterlyCandlestickDAO',
