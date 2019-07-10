@@ -382,7 +382,7 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
-      label: 'Phone #',
+      label: '',
       autoValidate: true
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
@@ -464,6 +464,7 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
+      label: '',
       section: 'homeAddressSection',
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
@@ -543,6 +544,7 @@ foam.CLASS({
       ]
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
+      label: '',
       section: 'businessAddressSection',
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
