@@ -32,6 +32,7 @@ while getopts "D:h:N:W:Z:V:" opt ; do
     case $opt in
         D) DEBUG=$OPTARG;;
         h) usage; exit 0;;
+        N) NANOPAY_HOME=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
         Z) DAEMONIZE=$OPTARG;;
         V) VERSION=$OPTARG;;
