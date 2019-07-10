@@ -292,7 +292,7 @@ function start_nanos {
         OPT_ARGS=
         
         if [ $GRADLE_BUILD -eq 1 ]; then
-            OPT_ARGS="${OPTARGS} -Z$(gradle -q --daemon getVersion)"
+            OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
         fi
 
         if [ ! -z ${RUN_USER} ]; then
