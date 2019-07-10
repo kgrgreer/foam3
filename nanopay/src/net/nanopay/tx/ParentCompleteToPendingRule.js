@@ -18,7 +18,7 @@ foam.CLASS({
       javaCode: `
       Transaction tx = (Transaction) obj;
         if( tx.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED && ((Transaction) tx.findParent(x)).getStatus() == TransactionStatus.COMPLETED)
-          tx.setStatus(TransactionStatus.PENDING);
+          tx.setStatus(tx.getInitialStatus());
 
       `
     }
