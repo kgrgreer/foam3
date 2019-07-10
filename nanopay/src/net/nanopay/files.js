@@ -320,6 +320,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
+  { name: 'net/nanopay/tx/ParentCompleteToPendingRule'},
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
