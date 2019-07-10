@@ -80,9 +80,10 @@ public class TransactionDAO
    */
   boolean canExecute(X x, Transaction txn, Transaction oldTxn) {
     return ( ! SafetyUtil.isEmpty(txn.getId()) ||
-             txn instanceof DigitalTransaction ) &&
-      txn.getNext() == null &&
-      txn.canTransfer(x, oldTxn);
+      txn instanceof DigitalTransaction ) &&
+      (txn.getNext() == null || txn.getNext().length == 0 ) &&
+      (txn.canTransfer(x, oldTxn) ||
+        txn.canReverseTransfer(x, oldTxn));
   }
 
   FObject executeTransaction(X x, Transaction txn, Transaction oldTxn) {
@@ -148,16 +149,24 @@ public class TransactionDAO
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
     Balance [] finalBalanceArr = new Balance[ts.length];
-    for ( Transfer t : ts ) {
-      Account account = t.findAccount(getX());
-      Balance balance = (Balance) getBalanceDAO().find(account.getId());
+    DAO localAccountDAO = (DAO) x.get("localAccountDAO");
+    for ( int i = 0 ; i < ts.length ; i++ ) {
+      Transfer t = ts[i];
+      Account account = (Account) localAccountDAO.find(t.getAccount());
+      Balance balance = (Balance) writableBalanceDAO_.find(account.getId());
       if ( balance == null ) {
         balance = new Balance();
         balance.setId(account.getId());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-      account.validateAmount( x, balance, t.getAmount() );
+      finalBalanceArr[i] = balance;
+      try {
+        account.validateAmount(x, balance, t.getAmount());
+      } catch (RuntimeException e) {
+        throw e;
+      }
     }
+
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
       t.validate();
