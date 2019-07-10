@@ -8,6 +8,7 @@ foam.CLASS({
   tableColumns: [
     'id',
     'userId',
+    'nameSearched',
     'daoKey',
     'searchDate',
     'status'
@@ -16,6 +17,7 @@ foam.CLASS({
   searchColumns: [
     'id',
     'userId',
+    'nameSearched',
     'daoKey',
     'searchDate',
     'status'

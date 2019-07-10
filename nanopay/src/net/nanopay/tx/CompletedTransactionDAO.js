@@ -38,15 +38,17 @@ foam.CLASS({
           EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED));
         for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
           Transaction child = (Transaction) ((Transaction) o).fclone();
-          child.setStatus(child.getInitialStatus());
-
+          if( child.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED){
+            child.setStatus(child.getInitialStatus());
+            children.put_(getX(), child);
+          }
           /**
            * need to use the put_ override because of the newly added transaction.status permissionRequired: true property
            * we call put_ with the DAO context rather than the calling context instead
            * this is because the user in the calling context may not have permission to update
            * all neccessary properties
            */
-          child = (Transaction) children.put_(getX(), child);
+
         }
       }
       return txn;
