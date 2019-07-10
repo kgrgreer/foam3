@@ -100,40 +100,6 @@ var accountTree = [
   }
 ];
 
-<<<<<<< HEAD
-function createCurrency(X, cObj) {
-  var currency = net.nanopay.model.Currency.create({
-    delimiter: ',',
-    decimalCharacter: '.',
-    symbol: '¤',
-    leftOrRight: 'left',
-    showSpace: true,
-    precision: 2,
-    numericCode: 0,
-    ...cObj
-  });
-
-  X.currencyDAO.put(currency);
-}
-
-function createTrustAccount(X, d) {
-  var trust = net.nanopay.account.TrustAccount.create({
-    id: foam.next$UID(),
-    owner: 101,
-    name: `${d} Trust Account`,
-    denomination: d
-  })
-
-  X.accountDAO.put(trust);
-}
-
-function bank(X, a) {
-  var cls = a.denomination == 'CAD' 
-      ? net.nanopay.bank.CABankAccount 
-      : a.denomination == 'USD' 
-          ? net.nanopay.bank.USBankAccount
-          : net.nanopay.bank.BankAccount
-=======
 // need this declared outside of the tree because we first create the accounts, then add the settings after they have an initial balance
 var accountNamesToLiquidity = {
   'Widgets and Things': 'Low And High Rebalance Email',
@@ -188,6 +154,33 @@ const liquiditySettings = [
 
 // to be filled out as liquidity settings get created
 const liquidityNamesToId = {};
+
+function createCurrency(X, cObj) {
+  var currency = net.nanopay.model.Currency.create({
+    delimiter: ',',
+    decimalCharacter: '.',
+    symbol: '¤',
+    leftOrRight: 'left',
+    showSpace: true,
+    precision: 2,
+    numericCode: 0,
+    ...cObj
+  });
+
+  X.currencyDAO.put(currency);
+}
+
+function createTrustAccount(X, d) {
+  var trust = net.nanopay.account.TrustAccount.create({
+    id: foam.next$UID(),
+    owner: 101,
+    name: `${d} Trust Account`,
+    denomination: d
+  })
+
+  X.accountDAO.put(trust);
+}
+
 
 function createEmailLiquiditySetting(X, s) {
   var liquiditySettingsObj = {
@@ -288,10 +281,11 @@ function createEmailRebalanceLiquiditySetting(X, s) {
 }
 
 function bank(X, a) {
-  var cls = a.denomination == 'CAD' ?
-  net.nanopay.bank.CABankAccount :
-  net.nanopay.bank.USBankAccount;
->>>>>>> origin
+  var cls = a.denomination == 'CAD' 
+      ? net.nanopay.bank.CABankAccount 
+      : a.denomination == 'USD' 
+          ? net.nanopay.bank.USBankAccount
+          : net.nanopay.bank.BankAccount
 
   var bank = cls.create({
     id: foam.next$UID(),
