@@ -1,3 +1,5 @@
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"business.ro.loginEnabled"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"contact.ro.loginEnabled"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"currency.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"invoice.pay"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"menu.read.currency"})
@@ -13,6 +15,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.run.httpBlobService"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.run.httpFileService"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"user.ro.loginEnabled"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"cico.ci"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"fx.provision.payer"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"menu.read.accounts"})
