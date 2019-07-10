@@ -54,6 +54,9 @@ foam.CLASS({
     ^ .input-container {
       margin: 25px;
     }
+    ^ input:not([type="checkbox"]) {
+      width: 100%;
+    }
   `,
 
   properties: [
@@ -106,7 +109,7 @@ foam.CLASS({
           .end()
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
-            .start(this.EMAIL).addClass('input-field').end()
+            .tag(this.EMAIL)
           .end()
         .end()
         .start().addClass('bottom-modal')

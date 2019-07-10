@@ -33,8 +33,8 @@ foam.CLASS({
       padding: 24px;
       min-width: 350px;
     }
-    ^ .input-field {
-      background: white;
+    ^change-password-card input {
+      width: 100%;
     }
     ^two-factor-card {
       padding: 24px;
@@ -45,7 +45,8 @@ foam.CLASS({
     }
     ^two-factor-instr-left {
       display: inline-block;
-      width: 360px;
+      width: 380px;
+      margin-bottom: 15px;
     }
     ^step-1 span {
       font-family: Lato;
@@ -79,7 +80,6 @@ foam.CLASS({
     ^two-factor-instr-right {
       display: inline-block;
       vertical-align: top;
-      margin-top: 30px;
     }
     @media only screen and (max-width: 767px) {
       ^ .validation-input {
@@ -90,9 +90,9 @@ foam.CLASS({
       }
 
     }
-    @media only screen and (min-width: 1313px) {
+    @media only screen and (min-width: 1133px) {
       ^two-factor-instr-right {
-        margin-left: 110px;
+        margin-left: 20px;
       }
   `,
 
@@ -152,10 +152,10 @@ foam.CLASS({
     { name: 'passwordMismatch', message: 'Passwords do not match' },
     { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor Authentication' },
-    { name: 'TwoFactorInstr1', message: 'Download the authenticator app on your mobile device' },
-    { name: 'TwoFactorInstr2', message: 'Open the authenticator app on your mobile device and scan the QR code to retrieve your validation code then enter it in into the field on the right.' },
-    { name: 'IOSName', message: 'iOS authenticator download' },
-    { name: 'AndroidName', message: 'Android authenticator download' },
+    { name: 'TwoFactorInstr1', message: 'Download and use your Google Authenticator ' },
+    { name: 'TwoFactorInstr2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into Google Authenticator app manually.' },
+    { name: 'IOSName', message: 'iOS' },
+    { name: 'AndroidName', message: 'Android' },
     { name: 'StepOne', message: 'Step 1' },
     { name: 'StepTwo', message: 'Step 2' }
   ],
@@ -209,28 +209,23 @@ foam.CLASS({
             // two factor disabled
 
             return this.E()
-              .br()
               .start().addClass(this.myClass('two-factor-instr'))
                 .start().addClass(this.myClass('two-factor-instr-left'))
                   .start().addClass(this.myClass('step-1'))
-                    .start('b').add(this.StepOne).end()
                     .br()
-                    .start('span').add(this.TwoFactorInstr1).end()
-                    .br()
-                    .start('a').addClass(this.myClass('two-factor-link'))
-                      .add(this.IOSName)
-                      .attrs({ href: this.IOS_LINK, target: '_blank' })
+                    .start('span')
+                      .add(this.TwoFactorInstr1)
+                      .start('a').addClass(this.myClass('two-factor-link'))
+                        .add(this.IOSName)
+                        .attrs({ href: this.IOS_LINK, target: '_blank' })
+                      .end()
+                      .add(' or ')
+                      .start('a').addClass(this.myClass('two-factor-link'))
+                        .add(this.AndroidName)
+                        .attrs({ href: this.ANDROID_LINK, target: '_blank' })
+                      .end()
+                      .add(this.TwoFactorInstr2)
                     .end()
-                    .br()
-                    .start('a').addClass(this.myClass('two-factor-link'))
-                      .add(this.AndroidName)
-                      .attrs({ href: this.ANDROID_LINK, target: '_blank' })
-                    .end()
-                  .end()
-                  .start().addClass(this.myClass('step-2'))
-                    .start('b').add(this.StepTwo).end()
-                    .br()
-                    .start('span').add(this.TwoFactorInstr2).end()
                   .end()
                 .end()
                 .start({

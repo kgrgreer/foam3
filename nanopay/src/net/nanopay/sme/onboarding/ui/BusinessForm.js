@@ -459,11 +459,11 @@ foam.CLASS({
           .start(this.ADDRESS_FIELD).end()
           .start().addClass('label-input').addClass('half-container').addClass('left-of-container')
             .start().addClass('label').add(this.PHONE_NUMBER_LABEL).end()
-            .start(this.PHONE_NUMBER_FIELD).addClass('input-field').end()
+            .tag(this.PHONE_NUMBER_FIELD)
           .end()
           .start().addClass('label-input').addClass('half-container')
             .start().addClass('label').add(this.WEBSITE_LABEL).end()
-            .start(this.WEBSITE_FIELD).addClass('input-field').end()
+            .tag(this.WEBSITE_FIELD)
           .end()
           // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
           //
@@ -508,7 +508,7 @@ foam.CLASS({
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.BUSINESS_NAME_LABEL).end()
-            .start(this.REGISTERED_BUSINESS_NAME_FIELD).addClass('input-field').end()
+            .tag(this.REGISTERED_BUSINESS_NAME_FIELD)
           .end()
           .tag({ class: 'foam.u2.CheckBox', data$: this.operating$ })
           .start().addClass('inline').add(this.OPERATING_QUESTION).end()
@@ -520,7 +520,7 @@ foam.CLASS({
           .end()
           .start().addClass('label-input')
             .start().addClass('label').add(this.PRODUCTS_AND_SERVICES_LABEL).end()
-            .start(this.TARGET_CUSTOMERS_FIELD).addClass('input-field').end()
+            .tag(this.TARGET_CUSTOMERS_FIELD)
           .end()
           // Place info box here.
           .start().addClass('subdued-text')
@@ -536,14 +536,14 @@ foam.CLASS({
           }))
             .addClass('label-input')
             .start().addClass('label').add(this.SOURCE_OF_FUNDS_LABEL).end()
-            .start(this.SOURCE_OF_FUNDS_OTHER_FIELD).addClass('input-field').end()
+            .tag(this.SOURCE_OF_FUNDS_OTHER_FIELD)
           .end()
           // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE.
           //
           // .start().addClass('label-input')
           //   .show(this.isUS$)
           //   .start().addClass('label').add(this.TAX_ID_LABEL).end()
-          //   .start(this.TAX_NUMBER_FIELD).addClass('input-field').end()
+          //   .tag(this.TAX_NUMBER_FIELD)
           // .end()
           .start().addClass('label-input')
             .start().addClass('inline').add(this.HOLDING_QUESTION).end()

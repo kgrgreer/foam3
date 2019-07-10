@@ -154,10 +154,6 @@ foam.CLASS({
     ^annotation {
       font-size: 10px;
     }
-    ^primary-disable {
-      background: #bdb4fd !important;
-      cursor: default !important;
-    }
     ^ .date-display-box {
       width: 403px !important;
       font-size: 14px !important;
@@ -170,7 +166,7 @@ foam.CLASS({
       padding-top: 2px;
     }
     ^ .date-display-text {
-      color: #2b2b2b !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
     }
     ^ .net-nanopay-invoice-ui-modal-RecordPaymentModal {
       overflow: scroll;
@@ -276,10 +272,9 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showBankAccount',
       expression: function(invoice) {
-        return ( invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
+        return invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
           invoice.status === this.InvoiceStatus.PROCESSING ||
-          invoice.status === this.InvoiceStatus.PAID ) &&
-          ( invoice.payeeId === this.user.id && invoice.destinationAccount != 0 );
+          invoice.status === this.InvoiceStatus.PAID;
       },
       documentation: `Only show bank accounts when it is requires
         approval, processing & complete`
@@ -488,25 +483,10 @@ foam.CLASS({
                 // Dynamic create the primary action
                 .start()
                   .addClass(this.myClass('header-align-right'))
-                  .start(this.PAY_NOW)
-                    .addClass('sme').addClass('button').addClass('primary')
-                  .end()
-                  .start(this.EDIT)
-                    .addClass('sme').addClass('button').addClass('primary')
-                  .end()
-                  .start(this.PAID)
-                    .addClass('sme').addClass('button').addClass('primary')
-                    .addClass(this.myClass('primary-disable'))
-                  .end()
-                  .start(this.APPROVE)
-                    .addClass('sme').addClass('button').addClass('primary')
-                    .enableClass(
-                      this.myClass('primary-disable'),
-                      this.slot(function(canApproveInvoice) {
-                        return ! canApproveInvoice;
-                      })
-                    )
-                  .end()
+                  .tag(this.PAY_NOW, { size: 'LARGE' })
+                  .tag(this.EDIT, { size: 'LARGE' })
+                  .tag(this.PAID, { size: 'LARGE' })
+                  .tag(this.APPROVE, { size: 'LARGE' })
                 .end()
               .end()
             .endContext();
