@@ -21,7 +21,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.tx.cico.CITransaction'
+    'net.nanopay.tx.cico.CITransaction',
+    'foam.nanos.app.Mode'
   ],
 
   properties: [
@@ -37,6 +38,9 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
 
+    if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.PRODUCTION )
+      return getDelegate().put_(x, quote);
+
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = (Transaction) quote.getRequestTransaction().fclone();
 
@@ -50,9 +54,7 @@ foam.CLASS({
       t.copyFrom(request);
       t.setIsQuoted(true);
       quote.addPlan(t);
-
     }
-
     return getDelegate().put_(x, quote);
     `
     },
