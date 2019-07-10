@@ -283,7 +283,7 @@ foam.CLASS({
           label: 'Payment details',
           subtitle: 'Select payment method',
           view: {
-            class: 'net.nanopay.sme.ui.Payment',
+            class: 'net.nanopay.sme.ui.SendRequestMoneyPayment',
             type: this.type
           }
         });
