@@ -183,7 +183,7 @@ foam.CLASS({
     },
     {
       name: 'homeAddressSection',
-      title: 'Enter you home address',
+      title: 'Enter your home address',
       help: 'Awesome! Next, I’ll need to know your current home address…',
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
