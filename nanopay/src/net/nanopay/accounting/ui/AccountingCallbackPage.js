@@ -56,7 +56,7 @@ foam.CLASS({
     font-stretch: normal;
     line-height: 1.5;
     letter-spacing: normal;
-    color: #2b2b2b;
+    color: /*%BLACK%*/ #1e1f21;
   }
 
   ^ .ablii-accounting-software-icon {

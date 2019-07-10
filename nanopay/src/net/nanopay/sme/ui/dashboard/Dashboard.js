@@ -51,7 +51,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_ACTION_REQUIRED', message: 'You\'re all caught up!' },
     { name: 'NO_LATEST_ACTIVITY', message: 'No latest activity to display' },
     { name: 'NO_RECENT_PAYABLES', message: 'No recent payables to display' },
     { name: 'NO_RECENT_RECEIVABLES', message: 'No recent receivables to display' },
@@ -126,13 +125,6 @@ foam.CLASS({
             this.countDepositPayment = c.value;
           });
         return 0;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'actionsCheck',
-      expression: function(countRequiresApproval, countOverdueAndUpcoming, countDepositPayment) {
-        return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
       }
     },
     {
@@ -218,7 +210,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.BankAccount.name),
               this.EQ(this.Account.TYPE, this.CABankAccount.name),
               this.EQ(this.Account.TYPE, this.USBankAccount.name)
-            ), 
+            ),
             this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED)
           )
         ).select()
@@ -241,7 +233,7 @@ foam.CLASS({
           .start('h1')
             .add(this.TITLE)
           .end()
-          .tag({ 
+          .tag({
             class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard',
             bankAccount: this.bankAccount,
             userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
@@ -255,11 +247,6 @@ foam.CLASS({
             .add(this.SUBTITLE1)
           .end()
           .start()
-            .show(this.actionsCheck$)
-            .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
-          .end()
-          .start()
-            .hide(this.actionsCheck$)
             .tag(this.RequireActionView.create({
               countRequiresApproval$: this.countRequiresApproval$,
               countOverdueAndUpcoming$: this.countOverdueAndUpcoming$,
@@ -373,7 +360,7 @@ foam.CLASS({
         split.rightBottomPanel.add(botR);
 
         this.addClass(this.myClass()).add(split).end();
-      })
+      });
     }
   ]
 });

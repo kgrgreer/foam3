@@ -102,7 +102,7 @@ foam.CLASS({
     }
     ^current-signin-email {
       display: inline-block;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 16px;
       margin-left: 3px;
     }

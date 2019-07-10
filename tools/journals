@@ -30,12 +30,12 @@ lineItemFees
 lineItemTax
 lineItemTypeAccounts
 lineItemTypes
+liquiditySettings
 menus
 notificationTemplates
 payoutOptions
 permissions
 questionnaires
-quickbooksConfig
 quickbooksToken
 regions
 reports

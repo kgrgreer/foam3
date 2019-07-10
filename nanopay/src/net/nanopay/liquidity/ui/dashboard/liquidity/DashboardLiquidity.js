@@ -1,26 +1,3 @@
-foam.ENUM({
-  package: 'net.nanopay.liquidity.ui.dashboard.liquidity',
-  name: 'TimeFrame',
-  values: [
-    {
-      name: 'WEEKLY',
-      label: 'Weekly'
-    },
-    {
-      name: 'MONTHLY',
-      label: 'Monthly'
-    },
-    {
-      name: 'QUARTERLY',
-      label: 'Quarterly'
-    },
-    {
-      name: 'ANNUALLY',
-      label: 'Annually'
-    },
-  ]
-});
-
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.liquidity',
   name: 'DashboardLiquidity',
@@ -111,20 +88,20 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.liquidity.ui.dashboard.liquidity.TimeFrame',
+      of: 'net.nanopay.liquidity.ui.dashboard.DateFrequency',
       name: 'timeFrame',
       value: 'WEEKLY'
     },
     {
-      class: 'DateTime',
-      name: 'startTime',
+      class: 'Date',
+      name: 'startDate',
       factory: function() {
         return new Date(0);
       }
     },
     {
-      class: 'DateTime',
-      name: 'endTime',
+      class: 'Date',
+      name: 'endDate',
       factory: function() {
         return new Date();
       }
@@ -169,8 +146,8 @@ foam.CLASS({
 
   reactions: [
     ['', 'propertyChange.aggregatedDAO', 'updateStyling'],
-    ['', 'propertyChange.startTime', 'updateAggregatedDAO'],
-    ['', 'propertyChange.endTime', 'updateAggregatedDAO'],
+    ['', 'propertyChange.startDate', 'updateAggregatedDAO'],
+    ['', 'propertyChange.endDate', 'updateAggregatedDAO'],
     ['', 'propertyChange.account', 'updateAggregatedDAO'],
     ['', 'propertyChange.timeFrame', 'updateAggregatedDAO'],
   ],
@@ -205,11 +182,11 @@ foam.CLASS({
         .start(this.Cols)
           .tag(this.SectionedDetailPropertyView, {
             data: this,
-            prop: this.START_TIME
+            prop: this.START_DATE
           })
           .tag(this.SectionedDetailPropertyView, {
             data: this,
-            prop: this.END_TIME
+            prop: this.END_DATE
           })
         .end();
     }
@@ -235,8 +212,8 @@ foam.CLASS({
               var account = await this.account$find;
               await this['accountBalance' + this.timeFrame.label + 'CandlestickDAO']
                 .where(this.AND(
-                  this.GTE(this.Candlestick.CLOSE_TIME, this.startTime),
-                  this.LTE(this.Candlestick.CLOSE_TIME, this.endTime),
+                  this.GTE(this.Candlestick.CLOSE_TIME, this.startDate),
+                  this.LTE(this.Candlestick.CLOSE_TIME, this.endDate),
                   this.EQ(this.Candlestick.KEY, account.id)
                 ))
                 .select(sink);
@@ -248,13 +225,14 @@ foam.CLASS({
               }
 
               // Only put liquidity history that spans the range of the balance history.
-              // i.e. If the startTime is May 1st but balance histories don't start until
+              // i.e. If the startDate is May 1st but balance histories don't start until
               // July 1st, we want liquidity settings to start at July 1st but if liquidity
               // settings haven't been touched since June 1st, we need to render the point
               // from June 1st at July 1st.
-
-              var minTime = (await dao.select(this.MIN(this.Candlestick.CLOSE_TIME))).value;
-              var maxTime = (await dao.select(this.MAX(this.Candlestick.CLOSE_TIME))).value;
+              var minTime = await dao.select(this.MIN(this.Candlestick.CLOSE_TIME));
+              minTime = minTime.value || new Date();
+              var maxTime = await dao.select(this.MAX(this.Candlestick.CLOSE_TIME));
+              maxTime = maxTime.value || new Date();
 
               var fillLiquidityHistory = async function(threshold) {
                 var key = account.liquiditySetting + ':' + threshold;

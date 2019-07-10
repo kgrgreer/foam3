@@ -5,8 +5,7 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOBrowserView',
-    'org.chartjs.PieDAOChartView',
-    'foam.u2.layout.Cols'
+    'org.chartjs.PieDAOChartView'
   ],
 
   css: `
@@ -24,6 +23,7 @@ foam.CLASS({
       padding: 34px;
     }
   `,
+
 
   properties: [
     {
@@ -73,6 +73,10 @@ foam.CLASS({
                       }
                     }
                   }
+                },
+                backgroundColor: function(context) {
+                  const palette = ['#202341', '#233e8b', '#406dea', '#1e1f21', '#47484a', '#9ba1a6'];
+                  return palette[context.dataIndex % palette.length];
                 }
               }
             ).addClass(this.myClass('pie-chart')).end()

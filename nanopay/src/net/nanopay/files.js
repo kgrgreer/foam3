@@ -18,7 +18,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/AccountDAOSummaryView' },
   { name: 'net/nanopay/account/Debtable' },
   { name: 'net/nanopay/account/Accountable' },
-  { name: 'net/nanopay/account/DuplicateDigitalAccountRule'},
+  { name: 'net/nanopay/account/DuplicateAccountRule'},
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
   { name: 'net/nanopay/account/ui/AccountTreeView' },
@@ -297,6 +297,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRuleAction' },
+  { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
   { name: 'net/nanopay/tx/ruler/AccountTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/UserTransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/InvoicePaymentRule' },
@@ -950,7 +951,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/UserComplianceRequested' },
   { name: 'net/nanopay/meter/compliance/ruler/CreateRemoveComplianceItemRule' },
   { name: 'net/nanopay/meter/compliance/ruler/RemoveComplianceApprovalRequest' },
-  { name: 'net/nanopay/meter/compliance/ruler/ComplianceLoginControlRule' },
 
   // canadian sanction
   { name: 'net/nanopay/meter/compliance/canadianSanction/Record' },
@@ -1020,9 +1020,10 @@ FOAM_FILES([
 
   // liquidity
   { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
-  
+  { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },  
   { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
   { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
+  { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadow' },
   { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposure' },
   { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/DashboardCurrencyExposure' },
   { name: 'net/nanopay/liquidity/ui/dashboard/currencyExposure/CurrencyExposureDAO' },
