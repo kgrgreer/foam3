@@ -69,7 +69,7 @@ public class LiquiditySettingsTest
     sender_.setFirstName("Francis");
     sender_.setLastName("Filth");
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
-    senderDigitalDefault = DigitalAccount.findDefault(x_, sender_, "CAD");
+    senderDigitalDefault = (DigitalAccount) DigitalAccount.findDefault(x_, sender_, "CAD").fclone();
     senderLiquidityDigital = new DigitalAccount();
     senderLiquidityDigital.setDenomination("CAD");
     senderLiquidityDigital.setOwner(sender_.getId());

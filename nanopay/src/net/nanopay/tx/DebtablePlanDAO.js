@@ -24,16 +24,14 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      javaCode: `
-      TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
+      javaCode: ` TransactionQuote quote = (TransactionQuote) getDelegate().put_(x, obj);
       Transaction plan = quote.getPlan();
 
       if (plan instanceof VerificationTransaction) return quote;
 
-      Account sourceAccount = plan.findSourceAccount(x);
-      Account destinationAccount = plan.findDestinationAccount(x);
+      Account sourceAccount = quote.getSourceAccount();
 
-      if ( sourceAccount instanceof Debtable) {
+      if ( ! ( sourceAccount instanceof Debtable ) ) return quote;
         DebtAccount debtAccount = ((Debtable) sourceAccount).findDebtAccount(x);
         if ( debtAccount != null &&
              debtAccount.getLimit() > 0 ) {
@@ -46,11 +44,8 @@ foam.CLASS({
           d.setIsQuoted(true);
           d.addNext(plan);
           quote.setPlan(d);
-((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Transaction", d.getType(), d.getId(), "invoice", d.getInvoiceId());
         }
-      }
-      return quote;
-      `
+      return quote;`
     }
   ]
 });

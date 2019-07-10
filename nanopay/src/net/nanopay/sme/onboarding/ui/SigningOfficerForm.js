@@ -167,7 +167,7 @@ foam.CLASS({
     }
 
     ^ .date-display-text {
-    color: #2b2b2b !important;
+    color: /*%BLACK%*/ #1e1f21 !important;
     }
 
     ^ .property-birthdayField .date-display-box {

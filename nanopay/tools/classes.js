@@ -51,7 +51,7 @@ var classes = [
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
   'net.nanopay.account.Balance',
-  'net.nanopay.account.DuplicateDigitalAccountRule',
+  'net.nanopay.account.DuplicateAccountRule',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
@@ -223,6 +223,7 @@ var classes = [
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
    'net.nanopay.liquidity.LiquidityRule',
+   'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
    'net.nanopay.util.Frequency',
 
    // quick
@@ -331,6 +332,7 @@ var classes = [
   'net.nanopay.tx.FailedTransactionNotification',
   'net.nanopay.tx.DebtRepaymentTransaction',
   'net.nanopay.tx.DebtRepaymentPlanDAO',
+  'net.nanopay.tx.ParentCompleteToPendingRule',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -559,7 +561,6 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
   'net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule',
-  'net.nanopay.meter.compliance.ruler.ComplianceLoginControlRule',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',

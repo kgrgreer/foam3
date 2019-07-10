@@ -26,7 +26,6 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer'
   ],
-
   properties: [
     {
       name: 'name',
@@ -62,6 +61,12 @@ foam.CLASS({
             ['DECLINED', 'DECLINED']
           ];
         }
+        if ( this.status == this.TransactionStatus.PENDING_PARENT_COMPLETED ) {
+          return [
+            'choose status',
+            ['PAUSED', 'PAUSED']
+          ];
+        }
         if ( this.status == this.TransactionStatus.SENT ) {
           return [
             'choose status',
@@ -81,7 +86,7 @@ foam.CLASS({
         if ( this.status == this.TransactionStatus.PAUSED ) {
           return [
             'choose status',
-            ['PENDING', 'PENDING'],
+            ['PENDING_PARENT_COMPLETED', 'UNPAUSE'],
             ['CANCELLED', 'CANCELLED']
           ];
         }
