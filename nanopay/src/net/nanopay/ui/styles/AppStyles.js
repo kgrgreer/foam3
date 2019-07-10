@@ -17,30 +17,6 @@ foam.CLASS({
       background: /*%GREY5%*/ #f5f7fa;
       margin: 0;
     }
-    table {
-      border-collapse: collapse;
-      margin: auto;
-    }
-    thead > tr > th {
-      font-family: 'Roboto';
-      font-size: 14px;
-      background-color: %TABLECOLOR%;
-      color: /*%BLACK%*/ #1e1f21;
-      line-height: 1.14;
-      letter-spacing: 0.3px;
-      border-spacing: 0;
-      text-align: left;
-      padding-left: 15px;
-      height: 40px;
-    }
-    tbody > tr > th > td {
-      font-size: 12px;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
-      padding-left: 15px;
-      height: 60px;
-    }
     .foam-u2-DetailView {
       background: #fafafa;
       border: 1px solid grey;

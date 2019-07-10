@@ -8,7 +8,7 @@ foam.CLASS({
   css: `
     .label, .infoLabel {
       font-size: 12px !important;
-      color: #2b2b2b !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
       padding-bottom: 6px !important;
       font-weight: 400 !important;
       display: block !important;
@@ -116,7 +116,7 @@ foam.CLASS({
 
     .popUpHeader {
       background: #fff !important;
-      color: #2b2b2b !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
       padding: 24px 24px 16px 24px !important;
       width: auto !important;
       height: auto !important;
@@ -125,7 +125,7 @@ foam.CLASS({
     .popUpTitle {
       font-weight: 900 !important;
       font-size: 24px !important;
-      color: #2b2b2b !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
       margin: 0px !important;
     }
 
@@ -479,7 +479,7 @@ foam.CLASS({
       font-size: 14px;
       line-height: 21px;
       font-weight: 400;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     .table-heading {
@@ -647,7 +647,7 @@ foam.CLASS({
       font-size: 32px;
       line-height: 48px;
       font-weight: 900;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     .foam-u2-search-TextSearchView input {
@@ -657,41 +657,8 @@ foam.CLASS({
       width: 330px;
     }
 
-    .foam-comics-DAOControllerView .foam-u2-view-TableView-row {
-      height: 48px;
-    }
-
-    .foam-comics-DAOControllerView .foam-u2-view-TableView-row img {
-      border-radius: 2px;
-    }
-
-    .foam-u2-view-TableView {
-      border-style: inherit !important;
-      border-collapse: separate !important;
-      border-spacing: 0px !important;
-      display: inline-table;
-    }
-
-    .foam-u2-view-TableView tbody td {
-      border-radius: 0px !important;
-      border-top: none !important;
-    }
-
-    .foam-u2-view-TableView tbodyt tr {
-      border-top: none !important;
-    }
-
-    .foam-u2-view-TableView tbody tr {
-      background: #fff;
-    }
-
-    .foam-u2-view-TableView tbody tr:hover {
-      background: #fff;
-      cursor: auto;
-    }
-
-    .foam-u2-view-TableView thead th {
-      border-bottom: solid 1px #e2e2e3;
+    .net-nanopay-sme-SMEController .foam-u2-view-TableView-selected {
+      background: initial;
     }
 
     .foam-u2-md-overlaydropdown {
@@ -823,7 +790,7 @@ foam.CLASS({
       background: #b3d8ff;
       text-align: center;
       padding: 14px;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       opacity: 0.8;
     }
     .horizontal-flip {

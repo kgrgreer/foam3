@@ -85,7 +85,7 @@ foam.CLASS({
       padding-top: 2px;
     }
     ^ .date-display-text {
-      color: #2b2b2b !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
     }
     ^ .medium-header {
       margin: 25px 0px;

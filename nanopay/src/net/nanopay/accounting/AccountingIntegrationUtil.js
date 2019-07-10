@@ -183,6 +183,8 @@ foam.CLASS({
 
       let data = [];
 
+      doc.myY = doc.myY + 10;
+
       for ( item of mismatch ) {
         data.push({
           businessName: item.existContact.businessName,

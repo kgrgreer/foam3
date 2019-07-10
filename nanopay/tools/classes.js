@@ -221,6 +221,7 @@ var classes = [
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
    'net.nanopay.liquidity.LiquidityRule',
+   'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
    'net.nanopay.util.Frequency',
 
    // quick

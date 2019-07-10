@@ -53,7 +53,7 @@ foam.CLASS({
       cursor: pointer;
       margin: 0;
       font-size: 14px;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 1;
     }
 
