@@ -44,7 +44,7 @@ foam.CLASS({
           .then(g => {
             var rates = {};
             return Promise.all(g.groupKeys.map(d => {
-              return fxService.getFXRate(d, baseDenomination, 0, 1, 'BUY', null, user.id, 'localFXService').then(r => {
+              return fxService.getFXRate(d, baseDenomination, 0, 1, 'BUY', null, user.id, 'nanopay').then(r => {
                 rates[d] = r.rate;
               });
             })).then(_ => rates);
