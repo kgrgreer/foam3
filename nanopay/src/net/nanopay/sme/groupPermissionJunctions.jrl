@@ -77,4 +77,3 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmi
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmin","targetId":"useruserjunction.rw.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessApprover","targetId":"invoice.pay"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessEmployee","targetId":"invoice.holdingAccount"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"service.complianceHistoryDAO"})

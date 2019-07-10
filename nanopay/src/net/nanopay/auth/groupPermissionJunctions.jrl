@@ -206,6 +206,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"service.balanceDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"service.branchDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"service.businessSectorDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"service.complianceHistoryDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"service.currencyDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"service.digitalAccount"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"service.doNotSolicitDAO"})
