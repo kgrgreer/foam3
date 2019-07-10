@@ -53,21 +53,17 @@ public class AFEXClientOnboardingDAO
     BankAccount existingAccount = (BankAccount) getDelegate().find(account.getId());
     if ( existingAccount != null && (existingAccount.getStatus() == BankAccountStatus.VERIFIED  
         ||  account.getStatus() == BankAccountStatus.VERIFIED) ) {
-          System.out.println("There is verified account");
       AuthService auth = (AuthService) x.get("auth");
       DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
       Business business = (Business) localBusinessDAO.find(account.getOwner());
       if  ( null != business && business.getOnboarded() ) {
-        System.out.println("Business exists and already pushed to onboarded");
-        // TODO: Check if business is already pushed to AFEX?
         DAO afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
         if ( afexBusiness != null ) return super.put_(x, obj);
 
-        boolean hasFXProvisionPayerPermission = true; //auth.checkUser(getX(), business, "fx.provision.payer");
+        boolean hasFXProvisionPayerPermission = auth.checkUser(getX(), business, "fx.provision.payer");
         //boolean hasCurrencyReadUSDPermission = auth.checkUser(getX(), business, "currency.read.USD");
         if ( hasFXProvisionPayerPermission ) {
-          System.out.println("Has Permission to push to Partner");
           User signingOfficer = getSigningOfficer(x, business);
           if ( signingOfficer != null ) {
             String identificationExpiryDate = null;
@@ -86,7 +82,7 @@ public class AFEXClientOnboardingDAO
             onboardingRequest.setBusinessCountryCode(business.getAddress().getCountryId());
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
-            onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId())); // TODO: This should ref AFEX company type
+            onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
             onboardingRequest.setContactBusinessPhone(business.getBusinessPhone().getNumber());
             String businessRegDate = null;
             try {
@@ -106,7 +102,6 @@ public class AFEXClientOnboardingDAO
               afexBusiness.setUser(business.getId());
               afexBusiness.setApiKey(newClient.getAPIKey());
               afexBusiness.setAccountNumber(newClient.getAccountNumber());
-              afexBusiness.setStatus("Active"); // TODO: Confirm this
               afexBusinessDAO.put(afexBusiness);
             }
           }

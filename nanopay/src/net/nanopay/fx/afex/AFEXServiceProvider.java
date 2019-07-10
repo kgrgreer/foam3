@@ -91,10 +91,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     // Check payee does not already exists on AFEX
     FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexBusiness.getApiKey());
     if ( null == beneficiaryResponse ) {
+      FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
+      String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
       CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();
       createBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
       createBeneficiaryRequest.setBankCountryCode(bankAddress.getCountryId());
-      createBeneficiaryRequest.setBankName(bankAccount.getName());
+      createBeneficiaryRequest.setBankName(bankName);
       createBeneficiaryRequest.setBankRoutingCode(bankAccount.getRoutingCode(this.x));
       createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress());
       createBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
@@ -167,10 +169,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
 
+    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
+    String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
+
     UpdateBeneficiaryRequest updateBeneficiaryRequest = new UpdateBeneficiaryRequest();
     updateBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
     updateBeneficiaryRequest.setBankCountryCode(bankAddress.getCountryId());
-    //updateBeneficiaryRequest.setBankName(bankAccount.get);
+    updateBeneficiaryRequest.setBankName(bankName);
     updateBeneficiaryRequest.setBankRoutingCode(bankAccount.getRoutingCode(this.x));
     updateBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
     updateBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
@@ -209,14 +214,14 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return payeeInfo;
   }
 
-  public Transaction submitPayment(Transaction transaction) throws RuntimeException{
+  public Transaction submitPayment(Transaction transaction) throws RuntimeException {
     if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
 
     AFEXBusiness afexBusiness = getAFEXBusiness(x,transaction.getPayerId());
     if ( null == afexBusiness ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
 
     AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x,transaction.getPayeeId(), transaction.getPayerId());
-    if ( null == afexBeneficiary ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+    if ( null == afexBeneficiary ) throw new RuntimeException("Ontact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
 
     long tradeAmount = 0;
     boolean isAmountSettlement = transaction.getAmount() > 1 ? true : false;
@@ -251,13 +256,34 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           }
         } catch(Throwable t) {
           ((Logger) x.get("logger")).error("Error sending payment to AFEX.", t);
+          throw new RuntimeException(t);
         } 
       }
     } catch(Throwable t) {
       ((Logger) x.get("logger")).error("Error createing AFEX Trade.", t);
+      throw new RuntimeException(t);
     }
 
     return transaction;
+  }
+
+  public FindBankByNationalIDResponse getBankInformation(X x, String clientAPIKey, BankAccount bankAccount) {
+    FindBankByNationalIDResponse bankInformation = null;
+    Address bankAddress = bankAccount.getBankAddress(); 
+    if ( null == bankAddress ) return bankInformation;
+
+    FindBankByNationalIDRequest findBankByNationalIDRequest = new FindBankByNationalIDRequest();
+    findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
+    findBankByNationalIDRequest.setCity(bankAddress.getCity());
+    findBankByNationalIDRequest.setCountryCode(bankAddress.getCountryId());
+    findBankByNationalIDRequest.setInstitution(bankAccount.getBankCode(x));
+    findBankByNationalIDRequest.setNationalID(bankAccount.getRoutingCode(x));
+    try {
+      bankInformation = this.afexClient.findBankByNationalID(findBankByNationalIDRequest);
+    } catch(Throwable t) {
+      ((Logger) x.get("logger")).error("Error findind bank information from AFEX.", t);
+    }
+    return bankInformation;
   }
 
   protected AFEXBusiness getAFEXBusiness(X x, Long userId) {
