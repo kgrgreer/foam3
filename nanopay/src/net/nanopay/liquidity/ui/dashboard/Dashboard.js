@@ -28,8 +28,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'baseDenomination',
-    'conversionService'
+    'baseDenomination'
   ],
 
   css: `
@@ -56,15 +55,6 @@ foam.CLASS({
       name: 'baseDenomination',
       targetDAOKey: 'currencyDAO',
       value: 'CAD'
-    },
-    {
-      name: 'conversionService',
-      hidden: true,
-      value: {
-        getRate: function(from, to) {
-          return Promise.resolve(1);
-        }
-      }
     },
     {
       class: 'foam.dao.DAOProperty',
