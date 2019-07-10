@@ -292,7 +292,7 @@ function start_nanos {
         OPT_ARGS=
         
         if [ $GRADLE_BUILD -eq 1 ]; then
-            OPT_ARGS="${OPTARGS} -Z$(gradle -q --daemon getVersion)"
+            OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
         fi
 
         if [ ! -z ${RUN_USER} ]; then
@@ -561,7 +561,7 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 
