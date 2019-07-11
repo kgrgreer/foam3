@@ -99,6 +99,13 @@ foam.CLASS({
     },
     {
       class: 'foam.comics.v2.CannedQuery',
+      label: 'Scheduled',
+      predicateFactory: function(e) {
+        return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.SCHEDULED);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
       label: 'Pending',
       predicateFactory: function(e) {
         return e.EQ(net.nanopay.tx.model.Transaction.STATUS, net.nanopay.tx.model.TransactionStatus.PENDING);

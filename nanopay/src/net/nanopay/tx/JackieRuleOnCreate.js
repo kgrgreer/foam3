@@ -20,16 +20,6 @@ foam.CLASS({
 
   ],
 
-  properties: [
-    {
-      name: 'jackieId',
-      class: 'Long',
-      value: 8233
-      //class: 'Reference',
-      //of: 'foam.nanos.auth.Group',
-    }
-  ],
-
   methods: [
     {
       name: 'applyAction',
@@ -43,7 +33,6 @@ foam.CLASS({
         ApprovalRequest req = new ApprovalRequest.Builder(x)
           .setDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
-          .setApprover(getJackieId())
           .setGroup("fraud-ops")
           .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
           .build();
