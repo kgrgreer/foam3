@@ -218,7 +218,7 @@ function package_tar {
 function delete_runtime_journals {
   if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
     echo "INFO :: Runtime journals deleted."
-    rmdir -rf "$JOURNAL_HOME"
+    rm -rf "$JOURNAL_HOME"
     mkdir -p "$JOURNAL_HOME"
   fi
 }
