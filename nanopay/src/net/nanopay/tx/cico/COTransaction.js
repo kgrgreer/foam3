@@ -18,7 +18,6 @@ foam.CLASS({
     'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.account.Account'
   ],
-
   properties: [
     {
       name: 'name',
@@ -70,14 +69,20 @@ foam.CLASS({
             ['CANCELLED', 'CANCELLED']
           ];
         }
+        if ( this.status == this.TransactionStatus.PENDING_PARENT_COMPLETED ) {
+          return [
+            'choose status',
+            ['PAUSED', 'PAUSED']
+          ];
+        }
         if ( this.status == this.TransactionStatus.PAUSED ) {
           return [
             'choose status',
-            ['PENDING', 'PENDING'],
+            ['PENDING_PARENT_COMPLETED', 'UNPAUSE'],
             ['CANCELLED', 'CANCELLED']
-         ];
+          ];
         }
-       return ['No status to choose'];
+        return ['No status to choose'];
       }
     }
   ],

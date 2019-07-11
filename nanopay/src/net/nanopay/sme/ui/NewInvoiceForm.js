@@ -186,7 +186,7 @@ foam.CLASS({
       padding-top: 2px;
     }
     ^ .date-input-field .date-display-text {
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .foam-u2-DateView {
       width: 100%;

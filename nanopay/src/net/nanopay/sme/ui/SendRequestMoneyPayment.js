@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
-  name: 'Payment',
+  name: 'SendRequestMoneyPayment',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'The second step in the send/request payment flow for Ablii',

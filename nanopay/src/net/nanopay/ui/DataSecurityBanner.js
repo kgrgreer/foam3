@@ -34,7 +34,7 @@ foam.CLASS({
 
     ^title {
       font-weight: 900;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^subtitle {

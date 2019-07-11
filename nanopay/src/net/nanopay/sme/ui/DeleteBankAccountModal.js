@@ -82,7 +82,7 @@ foam.CLASS({
     }
     ^ .net-nanopay-ui-modal-ModalHeader .title {
       font-size: 24px;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       font-weight: 900;
       font-family: Lato;
       margin-left: 0;
