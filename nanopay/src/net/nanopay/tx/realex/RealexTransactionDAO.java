@@ -7,6 +7,7 @@ import foam.core.FObject;
 import foam.dao.AbstractSink;
 import java.util.*;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.cico.paymentCard.model.PaymentCard;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
@@ -53,6 +54,7 @@ public class RealexTransactionDAO
     RealexPaymentAccountInfo paymentAccountInfo = (RealexPaymentAccountInfo) transaction.getPaymentAccountInfo();
     DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
     DAO localTransactionQuotePlanDAO = (DAO) x.get("localTransactionQuotePlanDAO");
+    Logger logger = (Logger) x.get("logger");
     if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.MOBILE ) {
       paymentRequest
         .addType(PaymentType.AUTH_MOBILE)
@@ -82,6 +84,7 @@ public class RealexTransactionDAO
         .select(new ArraySink());
       List list = sink.getArray();
       if ( list.size() == 0 ) {
+        logger.error("Please add Payment Card again");
         throw new RuntimeException("Please add Payment Card again");
       }
       TxnProcessorUserReference userReference = (TxnProcessorUserReference) list.get(0);
@@ -98,8 +101,10 @@ public class RealexTransactionDAO
         .addAutoSettle(new AutoSettle().addFlag(AutoSettle.AutoSettleFlag.TRUE));
       paymentRequest.addPayerReference(userReference.getReference());
     } else if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.ONEOFF ) {
+      logger.error("One-off do not support");
       throw new RuntimeException("One-off do not support");
     } else {
+      logger.error("Unknown payment type for Realex platform");
       throw new RuntimeException("Unknown payment type for Realex platform");
     }
     HttpConfiguration HttpConfiguration = new HttpConfiguration();
@@ -113,6 +118,7 @@ public class RealexTransactionDAO
       if ( ! "00".equals(response.getResult()) ) {
         transaction.setStatus(TransactionStatus.DECLINED);
         getDelegate().put_(x, transaction);
+        logger.error("fail to cashIn by Realex, error message: " + response.getMessage());
         throw new RuntimeException("fail to cashIn by Realex, error message: " + response.getMessage());
       }
       transaction.setStatus(TransactionStatus.COMPLETED);
@@ -142,10 +148,13 @@ public class RealexTransactionDAO
       // }
       return txn;
     } catch ( RealexServerException e ) {
+      logger.error(e);
       throw new RuntimeException(e);
     } catch ( RealexException e ) {
+      logger.error(e);
       throw new RuntimeException(e);
     } catch ( Throwable e ) {
+      logger.error(e);
       throw new RuntimeException(e);
     }
   }

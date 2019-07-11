@@ -77,6 +77,7 @@ foam.CLASS({
         if ( amount < 0 &&
              -amount > bal ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+          logger.error("Insufficient balance in account and overdraft exceeded" + this.getId());
           throw new RuntimeException("Insufficient balance in account and overdraft exceeded " + this.getId());
         }
       `

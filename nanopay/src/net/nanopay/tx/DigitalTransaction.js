@@ -7,6 +7,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -87,6 +88,7 @@ foam.CLASS({
 
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
+        ((Logger) x.get("logger")).error("instanceof DigitalTransaction cannot be updated.");
         throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
       }
       `

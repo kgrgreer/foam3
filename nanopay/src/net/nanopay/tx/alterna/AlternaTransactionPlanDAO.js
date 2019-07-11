@@ -48,6 +48,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `TransactionQuote quote = (TransactionQuote) obj;
       Transaction request = quote.getRequestTransaction();
+      Logger logger = (Logger) x.get("logger");
       if ( request instanceof AlternaVerificationTransaction ) {
         request.setIsQuoted(true);
         quote.addPlan(request);
@@ -58,6 +59,7 @@ foam.CLASS({
       if ( sourceAccount instanceof CABankAccount &&
         destinationAccount instanceof DigitalAccount ) {
         if ( ((CABankAccount) sourceAccount).getStatus() != BankAccountStatus.VERIFIED ) {
+          logger.error("Bank account needs to be verified for cashin " + sourceAccount.getId());
           throw new RuntimeException("Bank account needs to be verified for cashin");
         }
         AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
@@ -69,7 +71,8 @@ foam.CLASS({
       } else if ( destinationAccount instanceof CABankAccount &&
         sourceAccount instanceof DigitalAccount ) {
         if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) {
-          throw new RuntimeException("Bank account needs to be verified for cashout");
+          logger.error("Bank account needs to be verified for cashout");
+          throw new RuntimeException("Bank account needs to be verified for cashout " + destinationAccount.getId());
         }
         AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
         t.copyFrom(request);
