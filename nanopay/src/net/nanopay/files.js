@@ -16,6 +16,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
   { name: 'net/nanopay/account/AccountDAOSummaryView' },
+  { name: 'net/nanopay/account/AccountBalanceView' },
   { name: 'net/nanopay/account/Debtable' },
   { name: 'net/nanopay/account/Accountable' },
   { name: 'net/nanopay/account/DuplicateAccountRule'},

@@ -10,7 +10,7 @@ foam.CLASS({
   requires: [
     'foam.comics.v2.DAOBrowserView',
     'foam.u2.layout.Card',
-    'foam.u2.layout.Cards',
+    'foam.u2.layout.Grid',
     'foam.u2.layout.Rows',
     'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
     'net.nanopay.liquidity.ui.dashboard.cicoShadow.DashboardCicoShadow',
@@ -42,7 +42,7 @@ foam.CLASS({
       padding: 32px;
     }
 
-    ^dashboard-container .foam-u2-layout-Cards {
+    ^dashboard-container .foam-u2-layout-Grid {
       margin-bottom: 32px;
     }
   `,
@@ -82,18 +82,18 @@ foam.CLASS({
         .addClass(this.myClass())
           .start().add(this.cls_.name).addClass(this.myClass('header')).end()
           .start(this.Rows).addClass(this.myClass('dashboard-container'))
-            .start(this.Cards)
-              .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
+            .start(this.Grid)
+              .start(this.Card, { columns: 8 }).addClass(this.myClass('accounts'))
                 .tag(this.DashboardAccounts, { 
                   currency$: this.currencyExposureDAO$,
                   denomination$: this.baseDenomination$,
                 })
               .end()
-              .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
+              .start(this.Card, { columns: 4 }).addClass(this.myClass('liquidity'))
                 .tag(this.DashboardLiquidity)
               .end()
             .end()
-            .start(this.Cards)
+            .start(this.Grid)
               .start(this.Card, { columns: 1 }).addClass(this.myClass('currency-exposure'))
                 .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
               .end()
@@ -101,7 +101,7 @@ foam.CLASS({
                 .tag(this.DashboardCicoShadow)
               .end()
             .end()
-            .start(this.Cards)
+            .start(this.Grid)
               .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
                 .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
               .end()

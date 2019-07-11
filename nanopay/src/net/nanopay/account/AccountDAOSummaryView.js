@@ -97,47 +97,29 @@ foam.CLASS({
       font-weight: 600;
       font-size: 12px;
     }
+
+    ^transactions-table {
+      margin: 32px 8px;
+    }
+
+    ^card-row {
+      margin-top: 32px;
+    }
   `,
 
   requires: [
     'foam.comics.v2.DAOBrowserView',
-    'foam.u2.borders.CardBorder'
+    'net.nanopay.account.AccountBalanceView',
+    'foam.u2.detail.GridSectionView',
+    'foam.u2.borders.CardBorder',
+    'foam.u2.layout.Card',
+    'foam.u2.layout.Grid'
   ],
   imports: [
     'transactionDAO'
   ],
-  properties: [
-    {
-      class: 'String',
-      name: 'denominationFlag',
-      factory: function() {
-        /**
-         * TODO: we might want to make flags a property of currencies/denominations
-         * and use images instead of emojis
-         */
-        switch(this.data.denomination){
-          case 'USD':
-            return '🇺🇸';
-          case 'CAD':
-            return '🇨🇦';
-          case 'INR':
-            return '🇮🇳';
-          default:
-            return '💰';
-        }
-      }
-    }
-  ],
 
   messages: [
-    {
-      name: 'CARD_HEADER',
-      message: 'BALANCE',
-    },
-    {
-      name: 'BALANCE_NOTE',
-      message: 'Total value shown in home currency',
-    },
     {
       name: 'TABLE_HEADER',
       message: 'TRANSACTIONS'
@@ -149,31 +131,34 @@ foam.CLASS({
       var self = this;
       this
         .addClass(this.myClass())
-        .add(self.slot(function(data, data$id, data$denomination, denominationFlag) {
+        .add(self.slot(function(data, data$id) {
           return self.E()
             .start(self.Rows)
-              .start(self.CardBorder).addClass(this.myClass('balance-card'))
-                .start(self.Rows)
-                  .start()
-                    .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
-                  .end()
-                  .start().addClass(this.myClass('balance'))
-                    .add(data.findBalance(self.__context__)
-                          .then(balance => self.__subSubContext__.currencyDAO.find(data$denomination)
-                            .then(curr => balance != null 
-                              ? `${curr.format(balance)}  ${denominationFlag}` 
-                              : `0 ${denominationFlag}`
-                            )
-                          )
-                        )
-                  .end()
-                  .start().addClass(this.myClass('balance-note'))
-                    .add(self.BALANCE_NOTE)
-                    .add(` (${data$denomination})`)
-                  .end()
+              .start(self.Grid).addClass(this.myClass('card-row'))
+                .start(self.Card, { columns: 4 })
+                  .tag(self.AccountBalanceView, { data })
+                .end()
+                .start(this.Card, { columns: 4 })
+                  .tag(self.GridSectionView, { 
+                    data,
+                    section: {
+                      properties: [
+                        'created',
+                        'createdBy',
+                        'type',
+                        'id',
+
+                      ]
+                    }
+                  })
+                .end()
+                .start(this.Card, { columns: 4 })
+                  .tag(self.GridSectionView, { 
+                    data 
+                  })
                 .end()
               .end()
-              .start(self.CardBorder)
+              .start(self.CardBorder).addClass(this.myClass('transactions-table'))
                 .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
                 .start(foam.comics.v2.DAOBrowserView, {
                   data: self.transactionDAO
@@ -184,13 +169,7 @@ foam.CLASS({
                           .orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED))
                           .limit(20),
                 })
-                .addClass(this.myClass('transactions-table'))
-              .end()
-              .end()
-              .start(foam.u2.detail.SectionedDetailView, {
-                data
-              })
-                .addClass(this.myClass('detail-view'))
+                .end()
               .end()
             .end();
         }));
