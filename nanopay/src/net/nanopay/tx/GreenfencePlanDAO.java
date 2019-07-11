@@ -10,6 +10,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
@@ -57,6 +58,7 @@ public class GreenfencePlanDAO extends ProxyDAO {
       //txn.addNext(tx1);
       txn.addLineItems(tx1.getLineItems(), null);
     } else {
+      ((Logger)getX().get("logger")).error("GreenFencePlanDAO: no quote was found for invoice1");
       throw new RuntimeException("GreenFencePlanDAO: no quote was found for invoice1");
     }
 
@@ -70,6 +72,7 @@ public class GreenfencePlanDAO extends ProxyDAO {
       //txn.addNext(tx2);
       txn.addLineItems(tx2.getLineItems(), null);
     } else {
+      ((Logger)getX().get("logger")).error("GreenFencePlanDAO: no quote was found for invoice2");
       throw new RuntimeException("GreenFencePlanDAO: no quote was found for invoice2");
     }
     Transaction parent = txn.findParent(x);

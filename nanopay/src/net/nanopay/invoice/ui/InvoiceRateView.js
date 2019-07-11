@@ -476,13 +476,16 @@ foam.CLASS({
         destinationCurrency: this.invoice.destinationCurrency,
         payerId: this.invoice.payerId,
         payeeId: this.invoice.payeeId,
-        amount: this.invoice.amount
+        amount: this.invoice.amount,
+        destinationAmount: this.invoice.targetAmount,
       });
+      console.log(transaction);
       var quote = await this.transactionQuotePlanDAO.put(
         this.TransactionQuote.create({
           requestTransaction: transaction
         })
       );
+      console.log(quote);
       return quote.plan;
     },
     async function getFXQuote() {
