@@ -72,7 +72,7 @@ foam.CLASS({
         sourceAccount instanceof DigitalAccount ) {
         if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) {
           logger.error("Bank account needs to be verified for cashout");
-          throw new RuntimeException("Bank account needs to be verified for cashout " + destinationAccount.getId());
+          throw new RuntimeException("Bank account needs to be verified for cashout");
         }
         AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();
         t.copyFrom(request);
