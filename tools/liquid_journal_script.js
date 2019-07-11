@@ -117,38 +117,41 @@ const accountNamesToAccount = {};
 var cashInCounter = 0;
 var cashOutCounter = 0;
 
+// creation date liquidity settings
+var liquidityLastModifiedDate = new Date(new Date().setFullYear(new Date().getFullYear() - 5))
+
 // assign to only CAD accounts and push/pull from CAD accounts for now
 const liquiditySettings = [
   {
     type: 'email',
     name: 'Low and High Email Only',
     userToEmail: 8005,
-    highLiquidity: 1000000,
-    lowLiquidity: 200000
+    highLiquidity: 10000000,
+    lowLiquidity: 1500000
   },
   {
     type: 'rebalance',
     name: 'Low Rebalance Only',
-    lowLiquidity: 200000,
+    lowLiquidity: 1500000,
     lowPull: 'ABC Toronto Shadow Account',
-    lowResetBalance: 300000
+    lowResetBalance: 2000000
   },
   {
     type: 'rebalance',
     name: 'High Rebalance Only',
-    highLiquidity: 1000000,
+    highLiquidity: 10000000,
     highPush: 'ABC Toronto Shadow Account',
-    highResetBalance: 500000
+    highResetBalance: 8000000
   },
   {
     type: 'emailRebalance',
     name: 'Low And High Rebalance Email',
-    highLiquidity: 1000000,
+    highLiquidity: 10000000,
     highPush: 'ABC Toronto Shadow Account',
-    highResetBalance: 500000,
-    lowLiquidity: 200000,
+    highResetBalance: 8000000,
+    lowLiquidity: 1500000,
     lowPull: 'ABC Toronto Shadow Account',
-    lowResetBalance: 300000
+    lowResetBalance: 2000000
   }
 ];
 
@@ -188,6 +191,7 @@ function createEmailLiquiditySetting(X, s) {
     name: s.name,
     userToEmail: s.userToEmail,
     cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+    lastModified: liquidityLastModifiedDate
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
@@ -216,6 +220,7 @@ function createRebalanceLiquiditySetting(X, s) {
     id: foam.next$UID(),
     name: s.name,
     cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+    lastModified: liquidityLastModifiedDate
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
@@ -251,6 +256,7 @@ function createEmailRebalanceLiquiditySetting(X, s) {
     name: s.name,
     userToEmail: s.userToEmail,
     cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+    lastModified: liquidityLastModifiedDate
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {

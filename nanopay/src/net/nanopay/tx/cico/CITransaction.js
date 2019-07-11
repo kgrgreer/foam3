@@ -7,6 +7,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'java.text.NumberFormat',
     'foam.util.SafetyUtil',
@@ -310,14 +311,17 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
       super.validate(x);
+      Logger logger = (Logger) x.get("logger");
 
       if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
+        logger.error("Bank account must be verified");
         throw new RuntimeException("Bank account must be verified");
       }
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) || oldTxn.getStatus().equals(TransactionStatus.REVERSE) ||
         oldTxn.getStatus().equals(TransactionStatus.REVERSE_FAIL) ||
         oldTxn.getStatus().equals(TransactionStatus.COMPLETED) ) && ! getStatus().equals(TransactionStatus.DECLINED) ) {
+        logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
       }
       `
