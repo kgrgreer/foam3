@@ -34,17 +34,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
     GetQuoteRequest quoteRequest = new GetQuoteRequest();
-    Long amount = sourceAmount > 0 ? sourceAmount : destinationAmount;
-    quoteRequest.setAmount(String.valueOf(amount));
+    boolean isAmountSettlement = sourceAmount > 0 ? true : false;
+    Long amount = isAmountSettlement ? sourceAmount : destinationAmount;
+    quoteRequest.setAmount(String.valueOf(toDecimal(amount)));
     quoteRequest.setCurrencyPair(targetCurrency + sourceCurrency);
     quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency));
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest);
       if ( null != quote ) {
+        Double fxAmount = isAmountSettlement ? toDecimal(sourceAmount) *  quote.getRate():  toDecimal(destinationAmount) *  quote.getInvertedRate();
         fxQuote.setRate(quote.getRate());
-        fxQuote.setTargetAmount(destinationAmount);
+        fxQuote.setTargetAmount(isAmountSettlement ? fromDecimal(fxAmount) : destinationAmount);
         fxQuote.setTargetCurrency(targetCurrency);
-        fxQuote.setSourceAmount(sourceAmount);
+        fxQuote.setSourceAmount(isAmountSettlement ? sourceAmount : fromDecimal(fxAmount));
         fxQuote.setSourceCurrency(sourceCurrency);
         fxQuote.setValueDate(quote.getValueDate());
         fxQuote.setExternalId(quote.getQuoteId());
@@ -52,7 +54,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       }
 
     } catch(Exception e) {
-      // Log here
+      ((Logger) getX().get("logger")).error("Error to get FX Rate from AFEX.", e);
     }
 
     return fxQuote;
