@@ -24,6 +24,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
+import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
@@ -100,10 +101,12 @@ public class TransactionDAO
     throws RuntimeException
   {
     HashMap hm = new HashMap();
+    Logger logger = (Logger) x.get("logger");
     for ( Transfer tr : ts ) {
       tr.validate();
       Account account = tr.findAccount(getX());
       if ( account == null ) {
+        logger.error("Unknown account: " + tr.getAccount(), tr);
         throw new RuntimeException("Unknown account: " + tr.getAccount());
       }
       account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
@@ -112,7 +115,10 @@ public class TransactionDAO
     }
 
     for ( Object value : hm.values() ) {
-      if ( (long)value != 0 ) throw new RuntimeException("Debits and credits don't match.");
+      if ( (long)value != 0 ) {
+        logger.error("Debits and credits don't match.", value);
+        throw new RuntimeException("Debits and credits don't match.");
+      }
     }
   }
 
