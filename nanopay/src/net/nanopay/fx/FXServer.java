@@ -28,7 +28,10 @@ public class FXServer extends ContextAwareSupport implements FXService, NanoServ
     FXQuote fxQuote = null;
 
     User user = findUser(userId);
-    if ( null == user ) throw new RuntimeException("Unable to find User: " + userId);
+    if ( null == user ) {
+      ((Logger) getX().get("logger")).error("Unable to find user: " + userId);
+      throw new RuntimeException("Unable to find User: " + userId);
+    }
     FXService fxService = CurrencyFXService.getFXService(getX(), sourceCurrency, targetCurrency, user.getSpid());
 
     try {
@@ -47,10 +50,18 @@ public class FXServer extends ContextAwareSupport implements FXService, NanoServ
   public boolean acceptFXRate(String quoteId, long userId) throws RuntimeException {
     boolean accepted = false;
     User user = findUser(userId);
-    if ( null == user ) throw new RuntimeException("Unable to find User: " + userId);
+    Logger logger = (Logger) getX().get("logger");
+
+    if ( null == user ) {
+      logger.error("Unable to find user: " + userId);
+      throw new RuntimeException("Unable to find User: " + userId);
+    }
 
     FXQuote existingFXQuote = (FXQuote) this.fxQuoteDAO_.find(quoteId);
-    if ( null == existingFXQuote ) throw new RuntimeException("FXQuote not found with quotye ID: " + quoteId);
+    if ( null == existingFXQuote ) {
+      logger.error("FXQuote not found with quotye ID: " + quoteId);
+      throw new RuntimeException("FXQuote not found with quotye ID: " + quoteId);
+    }
 
     FXService fxService = CurrencyFXService.getFXService(getX(), existingFXQuote.getSourceCurrency(), existingFXQuote.getTargetCurrency(), user.getSpid());
     accepted = fxService.acceptFXRate(String.valueOf(existingFXQuote.getId()), userId);

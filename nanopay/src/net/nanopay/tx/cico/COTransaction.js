@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
@@ -105,14 +106,17 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
       super.validate(x);
+      Logger logger = (Logger) x.get("logger");
 
       if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
+        logger.error("Bank account must be verified");
         throw new RuntimeException("Bank account must be verified");
       }
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) ||
             oldTxn.getStatus().equals(TransactionStatus.COMPLETED) ) &&
             ! getStatus().equals(TransactionStatus.DECLINED) ) {
+        logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
       }
       `

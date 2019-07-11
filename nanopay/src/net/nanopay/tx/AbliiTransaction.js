@@ -8,6 +8,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
@@ -107,6 +108,7 @@ foam.CLASS({
 
       // An invoice is required to create an ablii transaction
       if( tx.findInvoiceId(x) == null ) {
+        ((Logger) x.get("logger")).error("An invoice was not provided for this transaction");
         throw new RuntimeException("An invoice for this transaction was not provided.");
       }
 

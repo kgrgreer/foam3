@@ -56,6 +56,7 @@ public class AFEXTransactionDAO
     } catch (Throwable t) {
       transaction.setStatus(TransactionStatus.DECLINED);
       getDelegate().put_(x, transaction);
+      ((Logger)x.get("logger")).error(" Error submitting payment for AfexTransaction " + transaction.getId(), t);
       throw new RuntimeException(t.getMessage());
     }
     
