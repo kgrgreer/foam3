@@ -59,7 +59,7 @@ public class FXServer extends ContextAwareSupport implements FXService, NanoServ
 
     FXQuote existingFXQuote = (FXQuote) this.fxQuoteDAO_.find(quoteId);
     if ( null == existingFXQuote ) {
-      logger.error("FXQuote not found with quotye ID: " + quoteId);
+      logger.error("FXQuote not found with quote ID: " + quoteId);
       throw new RuntimeException("FXQuote not found with quotye ID: " + quoteId);
     }
 

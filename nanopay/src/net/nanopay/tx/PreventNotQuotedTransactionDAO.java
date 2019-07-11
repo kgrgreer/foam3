@@ -17,7 +17,7 @@ public class PreventNotQuotedTransactionDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-  Transaction txn = (Transaction) obj;
+    Transaction txn = (Transaction) obj;
     Logger logger = (Logger) x.get("logger");
     if ( txn.getClass().equals(Transaction.class) ) {
       logger.error("Transaction of Transaction.class cannot be stored " + txn.getId());
