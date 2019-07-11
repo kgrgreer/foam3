@@ -98,6 +98,7 @@ foam.CLASS({
     {
       name: 'doFolds',
       javaCode: `
+if ( getLastModified() == null ) return;
 fm.foldForState(getId()+":high", getLastModified(), getHighLiquidity().getThreshold());
 fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshold());
       `
