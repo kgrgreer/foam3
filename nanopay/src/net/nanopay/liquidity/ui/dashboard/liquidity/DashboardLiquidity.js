@@ -224,6 +224,8 @@ foam.CLASS({
                 return;
               }
 
+              var liquiditySetting = await account.liquiditySetting$find;
+
               // Only put liquidity history that spans the range of the balance history.
               // i.e. If the startDate is May 1st but balance histories don't start until
               // July 1st, we want liquidity settings to start at July 1st but if liquidity
@@ -235,11 +237,8 @@ foam.CLASS({
               maxTime = maxTime.value || new Date();
 
               var fillLiquidityHistory = async function(threshold) {
-                var liquiditySetting = await account.liquiditySetting$find;
                 // If the liquidity setting is not enabled, just do not display
-                if ( liquiditySetting ) {
-                  if ( ! liquiditySetting[threshold + 'Liquidity'].enabled ) return;
-                }
+                if ( ! liquiditySetting[threshold + 'Liquidity'].enabled ) return;
 
                 var key = account.liquiditySetting + ':' + threshold;
                 var liquidityHistoryDAO = this.liquidityThresholdCandlestickDAO
