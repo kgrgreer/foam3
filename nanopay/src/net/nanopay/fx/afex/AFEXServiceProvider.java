@@ -50,6 +50,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         fxQuote.setSourceCurrency(sourceCurrency);
         fxQuote.setValueDate(quote.getValueDate());
         fxQuote.setExternalId(quote.getQuoteId());
+        fxQuote.setHasSourceAmount(isAmountSettlement);
         fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
       }
 
@@ -232,7 +233,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
 
     long tradeAmount = 0;
-    boolean isAmountSettlement = afexTransaction.getAmount() > 1 ? true : false;
+    boolean isAmountSettlement = quote.getHasSourceAmount();
     tradeAmount = isAmountSettlement ? afexTransaction.getAmount() : afexTransaction.getDestinationAmount();
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
     createTradeRequest.setClientAPIKey(afexBusiness.getApiKey());
