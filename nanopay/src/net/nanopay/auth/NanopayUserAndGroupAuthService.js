@@ -140,7 +140,12 @@ foam.CLASS({
         Group group = user.findGroup(x);
         String supportEmail = (String) group.getSupportEmail();
 
-        if ( ! user.getLoginEnabled() || ! user.getEnabled() ) {
+        if (
+          ! user.getLoginEnabled() ||
+          ! user.getEnabled() ||
+          user.getStatus() == AccountStatus.REVOKED ||
+          user.getStatus() == AccountStatus.DISABLED
+        ) {
           throw new AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
         }
 

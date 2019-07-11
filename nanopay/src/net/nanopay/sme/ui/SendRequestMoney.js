@@ -283,7 +283,7 @@ foam.CLASS({
           label: 'Payment details',
           subtitle: 'Select payment method',
           view: {
-            class: 'net.nanopay.sme.ui.Payment',
+            class: 'net.nanopay.sme.ui.SendRequestMoneyPayment',
             type: this.type
           }
         });
@@ -517,7 +517,7 @@ foam.CLASS({
             });
             break;
           case this.REVIEW_VIEW_ID:
-            if ( ! this.viewData.quote && this.isPayable ) {
+            if ( ! this.viewData.quote && this.isPayable && ! this.viewData.isDomestic ) {
               this.notify(this.WAITING_FOR_RATE, 'warning');
               return;
             }

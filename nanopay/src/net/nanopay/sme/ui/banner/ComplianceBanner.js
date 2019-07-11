@@ -27,7 +27,7 @@ foam.CLASS({
       font-size: 14px;
       text-align: center;
       line-height: 1.5;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       display: table-cell;
       vertical-align: middle;
     }

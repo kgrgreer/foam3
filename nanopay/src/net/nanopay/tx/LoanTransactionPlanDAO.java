@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.MLang;
+import net.nanopay.account.Account;
 import net.nanopay.account.LoanAccount;
 import net.nanopay.account.LoanedTotalAccount;
 import net.nanopay.tx.model.Transaction;
@@ -21,8 +22,12 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
 
     TransactionQuote quote = (TransactionQuote) obj;
-    Transaction txn = quote.getRequestTransaction();
+    Account sourceAccount = quote.getSourceAccount();
+    Account destinationAccount = quote.getDestinationAccount();
+    if ( ! ( sourceAccount instanceof LoanAccount || destinationAccount instanceof LoanAccount ) )
+      return getDelegate().put_(x, obj);
 
+    Transaction txn = quote.getRequestTransaction();
     if ( txn instanceof InterestTransaction ){
       txn.setIsQuoted(true);
       txn.setStatus(TransactionStatus.COMPLETED);
@@ -30,14 +35,11 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
       return quote;
     }
 
-    if ( ! ( txn.findSourceAccount(x) instanceof LoanAccount || txn.findDestinationAccount(x) instanceof LoanAccount ) )
-      return getDelegate().put_(x, obj);
     TransactionLineItem withdrawLineItem = null;
     TransactionLineItem depositLineItem = null;
-
-    if ( txn.findSourceAccount(x) instanceof LoanAccount ) {
-      DAO accountDAO = (DAO) x.get("accountDAO");
-      LoanAccount theLoanAccount = (LoanAccount) txn.findSourceAccount(x);
+    DAO accountDAO = (DAO) x.get("localAccountDAO");
+    if ( sourceAccount instanceof LoanAccount ) {
+      LoanAccount theLoanAccount = (LoanAccount) sourceAccount;
       if ( theLoanAccount.getPrincipal() < ( txn.getAmount() - ( (long) theLoanAccount.findBalance(x) ) ) )
         throw new RuntimeException("Transaction Exceeds Loan Account Principal Limit");
       LoanedTotalAccount globalLoanAccount = ((LoanedTotalAccount) accountDAO.find(
@@ -55,11 +57,11 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
         .setCurrency( theLoanAccount.getDenomination() )
         .build();
       txn.setSourceAccount( theLoanAccount.getLenderAccount() );
+      quote.setSourceAccount(theLoanAccount.findLenderAccount(getX()));
     }
 
-    if ( txn.findDestinationAccount(x) instanceof LoanAccount ) {
-      DAO accountDAO = (DAO) x.get("accountDAO");
-      LoanAccount theLoanAccount = (LoanAccount) txn.findDestinationAccount(x);
+    if ( destinationAccount instanceof LoanAccount ) {
+      LoanAccount theLoanAccount = (LoanAccount) destinationAccount;
       LoanedTotalAccount globalLoanAccount = ( (LoanedTotalAccount) accountDAO.find(
         MLang.AND(
           MLang.INSTANCE_OF( LoanedTotalAccount.class ),
@@ -75,6 +77,7 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
         .setCurrency( theLoanAccount.getDenomination() )
         .build();
       txn.setDestinationAccount(theLoanAccount.getLenderAccount());
+      quote.setDestinationAccount(theLoanAccount.findLenderAccount(getX()));
     }
 
     quote.setRequestTransaction(txn);

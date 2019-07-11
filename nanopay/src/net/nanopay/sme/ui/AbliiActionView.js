@@ -8,6 +8,7 @@ foam.CLASS({
   inheritCSS: false,
   css: `
     ^ {
+      font-family: 'Lato', sans-serif;
       border-radius: 4px;
       text-align: center;
       display: inline-flex;
@@ -55,8 +56,8 @@ foam.CLASS({
     }
 
     ^primary:disabled {
-      border: 1px solid /*%PRIMARY5%*/ #e5f1fc;
-      background-color: /*%PRIMARY5%*/ #e5f1fc;
+      border: 1px solid /*%PRIMARY4%*/ #a7beff;
+      background-color: /*%PRIMARY4%*/ #a7beff;
     }
 
 
@@ -109,8 +110,8 @@ foam.CLASS({
     }
 
     ^secondary:disabled {
-      border-color: /*%PRIMARY5%*/ #e5f1fc;
-      color: /*%PRIMARY5%*/ #e5f1fc;
+      border-color: /*%PRIMARY4%*/ #a7beff;
+      color: /*%PRIMARY4%*/ #a7beff;
     }
 
 

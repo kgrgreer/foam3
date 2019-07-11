@@ -65,12 +65,12 @@ foam.CLASS({
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({
               label: 'Invoice No.',
-              tableWidth: 145
+              tableWidth: 115
             }),
-            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 145 }),
-            this.Invoice.ISSUE_DATE.clone().copyFrom({ tableWidth: 145 }),
-            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 145 }),
-            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 145 }),
+            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.ISSUE_DATE.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 115 }),
             'invoiceFile'
           ],
 

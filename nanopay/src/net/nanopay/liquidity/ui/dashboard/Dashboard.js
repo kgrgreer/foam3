@@ -8,15 +8,16 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.comics.v2.DAOBrowserView',
+    'foam.u2.layout.Card',
+    'foam.u2.layout.Cards',
+    'foam.u2.layout.Rows',
     'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
-    'net.nanopay.liquidity.ui.dashboard.liquidity.DashboardLiquidity',
+    'net.nanopay.liquidity.ui.dashboard.cicoShadow.DashboardCicoShadow',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
+    'net.nanopay.liquidity.ui.dashboard.liquidity.DashboardLiquidity',
     'net.nanopay.liquidity.ui.dashboard.recentTransactions.DashboardRecentTransactions',
-    'foam.comics.v2.DAOBrowserView',
-    'foam.u2.layout.Cards',
-    'foam.u2.layout.Card',
-    'foam.u2.layout.Rows',
   ],
 
   imports: [
@@ -107,7 +108,7 @@ foam.CLASS({
                 .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
               .end()
               .start(this.Card, { columns: 11 })
-                // TODO: Add CICO Chart
+                .tag(this.DashboardCicoShadow)
               .end()
             .end()
             .start(this.Cards)

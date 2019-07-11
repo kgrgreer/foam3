@@ -51,6 +51,9 @@ foam.CLASS({
     ^ textarea {
       height: auto !important;
     }
+    ^ input:not([type="checkbox"]) {
+      width: 100%;
+    }
   `,
 
   messages: [
@@ -110,9 +113,7 @@ foam.CLASS({
               .add('Email')
             .end()
             .startContext({ data: this.data })
-              .start(this.data.EMAIL, { mode: foam.u2.DisplayMode.DISABLED })
-                .addClass('input-field')
-              .end()
+              .tag(this.data.EMAIL, { mode: foam.u2.DisplayMode.DISABLED })
             .endContext()
           .end()
           .start()
@@ -121,9 +122,7 @@ foam.CLASS({
               .addClass('input-label')
               .add('Message')
             .end()
-            .start(this.MESSAGE)
-              .addClass('input-field')
-            .end()
+            .tag(this.MESSAGE)
           .end()
           .start()
             .addClass('input-wrapper')
@@ -132,7 +131,7 @@ foam.CLASS({
         .end()
         .start()
           .addClass(this.myClass('buttons'))
-          .add(this.CANCEL)
+          .tag(this.CANCEL, { buttonStyle: 'TERTIARY' })
           .add(this.SEND)
         .end();
     }

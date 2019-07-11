@@ -41,11 +41,9 @@ foam.CLASS({
   css: `
     ^ .invoice-block {
       display: inline-block;
-      width: 45%;
     }
     ^ .invoice-block-right {
       display: inline-block;
-      width: 45%;
       float: right;
     }
     ^ .title {
@@ -69,7 +67,6 @@ foam.CLASS({
       font-size: 12px;
       width: 100%;
       height: 40px;
-      border: solid 1px #8e9090;
       border-radius: 0 4px 4px 0;
       outline: none;
       padding-left: 5px;
@@ -78,7 +75,6 @@ foam.CLASS({
     ^ .invoice-amount-input {
       width: calc(100% - 86px);
       display: inline-block;
-      border-color: #8e9090;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
       width: 80px;
@@ -89,17 +85,13 @@ foam.CLASS({
       vertical-align: top;
       border-style: solid;
       border-width: 1px 0 1px 1px;
-      border-color: #8e9090;
+      border-color: /*%GREY3%*/ #cbcfd4;
       border-radius: 4px 0 0 4px;
     }
     ^ .validation-failure-container {
       font-size: 10px;
       color: #d0021b;
       margin: 4px 0 16px 0;
-    }
-    ^ .foam-u2-DateView {
-      border: solid 1px #8e9090 !important;
-      border-radius: 3px !important;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice .popUpDropDown::before {
       transform: translate(63px, -28px);
@@ -108,11 +100,7 @@ foam.CLASS({
       padding: 0px;
     }
     ^ .foam-u2-tag-TextArea {
-      border-radius: 3px !important;
-      border: solid 1px #8e9090 !important;
-      font-size: 14px;
-      padding: 12px;
-      width: 504px;
+      width: 100%;
     }
     ^ .foam-u2-ActionView-currencyChoice {
       margin-left: 0px !important;
@@ -198,7 +186,7 @@ foam.CLASS({
       padding-top: 2px;
     }
     ^ .date-input-field .date-display-text {
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .foam-u2-DateView {
       width: 100%;
@@ -475,7 +463,6 @@ foam.CLASS({
                   .start(this.Invoice.INVOICE_NUMBER, { mode: displayMode })
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
-                    .addClass('input-field')
                   .end()
                 .end()
               .end()
@@ -499,7 +486,6 @@ foam.CLASS({
                 .start().addClass('input-label').add('P.O. Number').end()
                 .start(this.Invoice.PURCHASE_ORDER)
                   .attrs({ placeholder: this.PO_PLACEHOLDER })
-                  .addClass('input-field')
                 .end()
               .end()
 
