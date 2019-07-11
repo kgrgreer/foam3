@@ -89,6 +89,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   targetProperty: {
     section: 'accountDetails',
+    order: 4,
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
       return {

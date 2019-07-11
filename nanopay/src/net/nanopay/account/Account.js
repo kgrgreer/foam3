@@ -128,7 +128,8 @@ foam.CLASS({
           return 'Account name may not consist of only whitespace.';
         }
       },
-      section: 'accountDetails'
+      section: 'accountDetails',
+      order: 1
     },
     {
       class: 'String',
@@ -136,7 +137,8 @@ foam.CLASS({
       documentation: `The given description of the account, provided by
         the individual person, or real user.`,
       label: 'Memo',
-      section: 'accountDetails'
+      section: 'accountDetails',
+      order: 2
     },
     {
       class: 'Boolean',
@@ -156,7 +158,9 @@ foam.CLASS({
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
       `,
-      tableWidth: 127
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3
     },
     {
       class: 'Boolean',

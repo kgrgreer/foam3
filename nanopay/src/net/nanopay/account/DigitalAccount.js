@@ -46,8 +46,7 @@ foam.CLASS({
       class: 'String',
       name: 'denomination',
       aliases: ['currencyCode', 'currency'],
-      value: 'CAD',
-      section: 'accountDetails'
+      value: 'CAD'
     }
   ],
 
