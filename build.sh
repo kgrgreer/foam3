@@ -226,7 +226,7 @@ function delete_runtime_journals {
 function delete_runtime_logs {
   if [[ $DELETE_RUNTIME_LOGS -eq 1 && IS_AWS -eq 0 ]]; then
     echo "INFO :: Runtime logs deleted."
-    rmdir -rf "$LOG_HOME"
+    rm -rf "$LOG_HOME"
     mkdir -p "$LOG_HOME"
   fi
 }
