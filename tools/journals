@@ -30,6 +30,7 @@ lineItemFees
 lineItemTax
 lineItemTypeAccounts
 lineItemTypes
+liquiditySettings
 menus
 notificationTemplates
 payoutOptions

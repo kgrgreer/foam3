@@ -64,6 +64,9 @@ foam.CLASS({
 
       align-items: center !important;
     }
+    ^ .foam-u2-view-RadioView-horizontal-radio {
+      margin-top: 10px;
+    }
   `,
   properties: [
     {

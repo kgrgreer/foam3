@@ -13,6 +13,7 @@ WEB_PORT=8080
 NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
 VERSION=
+RUN_USER=
 
 export DEBUG=0
 
@@ -36,9 +37,14 @@ while getopts "D:h:N:W:Z:V:" opt ; do
         W) WEB_PORT=$OPTARG;;
         Z) DAEMONIZE=$OPTARG;;
         V) VERSION=$OPTARG;;
+        U) RUN_USER=$OPTARG;;
         ?) usage ; exit 0 ;;
    esac
 done
+
+if [ ! -z ${RUN_USER} ] && [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "${RUN_USER}" ]; then
+    exec sudo -u "${RUN_USER}" -- "$0" "$@"
+fi
 
 JAVA_OPTS=""
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
@@ -66,7 +72,7 @@ export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
 #java -server -jar "${JAR}"
 if [ "$DAEMONIZE" -eq 1 ]; then
-    nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 2>&1
+    nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 2>&1 &
     echo $! > "${NANOS_PIDFILE}"
 else
     java -server -jar "${JAR}"

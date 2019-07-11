@@ -289,11 +289,17 @@ function status_nanos {
 
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
+        OPT_ARGS=
+        
         if [ $GRADLE_BUILD -eq 1 ]; then
-            ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT} -Z$(gradle -q --daemon getVersion)
-        else
-            ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT}
+            OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
         fi
+
+        if [ ! -z ${RUN_USER} ]; then
+            OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
+        fi
+
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -509,6 +515,7 @@ function usage {
     echo "  -t : Run All tests."
     echo "  -T testId1,testId2,... : Run listed tests."
     echo "  -u : Run from jar. Intented for Production deployments."
+    echo "  -U : User to run as"
     echo "  -v : java compile only (maven), no code generation."
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
@@ -552,8 +559,9 @@ WEB_PORT=8080
 VULNERABILITY_CHECK=0
 GRADLE_FLAGS=
 LIQUID_DEMO=0
+RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 
@@ -601,6 +609,7 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
            CLEAN_BUILD=1
            ;;
         u) RUN_JAR=1;;
+        U) RUN_USER=${OPTARG};;
         v) COMPILE_ONLY=1 ;;
         V) VERSION=$OPTARG
            echo "VERSION=${VERSION}";;

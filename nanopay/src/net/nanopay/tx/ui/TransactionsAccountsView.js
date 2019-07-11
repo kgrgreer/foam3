@@ -61,14 +61,14 @@ foam.CLASS({
       padding-bottom: 5px;
       line-height: 1.33;
       letter-spacing: 0.2px;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .balance {
       font-size: 32px;
       font-weight: 900;
       line-height: 1;
       text-align: left;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .inlineDiv {
       display: inline-block;

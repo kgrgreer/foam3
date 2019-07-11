@@ -37,7 +37,7 @@ foam.CLASS({
       font-size: 16px;
       font-weight: 900;
       letter-spacing: normal;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       margin-bottom: 16px;
     }
     ^ .integration-box {
@@ -76,7 +76,7 @@ foam.CLASS({
     ^ .integration-box-title {
       font-size: 14px;
       font-weight: 900;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .integration-info-div {
       margin-left: 10px;
@@ -104,7 +104,7 @@ foam.CLASS({
       display: inline-block;
       font-size: 16px;
       font-weight: 900;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .bank-matching-desc {
       width: 480px;
@@ -141,7 +141,7 @@ foam.CLASS({
     ^ .drop-down-label {
       font-size: 12px;
       font-weight: 600;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       margin-bottom: 8px;
     }
     ^ .foam-u2-tag-Select {
