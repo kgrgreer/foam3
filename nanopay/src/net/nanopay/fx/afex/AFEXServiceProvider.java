@@ -237,7 +237,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     tradeAmount = isAmountSettlement ? afexTransaction.getAmount() : afexTransaction.getDestinationAmount();
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
     createTradeRequest.setClientAPIKey(afexBusiness.getApiKey());
-    createTradeRequest.setAmount(String.valueOf(tradeAmount));
+    createTradeRequest.setAmount(String.valueOf(toDecimal(tradeAmount)));
     createTradeRequest.setIsAmountSettlement(String.valueOf(isAmountSettlement));
     createTradeRequest.setSettlementCcy(afexTransaction.getSourceCurrency());
     createTradeRequest.setTradeCcy(afexTransaction.getDestinationCurrency());
