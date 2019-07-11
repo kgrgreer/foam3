@@ -47,6 +47,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         fxQuote.setSourceAmount(sourceAmount);
         fxQuote.setSourceCurrency(sourceCurrency);
         fxQuote.setValueDate(quote.getValueDate());
+        fxQuote.setExternalId(quote.getQuoteId());
         fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
       }
 
@@ -217,21 +218,27 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public Transaction submitPayment(Transaction transaction) throws RuntimeException {
     if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x,transaction.getPayerId());
+    AFEXTransaction afexTransaction = (AFEXTransaction) transaction;
+
+    AFEXBusiness afexBusiness = getAFEXBusiness(x,afexTransaction.getPayerId());
     if ( null == afexBusiness ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
 
-    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x,transaction.getPayeeId(), transaction.getPayerId());
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x,afexTransaction.getPayeeId(), afexTransaction.getPayerId());
     if ( null == afexBeneficiary ) throw new RuntimeException("Ontact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
 
+    FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(afexTransaction.getFxQuoteId()));
+    if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
+
     long tradeAmount = 0;
-    boolean isAmountSettlement = transaction.getAmount() > 1 ? true : false;
-    tradeAmount = isAmountSettlement ? transaction.getAmount() : transaction.getDestinationAmount();
+    boolean isAmountSettlement = afexTransaction.getAmount() > 1 ? true : false;
+    tradeAmount = isAmountSettlement ? afexTransaction.getAmount() : afexTransaction.getDestinationAmount();
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
     createTradeRequest.setClientAPIKey(afexBusiness.getApiKey());
     createTradeRequest.setAmount(String.valueOf(tradeAmount));
     createTradeRequest.setIsAmountSettlement(String.valueOf(isAmountSettlement));
-    createTradeRequest.setSettlementCcy(transaction.getSourceCurrency());
-    createTradeRequest.setTradeCcy(transaction.getDestinationCurrency());
+    createTradeRequest.setSettlementCcy(afexTransaction.getSourceCurrency());
+    createTradeRequest.setTradeCcy(afexTransaction.getDestinationCurrency());
+    createTradeRequest.setQuoteID(quote.getExternalId());
     try {
       CreateTradeResponse tradeResponse = this.afexClient.createTrade(createTradeRequest);
       if ( null != tradeResponse && tradeResponse.getTradeNumber() > 0 ) {
@@ -244,7 +251,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         try {
           CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest);
           if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
-            AFEXTransaction txn = (AFEXTransaction) transaction.fclone();
+            AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
             txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
             try {
               Date valueDate = new SimpleDateFormat("yyyy/MM/dd").parse(tradeResponse.getValueDate());
@@ -264,7 +271,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       throw new RuntimeException(t);
     }
 
-    return transaction;
+    return afexTransaction;
   }
 
   public FindBankByNationalIDResponse getBankInformation(X x, String clientAPIKey, BankAccount bankAccount) {
