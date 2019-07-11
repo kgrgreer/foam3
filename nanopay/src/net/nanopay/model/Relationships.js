@@ -109,19 +109,10 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
   targetProperty: {
-    section: 'liquiditySettings',
+    section: 'accountDetails',
     value: 0,
-    view: function(_, X) {
-      return foam.u2.view.RichChoiceView.create({
-        search: true,
-        selectionView: { class: 'net.nanopay.liquidity.LiquiditySettingsSelectionView' },
-        rowView: { class: 'net.nanopay.liquidity.LiquiditySettingsRowView' },
-        sections: [
-          {
-            dao: X.liquiditySettingsDAO,
-          }
-        ]
-      });
+    view: {
+      class: 'foam.u2.view.FullReferenceView'
     }
   }
 });

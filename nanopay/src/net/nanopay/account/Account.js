@@ -82,16 +82,10 @@ foam.CLASS({
   sections: [
     {
       name: 'accountType',
-      title: 'Account type',
       isAvailable: function(id) { return !! id; }
     },
     {
       name: 'accountDetails',
-      title: 'Account details'
-    },
-    {
-      name: 'liquiditySettings',
-      title: 'Liquidity settings'
     },
     {
       name: '_defaultSection',
