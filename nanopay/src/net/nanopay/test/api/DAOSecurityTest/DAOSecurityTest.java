@@ -26,9 +26,9 @@ import foam.util.SafetyUtil;
 
 import static java.lang.System.exit;
 
-public class DAOSecurityTest extends ApiTestBase {
+public abstract class DAOSecurityTest extends ApiTestBase {
 
-  private static final String TEST_FIND = "{\n" +
+  protected static final String TEST_FIND = "{\n" +
     "\t\"class\":\"foam.box.Message\",\n" +
     "\t\"attributes\":{\n" +
     "\t\t\"replyBox\":{\n" +
@@ -47,7 +47,7 @@ public class DAOSecurityTest extends ApiTestBase {
     "\t}\n" +
     "}";
 
-  private static final String TEST_SELECT = "{\n" +
+  protected static final String TEST_SELECT = "{\n" +
     "\t\"class\":\"foam.box.Message\",\n" +
     "\t\"attributes\":{\n" +
     "\t\t\"replyBox\":{\n" +
@@ -72,7 +72,7 @@ public class DAOSecurityTest extends ApiTestBase {
     "\t}\n" +
     "}";
 
-  private static final String TEST_REMOVE_ALL = "{\n" +
+  protected static final String TEST_REMOVE_ALL = "{\n" +
     "\t\"class\":\"foam.box.Message\",\n" +
     "\t\"attributes\":{\n" +
     "\t\t\"replyBox\":{\n" +
@@ -175,13 +175,13 @@ public class DAOSecurityTest extends ApiTestBase {
     return true;
   }
 
-  @Override
-  public void runTest(X x) {
-    List<String> ignores = new ArrayList<>();
-    testAllDAOs(x, TEST_SELECT, "select", ignores);
-    testAllDAOs(x, TEST_FIND, "find", ignores);
-    testAllDAOs(x, TEST_REMOVE_ALL, "removeAll", ignores);
-  }
+//  @Override
+//  public void runTest(X x) {
+//    List<String> ignores = new ArrayList<>();
+//    testAllDAOs(x, TEST_SELECT, "select", ignores);
+//    testAllDAOs(x, TEST_FIND, "find", ignores);
+//    testAllDAOs(x, TEST_REMOVE_ALL, "removeAll", ignores);
+//  }
 
   // Run the test with a list of DAOs to ignore
   public void testAllDAOs(X x, String request, String command, List<String> ignores) {
