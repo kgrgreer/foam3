@@ -67,12 +67,6 @@ foam.CLASS({
       margin-left: 8px;
     }
 
-    ^card-header {
-      font-weight: 600;
-      font-size: 12px;
-      margin-bottom: 52px;
-    }
-
     ^ .foam-u2-ActionView-back {
       display: flex;
       align-items: center;
@@ -98,6 +92,12 @@ foam.CLASS({
       font-size: 12px;
     }
 
+    ^card-header {
+      font-weight: 600;
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+
     ^transactions-table {
       margin: 32px 8px;
     }
@@ -108,6 +108,10 @@ foam.CLASS({
 
     ^card-row .foam-u2-layout-Card {
       padding: 24px 16px;
+    }
+
+    ^ .foam-u2-layout-GUnit {
+      margin: 0px;
     }
   `,
 
@@ -129,6 +133,14 @@ foam.CLASS({
     {
       name: 'TABLE_HEADER',
       message: 'TRANSACTIONS'
+    },
+    {
+      name: 'OVERVIEW_HEADER',
+      message: 'OVERVIEW'
+    },
+    {
+      name: 'THRESHOLD_HEADER',
+      message: 'THRESHOLD RULES'
     }
   ],
 
@@ -141,13 +153,14 @@ foam.CLASS({
       var self = this;
       this
         .addClass(this.myClass())
-        .add(self.slot(function(data, data$id) {
+        .add(self.slot(function(data, data$id, data$liquiditySetting, liquiditySettingsDAO) {
           return self.E()
             .start(self.Grid).addClass(this.myClass('card-row'))
               .start(self.Card, { columns: 4 })
                 .tag(self.AccountBalanceView, { data })
               .end()
               .start(self.Card, { columns: 4 })
+                .start().add(self.OVERVIEW_HEADER).addClass(this.myClass('card-header')).end()
                 .tag(self.GridSectionView, { 
                   data,
                   unitWidth: 6,
@@ -174,34 +187,19 @@ foam.CLASS({
                 })
               .end()
               .start(this.Card, { columns: 4 })
+                .start().add(self.THRESHOLD_HEADER).addClass(this.myClass('card-header')).end()
                 .tag(self.GridSectionView, { 
-                  data,
+                  data: liquiditySettingsDAO.find(data$liquiditySetting).then(data => data),
                   unitWidth: 6,
                   section: {
                     properties: [
                       {
                         class: 'Property',
-                        name: 'created'
+                        name: 'lowLiquidity'
                       },
                       {
                         class: 'Property',
-                        name: 'createdBy'
-                      },
-                      {
-                        class: 'Property',
-                        name: 'type'
-                      },
-                      {
-                        class: 'Property',
-                        name: 'id'
-                      },
-                      {
-                        class: 'Property',
-                        name: 'type'
-                      },
-                      {
-                        class: 'Property',
-                        name: 'id'
+                        name: 'highLiquidity'
                       }
                     ]
                   }
