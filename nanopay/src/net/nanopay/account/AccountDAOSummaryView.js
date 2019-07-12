@@ -150,7 +150,6 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .add(self.slot(function(data, data$id) {
-          debugger;
           return self.E()
             .start(self.Grid).addClass(this.myClass('card-row'))
               .start(self.Card, { columns: 4 })
