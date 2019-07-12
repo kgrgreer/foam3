@@ -196,11 +196,13 @@ public class BmoEftFileGenerator {
             bankAccount = getAccountById(transaction.getDestinationAccount());
           }
 
+          Branch branch = getBranchById(bankAccount.getBranch());
+
           BmoDetailRecord detailRecord =      new BmoDetailRecord();
           detailRecord.setAmount              (transaction.getAmount());
           detailRecord.setLogicalRecordTypeId (type);
           detailRecord.setClientName          (getNameById(bankAccount.getOwner()));
-          detailRecord.setClientInstitutionId (getInstitutionById(bankAccount.getInstitution()) + getBranchById(bankAccount.getBranch()));
+          detailRecord.setClientInstitutionId (getInstitutionById(branch.getInstitution()) + branch.getBranchId());
           detailRecord.setClientAccountNumber (bankAccount.getAccountNumber());
           detailRecord.setReferenceNumber     (String.valueOf(getRefNumber(transaction)));
           detailRecord.validate(x);
@@ -296,12 +298,10 @@ public class BmoEftFileGenerator {
     return institution.getInstitutionNumber();
   }
 
-  public String getBranchById(long id) {
+  public Branch getBranchById(long id) {
     DAO branchDAO = (DAO) x.get("branchDAO");
 
-    Branch branch = (Branch) branchDAO.inX(x).find(id);
-
-    return branch.getBranchId();
+    return (Branch) branchDAO.inX(x).find(id);
   }
 
   public boolean isValidTransaction(Transaction transaction) {

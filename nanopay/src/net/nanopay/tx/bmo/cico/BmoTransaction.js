@@ -14,20 +14,6 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'getPotentiallyUndelivered',
-      type: 'Boolean'
-    },
-    {
-      name: 'setPotentiallyUndelivered',
-      type: 'void',
-      args: [
-        {
-          type: 'Boolean',
-          name: 'potentiallyUndelivered',
-        },
-      ]
-    },
-    {
       name: 'setBmoReferenceNumber',
       type: 'void',
       args: [
@@ -69,20 +55,6 @@ foam.INTERFACE({
     {
       name: 'getRejectReason',
       type: 'String',
-    },
-    {
-      name: 'setCompletedTimeEDT',
-      args: [
-        {
-          type: 'String',
-          name: 'completedTimeEDT'
-        }
-      ],
-      type: 'void'
-    },
-    {
-      name: 'getCompletedTimeEDT',
-      type: 'String',
-    },
+    }
   ]
 });

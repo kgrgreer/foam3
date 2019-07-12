@@ -6,7 +6,10 @@ foam.CLASS({
   javaImports: [
     'java.util.ArrayList',
     'java.util.Arrays',
-    'net.nanopay.tx.bmo.BmoFormatUtil'
+    'net.nanopay.tx.bmo.BmoFormatUtil',
+    'net.nanopay.tx.bmo.BmoTransactionHistory',
+    'foam.core.FObject',
+    'java.util.List'
   ],
 
   implements: [
@@ -14,19 +17,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'CompletedTimeEDT',
-      class: 'String'
-    },
-    {
-      name: 'transactionHistory',
-      class: 'String',
-      view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 }
-    },
-    {
-      name: 'potentiallyUndelivered',
-      class: 'Boolean'
-    },
     {
       name: 'bmoReferenceNumber',
       class: 'String'
@@ -51,8 +41,13 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
-      String temp = BmoFormatUtil.getCurrentDateTimeEDT() + " : " + history + System.lineSeparator();
-      this.setTransactionHistory(this.getTransactionHistory() + temp);
+        BmoTransactionHistory bmoHistory = new BmoTransactionHistory();
+        bmoHistory.setTimeEDT(BmoFormatUtil.getCurrentDateTimeEDT());
+        bmoHistory.setMessage(history);
+    
+        ArrayList<FObject> temp = new ArrayList<>(Arrays.asList(this.getReferenceData()));
+        temp.add(bmoHistory);
+        this.setReferenceData(temp.toArray(new FObject[temp.size()]));
       `
     },
     {
@@ -65,9 +60,6 @@ foam.CLASS({
       ],
       javaCode: `
         super.limitedCopyFrom(other);
-        setTransactionHistory( ((BmoCOTransaction) other).getTransactionHistory() );
-        setCompletedTimeEDT(((BmoCOTransaction) other).getCompletedTimeEDT() );
-        setPotentiallyUndelivered( ((BmoCOTransaction) other).getPotentiallyUndelivered() );
         setBmoReferenceNumber( ((BmoCOTransaction) other).getBmoReferenceNumber() );
         setBmoFileCreationNumber( ((BmoCOTransaction) other).getBmoFileCreationNumber() );
         setRejectReason( ((BmoCOTransaction) other).getRejectReason() );

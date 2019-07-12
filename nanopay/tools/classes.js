@@ -672,6 +672,7 @@ var classes = [
   'net.nanopay.tx.bmo.cico.BmoTransaction',
   'net.nanopay.tx.bmo.BmoSFTPCredential',
   'net.nanopay.tx.bmo.BmoReferenceNumber',
+  'net.nanopay.tx.bmo.BmoTransactionHistory',
 
   // alarming & monitoring
   'net.nanopay.alarming.Alarm',

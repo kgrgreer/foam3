@@ -52,10 +52,6 @@ public class BmoSendFileCron implements ContextAgent {
       Transaction.STATUS, TransactionStatus.PENDING
     );
 
-    Predicate condition3 = MLang.OR(
-      MLang.EQ(BmoCITransaction.POTENTIALLY_UNDELIVERED, false),
-      MLang.EQ(BmoCOTransaction.POTENTIALLY_UNDELIVERED, false)
-    );
 
     ArraySink sink = (ArraySink) transactionDAO.where(
       MLang.AND(condition1, condition2)
@@ -134,22 +130,28 @@ public class BmoSendFileCron implements ContextAgent {
         new BmoSFTPClient(x, sftpCredential).upload(readyToSend);
         passedTransaction.forEach(transaction -> {
           ((BmoTransaction)transaction).addHistory("Sending...");
-          ((BmoTransaction)transaction).setPotentiallyUndelivered(true);
-          transaction.setStatus(TransactionStatus.FAILED);
         });
 
-        File receipt = new BmoSFTPClient(x, sftpCredential).downloadReceipt();
-        passedTransaction.forEach(transaction -> {
-          ((BmoTransaction)transaction).addHistory("Downloading receipt...");
-        });
-
-        if ( new BmoReportProcessor(x).processReceipt(receipt, eftFile.getHeaderRecord().getFileCreationNumber()) ) {
+        /* Fetch and process the receipt file, any exception happened during this process, set the transaction status to Failed */
+        try {
+          File receipt = new BmoSFTPClient(x, sftpCredential).downloadReceipt();
           passedTransaction.forEach(transaction -> {
-            ((BmoTransaction)transaction).addHistory("Verify receipt...");
-            ((BmoTransaction)transaction).setPotentiallyUndelivered(false);
+            ((BmoTransaction)transaction).addHistory("Downloading receipt...");
           });
-        } else {
-          throw new BmoSFTPException("Failed when verify receipt.");
+
+          if ( new BmoReportProcessor(x).processReceipt(receipt, eftFile.getHeaderRecord().getFileCreationNumber()) ) {
+            passedTransaction.forEach(transaction -> {
+              ((BmoTransaction)transaction).addHistory("Verify receipt...");
+            });
+          } else {
+            throw new BmoSFTPException("Failed when verify receipt.");
+          }
+        } catch ( Exception e ) {
+          passedTransaction.forEach(transaction -> {
+            ((BmoTransaction)transaction).addHistory("Failed when verify receipt.");
+            transaction.setStatus(TransactionStatus.FAILED);
+          });
+          throw e;
         }
 
         SEND_LOCK.unlock();

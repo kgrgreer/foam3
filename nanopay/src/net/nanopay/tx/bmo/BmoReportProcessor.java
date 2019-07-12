@@ -17,10 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -109,6 +106,9 @@ public class BmoReportProcessor {
 
   }
 
+  /**
+   * Please see example settlement report: https://drive.google.com/open?id=1TE8aFgren_UL3YWB1VK3QSaDdP8btkzY
+   */
   public void processSettlementReport(List<String> report) {
 
     String fileCreationNumber = "";
@@ -151,7 +151,7 @@ public class BmoReportProcessor {
     transaction = (Transaction) transaction.fclone();
 
     ((BmoTransaction)transaction).addHistory("Transaction completed.");
-    ((BmoTransaction)transaction).setCompletedTimeEDT(BmoFormatUtil.getCurrentDateTimeEDT());
+    transaction.setCompletionDate(new Date());
     transaction.setStatus(TransactionStatus.COMPLETED);
 
     transactionDAO.inX(this.x).put(transaction);
@@ -165,6 +165,9 @@ public class BmoReportProcessor {
       StringUtils.isNumeric(record.substring(55, 74).trim());
   }
 
+  /**
+   * Please see example rejected report: https://drive.google.com/open?id=1y0BGeLxjhVvS-uKYeG_3bAp6FLzvd46R
+   */
   public void processRejectReport(List<String> report) {
 
     ArrayList<String> rejectedItem = new ArrayList<>();
@@ -186,7 +189,6 @@ public class BmoReportProcessor {
 
       if ( line.contains("TOTAL REJECTS BY VALUE DATE") ) {
         processRejectRecord(rejectedItem, fileCreationNumber);
-        return;
       }
 
       rejectedItem.add(line);
