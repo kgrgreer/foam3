@@ -6,6 +6,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import static foam.mlang.MLang.EQ;
+import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
@@ -47,6 +48,10 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       Invoice invoice = getInvoice(x, transaction);
       if ( invoice != null ) {
         invoice.setPaymentId(transaction.getId());
+
+        if ( invoice.getPaymentMethod().equals(PaymentStatus.PENDING_APPROVAL) ) {
+          invoice.setApprovedBy(((User) x.get("user")).getId());
+        }
         // Invoice status should be processing as default when the trasaction is created
         invoice.setPaymentMethod(PaymentStatus.PROCESSING);
         // AscendantFXTransaction has its own completion date

@@ -42,6 +42,7 @@ foam.CLASS({
           }),
           this.Invoice.CREATED_BY,
           this.Invoice.STATUS,
+          this.Invoice.APPROVED_BY,
           this.Invoice.ISSUE_DATE.clone().copyFrom({
             label: 'Issue Date'
           }),
