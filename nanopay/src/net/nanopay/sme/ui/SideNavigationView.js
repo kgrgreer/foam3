@@ -120,7 +120,7 @@ foam.CLASS({
     ^ .account-button-info-detail {
       font-size: 16px;
       line-height: 24px;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .account-button-info-detail-small {
       font-size: 10px;

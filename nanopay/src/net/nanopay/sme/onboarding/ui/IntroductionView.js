@@ -28,11 +28,11 @@ foam.CLASS({
       box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
       border: 1px solid #e2e2e3;
       border-radius: 4px;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
     }
     ^ .small-title {
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
       margin-top: 32px;
     }

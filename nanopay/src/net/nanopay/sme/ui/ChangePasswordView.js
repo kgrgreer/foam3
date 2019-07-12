@@ -20,7 +20,7 @@ foam.CLASS({
         margin: auto;
         text-align: center;
         background: #fff;
-        height: 100%;
+        min-height: 100vh;
         width: 100%;
       }
 
@@ -149,6 +149,10 @@ foam.CLASS({
       /* This is required to set the position of visibility icon */
       ^ .input-field-container {
         position: relative;
+      }
+
+      ^ .full-width-input-password {
+        width:100%;
       }
     `,
 

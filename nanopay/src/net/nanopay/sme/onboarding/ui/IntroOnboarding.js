@@ -29,7 +29,7 @@ foam.CLASS({
       margin-top: 30px;
       font-size: 14px;
       font-weight: 600;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
 		}
 		^ .table-content {
 			margin-left: 30px;

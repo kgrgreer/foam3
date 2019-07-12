@@ -18,7 +18,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/AccountDAOSummaryView' },
   { name: 'net/nanopay/account/Debtable' },
   { name: 'net/nanopay/account/Accountable' },
-  { name: 'net/nanopay/account/DuplicateDigitalAccountRule'},
+  { name: 'net/nanopay/account/DuplicateAccountRule'},
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
   { name: 'net/nanopay/account/ui/AccountTreeView' },
@@ -320,6 +320,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
+  { name: 'net/nanopay/tx/ParentCompleteToPendingRule'},
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -772,8 +773,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/InvoiceRowView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SendRequestMoney', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SendRequestMoneyDetails', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/SendRequestMoneyPayment', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SendRequestMoneyReview', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/Payment', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/UploadFileModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/NewInvoiceForm', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceDetails', flags: ['web'] },

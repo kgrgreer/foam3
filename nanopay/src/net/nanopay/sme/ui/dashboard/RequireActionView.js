@@ -4,7 +4,6 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
-    'actionsCheck',
     'auth',
     'stack'
   ],
@@ -69,7 +68,17 @@ foam.CLASS({
           this.canPayInvoice = p;
         });
       }
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'showEmptyState',
+      documentation: 'It returns false if there is any overdue or requires approval payables.',
+      expression: function(countRequiresApproval,
+        countOverdueAndUpcoming, countDepositPayment, canPayInvoice) {
+        return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment === 0
+          || ( ! canPayInvoice && countOverdueAndUpcoming === 0 && countDepositPayment === 0 );
+      }
+    },
   ],
 
   messages: [
@@ -86,9 +95,7 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .show(this.slot(function(canPayInvoice, actionsCheck) {
-            return ! canPayInvoice || actionsCheck;
-          }))
+          .show(this.showEmptyState$)
           .addClass('empty-state').add(this.NO_ACTION_REQUIRED)
         .end()
         .start()

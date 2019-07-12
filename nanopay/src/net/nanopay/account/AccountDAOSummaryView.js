@@ -122,8 +122,6 @@ foam.CLASS({
             return '🇨🇦';
           case 'INR':
             return '🇮🇳';
-          case 'PKR':
-            return '🇵🇰';
           default:
             return '💰';
         }
