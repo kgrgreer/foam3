@@ -82,10 +82,12 @@ foam.CLASS({
   sections: [
     {
       name: 'accountType',
-      isAvailable: function(id) { return !! id; }
+      isAvailable: function(id) { return !! id; },
+      order: 1
     },
     {
       name: 'accountDetails',
+      order: 2
     },
     {
       name: '_defaultSection',

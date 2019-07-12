@@ -114,7 +114,8 @@ foam.RELATIONSHIP({
     label: ''
   },
   targetProperty: {
-    section: 'accountDetails',
+    section: 'liquiditySettingsSection',
+    label: '',
     value: 0,
     view: {
       class: 'foam.u2.view.FullReferenceView'

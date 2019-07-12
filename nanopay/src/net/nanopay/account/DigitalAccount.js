@@ -63,6 +63,13 @@ foam.CLASS({
     }
   ],
 
+  sections: [
+    {
+      name: 'liquiditySettingsSection',
+      title: 'Liquidity Settings'
+    }
+  ],
+
   axioms: [
     {
       buildJavaClass: function(cls) {
