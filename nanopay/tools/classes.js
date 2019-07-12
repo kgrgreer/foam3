@@ -540,6 +540,7 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.PruneApprovalRequests',
   'net.nanopay.meter.compliance.ruler.RequestBeneficialOwnersCompliance',
   'net.nanopay.meter.compliance.ruler.RequestSigningOfficersCompliance',
+  'net.nanopay.meter.compliance.ruler.ResetLastModified',
   'net.nanopay.meter.compliance.ruler.SecurefactLEVValidator',
   'net.nanopay.meter.compliance.ruler.SecurefactSIDniValidator',
   'net.nanopay.meter.compliance.ruler.UserComplianceApproval',

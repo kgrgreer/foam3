@@ -932,6 +932,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/PruneApprovalRequests' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestBeneficialOwnersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
+  { name: 'net/nanopay/meter/compliance/ruler/ResetLastModified' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactSIDniValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/UserComplianceApproval' },
