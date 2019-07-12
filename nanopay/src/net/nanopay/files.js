@@ -205,6 +205,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXUserStatus' },
   { name: 'net/nanopay/fx/KotakFxTransaction' },
   { name: 'net/nanopay/fx/ManualFxApprovalRequest' },
+  { name: 'net/nanopay/fx/GenericFXPlanDAO' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
