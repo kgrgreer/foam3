@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.mlang.MLang;
+import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
 import net.nanopay.account.LoanAccount;
 import net.nanopay.account.LoanedTotalAccount;
@@ -40,8 +41,10 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     if ( sourceAccount instanceof LoanAccount ) {
       LoanAccount theLoanAccount = (LoanAccount) sourceAccount;
-      if ( theLoanAccount.getPrincipal() < ( txn.getAmount() - ( (long) theLoanAccount.findBalance(x) ) ) )
+      if ( theLoanAccount.getPrincipal() < ( txn.getAmount() - ( (long) theLoanAccount.findBalance(x) ) ) ) {
+        ((Logger) getX().get("logger")).error("Transaction Exceeds Loan Account Principal Limit" + txn.getId());
         throw new RuntimeException("Transaction Exceeds Loan Account Principal Limit");
+      }
       LoanedTotalAccount globalLoanAccount = ((LoanedTotalAccount) accountDAO.find(
         MLang.AND(
           MLang.INSTANCE_OF( LoanedTotalAccount.class ),
@@ -49,7 +52,10 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
         )
       ));
 
-      if ( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");
+      if ( globalLoanAccount == null ) {
+        ((Logger) getX().get("logger")).error("Total Loan Account not found");
+        throw new RuntimeException("Total Loan Account not found");
+      }
       withdrawLineItem = new TransactionLineItem.Builder(x)
         .setSourceAccount( theLoanAccount.getId() )
         .setDestinationAccount( globalLoanAccount.getId() )
@@ -69,7 +75,10 @@ public class LoanTransactionPlanDAO extends ProxyDAO {
         )
       ));
 
-      if ( globalLoanAccount == null ) throw new RuntimeException("Total Loan Account not found");
+      if ( globalLoanAccount == null ) {
+        ((Logger) getX().get("logger")).error("Total Loan Account not found");
+        throw new RuntimeException("Total Loan Account not found");
+      }
       depositLineItem = new TransactionLineItem.Builder(x)
         .setSourceAccount( globalLoanAccount.getId() )
         .setDestinationAccount( theLoanAccount.getId() )

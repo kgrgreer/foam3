@@ -8,6 +8,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction'
@@ -26,6 +27,7 @@ foam.CLASS({
         if ( account == null ) {
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
           if ( user == null ) {
+            ((Logger) x.get("logger")).error("Payer not found for " + txn.getId());
             throw new RuntimeException("Payer not found");
           }
           account = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
