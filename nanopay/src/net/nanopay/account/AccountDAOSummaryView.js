@@ -105,6 +105,10 @@ foam.CLASS({
     ^card-row {
       margin-top: 32px;
     }
+
+    ^card-row .foam-u2-layout-Card {
+      padding: 24px 16px;
+    }
   `,
 
   requires: [
@@ -113,10 +117,12 @@ foam.CLASS({
     'foam.u2.detail.GridSectionView',
     'foam.u2.borders.CardBorder',
     'foam.u2.layout.Card',
+    'foam.u2.layout.Rows',
     'foam.u2.layout.Grid'
   ],
   imports: [
-    'transactionDAO'
+    'transactionDAO',
+    'liquiditySettingsDAO'
   ],
 
   messages: [
@@ -126,6 +132,10 @@ foam.CLASS({
     }
   ],
 
+  properties: [
+
+  ],
+
   methods: [
     function initE() {
       var self = this;
@@ -133,43 +143,82 @@ foam.CLASS({
         .addClass(this.myClass())
         .add(self.slot(function(data, data$id) {
           return self.E()
-            .start(self.Rows)
-              .start(self.Grid).addClass(this.myClass('card-row'))
-                .start(self.Card, { columns: 4 })
-                  .tag(self.AccountBalanceView, { data })
-                .end()
-                .start(this.Card, { columns: 4 })
-                  .tag(self.GridSectionView, { 
-                    data,
-                    section: {
-                      properties: [
-                        'created',
-                        'createdBy',
-                        'type',
-                        'id',
-
-                      ]
-                    }
-                  })
-                .end()
-                .start(this.Card, { columns: 4 })
-                  .tag(self.GridSectionView, { 
-                    data 
-                  })
-                .end()
+            .start(self.Grid).addClass(this.myClass('card-row'))
+              .start(self.Card, { columns: 4 })
+                .tag(self.AccountBalanceView, { data })
               .end()
-              .start(self.CardBorder).addClass(this.myClass('transactions-table'))
-                .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
-                .start(foam.comics.v2.DAOBrowserView, {
-                  data: self.transactionDAO
-                          .where
-                            (self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id)),
-                                    (self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id))  
-                            )
-                          .orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED))
-                          .limit(20),
+              .start(self.Card, { columns: 4 })
+                .tag(self.GridSectionView, { 
+                  data,
+                  unitWidth: 6,
+                  section: {
+                    properties: [
+                      {
+                        class: 'Property',
+                        name: 'created'
+                      },
+                      {
+                        class: 'Property',
+                        name: 'createdBy'
+                      },
+                      {
+                        class: 'Property',
+                        name: 'type'
+                      },
+                      {
+                        class: 'Property',
+                        name: 'id'
+                      }
+                    ]
+                  }
                 })
-                .end()
+              .end()
+              .start(this.Card, { columns: 4 })
+                .tag(self.GridSectionView, { 
+                  data,
+                  unitWidth: 6,
+                  section: {
+                    properties: [
+                      {
+                        class: 'Property',
+                        name: 'created'
+                      },
+                      {
+                        class: 'Property',
+                        name: 'createdBy'
+                      },
+                      {
+                        class: 'Property',
+                        name: 'type'
+                      },
+                      {
+                        class: 'Property',
+                        name: 'id'
+                      },
+                      {
+                        class: 'Property',
+                        name: 'type'
+                      },
+                      {
+                        class: 'Property',
+                        name: 'id'
+                      }
+                    ]
+                  }
+                })
+              .end()
+            .end()
+            .start(self.CardBorder).addClass(this.myClass('transactions-table'))
+              .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
+              .start(foam.comics.v2.DAOBrowserView, {
+                data: self.transactionDAO
+                        .where
+                          (self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id)),
+                                  (self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id))  
+                          )
+                        .orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED))
+                        .limit(20),
+              })
               .end()
             .end();
         }));

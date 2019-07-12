@@ -14,11 +14,9 @@ foam.CLASS({
   `,
 
   css:`
-    /*
     ^ {
-      padding: 24px 16px;
+      margin-bottom: 32px;
     }
-    */
 
     ^balance {
       font-size: 28px;

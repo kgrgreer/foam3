@@ -176,7 +176,7 @@ foam.CLASS({
             data: this.aggregatedDAO$proxy,
             config$: this.config$,
             customDatasetStyling$: this.styling$,
-            width: 700,
+            width: 600,
             height: 600
           }))
         .end()
