@@ -144,16 +144,13 @@ foam.CLASS({
     }
   ],
 
-  properties: [
-
-  ],
-
   methods: [
     function initE() {
       var self = this;
       this
         .addClass(this.myClass())
-        .add(self.slot(function(data, data$id, data$liquiditySetting, liquiditySettingsDAO) {
+        .add(self.slot(function(data, data$id) {
+          debugger;
           return self.E()
             .start(self.Grid).addClass(this.myClass('card-row'))
               .start(self.Card, { columns: 4 })
@@ -166,44 +163,49 @@ foam.CLASS({
                   unitWidth: 6,
                   section: {
                     properties: [
-                      {
-                        class: 'Property',
-                        name: 'created'
-                      },
-                      {
-                        class: 'Property',
-                        name: 'createdBy'
-                      },
-                      {
-                        class: 'Property',
-                        name: 'type'
-                      },
-                      {
-                        class: 'Property',
-                        name: 'id'
-                      }
+                      data.CREATED,
+                      data.CREATED_BY,
+                      data.TYPE,
+                      data.ID
                     ]
                   }
                 })
               .end()
               .start(this.Card, { columns: 4 })
                 .start().add(self.THRESHOLD_HEADER).addClass(this.myClass('card-header')).end()
-                .tag(self.GridSectionView, { 
-                  data: liquiditySettingsDAO.find(data$liquiditySetting).then(data => data),
-                  unitWidth: 6,
-                  section: {
-                    properties: [
-                      {
-                        class: 'Property',
-                        name: 'lowLiquidity'
-                      },
-                      {
-                        class: 'Property',
-                        name: 'highLiquidity'
+                .add(data.liquiditySetting$find.then(ls => {
+                  return self.E()
+                    .tag(self.GridSectionView, {
+                      data: ls.lowLiquidity,
+                      unitWidth: 6,
+                      section: {
+                        properties: [
+                          ls.lowLiquidity.THRESHOLD.clone().copyFrom({
+                            label: 'Low'
+                          }),
+                          ls.lowLiquidity.RESET_BALANCE,
+                          ls.lowLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
+                            label: 'With funding from'
+                          })
+                        ]
                       }
-                    ]
-                  }
-                })
+                    })
+                    .tag(self.GridSectionView, {
+                      data: ls.highLiquidity,
+                      unitWidth: 6,
+                      section: {
+                        properties: [
+                          ls.highLiquidity.THRESHOLD.clone().copyFrom({
+                            label: 'High'
+                          }),
+                          ls.highLiquidity.RESET_BALANCE,
+                          ls.highLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
+                            label: 'With funding from'
+                          })
+                        ]
+                      }
+                    })
+                }))
               .end()
             .end()
             .start(self.CardBorder).addClass(this.myClass('transactions-table'))
