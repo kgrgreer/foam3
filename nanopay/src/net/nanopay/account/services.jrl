@@ -40,7 +40,8 @@ p({
       .build();
     pdba = new net.nanopay.bank.PreventDuplicateBankAccountDAO(x, eodbapc);
     bab = new net.nanopay.bank.BankAccountBranchDAO(x, pdba);
-    bai = new net.nanopay.bank.BankAccountInstitutionDAO(x, bab);\neoddapc = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, bai);
+    bai = new net.nanopay.bank.BankAccountInstitutionDAO(x, bab);
+    eoddapc = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, bai);
     lnoba = new net.nanopay.account.LimitNumberOfBankAccountsDAO(x, eoddapc);
     sn = new foam.dao.SequenceNumberDAO(lnoba);
     pm = new foam.dao.PMDAO(x, sn);
