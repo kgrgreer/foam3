@@ -152,10 +152,10 @@ foam.CLASS({
         .add(self.slot(function(data, data$id) {
           return self.E()
             .start(self.Grid).addClass(this.myClass('card-row'))
-              .start(self.Card, { columns: 4 })
+              .start(self.Card, { columns: this.data.liquiditySetting !== undefined ? 4 : 6 })
                 .tag(self.AccountBalanceView, { data })
               .end()
-              .start(self.Card, { columns: 4 })
+              .start(self.Card, { columns: this.data.liquiditySetting !== undefined ? 4 : 6 })
                 .start().add(self.OVERVIEW_HEADER).addClass(this.myClass('card-header')).end()
                 .tag(self.GridSectionView, { 
                   data,
@@ -170,43 +170,56 @@ foam.CLASS({
                   }
                 })
               .end()
-              .start(this.Card, { columns: 4 })
-                .start().add(self.THRESHOLD_HEADER).addClass(this.myClass('card-header')).end()
-                .add(data.liquiditySetting$find.then(ls => {
-                  return self.E()
-                    .tag(self.GridSectionView, {
-                      data: ls.lowLiquidity,
-                      unitWidth: 6,
-                      section: {
-                        properties: [
-                          ls.lowLiquidity.THRESHOLD.clone().copyFrom({
-                            label: 'Low'
-                          }),
-                          ls.lowLiquidity.RESET_BALANCE,
-                          ls.lowLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
-                            label: 'With funding from'
+              .callIf(data.liquiditySetting !== undefined, function() {
+                this.start(self.Card, { columns: 4 })
+                  .start().add(self.THRESHOLD_HEADER).addClass(self.myClass('card-header')).end()
+                  .callIfElse(data.liquiditySetting === 0, function() {
+                    this.start().add('lit').end();
+                  }, function() {
+                    this
+                      .add(data.liquiditySetting$find.then(ls => {
+                        return self.E()
+                          .callIf(ls.lowLiquidity.enabled, function(){
+                            this
+                              .tag(self.GridSectionView, {
+                                data: ls.lowLiquidity,
+                                unitWidth: 6,
+                                section: {
+                                  properties: [
+                                    ls.lowLiquidity.THRESHOLD.clone().copyFrom({
+                                      label: 'Low'
+                                    }),
+                                    ls.lowLiquidity.RESET_BALANCE,
+                                    ls.lowLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
+                                      label: 'With funding from'
+                                    })
+                                  ]
+                                }
+                              })
+                            })
+                            .callIf(ls.highLiquidity.enabled, function(){
+                              this.tag(self.GridSectionView, {
+                                data: ls.highLiquidity,
+                                unitWidth: 6,
+                                section: {
+                                  properties: [
+                                    ls.highLiquidity.THRESHOLD.clone().copyFrom({
+                                      label: 'High'
+                                    }),
+                                    ls.highLiquidity.RESET_BALANCE,
+                                    ls.highLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
+                                      label: 'With funding from'
+                                    })
+                                  ]
+                                }
+                              })
+                            })
                           })
-                        ]
-                      }
-                    })
-                    .tag(self.GridSectionView, {
-                      data: ls.highLiquidity,
-                      unitWidth: 6,
-                      section: {
-                        properties: [
-                          ls.highLiquidity.THRESHOLD.clone().copyFrom({
-                            label: 'High'
-                          }),
-                          ls.highLiquidity.RESET_BALANCE,
-                          ls.highLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
-                            label: 'With funding from'
-                          })
-                        ]
-                      }
-                    })
-                }))
-              .end()
-            .end()
+                        )
+                      })
+                    .end()
+                  })
+                .end()
             .start(self.CardBorder).addClass(this.myClass('transactions-table'))
               .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
               .start(foam.comics.v2.DAOBrowserView, {
