@@ -28,72 +28,6 @@ import static java.lang.System.exit;
 
 public abstract class DAOSecurityTest extends ApiTestBase {
 
-  protected static final String TEST_FIND = "{\n" +
-    "\t\"class\":\"foam.box.Message\",\n" +
-    "\t\"attributes\":{\n" +
-    "\t\t\"replyBox\":{\n" +
-    "\t\t\t\"class\":\"foam.box.HTTPReplyBox\"\n" +
-    "\t\t},\n" +
-    "\t\t\"sessionId\":\"6d2df1a2-982e-4537-9fcd-randomabc123\"\n" +
-    "\t},\n" +
-    "\t\"object\":{\n" +
-    "\t\t\"class\":\"foam.box.RPCMessage\",\n" +
-    "\t\t\"name\":\"find\",\n" +
-    "\t\t\"args\":[\n" +
-    "\t\t\tnull,\n" +
-    "\t\t\t0\n" +
-    "\t\t],\n" +
-    "\t\t\"attributes\":{}\n" +
-    "\t}\n" +
-    "}";
-
-  protected static final String TEST_SELECT = "{\n" +
-    "\t\"class\":\"foam.box.Message\",\n" +
-    "\t\"attributes\":{\n" +
-    "\t\t\"replyBox\":{\n" +
-    "\t\t\t\"class\":\"foam.box.HTTPReplyBox\"\n" +
-    "\t\t},\n" +
-    "\t\t\"sessionId\":\"6d2df1a2-982e-4537-9fcd-randomabc123\"\n" +
-    "\t},\n" +
-    "\t\"object\":{\n" +
-    "\t\t\"class\":\"foam.box.RPCMessage\",\n" +
-    "\t\t\"name\":\"select\",\n" +
-    "\t\t\"args\":[\n" +
-    "\t\t\tnull,\n" +
-    "\t\t\t{\n" +
-    "\t\t\t\t\"class\":\"foam.dao.ArraySink\"\n" +
-    "\t\t\t},\n" +
-    "\t\t\t0,\n" +
-    "\t\t\t10,\n" +
-    "\t\t\tnull,\n" +
-    "\t\t\tnull\n" +
-    "\t\t],\n" +
-    "\t\t\"attributes\":{}\n" +
-    "\t}\n" +
-    "}";
-
-  protected static final String TEST_REMOVE_ALL = "{\n" +
-    "\t\"class\":\"foam.box.Message\",\n" +
-    "\t\"attributes\":{\n" +
-    "\t\t\"replyBox\":{\n" +
-    "\t\t\t\"class\":\"foam.box.HTTPReplyBox\"\n" +
-    "\t\t},\n" +
-    "\t\t\"sessionId\":\"6d2df1a2-982e-4537-9fcd-randomabc123\"\n" +
-    "\t},\n" +
-    "\t\"object\":{\n" +
-    "\t\t\"class\":\"foam.box.RPCMessage\",\n" +
-    "\t\t\"name\":\"select\",\n" +
-    "\t\t\"args\":[\n" +
-    "\t\t\tnull,\n" +
-    "\t\t\t0,\n" +
-    "\t\t\t10,\n" +
-    "\t\t\tnull,\n" +
-    "\t\t\tnull\n" +
-    "\t\t],\n" +
-    "\t\t\"attributes\":{}\n" +
-    "\t}\n" +
-    "}";
-
   private static final String USER_AGENT = "Mozilla/5.0";
 
   // Helper class for holding results
@@ -174,14 +108,6 @@ public abstract class DAOSecurityTest extends ApiTestBase {
     // Successful (i.e. transaction failed with authentication exception)
     return true;
   }
-
-//  @Override
-//  public void runTest(X x) {
-//    List<String> ignores = new ArrayList<>();
-//    testAllDAOs(x, TEST_SELECT, "select", ignores);
-//    testAllDAOs(x, TEST_FIND, "find", ignores);
-//    testAllDAOs(x, TEST_REMOVE_ALL, "removeAll", ignores);
-//  }
 
   // Run the test with a list of DAOs to ignore
   public void testAllDAOs(X x, String request, String command, List<String> ignores) {
