@@ -19,6 +19,17 @@ foam.CLASS({
     },
     {
       name: 'thresholds'
+    },
+    {
+      name: 'accountsSection',
+      title: 'Accounts',
+      isAvailable: function(id) {
+        return !! id;
+      }
+    },
+    {
+      name: '_defaultSection',
+      permissionRequired: true
     }
   ],
 
@@ -31,8 +42,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id',
-      visibility: 'HIDDEN'
+      name: 'id'
     },
     {
       class: 'String',

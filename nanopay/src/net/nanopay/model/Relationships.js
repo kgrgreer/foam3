@@ -109,6 +109,10 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  sourceProperty: {
+    section: 'accountsSection',
+    label: ''
+  },
   targetProperty: {
     section: 'accountDetails',
     value: 0,
