@@ -66,7 +66,7 @@ public class BmoEftFileGenerator {
 
     try {
 
-      file = new File(SEND_FOLDER + eftFile.getFileName() + "_" + Instant.now());
+      file = new File(SEND_FOLDER + eftFile.getFileName() + "_" + Instant.now().toEpochMilli());
       FileUtils.touch(file);
       FileUtils.writeStringToFile(file, eftFile.toBmoFormat(), false);
 
