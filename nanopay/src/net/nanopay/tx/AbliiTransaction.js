@@ -8,14 +8,15 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
     'java.lang.StringBuilder',
-    'java.text.NumberFormat',
     'net.nanopay.account.Account',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.model.Currency',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   methods: [
@@ -35,20 +36,34 @@ foam.CLASS({
         User sender = findSourceAccount(x).findOwner(x);
         User receiver = (User) localUserDAO.find(findDestinationAccount(x).getOwner());
 
-        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
+        Currency currency = (Currency) currencyDAO.find(getDestinationCurrency());
+
+        if ( currency == null ) {
+          throw new RuntimeException("Destination currency should not be null.");
+        }
+
         StringBuilder sb = new StringBuilder(sender.label())
           .append(" just initiated a payment to ")
           .append(receiver.label())
           .append(" for ")
-          .append(formatter.format(getAmount()/100.00));
-        if ( invoice.getInvoiceNumber() != null && ! SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ) {
+          .append(currency.format(getAmount()))
+          .append(" ")
+          .append(getDestinationCurrency());
+
+        if (
+          invoice.getInvoiceNumber() != null &&
+          ! SafetyUtil.isEmpty(invoice.getInvoiceNumber())
+        ) {
           sb.append(" on Invoice#: ")
             .append(invoice.getInvoiceNumber());
         }
-        if(invoice.getPurchaseOrder().length() > 0) {
+
+        if ( invoice.getPurchaseOrder().length() > 0 ) {
           sb.append(" and P.O: ");
           sb.append(invoice.getPurchaseOrder());
         } 
+
         sb.append(".");
         String notificationMsg = sb.toString();
 
@@ -61,7 +76,7 @@ foam.CLASS({
         notificationDAO.put_(x, senderNotification);
 
         // notification to receiver
-        if(receiver.getId() != sender.getId()) {
+        if ( receiver.getId() != sender.getId() ) {
           Notification receiverNotification = new Notification();
           receiverNotification.setUserId(receiver.getId()); 
           receiverNotification.setBody(notificationMsg);
@@ -107,6 +122,7 @@ foam.CLASS({
 
       // An invoice is required to create an ablii transaction
       if( tx.findInvoiceId(x) == null ) {
+        ((Logger) x.get("logger")).error("An invoice was not provided for this transaction");
         throw new RuntimeException("An invoice for this transaction was not provided.");
       }
 
