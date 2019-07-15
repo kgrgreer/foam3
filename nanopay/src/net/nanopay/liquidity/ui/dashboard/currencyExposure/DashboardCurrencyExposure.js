@@ -51,8 +51,8 @@ foam.CLASS({
                 data: this.data,
                 keyExpr: net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure.DENOMINATION,
                 valueExpr: net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure.TOTAL,
-                height: 375,
-                width: 375,
+                height: 280,
+                width: 280,
                 config: {
                   type: 'pie',
                   options: {

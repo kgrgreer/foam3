@@ -170,14 +170,14 @@ foam.CLASS({
           .end()
         .end()
         .start()
-          .style({ 'width': '750px', 'height': '625px' })
+          .style({ 'width': '600px', 'height': '550px' })
           .addClass(this.myClass('chart'))
           .add(this.CandlestickDAOChartView.create({
             data: this.aggregatedDAO$proxy,
             config$: this.config$,
             customDatasetStyling$: this.styling$,
-            width: 750,
-            height: 625
+            width: 600,
+            height: 550
           }))
         .end()
         .start(this.Cols)
