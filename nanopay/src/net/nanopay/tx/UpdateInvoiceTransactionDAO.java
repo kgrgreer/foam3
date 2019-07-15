@@ -47,7 +47,6 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
       Invoice invoice = getInvoice(x, transaction);
       if ( invoice != null ) {
         invoice.setPaymentId(transaction.getId());
-
         // Invoice status should be processing as default when the trasaction is created
         invoice.setPaymentMethod(PaymentStatus.PROCESSING);
         // AscendantFXTransaction has its own completion date
