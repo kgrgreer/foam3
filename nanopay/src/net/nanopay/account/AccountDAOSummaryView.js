@@ -43,47 +43,14 @@ foam.CLASS({
   `,
 
   css:`
-    ^balance-card {
-      width: 448px;
-      height: 188px;
-      margin: 32px 0px;
-      padding: 24px 16px;
-    }
-
-    ^balance {
-      font-size: 28px;
-      font-weight: 600;
-      line-height: 1.43;
-    }
-
-    ^balance-note {
-      font-size: 12px;
-      color: #5e6061;
-      line-height: 1.5;
-      font-style: italic;
-    }
-
-    ^denom-flag {
-      margin-left: 8px;
-    }
-
     ^ .foam-u2-ActionView-back {
       display: flex;
       align-items: center;
     }
 
-    ^account-name {
-      font-size: 36px;
-      font-weight: 600;
-    }
-
     ^actions-header .foam-u2-ActionView {
       margin-right: 24px;
       line-height: 1.5
-    }
-
-    ^view-container {
-      margin: auto;
     }
 
     ^table-header {
@@ -108,10 +75,6 @@ foam.CLASS({
 
     ^card-row .foam-u2-layout-Card {
       padding: 24px 16px;
-    }
-
-    ^ .foam-u2-layout-GUnit {
-      margin: 0px;
     }
 
     ^threshold-header {

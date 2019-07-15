@@ -40,7 +40,7 @@ foam.CLASS({
     ^card-header {
       font-weight: 600;
       font-size: 12px;
-      margin-bottom: 52px;
+      margin-bottom: 72px;
     }
 
     ^ .foam-u2-ActionView-back {
