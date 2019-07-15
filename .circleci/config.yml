@@ -14,28 +14,6 @@ jobs:
       - run: git submodule sync
       - run: git submodule update --init
 
-      # Download and cache dependencies
-      - restore_cache:
-          key: node-v1-{{ checksum "package-lock.json" }}
-
-      - run: npm install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: node-v1-{{ checksum "package-lock.json" }}
-
-      # cache maven repositories
-      - restore_cache:
-          key: maven-v1-{{ checksum "pom.xml" }}
-
-      - run: mvn dependency:go-offline
-
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: maven-v1-{{ checksum "pom.xml" }}
-
       - run: ./build.sh -t
 
 workflows:
