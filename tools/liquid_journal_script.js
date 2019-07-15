@@ -179,7 +179,7 @@ function createTrustAccount(X, d) {
     owner: 101,
     name: `${d} Trust Account`,
     denomination: d
-  })
+  }, X);
 
   X.accountDAO.put(trust);
 }
@@ -287,9 +287,9 @@ function createEmailRebalanceLiquiditySetting(X, s) {
 }
 
 function bank(X, a) {
-  var cls = a.denomination == 'CAD' 
-      ? net.nanopay.bank.CABankAccount 
-      : a.denomination == 'USD' 
+  var cls = a.denomination == 'CAD'
+      ? net.nanopay.bank.CABankAccount
+      : a.denomination == 'USD'
           ? net.nanopay.bank.USBankAccount
           : net.nanopay.bank.BankAccount
 
@@ -467,7 +467,7 @@ function cashIn(X, bank, dest, amount) {
     ],
     lastModified: X.currentDate
   }, X);
-  
+
 
   X.transactionDAO.put(tx);
 
