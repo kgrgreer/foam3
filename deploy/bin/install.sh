@@ -6,8 +6,9 @@ NANOPAY_TARBALL=
 NANOPAY_REMOTE_OUTPUT=/tmp/tar_extract
 NANOPAY_SERVICE_FILE=/lib/systemd/system/nanopay.service
 MNT_HOME=/mnt/nanopay
-LOG_HOME=/mnt/nanopay/logs
-JOURNAL_HOME=/mnt/nanopay/journals
+LOG_HOME=${MNT_HOME}/logs
+JOURNAL_HOME=${MNT_HOME}/journals
+BACKUP_HOME=${MNT_HOME}/backups
 
 function quit {
     echo "ERROR :: Remote Install Failed"
@@ -35,27 +36,37 @@ while getopts "hN:O:I:" opt ; do
    esac
 done
 
+if [ -z $NANOPAY_HOME ]; then
+    echo "ERROR :: NANOPAY_HOME is undefined"
+    quit
+fi
+
 NANOPAY_CURRENT_VERSION=$(readlink -f ${NANOPAY_ROOT} | awk -F- '{print $NF}')
 NANOPAY_NEW_VERSION=$(echo ${NANOPAY_HOME} | awk -F- '{print $NF}')
 
-function installFiles {
-    if [ -z $NANOPAY_HOME ]; then
-        echo "ERROR :: NANOPAY_HOME is undefined"
-        quit
+function backupFiles {
+    if [ ! -d ${BACKUP_HOME} ]; then
+        mkdir -p ${BACKUP_HOME} 
+        chgrp nanopay ${BACKUP_HOME}
+        chmod 770 ${BACKUP_HOME}
     fi
 
     # Move same/duplicate version installation.
     if [ -d $NANOPAY_HOME ]; then
-        NANOPAY_BACKUP=${NANOPAY_HOME}.bak.tar.gz
-        if [ -f ${NANOPAY_BACKUP} ]; then
-            echo "INFO :: ${NANOPAY_BACKUP} found, deleting"
-            rm -f ${NANOPAY_BACKUP}
-        fi
+        NANOPAY_BACKUP=${BACKUP_HOME}/$(basename ${NANOPAY_HOME})-$(date +%s)-backup.tar.gz
         echo "INFO :: ${NANOPAY_HOME} found, backing up to ${NANOPAY_BACKUP}"
-        tar -czf ${NANOPAY_BACKUP} --absolute-names ${NANOPAY_HOME}
+        tar -czf ${NANOPAY_BACKUP} -C ${NANOPAY_HOME} .
+        if [ ! $? -eq 0 ]; then
+            echo "ERROR :: Couldn't backup ${NANOPAY_HOME} to ${NANOPAY_BACKUP}"
+            quit
+        fi
+        chgrp nanopay ${NANOPAY_BACKUP}
+        chmod 770 ${NANOPAY_BACKUP}
         rm -rf ${NANOPAY_HOME}
     fi
+}
 
+function installFiles {
     echo "INFO :: Installing nanopay to ${NANOPAY_HOME}"
 
     if [ ! -d $NANOPAY_HOME ]; then
@@ -139,6 +150,10 @@ function setupUser {
 function setupNanopaySymLink {
     if [ -h ${NANOPAY_ROOT} ]; then
         unlink ${NANOPAY_ROOT}
+    elif [ -d ${NANOPAY_ROOT} ]; then
+        BACKUP_DIR="${NANOPAY_ROOT}.$(date +%s).bak"
+        echo "INFO :: Found old ${NANOPAY_ROOT} dir, moving to ${BACKUP_DIR}"
+        mv ${NANOPAY_ROOT} ${BACKUP_DIR}
     fi
 
     ln -s ${NANOPAY_HOME} ${NANOPAY_ROOT}
@@ -201,6 +216,8 @@ if [ ! $? -eq 0 ]; then
 fi
 
 setupUser
+
+backupFiles
 
 installFiles
 

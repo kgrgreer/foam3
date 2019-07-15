@@ -9,6 +9,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'net.nanopay.tx.model.Transaction',
     'java.util.List'
   ],
@@ -30,6 +31,7 @@ foam.CLASS({
         DAO keyPairDAO = (DAO) x.get("keyPairDAO");
         DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
         DAO privateKeyDAO = (DAO) x.get("privateKeyDAO");
+        Logger logger = (Logger) x.get("logger");
 
         Transaction tx = (Transaction) obj;
         List<Signature> signatures = tx.getSignatures();
@@ -41,16 +43,19 @@ foam.CLASS({
 
         KeyPairEntry keyPairEntry;
         if ( ( keyPairEntry = (KeyPairEntry) keyPairDAO.inX(x).find(MLang.EQ(KeyPairEntry.OWNER, user.getId())) ) == null ) {
+          logger.error("Keypair not found for user " + user.getId());
           throw new RuntimeException("KeyPair not found.");
         }
 
         PublicKeyEntry publicKeyEntry;
         if ( ( publicKeyEntry = (PublicKeyEntry) publicKeyDAO.inX(x).find(keyPairEntry.getPublicKeyId()) ) == null ) {
+          logger.error("PublicKey not found for user " + user.getId());
           throw new RuntimeException("PublicKey not found.");
         }
 
         PrivateKeyEntry privateKeyEntry;
         if ( ( privateKeyEntry = (PrivateKeyEntry) privateKeyDAO.inX(x).find(keyPairEntry.getPrivateKeyId()) ) == null ) {
+          logger.error("PrivateKey not found for user " + user.getId());
           throw new RuntimeException("PrivateKey not found.");
         }
 
@@ -74,6 +79,7 @@ foam.CLASS({
 
           return super.put_(x, tx);
         } catch ( Throwable t ) {
+          logger.error("Unexpected exception in PayerAsssentTransactionDAO", t);
           throw new RuntimeException(t);
         }
       `

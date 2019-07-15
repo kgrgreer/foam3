@@ -57,7 +57,7 @@ foam.CLASS({
     ^ .drop-down-label {
       font-size: 12px;
       font-weight: 600;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       margin-bottom: 8px;
     }
     ^ .foam-u2-tag-Select {
@@ -85,7 +85,7 @@ foam.CLASS({
       display: inline-block;
       font-size: 16px;
       font-weight: 900;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .foam-u2-ActionView-save {
       width: 96px;

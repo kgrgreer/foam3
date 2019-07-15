@@ -4,15 +4,13 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'foam.nanos.analytics.Foldable'
+    'foam.nanos.analytics.Foldable',
+    'foam.nanos.auth.LastModifiedAware'
   ],
 
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount'
-  ],
-  imports: [
-    'liquiditySettingsDAO'
   ],
 
   //relationship: 1:* LiquiditySettings : DigitalAccount
@@ -21,11 +19,6 @@ foam.CLASS({
 
   plural: 'Liquidity Settings',
 
-  css: `
-  .foam-u2-view-RichChoiceView-container {
-    z-index:1;
-  }
-  `,
   properties: [
     {
       class: 'Long',
@@ -83,6 +76,11 @@ foam.CLASS({
           .setEnabled(false)
           .build();
       `,
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: 'Last modified date'
     }
   ],
   methods: [
@@ -100,8 +98,9 @@ foam.CLASS({
     {
       name: 'doFolds',
       javaCode: `
-fm.foldForState(getId()+":high", new java.util.Date(), getHighLiquidity().getThreshold());
-fm.foldForState(getId()+":low", new java.util.Date(), getLowLiquidity().getThreshold());
+if ( getLastModified() == null ) return;
+fm.foldForState(getId()+":high", getLastModified(), getHighLiquidity().getThreshold());
+fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshold());
       `
     }
   ]

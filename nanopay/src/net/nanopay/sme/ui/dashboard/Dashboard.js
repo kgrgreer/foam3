@@ -43,7 +43,6 @@ foam.CLASS({
   ],
 
   exports: [
-    'actionsCheck',
     'myDaoNotification'
   ],
 
@@ -129,14 +128,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'actionsCheck',
-      documentation: 'It returns false if there is any overdue or requires approval payables.',
-      expression: function(countRequiresApproval, countOverdueAndUpcoming, countDepositPayment) {
-        return countRequiresApproval + countOverdueAndUpcoming + countDepositPayment == 0;
-      }
-    },
-    {
       class: 'foam.dao.DAOProperty',
       name: 'myDAOReceivables',
       factory: function() {
@@ -219,7 +210,7 @@ foam.CLASS({
               this.EQ(this.Account.TYPE, this.BankAccount.name),
               this.EQ(this.Account.TYPE, this.CABankAccount.name),
               this.EQ(this.Account.TYPE, this.USBankAccount.name)
-            ), 
+            ),
             this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED)
           )
         ).select()
@@ -369,7 +360,7 @@ foam.CLASS({
         split.rightBottomPanel.add(botR);
 
         this.addClass(this.myClass()).add(split).end();
-      })
+      });
     }
   ]
 });

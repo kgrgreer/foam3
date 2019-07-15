@@ -30,7 +30,8 @@ foam.CLASS({
           return [
             'choose status',
             ['COMPLETED', 'COMPLETED'],
-            ['CANCELLED', 'DECLINED']
+            ['CANCELLED', 'CANCELLED'],
+            ['DECLINED', 'DECLINED'],
           ];
         }
        return ['No status to choose'];

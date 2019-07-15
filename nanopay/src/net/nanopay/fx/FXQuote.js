@@ -77,6 +77,14 @@ foam.CLASS({
           name: 'rate'
         },
         {
+          class: 'Double',
+          name: 'invertedRate'
+        },
+        {
+          class: 'Boolean',
+          name: 'hasSourceAmount'
+        },
+        {
           class: 'Currency',
           name: 'fee'
         },
