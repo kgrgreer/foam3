@@ -330,6 +330,7 @@ var classes = [
   'net.nanopay.tx.FailedTransactionNotification',
   'net.nanopay.tx.DebtRepaymentTransaction',
   'net.nanopay.tx.DebtRepaymentPlanDAO',
+  'net.nanopay.tx.GenericCIPlanner',
   'net.nanopay.tx.ParentCompleteToPendingRule',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
