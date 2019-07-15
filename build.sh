@@ -561,7 +561,7 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
@@ -583,10 +583,10 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
         M) MODE=$OPTARG
            echo "MODE=${MODE}"
            ;;
-        n) GRADLE_BUILD=0 ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
+        o) GRADLE_BUILD=0 ;;
         p) MODE=PRODUCTION
            echo "MODE=${MODE}"
            ;;
