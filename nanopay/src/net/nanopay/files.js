@@ -1072,6 +1072,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
   { name: 'net/nanopay/meter/test/ComplianceAwareDummy' },
+  { name: 'net/nanopay/meter/test/IdentityMindIntegrationTest' },
 
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 

@@ -660,6 +660,7 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
   'net.nanopay.meter.test.ComplianceAwareDummy',
+  'net.nanopay.meter.test.IdentityMindIntegrationTest',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 
