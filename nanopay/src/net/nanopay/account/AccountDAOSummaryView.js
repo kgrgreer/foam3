@@ -122,7 +122,7 @@ foam.CLASS({
   requires: [
     'foam.comics.v2.DAOBrowserView',
     'net.nanopay.account.AccountBalanceView',
-    'foam.u2.detail.GridSectionView',
+    'foam.u2.detail.SectionView',
     'foam.u2.borders.CardBorder',
     'foam.u2.layout.Card',
     'foam.u2.layout.Rows',
@@ -162,79 +162,88 @@ foam.CLASS({
         .add(self.slot(function(data, data$id) {
           return self.E()
             .start(self.Grid).addClass(this.myClass('card-row'))
-              .start(self.GUnit, { columns: this.data.liquiditySetting !== undefined ? 4 : 6 })
-                .start(self.CardBorder)
-                  .tag(self.AccountBalanceView, { data })
-                .end()
+              .start(self.Card, { columns: this.data.liquiditySetting !== undefined ? 4 : 6 })
+                .tag(self.AccountBalanceView, { data })
               .end()
-              .start(self.GUnit, { columns: this.data.liquiditySetting !== undefined ? 4 : 6 })
-                .start(self.CardBorder)
-                  .start().add(self.OVERVIEW_HEADER).addClass(this.myClass('card-header')).end()
-                  .tag(self.GridSectionView, { 
-                    data,
-                    unitWidth: 6,
-                    section: {
-                      properties: [
-                        data.CREATED,
-                        data.CREATED_BY,
-                        data.TYPE,
-                        data.ID
-                      ]
-                    }
-                  })
-                .end()
+              .start(self.Card, { columns: this.data.liquiditySetting !== undefined ? 4 : 6 })
+                .start().add(self.OVERVIEW_HEADER).addClass(this.myClass('card-header')).end()
+                .tag(self.SectionView, { 
+                  data,
+                  section: {
+                    properties: [
+                      data.CREATED.clone().copyFrom({
+                        gridColumns: 6
+                      }),
+                      data.CREATED_BY.clone().copyFrom({
+                        gridColumns: 6
+                      }),
+                      data.TYPE.clone().copyFrom({
+                        gridColumns: 6
+                      }),
+                      data.ID.clone().copyFrom({
+                        gridColumns: 6
+                      })
+                    ]
+                  }
+                })
               .end()
               .callIf(data.liquiditySetting !== undefined, function() {
-                this.start(self.GUnit, { columns: 4 })
-                  .start(self.CardBorder)
-                    .start().add(self.THRESHOLD_HEADER).addClass(self.myClass('card-header')).end()
-                    .callIfElse(data.liquiditySetting === 0, function() {
-                      this.start().add(self.NO_LIQUIDITY_SETTINGS).addClass(self.myClass('threshold-header')).end();
-                    }, function() {
-                      this
-                        .add(data.liquiditySetting$find.then(ls => {
-                          return self.E()
-                            .callIf(ls.lowLiquidity.enabled, function(){
-                              this
-                                .tag(self.GridSectionView, {
-                                  data: ls.lowLiquidity,
-                                  unitWidth: 12,
-                                  section: {
-                                    properties: [
-                                      ls.lowLiquidity.THRESHOLD.clone().copyFrom({
-                                        label: 'Low'
-                                      }),
-                                      ls.lowLiquidity.RESET_BALANCE,
-                                      ls.lowLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
-                                        label: 'With funding from'
-                                      })
-                                    ]
-                                  }
-                                })
-                              })
-                              .callIf(ls.highLiquidity.enabled, function(){
-                                this.tag(self.GridSectionView, {
-                                  data: ls.highLiquidity,
-                                  unitWidth: 12,
-                                  section: {
-                                    properties: [
-                                      ls.highLiquidity.THRESHOLD.clone().copyFrom({
-                                        label: 'High'
-                                      }),
-                                      ls.highLiquidity.RESET_BALANCE,
-                                      ls.highLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
-                                        label: 'With funding from'
-                                      })
-                                    ]
-                                  }
-                                })
+                this.start(self.Card, { columns: 4 })
+                  .start().add(self.THRESHOLD_HEADER).addClass(self.myClass('card-header')).end()
+                  .callIfElse(data.liquiditySetting === 0, function() {
+                    this.start().add(self.NO_LIQUIDITY_SETTINGS).addClass(self.myClass('threshold-header')).end();
+                  }, function() {
+                    this
+                      .add(data.liquiditySetting$find.then(ls => {
+                        return self.E()
+                          .callIf(ls.lowLiquidity.enabled, function(){
+                            this
+                              .tag(self.SectionView, {
+                                data: ls.lowLiquidity,
+                                section: {
+                                  properties: [
+                                    ls.lowLiquidity.THRESHOLD.clone().copyFrom({
+                                      label: 'Low',
+                                      gridColumns: 4
+                                    }),
+                                    ls.lowLiquidity.RESET_BALANCE.clone().copyFrom({
+                                      label: 'Reset balance to',
+                                      gridColumns: 4
+                                    }),
+                                    ls.lowLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
+                                      label: 'With funding from',
+                                      gridColumns: 4
+                                    })
+                                  ]
+                                }
                               })
                             })
-                          )
-                        })
-                      .end()
-                      .end()
-                    })
+                            .callIf(ls.highLiquidity.enabled, function(){
+                              this.tag(self.SectionView, {
+                                data: ls.highLiquidity,
+                                section: {
+                                  properties: [
+                                    ls.highLiquidity.THRESHOLD.clone().copyFrom({
+                                      label: 'High',
+                                      gridColumns: 4
+                                    }),
+                                    ls.highLiquidity.RESET_BALANCE.clone().copyFrom({
+                                      label: 'Reset balance to',
+                                      gridColumns: 4
+                                    }),
+                                    ls.highLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
+                                      label: 'With funding from',
+                                      gridColumns: 4
+                                    })
+                                  ]
+                                }
+                              })
+                            })
+                          })
+                        )
+                      })
+                    .end()
+                  })
                 .end()
             .start(self.CardBorder).addClass(this.myClass('transactions-table'))
               .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
