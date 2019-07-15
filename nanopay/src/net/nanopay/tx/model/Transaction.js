@@ -89,6 +89,33 @@ foam.CLASS({
     'completionDate'
   ],
 
+  sections: [
+    {
+      name: 'basicInfo'
+    },
+    {
+      name: 'paymentInfo'
+    },
+    {
+      name: 'lineItemsSection',
+      title: 'Line Items',
+      isAvailable: function(lineItems) {
+        return lineItems.length;
+      }
+    },
+    {
+      name: 'reverseLineItemsSection',
+      title: 'Reverse Line Items',
+      isAvailable: function(reverseLineItems) {
+        return reverseLineItems.length;
+      }
+    },
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    },
+  ],
+
   axioms: [
     {
       class: 'foam.comics.v2.CannedQuery',
@@ -128,6 +155,7 @@ foam.CLASS({
       name: 'name',
       class: 'String',
       visibility: 'RO',
+      section: 'basicInfo',
       factory: function() {
         return this.type;
       },
@@ -140,6 +168,7 @@ foam.CLASS({
       class: 'String',
       visibility: 'RO',
       storageTransient: true,
+      section: 'basicInfo',
       getter: function() {
          return this.cls_.name;
       },
@@ -179,6 +208,7 @@ foam.CLASS({
       name: 'id',
       label: 'ID',
       visibility: 'RO',
+      section: 'basicInfo',
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
 
@@ -188,6 +218,7 @@ foam.CLASS({
       name: 'created',
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
+      section: 'basicInfo',
       tableWidth: 140
     },
     {
@@ -196,6 +227,7 @@ foam.CLASS({
       name: 'createdBy',
       documentation: `The id of the user who created the transaction.`,
       visibility: 'RO',
+      section: 'basicInfo',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -252,6 +284,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
+      section: 'basicInfo',
       value: 'COMPLETED',
       permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
@@ -294,6 +327,7 @@ foam.CLASS({
       label: 'Receiver',
       storageTransient: true,
       visibility: 'RO',
+      section: 'paymentInfo',
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
@@ -308,6 +342,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
       label: 'Sender',
+      section: 'paymentInfo',
       visibility: 'RO',
       storageTransient: true,
       tableCellFormatter: function(value) {
@@ -333,7 +368,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      label: 'Amount',
+      section: 'paymentInfo',
       visibility: 'RO'
     },
     {
@@ -397,7 +432,12 @@ foam.CLASS({
       name: 'destinationAmount',
       label: 'Destination Amount',
       documentation: 'Amount in Receiver Currency',
-      visibility: 'RO',
+      section: 'paymentInfo',
+      visibilityExpression: function(sourceCurrency, destinationCurrency) {
+        return sourceCurrency == destinationCurrency ?
+          foam.u2.Visibility.HIDDEN :
+          foam.u2.Visibility.RO;
+      },
       tableCellFormatter: function(destinationAmount, X) {
         var formattedAmount = destinationAmount/100;
         this
@@ -416,6 +456,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'completionDate',
       visibility: 'RO',
+      section: 'basicInfo',
       tableWidth: 145
     },
     {
@@ -429,6 +470,7 @@ foam.CLASS({
       name: 'sourceCurrency',
       label: 'Currency',
       visibility: 'RO',
+      section: 'paymentInfo',
       value: 'CAD'
     },
     {
@@ -442,7 +484,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
-      visibility: 'RO',
+      visibilityExpression: function(sourceCurrency, destinationCurrency) {
+        return sourceCurrency == destinationCurrency ?
+          foam.u2.Visibility.HIDDEN :
+          foam.u2.Visibility.RO;
+      },
+      section: 'paymentInfo',
       value: 'CAD'
     },
     {
@@ -458,12 +505,20 @@ foam.CLASS({
     },
     // schedule TODO: future
     {
+      // TODO: Why do we have this and scheduledTime?
       name: 'scheduled',
       class: 'DateTime',
-      visibility: 'RO'
+      section: 'basicInfo',
+      visibilityExpression: function(scheduled) {
+        return scheduled ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       name: 'lineItems',
+      label: '',
+      section: 'lineItemsSection',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
@@ -471,6 +526,8 @@ foam.CLASS({
     },
     {
       name: 'reverseLineItems',
+      label: '',
+      section: 'reverseLineItemsSection',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
@@ -479,6 +536,12 @@ foam.CLASS({
    {
       class: 'DateTime',
       name: 'scheduledTime',
+      section: 'basicInfo',
+      visibilityExpression: function(scheduledTime) {
+        return scheduledTime ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      },
       documentation: `The scheduled date when transaction should be processed.`
     },
     {
@@ -486,7 +549,7 @@ foam.CLASS({
       name: 'deleted',
       value: false,
       permissionRequired: true,
-      visibility: 'hidden'
+      visibility: 'HIDDEN'
     },
   ],
 
