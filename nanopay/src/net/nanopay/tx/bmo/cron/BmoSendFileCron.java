@@ -175,7 +175,7 @@ public class BmoSendFileCron implements ContextAgent {
           FileUtils.moveFile(readyToSend, new File(BmoEftFileGenerator.SEND_FAILED +
             readyToSend.getName() + "_" + Instant.now().toEpochMilli()));
         } catch (IOException ex) {
-          ex.printStackTrace();
+          logger.error("BMO ERROR", e);
         }
       }
 
