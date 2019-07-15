@@ -224,7 +224,7 @@ foam.CLASS({
             .end()
           .endContext()
         .end()
-        .start().style({ 'width': '1325px', 'height': '320px' }).addClass(this.myClass('chart'))
+        .start().style({ 'width': '1425ps', 'height': '320px' }).addClass(this.myClass('chart'))
           .add(this.HorizontalBarDAOChartView.create({
             data$: this.cicoTransactionsDAO$,
             keyExpr: this.TransactionCICOType.create(),
@@ -234,7 +234,7 @@ foam.CLASS({
               delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
             })),
             customDatasetStyling: this.customDatasetStyling,
-            width: 1325,
+            width: 1425,
             height: 300
           }))
         .end()
