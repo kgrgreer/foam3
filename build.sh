@@ -531,7 +531,7 @@ function usage {
 JOURNAL_CONFIG=default
 INSTANCE=
 HOST_NAME=`hostname -s`
-GRADLE_BUILD=0
+GRADLE_BUILD=1
 VERSION=
 MODE=
 #MODE=DEVELOPMENT
@@ -583,7 +583,7 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
         M) MODE=$OPTARG
            echo "MODE=${MODE}"
            ;;
-        n) GRADLE_BUILD=1 ;;
+        n) GRADLE_BUILD=0 ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
@@ -621,6 +621,10 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
         ?) usage ; quit 1 ;;
     esac
 done
+
+if [ ${GRADLE_BUILD} -eq 0 ]; then
+    echo "WARNING :: Maven build is deprecated, switch do gradle by dropping 'n' flag"
+fi
 
 if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
     echo "WARNING :: ${JOURNAL_CONFIG} journal config unsupported for jar deployment";
