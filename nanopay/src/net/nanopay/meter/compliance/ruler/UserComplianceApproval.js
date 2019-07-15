@@ -7,8 +7,6 @@ foam.CLASS({
   ],
   documentation: 'Updates user compliance according to approval.',
   javaImports: [
-    'foam.core.ContextAgent',
-    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.approval.ApprovalStatus',
@@ -18,23 +16,22 @@ foam.CLASS({
     {
       name: 'objDaoKey',
       value: 'localUserDAO'
+    },
+    {
+      name: 'description',
+      value: 'Setting user compliance status'
     }
   ],
   methods: [
     {
       name: 'updateObj',
       javaCode: `
-        agency.submit(x, new ContextAgent() {
-          @Override
-          public void execute(X x) {
-            User user = (User) obj.fclone();
-            user.setCompliance(
-              ApprovalStatus.APPROVED == approvalStatus
-                ? ComplianceStatus.PASSED
-                : ComplianceStatus.FAILED);
-            ((DAO) x.get(getObjDaoKey())).inX(x).put(user);
-          }}, 
-          "Setting compliance status");
+        User user = (User) obj.fclone();
+        user.setCompliance(
+          ApprovalStatus.APPROVED == approvalStatus
+            ? ComplianceStatus.PASSED
+            : ComplianceStatus.FAILED);
+        ((DAO) x.get(getObjDaoKey())).inX(x).put(user);
       `
     }
   ]
