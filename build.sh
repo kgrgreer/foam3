@@ -623,7 +623,7 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
 done
 
 if [ ${GRADLE_BUILD} -eq 0 ]; then
-    echo "WARNING :: Maven build is deprecated, switch do gradle by dropping 'n' flag"
+    echo "WARNING :: Maven build is deprecated, switch to gradle by dropping 'n' flag"
 fi
 
 if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
