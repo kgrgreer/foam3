@@ -320,6 +320,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
+  { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule'},
 
   // tx tests
@@ -1073,6 +1074,6 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/AlarmReason' },
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
-  { name: 'net/nanopay/alarming/AlarmAndMonitoring' }
+  { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 
 ]);
