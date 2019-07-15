@@ -34,9 +34,8 @@ foam.CLASS({
       if (getEnabled()) {
         TransactionQuote quote = (TransactionQuote) obj;
         if (quote.getRequestTransaction() instanceof FXTransaction ){
-          Transaction tx = (Transaction) quote.getRequestTransaction();
-          if (SafetyUtil.equals(tx.getSourceCurrency(),tx.getDestinationCurrency())){
-            FXTransaction txn = 
+          FXTransaction txn = (FXTransaction) quote.getRequestTransaction();
+          if ( ! SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency())){
             // has source and destination but no rate or has all 3.
             if ( ! SafetyUtil.equals(txn.getAmount(),0) &&  ! SafetyUtil.equals(txn.getDestinationAmount(),0)) {
               if (SafetyUtil.equals(txn.getFxRate(),0))
