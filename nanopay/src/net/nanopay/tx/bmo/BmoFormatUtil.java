@@ -85,7 +85,7 @@ public class BmoFormatUtil {
     e.printStackTrace(ps);
     body = body + os.toString();
 
-    message.setTo(new String[]{"siren@nanopay.net"});
+    message.setTo(new String[]{"ops@nanopay.net"});
     message.setSubject(subject);
     message.setBody(body);
     DAO email = (DAO) x.get("emailMessageDAO");
