@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'CompliancePlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: 'Adds a compliance transaction to all COTransaction Plans.',
+  documentation: 'Adds a compliance transaction right after SummaryTransaction Plan.',
 
   javaImports: [
     'net.nanopay.tx.model.Transaction'

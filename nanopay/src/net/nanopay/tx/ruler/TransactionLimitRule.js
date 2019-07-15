@@ -16,46 +16,74 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'name',
+      visibility: 'RO',
+      expression: function(limit, send, period) {
+        return `${limit} ${send ? 'sending' : 'receiving'} ${period.label} transaction limit`;
+      }
+    },
+    {
       class: 'String',
       name: 'ruleGroup',
-      value: 'transactionLimits'
+      value: 'transactionLimits',
+      visibility: 'RO',
+      permissionRequired: true
     },
     {
       class: 'Enum',
       of: 'foam.nanos.ruler.Operations',
       name: 'operation',
-      value: 'CREATE'
+      value: 'CREATE',
+      visibility: 'RO'
     },
     {
       class: 'Double',
       name: 'limit',
-      documentation: 'Amount that running limit should not exceed'
+      label: 'Maximum transaction size',
+      validationPredicates: [
+        {
+          args: ['limit'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.tx.ruler.TransactionLimitRule.LIMIT, 0);
+          },
+          errorString: 'Please set a transaction limit.'
+        }
+      ]
     },
     {
       class: 'Boolean',
       name: 'send',
       value: true,
-      documentation: 'Transaction operation, ' +
-      'determines whether limit is set for sending money or receiving money.'
+      label: 'Apply limit to...',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: [
+          [true, 'Sending'],
+          [false, 'Receiving'],
+        ]
+      }
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'period',
       value: 'DAILY',
-      documentation: 'Transaction limit time frame. (Day, Week etc.)'
+      label: 'Transaction limit time frame.'
     },
     {
       class: 'Map',
       name: 'currentLimits',
+      visibility: 'RO',
+      permissionRequired: true,
       javaFactory: `
-      return new java.util.HashMap<Object, TransactionLimitState>();
+        return new java.util.HashMap<Object, TransactionLimitState>();
       `,
       documentation: 'Stores map of objects and current running limits.'
     },
     {
       name: 'daoKey',
-      value: 'localTransactionDAO'
+      value: 'localTransactionDAO',
+      visibility: 'RO',
     },
     {
       name: 'action',

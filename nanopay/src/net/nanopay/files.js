@@ -320,6 +320,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
+  { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule'},
 
   // tx tests
@@ -932,6 +933,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/PruneApprovalRequests' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestBeneficialOwnersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
+  { name: 'net/nanopay/meter/compliance/ruler/ResetLastModified' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactSIDniValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/UserComplianceApproval' },
@@ -945,6 +947,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/DowJonesApprovalRequested' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/IsComplianceTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/IsPendingTransaction' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsRejectedComplianceApprovalRequest' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/NewEqOld' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
@@ -1073,6 +1076,6 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/AlarmReason' },
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
-  { name: 'net/nanopay/alarming/AlarmAndMonitoring' }
+  { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 
 ]);

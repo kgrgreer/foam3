@@ -29,11 +29,18 @@ foam.CLASS({
       class: 'Boolean',
       name: 'complete',
       hidden: true,
-      value: false,
+      value: false
     },
     {
       class: 'Long',
-      name: 'lastUpdated'
+      name: 'lastUpdated',
+      documentation: ' When this invoice was last updated on xero.'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastDateUpdated',
+      label: 'Xero Last Updated',
+      visibility: 'RO'
     }
   ]
 });
