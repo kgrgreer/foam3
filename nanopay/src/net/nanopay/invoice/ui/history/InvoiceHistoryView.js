@@ -56,7 +56,7 @@ foam.CLASS({
           if (
             previousStatus &&
             status.newValue === self.InvoiceStatus.UNPAID &&
-            previousStatus.newValue === self.InvoiceStatus.PENDING
+            previousStatus.newValue === self.InvoiceStatus.PROCESSING
           ) {
             var declinedTimestamp = new Date(o.timestamp);
             declinedTimestamp.setSeconds(declinedTimestamp.getSeconds() - 1) // Failed status will appear before unpaid
