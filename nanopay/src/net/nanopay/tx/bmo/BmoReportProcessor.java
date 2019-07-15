@@ -5,6 +5,7 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class BmoReportProcessor {
 
-  private static final String PATH = System.getProperty("JOURNAL_HOME") + "/bmo_eft/";
+  private static final String PATH = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/";
   private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
   private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
 
@@ -32,9 +33,11 @@ public class BmoReportProcessor {
   private DAO transactionDAO;
   private Logger logger;
 
+  private static Pattern pattern = Pattern.compile("\\d{4}");
+
   public BmoReportProcessor(X x) {
     this.x         = x;
-    logger         = (Logger) x.get("logger");
+    logger         = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
     transactionDAO = (DAO) x.get("localTransactionDAO");
   }
 
@@ -56,8 +59,7 @@ public class BmoReportProcessor {
       return result;
 
     } catch (Exception e) {
-      this.logger.error("Error when process the receipt file. " + e);
-      e.printStackTrace();
+      this.logger.error("Error when process the receipt file. ", e);
       return false;
     }
 
@@ -79,6 +81,7 @@ public class BmoReportProcessor {
 
       } catch ( Exception e ) {
         logger.error("Error when process report ", e);
+        throw new RuntimeException("Error when process report", e);
       }
 
     }
@@ -120,6 +123,9 @@ public class BmoReportProcessor {
       }
 
       if ( isSettlementRecord(line) ) {
+        if ( SafetyUtil.isEmpty(fileCreationNumber) ) {
+          throw new RuntimeException("File creation number is empty.");
+        }
         processSettlementRecord(line, fileCreationNumber);
       }
     }
@@ -145,7 +151,7 @@ public class BmoReportProcessor {
     }
 
     if ( transaction == null ) {
-      return;
+      throw new RuntimeException("Transaction reference number: " + referenceNumber + " not found");
     }
 
     transaction = (Transaction) transaction.fclone();
@@ -181,6 +187,9 @@ public class BmoReportProcessor {
 
       if ( line.contains("LOG. REC. TYPE") ) {
         // process old reject item
+        if ( SafetyUtil.isEmpty(fileCreationNumber) ) {
+          throw new RuntimeException("File creation number is empty.");
+        }
         processRejectRecord(rejectedItem, fileCreationNumber);
 
         // creat new reject item
@@ -229,7 +238,7 @@ public class BmoReportProcessor {
     }
 
     if ( transaction == null ) {
-      return;
+      throw new RuntimeException("Transaction reference number: " + referenceNumber + " not found");
     }
 
     transaction = (Transaction) transaction.fclone();
@@ -267,7 +276,6 @@ public class BmoReportProcessor {
 
     for ( String line : strings ) {
       if ( line.contains("FILE CREATION NO.") ) {
-        Pattern pattern = Pattern.compile("\\d{4}");
         Matcher matcher = pattern.matcher(line);
 
         if ( matcher.find() ) {

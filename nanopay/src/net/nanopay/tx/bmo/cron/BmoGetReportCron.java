@@ -2,6 +2,8 @@ package net.nanopay.tx.bmo.cron;
 
 import foam.core.ContextAgent;
 import foam.core.X;
+import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import net.nanopay.tx.bmo.BmoFormatUtil;
 import net.nanopay.tx.bmo.BmoReportProcessor;
 import net.nanopay.tx.bmo.BmoSFTPClient;
@@ -22,16 +24,21 @@ public class BmoGetReportCron implements ContextAgent {
   }
 
   public void process(X x) {
+    Logger logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
     BmoSFTPCredential sftpCredential = (BmoSFTPCredential) x.get("bmoSFTPCredential");
 
-    // 1. download
-    new BmoSFTPClient(x, sftpCredential).downloadReports();
+    try {
+      // 1. download
+      new BmoSFTPClient(x, sftpCredential).downloadReports();
 
-    // 2. process
-    new BmoReportProcessor(x).processReports();
+      // 2. process
+      new BmoReportProcessor(x).processReports();
 
-    // 3. post process
-    new BmoReportProcessor(x).postProcessReport();
-
+      // 3. post process
+      new BmoReportProcessor(x).postProcessReport();
+    } catch ( Exception e ) {
+      logger.error("Error during process report file. ", e);
+      BmoFormatUtil.sendEmail(x, "BMO EFT error during processing the report", e);
+    }
   }
 }

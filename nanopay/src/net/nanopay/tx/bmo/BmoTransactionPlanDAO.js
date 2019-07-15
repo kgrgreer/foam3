@@ -30,35 +30,44 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+    Logger logger = (Logger) x.get("logger");
 
     TransactionQuote quote = (TransactionQuote) obj;
-    Transaction request = (Transaction) quote.getRequestTransaction().fclone();
+    Transaction request = (Transaction) quote.getRequestTransaction();
 
-    Account sourceAccount = request.findSourceAccount(x);
-    Account destinationAccount = request.findDestinationAccount(x);
+    Account sourceAccount = quote.getSourceAccount();
+    Account destinationAccount = quote.getDestinationAccount();
 
     if ( sourceAccount instanceof CABankAccount &&
       destinationAccount instanceof DigitalAccount ) {
 
-      if ( ((CABankAccount) sourceAccount).getStatus() != BankAccountStatus.VERIFIED ) throw new RuntimeException("Bank account needs to be verified for cashin");
+      if ( ((CABankAccount) sourceAccount).getStatus() != BankAccountStatus.VERIFIED ) {
+        logger.warning("Bank account needs to be verified for cashin for bank account id: " + sourceAccount.getId() +
+              " and transaction id: " + request.getId());
+        throw new RuntimeException("Bank account needs to be verified for cashin");
+      };
 
       BmoCITransaction t = new BmoCITransaction.Builder(x).build();
       t.copyFrom(request);
 
       // TODO: use EFT calculation process
-      t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+      t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
       t.setIsQuoted(true);
       quote.addPlan(t);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
 
-      if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) throw new RuntimeException("Bank account needs to be verified for cashout");
+      if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) { 
+        logger.warning("Bank account needs to be verified for cashout for bank account id: " + sourceAccount.getId() +
+              " and transaction id: " + request.getId());
+        throw new RuntimeException("Bank account needs to be verified for cashout"); 
+      }
 
       BmoCOTransaction t = new BmoCOTransaction.Builder(x).build();
       t.copyFrom(request);
 
       // TODO: use EFT calculation process
-      t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+      t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
       t.setIsQuoted(true);
       quote.addPlan(t);
     }

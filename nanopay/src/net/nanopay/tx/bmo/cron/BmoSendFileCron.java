@@ -7,10 +7,10 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
-import net.nanopay.tx.bmo.BmoEftFileGenerator;
-import net.nanopay.tx.bmo.BmoReportProcessor;
-import net.nanopay.tx.bmo.BmoSFTPClient;
-import net.nanopay.tx.bmo.BmoSFTPCredential;
+import foam.nanos.logger.PrefixLogger;
+import foam.nanos.notification.email.EmailMessage;
+import foam.util.Emails.EmailsUtility;
+import net.nanopay.tx.bmo.*;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
@@ -62,7 +62,7 @@ public class BmoSendFileCron implements ContextAgent {
   }
 
   public void send(X x, List<Transaction> transactions) {
-    Logger logger = (Logger) x.get("logger");
+    Logger logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
 
     // batch record
     List<Transaction> ciTransactions = transactions.stream()
@@ -104,7 +104,7 @@ public class BmoSendFileCron implements ContextAgent {
     BmoSFTPCredential sftpCredential = (BmoSFTPCredential) x.get("bmoSFTPCredential");
     DAO transactionDAO               = (DAO) x.get("localTransactionDAO");
     DAO bmoEftFileDAO                = (DAO) x.get("bmoEftFileDAO");
-    Logger logger                    = (Logger) x.get("logger");
+    Logger logger                    = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));;
 
     ArrayList<Transaction> passedTransaction = null;
     File readyToSend = null;
@@ -167,6 +167,7 @@ public class BmoSendFileCron implements ContextAgent {
 
     } catch ( Exception e ) {
       logger.error("BMO EFT : " + e.getMessage(), e);
+      BmoFormatUtil.sendEmail(x, "BMO EFT Error during sending EFT file", e);
       passedTransaction.forEach(transaction -> ((BmoTransaction)transaction).addHistory("Error: " + e.getMessage()));
 
       if ( readyToSend != null ) {

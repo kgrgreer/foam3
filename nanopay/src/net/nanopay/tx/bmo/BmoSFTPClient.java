@@ -5,6 +5,7 @@ import com.sun.org.apache.regexp.internal.RE;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import foam.core.X;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import javassist.ClassPool;
 import net.nanopay.tx.bmo.exceptions.BmoSFTPException;
 import net.schmizz.sshj.SSHClient;
@@ -31,7 +32,7 @@ public class BmoSFTPClient {
   private StatefulSFTPClient statefulSFTPClient = null;
   private BmoSFTPCredential  credential         = null;
 
-  private static final String PATH                    = System.getProperty("JOURNAL_HOME") + "/bmo_eft/";
+  private static final String PATH                    = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/";
   public  static final String RECEIPT_DOWNLOAD_FOLDER = PATH + "/receipt/";
   public  static final String REPORT_DOWNLOAD_FOLDER  = PATH + "/report/";
   private static final String SEND_FOLDER             = "DEFT-DEFT-A:/*BIN/NANOPAY";
@@ -42,7 +43,7 @@ public class BmoSFTPClient {
 
   public BmoSFTPClient(X x, BmoSFTPCredential credential) {
     this.init(x, credential);
-    this.logger = (Logger) x.get("logger");
+    this.logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
   };
 
   private BmoSFTPClient init(X x, BmoSFTPCredential credential) {
@@ -86,8 +87,8 @@ public class BmoSFTPClient {
       return ls.size() > 0;
 
     } catch (Exception e) {
-      this.logger.error("BMO: Error when check receipt files.", e);
-      throw new BmoSFTPException("BMO: Error when check receipt files.", e.getCause());
+      this.logger.error("Error when check receipt files.", e);
+      throw new BmoSFTPException("Error when check receipt files.", e.getCause());
     } finally {
       this.disconnect();
       this.logger.info("finish check unprocessed receipt files.");
@@ -106,7 +107,7 @@ public class BmoSFTPClient {
       // If there still POLLABLE file on RECEIPT Server
       if ( unProcessedReceiptFiles() ) {
         throw new BmoSFTPException(
-          "BMO: unprocessed receipt files exist on 'ADW35691-RECEIPT:'. Might cause duplicate transactions." +
+          "unprocessed receipt files exist on 'ADW35691-RECEIPT:'. Might cause duplicate transactions." +
           "Please make sure all previous transactions have been successfully delivered.");
       }
 
@@ -117,11 +118,11 @@ public class BmoSFTPClient {
     } catch ( BmoSFTPException e ) {
       throw e;
     } catch (Exception e) {
-      this.logger.error("BMO: Error when send file.", e);
-      throw new BmoSFTPException("BMO: Error when send file.", e.getCause());
+      this.logger.error("Error when send file.", e);
+      throw new BmoSFTPException("Error when send file.", e.getCause());
     } finally {
       this.disconnect();
-      this.logger.info("finish uploading....");
+      this.logger.info("finish uploading.");
     }
   }
 
@@ -149,8 +150,8 @@ public class BmoSFTPClient {
 
       if ( ls.size() == 0 ) {
         this.disconnect();
-        this.logger.error("Bmo: EFT file not delivered.");
-        throw new BmoSFTPException("Bmo: EFT file not delivered.");
+        this.logger.error("EFT Receipt file not received.");
+        throw new BmoSFTPException("EFT Receipt file not received.");
       }
 
       // Because we check the un processed receipt files before we send the eft file,
@@ -163,8 +164,8 @@ public class BmoSFTPClient {
     } catch ( BmoSFTPException e ) {
       throw e;
     } catch ( Exception e ) {
-      this.logger.error("BMO: Error when download receipt.", e);
-      throw new BmoSFTPException("BMO: Error when download receipt.", e.getCause());
+      this.logger.error("Error when download receipt.", e);
+      throw new BmoSFTPException("Error when download receipt.", e.getCause());
     } finally {
       this.disconnect();
     }
@@ -193,8 +194,8 @@ public class BmoSFTPClient {
       }
 
     } catch (Exception e) {
-      this.logger.error("BMO: Error when downloading file", e);
-      throw new BmoSFTPException("BMO: Error when downloading file", e.getCause());
+      this.logger.error("Error when downloading file", e);
+      throw new BmoSFTPException("Error when downloading file", e.getCause());
     } finally {
       this.disconnect();
     }
@@ -211,7 +212,7 @@ public class BmoSFTPClient {
         this.sshClient.disconnect();
       }
     } catch ( Exception e ) {
-      throw new BmoSFTPException("BMO: Error when close the sftp connection", e.getCause());
+      throw new BmoSFTPException("Error when close the sftp connection", e.getCause());
     }
 
   }

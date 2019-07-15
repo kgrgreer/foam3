@@ -7,6 +7,7 @@ import foam.mlang.MLang;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.CABankAccount;
@@ -27,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -43,15 +45,15 @@ public class BmoEftFileGenerator {
   BmoAssignedClientValue         clientValue;
   private ArrayList<Transaction> passedTransactions = new ArrayList<>();
 
-  public static final String SEND_FOLDER = System.getProperty("JOURNAL_HOME") + "/bmo_eft/send/";
-  public static final String SEND_FAILED = System.getProperty("JOURNAL_HOME") + "/bmo_eft/send_failed/";
+  public static final String SEND_FOLDER = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/send/";
+  public static final String SEND_FAILED = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/send_failed/";
 
   public BmoEftFileGenerator(X x) {
     this.x = x;
     this.currencyDAO    = (DAO) x.get("currencyDAO");
     this.bmoEftFileDAO  = (DAO) x.get("bmoEftFileDAO");
     this.clientValue    = (BmoAssignedClientValue) x.get("bmoAssignedClientValue");
-    this.logger         = (Logger) x.get("logger");
+    this.logger         = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
   }
 
   /**
@@ -64,7 +66,7 @@ public class BmoEftFileGenerator {
 
     try {
 
-      file = new File(SEND_FOLDER + eftFile.getFileName());
+      file = new File(SEND_FOLDER + eftFile.getFileName() + "_" + Instant.now());
       FileUtils.touch(file);
       FileUtils.writeStringToFile(file, eftFile.toBmoFormat(), false);
 
