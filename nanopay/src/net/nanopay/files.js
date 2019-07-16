@@ -477,6 +477,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ServiceLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItem' },
   { name: 'net/nanopay/tx/DisclosureLineItem' },
+  { name: 'net/nanopay/tx/ReferenceLineItem' },
   { name: 'net/nanopay/fx/FXLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXFeeLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantUserPayeeJunction' },
