@@ -331,15 +331,6 @@ foam.CLASS({
         related to any such person.
       `
     },
-    // TODO: Remove
-    {
-      class: 'Boolean',
-      name: 'signingOfficer',
-      documentation: `Determines whether the user is the signing officer capable of
-        acting as the business and providing additional information on behalf of
-        the business.
-      `
-    },
     {
       class: 'FObjectProperty',
       name: 'suggestedUserTransactionInfo',
