@@ -66,7 +66,7 @@ foam.CLASS({
     }
 
     ^transactions-table {
-      margin: 32px 8px;
+      margin: 32px 0px;
     }
 
     ^card-row {
