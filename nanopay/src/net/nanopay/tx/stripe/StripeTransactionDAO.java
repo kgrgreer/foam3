@@ -10,6 +10,7 @@ import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.model.Currency;
 import net.nanopay.cico.paymentCard.model.StripePaymentCard;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.account.DigitalAccount;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,11 +46,15 @@ public class StripeTransactionDAO extends ProxyDAO {
     StripeTransaction transaction = (StripeTransaction) obj;
     DAO localTransactionDAO = (DAO) x.get("localTransactionDAO");
     DAO localUserDAO = (DAO) x.get("localUserDAO");
+    Logger logger = (Logger) x.get("logger");
 
     long payerId = transaction.getPayerId();
     long payeeId = transaction.getPayeeId();
 
-    if ( payerId == payeeId ) throw new RuntimeException("Payer can not be equal to payee.");
+    if ( payerId == payeeId ) {
+      logger.error("Payer can not be equal to payee.");
+      throw new RuntimeException("Payer can not be equal to payee.");
+    }
     User payerUser = (User) localUserDAO.find(payerId);
     User payeeUser = (User) localUserDAO.find(payeeId);
 
@@ -87,12 +92,15 @@ public class StripeTransactionDAO extends ProxyDAO {
 
       StripePaymentCard paymentCard = (StripePaymentCard) paymentCardDAO.find_(x, transaction.getPaymentCardId());
 
-      if ( paymentCard == null )
+      if ( paymentCard == null ) {
+        logger.error("Can not find payment card");
         throw new RuntimeException("Can not find payment card");
+      }
 
       chargeMap.put("amount", transaction.getAmount());
       chargeMap.put("customer", paymentCard.getStripeCustomerId());
      } else {
+       logger.error("PaymnetType is not supported");
       throw new RuntimeException("PaymentType is not supported");
      }
 
@@ -105,6 +113,7 @@ public class StripeTransactionDAO extends ProxyDAO {
     } catch (StripeException e){
       transaction.setStatus(TransactionStatus.DECLINED);
       getDelegate().put_(x, transaction);
+      logger.error("Stripe transaction failed.", e);
       if(SafetyUtil.isEmpty(e.getMessage()))
         throw new RuntimeException("Stripe transaction failed.");
       else

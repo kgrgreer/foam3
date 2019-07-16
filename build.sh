@@ -95,7 +95,7 @@ function setup_jce {
 
 function deploy_journals {
     echo "INFO :: Deploying Journals"
-    
+
     # prepare journals
     cd "$PROJECT_HOME"
 
@@ -168,10 +168,6 @@ function clean {
                 rm -rf target
                 mkdir target
             fi
-            if [ -d "generatedJava/" ]; then
-                rm -rf generatedJava
-                mkdir generatedJava
-            fi
             mvn clean
         else
             gradle clean $GRADLE_FLAGS
@@ -190,7 +186,7 @@ function build_jar {
         # maven
         if [ "$COMPILE_ONLY" -eq 0 ]; then
             echo "INFO :: Building nanos..."
-            ./gen.sh tools/classes.js generatedJava
+            ./gen.sh tools/classes.js build/src/java
 
             echo "INFO :: Packaging js..."
             ./tools/js_build/build.js
@@ -218,7 +214,7 @@ function package_tar {
 function delete_runtime_journals {
   if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
     echo "INFO :: Runtime journals deleted."
-    rmdir "$JOURNAL_HOME"
+    rm -rf "$JOURNAL_HOME"
     mkdir -p "$JOURNAL_HOME"
   fi
 }
@@ -226,7 +222,7 @@ function delete_runtime_journals {
 function delete_runtime_logs {
   if [[ $DELETE_RUNTIME_LOGS -eq 1 && IS_AWS -eq 0 ]]; then
     echo "INFO :: Runtime logs deleted."
-    rmdir "$LOG_HOME"
+    rm -rf "$LOG_HOME"
     mkdir -p "$LOG_HOME"
   fi
 }
@@ -564,7 +560,7 @@ RUN_USER=
 while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) CLEAN_BUILD=1 
+        c) CLEAN_BUILD=1
            GRADLE_FLAGS="--rerun-tasks"
            ;;
         d) DEBUG=1 ;;
