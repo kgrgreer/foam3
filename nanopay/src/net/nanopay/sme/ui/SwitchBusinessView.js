@@ -195,6 +195,8 @@ foam.CLASS({
           this.agent = result;
           this.pushMenu('sme.main.dashboard');
           return;
+        } else {
+          throw new Error();
         }
       } catch (err) {
         var msg = err != null && typeof err.message === 'string'
