@@ -398,7 +398,7 @@ foam.CLASS({
               dstCurrency.format(obj.destinationAmount)
           );
         }
-        if( obj.payer ) {
+        if ( obj.payer ) {
           this.add(
             ' | ' +
             obj.payer.displayName + ' → ' +
