@@ -45,7 +45,9 @@ foam.CLASS({
           this.BankAccount.CREATED_BY,
           this.BankAccount.CREATED,
           this.BankAccount.CREDITS,
-          this.BankAccount.DEBITS
+          this.BankAccount.DEBITS,
+          this.BankAccount.FLINKS_RESPONSES,
+          this.BankAccount.PLAID_RESPONSES
         ];
       }
     }

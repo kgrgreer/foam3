@@ -24,17 +24,21 @@ public class InteracTransactionDAO
     DAO transactionDAO          = (DAO) getX().get("localTransactionDAO");
     DAO canadianTransactionDAO  = (DAO) getX().get("canadaTransactionDAO");
     DAO indiaTransactionDAO     = (DAO) getX().get("indiaTransactionDAO");
+    Logger logger = (Logger) x.get("logger");
 
     Transaction transaction = (Transaction) obj;
     if ( transaction.findSourceAccount(x) == null ) {
+      logger.error("Source account not found for transaction " + transaction.getId());
       throw new RuntimeException("Invalid Source/Payer Account");
     }
 
     if ( transaction.findDestinationAccount(x) == null ) {
+      logger.error("Destination account not found for transaction " + transaction.getId());
       throw new RuntimeException("Invalid Destination/Payee Account");
     }
 
     if ( transaction.getAmount() < 0 ) {
+      logger.error("Invalid transaction amount for transaction " + transaction.getId());
       throw new RuntimeException("Invalid amount");
     }
 
@@ -74,6 +78,7 @@ public class InteracTransactionDAO
       return completedTransaction;
 
     } catch (RuntimeException e) {
+      logger.error("Unexpected exception in InteracTransactionDAO",e);
       throw e;
     }
   }

@@ -106,6 +106,10 @@ foam.CLASS({
     padding: 5px;
     text-align: left;
   }
+
+  .error-table-container .table-container .foam-u2-view-TableView-th:last-child {
+    display: none;
+  }
   `,
 
   messages: [

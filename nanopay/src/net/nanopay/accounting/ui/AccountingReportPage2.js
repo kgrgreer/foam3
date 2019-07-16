@@ -180,6 +180,9 @@ foam.CLASS({
       background-color: #ffffff !important;
       border-color: #4d38e1;
     }
+    ^ .container-overflow {
+      overflow-y: auto;
+    }
   }
   `,
 
@@ -236,84 +239,85 @@ foam.CLASS({
 
     this
       .start().addClass(this.myClass())
-        .start().addClass('report-2-container')
+        .start().addClass('container-overflow')
+          .start().addClass('report-2-container')
 
-          .start('h1').add(this.TITLE).addClass('title').end()
+            .start('h1').add(this.TITLE).addClass('title').end()
 
-          .start('div').addClass('report-2-container-tables')
+            .start('div').addClass('report-2-container-tables')
 
-            .start('div').addClass('report-2-container-title').show(this.showContactError$)
-              .start()
-                .addClass('exclamation-mark')
-                .start('img').attrs({ src: 'images/ablii/warning-triangle.svg' }).end()
-              .end()
-              .start('p').add(this.CONTACTS_FAILED).end()
-            .end()
-            .start().show(this.showContactError$)
-              .add(this.CONTACT_TEXT + this.TEXT + this.user.integrationCode.label + this.TEXT2)
-              .addClass('report-2-description')
-            .end()
-            .call( function() {
-              let contactErrors = self.reportResult.contactErrors;
-              for ( key of Object.keys(contactErrors) ) {
-                if ( contactErrors[key].length !== 0 ) {
-                  this.showContactError = true;
-                  this.start('div').addClass('report-table-container').addClass('contact-tables')
-                    .start().tag({
-                    class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initContactError(contactErrors[key]), columns: ['name', 'businessName'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.contactCount + ')'
-                    }).end()
-                  .end();
-                }
-              }
-            })
-
-            .start().addClass('report-2-container-title').show(this.showInvoiceError$)
-              .start()
-                .addClass('exclamation-mark')
-                .start('img').attrs({ src: 'images/ablii/warning-triangle.svg' }).end()
-              .end()
-              .start('p').add(this.INVOICES_FAILED).end()
-            .end()
-            .start().show(this.showInvoiceError$)
-              .add(this.INVOICE_TEXT + this.TEXT + this.user.integrationCode.label + this.TEXT2)
-              .addClass('report-2-description')
-            .end()
-            .call( function() {
-              let invoiceErrors = self.reportResult.invoiceErrors;
-              for ( key of Object.keys(invoiceErrors) ) {
-                if ( invoiceErrors[key].length !== 0 ) {
-                  this.showInvoiceError = true;
-                  this.start('div').addClass('report-table-container').addClass('invoice-tables')
-                    .start().tag({
-                      class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initInvoiceError(invoiceErrors[key]), columns: ['invoiceNumber', 'Amount', 'dueDate'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.invoiceCount + ')'
-                    })
-                    .end()
-                  .end();
-                }
-              }
-            })
-
-            .start().show(this.showMismatch$)
-              .start('div').addClass('report-2-container-title')
+              .start('div').addClass('report-2-container-title').show(this.showContactError$)
                 .start()
                   .addClass('exclamation-mark')
-                  .start('img').attrs({ src: 'images/ablii/error.svg' }).end()
+                  .start('img').attrs({ src: 'images/ablii/warning-triangle.svg' }).end()
                 .end()
-                .start('p').add(this.MISMATCH).end()
+                .start('p').add(this.CONTACTS_FAILED).end()
               .end()
-              .start()
-                .add(this.MISMATCH_TEXT)
+              .start().show(this.showContactError$)
+                .add(this.CONTACT_TEXT + this.TEXT + this.user.integrationCode.label + this.TEXT2)
                 .addClass('report-2-description')
               .end()
+              .call( function() {
+                let contactErrors = self.reportResult.contactErrors;
+                for ( key of Object.keys(contactErrors) ) {
+                  if ( contactErrors[key].length !== 0 ) {
+                    this.showContactError = true;
+                    this.start('div').addClass('report-table-container').addClass('contact-tables')
+                      .start().tag({
+                      class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initContactError(contactErrors[key]), columns: ['name', 'businessName'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.contactCount + ')'
+                      }).end()
+                    .end();
+                  }
+                }
+              })
 
-              .start('div').addClass('report-table-container').addClass('contact-mismatch-table')
-                .start().tag({
-                  class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initMismatchData(), columns: ['name', 'businessName', 'message'], header: 'Contacts (' + self.mismatchCount + ')'
-                }).end()
+              .start().addClass('report-2-container-title').show(this.showInvoiceError$)
+                .start()
+                  .addClass('exclamation-mark')
+                  .start('img').attrs({ src: 'images/ablii/warning-triangle.svg' }).end()
+                .end()
+                .start('p').add(this.INVOICES_FAILED).end()
+              .end()
+              .start().show(this.showInvoiceError$)
+                .add(this.INVOICE_TEXT + this.TEXT + this.user.integrationCode.label + this.TEXT2)
+                .addClass('report-2-description')
+              .end()
+              .call( function() {
+                let invoiceErrors = self.reportResult.invoiceErrors;
+                for ( key of Object.keys(invoiceErrors) ) {
+                  if ( invoiceErrors[key].length !== 0 ) {
+                    this.showInvoiceError = true;
+                    this.start('div').addClass('report-table-container').addClass('invoice-tables')
+                      .start().tag({
+                        class: 'net.nanopay.accounting.ui.ErrorTable', data: self.initInvoiceError(invoiceErrors[key]), columns: ['invoiceNumber', 'Amount', 'dueDate'], header: self.accountingIntegrationUtil.getTableName(key) + ' (' + self.invoiceCount + ')'
+                      })
+                      .end()
+                    .end();
+                  }
+                }
+              })
+
+              .start().show(this.showMismatch$)
+                .start('div').addClass('report-2-container-title')
+                  .start()
+                    .addClass('exclamation-mark')
+                    .start('img').attrs({ src: 'images/ablii/error.svg' }).end()
+                  .end()
+                  .start('p').add(this.MISMATCH).end()
+                .end()
+                .start()
+                  .add(this.MISMATCH_TEXT)
+                  .addClass('report-2-description')
+                .end()
+
+                .start('div').addClass('report-table-container').addClass('contact-mismatch-table')
+                  .start().tag({
+                    class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initMismatchData(), columns: ['name', 'businessName', 'message'], header: 'Contacts (' + self.mismatchCount + ')'
+                  }).end()
+                .end()
               .end()
             .end()
           .end()
-
         .end()
         .start().addClass('button-bar')
           .start(this.DONE).addClass('done-button').end()
