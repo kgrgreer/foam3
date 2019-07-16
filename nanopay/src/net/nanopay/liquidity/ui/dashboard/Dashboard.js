@@ -39,11 +39,9 @@ foam.CLASS({
     }
 
     ^dashboard-container {
+      grid-column-gap: 16px;
+      grid-row-gap: 32px;
       padding: 32px;
-    }
-
-    ^dashboard-container .foam-u2-layout-Grid {
-      margin-bottom: 32px;
     }
   `,
 

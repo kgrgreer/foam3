@@ -71,6 +71,8 @@ foam.CLASS({
 
     ^card-row {
       margin-top: 32px;
+      grid-column-gap: 16px;
+      grid-row-gap: 32px;
     }
 
     ^card-row .foam-u2-layout-Card {
