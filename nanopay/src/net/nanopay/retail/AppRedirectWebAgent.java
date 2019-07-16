@@ -21,7 +21,7 @@ public class AppRedirectWebAgent
 
   @Override
   public void execute(X x) {
-    DAO emailTemplateDAO = (DAO) x.get("emailTemplateDAO");
+    DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
     HttpServletResponse resp = x.get(HttpServletResponse.class);
 
     try {
