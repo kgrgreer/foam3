@@ -16,6 +16,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
   { name: 'net/nanopay/account/AccountDAOSummaryView' },
+  { name: 'net/nanopay/account/AccountBalanceView' },
   { name: 'net/nanopay/account/Debtable' },
   { name: 'net/nanopay/account/Accountable' },
   { name: 'net/nanopay/account/DuplicateAccountRule'},
@@ -320,6 +321,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
+  { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule'},
 
   // tx tests
@@ -932,6 +934,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/PruneApprovalRequests' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestBeneficialOwnersCompliance' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestSigningOfficersCompliance' },
+  { name: 'net/nanopay/meter/compliance/ruler/ResetLastModified' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactLEVValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/SecurefactSIDniValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/UserComplianceApproval' },
@@ -945,6 +948,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/DowJonesApprovalRequested' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/IsComplianceTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/IsPendingTransaction' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsRejectedComplianceApprovalRequest' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/LoginSuccess' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/NewEqOld' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/RecurringUserComplianceCheck' },
@@ -1066,6 +1070,23 @@ FOAM_FILES([
   { name: 'net/nanopay/approval/ApprovalRequest' },
   { name: 'net/nanopay/approval/ApprovalStatus' },
 
+  // bmo
+  { name: 'net/nanopay/tx/bmo/BmoAssignedClientValue' },
+  { name: 'net/nanopay/tx/bmo/eftfile/BmoEftFile' },
+  { name: 'net/nanopay/tx/bmo/eftfile/BmoFileHeader' },
+  { name: 'net/nanopay/tx/bmo/eftfile/BmoFileControl' },
+  { name: 'net/nanopay/tx/bmo/eftfile/BmoBatchControl' },
+  { name: 'net/nanopay/tx/bmo/eftfile/BmoBatchHeader' },
+  { name: 'net/nanopay/tx/bmo/eftfile/BmoBatchRecord' },
+  { name: 'net/nanopay/tx/bmo/eftfile/BmoDetailRecord' },
+  { name: 'net/nanopay/tx/bmo/cico/BmoCITransaction' },
+  { name: 'net/nanopay/tx/bmo/cico/BmoCOTransaction' },
+  { name: 'net/nanopay/tx/bmo/cico/BmoTransaction' },
+  { name: 'net/nanopay/tx/bmo/BmoSFTPCredential'},
+  { name: 'net/nanopay/tx/bmo/BmoReferenceNumber'},
+  { name: 'net/nanopay/tx/bmo/BmoTransactionHistory'},
+  { name: 'net/nanopay/tx/bmo/BmoTransactionPlanDAO'},
+
   // alarming & monitoring
   { name: 'net/nanopay/alarming/Alarm' },
   { name: 'net/nanopay/alarming/Alarming' },
@@ -1073,6 +1094,6 @@ FOAM_FILES([
   { name: 'net/nanopay/alarming/AlarmReason' },
   { name: 'net/nanopay/alarming/MonitoringReport' },
   { name: 'net/nanopay/alarming/MonitorType' },
-  { name: 'net/nanopay/alarming/AlarmAndMonitoring' }
+  { name: 'net/nanopay/alarming/AlarmAndMonitoring' },
 
 ]);

@@ -21,6 +21,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.hierynomus</groupId>
+      <artifactId>sshj</artifactId>
+      <version>0.27.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.jtwig</groupId>
       <artifactId>jtwig-core</artifactId>
       <version>5.87.0.RELEASE</version>
@@ -513,7 +518,7 @@
               <includes>
                 <include>foam2/src/**/*.java</include>
                 <include>nanopay/src/**/*.java</include>
-                <include>generatedJava/**/*.java</include>
+                <include>build/src/java/**/*.java</include>
               </includes>
               <excludes>
                 <exclude>interac/src/**/*.java</exclude>
