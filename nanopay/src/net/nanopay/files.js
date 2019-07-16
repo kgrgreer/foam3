@@ -225,6 +225,8 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/Token"},
   { name: "net/nanopay/fx/afex/OnboardCorporateClientRequest"},
   { name: "net/nanopay/fx/afex/OnboardCorporateClientResponse"},
+  { name: "net/nanopay/fx/afex/GetClientAccountStatusResponse"},
+  { name: "net/nanopay/fx/afex/RetrieveClientAccountDetailsResponse"},
   { name: "net/nanopay/fx/afex/CreateBeneficiaryRequest"},
   { name: "net/nanopay/fx/afex/CreateBeneficiaryResponse"},
   { name: "net/nanopay/fx/afex/UpdateBeneficiaryRequest"},
@@ -234,12 +236,18 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/FindBeneficiaryResponse"},
   { name: "net/nanopay/fx/afex/FindBankByNationalIDRequest"},
   { name: "net/nanopay/fx/afex/FindBankByNationalIDResponse"},
+  { name: "net/nanopay/fx/afex/GetRateRequest"},
+  { name: "net/nanopay/fx/afex/GetRateResponse"},
   { name: "net/nanopay/fx/afex/Quote"},
   { name: "net/nanopay/fx/afex/GetQuoteRequest"},
   { name: "net/nanopay/fx/afex/CreateTradeRequest"},
   { name: "net/nanopay/fx/afex/CreateTradeResponse"},
+  { name: "net/nanopay/fx/afex/CheckTradeStatusRequest"},
+  { name: "net/nanopay/fx/afex/CheckTradeStatusResponse"},
   { name: "net/nanopay/fx/afex/CreatePaymentRequest"},
   { name: "net/nanopay/fx/afex/CreatePaymentResponse"},
+  { name: "net/nanopay/fx/afex/CheckPaymentStatusRequest"},
+  { name: "net/nanopay/fx/afex/CheckPaymentStatusResponse"},
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -1025,7 +1033,7 @@ FOAM_FILES([
 
   // liquidity
   { name: 'net/nanopay/liquidity/ui/dashboard/Dashboard' },
-  { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },  
+  { name: 'net/nanopay/liquidity/ui/dashboard/DateFrequency' },
   { name: 'net/nanopay/liquidity/ui/dashboard/accounts/DashboardAccounts' },
   { name: 'net/nanopay/liquidity/ui/dashboard/liquidity/DashboardLiquidity' },
   { name: 'net/nanopay/liquidity/ui/dashboard/cicoShadow/DashboardCicoShadow' },
