@@ -172,10 +172,6 @@ function clean {
                 rm -rf target
                 mkdir target
             fi
-            if [ -d "generatedJava/" ]; then
-                rm -rf generatedJava
-                mkdir generatedJava
-            fi
             mvn clean
         else
             gradle clean $GRADLE_FLAGS
@@ -194,7 +190,7 @@ function build_jar {
         # maven
         if [ "$COMPILE_ONLY" -eq 0 ]; then
             echo "INFO :: Building nanos..."
-            ./gen.sh tools/classes.js generatedJava
+            ./gen.sh tools/classes.js build/src/java
 
             echo "INFO :: Packaging js..."
             ./tools/js_build/build.js

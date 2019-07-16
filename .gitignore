@@ -64,7 +64,6 @@ target/
 root/target/
 nanopay-bin.js
 testindex
-generatedJava
 
 # Local Tomcat Server XML
 /server.xml
