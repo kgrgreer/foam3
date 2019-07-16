@@ -38,7 +38,7 @@ public class AscendantFXBankAccountDAO
     boolean hasFXProvisionPayerPermission = false;
     if ( accountOwner != null ) {
       // accountOwner is null in some test cases
-      hasFXProvisionPayerPermission = auth.checkUser(x, accountOwner, "fx.provision.payer");
+      hasFXProvisionPayerPermission = auth.checkUser(getX(), accountOwner, "fx.provision.payer");
     }
     if ( hasFXProvisionPayerPermission ) {
 

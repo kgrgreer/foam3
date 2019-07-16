@@ -67,8 +67,9 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
-      name: 'highLiquidity',
+      name: 'lowLiquidity',
       section: 'thresholds',
+      gridColumns: 6,
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,
@@ -85,8 +86,9 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
-      name: 'lowLiquidity',
+      name: 'highLiquidity',
       section: 'thresholds',
+      gridColumns: 6,
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,

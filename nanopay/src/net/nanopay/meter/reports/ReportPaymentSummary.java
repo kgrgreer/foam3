@@ -23,6 +23,7 @@ import foam.dao.MDAO;
 import foam.mlang.MLang;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Sum;
+import net.nanopay.account.Account;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.model.Currency;
@@ -265,11 +266,38 @@ public class ReportPaymentSummary extends AbstractReport {
 
     for (Object obj : txLst) {
       Transaction transaction = (Transaction) obj;
-      if ((transaction.findSourceAccount(x).findOwner(x).getAddress().getCountryId().equals("CA")) &&
-        (transaction.findDestinationAccount(x).findOwner(x).getAddress().getCountryId().equals("CA"))) {
+      if ( transaction.findSourceAccount(x) == null ) {
+//        throw new RuntimeException("Invalid Source/Payer Account");
+        continue;
+      }
+      if ( transaction.findDestinationAccount(x) == null ) {
+//        throw new RuntimeException("Invalid Destination/Payee Account");
+        continue;
+      }
+      Account sourceAccount = transaction.findSourceAccount(x);
+      Account destinationAccount = transaction.findDestinationAccount(x);
+      if ( sourceAccount.findOwner(x) == null) {
+//        throw new RuntimeException("No owner find for the Source/Payer Account");
+        continue;
+      }
+      if ( destinationAccount.findOwner(x) == null) {
+//        throw new RuntimeException("No owner find for the Destination/Payee Account");
+        continue;
+      }
+      if ( sourceAccount.findOwner(x).getAddress() == null) {
+//        throw new RuntimeException("No address find for the Source/Payer Account");
+        continue;
+      }
+      if ( destinationAccount.findOwner(x).getAddress() == null) {
+//        throw new RuntimeException("No address find for the Destination/Payee Account");
+        continue;
+      }
+
+      if ((sourceAccount.findOwner(x).getAddress().getCountryId().equals("CA")) &&
+        (destinationAccount.findOwner(x).getAddress().getCountryId().equals("CA"))) {
         txDomesticCanada.put(transaction);
-      } else if ((transaction.findSourceAccount(x).findOwner(x).getAddress().getCountryId().equals("US")) &&
-        (transaction.findDestinationAccount(x).findOwner(x).getAddress().getCountryId().equals("US"))) {
+      } else if ((sourceAccount.findOwner(x).getAddress().getCountryId().equals("US")) &&
+        (destinationAccount.findOwner(x).getAddress().getCountryId().equals("US"))) {
         txDomesticUSA.put(transaction);
       } else {
         txInternational.put(transaction);

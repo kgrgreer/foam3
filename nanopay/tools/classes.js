@@ -135,6 +135,8 @@ var classes = [
   'net.nanopay.fx.afex.Token',
   'net.nanopay.fx.afex.OnboardCorporateClientRequest',
   'net.nanopay.fx.afex.OnboardCorporateClientResponse',
+  'net.nanopay.fx.afex.GetClientAccountStatusResponse',
+  'net.nanopay.fx.afex.RetrieveClientAccountDetailsResponse',
   'net.nanopay.fx.afex.CreateBeneficiaryRequest',
   'net.nanopay.fx.afex.CreateBeneficiaryResponse',
   'net.nanopay.fx.afex.UpdateBeneficiaryRequest',
@@ -144,12 +146,18 @@ var classes = [
   'net.nanopay.fx.afex.FindBeneficiaryResponse',
   'net.nanopay.fx.afex.FindBankByNationalIDRequest',
   'net.nanopay.fx.afex.FindBankByNationalIDResponse',
+  'net.nanopay.fx.afex.GetRateRequest',
+  'net.nanopay.fx.afex.GetRateResponse',
   'net.nanopay.fx.afex.Quote',
   'net.nanopay.fx.afex.GetQuoteRequest',
   'net.nanopay.fx.afex.CreateTradeRequest',
   'net.nanopay.fx.afex.CreateTradeResponse',
+  'net.nanopay.fx.afex.CheckTradeStatusRequest',
+  'net.nanopay.fx.afex.CheckTradeStatusResponse',
   'net.nanopay.fx.afex.CreatePaymentRequest',
   'net.nanopay.fx.afex.CreatePaymentResponse',
+  'net.nanopay.fx.afex.CheckPaymentStatusRequest',
+  'net.nanopay.fx.afex.CheckPaymentStatusResponse',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -661,6 +669,23 @@ var classes = [
   // approval
   'net.nanopay.approval.ApprovalRequest',
   'net.nanopay.approval.ApprovalStatus',
+
+  // BMO EFT integration
+  'net.nanopay.tx.bmo.eftfile.BmoBatchControl',
+  'net.nanopay.tx.bmo.eftfile.BmoBatchHeader',
+  'net.nanopay.tx.bmo.eftfile.BmoBatchRecord',
+  'net.nanopay.tx.bmo.eftfile.BmoDetailRecord',
+  'net.nanopay.tx.bmo.eftfile.BmoEftFile',
+  'net.nanopay.tx.bmo.eftfile.BmoFileControl',
+  'net.nanopay.tx.bmo.eftfile.BmoFileHeader',
+  'net.nanopay.tx.bmo.BmoAssignedClientValue',
+  'net.nanopay.tx.bmo.cico.BmoCITransaction',
+  'net.nanopay.tx.bmo.cico.BmoCOTransaction',
+  'net.nanopay.tx.bmo.cico.BmoTransaction',
+  'net.nanopay.tx.bmo.BmoSFTPCredential',
+  'net.nanopay.tx.bmo.BmoReferenceNumber',
+  'net.nanopay.tx.bmo.BmoTransactionHistory',
+  'net.nanopay.tx.bmo.BmoTransactionPlanDAO',
 
   // alarming & monitoring
   'net.nanopay.alarming.Alarm',
