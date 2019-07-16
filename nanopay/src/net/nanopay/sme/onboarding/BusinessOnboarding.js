@@ -395,13 +395,21 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY,
-                timeMs: 18 * 365 * 24 * 60 * 60 * 1000
-              })
+              e.AND(
+                foam.mlang.predicate.OlderThan.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY,
+                  timeMs: 18 * 365 * 24 * 60 * 60 * 1000
+                }),
+                e.NOT(
+                  foam.mlang.predicate.OlderThan.create({
+                    arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY,
+                    timeMs: 100 * 365 * 24 * 60 * 60 * 1000
+                  })
+                )
+              )
             );
           },
-          errorString: 'Must be at least 18 years old.'
+          errorString: 'Must be between the age of 18 and 100 years old.'
         }
       ]
     }),
