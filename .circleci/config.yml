@@ -14,9 +14,30 @@ jobs:
       - run: git submodule sync
       - run: git submodule update --init
 
+      # Download and cache dependencies
+      - restore_cache:
+          key: node-v1-{{ checksum "package-lock.json" }}
+
       - run: npm install
 
-      - run: ./build.sh -t
+      - save_cache:
+          paths:
+            - node_modules
+          key: node-v1-{{ checksum "package-lock.json" }}
+
+      # cache gradle repositories
+      - restore_cache:
+          keys:
+            - gradle-repo-v1-{{ .Branch }}-{{ checksum "build.gradle" }}
+            - gradle-repo-v1-{{ .Branch }}-
+            - gradle-repo-v1-
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: gradle-repo-v1-{{ .Branch }}-{{ checksum "build.gradle" }}
+
+      - run: ./build.sh -ot
 
 workflows:
   version: 2
