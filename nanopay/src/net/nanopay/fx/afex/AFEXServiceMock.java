@@ -47,6 +47,16 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public GetClientAccountStatusResponse getClientAccountStatus(String clientAPIKey) {
+    return null;
+  }
+
+  @Override
+  public RetrieveClientAccountDetailsResponse retrieveClientAccountDetails(String clientAPIKey) {
+    return null;
+  }
+
+  @Override
   public CreateBeneficiaryResponse createBeneficiary(CreateBeneficiaryRequest request) {
     return null;
   }
@@ -77,6 +87,11 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public GetRateResponse getRate(GetRateRequest request) {
+    return null;
+  }
+
+  @Override
   public Quote getQuote(GetQuoteRequest request) {
 
     Date date = Calendar.getInstance().getTime();
@@ -103,7 +118,17 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public CheckTradeStatusResponse checkTradeStatus(CheckTradeStatusRequest request) {
+    return null;
+  }
+
+  @Override
   public net.nanopay.fx.afex.CreatePaymentResponse createPayment(CreatePaymentRequest request) {
+    return null;
+  }
+
+  @Override
+  public CheckPaymentStatusResponse checkPaymentStatus(CheckPaymentStatusRequest request) {
     return null;
   }
 }

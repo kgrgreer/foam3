@@ -162,7 +162,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     for ( Object obj : children ) {
       Transaction child = (Transaction) ((Transaction) obj).fclone();
       child.setInvoiceId(transaction.getInvoiceId());
-      child = (Transaction) dao.put(child);
+      child = (Transaction) dao.put_(x, child);
       updateInvoice(x, child);
     }
   }

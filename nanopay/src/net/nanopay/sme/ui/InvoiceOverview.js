@@ -358,7 +358,8 @@ foam.CLASS({
       expression: function(invoice$status, invoice$createdBy) {
         return this.user.id === invoice$createdBy &&
         ( invoice$status === this.InvoiceStatus.UNPAID ||
-          invoice$status === this.InvoiceStatus.OVERDUE ) && !
+          invoice$status === this.InvoiceStatus.OVERDUE ||
+          invoice$status === this.InvoiceStatus.PENDING_APPROVAL ) && !
         ( ( this.QuickbooksInvoice.isInstance(this.invoice) || this.XeroInvoice.isInstance(this.invoice) ) && this.isPayable );
       }
     },

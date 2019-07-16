@@ -183,6 +183,11 @@ foam.CLASS({
         who last modified the Invoice.`,
     },
     {
+      class: 'DateTime',
+      name: 'lastDateUpdated',
+      documentation: 'Last time a XeroInvoice or QuickbooksInvoice was updated.'
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
@@ -499,6 +504,16 @@ foam.CLASS({
         if the invoice is associated with an AFX transaction. This property exists 
         to keep  that PDF in such a scenario.
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'isSyncedWithAccounting',
+      factory: function() {
+        return net.nanopay.accounting.xero.model.XeroInvoice.isInstance(this) ||
+        net.nanopay.accounting.quickbooks.model.QuickbooksInvoice.isInstance(this);
+      },
+      documentation: 'Checks if invoice has been synced with accounting software.',
+      visibility: 'RO'
     }
   ],
 
