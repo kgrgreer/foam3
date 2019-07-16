@@ -74,10 +74,7 @@ foam.CLASS({
                     }
                   }
                 },
-                backgroundColor: function(context) {
-                  const palette = ['#202341', '#233e8b', '#406dea', '#1e1f21', '#47484a', '#9ba1a6'];
-                  return palette[context.dataIndex % palette.length];
-                }
+                palette: ['#202341', '#233e8b', '#406dea', '#1e1f21', '#47484a', '#9ba1a6']
               }
             ).addClass(this.myClass('pie-chart')).end()
           .end();
