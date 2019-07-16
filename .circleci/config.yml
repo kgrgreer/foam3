@@ -16,14 +16,17 @@ jobs:
 
       # Download and cache dependencies
       - restore_cache:
-          key: node-v1-{{ checksum "package-lock.json" }}
+          keys:
+            - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - node-v1-{{ .Branch }}-
+            - node-v1-
 
       - run: npm install
 
       - save_cache:
           paths:
             - node_modules
-          key: node-v1-{{ checksum "package-lock.json" }}
+          key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
 
       # cache gradle repositories
       - restore_cache:
