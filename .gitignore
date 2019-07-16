@@ -43,7 +43,7 @@ out/
 .settings/
 .project
 .classpath
-package-lock.json
+#package-lock.json
 
 # JIRA plugin
 atlassian-ide-plugin.xml
