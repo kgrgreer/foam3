@@ -99,8 +99,8 @@ foam.CLASS({
     {
       name: 'lineItemsSection',
       title: 'Line Items',
-      isAvailable: function(lineItems) {
-        return lineItems.length;
+      isAvailable: function(id, lineItems) {
+        return ! id || lineItems.length;
       }
     },
     {
