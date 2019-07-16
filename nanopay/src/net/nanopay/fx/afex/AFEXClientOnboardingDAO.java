@@ -92,7 +92,7 @@ public class AFEXClientOnboardingDAO
             } 
             onboardingRequest.setDateOfIncorporation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
-            onboardingRequest.setGender("Male"); //TODO
+            //onboardingRequest.setGender(signingOfficer.getGender()); //TODO
             onboardingRequest.setLastName(signingOfficer.getLastName());
             onboardingRequest.setPrimaryEmailAddress(signingOfficer.getEmail());
             onboardingRequest.setTermsAndConditions("true");

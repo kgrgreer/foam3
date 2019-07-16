@@ -24,6 +24,30 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getClientAccountStatus',
+      documentation: 'Get the account status of a child account by API key',
+      async: true,
+      type: 'net.nanopay.fx.afex.GetClientAccountStatusResponse',
+      args: [
+        {
+          name: 'clientAPIKey',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'retrieveClientAccountDetails',
+      documentation: 'Get the account account details for the specified client',
+      async: true,
+      type: 'net.nanopay.fx.afex.RetrieveClientAccountDetailsResponse',
+      args: [
+        {
+          name: 'clientAPIKey',
+          type: 'String'
+        }
+      ]
+    },
+    {
       name: 'createBeneficiary',
       documentation: 'Create a new beneficiary',
       async: true,
@@ -99,6 +123,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getRate',
+      documentation: 'Request a rate for a specified currency pair',
+      async: true,
+      type: 'net.nanopay.fx.afex.GetRateResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.GetRateRequest',
+          name: 'request'
+        }
+      ]
+    },
+    {
       name: 'getQuote',
       documentation: 'Get quote',
       async: true,
@@ -123,6 +159,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'checkTradeStatus',
+      documentation: 'retrieve trade details',
+      async: true,
+      type: 'net.nanopay.fx.afex.CheckTradeStatusResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CheckTradeStatusRequest',
+          name: 'request'
+        }
+      ]
+    },
+    {
       name: 'createPayment',
       documentation: 'Create scheduled payment',
       async: true,
@@ -130,6 +178,18 @@ foam.INTERFACE({
       args: [
         {
           type: 'net.nanopay.fx.afex.CreatePaymentRequest',
+          name: 'request'
+        }
+      ]
+    },
+    {
+      name: 'checkPaymentStatus',
+      documentation: 'retrieve payment details',
+      async: true,
+      type: 'net.nanopay.fx.afex.CheckPaymentStatusResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CheckPaymentStatusRequest',
           name: 'request'
         }
       ]

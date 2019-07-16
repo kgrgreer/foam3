@@ -13,6 +13,26 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount'
   ],
 
+  sections: [
+    {
+      name: 'basicInfo'
+    },
+    {
+      name: 'thresholds'
+    },
+    {
+      name: 'accountsSection',
+      title: 'Accounts',
+      isAvailable: function(id) {
+        return !! id;
+      }
+    },
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    }
+  ],
+
   //relationship: 1:* LiquiditySettings : DigitalAccount
 
   //ids: ['account'],
@@ -22,31 +42,34 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id',
-      label: 'ID',
-      visibility: 'RO'
+      name: 'id'
     },
     {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      section: 'basicInfo'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userToEmail',
-      documentation: 'The user that is supposed to receive emails for this liquidity Setting'
+      documentation: 'The user that is supposed to receive emails for this liquidity Setting',
+      section: 'basicInfo'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'cashOutFrequency',
       factory: function() { return net.nanopay.util.Frequency.DAILY; },
-      documentation: 'Determines how often an automatic cash out can occur.'
+      documentation: 'Determines how often an automatic cash out can occur.',
+      section: 'basicInfo'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
-      name: 'highLiquidity',
+      name: 'lowLiquidity',
+      section: 'thresholds',
+      gridColumns: 6,
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,
@@ -63,7 +86,9 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
-      name: 'lowLiquidity',
+      name: 'highLiquidity',
+      section: 'thresholds',
+      gridColumns: 6,
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,

@@ -26,7 +26,9 @@ public class ApprovalDAO
     DAO requestDAO = ((DAO)x.get("approvalRequestDAO"));
     ApprovalRequest old = (ApprovalRequest) requestDAO.find(obj);
     ApprovalRequest request = (ApprovalRequest) getDelegate().put(obj);
-    if ( old != null && old.getStatus() != request.getStatus() ) {
+    if ( old != null && old.getStatus() != request.getStatus()
+      || request.getStatus() != ApprovalStatus.REQUESTED
+    ) {
       DAO requests = ApprovalRequestUtil.getAllRequests(x, request.getObjId(), request.getClassification());
       // if points are sufficient to consider object approved
       if ( getCurrentPoints(requests) >= request.getRequiredPoints() ||
@@ -35,16 +37,16 @@ public class ApprovalDAO
         removeUnusedRequests(requests);
         
         //puts object to its original dao
-        rePutObject(request);
+        rePutObject(x, request);
       }
     }
     return request;
   }
 
-  private void rePutObject(ApprovalRequest request) {
-    DAO dao = (DAO) x_.get(request.getDaoKey());
-    FObject found = dao.inX(x_).find(request.getObjId()).fclone();
-    dao.inX(x_).put(found);
+  private void rePutObject(X x, ApprovalRequest request) {
+    DAO dao = (DAO) x.get(request.getDaoKey());
+    FObject found = dao.inX(x).find(request.getObjId()).fclone();
+    dao.inX(x).put(found);
   }
 
   private void removeUnusedRequests(DAO dao) {

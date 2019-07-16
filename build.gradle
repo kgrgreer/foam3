@@ -16,7 +16,8 @@ repositories {
 }
 
 dependencies {
-	compile "org.jtwig:jtwig-core:5.87.0.RELEASE"
+  compile "net.schmizz:sshj:0.3.1"
+  compile "org.jtwig:jtwig-core:5.87.0.RELEASE"
 	compile "org.apache.commons:commons-collections4:4.3"
 	compile "xerces:xercesImpl:2.12.0"
 	compile "com.github.xeroapi:xero-java:2.1.3"
