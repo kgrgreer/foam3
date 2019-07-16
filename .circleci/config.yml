@@ -32,12 +32,12 @@ jobs:
             - gradle-repo-v1-{{ .Branch }}-
             - gradle-repo-v1-
 
+      - run: ./build.sh -ot
+
       - save_cache:
           paths:
             - ~/.gradle
           key: gradle-repo-v1-{{ .Branch }}-{{ checksum "build.gradle" }}
-
-      - run: ./build.sh -ot
 
 workflows:
   version: 2
