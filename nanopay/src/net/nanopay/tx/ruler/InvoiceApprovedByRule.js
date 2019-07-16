@@ -21,9 +21,11 @@ foam.CLASS({
         name: 'applyAction',
         javaCode: `
             Invoice invoice = (Invoice) obj;
-
-            if (invoice.getPaymentMethod().equals(PaymentStatus.PROCESSING)) {
-                invoice.setApprovedBy(((User) x.get("user")).getId());
+            Invoice oldInvoice = (Invoice) oldObj;
+            if (oldInvoice.getPaymentMethod().equals(PaymentStatus.PENDING_APPROVAL) && 
+                  (invoice.getPaymentMethod().equals(PaymentStatus.PROCESSING) || 
+                   invoice.getPaymentMethod().equals(PaymentStatus.NANOPAY))) {
+              invoice.setApprovedBy(((User) x.get("user")).getId());
             }
         `
       }
