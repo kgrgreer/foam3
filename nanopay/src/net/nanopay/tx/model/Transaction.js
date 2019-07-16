@@ -385,15 +385,10 @@ foam.CLASS({
           obj.currencyDAO.find(obj.sourceCurrency),
           obj.currencyDAO.find(obj.destinationCurrency)
         ]);
-
-        if ( obj.payer ) {
+        if ( obj.sourceCurrency === obj.destinationCurrency ) {
           this.add(
             obj.sourceCurrency + ' ' +
-              srcCurrency.format(obj.amount) + ' → ' +
-              obj.destinationCurrency + ' ' +
-              dstCurrency.format(obj.destinationAmount) + '  |  ' +
-              obj.payer.displayName + ' → ' +
-              obj.payee.displayName
+            srcCurrency.format(obj.amount)
           );
         } else {
           this.add(
@@ -401,6 +396,13 @@ foam.CLASS({
               srcCurrency.format(obj.amount) + ' → ' +
               obj.destinationCurrency + ' ' +
               dstCurrency.format(obj.destinationAmount)
+          );
+        }
+        if ( obj.payer ) {
+          this.add(
+            ' | ' +
+            obj.payer.displayName + ' → ' +
+            obj.payee.displayName
           );
         }
       }
