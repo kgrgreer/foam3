@@ -662,6 +662,23 @@ var classes = [
   'net.nanopay.approval.ApprovalRequest',
   'net.nanopay.approval.ApprovalStatus',
 
+  // BMO EFT integration
+  'net.nanopay.tx.bmo.eftfile.BmoBatchControl',
+  'net.nanopay.tx.bmo.eftfile.BmoBatchHeader',
+  'net.nanopay.tx.bmo.eftfile.BmoBatchRecord',
+  'net.nanopay.tx.bmo.eftfile.BmoDetailRecord',
+  'net.nanopay.tx.bmo.eftfile.BmoEftFile',
+  'net.nanopay.tx.bmo.eftfile.BmoFileControl',
+  'net.nanopay.tx.bmo.eftfile.BmoFileHeader',
+  'net.nanopay.tx.bmo.BmoAssignedClientValue',
+  'net.nanopay.tx.bmo.cico.BmoCITransaction',
+  'net.nanopay.tx.bmo.cico.BmoCOTransaction',
+  'net.nanopay.tx.bmo.cico.BmoTransaction',
+  'net.nanopay.tx.bmo.BmoSFTPCredential',
+  'net.nanopay.tx.bmo.BmoReferenceNumber',
+  'net.nanopay.tx.bmo.BmoTransactionHistory',
+  'net.nanopay.tx.bmo.BmoTransactionPlanDAO',
+
   // alarming & monitoring
   'net.nanopay.alarming.Alarm',
   'net.nanopay.alarming.AlarmConfig',
