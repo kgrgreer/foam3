@@ -403,13 +403,13 @@ foam.CLASS({
                 e.NOT(
                   foam.mlang.predicate.OlderThan.create({
                     arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY,
-                    timeMs: 100 * 365 * 24 * 60 * 60 * 1000
+                    timeMs: 125 * 365 * 24 * 60 * 60 * 1000
                   })
                 )
               )
             );
           },
-          errorString: 'Must be between the age of 18 and 100 years old.'
+          errorString: 'Must be between the age of 18 and 125 years old.'
         }
       ]
     }),
