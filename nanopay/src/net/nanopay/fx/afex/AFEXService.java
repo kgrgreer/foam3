@@ -551,7 +551,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   @Override
   public CreateTradeResponse createTrade(CreateTradeRequest request) {
     try {
-      valueDate = getValueDate(request.getTradeCcy() + request.getSettlementCcy(), "CASH");
+      valueDate = getValueDate(request.getTradeCcy() + request.getSettlementCcy(), "SPOT");
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/trades/create");
 
       httpPost.addHeader("API-Key", request.getClientAPIKey());
