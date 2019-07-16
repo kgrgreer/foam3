@@ -326,7 +326,8 @@ foam.CLASS({
       name: 'payee',
       label: 'Receiver',
       storageTransient: true,
-      visibility: 'RO',
+      //      visibility: 'RO',
+      hidden: true,
       section: 'paymentInfo',
       tableCellFormatter: function(value) {
         this.start()
@@ -343,7 +344,8 @@ foam.CLASS({
       name: 'payer',
       label: 'Sender',
       section: 'paymentInfo',
-      visibility: 'RO',
+      //      visibility: 'RO',
+      hidden: true,
       storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
@@ -369,7 +371,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       section: 'paymentInfo',
-      visibility: 'RO'
+      visibility: 'FINAL'
     },
     {
       class: 'String',
@@ -642,7 +644,7 @@ for ( Balance b : getBalances() ) {
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&  
+      if ( getStatus() == TransactionStatus.COMPLETED &&
       ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
    return true;
  }
@@ -978,7 +980,7 @@ for ( Balance b : getBalances() ) {
           exportEnabled: true,
           title: `${this.id}'s Compliance History`,
           data: this.complianceHistoryDAO.where(m.AND(
-            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id), 
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
             m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
           ))
         });
