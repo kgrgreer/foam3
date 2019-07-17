@@ -32,7 +32,8 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*',
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'net.nanopay.tx.cico.VerificationTransaction'
   ],
 
   properties: [
@@ -46,14 +47,24 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      javaCode: `TransactionQuote quote = (TransactionQuote) obj;
+      javaCode: `
+      
+      if ( ! this.getEnabled() ) {
+        return getDelegate().put_(x, obj);
+      }
+      
+      TransactionQuote quote = (TransactionQuote) obj;
       Transaction request = quote.getRequestTransaction();
       Logger logger = (Logger) x.get("logger");
+      
       if ( request instanceof AlternaVerificationTransaction ) {
         request.setIsQuoted(true);
         quote.addPlan(request);
         return quote;
+      } else if ( request instanceof VerificationTransaction ) {
+        return getDelegate().put_(x, obj);
       }
+      
       Account sourceAccount = quote.getSourceAccount();
       Account destinationAccount = quote.getDestinationAccount();
       if ( sourceAccount instanceof CABankAccount &&
