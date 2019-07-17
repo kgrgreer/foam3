@@ -45,6 +45,12 @@ foam.CLASS({
       name: 'description',
       visibility: foam.u2.Visibility.RO
     },
+    {
+      name: 'institutionNumber',
+      class: 'String',
+      value: '002',
+      visibility: 'Hidden'
+    }
   ],
 
   methods: [

@@ -5,11 +5,13 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Currency',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.dao.MDAO',
     'foam.dao.Sink',
     'foam.mlang.MLang',
     'foam.mlang.sink.Count',
@@ -19,7 +21,7 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProvider',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-
+    'foam.util.SafetyUtil',
     'java.util.List'
   ],
 
@@ -44,7 +46,7 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          static public Account[] find(X x, User sourceUser, String currency) {
+          static public DAO find(X x, User sourceUser, String currency) {
             Logger logger   = (Logger) x.get("logger");
             ServiceProvider spid = sourceUser.findSpid(x) == null ? (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find("nanopay") : sourceUser.findSpid(x);
             User user = zeroAccountUser(x, spid , currency);
@@ -59,8 +61,9 @@ foam.CLASS({
                               )
                             );
                         //    .select(new ArraySink())).getArray();
-                       Count count = new Count()
-                       int amount = accounts.select(count).getValue();
+            Count count = new Count();
+            count = (Count) accounts.select(count);
+            long amount = count.getValue();
             if ( amount == 0 ) {
               logger.error("Trust account not found for", user.getId());
               throw new RuntimeException("Trust account not found for "+user.getId());
@@ -73,19 +76,47 @@ foam.CLASS({
 
           static public TrustAccount find(X x, Account account) {
             DAO accounts = find(x, account.findOwner(x), account.getDenomination());
-            return (TrustAccount) accounts.select(new ArraySink()).getArray().get(0)
+            return (TrustAccount) ( (ArraySink) accounts.select(new ArraySink())).getArray().get(0);
           }
 
-          static public TrustAccount find(X x, Account account, String institutionNumber){
+          static public TrustAccount find(X x, Account account, String institutionNumber) {
+            if (SafetyUtil.isEmpty(institutionNumber)) {
+              return find(x,account);
+            }
+
+            Logger logger   = (Logger) x.get("logger");
             DAO accounts = find(x, account.findOwner(x), account.getDenomination());
-            accounts.where(
-              EQ(TrustAccount.,institutionNumber)
-            )
+            List accountz = ((ArraySink)accounts.select(new ArraySink())).getArray();
+            DAO reserves = new MDAO(Account.getOwnClassInfo());
+
+            for ( int i =0 ; i<accountz.size(); i++){
+              reserves.put( ( (TrustAccount) accountz.get(i) ).findReserveAccount(x) );
+            }
+
+            List reservez = ( (ArraySink) reserves.where(
+              AND(
+                INSTANCE_OF(BankAccount.class),
+                EQ(BankAccount.INSTITUTION_NUMBER,institutionNumber)
+              )
+            ).select(new ArraySink())).getArray();
+            accountz = ((ArraySink) accounts.where(
+              EQ(TrustAccount.RESERVE_ACCOUNT,reservez.get(0))
+            ).select(new ArraySink())).getArray();
+
+            if (accountz.size() > 1) {
+              logger.error("ERROR, Multiple Trust accounts found for institution: " + institutionNumber);
+              throw new RuntimeException("Multiple Trust accounts found for institution: " + institutionNumber);
+            }
+            if( accountz.size() == 0 ) {
+              logger.error("Trust account not found for institution: " + institutionNumber);
+              throw new RuntimeException("Trust account not found for institution: "+ institutionNumber);
+            }
+            return (TrustAccount) accountz.get(0);
           }
 
           static public TrustAccount find(X x, User sourceUser, Currency currency) {
             DAO accounts = find(x, sourceUser, currency.getAlphabeticCode());
-            return (TrustAccount) accounts.select(new ArraySink()).getArray().get(0);
+            return (TrustAccount) ((ArraySink) accounts.select(new ArraySink())).getArray().get(0);
           }
       `);
       }
