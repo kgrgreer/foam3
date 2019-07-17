@@ -978,10 +978,20 @@ for ( Balance b : getBalances() ) {
           exportEnabled: true,
           title: `${this.id}'s Compliance History`,
           data: this.complianceHistoryDAO.where(m.AND(
-            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id), 
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
             m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
           ))
         });
+      }
+    },
+    {
+      name: 'expiditeTxn',
+      label: 'Expidite Transaction',
+      isAvailable: function() {
+        return net.nanopay.tx.alterna.AlternaCITransaction.isInstance(this);
+      },
+      code: async function(X) {
+        // Open Expidite Transaction Wizard
       }
     }
   ]
