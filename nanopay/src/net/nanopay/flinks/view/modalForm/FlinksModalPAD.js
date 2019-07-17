@@ -25,11 +25,7 @@ foam.CLASS({
     'isConnecting',
     'notify',
     'padCaptureDAO',
-    'user',
-    'validateAddress',
-    'validateCity',
-    'validatePostalCode',
-    'validateStreetNumber'
+    'user'
   ],
 
   css: `
@@ -133,22 +129,6 @@ foam.CLASS({
         this.notify(this.ERROR_LLENGTH, 'error');
         return false;
       }
-      if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
-        this.notify(this.ERROR_STREET_NAME, 'error');
-        return false;
-      }
-      if ( ! this.validateAddress(user.address.streetName) ) {
-        this.notify(this.ERROR_STREET_NUMBER, 'error');
-        return false;
-      }
-      if ( ! this.validateCity(user.address.city) ) {
-        this.notify(this.ERROR_CITY, 'error');
-        return false;
-      }
-      if ( ! this.validatePostalCode(user.address.postalCode, user.address.countryId) ) {
-        this.notify(this.ERROR_POSTAL, 'error');
-        return false;
-      }
       return true;
     },
 
@@ -177,7 +157,7 @@ foam.CLASS({
         } finally {
           this.isConnecting = false;
         }
-        this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS }));
+        this.ctrl.notify(this.SUCCESS);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
       }
