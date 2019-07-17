@@ -54,7 +54,7 @@ foam.CLASS({
                 MLang.EQ(CurrencyFXService.SOURCE_CURRENCY, sourceCurrency),
                 MLang.EQ(CurrencyFXService.DEST_CURRENCY, destCurrency),
                 MLang.EQ(CurrencyFXService.SP_ID, spId)
-            )).select(new AbstractSink() {
+            )).limit(1).select(new AbstractSink() {
               @Override
               public void put(Object obj, Detachable sub) {
                 currencyFXService.setNSpecId(((CurrencyFXService) obj).getNSpecId());
@@ -81,7 +81,7 @@ foam.CLASS({
                 MLang.EQ(CurrencyFXService.SOURCE_CURRENCY, sourceCurrency),
                 MLang.EQ(CurrencyFXService.DEST_CURRENCY, destCurrency),
                 MLang.EQ(CurrencyFXService.N_SPEC_ID, nSpecId)
-            )).select(new AbstractSink() {
+            )).limit(1).select(new AbstractSink() {
               @Override
               public void put(Object obj, Detachable sub) {
                 currencyFXService.setNSpecId(((CurrencyFXService) obj).getNSpecId());
