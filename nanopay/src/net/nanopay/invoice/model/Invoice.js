@@ -342,6 +342,25 @@ foam.CLASS({
     },
     {
       class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'approvedBy',
+      documentation: 'the ID of the user that approved this invoice within the business.',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      }
+    },
+    {
+      class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'account',
       aliases: [

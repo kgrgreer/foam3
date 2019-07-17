@@ -70,3 +70,47 @@ p({"class":"foam.nanos.script.Script","id":"Configure Compliance","description":
 p({"class":"foam.nanos.script.Script","id":"Remove active contact emails","description":"Removes emails from active contacts. Compliance solution.","code":"import net.nanopay.contacts.ContactStatus;\nimport net.nanopay.contacts.Contact;\nimport foam.mlang.MLang;\n\ncontactDAO = x.get(\"contactDAO\");\n\nactiveContacts = contactDAO.where(MLang.EQ(Contact.SIGN_UP_STATUS, ContactStatus.ACTIVE)).select().getArray();\n\nfor ( int i = 0 ; i < activeContacts.size() ; i++ ) {\ncontact = activeContacts.get(i);\nprint(contact.getOrganization() + \" email will be removed.\");\ncontact.setEmail(\"\");\ncontactDAO.put(contact);\n}\n\nprint(\"Finished.\");"})
 p({"class":"foam.nanos.script.Script","id":"Print DAO's rules","code":"import foam.dao.ProxyDAO;\nimport foam.nanos.ruler.Rule;\nimport foam.nanos.ruler.RulerDAO;\n\nimport static foam.mlang.MLang.*;\n\n// =============================================================\n// Setting\n// =============================================================\nTARGET_DAO = \"businessDAO\";     // Target DAO to check against\n\n// =============================================================\n// Helper functions\n// =============================================================\nvoid printRules(heading, sink) {\n    if ( ! sink.groupKeys.isEmpty() ) {\n        print(\"  - \" + heading + sink.groupKeys);\n        for ( key : sink.groupKeys ) {\n            printRuleGroup(key, sink.groups.get(key).array);\n        }\n        print(\"\\n\");\n    }\n}\n\nvoid printRuleGroup(key, group) {\n    if ( ! group.isEmpty() ) {\n        print(\"    - \" + key + \":\");\n        for( rule : group ) {\n            print(\"      \" + formatRule(rule));\n        }\n    }\n}\n\nString formatRule(rule) {\n    action = String.join(\"/\", new String[] {\n         rule.action != null ? \"sync\" : \"-\",\n         rule.asyncAction != null ? \"async\" : \"-\"\n    });\n    return String.format(\"id: %d, action: %s, priority: %d, name: %s.\", new Object[] {\n        rule.id,\n        action,\n        rule.priority,\n        rule.name\n    });\n}\n\n// =============================================================\n// Main\n// =============================================================\nvoid main() {\n    // Print header\n    print(\"Print \" + TARGET_DAO + \"'s rules:\");\n    \n    // Locate RulerDAO from the TARGET_DAO\n    dao = x.get(TARGET_DAO);\n    while ( \n        (dao instanceof ProxyDAO)\n        && ! (dao instanceof RulerDAO)\n    ) { dao = dao.delegate; }\n    \n    // Fetch all rules that can be applied to the underlying dao\n    if ( dao instanceof RulerDAO ) {\n        print(\"- RulerDAO(\" + dao.daoKey + \")\");\n        printRules(\"Before CREATE rules:\" , dao.rulesList.get(dao.createBefore));\n        printRules(\"After CREATE rules:\"  , dao.rulesList.get(dao.createAfter));\n        printRules(\"Before UPDATE rules:\" , dao.rulesList.get(dao.updateBefore));\n        printRules(\"After UPDATE rules:\"  , dao.rulesList.get(dao.updateAfter));\n        printRules(\"Before REMOVE rules:\" , dao.rulesList.get(dao.removeBefore));\n        printRules(\"After REMOVE rules:\"  , dao.rulesList.get(dao.removeAfter));\n    }\n}\nmain();"})
 p({"class":"foam.nanos.script.Script","id":"JackieToMichaelRule","description":"Change all the approval requests whose approver is 8233(Jackie) to the ones whose approver is 1476(Micheal). ","code":"import foam.core.X;\nimport foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport foam.mlang.MLang;\nimport net.nanopay.approval.ApprovalRequest;\nimport net.nanopay.approval.ApprovalStatus;\n\npreApprover = 8233;\nnewApprover = 1476;\n\napprovalRequestDAO = (DAO) x.get(\"approvalRequestDAO\");\n\nprint(\"Updated approval requests:\");\nList requests = (approvalRequestDAO.where(MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)).select(new ArraySink())).fclone().getArray();\nfor (ApprovalRequest req : requests) {\n  if (req.approver == preApprover) {\n    req.setApprover(newApprover);\n    approvalRequestDAO.put(req);\n    print(\"id: \" + req.id + \", approver: \" + preApprover + \"  =>  id: \" + req.id + \", approver: \" + req.approver);\n  }\n}"})
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Grant useruserjunction.rw.status to all existing business admin groups",
+  "code": """
+PERMISSION = "useruserjunction.rw.status";
+
+// ----------------------------------------------------------------
+
+import foam.dao.DAO;
+import foam.dao.ArraySink;
+import foam.nanos.auth.User;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.Permission;
+import net.nanopay.model.Business;
+import javax.security.auth.AuthPermission;
+
+DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+DAO groupDAO = (DAO) x.get("groupDAO");
+
+businesses = localBusinessDAO.select(new ArraySink()).getArray();
+permission_ = new Permission.Builder(x).setId(PERMISSION).build();
+
+for ( Business business : businesses ) {
+  Group group = business.findGroup(x);
+
+  if ( group == null ) {
+    print("Couldn't find group '" + business.getGroup() + "'. Skipping...");
+    continue;
+  }
+
+  if ( group.implies(x, new AuthPermission(PERMISSION)) ) {
+    print("Group '" + group.getId() + "' already has a permission that implies the one we're adding. Skipping...");
+    continue;
+  }
+
+  try {
+    group.getPermissions(x).add(permission_);
+    print("Successfully added permission '" + PERMISSION + "' to group " + group.getId());
+  } catch(Throwable t) {
+    print("Failed to add permission '" + PERMISSION + "' to group '" + group.getId() + "'.");
+  }
+}
+  """
+})

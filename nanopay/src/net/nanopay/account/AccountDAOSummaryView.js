@@ -66,7 +66,7 @@ foam.CLASS({
     }
 
     ^transactions-table {
-      margin: 32px 8px;
+      margin: 32px 0px;
     }
 
     ^card-row {
@@ -132,7 +132,7 @@ foam.CLASS({
               .end()
               .start(self.Card, { columns: this.data.liquiditySetting !== undefined ? 4 : 6 })
                 .start().add(self.OVERVIEW_HEADER).addClass(this.myClass('card-header')).end()
-                .tag(self.SectionView, { 
+                .tag(self.SectionView, {
                   data,
                   section: {
                     properties: [
@@ -214,12 +214,10 @@ foam.CLASS({
               .start().add(self.TABLE_HEADER).addClass(this.myClass('table-header')).end()
               .start(foam.comics.v2.DAOBrowserView, {
                 data: self.transactionDAO
-                        .where
-                          (self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id)),
-                                  (self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id))  
-                          )
-                        .orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED))
-                        .limit(20),
+                  .where(self.OR(self.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, data$id),
+                                 self.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, data$id)))
+                  .orderBy(this.DESC(net.nanopay.tx.model.Transaction.CREATED))
+                  .limit(20),
               })
               .end()
             .end();

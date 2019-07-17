@@ -135,6 +135,8 @@ var classes = [
   'net.nanopay.fx.afex.Token',
   'net.nanopay.fx.afex.OnboardCorporateClientRequest',
   'net.nanopay.fx.afex.OnboardCorporateClientResponse',
+  'net.nanopay.fx.afex.GetClientAccountStatusResponse',
+  'net.nanopay.fx.afex.RetrieveClientAccountDetailsResponse',
   'net.nanopay.fx.afex.CreateBeneficiaryRequest',
   'net.nanopay.fx.afex.CreateBeneficiaryResponse',
   'net.nanopay.fx.afex.UpdateBeneficiaryRequest',
@@ -144,12 +146,18 @@ var classes = [
   'net.nanopay.fx.afex.FindBeneficiaryResponse',
   'net.nanopay.fx.afex.FindBankByNationalIDRequest',
   'net.nanopay.fx.afex.FindBankByNationalIDResponse',
+  'net.nanopay.fx.afex.GetRateRequest',
+  'net.nanopay.fx.afex.GetRateResponse',
   'net.nanopay.fx.afex.Quote',
   'net.nanopay.fx.afex.GetQuoteRequest',
   'net.nanopay.fx.afex.CreateTradeRequest',
   'net.nanopay.fx.afex.CreateTradeResponse',
+  'net.nanopay.fx.afex.CheckTradeStatusRequest',
+  'net.nanopay.fx.afex.CheckTradeStatusResponse',
   'net.nanopay.fx.afex.CreatePaymentRequest',
   'net.nanopay.fx.afex.CreatePaymentResponse',
+  'net.nanopay.fx.afex.CheckPaymentStatusRequest',
+  'net.nanopay.fx.afex.CheckPaymentStatusResponse',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -259,6 +267,7 @@ var classes = [
   'net.nanopay.tx.JackieRuleOnPut',
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
+  'net.nanopay.tx.ReferenceLineItem',
   'net.nanopay.tx.ExpiryLineItem',
   'net.nanopay.fx.ManualFxApprovalRequest',
   'net.nanopay.tx.ManualFxRule',
@@ -306,6 +315,7 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
   'net.nanopay.tx.ruler.AccountTransactionLimitRule',
   'net.nanopay.tx.ruler.InvoicePaymentRule',
+  'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -654,6 +664,7 @@ var classes = [
   // business
   'net.nanopay.business.EnforceOneBusinessAdminDAO',
   'net.nanopay.business.JoinBusinessTokenService',
+  'net.nanopay.business.UpdateBusinessEmailRule',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',

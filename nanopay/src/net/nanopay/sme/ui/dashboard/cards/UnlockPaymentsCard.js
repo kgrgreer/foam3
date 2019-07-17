@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'UnlockPaymentsCard',
   extends: 'foam.u2.View',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   documentation: `
     The cards displayed to the user telling them if they have enabled domestic/international payments
   `,
@@ -14,6 +18,7 @@ foam.CLASS({
 
   imports: [
     'agent',
+    'businessOnboardingDAO',
     'menuDAO',
     'stack',
     'user'
@@ -232,7 +237,21 @@ foam.CLASS({
           if ( ! this.user.onboarded ) {
             var userId = this.agent.id;
             var businessId = this.user.id;
-            x.businessOnboardingDAO.find(userId).then((o) => {
+
+            // We need to find the BusinessOnboarding by checking both the
+            // userId and the businessId. Previously we were only checking the
+            // userId, which caused a bug when trying to add a user that's
+            // already on the platform as a signing officer for another
+            // business. The bug was caused by the search by userId finding the
+            // BusinessOnboarding for the existing user's other business instead
+            // of the one they were recently added to. By including the
+            // businessId in our search criteria we avoid this problem.
+            this.businessOnboardingDAO.find(
+              this.AND(
+                this.EQ(this.BusinessOnboarding.USER_ID, userId),
+                this.EQ(this.BusinessOnboarding.BUSINESS_ID, businessId)
+              )
+            ).then((o) => {
               o = o || this.BusinessOnboarding.create({
                 userId: userId,
                 businessId: businessId
