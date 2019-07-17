@@ -131,7 +131,9 @@ foam.CLASS({
                   {
                     ticks: {
                       callback: function (value, index, values) {
-                        return `$${value}`;
+                        return self.account !== 0 
+                                  ? self.__subContext__.currencyDAO.find(self.accountObject.denomination).then(curr => baseTotal != null ?  curr.format(value) : 0)
+                                  : value
                       }
                     }
                   }
@@ -165,6 +167,14 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'account',
       targetDAOKey: 'shadowAccountDAO',
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.account.Account',
+      name: 'accountObject',
+      expression: function(account, accountDAO) {
+        return accountDAO.find(account).then(account => account);
+      }
     },
     {
       class: 'foam.dao.DAOProperty',
