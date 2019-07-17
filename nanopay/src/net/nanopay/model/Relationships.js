@@ -628,6 +628,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   targetProperty: {
     section: 'paymentInfo',
+    visibility: 'FINAL',
     view: {
       class: 'foam.u2.view.FullReferenceView',
       detailView: {
@@ -674,6 +675,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   targetProperty: {
     section: 'paymentInfo',
+    visibility: 'FINAL',
     view: {
       class: 'foam.u2.view.FullReferenceView',
       detailView: {
