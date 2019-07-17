@@ -14,10 +14,10 @@ import net.nanopay.bank.BankAccountStatus;
  * This DAO would onboard user as a client on AFEX by calling AFEX API and then c
  * reates AFEXUser if the owner of the account has the required permission 
  */
-public class AFEXClientOnboardingDAO
+public class AFEXBankOnboardingDAO
     extends ProxyDAO {
 
-  public AFEXClientOnboardingDAO(X x, DAO delegate) {
+  public AFEXBankOnboardingDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
   }

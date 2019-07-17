@@ -32,7 +32,8 @@ p({
     ave = new net.nanopay.bank.AccountVerifiedEmailDAO(x, nbaae);
     ade = new net.nanopay.bank.AccountDeletedEmailDAO(x, ave);
     be = new net.nanopay.bank.BankEmailDAO(x, ade);
-    afxba = new net.nanopay.bank.AscendantFXBankAccountDAO(x, be);
+    afexba = new net.nanopay.fx.afex.AFEXBankOnboardingDAO(x, be);
+    afxba = new net.nanopay.bank.AscendantFXBankAccountDAO(x, afexba);
     rdba = new net.nanopay.bank.RandomDepositBankAccountDAO(x, afxba);
     eodbapc = new net.nanopay.bank.EnforceOneDefaultBankAccountPerCurrencyDAO.Builder(x)
       .setDelegate(rdba)
