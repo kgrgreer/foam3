@@ -8,7 +8,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
-    'net.nanopay.contacts.Contact',
     'static foam.mlang.MLang.*',
   ],
 
@@ -19,7 +18,7 @@ foam.CLASS({
         return AND(
           EQ(OLD_OBJ, null),
           EQ(DOT(NEW_OBJ, User.GROUP), "sme"),
-          NEQ(DOT(NEW_OBJ, INSTANCE_OF(Contact.class)), true)
+          EQ(DOT(NEW_OBJ, CLASS_OF(User.class)), true)
         ).f(obj);
       `
     }
