@@ -8,8 +8,9 @@ foam.CLASS({
       of: 'net.nanopay.accounting.IntegrationCode',
       name: 'integrationCode',
       documentation: 'The code that determines which Accounting system is currently active with the user.',
-      hidden: true,
-      value: 'NONE'
+      visibility: 'RO',
+      value: 'NONE',
+      label: 'Accounting Integration'
     },
     {
       class: 'Boolean',

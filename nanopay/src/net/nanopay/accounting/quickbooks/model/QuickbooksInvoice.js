@@ -33,7 +33,14 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'lastUpdated'
+      name: 'lastUpdated',
+      documentation: ' When this invoice was last updated on QBO.'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastDateUpdated',
+      label: 'Quickbooks Last Updated',
+      visibility: 'RO'
     }
   ]
 });

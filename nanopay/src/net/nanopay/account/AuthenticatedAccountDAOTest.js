@@ -22,9 +22,6 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-      // create mock userDAO as localUserDAO
-      x = x.put("localUserDAO", new MDAO(User.getOwnClassInfo()));
-
       DAO accountDAO = (DAO) x.get("accountDAO");
       DAO userDAO = (DAO) x.get("localUserDAO");
 
@@ -56,6 +53,10 @@ foam.CLASS({
       AuthenticatedAccountDAO_SelectOnTheDAO(user1, user2, user1Context, user2Context, accountDAO);
       AuthenticatedAccountDAO_DeleteUnownedAccount(user1, user1Context, user2Context, accountDAO);
       AuthenticatedAccountDAO_SummarilyDeleteAccounts(user1, user2, user1Context, user2Context, accountDAO);
+
+      // cleanup
+      userDAO.remove(user1);
+      userDAO.remove(user2);
     `
     },
     {

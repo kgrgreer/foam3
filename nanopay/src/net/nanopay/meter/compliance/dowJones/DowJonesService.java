@@ -6,6 +6,7 @@ import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.logger.Logger;
+import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.meter.compliance.dowJones.EntityNameSearchData;
 import net.nanopay.meter.compliance.dowJones.PersonNameSearchData;
 
@@ -53,6 +54,9 @@ public class DowJonesService
         resp.setUserId(searchData.getSearchId());
         resp.setSearchDate(new Date());
         resp.setDaoKey("userDAO");
+        if ( resp.getTotalMatches() == 0 ) {
+          resp.setStatus(ApprovalStatus.APPROVED);
+        }
         dowJonesResponseDAO_.put(resp);
       } else {
         feedback = (DowJonesInvalidResponse) respMsg.getModel();

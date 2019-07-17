@@ -10,8 +10,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.ContextAgent',
-    'foam.core.X',
+    'foam.dao.DAO',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
@@ -21,6 +20,10 @@ foam.CLASS({
     {
       name: 'objDaoKey',
       value: 'localTransactionDAO'
+    },
+    {
+      name: 'description',
+      value: 'Update compliance transaction status'
     }
   ],
 
@@ -28,23 +31,14 @@ foam.CLASS({
     {
       name: 'updateObj',
       javaCode: `
-      agency.submit(x, new ContextAgent() {
-        @Override
-        public void execute(X x) {
-          Transaction transaction = (Transaction) obj;
-          if ( transaction.getStatus() == TransactionStatus.PENDING ) {
-            transaction.setStatus(
-              ApprovalStatus.APPROVED == approvalStatus
-                ? TransactionStatus.COMPLETED
-                : TransactionStatus.DECLINED);
-          } else {
-            transaction.setInitialStatus(
-              ApprovalStatus.APPROVED == approvalStatus
-                ? TransactionStatus.COMPLETED
-                : TransactionStatus.DECLINED);
-          }
-        }}, 
-        "Update transaction status");
+        Transaction transaction = (Transaction) obj;
+        if ( transaction.getStatus() == TransactionStatus.PENDING ) {
+          transaction.setStatus(
+            ApprovalStatus.APPROVED == approvalStatus
+              ? TransactionStatus.COMPLETED
+              : TransactionStatus.DECLINED);
+          ((DAO) x.get(getObjDaoKey())).inX(x).put(transaction);
+        }
       `
     }
   ]

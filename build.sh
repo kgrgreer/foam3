@@ -8,6 +8,10 @@
 # Exit on first failure
 set -e
 
+function warning {
+    echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
+}
+
 function rmdir {
     if test -d "$1" ; then
         rm -rf "$1"
@@ -168,10 +172,6 @@ function clean {
                 rm -rf target
                 mkdir target
             fi
-            if [ -d "generatedJava/" ]; then
-                rm -rf generatedJava
-                mkdir generatedJava
-            fi
             mvn clean
         else
             gradle clean $GRADLE_FLAGS
@@ -190,7 +190,7 @@ function build_jar {
         # maven
         if [ "$COMPILE_ONLY" -eq 0 ]; then
             echo "INFO :: Building nanos..."
-            ./gen.sh tools/classes.js generatedJava
+            ./gen.sh tools/classes.js build/src/java
 
             echo "INFO :: Packaging js..."
             ./tools/js_build/build.js
@@ -531,7 +531,7 @@ function usage {
 JOURNAL_CONFIG=default
 INSTANCE=
 HOST_NAME=`hostname -s`
-GRADLE_BUILD=0
+GRADLE_BUILD=1
 VERSION=
 MODE=
 #MODE=DEVELOPMENT
@@ -561,7 +561,7 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
@@ -583,10 +583,10 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
         M) MODE=$OPTARG
            echo "MODE=${MODE}"
            ;;
-        n) GRADLE_BUILD=1 ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
+        o) GRADLE_BUILD=0 ;;
         p) MODE=PRODUCTION
            echo "MODE=${MODE}"
            ;;
@@ -622,8 +622,12 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
     esac
 done
 
+if [ ${GRADLE_BUILD} -eq 0 ]; then
+    warning "Maven build is deprecated, switch to gradle by dropping 'n' flag"
+fi
+
 if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
-    echo "WARNING :: ${JOURNAL_CONFIG} journal config unsupported for jar deployment";
+    warning "${JOURNAL_CONFIG} journal config unsupported for jar deployment";
 fi
 
 setenv
