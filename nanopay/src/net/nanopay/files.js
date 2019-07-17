@@ -1038,6 +1038,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/Overview' },
   { name: 'net/nanopay/liquidity/ui/account/Balance' },
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
+  { name: 'net/nanopay/tx/ui/AccountTransactionLimitRulePredicateView' },
 
   // identitymind
   { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },
