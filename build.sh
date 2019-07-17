@@ -506,7 +506,7 @@ function usage {
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
-    echo "  -n : new Gradle Build"
+    echo "  -o : old maven build"
     echo "  -p : short cut for setting MODE to PRODUCTION"
     echo "  -q : short cut for setting MODE to STAGING"
     echo "  -r : Start nanos with whatever was last built."

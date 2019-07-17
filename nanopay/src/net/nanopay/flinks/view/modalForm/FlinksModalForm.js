@@ -56,6 +56,9 @@ foam.CLASS({
       text-align: center;
       max-width: 75%;
     }
+    ^ .full-width-input-password {
+      width: 100%;
+    }
   `,
 
   properties: [

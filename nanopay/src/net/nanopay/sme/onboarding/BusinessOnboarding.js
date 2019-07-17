@@ -379,8 +379,9 @@ foam.CLASS({
         class: 'net.nanopay.sme.onboarding.ui.IntroOnboarding'
       }
     },
-
-    foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
+    {
+      class: 'Boolean',
+      name: 'signingOfficer',
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
       label: '',
@@ -391,7 +392,8 @@ foam.CLASS({
           [false, 'No, I am not'],
         ],
       }
-    }),
+    },
+
     foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
       section: 'personalInformationSection',
       view: {
