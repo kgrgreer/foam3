@@ -21,7 +21,10 @@ foam.CLASS({
     },
     {
       class: 'Array',
-      name: 'references'
+      name: 'references',
+      postSet: function() {
+        this.referencesToPredicate();
+      }
     },
     {
       class: 'String',
@@ -31,12 +34,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'preventFeedback_'
     },
-  ],
-  reactions: [
-    ['', 'propertyChange.references', 'referencesToPredicate'],
-    ['rule', 'propertyChange.send', 'referencesToPredicate'],
-    ['', 'propertyChange.data', 'predicateToReferences'],
-    ['data', 'propertyChange', 'predicateToReferences'],
   ],
   listeners: [
     {
