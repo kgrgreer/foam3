@@ -66,7 +66,7 @@ foam.CLASS({
     TransactionQuote quote = (TransactionQuote) obj;
 
     if ( ! this.getEnabled() ) {
-      getDelegate().put_(x, quote);
+      return getDelegate().put_(x, quote);
     }
 
     Logger logger = (Logger) x.get("logger");
@@ -172,16 +172,9 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   afexTransaction.setIsQuoted(true);
   afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
-  // Currency conversion
-  DAO currencyDAO = (DAO) x.get("currencyDAO");
-  Currency currency = (Currency) currencyDAO.find(request.getSourceCurrency());
-  double amount = request.getAmount() > 0 ? request.getAmount() : request.getDestinationAmount();
-  double sourceAmount = amount / Math.pow(10, currency.getPrecision()) * fxQuote.getRate();
-  Long sourceAmountWithRate = Math.round(sourceAmount * 100);
-
-  afexTransaction.setAmount( sourceAmountWithRate );
+  afexTransaction.setAmount(fxQuote.getSourceAmount());
   afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
-  afexTransaction.setDestinationAmount(request.getAmount() > 0 ? request.getAmount() : request.getDestinationAmount());
+  afexTransaction.setDestinationAmount(fxQuote.getTargetAmount());
   afexTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
   
   if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
@@ -207,7 +200,7 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setFxQuoteId(tx.getFxQuoteId());
   summary.setSourceAccount(sourceAccount.getId());
   summary.setDestinationAccount(destinationAccount.getId());
-  summary.setFxRate(1/tx.getFxRate());
+  summary.setFxRate(tx.getFxRate());
   summary.addNext(tx);
   summary.setIsQuoted(true);
   return summary;

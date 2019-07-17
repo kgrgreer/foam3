@@ -130,8 +130,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      logRequest(httpPost);
-
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       try {
@@ -252,7 +250,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       if ( !request.getVendorId().equals("") ) nvps.add(new BasicNameValuePair("VendorId", request.getVendorId()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
-      logRequest(httpPost);
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       try {
