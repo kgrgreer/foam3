@@ -3,6 +3,7 @@ package net.nanopay.tx.alterna;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
+import foam.lib.csv.CSVOutputterImpl;
 import foam.dao.CSVSink;
 import foam.dao.DAO;
 import foam.lib.json.OutputterMode;
@@ -134,10 +135,12 @@ public class CsvUtil {
     final DAO notificationDAO = (DAO) x.get("notificationDAO");
     Logger logger = (Logger) x.get("logger");
 
-    CSVSink out = new CSVSink.Builder(x).build();
-    // Below we create the ClassInfo for AlternaFormat used in csvSink(out)
-    out.setOf((new net.nanopay.tx.alterna.AlternaFormat()).getClassInfo());
-    out.getOutputter().setIsFirstRow(false);
+    CSVSink out = new CSVSink.Builder(x)
+      .setOutputter(new CSVOutputterImpl.Builder(x)
+        .setIsFirstRow(false)
+        .setOf((new net.nanopay.tx.alterna.AlternaFormat()).getClassInfo())
+        .build()
+      ).build();
     transactionDAO
       .where(
              AND(
