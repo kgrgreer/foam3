@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.mlang.MLang',
+    'foam.mlang.sink.Count',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
@@ -43,12 +44,12 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          static public TrustAccount find(X x, User sourceUser, String currency) {
+          static public Account[] find(X x, User sourceUser, String currency) {
             Logger logger   = (Logger) x.get("logger");
             ServiceProvider spid = sourceUser.findSpid(x) == null ? (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).find("nanopay") : sourceUser.findSpid(x);
             User user = zeroAccountUser(x, spid , currency);
 
-            List accounts = ((ArraySink)((DAO)x.get("localAccountDAO"))
+            DAO accounts = ((DAO)x.get("localAccountDAO"))
                             .where(
                               AND(
                                 INSTANCE_OF(TrustAccount.class),
@@ -56,24 +57,35 @@ foam.CLASS({
                                 EQ(Account.OWNER, user.getId()),
                                 EQ(Account.DENOMINATION, currency)
                               )
-                            )
-                            .select(new ArraySink())).getArray();
-            if ( accounts.size() == 0 ) {
+                            );
+                        //    .select(new ArraySink())).getArray();
+                       Count count = new Count()
+                       int amount = accounts.select(count).getValue();
+            if ( amount == 0 ) {
               logger.error("Trust account not found for", user.getId());
               throw new RuntimeException("Trust account not found for "+user.getId());
-            } else if ( accounts.size() > 1 ) {
-              logger.error("Multiple Trust accounts found for", user.getId());
-              throw new RuntimeException("Multiple Trust accounts found for "+ user.getId());
+            } else if ( amount > 1 ) {
+              logger.error("Warning, Multiple Trust accounts found for", user.getId());
+              //throw new RuntimeException("Multiple Trust accounts found for "+ user.getId());
             }
-            return (TrustAccount) accounts.get(0);
+            return accounts;
           }
 
           static public TrustAccount find(X x, Account account) {
-            return find(x, account.findOwner(x), account.getDenomination());
+            DAO accounts = find(x, account.findOwner(x), account.getDenomination());
+            return (TrustAccount) accounts.select(new ArraySink()).getArray().get(0)
+          }
+
+          static public TrustAccount find(X x, Account account, String institutionNumber){
+            DAO accounts = find(x, account.findOwner(x), account.getDenomination());
+            accounts.where(
+              EQ(TrustAccount.,institutionNumber)
+            )
           }
 
           static public TrustAccount find(X x, User sourceUser, Currency currency) {
-            return find(x, sourceUser, currency.getAlphabeticCode());
+            DAO accounts = find(x, sourceUser, currency.getAlphabeticCode());
+            return (TrustAccount) accounts.select(new ArraySink()).getArray().get(0);
           }
       `);
       }

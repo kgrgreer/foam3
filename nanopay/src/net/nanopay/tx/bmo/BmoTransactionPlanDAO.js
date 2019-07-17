@@ -24,7 +24,9 @@ foam.CLASS({
     'net.nanopay.tx.alterna.*',
     'net.nanopay.tx.bmo.cico.*'
   ],
+  constants: [
 
+  ],
 
   methods: [
     {
