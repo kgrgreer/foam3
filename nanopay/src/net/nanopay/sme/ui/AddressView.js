@@ -56,19 +56,14 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'customCountryDAO',
       documentation: 'Can be set if you want a filtered version of countryDAO.',
-      factory: function() { return this.countryDAO; }
+      factory: function() {
+        return this.countryDAO;
+      }
     }
   ],
 
   messages: [
-    { name: 'COUNTRY_LABEL', message: 'Country' },
-    { name: 'STREET_NUMBER_LABEL', message: 'Street Number' },
-    { name: 'STREET_NAME_LABEL', message: 'Street Name' },
-    { name: 'ADDRESS_LABEL', message: 'Address Line 2 (Optional)' },
-    { name: 'ADDRESS_HINT', message: 'Apartment, suite, etc.' },
-    { name: 'PROVINCE_LABEL', message: 'Province/State' },
-    { name: 'CITY_LABEL', message: 'City' },
-    { name: 'POSTAL_CODE_LABEL', message: 'Postal Code/Zip Code' }
+    { name: 'PROVINCE_LABEL', message: 'Province/State' }
   ],
 
   methods: [
