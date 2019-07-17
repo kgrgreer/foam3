@@ -636,6 +636,11 @@ if [ ${GRADLE_BUILD} -eq 0 ]; then
     warning "Maven build is deprecated, switch to gradle by dropping 'n' flag"
 fi
 
+if [ ${MODE} == TEST ]; then
+    echo "INFO :: Mode is test, setting JOURNAL_CONFIG to test"
+    JOURNAL_CONFIG=test
+fi
+
 if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
     warning "${JOURNAL_CONFIG} journal config unsupported for jar deployment";
 fi
