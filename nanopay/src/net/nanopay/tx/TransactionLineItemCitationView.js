@@ -9,20 +9,32 @@ foam.CLASS({
   name: 'TransactionLineItemCitationView',
   extends: 'foam.u2.CitationView',
 
+  css: `
+    ^ .property-name {
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 2;
+    }
+
+    ^ .property-id {
+      width: 135%;
+    }
+  `,
+
   requires: [
     'foam.u2.layout.Cols'
   ],
 
   methods: [
-   function initE() {
+  function initE() {
       this.addClass(this.myClass());
 
-      this.start(this.Cols)
+      this.start(this.Cols).style({ 'justify-content': 'space-between' })
         .start(this.Cols)
-          .add(/* Class */)
-          .add(/* Item */)
+          .tag(this.of.NAME)
+          .tag(this.of.ID)
         .end()
-        .add(/* Balance */)
+        .tag(this.of.AMOUNT)
       .end()
     }
   ]
