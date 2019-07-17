@@ -684,6 +684,7 @@ var classes = [
   'net.nanopay.tx.bmo.cico.BmoCITransaction',
   'net.nanopay.tx.bmo.cico.BmoCOTransaction',
   'net.nanopay.tx.bmo.cico.BmoTransaction',
+  'net.nanopay.tx.bmo.cico.BmoVerificationTransaction',
   'net.nanopay.tx.bmo.BmoSFTPCredential',
   'net.nanopay.tx.bmo.BmoReferenceNumber',
   'net.nanopay.tx.bmo.BmoTransactionHistory',

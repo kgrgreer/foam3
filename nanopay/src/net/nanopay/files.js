@@ -1091,6 +1091,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/bmo/cico/BmoCITransaction' },
   { name: 'net/nanopay/tx/bmo/cico/BmoCOTransaction' },
   { name: 'net/nanopay/tx/bmo/cico/BmoTransaction' },
+  { name: 'net/nanopay/tx/bmo/cico/BmoVerificationTransaction' },
   { name: 'net/nanopay/tx/bmo/BmoSFTPCredential'},
   { name: 'net/nanopay/tx/bmo/BmoReferenceNumber'},
   { name: 'net/nanopay/tx/bmo/BmoTransactionHistory'},

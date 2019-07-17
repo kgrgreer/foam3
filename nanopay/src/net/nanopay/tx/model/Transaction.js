@@ -38,7 +38,7 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business',
-    'net.nanopay.tx.alterna.AlternaVerificationTransaction',
+    'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.liquidity.LiquidityService',
@@ -724,7 +724,7 @@ for ( Balance b : getBalances() ) {
         throw new RuntimeException("Payer user is disabled.");
       }
 
-      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof AlternaVerificationTransaction) ) {
+      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof VerificationTransaction) ) {
         throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
 
