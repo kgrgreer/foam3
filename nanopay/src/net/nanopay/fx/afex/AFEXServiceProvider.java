@@ -37,7 +37,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public boolean onboardBusiness(Business business) {
-    BankAccount bankAccount = (BankAccount) ((DAO) this.x.get("localAccountDAO")).find(business.getId());
+    BankAccount bankAccount = (BankAccount) ((DAO) this.x.get("localAccountDAO")).find(AND(
+      EQ(BankAccount.OWNER,business.getId()),
+      INSTANCE_OF(BankAccount.class)));
     return onboardBusiness(business, bankAccount);
   }
 
