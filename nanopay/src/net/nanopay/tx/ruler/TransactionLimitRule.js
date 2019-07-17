@@ -93,9 +93,7 @@ foam.CLASS({
     },
     {
       name: 'predicate',
-      javaFactory: `
-      return EQ(DOT(NEW_OBJ, net.nanopay.tx.model.Transaction.IS_QUOTED), false);
-      `
+      javaFactory: `return foam.mlang.MLang.FALSE;` 
     }
   ],
 
