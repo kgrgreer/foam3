@@ -9,10 +9,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
-
 
   properties: [
     {
@@ -96,7 +94,7 @@ foam.CLASS({
     {
       name: 'predicate',
       javaFactory: `
-      return EQ(DOT(NEW_OBJ, Transaction.IS_QUOTED), false);
+      return EQ(DOT(NEW_OBJ, net.nanopay.tx.model.Transaction.IS_QUOTED), false);
       `
     }
   ],
