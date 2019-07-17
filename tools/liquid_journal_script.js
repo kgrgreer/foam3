@@ -528,7 +528,6 @@ function transfer(X, source, dest, amount) {
     isQuoted: true,
     id: foam.next$UID(),
     amount: amount,
-    completionDate: X.currentDate,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     initialStatus: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     sourceCurrency: source.denomination,
