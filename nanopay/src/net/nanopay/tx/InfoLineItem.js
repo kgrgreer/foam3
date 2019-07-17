@@ -74,8 +74,7 @@ foam.CLASS({
       name: 'toSummary',
       code: function() {
         return this.name + ' - ' + this.note;
-      },
-      javaCode: `return getName() + " - " + getNote();`
+      }
     }
   ]
 });
