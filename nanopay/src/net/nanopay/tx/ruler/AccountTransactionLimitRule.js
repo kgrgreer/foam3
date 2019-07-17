@@ -21,22 +21,18 @@ foam.CLASS({
             .style({
               'padding-top': '20px',
             })
-            .start({
+            .tag({
               class: 'net.nanopay.tx.ui.AccountTransactionLimitRulePredicateView',
               daoKey: 'accountDAO',
               data$: data$,
             })
-              .call(function() { this.fromProperty && this.fromProperty(prop) })
-            .end()
           .end()
           .start(foam.u2.Tab, { label: 'JSON' })
-            .start({
+            .tag({
               class: 'foam.u2.view.JSONTextView',
               rows: 20,
               data$: data$,
             })
-              .call(function() { this.fromProperty && this.fromProperty(prop) })
-            .end()
           .end();
       }
     }
