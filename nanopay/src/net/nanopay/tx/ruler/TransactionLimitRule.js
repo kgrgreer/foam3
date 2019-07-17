@@ -8,8 +8,7 @@ foam.CLASS({
   'by models that would provide logic for getObjectToMap method. See example: AccountTransactionLimitRule.',
 
   javaImports: [
-    'foam.core.X',
-    'static foam.mlang.MLang.*'
+    'foam.core.X'
   ],
 
   properties: [
