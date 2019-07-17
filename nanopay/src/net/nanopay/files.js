@@ -773,7 +773,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/dashboard/RequireActionView' },
   { name: 'net/nanopay/sme/ui/BalanceCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BalanceView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/dashboard/DynamicSixButtons', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/TopCardsOnDashboard', flags: ['web'] },
   { name: 'net/nanopay/sme/SMEController', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SignInView', flags: ['web'] },
@@ -1076,6 +1075,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/NatureOfBusiness' },
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
   { name: 'net/nanopay/business/JoinBusinessTokenService' },
+  { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },

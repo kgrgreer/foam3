@@ -1,0 +1,1 @@
+p({"class":"foam.nanos.ruler.Rule","id":6000,"name":"Update business's email","priority":100,"ruleGroup":"UpdateBusinessEmail","documentation":"Update business email based on new signing officer","daoKey":"signingOfficerJunctionDAO","operation":3,"action": {"class": "net.nanopay.business.UpdateBusinessEmailRule"},"after":false,"enabled":true,"saveHistory":false})
