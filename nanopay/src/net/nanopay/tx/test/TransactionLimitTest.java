@@ -21,6 +21,8 @@ import net.nanopay.tx.ruler.TransactionLimitProbeInfo;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.DOT;
+import static foam.mlang.MLang.NEW_OBJ;
 import static foam.mlang.MLang.INSTANCE_OF;
 
 public class TransactionLimitTest extends Test {
@@ -160,6 +162,7 @@ public class TransactionLimitTest extends Test {
 //    rule2 = (AccountTransactionLimitRule) ((DAO)x.get("ruleDAO")).put(limitRule2).fclone();
 
 AccountTransactionLimitRule limitRule = new AccountTransactionLimitRule();
+     limitRule.setPredicate(EQ(DOT(NEW_OBJ, Transaction.IS_QUOTED), false));
      limitRule.setLimit(10000L);
      limitRule.setDaoKey("transactionDAO");
      rule = (AccountTransactionLimitRule) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
