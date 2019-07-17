@@ -40,6 +40,7 @@ foam.CLASS({
       class: 'Double',
       name: 'limit',
       label: 'Maximum transaction size',
+      section: 'basicInfo',
       validationPredicates: [
         {
           args: ['limit'],
@@ -55,6 +56,7 @@ foam.CLASS({
       name: 'send',
       value: true,
       label: 'Apply limit to...',
+      section: 'basicInfo',
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
