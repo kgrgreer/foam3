@@ -85,8 +85,7 @@ foam.CLASS({
     'type',
     'status',
     'summary',
-    'created',
-    'completionDate'
+    'created'
   ],
 
   sections: [
