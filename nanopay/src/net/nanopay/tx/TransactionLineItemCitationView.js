@@ -17,15 +17,13 @@ foam.CLASS({
    function initE() {
       this.addClass(this.myClass());
 
-      debugger;
-      this.
-        start(this.Cols)
-          .start(this.Cols)
-            .add(this.summary)
-            .add()
-          .end()
-          .add()
-        .end();
+      this.start(this.Cols)
+        .start(this.Cols)
+          .add(/* Class */)
+          .add(/* Item */)
+        .end()
+        .add(/* Balance */)
+      .end()
     }
   ]
 });
