@@ -54,7 +54,7 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
 
           // send request and parse response
           KotakService kotakService = new KotakService(x);
-          Reversal response = kotakService.submitSOAPReversal(request);
+          Reversal response = kotakService.submitReversal(request);
 
           Rev_DetailType[] revDetails = response.getDetails().getRev_Detail();
 

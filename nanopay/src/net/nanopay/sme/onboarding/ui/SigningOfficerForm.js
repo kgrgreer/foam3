@@ -216,7 +216,7 @@ foam.CLASS({
     },
     {
       name: 'politicallyExposed',
-      documentation: 'Radio button determining if user is the sigining officer of the business.',
+      documentation: 'Radio button determining if user is the signing officer of the business.',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
