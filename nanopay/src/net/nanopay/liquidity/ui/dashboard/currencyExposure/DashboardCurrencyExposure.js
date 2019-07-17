@@ -3,9 +3,14 @@ foam.CLASS({
   name: 'DashboardCurrencyExposure',
   extends: 'foam.u2.View',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.comics.v2.DAOBrowserView',
-    'org.chartjs.PieDAOChartView'
+    'org.chartjs.PieDAOChartView',
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure'
   ],
 
   css: `
@@ -48,11 +53,12 @@ foam.CLASS({
           .start(this.Cols).style({ 'align-items': 'center', 'justify-content': 'center' })
             .start(this.PieDAOChartView,
               {
-                data: this.data,
-                keyExpr: net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure.DENOMINATION,
-                valueExpr: net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposure.TOTAL,
-                height: 280,
-                width: 280,
+                // We only want to see data that has value.
+                data: this.data.where(this.GT(this.CurrencyExposure.TOTAL, 0)),
+                keyExpr: this.CurrencyExposure.DENOMINATION,
+                valueExpr: this.CurrencyExposure.TOTAL,
+                height: 300,
+                width: 300,
                 config: {
                   type: 'pie',
                   options: {
@@ -71,13 +77,15 @@ foam.CLASS({
                           return data.labels[tooltipItem[0].index];
                         }
                       }
+                    },
+                    legend: {
+                      labels: {
+                        boxWidth: 20
+                      }
                     }
                   }
                 },
-                backgroundColor: function(context) {
-                  const palette = ['#202341', '#233e8b', '#406dea', '#1e1f21', '#47484a', '#9ba1a6'];
-                  return palette[context.dataIndex % palette.length];
-                }
+                palette: ['#202341', '#233e8b', '#406dea', '#1e1f21', '#47484a', '#9ba1a6']
               }
             ).addClass(this.myClass('pie-chart')).end()
           .end();

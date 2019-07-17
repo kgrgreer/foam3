@@ -8,17 +8,22 @@ public class Test implements ContextAgent {
   @Override
   public void execute(X x) {
     AFEXService afexService = new AFEXService(x);
-      testGetToken(afexService);
-      testOnboardCorporateClient(afexService);
-      testCreateBeneficiary(afexService);
-      testUpdateBeneficiary(afexService);
-      testDisableBeneficiary(afexService);
-      testFindBeneficiary(afexService);
-      testFindBankByNationalID(afexService);
-      testGetValueDate(afexService);
-      testGetQuote(afexService);
-      testCreateTrade(afexService);
-      testCreatePayment(afexService);
+    testGetToken(afexService);
+    testOnboardCorporateClient(afexService);
+    testGetClientAccountStatus(afexService);
+    testRetrieveClientAccountDetails(afexService);
+    testCreateBeneficiary(afexService);
+    testUpdateBeneficiary(afexService);
+    testDisableBeneficiary(afexService);
+    testFindBeneficiary(afexService);
+    testFindBankByNationalID(afexService);
+    testGetValueDate(afexService);
+    testGetRate(afexService);
+    testGetQuote(afexService);
+    testCreateTrade(afexService);
+    testCheckTradeStatus(afexService);
+    testCreatePayment(afexService);
+    testCheckPaymentStatus(afexService);
   }
 
   private void testGetToken(AFEXService afexService) {
@@ -51,6 +56,40 @@ public class Test implements ContextAgent {
     System.out.println(onboardCorporateClientResponse.getAPIKey());
     System.out.println(onboardCorporateClientResponse.getAccountNumber());
     System.out.println(onboardCorporateClientResponse.getMessage());
+  }
+
+  private void testGetClientAccountStatus(AFEXService afexService) {
+    GetClientAccountStatusResponse getClientAccountStatusResponse = afexService.getClientAccountStatus("000058C9V464e2c3a-a796-e911-be2f-0050569b0074");
+    System.out.println(getClientAccountStatusResponse.getAccountStatus());
+  }
+
+  private void testRetrieveClientAccountDetails(AFEXService afexService) {
+    RetrieveClientAccountDetailsResponse retrieveClientAccountDetailsResponse = afexService.retrieveClientAccountDetails("000058C9V464e2c3a-a796-e911-be2f-0050569b0074");
+    System.out.println(retrieveClientAccountDetailsResponse.getAccountStatus());
+    System.out.println(retrieveClientAccountDetailsResponse.getCitizenship());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactCity());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactAddress1());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactAddress2());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactAddress3());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactCountryCode());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationExpirationDate());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationIssuingAgency());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationNumber());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationType());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactStateRegion());
+    System.out.println(retrieveClientAccountDetailsResponse.getContactZip());
+    System.out.println(retrieveClientAccountDetailsResponse.getDateOfBirth());
+    System.out.println(retrieveClientAccountDetailsResponse.getExpectedMonthlyPayments());
+    System.out.println(retrieveClientAccountDetailsResponse.getExpectedMonthlyVolume());
+    System.out.println(retrieveClientAccountDetailsResponse.getFirstName());
+    System.out.println(retrieveClientAccountDetailsResponse.getGender());
+    System.out.println(retrieveClientAccountDetailsResponse.getJobTitle());
+    System.out.println(retrieveClientAccountDetailsResponse.getLastName());
+    System.out.println(retrieveClientAccountDetailsResponse.getMiddleName());
+    System.out.println(retrieveClientAccountDetailsResponse.getPhoneNumber());
+    System.out.println(retrieveClientAccountDetailsResponse.getPrimaryEmailAddress());
+    System.out.println(retrieveClientAccountDetailsResponse.getTaxIdentificationNumber());
+    System.out.println(retrieveClientAccountDetailsResponse.getTermsAndConditions());
   }
 
   private void testCreateBeneficiary(AFEXService afexService) {
@@ -151,7 +190,7 @@ public class Test implements ContextAgent {
   }
 
   private void testGetValueDate(AFEXService afexService) {
-    String response = afexService.getValueDate("USDCAD", "CASH");
+    String response = afexService.getValueDate("USDCAD", "SPOT");
     System.out.println("value date response: " + response);
   }
 
@@ -175,6 +214,18 @@ public class Test implements ContextAgent {
     System.out.println(quote.getIsAmountSettlement());
   }
 
+  private void testGetRate(AFEXService afexService) {
+    GetRateRequest getRateRequest = new GetRateRequest();
+    getRateRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    getRateRequest.setCurrencyPair("USDCAD");
+
+    GetRateResponse getRateResponse = afexService.getRate(getRateRequest);
+    System.out.println("rate: ");
+    System.out.println(getRateResponse.getRate());
+    System.out.println(getRateResponse.getInvertedRate());
+    System.out.println(getRateResponse.getTerms());
+  }
+
   private void testCreateTrade(AFEXService afexService) {
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
     createTradeRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
@@ -193,6 +244,28 @@ public class Test implements ContextAgent {
     System.out.println(createTradeResponse.getValueDate());
   }
 
+  private void testCheckTradeStatus(AFEXService afexService) {
+    CheckTradeStatusRequest checkTradeStatusRequest = new CheckTradeStatusRequest();
+    checkTradeStatusRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    checkTradeStatusRequest.setId("357496");
+
+    CheckTradeStatusResponse checkTradeStatusResponse = afexService.checkTradeStatus(checkTradeStatusRequest);
+    System.out.println("Trade status: ");
+    System.out.println(checkTradeStatusResponse.getTradeNumber());
+    System.out.println(checkTradeStatusResponse.getAmount());
+    System.out.println(checkTradeStatusResponse.getRemainingBalance());
+    System.out.println(checkTradeStatusResponse.getRate());
+    System.out.println(checkTradeStatusResponse.getBeneficiaryName());
+    System.out.println(checkTradeStatusResponse.getTradeCcy());
+    System.out.println(checkTradeStatusResponse.getSettlementAmt());
+    System.out.println(checkTradeStatusResponse.getSettlementCcy());
+    System.out.println(checkTradeStatusResponse.getTradeDate());
+    System.out.println(checkTradeStatusResponse.getValueDate());
+    System.out.println(checkTradeStatusResponse.getStatus());
+    System.out.println(checkTradeStatusResponse.getFunded());
+    System.out.println(checkTradeStatusResponse.getNote());
+  }
+
   private void testCreatePayment(AFEXService afexService) {
     CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
     createPaymentRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
@@ -208,5 +281,26 @@ public class Test implements ContextAgent {
     System.out.println(createPaymentResponse.getCcy());
     System.out.println(createPaymentResponse.getPaymentDate());
     System.out.println(createPaymentResponse.getMessage());
+  }
+
+  private void testCheckPaymentStatus(AFEXService afexService) {
+    CheckPaymentStatusRequest checkPaymentStatusRequest = new CheckPaymentStatusRequest();
+    checkPaymentStatusRequest.setClientAPIKey("00005838Ve1b47397-8772-e911-9608-892613e8802f");
+    checkPaymentStatusRequest.setId("243809");
+
+    CheckPaymentStatusResponse checkPaymentStatusResponse = afexService.checkPaymentStatus(checkPaymentStatusRequest);
+    System.out.println("Payment status: ");
+    System.out.println(checkPaymentStatusResponse.getReferenceNumber());
+    System.out.println(checkPaymentStatusResponse.getPaymentStatus());
+    System.out.println(checkPaymentStatusResponse.getCurrency());
+    System.out.println(checkPaymentStatusResponse.getAmount());
+    System.out.println(checkPaymentStatusResponse.getValueDate());
+    System.out.println(checkPaymentStatusResponse.getBeneficiaryName());
+    System.out.println(checkPaymentStatusResponse.getScheduledDate());
+    System.out.println(checkPaymentStatusResponse.getSubmittedDate());
+    System.out.println(checkPaymentStatusResponse.getModifiedDate());
+    System.out.println(checkPaymentStatusResponse.getTradeNumber());
+    System.out.println(checkPaymentStatusResponse.getStatus());
+    System.out.println(checkPaymentStatusResponse.getNote());
   }
 }
