@@ -126,18 +126,6 @@ foam.CLASS({
                   }
                 }
               ],
-              xAxes:
-                [
-                  {
-                    ticks: {
-                      callback: function (value, index, values) {
-                        return self.account !== 0 
-                                  ? self.__subContext__.currencyDAO.find(self.accountObject.denomination).then(curr => baseTotal != null ?  curr.format(value) : 0)
-                                  : value
-                      }
-                    }
-                  }
-                ]
             }
           },
         };
@@ -167,14 +155,6 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'account',
       targetDAOKey: 'shadowAccountDAO',
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.account.Account',
-      name: 'accountObject',
-      expression: function(account, accountDAO) {
-        return accountDAO.find(account).then(account => account);
-      }
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -224,6 +204,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      debugger;
       this.addClass(this.myClass())
         .start(this.Cols)
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
@@ -235,7 +216,39 @@ foam.CLASS({
           .endContext()
         .end()
         .start().style({ 'width': '1150px', 'height': '320px' }).addClass(this.myClass('chart'))
-          .add(this.HorizontalBarDAOChartView.create({
+          .add(this.account ? this.account$find.then(account => this.currencyDAO.find(account.denomination).then(currency => {
+            var configAdded = this.config.clone();
+            
+            var xAxisConfigured =  [
+              {
+                ticks: {
+                  callback: function (value, index, values) {
+                    return self.account !== 0 
+                              ? currency.format(value)
+                              : value
+                  }
+                }
+              }
+            ];
+            
+            configAdded.options.scales.xAxes = xAxisConfigured; 
+          
+            return self.E().add(this.HorizontalBarDAOChartView.create({
+                data$: this.cicoTransactionsDAO$,
+                keyExpr: this.TransactionCICOType.create(),
+                config: configAdded,
+                xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
+                yExpr$: this.dateFrequency$.map(d => d.glang.clone().copyFrom({
+                  delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
+                })),
+                customDatasetStyling: this.customDatasetStyling,
+                width: 1100,
+                height: 320
+              })
+            )
+          }))
+          :
+          this.HorizontalBarDAOChartView.create({
             data$: this.cicoTransactionsDAO$,
             keyExpr: this.TransactionCICOType.create(),
             config: this.config,
@@ -246,7 +259,8 @@ foam.CLASS({
             customDatasetStyling: this.customDatasetStyling,
             width: 1100,
             height: 320
-          }))
+          })
+        )
         .end()
         .startContext({ data: this })
           .start(this.Cols).addClass(this.myClass('buttons'))
