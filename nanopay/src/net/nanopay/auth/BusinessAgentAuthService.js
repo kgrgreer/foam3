@@ -132,7 +132,11 @@ foam.CLASS({
         // passed in user. Source (agent) users are permitted to act as
         // target (entity) users, not vice versa.
         DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-        UserUserJunction permissionJunction = (UserUserJunction) agentJunctionDAO.inX(x).find(AND(
+
+        // Use the system context here instead of the user context in case the
+        // user doesn't have permission to read the status property, in which
+        // case it defaults to Active and passes.
+        UserUserJunction permissionJunction = (UserUserJunction) agentJunctionDAO.find(AND(
           EQ(UserUserJunction.SOURCE_ID, agent.getId()),
           EQ(UserUserJunction.TARGET_ID, entity.getId())
         ));
