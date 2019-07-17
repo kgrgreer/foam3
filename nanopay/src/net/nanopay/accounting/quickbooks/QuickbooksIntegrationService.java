@@ -628,6 +628,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     newContact.setRealmId(token.getRealmId());
     newContact.setOwner(user.getId());
     newContact.setLastUpdated(importContact.getMetaData().getLastUpdatedTime().getTime());
+    newContact.setLastDateUpdated(new Date());
 
     return newContact;
   }
@@ -798,6 +799,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     existInvoice.setCreatedBy(user.getId());
     existInvoice.setContactId(contact.getId());
     existInvoice.setLastUpdated(qInvoice.getMetaData().getLastUpdatedTime().getTime());
+    existInvoice.setLastDateUpdated(new Date());
 
     invoiceDAO.inX(x).put(existInvoice);
 

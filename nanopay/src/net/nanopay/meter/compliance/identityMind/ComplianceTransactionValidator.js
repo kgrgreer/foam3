@@ -6,15 +6,14 @@ foam.CLASS({
   documentation: 'Validates transaction via IdentityMind Transfer API.',
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
+    'foam.util.SafetyUtil',
     'net.nanopay.approval.ApprovalStatus',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.bank.BankAccount',
-    'foam.util.SafetyUtil',
-    'foam.core.ContextAgent',
-    'foam.core.X'
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
@@ -38,57 +37,31 @@ foam.CLASS({
             new ComplianceApprovalRequest.Builder(x)
               .setObjId(transaction.getId())
               .setDaoKey("localTransactionDAO")
+              .setClassification("Validate Transaction Using IdentityMind")
               .build();
 
-          IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-
-          while ( ! SafetyUtil.isEmpty(transaction.getParent()) ) {
-            Transaction parent = transaction.findParent(x);
-            if ( parent != null ) {
-              transaction = parent;
-            } else {
-              break;
-            }
+          // NOTE: Only run transaction evaluation through IdentityMind
+          // when it is a bank to bank transaction.
+          if ( transaction.findSourceAccount(x) instanceof BankAccount
+            && transaction.findDestinationAccount(x) instanceof BankAccount
+          ) {
+            IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
+            IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
+            status = response.getComplianceValidationStatus();
+            approvalRequest.setCauseId(response.getId());
+            approvalRequest.setCauseDaoKey("identityMindResponseDAO");
+            // Save status in ruleHistory.result
+            ruler.putResult(status);
+          } else {
+            approvalRequest.setMemo("IdentityMind transaction check is skipped because it's not a bank-to-bank transaction.");
           }
 
-          if ( transaction.findSourceAccount(x) instanceof BankAccount ) {
-            try {
-              IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
-              status = response.getComplianceValidationStatus();
-              TransactionStatus transactionStatus = getTransactionStatus(status);
-              if ( transactionStatus != null ) {
-                transaction.setInitialStatus(transactionStatus);
-              }
-
-              approvalRequest.setCauseId(response.getId());
-              approvalRequest.setCauseDaoKey("identityMindResponseDAO");
-              approvalRequest.setStatus(getApprovalStatus(status));
-              approvalRequest.setApprover(getApprover(status));
-            } finally {
-              requestApproval(x, approvalRequest);
-              ruler.putResult(status);
-            }
-          }
+          // Create approval request
+          approvalRequest.setStatus(getApprovalStatus(status));
+          approvalRequest.setApprover(getApprover(status));
+          requestApproval(x, approvalRequest);
         }
-      },"Compliance Transaction Validator");
-      `
-    },
-    {
-      name: 'getTransactionStatus',
-      type: 'net.nanopay.tx.model.TransactionStatus',
-      args: [
-        {
-          name: 'status',
-          type: 'net.nanopay.meter.compliance.ComplianceValidationStatus'
-        }
-      ],
-      javaCode: `
-        if ( ComplianceValidationStatus.VALIDATED == status ) {
-          return TransactionStatus.COMPLETED;
-        } else if ( ComplianceValidationStatus.REJECTED == status ) {
-          return TransactionStatus.DECLINED;
-        }
-        return null;
+      }, "Compliance Transaction Validator");
       `
     },
     {

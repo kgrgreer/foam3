@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: `Transaction to be created specifically for adding Interest to LoanAccounts, enforces source/destination to always be Loan and LoanedTotalAccount`,
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.LoanAccount',
     'java.util.List',
@@ -47,10 +48,14 @@ foam.CLASS({
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       Transaction tx = super.executeBeforePut(x, oldTxn);
-      if( ! ( tx.findSourceAccount(x) instanceof LoanAccount ) )
+      if( ! ( tx.findSourceAccount(x) instanceof LoanAccount ) ) {
+        ((Logger)getX().get("logger")).error("Transaction must include a Loan Account as a Source Account");
         throw new RuntimeException("Transaction must include a Loan Account as a Source Account");
-      if( ! ( tx.findDestinationAccount(x) instanceof LoanedTotalAccount ) )
+      }
+      if( ! ( tx.findDestinationAccount(x) instanceof LoanedTotalAccount ) ) {
+        ((Logger)getX().get("logger")).error("Transaction must include a LoanedTotalAccount as a Destination Account");
         throw new RuntimeException("Transaction must include a LoanedTotalAccount as a Destination Account");
+      }
       return tx;
     `
     },

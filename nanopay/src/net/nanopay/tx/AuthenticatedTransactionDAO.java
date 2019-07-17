@@ -12,6 +12,7 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.AuthorizationException;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
@@ -49,8 +50,10 @@ public class AuthenticatedTransactionDAO
     AuthService auth = (AuthService) x.get("auth");
     Transaction t = (Transaction) obj;
     Transaction oldTxn = (Transaction) super.find_(x, obj);
+    Logger logger = (Logger) x.get("logger");
 
     if ( user == null ) {
+      logger.warning("User not found for " + t.getId());
       throw new AuthenticationException();
     }
 
@@ -77,6 +80,7 @@ public class AuthenticatedTransactionDAO
        * 2. if a creation was made (oldTxn == null), check creation perms
        */
       if ( oldTxn != null && ! isUpdatePermitted || oldTxn == null && ! isCreatePermitted  ) {
+        logger.warning("Permission denied for " + t.getId() + " or " + t.getId());
         throw new AuthorizationException();
       }
     }
@@ -85,19 +89,23 @@ public class AuthenticatedTransactionDAO
       Invoice invoice = (Invoice) invoiceDAO.find(t.getInvoiceId());
 
       if ( invoice == null ) {
+        logger.error("the invoice associated with this transaction could not be found for transaction" + t.getId());
         throw new RuntimeException("The invoice associated with this transaction could not be found.");
       }
 
       if ( invoice.getPayerId() != user.getId() && ! isAcceptingPaymentFromPayersDigitalAccount ) {
         if ( oldTxn == null ) {
+          logger.error("You cannot pay a receivable " + t.getId());
           throw new AuthorizationException("You cannot pay a receivable.");
         }
         else if ( ! isUpdatePermitted ) {
+          logger.error("You cannot update a receivable " + t.getId());
           throw new AuthorizationException("You cannot update a receivable.");
         }
       }
 
       if ( invoice.getDraft() ) {
+        logger.error("You cannot pay a draft " + t.getId());
         throw new AuthorizationException("You cannot pay draft invoices.");
       }
 
@@ -118,6 +126,7 @@ public class AuthenticatedTransactionDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
+      ((Logger) x.get("logger")).error("User not found in authenicatedTransactionDAO find_");
       throw new AuthenticationException();
     }
 
@@ -136,6 +145,7 @@ public class AuthenticatedTransactionDAO
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
+      ((Logger) x.get("logger")).error("User not found in authenicatedTransactionDAO select_");
       throw new AuthenticationException();
     }
 
