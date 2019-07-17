@@ -6,21 +6,26 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'ReferenceLineItemCitationView',
+  name: 'TransactionLineItemCitationView',
   extends: 'foam.u2.CitationView',
 
   requires: [
-    'foam.u2.detail.SectionedDetailPropertyView'
+    'foam.u2.layout.Cols'
   ],
 
   methods: [
    function initE() {
       this.addClass(this.myClass());
 
-      this.tag(this.SectionedDetailPropertyView, { 
-        data$: this.data$,
-        prop: this.of.REFERENCE_ID 
-      })
+      debugger;
+      this.
+        start(this.Cols)
+          .start(this.Cols)
+            .add(this.summary)
+            .add()
+          .end()
+          .add()
+        .end();
     }
   ]
 });
