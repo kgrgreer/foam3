@@ -93,7 +93,13 @@ foam.CLASS({
     },
     {
       name: 'predicate',
-      javaFactory: `return foam.mlang.MLang.FALSE;` 
+      javaFactory: `
+        return foam.mlang.MLang.EQ(
+          foam.mlang.MLang.DOT(
+            foam.mlang.MLang.NEW_OBJ,
+            net.nanopay.tx.model.Transaction.IS_QUOTED),
+          false);
+      ` 
     }
   ],
 
