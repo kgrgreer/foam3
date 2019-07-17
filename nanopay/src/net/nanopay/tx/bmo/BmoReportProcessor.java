@@ -10,6 +10,7 @@ import foam.util.SafetyUtil;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
+import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import org.apache.commons.io.FileUtils;
@@ -136,25 +137,7 @@ public class BmoReportProcessor {
 
     String referenceNumber = record.substring(55, 74).trim();
 
-    Transaction transaction = (Transaction) this.transactionDAO.find(MLang.AND(
-      MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
-    ));
-
-    if ( transaction == null ) {
-      transaction = (Transaction) this.transactionDAO.find(MLang.AND(
-        MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
-      ));
-    }
-
-    if ( transaction == null ) {
-      throw new RuntimeException("Transaction reference number: " + referenceNumber + " not found");
-    }
-
-    transaction = (Transaction) transaction.fclone();
+    Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
 
     ((BmoTransaction)transaction).addHistory("Transaction completed.");
     transaction.setCompletionDate(new Date());
@@ -223,29 +206,12 @@ public class BmoReportProcessor {
 
     String referenceNumber = rejectedItem.get(0).substring(108, 127).trim();
 
-    Transaction transaction = (Transaction) this.transactionDAO.find(MLang.AND(
-      MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
-    ));
-
-    if ( transaction == null ) {
-      transaction = (Transaction) this.transactionDAO.find(MLang.AND(
-        MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
-      ));
-    }
-
-    if ( transaction == null ) {
-      throw new RuntimeException("Transaction reference number: " + referenceNumber + " not found");
-    }
-
-    transaction = (Transaction) transaction.fclone();
+    Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
 
     transaction.setStatus(TransactionStatus.DECLINED);
     ((BmoTransaction)transaction).addHistory("Transaction rejected.");
     ((BmoTransaction)transaction).setRejectReason(rejectReason);
+    transaction.setCompletionDate(new Date());
 
     transactionDAO.inX(this.x).put(transaction);
   }
@@ -268,6 +234,37 @@ public class BmoReportProcessor {
       }
     }
 
+  }
+
+  public Transaction getTransactionBy(int fileCreationNumber,  String referenceNumber) {
+
+    Transaction transaction = (Transaction) this.transactionDAO.find(MLang.AND(
+      MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
+      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+    ));
+
+    if ( transaction == null ) {
+      transaction = (Transaction) this.transactionDAO.find(MLang.AND(
+        MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
+        MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+      ));
+    }
+
+    if ( transaction == null ) {
+      transaction = (Transaction) this.transactionDAO.find(MLang.AND(
+        MLang.EQ(BmoVerificationTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
+        MLang.EQ(BmoVerificationTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+      ));
+    }
+
+    if ( transaction == null ) {
+      throw new RuntimeException("Transaction reference number: " + referenceNumber + " not found");
+    }
+
+    return transaction = (Transaction) transaction.fclone();
   }
 
   public String getFileCreationNumber(File file) throws IOException {

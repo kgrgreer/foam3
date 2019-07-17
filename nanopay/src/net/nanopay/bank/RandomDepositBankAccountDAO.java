@@ -7,6 +7,8 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.User;
 import net.nanopay.account.TrustAccount;
 import net.nanopay.tx.alterna.AlternaVerificationTransaction;
+import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
+import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 
 public class RandomDepositBankAccountDAO
@@ -15,9 +17,13 @@ public class RandomDepositBankAccountDAO
   protected DAO transactionDAO_;
   protected DAO transactionQuotePlanDAO_;
 
+  private boolean useBMO;
+
   public RandomDepositBankAccountDAO(X x, DAO delegate) {
     setX(x);
     setDelegate(delegate);
+
+    this.setUseBMO(false);
   }
 
   public DAO getTransactionDAO() {
@@ -52,15 +58,29 @@ public class RandomDepositBankAccountDAO
       User user = (User) x.get("user");
 
       // create new transaction and store
-      AlternaVerificationTransaction transaction = new AlternaVerificationTransaction.Builder(x)
-        .setPayerId(user.getId())
-        .setDestinationAccount(account.getId())
-        .setAmount(randomDepositAmount)
-        .setSourceCurrency(account.getDenomination())
-        .build();
+      VerificationTransaction transaction = null;
+      if ( this.isUseBMO() ) {
+        transaction = new BmoVerificationTransaction();
+      } else {
+        transaction = new AlternaVerificationTransaction();
+      }
+
+      transaction.setPayerId(user.getId());
+      transaction.setDestinationAccount(account.getId());
+      transaction.setAmount(randomDepositAmount);
+      transaction.setSourceCurrency(account.getDenomination());
+
       getTransactionDAO().put_(x, transaction);
     }
 
     return ret;
+  }
+
+  public boolean isUseBMO() {
+    return useBMO;
+  }
+
+  public void setUseBMO(boolean useBMO) {
+    this.useBMO = useBMO;
   }
 }

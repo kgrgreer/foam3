@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'BmoTransactionPlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
+  implements: [
+    'foam.nanos.auth.EnabledAware'
+  ],
+
   javaImports: [
     'net.nanopay.bank.BankAccountStatus',
     'foam.nanos.auth.User',
@@ -22,18 +26,38 @@ foam.CLASS({
     'foam.dao.DAO',
 
     'net.nanopay.tx.alterna.*',
-    'net.nanopay.tx.bmo.cico.*'
+    'net.nanopay.tx.bmo.cico.*',
+    'net.nanopay.tx.cico.VerificationTransaction'
   ],
 
+  properties: [
+    {
+      name: 'enabled',
+      class: 'Boolean',
+      value: true
+    }
+  ],
 
   methods: [
     {
       name: 'put_',
       javaCode: `
+    
+    if ( ! this.getEnabled() ) {
+      return getDelegate().put_(x, obj);
+    }
+        
     Logger logger = (Logger) x.get("logger");
-
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction request = (Transaction) quote.getRequestTransaction();
+    
+    if ( request instanceof BmoVerificationTransaction ) {
+        request.setIsQuoted(true);
+        quote.addPlan(request);
+        return quote;
+      } else if ( request instanceof VerificationTransaction ) {
+        return getDelegate().put_(x, obj);
+      }
 
     Account sourceAccount = quote.getSourceAccount();
     Account destinationAccount = quote.getDestinationAccount();
