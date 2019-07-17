@@ -993,6 +993,16 @@ for ( Balance b : getBalances() ) {
           ))
         });
       }
+    },
+    {
+      name: 'expiditeTxn',
+      label: 'Expidite Transaction',
+      isAvailable: function() {
+        return net.nanopay.tx.alterna.AlternaCITransaction.isInstance(this);
+      },
+      code: async function(X) {
+        // Open Expidite Transaction Wizard
+      }
     }
   ]
 });
