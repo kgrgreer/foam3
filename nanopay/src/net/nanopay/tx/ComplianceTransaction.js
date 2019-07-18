@@ -58,6 +58,25 @@ foam.CLASS({
         return false;
       `
     },
+    {
+      name: 'sendReverseNotification',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'oldTxn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+        if ( oldTxn == null ) return;
+        if ( getStatus() != TransactionStatus.DECLINED ) return;
+        if ( oldTxn.getStatus() == TransactionStatus.DECLINED ) return;
 
+        DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+        Notification notification = new Notification();
+        notification.setEmailIsEnabled(true);
+        notification.setBody("Compliance transaction id: " + getId() + " was declined.");
+        notification.setNotificationType("Compliance transaction declined");
+        notification.setGroupId("noc");
+        notificationDAO.put(notification);
+      `
+    }
   ]
 });
