@@ -61,28 +61,6 @@ foam.CLASS({
   imports: [
     'transactionDAO'
   ],
-  properties: [
-    {
-      class: 'String',
-      name: 'denominationFlag',
-      factory: function() {
-        /**
-         * TODO: we might want to make flags a property of currencies/denominations
-         * and use images instead of emojis
-         */
-        switch(this.data.denomination){
-          case 'USD':
-            return '🇺🇸';
-          case 'CAD':
-            return '🇨🇦';
-          case 'INR':
-            return '🇮🇳';
-          default:
-            return '💰';
-        }
-      }
-    }
-  ],
 
   messages: [
     {
