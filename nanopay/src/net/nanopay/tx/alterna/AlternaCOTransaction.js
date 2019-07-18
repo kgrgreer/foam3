@@ -48,7 +48,7 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       class: 'String',
-      value: '002',
+      value: 'ATB',
       visibility: 'Hidden'
     }
   ],

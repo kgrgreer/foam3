@@ -22,7 +22,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
-    'java.util.List'
+    'java.util.List',
+    'net.nanopay.payment.Institution'
   ],
 
   properties: [
@@ -65,11 +66,8 @@ foam.CLASS({
             count = (Count) accounts.select(count);
             long amount = count.getValue();
             if ( amount == 0 ) {
-              logger.error("Trust account not found for", user.getId());
-              throw new RuntimeException("Trust account not found for "+user.getId());
-            } else if ( amount > 1 ) {
-              logger.error("Warning, Multiple Trust accounts found for", user.getId());
-              //throw new RuntimeException("Multiple Trust accounts found for "+ user.getId());
+              logger.error("No TrustAccounts found for ", user.getId());
+              throw new RuntimeException("No TrustAccounts found for "+user.getId());
             }
             return accounts;
           }
@@ -80,38 +78,38 @@ foam.CLASS({
           }
 
           static public TrustAccount find(X x, Account account, String institutionNumber) {
-            if (SafetyUtil.isEmpty(institutionNumber)) {
+            if ( SafetyUtil.isEmpty(institutionNumber) ) {
               return find(x,account);
             }
 
             Logger logger   = (Logger) x.get("logger");
             DAO accounts = find(x, account.findOwner(x), account.getDenomination());
-            List accountz = ((ArraySink)accounts.select(new ArraySink())).getArray();
-            DAO reserves = new MDAO(Account.getOwnClassInfo());
+            List accountList = ((ArraySink)accounts.select(new ArraySink())).getArray();
+            DAO reserveAccs = new MDAO(Account.getOwnClassInfo());
 
-            for ( int i =0 ; i<accountz.size(); i++){
-              reserves.put( ( (TrustAccount) accountz.get(i) ).findReserveAccount(x) );
+            for ( int i =0 ; i<accountList.size(); i++ ) {
+              reserveAccs.put( ( (TrustAccount) accountList.get(i) ).findReserveAccount(x) );
             }
-
-            List reservez = ( (ArraySink) reserves.where(
+            Institution institution = (Institution) ((DAO) x.get("institutionDAO")).find(EQ(Institution.NAME,institutionNumber));
+            List reserveAccsList = ( (ArraySink) reserveAccs.where(
               AND(
                 INSTANCE_OF(BankAccount.class),
-                EQ(BankAccount.INSTITUTION_NUMBER,institutionNumber)
+                EQ(BankAccount.INSTITUTION,institution.getId())
               )
             ).select(new ArraySink())).getArray();
-            accountz = ((ArraySink) accounts.where(
-              EQ(TrustAccount.RESERVE_ACCOUNT,reservez.get(0))
+            accountList = ((ArraySink) accounts.where(
+              EQ(TrustAccount.RESERVE_ACCOUNT,((BankAccount) reserveAccsList.get(0)).getId())
             ).select(new ArraySink())).getArray();
 
-            if (accountz.size() > 1) {
+            if ( accountList.size() > 1 ) {
               logger.error("ERROR, Multiple Trust accounts found for institution: " + institutionNumber);
               throw new RuntimeException("Multiple Trust accounts found for institution: " + institutionNumber);
             }
-            if( accountz.size() == 0 ) {
+            if ( accountList.size() == 0 ) {
               logger.error("Trust account not found for institution: " + institutionNumber);
               throw new RuntimeException("Trust account not found for institution: "+ institutionNumber);
             }
-            return (TrustAccount) accountz.get(0);
+            return (TrustAccount) accountList.get(0);
           }
 
           static public TrustAccount find(X x, User sourceUser, Currency currency) {
