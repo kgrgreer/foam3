@@ -25,6 +25,7 @@ foam.CLASS({
     'net.nanopay.tx.bmo.cico.*'
   ],
 
+
   methods: [
     {
       name: 'put_',
