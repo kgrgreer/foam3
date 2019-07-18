@@ -249,12 +249,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
 
     long tradeAmount = 0;
-    boolean isAmountSettlement = quote.getHasSourceAmount();
-    tradeAmount = isAmountSettlement ? afexTransaction.getAmount() : afexTransaction.getDestinationAmount();
+    tradeAmount =  afexTransaction.getDestinationAmount();
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
     createTradeRequest.setClientAPIKey(afexBusiness.getApiKey());
     createTradeRequest.setAmount(String.valueOf(toDecimal(tradeAmount)));
-    createTradeRequest.setIsAmountSettlement(String.valueOf(isAmountSettlement));
+    createTradeRequest.setIsAmountSettlement(String.valueOf(false));
     createTradeRequest.setSettlementCcy(afexTransaction.getSourceCurrency());
     createTradeRequest.setTradeCcy(afexTransaction.getDestinationCurrency());
     createTradeRequest.setQuoteID(quote.getExternalId());
@@ -267,23 +266,23 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         createPaymentRequest.setAmount(String.valueOf(tradeResponse.getAmount()));
         createPaymentRequest.setCurrency(tradeResponse.getTradeCcy());
         createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()));
-        try {
-          CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest);
-          if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
-            AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
-            txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
-            try {
-              Date valueDate = new SimpleDateFormat("yyyy/MM/dd").parse(tradeResponse.getValueDate());
-              txn.setCompletionDate(valueDate); 
-            } catch(Throwable t) {
-              ((Logger) x.get("logger")).error("Error parsing date.", t);
-            } 
-            return txn;
-          }
-        } catch(Throwable t) {
-          ((Logger) x.get("logger")).error("Error sending payment to AFEX.", t);
-          throw new RuntimeException(t);
-        } 
+//        try {
+//          CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest);
+//          if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
+//            AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
+//            txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
+//            try {
+//              Date valueDate = new SimpleDateFormat("yyyy/MM/dd").parse(tradeResponse.getValueDate());
+//              txn.setCompletionDate(valueDate);
+//            } catch(Throwable t) {
+//              ((Logger) x.get("logger")).error("Error parsing date.", t);
+//            }
+//            return txn;
+//          }
+//        } catch(Throwable t) {
+//          ((Logger) x.get("logger")).error("Error sending payment to AFEX.", t);
+//          throw new RuntimeException(t);
+//        }
       }
     } catch(Throwable t) {
       ((Logger) x.get("logger")).error("Error createing AFEX Trade.", t);
