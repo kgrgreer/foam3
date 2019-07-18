@@ -216,32 +216,47 @@ foam.CLASS({
             .end()
           .endContext()
         .end()
-        .add(this.slot(
-          function(
-            account, currencyDAO, config, 
-            cicoTransactionsDAO, dateFrequency, customDatasetStyling
-          ){
-          return self.E()
-            .start().style({ 'width': '1150px', 'height': '320px' }).addClass(self.myClass('chart'))
-              .add(account ? self.account$find.then(a => currencyDAO.find(a.denomination).then(c => {
-                var configAdded = config.clone();
-                
-                var xAxisConfigured =  [
-                  {
-                    ticks: {
-                      callback: function (value, index, values) {
-                        return c.format(value);
+        .start().style({ 'width': '1150px', 'height': '320px' }).addClass(self.myClass('chart'))
+          .add(this.slot(
+            function(
+              account, currencyDAO, config, 
+              cicoTransactionsDAO, dateFrequency, customDatasetStyling
+            ){
+            return self.E()
+                .add(account && self.account$find ? self.account$find.then(a => currencyDAO.find(a.denomination).then(c => {
+                  var configAdded = config.clone();
+                  
+                  var xAxisConfigured =  [
+                    {
+                      ticks: {
+                        callback: function (value, index, values) {
+                          return c.format(value);
+                        }
                       }
                     }
-                  }
-                ];
+                  ];
+                  
+                  configAdded.options.scales.xAxes = xAxisConfigured; 
                 
-                configAdded.options.scales.xAxes = xAxisConfigured; 
-              
-                return self.E().add(self.HorizontalBarDAOChartView.create({
+                  return self.E()
+                    .add(self.HorizontalBarDAOChartView.create({
+                        data$: cicoTransactionsDAO,
+                        keyExpr: self.TransactionCICOType.create(),
+                        config: configAdded,
+                        xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
+                        yExpr$: dateFrequency.map(d => d.glang.clone().copyFrom({
+                          delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
+                        })),
+                        customDatasetStyling: customDatasetStyling,
+                        width: 1100,
+                        height: 320
+                      })
+                    )
+                }))
+                : self.HorizontalBarDAOChartView.create({
                     data$: cicoTransactionsDAO,
                     keyExpr: self.TransactionCICOType.create(),
-                    config: configAdded,
+                    config: config,
                     xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
                     yExpr$: dateFrequency.map(d => d.glang.clone().copyFrom({
                       delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
@@ -251,22 +266,8 @@ foam.CLASS({
                     height: 320
                   })
                 )
-              }))
-              : self.HorizontalBarDAOChartView.create({
-                  data$: cicoTransactionsDAO,
-                  keyExpr: self.TransactionCICOType.create(),
-                  config: config,
-                  xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
-                  yExpr$: dateFrequency.map(d => d.glang.clone().copyFrom({
-                    delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
-                  })),
-                  customDatasetStyling: customDatasetStyling,
-                  width: 1100,
-                  height: 320
-                })
-              )
-            .end()
-        }))
+          }))
+        .end()
         .startContext({ data: this })
           .start(this.Cols).addClass(this.myClass('buttons'))
             .tag(this.SectionedDetailPropertyView, {
