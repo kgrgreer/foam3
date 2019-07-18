@@ -53,7 +53,8 @@ foam.CLASS({
   ],
   imports: [
     'accountDAO',
-    'transactionDAO'
+    'transactionDAO',
+    'currencyDAO',
   ],
 
   messages: [
@@ -126,16 +127,6 @@ foam.CLASS({
                   }
                 }
               ],
-              xAxes:
-                [
-                  {
-                    ticks: {
-                      callback: function (value, index, values) {
-                        return `$${value}`;
-                      }
-                    }
-                  }
-                ]
             }
           },
         };
@@ -214,6 +205,8 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this;
+
       this.addClass(this.myClass())
         .start(this.Cols)
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
@@ -224,19 +217,35 @@ foam.CLASS({
             .end()
           .endContext()
         .end()
-        .start().style({ 'width': '1150px', 'height': '320px' }).addClass(this.myClass('chart'))
-          .add(this.HorizontalBarDAOChartView.create({
-            data$: this.cicoTransactionsDAO$,
-            keyExpr: this.TransactionCICOType.create(),
-            config: this.config,
-            xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
-            yExpr$: this.dateFrequency$.map(d => d.glang.clone().copyFrom({
-              delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
-            })),
-            customDatasetStyling: this.customDatasetStyling,
-            width: 1100,
-            height: 320
-          }))
+        .start().style({ 'width': '1150px', 'height': '320px' }).addClass(self.myClass('chart'))
+          .add(this.slot(function(account, currencyDAO, config, customDatasetStyling) {
+            return (account ? self.account$find : Promise.resolve(null))
+              .then(a => a && currencyDAO.find(a.denomination))
+              .then(c => {
+                if ( c ) {
+                  config = foam.Object.clone(config);
+                  config.options.scales.xAxes = [{
+                    ticks: {
+                      callback: function (value) {
+                        return c.format(value);
+                      }
+                    }
+                  }];
+                }
+                return self.HorizontalBarDAOChartView.create({
+                  data$: self.cicoTransactionsDAO$,
+                  keyExpr: self.TransactionCICOType.create(),
+                  config: config,
+                  xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
+                  yExpr$: self.dateFrequency$.map(d => d.glang.clone().copyFrom({
+                    delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
+                  })),
+                  customDatasetStyling: customDatasetStyling,
+                  width: 1100,
+                  height: 320
+                });
+              })
+            }))
         .end()
         .startContext({ data: this })
           .start(this.Cols).addClass(this.myClass('buttons'))
