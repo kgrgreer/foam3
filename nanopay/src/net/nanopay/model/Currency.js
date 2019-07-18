@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Currency',
 
-  documentation: `The base model for storing, using and managing currency information. 
+  documentation: `The base model for storing, using and managing currency information.
     All class properties require a return of *true* in order to pass.`,
 
   ids: [
@@ -24,7 +24,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      documentation: `This is the [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) 
+      documentation: `This is the [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html)
         international standard for currency codes.`,
       required: true
     },
@@ -50,7 +50,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
-      documentation: `The name of the country associated with the currency. 
+      documentation: `The name of the country associated with the currency.
         This should be set by the child class.`,
       name: 'country',
       required: true
@@ -89,9 +89,15 @@ foam.CLASS({
         supported by the platform.`,
     },
     {
+      class: 'String',
+      name: 'colour',
+      value: '#406dea',
+      documentation: `The colour that represents this currency`
+    },
+    {
       class: 'Boolean',
       name: 'showSpace',
-      documentation: `Determines whether there is a space between the symbol and 
+      documentation: `Determines whether there is a space between the symbol and
         the number when the currency is displayed.
       `,
       required: true
@@ -101,8 +107,8 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
-      documentation: `When using a reference to the currencyDAO, the labels associated 
-        to it will show a chosen property rather than the first alphabetical string 
+      documentation: `When using a reference to the currencyDAO, the labels associated
+        to it will show a chosen property rather than the first alphabetical string
         property. In this case, we are using the alphabeticCode.
       `,
       code: function(x) {

@@ -24,7 +24,7 @@ foam.CLASS({
   ],
 
   properties: [
-    { 
+    {
       name: 'nodeWidth',
       value: 185
     },
@@ -33,7 +33,7 @@ foam.CLASS({
       value: 80
     },
     {
-      name: 'padding', 
+      name: 'padding',
       value: 10
     },
     {
@@ -45,7 +45,7 @@ foam.CLASS({
       value: 1000
     },
     {
-      name: 'x', 
+      name: 'x',
       value: 0
     },
     {
@@ -79,26 +79,12 @@ foam.CLASS({
         // Balance and Denomination Indicator
         this.data.findBalance(this.__subContext__).then(function(balance) {
           this.__subContext__.currencyDAO.find(this.data.denomination).then(function(denom) {
-
-            let treeTagColour;
-            // check parents
-            if ( !balance || type === 'Aggregate' ) {
-              treeTagColour = '#9ba1a6';
-            }
-            // TODO: group tree tag colours by trees themselves (i.e. by roots)
-            else if ( /* new tree */ false ) {
-              treeTagColour = treeTagColourSequence[treeTagColourPointer++];
-              if (treeTagColourPointer > treeTagColourSequence.length) treeTagColourPointer = 0;
-            } else {
-              treeTagColour = treeTagColourSequence[treeTagColourPointer];
-            }
-
             this.add(this.Line.create({
               startX: -this.width/2+1,
               startY: 0,
               endX: -this.width/2+1,
               endY: this.height,
-              color: treeTagColour,
+              color: type === 'Aggregate' ? '#9ba1a6' : denom.colour,
               lineWidth: 6
             }));
 
