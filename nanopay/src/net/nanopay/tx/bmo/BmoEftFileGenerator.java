@@ -18,6 +18,7 @@ import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
+import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.bmo.eftfile.*;
 import net.nanopay.tx.bmo.exceptions.BmoEftFileException;
 import net.nanopay.tx.cico.CITransaction;
@@ -106,7 +107,7 @@ public class BmoEftFileGenerator {
         .collect(Collectors.toList());
 
       List<Transaction> coTransactions = transactions.stream()
-        .filter(transaction -> transaction instanceof COTransaction)
+        .filter(transaction -> (transaction instanceof COTransaction || transaction instanceof BmoVerificationTransaction))
         .collect(Collectors.toList());
 
       BmoBatchRecord ciBatchRecord = createBatchRecord(ciTransactions);
@@ -175,7 +176,7 @@ public class BmoEftFileGenerator {
        */
       BmoBatchHeader batchHeader =           new BmoBatchHeader();
       batchHeader.setBatchPaymentType        (type);
-      batchHeader.setTransactionTypeCode     (700);
+      batchHeader.setTransactionTypeCode     (clientValue.getTransactionType());
       batchHeader.setPayableDate             (BmoFormatUtil.getCurrentJulianDateEDT());
       batchHeader.setOriginatorShortName     (this.clientValue.getOriginatorShortName());
       batchHeader.setOriginatorLongName      (this.clientValue.getOriginatorLongName());
@@ -309,7 +310,7 @@ public class BmoEftFileGenerator {
   public boolean isValidTransaction(Transaction transaction) {
     ((BmoTransaction) transaction).addHistory("Transaction picked by BmoEftFileGenerator");
 
-    if ( ! (transaction instanceof BmoCITransaction || transaction instanceof BmoCOTransaction) ) {
+    if ( ! (transaction instanceof BmoCITransaction || transaction instanceof BmoCOTransaction || transaction instanceof BmoVerificationTransaction) ) {
       throw new RuntimeException("Wrong transaction type");
     }
 
