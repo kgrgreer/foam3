@@ -70,9 +70,6 @@ foam.CLASS({
         // var isShadow = this.data.name.indexOf('Shadow') != -1;
         const leftPos  = -this.width/2+8;
         let type     = this.data.type.replace('Account', '');
-        const treeTagColourSequence = ['#406dea', '#32bf5e', '#eedc00', '#d9170e'];
-        let treeTagColourPointer = 0;
-
         // Account Name
         this.add(this.Label.create({color: '#1d1f21', x: leftPos, y: 7, text: this.data.name, font: '500 12px sans-serif'}));
 
