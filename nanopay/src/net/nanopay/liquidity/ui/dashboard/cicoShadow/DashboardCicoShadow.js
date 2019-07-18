@@ -218,12 +218,12 @@ foam.CLASS({
         .end()
         .add(this.slot(
           function(
-            account, account$find, currencyDAO, config, 
+            account, currencyDAO, config, 
             cicoTransactionsDAO, dateFrequency, customDatasetStyling
           ){
           return self.E()
             .start().style({ 'width': '1150px', 'height': '320px' }).addClass(self.myClass('chart'))
-              .add(account ? account$find.then(a => currencyDAO.find(a.denomination).then(c => {
+              .add(account ? self.account$find.then(a => currencyDAO.find(a.denomination).then(c => {
                 var configAdded = config.clone();
                 
                 var xAxisConfigured =  [
