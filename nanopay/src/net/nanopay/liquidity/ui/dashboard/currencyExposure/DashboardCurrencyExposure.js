@@ -25,6 +25,7 @@ foam.CLASS({
     }
 
     ^pie-chart {
+      height: 300px;
       padding: 34px;
     }
   `,
@@ -51,43 +52,41 @@ foam.CLASS({
         .addClass(this.myClass())
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header')).end()
           .start(this.Cols).style({ 'align-items': 'center', 'justify-content': 'center' })
-            .start(this.PieDAOChartView,
-              {
-                // We only want to see data that has value.
-                data: this.data.where(this.GT(this.CurrencyExposure.TOTAL, 0)),
-                keyExpr: this.CurrencyExposure.DENOMINATION,
-                valueExpr: this.CurrencyExposure.TOTAL,
-                height: 300,
-                width: 300,
-                config: {
-                  type: 'pie',
-                  options: {
-                    tooltips: {
-                      displayColors: false,
-                      callbacks: {
-                        label: function(tooltipItem, data) {
-                          var dataset = data.datasets[tooltipItem.datasetIndex];
-                          var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-                          var total = meta.total;
-                          var currentValue = dataset.data[tooltipItem.index];
-                          var percentage = parseFloat((currentValue/total*100).toFixed(1));
-                          return percentage + '%';
-                        },
-                        title: function(tooltipItem, data) {
-                          return data.labels[tooltipItem[0].index];
-                        }
-                      }
-                    },
-                    legend: {
-                      labels: {
-                        boxWidth: 20
+            .start(this.PieDAOChartView, {
+              // We only want to see data that has value.
+              data: this.data.where(this.GT(this.CurrencyExposure.TOTAL, 0)),
+              keyExpr: this.CurrencyExposure.DENOMINATION,
+              valueExpr: this.CurrencyExposure.TOTAL,
+              config: {
+                type: 'pie',
+                options: {
+                  tooltips: {
+                    displayColors: false,
+                    callbacks: {
+                      label: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+                        var total = meta.total;
+                        var currentValue = dataset.data[tooltipItem.index];
+                        var percentage = parseFloat((currentValue/total*100).toFixed(1));
+                        return percentage + '%';
+                      },
+                      title: function(tooltipItem, data) {
+                        return data.labels[tooltipItem[0].index];
                       }
                     }
+                  },
+                  legend: {
+                    labels: {
+                      boxWidth: 20
+                    }
                   }
-                },
-                palette: ['#202341', '#233e8b', '#406dea', '#1e1f21', '#47484a', '#9ba1a6']
-              }
-            ).addClass(this.myClass('pie-chart')).end()
+                }
+              },
+              palette: ['#202341', '#233e8b', '#406dea', '#1e1f21', '#47484a', '#9ba1a6']
+            })
+              .addClass(this.myClass('pie-chart'))
+            .end()
           .end();
     }
   ]
