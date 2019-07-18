@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: `Transaction to be created specifically for compliance purposes. stays in pending until compliance is passed`,
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.notification.Notification',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
