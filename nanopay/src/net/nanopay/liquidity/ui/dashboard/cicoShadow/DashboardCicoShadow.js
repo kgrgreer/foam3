@@ -53,7 +53,8 @@ foam.CLASS({
   ],
   imports: [
     'accountDAO',
-    'transactionDAO'
+    'transactionDAO',
+    'currencyDAO',
   ],
 
   messages: [
@@ -217,56 +218,34 @@ foam.CLASS({
           .endContext()
         .end()
         .start().style({ 'width': '1150px', 'height': '320px' }).addClass(self.myClass('chart'))
-          .add(this.slot(
-            function(
-              account, currencyDAO, config, 
-              cicoTransactionsDAO, dateFrequency, customDatasetStyling
-            ){
-            return self.E()
-                .add(account && self.account$find ? self.account$find.then(a => currencyDAO.find(a.denomination).then(c => {
-                  var configAdded = config.clone();
-                  
-                  var xAxisConfigured =  [
-                    {
-                      ticks: {
-                        callback: function (value, index, values) {
-                          return c.format(value);
-                        }
+          .add(this.slot(function(account, currencyDAO, config, customDatasetStyling) {
+            return (account ? self.account$find : Promise.resolve(null))
+              .then(a => a && currencyDAO.find(a.denomination))
+              .then(c => {
+                if ( c ) {
+                  config = foam.Object.clone(config);
+                  config.options.scales.xAxes = [{
+                    ticks: {
+                      callback: function (value) {
+                        return c.format(value);
                       }
                     }
-                  ];
-                  
-                  configAdded.options.scales.xAxes = xAxisConfigured; 
-                
-                  return self.E()
-                    .add(self.HorizontalBarDAOChartView.create({
-                        data$: cicoTransactionsDAO,
-                        keyExpr: self.TransactionCICOType.create(),
-                        config: configAdded,
-                        xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
-                        yExpr$: dateFrequency.map(d => d.glang.clone().copyFrom({
-                          delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
-                        })),
-                        customDatasetStyling: customDatasetStyling,
-                        width: 1100,
-                        height: 320
-                      })
-                    )
-                }))
-                : self.HorizontalBarDAOChartView.create({
-                    data$: cicoTransactionsDAO,
-                    keyExpr: self.TransactionCICOType.create(),
-                    config: config,
-                    xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
-                    yExpr$: dateFrequency.map(d => d.glang.clone().copyFrom({
-                      delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
-                    })),
-                    customDatasetStyling: customDatasetStyling,
-                    width: 1100,
-                    height: 320
-                  })
-                )
-          }))
+                  }];
+                }
+                return self.HorizontalBarDAOChartView.create({
+                  data$: self.cicoTransactionsDAO$,
+                  keyExpr: self.TransactionCICOType.create(),
+                  config: config,
+                  xExpr: net.nanopay.tx.model.Transaction.AMOUNT,
+                  yExpr$: self.dateFrequency$.map(d => d.glang.clone().copyFrom({
+                    delegate: net.nanopay.tx.model.Transaction.COMPLETION_DATE
+                  })),
+                  customDatasetStyling: customDatasetStyling,
+                  width: 1100,
+                  height: 320
+                });
+              })
+            }))
         .end()
         .startContext({ data: this })
           .start(this.Cols).addClass(this.myClass('buttons'))
