@@ -622,6 +622,11 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
     esac
 done
 
+if [ ${MODE} == TEST ]; then
+    echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
+    JOURNAL_CONFIG=test
+fi
+
 if [ ${GRADLE_BUILD} -eq 0 ]; then
     warning "Maven build is deprecated, switch to gradle by dropping 'n' flag"
 fi
