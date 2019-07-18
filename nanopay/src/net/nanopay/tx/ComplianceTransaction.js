@@ -68,8 +68,8 @@ foam.CLASS({
       ],
       javaCode: `
         if ( oldTxn == null ) return;
-        if ( oldTxn.getStatus() == TransactionStatus.DECLINED ) return;
         if ( getStatus() != TransactionStatus.DECLINED ) return;
+        if ( oldTxn.getStatus() == TransactionStatus.DECLINED ) return;
         
         DAO notificationDAO = ((DAO) x.get("notificationDAO"));
         Notification notification = new Notification();
