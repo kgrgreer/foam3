@@ -18,6 +18,7 @@ import net.nanopay.fx.FXService;
 import net.nanopay.model.Business;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -363,6 +364,47 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
 
     return afexTransaction;
+  }
+
+  public Transaction updatePaymentStatus(Transaction transaction) throws RuntimeException {
+    if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
+
+    AFEXBusiness afexBusiness = getAFEXBusiness(x,transaction.getPayerId());
+    if ( null == afexBusiness ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+
+    CheckPaymentStatusRequest request = new CheckPaymentStatusRequest();
+    request.setClientAPIKey(afexBusiness.getApiKey());
+    request.setId(transaction.getReferenceNumber());
+
+    try {
+      CheckPaymentStatusResponse paymentStatusResponse = this.afexClient.checkPaymentStatus(request);
+      if ( null == paymentStatusResponse ) throw new RuntimeException("Null response got for remote system." );
+
+      transaction.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
+      
+    } catch(Throwable t) {
+      ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
+    }   
+    
+    return transaction;
+
+  } 
+  
+  public TransactionStatus mapAFEXPaymentStatus(String paymentStatus){
+    if ( AFEXPaymentStatus.SUBMITTED.getLabel().equals(paymentStatus) ) 
+      return TransactionStatus.COMPLETED;
+
+    if ( AFEXPaymentStatus.APPROVED.getLabel().equals(paymentStatus) ) 
+      return TransactionStatus.COMPLETED;      
+
+    if ( AFEXPaymentStatus.FAILED.getLabel().equals(paymentStatus) ) 
+      return TransactionStatus.DECLINED;
+
+    if ( AFEXPaymentStatus.CANCELLED.getLabel().equals(paymentStatus) ) 
+      return TransactionStatus.DECLINED;  
+      
+      return TransactionStatus.SENT;
+
   }
 
   public FindBankByNationalIDResponse getBankInformation(X x, String clientAPIKey, BankAccount bankAccount) {
