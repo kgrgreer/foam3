@@ -197,7 +197,7 @@ foam.CLASS({
                                       gridColumns: 4
                                     }),
                                     ls.highLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
-                                      label: 'With funding from',
+                                      label: 'With excess to',
                                       gridColumns: 4
                                     })
                                   ]
