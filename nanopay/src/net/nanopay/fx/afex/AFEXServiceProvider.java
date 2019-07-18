@@ -94,7 +94,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             } 
             onboardingRequest.setDateOfIncorporation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
-            onboardingRequest.setGender(signingOfficer.getGender().getLabel()); //TODO
+            onboardingRequest.setGender("Male"); // TO be removed in API by AFEX
             onboardingRequest.setLastName(signingOfficer.getLastName());
             onboardingRequest.setPrimaryEmailAddress(signingOfficer.getEmail());
             onboardingRequest.setTermsAndConditions("true");

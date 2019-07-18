@@ -75,7 +75,6 @@ foam.CLASS({
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
-        user.setGender(businessOnboarding.getGender());
         business.setPhone(businessOnboarding.getPhone());
         business.setBusinessPhone(businessOnboarding.getPhone());
 

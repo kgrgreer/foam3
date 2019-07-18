@@ -408,12 +408,6 @@ foam.CLASS({
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
       }
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.model.Gender',
-      name: 'gender',
-      documentation: `User Gender.`
     }
   ],
 

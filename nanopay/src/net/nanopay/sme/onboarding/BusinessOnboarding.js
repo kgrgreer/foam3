@@ -403,11 +403,6 @@ foam.CLASS({
       minLength: 1,
       maxLength: 50
     }),
-    foam.nanos.auth.User.GENDER.clone().copyFrom({
-      section: 'personalInformationSection',
-      label: 'Gender #',
-      autoValidate: true
-    }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
       label: 'Phone #',
