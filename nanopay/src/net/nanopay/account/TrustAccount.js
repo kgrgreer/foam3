@@ -64,8 +64,7 @@ foam.CLASS({
                         //    .select(new ArraySink())).getArray();
             Count count = new Count();
             count = (Count) accounts.select(count);
-            long amount = count.getValue();
-            if ( amount == 0 ) {
+            if ( count.getValue() == 0 ) {
               logger.error("No TrustAccounts found for ", user.getId());
               throw new RuntimeException("No TrustAccounts found for "+user.getId());
             }
