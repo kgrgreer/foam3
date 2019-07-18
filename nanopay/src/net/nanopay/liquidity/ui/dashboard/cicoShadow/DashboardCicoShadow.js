@@ -217,7 +217,7 @@ foam.CLASS({
             .end()
           .endContext()
         .end()
-        .start().style({ 'width': '1150px', 'height': '320px' }).addClass(self.myClass('chart'))
+        .start().style({ 'height': '320px' }).addClass(self.myClass('chart'))
           .add(this.slot(function(account, currencyDAO, config, customDatasetStyling) {
             return (account ? self.account$find : Promise.resolve(null))
               .then(a => a && currencyDAO.find(a.denomination))
