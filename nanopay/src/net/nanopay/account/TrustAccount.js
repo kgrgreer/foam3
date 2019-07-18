@@ -89,7 +89,7 @@ foam.CLASS({
             for ( int i =0 ; i<accountList.size(); i++ ) {
               reserveAccs.put( ( (TrustAccount) accountList.get(i) ).findReserveAccount(x) );
             }
-            Institution institution = (Institution) ((DAO) x.get("institutionDAO")).find(EQ(Institution.NAME,institutionNumber));
+            Institution institution = (Institution) ((DAO) x.get("institutionDAO")).find(EQ(Institution.INSTITUTION_NUMBER,institutionNumber));
             List reserveAccsList = ( (ArraySink) reserveAccs.where(
               AND(
                 INSTANCE_OF(BankAccount.class),

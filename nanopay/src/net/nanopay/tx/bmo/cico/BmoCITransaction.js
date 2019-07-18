@@ -32,7 +32,7 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       class: 'String',
-      value: 'Bank of Montreal',
+      value: '001',
       visibility: 'Hidden'
     }
   ],
