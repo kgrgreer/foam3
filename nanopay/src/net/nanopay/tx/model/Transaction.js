@@ -219,7 +219,7 @@ foam.CLASS({
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
       section: 'basicInfo',
-      tableWidth: 140
+      tableWidth: 145
     },
     {
       class: 'Reference',
@@ -458,7 +458,7 @@ foam.CLASS({
       name: 'completionDate',
       visibility: 'RO',
       section: 'basicInfo',
-      tableWidth: 145,
+      tableWidth: 145
     },
     {
       documentation: `Defined by ISO 20220 (Pacs008)`,
