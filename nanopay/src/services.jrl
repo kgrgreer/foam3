@@ -112,7 +112,7 @@ p({
 p({"class":"foam.nanos.boot.NSpec", "name":"publicBusinessDAO",                "lazy":true,  "serve":true,  "description":"A read-only version of localBusinessDAO that only returns a few properties of businesses that have been marked as public.", "serviceScript": "return new net.nanopay.auth.BusinessToPublicBusinessInfoDAO.Builder(x).setDelegate(x.get(\"localBusinessDAO\")).build();", "client": "{\"of\":\"net.nanopay.auth.PublicBusinessInfo\", \"remoteListenerSupport\": false}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"userHistoryDAO",                   "lazy":true,  "serve":true,  "serviceScript":"foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, foam.dao.history.HistoryRecord.getOwnClassInfo(), \"userHistory\"); return new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setAuthenticateRead(false).setSeqNo(true).setSeqPropertyName(\"seqNo\").setInnerDAO(hashingJDAO).setOf(foam.dao.history.HistoryRecord.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.dao.history.HistoryRecord\"}","description":"DAO containing any modifications made to users"})
 
-P({
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"userHistoryDAO",
   "lazy":true,
