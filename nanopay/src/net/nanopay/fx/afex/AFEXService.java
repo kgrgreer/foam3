@@ -16,8 +16,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -57,7 +55,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       SafetyUtil.isEmpty(credentials.getApiPassword()) ||
       SafetyUtil.isEmpty(credentials.getPartnerApi()) ||
       SafetyUtil.isEmpty(credentials.getAFEXApi()) ) {
-      logger.error("AFEXCredentials", "invalid credentials");
+      logger.error(this.getClass().getSimpleName(), "invalid credentials");
       throw new RuntimeException("AFEX invalid credentials");
     }
     return credentials;
@@ -129,9 +127,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("TermsAndConditions", request.getTermsAndConditions()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
-
-      logRequest(httpPost);
-
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       try {
@@ -252,7 +247,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       if ( !request.getVendorId().equals("") ) nvps.add(new BasicNameValuePair("VendorId", request.getVendorId()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
-      logRequest(httpPost);
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       try {
@@ -372,20 +366,16 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   @Override
   public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request) {
-    CloseableHttpResponse httpResponse = null;
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/beneficiary/find");
-      uriBuilder.setParameter("VendorID", request.getVendorId());
-      System.out.println("VendorId: " + request.getVendorId());
-      System.out.println("APIKey: " + request.getClientAPIKey());
-      System.out.println("URI: " + uriBuilder.build().toASCIIString());
+      uriBuilder.setParameter("VendorId", request.getVendorId());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
 
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
 
-      httpResponse = httpClient.execute(httpGet);
+      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -404,15 +394,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
     } catch (IOException | URISyntaxException e) {
       logger.error(e);
-    } finally {
-      if ( httpResponse != null ) {
-        try {
-          httpResponse.close();
-        } catch(IOException io) {
-          logger.error(io);
-        }
-      }
-
     }
 
     return null;
@@ -679,23 +660,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     }
 
     return null;
-  }
-
-  private void logRequest(HttpPost httpPost) {
-    HttpEntity entity = httpPost.getEntity();
-    String content = "";
-    StringBuilder sb = new StringBuilder();
-    sb.append("\nRequestLine:");
-    if(entity != null){
-        try {
-            content = IOUtils.toString(entity.getContent());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } 
-    }
-    sb.append("\nContent:");
-    sb.append(content);
-    System.out.println(sb.toString());
   }
 
   @Override
