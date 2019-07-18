@@ -100,29 +100,30 @@ foam.CLASS({
       var self = this;
       this
         .addClass(this.myClass())
-        .add(self.slot(function(data, data$denomination, denominationFlag) {
-          return self.E()
-            .start(self.Rows)
+        .add(self.slot(function(data, data$denomination) {
+          return data && data$denomination && Promise.all([
+            data.denomination$find,
+            data.findBalance(self.__context__)
+          ]).then(arr => {
+            var currency = arr[0];
+            var balance = currency.format(arr[1]);
+            return self.E()
               .start(self.Rows)
-                .start()
-                  .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
+                .start(self.Rows)
+                  .start()
+                    .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
+                  .end()
+                  .start()
+                    .addClass(this.myClass('balance'))
+                    .add(`${balance} ${currency.emoji}`)
+                  .end()
+                  .start().addClass(this.myClass('balance-note'))
+                    .add(self.BALANCE_NOTE)
+                    .add(` (${data$denomination})`)
+                  .end()
                 .end()
-                .start().addClass(this.myClass('balance'))
-                  .add(data.findBalance(self.__context__)
-                        .then(balance => self.__subSubContext__.currencyDAO.find(data$denomination)
-                          .then(curr => balance != null 
-                            ? `${curr.format(balance)}  ${denominationFlag}` 
-                            : `0 ${denominationFlag}`
-                          )
-                        )
-                      )
-                .end()
-                .start().addClass(this.myClass('balance-note'))
-                  .add(self.BALANCE_NOTE)
-                  .add(` (${data$denomination})`)
-                .end()
-              .end()
-            .end();
+              .end();
+          })
         }));
     }
   ]
