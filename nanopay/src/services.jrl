@@ -120,13 +120,15 @@ P({
   "description":"DAO containing any modifications made to users",
   "serviceScript":
   """
-  foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, foam.dao.history.HistoryRecord.getOwnClassInfo(), \"userHistory\"); return new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setAuthenticateRead(false).setSeqNo(true).setSeqPropertyName(\"seqNo\").setInnerDAO(hashingJDAO).setOf(foam.dao.history.HistoryRecord.getOwnClassInfo()).build();
+  foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, foam.dao.history.HistoryRecord.getOwnClassInfo(), "userHistory");
+  return new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setAuthenticateRead(false).setSeqNo(true).setSeqPropertyName("seqNo").setInnerDAO(hashingJDAO).setOf(foam.dao.history.HistoryRecord.getOwnClassInfo()).build();
   """,
   "client":
   """
   {
     "of":"foam.dao.history.HistoryRecord"
-  }"""
+  }
+  """
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"alternaSftp",                      "lazy":true,  "serve":true,  "service":{"class":"net.nanopay.tx.alterna.AlternaSFTPService","host":"ftp.eftcanada.com","port":22,"username":"eftcadtest2","password":"1a2$3d4f","directory":"/"}, "boxClass":"net.nanopay.tx.alterna.SFTPServiceSkeleton","client":"{ \"class\":\"net.nanopay.tx.alterna.client.ClientAlternaSFTPService\", \"delegate\": { \"class\":\"foam.box.HTTPBox\", \"url\":\"service/alternaSftp\" } }"})

@@ -60,7 +60,7 @@ p({
             new net.nanopay.account.AbliiBankAccountAutoverifyDAO(x,  
               new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")).where(foam.mlang.MLang.EQ(net.nanopay.account.Account.ENABLED, true)),
                 new net.nanopay.bank.BankAccountValidator()))));
-    return new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setDelegate(AAD).setOf(net.nanopay.account.Account.getOwnClassInfo()).build();
+    return new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setInnerDAO(AAD).setOf(net.nanopay.account.Account.getOwnClassInfo()).build();
   """,
   "client":
   """
