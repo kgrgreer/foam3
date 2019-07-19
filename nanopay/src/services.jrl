@@ -50,7 +50,7 @@ p({
     uph = new foam.nanos.auth.UserPasswordHashingDAO(x, ldu);
     aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(uph).build();
     uccpfe = new net.nanopay.onboarding.email.UserCompliancePassEmailDAO.Builder(x).setDelegate(aduih).build();
-    afexbe = new net.nanopay.fx.afex.AFEXBusinessOnboardingDAO(x,uccpfe);
+    afexbe = new net.nanopay.fx.afex.AFEXBusinessOnboardingDAO.Builder(x).setDelegate(uccpfe).build();
     usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, afexbe);
     nuoe = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(usus).build();
     cb = new net.nanopay.onboarding.CreateBusinessDAO(x, nuoe);
