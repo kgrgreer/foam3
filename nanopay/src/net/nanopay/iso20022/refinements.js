@@ -17,10 +17,6 @@ foam.CLASS({
       value: function toXML(value, _) {
         return this.formatDate(value);
       }
-    },
-    {
-      name: 'javaToCSV',
-      value: 'outputter.outputValue(sdf.get().format(f(obj)));'
     }
   ],
 
@@ -55,6 +51,17 @@ foam.CLASS({
         type: 'void',
         args: [
           { type: 'foam.lib.json.Outputter', name: 'outputter' },
+          { type: 'Object',                  name: 'value'     },
+        ],
+        body: 'outputter.output(sdf.get().format(value));'
+      });
+
+      info.method({
+        name: 'toCSV',
+        visibility: 'public',
+        type: 'void',
+        args: [
+          { type: 'foam.lib.csv.Outputter', name: 'outputter' },
           { type: 'Object',                  name: 'value'     },
         ],
         body: 'outputter.output(sdf.get().format(value));'
@@ -97,10 +104,6 @@ foam.CLASS({
       value: function toXML(value, _) {
         return this.formatDate(value);
       }
-    },
-    {
-      name: 'javaToCSV',
-      value: 'outputter.outputValue(sdf.get().format(f(obj)));'
     }
   ],
 
@@ -135,6 +138,17 @@ foam.CLASS({
         type: 'void',
         args: [
           { type: 'foam.lib.json.Outputter', name: 'outputter' },
+          { type: 'Object',                  name: 'value'     },
+        ],
+        body: 'outputter.output(sdf.get().format(value));'
+      });
+
+      info.method({
+        name: 'toCSV',
+        visibility: 'public',
+        type: 'void',
+        args: [
+          { type: 'foam.lib.csv.Outputter', name: 'outputter' },
           { type: 'Object',                  name: 'value'     },
         ],
         body: 'outputter.output(sdf.get().format(value));'
@@ -186,11 +200,7 @@ foam.CLASS({
       value: function toXML(value, _) {
         return this.formatDate(value);
       }
-    },
-    {
-      name: 'javaToCSV',
-      value: 'outputter.outputValue(sdf.get().format(f(obj)));'
-    },
+    }
   ],
 
   methods: [
@@ -224,6 +234,17 @@ foam.CLASS({
         type: 'void',
         args: [
           { type: 'foam.lib.json.Outputter', name: 'outputter' },
+          { type: 'Object',                  name: 'value'     },
+        ],
+        body: 'outputter.output(sdf.get().format(value));'
+      });
+
+      info.method({
+        name: 'toCSV',
+        visibility: 'public',
+        type: 'void',
+        args: [
+          { type: 'foam.lib.csv.Outputter', name: 'outputter' },
           { type: 'Object',                  name: 'value'     },
         ],
         body: 'outputter.output(sdf.get().format(value));'

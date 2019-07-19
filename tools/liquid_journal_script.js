@@ -158,14 +158,6 @@ const liquiditySettings = [
 // to be filled out as liquidity settings get created
 const liquidityNamesToId = {};
 
-function* referenceIdMaker() {
-  var index = 10000000;
-  while (index < index+1)
-    yield index++;
-}
-
-const refIdGenerator = referenceIdMaker();
-
 function createCurrency(X, cObj) {
   var currency = net.nanopay.model.Currency.create({
     delimiter: ',',
@@ -461,9 +453,6 @@ function cashIn(X, bank, dest, amount) {
     lineItems: [
       net.nanopay.tx.ETALineItem.create({
         eta: 172800000
-      }),
-      net.nanopay.tx.ReferenceLineItem.create({
-        referenceId: refIdGenerator.next().value
       })
     ]
   }, X);
@@ -474,10 +463,7 @@ function cashIn(X, bank, dest, amount) {
     id: tx.id,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     lineItems: [
-      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() }),
-      net.nanopay.tx.ReferenceLineItem.create({
-        referenceId: refIdGenerator.next().value
-      })
+      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
     ],
     lastModified: X.currentDate
   }, X);
@@ -509,9 +495,6 @@ function cashOut(X, source, bank, amount) {
     lineItems: [
       net.nanopay.tx.ETALineItem.create({
         eta: 172800000
-      }),
-      net.nanopay.tx.ReferenceLineItem.create({
-        referenceId: refIdGenerator.next().value
       })
     ]
   }, X);
@@ -522,10 +505,7 @@ function cashOut(X, source, bank, amount) {
     id: tx.id,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     lineItems: [
-      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() }),
-      net.nanopay.tx.ReferenceLineItem.create({
-        referenceId: refIdGenerator.next().value
-      })
+      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
     ],
     lastModified: X.currentDate
   }, X);
@@ -559,11 +539,6 @@ function transfer(X, source, dest, amount) {
     lastModifiedBy: X.userId,
     created: X.currentDate,
     createdBy: X.userId,
-    lineItems: [
-      net.nanopay.tx.ReferenceLineItem.create({
-        referenceId: refIdGenerator.next().value
-      })
-    ],
   }, X);
 
   X.transactionDAO.put(tx);
