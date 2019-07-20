@@ -23,30 +23,31 @@ foam.CLASS({
     'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.EQ',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
+    'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.model.Business',
     'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.account.Balance'
+    'static foam.mlang.MLang.EQ'
   ],
 
   requires: [
@@ -958,8 +959,13 @@ for ( Balance b : getBalances() ) {
       }
     ],
     javaCode: `
-    sendReverseNotification(x, oldTxn);
-    sendCompletedNotification(x, oldTxn);
+    try {
+      sendReverseNotification(x, oldTxn);
+      sendCompletedNotification(x, oldTxn);
+    } catch (Exception e) {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning("Transaction failed to send notitfication. " + e.getMessage());
+    }
     `
   }
 ],

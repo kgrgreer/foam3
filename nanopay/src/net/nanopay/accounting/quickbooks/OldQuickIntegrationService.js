@@ -334,7 +334,7 @@ if ( ! query.getResult() ) {
 }
 
 try {
-  DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
+  DAO notification = ((DAO) x.get("localNotificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
@@ -507,7 +507,7 @@ if ( ! query.getResult() ) {
 }
 
 try {
-  DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
+  DAO notification = ((DAO) x.get("localNotificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
@@ -704,7 +704,7 @@ return true;
 `
 Logger         logger         = (Logger) x.get("logger");
 DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
-DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
+DAO            notification   = ((DAO) x.get("localNotificationDAO")).inX(x);
 DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
 DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
 DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
@@ -1459,7 +1459,7 @@ return null;
       ],
       javaCode:`
 User user = (User) x.get("user");
-DAO notification   = ((DAO) x.get("notificationDAO")).inX(x);
+DAO notification   = ((DAO) x.get("localNotificationDAO")).inX(x);
 
 Notification notify = new Notification();
 notify.setUserId(user.getId());
