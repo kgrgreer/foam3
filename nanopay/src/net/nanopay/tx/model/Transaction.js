@@ -50,6 +50,7 @@ foam.CLASS({
   ],
 
   requires: [
+   'foam.u2.dialog.NotificationMessage',
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
@@ -986,12 +987,13 @@ for ( Balance b : getBalances() ) {
     },
     {
       name: 'expiditeTxn',
-      label: 'Expidite Transaction',
+      label: 'Modify State',
       isAvailable: function() {
         return net.nanopay.tx.AbliiTransaction.isInstance(this);
       },
-      code: async function(X) {
-        // Open Expidite Transaction Wizard
+      code: function(X) {
+        // Open Expidite Transaction pop up
+        // this.__context__.stack.push({ class: 'net.nanopay.tx.ui.ExpediteTxnWizard' });
       }
     }
   ]
