@@ -19,14 +19,7 @@ foam.CLASS({
 
   css: ``,
 
-  properties: [
-    {
-      name: 'transactionDAO',
-      factory: function() {
-        return this.transactionDAO;
-      }
-    }
-  ],
+  properties: [],
 
   messages: [],
 
@@ -36,7 +29,7 @@ foam.CLASS({
       this.title = 'Expedite transactions';
       this.exitLabel = 'Close';
       this.nextLabel = 'Next';
-      
+
       this.views = [
         { id: 'expedite-transaction-action', label: 'Modify Transaction States', view: { class: 'net.nanopay.tx.ui.ExpediteTransactionActionView' } },
         { id: 'confirm-expedite', label: 'Confirm Action', view: { class: 'net.nanopay.tx.ui.ConfirmExpediteView' } },
