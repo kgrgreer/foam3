@@ -49,13 +49,6 @@ foam.CLASS({
       message: 'CURRENCY EXPOSURE',
     },
     {
-      class: 'foam.dao.DAOProperty',
-      name: 'currencyExposureDAO',
-      factory: function() {
-        return this.data.where(this.GT(this.CurrencyExposure.TOTAL, 0));
-      }
-    },
-    {
       class: 'FObjectProperty',
       of: 'net.nanopay.model.Currency',
       name: 'currency'
@@ -70,7 +63,6 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      console.log(this.baseDenomination);
       this.currencyDAO.find(this.baseDenomination).then(currency => {
         this.currency = currency
       });
@@ -82,7 +74,7 @@ foam.CLASS({
               return self.E()
                 .start(this.PieDAOChartView, {
                   // We only want to see data that has value.
-                  data: this.currencyExposureDAO,
+                  data: this.data.where(this.GT(this.CurrencyExposure.TOTAL, 0)),
                   keyExpr: this.CurrencyExposure.DENOMINATION,
                   valueExpr: this.CurrencyExposure.TOTAL,
                   config: {
