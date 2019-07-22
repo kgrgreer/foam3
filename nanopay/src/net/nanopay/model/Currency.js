@@ -17,7 +17,8 @@ foam.CLASS({
     'name',
     'alphabeticCode',
     'country',
-    'symbol'
+    'symbol',
+    'emoji'
   ],
 
   properties: [
@@ -78,8 +79,8 @@ foam.CLASS({
       name: 'leftOrRight',
       documentation: `The side of the digits that the symbol should be displayed on.`,
       required: true,
-      validateObj: function(value) {
-        if ( value !== 'left' && value !== 'right' ) return `Property 'leftOrRight' must be set to either "left" or "right".`;
+      validateObj: function(leftOrRight) {
+        if ( leftOrRight !== 'left' && leftOrRight !== 'right' ) return `Property 'leftOrRight' must be set to either "left" or "right".`;
       }
     },
     {
@@ -87,6 +88,11 @@ foam.CLASS({
       name: 'flagImage',
       documentation: `The flag image used in relation to currencies from countries currently
         supported by the platform.`,
+    },
+    {
+      class: 'String',
+      name: 'emoji',
+      value: '💰'
     },
     {
       class: 'Boolean',
