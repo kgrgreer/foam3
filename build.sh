@@ -621,8 +621,7 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
     esac
 done
 
-
-if [ ${MODE} == TEST ]; then
+if [ "${MODE}" == "TEST" ]; then
     echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
     JOURNAL_CONFIG=test
 fi
