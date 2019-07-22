@@ -86,14 +86,13 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOBrowserView',
-    'net.nanopay.account.AccountBalanceView',
-    'foam.u2.detail.SectionView',
     'foam.u2.borders.CardBorder',
+    'foam.u2.detail.SectionView',
     'foam.u2.layout.Card',
-    'foam.u2.layout.Rows',
-    'foam.u2.layout.Grid',
     'foam.u2.layout.GUnit',
-    'foam.u2.borders.CardBorder'
+    'foam.u2.layout.Grid',
+    'foam.u2.layout.Rows',
+    'net.nanopay.account.AccountBalanceView'
   ],
   imports: [
     'transactionDAO',

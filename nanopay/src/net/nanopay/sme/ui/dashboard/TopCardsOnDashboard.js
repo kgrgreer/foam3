@@ -147,6 +147,7 @@ foam.CLASS({
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
         .callIfElse( this.businessOnboarding &&
                       this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED &&
+                      ! this.onboardingStatus &&
                       ! this.businessOnboarding.signingOfficer, () => {
           this
             .start('span').addClass('cards')

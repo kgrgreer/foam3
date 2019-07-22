@@ -15,7 +15,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'balanceDAO',
-    'baseDenomination',
+    'homeDenomination',
     'fxService',
     'user'
   ],
@@ -23,7 +23,7 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'delegate',
-      expression: function(baseDenomination, fxService, user) {
+      expression: function(homeDenomination, fxService, user) {
         var accountDenominationGroupBy = this.accountDAO
           .select(
             this.GROUP_BY(
@@ -44,7 +44,7 @@ foam.CLASS({
           .then(g => {
             var rates = {};
             return Promise.all(g.groupKeys.map(d => {
-              return fxService.getFXRate(d, baseDenomination, 0, 1, 'BUY', null, user.id, 'nanopay').then(r => {
+              return fxService.getFXRate(d, homeDenomination, 0, 1, 'BUY', null, user.id, 'nanopay').then(r => {
                 rates[d] = r.rate;
               });
             })).then(_ => rates);

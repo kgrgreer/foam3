@@ -71,7 +71,7 @@ foam.CLASS({
         if ( getStatus() != TransactionStatus.DECLINED ) return;
         if ( oldTxn.getStatus() == TransactionStatus.DECLINED ) return;
         
-        DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+        DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
         Notification notification = new Notification();
         notification.setEmailIsEnabled(true);
         notification.setBody("Compliance transaction id: " + getId() + " was declined.");
