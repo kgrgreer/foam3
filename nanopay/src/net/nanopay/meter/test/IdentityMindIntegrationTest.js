@@ -62,7 +62,8 @@ foam.CLASS({
         if ( testIdentityMindTxRulesEnabled() ) {
           // 1. test transaction ACCEPT-ed
           testTransactionAcceptedByIdentityMind();
-          // 2. test transaction REJECTE-d
+          // 2. test transaction REJECT-ed
+          testTransactionRejectedByIdentityMind();
           // 3. test transaction MANUAL_REVIEW-ed
         }
         tearDown();
@@ -89,14 +90,6 @@ foam.CLASS({
           cloned.setEnabled(false);
           ruleDAO.put(cloned);
         }
-
-        // Setup IdentityMind service
-        IdentityMindService service = (IdentityMindService) getIdentityMindService();
-        identityMindService_ = service.fclone();
-        service.setBaseUrl("https://sandbox.identitymind.com/im");
-        service.setApiUser("nanopay");
-        service.setApiKey("ae7488c9b3aaaf6c640ef9f66025abdd346167a0");
-        service.setHashingSalt("12345678");
 
         // Setup users and accounts
         sender_ = findOrCreateUser("sender@test.com");
@@ -131,10 +124,6 @@ foam.CLASS({
         if ( ! jackieRule1_.equals(ruleDAO.find(jackieRule1_)) ) {
           ruleDAO.put(jackieRule1_);
         }
-
-        // Restore IdentityMind service
-        IdentityMindService service = (IdentityMindService) getIdentityMindService();
-        service.copyFrom(identityMindService_);
 
         // Restore thread pool
         if ( threadPool_ != null && threadPool_ != getThreadPool() ) {
@@ -258,6 +247,22 @@ foam.CLASS({
         tx = (Transaction) ((DAO) getTransactionDAO()).find(tx);
         test(tx.getStatus() == TransactionStatus.COMPLETED, "Compliance transaction should be COMPLETED");
       `
+    },
+    {
+      name: 'testTransactionRejectedByIdentityMind',
+      javaCode: `
+        ((IdentityMindService) getIdentityMindService()).setDefaultProfile("REJECT");
+        Transaction tx = newTransaction(1100);
+        tx = (Transaction) ((DAO) getTransactionDAO()).inX(senderX_).put(tx);
+
+        ((StubThreadPool) getThreadPool()).invokeAll();
+        ApprovalRequest found = findTxApprovalRequest(tx);
+        test(found != null && found.getApprover() == getIdentityMindUserId() && found.getStatus() == ApprovalStatus.REJECTED,
+          "An approval request with status=REJECTED is created when the IdentityMind REJECT-ed the transaction");
+
+        tx = (Transaction) ((DAO) getTransactionDAO()).find(tx);
+        test(tx.getStatus() == TransactionStatus.DECLINED, "Compliance transaction should be DECLINED");
+      `
     }
   ],
 
@@ -268,7 +273,6 @@ foam.CLASS({
         cls.extras.push(`
         protected Rule        identityMindRule_;
         protected Rule        jackieRule1_;
-        protected FObject     identityMindService_;
         protected User        sender_;
         protected User        receiver_;
         protected BankAccount sourceAccount_;
