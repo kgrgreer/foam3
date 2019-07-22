@@ -19,6 +19,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
+      this.nextLabel = 'Done';
     }
   ]
 });

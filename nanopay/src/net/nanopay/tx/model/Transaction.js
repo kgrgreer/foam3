@@ -991,8 +991,7 @@ for ( Balance b : getBalances() ) {
         return net.nanopay.tx.AbliiTransaction.isInstance(this);
       },
       code: function(X) {
-        // Open Expidite Transaction pop up
-        // this.__context__.stack.push({ class: 'net.nanopay.tx.ui.ExpediteTransactionWizard' });
+        this.__context__.stack.push({ class: 'net.nanopay.tx.ui.ExpediteTransactionWizard' });
       }
     }
   ]
