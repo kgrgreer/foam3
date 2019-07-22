@@ -97,6 +97,10 @@ function installFiles {
     chgrp nanopay ${NANOPAY_HOME}/etc
     chmod -R 750 ${NANOPAY_HOME}/etc
 
+    if [ -f ${NANOPAY_HOME}/etc/shrc.local ]; then
+        chgrp nanopay ${NANOPAY_HOME}/etc/shrc.local
+    fi
+
     if [ ! -d ${MNT_HOME} ]; then
         mkdir -p ${MNT_HOME}
     fi
