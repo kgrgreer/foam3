@@ -9,6 +9,9 @@ foam.CLASS({
     'alphabeticCode'
   ],
 
+  imports: [
+    'homeDenomination'
+  ],
   javaImports: [
     'foam.util.SafetyUtil'
   ],
@@ -135,6 +138,12 @@ foam.CLASS({
         while ( amount.length < this.precision ) amount = '0' + amount;
         var beforeDecimal = amount.substring(0, amount.length - this.precision);
         var formatted = isNegative ? '-' : '';
+
+        if ( this.leftOrRight === 'right' && this.homeDenomination !== this.id ) {
+          formatted += this.id;
+          formatted += ' ';
+        }
+
         if ( this.leftOrRight === 'left' ) {
           formatted += this.symbol;
           if ( this.showSpace ) formatted += ' ';
@@ -148,6 +157,12 @@ foam.CLASS({
           if ( this.showSpace ) formatted += ' ';
           formatted += this.symbol;
         }
+
+        if ( this.leftOrRight === 'left' && this.homeDenomination !== this.id ) {
+          formatted += ' ';
+          formatted += this.id;
+        }
+
         return formatted;
       },
       args: [
