@@ -9,7 +9,8 @@ foam.CLASS({
   ],
   
   imports: [
-    'transactionDAO'
+    'transactionDAO',
+    'user'
   ],
 
   axioms: [
@@ -30,7 +31,21 @@ foam.CLASS({
   messages: [],
 
   methods: [
-    function init() {}
+    function init() {
+      this.viewData.user = this.user;
+      this.title = 'Expedite transactions';
+      this.exitLabel = 'Close';
+      this.nextLabel = 'Next';
+      
+      this.views = [
+        { id: 'expedite-transaction-action', label: 'Modify Transaction States', view: { class: 'net.nanopay.tx.ui.ExpediteTransactionActionView' } },
+        { id: 'confirm-expedite', label: 'Confirm Action', view: { class: 'net.nanopay.tx.ui.ConfirmExpediteView' } },
+        { id: 'expedite-result', label: 'Expedite Result', view: { class: 'net.nanopay.tx.ui.ExpediteResultView' } }
+      ];
+
+      // Keep this at bottom of init function
+      this.SUPER();
+    }
   ],
 
   actions: []

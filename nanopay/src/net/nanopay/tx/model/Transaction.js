@@ -1003,7 +1003,7 @@ for ( Balance b : getBalances() ) {
       },
       code: function(X) {
         // Open Expidite Transaction pop up
-        // this.__context__.stack.push({ class: 'net.nanopay.tx.ui.ExpediteTxnWizard' });
+        // this.__context__.stack.push({ class: 'net.nanopay.tx.ui.ExpediteTransactionWizard' });
       }
     }
   ]

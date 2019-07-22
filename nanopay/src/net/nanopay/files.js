@@ -348,6 +348,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ui/exposure/ValueCard', flags: ['web'] },
 
   { name: 'net/nanopay/model/Broker' },
+  { name: 'net/nanopay/tx/ui/ConfirmExpediteView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/ExpediteResultView', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/ExpediteTransactionWizard', flags: ['web'] },
+  { name: 'net/nanopay/tx/ui/ExpediteTransactionActionView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionsView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionFeesTableView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionDetailView', flags: ['web'] },
