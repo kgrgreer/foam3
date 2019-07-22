@@ -173,6 +173,7 @@ foam.CLASS({
                     .addClass('flag').end().add(c.alphabeticCode)
                     .on('click', function() {
                       self.lastCurrency = c;
+                      self.homeDenomination = c.alphabeticCode;
 
                       // TODO: Figure out a better way to store user preferences
                       localStorage.setItem('homeDenomination', c.alphabeticCode);
