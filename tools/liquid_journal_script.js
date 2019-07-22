@@ -704,11 +704,11 @@ function main() {
     cashIn(X, bank, shadow, amount);
   })
 
-  while ( foam.Date.compare(currentDate, end) < 0 ) {
-    currentDate.setTime(currentDate.getTime() + timeStep);
+  do {
     randomDigitalTransfer(X);
     randomCICOTransfer(X);
-  }
+    currentDate.setTime(currentDate.getTime() + timeStep);
+  } while ( foam.Date.compare(currentDate, end) < 0 );
 
   X.accountDAO.close();
   X.transactionDAO.close();
