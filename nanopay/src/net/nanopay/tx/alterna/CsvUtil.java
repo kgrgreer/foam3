@@ -132,7 +132,7 @@ public class CsvUtil {
     final DAO userDAO         = (DAO) x.get("localUserDAO");
     final DAO institutionDAO  = (DAO) x.get("institutionDAO");
     final DAO branchDAO       = (DAO) x.get("branchDAO");
-    final DAO notificationDAO = (DAO) x.get("notificationDAO");
+    final DAO notificationDAO = (DAO) x.get("localNotificationDAO");
     Logger logger = (Logger) x.get("logger");
 
     CSVSink out = new CSVSink.Builder(x)
