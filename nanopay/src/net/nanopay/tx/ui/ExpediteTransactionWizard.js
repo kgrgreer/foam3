@@ -19,7 +19,9 @@ foam.CLASS({
 
   css: ``,
 
-  properties: [],
+  properties: [
+    'parentTransaction'
+  ],
 
   messages: [],
 
@@ -27,8 +29,7 @@ foam.CLASS({
     function init() {
       this.viewData.user = this.user;
       this.title = 'Transaction workflow';
-      this.exitLabel = 'Close';
-      this.nextLabel = 'Next';
+      this.viewData.parentTransaction = this.parentTransaction;
 
       this.views = [
         { id: 'expedite-transaction-action', label: 'Modify Transaction States', view: { class: 'net.nanopay.tx.ui.ExpediteTransactionActionView' } },

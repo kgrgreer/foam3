@@ -985,13 +985,13 @@ for ( Balance b : getBalances() ) {
       }
     },
     {
-      name: 'expiditeTxn',
+      name: 'expediteTxn',
       label: 'Modify State',
       isAvailable: function() {
         return net.nanopay.tx.AbliiTransaction.isInstance(this);
       },
       code: function(X) {
-        this.__context__.stack.push({ class: 'net.nanopay.tx.ui.ExpediteTransactionWizard' });
+        this.__context__.stack.push({ class: 'net.nanopay.tx.ui.ExpediteTransactionWizard', parentTransaction: this });
       }
     }
   ]
