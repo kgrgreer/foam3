@@ -93,6 +93,12 @@ foam.CLASS({
         }
         return ['No status to choose'];
       }
+    },
+    {
+      name: 'institutionNumber',
+      class: 'String',
+      value: "",
+      visibility: 'Hidden'
     }
   ],
 
@@ -126,7 +132,7 @@ foam.CLASS({
           getStatus() != TransactionStatus.DECLINED
         ) return;
 
-        DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+        DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
 
         if ( getStatus() == TransactionStatus.REVERSE_FAIL ) {
           Notification notification = new Notification();
@@ -262,8 +268,8 @@ foam.CLASS({
             }
           }
           all.add(new Transfer.Builder(x)
-              .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-In COMPLETED")
-              .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
+              .setDescription(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getName()+" Cash-In COMPLETED")
+              .setAccount(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getId())
               .setAmount(-getTotal())
               .build());
             all.add( new Transfer.Builder(getX())
