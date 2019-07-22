@@ -1,2 +1,0 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"threadPool", "serviceClass":"foam.nanos.pool.StubThreadPool"})
-p({"class":"foam.nanos.boot.NSpec","id":"identityMindService","service":{"class":"net.nanopay.meter.compliance.identityMind.IdentityMindService","baseUrl":"https://sandbox.identitymind.com/im","apiUser":"nanopay","apiKey":"ae7488c9b3aaaf6c640ef9f66025abdd346167a0","hashingSalt":"12345678"}})
