@@ -85,7 +85,8 @@ foam.CLASS({
                         callbacks: {
                           label: function(tooltipItem, data) {
                             var dataset = data.datasets[tooltipItem.datasetIndex];
-                            if ( ! self.total ) dataset.data.forEach(total => self.total += total);
+                            self.total = 0;
+                            dataset.data.forEach(total => self.total += total);
                             var meta = dataset._meta[Object.keys(dataset._meta)[0]];
                             var currentValue = dataset.data[tooltipItem.index];
                             var percentage = parseFloat((currentValue/self.total*100).toFixed(1));
