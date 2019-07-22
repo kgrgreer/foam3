@@ -7,6 +7,7 @@ foam.CLASS({
     'accountDAO',
     'approvalRequestDAO',
     'identityMindService',
+    'nSpecDAO',
     'ruleDAO',
     'transactionDAO',
     'threadPool',
@@ -14,11 +15,15 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
+    'foam.core.FObject',
     'foam.dao.DAO',
+    'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
-    'foam.nanos.ruler.Rule',
+    'foam.nanos.boot.NSpec',
     'foam.nanos.pool.StubThreadPool',
-    'foam.util.SafetyUtil',
+    'foam.nanos.ruler.Rule',
+    'foam.util.Auth',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.bank.BankAccount',
@@ -34,40 +39,17 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'identityMindTxRuleId',
-      value: 1400
+      value: 1440
+    },
+    {
+      class: 'Long',
+      name: 'jackieRule1Id',
+      value: 3000
     },
     {
       class: 'Long',
       name: 'identityMindUserId',
       value: 1013
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.User',
-      name: 'sender',
-      javaGetter: 'return findOrCreateUser("sender@test.com");'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.User',
-      name: 'receiver',
-      javaGetter: 'return findOrCreateUser("receiver@test.com");'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.bank.BankAccount',
-      name: 'sourceAccount',
-      transient: true,
-      javaGetter: 'return findOrCreateBankAccount(getSender(), "111111");',
-      hidden: true
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.bank.BankAccount',
-      name: 'destinationAccount',
-      transient: true,
-      javaGetter: 'return findOrCreateBankAccount(getReceiver(), "222222");',
-      hidden: true
     }
   ],
 
@@ -76,14 +58,92 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
         setX(x);
-        if ( ! testIdentityMindTxRuleExists() ) {
-          return;
+        setUp();
+        if ( testIdentityMindTxRulesEnabled() ) {
+          // 1. test transaction ACCEPT-ed
+          testTransactionAcceptedByIdentityMind();
+          // 2. test transaction REJECTE-d
+          // 3. test transaction MANUAL_REVIEW-ed
+        }
+        tearDown();
+      `
+    },
+    {
+      name: 'setUp',
+      javaCode: `
+        // Enabled IdentityMind transaction rule
+        DAO ruleDAO = (DAO) getRuleDAO();
+        identityMindRule_ = (Rule) ruleDAO.find(getIdentityMindTxRuleId());
+        if ( identityMindRule_ != null && ! identityMindRule_.getEnabled() ) {
+          Rule cloned = (Rule) identityMindRule_.fclone();
+
+          cloned.setEnabled(true);
+          ruleDAO.put(cloned);
+        }
+        
+        // Disabled Jackie rule 1
+        jackieRule1_ = (Rule) ruleDAO.find(getJackieRule1Id());
+        if ( jackieRule1_ != null && jackieRule1_.getEnabled() ) {
+          Rule cloned = (Rule) jackieRule1_.fclone();
+
+          cloned.setEnabled(false);
+          ruleDAO.put(cloned);
         }
 
-        // 1. test transaction ACCEPT-ed
-        testTransactionAcceptedByIdentityMind();
-        // 2. test transaction REJECTE-d
-        // 3. test transaction MANUAL_REVIEW-ed
+        // Setup IdentityMind service
+        IdentityMindService service = (IdentityMindService) getIdentityMindService();
+        identityMindService_ = service.fclone();
+        service.setBaseUrl("https://sandbox.identitymind.com/im");
+        service.setApiUser("nanopay");
+        service.setApiKey("ae7488c9b3aaaf6c640ef9f66025abdd346167a0");
+        service.setHashingSalt("12345678");
+
+        // Setup users and accounts
+        sender_ = findOrCreateUser("sender@test.com");
+        receiver_ = findOrCreateUser("receiver@test.com");
+        sourceAccount_ = findOrCreateBankAccount(sender_, "111111");
+        destinationAccount_ = findOrCreateBankAccount(receiver_, "222222");
+        
+        // Stub thread pool
+        threadPool_ = getThreadPool();
+        if ( ! (threadPool_ instanceof StubThreadPool) ) {
+          DAO nSpecDAO = (DAO) getNSpecDAO();
+          NSpec spec = (NSpec) nSpecDAO.find("threadPool");
+
+          spec.setServiceClass("foam.nanos.pool.StubThreadPool");
+          nSpecDAO.put(spec);
+        }
+
+        // Sudo sender
+        senderX_ = Auth.sudo(getX(), sender_);
+      `
+    },
+    {
+      name: 'tearDown',
+      javaCode: `
+        // Restore IdentityMind rule
+        DAO ruleDAO = (DAO) getRuleDAO();
+        if ( ! identityMindRule_.equals(ruleDAO.find(identityMindRule_)) ) {
+          ruleDAO.put(identityMindRule_);
+        }
+
+        // Restore Jackie rule 1
+        if ( ! jackieRule1_.equals(ruleDAO.find(jackieRule1_)) ) {
+          ruleDAO.put(jackieRule1_);
+        }
+
+        // Restore IdentityMind service
+        IdentityMindService service = (IdentityMindService) getIdentityMindService();
+        service.copyFrom(identityMindService_);
+
+        // Restore thread pool
+        if ( threadPool_ != null && threadPool_ != getThreadPool() ) {
+          DAO nSpecDAO = (DAO) getNSpecDAO();
+          NSpec spec = (NSpec) nSpecDAO.find("threadPool");
+
+          spec.setServiceClass(threadPool_.getClass().getName());
+          nSpecDAO.put(spec);
+        }
       `
     },
     {
@@ -94,8 +154,8 @@ foam.CLASS({
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         return new ComplianceTransaction.Builder(getX())
-          .setSourceAccount(getSourceAccount().getId())
-          .setDestinationAccount(getDestinationAccount().getId())
+          .setSourceAccount(sourceAccount_.getId())
+          .setDestinationAccount(destinationAccount_.getId())
           .setAmount(amount)
           .setIsQuoted(true)
           .build();
@@ -164,13 +224,19 @@ foam.CLASS({
       `
     },
     {
-      name: 'testIdentityMindTxRuleExists',
+      name: 'testIdentityMindTxRulesEnabled',
       type: 'Boolean',
       javaCode: `
-        Rule rule = (Rule) ((DAO) getRuleDAO()).find(getIdentityMindTxRuleId());
-        boolean result = rule != null && ! SafetyUtil.isEmpty(rule.getDaoKey());
+        Long[] ruleIds = new Long[] { getIdentityMindTxRuleId(), 1310L, 1520L };
+        Count count = (Count) ((DAO) getRuleDAO())
+          .where(AND(
+            EQ(Rule.ENABLED, true),
+            EQ(Rule.DAO_KEY, "localTransactionDAO"),
+            IN(Rule.ID, ruleIds)))
+          .select(new Count());
 
-        test(result, "IdentityMind transaction rule exists");
+        boolean result = count.getValue() == ruleIds.length;
+        test(result, "IdentityMind transaction rules are enabled");
         return result;
       `
     },
@@ -179,7 +245,7 @@ foam.CLASS({
       javaCode: `
         ((IdentityMindService) getIdentityMindService()).setDefaultProfile("ACCEPT");
         Transaction tx = newTransaction(1000);
-        tx = (Transaction) ((DAO) getTransactionDAO()).put(tx);
+        tx = (Transaction) ((DAO) getTransactionDAO()).inX(senderX_).put(tx);
 
         test(findTxApprovalRequest(tx) == null,
           "No approval request is created yet before the IdentityMind transaction rule is run");
@@ -192,6 +258,25 @@ foam.CLASS({
         tx = (Transaction) ((DAO) getTransactionDAO()).find(tx);
         test(tx.getStatus() == TransactionStatus.COMPLETED, "Compliance transaction should be COMPLETED");
       `
+    }
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+        protected Rule        identityMindRule_;
+        protected Rule        jackieRule1_;
+        protected FObject     identityMindService_;
+        protected User        sender_;
+        protected User        receiver_;
+        protected BankAccount sourceAccount_;
+        protected BankAccount destinationAccount_;
+        protected Object      threadPool_;
+        protected X           senderX_;
+        `);
+      }
     }
   ]
 });
