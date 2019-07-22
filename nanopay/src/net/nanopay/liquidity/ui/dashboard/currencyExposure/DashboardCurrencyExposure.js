@@ -71,8 +71,9 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.onDetach(this.homeDenomination$.sub(this.currencyUpdate));
-      this.currencyUpdate();
+      this.currencyDAO.find(this.homeDenomination).then(currency => {
+        this.currency = currency
+      });
       this
         .addClass(this.myClass())
           .start().add(this.CARD_HEADER).addClass(this.myClass('card-header')).end()
@@ -119,18 +120,6 @@ foam.CLASS({
                 .end()
             }))
           .end();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'currencyUpdate',
-      isFramed: true,
-      code: function() {
-        this.currencyDAO.find(this.homeDenomination).then(currency => {
-          this.currency = currency
-        });
-      }
     }
   ]
 });
