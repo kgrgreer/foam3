@@ -29,6 +29,7 @@ public class BmoReportProcessor {
   private static final String PATH = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/";
   private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
   private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
+  private static final String REPORT_PROCESSED_FAILED_FOLDER = PATH + "/processed/report_failed/";
 
   private X x;
   private DAO transactionDAO;
@@ -81,8 +82,14 @@ public class BmoReportProcessor {
         FileUtils.moveFile(file, new File(REPORT_PROCESSED_FOLDER + file.getName() + "_" + Instant.now().toEpochMilli()));
 
       } catch ( Exception e ) {
-        logger.error("Error when process report ", e);
-        throw new RuntimeException("Error when process report", e);
+
+        try {
+          logger.error("Error when process report ", e);
+          FileUtils.moveFile(file, new File(REPORT_PROCESSED_FAILED_FOLDER + file.getName() + "_" + Instant.now().toEpochMilli()));
+          BmoFormatUtil.sendEmail(x, "BMO EFT error during processing the report", e);
+        } catch ( Exception e2 ) {
+          logger.error("Error when process report ", e);
+        }
       }
 
     }
@@ -135,15 +142,22 @@ public class BmoReportProcessor {
 
   public void processSettlementRecord(String record, String fileCreationNumber ) {
 
-    String referenceNumber = record.substring(55, 74).trim();
+    String referenceNumber = "";
 
-    Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
+    try {
+      referenceNumber = record.substring(55, 74).trim();
 
-    ((BmoTransaction)transaction).addHistory("Transaction completed.");
-    transaction.setCompletionDate(new Date());
-    transaction.setStatus(TransactionStatus.COMPLETED);
+      Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
 
-    transactionDAO.inX(this.x).put(transaction);
+      ((BmoTransaction)transaction).addHistory("Transaction completed.");
+      transaction.setCompletionDate(new Date());
+      transaction.setStatus(TransactionStatus.COMPLETED);
+
+      transactionDAO.inX(this.x).put(transaction);
+    } catch ( Exception e ) {
+      logger.error("Error when process reference number: " + referenceNumber, e);
+      BmoFormatUtil.sendEmail(x, "Error when process reference number: " + referenceNumber, e);
+    }
   }
 
   public boolean isSettlementRecord(String record) {
@@ -190,30 +204,37 @@ public class BmoReportProcessor {
 
   public void processRejectRecord(ArrayList<String> rejectedItem, String fileCreationNumber) {
 
-    if ( rejectedItem.size() == 0 ) {
-      return;
+    String referenceNumber = "";
+
+    try {
+      if ( rejectedItem.size() == 0 ) {
+        return;
+      }
+
+      if ( ! rejectedItem.get(0).contains("LOG. REC. TYPE") ) {
+        return;
+      }
+
+      String rejectReason = rejectedItem.subList(5, rejectedItem.size() - 1).stream()
+        .filter(line -> !line.trim().equals(""))
+        .map(line -> line.substring(28, 73))
+        .reduce("", (pre, post) -> pre + post + ";");
+
+
+      referenceNumber = rejectedItem.get(0).substring(108, 127).trim();
+
+      Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
+
+      transaction.setStatus(TransactionStatus.DECLINED);
+      ((BmoTransaction)transaction).addHistory("Transaction rejected.");
+      ((BmoTransaction)transaction).setRejectReason(rejectReason);
+      transaction.setCompletionDate(new Date());
+
+      transactionDAO.inX(this.x).put(transaction);
+    } catch ( Exception e ) {
+      logger.error("Error when process reference number: " + referenceNumber, e);
+      BmoFormatUtil.sendEmail(x, "Error when process reference number: " + referenceNumber, e);
     }
-
-    if ( ! rejectedItem.get(0).contains("LOG. REC. TYPE") ) {
-      return;
-    }
-
-    String rejectReason = rejectedItem.subList(5, rejectedItem.size() - 1).stream()
-      .filter(line -> !line.trim().equals(""))
-      .map(line -> line.substring(28, 73))
-      .reduce("", (pre, post) -> pre + post + ";");
-
-
-    String referenceNumber = rejectedItem.get(0).substring(108, 127).trim();
-
-    Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
-
-    transaction.setStatus(TransactionStatus.DECLINED);
-    ((BmoTransaction)transaction).addHistory("Transaction rejected.");
-    ((BmoTransaction)transaction).setRejectReason(rejectReason);
-    transaction.setCompletionDate(new Date());
-
-    transactionDAO.inX(this.x).put(transaction);
   }
 
   public void postProcessReport() {

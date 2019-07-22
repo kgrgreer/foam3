@@ -38,7 +38,7 @@ public class MakeConnectionDAO
 
     // Send notification if accepted
     if ( accepted ) {
-      DAO notificationDAO = (DAO) x.get("notificationDAO");
+      DAO notificationDAO = (DAO) x.get("localNotificationDAO");
       Notification notification = new Notification();
       notification.setUserId(sender.getId());
       notification.setBody(user.getLegalName() +
