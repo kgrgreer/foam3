@@ -24,20 +24,21 @@ function usage {
     echo "  -D 0 or 1           : Debug mode."
     echo "  -h                  : Display help."
     echo "  -N <nanopay_home>   : Nanopay home directory."
+    echo "  -U <user>           : User to run script as"
     echo "  -V <version>        : Version."
     echo "  -W <web_port>       : HTTP Port."
     echo "  -Z 0 or 1           : Daemonize."
 }
 
-while getopts "D:h:N:W:Z:V:" opt ; do
+while getopts "D:h:N:U:V:W:Z:" opt ; do
     case $opt in
         D) DEBUG=$OPTARG;;
         h) usage; exit 0;;
         N) NANOPAY_HOME=$OPTARG;;
+        U) RUN_USER=$OPTARG;;
+        V) VERSION=$OPTARG;;
         W) WEB_PORT=$OPTARG;;
         Z) DAEMONIZE=$OPTARG;;
-        V) VERSION=$OPTARG;;
-        U) RUN_USER=$OPTARG;;
         ?) usage ; exit 0 ;;
    esac
 done
@@ -59,6 +60,10 @@ export MEMORY_MODEL=SMALL
 # load instance specific deployment options
 if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
     . "${NANOPAY_HOME}/etc/shrc.local"
+fi
+
+if [ -f "${NANOPAY_HOME}/conf/shrc.custom" ]; then
+    . "${NANOPAY_HOME}/conf/shrc.custom"
 fi
 
 if [ ! -z $VERSION ]; then
