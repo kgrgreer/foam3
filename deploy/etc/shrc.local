@@ -8,7 +8,7 @@
 #########################
 
 ###### Customer parameter File
-CUSTOM_CONFIG="$NANOPAY_HOME/etc/shrc.custom"
+CUSTOM_CONFIG="${NANOPAY_HOME}/conf/shrc.custom"
 if [ -f "${CUSTOM_CONFIG}" ]; then
   . ${CUSTOM_CONFIG} $1
 fi

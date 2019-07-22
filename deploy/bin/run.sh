@@ -62,10 +62,6 @@ if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
     . "${NANOPAY_HOME}/etc/shrc.local"
 fi
 
-if [ -f "${NANOPAY_HOME}/conf/shrc.custom" ]; then
-    . "${NANOPAY_HOME}/conf/shrc.custom"
-fi
-
 if [ ! -z $VERSION ]; then
     JAR="${NANOPAY_HOME}/lib/nanopay-${VERSION}.jar"
 else
