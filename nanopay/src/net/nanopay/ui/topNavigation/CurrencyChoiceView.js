@@ -116,13 +116,18 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.model.Currency',
       name: 'lastCurrency'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
+      name: 'defaultCurrency',
+      value: 'USD'
     }
   ],
 
   methods: [
 
     function initE() {
-      this.currentAccount$.sub(this.updateCurrency);
       this.updateCurrency();
 
       this
@@ -141,16 +146,21 @@ foam.CLASS({
 
   listeners: [
     function updateCurrency() {
-      debugger;
       var self = this;
-      self.accountDAO.find(this.currentAccount.id).then(function(acc) {
-        var denomination = 'CAD';
-        if ( acc ) {
-          denomination = acc.denomination;
-        }
-        self.currencyDAO.find(denomination).then(function(c) {
-          self.lastCurrency = c;
-        });
+
+      /**
+       * TODO: Currently our storing the home denomination preferences, just need it 
+       * to default to USD for Goldman, also added a hacky way to persist it via local storage
+       * we will later on think of a better way to handle default user preferences
+       */
+      var storedHomeDenomination = localStorage.getItem('homeDenomination');
+      var startingCurrency = storedHomeDenomination
+                                ? storedHomeDenomination
+                                : this.defaultCurrency;
+
+      this.currencyDAO.find(startingCurrency).then(function(c) {
+        self.lastCurrency = c;
+        localStorage.setItem('homeDenomination', c.alphabeticCode);
       });
     }
   ],
@@ -171,14 +181,17 @@ foam.CLASS({
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
           .select(this.currencyDAO.where(
-            this.TRUE), function(cur) {
-              if ( cur.flagImage != null ) {
+            this.TRUE), function(c) {
+              if ( c.flagImage != null ) {
                 return self.E()
                   .start('div').start('img')
-                    .attrs({ src: cur.flagImage })
-                    .addClass('flag').end().add(cur.alphabeticCode)
+                    .attrs({ src: c.flagImage })
+                    .addClass('flag').end().add(c.alphabeticCode)
                     .on('click', function() {
-                      self.lastCurrency = cur;
+                      self.lastCurrency = c;
+
+                      // TODO: Figure out a better way to store user preferences
+                      localStorage.setItem('homeDenomination', c.alphabeticCode);
                     });
               }
             })
