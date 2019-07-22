@@ -40,13 +40,6 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'data',
-    }
-  ],
-
-  messages: [
-    {
-      name: 'CARD_HEADER',
-      message: 'CURRENCY EXPOSURE',
     },
     {
       class: 'FObjectProperty',
@@ -56,6 +49,21 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'total'
+    }
+  ],
+
+  messages: [
+    {
+      name: 'CARD_HEADER',
+      message: 'CURRENCY EXPOSURE',
+    },
+    {
+      name: 'TOOLTIP_EXPOSURE',
+      message: 'Exposure'
+    },
+    {
+      name: 'TOOLTIP_VALUE',
+      message: 'Value in'
     }
   ],
 
@@ -90,7 +98,9 @@ foam.CLASS({
                             var meta = dataset._meta[Object.keys(dataset._meta)[0]];
                             var currentValue = dataset.data[tooltipItem.index];
                             var percentage = parseFloat((currentValue/self.total*100).toFixed(1));
-                            return self.currency ? `${percentage}% - ${self.baseDenomination} ${self.currency.format(currentValue)}` : `${percentage}%`;
+                            return self.currency ?
+                              [`${self.TOOLTIP_EXPOSURE}: ${percentage}%`, `${self.TOOLTIP_VALUE} ${self.baseDenomination}: ${self.currency.format(currentValue)}`] :
+                              [`${self.TOOLTIP_EXPOSURE}: ${percentage}%`];
                           },
                           title: function(tooltipItem, data) {
                             return data.labels[tooltipItem[0].index];
