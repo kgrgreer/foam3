@@ -30,7 +30,7 @@ foam.CLASS({
       Business business = (Business) getDelegate().put_(x, obj);
       if ( business.getCompliance().equals(ComplianceStatus.PASSED) ) {
         AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-        afexServiceProvider.onboardBusiness(business);
+        new Thread(() -> afexServiceProvider.onboardBusiness(business)).start();
       }
   
       return business;

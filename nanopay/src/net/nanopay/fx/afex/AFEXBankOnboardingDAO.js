@@ -30,7 +30,7 @@ foam.CLASS({
       BankAccount bankAccount = (BankAccount) getDelegate().put_(x, obj);
       if ( bankAccount.getStatus() == BankAccountStatus.VERIFIED ) {
         AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-        afexServiceProvider.onboardBusiness(bankAccount);
+        new Thread(() -> afexServiceProvider.onboardBusiness(bankAccount)).start();
       }
   
       return bankAccount;

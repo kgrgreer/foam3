@@ -9,6 +9,8 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
+
 import static foam.mlang.MLang.*;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccount;
@@ -212,6 +214,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     } else {
       addBeneficiary(x, userId, sourceUser, beneficiaryResponse.getStatus());
     }
+    System.out.println("Done creating beneficiary");
   }
 
   public FindBeneficiaryResponse findBeneficiary(long beneficiaryId, String clientApiKey) {
@@ -409,8 +412,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   public FindBankByNationalIDResponse getBankInformation(X x, String clientAPIKey, BankAccount bankAccount) {
     FindBankByNationalIDResponse bankInformation = null;
-    Address bankAddress = bankAccount.getBankAddress(); 
-    if ( null == bankAddress ) return bankInformation;
+    Address bankAddress =  bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
+    if ( null == bankAddress || SafetyUtil.isEmpty(bankAddress.getCity())) return bankInformation;
 
     FindBankByNationalIDRequest findBankByNationalIDRequest = new FindBankByNationalIDRequest();
     findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
