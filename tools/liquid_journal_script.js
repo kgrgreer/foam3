@@ -548,7 +548,6 @@ function transfer(X, source, dest, amount) {
     isQuoted: true,
     id: foam.next$UID(),
     amount: amount,
-    completionDate: X.currentDate,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     initialStatus: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     sourceCurrency: source.denomination,
@@ -730,11 +729,11 @@ function main() {
     cashIn(X, bank, shadow, amount);
   })
 
-  while ( foam.Date.compare(currentDate, end) < 0 ) {
-    currentDate.setTime(currentDate.getTime() + timeStep);
+  do {
     randomDigitalTransfer(X);
     randomCICOTransfer(X);
-  }
+    currentDate.setTime(currentDate.getTime() + timeStep);
+  } while ( foam.Date.compare(currentDate, end) < 0 );
 
   X.accountDAO.close();
   X.transactionDAO.close();

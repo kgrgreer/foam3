@@ -86,8 +86,7 @@ foam.CLASS({
     'type',
     'status',
     'summary',
-    'created',
-    'completionDate'
+    'created'
   ],
 
   sections: [
@@ -321,13 +320,15 @@ foam.CLASS({
       label: 'Reference'
     },
     {
-      // FIXME: move to a ViewTransaction used on the client
+      // FIXME: Should be able to remove now that we render this from
+      // source/destinationAccount on the client.  Appears to be used
+      // in SPSProcess.java but that might be incorrect.
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payee',
       label: 'Receiver',
       storageTransient: true,
-      visibility: 'RO',
+      hidden: true,
       section: 'paymentInfo',
       tableCellFormatter: function(value) {
         this.start()
@@ -338,13 +339,16 @@ foam.CLASS({
       },
     },
     {
-      // FIXME: move to a ViewTransaction used on the client
+      // FIXME: Should be able to remove now that we render this from
+      // source/destinationAccount on the client.  Appears to be used
+      // in SPSProcess.java but that might be incorrect.
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
       label: 'Sender',
       section: 'paymentInfo',
-      visibility: 'RO',
+      //      visibility: 'RO',
+      hidden: true,
       storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
@@ -370,7 +374,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       section: 'paymentInfo',
-      visibility: 'RO'
+      visibility: 'FINAL'
     },
     {
       class: 'String',
