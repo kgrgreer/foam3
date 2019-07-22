@@ -131,6 +131,11 @@ foam.CLASS({
          * Given a number, display it as a currency using the appropriate
          * precision, decimal character, delimiter, symbol, and placement
          * thereof.
+         * 
+         * With the new home denomination feature, we will append (if left) or 
+         * prepend (if right) the alphabetic code if the currency's alphabetic code
+         * is not equal to the homeDenomination 
+         * 
          */
         var isNegative = amount < 0;
         amount = amount.toString();
