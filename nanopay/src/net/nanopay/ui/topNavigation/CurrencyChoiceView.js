@@ -141,6 +141,7 @@ foam.CLASS({
 
   listeners: [
     function updateCurrency() {
+      debugger;
       var self = this;
       self.accountDAO.find(this.currentAccount.id).then(function(acc) {
         var denomination = 'CAD';
@@ -169,25 +170,16 @@ foam.CLASS({
         });
 
         self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(this.accountDAO.where(
-            this.AND(
-              this.EQ(this.Account.OWNER, this.user),
-              this.EQ(this.Account.TYPE, this.DigitalAccount.name),
-              this.EQ(this.Account.IS_DEFAULT, true)
-              //this.EQ(this.DigitalAccount.IS_DIGITAL_ACCOUNT, true)
-            )), function(acc) {
-              if ( acc != null ) {
-                this.select(self.currencyDAO.where(self.EQ(self.Currency.ALPHABETIC_CODE, acc.denomination)), function(cur) {
-                  if ( cur.flagImage != null ) {
-                    this.start('div').start('img')
-                      .attrs({ src: cur.flagImage })
-                      .addClass('flag').end().add(cur.alphabeticCode)
-                      .on('click', function() {
-                        self.currentAccount = acc;
-                        self.lastCurrency = cur;
-                      });
-                  }
-                });
+          .select(this.currencyDAO.where(
+            this.TRUE), function(cur) {
+              if ( cur.flagImage != null ) {
+                return self.E()
+                  .start('div').start('img')
+                    .attrs({ src: cur.flagImage })
+                    .addClass('flag').end().add(cur.alphabeticCode)
+                    .on('click', function() {
+                      self.lastCurrency = cur;
+                    });
               }
             })
           .end();
