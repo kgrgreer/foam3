@@ -51,7 +51,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
         Date date = format.parse(quote.getValueDate());
         Double fxAmount = isAmountSettlement ? getConvertedAmount(quote,sourceAmount):  getConvertedAmount(quote,destinationAmount);
-        fxQuote.setRate(quote.getRate());
+        fxQuote.setRate(quote.getTerms().equals("A") ? quote.getInvertedRate(): quote.getRate());
         fxQuote.setTargetAmount(isAmountSettlement ? fromDecimal(fxAmount) : destinationAmount);
         fxQuote.setTargetCurrency(targetCurrency);
         fxQuote.setSourceAmount(isAmountSettlement ? sourceAmount : fromDecimal(fxAmount));
