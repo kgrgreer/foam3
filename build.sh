@@ -626,9 +626,9 @@ if [ ${MODE} == TEST ]; then
     echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
     JOURNAL_CONFIG=test
 fi
+
 if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
-
 fi
 
 if [ ${GRADLE_BUILD} -eq 0 ]; then
