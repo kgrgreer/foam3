@@ -130,7 +130,7 @@ foam.CLASS({
         .tag('span', null, this.optionsBtn_$)
         .start(this.CURRENCY_CHOICE, {
           icon$: this.lastCurrency$.dot('flagImage').map(function(v) { return v || ' ';}),
-          label$: this.lastCurrency$.dot('alphabeticCode')
+          label$: this.lastCurrency$.dot('id')
         })
           .start('div')
             .addClass(this.myClass('carrot'))
@@ -170,13 +170,13 @@ foam.CLASS({
                 return self.E()
                   .start('div').start('img')
                     .attrs({ src: c.flagImage })
-                    .addClass('flag').end().add(c.alphabeticCode)
+                    .addClass('flag').end().add(c.id)
                     .on('click', function() {
                       self.lastCurrency = c;
-                      self.homeDenomination = c.alphabeticCode;
+                      self.homeDenomination = c.id;
 
                       // TODO: Figure out a better way to store user preferences
-                      localStorage.setItem('homeDenomination', c.alphabeticCode);
+                      localStorage.setItem('homeDenomination', c.id);
                     });
               }
             })
