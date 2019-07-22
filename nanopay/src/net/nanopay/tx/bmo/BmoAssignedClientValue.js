@@ -58,6 +58,11 @@ foam.CLASS({
       class: 'Boolean'
     },
     {
+      name: 'transactionType',
+      class: 'Int',
+      documentation: 'Please see EFT_Client_Manual_CAN.pdf, Appendix B.'
+    },
+    {
       name: 'fileCreationNumberOffset',
       class: 'Int'
     }
