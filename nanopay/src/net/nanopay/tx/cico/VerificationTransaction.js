@@ -88,7 +88,7 @@ foam.CLASS({
       ],
       javaCode: `
       if ( getStatus() != TransactionStatus.DECLINED && getStatus() != TransactionStatus.FAILED ) return;
-      DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+      DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
       Notification notification = new Notification();
       notification.setEmailIsEnabled(true);
       notification.setBody("Verification transaction id: " + getId() + " was declined.");

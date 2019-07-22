@@ -126,7 +126,7 @@ foam.CLASS({
           getStatus() != TransactionStatus.DECLINED
         ) return;
 
-        DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+        DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
 
         if ( getStatus() == TransactionStatus.REVERSE_FAIL ) {
           Notification notification = new Notification();

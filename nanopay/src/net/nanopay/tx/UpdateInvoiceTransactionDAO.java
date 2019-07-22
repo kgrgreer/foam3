@@ -124,7 +124,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
           .setInvoiceId(invoice.getId())
           .setEmailArgs(args)
           .build();
-        DAO notificationDAO = ((DAO) x.get("notificationDAO")).inX(x);
+        DAO notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
         notificationDAO.put(notification);
       } else if ( state == TransactionStatus.COMPLETED ) {
         Calendar curDate = Calendar.getInstance();
