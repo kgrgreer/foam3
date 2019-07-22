@@ -14,7 +14,8 @@ foam.CLASS({
     'stack',
     'transactionDAO',
     'userDAO',
-    'user'
+    'user',
+    'homeDenomination'
   ],
 
   requires: [
@@ -116,12 +117,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.model.Currency',
       name: 'lastCurrency'
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.Currency',
-      name: 'defaultCurrency',
-      value: 'USD'
     }
   ],
 
@@ -148,19 +143,8 @@ foam.CLASS({
     function updateCurrency() {
       var self = this;
 
-      /**
-       * TODO: Currently our storing the home denomination preferences, just need it 
-       * to default to USD for Goldman, also added a hacky way to persist it via local storage
-       * we will later on think of a better way to handle default user preferences
-       */
-      var storedHomeDenomination = localStorage.getItem('homeDenomination');
-      var startingCurrency = storedHomeDenomination
-                                ? storedHomeDenomination
-                                : this.defaultCurrency;
-
-      this.currencyDAO.find(startingCurrency).then(function(c) {
+      this.currencyDAO.find(this.homeDenomination).then(function(c) {
         self.lastCurrency = c;
-        localStorage.setItem('homeDenomination', c.alphabeticCode);
       });
     }
   ],
