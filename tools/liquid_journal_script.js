@@ -489,7 +489,7 @@ function cashIn(X, bank, dest, amount) {
 }
 
 function cashOut(X, source, bank, amount) {
-  var tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+  var tx = net.nanopay.tx.cico.COTransaction.create({
     id: foam.next$UID().toString(),
     name: `Cash Out #${++cashOutCounter}`,
     sourceAccount: source.id,
@@ -518,7 +518,7 @@ function cashOut(X, source, bank, amount) {
 
   X.transactionDAO.put(tx);
 
-  tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+  tx = net.nanopay.tx.cico.COTransaction.create({
     id: tx.id,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     lineItems: [
