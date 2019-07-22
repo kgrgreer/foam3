@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'baseDenomination',
+    'homeDenomination',
     'currencyDAO'
   ],
 
@@ -71,7 +71,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.onDetach(this.baseDenomination$.sub(this.currencyUpdate));
+      this.onDetach(this.homeDenomination$.sub(this.currencyUpdate));
       this.currencyUpdate();
       this
         .addClass(this.myClass())
@@ -98,7 +98,7 @@ foam.CLASS({
                             var currentValue = dataset.data[tooltipItem.index];
                             var percentage = parseFloat((currentValue/self.total*100).toFixed(1));
                             return self.currency ?
-                              [`${self.TOOLTIP_EXPOSURE}: ${percentage}%`, `${self.TOOLTIP_VALUE} ${self.baseDenomination}: ${self.currency.format(currentValue)}`] :
+                              [`${self.TOOLTIP_EXPOSURE}: ${percentage}%`, `${self.TOOLTIP_VALUE} ${self.homeDenomination}: ${self.currency.format(currentValue)}`] :
                               [`${self.TOOLTIP_EXPOSURE}: ${percentage}%`];
                           },
                           title: function(tooltipItem, data) {
@@ -127,7 +127,7 @@ foam.CLASS({
       name: 'currencyUpdate',
       isFramed: true,
       code: function() {
-        this.currencyDAO.find(this.baseDenomination).then(currency => {
+        this.currencyDAO.find(this.homeDenomination).then(currency => {
           this.currency = currency
         });
       }
