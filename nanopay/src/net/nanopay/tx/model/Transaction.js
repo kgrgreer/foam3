@@ -211,8 +211,8 @@ foam.CLASS({
       visibility: 'RO',
       section: 'basicInfo',
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
-      javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
-
+      javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
+      tableWidth: 150
     },
     {
       class: 'DateTime',
@@ -220,7 +220,7 @@ foam.CLASS({
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
       section: 'basicInfo',
-      tableWidth: 140
+      tableWidth: 145
     },
     {
       class: 'Reference',
@@ -380,7 +380,6 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of Transactions.
       `,
-      tableWidth: 320,
       tableCellFormatter: async function(_, obj) {
         var [srcCurrency, dstCurrency] = await Promise.all([
           obj.currencyDAO.find(obj.sourceCurrency),
@@ -643,7 +642,7 @@ for ( Balance b : getBalances() ) {
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&  
+      if ( getStatus() == TransactionStatus.COMPLETED &&
       ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
    return true;
  }

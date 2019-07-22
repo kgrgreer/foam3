@@ -565,7 +565,6 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
-           GRADLE_FLAGS="--rerun-tasks"
            ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
@@ -621,6 +620,10 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
         ?) usage ; quit 1 ;;
     esac
 done
+
+if [ ${CLEAN_BUILD} -eq 1 ]; then
+    GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
+fi
 
 if [ ${GRADLE_BUILD} -eq 0 ]; then
     warning "Maven build is deprecated, switch to gradle by dropping 'n' flag"
