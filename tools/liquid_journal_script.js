@@ -27,6 +27,24 @@ require(npRoot + 'nanopay/src/net/nanopay/flinks/utils/files.js');
 global.FOAM_FLAGS.src = old;
 global.FOAM_ROOT = oldRoot;
 
+/**
+ * Manually add the new currencies and new trust accounts that need to be created
+ * b/c for now I don't know how we can query the existing currencies or accounts here
+ */
+
+// for new currencies need to create an object defining AT LEAST
+/**
+    {
+      name,
+      alphabeticCode,
+      numericCode,
+      country
+    }
+ */
+var newCurrencies = [];
+var newTrustAccountDenominations = ['USD'];
+
+// can enter banks with new currencies just by typing the denomination ('alphabetic code')
 var accountTree = [
   {
     type: 'Bank',
@@ -62,11 +80,7 @@ var accountTree = [
   {
     name: 'ABC New York',
     type: 'Bank',
-    // TODO: Enable USD and FX transactions.
-    // There appears to be no pre-loaded USD trust account so
-
-    // denomination: 'USD',
-    denomination: 'CAD',
+    denomination: 'USD',
     children: [
       {
         type: 'Aggregate',
@@ -103,43 +117,81 @@ const accountNamesToAccount = {};
 var cashInCounter = 0;
 var cashOutCounter = 0;
 
+// creation date liquidity settings
+var liquidityLastModifiedDate = new Date(new Date().setFullYear(new Date().getFullYear() - 5))
+
 // assign to only CAD accounts and push/pull from CAD accounts for now
 const liquiditySettings = [
   {
     type: 'email',
     name: 'Low and High Email Only',
     userToEmail: 8005,
-    highLiquidity: 1000000,
-    lowLiquidity: 200000
+    highLiquidity: 10000000,
+    lowLiquidity: 1500000
   },
   {
     type: 'rebalance',
     name: 'Low Rebalance Only',
-    lowLiquidity: 200000,
+    lowLiquidity: 1500000,
     lowPull: 'ABC Toronto Shadow Account',
-    lowResetBalance: 300000
+    lowResetBalance: 2000000
   },
   {
     type: 'rebalance',
     name: 'High Rebalance Only',
-    highLiquidity: 1000000,
+    highLiquidity: 10000000,
     highPush: 'ABC Toronto Shadow Account',
-    highResetBalance: 500000
+    highResetBalance: 8000000
   },
   {
     type: 'emailRebalance',
     name: 'Low And High Rebalance Email',
-    highLiquidity: 1000000,
+    highLiquidity: 10000000,
     highPush: 'ABC Toronto Shadow Account',
-    highResetBalance: 500000,
-    lowLiquidity: 200000,
+    highResetBalance: 8000000,
+    lowLiquidity: 1500000,
     lowPull: 'ABC Toronto Shadow Account',
-    lowResetBalance: 300000
+    lowResetBalance: 2000000
   }
 ];
 
 // to be filled out as liquidity settings get created
 const liquidityNamesToId = {};
+
+function* referenceIdMaker() {
+  var index = 10000000;
+  while (index < index+1)
+    yield index++;
+}
+
+const refIdGenerator = referenceIdMaker();
+
+function createCurrency(X, cObj) {
+  var currency = net.nanopay.model.Currency.create({
+    delimiter: ',',
+    decimalCharacter: '.',
+    symbol: '¤',
+    leftOrRight: 'left',
+    showSpace: true,
+    precision: 2,
+    numericCode: 0,
+    ...cObj
+  });
+
+  X.currencyDAO.put(currency);
+}
+
+function createTrustAccount(X, d) {
+  var trust = net.nanopay.account.TrustAccount.create({
+    id: foam.next$UID(),
+    owner: 101,
+    name: `${d} Trust Account`,
+    denomination: d
+  }, X);
+
+  X.accountDAO.put(trust);
+}
+
 
 function createEmailLiquiditySetting(X, s) {
   var liquiditySettingsObj = {
@@ -147,6 +199,7 @@ function createEmailLiquiditySetting(X, s) {
     name: s.name,
     userToEmail: s.userToEmail,
     cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+    lastModified: liquidityLastModifiedDate
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
@@ -175,6 +228,7 @@ function createRebalanceLiquiditySetting(X, s) {
     id: foam.next$UID(),
     name: s.name,
     cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+    lastModified: liquidityLastModifiedDate
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
@@ -210,6 +264,7 @@ function createEmailRebalanceLiquiditySetting(X, s) {
     name: s.name,
     userToEmail: s.userToEmail,
     cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
+    lastModified: liquidityLastModifiedDate
   };
 
   if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
@@ -240,9 +295,11 @@ function createEmailRebalanceLiquiditySetting(X, s) {
 }
 
 function bank(X, a) {
-  var cls = a.denomination == 'CAD' ?
-  net.nanopay.bank.CABankAccount :
-  net.nanopay.bank.USBankAccount;
+  var cls = a.denomination == 'CAD'
+      ? net.nanopay.bank.CABankAccount
+      : a.denomination == 'USD'
+          ? net.nanopay.bank.USBankAccount
+          : net.nanopay.bank.BankAccount
 
   var bank = cls.create({
     id: foam.next$UID(),
@@ -384,7 +441,7 @@ function jdao(journal) {
 }
 
 function cashIn(X, bank, dest, amount) {
-  var tx = net.nanopay.tx.alterna.AlternaCITransaction.create({
+  var tx = net.nanopay.tx.cico.CITransaction.create({
     id: foam.next$UID().toString(),
     name: `Cash In #${++cashInCounter}`,
     sourceAccount: bank.id,
@@ -404,21 +461,27 @@ function cashIn(X, bank, dest, amount) {
     lineItems: [
       net.nanopay.tx.ETALineItem.create({
         eta: 172800000
+      }),
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
       })
     ]
   }, X);
 
   X.transactionDAO.put(tx);
 
-  tx = net.nanopay.tx.alterna.AlternaCITransaction.create({
+  tx = net.nanopay.tx.cico.CITransaction.create({
     id: tx.id,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     lineItems: [
-      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
+      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() }),
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
+      })
     ],
     lastModified: X.currentDate
   }, X);
-  
+
 
   X.transactionDAO.put(tx);
 
@@ -446,6 +509,9 @@ function cashOut(X, source, bank, amount) {
     lineItems: [
       net.nanopay.tx.ETALineItem.create({
         eta: 172800000
+      }),
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
       })
     ]
   }, X);
@@ -456,7 +522,10 @@ function cashOut(X, source, bank, amount) {
     id: tx.id,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     lineItems: [
-      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
+      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() }),
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
+      })
     ],
     lastModified: X.currentDate
   }, X);
@@ -490,6 +559,11 @@ function transfer(X, source, dest, amount) {
     lastModifiedBy: X.userId,
     created: X.currentDate,
     createdBy: X.userId,
+    lineItems: [
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
+      })
+    ],
   }, X);
 
   X.transactionDAO.put(tx);
@@ -593,14 +667,22 @@ function main() {
     debtAccountDAO: foam.dao.NullDAO.create(),
     transactionDAO: jdao("target/journals/transactions.0"),
     liquiditySettingsDAO: jdao("target/journals/liquiditySettings.0"),
+    currencyDAO: jdao("target/journals/currencies.0"),
     currentDate: currentDate,
     balances: {},
-    currencyDAO: foam.dao.NullDAO.create(),
     userDAO: foam.dao.NullDAO.create(),
     complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,
     addCommas: function (a) { return a; }
   });
+
+  newCurrencies.forEach(c => {
+    createCurrency(X, c);
+  })
+
+  newTrustAccountDenominations.forEach(d => {
+    createTrustAccount(X, d)
+  })
 
   accountTree = accountTree.map(inflate.bind(null, X));
 
@@ -657,6 +739,7 @@ function main() {
   X.accountDAO.close();
   X.transactionDAO.close();
   X.liquiditySettingsDAO.close();
+  X.currencyDAO.close();
 }
 
 main();

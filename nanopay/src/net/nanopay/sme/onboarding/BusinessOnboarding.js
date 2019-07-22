@@ -356,8 +356,9 @@ foam.CLASS({
         class: 'net.nanopay.sme.onboarding.ui.IntroOnboarding'
       }
     },
-
-    foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
+    {
+      class: 'Boolean',
+      name: 'signingOfficer',
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
       label: '',
@@ -368,7 +369,8 @@ foam.CLASS({
           [false, 'No, I am not'],
         ],
       }
-    }),
+    },
+
     foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
       section: 'personalInformationSection',
       view: {
@@ -402,6 +404,21 @@ foam.CLASS({
             );
           },
           errorString: 'Must be at least 18 years old.'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.NOT(
+                foam.mlang.predicate.OlderThan.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY,
+                  timeMs: 125 * 365 * 24 * 60 * 60 * 1000
+                })
+              )
+            );
+          },
+          errorString: 'Must be under the age of 125 years old.'
         }
       ]
     }),
@@ -870,7 +887,7 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
-        this.clearProperty('owner1');
+        if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -883,7 +900,7 @@ foam.CLASS({
       label: '',
       label2: 'This is a publicly traded company',
       postSet: function(_, n) {
-        this.clearProperty('owner1');
+        if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;

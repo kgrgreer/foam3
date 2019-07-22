@@ -52,7 +52,6 @@ foam.CLASS({
                     .build());
               }
             });
-            
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {

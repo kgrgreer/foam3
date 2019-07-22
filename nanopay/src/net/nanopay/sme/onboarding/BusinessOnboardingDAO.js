@@ -87,6 +87,10 @@ foam.CLASS({
           // Set the signing officer junction between the user and the business
           business.getSigningOfficers(x).add(user);
 
+          // Update the business because the put to signingOfficerJunctionDAO
+          // will have updated the email property of the business.
+          business = (Business) localBusinessDAO.find(business.getId());
+
           // * Step 6: Business info
           // Business info: business address
           business.setAddress(businessOnboarding.getBusinessAddress());

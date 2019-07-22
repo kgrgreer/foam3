@@ -476,7 +476,8 @@ foam.CLASS({
         destinationCurrency: this.invoice.destinationCurrency,
         payerId: this.invoice.payerId,
         payeeId: this.invoice.payeeId,
-        amount: this.invoice.amount
+        amount: this.invoice.amount,
+        destinationAmount: this.invoice.targetAmount,
       });
       var quote = await this.transactionQuotePlanDAO.put(
         this.TransactionQuote.create({

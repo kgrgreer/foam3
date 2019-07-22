@@ -43,11 +43,9 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
       name: 'denomination',
       aliases: ['currencyCode', 'currency'],
-      value: 'CAD',
-      section: 'accountDetails'
+      value: 'CAD'
     }
   ],
 
@@ -61,6 +59,13 @@ foam.CLASS({
       code: function(X) {
         X.stack.push({ class: 'net.nanopay.tx.ui.exposure.ExposureOverview', data: this });
       }
+    }
+  ],
+
+  sections: [
+    {
+      name: 'liquiditySettingsSection',
+      title: 'Liquidity Settings'
     }
   ],
 

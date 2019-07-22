@@ -13,6 +13,7 @@ import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.tx.alterna.CsvUtil;
+import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
@@ -70,7 +71,8 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
          transaction.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED ||
          ! ( transaction instanceof CITransaction ||
              transaction instanceof COTransaction ||
-             transaction instanceof FXTransaction ) ) {
+             transaction instanceof FXTransaction ||
+             transaction instanceof ComplianceTransaction ) ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -160,7 +162,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     for ( Object obj : children ) {
       Transaction child = (Transaction) ((Transaction) obj).fclone();
       child.setInvoiceId(transaction.getInvoiceId());
-      child = (Transaction) dao.put(child);
+      child = (Transaction) dao.put_(x, child);
       updateInvoice(x, child);
     }
   }

@@ -65,9 +65,11 @@ foam.CLASS({
 
       if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
         service = this.xeroService;
+        this.user.countXero++;
       }
       if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
         service = this.quickbooksService;
+        this.user.countQBO++;
       }
 
       // contact sync
@@ -99,7 +101,10 @@ foam.CLASS({
       report.userId = this.user.id;
       report.time = new Date();
       report.resultResponse = finalResult;
+      report.integrationCode = this.user.integrationCode;
       this.accountingReportDAO.put(report);
+
+      this.userDAO.put(this.user);
 
       return finalResult;
     },
@@ -182,6 +187,8 @@ foam.CLASS({
       ];
 
       let data = [];
+
+      doc.myY = doc.myY + 10;
 
       for ( item of mismatch ) {
         data.push({

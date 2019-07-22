@@ -8,17 +8,16 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
-    'net.nanopay.liquidity.ui.dashboard.liquidity.DashboardLiquidity',
-    'net.nanopay.liquidity.ui.dashboard.cicoShadow.DashboardCicoShadow',
-    'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
-    'net.nanopay.liquidity.ui.dashboard.recentTransactions.DashboardRecentTransactions',
-    'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
-    'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
     'foam.comics.v2.DAOBrowserView',
-    'foam.u2.layout.Cards',
     'foam.u2.layout.Card',
+    'foam.u2.layout.Grid',
     'foam.u2.layout.Rows',
+    'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
+    'net.nanopay.liquidity.ui.dashboard.cicoShadow.DashboardCicoShadow',
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
+    'net.nanopay.liquidity.ui.dashboard.currencyExposure.DashboardCurrencyExposure',
+    'net.nanopay.liquidity.ui.dashboard.liquidity.DashboardLiquidity',
+    'net.nanopay.liquidity.ui.dashboard.recentTransactions.DashboardRecentTransactions',
   ],
 
   imports: [
@@ -28,8 +27,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'baseDenomination',
-    'conversionService'
+    'baseDenomination'
   ],
 
   css: `
@@ -41,11 +39,9 @@ foam.CLASS({
     }
 
     ^dashboard-container {
+      grid-column-gap: 16px;
+      grid-row-gap: 32px;
       padding: 32px;
-    }
-
-    ^dashboard-container .foam-u2-layout-Cards {
-      margin-bottom: 32px;
     }
   `,
 
@@ -56,15 +52,6 @@ foam.CLASS({
       name: 'baseDenomination',
       targetDAOKey: 'currencyDAO',
       value: 'CAD'
-    },
-    {
-      name: 'conversionService',
-      hidden: true,
-      value: {
-        getRate: function(from, to) {
-          return Promise.resolve(1);
-        }
-      }
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -92,30 +79,24 @@ foam.CLASS({
       this
         .addClass(this.myClass())
           .start().add(this.cls_.name).addClass(this.myClass('header')).end()
-          .start(this.Rows).addClass(this.myClass('dashboard-container'))
-            .start(this.Cards)
-              .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
-                .tag(this.DashboardAccounts, { 
-                  currency$: this.currencyExposureDAO$,
-                  denomination$: this.baseDenomination$,
-                })
-              .end()
-              .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
-                .tag(this.DashboardLiquidity)
-              .end()
+          .start(this.Grid).addClass(this.myClass('dashboard-container'))
+            .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
+              .tag(this.DashboardAccounts, { 
+                currency$: this.currencyExposureDAO$,
+                denomination$: this.baseDenomination$,
+              })
             .end()
-            .start(this.Cards)
-              .start(this.Card, { columns: 1 }).addClass(this.myClass('currency-exposure'))
-                .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
-              .end()
-              .start(this.Card, { columns: 11 })
-                .tag(this.DashboardCicoShadow)
-              .end()
+            .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
+              .tag(this.DashboardLiquidity)
             .end()
-            .start(this.Cards)
-              .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
-                .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
-              .end()
+            .start(this.Card, { columns: 3 }).addClass(this.myClass('currency-exposure'))
+              .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
+            .end()
+            .start(this.Card, { columns: 9 })
+              .tag(this.DashboardCicoShadow)
+            .end()
+            .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
+              .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
             .end()
           .end();
     }

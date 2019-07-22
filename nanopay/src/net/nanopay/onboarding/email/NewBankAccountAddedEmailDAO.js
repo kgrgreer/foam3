@@ -77,7 +77,7 @@ foam.CLASS({
       account = (BankAccount) getDelegate().put_(x, obj);
 
       // Send email only after passing above checks
-      EmailMessage      message = new EmailMessage();
+      EmailMessage message = new EmailMessage.Builder(x).build();
       Map<String, Object>  args = new HashMap<>();
 
       args.put("userId", owner.getId());

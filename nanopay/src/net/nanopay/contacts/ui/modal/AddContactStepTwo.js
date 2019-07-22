@@ -44,7 +44,7 @@ foam.CLASS({
     ^ .bankAction {
       background-color: white;
       box-sizing: border-box;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       cursor: pointer;
       height: 44px;
       padding: 10px;
@@ -78,7 +78,7 @@ foam.CLASS({
       height: 24px;
       line-height: 1.5;
       font-size: 14px;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .bankAction:hover {
       background-color: white;

@@ -183,6 +183,11 @@ foam.CLASS({
         who last modified the Invoice.`,
     },
     {
+      class: 'DateTime',
+      name: 'lastDateUpdated',
+      documentation: 'Last time a XeroInvoice or QuickbooksInvoice was updated.'
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
@@ -259,7 +264,21 @@ foam.CLASS({
             .end();
           });
       },
-      tableWidth: 120
+      tableWidth: 120,
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        String dstCurrency = ((Invoice)obj).getDestinationCurrency();
+        Currency currency = (Currency) currencyDAO.find(dstCurrency);
+        
+        // Outputting two columns: "amount", "destination Currency"
+        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(dstCurrency);
+      `,
+      javaToCSVLabel: `
+        // Outputting two columns: "amount", "destination Currency"
+        outputter.outputValue(getName());
+        outputter.outputValue("Destination Currency");
+      `
     },
     { // How is this used? - display only?,
       class: 'Currency',
@@ -320,6 +339,25 @@ foam.CLASS({
       name: 'autoPay',
       documentation: 'Determines whether the invoice can be paid automatically.'
       // TODO
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'approvedBy',
+      documentation: 'the ID of the user that approved this invoice within the business.',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      }
     },
     {
       class: 'Reference',
@@ -431,7 +469,21 @@ foam.CLASS({
           hoverImageURL: '/images/attachment.svg',
           disabledImageURL: '/images/attachment.svg',
         });
-      }
+      },
+      javaToCSV: `
+        StringBuilder sb = new StringBuilder();
+        foam.nanos.fs.File[] filesList = get_(obj);
+        foam.nanos.fs.File file;
+  
+        sb.append("[");
+        for(int i = 0; i < filesList.length; i++ ) {
+          if ( i != 0 ) sb.append(",");
+          file = filesList[i];
+          sb.append(file.isPropertySet("address") ? file.getAddress() : file.getFilename());
+        }
+        sb.append("]");
+        outputter.outputValue(sb.toString());
+      `
     },
     {
       class: 'Boolean',
@@ -499,6 +551,16 @@ foam.CLASS({
         if the invoice is associated with an AFX transaction. This property exists 
         to keep  that PDF in such a scenario.
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'isSyncedWithAccounting',
+      factory: function() {
+        return net.nanopay.accounting.xero.model.XeroInvoice.isInstance(this) ||
+        net.nanopay.accounting.quickbooks.model.QuickbooksInvoice.isInstance(this);
+      },
+      documentation: 'Checks if invoice has been synced with accounting software.',
+      visibility: 'RO'
     }
   ],
 
@@ -637,7 +699,14 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payee ? obj.payee.label() : 'N/A');
-    }
+    },
+    javaToCSV: `
+      User payee = ((Invoice)obj).findPayeeId(x);
+      outputter.outputValue(payee.label());
+    `,
+    javaToCSVLabel: `
+      outputter.outputValue("Payee");
+    `
   },
 });
 
@@ -684,6 +753,13 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payer ? obj.payer.label() : 'N/A');
-    }
+    },
+    javaToCSV: `
+    User payer = ((Invoice)obj).findPayerId(x);
+    outputter.outputValue(payer.label());
+    `,
+    javaToCSVLabel: `
+    outputter.outputValue("Payer");
+    `
   },
 });

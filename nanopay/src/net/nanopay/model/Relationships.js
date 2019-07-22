@@ -89,6 +89,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   targetProperty: {
     section: 'accountDetails',
+    order: 4,
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
       return {
@@ -108,20 +109,16 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  sourceProperty: {
+    section: 'accountsSection',
+    label: ''
+  },
   targetProperty: {
-    section: 'liquiditySettings',
+    section: 'liquiditySettingsSection',
+    label: '',
     value: 0,
-    view: function(_, X) {
-      return foam.u2.view.RichChoiceView.create({
-        search: true,
-        selectionView: { class: 'net.nanopay.liquidity.LiquiditySettingsSelectionView' },
-        rowView: { class: 'net.nanopay.liquidity.LiquiditySettingsRowView' },
-        sections: [
-          {
-            dao: X.liquiditySettingsDAO,
-          }
-        ]
-      });
+    view: {
+      class: 'foam.u2.view.FullReferenceView'
     }
   }
 });
@@ -640,6 +637,28 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
+  forwardName: 'flinksResponses',
+  inverseName: 'flinksAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'accountDAO',
+  targetDAOKey: 'flinksAccountsDetailResponseDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.plaid.model.PlaidAccountDetail',
+  forwardName: 'plaidResponses',
+  inverseName: 'plaidAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'accountDAO',
+  targetDAOKey: 'plaidAccountDetailDAO',
   targetProperty: { visibility: 'RO' }
 });
 

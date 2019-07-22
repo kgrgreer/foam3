@@ -11,22 +11,22 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.*',
-    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.Account',
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        if ( obj instanceof DigitalAccount ) {
+        if ( obj instanceof Account ) {
           Count count = new Count();
-          DigitalAccount digitalAccount = (DigitalAccount) obj;
+          Account account = (Account) obj;
           count = (Count) ((DAO) x.get("localAccountDAO"))
             .where(
               AND(
-                EQ(DigitalAccount.PARENT, digitalAccount.getId()),
-                EQ(DigitalAccount.ENABLED, true),
-                EQ(DigitalAccount.DELETED, false)
+                EQ(Account.PARENT, account.getId()),
+                EQ(Account.ENABLED, true),
+                EQ(Account.DELETED, false)
               )
             )
             .limit(1)
@@ -34,7 +34,7 @@ foam.CLASS({
 
           if ( count.getValue() > 0 ) {
             Logger logger = (Logger) x.get("logger");
-            logger.log("Cannot delete account " + digitalAccount.getId() + " as it has children accounts");
+            logger.log("Cannot delete account " + account.getId() + " as it has children accounts");
             throw new RuntimeException("Cannot delete this account as it has children accounts");
           }
         }

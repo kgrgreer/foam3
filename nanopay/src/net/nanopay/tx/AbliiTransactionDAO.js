@@ -66,6 +66,7 @@ foam.CLASS({
         BankAccount destBankAccount = BankAccount.findDefault(getX(), destAccOwner, request.getDestinationCurrency());
 
         if ( destBankAccount == null ) {
+          ((Logger) x.get("logger")).error("Contact does not have a " + request.getDestinationAccount() + " bank account for request " + request );
           throw new RuntimeException("Contact does not have a " + request.getDestinationCurrency() + " bank account.");
         }
         request.setDestinationAccount(destBankAccount.getId());
@@ -76,9 +77,10 @@ foam.CLASS({
       Account senderDigitalAccount = DigitalAccount.findDefault(getX(), sender, request.getSourceCurrency());
       if (senderDigitalAccount instanceof Debtable &&
         ((Debtable) senderDigitalAccount).findDebtAccount(x) != null && // should be system context?
-        ((Debtable) senderDigitalAccount).findDebtAccount(x).getLimit() > 0 &&
-        request.getSourceCurrency() == request.getDestinationCurrency() &&
-        request.getSourceCurrency().equals("CAD") ) {
+        ((Debtable) senderDigitalAccount).findDebtAccount(x).getLimit() >= ( request.getAmount() - (long) senderDigitalAccount.findBalance(x) ) &&
+        SafetyUtil.equals(request.getSourceCurrency(), request.getDestinationCurrency()) &&
+        request.getSourceCurrency().equals("CAD") &&
+        ( (long) ((Debtable) senderDigitalAccount).findDebtAccount(x).findCreditorAccount(x).findBalance(x) ) >= ( request.getAmount() - (long) senderDigitalAccount.findBalance(x) ) ) {
           CompositeTransaction ct = new CompositeTransaction();
           ct.copyFrom(request);
           ct.setIsQuoted(true);

@@ -32,7 +32,8 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*',
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'net.nanopay.tx.cico.VerificationTransaction'
   ],
 
   properties: [
@@ -46,18 +47,30 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      javaCode: `TransactionQuote quote = (TransactionQuote) obj;
+      javaCode: `
+      
+      if ( ! this.getEnabled() ) {
+        return getDelegate().put_(x, obj);
+      }
+      
+      TransactionQuote quote = (TransactionQuote) obj;
       Transaction request = quote.getRequestTransaction();
+      Logger logger = (Logger) x.get("logger");
+      
       if ( request instanceof AlternaVerificationTransaction ) {
         request.setIsQuoted(true);
         quote.addPlan(request);
         return quote;
+      } else if ( request instanceof VerificationTransaction ) {
+        return getDelegate().put_(x, obj);
       }
+      
       Account sourceAccount = quote.getSourceAccount();
       Account destinationAccount = quote.getDestinationAccount();
       if ( sourceAccount instanceof CABankAccount &&
         destinationAccount instanceof DigitalAccount ) {
         if ( ((CABankAccount) sourceAccount).getStatus() != BankAccountStatus.VERIFIED ) {
+          logger.error("Bank account needs to be verified for cashin " + sourceAccount.getId());
           throw new RuntimeException("Bank account needs to be verified for cashin");
         }
         AlternaCITransaction t = new AlternaCITransaction.Builder(x).build();
@@ -69,6 +82,7 @@ foam.CLASS({
       } else if ( destinationAccount instanceof CABankAccount &&
         sourceAccount instanceof DigitalAccount ) {
         if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) {
+          logger.error("Bank account needs to be verified for cashout");
           throw new RuntimeException("Bank account needs to be verified for cashout");
         }
         AlternaCOTransaction t = new AlternaCOTransaction.Builder(x).build();

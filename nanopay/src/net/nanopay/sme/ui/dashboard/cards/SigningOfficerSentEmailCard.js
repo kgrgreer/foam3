@@ -53,7 +53,7 @@ foam.CLASS({
       font-size: 16px;
       font-weight: 900;
       line-height: 1.5;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^ .description {
@@ -80,7 +80,7 @@ foam.CLASS({
   messages: [
     {
       name: 'TITLE',
-      message: 'We’ve sent an email to a sigining officer at your company!'
+      message: 'We’ve sent an email to a signing officer at your company!'
     },
     {
       name: 'DESCRIPTION',

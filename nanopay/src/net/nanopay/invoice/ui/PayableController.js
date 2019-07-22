@@ -65,12 +65,12 @@ foam.CLASS({
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({
               label: 'Invoice No.',
-              tableWidth: 145
+              tableWidth: 115
             }),
-            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 145 }),
-            this.Invoice.ISSUE_DATE.clone().copyFrom({ tableWidth: 145 }),
-            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 145 }),
-            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 145 }),
+            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.ISSUE_DATE.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 115 }),
             'invoiceFile'
           ],
 
@@ -168,14 +168,16 @@ foam.CLASS({
               isEnabled: function() {
                 return self.user.id === this.createdBy &&
                   ( this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE ) && !
+                  this.status === self.InvoiceStatus.OVERDUE ||
+                  this.status === self.InvoiceStatus.PENDING_APPROVAL ) && !
                   ( self.QuickbooksInvoice.isInstance(this) || self.XeroInvoice.isInstance(this) );
               },
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.UNPAID ||
                   this.status === self.InvoiceStatus.PAID ||
                   this.status === self.InvoiceStatus.PROCESSING ||
-                  this.status === self.InvoiceStatus.OVERDUE;
+                  this.status === self.InvoiceStatus.OVERDUE ||
+                  this.status === self.InvoiceStatus.PENDING_APPROVAL;
               },
               code: function() {
                 this.paymentMethod = self.PaymentStatus.VOID;

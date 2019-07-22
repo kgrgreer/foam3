@@ -8,6 +8,10 @@
 # Exit on first failure
 set -e
 
+function warning {
+    echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
+}
+
 function rmdir {
     if test -d "$1" ; then
         rm -rf "$1"
@@ -95,7 +99,7 @@ function setup_jce {
 
 function deploy_journals {
     echo "INFO :: Deploying Journals"
-    
+
     # prepare journals
     cd "$PROJECT_HOME"
 
@@ -168,10 +172,6 @@ function clean {
                 rm -rf target
                 mkdir target
             fi
-            if [ -d "generatedJava/" ]; then
-                rm -rf generatedJava
-                mkdir generatedJava
-            fi
             mvn clean
         else
             gradle clean $GRADLE_FLAGS
@@ -190,7 +190,7 @@ function build_jar {
         # maven
         if [ "$COMPILE_ONLY" -eq 0 ]; then
             echo "INFO :: Building nanos..."
-            ./gen.sh tools/classes.js generatedJava
+            ./gen.sh tools/classes.js build/src/java
 
             echo "INFO :: Packaging js..."
             ./tools/js_build/build.js
@@ -218,7 +218,7 @@ function package_tar {
 function delete_runtime_journals {
   if [[ $DELETE_RUNTIME_JOURNALS -eq 1 && IS_AWS -eq 0 ]]; then
     echo "INFO :: Runtime journals deleted."
-    rmdir "$JOURNAL_HOME"
+    rm -rf "$JOURNAL_HOME"
     mkdir -p "$JOURNAL_HOME"
   fi
 }
@@ -226,7 +226,7 @@ function delete_runtime_journals {
 function delete_runtime_logs {
   if [[ $DELETE_RUNTIME_LOGS -eq 1 && IS_AWS -eq 0 ]]; then
     echo "INFO :: Runtime logs deleted."
-    rmdir "$LOG_HOME"
+    rm -rf "$LOG_HOME"
     mkdir -p "$LOG_HOME"
   fi
 }
@@ -289,11 +289,17 @@ function status_nanos {
 
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
+        OPT_ARGS=
+        
         if [ $GRADLE_BUILD -eq 1 ]; then
-            ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT} -Z$(gradle -q --daemon getVersion)
-        else
-            ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT}
+            OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
         fi
+
+        if [ ! -z ${RUN_USER} ]; then
+            OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
+        fi
+
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -500,7 +506,7 @@ function usage {
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
-    echo "  -n : new Gradle Build"
+    echo "  -o : old maven build"
     echo "  -p : short cut for setting MODE to PRODUCTION"
     echo "  -q : short cut for setting MODE to STAGING"
     echo "  -r : Start nanos with whatever was last built."
@@ -509,6 +515,7 @@ function usage {
     echo "  -t : Run All tests."
     echo "  -T testId1,testId2,... : Run listed tests."
     echo "  -u : Run from jar. Intented for Production deployments."
+    echo "  -U : User to run as"
     echo "  -v : java compile only (maven), no code generation."
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
@@ -524,7 +531,7 @@ function usage {
 JOURNAL_CONFIG=default
 INSTANCE=
 HOST_NAME=`hostname -s`
-GRADLE_BUILD=0
+GRADLE_BUILD=1
 VERSION=
 MODE=
 #MODE=DEVELOPMENT
@@ -552,12 +559,12 @@ WEB_PORT=8080
 VULNERABILITY_CHECK=0
 GRADLE_FLAGS=
 LIQUID_DEMO=0
+RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) CLEAN_BUILD=1 
-           GRADLE_FLAGS="--rerun-tasks"
+        c) CLEAN_BUILD=1
            ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
@@ -575,10 +582,10 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
         M) MODE=$OPTARG
            echo "MODE=${MODE}"
            ;;
-        n) GRADLE_BUILD=1 ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
+        o) GRADLE_BUILD=0 ;;
         p) MODE=PRODUCTION
            echo "MODE=${MODE}"
            ;;
@@ -601,6 +608,7 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
            CLEAN_BUILD=1
            ;;
         u) RUN_JAR=1;;
+        U) RUN_USER=${OPTARG};;
         v) COMPILE_ONLY=1 ;;
         V) VERSION=$OPTARG
            echo "VERSION=${VERSION}";;
@@ -613,8 +621,16 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uvV:W:xz" opt ; do
     esac
 done
 
+if [ ${CLEAN_BUILD} -eq 1 ]; then
+    GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
+fi
+
+if [ ${GRADLE_BUILD} -eq 0 ]; then
+    warning "Maven build is deprecated, switch to gradle by dropping 'n' flag"
+fi
+
 if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
-    echo "WARNING :: ${JOURNAL_CONFIG} journal config unsupported for jar deployment";
+    warning "${JOURNAL_CONFIG} journal config unsupported for jar deployment";
 fi
 
 setenv
