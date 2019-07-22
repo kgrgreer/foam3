@@ -89,6 +89,14 @@ foam.CLASS({
         supported by the platform.`,
     },
     {
+      class: 'String',
+      name: 'flagEmoji',
+      documentation: `
+        The flag emoji used in relation to currencies from countries 
+        currently supported by the platform
+      `
+    },
+    {
       class: 'Boolean',
       name: 'showSpace',
       documentation: `Determines whether there is a space between the symbol and 
