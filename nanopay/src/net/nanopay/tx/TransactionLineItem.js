@@ -18,6 +18,7 @@ foam.CLASS({
     {
       name: 'id',
       class: 'String',
+      hidden: true,
       factory: function() {
         return foam.uuid.randomGUID();
       },
