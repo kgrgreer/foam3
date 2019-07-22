@@ -1,0 +1,4 @@
+p({"class":"net.nanopay.bank.BankAccount", "id":7, "owner":101, "denomination":"CAD", "name":"Alterna Bank Account", "institution",1})
+p({"class":"net.nanopay.bank.BankAccount", "id":8, "owner":101, "denomination":"CAD", "name":"BMO Bank Account", "institution",2})
+p({"class":"net.nanopay.account.TrustAccount", "id":1, "reserveAccount":7, "owner":101, "denomination":"CAD", "name":"nanopay Alterna Trust Account CAD"})
+p({"class":"net.nanopay.account.TrustAccount", "id":9, "reserveAccount":8, "owner":101, "denomination":"CAD", "name":"nanopay BMO Trust Account CAD"})
