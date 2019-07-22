@@ -114,7 +114,6 @@ foam.CLASS({
         property. In this case, we are using the alphabeticCode.
       `,
       code: function(x) {
-        var self = this;
         return this.alphabeticCode;
       }
     },
