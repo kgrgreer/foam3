@@ -65,14 +65,6 @@ foam.CLASS({
       message: 'CASH IN / OUT OF SHADOW ACCOUNTS',
     },
     {
-      name: 'TOOLTIP_CI',
-      message: 'Cash In'
-    },
-    {
-      name: 'TOOLTIP_CO',
-      message: 'Cash Out'
-    },
-    {
       name: 'TOOLTIP_TOTAL_CI',
       message: '+'
     },
