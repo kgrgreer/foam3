@@ -40,7 +40,6 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'foam.nanos.analytics.Candlestick',
     'net.nanopay.account.ShadowAccount',
-    'net.nanopay.model.Currency',
     'net.nanopay.tx.model.TransactionStatus',
     'org.chartjs.HorizontalBarDAOChartView',
     'foam.u2.layout.Rows',
