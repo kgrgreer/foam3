@@ -186,25 +186,40 @@ foam.CLASS({
         }
         String beforeDecimal = amountStr.substring(0, amountStr.length() - this.getPrecision());
         String formatted = isNegative ? "-" : "";
+
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "right") && SafetyUtil.equals(this.getHomeDenomination(), this.getId()) ) {
+          formatted += this.getId();
+          formatted += " ";
+        }
+
         if ( SafetyUtil.equals(this.getLeftOrRight(), "left") ) {
           formatted += this.getSymbol();
           if ( this.getShowSpace() ) {
             formatted += " ";
           }
         }
+
         formatted += beforeDecimal.length() > 0 ?
           beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", this.getDelimiter()) :
           "0";
+
         if ( this.getPrecision() > 0 ) {
           formatted += this.getDecimalCharacter();
           formatted += amountStr.substring(amountStr.length() - this.getPrecision());
         }
+
         if ( SafetyUtil.equals(this.getLeftOrRight(), "right") ) {
           if ( this.getShowSpace() ) {
             formatted += " ";
           }
           formatted += this.getSymbol();
         }
+
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "left") && SafetyUtil.equals(this.getHomeDenomination(), this.getId()) ) {
+          formatted += " ";
+          formatted += this.getId();
+        }
+
         return formatted;
       `
     }
