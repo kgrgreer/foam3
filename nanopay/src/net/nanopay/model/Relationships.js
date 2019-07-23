@@ -624,9 +624,45 @@ foam.RELATIONSHIP({
   forwardName: 'debits',
   inverseName: 'sourceAccount',
   cardinality: '1:*',
-  sourceDAOKey: 'localAccountDAO',
+  sourceDAOKey: 'accountDAO',
   targetDAOKey: 'transactionDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    section: 'paymentInfo',
+    visibility: 'FINAL',
+    view: {
+      class: 'foam.u2.view.FullReferenceView',
+      detailView: {
+        class: 'foam.u2.view.CollapseableDetailView',
+        citationView: null,
+        view: {
+          class: 'foam.u2.detail.SectionView',
+          section: {
+            properties: [
+              net.nanopay.account.Account.NAME,
+              net.nanopay.account.Account.TYPE,
+              net.nanopay.account.Account.OWNER.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.FullReferenceView',
+                  detailView: {
+                    class: 'foam.u2.detail.SectionView',
+                    section: {
+                      properties: [
+                        foam.nanos.auth.User.ID,
+                        foam.nanos.auth.User.LEGAL_NAME,
+                        foam.nanos.auth.User.EMAIL,
+                        foam.nanos.auth.User.BUSINESS_NAME,
+                        foam.nanos.auth.User.PROFILE_PICTURE,
+                      ]
+                    }
+                  }
+                }
+              })
+            ]
+          }
+        }
+      }
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -635,9 +671,45 @@ foam.RELATIONSHIP({
   forwardName: 'credits',
   inverseName: 'destinationAccount',
   cardinality: '1:*',
-  sourceDAOKey: 'localAccountDAO',
+  sourceDAOKey: 'accountDAO',
   targetDAOKey: 'transactionDAO',
-  targetProperty: { visibility: 'RO' }
+  targetProperty: {
+    section: 'paymentInfo',
+    visibility: 'FINAL',
+    view: {
+      class: 'foam.u2.view.FullReferenceView',
+      detailView: {
+        class: 'foam.u2.view.CollapseableDetailView',
+        citationView: null,
+        view: {
+          class: 'foam.u2.detail.SectionView',
+          section: {
+            properties: [
+              net.nanopay.account.Account.NAME,
+              net.nanopay.account.Account.TYPE,
+              net.nanopay.account.Account.OWNER.clone().copyFrom({
+                view: {
+                  class: 'foam.u2.view.FullReferenceView',
+                  detailView: {
+                    class: 'foam.u2.detail.SectionView',
+                    section: {
+                      properties: [
+                        foam.nanos.auth.User.ID,
+                        foam.nanos.auth.User.LEGAL_NAME,
+                        foam.nanos.auth.User.EMAIL,
+                        foam.nanos.auth.User.BUSINESS_NAME,
+                        foam.nanos.auth.User.PROFILE_PICTURE,
+                      ]
+                    }
+                  }
+                }
+              })
+            ]
+          }
+        }
+      }
+    }
+  }
 });
 
 foam.RELATIONSHIP({

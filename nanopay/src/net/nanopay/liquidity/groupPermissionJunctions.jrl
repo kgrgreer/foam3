@@ -6,3 +6,4 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"transaction.ro.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"bankaccount.ro.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"currency.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"liquidDev","targetId":"rule.*"})

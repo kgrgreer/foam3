@@ -28,6 +28,12 @@ foam.CLASS({
     {
       name: 'rejectReason',
       class: 'String'
+    },
+    {
+      name: 'institutionNumber',
+      class: 'String',
+      value: '001',
+      visibility: 'Hidden'
     }
   ],
 
