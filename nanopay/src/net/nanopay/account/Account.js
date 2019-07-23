@@ -15,6 +15,12 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  imports: [
+    'homeDenomination',
+    'fxService',
+    'user'
+  ],
+
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
@@ -33,7 +39,8 @@ foam.CLASS({
     'name',
     'type',
     'denomination',
-    'balance'
+    'balance',
+    'homeBalance'
   ],
 
   axioms: [
@@ -202,7 +209,29 @@ foam.CLASS({
           });
         });
       },
-      tableWidth: 100
+      tableWidth: 135
+    },
+    {
+      class: 'Long',
+      name: 'homeBalance',
+      documentation: `
+        A numeric value representing the available funds in the 
+        bank account converted to home denomination.
+      `,
+      storageTransient: true,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, id) {
+        var self = this;
+
+        this.add(obj.fxService.getFXRate(obj.denomination, obj.homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
+          obj.findBalance(self.__subSubContext__).then(balance => 
+            self.__subSubContext__.currencyDAO.find(obj.homeDenomination).then(curr => 
+              balance != null ?  curr.format(Math.floor(balance * r.rate)) : 0
+            )
+          )
+        ));
+      },
+      tableWidth: 135
     },
     {
       class: 'DateTime',
