@@ -40,6 +40,7 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'foam.nanos.analytics.Candlestick',
     'net.nanopay.account.ShadowAccount',
+    'net.nanopay.model.Currency',
     'net.nanopay.tx.model.TransactionStatus',
     'org.chartjs.HorizontalBarDAOChartView',
     'foam.u2.layout.Rows',
@@ -55,12 +56,29 @@ foam.CLASS({
     'accountDAO',
     'transactionDAO',
     'currencyDAO',
+    'homeDenomination'
   ],
 
   messages: [
     {
       name: 'CARD_HEADER',
       message: 'CASH IN / OUT OF SHADOW ACCOUNTS',
+    },
+    {
+      name: 'TOOLTIP_CI',
+      message: 'Cash In'
+    },
+    {
+      name: 'TOOLTIP_CO',
+      message: 'Cash Out'
+    },
+    {
+      name: 'TOOLTIP_TOTAL_CI',
+      message: '+'
+    },
+    {
+      name: 'TOOLTIP_TOTAL_CO',
+      message: '-'
     }
   ],
 
@@ -227,10 +245,23 @@ foam.CLASS({
                   config.options.scales.xAxes = [{
                     ticks: {
                       callback: function (value) {
-                        return c.format(value);
+                        return `${c.id} ${c.format(value)}`;
                       }
                     }
                   }];
+
+                  config.options.tooltips = {
+                    displayColors: false,
+                    callbacks: {
+                      label: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var currentValue = dataset.data[tooltipItem.index];
+
+                        var label = dataset.label === 'CITransaction' ? self.TOOLTIP_TOTAL_CI : self.TOOLTIP_TOTAL_CO;
+                        return [`${label} ${c.id} ${c.format(currentValue)}`];
+                      }
+                    }
+                  };
                 }
                 return self.HorizontalBarDAOChartView.create({
                   data$: self.cicoTransactionsDAO$,
@@ -284,16 +315,16 @@ foam.CLASS({
     {
       name: 'f',
       code: function (obj) {
-        return this.CITransaction.isInstance(obj) 
+        return this.CITransaction.isInstance(obj)
           ? 'CITransaction'
-          : this.COTransaction.isInstance(obj) 
-            ? 'COTransaction' 
+          : this.COTransaction.isInstance(obj)
+            ? 'COTransaction'
             : 'Other';
       },
       javaCode: `
-        return obj instanceof CITransaction 
+        return obj instanceof CITransaction
           ? "CITransaction"
-          : obj instanceof COTransaction 
+          : obj instanceof COTransaction
             ? "COTransaction"
             : "Other";
       `
