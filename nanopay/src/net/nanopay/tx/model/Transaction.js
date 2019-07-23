@@ -557,6 +557,12 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      code: function() {
+        return this.type + ' ' + this.status + ' ' + this.lastModified;
+      }
+    },
+    {
       name: 'doFolds',
       javaCode: `
 for ( Balance b : getBalances() ) {
@@ -991,7 +997,7 @@ for ( Balance b : getBalances() ) {
         return net.nanopay.tx.AbliiTransaction.isInstance(this);
       },
       code: function(X) {
-        this.__context__.stack.push({ class: 'net.nanopay.tx.ui.ExpediteTransactionWizard', parentTransaction: this });
+        this.__context__.stack.push({ class: 'foam.u2.DetailView', data: net.nanopay.tx.ui.ExpediteTransaction.create({ transaction: this.id }, this) });
       }
     }
   ]
