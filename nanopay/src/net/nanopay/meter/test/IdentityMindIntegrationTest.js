@@ -65,14 +65,54 @@ foam.CLASS({
         setX(x);
         setUp();
         if ( testIdentityMindTxRulesEnabled() ) {
-          // 1. test transaction ACCEPT-ed
-          testTransactionAcceptedByIdentityMind();
-          // 2. test transaction REJECT-ed
-          testTransactionRejectedByIdentityMind();
-          // 3. test transaction MANUAL_REVIEW-ed
-          testTransactionManualReviewedByIdentityMind();
+          testTransaction("ACCEPT", getIdentityMindUserId());
+          testTransaction("DENY", getIdentityMindUserId());
+          testTransaction("MANUAL_REVIEW", getFraudOpsUserId());
         }
         tearDown();
+      `
+    },
+    {
+      name: 'testIdentityMindTxRulesEnabled',
+      type: 'Boolean',
+      javaCode: `
+        Long[] ruleIds = new Long[] { getIdentityMindTxRuleId(), 1310L, 1520L };
+        Count count = (Count) ((DAO) getRuleDAO())
+          .where(AND(
+            EQ(Rule.ENABLED, true),
+            EQ(Rule.DAO_KEY, "localTransactionDAO"),
+            IN(Rule.ID, ruleIds)))
+          .select(new Count());
+
+        boolean result = count.getValue() == ruleIds.length;
+        test(result, "IdentityMind transaction rules are enabled");
+        return result;
+      `
+    },
+    {
+      name: 'testTransaction',
+      args: [
+        { name: 'policy', type: 'String' },
+        { name: 'approverId', type: 'Long' }
+      ],
+      javaCode: `
+        ((IdentityMindService) getIdentityMindService()).setDefaultProfile(policy);
+        Transaction tx = newTransaction(1000);
+        tx = (Transaction) ((DAO) getTransactionDAO()).inX(senderX_).put(tx);
+
+        test(findTxApprovalRequest(tx) == null,
+          "1. No approval request is created before the IdentityMind transaction rule is run");
+
+        ((StubThreadPool) getThreadPool()).invokeAll();
+        ApprovalRequest found = findTxApprovalRequest(tx);
+        ApprovalStatus approvalStatus = getExpectedApprovalStatus(policy);
+        test(found != null && found.getApprover() == approverId && found.getStatus() == approvalStatus,
+          "2. When transaction is marked as " + policy + ", an approval request with status=" + approvalStatus.toString() + " is created");
+
+        tx = (Transaction) ((DAO) getTransactionDAO()).find(tx);
+        TransactionStatus transactionStatus = getExpectedTransactionStatus(policy);
+        test(tx.getStatus() == transactionStatus,
+          "3 .Compliance transaction status should be " + transactionStatus.toString());
       `
     },
     {
@@ -219,71 +259,29 @@ foam.CLASS({
       `
     },
     {
-      name: 'testIdentityMindTxRulesEnabled',
-      type: 'Boolean',
+      name: 'getExpectedApprovalStatus',
+      args: [
+        { name: 'policy', type: 'String' }
+      ],
+      type: 'net.nanopay.approval.ApprovalStatus',
       javaCode: `
-        Long[] ruleIds = new Long[] { getIdentityMindTxRuleId(), 1310L, 1520L };
-        Count count = (Count) ((DAO) getRuleDAO())
-          .where(AND(
-            EQ(Rule.ENABLED, true),
-            EQ(Rule.DAO_KEY, "localTransactionDAO"),
-            IN(Rule.ID, ruleIds)))
-          .select(new Count());
-
-        boolean result = count.getValue() == ruleIds.length;
-        test(result, "IdentityMind transaction rules are enabled");
-        return result;
+        if ( policy.equals("ACCEPT") ) return ApprovalStatus.APPROVED;
+        if ( policy.equals("DENY") ) return ApprovalStatus.REJECTED;
+        if ( policy.equals("MANUAL_REVIEW") ) return ApprovalStatus.REQUESTED;
+        return null;
       `
     },
     {
-      name: 'testTransactionAcceptedByIdentityMind',
+      name: 'getExpectedTransactionStatus',
+      args: [
+        { name: 'policy', type: 'String' }
+      ],
+      type: 'net.nanopay.tx.model.TransactionStatus',
       javaCode: `
-        ((IdentityMindService) getIdentityMindService()).setDefaultProfile("ACCEPT");
-        Transaction tx = newTransaction(1000);
-        tx = (Transaction) ((DAO) getTransactionDAO()).inX(senderX_).put(tx);
-
-        test(findTxApprovalRequest(tx) == null,
-          "No approval request is created yet before the IdentityMind transaction rule is run");
-
-        ((StubThreadPool) getThreadPool()).invokeAll();
-        ApprovalRequest found = findTxApprovalRequest(tx);
-        test(found != null && found.getApprover() == getIdentityMindUserId() && found.getStatus() == ApprovalStatus.APPROVED,
-          "An approval request with status=APPROVED is created when the IdentityMind ACCEPT-ed the transaction");
-
-        tx = (Transaction) ((DAO) getTransactionDAO()).find(tx);
-        test(tx.getStatus() == TransactionStatus.COMPLETED, "Compliance transaction should be COMPLETED");
-      `
-    },
-    {
-      name: 'testTransactionRejectedByIdentityMind',
-      javaCode: `
-        ((IdentityMindService) getIdentityMindService()).setDefaultProfile("REJECT");
-        Transaction tx = newTransaction(1100);
-        tx = (Transaction) ((DAO) getTransactionDAO()).inX(senderX_).put(tx);
-
-        ((StubThreadPool) getThreadPool()).invokeAll();
-        ApprovalRequest found = findTxApprovalRequest(tx);
-        test(found != null && found.getApprover() == getIdentityMindUserId() && found.getStatus() == ApprovalStatus.REJECTED,
-          "An approval request with status=REJECTED is created when the IdentityMind REJECT-ed the transaction");
-
-        tx = (Transaction) ((DAO) getTransactionDAO()).find(tx);
-        test(tx.getStatus() == TransactionStatus.DECLINED, "Compliance transaction should be DECLINED");
-      `
-    },
-    {
-      name: 'testTransactionManualReviewedByIdentityMind',
-      javaCode: `
-        ((IdentityMindService) getIdentityMindService()).setDefaultProfile("MANUAL_REVIEW");
-        Transaction tx = newTransaction(1200);
-        tx = (Transaction) ((DAO) getTransactionDAO()).inX(senderX_).put(tx);
-
-        ((StubThreadPool) getThreadPool()).invokeAll();
-        ApprovalRequest found = findTxApprovalRequest(tx);
-        test(found != null && found.getApprover() == getFraudOpsUserId() && found.getStatus() == ApprovalStatus.REQUESTED,
-          "An approval request is created for fraud-ops user when the IdentityMind marked transaction as MANUAL_REVIEW");
-
-        tx = (Transaction) ((DAO) getTransactionDAO()).find(tx);
-        test(tx.getStatus() == TransactionStatus.PENDING, "Compliance transaction should be in PENDING");
+        if ( policy.equals("ACCEPT") ) return TransactionStatus.COMPLETED;
+        if ( policy.equals("DENY") ) return TransactionStatus.DECLINED;
+        if ( policy.equals("MANUAL_REVIEW") ) return TransactionStatus.PENDING;
+        return null;
       `
     }
   ],
