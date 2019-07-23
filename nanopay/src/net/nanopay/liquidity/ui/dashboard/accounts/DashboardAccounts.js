@@ -14,6 +14,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'homeDenomination',
     'accountDAO',
     'balanceDAO',
     'user'
@@ -85,11 +86,6 @@ foam.CLASS({
       name: 'currency'
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.model.Currency',
-      name: 'denomination',
-    },
-    {
       name: 'controllerMode',
       factory: function() {
         return this.ControllerMode.VIEW;
@@ -103,16 +99,13 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(self.slot(function(accountDAO, denomination, currency) {
+        .add(self.slot(function(accountDAO, homeDenomination, currency) {
           return self.E()
               .start(self.Rows).addClass(this.myClass('card-container'))
                 .start().addClass(this.myClass('balance-card'))
                   .start(self.Rows)
                     .start(self.Cols).style({'align-items': 'center'}).addClass(this.myClass('card-header-container'))
                       .start().add(self.CARD_HEADER).addClass(this.myClass('card-header-title')).end()
-                      .startContext({ data: this, controllerMode: self.ControllerMode.EDIT })
-                        .tag(this.DENOMINATION)
-                      .endContext()
                     .end()
                     .start().addClass(this.myClass('balance'))
                       .add(
@@ -121,13 +114,13 @@ foam.CLASS({
                               denomBalances.array.forEach(denomBalance => {
                                 baseTotal += denomBalance.total;
                               })
-                              return self.__subSubContext__.currencyDAO.find(denomination).then(curr => baseTotal != null ?  curr.format(baseTotal) : 0);
+                              return self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => baseTotal != null ?  curr.format(baseTotal) : 0);
                             })
                           )
                     .end()
                     .start().addClass(this.myClass('balance-note'))
                       .add(self.BALANCE_NOTE)
-                      .add(` (${denomination})`)
+                      .add(` (${homeDenomination})`)
                     .end()
                   .end()
                 .end()

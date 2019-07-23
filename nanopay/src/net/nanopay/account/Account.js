@@ -155,7 +155,8 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
       name: 'denomination',
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.

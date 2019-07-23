@@ -12,6 +12,38 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
+  properties: [
+    {
+      name: 'id',
+      hidden: true
+    },
+    {
+      name: 'reversable',
+      hidden: true
+    },
+    {
+      name: 'currency',
+      hidden: true
+    },
+    {
+      name: 'name',
+      visibility: foam.u2.Visibility.RW,
+      factory: function() { return ''; }
+    },
+    {
+      name: 'type',
+      hidden: true
+    },
+    {
+      name: 'amount',
+      hidden: true
+    },
+    {
+      name: 'group',
+      hidden: true
+    }
+  ],
+
   methods: [
     {
       name: 'createTransfers',
@@ -37,6 +69,12 @@ foam.CLASS({
       javaCode: `
         return new Transfer[0];
       `
+    },
+    {
+      name: 'toSummary',
+      code: function() {
+        return this.name + ' - ' + this.note;
+      }
     }
   ]
 });

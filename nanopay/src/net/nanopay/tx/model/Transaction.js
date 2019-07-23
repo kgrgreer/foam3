@@ -23,30 +23,31 @@ foam.CLASS({
     'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.EQ',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
+    'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.model.Business',
     'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.account.Balance'
+    'static foam.mlang.MLang.EQ'
   ],
 
   requires: [
@@ -85,8 +86,7 @@ foam.CLASS({
     'type',
     'status',
     'summary',
-    'created',
-    'completionDate'
+    'created'
   ],
 
   sections: [
@@ -210,8 +210,8 @@ foam.CLASS({
       visibility: 'RO',
       section: 'basicInfo',
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
-      javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
-
+      javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
+      tableWidth: 150
     },
     {
       class: 'DateTime',
@@ -219,7 +219,7 @@ foam.CLASS({
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
       section: 'basicInfo',
-      tableWidth: 140
+      tableWidth: 145
     },
     {
       class: 'Reference',
@@ -320,13 +320,15 @@ foam.CLASS({
       label: 'Reference'
     },
     {
-      // FIXME: move to a ViewTransaction used on the client
+      // FIXME: Should be able to remove now that we render this from
+      // source/destinationAccount on the client.  Appears to be used
+      // in SPSProcess.java but that might be incorrect.
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payee',
       label: 'Receiver',
       storageTransient: true,
-      visibility: 'RO',
+      hidden: true,
       section: 'paymentInfo',
       tableCellFormatter: function(value) {
         this.start()
@@ -337,13 +339,16 @@ foam.CLASS({
       },
     },
     {
-      // FIXME: move to a ViewTransaction used on the client
+      // FIXME: Should be able to remove now that we render this from
+      // source/destinationAccount on the client.  Appears to be used
+      // in SPSProcess.java but that might be incorrect.
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
       label: 'Sender',
       section: 'paymentInfo',
-      visibility: 'RO',
+      //      visibility: 'RO',
+      hidden: true,
       storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
@@ -369,7 +374,7 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       section: 'paymentInfo',
-      visibility: 'RO'
+      visibility: 'FINAL'
     },
     {
       class: 'String',
@@ -379,7 +384,6 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of Transactions.
       `,
-      tableWidth: 320,
       tableCellFormatter: async function(_, obj) {
         var [srcCurrency, dstCurrency] = await Promise.all([
           obj.currencyDAO.find(obj.sourceCurrency),
@@ -642,7 +646,7 @@ for ( Balance b : getBalances() ) {
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&  
+      if ( getStatus() == TransactionStatus.COMPLETED &&
       ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
    return true;
  }
@@ -959,8 +963,13 @@ for ( Balance b : getBalances() ) {
       }
     ],
     javaCode: `
-    sendReverseNotification(x, oldTxn);
-    sendCompletedNotification(x, oldTxn);
+    try {
+      sendReverseNotification(x, oldTxn);
+      sendCompletedNotification(x, oldTxn);
+    } catch (Exception e) {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning("Transaction failed to send notitfication. " + e.getMessage());
+    }
     `
   }
 ],
@@ -978,7 +987,7 @@ for ( Balance b : getBalances() ) {
           exportEnabled: true,
           title: `${this.id}'s Compliance History`,
           data: this.complianceHistoryDAO.where(m.AND(
-            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id), 
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
             m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
           ))
         });

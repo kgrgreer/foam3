@@ -190,9 +190,16 @@ public class BmoSendFileCron implements ContextAgent {
         SEND_LOCK.unlock();
       }
       // update the transaction
-      transactions.stream().forEach(
-        transactionDAO.inX(x)::put
-      );
+      for ( Transaction transaction : transactions ) {
+
+        try {
+          transactionDAO.inX(x).put(transaction);
+        } catch ( Exception e ) {
+          logger.error("Transaction " + transaction.getId() + " updated failed, please update manually", e);
+          BmoFormatUtil.sendEmail(x, "Transaction " + transaction.getId() + " updated failed, please update manually", e);
+        }
+
+      }
     }
   }
 
