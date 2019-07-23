@@ -10,7 +10,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'bareUserDAO',
     'localUserDAO',
     'logger',
     'groupDAO'
@@ -241,7 +240,7 @@ foam.CLASS({
         user = user.isFrozen() ? (foam.nanos.auth.User) user.fclone() : user;
         user.setLoginAttempts((short) 0);
         user.setNextLoginAttemptAllowedAt(new Date());
-        return (foam.nanos.auth.User) ((foam.dao.DAO) getBareUserDAO()).put(user);
+        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).put(user);
       `
     },
     {
@@ -261,7 +260,7 @@ foam.CLASS({
       javaCode: `
         user = user.isFrozen() ? (foam.nanos.auth.User) user.fclone() : user;
         user.setLoginAttempts((short) (user.getLoginAttempts() + 1));
-        return (foam.nanos.auth.User) ((foam.dao.DAO) getBareUserDAO()).put(user);
+        return (foam.nanos.auth.User) ((foam.dao.DAO) getLocalUserDAO()).put(user);
       `
     },
     {
@@ -283,7 +282,7 @@ foam.CLASS({
          Calendar cal = Calendar.getInstance();
          cal.add((Calendar.MINUTE), user.getLoginAttempts() * getLoginDelayMultiplier());
          user.setNextLoginAttemptAllowedAt(cal.getTime());
-         ((foam.dao.DAO) getBareUserDAO()).put(user);
+         ((foam.dao.DAO) getLocalUserDAO()).put(user);
        `
      },
     {
