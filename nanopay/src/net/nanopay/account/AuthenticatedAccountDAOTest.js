@@ -73,7 +73,7 @@ foam.CLASS({
         try {
           accountDAO.put_(nullUserContext, account);
         } catch ( Exception e ) {
-          return false;
+          return true;
         }
         return false;
       } catch (Throwable t) {
