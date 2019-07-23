@@ -55,8 +55,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'transactionDAO',
-    'currencyDAO',
-    'homeDenomination'
+    'currencyDAO'
   ],
 
   messages: [
