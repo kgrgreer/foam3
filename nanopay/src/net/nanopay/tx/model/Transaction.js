@@ -480,7 +480,6 @@ foam.CLASS({
       name: 'referenceData',
       class: 'FObjectArray',
       of: 'foam.core.FObject',
-      storageTransient: true,
       visibility: 'RO'
     },
     {
