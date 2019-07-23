@@ -16,8 +16,7 @@ foam.CLASS({
       name: 'runTest',
       javaCode: `
         // set up user dao
-        x = x.put("bareUserDAO", new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()));
-        x = x.put("localUserDAO", x.get("bareUserDAO"));
+        x = x.put("localUserDAO", new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()));
         foam.dao.DAO userDAO = (foam.dao.DAO) x.get("localUserDAO");
         ResetLoginCount(x, userDAO);
 
