@@ -104,7 +104,22 @@ foam.CLASS({
       class: 'Date',
       name: 'endDate',
       factory: function() {
-        return new Date().setHours(23,59,59,999);
+        var today = new Date();
+        today.setHours(23,59,59,999);
+
+        return today;
+      },
+      preSet: function(_, n) {
+        debugger;
+
+        var today = new Date();
+        today.setHours(23,59,59,999);
+
+        if ( n > today ){
+          return today;
+        }
+
+        return n;
       }
     },
     {
