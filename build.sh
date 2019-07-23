@@ -594,6 +594,8 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
            echo "MODE=${MODE}"
            ;;
         Q) LIQUID_DEMO=1
+           JOURNAL_CONFIG=liquid
+           echo "💧 Initializing Liquid Environment 💧"
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
