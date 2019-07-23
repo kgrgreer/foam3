@@ -110,7 +110,7 @@ foam.CLASS({
     t.printStackTrace();
     return false;
   } finally {
-    accountDAO.remove_(user1Context, clonedAccount);
+    if ( clonedAccount != null ) accountDAO.remove_(user1Context, clonedAccount);
   }
       `
     },
@@ -135,7 +135,7 @@ foam.CLASS({
         t.printStackTrace();
         return false;
       } finally {
-        accountDAO.remove_(user1Context, putAccount);
+        if ( putAccount != null) accountDAO.remove_(user1Context, putAccount);
       }
       `
     },
@@ -166,7 +166,7 @@ foam.CLASS({
         t.printStackTrace();
         return false;
       } finally {
-        accountDAO.remove_(user1Context, clonedAccount);
+        if (clonedAccount != null) accountDAO.remove_(user1Context, clonedAccount);
       }
       `
     },
@@ -235,8 +235,8 @@ foam.CLASS({
         t.printStackTrace();
         return false;
       } finally {
-        accountDAO.remove_(user1Context, account1);
-        accountDAO.remove_(user2Context, account2);
+        if (account1 != null) accountDAO.remove_(user1Context, account1);
+        if (account2 != null) accountDAO.remove_(user2Context, account2);
       }
       `
     },
@@ -266,7 +266,7 @@ foam.CLASS({
         t.printStackTrace();
         return false;
       } finally {
-        accountDAO.remove_(user1Context, account);
+        if (account != null) accountDAO.remove_(user1Context, account);
       }
       `
     },
