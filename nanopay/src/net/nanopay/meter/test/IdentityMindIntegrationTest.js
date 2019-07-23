@@ -50,6 +50,11 @@ foam.CLASS({
       class: 'Long',
       name: 'identityMindUserId',
       value: 1013
+    },
+    {
+      class: 'Long',
+      name: 'fraudOpsUserId',
+      value: 1012
     }
   ],
 
@@ -65,6 +70,7 @@ foam.CLASS({
           // 2. test transaction REJECT-ed
           testTransactionRejectedByIdentityMind();
           // 3. test transaction MANUAL_REVIEW-ed
+          testTransactionManualReviewedByIdentityMind();
         }
         tearDown();
       `
@@ -262,6 +268,22 @@ foam.CLASS({
 
         tx = (Transaction) ((DAO) getTransactionDAO()).find(tx);
         test(tx.getStatus() == TransactionStatus.DECLINED, "Compliance transaction should be DECLINED");
+      `
+    },
+    {
+      name: 'testTransactionManualReviewedByIdentityMind',
+      javaCode: `
+        ((IdentityMindService) getIdentityMindService()).setDefaultProfile("MANUAL_REVIEW");
+        Transaction tx = newTransaction(1200);
+        tx = (Transaction) ((DAO) getTransactionDAO()).inX(senderX_).put(tx);
+
+        ((StubThreadPool) getThreadPool()).invokeAll();
+        ApprovalRequest found = findTxApprovalRequest(tx);
+        test(found != null && found.getApprover() == getFraudOpsUserId() && found.getStatus() == ApprovalStatus.REQUESTED,
+          "An approval request is created for fraud-ops user when the IdentityMind marked transaction as MANUAL_REVIEW");
+
+        tx = (Transaction) ((DAO) getTransactionDAO()).find(tx);
+        test(tx.getStatus() == TransactionStatus.PENDING, "Compliance transaction should be in PENDING");
       `
     }
   ],
