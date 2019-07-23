@@ -78,7 +78,7 @@ foam.CLASS({
     },
     {
       name: 'TOOLTIP_TOTAL_CO',
-      message: '-'
+      message: '−'
     }
   ],
 
@@ -249,9 +249,7 @@ foam.CLASS({
                       }
                     }
                   }];
-
                   config.options.tooltips = {
-                    displayColors: false,
                     callbacks: {
                       label: function(tooltipItem, data) {
                         var dataset = data.datasets[tooltipItem.datasetIndex];
