@@ -8,6 +8,7 @@ NANOPAY_SERVICE_FILE=/lib/systemd/system/nanopay.service
 MNT_HOME=/mnt/nanopay
 LOG_HOME=${MNT_HOME}/logs
 JOURNAL_HOME=${MNT_HOME}/journals
+CONF_HOME=${MNT_HOME}/conf
 BACKUP_HOME=${MNT_HOME}/backups
 
 function quit {
@@ -97,11 +98,21 @@ function installFiles {
     chgrp nanopay ${NANOPAY_HOME}/etc
     chmod -R 750 ${NANOPAY_HOME}/etc
 
+    if [ -f ${NANOPAY_HOME}/etc/shrc.local ]; then
+        chgrp nanopay ${NANOPAY_HOME}/etc/shrc.local
+    fi
+
     if [ ! -d ${MNT_HOME} ]; then
         mkdir -p ${MNT_HOME}
     fi
     chgrp nanopay ${MNT_HOME}
     chmod 770 ${MNT_HOME}
+
+    if [ ! -d ${CONF_HOME} ]; then
+        mkdir -p ${CONF_HOME}
+    fi
+    chgrp -R nanopay ${CONF_HOME}
+    chmod -R 770 ${CONF_HOME}
 
     if [ ! -d ${LOG_HOME} ]; then
         mkdir -p ${LOG_HOME}
@@ -174,6 +185,15 @@ function setupNanopaySymLink {
 
     if [ -d ${LOG_HOME} ]; then
         ln -s ${LOG_HOME} ${NANOPAY_HOME}/logs
+    fi
+
+    # symlink to conf
+    if [ -h ${NANOPAY_HOME}/conf ]; then
+        unlink ${NANOPAY_HOME}/conf
+    fi
+
+    if [ -d ${CONF_HOME} ]; then
+        ln -s ${CONF_HOME} ${NANOPAY_HOME}/conf
     fi
 }
 

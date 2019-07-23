@@ -1,12 +1,13 @@
 [Unit]
 Description=Nanopay Platform
 After=network.target
+StartLimitIntervalSec=30
+StartLimitBurst=3
 
 [Service]
 Type=simple
 Restart=always
 RestartSec=1
-StartLimitIntervalSec=0
 ExecStart=/opt/nanopay/bin/run.sh -Z0
 User=nanopay
 Group=nanopay
