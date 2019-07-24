@@ -70,10 +70,7 @@ foam.CLASS({
     {
       class: 'foam.comics.v2.namedViews.NamedViewCollection',
       name: 'Table',
-      view: { 
-        class: 'foam.comics.v2.DAOBrowserView', 
-        columns: ['name', 'balance', 'homeBalance', 'type', 'owner'] 
-      },
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
       icon: 'images/list-view.svg',
     },
     {
