@@ -670,6 +670,7 @@ function main() {
     currencyDAO: jdao("target/journals/currencies.0"),
     currentDate: currentDate,
     balances: {},
+    homeDenomination: 'USD',
     userDAO: foam.dao.NullDAO.create(),
     complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,
