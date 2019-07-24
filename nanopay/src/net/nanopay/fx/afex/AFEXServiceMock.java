@@ -41,7 +41,10 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public OnboardCorporateClientResponse onboardCorporateClient(OnboardCorporateClientRequest request) {
-    return null;
+    OnboardCorporateClientResponse response = new OnboardCorporateClientResponse();
+    response.setAPIKey("API_KEY");
+    response.setAccountNumber("00000122");
+    return response;
   }
 
   @Override

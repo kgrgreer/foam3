@@ -76,7 +76,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             } catch(Throwable t) {
               logger.error("Error creating AFEX beneficiary.", t);
             } 
-            AFEXService afexService = (AFEXService) this.x.get("afexService");
             OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate(identificationExpiryDate);
             onboardingRequest.setAccountPrimaryIdentificationNumber(String.valueOf(signingOfficer.getIdentification().getIdentificationNumber()));
@@ -100,7 +99,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setLastName(signingOfficer.getLastName());
             onboardingRequest.setPrimaryEmailAddress(signingOfficer.getEmail());
             onboardingRequest.setTermsAndConditions("true");
-            OnboardCorporateClientResponse newClient = afexService.onboardCorporateClient(onboardingRequest);
+            OnboardCorporateClientResponse newClient = afexClient.onboardCorporateClient(onboardingRequest);
             if ( newClient != null ) {
               afexBusiness  = new AFEXBusiness();
               afexBusiness.setUser(business.getId());
