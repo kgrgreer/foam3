@@ -205,11 +205,15 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj, id) {
         var self = this;
-        obj.findBalance(this.__subSubContext__).then( function( balance ) {
-          self.__subSubContext__.currencyDAO.find(obj.denomination).then(function(curr) {
-            self.add(balance != null ?  curr.format(balance) : 0);
-          });
-        });
+        this.add(
+          obj.slot(homeDenomination => 
+            obj.findBalance(this.__subSubContext__).then(balance => 
+              self.__subSubContext__.currencyDAO.find(obj.denomination).then(curr => 
+                balance != null ?  curr.format(balance) : 0
+              )
+            )
+          )
+        );
       },
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
@@ -233,13 +237,17 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, id) {
         var self = this;
 
-        this.add(obj.slot(homeDenomination => obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
-          obj.findBalance(self.__subSubContext__).then(balance => 
-            self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
-              balance != null ?  curr.format(Math.floor(balance * r.rate)) : 0
+        this.add(
+          obj.slot(homeDenomination => 
+            obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
+              obj.findBalance(self.__subSubContext__).then(balance => 
+                self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
+                  balance != null ?  curr.format(Math.floor(balance * r.rate)) : 0
+                )
+              )
             )
           )
-        )));
+        );
       },
       tableWidth: 130
     },
