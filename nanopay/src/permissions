@@ -346,6 +346,6 @@ p({"class":"foam.nanos.auth.Permission","id":"whitelistedEmail.create","descript
 p({"class":"foam.nanos.auth.Permission","id":"whitelistedEmail.read.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"whitelistedEmail.remove.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"whitelistedEmail.update.*","description":""})
-p({"class":"foam.nanos.auth.Permission","id":"notificationDAO.create","description":""})
-p({"class":"foam.nanos.auth.Permission","id":"notificationDAO.read.*","description":""})]
-p({"class":"foam.nanos.auth.Permission","id":"notificationDAO.update.*","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"notification.create","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"notification.read.*","description":""})]
+p({"class":"foam.nanos.auth.Permission","id":"notification.update.*","description":""})
