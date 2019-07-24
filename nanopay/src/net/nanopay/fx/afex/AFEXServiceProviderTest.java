@@ -72,7 +72,7 @@ public class AFEXServiceProviderTest
     testOnboardBusiness();
     testGetFXRate();
     testAcceptFXRate();
-    //testAddPayee();
+    testAddPayee();
     //testSubmitDeal();
     //testSubmitDealWithNoAmount();
     //testSubmit_Payment_Payee_Updated();
@@ -241,6 +241,13 @@ public class AFEXServiceProviderTest
     test( ! onbarded, "Business was not onboarded" );
     onbarded = afexServiceProvider.onboardBusiness(business, user1CABankAccount);
     test( onbarded, "Business was onboarded" );
+    AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
+    if ( afexBusiness != null ) {
+      afexBusiness = (AFEXBusiness) afexBusiness.fclone();
+      afexBusiness.setStatus("Active");
+      afexBusinessDAO.put(afexBusiness);
+    }
+    
   }
 
   public void testGetFXRate() {
@@ -266,129 +273,11 @@ public class AFEXServiceProviderTest
     }
   }
 
-  // public void testAddPayee() {
-  //   PaymentService afexPaymentService = new AFEXServiceProvider(this.x, afexService);
-  //   boolean onbarded = afexPaymentService.addPayee(user2.getId(), payeeBankAccount_.getId(), 1000);
-  //   test( onbarded, "Business was not onboarded" );
-  //   test(TestUtils.testThrows(() -> afexPaymentService.addPayee(user2.getId(), payeeBankAccount_.getId(), 1000), "User is not provisioned for foreign exchange transactions yet, please contact customer support.", RuntimeException.class),"thrown an exception");
-  // }
-
-//   public void testSubmit_Payment_Payee_Updated() {
-//     FXQuote fxQuote = afexServiceProvider.getFXRate("CAD", "USD", 100l, 0l, "Buy", null, 1002, null);
-//     test( null != fxQuote, "FX Quote was returned" );
-//     Boolean fxAccepted = afexServiceProvider.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
-//     PaymentService ascendantPaymentService = new AscendantafexServiceProviderProvider(x_, ascendantFX);
-//     AscendantFXTransaction transaction = new AscendantFXTransaction.Builder(x_).build();
-//     transaction.setPayerId(1002);
-//     transaction.setPayeeId(payee_.getId());
-//     transaction.setAmount(fxQuote.getSourceAmount());
-//     transaction.setDestinationAmount(fxQuote.getTargetAmount());
-//     transaction.setDestinationAccount(payeeBankAccount_.getId());
-//     transaction.setSourceCurrency("CAD");
-//     transaction.setDestinationCurrency("USD");
-//     transaction.setFxExpiry(fxQuote.getExpiryTime());
-//     transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
-//     transaction.setFxRate(fxQuote.getRate());
-
-//     FeesFields fees = new FeesFields.Builder(x_).build();
-//     fees.setTotalFees(fxQuote.getFee());
-//     fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-//     transaction.setFxFees(fees);
-//     if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
-//           transaction.setAccepted(true);
-
-//     // Add Payee
-//     getAscendantUserPayeeJunction("5904960",payee_.getId());
-
-//     //Change account
-//     try{
-//       BankAccount bankAccount =  (BankAccount) ((DAO) x_.get("localAccountDAO")).find(payeeBankAccount_.getId()).fclone();
-//       bankAccount.setInstitutionNumber("210000001");
-//       bankAccount = (BankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, bankAccount).fclone();
-//       Thread.sleep(100); // So test does not fail because both account and afx payee was updated at the same time
-//     } catch (InterruptedException ex) {}
-
-//     try {
-//       ascendantPaymentService.submitPayment(transaction);
-//     } catch (Exception ex) {
-//       throw new RuntimeException(ex.getMessage());
-//     }
-
-//     DAO userPayeeJunctionDAO = (DAO) x_.get("ascendantUserPayeeJunctionDAO");
-//     AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
-//     userPayeeJunctionDAO.find(
-//               AND(
-//                   EQ(AscendantUserPayeeJunction.ORG_ID, "5904960"),
-//                   EQ(AscendantUserPayeeJunction.ASCENDANT_PAYEE_ID, "9800")
-//               )
-//           );
-//     test( null != userPayeeJunction, "Payee was updated" );
-
-//   }
-
-
-// public void testSubmit_Payment_Payee_Not_Updated() {
-//       FXQuote fxQuote = afexServiceProvider.getFXRate("CAD", "USD", 100l, 0l, "Buy", null, 1002, null);
-//       test( null != fxQuote, "FX Quote was returned" );
-//       Boolean fxAccepted = afexServiceProvider.acceptFXRate(String.valueOf(fxQuote.getId()), 1002);
-//       PaymentService afexPaymentService = new AFEXServiceProvider(x_, afexService);
-//       AFEXTransaction transaction = new AFEXTransaction.Builder(x_).build();
-//       transaction.setPayerId(1002);
-//       transaction.setPayeeId(payee_.getId());
-//       transaction.setAmount(fxQuote.getSourceAmount());
-//       transaction.setDestinationAmount(fxQuote.getTargetAmount());
-//       transaction.setDestinationAccount(payeeBankAccount_.getId());
-//       transaction.setSourceCurrency("CAD");
-//       transaction.setDestinationCurrency("USD");
-//       transaction.setFxExpiry(fxQuote.getExpiryTime());
-//       transaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
-//       transaction.setFxRate(fxQuote.getRate());
-
-//       FeesFields fees = new FeesFields.Builder(x_).build();
-//       fees.setTotalFees(fxQuote.getFee());
-//       fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-//       transaction.setFxFees(fees);
-//       if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) )
-//             transaction.setAccepted(true);
-
-//       // Add Payee
-//       getAscendantUserPayeeJunction("5904960",payee_.getId());
-
-//       try {
-//         afexPaymentService.submitPayment(transaction);
-//       } catch (Exception ex) {
-//         throw new RuntimeException(ex.getMessage());
-//       }
-
-//       DAO userPayeeJunctionDAO = (DAO) x_.get("ascendantUserPayeeJunctionDAO");
-//       AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
-//       userPayeeJunctionDAO.find(
-//                 AND(
-//                     EQ(AscendantUserPayeeJunction.ORG_ID, "5904960"),
-//                     EQ(AscendantUserPayeeJunction.ASCENDANT_PAYEE_ID, "9800")
-//                 )
-//             );
-//       test( null == userPayeeJunction, "Payee was not updated" );
-
-//     }
-
-//   private AscendantUserPayeeJunction getAscendantUserPayeeJunction(String orgId,long userId) {
-//     DAO userPayeeJunctionDAO = (DAO) x_.get("ascendantUserPayeeJunctionDAO");
-//     AscendantUserPayeeJunction userPayeeJunction = (AscendantUserPayeeJunction)
-//     userPayeeJunctionDAO.find(
-//               AND(
-//                   EQ(AscendantUserPayeeJunction.ORG_ID, orgId),
-//                   EQ(AscendantUserPayeeJunction.USER, userId)
-//               )
-//           );
-//     if( null == userPayeeJunction ) userPayeeJunction = new AscendantUserPayeeJunction.Builder(x_).build();
-//     userPayeeJunction = (AscendantUserPayeeJunction) userPayeeJunction.fclone();
-//     userPayeeJunction.setAscendantPayeeId("9836");
-//     userPayeeJunction.setOrgId(orgId);
-//     userPayeeJunction.setUser(userId);
-//     userPayeeJunctionDAO.put(userPayeeJunction);
-//     return userPayeeJunction;
-//   }
+  public void testAddPayee() {
+    PaymentService afexPaymentService = new AFEXServiceProvider(this.x, afexService);
+    test(TestUtils.testThrows(() -> afexPaymentService.addPayee(user2.getId(), user2USBankAccount.getId(), 1000),"Business as not been completely onboarded on partner system. " + 1000, RuntimeException.class),"thrown an exception");
+    afexPaymentService.addPayee(user2.getId(), user2USBankAccount.getId(), business.getId());
+  }
 
 //   public void testSubmitDeal(){
 //     FXQuote fxQuote = afexServiceProvider.getFXRate("CAD", "USD", 100l, 0l, "Buy", null, 1002, null);
@@ -453,11 +342,5 @@ public class AFEXServiceProviderTest
 //       }
 
 //     }
-
-//   public void testDeletePayee() {
-//     PaymentService afexPaymentService = new AFEXServiceProvider(x_, afexService);
-//     test(TestUtils.testThrows(() -> afexPaymentService.deletePayee(payee_.getId(), 1000), "User is not provisioned for foreign exchange transactions yet, please contact customer support.", RuntimeException.class),"delete payee thrown an exception");
-//     afexPaymentService.deletePayee(payee_.getId(), 1002);
-//   }
 
 }
