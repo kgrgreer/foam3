@@ -3,6 +3,9 @@ foam.CLASS({
   name: 'AccountTreeView',
   extends: 'foam.u2.Element',
 
+  imports: [
+    'homeDenomination'
+  ],
   requires: [
     'net.nanopay.account.ui.AccountTreeGraph'
   ],
@@ -34,9 +37,18 @@ foam.CLASS({
 
   methods: [
       function initE(){
+        var self = this;
+
         this.addClass(this.myClass());
-        this.start().addClass(this.myClass('header')).add(this.VIEW_HEADER).end();
-        this.tag(this.AccountTreeGraph);
+        this
+          .start().addClass(this.myClass('header'))
+            .add(this.VIEW_HEADER)
+          .end()
+          .start()
+            .add(this.slot(homeDenomination =>  /* Leave homeDenomination on because graph needs to react to change */
+              self.E().tag(self.AccountTreeGraph)
+            ))
+          .end()
       }
   ],
 });

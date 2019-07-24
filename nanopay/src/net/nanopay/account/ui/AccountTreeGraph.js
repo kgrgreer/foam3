@@ -38,7 +38,7 @@ foam.CLASS({
     },
     {
       name: 'width',
-      value: 1614
+      value: 1460
     },
     {
       name: 'height',
