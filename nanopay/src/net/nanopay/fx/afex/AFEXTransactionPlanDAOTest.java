@@ -7,10 +7,12 @@ import foam.dao.DAO;
 import foam.nanos.auth.User;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.fx.FXSummaryTransaction;
+import net.nanopay.invoice.model.Invoice;
 import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
@@ -39,6 +41,7 @@ public class AFEXTransactionPlanDAOTest
   DAO localUserDAO;
   DAO localAccountDAO;
   DAO localtxDAO;
+  DAO invoiceDAO;
   X x_;
 
   @Override
@@ -165,8 +168,9 @@ public class AFEXTransactionPlanDAOTest
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
     test( null != resultQoute, "CAD USD quote was processed" );
 
+    Transaction tx = resultQoute.getPlan();
     localtxDAO = (DAO) x_.get("localTransactionDAO");
-    Transaction tx1 = (Transaction) localtxDAO.put_(x_, resultQoute.getPlan());
+    Transaction tx1 = (Transaction) localtxDAO.put_(x_, tx);
 
     test( tx1 instanceof FXSummaryTransaction && tx1.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for CAD to USD");
 
@@ -181,7 +185,8 @@ public class AFEXTransactionPlanDAOTest
     test(tx2.getAmount() == 134l, "CAD USD Source amount is correct");
     test(tx2.getDestinationCurrency().equals("USD"), "CAD USD Source Currency is CAD");
     test(tx2.getDestinationAmount() == 100l, "CAD USD Destination amount is correct");
-    //test((long)user2USBankAccount.findBalance(x_) == 100l && (long)user1CABankAccount.findBalance(x_) == 99900L, "CAD USD transfer" );
+    test( tx2.getSourceAccount() == user1CABankAccount.getId(), "Corrent source bank account");
+    test( tx2.getDestinationAccount() == user2USBankAccount.getId(), "Correct destination bank account");
 
   }
 
@@ -200,8 +205,8 @@ public class AFEXTransactionPlanDAOTest
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
     test( null != resultQoute, "USD USD quote was processed" );
 
-    localtxDAO = (DAO) x_.get("localTransactionDAO");
-    Transaction tx1 = (Transaction) localtxDAO.put_(x_, resultQoute.getPlan());
+    Transaction tx = resultQoute.getPlan();
+    Transaction tx1 = (Transaction) localtxDAO.put_(x_, tx);
 
     test( tx1 instanceof FXSummaryTransaction && tx1.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to USD");
 
@@ -213,9 +218,10 @@ public class AFEXTransactionPlanDAOTest
     user2USBankAccount = (USBankAccount) localAccountDAO.find(user2USBankAccount);
     user1CABankAccount = (CABankAccount) localAccountDAO.find(user1CABankAccount);
     test(tx2.getSourceCurrency().equals("USD"), "USD USD Source Currency is USD");
-    test(tx2.getDestinationCurrency().equals("USD"), "USD USD Source Currency is USD");
+    test(tx2.getDestinationCurrency().equals("USD"), "USD USD Destination Currency is USD");
     test(tx2.getAmount() == tx2.getDestinationAmount() && tx2.getDestinationAmount() == 50l, "Source amount equals destination amount");
-    //test((long)user2USBankAccount.findBalance(x_) == 0l && (long)user1USBankAccount.findBalance(x_) == 50L, "USD USD transfer" );
+    test( tx2.getSourceAccount() == user2USBankAccount.getId(), "Corrent source bank account");
+    test( tx2.getDestinationAccount() == user1USBankAccount.getId(), "Correct destination bank account");
 
   }
 
@@ -232,10 +238,9 @@ public class AFEXTransactionPlanDAOTest
     transaction.setDestinationCurrency("CAD");
     quote.setRequestTransaction(transaction);
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
-   // test( null != resultQoute, "USD CAD quote was processed" );
 
-    localtxDAO = (DAO) x_.get("localTransactionDAO");
-    Transaction tx1 = (Transaction) localtxDAO.put_(x_, resultQoute.getPlan());
+    Transaction tx = resultQoute.getPlan();
+    Transaction tx1 = (Transaction) localtxDAO.put_(x_, tx);
 
     test( tx1 instanceof FXSummaryTransaction && tx1.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to CAD");
 
@@ -247,10 +252,11 @@ public class AFEXTransactionPlanDAOTest
     user2USBankAccount = (USBankAccount) localAccountDAO.find(user2USBankAccount);
     user1CABankAccount = (CABankAccount) localAccountDAO.find(user1CABankAccount);
     test(tx2.getSourceCurrency().equals("USD"), "USD CAD Source Currency is USD");
-    test(tx2.getAmount() == 50l, "USD CAD Source amount is correct");
+    test(tx2.getAmount() == 49l, "USD CAD Source amount is correct");
     test(tx2.getDestinationCurrency().equals("CAD"), "USD CAD Destination Currency is CAD");
     test(tx2.getDestinationAmount() == 66l, "USD CAD Destination amount is correct");
-   // test((long)user2USBankAccount.findBalance(x_) == 0l && (long)user1CABankAccount.findBalance(x_) == 99966L, "USD CAD transfer" );
+    test( tx2.getSourceAccount() == user2USBankAccount.getId(), "Corrent source bank account");
+    test( tx2.getDestinationAccount() == user1CABankAccount.getId(), "Correct destination bank account");
 
   }
 }

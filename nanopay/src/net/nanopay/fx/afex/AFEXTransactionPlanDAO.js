@@ -81,29 +81,29 @@ foam.CLASS({
 
     // Check if AFEXTransactionPlanDAO can handle the currency combination
     FXService fxService = null;
-    // if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.DEVELOPMENT ) {
-    //   if ( (request.getSourceCurrency().equals("CAD") && request.getDestinationCurrency().equals("USD")) ||
-    //   (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("CAD")) ||
-    //   (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("USD")) ) {
-    //     AFEX afex = new AFEXServiceMock(x);
-    //     fxService = new AFEXServiceProvider(x, afex);
-    //   }
-    // } else {
+    if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.DEVELOPMENT ) {
+      if ( (request.getSourceCurrency().equals("CAD") && request.getDestinationCurrency().equals("USD")) ||
+      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("CAD")) ||
+      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("USD")) ) {
+        AFEX afex = new AFEXServiceMock(x);
+        fxService = new AFEXServiceProvider(x, afex);
+      }
+    } else {
       fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
       request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
-    // }
+    }
     if ( fxService instanceof AFEXServiceProvider  ) {
       fxService = (AFEXServiceProvider) fxService;
 
       // Validate that Payer is provisioned for AFEX before proceeding
-      // if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
+      if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
         AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
         if (afexBusiness == null) {
           logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
           return getDelegate().put_(x, quote);
         }
 
-      // }
+      }
 
       FXQuote fxQuote = new FXQuote.Builder(x).build();
 
@@ -185,6 +185,9 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(fxQuote.getValueDate().getTime() - new Date().getTime()).build()}, null);
 
   // TODO ADD FEES
+  // DAO lineItemDAO = (DAO) x.get("lineItemDAO");
+  // afexTransaction.addLineItems(new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+
   afexTransaction.setIsQuoted(true);
 
   return afexTransaction;

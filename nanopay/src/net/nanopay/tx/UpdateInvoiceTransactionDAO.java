@@ -42,7 +42,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Transaction transaction = (Transaction) obj;
 
     if ( SafetyUtil.isEmpty(transaction.getId()) &&
-      ( transaction instanceof AbliiTransaction || transaction instanceof AscendantFXTransaction || transaction instanceof FXSummaryTransaction )
+      ( transaction instanceof AbliiTransaction || transaction instanceof AscendantFXTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 ) )
     ) {
       transaction = (Transaction) super.put_(x, obj);
 
