@@ -129,6 +129,7 @@ foam.CLASS({
          * precision, decimal character, delimiter, symbol, and placement
          * thereof.
          */
+        amount = Math.floor(amount);
         var isNegative = amount < 0;
         amount = amount.toString();
         if ( isNegative ) amount = amount.substring(1);
