@@ -193,7 +193,7 @@ foam.CLASS({
       javaGetter: `
         return getClass().getSimpleName();
       `,
-      tableWidth: 125,
+      tableWidth: 130,
       section: 'accountType',
       visibility: 'RO'
     },
@@ -219,7 +219,7 @@ foam.CLASS({
         // Output formatted balance or zero
         outputter.outputValue(curr.format(balance));
       `,
-      tableWidth: 135
+      tableWidth: 130
     },
     {
       class: 'Long',
@@ -241,7 +241,7 @@ foam.CLASS({
           )
         ));
       },
-      tableWidth: 135
+      tableWidth: 130
     },
     {
       class: 'DateTime',
