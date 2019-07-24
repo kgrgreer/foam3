@@ -16,7 +16,8 @@ foam.CLASS({
     'addCommas',
     'currencyDAO',
     'userDAO',
-    'complianceHistoryDAO'
+    'complianceHistoryDAO',
+    'homeDenomination'
   ],
 
   javaImports: [
@@ -384,31 +385,36 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of Transactions.
       `,
-      tableCellFormatter: async function(_, obj) {
-        var [srcCurrency, dstCurrency] = await Promise.all([
-          obj.currencyDAO.find(obj.sourceCurrency),
-          obj.currencyDAO.find(obj.destinationCurrency)
-        ]);
-        if ( obj.sourceCurrency === obj.destinationCurrency ) {
-          this.add(
-            obj.sourceCurrency + ' ' +
-            srcCurrency.format(obj.amount)
-          );
-        } else {
-          this.add(
-            obj.sourceCurrency + ' ' +
-              srcCurrency.format(obj.amount) + ' → ' +
-              obj.destinationCurrency + ' ' +
-              dstCurrency.format(obj.destinationAmount)
-          );
-        }
-        if ( obj.payer ) {
-          this.add(
-            ' | ' +
-            obj.payer.displayName + ' → ' +
-            obj.payee.displayName
-          );
-        }
+      tableCellFormatter: function(_, obj) {
+        this.add(obj.slot(function(
+            sourceCurrency,
+            destinationCurrency,
+            currencyDAO,
+            homeDenomination  /* Do not remove b/c the cell needs to re-render if homeDenomination changes */
+          ){
+            return Promise.all([
+              currencyDAO.find(sourceCurrency),
+              currencyDAO.find(destinationCurrency)
+            ]).then(([srcCurrency, dstCurrency]) => {
+              let output = "";
+
+              if ( sourceCurrency === destinationCurrency ) {
+                output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
+              } else {
+                output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
+                output += ' → ';
+                output += dstCurrency 
+                            ? dstCurrency.format(obj.destinationAmount) 
+                            : `${obj.destinationAmount} ${destinationCurrency}`;
+              }
+
+              if ( obj.payer ) {
+                output += (' | ' + obj.payer.displayName + ' → ' + obj.payee.displayName);
+              }
+
+              return output;
+            })
+        }))
       }
     },
     {
