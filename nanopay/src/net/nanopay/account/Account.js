@@ -233,13 +233,13 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, id) {
         var self = this;
 
-        this.add(obj.fxService.getFXRate(obj.denomination, obj.homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
+        this.add(obj.slot(homeDenomination => obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
           obj.findBalance(self.__subSubContext__).then(balance => 
-            self.__subSubContext__.currencyDAO.find(obj.homeDenomination).then(curr => 
+            self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
               balance != null ?  curr.format(Math.floor(balance * r.rate)) : 0
             )
           )
-        ));
+        )));
       },
       tableWidth: 130
     },
