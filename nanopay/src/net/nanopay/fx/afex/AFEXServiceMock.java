@@ -77,7 +77,9 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request) {
-    return null;
+    FindBeneficiaryResponse response = new FindBeneficiaryResponse();
+    response.setBeneficiaryName("Test Beneficiary");
+    return response;
   }
 
   @Override

@@ -73,11 +73,11 @@ public class AFEXServiceProviderTest
     testGetFXRate();
     testAcceptFXRate();
     testAddPayee();
+    testFindBeneficiary();
     //testSubmitDeal();
     //testSubmitDealWithNoAmount();
     //testSubmit_Payment_Payee_Updated();
     //testSubmit_Payment_Payee_Not_Updated();
-    //testDeletePayee();
     tearDownTest();
 
   }
@@ -274,9 +274,15 @@ public class AFEXServiceProviderTest
   }
 
   public void testAddPayee() {
-    PaymentService afexPaymentService = new AFEXServiceProvider(this.x, afexService);
-    test(TestUtils.testThrows(() -> afexPaymentService.addPayee(user2.getId(), user2USBankAccount.getId(), 1000),"Business as not been completely onboarded on partner system. " + 1000, RuntimeException.class),"thrown an exception");
-    afexPaymentService.addPayee(user2.getId(), user2USBankAccount.getId(), business.getId());
+    test(TestUtils.testThrows(() -> afexServiceProvider.addPayee(user2.getId(), user2USBankAccount.getId(), 1000),"Business as not been completely onboarded on partner system. " + 1000, RuntimeException.class),"thrown an exception");
+    afexServiceProvider.addPayee(user2.getId(), user2USBankAccount.getId(), business.getId());
+  }
+
+  public void testFindBeneficiary() {
+    AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
+    test( afexBusiness != null, "AFEXBusiness is found" );
+    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexBusiness.getApiKey());
+    test( beneficiaryResponse != null, "beneficiary is found" );
   }
 
 //   public void testSubmitDeal(){
