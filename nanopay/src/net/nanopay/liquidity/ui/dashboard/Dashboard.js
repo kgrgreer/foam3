@@ -26,10 +26,6 @@ foam.CLASS({
     'transactionDAO'
   ],
 
-  exports: [
-    'baseDenomination'
-  ],
-
   css: `
     ^header {
       font-size: 36px;
@@ -46,13 +42,6 @@ foam.CLASS({
   `,
 
   properties: [
-    {
-      class: 'Reference',
-      of: 'net.nanopay.model.Currency',
-      name: 'baseDenomination',
-      targetDAOKey: 'currencyDAO',
-      value: 'CAD'
-    },
     {
       class: 'foam.dao.DAOProperty',
       name: 'currencyExposureDAO',
@@ -82,8 +71,7 @@ foam.CLASS({
           .start(this.Grid).addClass(this.myClass('dashboard-container'))
             .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
               .tag(this.DashboardAccounts, { 
-                currency$: this.currencyExposureDAO$,
-                denomination$: this.baseDenomination$,
+                currency$: this.currencyExposureDAO$
               })
             .end()
             .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))

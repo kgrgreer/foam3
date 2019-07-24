@@ -16,37 +16,39 @@ foam.CLASS({
     'addCommas',
     'currencyDAO',
     'userDAO',
-    'complianceHistoryDAO'
+    'complianceHistoryDAO',
+    'homeDenomination'
   ],
 
   javaImports: [
     'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.EQ',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
+    'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.model.Business',
     'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.account.Balance'
+    'static foam.mlang.MLang.EQ'
   ],
 
   requires: [
@@ -380,31 +382,36 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of Transactions.
       `,
-      tableCellFormatter: async function(_, obj) {
-        var [srcCurrency, dstCurrency] = await Promise.all([
-          obj.currencyDAO.find(obj.sourceCurrency),
-          obj.currencyDAO.find(obj.destinationCurrency)
-        ]);
-        if ( obj.sourceCurrency === obj.destinationCurrency ) {
-          this.add(
-            obj.sourceCurrency + ' ' +
-            srcCurrency.format(obj.amount)
-          );
-        } else {
-          this.add(
-            obj.sourceCurrency + ' ' +
-              srcCurrency.format(obj.amount) + ' → ' +
-              obj.destinationCurrency + ' ' +
-              dstCurrency.format(obj.destinationAmount)
-          );
-        }
-        if ( obj.payer ) {
-          this.add(
-            ' | ' +
-            obj.payer.displayName + ' → ' +
-            obj.payee.displayName
-          );
-        }
+      tableCellFormatter: function(_, obj) {
+        this.add(obj.slot(function(
+            sourceCurrency,
+            destinationCurrency,
+            currencyDAO,
+            homeDenomination  /* Do not remove b/c the cell needs to re-render if homeDenomination changes */
+          ){
+            return Promise.all([
+              currencyDAO.find(sourceCurrency),
+              currencyDAO.find(destinationCurrency)
+            ]).then(([srcCurrency, dstCurrency]) => {
+              let output = "";
+
+              if ( sourceCurrency === destinationCurrency ) {
+                output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
+              } else {
+                output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
+                output += ' → ';
+                output += dstCurrency 
+                            ? dstCurrency.format(obj.destinationAmount) 
+                            : `${obj.destinationAmount} ${destinationCurrency}`;
+              }
+
+              if ( obj.payer ) {
+                output += (' | ' + obj.payer.displayName + ' → ' + obj.payee.displayName);
+              }
+
+              return output;
+            })
+        }))
       }
     },
     {
@@ -965,8 +972,13 @@ for ( Balance b : getBalances() ) {
       }
     ],
     javaCode: `
-    sendReverseNotification(x, oldTxn);
-    sendCompletedNotification(x, oldTxn);
+    try {
+      sendReverseNotification(x, oldTxn);
+      sendCompletedNotification(x, oldTxn);
+    } catch (Exception e) {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning("Transaction failed to send notitfication. " + e.getMessage());
+    }
     `
   }
 ],

@@ -20,7 +20,9 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'java.util.List',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.Balance',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.model.Currency'
   ],
 
   searchColumns: [
@@ -202,6 +204,14 @@ foam.CLASS({
           });
         });
       },
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        long balance  = (Long) ((Account)obj).findBalance(x);
+        Currency curr = (Currency) currencyDAO.find(((Account)obj).getDenomination());
+        
+        // Output formatted balance or zero
+        outputter.outputValue(curr.format(balance));
+      `,
       tableWidth: 100
     },
     {

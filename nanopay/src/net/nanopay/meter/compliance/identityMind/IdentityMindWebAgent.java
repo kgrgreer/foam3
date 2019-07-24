@@ -29,7 +29,7 @@ public class IdentityMindWebAgent implements WebAgent {
   public void execute(X x) {
     DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
     DAO identityMindResponseDAO = (DAO) x.get("identityMindResponseDAO");
-    DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+    DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
     Logger logger = (Logger) x.get("logger");
     HttpParameters p = x.get(HttpParameters.class);
     String data = p.getParameter("data");

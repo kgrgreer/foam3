@@ -67,7 +67,7 @@ foam.CLASS({
       javaCode:
         `Date now = new Date();
 X x = getX();
-DAO notificationDAO = (DAO) x.get("notificationDAO");
+DAO notificationDAO = (DAO) x.get("localNotificationDAO");
 
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 PrintWriter printWriter = new PrintWriter(baos);
