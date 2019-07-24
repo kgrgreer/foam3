@@ -200,6 +200,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'balance',
+      label: 'Balance (local)',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
@@ -228,6 +229,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'homeBalance',
+      label: 'Balance (home)',
       documentation: `
         A numeric value representing the available funds in the 
         bank account converted to home denomination.
