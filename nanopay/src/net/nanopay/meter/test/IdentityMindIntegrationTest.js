@@ -6,11 +6,11 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'approvalRequestDAO',
-    'identityMindService',
+    'identityMindService?',
     'nSpecDAO',
     'ruleDAO',
     'transactionDAO',
-    'threadPool',
+    'threadPool?',
     'userDAO'
   ],
 
@@ -21,7 +21,7 @@ foam.CLASS({
     'foam.mlang.sink.Count',
     'foam.nanos.auth.User',
     'foam.nanos.boot.NSpec',
-    'foam.nanos.pool.StubThreadPool',
+    'foam.nanos.pool.AgentAgency',
     'foam.nanos.ruler.Rule',
     'foam.util.Auth',
     'net.nanopay.approval.ApprovalRequest',
@@ -55,7 +55,12 @@ foam.CLASS({
       class: 'Long',
       name: 'fraudOpsUserId',
       value: 1012
-    }
+    },
+    {
+      class: 'String',
+      name: 'mockIdentityMindUrl',
+      value: 'https://7f01030d-1cf0-4ba3-8d8d-d44f7056e236.mock.pstmn.io'
+    },
   ],
 
   methods: [
@@ -96,14 +101,15 @@ foam.CLASS({
         { name: 'approverId', type: 'Long' }
       ],
       javaCode: `
-        ((IdentityMindService) getIdentityMindService()).setDefaultProfile(policy);
+        String baseUrl = getMockIdentityMindUrl() + "/" + policy;
+        ((IdentityMindService) getIdentityMindService()).setBaseUrl(baseUrl);
         Transaction tx = newTransaction(1000);
-        tx = (Transaction) ((DAO) getTransactionDAO()).inX(senderX_).put(tx);
+        tx = (Transaction) ((DAO) getTransactionDAO()).put(tx);
 
         test(findTxApprovalRequest(tx) == null,
           "1. No approval request is created before the IdentityMind transaction rule is run");
 
-        ((StubThreadPool) getThreadPool()).invokeAll();
+        ((AgentAgency) getThreadPool()).execute();
         ApprovalRequest found = findTxApprovalRequest(tx);
         ApprovalStatus approvalStatus = getExpectedApprovalStatus(policy);
         test(found != null && found.getApprover() == approverId && found.getStatus() == approvalStatus,
@@ -142,19 +148,20 @@ foam.CLASS({
         receiver_ = findOrCreateUser("receiver@test.com");
         sourceAccount_ = findOrCreateBankAccount(sender_, "111111");
         destinationAccount_ = findOrCreateBankAccount(receiver_, "222222");
+
+
+        // Clone IdentityMindService
+        identityMindService_ = ((FObject) getIdentityMindService()).fclone();
         
         // Stub thread pool
         threadPool_ = getThreadPool();
-        if ( ! (threadPool_ instanceof StubThreadPool) ) {
+        if ( ! (threadPool_ instanceof AgentAgency) ) {
           DAO nSpecDAO = (DAO) getNSpecDAO();
           NSpec spec = (NSpec) nSpecDAO.find("threadPool");
 
-          spec.setServiceClass("foam.nanos.pool.StubThreadPool");
+          spec.setServiceClass("foam.nanos.pool.AgentAgency");
           nSpecDAO.put(spec);
         }
-
-        // Sudo sender
-        senderX_ = Auth.sudo(getX(), sender_);
       `
     },
     {
@@ -169,6 +176,12 @@ foam.CLASS({
         // Restore Jackie rule 1
         if ( ! jackieRule1_.equals(ruleDAO.find(jackieRule1_)) ) {
           ruleDAO.put(jackieRule1_);
+        }
+
+        // Restore IdentityMindService setting
+        FObject identityMindService = (FObject) getIdentityMindService();
+        if ( ! identityMindService_.equals(identityMindService) ) {
+          identityMindService.copyFrom(identityMindService_);
         }
 
         // Restore thread pool
@@ -297,8 +310,8 @@ foam.CLASS({
         protected User        receiver_;
         protected BankAccount sourceAccount_;
         protected BankAccount destinationAccount_;
+        protected FObject     identityMindService_;
         protected Object      threadPool_;
-        protected X           senderX_;
         `);
       }
     }
