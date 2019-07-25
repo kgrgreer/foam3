@@ -88,18 +88,10 @@ foam.CLASS({
 
         var complianceObj = complianceFilter[0];
         complianceObj.status = this.TransactionStatus.COMPLETED;
-        await this.transactionDAO.put(complianceObj)
-        .catch(function(error) {
-          console.log(error);
-          console.log(error.message);
-        });
+        await this.transactionDAO.put(complianceObj);
 
         cashInObj.status = this.TransactionStatus.COMPLETED;
-        await this.transactionDAO.put(cashInObj)
-        .catch(function(error) {
-          console.log(error);
-          console.log(error.message);
-        });
+        await this.transactionDAO.put(cashInObj);
         this.output = 'Cash In successfully expedited';
       }
     },
@@ -107,7 +99,7 @@ foam.CLASS({
       name: 'expediteCashOut',
       label: 'Expedite Cash Out',
       confirmationRequired: true,
-      code: function(X) {
+      code: async function(X) {
         // check if cash out is status pending, if it is change to complete and write to dao
         var cashOutFilter = this.childTransactions.filter((t) => t.type == 'AlternaCOTransaction');
         var cashOutObj = cashOutFilter[0];
@@ -126,7 +118,7 @@ foam.CLASS({
         }
 
         cashOutObj.status = this.TransactionStatus.COMPLETED;
-        this.transactionDAO.put(cashOutObj);
+        await this.transactionDAO.put(cashOutObj);
         this.output = 'Cash Out successfully expedited.';
       }
     },
