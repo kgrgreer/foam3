@@ -7,7 +7,8 @@ p({
   "serviceScript":"""
     nuagas = new net.nanopay.auth.NanopayUserAndGroupAuthService(x);
     cache  = new foam.nanos.auth.CachingAuthService(nuagas);
-    ecas   = new foam.nanos.auth.EnabledCheckAuthService.Builder(x).setDelegate(cache).build();
+    capas = new foam.nanos.auth.CapabilityAuthService.Builder(x).setDelegate(cache).build();
+    ecas   = new foam.nanos.auth.EnabledCheckAuthService.Builder(x).setDelegate(capas).build();
     cas    = new net.nanopay.meter.compliance.ComplianceAuthService.Builder(x).setDelegate(ecas).build();
     peas   = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(cas).build();
     laas   = new net.nanopay.security.auth.LoginAttemptAuthService.Builder(x).setDelegate(peas).build();
