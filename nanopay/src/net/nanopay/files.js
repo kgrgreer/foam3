@@ -552,6 +552,8 @@ FOAM_FILES([
 
   // documents
   { name: 'net/nanopay/documents/AcceptanceDocument' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentProperty' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentUserInputView' },
   { name: 'net/nanopay/documents/UserAcceptanceDocument' },
   { name: 'net/nanopay/documents/ClientAcceptanceDocumentService' },
   { name: 'net/nanopay/documents/AcceptanceDocumentService' },
