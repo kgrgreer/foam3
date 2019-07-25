@@ -61,7 +61,7 @@ public class SendInvitationDAO
 
       if ( invite.getInternal() ) {
         // Send the internal user a notification.
-        DAO notificationDAO = (DAO) x.get("notificationDAO");
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         DAO userDAO = (DAO) x.get("localUserDAO");
         User recipient = (User) userDAO.inX(x).find(invite.getInviteeId());
         sendInvitationNotification(notificationDAO.inX(x), user, recipient, invite);

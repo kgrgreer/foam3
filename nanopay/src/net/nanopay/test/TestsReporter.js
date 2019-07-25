@@ -93,7 +93,7 @@ Notification notification = new Notification.Builder(x)
   .setTemplate("TestsReporter")
   .setBody(body)
   .build();
-DAO notificationDAO = (DAO) x.get("notificationDAO");
+DAO notificationDAO = (DAO) x.get("localNotificationDAO");
 notificationDAO.put(notification);`
     }
   ]
