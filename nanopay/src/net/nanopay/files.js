@@ -478,7 +478,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ExpenseLineItem' },
   { name: 'net/nanopay/tx/ServiceLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItem' },
+  { name: 'net/nanopay/tx/TransactionLineItemCitationView' },
   { name: 'net/nanopay/tx/DisclosureLineItem' },
+  { name: 'net/nanopay/tx/ReferenceLineItem' },
+  { name: 'net/nanopay/tx/ReferenceLineItemCitationView' },
   { name: 'net/nanopay/fx/FXLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXFeeLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantUserPayeeJunction' },
@@ -1044,6 +1047,7 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/ui/account/Overview' },
   { name: 'net/nanopay/liquidity/ui/account/Balance' },
   { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
+  { name: 'net/nanopay/tx/ui/AccountTransactionLimitRulePredicateView' },
 
   // identitymind
   { name: 'net/nanopay/meter/compliance/identityMind/AbstractIdentityMindComplianceRuleAction' },
