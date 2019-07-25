@@ -47,24 +47,37 @@ p({"class":"foam.nanos.boot.NSpec", "name":"smsToken",                         "
 p({"class":"foam.nanos.boot.NSpec", "name":"push",                             "lazy":true,  "serve":false, "serviceClass":"foam.nanos.notification.push.FirebasePushService","service":{"class":"foam.nanos.notification.push.FirebasePushService","apiKey":"AAAAMKWTPTs:APA91bFLHRdVt76aQ-kZ8RBPS1ytYjmO-YsDfSktiN3Ka7U_jpRmt_U7HAs4RNL8bwPEiseZaiecatJDYs3DUp4K3vaq-zx6jg-RaH4xqGjo4KDk-VWDLtz9dgFrySSBcpC2F5DjZJqcuATPI0KMwQLE3KzRoSRQDg"}})
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"bareUserDAO",                      "lazy":false, "serve":false, "description":"Bare boned userDAO wrapped with essential decorators.", "authenticate": false, "serviceScript":
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"bareUserDAO",                      
+  "lazy":false, 
+  "serve":false, 
+  "description":"Bare boned userDAO wrapped with essential decorators.", 
+  "authenticate": false, 
+  "serviceScript":
   """
-    import foam.nanos.auth.User;
     foam.dao.MDAO mdao = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {User.EMAIL});
+    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL});
     return new foam.dao.PMDAO(x,
       new foam.dao.PipelinePMDAO(x,
-        new foam.dao.SequenceNumberDAO(1000, new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()), "users")))));
+        new foam.dao.SequenceNumberDAO(1000, 
+          new foam.dao.history.HistoryDAO(x, "userHistoryDAO", 
+            new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, 
+              new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()), "users")))));
   """,
   "client":"{\"of\":\"foam.nanos.auth.User\"}"
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"localUserDAO",                     "lazy":false, "serve":false, "description":"Server side userDAO wrapped in decorators.", "serviceScript":
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"localUserDAO",                     
+  "lazy":false, 
+  "serve":false, 
+  "description":"Server side userDAO wrapped in decorators.", 
+  "serviceScript":
   """
     bu = x.get("bareUserDAO");
     da = new foam.nanos.auth.DeletedAwareDAO(x, "user", bu);
-    ca =new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(da).build();
+    ca = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(da).build();
     r = new foam.nanos.ruler.RulerDAO(x, ca, "localUserDAO");
     ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(r).build();
     uph = new foam.nanos.auth.UserPasswordHashingDAO(x, ldu);
@@ -88,7 +101,13 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"userDAO",                          "lazy":true,  "serve":true,  "description":"Client authenticated userDAO", "authenticate": false, "serviceScript":
+  "class": "foam.nanos.boot.NSpec",
+  "name": "userDAO",                          
+  "lazy":true,  
+  "serve":true,  
+  "description":"Client authenticated userDAO", 
+  "authenticate": false,
+  "serviceScript":
   """
     return new foam.dao.PMDAO(x, 
       new foam.dao.PipelinePMDAO(x, 
