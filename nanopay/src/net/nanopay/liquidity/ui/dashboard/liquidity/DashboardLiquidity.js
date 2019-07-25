@@ -96,6 +96,9 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'startDate',
+      expression: function(timeFrame) {
+        
+      },
       factory: function() {
         return new Date(0);
       }
