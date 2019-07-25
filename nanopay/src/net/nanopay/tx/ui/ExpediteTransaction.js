@@ -16,6 +16,12 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
+  css: `
+    .property-output {
+      margin-bottom: 45px;
+    }
+  `,
+
   properties: [
     {
       class: 'Reference',
@@ -64,8 +70,10 @@ foam.CLASS({
       name: 'expediteCashIn',
       label: 'Expedite Cash In',
       confirmationRequired: true,
-      code: function(X) {
-        // fetch cash in, update status and put back to dao
+      code: async function(X) {
+        // Set Compliance Transaction to Complete write to dao
+        // then set cash in to complete and write to dao
+        var complianceFilter = this.childTransactions.filter((t) => t.type == 'ComplianceTransaction');
         var cashInFilter = this.childTransactions.filter((t) => t.type == 'AlternaCITransaction');
         var cashInObj = cashInFilter[0];
 
@@ -77,13 +85,22 @@ foam.CLASS({
           this.output = 'Cash In transaction is already completed.';
           return;
         }
-        if ( cashInObj.status == this.TransactionStatus.DECLINED ) {
-          this.output = 'Unable to update transaction if status is declined.';
-          return;
-        }
+
+        var complianceObj = complianceFilter[0];
+        complianceObj.status = this.TransactionStatus.COMPLETED;
+        await this.transactionDAO.put(complianceObj)
+        .catch(function(error) {
+          console.log(error);
+          console.log(error.message);
+        });
+
         cashInObj.status = this.TransactionStatus.COMPLETED;
-        this.transactionDAO.put(cashInObj);
-        this.output = 'Cash In successfully expedited.';
+        await this.transactionDAO.put(cashInObj)
+        .catch(function(error) {
+          console.log(error);
+          console.log(error.message);
+        });
+        this.output = 'Cash In successfully expedited';
       }
     },
     {
@@ -91,7 +108,7 @@ foam.CLASS({
       label: 'Expedite Cash Out',
       confirmationRequired: true,
       code: function(X) {
-        // fetch cash out, update status and put back to dao
+        // check if cash out is status pending, if it is change to complete and write to dao
         var cashOutFilter = this.childTransactions.filter((t) => t.type == 'AlternaCOTransaction');
         var cashOutObj = cashOutFilter[0];
 
@@ -103,10 +120,11 @@ foam.CLASS({
           this.output = 'Cash Out transaction is already completed.';
           return;
         }
-        if ( cashOutObj.status == this.TransactionStatus.DECLINED ) {
-          this.output = 'Unable to update transaction if status is declined.';
+        if ( cashOutObj.status != this.TransactionStatus.PENDING ) {
+          this.output = 'Cash Out status must be pending in order to complete.';
           return;
         }
+
         cashOutObj.status = this.TransactionStatus.COMPLETED;
         this.transactionDAO.put(cashOutObj);
         this.output = 'Cash Out successfully expedited.';
