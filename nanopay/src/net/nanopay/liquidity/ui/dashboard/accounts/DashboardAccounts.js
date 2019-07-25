@@ -90,7 +90,18 @@ foam.CLASS({
       factory: function() {
         return this.ControllerMode.VIEW;
       }
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.DAOControllerConfig',
+      name: 'config',
+      factory: function() {
+        return this.DAOControllerConfig.create({ 
+          defaultColumns: ["name","balance","type","owner"],
+          dao: this.accountDAO,
+        });
+      }
+    },
   ],
 
   methods: [
@@ -99,7 +110,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(self.slot(function(accountDAO, homeDenomination, currency) {
+        .add(self.slot(function(homeDenomination, currency, accountDAO, config) {
           return self.E()
               .start(self.Rows).addClass(this.myClass('card-container'))
                 .start().addClass(this.myClass('balance-card'))
@@ -126,7 +137,8 @@ foam.CLASS({
                 .end()
                 .start()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    data: accountDAO.where(self.TRUE)
+                    data: accountDAO.where(self.TRUE),
+                    config
                   })
                     .addClass(this.myClass('accounts-table'))
                   .end()
