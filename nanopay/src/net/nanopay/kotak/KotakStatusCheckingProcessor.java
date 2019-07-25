@@ -110,6 +110,6 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
       .setBody(body)
       .build();
 
-    ((DAO) x.get("notificationDAO")).put(notification);
+    ((DAO) x.get("localNotificationDAO")).put(notification);
   }
 }

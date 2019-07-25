@@ -80,7 +80,7 @@ foam.CLASS({
         ((Debtable) senderDigitalAccount).findDebtAccount(x).getLimit() >= ( request.getAmount() - (long) senderDigitalAccount.findBalance(x) ) &&
         SafetyUtil.equals(request.getSourceCurrency(), request.getDestinationCurrency()) &&
         request.getSourceCurrency().equals("CAD") &&
-        ( (long) ((Debtable) senderDigitalAccount).findDebtAccount(x).findCreditorAccount(x).findBalance(x) ) >= ( request.getAmount() - (long) senderDigitalAccount.findBalance(x) ) ) {
+        ( ((Debtable) senderDigitalAccount).findDebtAccount(x).findCreditorAccount(x) ) != null ) {
           CompositeTransaction ct = new CompositeTransaction();
           ct.copyFrom(request);
           ct.setIsQuoted(true);

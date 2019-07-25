@@ -59,29 +59,8 @@ foam.CLASS({
     'foam.u2.borders.CardBorder'
   ],
   imports: [
-    'transactionDAO'
-  ],
-  properties: [
-    {
-      class: 'String',
-      name: 'denominationFlag',
-      factory: function() {
-        /**
-         * TODO: we might want to make flags a property of currencies/denominations
-         * and use images instead of emojis
-         */
-        switch(this.data.denomination){
-          case 'USD':
-            return '🇺🇸';
-          case 'CAD':
-            return '🇨🇦';
-          case 'INR':
-            return '🇮🇳';
-          default:
-            return '💰';
-        }
-      }
-    }
+    'transactionDAO',
+    'homeDenomination'
   ],
 
   messages: [
@@ -90,8 +69,12 @@ foam.CLASS({
       message: 'BALANCE',
     },
     {
-      name: 'BALANCE_NOTE',
+      name: 'HOME_BALANCE_NOTE',
       message: 'Total value shown in home currency',
+    },
+    {
+      name: 'LOCAL_BALANCE_NOTE',
+      message: 'Total value shown in local currency'
     }
   ],
 
@@ -100,29 +83,30 @@ foam.CLASS({
       var self = this;
       this
         .addClass(this.myClass())
-        .add(self.slot(function(data, data$denomination, denominationFlag) {
-          return self.E()
-            .start(self.Rows)
+        .add(self.slot(function(data, data$denomination, homeDenomination) {
+          return data && data$denomination && Promise.all([
+            data.denomination$find,
+            data.findBalance(self.__context__)
+          ]).then(arr => {
+            var currency = arr[0];
+            var balance = currency.format(arr[1]);
+            return self.E()
               .start(self.Rows)
-                .start()
-                  .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
+                .start(self.Rows)
+                  .start()
+                    .add(self.CARD_HEADER).addClass(this.myClass('card-header'))
+                  .end()
+                  .start()
+                    .addClass(this.myClass('balance'))
+                    .add(`${balance} ${currency.emoji}`)
+                  .end()
+                  .start().addClass(this.myClass('balance-note'))
+                    .add(homeDenomination === data$denomination ? self.HOME_BALANCE_NOTE : self.LOCAL_BALANCE_NOTE)
+                    .add(` (${data$denomination})`)
+                  .end()
                 .end()
-                .start().addClass(this.myClass('balance'))
-                  .add(data.findBalance(self.__context__)
-                        .then(balance => self.__subSubContext__.currencyDAO.find(data$denomination)
-                          .then(curr => balance != null 
-                            ? `${curr.format(balance)}  ${denominationFlag}` 
-                            : `0 ${denominationFlag}`
-                          )
-                        )
-                      )
-                .end()
-                .start().addClass(this.myClass('balance-note'))
-                  .add(self.BALANCE_NOTE)
-                  .add(` (${data$denomination})`)
-                .end()
-              .end()
-            .end();
+              .end();
+          })
         }));
     }
   ]
