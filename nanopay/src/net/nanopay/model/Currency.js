@@ -9,6 +9,9 @@ foam.CLASS({
     'alphabeticCode'
   ],
 
+  imports: [
+    'homeDenomination'
+  ],
   javaImports: [
     'foam.util.SafetyUtil'
   ],
@@ -128,6 +131,11 @@ foam.CLASS({
          * Given a number, display it as a currency using the appropriate
          * precision, decimal character, delimiter, symbol, and placement
          * thereof.
+         * 
+         * With the new home denomination feature, we will append (if left) or 
+         * prepend (if right) the alphabetic code if the currency's alphabetic code
+         * is not equal to the homeDenomination 
+         * 
          */
         amount = Math.floor(amount);
         var isNegative = amount < 0;
@@ -136,6 +144,12 @@ foam.CLASS({
         while ( amount.length < this.precision ) amount = '0' + amount;
         var beforeDecimal = amount.substring(0, amount.length - this.precision);
         var formatted = isNegative ? '-' : '';
+
+        if ( this.leftOrRight === 'right' && this.homeDenomination !== this.id ) {
+          formatted += this.id;
+          formatted += ' ';
+        }
+
         if ( this.leftOrRight === 'left' ) {
           formatted += this.symbol;
           if ( this.showSpace ) formatted += ' ';
@@ -149,6 +163,12 @@ foam.CLASS({
           if ( this.showSpace ) formatted += ' ';
           formatted += this.symbol;
         }
+
+        if ( this.leftOrRight === 'left' && this.homeDenomination !== this.id ) {
+          formatted += ' ';
+          formatted += this.id;
+        }
+
         return formatted;
       },
       args: [
@@ -167,25 +187,40 @@ foam.CLASS({
         }
         String beforeDecimal = amountStr.substring(0, amountStr.length() - this.getPrecision());
         String formatted = isNegative ? "-" : "";
+
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "right") && SafetyUtil.equals(this.getHomeDenomination(), this.getId()) ) {
+          formatted += this.getId();
+          formatted += " ";
+        }
+
         if ( SafetyUtil.equals(this.getLeftOrRight(), "left") ) {
           formatted += this.getSymbol();
           if ( this.getShowSpace() ) {
             formatted += " ";
           }
         }
+
         formatted += beforeDecimal.length() > 0 ?
           beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", this.getDelimiter()) :
           "0";
+
         if ( this.getPrecision() > 0 ) {
           formatted += this.getDecimalCharacter();
           formatted += amountStr.substring(amountStr.length() - this.getPrecision());
         }
+
         if ( SafetyUtil.equals(this.getLeftOrRight(), "right") ) {
           if ( this.getShowSpace() ) {
             formatted += " ";
           }
           formatted += this.getSymbol();
         }
+
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "left") && SafetyUtil.equals(this.getHomeDenomination(), this.getId()) ) {
+          formatted += " ";
+          formatted += this.getId();
+        }
+
         return formatted;
       `
     }
