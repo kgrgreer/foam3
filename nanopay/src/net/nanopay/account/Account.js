@@ -244,7 +244,7 @@ foam.CLASS({
             obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
               obj.findBalance(self.__subSubContext__).then(balance => 
                 self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
-                  balance != null ?  curr.format(Math.floor(balance * r.rate)) : 0
+                  curr.format(balance != null ? Math.floor(balance * r.rate) : 0)
                 )
               )
             )
