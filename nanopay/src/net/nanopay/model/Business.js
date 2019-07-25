@@ -69,9 +69,11 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
       name: 'dualPartyAgreement',
       documentation: 'Verifies if the user is accept the dual-party agreement.',
+      docName: 'dualPartyAgreementCAD',
+      label: ''
     },
     {
       class: 'Int',

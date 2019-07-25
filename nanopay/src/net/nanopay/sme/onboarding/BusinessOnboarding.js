@@ -1056,20 +1056,6 @@ foam.CLASS({
     },
     net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
       section: 'reviewOwnersSection',
-      label: '',
-      //      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
-      label2Formatter: function() {
-        this.
-          add('I acknowledge that I have read and accept the ').
-          start('a').
-            attrs({
-              href: "https://nanopay.net/wp-content/uploads/2019/05/nanopay-Canada-Dual-Agreement.pdf",
-              target: "blank"
-            }).
-            add('Dual Party Agreement').
-          end().
-          add(' for Ablii Canadian Payment Services.');
-      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
@@ -1079,7 +1065,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, true)
+              e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, 0)
             );
           },
           errorString: 'Must acknowledge the dual party agreement.'

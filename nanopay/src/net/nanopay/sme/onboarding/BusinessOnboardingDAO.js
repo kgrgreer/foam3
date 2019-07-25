@@ -45,9 +45,7 @@ foam.CLASS({
         if ( old == null || old.getDualPartyAgreement() != businessOnboarding.getDualPartyAgreement() ) {
           net.nanopay.documents.AcceptanceDocumentService documentService =
             (net.nanopay.documents.AcceptanceDocumentService)(x.get("acceptanceDocumentService"));
-
-          net.nanopay.documents.AcceptanceDocument document = documentService.getAcceptanceDocument(x, "dualPartyAgreementCAD", "");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), document.getId(), businessOnboarding.getDualPartyAgreement());
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
         }
 
         Session session = x.get(Session.class);
@@ -78,10 +76,10 @@ foam.CLASS({
           user.setBirthday(businessOnboarding.getBirthday());
           user.setAddress(businessOnboarding.getAddress());
 
-          // Agreenments (tri-party, dual-party & PEP/HIO)
+          // Agreements (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
-          business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
+          if (businessOnboarding.getDualPartyAgreement() != 0) business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
 
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business

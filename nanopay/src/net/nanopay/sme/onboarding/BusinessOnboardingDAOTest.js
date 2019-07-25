@@ -97,7 +97,7 @@ foam.CLASS({
         onboarding.setBirthday(birthday);
         onboarding.setPEPHIORelated(true);
         onboarding.setThirdParty(true);
-        onboarding.setDualPartyAgreement(true);
+        onboarding.setDualPartyAgreement(3); // 0 would be a false acceptance, any other int is for true acceptance
         onboarding.setAddress(signingOfficerAddress);
 
         onboarding.setBusinessTypeId(6);
