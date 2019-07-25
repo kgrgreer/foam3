@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Invitation',
@@ -42,9 +43,12 @@ foam.CLASS({
 
         BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
 
-        if ( old == null || old.getDualPartyAgreement() != businessOnboarding.getDualPartyAgreement() ) {
-          net.nanopay.documents.AcceptanceDocumentService documentService =
-            (net.nanopay.documents.AcceptanceDocumentService)(x.get("acceptanceDocumentService"));
+        if (
+          (old == null && businessOnboarding.getDualPartyAgreement() != 0)
+          ||
+          ( old != null && old.getDualPartyAgreement() != businessOnboarding.getDualPartyAgreement())
+        ) {
+          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
         }
 
@@ -79,7 +83,7 @@ foam.CLASS({
           // Agreements (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
-          if (businessOnboarding.getDualPartyAgreement() != 0) business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
+          business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
 
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
