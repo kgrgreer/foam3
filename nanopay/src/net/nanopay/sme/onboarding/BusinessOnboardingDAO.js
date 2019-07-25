@@ -86,9 +86,10 @@ foam.CLASS({
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
-          user.setIdentification(businessOnboarding.getPersonalIdentification());
           business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
 
+          user.setIdentification(businessOnboarding.getUSBusinessDetails().getSigningOfficerIdentification());
+          
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
           business.getSigningOfficers(x).add(user);
@@ -106,9 +107,10 @@ foam.CLASS({
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
           business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
           business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
-          business.setBusinessRegistrationDate(businessOnboarding.getBusinessRegistration().getBusinessFormationDate());
-          business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistration().getBusinessRegistrationNumber());
-          business.setCountryOfBusinessRegistration(businessOnboarding.getBusinessRegistration().getCountryOfBusinessFormation());         
+
+          business.setBusinessRegistrationDate(businessOnboarding.getUSBusinessDetails().getBusinessFormationDate());
+          business.setBusinessRegistrationNumber(businessOnboarding.getUSBusinessDetails().getBusinessRegistrationNumber());
+          business.setCountryOfBusinessRegistration(businessOnboarding.getUSBusinessDetails().getCountryOfBusinessFormation()); 
 
           if ( businessOnboarding.getOperatingUnderDifferentName() ) {
             business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());

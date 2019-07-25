@@ -23,6 +23,16 @@ foam.CLASS({
     //   documentation: 'Legal Entity Identifier (LEI) Expiration Date'
     // }, 
     {
+      section: 'personalIdentificationSection',
+      class: 'FObjectProperty',
+      name: 'signingOfficerIdentification',
+      of: 'net.nanopay.model.PersonalIdentification',
+      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
+      factory: function() {
+        return this.PersonalIdentification.create({});
+      },
+    },
+    {
       class: 'Date',
       name: 'businessFormationDate',
       documentation: 'Date of Business Formation or Incorporation.'
