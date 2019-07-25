@@ -40,7 +40,7 @@ foam.CLASS({
                 .setGroup("payment-ops")
                 .setStatus(ApprovalStatus.REQUESTED).build());
           }
-        });
+        }, "Create Manual FX Rule");
       `
     }
   ]

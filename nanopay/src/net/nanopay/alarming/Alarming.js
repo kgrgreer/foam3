@@ -52,7 +52,7 @@ foam.CLASS({
               logger.error(e);
             }
           }
-        });
+        }, "Alarming");
       }
      `
     }
