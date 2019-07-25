@@ -30,7 +30,7 @@ foam.CLASS({
         if ( getStatus() != TransactionStatus.COMPLETED || getInvoiceId() == 0 ) return;
 
         DAO localUserDAO = (DAO) x.get("localUserDAO");
-        DAO notificationDAO = (DAO) x.get("notificationDAO");
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         Invoice invoice = this.findInvoiceId(x);
 
         User sender = findSourceAccount(x).findOwner(x);
