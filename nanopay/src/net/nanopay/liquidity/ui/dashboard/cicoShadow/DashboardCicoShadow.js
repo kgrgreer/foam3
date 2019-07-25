@@ -235,7 +235,7 @@ foam.CLASS({
                   config.options.scales.xAxes = [{
                     ticks: {
                       callback: function (value) {
-                        return `${c.id} ${c.format(value)}`;
+                        return `${c.format(value)}`;
                       }
                     }
                   }];
@@ -246,7 +246,7 @@ foam.CLASS({
                         var currentValue = dataset.data[tooltipItem.index];
 
                         var label = dataset.label === 'CITransaction' ? self.TOOLTIP_TOTAL_CI : self.TOOLTIP_TOTAL_CO;
-                        return [`${label} ${c.id} ${c.format(currentValue)}`];
+                        return [`${label} ${c.format(currentValue)}`];
                       }
                     }
                   };

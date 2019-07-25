@@ -300,7 +300,7 @@ foam.CLASS({
         this.config.options.scales.yAxes = [{
             ticks: {
               callback: function(v) {
-                return `${c.id} ${c.format(v)}`;
+                return `${c.format(v)}`;
               }
             }
         }];
@@ -308,7 +308,7 @@ foam.CLASS({
           displayColors: false,
           callbacks: {
             label: function(v) {
-              return `${c.id} ${c.format(v.yLabel)}`;
+              return `${c.format(v.yLabel)}`;
             }
           }
         }
