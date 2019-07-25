@@ -35,6 +35,9 @@ foam.CLASS({
       name: 'preventFeedback_'
     },
   ],
+  reactions: [
+    ['rule', 'propertyChange.send', 'referencesToPredicate']
+  ],
   listeners: [
     {
       name: 'predicateToReferences',

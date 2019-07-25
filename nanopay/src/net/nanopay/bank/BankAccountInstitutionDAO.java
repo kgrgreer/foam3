@@ -69,7 +69,7 @@ public class BankAccountInstitutionDAO
           .setBody(message)
           .build();
         new Transfer.Builder(x).build();
-        ((DAO) x.get("notificationDAO")).put(notification);
+        ((DAO) x.get("localNotificationDAO")).put(notification);
         ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
      } else if ( institutions.size() > 1 ) {
         String message = "Multiple Institutions found for institutionNumber: "+bankAccount.getInstitution()+". Using "+institution.getId()+" on BankAccount: "+bankAccount.getId();
@@ -77,7 +77,7 @@ public class BankAccountInstitutionDAO
           .setTemplate("NOC")
           .setBody(message)
           .build();
-        ((DAO) x.get("notificationDAO")).put(notification);
+        ((DAO) x.get("localNotificationDAO")).put(notification);
         ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
         ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "institutions", institutions);
       }

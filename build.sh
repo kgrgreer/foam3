@@ -594,6 +594,8 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
            echo "MODE=${MODE}"
            ;;
         Q) LIQUID_DEMO=1
+           JOURNAL_CONFIG=liquid
+           echo "💧 Initializing Liquid Environment 💧"
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
@@ -620,6 +622,11 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
         ?) usage ; quit 1 ;;
     esac
 done
+
+if [ "${MODE}" == "TEST" ]; then
+    echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
+    JOURNAL_CONFIG=test
+fi
 
 if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
