@@ -97,7 +97,7 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({ 
-          defaultColumns: ["name","balance","type","owner"],
+          defaultColumns: ["name","balance","homeBalance","type","owner"],
           dao: this.accountDAO,
         });
       }
