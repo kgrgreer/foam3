@@ -12,6 +12,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.tx.ComplianceTransaction',
+    'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.cico.COTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -89,7 +92,7 @@ foam.CLASS({
       confirmationRequired: true,
       code: async function(X) {
         // fetch compliance and cash in transactions, update status and write to dao
-        var complianceTransactions = this.childTransactions.filter((t) => net.nanopay.tx.ComplianceTransaction.isInstance(t));
+        var complianceTransactions = this.childTransactions.filter((t) => this.ComplianceTransaction.isInstance(t));
         for ( var i = 0; i < complianceTransactions.length; i++ ) {
           var complianceObj = complianceTransactions[i];
           if ( complianceObj != undefined && complianceObj.status != this.TransactionStatus.COMPLETED ) {
@@ -99,7 +102,7 @@ foam.CLASS({
           }
         }
         
-        var cashInTransactions = this.childTransactions.filter((t) => net.nanopay.tx.cico.CITransaction.isInstance(t));
+        var cashInTransactions = this.childTransactions.filter((t) => this.CITransaction.isInstance(t));
         for ( var i = 0; i < cashInTransactions.length; i++ ) {
           var cashInObj = cashInTransactions[i];
           var status = cashInObj.status;
@@ -122,7 +125,7 @@ foam.CLASS({
       confirmationRequired: true,
       code: async function(X) {
         // fetch cash out transactions, update status and write to dao
-        var cashOutTransactions = this.childTransactions.filter((t) => net.nanopay.tx.cico.COTransaction.isInstance(t));
+        var cashOutTransactions = this.childTransactions.filter((t) => this.COTransaction.isInstance(t));
         for ( var i = 0; i < cashOutTransactions.length; i++ ) {
           var cashOutObj = cashOutTransactions[i];
           var status = cashOutObj.status;
@@ -140,7 +143,6 @@ foam.CLASS({
     },
     {
       name: 'back',
-      label: 'Back',
       section: 'outputSection',
       code: function(X) {
         this.stack.back();
