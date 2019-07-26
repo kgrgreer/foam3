@@ -4,7 +4,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.nanos.app.AppConfig;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -34,15 +33,17 @@ public class AFEXContactDAO
       return getDelegate().put_(x, obj);
     }
 
-    AppConfig appConfig = (AppConfig) x.get("appConfig");
-    if ( null == appConfig || ! appConfig.getEnableInternationalPayment()) return getDelegate().put_(x, obj);
-
     DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
     AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     
     Contact contact = (Contact) obj;
-    Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
+    
+    // check contact owner has currency.read.USD permission
+    AuthService auth = (AuthService) x.get("auth");
+    Business contactOwner = (Business) localBusinessDAO.find(contact.getOwner());
+    if ( ! auth.checkUser(getX(), contactOwner, "currency.read.USD") ) return getDelegate().put_(x, obj);
+
     // Check if contact has a bank account
     BankAccount contactBankAccount = contact.getBankAccount() < 1 ? 
       ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, contact.getId()), INSTANCE_OF(BankAccount.class)))) 
@@ -55,6 +56,7 @@ public class AFEXContactDAO
     }
 
     // Check If Contact has business and create AFEX beneficiary for business also
+    Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
     if ( business != null ) {
       BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class))));
       if ( null != businessBankAccount ) {
