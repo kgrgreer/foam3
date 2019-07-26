@@ -83,22 +83,21 @@ foam.CLASS({
   actions: [
     {
       name: 'expediteCashIn',
-      label: 'Expedite Cash In',
       section: 'transactionInfo',
       confirmationRequired: true,
       code: async function(X) {
         // Set Compliance Transaction to Complete write to dao
         // then set cash in to complete and write to dao
-        var complianceFilter = this.childTransactions.filter((t) => t.type == 'ComplianceTransaction');
-        var complianceObj = complianceFilter[0];
+        var complianceTransactions = this.childTransactions.filter((t) => net.nanopay.tx.ComplianceTransaction.isInstance(t));
+        var complianceObj = complianceTransactions[0];
         if ( complianceObj != undefined && complianceObj.status != this.TransactionStatus.COMPLETED ) {
           complianceObj.status = this.TransactionStatus.COMPLETED;
           await this.transactionDAO.put(complianceObj);
           await this.updateChildren();
         }
 
-        var cashInFilter = this.childTransactions.filter((t) => t.type == 'AlternaCITransaction');
-        var cashInObj = cashInFilter[0];
+        var cashInTransactions = this.childTransactions.filter((t) => net.nanopay.tx.cico.CITransaction.isInstance(t));
+        var cashInObj = cashInTransactions[0];
         if ( cashInObj == undefined ) {
           this.output = 'There is no cash in transaction to expedite.';
           return;
@@ -121,13 +120,12 @@ foam.CLASS({
     },
     {
       name: 'expediteCashOut',
-      label: 'Expedite Cash Out',
       section: 'transactionInfo',
       confirmationRequired: true,
       code: async function(X) {
         // check if cash out is status pending, if it is change to complete and write to dao
-        var cashOutFilter = this.childTransactions.filter((t) => t.type == 'AlternaCOTransaction');
-        var cashOutObj = cashOutFilter[0];
+        var cashOutTransactions = this.childTransactions.filter((t) => net.nanopay.tx.cico.COTransaction.isInstance(t));
+        var cashOutObj = cashOutTransactions[0];
 
         if ( cashOutObj == undefined ) {
           this.output = 'There is no cash out transaction to expedite.';
