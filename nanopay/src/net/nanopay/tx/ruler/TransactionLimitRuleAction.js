@@ -27,9 +27,6 @@ foam.CLASS({
       Transaction txn = (Transaction) obj;
       DAO transactionDAO = (DAO) x.get("localTransactionDAO");
       Transaction oldTxn = (Transaction) transactionDAO.find_(x, obj);
-      // if ( ! txn.canTransfer(x, oldTxn) ) {
-      //   return;
-      // }
       if (! (txn instanceof AbliiTransaction) && ( ! txn.canTransfer(x, oldTxn) )) {
         return;
       }
