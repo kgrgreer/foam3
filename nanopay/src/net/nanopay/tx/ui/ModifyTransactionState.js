@@ -102,23 +102,17 @@ foam.CLASS({
         var cashInTransactions = this.childTransactions.filter((t) => net.nanopay.tx.cico.CITransaction.isInstance(t));
         for ( var i = 0; i < cashInTransactions.length; i++ ) {
           var cashInObj = cashInTransactions[i];
-          if ( cashInObj == undefined ) {
-            this.output = 'There is no cash in transaction to expedite.';
-            return;
+          var status = cashInObj.status;
+
+          if ( cashInObj != undefined && status != this.TransactionStatus.COMPLETED
+             && status == this.TransactionStatus.PENDING || status == this.TransactionStatus.SENT ) {
+              cashInObj.status = this.TransactionStatus.COMPLETED;
+              await this.transactionDAO.put(cashInObj);
+              this.output = 'Cash In successfully expedited';
+              this.updateChildren();
+          } else {
+            this.output = 'Cash In is either non existent or the status is not pending or sent.';
           }
-          if ( cashInObj.status == this.TransactionStatus.COMPLETED ) {
-            this.output = 'Cash In has already been completed.';
-            return;
-          }
-          if ( cashInObj.status != this.TransactionStatus.PENDING
-             && cashInObj.status != this.TransactionStatus.SENT ) {
-            this.output = 'Cash In status must be pending or sent to expedite.';
-            return;
-          }
-          cashInObj.status = this.TransactionStatus.COMPLETED;
-          await this.transactionDAO.put(cashInObj);
-          this.output = 'Cash In successfully expedited';
-          this.updateChildren();
         }
       }
     },
@@ -131,22 +125,16 @@ foam.CLASS({
         var cashOutTransactions = this.childTransactions.filter((t) => net.nanopay.tx.cico.COTransaction.isInstance(t));
         for ( var i = 0; i < cashOutTransactions.length; i++ ) {
           var cashOutObj = cashOutTransactions[i];
-          if ( cashOutObj == undefined ) {
-            this.output = 'There is no cash out transaction to expedite.';
-            return;
+          var status = cashOutObj.status;
+
+          if ( cashOutObj != undefined && status != this.TransactionStatus.COMPLETED
+             && status == this.TransactionStatus.PENDING || status == this.TransactionStatus.SENT ) {
+              cashOutObj.status = this.TransactionStatus.COMPLETED;
+              await this.transactionDAO.put(cashOutObj);
+              this.output = 'Cash Out successfully expedited.';
+          } else {
+            this.output = 'Cash Out is either non existent or the status is not pending or sent.';
           }
-          if ( cashOutObj.status == this.TransactionStatus.COMPLETED ) {
-            this.output = 'Cash Out has already been completed.';
-            return;
-          }
-          if ( cashOutObj.status != this.TransactionStatus.PENDING
-             && cashOutObj.status != this.TransactionStatus.SENT ) {
-            this.output = 'Cash Out status must be pending or sent to expedite.';
-            return;
-          }
-          cashOutObj.status = this.TransactionStatus.COMPLETED;
-          await this.transactionDAO.put(cashOutObj);
-          this.output = 'Cash Out successfully expedited.';
         }
       }
     },
