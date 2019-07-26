@@ -36,11 +36,7 @@ foam.CLASS({
       section: 'transactionInfo',
       postSet: function() {
         this.childTransactions = [];
-        this.transaction$find
-          .then((t) => this.getChildren(t))
-          .then((a) => {
-            this.childTransactions = a;
-          });
+        this.updateChildren();
       }
     },
     {
@@ -74,6 +70,13 @@ foam.CLASS({
         }
       }
       return children;
+    },
+    function updateChildren() {
+      this.transaction$find
+          .then((t) => this.getChildren(t))
+          .then((a) => {
+            this.childTransactions = a;
+          });
     }
   ],
 
@@ -106,6 +109,7 @@ foam.CLASS({
         cashInObj.status = this.TransactionStatus.COMPLETED;
         await this.transactionDAO.put(cashInObj);
         this.output = 'Cash In successfully expedited';
+        this.updateChildren();
       }
     },
     {
