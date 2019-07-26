@@ -21,7 +21,7 @@ foam.CLASS({
   constants: [
     {
       type: 'String',
-      name: 'LOCAL_SERVICE_NSPEC_ID',
+      name: 'LOCAL_FX_SERVICE_NSPEC_ID',
       value: 'localFXService'
     }
   ],
@@ -82,7 +82,7 @@ foam.CLASS({
         return super.put_(x, quote);
       }
 
-      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency(), "localFXService");
+      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency(), LOCAL_FX_SERVICE_NSPEC_ID);
       FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"");
       txn.addLineItems(new TransactionLineItem[] { new FeeLineItem.Builder(x).setName("Foreign Exchange Fee ( rate: " + fxQuote.getRate() + " )").setAmount((long)fxQuote.getRate() * (quote.getRequestTransaction().getAmount()) ).build()},null);
 
