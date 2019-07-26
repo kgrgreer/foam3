@@ -63,6 +63,7 @@ p({
         .setPm(true)
         .setPipelinePm(true)
         .setSeqNo(true)
+        .setSeqStartingValue(1000)
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(historyHashingDAO)
         .setAuthenticate(false)
