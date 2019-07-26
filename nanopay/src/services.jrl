@@ -55,7 +55,7 @@ p({
   "serviceScript":
   """
     foam.dao.MDAO mdao = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {User.EMAIL});
+    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL});
     foam.dao.DAO historyHashingDAO = new foam.dao.history.HistoryDAO(x, "userHistoryDAO",
         new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "users")
     );
