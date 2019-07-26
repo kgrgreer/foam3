@@ -61,7 +61,122 @@ p({"class":"foam.nanos.script.Script","id":"DAO Security Test","description":"DA
 p({"class":"foam.nanos.script.Script","id":"addComplianceReadToSME","code":"import foam.core.X;\nimport foam.dao.DAO;\nimport foam.nanos.auth.AuthService;\nimport foam.nanos.auth.Group;\nimport foam.nanos.auth.Permission;\nimport java.security.BasicPermission;\n\ngroupDAO = ((DAO) x.get(\"localGroupDAO\")).inX(x);\nauth = (AuthService) x.get(\"auth\");\n\ngroup = (Group) groupDAO.find(\"sme\");\n\nX groupCtx = x.put(\"group\", group);\n\nString[] permissionsToAdd = {\n  \"business.ro.compliance\",\n\"user.ro.compliance\"\n};\n\nfor ( String permissionId : permissionsToAdd ) {\n  if ( auth.check(groupCtx, permissionId) ) {\n    print(\"Already has \" + permissionId + \".\");\n  } else {\n    print(\"Need to add \" + permissionId + \".\");\n    Permission[] currentPermissions = group.getPermissions();\n    Permission[] newPermissions = new Permission[currentPermissions.length + 1];\n    for ( int i = 0; i < currentPermissions.length; i++ ) {\n      newPermissions[i] = currentPermissions[i];\n    }\n    newPermissions[currentPermissions.length] = new Permission(permissionId, \"\");\n    group.setPermissions(newPermissions);\n    print(\"Added \" + permissionId + \".\");\n  }\n}\n\ngroupDAO.put(group);","output":""})
 p({"class":"foam.nanos.script.Script","id":"LiquidLiquiditySettingsTest","description":"To test out liquidity settings on liquid","server":false,"code":"/**\n * TITLE: LiquidLiquiditySettingsTest\n * DESCRIPTION: To test out liquidity settings on liquid\n */\n// ==================================================================================\n\nconst main = async () => {\n  // grabbing DAOs\n  const accountDAO = x['accountDAO'];\n  const transactionDAO = x['transactionDAO'];\n  const liquiditySettingsDAO = x['liquiditySettingsDAO'];\n  const MLang = foam.mlang.ExpressionsSingleton.create();\n\n  // grabbing user id\n  const userId = x.user.id;\n  const fromName = 'Main Virtual [4][0][1]';\n  const toName = 'Main Virtual [1][0][1]';\n  const liquiditySettingName = 'Notify and Auto';\n  const rootName = 'Main Root Shadow [0][0][0]';\n\n  // grab the root id of the main tree\n\n  const rootAccount = await accountDAO.limit(1).where(MLang.EQ(net.nanopay.account.Account.NAME, rootName)).select();\n\n  const lowLiquidity = {\n    enabled: true,\n    rebalancingEnabled: true,\n    threshold: 1,\n    resetBalance: 5000000,\n    pushPullAccount: rootAccount.array[0].id\n  }\n  \n  /**\n   * Essentially after this, the fromAccount should trigger a lowLiquidityThreshold and have its balance reset to $50,000 if enabled above\n   * the toAccount should trigger a highLiquidityThreshold and have its balance reset to $500,0000\n   */\n\n  const newLiquiditySettingArray = await liquiditySettingsDAO.limit(1).where(MLang.EQ(net.nanopay.liquidity.LiquiditySettings.NAME, liquiditySettingName)).select();\n\n  const newLiquiditySetting = newLiquiditySettingArray.array[0];\n\n  newLiquiditySetting.lowLiquidity = lowLiquidity;\n\n  // update the notify and auto setting in the DAO\n  await liquiditySettingsDAO.put(newLiquiditySetting);\n\n  // 1. grab the from account\n  // fromAccount = 204\t\tMain Virtual [4][0][1]\tDigitalAccount\tCAD\t$579,000.00\t\n  const fromAccount = await accountDAO.limit(1).where(MLang.EQ(net.nanopay.account.Account.NAME, fromName)).select();\n\n  // 2. grab the to account\n  // toAccount = 189\t\tMain Virtual [1][0][1]\tDigitalAccount\tCAD\t$586,000.00\n  const toAccount = await accountDAO.limit(1).where(MLang.EQ(net.nanopay.account.Account.NAME, toName)).select();\n\n  // 3. create a transaction of the entire balance from\n  const transaction = net.nanopay.tx.model.Transaction.create({\n    sourceAccount: fromAccount.array[0].id,\n    destinationAccount: toAccount.array[0].id,\n    amount: await fromAccount.array[0].findBalance(x),\n    createdBy: userId,\n    payerId: userId,\n    payeeId: userId\n  }, x);\n\n  await transactionDAO.put(transaction);\n\n  print('FIN');\n}\n\nmain();"})
 p({"class":"foam.nanos.script.Script","id":"Network Transport for EmailMessages", "code":"\nimport foam.nanos.notification.email.EmailService;\nimport foam.nanos.notification.email.SMTPEmailService;\nimport foam.nanos.notification.email.ProxyEmailService;\n\n\nProxyEmailService pes = x.get(\"email\"); \nEmailService es = new SMTPEmailService.Builder(x)\n.setHost(\"smtp.gmail.com\")\n.setPort(\"587\")\n.setStarttls(true)\n.setUsername(\"nanopay.email@gmail.com\")\n.setPassword(\"Em@1l53nd3r\")\n.build(); \n\npes.setDelegate(es);\nprint(\"done\");","output":""})
-p({"class":"foam.nanos.script.Script","id":"setupAbliiUsers","status":2,"code":"import foam.nanos.auth.User;\nimport foam.mlang.MLang;\nimport net.nanopay.model.Business;\nimport foam.nanos.auth.Address;\nimport net.nanopay.admin.model.ComplianceStatus;\nimport net.nanopay.admin.model.AccountStatus;\nimport net.nanopay.bank.BankAccountStatus;\nimport net.nanopay.Account;\nimport net.nanopay.bank.BankAccount;\nimport net.nanopay.bank.CABankAccount;\nimport foam.nanos.auth.UserUserJunction;\n\naccountDAO = x.get(\"accountDAO\");\nagentJunctionDAO = x.get(\"agentJunctionDAO\");\nbusinessDAO = x.get(\"businessDAO\");\nregionDAO = x.get(\"regionDAO\");\nsmeBusinessRegistrationDAO = x.get(\"smeBusinessRegistrationDAO\");\nuserDAO = x.get(\"userDAO\");\n\nusers = userDAO.orderBy(User.ID).select().getArray();\ni = users.get(users.size() - 1).getId() + 1;\n\n// emails are in order of {admin1, employee1, admin2, employee2, ...}\n// the emails without corresponding passwords will have it set to passwords[0]\nString[] emails = {\"user\"+i+\"@email.com\", \"employee\"+i+\"@email.com\", \"user\"+(i+2)+\"@email.com\", \"employee\"+(i+2)+\"@email.com\"};\nString[] passwords = {\"AbliiTestUser\"}; \n\naddress = new Address();\naddress.setCountryId(\"CA\");\naddress.setStreetName(\"Avenue Rd\");\naddress.setStreetNumber(\"123\");\naddress.setPostalCode(\"M1M1M1\");\naddress.setCity(\"Toronto\");\naddress.setRegionId(regionDAO.find(\"ON\").getCode());\n\nbirthday = new GregorianCalendar(2000, 1, 1).getTime();\n\nfor(int j = 0; j < emails.length; j+=2) {\n    print(\"\\nCompany \"+(i+j));\n    user = new User();\n    user.setFirstName(\"Test\");\n    user.setLastName(\"Admin\");\n    user.setEmail(emails[j]);\n    user.setDesiredPassword(passwords.length<j+1?passwords[0]:passwords[j]);\n    user.setGroup(\"sme\");\n    user.setAddress(address);\n    user.setType(\"Business\");\n    user.setOrganization(\"Company \"+(i+j));\n    user.setBusinessName(\"Company \"+(i+j));\n    user.setLanguage(\"en\");\n    user.setBirthday(birthday);\n    user.setBusinessAddress(address);\n    user.setEnabled(true);\n    user.setLoginEnabled(true);\n    user.setEmailVerified(true);\n    user.setEmailVerified(true);\n    smeBusinessRegistrationDAO.put(user);\n\n    business = businessDAO.where(foam.mlang.MLang.EQ(Business.EMAIL, user.getEmail())).select().getArray().get(0);\n    business = business.fclone();\n    business.setStatus(AccountStatus.ACTIVE);\n    business.setBusinessAddress(address);\n    business.setOnboarded(true);\n    business.setCompliance(ComplianceStatus.PASSED);\n    try {\n        businessDAO.put(business);\n    } catch(Exception e) {\n    }\n\n    account = new CABankAccount();\n    account.setName(\"testAccount\"+(i+j));\n    account.setBranchId(\"12345\");\n    account.setInstitutionNumber(\"004\");\n    account.setAccountNumber(\"1232142113\");\n    account.setStatus(BankAccountStatus.VERIFIED);\n    account.setOwner(business.getId());\n    account.setParent(business.getId());\n    account.setAddress(address);\n\n    accountDAO.put(account);\n\n    print(\"ADMIN CREATED :\\n . \"+user.getEmail() + \"\\n . \" + (passwords.length<j+1?passwords[0]:passwords[j]));\n\n    admin = user;\n\n    user = new User();\n    user.setEnabled(true);\n    user.setLoginEnabled(true);\n    user.setFirstName(\"Test\");\n    user.setLastName(\"Employee\");\n    user.setBusinessAddress(address);\n    user.setOrganization(admin.getOrganization());\n    user.setGroup(admin.getGroup());\n    user.setEmail(emails[j+1]);\n    user.setEmailVerified(true);\n    user.setDesiredPassword(passwords.length<j+2?passwords[0]:passwords[j+1]);\n    user.setStatus(AccountStatus.ACTIVE);\n    userDAO.put(user);\n\n    UserUserJunction junction = new UserUserJunction();\n    junction.setGroup(admin.getGroup());\n    junction.setSourceId(user.getId());\n    junction.setTargetId(business.getId());\n    agentJunctionDAO.put(junction);\n\n    print(\"EMPLOYEE CREATED :\\n . \"+user.getEmail() + \"\\n . \" + (passwords.length<j+2?passwords[0]:passwords[j+1]));\n}\n\n","output":""})
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"setupAbliiUsers",
+  "status":2,
+  "code":"""
+import foam.nanos.auth.User;
+import foam.mlang.MLang;
+import net.nanopay.model.Business;
+import foam.nanos.auth.Address;
+import net.nanopay.admin.model.ComplianceStatus;
+import net.nanopay.admin.model.AccountStatus;
+import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.Account;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.CABankAccount;
+import foam.nanos.auth.UserUserJunction;
+
+accountDAO = x.get("accountDAO");
+agentJunctionDAO = x.get("agentJunctionDAO");
+businessDAO = x.get("businessDAO");
+regionDAO = x.get("regionDAO");
+smeBusinessRegistrationDAO = x.get("smeBusinessRegistrationDAO");
+userDAO = x.get("userDAO");
+
+users = userDAO.orderBy(User.ID).select().getArray();
+i = users.get(users.size() - 1).getId() + 1;
+
+// emails are in order of {admin1, employee1, admin2, employee2, ...}
+// the emails without corresponding passwords will have it set to passwords[0]
+String[] emails = {"user"+i+"@email.com", "employee"+i+"@email.com", "user"+(i+2)+"@email.com", "employee"+(i+2)+"@email.com"};
+String[] passwords = {"AbliiTestUser"}; 
+
+address = new Address();
+address.setCountryId("CA");
+address.setStreetName("Avenue Rd");
+address.setStreetNumber("123");
+address.setPostalCode("M1M1M1");
+address.setCity("Toronto");
+address.setRegionId(regionDAO.find("ON").getCode());
+
+birthday = new GregorianCalendar(2000, 1, 1).getTime();
+
+for(int j = 0; j < emails.length; j+=2) {
+    print("\nCompany "+(i+j));
+    user = new User();
+    user.setFirstName("Test");
+    user.setLastName("Admin");
+    user.setEmail(emails[j]);
+    user.setDesiredPassword(passwords.length<j+1?passwords[0]:passwords[j]);
+    user.setGroup("sme");
+    user.setAddress(address);
+    user.setType("Business");
+    user.setOrganization("Company "+(i+j));
+    user.setBusinessName("Company "+(i+j));
+    user.setLanguage("en");
+    user.setBirthday(birthday);
+    user.setBusinessAddress(address);
+    user.setEnabled(true);
+    user.setLoginEnabled(true);
+    user.setEmailVerified(true);
+    user.setEmailVerified(true);
+    user.setCompliance(ComplianceStatus.PASSED);
+    smeBusinessRegistrationDAO.put(user);
+
+    business = businessDAO.where(foam.mlang.MLang.EQ(Business.EMAIL, user.getEmail())).select().getArray().get(0);
+    business = business.fclone();
+    business.setStatus(AccountStatus.ACTIVE);
+    business.setBusinessAddress(address);
+    business.setOnboarded(true);
+    business.setCompliance(ComplianceStatus.PASSED);
+    try {
+        businessDAO.put(business);
+    } catch(Exception e) {
+    }
+
+    account = new CABankAccount();
+    account.setName("testAccount"+(i+j));
+    account.setBranchId("12345");
+    account.setInstitutionNumber("004");
+    account.setAccountNumber("1232142113");
+    account.setStatus(BankAccountStatus.VERIFIED);
+    account.setOwner(business.getId());
+    account.setParent(business.getId());
+    account.setAddress(address);
+
+    accountDAO.put(account);
+
+    print("ADMIN CREATED :\n . "+user.getEmail() + "\n . " + (passwords.length<j+1?passwords[0]:passwords[j]));
+
+    admin = user;
+
+    user = new User();
+    user.setEnabled(true);
+    user.setLoginEnabled(true);
+    user.setFirstName("Test");
+    user.setLastName("Employee");
+    user.setBusinessAddress(address);
+    user.setOrganization(admin.getOrganization());
+    user.setGroup(admin.getGroup());
+    user.setEmail(emails[j+1]);
+    user.setEmailVerified(true);
+    user.setDesiredPassword(passwords.length<j+2?passwords[0]:passwords[j+1]);
+    user.setStatus(AccountStatus.ACTIVE);
+    user.setCompliance(ComplianceStatus.PASSED);
+    userDAO.put(user);
+
+    UserUserJunction junction = new UserUserJunction();
+    junction.setGroup(admin.getGroup());
+    junction.setSourceId(user.getId());
+    junction.setTargetId(business.getId());
+    agentJunctionDAO.put(junction);
+
+    print("EMPLOYEE CREATED :\n . "+user.getEmail() + "\n . " + (passwords.length<j+2?passwords[0]:passwords[j+1]));
+}
+  """
+})
 p({"class":"foam.nanos.script.Script","id":"testKotakPayment","description":"submit a kotak payment","code":"import net.nanopay.kotak.Test;\nimport net.nanopay.kotak.KotakService;\nimport net.nanopay.kotak.KotakPaymentProcessor;\n\nKotakService kotakService = new KotakService(x);\n\nTest test = new Test();\n\n// kotakService, msgSource, clientCode, myProdCode, payMode, senderAccountNo, txnAmnt, beneAcctNo, beneName,\n// IFSCCode, remitterName, beneACType, remitterAddress, remitterAcNo, remitPurpose\n\n// testing\ntest.paymentTest(kotakService, \"NANOPAY\", \"TESTAPI\", \"NETPAY\", \"IMPS\", \"9411128990\", 500, \"9111175690\", \"HELLO API\", \n                 \"ICIC0000361\", \"NANOPAY\", \"SAVING\", \"905 King St W Suite 300\", \"9411128990\", \"TRANSFER_FROM_SELF\");\n\nprint(\"paymentMessageId: \" + test.paymentMessageId);\nprint(\"paymentResponseStatusCode: \" + test.paymentResponseStatusCode);\nprint(\"paymentResponseStatusRem: \" + test.paymentResponseStatusRem);\nprint(\"done\");"})
 p({"class":"foam.nanos.script.Script","id":"testKotakStatusChecking","description":"check the status of a kotak payment","code":"import net.nanopay.kotak.Test;\nimport net.nanopay.kotak.KotakService;\nimport net.nanopay.kotak.KotakPaymentProcessor;\n\nKotakService kotakService = new KotakService(x);\nTest test = new Test();\n\n// kotakService, paymentMessageId, msgSrc, clientCode\n// testing\ntest.reversalTest(kotakService, \"7ea9bfd303e04312\", \"NANOPAY\", \"TESTAPI\");\n\nprint(\"transactionStatusCode: \" + test.transactionStatusCode);\nprint(\"transactionStatusDesc: \" + test.transactionStatusDesc);\nprint(\"done\");"})
 p({"class":"foam.nanos.script.Script","id":"Enable Rules for Compliance","status":2,"code":"import foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport foam.nanos.ruler.Rule;\n\nDAO ruleDAO = x.get(\"ruleDAO\");\n\nrules = (ruleDAO.select(new ArraySink())).getArray();\n\nfor (Rule rule : rules) {\n\n  print(\"Checking: \" + rule.id + \" - \" + rule.name + \": \" + rule.enabled);\n  if (rule.enabled)\n    continue;\n\n  // Enable Compliance Rules for Onboarding (TX Rule is not enabled!)\n  if (rule.id == 1100 || // SIDni\n      rule.id == 1101 || // LEV\n      rule.id == 1200 || // DJ KYC User\n      rule.id == 1201 || // DJ KYC Business\n      rule.id == 1202 || // DJ Beneficial Owner\n      rule.id == 1203 || // DJ Approval Request\n      rule.id == 1300 || // User Final Rule\n      rule.id == 1301 || // Business Final Fule\n      rule.id == 1400 || // IDM Consumer Signup\n      rule.id == 1410 || // IDM Login\n      rule.id == 1420 || // IDM Merchant\n      rule.id == 1430    // IDM Consumer\n     ) {\n\n    // clone the rule to unfreeze it and resubmit the updated rule\n    rule = rule.fclone();\n    rule.enabled = true;\n    rule = ruleDAO.put(rule);\n    print(\"Updated: \" + rule);\n  }\n}","output":""})

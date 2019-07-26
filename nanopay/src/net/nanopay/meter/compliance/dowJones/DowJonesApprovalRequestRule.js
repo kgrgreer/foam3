@@ -37,7 +37,7 @@ foam.CLASS({
             DAO downJonesResponseDAO = (DAO) x.get("dowJonesResponseDAO");
             downJonesResponseDAO.put(dowJonesResponse_);
           }
-        });
+        }, "Dow Jones Approval Request Rule");
       `
     }
   ]

@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind',
   name: 'ComplianceTransactionValidator',
-  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
+  extends: 'net.nanopay.meter.compliance.identityMind.AbstractIdentityMindComplianceRuleAction',
 
   documentation: 'Validates transaction via IdentityMind Transfer API.',
 
@@ -9,19 +9,10 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.util.SafetyUtil',
-    'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.tx.model.Transaction'
-  ],
-
-  properties: [
-    {
-      name: 'identityMindUserId',
-      class: 'Long',
-      value: 1013
-    }
   ],
 
   methods: [
@@ -62,42 +53,6 @@ foam.CLASS({
           requestApproval(x, approvalRequest);
         }
       }, "Compliance Transaction Validator");
-      `
-    },
-    {
-      name: 'getApprovalStatus',
-      type: 'net.nanopay.approval.ApprovalStatus',
-      args: [
-        {
-          name: 'status',
-          type: 'net.nanopay.meter.compliance.ComplianceValidationStatus'
-        }
-      ],
-      javaCode: `
-        if ( ComplianceValidationStatus.VALIDATED == status ) {
-          return ApprovalStatus.APPROVED;
-        } else if ( ComplianceValidationStatus.REJECTED == status ) {
-          return ApprovalStatus.REJECTED;
-        }
-        return ApprovalStatus.REQUESTED;
-      `
-    },
-    {
-      name: 'getApprover',
-      type: 'Long',
-      args: [
-        {
-          name: 'status',
-          type: 'net.nanopay.meter.compliance.ComplianceValidationStatus'
-        }
-      ],
-      javaCode: `
-        if ( ComplianceValidationStatus.VALIDATED == status
-          || ComplianceValidationStatus.REJECTED == status
-        ) {
-          return getIdentityMindUserId();
-        }
-        return 0L;
       `
     }
   ]
