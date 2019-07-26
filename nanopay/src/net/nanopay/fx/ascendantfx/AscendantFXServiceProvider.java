@@ -367,6 +367,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     return transaction;
   }
 
+  public Transaction updatePaymentStatus(Transaction transaction) throws RuntimeException{
+    return transaction;
+  }
+
   public FXQuote getQuoteTBA(Transaction transaction) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
     try {

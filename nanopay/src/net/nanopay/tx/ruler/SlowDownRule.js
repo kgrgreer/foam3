@@ -49,7 +49,7 @@ foam.CLASS({
                   Logger logger = (Logger) x.get("logger");
                   logger.warning("FastPay Transaction Altered to Slow Pay due to insufficient debtlimit/clearing Amount");
                 }
-              });
+              }, "Slow Down Rule");
             }
           }
         }

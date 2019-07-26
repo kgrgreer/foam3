@@ -221,6 +221,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXSummaryTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: "net/nanopay/fx/afex/AFEX" },
+  { name: "net/nanopay/fx/afex/AFEXBeneficiary" },
+  { name: "net/nanopay/fx/afex/AFEXBusiness" },
   { name: "net/nanopay/fx/afex/AFEXCredentials"},
   { name: "net/nanopay/fx/afex/Token"},
   { name: "net/nanopay/fx/afex/OnboardCorporateClientRequest"},
@@ -248,6 +250,7 @@ FOAM_FILES([
   { name: "net/nanopay/fx/afex/CreatePaymentResponse"},
   { name: "net/nanopay/fx/afex/CheckPaymentStatusRequest"},
   { name: "net/nanopay/fx/afex/CheckPaymentStatusResponse"},
+  { name: "net/nanopay/fx/afex/AFEXPaymentStatus"},
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -864,6 +867,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
   { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
+  { name: 'net/nanopay/sme/onboarding/USBusinessOnboarding' },
   { name: 'net/nanopay/sme/onboarding/OnboardingStatus' },
   { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
   { name: 'net/nanopay/sme/onboarding/ui/WizardView' },
@@ -1068,6 +1072,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
   { name: 'net/nanopay/meter/test/ComplianceAwareDummy' },
+  { name: 'net/nanopay/meter/test/IdentityMindIntegrationTest' },
 
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 
