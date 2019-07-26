@@ -26,9 +26,7 @@ public class ApprovalDAO
     DAO requestDAO = ((DAO)x.get("approvalRequestDAO"));
     ApprovalRequest old = (ApprovalRequest) requestDAO.find(obj);
     ApprovalRequest request = (ApprovalRequest) getDelegate().put(obj);
-    if ( old != null && old.getStatus() != request.getStatus()
-      || request.getStatus() != ApprovalStatus.REQUESTED
-    ) {
+    if ( old != null && old.getStatus() != request.getStatus() ) {
       DAO requests = ApprovalRequestUtil.getAllRequests(x, request.getObjId(), request.getClassification());
       // if points are sufficient to consider object approved
       if ( getCurrentPoints(requests) >= request.getRequiredPoints() ||
