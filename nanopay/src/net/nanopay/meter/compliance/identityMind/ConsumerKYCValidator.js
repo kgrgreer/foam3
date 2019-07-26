@@ -37,15 +37,15 @@ foam.CLASS({
             IdentityMindResponse response = identityMindService.evaluateConsumer(x, obj, getStage(), memoMap);
             ComplianceValidationStatus status = response.getComplianceValidationStatus();
 
-            if ( obj instanceof User
-              && status != ComplianceValidationStatus.VALIDATED
-            ) {
+            if ( obj instanceof User ) {
               requestApproval(x,
                 new ComplianceApprovalRequest.Builder(x)
                   .setObjId(String.valueOf(obj.getProperty("id")))
                   .setDaoKey("localUserDAO")
                   .setCauseId(response.getId())
                   .setCauseDaoKey("identityMindResponseDAO")
+                  .setStatus(getApprovalStatus(status))
+                  .setApprover(getApprover(status))
                   .setClassification("Validate User Using IdentityMind")
                   .build()
               );
