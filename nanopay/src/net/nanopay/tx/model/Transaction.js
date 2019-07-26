@@ -53,7 +53,6 @@ foam.CLASS({
   ],
 
   requires: [
-   'foam.u2.dialog.NotificationMessage',
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
