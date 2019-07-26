@@ -185,7 +185,21 @@ p({"class":"foam.nanos.boot.NSpec", "name":"ipHistoryDAO",                     "
 p({"class":"foam.nanos.boot.NSpec", "name":"historyDAO",                       "serve":true,  "serviceScript":"foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, foam.dao.history.HistoryRecord.getOwnClassInfo(), \"historyRecords\"); return new foam.dao.PMDAO(x, hashingJDAO);","client":"{\"of\":\"foam.dao.history.HistoryRecord\"}"})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"supportEmailDAO",                  "serve":true, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO(new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, foam.support.model.SupportEmail.getOwnClassInfo(), \"supportEmails\"))));","client":"{\"of\":\"foam.support.model.SupportEmail\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"ticketDAO",                        "serve":true, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO(new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, foam.support.model.Ticket.getOwnClassInfo(), \"tickets\"))));","client":"{\"of\":\"foam.support.model.Ticket\"}"})
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"ticketDAO",                        
+  "serve":true, 
+  "serviceScript":
+  """
+    return new foam.dao.PMDAO(x, 
+      new foam.dao.PipelinePMDAO(x, 
+        new foam.dao.SequenceNumberDAO(
+          new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, foam.support.model.Ticket.getOwnClassInfo(), "tickets"))));
+  """,
+  "client":"{\"of\":\"foam.support.model.Ticket\"}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"ticketMessageDAO",                 "serve":true, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO(new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, foam.support.model.TicketMessage.getOwnClassInfo(), \"ticketMessages\"))))","client":"{\"of\":\"foam.support.model.TicketMessage\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"reportDAO",                        "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.GUIDDAO(new foam.nanos.script.ScriptRunnerDAO(new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.reports.Report.getOwnClassInfo(), \"reports\")))));", "client":"{\"of\":\"net.nanopay.meter.reports.Report\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"routingJournal",                   "description":"Single journal to replace all of the individual journals.","authenticate":false,"serviceScript":"java.io.File file = null; String journalName = \"routingJournal\"; try { file = new java.io.File(System.getProperty(\"JOURNAL_HOME\") + \"/\" + journalName); file.createNewFile(); } catch ( Throwable t ) { throw new RuntimeException(t); } journal = new foam.dao.RoutingJournal.Builder(x).setFile(file).setFilename(journalName).build(); journal.replay(x, new foam.dao.NullDAO()); return journal;"})
