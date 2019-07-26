@@ -2,3 +2,4 @@ p({"class":"net.nanopay.meter.test.BlockDisabledUserTransactionTest","id":"Block
 p({"class":"net.nanopay.meter.test.BlockDisabledUserInvoiceTest","id":"BlockDisabledUserInvoiceTest"})
 p({"class":"net.nanopay.meter.test.DowJonesIntegrationTest","id":"DowJonesIntegrationTest"})
 p({"class":"net.nanopay.meter.test.BlacklistTest","id":"BlacklistTest"})
+p({"class":"net.nanopay.meter.test.IdentityMindIntegrationTest","id":"IdentityMindIntegrationTest"})
