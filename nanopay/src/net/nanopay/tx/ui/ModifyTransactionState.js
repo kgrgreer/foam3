@@ -61,6 +61,7 @@ foam.CLASS({
 
   methods: [
     async function getChildren(transaction) {
+      // fetch all child transactions that are chained to AbliiTransaction
       var children = [transaction];
       if ( transaction.children ) {
         var txnChildren = await transaction.children.select();
@@ -72,6 +73,7 @@ foam.CLASS({
       return children;
     },
     async function updateChildren() {
+      // update child transactions in case states have changed
       await this.transaction$find
           .then((t) => this.getChildren(t))
           .then((a) => {
@@ -86,36 +88,38 @@ foam.CLASS({
       section: 'transactionInfo',
       confirmationRequired: true,
       code: async function(X) {
-        // Set Compliance Transaction to Complete write to dao
-        // then set cash in to complete and write to dao
+        // fetch compliance and cash in transactions, update status and write to dao
         var complianceTransactions = this.childTransactions.filter((t) => net.nanopay.tx.ComplianceTransaction.isInstance(t));
-        var complianceObj = complianceTransactions[0];
-        if ( complianceObj != undefined && complianceObj.status != this.TransactionStatus.COMPLETED ) {
-          complianceObj.status = this.TransactionStatus.COMPLETED;
-          await this.transactionDAO.put(complianceObj);
-          await this.updateChildren();
-        }
-
-        var cashInTransactions = this.childTransactions.filter((t) => net.nanopay.tx.cico.CITransaction.isInstance(t));
-        var cashInObj = cashInTransactions[0];
-        if ( cashInObj == undefined ) {
-          this.output = 'There is no cash in transaction to expedite.';
-          return;
-        }
-        if ( cashInObj.status == this.TransactionStatus.COMPLETED ) {
-          this.output = 'Cash In has already been completed.';
-          return;
-        }
-        if ( cashInObj.status != this.TransactionStatus.PENDING
-           && cashInObj.status != this.TransactionStatus.SENT ) {
-          this.output = 'Cash In status must be pending or sent to expedite.';
-          return;
+        for ( var i = 0; i < complianceTransactions.length; i++ ) {
+          var complianceObj = complianceTransactions[i];
+          if ( complianceObj != undefined && complianceObj.status != this.TransactionStatus.COMPLETED ) {
+            complianceObj.status = this.TransactionStatus.COMPLETED;
+            await this.transactionDAO.put(complianceObj);
+            await this.updateChildren();
+          }
         }
         
-        cashInObj.status = this.TransactionStatus.COMPLETED;
-        await this.transactionDAO.put(cashInObj);
-        this.output = 'Cash In successfully expedited';
-        this.updateChildren();
+        var cashInTransactions = this.childTransactions.filter((t) => net.nanopay.tx.cico.CITransaction.isInstance(t));
+        for ( var i = 0; i < cashInTransactions.length; i++ ) {
+          var cashInObj = cashInTransactions[i];
+          if ( cashInObj == undefined ) {
+            this.output = 'There is no cash in transaction to expedite.';
+            return;
+          }
+          if ( cashInObj.status == this.TransactionStatus.COMPLETED ) {
+            this.output = 'Cash In has already been completed.';
+            return;
+          }
+          if ( cashInObj.status != this.TransactionStatus.PENDING
+             && cashInObj.status != this.TransactionStatus.SENT ) {
+            this.output = 'Cash In status must be pending or sent to expedite.';
+            return;
+          }
+          cashInObj.status = this.TransactionStatus.COMPLETED;
+          await this.transactionDAO.put(cashInObj);
+          this.output = 'Cash In successfully expedited';
+          this.updateChildren();
+        }
       }
     },
     {
@@ -123,27 +127,27 @@ foam.CLASS({
       section: 'transactionInfo',
       confirmationRequired: true,
       code: async function(X) {
-        // check if cash out is status pending, if it is change to complete and write to dao
+        // fetch cash out transactions, update status and write to dao
         var cashOutTransactions = this.childTransactions.filter((t) => net.nanopay.tx.cico.COTransaction.isInstance(t));
-        var cashOutObj = cashOutTransactions[0];
-
-        if ( cashOutObj == undefined ) {
-          this.output = 'There is no cash out transaction to expedite.';
-          return;
+        for ( var i = 0; i < cashOutTransactions.length; i++ ) {
+          var cashOutObj = cashOutTransactions[i];
+          if ( cashOutObj == undefined ) {
+            this.output = 'There is no cash out transaction to expedite.';
+            return;
+          }
+          if ( cashOutObj.status == this.TransactionStatus.COMPLETED ) {
+            this.output = 'Cash Out has already been completed.';
+            return;
+          }
+          if ( cashOutObj.status != this.TransactionStatus.PENDING
+             && cashOutObj.status != this.TransactionStatus.SENT ) {
+            this.output = 'Cash Out status must be pending or sent to expedite.';
+            return;
+          }
+          cashOutObj.status = this.TransactionStatus.COMPLETED;
+          await this.transactionDAO.put(cashOutObj);
+          this.output = 'Cash Out successfully expedited.';
         }
-        if ( cashOutObj.status == this.TransactionStatus.COMPLETED ) {
-          this.output = 'Cash Out has already been completed.';
-          return;
-        }
-        if ( cashOutObj.status != this.TransactionStatus.PENDING
-           && cashOutObj.status != this.TransactionStatus.SENT ) {
-          this.output = 'Cash Out status must be pending or sent to expedite.';
-          return;
-        }
-
-        cashOutObj.status = this.TransactionStatus.COMPLETED;
-        await this.transactionDAO.put(cashOutObj);
-        this.output = 'Cash Out successfully expedited.';
       }
     },
     {
