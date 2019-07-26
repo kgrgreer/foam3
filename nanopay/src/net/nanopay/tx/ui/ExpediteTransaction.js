@@ -16,17 +16,24 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
-  css: `
-    .property-output {
-      margin-bottom: 45px;
+  sections: [
+    {
+      name: 'transactionInfo',
+      gridColumns: 6
+    },
+    {
+      name: 'outputSection',
+      label: 'Output',
+      gridColumns: 6
     }
-  `,
+  ],
 
   properties: [
     {
       class: 'Reference',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'transaction',
+      section: 'transactionInfo',
       postSet: function() {
         this.childTransactions = [];
         this.transaction$find
@@ -40,14 +47,19 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'childTransactions',
+      section: 'transactionInfo',
       visibility: 'RO'
     },
     {
       class: 'String',
       name: 'output',
-      visiblityExpression: function(output) {
-        return output ? foam.u2.Visibility.RO : foam.u2.Visiblity.HIDDEN;
-      }
+      label: '',
+      section: 'outputSection',
+      view: {
+        class: 'foam.u2.tag.TextArea'
+      },
+      visibility: 'RO',
+      value: 'Click an action'
     }
   ],
 
@@ -69,6 +81,7 @@ foam.CLASS({
     {
       name: 'expediteCashIn',
       label: 'Expedite Cash In',
+      section: 'transactionInfo',
       confirmationRequired: true,
       code: async function(X) {
         // Set Compliance Transaction to Complete write to dao
@@ -98,6 +111,7 @@ foam.CLASS({
     {
       name: 'expediteCashOut',
       label: 'Expedite Cash Out',
+      section: 'transactionInfo',
       confirmationRequired: true,
       code: async function(X) {
         // check if cash out is status pending, if it is change to complete and write to dao
@@ -125,6 +139,7 @@ foam.CLASS({
     {
       name: 'back',
       label: 'Back',
+      section: 'outputSection',
       code: function(X) {
         this.stack.back();
       }
