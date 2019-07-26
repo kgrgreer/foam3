@@ -140,7 +140,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( null != quote ) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
         Date date = format.parse(quote.getValueDate());
-        Double fxAmount = isAmountSettlement ? getConvertedAmount(quote,sourceAmount):  getConvertedAmount(quote,destinationAmount);
+        Double fxAmount = isAmountSettlement ? getConvertedAmount(quote,sourceAmount, true):  getConvertedAmount(quote,destinationAmount, false);
         fxQuote.setRate(quote.getTerms().equals("A") ? quote.getInvertedRate(): quote.getRate());
         fxQuote.setTargetAmount(isAmountSettlement ? fromDecimal(fxAmount) : destinationAmount);
         fxQuote.setTargetCurrency(targetCurrency);
@@ -159,11 +159,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return fxQuote;
   }
 
-  private Double getConvertedAmount(Quote quote, long amount ) {
-    if ( quote.getTerms().equals("A") ) {
-      return  toDecimal(amount) *  quote.getRate();
+  private Double getConvertedAmount(Quote quote, long amount, Boolean isSettlementAmount ) {
+    if ( isSettlementAmount ) {
+      if (quote.getTerms().equals("A")) {
+        return toDecimal(amount) / quote.getRate();
+      } else {
+        return toDecimal(amount) * quote.getRate();
+      }
     } else {
-      return  toDecimal(amount) /  quote.getRate();
+      if (quote.getTerms().equals("A")) {
+        return toDecimal(amount) * quote.getRate();
+      } else {
+        return toDecimal(amount) / quote.getRate();
+      }
     }
   }
 
