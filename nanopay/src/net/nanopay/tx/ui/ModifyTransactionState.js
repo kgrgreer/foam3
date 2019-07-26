@@ -71,8 +71,8 @@ foam.CLASS({
       }
       return children;
     },
-    function updateChildren() {
-      this.transaction$find
+    async function updateChildren() {
+      await this.transaction$find
           .then((t) => this.getChildren(t))
           .then((a) => {
             this.childTransactions = a;
@@ -90,23 +90,29 @@ foam.CLASS({
         // Set Compliance Transaction to Complete write to dao
         // then set cash in to complete and write to dao
         var complianceFilter = this.childTransactions.filter((t) => t.type == 'ComplianceTransaction');
+        var complianceObj = complianceFilter[0];
+        if ( complianceObj != undefined && complianceObj.status != this.TransactionStatus.COMPLETED ) {
+          complianceObj.status = this.TransactionStatus.COMPLETED;
+          await this.transactionDAO.put(complianceObj);
+          await this.updateChildren();
+        }
+
         var cashInFilter = this.childTransactions.filter((t) => t.type == 'AlternaCITransaction');
         var cashInObj = cashInFilter[0];
-
         if ( cashInObj == undefined ) {
           this.output = 'There is no cash in transaction to expedite.';
           return;
         }
-        if ( cashInObj.status == this.TransactionStatus.COMPLETED
-          || cashInObj.status == this.TransactionStatus.SENT ) {
-          this.output = 'Cash In transaction is already completed.';
+        if ( cashInObj.status == this.TransactionStatus.COMPLETED ) {
+          this.output = 'Cash In has already been completed.';
           return;
         }
-
-        var complianceObj = complianceFilter[0];
-        complianceObj.status = this.TransactionStatus.COMPLETED;
-        await this.transactionDAO.put(complianceObj);
-
+        if ( cashInObj.status != this.TransactionStatus.PENDING
+           && cashInObj.status != this.TransactionStatus.SENT ) {
+          this.output = 'Cash In status must be pending or sent to expedite.';
+          return;
+        }
+        
         cashInObj.status = this.TransactionStatus.COMPLETED;
         await this.transactionDAO.put(cashInObj);
         this.output = 'Cash In successfully expedited';
@@ -127,13 +133,13 @@ foam.CLASS({
           this.output = 'There is no cash out transaction to expedite.';
           return;
         }
-        if ( cashOutObj.status == this.TransactionStatus.COMPLETED
-           || cashOutObj.status == this.TransactionStatus.SENT ) {
-          this.output = 'Cash Out transaction is already completed.';
+        if ( cashOutObj.status == this.TransactionStatus.COMPLETED ) {
+          this.output = 'Cash Out has already been completed.';
           return;
         }
-        if ( cashOutObj.status != this.TransactionStatus.PENDING ) {
-          this.output = 'Cash Out status must be pending in order to complete.';
+        if ( cashOutObj.status != this.TransactionStatus.PENDING
+           && cashOutObj.status != this.TransactionStatus.SENT ) {
+          this.output = 'Cash Out status must be pending or sent to expedite.';
           return;
         }
 
