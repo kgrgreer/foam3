@@ -86,12 +86,17 @@ foam.CLASS({
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
-          user.setIdentification(businessOnboarding.getPersonalIdentification());
           business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
 
+          user.setIdentification(businessOnboarding.getUSBusinessDetails().getSigningOfficerIdentification());
+          
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
           business.getSigningOfficers(x).add(user);
+
+          // Update the business because the put to signingOfficerJunctionDAO
+          // will have updated the email property of the business.
+          business = (Business) localBusinessDAO.find(business.getId());
 
           // * Step 6: Business info
           // Business info: business address
@@ -102,9 +107,10 @@ foam.CLASS({
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
           business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
           business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
-          business.setBusinessRegistrationDate(businessOnboarding.getBusinessRegistration().getBusinessFormationDate());
-          business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistration().getBusinessRegistrationNumber());
-          business.setCountryOfBusinessRegistration(businessOnboarding.getBusinessRegistration().getCountryOfBusinessFormation());         
+
+          business.setBusinessRegistrationDate(businessOnboarding.getUSBusinessDetails().getBusinessFormationDate());
+          business.setBusinessRegistrationNumber(businessOnboarding.getUSBusinessDetails().getBusinessRegistrationNumber());
+          business.setCountryOfBusinessRegistration(businessOnboarding.getUSBusinessDetails().getCountryOfBusinessFormation()); 
 
           if ( businessOnboarding.getOperatingUnderDifferentName() ) {
             business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
@@ -136,13 +142,6 @@ foam.CLASS({
 
           localBusinessDAO.put(business);
 
-          // Do AFEX onboarding if Bank Account already exists for business
-          DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
-          BankAccount bankAccount = (BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class)));
-          if ( bankAccount != null ) {
-            bankAccount = (BankAccount) bankAccount.fclone();
-            localAccountDAO.put(bankAccount); // Should be a better way to do this?
-          }
         } else {
           // If the user needs to invite the signing officer
           String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();

@@ -59,7 +59,7 @@ public class AscendantFXBankAccountDAO
           .setTemplate("NOC")
           .setBody(message)
           .build();
-      ((DAO) x.get("notificationDAO")).put(notification);
+      ((DAO) x.get("localNotificationDAO")).put(notification);
       ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
 
       }

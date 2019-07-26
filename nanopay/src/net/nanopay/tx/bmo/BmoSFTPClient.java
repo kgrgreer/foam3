@@ -32,7 +32,7 @@ public class BmoSFTPClient {
   private StatefulSFTPClient statefulSFTPClient = null;
   private BmoSFTPCredential  credential         = null;
 
-  private static final String PATH                    = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/";
+  private static final String PATH                    = System.getProperty("NANOPAY_HOME") + "/var" + "/bmo_eft/";
   public  static final String RECEIPT_DOWNLOAD_FOLDER = PATH + "/receipt/";
   public  static final String REPORT_DOWNLOAD_FOLDER  = PATH + "/report/";
   private static final String SEND_FOLDER             = "DEFT-DEFT-A:/*BIN/NANOPAY";

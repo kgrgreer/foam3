@@ -256,7 +256,7 @@ foam.CLASS({
         .setTemplate("NOC")
         .setBody(message)
         .build();
-        ((DAO) x.get("notificationDAO")).put(notification);
+        ((DAO) x.get("localNotificationDAO")).put(notification);
         ((Logger) x.get("logger")).error("Error sending GetQuote to AFEX.", t);
     }
     return null;

@@ -158,6 +158,14 @@ const liquiditySettings = [
 // to be filled out as liquidity settings get created
 const liquidityNamesToId = {};
 
+function* referenceIdMaker() {
+  var index = 10000000;
+  while (index < index+1)
+    yield index++;
+}
+
+const refIdGenerator = referenceIdMaker();
+
 function createCurrency(X, cObj) {
   var currency = net.nanopay.model.Currency.create({
     delimiter: ',',
@@ -453,6 +461,9 @@ function cashIn(X, bank, dest, amount) {
     lineItems: [
       net.nanopay.tx.ETALineItem.create({
         eta: 172800000
+      }),
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
       })
     ]
   }, X);
@@ -463,7 +474,10 @@ function cashIn(X, bank, dest, amount) {
     id: tx.id,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     lineItems: [
-      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
+      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() }),
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
+      })
     ],
     lastModified: X.currentDate
   }, X);
@@ -475,7 +489,7 @@ function cashIn(X, bank, dest, amount) {
 }
 
 function cashOut(X, source, bank, amount) {
-  var tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+  var tx = net.nanopay.tx.cico.COTransaction.create({
     id: foam.next$UID().toString(),
     name: `Cash Out #${++cashOutCounter}`,
     sourceAccount: source.id,
@@ -495,17 +509,23 @@ function cashOut(X, source, bank, amount) {
     lineItems: [
       net.nanopay.tx.ETALineItem.create({
         eta: 172800000
+      }),
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
       })
     ]
   }, X);
 
   X.transactionDAO.put(tx);
 
-  tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+  tx = net.nanopay.tx.cico.COTransaction.create({
     id: tx.id,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     lineItems: [
-      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() })
+      net.nanopay.tx.ETALineItem.create({ eta: 172800000, id: foam.uuid.randomGUID() }),
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
+      })
     ],
     lastModified: X.currentDate
   }, X);
@@ -539,6 +559,11 @@ function transfer(X, source, dest, amount) {
     lastModifiedBy: X.userId,
     created: X.currentDate,
     createdBy: X.userId,
+    lineItems: [
+      net.nanopay.tx.ReferenceLineItem.create({
+        referenceId: refIdGenerator.next().value
+      })
+    ],
   }, X);
 
   X.transactionDAO.put(tx);
@@ -645,6 +670,7 @@ function main() {
     currencyDAO: jdao("target/journals/currencies.0"),
     currentDate: currentDate,
     balances: {},
+    homeDenomination: 'USD',
     userDAO: foam.dao.NullDAO.create(),
     complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,

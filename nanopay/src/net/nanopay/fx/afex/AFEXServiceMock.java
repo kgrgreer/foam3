@@ -43,7 +43,10 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public OnboardCorporateClientResponse onboardCorporateClient(OnboardCorporateClientRequest request) {
-    return null;
+    OnboardCorporateClientResponse response = new OnboardCorporateClientResponse();
+    response.setAPIKey("API_KEY");
+    response.setAccountNumber("00000122");
+    return response;
   }
 
   @Override
@@ -58,6 +61,9 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public CreateBeneficiaryResponse createBeneficiary(CreateBeneficiaryRequest request) {
+    CreateBeneficiaryResponse response = new CreateBeneficiaryResponse();
+    response.setCode(0);
+    response.setStatus("Active");
     return null;
   }
 
@@ -73,7 +79,9 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request) {
-    return null;
+    FindBeneficiaryResponse response = new FindBeneficiaryResponse();
+    response.setBeneficiaryName("Test Beneficiary");
+    return response;
   }
 
   @Override

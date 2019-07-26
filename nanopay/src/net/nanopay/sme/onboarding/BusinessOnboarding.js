@@ -153,7 +153,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
-    'net.nanopay.model.PersonalIdentification',
     'net.nanopay.sme.onboarding.USBusinessOnboarding',
   ],
 
@@ -186,14 +185,8 @@ foam.CLASS({
       help: 'Thanks, now I’ll need a bit of personal information so I can verify your identity…'
     },
     {
-      name: 'personalIdentificationSection',
-      title: 'Enter your personal identification',
-      help: `Thanks, now I’ll need a bit more of your personal identification so I can verify your identity…`,
-      isAvailable: function (signingOfficer) { return signingOfficer && this.appConfig.enableInternationalPayment }
-    },
-    {
       name: 'homeAddressSection',
-      title: 'Enter you home address',
+      title: 'Enter your home address',
       help: 'Awesome! Next, I’ll need to know your current home address…',
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
@@ -225,7 +218,7 @@ foam.CLASS({
     {
       name: 'internationalTransactionSection',
       title: 'Are you going to be sending International Payments?',
-      help: `Thanks! That’s all the details I need to setup local transactions. Now let’s get some more details on your foreign transactions`,
+      help: `Thanks! That’s all the details I need to setup local transactions. Now let’s get some more details on your US transactions`,
       isAvailable: function (signingOfficer) { return signingOfficer && this.appConfig.enableInternationalPayment }
     },
     {
@@ -379,8 +372,9 @@ foam.CLASS({
         class: 'net.nanopay.sme.onboarding.ui.IntroOnboarding'
       }
     },
-
-    foam.nanos.auth.User.SIGNING_OFFICER.clone().copyFrom({
+    {
+      class: 'Boolean',
+      name: 'signingOfficer',
       section: 'signingOfficerQuestionSection',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
       label: '',
@@ -391,7 +385,8 @@ foam.CLASS({
           [false, 'No, I am not'],
         ],
       }
-    }),
+    },
+
     foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
       section: 'personalInformationSection',
       view: {
@@ -403,7 +398,7 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
-      label: 'Phone #',
+      label: '',
       autoValidate: true
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
@@ -485,6 +480,7 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
+      label: '',
       section: 'homeAddressSection',
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
@@ -563,17 +559,8 @@ foam.CLASS({
         }
       ]
     },
-    {
-      section: 'personalIdentificationSection',
-      class: 'FObjectProperty',
-      name: 'personalIdentification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
-      factory: function() {
-        return this.PersonalIdentification.create({});
-      },
-    },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
+      label: '',
       section: 'businessAddressSection',
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
@@ -886,7 +873,8 @@ foam.CLASS({
     {
       section: 'internationalTransactionSection',
       class: 'FObjectProperty',
-      name: 'businessRegistration',
+      name: 'USBusinessDetails',
+      label: 'US Business Details',
       of: 'net.nanopay.sme.onboarding.USBusinessOnboarding',
       visibilityExpression: function(appConfig) {
         return appConfig.enableInternationalPayment ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -946,7 +934,7 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
-        if ( n ) this.clearProperty('owner1');
+        this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -959,7 +947,7 @@ foam.CLASS({
       label: '',
       label2: 'This is a publicly traded company',
       postSet: function(_, n) {
-        if ( n ) this.clearProperty('owner1');
+        this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;

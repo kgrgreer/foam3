@@ -14,6 +14,7 @@ import net.nanopay.tx.bmo.*;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.bmo.cico.BmoCOTransaction;
 import net.nanopay.tx.bmo.cico.BmoTransaction;
+import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.bmo.eftfile.BmoEftFile;
 import net.nanopay.tx.bmo.exceptions.BmoSFTPException;
 import net.nanopay.tx.cico.CITransaction;
@@ -25,7 +26,10 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -45,7 +49,8 @@ public class BmoSendFileCron implements ContextAgent {
 
     Predicate condition1 = MLang.OR(
       MLang.INSTANCE_OF(BmoCITransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(BmoCOTransaction.getOwnClassInfo())
+      MLang.INSTANCE_OF(BmoCOTransaction.getOwnClassInfo()),
+      MLang.INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo())
     );
 
     Predicate condition2 = MLang.EQ(
@@ -70,7 +75,7 @@ public class BmoSendFileCron implements ContextAgent {
       .collect(Collectors.toList());
 
     List<Transaction> coTransactions = transactions.stream()
-      .filter(transaction -> transaction instanceof COTransaction)
+      .filter(transaction -> (transaction instanceof COTransaction || transaction instanceof BmoVerificationTransaction))
       .collect(Collectors.toList());
 
     logger.info("Sending CI transactions.");
@@ -93,13 +98,13 @@ public class BmoSendFileCron implements ContextAgent {
       return;
     }
 
-    if ( transactions.size() > 1 ) {
-      for ( int i = 1; i < transactions.size(); i++ ) {
-        if ( ! transactions.get(i).getClass().getName().equals(transactions.get(i-1).getClass().getName()) ) {
-          throw new RuntimeException("All transactions should be the same type.");
-        }
-      }
-    }
+//    if ( transactions.size() > 1 ) {
+//      for ( int i = 1; i < transactions.size(); i++ ) {
+//        if ( ! transactions.get(i).getClass().getName().equals(transactions.get(i-1).getClass().getName()) ) {
+//          throw new RuntimeException("All transactions should be the same type.");
+//        }
+//      }
+//    }
 
     BmoSFTPCredential sftpCredential = (BmoSFTPCredential) x.get("bmoSFTPCredential");
     DAO transactionDAO               = (DAO) x.get("localTransactionDAO");
@@ -161,6 +166,7 @@ public class BmoSendFileCron implements ContextAgent {
       passedTransaction.forEach(transaction -> {
         ((BmoTransaction)transaction).addHistory("Sent to BMO.");
         ((BmoTransaction)transaction).setBmoFileCreationNumber(eftFile.getHeaderRecord().getFileCreationNumber());
+        transaction.setCompletionDate(Date.from(LocalDate.now().plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
         transaction.setStatus(TransactionStatus.SENT);
       });
       bmoEftFileDAO.inX(x).put(eftFile);
@@ -184,9 +190,16 @@ public class BmoSendFileCron implements ContextAgent {
         SEND_LOCK.unlock();
       }
       // update the transaction
-      transactions.stream().forEach(
-        transactionDAO.inX(x)::put
-      );
+      for ( Transaction transaction : transactions ) {
+
+        try {
+          transactionDAO.inX(x).put(transaction);
+        } catch ( Exception e ) {
+          logger.error("Transaction " + transaction.getId() + " updated failed, please update manually", e);
+          BmoFormatUtil.sendEmail(x, "Transaction " + transaction.getId() + " updated failed, please update manually", e);
+        }
+
+      }
     }
   }
 

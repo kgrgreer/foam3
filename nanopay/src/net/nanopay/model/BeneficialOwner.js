@@ -89,6 +89,18 @@ foam.CLASS({
             });
           },
           errorString: 'Must be at least 18 years old.'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.NOT(
+                foam.mlang.predicate.OlderThan.create({
+                  arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
+                  timeMs: 125 * 365 * 24 * 60 * 60 * 1000
+                })
+              );
+          },
+          errorString: 'Must be under the age of 125 years old.'
         }
       ]
     },

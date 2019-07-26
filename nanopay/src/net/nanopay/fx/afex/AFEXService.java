@@ -60,7 +60,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       SafetyUtil.isEmpty(credentials.getApiPassword()) ||
       SafetyUtil.isEmpty(credentials.getPartnerApi()) ||
       SafetyUtil.isEmpty(credentials.getAFEXApi()) ) {
-      logger.error("AFEXCredentials", "invalid credentials");
+      logger.error(this.getClass().getSimpleName(), "invalid credentials");
       throw new RuntimeException("AFEX invalid credentials");
     }
     return credentials;
@@ -420,13 +420,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   @Override
   public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request) {
-    CloseableHttpResponse httpResponse = null;
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/beneficiary/find");
-      uriBuilder.setParameter("VendorID", request.getVendorId());
-      System.out.println("VendorId: " + request.getVendorId());
-      System.out.println("APIKey: " + request.getClientAPIKey());
-      System.out.println("URI: " + uriBuilder.build().toASCIIString());
+      uriBuilder.setParameter("VendorId", request.getVendorId());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
 
@@ -434,9 +430,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("Content-Type", "application/json");
 
       omLogger.log("AFEX findBeneficiary starting");
-
-      httpResponse = httpClient.execute(httpGet);
-
+      CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
       omLogger.log("AFEX findBeneficiary completed");
 
       try {
@@ -459,15 +453,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         omLogger.log("AFEX findBeneficiary timeout");
       }
       logger.error(e);
-    } finally {
-      if ( httpResponse != null ) {
-        try {
-          httpResponse.close();
-        } catch(IOException io) {
-          logger.error(io);
-        }
-      }
-
     }
 
     return null;
