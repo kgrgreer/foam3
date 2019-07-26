@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ui',
-  name: 'ExpediteTransaction',
+  name: 'ModifyTransactionState',
 
   implements: [
     'foam.mlang.Expressions'
