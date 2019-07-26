@@ -97,7 +97,8 @@ foam.CLASS({
           this.output = 'There is no cash in transaction to expedite.';
           return;
         }
-        if ( cashInObj.status == this.TransactionStatus.COMPLETED ) {
+        if ( cashInObj.status == this.TransactionStatus.COMPLETED
+          || cashInObj.status == this.TransactionStatus.SENT ) {
           this.output = 'Cash In transaction is already completed.';
           return;
         }
@@ -126,7 +127,8 @@ foam.CLASS({
           this.output = 'There is no cash out transaction to expedite.';
           return;
         }
-        if ( cashOutObj.status == this.TransactionStatus.COMPLETED ) {
+        if ( cashOutObj.status == this.TransactionStatus.COMPLETED
+           || cashOutObj.status == this.TransactionStatus.SENT ) {
           this.output = 'Cash Out transaction is already completed.';
           return;
         }
