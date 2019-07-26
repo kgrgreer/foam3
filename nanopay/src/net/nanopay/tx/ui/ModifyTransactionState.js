@@ -101,7 +101,6 @@ foam.CLASS({
             await this.updateChildren();
           }
         }
-        
         var cashInTransactions = this.childTransactions.filter((t) => this.CITransaction.isInstance(t));
         for ( var i = 0; i < cashInTransactions.length; i++ ) {
           var cashInObj = cashInTransactions[i];
