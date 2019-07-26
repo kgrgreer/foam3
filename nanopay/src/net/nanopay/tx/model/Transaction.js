@@ -17,7 +17,8 @@ foam.CLASS({
     'currencyDAO',
     'userDAO',
     'complianceHistoryDAO',
-    'homeDenomination'
+    'homeDenomination',
+    'stack?'
   ],
 
   javaImports: [
@@ -56,7 +57,8 @@ foam.CLASS({
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
-   'net.nanopay.tx.model.TransactionStatus'
+   'net.nanopay.tx.model.TransactionStatus',
+   'net.nanopay.tx.ui.ModifyTransactionState'
  ],
 
   constants: [
@@ -988,7 +990,7 @@ for ( Balance b : getBalances() ) {
       availablePermissions: ['service.compliancehistorydao'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
+        this.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
           editEnabled: true,
@@ -1008,7 +1010,10 @@ for ( Balance b : getBalances() ) {
         return net.nanopay.tx.AbliiTransaction.isInstance(this);
       },
       code: function(X) {
-        this.__context__.stack.push({ class: 'foam.u2.detail.SectionedDetailView', data: net.nanopay.tx.ui.ModifyTransactionState.create({ transaction: this.id }, this) });
+        this.stack.push({
+          class: 'foam.u2.detail.SectionedDetailView',
+          data: this.ModifyTransactionState.create({ transaction: this.id })
+        });
       }
     }
   ]
