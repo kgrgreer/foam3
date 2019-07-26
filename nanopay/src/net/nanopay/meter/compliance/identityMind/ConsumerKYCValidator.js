@@ -52,7 +52,7 @@ foam.CLASS({
             }
             ruler.putResult(status);
           }
-        });
+        }, "Consumer KYC Validator");
       `
     }
   ]

@@ -44,7 +44,7 @@ foam.CLASS({
                 if ( destination instanceof DigitalAccount )
                   ls.liquifyAccount(destination.getId(), Frequency.PER_TRANSACTION, txn.getAmount());
               }
-            });
+            }, "Liquid Rule");
           }
         }
       `

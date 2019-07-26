@@ -40,7 +40,7 @@ foam.CLASS({
             );
             ruler.putResult(status);
           }
-        });
+        }, "Merchant KYC Validator");
       `
     }
   ]
