@@ -16,6 +16,7 @@ import static foam.mlang.MLang.EQ;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 
+import net.nanopay.model.Branch;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.Transfer;
 
@@ -42,7 +43,13 @@ public class BankAccountInstitutionDAO
     }
 
     BankAccount bankAccount = (BankAccount) obj;
-    Institution institution = bankAccount.findInstitution(x);
+    Institution institution = null;
+    Branch branch = bankAccount.findBranch(x);
+    if ( branch != null ) {
+      institution = branch.findInstitution(x);
+    } else {
+      institution = bankAccount.findInstitution(x);
+    }
     if ( institution == null && ! foam.util.SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
       DAO institutionDAO = (DAO) x.get("institutionDAO");
       List institutions = ((ArraySink) institutionDAO

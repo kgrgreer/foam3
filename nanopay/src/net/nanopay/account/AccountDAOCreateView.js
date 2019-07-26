@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.comics.v2.DAOCreateView',
 
   requires: [
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'foam.u2.dialog.NotificationMessage'
   ],
   
   documentation: `
@@ -46,13 +47,7 @@ foam.CLASS({
       name: 'save',
       code: function() {
         this.data.owner = this.__subContext__.user.id;
-        this.config.dao.put(this.data).then(o => {
-          this.data = o;
-          this.finished.pub();
-          this.stack.back();
-        }, e => {
-          this.throwError.pub(e);
-        });
+        this.SUPER();
       }
     },
   ],
