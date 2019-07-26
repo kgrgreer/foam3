@@ -210,7 +210,7 @@ foam.CLASS({
           obj.slot(homeDenomination => /* Do not remove homeDenomination as balance needs to react if it changes */
             obj.findBalance(this.__subSubContext__).then(balance => 
               self.__subSubContext__.currencyDAO.find(obj.denomination).then(curr => 
-                balance != null ?  curr.format(balance) : 0
+                curr.format(balance != null ? balance : 0)
               )
             )
           )
