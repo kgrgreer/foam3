@@ -1,11 +1,11 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFX",                 "lazy":true,   "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXService(x);"})
+p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFX",                  "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXService(x);"})
 p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXService",                 "lazy":false,  "serve":true, "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXServiceProvider(x, x.get(\"ascendantFX\"));"})
-p({"class":"foam.nanos.boot.NSpec", "name":"localFXService",                 "lazy":true,   "serviceScript":"return new net.nanopay.fx.localfx.LocalFXService(x);"})
+p({"class":"foam.nanos.boot.NSpec", "name":"localFXService",                  "serviceScript":"return new net.nanopay.fx.localfx.LocalFXService(x);"})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"fxService",                       "lazy":false,  "serve":true,  "boxClass":"net.nanopay.fx.FXServiceSkeleton", "serviceClass":"net.nanopay.fx.FXServer","client":"{\"class\":\"net.nanopay.fx.client.ClientFXService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/fxService\"}}"})
 
-p({"class":"foam.nanos.boot.NSpec", "name":"fxQuoteDAO",                  "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO (new foam.dao.java.JDAO(x, net.nanopay.fx.FXQuote.getOwnClassInfo(), \"fxQuotes\"))));", "client":"{\"of\":\"net.nanopay.fx.FXQuote\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"fxrate",                              "lazy":true,   "parameters":true, "serviceScript":"return new net.nanopay.fx.FXWebAgent()"})
+p({"class":"foam.nanos.boot.NSpec", "name":"fxQuoteDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO (new foam.dao.java.JDAO(x, net.nanopay.fx.FXQuote.getOwnClassInfo(), \"fxQuotes\"))));", "client":"{\"of\":\"net.nanopay.fx.FXQuote\"}"})
+p({"class":"foam.nanos.boot.NSpec", "name":"fxrate",                               "parameters":true, "serviceScript":"return new net.nanopay.fx.FXWebAgent()"})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"currencyFXServiceDAO",                 "lazy":false,  "serve":true, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.fx.CurrencyFXService.getOwnClassInfo(), \"currencyfxServices\")));"})
 
