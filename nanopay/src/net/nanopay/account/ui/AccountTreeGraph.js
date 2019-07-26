@@ -20,7 +20,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO'
+    'accountDAO',
+    'homeDenomination'
   ],
 
   properties: [
@@ -67,6 +68,8 @@ foam.CLASS({
     {
       name: 'formatNode',
       value: function() {
+        this.homeDenomination$.sub(this.invalidate);
+
         // var isShadow = this.data.name.indexOf('Shadow') != -1;
         const leftPos  = -this.width/2+8;
         let type     = this.data.type.replace('Account', '');
@@ -94,7 +97,10 @@ foam.CLASS({
 
             const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
             const balanceFont   = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
-            this.add(this.Label.create({color: balanceColour, font: balanceFont, x: leftPos,  y: this.height-21, text: denom.format(balance)}));
+            this.add(this.Label.create({color: balanceColour, font: balanceFont, x: leftPos,  y: this.height-21, text$: this.homeDenomination$.map(_ =>  {
+              console.log(denom);
+              return denom.format(balance);
+            })}));
           }.bind(this));
         }.bind(this));
       }
@@ -120,7 +126,8 @@ foam.CLASS({
         'nodeWidth',
         'padding',
         'parentNode?',
-        'relationship'
+        'relationship',
+        'homeDenomination'
       ],
       exports: [ 'as parentNode' ],
 
