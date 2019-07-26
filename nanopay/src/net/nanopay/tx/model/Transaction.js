@@ -1008,7 +1008,7 @@ for ( Balance b : getBalances() ) {
         return net.nanopay.tx.AbliiTransaction.isInstance(this);
       },
       code: function(X) {
-        this.__context__.stack.push({ class: 'foam.u2.DetailView', data: net.nanopay.tx.ui.ExpediteTransaction.create({ transaction: this.id }, this) });
+        this.__context__.stack.push({ class: 'foam.u2.detail.SectionedDetailView', data: net.nanopay.tx.ui.ExpediteTransaction.create({ transaction: this.id }, this) });
       }
     }
   ]
