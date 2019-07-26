@@ -86,7 +86,7 @@ foam.CLASS({
     },
     {
       name: 'action',
-      javaFactory: `
+      javaGetter: `
       return new TransactionLimitRuleAction(this);
       `,
     },

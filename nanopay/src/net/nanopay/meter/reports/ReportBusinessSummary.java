@@ -208,7 +208,7 @@ public class ReportBusinessSummary extends AbstractReport {
       boolean active = (transactionDAO.find(
         MLang.AND(
           MLang.GTE(Transaction.CREATED, lastMonthDate),
-          MLang.EQ(Transaction.PAYER_ID, business.getId())
+          MLang.EQ(Transaction.CREATED_BY, business.getId())
         )
       ) != null);
       if (active) {
