@@ -15,9 +15,10 @@ import java.util.Map;
  */
 public class ApprovalTester {
   /**
-   * The total rejected points collected.
+   * The total rejected points collected. The rejection points are aggregated by
+   * by approval request classification.
    */
-  protected int rejected_;
+  protected Map<String, Integer> rejected_ = new HashMap<>();
 
   /**
    * The total approval points collected. Use hash map to store and group the
@@ -94,9 +95,16 @@ public class ApprovalTester {
   }
 
   private int incrRejected(ApprovalRequest request) {
-    if ( request.getStatus() == ApprovalStatus.REJECTED ) {
-      rejected_ += request.getPoints();
+    String key = request.getClassification();
+    int value = 0;
+    if ( rejected_.containsKey(key) ) {
+      value = rejected_.get(key);
     }
-    return rejected_;
+
+    if ( request.getStatus() == ApprovalStatus.REJECTED ) {
+      value += request.getPoints();
+      rejected_.put(key, value);
+    }
+    return value;
   }
 }
