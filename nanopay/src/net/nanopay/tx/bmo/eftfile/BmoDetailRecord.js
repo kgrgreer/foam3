@@ -7,7 +7,8 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.bmo.BmoFormatUtil',
     'java.time.LocalDate',
-    'org.apache.commons.lang3.StringUtils'
+    'org.apache.commons.lang3.StringUtils',
+    'foam.nanos.logger.Logger'
   ],
 
   implements: [
@@ -76,7 +77,8 @@ foam.CLASS({
       //}
       
       if ( this.getClientName().length() > 29 ) {
-        throw new RuntimeException("User name is longer than 19 char.");
+        ((Logger)x.get("logger")).warning("User name is longer than 19 char.");
+        this.setClientName(this.getClientName().substring(0, 29));
       }
   
       if ( this.getReferenceNumber().length() > 19 ) {
