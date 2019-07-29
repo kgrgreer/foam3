@@ -66,6 +66,7 @@ p({
         .setSeqStartingValue(1000)
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(historyHashingDAO)
+        .setAuthorize(false)
         .build();
   """,
   "client":"{\"of\":\"foam.nanos.auth.User\"}"
