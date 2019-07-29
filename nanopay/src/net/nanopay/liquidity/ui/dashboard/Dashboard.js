@@ -8,11 +8,11 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.comics.v2.DAOBrowserView',
     'foam.u2.layout.Card',
     'foam.u2.layout.Grid',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
+    'foam.comics.v2.DAOBrowserView',
     'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
     'net.nanopay.liquidity.ui.dashboard.cicoShadow.DashboardCicoShadow',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
@@ -97,41 +97,38 @@ foam.CLASS({
                 .addClass(this.myClass('last-updated'))
               .end()
             .end()
-            .startContext({data: this}).tag(this.REFRESH, {
-              icon: 'images/ic-loading.svg'
-            }).endContext()
+            .startContext({data: this})
+              .tag(this.REFRESH, { icon: 'images/ic-loading.svg' })
+            .endContext()
           .end()
-          .start()
-            .add(this.lastUpdated$.map(_ => {
-              return this.E()
-                .start(this.Grid).addClass(this.myClass('dashboard-container'))
-                .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
-                  .tag(this.DashboardAccounts, { 
-                    currency$: this.currencyExposureDAO$
-                  })
-                .end()
-                .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
-                  .tag(this.DashboardLiquidity)
-                .end()
-                .start(this.Card, { columns: 3 }).addClass(this.myClass('currency-exposure'))
-                  .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
-                .end()
-                .start(this.Card, { columns: 9 })
-                  .tag(this.DashboardCicoShadow)
-                .end()
-                .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
-                  .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
-                .end()
-              .end();
-            }))
-          .end()
+          .tag(this.lastUpdated$.map(_ => {
+            return this.Grid.create()
+            .addClass(this.myClass('dashboard-container'))
+            .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
+              .tag(this.DashboardAccounts, { 
+                currency$: this.currencyExposureDAO$
+              })
+            .end()
+            .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
+              .tag(this.DashboardLiquidity)
+            .end()
+            .start(this.Card, { columns: 3 }).addClass(this.myClass('currency-exposure'))
+              .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
+            .end()
+            .start(this.Card, { columns: 9 })
+              .tag(this.DashboardCicoShadow)
+            .end()
+            .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
+              .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
+            .end()
+          }))
     }
   ],
   actions: [
     {
       name: 'refresh',
       code: function() {
-        this.lastUpdated = new Date();
+        this.lastUpdated = undefined;
       }
     },
   ]
