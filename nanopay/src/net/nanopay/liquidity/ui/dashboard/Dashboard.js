@@ -103,24 +103,24 @@ foam.CLASS({
           .end()
           .tag(this.lastUpdated$.map(_ => {
             return this.Grid.create()
-            .addClass(this.myClass('dashboard-container'))
-            .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
-              .tag(this.DashboardAccounts, { 
-                currency$: this.currencyExposureDAO$
-              })
-            .end()
-            .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
-              .tag(this.DashboardLiquidity)
-            .end()
-            .start(this.Card, { columns: 3 }).addClass(this.myClass('currency-exposure'))
-              .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
-            .end()
-            .start(this.Card, { columns: 9 })
-              .tag(this.DashboardCicoShadow)
-            .end()
-            .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
-              .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
-            .end()
+              .addClass(this.myClass('dashboard-container'))
+              .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
+                .tag(this.DashboardAccounts, { 
+                  currency$: this.currencyExposureDAO$
+                })
+              .end()
+              .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
+                .tag(this.DashboardLiquidity)
+              .end()
+              .start(this.Card, { columns: 3 }).addClass(this.myClass('currency-exposure'))
+                .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
+              .end()
+              .start(this.Card, { columns: 9 })
+                .tag(this.DashboardCicoShadow)
+              .end()
+              .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
+                .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
+              .end()
           }))
     }
   ],
