@@ -74,6 +74,10 @@ foam.CLASS({
       //if ( ! StringUtils.isAlphanumericSpace(this.getClientName()) ) {
       //  throw new RuntimeException("User name contains invalid characters.");
       //}
+      
+      if ( this.getClientName().length() > 29 ) {
+        throw new RuntimeException("User name is longer than 19 char.");
+      }
   
       if ( this.getReferenceNumber().length() > 19 ) {
         throw new RuntimeException("Transaction reference number is longer than 19 char.");
