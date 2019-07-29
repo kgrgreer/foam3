@@ -20,8 +20,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
-    'homeDenomination'
+    'accountDAO'
   ],
 
   properties: [
@@ -97,10 +96,13 @@ foam.CLASS({
 
             const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
             const balanceFont   = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
-            this.add(this.Label.create({color: balanceColour, font: balanceFont, x: leftPos,  y: this.height-21, text$: this.homeDenomination$.map(_ =>  {
-              console.log(denom);
-              return denom.format(balance);
-            })}));
+            this.add(this.Label.create({
+              color: balanceColour,
+              font: balanceFont,
+              x: leftPos,
+              y: this.height-21,
+              text$: this.homeDenomination$.map(_ =>  denom.format(balance))
+            }))
           }.bind(this));
         }.bind(this));
       }

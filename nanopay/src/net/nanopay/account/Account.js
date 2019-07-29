@@ -206,15 +206,12 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(value, obj, id) {
         var self = this;
-        this.add(
-          obj.slot(homeDenomination => /* Do not remove homeDenomination as balance needs to react if it changes */
-            obj.findBalance(this.__subSubContext__).then(balance => 
-              self.__subSubContext__.currencyDAO.find(obj.denomination).then(curr => 
-                curr.format(balance != null ? balance : 0)
-              )
-            )
-          )
-        );
+        // React to homeDenomination because it's used in the currency formatter.
+        this.add(obj.homeDenomination$.map(_ => {
+          return obj.findBalance(this.__subSubContext__)
+            .then(balance => self.__subSubContext__.currencyDAO.find(obj.denomination)
+            .then(curr => curr.format(balance != null ? balance : 0)))
+        }))
       },
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
