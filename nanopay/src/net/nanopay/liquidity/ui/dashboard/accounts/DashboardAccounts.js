@@ -56,14 +56,15 @@ foam.CLASS({
   `,
 
   requires: [
+    'foam.dao.ArraySink',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
-    'foam.comics.v2.DAOBrowserView',
-    'foam.u2.borders.CardBorder',
-    'foam.dao.ArraySink',
     'foam.mlang.sink.GroupBy',
-    'net.nanopay.account.Account'
+    'foam.u2.borders.CardBorder',
+    'net.nanopay.account.Account',
+    'foam.comics.v2.DAOBrowserView',
+    'foam.comics.v2.DAOControllerConfig'
   ],
   exports: [
     'controllerMode'
