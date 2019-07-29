@@ -674,6 +674,8 @@ function main() {
     userDAO: foam.dao.NullDAO.create(),
     complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,
+    user: foam.nanos.auth.User.create({ id: 8005 }),
+    fxService: foam.dao.NullDAO.create(),
     addCommas: function (a) { return a; }
   });
 
