@@ -44,8 +44,7 @@ foam.CLASS({
           dao$: this.business$.map((business) => this.accountDAO.where(
             this.AND(
               this.EQ(this.Account.OWNER, business),
-              this.NEQ(this.Account.TYPE, "DebtAccount"),
-              this.NEQ(this.Account.TYPE, "OverdraftAccount")
+              this.EQ(this.Account.TYPE, "OverdraftAccount")
             )
           )),
           data$: this.references$

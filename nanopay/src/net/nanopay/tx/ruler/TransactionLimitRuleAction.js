@@ -13,8 +13,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.ruler.TestedRule',
     'java.util.HashMap',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.AbliiTransaction'
+    'net.nanopay.tx.AbliiTransaction',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [
@@ -27,9 +27,9 @@ foam.CLASS({
       Transaction txn = (Transaction) obj;
       DAO transactionDAO = (DAO) x.get("localTransactionDAO");
       Transaction oldTxn = (Transaction) transactionDAO.find_(x, obj);
-      if (! (txn instanceof AbliiTransaction) && ( ! txn.canTransfer(x, oldTxn) )) {
-        return;
-      }
+      // if (! (txn instanceof AbliiTransaction) && ( ! txn.canTransfer(x, oldTxn) )) {
+      //   return;
+      // }
       Object id = rule_.getObjectToMap(txn, x);
 
       TransactionLimitState limitState = getLimitState(id);
