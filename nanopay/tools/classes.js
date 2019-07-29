@@ -546,7 +546,6 @@ var classes = [
   'net.nanopay.meter.reports.RowOfBusSumReports',
 
   // ruler
-  'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
   'net.nanopay.meter.compliance.ruler.RemoveComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
   'net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval',
