@@ -15,7 +15,7 @@ p({
     iplas  = new net.nanopay.security.auth.IPLoggingAuthService.Builder(x).setDelegate(laas).build();
     bas    = new net.nanopay.auth.BusinessAuthService.Builder(x).setDelegate(iplas).build();
     tfas   = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x).setDelegate(bas).build();
-    sas = new foam.nanos.auth.SystemAuthService(tfas);
+    sas    = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(tfas).build();
     return sas;
   """,
   "client":"{\"class\":\"foam.nanos.auth.CachedAuthServiceProxy\",\"delegate\":{\"class\":\"foam.nanos.auth.ClientLoginAuthService\"}}"
