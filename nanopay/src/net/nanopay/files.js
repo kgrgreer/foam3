@@ -1,4 +1,6 @@
 FOAM_FILES([
+  // DAO
+  { name: 'net/nanopay/dao/EasyDAO'},
   // Payment
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
