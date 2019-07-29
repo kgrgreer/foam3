@@ -590,7 +590,6 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
            echo "MODE=${MODE}"
            ;;
         q) MODE=STAGING
-           CLEAN_BUILD=1
            echo "MODE=${MODE}"
            ;;
         Q) LIQUID_DEMO=1
@@ -601,13 +600,11 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
         s) STOP_ONLY=1 ;;
         t) TEST=1
            MODE=TEST
-           CLEAN_BUILD=1
            COMPILE_ONLY=0
            ;;
         T) TEST=1
            TESTS=$OPTARG
            MODE=TEST
-           CLEAN_BUILD=1
            ;;
         u) RUN_JAR=1;;
         U) RUN_USER=${OPTARG};;

@@ -12,7 +12,7 @@ foam.CLASS({
     'net.nanopay.security.HashedJSONParser',
     'net.nanopay.security.HashingJournal',
     'net.nanopay.security.HashingOutputter',
-
+    'foam.core.X',
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
     'java.io.File',
@@ -109,8 +109,9 @@ foam.CLASS({
         try {
           DAO dao = new MDAO(User.getOwnClassInfo());
           File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-          HashingJournal journal = new HashingJournal.Builder(x)
-            .setFile(file)
+          X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
+          HashingJournal journal = new HashingJournal.Builder(storageX)
+            .setFilename(file.getName())
             .setDao(dao)
             .build();
 
@@ -143,8 +144,9 @@ foam.CLASS({
         try {
           DAO dao = new MDAO(User.getOwnClassInfo());
           File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-          HashingJournal journal = new HashingJournal.Builder(x)
-            .setFile(file)
+          X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
+          HashingJournal journal = new HashingJournal.Builder(storageX)
+            .setFilename(file.getName())
             .setDao(dao)
             .build();
 
@@ -183,9 +185,9 @@ foam.CLASS({
         try {
           DAO dao = new MDAO(User.getOwnClassInfo());
           File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-          HashingJournal journal = new HashingJournal.Builder(x)
-            .setAlgorithm("SHA-1")
-            .setFile(file)
+          X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
+          HashingJournal journal = new HashingJournal.Builder(storageX)
+            .setFilename(file.getName())
             .setDao(dao)
             .build();
 
