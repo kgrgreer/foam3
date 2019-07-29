@@ -47,6 +47,10 @@ foam.CLASS({
       grid-row-gap: 32px;
       padding: 32px;
     }
+
+    ^ .foam-u2-ActionView-refresh span {
+      vertical-align: middle;
+    }
   `,
 
   properties: [
@@ -98,7 +102,7 @@ foam.CLASS({
               .end()
             .end()
             .startContext({data: this})
-              .tag(this.REFRESH, { icon: 'images/ic-loading.svg' })
+              .tag(this.REFRESH, { icon: 'images/refresh-icon.svg' })
             .endContext()
           .end()
           .tag(this.lastUpdated$.map(_ => {
