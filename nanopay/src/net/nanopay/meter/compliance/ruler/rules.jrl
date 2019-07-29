@@ -117,8 +117,63 @@ p({"class":"foam.nanos.ruler.Rule","id":1440,"name":"IdentityMind transfer trans
 // Rollup rules
 p({"class":"foam.nanos.ruler.Rule","id":1500,"name":"Clear user approval requests","priority":80,"ruleGroup":"rollup","documentation":"Clear pending approval requests for a user.","daoKey":"localUserDAO","operation":1,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed"},"action":{"class":"net.nanopay.meter.compliance.ruler.PruneApprovalRequests","objDaoKey":"localUserDAO"},"enabled":true,"saveHistory":true})
 p({"class":"foam.nanos.ruler.Rule","id":1501,"name":"Clear transaction approval requests","priority":40,"ruleGroup":"rollup","documentation":"Clear pending approval requests for a transaction.","daoKey":"localTransactionDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"},{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction"}}]},"action":{"class":"net.nanopay.meter.compliance.ruler.PruneApprovalRequests","objDaoKey":"localTransactionDAO"},"enabled":true,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":1510,"name":"User compliance approval","priority":50,"ruleGroup":"rollup","documentation":"Update user compliance on approval request changes","daoKey":"localUserDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"},{"class":"net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested"}]},"action":{"class":"net.nanopay.meter.compliance.ruler.UserComplianceApproval"},"enabled":true,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":1520,"name":"Compliance transaction approval","priority":50,"ruleGroup":"rollup","documentation":"Update compliance transaction according to approval.","daoKey":"localTransactionDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"},{"class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"},{"class":"net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction"}]},"action":{"class":"net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval"},"enabled":true,"saveHistory":true})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1510,
+  "name": "User compliance approval",
+  "priority": 50,
+  "ruleGroup": "rollup",
+  "documentation": "Update user compliance on approval request changes",
+  "daoKey": "localUserDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested"
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.meter.compliance.ruler.UserComplianceApproval"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1520,
+  "name": "Compliance transaction approval",
+  "priority": 50,
+  "ruleGroup": "rollup",
+  "documentation": "Update compliance transaction according to approval.",
+  "daoKey": "localTransactionDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction"
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
 p({"class":"foam.nanos.ruler.Rule","id":1521,"name":"Remove compliance user approval","ruleGroup":"remove compliance requests","documentation":"Remove all compliance requests when one is rejected","daoKey":"approvalRequestDAO","operation":3,"after":true, "predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsRejectedComplianceApprovalRequest"},"action":{"class":"net.nanopay.meter.compliance.ruler.RemoveComplianceApprovalRequest"},"enabled":true})
 
 // ComplianceItem rules
