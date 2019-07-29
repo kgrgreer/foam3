@@ -333,9 +333,12 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/CompliancePlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentPlanDAO' },
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
-  { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
+  { name: 'net/nanopay/tx/RepayDebtOnCIRule' },
   { name: 'net/nanopay/tx/GenericCIPlanner' },
-  { name: 'net/nanopay/tx/ParentCompleteToPendingRule'},
+  { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
+  { name: 'net/nanopay/tx/ModifyCicoApprovalCleanup' },
+  { name: 'net/nanopay/tx/ModifyCicoStatus' },
+  { name: 'net/nanopay/tx/ModifyCicoStatusApproval' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -960,6 +963,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianBusinessOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/CanadianUserOnboarded' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/DowJonesApprovalRequested' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsCITransaction' },
+  { name: 'net/nanopay/meter/compliance/ruler/predicate/IsCompletedTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/IsComplianceTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/IsPendingTransaction' },
   { name: 'net/nanopay/meter/compliance/ruler/predicate/IsRejectedComplianceApprovalRequest' },
