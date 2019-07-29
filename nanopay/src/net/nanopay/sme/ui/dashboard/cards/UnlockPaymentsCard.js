@@ -209,7 +209,6 @@ foam.CLASS({
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
           .add(this.slot(function(isComplete, type, hasUSDPermission) {
-            debugger
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! hasUSDPermission ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
@@ -248,7 +247,6 @@ foam.CLASS({
           if ( ! this.user.onboarded ) {
             var userId = this.agent.id;
             var businessId = this.user.id;
-            debugger
             var isDomesticOnboarding = this.type === this.UnlockPaymentsCardType.DOMESTIC;
 
             // We need to find the BusinessOnboarding by checking both the

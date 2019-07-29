@@ -39,18 +39,19 @@ public class AFEXContactDAO
     
     Contact contact = (Contact) obj;
     
-    // check contact owner has currency.read.USD permission
     AuthService auth = (AuthService) x.get("auth");
     Business contactOwner = (Business) localBusinessDAO.find(contact.getOwner());
-    if ( ! auth.checkUser(getX(), contactOwner, "currency.read.USD") ) return getDelegate().put_(x, obj);
 
     // Check if contact has a bank account
     BankAccount contactBankAccount = contact.getBankAccount() < 1 ? 
       ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, contact.getId()), INSTANCE_OF(BankAccount.class)))) 
       : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
     if ( contactBankAccount != null ) {
+       // check contact owner has currency.read.x permission
+      String currencyPermission = "currency.read." + contactBankAccount.getDenomination();
+      boolean hasCurrencyPermission = auth.check(x, currencyPermission);
       // Check if beneficiary already added
-      if ( ! afexBeneficiaryExists(x, contact.getId(), contact.getOwner()) ) {
+      if ( hasCurrencyPermission && ! afexBeneficiaryExists(x, contact.getId(), contact.getOwner()) ) {
         createAFEXBeneficiary(x, contact.getId(), contactBankAccount.getId(),  contact.getOwner());
       }
     }
@@ -60,7 +61,9 @@ public class AFEXContactDAO
     if ( business != null ) {
       BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class))));
       if ( null != businessBankAccount ) {
-        if ( ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
+        String currencyPermission = "currency.read." + businessBankAccount.getDenomination();
+        boolean hasCurrencyPermission = auth.check(x, currencyPermission);
+        if ( hasCurrencyPermission && ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
           createAFEXBeneficiary(x, business.getId(), businessBankAccount.getId(),  contact.getOwner());
         }
       }
