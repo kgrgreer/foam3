@@ -55,8 +55,9 @@ public class ApprovalTester {
       || incrRejected(request) >= request.getRequiredRejectedPoints()
     ) {
       state_ = request.getStatus();
+    } else {
+      incrApproval(request);
     }
-    incrApproval(request);
     return state_;
   }
 
