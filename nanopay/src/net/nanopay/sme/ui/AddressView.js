@@ -24,14 +24,12 @@ foam.CLASS({
   css: `
     ^ .foam-u2-tag-Select {
       width: 100%;
-      margin-bottom: 10px;
     }
     ^ .label {
       margin-left: 0px;
     }
     ^ .foam-u2-TextField {
       width: 100%;
-      margin-bottom: 10px;
     }
     ^ .two-column{
       display: grid;

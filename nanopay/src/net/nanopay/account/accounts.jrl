@@ -1,4 +1,4 @@
-p({"class":"net.nanopay.account.TrustAccount", "id":1, "owner":101, "denomination":"CAD", "name":"nanopay Trust Account CAD"})
+p({"class":"net.nanopay.account.TrustAccount", "id":1, "owner":101, "denomination":"CAD", "name":"nanopay Alterna Trust Account CAD"})
 p({"class":"net.nanopay.account.DigitalAccount", "id":2, "owner":101, "denomination":"CAD", "name":"nanopay Fee Account CAD"})
 p({"class":"net.nanopay.account.DigitalAccount", "id":3, "owner":101, "denomination":"CAD", "name":"nanopay Broker Account CAD"})
 p({"class":"net.nanopay.account.DigitalAccount", "id":4, "owner":101, "denomination":"CAD", "isDefault":true, "name":"stripe digital account to mimic payer CAD"})

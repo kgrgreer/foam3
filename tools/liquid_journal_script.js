@@ -489,7 +489,7 @@ function cashIn(X, bank, dest, amount) {
 }
 
 function cashOut(X, source, bank, amount) {
-  var tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+  var tx = net.nanopay.tx.cico.COTransaction.create({
     id: foam.next$UID().toString(),
     name: `Cash Out #${++cashOutCounter}`,
     sourceAccount: source.id,
@@ -518,7 +518,7 @@ function cashOut(X, source, bank, amount) {
 
   X.transactionDAO.put(tx);
 
-  tx = net.nanopay.tx.alterna.AlternaCOTransaction.create({
+  tx = net.nanopay.tx.cico.COTransaction.create({
     id: tx.id,
     status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
     lineItems: [
@@ -670,9 +670,12 @@ function main() {
     currencyDAO: jdao("target/journals/currencies.0"),
     currentDate: currentDate,
     balances: {},
+    homeDenomination: 'USD',
     userDAO: foam.dao.NullDAO.create(),
     complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,
+    user: foam.nanos.auth.User.create({ id: 8005 }),
+    fxService: foam.dao.NullDAO.create(),
     addCommas: function (a) { return a; }
   });
 

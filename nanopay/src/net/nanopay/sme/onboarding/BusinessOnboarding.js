@@ -153,11 +153,14 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding',
   ],
 
   imports: [
     'ctrl',
     'pushMenu',
+    'appConfig',
+    'identificationTypeDAO'
   ],
 
   sections: [
@@ -183,7 +186,7 @@ foam.CLASS({
     },
     {
       name: 'homeAddressSection',
-      title: 'Enter you home address',
+      title: 'Enter your home address',
       help: 'Awesome! Next, I’ll need to know your current home address…',
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
@@ -210,6 +213,19 @@ foam.CLASS({
       name: 'transactionDetailsSection',
       title: 'Enter your transaction details',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
+    },
+    {
+      name: 'internationalTransactionSection',
+      title: 'Are you going to be sending International Payments?',
+      help: `Thanks! That’s all the details I need to setup local transactions. Now let’s get some more details on your US transactions`,
+      isAvailable: function (signingOfficer) { return signingOfficer && this.appConfig.enableInternationalPayment }
+    },
+    {
+      name: 'ownershipYesOrNoSection',
+      title: 'Does your company have anyone that owns 25% or more of the business?',
+      help: `Great, almost done! In accordance with banking laws, we need to document
+          the percentage of ownership of any individual with a 25% + stake in the company.`,
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
@@ -382,7 +398,7 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
-      label: 'Phone #',
+      label: '',
       autoValidate: true
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
@@ -464,6 +480,7 @@ foam.CLASS({
       }
     }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
+      label: '',
       section: 'homeAddressSection',
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
@@ -543,6 +560,7 @@ foam.CLASS({
       ]
     },
     foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
+      label: '',
       section: 'businessAddressSection',
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
@@ -853,6 +871,35 @@ foam.CLASS({
       ]
     }),
     {
+      section: 'internationalTransactionSection',
+      class: 'FObjectProperty',
+      name: 'USBusinessDetails',
+      label: 'US Business Details',
+      of: 'net.nanopay.sme.onboarding.USBusinessOnboarding',
+      visibilityExpression: function(appConfig) {
+        return appConfig.enableInternationalPayment ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      factory: function() {
+        return this.USBusinessOnboarding.create({});
+      },
+    },
+    {
+      class: 'Boolean',
+      name: 'ownershipAbovePercent',
+      label: '',
+      section: 'ownershipYesOrNoSection',
+      postSet: function(_, n) {
+        if ( ! n ) this.amountOfOwners = 0;
+      },
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          [false, 'No (or this is a publicly traded company)'],
+          [true, 'Yes, we have owners with 25% +']
+        ],
+      },
+    },
+    {
       class: 'Long',
       name: 'amountOfOwners',
       section: 'ownershipAmountSection',
@@ -887,7 +934,7 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
-        if ( n ) this.clearProperty('owner1');
+        this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -900,7 +947,7 @@ foam.CLASS({
       label: '',
       label2: 'This is a publicly traded company',
       postSet: function(_, n) {
-        if ( n ) this.clearProperty('owner1');
+        this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;

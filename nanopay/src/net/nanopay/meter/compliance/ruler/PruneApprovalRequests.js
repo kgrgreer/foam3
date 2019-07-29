@@ -29,8 +29,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        
-      agency.submit(x, new ContextAgent() {
+        agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
             ((DAO) x.get("approvalRequestDAO"))
@@ -40,7 +39,7 @@ foam.CLASS({
               EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
             .removeAll();
           }
-        });
+        }, "Prune Approval Requests");
       `
     }
   ]

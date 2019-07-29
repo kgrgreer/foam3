@@ -260,7 +260,7 @@ foam.CLASS({
           .find(invoice.destinationCurrency)
           .then((currency) => {
             this.start()
-              .add(currency.format(value) + ' ' + invoice.destinationCurrency)
+              .add(currency.format(value))
             .end();
           });
       },
@@ -289,7 +289,7 @@ foam.CLASS({
         this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
           .then(function(currency) {
             this.start()
-              .add(invoice.sourceCurrency + ' ' + currency.format(value))
+              .add(currency.format(value))
             .end();
         }.bind(this));
       }
