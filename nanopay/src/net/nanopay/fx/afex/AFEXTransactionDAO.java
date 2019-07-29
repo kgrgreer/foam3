@@ -37,7 +37,7 @@ public class AFEXTransactionDAO
     }
 
     AFEXTransaction transaction = (AFEXTransaction) obj;
-    if ( transaction.getStatus() != TransactionStatus.PENDING /*|| getDelegate().find(transaction.getId()) != null*/) {
+    if ( transaction.getStatus() != TransactionStatus.PENDING || ! ( SafetyUtil.isEmpty( transaction.getReferenceNumber()) ) ) {
       return getDelegate().put_(x, obj);
     }
 
@@ -46,7 +46,7 @@ public class AFEXTransactionDAO
   ///Submit transation to AFEX
     try {
       Transaction txn = afexService.submitPayment(transaction);
-      if ( SafetyUtil.isEmpty( transaction.getReferenceNumber())  &&  ! SafetyUtil.isEmpty(txn.getReferenceNumber()) ) {
+      if ( ! SafetyUtil.isEmpty(txn.getReferenceNumber()) ) {
         transaction.setStatus(TransactionStatus.SENT);
         transaction.setReferenceNumber(txn.getReferenceNumber());
       } else {

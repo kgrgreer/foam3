@@ -43,7 +43,7 @@ out/
 .settings/
 .project
 .classpath
-package-lock.json
+#package-lock.json
 
 # JIRA plugin
 atlassian-ide-plugin.xml
@@ -64,7 +64,6 @@ target/
 root/target/
 nanopay-bin.js
 testindex
-generatedJava
 
 # Local Tomcat Server XML
 /server.xml
