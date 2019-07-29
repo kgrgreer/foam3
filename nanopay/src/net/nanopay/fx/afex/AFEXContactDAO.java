@@ -49,7 +49,7 @@ public class AFEXContactDAO
     if ( contactBankAccount != null ) {
        // check contact owner has currency.read.x permission
       String currencyPermission = "currency.read." + contactBankAccount.getDenomination();
-      boolean hasCurrencyPermission = auth.check(x, currencyPermission);
+      boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);
       // Check if beneficiary already added
       if ( hasCurrencyPermission && ! afexBeneficiaryExists(x, contact.getId(), contact.getOwner()) ) {
         createAFEXBeneficiary(x, contact.getId(), contactBankAccount.getId(),  contact.getOwner());
@@ -62,7 +62,7 @@ public class AFEXContactDAO
       BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class))));
       if ( null != businessBankAccount ) {
         String currencyPermission = "currency.read." + businessBankAccount.getDenomination();
-        boolean hasCurrencyPermission = auth.check(x, currencyPermission);
+        boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);
         if ( hasCurrencyPermission && ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
           createAFEXBeneficiary(x, business.getId(), businessBankAccount.getId(),  contact.getOwner());
         }
