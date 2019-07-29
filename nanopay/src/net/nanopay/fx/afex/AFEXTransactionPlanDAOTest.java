@@ -43,6 +43,8 @@ public class AFEXTransactionPlanDAOTest
   DAO localtxDAO;
   DAO invoiceDAO;
   X x_;
+  AFEXServiceProvider afexService;
+  AFEXTransactionPlanDAO planDAO;
 
   @Override
   public void runTest(X x) {
@@ -57,6 +59,10 @@ public class AFEXTransactionPlanDAOTest
   }
 
   private void setUpTest() {
+    AFEX afex = new AFEXServiceMock(x_);
+    afexService = new AFEXServiceProvider(x_, afex);
+    planDAO = new AFEXTransactionPlanDAO.Builder(x_).build();
+
     localUserDAO = (DAO) x_.get("localUserDAO");
     localAccountDAO = (DAO) x_.get("localAccountDAO");
     Address businessAddress = new Address();
@@ -199,10 +205,10 @@ public class AFEXTransactionPlanDAOTest
     transaction.setSourceCurrency("CAD");
     transaction.setDestinationCurrency("USD");
     quote.setRequestTransaction(transaction);
-    TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
+    TransactionQuote resultQoute = (TransactionQuote) planDAO.generateTransaction(x_, quote, afexService);
     test( null != resultQoute, "CAD USD quote was processed" );
 
-    Transaction tx1 = resultQoute.getPlan();
+    Transaction tx1 = resultQoute.getPlans()[0];
 
     test( tx1 instanceof FXSummaryTransaction && tx1.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for CAD to USD");
 
@@ -232,10 +238,10 @@ public class AFEXTransactionPlanDAOTest
     transaction.setSourceCurrency("USD");
     transaction.setDestinationCurrency("USD");
     quote.setRequestTransaction(transaction);
-    TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
+    TransactionQuote resultQoute = (TransactionQuote) planDAO.generateTransaction(x_, quote, afexService);
     test( null != resultQoute, "USD USD quote was processed" );
 
-    Transaction tx1 = resultQoute.getPlan();
+    Transaction tx1 = resultQoute.getPlans()[0];
 
     test( tx1 instanceof FXSummaryTransaction && tx1.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to USD");
 
@@ -264,9 +270,9 @@ public class AFEXTransactionPlanDAOTest
     transaction.setSourceCurrency("USD");
     transaction.setDestinationCurrency("CAD");
     quote.setRequestTransaction(transaction);
-    TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionQuotePlanDAO")).put_(x_, quote);
+    TransactionQuote resultQoute = (TransactionQuote) planDAO.generateTransaction(x_, quote, afexService);
 
-    Transaction tx1 = resultQoute.getPlan();
+    Transaction tx1 = resultQoute.getPlans()[0];
 
     test( tx1 instanceof FXSummaryTransaction && tx1.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to CAD");
 

@@ -60,49 +60,33 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'put_',
+      name: 'generateTransaction',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'quote',
+          type: 'TransactionQuote'
+        },
+        {
+          name: 'afexService',
+          type: 'AFEXServiceProvider'
+        }
+      ],
+      javaType: 'FObject',
       javaCode: `
-
-    TransactionQuote quote = (TransactionQuote) obj;
-
-    if ( ! this.getEnabled() ) {
-      return getDelegate().put_(x, quote);
-    }
-
-    Logger logger = (Logger) x.get("logger");
-    Transaction request = quote.getRequestTransaction();
-    logger.debug(this.getClass().getSimpleName(), "put", quote);
-
-    Account sourceAccount = request.findSourceAccount(x);
-    Account destinationAccount = request.findDestinationAccount(x);
-
-    // Check if AFEX can handle this transaction
-    if ( ! (sourceAccount instanceof BankAccount) || ! (destinationAccount instanceof BankAccount) ) return getDelegate().put_(x, obj);
-
-    // Check if AFEXTransactionPlanDAO can handle the currency combination
-    FXService fxService = null;
-    if ( ((AppConfig) x.get("appConfig")).getMode() == Mode.DEVELOPMENT ) {
-      if ( (request.getSourceCurrency().equals("CAD") && request.getDestinationCurrency().equals("USD")) ||
-      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("CAD")) ||
-      (request.getSourceCurrency().equals("USD") && request.getDestinationCurrency().equals("USD")) ) {
-        AFEX afex = new AFEXServiceMock(x);
-        fxService = new AFEXServiceProvider(x, afex);
-      }
-    } else {
-      fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
-      request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
-    }
-    if ( fxService instanceof AFEXServiceProvider  ) {
-      fxService = (AFEXServiceProvider) fxService;
+      Transaction request = quote.getRequestTransaction();
+      Account sourceAccount = request.findSourceAccount(x);
+      Account destinationAccount = request.findDestinationAccount(x);
+      Logger logger = (Logger) x.get("logger");
 
       // Validate that Payer is provisioned for AFEX before proceeding
-      if ( ((AppConfig) x.get("appConfig")).getMode() != Mode.TEST && ((AppConfig) x.get("appConfig")).getMode() != Mode.DEVELOPMENT  ) {
-        AFEXBusiness afexBusiness = ((AFEXServiceProvider) fxService).getAFEXBusiness(x, sourceAccount.getOwner());
-        if (afexBusiness == null) {
-          logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
-          return getDelegate().put_(x, quote);
-        }
-
+      AFEXBusiness afexBusiness = afexService.getAFEXBusiness(x, sourceAccount.getOwner());
+      if (afexBusiness == null) {
+        logger.error("User not provisioned on AFEX " + sourceAccount.getOwner());
+        return getDelegate().put_(x, quote);
       }
 
       FXQuote fxQuote = new FXQuote.Builder(x).build();
@@ -110,8 +94,6 @@ foam.CLASS({
       // FX Rate has not yet been fetched
       if ( fxQuote.getId() < 1 ) {
         try {
-
-          AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
 
           fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
             null, null, request.findSourceAccount(x).getOwner(), null);
@@ -132,7 +114,7 @@ foam.CLASS({
             .setBody(message)
             .build();
             ((DAO) x.get("localNotificationDAO")).put(notification);
-            ((Logger) x.get("logger")).error("Error sending GetQuote to AFEX.", t);
+            logger.error("Error sending GetQuote to AFEX.", t);
         }
       } else  {
         AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
@@ -143,7 +125,34 @@ foam.CLASS({
         FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
         quote.addPlan(summary);
       }
+      return quote;
+      `
+    },
+    {
+      name: 'put_',
+      javaCode: `
 
+    TransactionQuote quote = (TransactionQuote) obj;
+
+    if ( ! this.getEnabled() ) {
+      return getDelegate().put_(x, quote);
+    }
+
+    Logger logger = (Logger) x.get("logger");
+    Transaction request = quote.getRequestTransaction();
+    logger.debug(this.getClass().getSimpleName(), "put", quote);
+
+    Account sourceAccount = request.findSourceAccount(x);
+    Account destinationAccount = request.findDestinationAccount(x);
+
+    // Check if AFEX can handle this transaction
+    if ( ! (sourceAccount instanceof BankAccount) || ! (destinationAccount instanceof BankAccount) ) return getDelegate().put_(x, obj);
+
+    // Check if AFEXTransactionPlanDAO can handle the currency combination
+    FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
+      request.getDestinationCurrency(), AFEX_SERVICE_NSPEC_ID);
+    if ( fxService instanceof AFEXServiceProvider  ) {
+     quote = (TransactionQuote) generateTransaction(x, quote, (AFEXServiceProvider) fxService);
     }
     return getDelegate().put_(x, quote);
     `
