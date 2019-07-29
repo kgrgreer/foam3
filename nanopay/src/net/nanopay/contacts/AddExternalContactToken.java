@@ -14,7 +14,9 @@ import java.util.UUID;
 import java.util.Map;
 import static foam.mlang.MLang.*;
 
-
+/**
+ * This class is a decorator of localUserDAO which generate the externalContactToken when adding external contact
+ */
 public class AddExternalContactToken extends ProxyDAO {
 
   public AddExternalContactToken(X x, DAO delegate) {
@@ -49,8 +51,10 @@ public class AddExternalContactToken extends ProxyDAO {
           } else {
             externalToken = (ExternalContactToken) token.fclone();
           }
+
           Map tokenParams = new HashMap();
           tokenParams.put("inviteeEmail", externalContactUser.getEmail());
+
           externalToken.setParameters(tokenParams);
           externalToken.setUserId(externalContactUser.getId());
           externalToken.setData(UUID.randomUUID().toString());
@@ -60,6 +64,16 @@ public class AddExternalContactToken extends ProxyDAO {
           // Do nothing. We've already created the ExternalContactToken for this
           // business but they haven't signed up yet.
         }
+      } else {
+        ExternalContactToken externalToken = new ExternalContactToken();
+        Map tokenParams = new HashMap();
+
+        tokenParams.put("inviteeEmail", externalContactUser.getEmail());
+        externalToken.setParameters(tokenParams);
+        externalToken.setUserId(externalContactUser.getId());
+        externalToken.setData(UUID.randomUUID().toString());
+        externalToken.setBusinessEmail(externalContactUser.getEmail());
+        tokenDAO.put(externalToken);
       }
     }
 

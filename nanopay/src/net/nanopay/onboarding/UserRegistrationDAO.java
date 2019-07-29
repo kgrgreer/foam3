@@ -113,7 +113,7 @@ public class UserRegistrationDAO
       } else {
         throw new RuntimeException("Cannot process without an invited email.");
       }
-      
+
       if ( params.containsKey("businessId") ) {
         long businessId = (long) params.get("businessId");
 
