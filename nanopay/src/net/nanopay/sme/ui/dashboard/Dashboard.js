@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'Dashboard',
   extends: 'foam.u2.Controller',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.nanos.notification.Notification',
     'foam.u2.dialog.NotificationMessage',
@@ -20,6 +24,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
+    'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
@@ -218,7 +223,20 @@ foam.CLASS({
           this.bankAccount = sink.array[0];
         });
       this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
-      this.businessOnboarding = await this.businessOnboardingDAO.find(this.agent.id);
+
+      // We need to find the BusinessOnboarding by checking both the userId and
+      // the businessId. Previously we were only checking the userId, which
+      // caused a bug when trying to add a user that's already on the platform
+      // as a signing officer for another business. The bug was caused by the
+      // search by userId finding the BusinessOnboarding for the existing user's
+      // other business instead of the one they were recently added to. By
+      // including the businessId in our search criteria we avoid this problem.
+      this.businessOnboarding = await this.businessOnboardingDAO.find(
+        this.AND(
+          this.EQ(this.BusinessOnboarding.USER_ID, this.agent.id),
+          this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
+        )
+      );
       this.onboardingStatus = this.user.onboarded;
     },
 

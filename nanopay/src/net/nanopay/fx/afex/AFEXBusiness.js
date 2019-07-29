@@ -9,6 +9,12 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  imports: [
+    'afexBeneficiaryDAO',
+    'userDAO',
+    'publicBusinessDAO'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -19,7 +25,13 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'user',
-      documentation: `The ID for the user`
+      documentation: `The ID for the user`,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+        this.__subSubContext__.publicBusinessDAO.find(value).then( function( user ) {
+          if ( user ) self.add(user.businessName);
+        });
+      }
     },
     {
       class: 'String',
@@ -34,6 +46,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status',
+      value: 'Pending',
       documentation: 'Beneficiary status on AFEX system.'
     },
     {
@@ -58,5 +71,30 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy'
     }
+  ],
+
+  actions: [
+    {
+      name: 'viewBeneficiaries',
+      label: 'View Beneficiaries',
+      tableWidth: 135,
+      code: function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        var self = this;
+          X.userDAO.find(this.user).then(function(user) {
+            debugger
+            if ( user ) {
+              self.__context__.stack.push({
+                class: 'foam.comics.BrowserView',
+                createEnabled: false,
+                editEnabled: true,
+                exportEnabled: true,
+                title: `${user.businessName}'s Beneficiaries`,
+                data: X.afexBeneficiaryDAO.where(m.EQ(net.nanopay.fx.afex.AFEXBeneficiary.OWNER, self.user))
+              });
+            }
+          });
+      }
+    },
   ]
 });

@@ -3,8 +3,9 @@ package net.nanopay.tx.alterna;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
+import foam.lib.csv.CSVOutputterImpl;
+import foam.dao.CSVSink;
 import foam.dao.DAO;
-import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -126,15 +127,20 @@ public class CsvUtil {
    */
   public static void writeCsvFile(X x, PrintWriter o, OutputterMode mode) {
     final Date now            = new Date();
-
     final DAO bankAccountDAO  = (DAO) x.get("localAccountDAO");
     final DAO transactionDAO  = (DAO) x.get("localTransactionDAO");
     final DAO userDAO         = (DAO) x.get("localUserDAO");
     final DAO institutionDAO  = (DAO) x.get("institutionDAO");
     final DAO branchDAO       = (DAO) x.get("branchDAO");
-    final DAO notificationDAO = (DAO) x.get("notificationDAO");
+    final DAO notificationDAO = (DAO) x.get("localNotificationDAO");
     Logger logger = (Logger) x.get("logger");
-    Outputter out = new Outputter(o, mode, false);
+
+    CSVSink out = new CSVSink.Builder(x)
+      .setOutputter(new CSVOutputterImpl.Builder(x)
+        .setIsFirstRow(false)
+        .setOf((new net.nanopay.tx.alterna.AlternaFormat()).getClassInfo())
+        .build()
+      ).build();
     transactionDAO
       .where(
              AND(
@@ -349,7 +355,11 @@ public class CsvUtil {
             out.put(cashout, sub);
           }
 
-          out.flush();
+          out.eof();
+          if ( o instanceof PrintWriter ) {
+            o.write(out.getCsv());
+            o.flush();
+          }
         } catch (Exception e) {
           logger.error("CsvUtil.writeCsvFile", e);
         }

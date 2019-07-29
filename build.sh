@@ -8,6 +8,10 @@
 # Exit on first failure
 set -e
 
+function warning {
+    echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
+}
+
 function rmdir {
     if test -d "$1" ; then
         rm -rf "$1"
@@ -502,7 +506,7 @@ function usage {
     echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
-    echo "  -n : new Gradle Build"
+    echo "  -o : old maven build"
     echo "  -p : short cut for setting MODE to PRODUCTION"
     echo "  -q : short cut for setting MODE to STAGING"
     echo "  -r : Start nanos with whatever was last built."
@@ -527,7 +531,7 @@ function usage {
 JOURNAL_CONFIG=default
 INSTANCE=
 HOST_NAME=`hostname -s`
-GRADLE_BUILD=0
+GRADLE_BUILD=1
 VERSION=
 MODE=
 #MODE=DEVELOPMENT
@@ -557,11 +561,10 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUN_USER=
 
-while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
+while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uUvV:W:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
-           GRADLE_FLAGS="--rerun-tasks"
            ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
@@ -579,10 +582,10 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
         M) MODE=$OPTARG
            echo "MODE=${MODE}"
            ;;
-        n) GRADLE_BUILD=1 ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
+        o) GRADLE_BUILD=0 ;;
         p) MODE=PRODUCTION
            echo "MODE=${MODE}"
            ;;
@@ -591,6 +594,8 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
            echo "MODE=${MODE}"
            ;;
         Q) LIQUID_DEMO=1
+           JOURNAL_CONFIG=liquid
+           echo "💧 Initializing Liquid Environment 💧"
            ;;
         r) RESTART_ONLY=1 ;;
         s) STOP_ONLY=1 ;;
@@ -618,8 +623,21 @@ while getopts "bcdD:ghijJ:klmM:nN:pqQrsStT:uUvV:W:xz" opt ; do
     esac
 done
 
+if [ "${MODE}" == "TEST" ]; then
+    echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
+    JOURNAL_CONFIG=test
+fi
+
+if [ ${CLEAN_BUILD} -eq 1 ]; then
+    GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
+fi
+
+if [ ${GRADLE_BUILD} -eq 0 ]; then
+    warning "Maven build is deprecated, switch to gradle by dropping 'n' flag"
+fi
+
 if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
-    echo "WARNING :: ${JOURNAL_CONFIG} journal config unsupported for jar deployment";
+    warning "${JOURNAL_CONFIG} journal config unsupported for jar deployment";
 fi
 
 setenv

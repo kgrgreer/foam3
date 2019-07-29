@@ -115,7 +115,7 @@ foam.CLASS({
             public void execute(X x) {
               migrateContactsAndInvoices(x, business);
             }
-          });
+          }, "Contact Migration Rule");
         }
       `
     },

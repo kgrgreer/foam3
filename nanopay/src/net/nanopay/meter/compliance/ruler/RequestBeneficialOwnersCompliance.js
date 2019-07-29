@@ -38,7 +38,7 @@ foam.CLASS({
                 DAO beneficialOwnerDAO = (DAO) business.getBeneficialOwners(x);
                 beneficialOwnerDAO.put(owner);
               }
-            });
+            }, "Request Beneficial Owners Compliance");
           }
         });
       `

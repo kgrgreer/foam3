@@ -41,11 +41,27 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public OnboardCorporateClientResponse onboardCorporateClient(OnboardCorporateClientRequest request) {
+    OnboardCorporateClientResponse response = new OnboardCorporateClientResponse();
+    response.setAPIKey("API_KEY");
+    response.setAccountNumber("00000122");
+    return response;
+  }
+
+  @Override
+  public GetClientAccountStatusResponse getClientAccountStatus(String clientAPIKey) {
+    return null;
+  }
+
+  @Override
+  public RetrieveClientAccountDetailsResponse retrieveClientAccountDetails(String clientAPIKey) {
     return null;
   }
 
   @Override
   public CreateBeneficiaryResponse createBeneficiary(CreateBeneficiaryRequest request) {
+    CreateBeneficiaryResponse response = new CreateBeneficiaryResponse();
+    response.setCode(0);
+    response.setStatus("Active");
     return null;
   }
 
@@ -61,7 +77,9 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request) {
-    return null;
+    FindBeneficiaryResponse response = new FindBeneficiaryResponse();
+    response.setBeneficiaryName("Test Beneficiary");
+    return response;
   }
 
   @Override
@@ -71,6 +89,11 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public String getValueDate(String currencyPair, String valueType) {
+    return null;
+  }
+
+  @Override
+  public GetRateResponse getRate(GetRateRequest request) {
     return null;
   }
 
@@ -100,7 +123,17 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public CheckTradeStatusResponse checkTradeStatus(CheckTradeStatusRequest request) {
+    return null;
+  }
+
+  @Override
   public net.nanopay.fx.afex.CreatePaymentResponse createPayment(CreatePaymentRequest request) {
+    return null;
+  }
+
+  @Override
+  public CheckPaymentStatusResponse checkPaymentStatus(CheckPaymentStatusRequest request) {
     return null;
   }
 }

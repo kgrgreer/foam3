@@ -8,11 +8,8 @@ foam.CLASS({
   'by models that would provide logic for getObjectToMap method. See example: AccountTransactionLimitRule.',
 
   javaImports: [
-    'foam.core.X',
-    'net.nanopay.tx.model.Transaction',
-    'static foam.mlang.MLang.*'
+    'foam.core.X'
   ],
-
 
   properties: [
     {
@@ -40,6 +37,7 @@ foam.CLASS({
       class: 'Double',
       name: 'limit',
       label: 'Maximum transaction size',
+      section: 'basicInfo',
       validationPredicates: [
         {
           args: ['limit'],
@@ -55,6 +53,7 @@ foam.CLASS({
       name: 'send',
       value: true,
       label: 'Apply limit to...',
+      section: 'basicInfo',
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
@@ -94,8 +93,12 @@ foam.CLASS({
     {
       name: 'predicate',
       javaFactory: `
-      return EQ(DOT(NEW_OBJ, Transaction.IS_QUOTED), false);
-      `
+        return foam.mlang.MLang.EQ(
+          foam.mlang.MLang.DOT(
+            foam.mlang.MLang.NEW_OBJ,
+            net.nanopay.tx.model.Transaction.IS_QUOTED),
+          false);
+      ` 
     }
   ],
 

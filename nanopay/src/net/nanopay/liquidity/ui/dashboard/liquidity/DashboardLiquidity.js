@@ -170,14 +170,12 @@ foam.CLASS({
           .end()
         .end()
         .start()
-          .style({ 'width': '700px', 'height': '600px' })
+          .style({ 'height': '550px' })
           .addClass(this.myClass('chart'))
           .add(this.CandlestickDAOChartView.create({
             data: this.aggregatedDAO$proxy,
             config$: this.config$,
-            customDatasetStyling$: this.styling$,
-            width: 700,
-            height: 600
+            customDatasetStyling$: this.styling$
           }))
         .end()
         .start(this.Cols)
@@ -302,13 +300,18 @@ foam.CLASS({
         this.config.options.scales.yAxes = [{
             ticks: {
               callback: function(v) {
-                return c.format(Math.floor(v));
+                return `${c.format(v)}`;
               }
             }
         }];
-        this.config.options.tooltips.callbacks.label = function(v) {
-          return c.format(Math.floor(v.yLabel));
-        };
+        this.config.options.tooltips = {
+          displayColors: false,
+          callbacks: {
+            label: function(v) {
+              return `${c.format(v.yLabel)}`;
+            }
+          }
+        }
 
         var style = {};
         style[a.id] = {

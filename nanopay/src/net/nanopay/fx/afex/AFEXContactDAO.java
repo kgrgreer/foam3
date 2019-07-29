@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -33,6 +34,9 @@ public class AFEXContactDAO
       return getDelegate().put_(x, obj);
     }
 
+    AppConfig appConfig = (AppConfig) x.get("appConfig");
+    if ( null == appConfig || ! appConfig.getEnableInternationalPayment()) return getDelegate().put_(x, obj);
+
     DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
     AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
@@ -47,15 +51,6 @@ public class AFEXContactDAO
       // Check if beneficiary already added
       if ( ! afexBeneficiaryExists(x, contact.getId(), contact.getOwner()) ) {
         createAFEXBeneficiary(x, contact.getId(), contactBankAccount.getId(),  contact.getOwner());
-      } else {
-        // Check if this is an update
-        if ( contactNeedsUpdateChanged(contact) ) {
-          try {
-            afexServiceProvider.updatePayee(contact.getId(), contactBankAccount.getId(),  contact.getOwner());
-          } catch(Throwable t) {
-            ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
-          } 
-        }        
       }
     }
 
@@ -65,30 +60,11 @@ public class AFEXContactDAO
       if ( null != businessBankAccount ) {
         if ( ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
           createAFEXBeneficiary(x, business.getId(), businessBankAccount.getId(),  contact.getOwner());
-        } else {
-          // Check if this is an update
-          if ( businessNeedsUpdateChanged(business) ) {
-            try {
-              afexServiceProvider.updatePayee(business.getId(), businessBankAccount.getId(),  contact.getOwner());
-            } catch(Throwable t) {
-              ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
-            } 
-          }
         }
       }
     }
 
     return super.put_(x, obj);
-  }
-
-  protected boolean contactNeedsUpdateChanged(Contact contact) {
-    // TODO: Logic to check if we are updating contact
-    return false;
-  }
-
-  protected boolean businessNeedsUpdateChanged(Business business) {
-    // TODO: Logic to check if we are updating contact
-    return false;
   }
 
   protected boolean afexBeneficiaryExists(X x, Long contactId, Long ownerId) {
@@ -124,7 +100,7 @@ public class AFEXContactDAO
   protected void createAFEXBeneficiary(X x, long beneficiaryId, long bankAccountId, long beneficiaryOwnerId) {
     AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     try {
-      afexServiceProvider.addPayee(beneficiaryId, bankAccountId,  beneficiaryOwnerId);
+      new Thread(() -> afexServiceProvider.addPayee(beneficiaryId, bankAccountId,  beneficiaryOwnerId)).start();
     } catch(Throwable t) {
       ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
     }  
