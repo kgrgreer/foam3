@@ -54,14 +54,18 @@ p({
   "authenticate": false, 
   "serviceScript":
   """
-    foam.dao.MDAO mdao = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL});
-    return new foam.dao.PMDAO(x,
-      new foam.dao.PipelinePMDAO(x,
-        new foam.dao.SequenceNumberDAO(1000, 
-          new foam.dao.history.HistoryDAO(x, "userHistoryDAO", 
-            new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, 
-              new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()), "users")))));
+    return new foam.dao.EasyDAO.Builder(x)
+        .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL})
+        .setPm(true)
+        .setPipelinePm(true)
+        .setSeqNo(true)
+        .setSeqStartingValue(1000)
+        .setOf(foam.nanos.auth.User.getOwnClassInfo())
+        .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", null))
+        .setJournalName("users")
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setAuthorize(false)
+        .build();
   """,
   "client":"{\"of\":\"foam.nanos.auth.User\"}"
 })
