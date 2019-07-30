@@ -110,9 +110,6 @@ p({
         .setInnerDAO(v)
         .setAuthorize(false)
         .build();
-
-    pm = new foam.dao.PMDAO(x, v);
-    return pm;
   """
 })
 
