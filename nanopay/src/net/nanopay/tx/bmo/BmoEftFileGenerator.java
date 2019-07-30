@@ -46,8 +46,8 @@ public class BmoEftFileGenerator {
   BmoAssignedClientValue         clientValue;
   private ArrayList<Transaction> passedTransactions = new ArrayList<>();
 
-  public static final String SEND_FOLDER = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/send/";
-  public static final String SEND_FAILED = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/send_failed/";
+  public static final String SEND_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/bmo_eft/send/";
+  public static final String SEND_FAILED = System.getProperty("NANOPAY_HOME") + "/var" + "/bmo_eft/send_failed/";
 
   public BmoEftFileGenerator(X x) {
     this.x = x;

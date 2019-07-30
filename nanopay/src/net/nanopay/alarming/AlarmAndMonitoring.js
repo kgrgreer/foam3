@@ -100,7 +100,7 @@ foam.CLASS({
           }
           alarmDAO.put(alarm);
         }
-      });
+      }, "Alarm And Monitoring");
       `
     },
     {

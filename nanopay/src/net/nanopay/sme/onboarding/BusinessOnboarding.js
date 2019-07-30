@@ -153,11 +153,14 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding',
   ],
 
   imports: [
     'ctrl',
     'pushMenu',
+    'appConfig',
+    'identificationTypeDAO'
   ],
 
   sections: [
@@ -210,6 +213,19 @@ foam.CLASS({
       name: 'transactionDetailsSection',
       title: 'Enter your transaction details',
       help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
+    },
+    {
+      name: 'internationalTransactionSection',
+      title: 'Are you going to be sending International Payments?',
+      help: `Thanks! That’s all the details I need to setup local transactions. Now let’s get some more details on your US transactions`,
+      isAvailable: function (signingOfficer) { return signingOfficer && this.hasUSDPermission }
+    },
+    {
+      name: 'ownershipYesOrNoSection',
+      title: 'Does your company have anyone that owns 25% or more of the business?',
+      help: `Great, almost done! In accordance with banking laws, we need to document
+          the percentage of ownership of any individual with a 25% + stake in the company.`,
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
@@ -469,9 +485,11 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
+        var dao = ! X.data.hasUSDPermission ? X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')) 
+          : X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA'))
+          customCountryDAO: dao
         };
       },
       validationPredicates: [
@@ -481,10 +499,11 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA')
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA'),
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'US')
             );
           },
-          errorString: 'Ablii does not currently support businesses outside of Canada. We are working hard to change this! If you are based outside of Canada, check back for updates.'
+          errorString: 'Ablii does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.'
         },
         {
           args: ['signingOfficer', 'address', 'address$regionId', 'address$errors_'],
@@ -549,9 +568,11 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
+        var dao = ! X.data.hasUSDPermission ? X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')) 
+        : X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA'))
+          customCountryDAO: dao
         };
       },
       validationPredicates: [
@@ -561,10 +582,11 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA')
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA'),
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'US')
             );
           },
-          errorString: 'Ablii does not currently support businesses outside of Canada. We are working hard to change this! If you are based outside of Canada, check back for updates.'
+          errorString: 'Ablii does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.'
         },
         {
           args: ['signingOfficer', 'businessAddress', 'businessAddress$regionId', 'businessAddress$errors_'],
@@ -855,6 +877,41 @@ foam.CLASS({
       ]
     }),
     {
+      section: 'internationalTransactionSection',
+      class: 'FObjectProperty',
+      name: 'USBusinessDetails',
+      label: 'US Business Details',
+      of: 'net.nanopay.sme.onboarding.USBusinessOnboarding',
+      visibilityExpression: function(appConfig) {
+        return this.hasUSDPermission ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      factory: function() {
+        return this.USBusinessOnboarding.create({});
+      },
+    },
+    {
+      class: 'Boolean',
+      name: 'hasUSDPermission',
+      value: false,
+      hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'ownershipAbovePercent',
+      label: '',
+      section: 'ownershipYesOrNoSection',
+      postSet: function(_, n) {
+        if ( ! n ) this.amountOfOwners = 0;
+      },
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          [false, 'No (or this is a publicly traded company)'],
+          [true, 'Yes, we have owners with 25% +']
+        ],
+      },
+    },
+    {
       class: 'Long',
       name: 'amountOfOwners',
       section: 'ownershipAmountSection',
@@ -889,7 +946,7 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
-        if ( n ) this.clearProperty('owner1');
+        this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -902,7 +959,7 @@ foam.CLASS({
       label: '',
       label2: 'This is a publicly traded company',
       postSet: function(_, n) {
-        if ( n ) this.clearProperty('owner1');
+        this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;

@@ -53,7 +53,7 @@ foam.CLASS({
                     .setMatches(response.getResponseBody().getMatches())
                     .build());
               }
-            });
+            }, "Beneficial Owner Sanction Validator");
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
