@@ -5,6 +5,9 @@ foam.CLASS({
 
   documentation: 'Interac transfer completion and loading screen.',
 
+  requires: [
+    'foam.u2.dialog.Popup'
+  ],
   imports: [
     'addCommas',
     'complete'
@@ -71,7 +74,6 @@ foam.CLASS({
     }
     ^ .foam-u2-ActionView-exportButton{
       position: relative;
-      top: -55px;
       float: none;
     }
   `,
@@ -114,13 +116,13 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start(this.EXPORT_BUTTON).addClass('import-button').addClass('hide').enableClass('show-yes', this.time$.map(function(value) { return value > 5 }) ).end()
+        .start(this.EXPORT_BUTTON, { buttonStyle: foam.u2.ButtonStyle.SECONDARY }).addClass('import-button').addClass('hide').enableClass('show-yes', this.time$.map(function(value) { return value > 5 }) ).end()
         .start().addClass(this.myClass('status-check-container'))
           .start().addClass(this.myClass('status-check'))
             .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function(value) { return value > 0 }))
             .start('p').add('Payment Request Submitted...').enableClass('show-green', this.time$.map(function(value) { return value > 0; })).end()
           .end()
-        .end();
+        .end()
     }
   ],
 
@@ -130,7 +132,10 @@ foam.CLASS({
       label: 'Export',
       icon: 'images/ic-export.png',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportObj: X.viewData.transaction }));
+        this.add(this.Popup.create().tag({
+          class: 'foam.u2.ExportModal',
+          exportObj: X.viewData.transaction
+        }));
       }
     }
   ],
