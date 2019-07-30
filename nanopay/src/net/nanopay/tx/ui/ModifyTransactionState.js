@@ -7,11 +7,14 @@ foam.CLASS({
   ],
 
   imports: [
-    'transactionDAO',
-    'stack'
+    'approvalRequestDAO',
+    'stack',
+    'transactionDAO'
   ],
 
   requires: [
+    'net.nanopay.approval.ApprovalStatus',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
@@ -90,53 +93,21 @@ foam.CLASS({
       name: 'expediteCashIn',
       section: 'transactionInfo',
       confirmationRequired: true,
-      code: async function(X) {
+      code: function(X) {
         // fetch compliance and cash in transactions, update status and write to dao
-        var complianceTransactions = this.childTransactions.filter((t) => this.ComplianceTransaction.isInstance(t));
-        for ( var i = 0; i < complianceTransactions.length; i++ ) {
-          var complianceObj = complianceTransactions[i];
-          if ( complianceObj != undefined && complianceObj.status != this.TransactionStatus.COMPLETED ) {
-            complianceObj.status = this.TransactionStatus.COMPLETED;
-            await this.transactionDAO.put(complianceObj);
-            await this.updateChildren();
-          }
-        }
         var cashInTransactions = this.childTransactions.filter((t) => this.CITransaction.isInstance(t));
         for ( var i = 0; i < cashInTransactions.length; i++ ) {
           var cashInObj = cashInTransactions[i];
-          var status = cashInObj.status;
-
-          if ( cashInObj != undefined && status != this.TransactionStatus.COMPLETED
-             && status == this.TransactionStatus.PENDING || status == this.TransactionStatus.SENT ) {
-              cashInObj.status = this.TransactionStatus.COMPLETED;
-              await this.transactionDAO.put(cashInObj);
-              this.output = 'Cash In successfully expedited';
-              this.updateChildren();
-          } else {
-            this.output = 'Cash In is either non existent or the status is not pending or sent.';
-          }
-        }
-      }
-    },
-    {
-      name: 'expediteCashOut',
-      section: 'transactionInfo',
-      confirmationRequired: true,
-      code: async function(X) {
-        // fetch cash out transactions, update status and write to dao
-        var cashOutTransactions = this.childTransactions.filter((t) => this.COTransaction.isInstance(t));
-        for ( var i = 0; i < cashOutTransactions.length; i++ ) {
-          var cashOutObj = cashOutTransactions[i];
-          var status = cashOutObj.status;
-
-          if ( cashOutObj != undefined && status != this.TransactionStatus.COMPLETED
-             && status == this.TransactionStatus.PENDING || status == this.TransactionStatus.SENT ) {
-              cashOutObj.status = this.TransactionStatus.COMPLETED;
-              await this.transactionDAO.put(cashOutObj);
-              this.output = 'Cash Out successfully expedited.';
-          } else {
-            this.output = 'Cash Out is either non existent or the status is not pending or sent.';
-          }
+          console.log(cashInObj);
+          this.approvalRequestDAO.where(
+            this.AND(
+              this.EQ(this.ComplianceApprovalRequest.OBJ_ID, cashInObj.id),
+              this.EQ(this.ComplianceApprovalRequest.DAO_KEY, 'localTransactionDAO')
+            )
+          ).select().then(function(a) {
+            console.log(a);
+          });
+          this.output = 'Cash In transaction has been submitted for expedition.';
         }
       }
     },

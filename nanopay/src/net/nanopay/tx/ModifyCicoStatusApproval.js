@@ -11,7 +11,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
+    'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.tx.cico.CITransaction'
   ],
 
@@ -20,7 +20,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         CITransaction ci = (CITransaction) obj;
-        ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
+        ApprovalRequest req = new ApprovalRequest.Builder(x)
           .setDaoKey("localTransactionDAO")
           .setObjId(ci.getId())
           .setGroup("payment-ops")
