@@ -3,16 +3,7 @@ foam.CLASS({
   name: 'AcceptanceDocumentUserInputView',
   extends: 'foam.u2.View',
 
-  documentation: `This view display's the AcceptanceDocumentProperty, as a checkbox with a string.
-  The displayed string has 2 parts:
-  1 - DEFAULT_LABEL, and
-  2 - the AcceptanceDocument title, which is displayed as a link to open the doc in a new window.
-
-  Note: 
-  1) As soon as this.docName is set we set this.doc, then once this.doc is set we set this.title.
-  While this.doc is getting loaded and set, we show a spinner.
-  2) The handling of the acceptance of the AcceptanceDocument should be done through
-   the model using AcceptanceDocumentProperty.Ex. of usage (SignUp.js).updateUser()`,
+  documentation: 'A view for a user to view and accept the latest version of a document.',
 
   requires: [
     'foam.u2.CheckBox',
@@ -33,41 +24,28 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'loadingSpin',
-      factory: function() {
-        return this.LoadingSpinner.create();
-      }
-    },
-    {
       class: 'Boolean',
-      name: 'isLoading',
-      value: false,
-      postSet: function(_, n) {
-        if ( n ) {
-          this.loadingSpin.show();
-          return;
-        }
-        this.loadingSpin.hide();
-      }
+      name: 'isLoading'
     },
     {
-      name: 'docLabel',
-      class: 'String'
+      class: 'String',
+      name: 'docLabel'
     },
     {
       class: 'String',
       name: 'docName',
       postSet: function(_, n) {
         this.isLoading = true;
-        this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, n, '').then((doc) => {
-          this.doc = doc;
-        })
-        .catch((e) => {
-          console.warn('Error occurred finding Terms Agreement: ', e);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
+        this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, n, '')
+          .then((doc) => {
+            this.doc = doc;
+          })
+          .catch((e) => {
+            console.warn('Error occurred finding Terms Agreement: ', e);
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
       }
     },
     {
@@ -86,8 +64,13 @@ foam.CLASS({
       documentation: 'This is equivalent to AcceptanceDocument.TITLE'
     },
     {
-      name: 'agreed',
       class: 'Boolean',
+      name: 'agreed',
+      expression: function() {
+        // used for reloading value on stack back
+        if ( this.data != 0 ) return true;
+        return false;
+      },
       postSet: function(o, n) {
         this.data = n ? this.doc.id : 0;
       },
@@ -99,10 +82,9 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      if ( this.data != 0 ) this.agreed = true; // used for reloading value on stack back
       this.start().addClass(this.myClass())
       .startContext({ data: this })
-        .start().show(this.loadingSpin.isHidden$)
+        .start().show(this.isLoading)
           .start(this.AGREED).end()
           .start('span').addClass('sme').addClass('link').addClass('fontSet')
             .add(this.title$)
@@ -111,7 +93,7 @@ foam.CLASS({
             })
           .end()
         .end()
-        .start().add(this.loadingSpin).end()
+        .add(this.isLoading$.map((b) => b ? this.LoadingSpinner.create() : null))
       .endContext()
       .end();
     }

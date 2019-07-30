@@ -42,12 +42,8 @@ foam.CLASS({
         // TODO: Please call the java validator of the businessOnboarding here
 
         BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
-
-        if (
-          (old == null && businessOnboarding.getDualPartyAgreement() != 0)
-          ||
-          ( old != null && old.getDualPartyAgreement() != businessOnboarding.getDualPartyAgreement())
-        ) {
+        Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
+        if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
         }

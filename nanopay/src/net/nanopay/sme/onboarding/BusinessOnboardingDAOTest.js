@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
+    'net.nanopay.documents.AcceptanceDocumentServer',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*',
     'java.util.Date'
@@ -97,7 +98,7 @@ foam.CLASS({
         onboarding.setBirthday(birthday);
         onboarding.setPEPHIORelated(true);
         onboarding.setThirdParty(true);
-        onboarding.setDualPartyAgreement(3); // 0 would be a false acceptance, any other int is for true acceptance
+        onboarding.setDualPartyAgreement(((AcceptanceDocumentServer)x.get("acceptanceDocumentService")).getAcceptanceDocument(x, "dualPartyAgreementCAD", "").getId());
         onboarding.setAddress(signingOfficerAddress);
 
         onboarding.setBusinessTypeId(6);

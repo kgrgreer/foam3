@@ -19,17 +19,11 @@ foam.CLASS({
       documentation: 'The name of the document to be loaded.'
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.documents.AcceptanceDocument',
-      name: 'doc'
-    },
-    {
       name: 'view',
       expression: function() {
         return {
           class: 'net.nanopay.documents.AcceptanceDocumentUserInputView',
-          docName$: this.docName$,
-          doc$: this.doc$
+          docName$: this.docName$
         };
       }
     }
