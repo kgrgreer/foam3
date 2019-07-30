@@ -6,6 +6,10 @@ foam.CLASS({
   documentation: 'Mapping for nanoPay User to AscendantFX Payee',
 
   implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LastModifiedAware',
+    'foam.nanos.auth.LastModifiedByAware',
     'foam.nanos.auth.EnabledAware'
   ],
 
@@ -95,6 +99,28 @@ foam.CLASS({
       documentation: 'Ascendant Holding Accounts.',
       hidden: true
     },
+    {
+      class: 'DateTime',
+      name: 'created',
+      label: 'Creation Date',
+      documentation: 'Creation date.'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'createdBy',
+      documentation: 'User who created the entry'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: 'Last modified date.'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedBy'
+    }
   ],
   axioms: [
     {
