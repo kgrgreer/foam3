@@ -52,7 +52,7 @@ foam.CLASS({
 
     ^ .foam-u2-tag-Select {
       width: 320px;
-      height: 40px;
+      height: 48px;
       border-radius: 0;
 
       -webkit-appearance: none;
@@ -551,7 +551,7 @@ foam.CLASS({
           let name = account.name ? account.name : 'Digital Account';
           choices.push(
             [account.id,
-            name + ' Balance: ' + currency.format(balance)]);
+            name + ': ' + currency.format(balance)]);
         }
         if ( this.types == 'DigitalAccount' ) view.choices = choices;
       }
