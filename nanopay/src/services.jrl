@@ -105,7 +105,6 @@ p({
 
     return new foam.dao.EasyDAO.Builder(x)
         .setPm(true)
-        .setPipelinePm(true)
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(v)
         .setAuthorize(false)
