@@ -67,7 +67,7 @@ public class AddExternalContactToken extends ProxyDAO {
           tokenDAO.put(externalToken);
         } else {
           /**
-           * Do nothing. We've already created the ExternalContactToken
+           * Do nothing. We have already created the ExternalContactToken
            * for this business but they haven't signed up yet.
            */
         }
