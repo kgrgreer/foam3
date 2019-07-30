@@ -315,13 +315,18 @@ foam.CLASS({
         this.config.options.scales.yAxes = [{
             ticks: {
               callback: function(v) {
-                return c.format(Math.floor(v));
+                return `${c.format(v)}`;
               }
             }
         }];
-        this.config.options.tooltips.callbacks.label = function(v) {
-          return c.format(Math.floor(v.yLabel));
-        };
+        this.config.options.tooltips = {
+          displayColors: false,
+          callbacks: {
+            label: function(v) {
+              return `${c.format(v.yLabel)}`;
+            }
+          }
+        }
 
         var style = {};
         style[a.id] = {

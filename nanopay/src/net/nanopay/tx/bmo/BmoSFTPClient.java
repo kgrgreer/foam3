@@ -1,29 +1,19 @@
 package net.nanopay.tx.bmo;
 
-import com.jcraft.jsch.*;
-import com.sun.org.apache.regexp.internal.RE;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.jcraft.jsch.ChannelSftp;
 import foam.core.X;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
-import javassist.ClassPool;
 import net.nanopay.tx.bmo.exceptions.BmoSFTPException;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
-import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPEngine;
 import net.schmizz.sshj.sftp.StatefulSFTPClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class BmoSFTPClient {
@@ -32,7 +22,7 @@ public class BmoSFTPClient {
   private StatefulSFTPClient statefulSFTPClient = null;
   private BmoSFTPCredential  credential         = null;
 
-  private static final String PATH                    = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/";
+  private static final String PATH                    = System.getProperty("NANOPAY_HOME") + "/var" + "/bmo_eft/";
   public  static final String RECEIPT_DOWNLOAD_FOLDER = PATH + "/receipt/";
   public  static final String REPORT_DOWNLOAD_FOLDER  = PATH + "/report/";
   private static final String SEND_FOLDER             = "DEFT-DEFT-A:/*BIN/NANOPAY";

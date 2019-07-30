@@ -59,7 +59,8 @@ foam.CLASS({
     'foam.u2.borders.CardBorder'
   ],
   imports: [
-    'transactionDAO'
+    'transactionDAO',
+    'homeDenomination'
   ],
 
   messages: [
@@ -68,8 +69,12 @@ foam.CLASS({
       message: 'BALANCE',
     },
     {
-      name: 'BALANCE_NOTE',
+      name: 'HOME_BALANCE_NOTE',
       message: 'Total value shown in home currency',
+    },
+    {
+      name: 'LOCAL_BALANCE_NOTE',
+      message: 'Total value shown in local currency'
     }
   ],
 
@@ -78,7 +83,7 @@ foam.CLASS({
       var self = this;
       this
         .addClass(this.myClass())
-        .add(self.slot(function(data, data$denomination) {
+        .add(self.slot(function(data, data$denomination, homeDenomination) {
           return data && data$denomination && Promise.all([
             data.denomination$find,
             data.findBalance(self.__context__)
@@ -96,7 +101,7 @@ foam.CLASS({
                     .add(`${balance} ${currency.emoji}`)
                   .end()
                   .start().addClass(this.myClass('balance-note'))
-                    .add(self.BALANCE_NOTE)
+                    .add(homeDenomination === data$denomination ? self.HOME_BALANCE_NOTE : self.LOCAL_BALANCE_NOTE)
                     .add(` (${data$denomination})`)
                   .end()
                 .end()

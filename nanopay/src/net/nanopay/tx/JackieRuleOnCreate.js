@@ -39,7 +39,7 @@ foam.CLASS({
           public void execute(X x) {
             requestApproval(x, req);
           }
-        });
+        }, "Jackie Rule On Create");
       `
     }
   ]

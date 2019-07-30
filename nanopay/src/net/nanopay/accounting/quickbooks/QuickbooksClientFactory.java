@@ -49,6 +49,10 @@ public class QuickbooksClientFactory {
       tokenStorage.setAppRedirect(" ");
     }
 
+    if ( config == null ) {
+      ((Logger) x.get("logger")).error("Unable to find QBO config for " + app.getUrl());
+    }
+
     // Configures the OAuth and gets the correct URLs.
     Environment environment = SafetyUtil.equals(config.getPortal(), "sand")
       ? Environment.SANDBOX
