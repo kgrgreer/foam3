@@ -151,6 +151,10 @@ foam.CLASS({
             .select(new ArraySink());
           List<Contact> contacts = contactSink.getArray();
 
+          /**
+           * Update the contacts based on the original contact's email 
+           * which is stored in the external contact token.
+           */
           for ( Contact contact : contacts ) {
             Contact updatedContact = (Contact) contact.fclone();
             updatedContact.setBusinessId(business.getId());

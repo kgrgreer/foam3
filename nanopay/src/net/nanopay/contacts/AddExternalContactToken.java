@@ -15,7 +15,8 @@ import java.util.Map;
 import static foam.mlang.MLang.*;
 
 /**
- * This class is a decorator of localUserDAO which generate the externalContactToken when adding external contact
+ * This class is a decorator of the localUserDAO which generates
+ *  the externalContactToken when adding an external contact.
  */
 public class AddExternalContactToken extends ProxyDAO {
 
@@ -31,6 +32,10 @@ public class AddExternalContactToken extends ProxyDAO {
       DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
 
       if (externalContactUser.getId() != 0) {
+        /**
+         * Check the amount of tokens to see if it is an existing contact with the tokens
+         * or it is a newly created contact without any token that is related.
+         */
         List<Token> tokensList = ((ArraySink) tokenDAO
           .where(EQ(Token.USER_ID, externalContactUser.getId())).select(new ArraySink())).getArray();
 
@@ -61,10 +66,13 @@ public class AddExternalContactToken extends ProxyDAO {
           externalToken.setBusinessEmail(externalContactUser.getEmail());
           tokenDAO.put(externalToken);
         } else {
-          // Do nothing. We've already created the ExternalContactToken for this
-          // business but they haven't signed up yet.
+          /**
+           * Do nothing. We've already created the ExternalContactToken
+           * for this business but they haven't signed up yet.
+           */
         }
       } else {
+        // When adding a contact without banking information
         ExternalContactToken externalToken = new ExternalContactToken();
         Map tokenParams = new HashMap();
 
