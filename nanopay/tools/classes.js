@@ -158,6 +158,9 @@ var classes = [
   'net.nanopay.fx.afex.CreatePaymentResponse',
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
   'net.nanopay.fx.afex.CheckPaymentStatusResponse',
+  'net.nanopay.fx.afex.AFEXPaymentStatus',
+  'net.nanopay.fx.afex.AFEXBankOnboardingDAO',
+  'net.nanopay.fx.afex.AFEXBusinessOnboardingDAO',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -268,6 +271,7 @@ var classes = [
   'net.nanopay.tx.JackieRuleOnPut',
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.ETALineItem',
+  'net.nanopay.tx.ReferenceLineItem',
   'net.nanopay.tx.ExpiryLineItem',
   'net.nanopay.fx.ManualFxApprovalRequest',
   'net.nanopay.tx.ManualFxRule',
@@ -315,6 +319,8 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
   'net.nanopay.tx.ruler.AccountTransactionLimitRule',
   'net.nanopay.tx.ruler.InvoicePaymentRule',
+  'net.nanopay.tx.ruler.InvoiceApprovedByRule',
+  'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -536,14 +542,11 @@ var classes = [
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
   'net.nanopay.meter.compliance.ComplianceService',
   'net.nanopay.meter.compliance.NanopayComplianceService',
-  'net.nanopay.meter.compliance.BusinessFinalRuleValidation',
-  'net.nanopay.meter.compliance.UserFinalRuleValidation',
   'net.nanopay.meter.compliance.ComplianceItem',
   'net.nanopay.meter.reports.DateColumnOfReports',
   'net.nanopay.meter.reports.RowOfBusSumReports',
 
   // ruler
-  'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
   'net.nanopay.meter.compliance.ruler.RemoveComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
   'net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval',
@@ -657,12 +660,14 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
   'net.nanopay.meter.test.ComplianceAwareDummy',
+  'net.nanopay.meter.test.IdentityMindIntegrationTest',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 
   // business
   'net.nanopay.business.EnforceOneBusinessAdminDAO',
   'net.nanopay.business.JoinBusinessTokenService',
+  'net.nanopay.business.UpdateBusinessEmailRule',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
@@ -683,6 +688,7 @@ var classes = [
   'net.nanopay.tx.bmo.cico.BmoCITransaction',
   'net.nanopay.tx.bmo.cico.BmoCOTransaction',
   'net.nanopay.tx.bmo.cico.BmoTransaction',
+  'net.nanopay.tx.bmo.cico.BmoVerificationTransaction',
   'net.nanopay.tx.bmo.BmoSFTPCredential',
   'net.nanopay.tx.bmo.BmoReferenceNumber',
   'net.nanopay.tx.bmo.BmoTransactionHistory',

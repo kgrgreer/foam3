@@ -409,27 +409,23 @@ foam.CLASS({
           if ( transaction.type === 'AscendantFXTransaction' && transaction.fxRate ) {
             if ( transaction.fxRate !== 1 ) {
               this.exchangeRateInfo = `1 ${transaction.destinationCurrency} = `
-                + `${(1 / transaction.fxRate).toFixed(4)} `
-                + `${transaction.sourceCurrency}`;
+                + `${(1 / transaction.fxRate).toFixed(4)} `;
             }
 
             this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
               .then((currency) => {
-                this.fee = `${currency.format(transaction.fxFees.totalFees)} `
-                  + `${currency.alphabeticCode}`;
+                this.fee = currency.format(transaction.fxFees.totalFees);
               });
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = `${currency.format(0)} ${currency.alphabeticCode}`;
+                this.fee = currency.format(0);
               });
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
             this.currencyDAO.find(account.denomination).then((currency) => {
-              this.formattedAmountPaid =
-                `${currency.format(transaction.amount)} ` +
-                `${currency.alphabeticCode}`;
+              this.formattedAmountPaid = currency.format(transaction.amount);
             });
 
             if ( this.invoice.destinationCurrency === account.denomination ) {
@@ -440,9 +436,7 @@ foam.CLASS({
           });
         } else {
           this.currencyDAO.find(this.invoice.chequeCurrency).then((currency) => {
-            this.formattedAmountPaid =
-              `${currency.format(this.invoice.chequeAmount)} ` +
-              `${currency.alphabeticCode}`;
+            this.formattedAmountPaid = currency.format(this.invoice.chequeAmount);
           });
         }
       });
@@ -564,8 +558,6 @@ foam.CLASS({
                       promise$: this.formattedAmountDue$,
                       value: '--',
                     }))
-                    .add(' ')
-                    .add(this.invoice$.dot('destinationCurrency'))
                   .end()
                   .start().addClass('invoice-text')
                     .start().addClass('table-content').add(this.AMOUNT_PAID).end()

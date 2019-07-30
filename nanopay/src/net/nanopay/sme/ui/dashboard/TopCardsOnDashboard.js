@@ -147,6 +147,7 @@ foam.CLASS({
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
         .callIfElse( this.businessOnboarding &&
                       this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED &&
+                      ! this.onboardingStatus &&
                       ! this.businessOnboarding.signingOfficer, () => {
           this
             .start('span').addClass('cards')
@@ -163,7 +164,7 @@ foam.CLASS({
                 .style({ 'margin-bottom': '20px' })
               .end()
               .start('span')
-                .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL })
+                .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus })
               .end()
             .end();
         })

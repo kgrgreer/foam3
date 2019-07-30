@@ -87,6 +87,9 @@ foam.CLASS({
   ],
 
   methods: [
+    function toSummary() {
+      return this.name;
+    },
     {
       name: 'createTransfers',
       args: [

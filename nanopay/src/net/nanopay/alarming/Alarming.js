@@ -47,12 +47,12 @@ foam.CLASS({
               notification.setEmailIsEnabled(config.getSendEmail());
               notification.setNotificationType("Alarm");
               notification.setBody("An alarm has been triggered for " + config.getName());
-              ((DAO) x.get("notificationDAO")).put(notification);
+              ((DAO) x.get("localNotificationDAO")).put(notification);
             } catch (Exception e) {
               logger.error(e);
             }
           }
-        });
+        }, "Alarming");
       }
      `
     }

@@ -16,11 +16,16 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'foam.util.SafetyUtil',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Invitation',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
-    'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo'
+    'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.INSTANCE_OF',
   ],
 
   methods: [
@@ -70,8 +75,6 @@ foam.CLASS({
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
-        business.setPhone(businessOnboarding.getPhone());
-        business.setBusinessPhone(businessOnboarding.getPhone());
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
@@ -82,20 +85,37 @@ foam.CLASS({
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
           business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
-
+          if ( businessOnboarding.getHasUSDPermission() ) {
+            user.setIdentification(businessOnboarding.getUSBusinessDetails().getSigningOfficerIdentification());
+          }
+          
+          
+          
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
           business.getSigningOfficers(x).add(user);
+
+          // Update the business because the put to signingOfficerJunctionDAO
+          // will have updated the email property of the business.
+          business = (Business) localBusinessDAO.find(business.getId());
 
           // * Step 6: Business info
           // Business info: business address
           business.setAddress(businessOnboarding.getBusinessAddress());
           business.setBusinessAddress(businessOnboarding.getBusinessAddress());
+          business.setPhone(businessOnboarding.getPhone());
+          business.setBusinessPhone(businessOnboarding.getPhone());
 
           // Business info: business details
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
           business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
           business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
+
+          if ( businessOnboarding.getHasUSDPermission() ) {
+            business.setBusinessRegistrationDate(businessOnboarding.getUSBusinessDetails().getBusinessFormationDate());
+            business.setBusinessRegistrationNumber(businessOnboarding.getUSBusinessDetails().getBusinessRegistrationNumber());
+            business.setCountryOfBusinessRegistration(businessOnboarding.getUSBusinessDetails().getCountryOfBusinessFormation()); 
+          }
 
           if ( businessOnboarding.getOperatingUnderDifferentName() ) {
             business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
@@ -126,6 +146,7 @@ foam.CLASS({
           }
 
           localBusinessDAO.put(business);
+
         } else {
           // If the user needs to invite the signing officer
           String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();

@@ -74,6 +74,18 @@ foam.INTERFACE({
           name: 'transaction'
         },
       ]
+    },
+    {
+      name: 'updatePaymentStatus',
+      type: 'net.nanopay.tx.model.Transaction',
+      async: true,
+      javaThrows: ['java.lang.Exception'],
+      args: [
+        {
+          type: 'net.nanopay.tx.model.Transaction',
+          name: 'transaction'
+        },
+      ]
     }
   ]
 });
