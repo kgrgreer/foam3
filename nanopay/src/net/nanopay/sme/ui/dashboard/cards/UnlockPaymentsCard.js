@@ -21,7 +21,8 @@ foam.CLASS({
     'businessOnboardingDAO',
     'menuDAO',
     'stack',
-    'user'
+    'user',
+    'auth'
   ],
 
   css: `
@@ -187,18 +188,28 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isComplete'
     },
+    {
+      name: 'hasUSDPermission',
+      value: false
+    },
   ],
 
   methods: [
+    function init() {
+      this.auth.check(null, 'currency.read.USD').then((result) => {
+        this.hasUSDPermission = result;
+      });
+    },
     function initE() {
+
       var self = this;
       this.addClass(this.myClass())
         .style({ 'background-image': this.flagImgPath })
         .start().addClass(this.myClass('info-box'))
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
-          .add(this.slot(function(isComplete, type) {
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL ) {
+          .add(this.slot(function(isComplete, type, hasUSDPermission) {
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! hasUSDPermission ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
@@ -233,10 +244,10 @@ foam.CLASS({
       name: 'getStarted',
       label: 'Get started',
       code: function(x) {
-        if ( this.type === this.UnlockPaymentsCardType.DOMESTIC ) {
           if ( ! this.user.onboarded ) {
             var userId = this.agent.id;
             var businessId = this.user.id;
+            var isDomesticOnboarding = this.type === this.UnlockPaymentsCardType.DOMESTIC;
 
             // We need to find the BusinessOnboarding by checking both the
             // userId and the businessId. Previously we were only checking the
@@ -256,6 +267,7 @@ foam.CLASS({
                 userId: userId,
                 businessId: businessId
               });
+              o.hasUSDPermission = ! isDomesticOnboarding && this.hasUSDPermission;
               this.stack.push({
                 class: 'net.nanopay.sme.onboarding.ui.WizardView',
                 data: o
@@ -264,7 +276,6 @@ foam.CLASS({
           } else {
             this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
           }
-        }
       }
     }
   ]

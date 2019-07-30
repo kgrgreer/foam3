@@ -75,8 +75,6 @@ foam.CLASS({
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
-        business.setPhone(businessOnboarding.getPhone());
-        business.setBusinessPhone(businessOnboarding.getPhone());
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
@@ -87,8 +85,11 @@ foam.CLASS({
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
           business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
-
-          user.setIdentification(businessOnboarding.getUSBusinessDetails().getSigningOfficerIdentification());
+          if ( businessOnboarding.getHasUSDPermission() ) {
+            user.setIdentification(businessOnboarding.getUSBusinessDetails().getSigningOfficerIdentification());
+          }
+          
+          
           
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
@@ -102,15 +103,19 @@ foam.CLASS({
           // Business info: business address
           business.setAddress(businessOnboarding.getBusinessAddress());
           business.setBusinessAddress(businessOnboarding.getBusinessAddress());
+          business.setPhone(businessOnboarding.getPhone());
+          business.setBusinessPhone(businessOnboarding.getPhone());
 
           // Business info: business details
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
           business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
           business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
 
-          business.setBusinessRegistrationDate(businessOnboarding.getUSBusinessDetails().getBusinessFormationDate());
-          business.setBusinessRegistrationNumber(businessOnboarding.getUSBusinessDetails().getBusinessRegistrationNumber());
-          business.setCountryOfBusinessRegistration(businessOnboarding.getUSBusinessDetails().getCountryOfBusinessFormation()); 
+          if ( businessOnboarding.getHasUSDPermission() ) {
+            business.setBusinessRegistrationDate(businessOnboarding.getUSBusinessDetails().getBusinessFormationDate());
+            business.setBusinessRegistrationNumber(businessOnboarding.getUSBusinessDetails().getBusinessRegistrationNumber());
+            business.setCountryOfBusinessRegistration(businessOnboarding.getUSBusinessDetails().getCountryOfBusinessFormation()); 
+          }
 
           if ( businessOnboarding.getOperatingUnderDifferentName() ) {
             business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());

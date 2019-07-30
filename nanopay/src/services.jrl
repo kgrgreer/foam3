@@ -15,7 +15,7 @@ p({
     iplas  = new net.nanopay.security.auth.IPLoggingAuthService.Builder(x).setDelegate(laas).build();
     bas    = new net.nanopay.auth.BusinessAuthService.Builder(x).setDelegate(iplas).build();
     tfas   = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x).setDelegate(bas).build();
-    sas = new foam.nanos.auth.SystemAuthService(tfas);
+    sas    = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(tfas).build();
     return sas;
   """,
   "client":"{\"class\":\"foam.nanos.auth.CachedAuthServiceProxy\",\"delegate\":{\"class\":\"foam.nanos.auth.ClientLoginAuthService\"}}"
@@ -183,7 +183,6 @@ p({
   "name":"xeroConfigDAO",
   "serve":true,
   "serviceScript":"""
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.accounting.xero.XeroConfig.getOwnClassInfo(), \"xeroConfig\")));
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setPipelinePm(true)
@@ -200,7 +199,24 @@ p({"class":"foam.nanos.boot.NSpec", "name":"xeroService",                      "
 p({"class":"foam.nanos.boot.NSpec", "name":"xeroTokenDAO",                     "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.accounting.xero.XeroToken.getOwnClassInfo(), \"xeroToken\")));", "client":"{\"of\":\"net.nanopay.accounting.xero.XeroToken\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"quickbooksWebAgent",               "serviceClass":"net.nanopay.accounting.quickbooks.QuickbooksWebAgent"})
 p({"class":"foam.nanos.boot.NSpec", "name":"quickbooksAuth",                   "serve":true,  "authenticate":false, "service":{"class":"net.nanopay.accounting.quickbooks.QuickbooksOauth"}})
-p({"class":"foam.nanos.boot.NSpec", "name":"quickbooksConfigDAO",              "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.accounting.quickbooks.QuickbooksConfig.getOwnClassInfo(), \"quickbooksConfig\")));", "client":"{\"of\":\"net.nanopay.accounting.quickbooks.QuickbooksConfig\"}"})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"quickbooksConfigDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("quickbooksConfig")
+      .setAuthorize(false)
+      .setOf(net.nanopay.accounting.quickbooks.QuickbooksConfig.getOwnClassInfo())
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.accounting.quickbooks.QuickbooksConfig\"}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"quickbooksService",                "serve":true,  "authenticate":false, "serviceClass":"net.nanopay.accounting.quickbooks.QuickbooksIntegrationService","boxClass":"net.nanopay.accounting.IntegrationServiceSkeleton","client":"{\"class\":\"net.nanopay.accounting.ClientIntegrationService\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"quickbooksTokenDAO",               "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.accounting.quickbooks.QuickbooksToken.getOwnClassInfo(), \"quickbooksToken\")));", "client":"{\"of\":\"net.nanopay.accounting.quickbooks.QuickbooksToken\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"AccountingContactEmailCacheDAO",   "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.accounting.AccountingContactEmailCache.getOwnClassInfo(), \"accountingContactEmailCache\")));", "client":"{\"of\": \"net.nanopay.accounting.AccountingContactEmailCache\"}"})

@@ -9,6 +9,8 @@ import static foam.mlang.MLang.EQ;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
+import net.nanopay.fx.FXSummaryTransaction;
+import net.nanopay.fx.afex.AFEXTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
@@ -41,7 +43,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Transaction transaction = (Transaction) obj;
 
     if ( SafetyUtil.isEmpty(transaction.getId()) &&
-      ( transaction instanceof AbliiTransaction || transaction instanceof AscendantFXTransaction )
+      ( transaction instanceof AbliiTransaction || transaction instanceof AscendantFXTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 ) )
     ) {
       transaction = (Transaction) super.put_(x, obj);
 

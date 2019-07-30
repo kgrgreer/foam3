@@ -82,7 +82,6 @@ foam.CLASS({
         var m = foam.mlang.ExpressionsSingleton.create({});
         var self = this;
           X.userDAO.find(this.user).then(function(user) {
-            debugger
             if ( user ) {
               self.__context__.stack.push({
                 class: 'foam.comics.BrowserView',
