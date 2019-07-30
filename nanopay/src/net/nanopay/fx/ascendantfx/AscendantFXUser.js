@@ -5,6 +5,10 @@ foam.CLASS({
 
   documentation: 'Mapping for nanoPay User to AscendantFX Payee',
 
+  implements: [
+    'foam.nanos.auth.EnabledAware'
+  ],
+
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
@@ -26,6 +30,11 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      value: true
+    },
     {
       class: 'Long',
       name: 'id',
