@@ -59,6 +59,9 @@ foam.CLASS({
               name: 'warning',
               label: '',
               tableWidth: 55,
+              tableHeaderFormatter: function() {
+                this.add('');
+              },
               tableCellFormatter: function(value, obj, axiom) {
                 if ( obj.bankAccount === 0 && obj.businessId === 0 ) {
                   this.start()
