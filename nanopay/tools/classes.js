@@ -263,6 +263,7 @@ var classes = [
   'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.fx.FXUserStatus',
   'net.nanopay.fx.KotakFxTransaction',
+  'net.nanopay.fx.GenericFXPlanDAO',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
