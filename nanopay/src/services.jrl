@@ -129,6 +129,20 @@ p({
   "authenticate": false,
   "serviceScript":
   """
+    userGroupAndSpidValidator =
+      new foam.nanos.auth.validators.UserGroupAndSpidValidator();
+
+    validatingDAO = new foam.dao.ValidatingDAO(x, x.get("localUserDAO"), 
+      new foam.nanos.auth.validators.UserGroupAndSpidValidator());
+
+    return new foam.dao.EasyDAO.Builder(x)
+        .setPm(true)
+        .setPipelinePm(true)
+        .setOf(foam.nanos.auth.User.getOwnClassInfo())
+        .setInnerDAO(validatingDAO)
+        .build();
+    /*
+    // Note: AuthorizationDAO may need to be set as decorator :/
     return new foam.dao.PMDAO(x, 
       new foam.dao.PipelinePMDAO(x, 
         new foam.nanos.auth.AuthorizationDAO(x, 
@@ -136,6 +150,7 @@ p({
             new foam.dao.ValidatingDAO(x, x.get("localUserDAO"), 
               new foam.nanos.auth.validators.UserGroupAndSpidValidator())), 
               new foam.nanos.auth.AuthorizableAuthorizer(\"user\"))));
+    */
   """,
   "client":"{\"of\":\"foam.nanos.auth.User\",\"cache\":false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
 })
