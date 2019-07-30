@@ -66,8 +66,6 @@ public class HashingJDAO
                                new ResourceStorage(System.getProperty("resource.journals.dir")));
     }
 
-    X fsStorageX = getX().put(foam.nanos.fs.Storage.class, new FileSystemStorage());
-
     // replay repo journal
     HashingJournal repo = new HashingJournal.Builder(resourceStorageX)
       .setFilename(filename + ".0")
@@ -79,7 +77,7 @@ public class HashingJDAO
     repo.replay(x, delegate);
 
     // replay runtime journal
-    setJournal(new HashingJournal.Builder(fsStorageX)
+    setJournal(new HashingJournal.Builder(x)
       .setAlgorithm(algorithm)
       .setPreviousDigest(repo.getPreviousDigest())
       .setDigestRequired(digestRequired)
