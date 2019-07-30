@@ -221,7 +221,7 @@ foam.CLASS({
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
       section: 'basicInfo',
-      tableWidth: 145
+      tableWidth: 172
     },
     {
       class: 'Reference',
@@ -465,7 +465,7 @@ foam.CLASS({
       name: 'completionDate',
       visibility: 'RO',
       section: 'basicInfo',
-      tableWidth: 145
+      tableWidth: 172
     },
     {
       documentation: `Defined by ISO 20220 (Pacs008)`,
@@ -486,7 +486,6 @@ foam.CLASS({
       name: 'referenceData',
       class: 'FObjectArray',
       of: 'foam.core.FObject',
-      storageTransient: true,
       visibility: 'RO'
     },
     {

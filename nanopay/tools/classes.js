@@ -158,6 +158,9 @@ var classes = [
   'net.nanopay.fx.afex.CreatePaymentResponse',
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
   'net.nanopay.fx.afex.CheckPaymentStatusResponse',
+  'net.nanopay.fx.afex.AFEXPaymentStatus',
+  'net.nanopay.fx.afex.AFEXBankOnboardingDAO',
+  'net.nanopay.fx.afex.AFEXBusinessOnboardingDAO',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -260,6 +263,7 @@ var classes = [
   'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.fx.FXUserStatus',
   'net.nanopay.fx.KotakFxTransaction',
+  'net.nanopay.fx.GenericFXPlanDAO',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -543,7 +547,6 @@ var classes = [
   'net.nanopay.meter.reports.RowOfBusSumReports',
 
   // ruler
-  'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
   'net.nanopay.meter.compliance.ruler.RemoveComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ruler.CanadianSanctionValidator',
   'net.nanopay.meter.compliance.ruler.ComplianceTransactionApproval',
@@ -657,6 +660,7 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
   'net.nanopay.meter.test.ComplianceAwareDummy',
+  'net.nanopay.meter.test.IdentityMindIntegrationTest',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 

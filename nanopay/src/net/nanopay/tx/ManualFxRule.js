@@ -94,7 +94,7 @@ foam.CLASS({
             }
           }
         }
-      });
+      }, "Manual FX Rule");
       `
     }
   ]

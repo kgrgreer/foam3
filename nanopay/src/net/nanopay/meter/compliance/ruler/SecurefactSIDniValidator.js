@@ -40,7 +40,7 @@ foam.CLASS({
                     .build()
                 );
               }
-            });
+            }, "Securefact SIDni Validator");
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {

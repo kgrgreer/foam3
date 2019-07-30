@@ -15,7 +15,7 @@ p({
     iplas  = new net.nanopay.security.auth.IPLoggingAuthService.Builder(x).setDelegate(laas).build();
     bas    = new net.nanopay.auth.BusinessAuthService.Builder(x).setDelegate(iplas).build();
     tfas   = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x).setDelegate(bas).build();
-    sas = new foam.nanos.auth.SystemAuthService(tfas);
+    sas    = new foam.nanos.auth.SystemAuthService.Builder(x).setDelegate(tfas).build();
     return sas;
   """,
   "client":"{\"class\":\"foam.nanos.auth.CachedAuthServiceProxy\",\"delegate\":{\"class\":\"foam.nanos.auth.ClientLoginAuthService\"}}"
@@ -47,30 +47,44 @@ p({"class":"foam.nanos.boot.NSpec", "name":"smsToken",                         "
 p({"class":"foam.nanos.boot.NSpec", "name":"push",                             "lazy":true,  "serve":false, "serviceClass":"foam.nanos.notification.push.FirebasePushService","service":{"class":"foam.nanos.notification.push.FirebasePushService","apiKey":"AAAAMKWTPTs:APA91bFLHRdVt76aQ-kZ8RBPS1ytYjmO-YsDfSktiN3Ka7U_jpRmt_U7HAs4RNL8bwPEiseZaiecatJDYs3DUp4K3vaq-zx6jg-RaH4xqGjo4KDk-VWDLtz9dgFrySSBcpC2F5DjZJqcuATPI0KMwQLE3KzRoSRQDg"}})
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"bareUserDAO",                      "lazy":false, "serve":false, "description":"Bare boned userDAO wrapped with essential decorators.", "authenticate": false, "serviceScript":
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"bareUserDAO",                      
+  "lazy":false, 
+  "serve":false, 
+  "description":"Bare boned userDAO wrapped with essential decorators.", 
+  "authenticate": false, 
+  "serviceScript":
   """
-    import foam.nanos.auth.User;
     foam.dao.MDAO mdao = new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] {User.EMAIL});
+    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.User.EMAIL});
     return new foam.dao.PMDAO(x,
       new foam.dao.PipelinePMDAO(x,
-        new foam.dao.SequenceNumberDAO(1000, new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()), "users")))));
+        new foam.dao.SequenceNumberDAO(1000, 
+          new foam.dao.history.HistoryDAO(x, "userHistoryDAO", 
+            new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, 
+              new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()), "users")))));
   """,
   "client":"{\"of\":\"foam.nanos.auth.User\"}"
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"localUserDAO",                     "lazy":false, "serve":false, "description":"Server side userDAO wrapped in decorators.", "serviceScript":
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"localUserDAO",                     
+  "lazy":false, 
+  "serve":false, 
+  "description":"Server side userDAO wrapped in decorators.", 
+  "serviceScript":
   """
     bu = x.get("bareUserDAO");
     da = new foam.nanos.auth.DeletedAwareDAO(x, "user", bu);
-    ca =new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(da).build();
+    ca = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(da).build();
     r = new foam.nanos.ruler.RulerDAO(x, ca, "localUserDAO");
     ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(r).build();
     uph = new foam.nanos.auth.UserPasswordHashingDAO(x, ldu);
     aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(uph).build();
     uccpfe = new net.nanopay.onboarding.email.UserCompliancePassEmailDAO.Builder(x).setDelegate(aduih).build();
-    usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, uccpfe);
+    afexbe = new net.nanopay.fx.afex.AFEXBusinessOnboardingDAO.Builder(x).setDelegate(uccpfe).build();
+    usus = new net.nanopay.contacts.UpdateSignUpStatusDAO(x, afexbe);
     nuoe = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(usus).build();
     cb = new net.nanopay.onboarding.CreateBusinessDAO(x, nuoe);
     rae = new net.nanopay.onboarding.email.RegistrationApprovedEmailDAO(x, cb);
@@ -88,7 +102,13 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"userDAO",                          "lazy":true,  "serve":true,  "description":"Client authenticated userDAO", "authenticate": false, "serviceScript":
+  "class": "foam.nanos.boot.NSpec",
+  "name": "userDAO",                          
+  "lazy":true,  
+  "serve":true,  
+  "description":"Client authenticated userDAO", 
+  "authenticate": false,
+  "serviceScript":
   """
     return new foam.dao.PMDAO(x, 
       new foam.dao.PipelinePMDAO(x, 
@@ -114,7 +134,7 @@ p({"class":"foam.nanos.boot.NSpec", "name":"institutionPurposeCodeDAO",        "
 p({"class":"foam.nanos.boot.NSpec", "name":"txnProcessorDAO",                  "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.TxnProcessor.getOwnClassInfo(), \"txnProcessors\")));","client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"flinksAuth",                       "lazy":true,  "serve":true,  "boxClass":"net.nanopay.flinks.FlinksAuthSkeleton", "serviceClass":"net.nanopay.flinks.FlinksAuthService","client":"{\"class\":\"net.nanopay.flinks.ClientFlinksAuthService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/flinksAuth\"}}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"flinksCredentials",                "lazy":false, "serve":false, "service":{"class":"net.nanopay.flinks.model.FlinksCredentials"}})
-p({"class":"foam.nanos.boot.NSpec", "name":"appConfig",                        "description":"","lazy":false,"serve":false,"authenticate":true,"parameters":false,"pm":true,"service":{"class":"foam.nanos.app.AppConfig","privacy":"Privacy Policy","privacyUrl":"https://nanopay.net/privacy-policy","copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.","urlLabel":"Powered by nanopay","termsAndCondLabel":"Terms and Conditions","termsAndCondLink":"net.nanopay.ui.modal.TandCModal","mode":0,"appLink":"","playLink":"https://play.google.com/store?hl=en"}})
+p({"class":"foam.nanos.boot.NSpec", "name":"appConfig",                        "description":"","lazy":false,"serve":false,"authenticate":true,"parameters":false,"pm":true,"service":{"class":"foam.nanos.app.AppConfig","privacy":"Privacy Policy","privacyUrl":"https://nanopay.net/privacy-policy","copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.","urlLabel":"Powered by nanopay","termsAndCondLabel":"Terms and Conditions","termsAndCondLink":"net.nanopay.ui.modal.TandCModal","mode":0,"appLink":"","playLink":"https://play.google.com/store?hl=en","enableInternationalPayment":true}})
 p({"class":"foam.nanos.boot.NSpec", "name":"EFTReturnFileCredentials",         "lazy":false, "serve":false, "service":{"class":"net.nanopay.cico.model.EFTReturnFileCredentials"}})
 p({"class":"foam.nanos.boot.NSpec", "name":"blobService",                      "lazy":true,  "serve":true,  "client": "{ \"class\":\"foam.blob.RestBlobService\", \"serviceName\":\"service/httpFileService\" }"})
 p({"class":"foam.nanos.boot.NSpec", "name":"qrcode",                           "lazy":true,  "serve":false, "authenticate":false, "serviceClass":"net.nanopay.retail.QrCodeWebAgent"})
@@ -186,7 +206,15 @@ p({"class":"foam.nanos.boot.NSpec","name":"securefactSIDniDAO",                "
 p({"class":"foam.nanos.boot.NSpec","name":"securefactLEVDAO",                  "lazy":true,"serve":true,"serviceScript":"ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo(), \"securefactLEV\"), \"securefactLEVDAO\"); dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setInnerDAO(ruler).setName(\"securefactLEV\").setOf(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo()).build(); return dao;","client":"{\"of\":\"net.nanopay.meter.compliance.secureFact.lev.LEVResponse\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"securefactService",                "lazy":false, "serve":false, "service":{"class":"net.nanopay.meter.compliance.secureFact.SecurefactService"}})
 p({"class":"foam.nanos.boot.NSpec","name":"identityMindResponseDAO",           "lazy":true,"serve":true,"serviceScript":"ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.compliance.identityMind.IdentityMindResponse.getOwnClassInfo(), \"identityMindResponses\"), \"identityMindResponseDAO\"); dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setInnerDAO(ruler).setName(\"identityMindResponse\").setOf(net.nanopay.meter.compliance.identityMind.IdentityMindResponse.getOwnClassInfo()).build(); return dao;","client":"{\"of\":\"net.nanopay.meter.compliance.identityMind.IdentityMindResponse\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"identityMindService",              "lazy":false, "serve":false, "service":{"class":"net.nanopay.meter.compliance.identityMind.IdentityMindService"}})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "identityMindService",
+  "lazy": false,
+  "serve": false,
+  "service": {
+    "class": "net.nanopay.meter.compliance.identityMind.IdentityMindService"
+  }
+})
 p({"class":"foam.nanos.boot.NSpec", "name":"identityMindWebAgent",             "lazy":true, "serve":false, "authenticate": true, "parameters":true, "serviceClass":"net.nanopay.meter.compliance.identityMind.IdentityMindWebAgent"})
 p({"class":"foam.nanos.boot.NSpec", "name":"dowjonesCredentials",              "lazy":false, "serve":false, "service":{"class":"net.nanopay.meter.compliance.dowJones.DowJonesCredentials"}})
 p({"class":"foam.nanos.boot.NSpec", "name":"dowJonesService",                  "lazy":true,  "serve":true,  "boxClass":"net.nanopay.meter.compliance.dowJones.DowJonesSkeleton", "serviceClass":"net.nanopay.meter.compliance.dowJones.DowJonesService","client":"{\"class\":\"net.nanopay.meter.compliance.dowJones.ClientDowJonesService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/dowJonesService\"}}"})
