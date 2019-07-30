@@ -10,6 +10,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
+import net.nanopay.fx.FXUserStatus;
 import net.nanopay.payment.PaymentService;
 import foam.nanos.auth.Address;
 import static foam.mlang.MLang.*;
@@ -123,6 +124,17 @@ public class AscendantFXServiceTest
     payeeBankAccount_.setIsDefault(true);
     payeeBankAccount_.setDenomination("USD");
     payeeBankAccount_ = (BankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, payeeBankAccount_).fclone();
+
+    DAO ascendantFXUserDAO = (DAO) x_.get("ascendantFXUserDAO");
+    AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(
+        EQ(AscendantFXUser.USER, 1002));
+    if (ascendantFXUser != null) {
+      System.out.println("AscendantFXUser was found for - " + ascendantFXUser.getUser());
+      ascendantFXUser = (AscendantFXUser) ascendantFXUser.fclone();
+      ascendantFXUser.setUserStatus(FXUserStatus.ACTIVE);
+      ascendantFXUserDAO.put(ascendantFXUser);
+    }
+
   }
 
   private void tearDownTest() {
