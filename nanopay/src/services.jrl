@@ -159,7 +159,25 @@ p({"class":"foam.nanos.boot.NSpec", "name":"qrcode",                           "
 p({"class":"foam.nanos.boot.NSpec", "name":"liquiditySettingsDAO",             "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, \n    new foam.dao.ValidatingDAO(x,\n        new foam.dao.SequenceNumberDAO(\n            new foam.nanos.analytics.FoldManagerDAODecorator.Builder(x)\n                .setFm(new foam.nanos.analytics.DAOFoldManager.Builder(x)\n                  .setDao((foam.dao.DAO) x.get(\"liquidityThresholdCandlestickDAO\"))\n                  .setPeriodLengthMs(60 * 60 * 1000)\n                  .build())\n                .setDelegate(new foam.dao.java.JDAO(x, net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo(), \"liquiditySettings\"))\n                .build()),\n        new net.nanopay.liquidity.LiquiditySettingValidator())));", "client":"{\"of\":\"net.nanopay.liquidity.LiquiditySettings\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"invoiceHistoryDAO",                "serve":true,  "serviceScript":"foam.dao.DAO hashingDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, foam.dao.history.HistoryRecord.getOwnClassInfo(), \"invoiceHistory\");\n  return new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setInnerDAO(hashingDAO).setSeqNo(true).setSeqPropertyName(\"seqNo\").setOf(foam.dao.history.HistoryRecord.getOwnClassInfo()).build();","client":"{\"of\":\"foam.dao.history.HistoryRecord\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"xeroWebAgent",                             "serviceClass":"net.nanopay.accounting.xero.XeroWebAgent"})
-p({"class":"foam.nanos.boot.NSpec", "name":"xeroConfigDAO",                    "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.accounting.xero.XeroConfig.getOwnClassInfo(), \"xeroConfig\")));", "client":"{\"of\":\"net.nanopay.accounting.xero.XeroConfig\"}"})
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"xeroConfigDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.accounting.xero.XeroConfig.getOwnClassInfo(), \"xeroConfig\")));
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setOf(net.nanopay.accounting.xero.XeroConfig.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName(\"xeroConfig\")
+      .setAuthorize(false)
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.accounting.xero.XeroConfig\"}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"xeroService",                      "serve":true,  "authenticate":false, "serviceClass":"net.nanopay.accounting.xero.XeroIntegrationService","boxClass":"net.nanopay.accounting.IntegrationServiceSkeleton","client":"{\"class\":\"net.nanopay.accounting.ClientIntegrationService\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"xeroTokenDAO",                     "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.accounting.xero.XeroToken.getOwnClassInfo(), \"xeroToken\")));", "client":"{\"of\":\"net.nanopay.accounting.xero.XeroToken\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"quickbooksWebAgent",               "serviceClass":"net.nanopay.accounting.quickbooks.QuickbooksWebAgent"})
