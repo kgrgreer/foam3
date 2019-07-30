@@ -263,7 +263,12 @@ foam.CLASS({
           .where(
             this.AND(
               this.EQ(this.Account.OWNER, newValue || ''),
-              this.NEQ(this.Account.TYPE, 'TrustAccount')))
+              this.AND(
+                this.NOT(this.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+                this.NOT(this.INSTANCE_OF(net.nanopay.account.TrustAccount))
+              )
+            )
+          )
           .select()
           .then(function(a) {
             var accounts = a.array;
@@ -581,7 +586,7 @@ foam.CLASS({
             this.EQ(this.Account.OWNER, this.accountOwner || ''),
             this.AND(
               this.NOT(this.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
-              this.NOT(this.INSTANCE_OF(net.nanopay.account.TrustAccount)),
+              this.NOT(this.INSTANCE_OF(net.nanopay.account.TrustAccount))
             )
           )
         )
