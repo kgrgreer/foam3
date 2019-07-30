@@ -723,6 +723,7 @@ function main() {
   addLiquiditySettingsToAccounts(X);
 
   var end = new Date();
+  end.setDate(end.getDate() - 1);
 
   var targetTransactionCount = 5000;
   var timeStep = Math.floor((end.getTime() - currentDate.getTime()) / targetTransactionCount);
