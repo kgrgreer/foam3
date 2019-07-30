@@ -19,5 +19,22 @@ foam.CLASS({
       return new foam.dao.MDAO(getOf());
       `
     }
+  ],
+  
+  methods: [
+    {
+      name: 'getOuterDAO',
+      documentation: 'Method to be overidden on the user end to add framework user specific DAO decorators to EasyDAO',
+      type: 'foam.dao.DAO',
+      args: [
+        {
+          type: 'foam.dao.DAO',
+          name: 'innerDAO'
+        }
+      ],
+      javaCode: `
+        return innerDAO;
+      `
+    }
   ]
 });
