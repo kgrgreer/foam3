@@ -347,7 +347,13 @@ foam.CLASS({
               this.NEQ(this.Account.ID, this.viewData.payerAccount),
               this.AND(
                 this.EQ(this.Account.OWNER, newValue || ''),
-                this.NEQ(this.Account.TYPE, 'TrustAccount'))))
+                this.AND(
+                  this.NOT(this.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+                  this.NOT(this.INSTANCE_OF(net.nanopay.account.TrustAccount))
+                )
+              )
+            )
+          )
           .select()
           .then(function(a) {
             var accounts = a.array;
@@ -626,7 +632,13 @@ foam.CLASS({
             this.NEQ(this.Account.ID, this.viewData.payerAccount),
             this.AND(
               this.EQ(this.Account.OWNER, this.accountOwner || ''),
-              this.NEQ(this.Account.TYPE, 'TrustAccount'))))
+              this.AND(
+                this.NOT(this.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+                this.NOT(this.INSTANCE_OF(net.nanopay.account.TrustAccount))
+              )
+            )
+          )
+        )
         .select(this.GROUP_BY(net.nanopay.account.Account.TYPE, this.COUNT()))        
         .then(function(g) {
           view.choices = Object.keys(g.groups).map(function(t) {
