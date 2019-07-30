@@ -4,7 +4,6 @@ import foam.core.X;
 import foam.core.ContextAwareSupport;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.app.AppConfig;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
@@ -55,7 +54,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   public boolean onboardBusiness(Business business, BankAccount bankAccount) {
     Logger logger = (Logger) this.x.get("logger");
-    if ( ! ((AppConfig) this.x.get("appConfig")).getEnableInternationalPayment() ) return false;
 
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
 
@@ -69,12 +67,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
         AuthService auth = (AuthService) this.x.get("auth");
         boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
-        if ( hasFXProvisionPayerPermission ) {
+        boolean hasCurrencyReadUSDPermission = auth.checkUser(this.x, business, "currency.read.USD");
+        if ( hasFXProvisionPayerPermission && hasCurrencyReadUSDPermission) {
           User signingOfficer = getSigningOfficer(this.x, business);
           if ( signingOfficer != null ) {
             String identificationExpiryDate = null;
             try {
-              identificationExpiryDate = new SimpleDateFormat("yyyy/MM/dd").format(signingOfficer.getIdentification().getExpirationDate()); 
+              identificationExpiryDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getIdentification().getExpirationDate()); 
             } catch(Throwable t) {
               logger.error("Error creating AFEX beneficiary.", t);
             } 
@@ -91,7 +90,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setContactBusinessPhone(business.getBusinessPhone().getNumber());
             String businessRegDate = null;
             try {
-              businessRegDate = new SimpleDateFormat("yyyy/MM/dd").format(business.getBusinessRegistrationDate()); 
+              businessRegDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(business.getBusinessRegistrationDate()); 
             } catch(Throwable t) {
               logger.error("Error creating AFEX beneficiary.", t);
             } 
