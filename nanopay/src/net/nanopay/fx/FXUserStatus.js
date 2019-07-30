@@ -19,5 +19,9 @@ foam.ENUM({
       name: 'ACTIVE',
       label: 'Active'
     },
+    {
+      name: 'DISABLED',
+      label: 'Disabled'
+    }
   ]
 });

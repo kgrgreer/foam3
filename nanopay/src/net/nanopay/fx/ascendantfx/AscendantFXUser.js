@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.mlang.MLang',
     'foam.util.SafetyUtil',
+    'net.nanopay.fx.FXUserStatus',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -93,9 +94,10 @@ foam.CLASS({
           static public String getUserAscendantFXOrgId(X x, long userId) throws RuntimeException {
               String orgId = null;
               DAO ascendantFXUserDAO = (DAO) x.get("ascendantFXUserDAO");
-              final AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(
-                            MLang.EQ(AscendantFXUser.USER, userId)
-                    );
+              final AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(MLang.AND(
+                            MLang.EQ(AscendantFXUser.USER, userId),
+                            MLang.EQ(AscendantFXUser.USER_STATUS, FXUserStatus.ACTIVE)
+                    ));
 
               if ( null != ascendantFXUser && ! SafetyUtil.isEmpty(ascendantFXUser.getOrgId()) ) orgId = ascendantFXUser.getOrgId();
 
