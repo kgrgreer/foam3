@@ -1049,6 +1049,7 @@ foam.CLASS({
       },
       view: {
         class: 'foam.u2.view.TableView',
+        of: 'net.nanopay.model.BeneficialOwner',
         editColumnsEnabled: false,
         disableUserSelection: true,
         columns: [
