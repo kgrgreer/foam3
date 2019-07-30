@@ -45,10 +45,6 @@ foam.CLASS({
       margin-top: 21px;
     }
 
-    ^ .title {
-      margin-top: 15px !important;
-    }
-
     ^ .topRow {
       margin-top: 15px;
       width: 100%;

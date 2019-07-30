@@ -168,8 +168,7 @@ foam.CLASS({
     function populateVariables() {
       this.currencyDAO.find(this.invoice.destinationCurrency)
         .then((currency) => {
-        this.formattedAmount_ = currency.format(this.invoice.amount) + ' ' +
-          currency.alphabeticCode;
+        this.formattedAmount_ = currency.format(this.invoice.amount);
       });
       this.auth.check(null, 'invoice.pay').then((result) => {
         this.isApprover_ = result;

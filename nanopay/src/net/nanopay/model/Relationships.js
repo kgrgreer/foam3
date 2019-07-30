@@ -154,7 +154,8 @@ foam.RELATIONSHIP({
         .catch((error) => {
           this.add(value);
         });
-    }
+    },
+    tableWidth: 220
   }
 });
 
