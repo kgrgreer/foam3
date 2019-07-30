@@ -1,14 +1,16 @@
 p({"class":"foam.nanos.boot.NSpec", "name":"agentAuth",                        "serviceScript":"return new net.nanopay.auth.BusinessAgentAuthService.Builder(x).setDelegate(new foam.nanos.auth.AgentUserAuthService(x)).build();"})
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"auth","serve":true,
-  "authenticate":false,
-  "boxClass":"foam.nanos.auth.AuthServiceSkeleton",
-  "serviceScript":"""
+  "class": "foam.nanos.boot.NSpec",
+  "name": "auth",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "foam.nanos.auth.AuthServiceSkeleton",
+  "serviceScript": """
     nuagas = new net.nanopay.auth.NanopayUserAndGroupAuthService(x);
     cache  = new foam.nanos.auth.CachingAuthService(nuagas);
-    capas = new foam.nanos.auth.CapabilityAuthService.Builder(x).setDelegate(cache).build();
-    ecas   = new foam.nanos.auth.EnabledCheckAuthService.Builder(x).setDelegate(capas).build();
+    // Uncomment the line below when CRUNCH is mature enough to replace our current system.
+    // capas  = new foam.nanos.auth.CapabilityAuthService.Builder(x).setDelegate(cache).build();
+    ecas   = new foam.nanos.auth.EnabledCheckAuthService.Builder(x).setDelegate(cache).build();
     cas    = new net.nanopay.meter.compliance.ComplianceAuthService.Builder(x).setDelegate(ecas).build();
     peas   = new foam.nanos.auth.PasswordExpiryAuthService.Builder(x).setDelegate(cas).build();
     laas   = new net.nanopay.security.auth.LoginAttemptAuthService.Builder(x).setDelegate(peas).build();
