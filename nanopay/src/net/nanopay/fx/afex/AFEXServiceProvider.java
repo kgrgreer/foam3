@@ -26,6 +26,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.util.Locale;
 
 public class AFEXServiceProvider extends ContextAwareSupport implements FXService, PaymentService {
 
@@ -129,16 +131,22 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     quoteRequest.setAmount(String.valueOf(toDecimal(amount)));
     quoteRequest.setCurrencyPair(targetCurrency + sourceCurrency);
     quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency));
+    AFEXBusiness business = this.getAFEXBusiness(x, user);
+    if ( business != null ) {
+      quoteRequest.setClientAPIKey(business.getApiKey());
+    }
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest);
       if ( null != quote ) {
-        Double fxAmount = isAmountSettlement ? toDecimal(sourceAmount) *  quote.getRate():  toDecimal(destinationAmount) *  quote.getInvertedRate();
-        fxQuote.setRate(quote.getRate());
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+        Date date = format.parse(quote.getValueDate());
+        Double fxAmount = isAmountSettlement ? getConvertedAmount(quote,sourceAmount, true):  getConvertedAmount(quote,destinationAmount, false);
+        fxQuote.setRate(quote.getTerms().equals("A") ? quote.getInvertedRate(): quote.getRate());
         fxQuote.setTargetAmount(isAmountSettlement ? fromDecimal(fxAmount) : destinationAmount);
         fxQuote.setTargetCurrency(targetCurrency);
         fxQuote.setSourceAmount(isAmountSettlement ? sourceAmount : fromDecimal(fxAmount));
         fxQuote.setSourceCurrency(sourceCurrency);
-        fxQuote.setValueDate(quote.getValueDate());
+        fxQuote.setValueDate(date);
         fxQuote.setExternalId(quote.getQuoteId());
         fxQuote.setHasSourceAmount(isAmountSettlement);
         fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
@@ -151,10 +159,26 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return fxQuote;
   }
 
+  private Double getConvertedAmount(Quote quote, long amount, Boolean isSettlementAmount ) {
+    if ( isSettlementAmount ) {
+      if (quote.getTerms().equals("A")) {
+        return toDecimal(amount) / quote.getRate();
+      } else {
+        return toDecimal(amount) * quote.getRate();
+      }
+    } else {
+      if (quote.getTerms().equals("A")) {
+        return toDecimal(amount) * quote.getRate();
+      } else {
+        return toDecimal(amount) / quote.getRate();
+      }
+    }
+  }
+
   private String getValueDate(String targetCurrency, String sourceCurrency ) {
     String valueDate = null;
     try {
-      valueDate = this.afexClient.getValueDate(targetCurrency + sourceCurrency, "CASH");
+      valueDate = this.afexClient.getValueDate(targetCurrency + sourceCurrency, "SPOT");
     } catch(Exception e) {
       // Log here
     }
@@ -170,7 +194,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
-    Address userAddress = user.getAddress() == null ? user.getBusinessAddress() : user.getAddress(); 
+    Address userAddress = user.getAddress() == null ? user.getBusinessAddress() : user.getAddress();
     if ( null == userAddress ) throw new RuntimeException("User Address is null " + userId );
     
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
@@ -324,15 +348,15 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
 
     long tradeAmount = 0;
-    boolean isAmountSettlement = quote.getHasSourceAmount();
-    tradeAmount = isAmountSettlement ? afexTransaction.getAmount() : afexTransaction.getDestinationAmount();
+    tradeAmount =  afexTransaction.getDestinationAmount();
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
     createTradeRequest.setClientAPIKey(afexBusiness.getApiKey());
     createTradeRequest.setAmount(String.valueOf(toDecimal(tradeAmount)));
-    createTradeRequest.setIsAmountSettlement(String.valueOf(isAmountSettlement));
+    createTradeRequest.setIsAmountSettlement(String.valueOf(false));
     createTradeRequest.setSettlementCcy(afexTransaction.getSourceCurrency());
     createTradeRequest.setTradeCcy(afexTransaction.getDestinationCurrency());
     createTradeRequest.setQuoteID(quote.getExternalId());
+    createTradeRequest.setAccountNumber(((BankAccount)transaction.findSourceAccount(x)).getAccountNumber());
     try {
       CreateTradeResponse tradeResponse = this.afexClient.createTrade(createTradeRequest);
       if ( null != tradeResponse && tradeResponse.getTradeNumber() > 0 ) {
@@ -348,17 +372,17 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
             txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
             try {
-              Date valueDate = new SimpleDateFormat("yyyy/MM/dd").parse(tradeResponse.getValueDate());
-              txn.setCompletionDate(valueDate); 
+              Date valueDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(tradeResponse.getValueDate());
+              txn.setCompletionDate(valueDate);
             } catch(Throwable t) {
               ((Logger) x.get("logger")).error("Error parsing date.", t);
-            } 
+            }
             return txn;
           }
         } catch(Throwable t) {
           ((Logger) x.get("logger")).error("Error sending payment to AFEX.", t);
           throw new RuntimeException(t);
-        } 
+        }
       }
     } catch(Throwable t) {
       ((Logger) x.get("logger")).error("Error createing AFEX Trade.", t);
