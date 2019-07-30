@@ -219,7 +219,7 @@ foam.CLASS({
       name: 'internationalTransactionSection',
       title: 'Are you going to be sending International Payments?',
       help: `Thanks! That’s all the details I need to setup local transactions. Now let’s get some more details on your US transactions`,
-      isAvailable: function (signingOfficer) { return signingOfficer && this.appConfig.enableInternationalPayment }
+      isAvailable: function (signingOfficer) { return signingOfficer && this.hasUSDPermission }
     },
     {
       name: 'ownershipYesOrNoSection',
@@ -485,9 +485,11 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
+        var dao = ! X.data.hasUSDPermission ? X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')) 
+          : X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA'))
+          customCountryDAO: dao
         };
       },
       validationPredicates: [
@@ -497,10 +499,11 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA')
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA'),
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'US')
             );
           },
-          errorString: 'Ablii does not currently support businesses outside of Canada. We are working hard to change this! If you are based outside of Canada, check back for updates.'
+          errorString: 'Ablii does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.'
         },
         {
           args: ['signingOfficer', 'address', 'address$regionId', 'address$errors_'],
@@ -565,9 +568,11 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
+        var dao = ! X.data.hasUSDPermission ? X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')) 
+        : X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA'))
+          customCountryDAO: dao
         };
       },
       validationPredicates: [
@@ -577,10 +582,11 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA')
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA'),
+              e.EQ(e.DOT(net.nanopay.sme.onboarding.BusinessOnboarding.BUSINESS_ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'US')
             );
           },
-          errorString: 'Ablii does not currently support businesses outside of Canada. We are working hard to change this! If you are based outside of Canada, check back for updates.'
+          errorString: 'Ablii does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.'
         },
         {
           args: ['signingOfficer', 'businessAddress', 'businessAddress$regionId', 'businessAddress$errors_'],
@@ -877,11 +883,17 @@ foam.CLASS({
       label: 'US Business Details',
       of: 'net.nanopay.sme.onboarding.USBusinessOnboarding',
       visibilityExpression: function(appConfig) {
-        return appConfig.enableInternationalPayment ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+        return this.hasUSDPermission ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
       factory: function() {
         return this.USBusinessOnboarding.create({});
       },
+    },
+    {
+      class: 'Boolean',
+      name: 'hasUSDPermission',
+      value: false,
+      hidden: true
     },
     {
       class: 'Boolean',

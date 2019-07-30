@@ -56,14 +56,15 @@ foam.CLASS({
   `,
 
   requires: [
+    'foam.dao.ArraySink',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
-    'foam.comics.v2.DAOBrowserView',
-    'foam.u2.borders.CardBorder',
-    'foam.dao.ArraySink',
     'foam.mlang.sink.GroupBy',
-    'net.nanopay.account.Account'
+    'foam.u2.borders.CardBorder',
+    'net.nanopay.account.Account',
+    'foam.comics.v2.DAOBrowserView',
+    'foam.comics.v2.DAOControllerConfig'
   ],
   exports: [
     'controllerMode'
@@ -90,7 +91,18 @@ foam.CLASS({
       factory: function() {
         return this.ControllerMode.VIEW;
       }
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.comics.v2.DAOControllerConfig',
+      name: 'config',
+      factory: function() {
+        return this.DAOControllerConfig.create({ 
+          defaultColumns: ["name","balance","homeBalance","type","owner"],
+          dao: this.accountDAO,
+        });
+      }
+    },
   ],
 
   methods: [
@@ -99,7 +111,7 @@ foam.CLASS({
       this.SUPER();
       this
         .addClass(this.myClass())
-        .add(self.slot(function(accountDAO, homeDenomination, currency) {
+        .add(self.slot(function(homeDenomination, currency, accountDAO, config) {
           return self.E()
               .start(self.Rows).addClass(this.myClass('card-container'))
                 .start().addClass(this.myClass('balance-card'))
@@ -126,7 +138,8 @@ foam.CLASS({
                 .end()
                 .start()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    data: accountDAO.where(self.TRUE)
+                    data: accountDAO.where(self.TRUE),
+                    config
                   })
                     .addClass(this.myClass('accounts-table'))
                   .end()
