@@ -38,6 +38,12 @@ foam.CLASS({
       name: 'EXPECTED',
       documentation: 'Expected journal output',
       value: 'p({"class":"foam.nanos.auth.User","id":1000,"firstName":"Kirk","lastName":"Eaton","email":"kirk@nanopay.net"},{"algorithm":"SHA-256","digest":"1f62e5366081be2b9ac3ff75bacec01bad128e64ab758438361b5e11ba90f5d5"})'
+    },
+    {
+      type: 'String',
+      name: 'INVALID',
+      documentation: 'Expected journal output',
+      value: 'p({"class":"foam.nanos.auth.User","id":1000,"firstName":"Kirk","lastName":"Eaton","email":"kirk@nanopay.net"},{"algorithm":"SHA-256","digest":"1f62e5366081be2b9ac3ff75bacec01bad128e64ab758438361b5e11barandom"})'
     }
   ],
 
@@ -193,7 +199,7 @@ foam.CLASS({
 
           // write entry with bad digest to journal
           try ( BufferedWriter writer = journal.getWriter() ) {
-            writer.write(EXPECTED);
+            writer.write(INVALID);
             writer.flush();
           }
 
