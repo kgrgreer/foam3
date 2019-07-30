@@ -398,9 +398,6 @@ foam.CLASS({
           }
         } else {
           try {
-            var quoteAccepted = await this.fxService
-              .acceptFXRate(transaction.fxQuoteId, this.user.id);
-            if ( quoteAccepted ) transaction.accepted = true;
             transaction.isQuoted = true;
             await this.transactionDAO.put(transaction);
           } catch ( error ) {
