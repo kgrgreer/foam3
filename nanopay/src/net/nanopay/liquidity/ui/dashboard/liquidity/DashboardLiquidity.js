@@ -110,8 +110,6 @@ foam.CLASS({
         return today;
       },
       preSet: function(_, n) {
-        debugger;
-
         var today = new Date();
         today.setHours(23,59,59,999);
 
