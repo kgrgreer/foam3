@@ -16,14 +16,12 @@ foam.CLASS({
     'addCommas',
     'currencyDAO',
     'userDAO',
-    'transactionDAO',
     'complianceHistoryDAO',
     'homeDenomination'
   ],
 
   javaImports: [
     'foam.core.PropertyInfo',
-    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
@@ -50,8 +48,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.AND'
+    'static foam.mlang.MLang.EQ'
   ],
 
   requires: [
