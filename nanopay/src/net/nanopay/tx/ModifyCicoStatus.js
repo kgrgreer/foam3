@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'ModifyCicoStatus',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
-  documentation: 'Updates Cico status for transaction if status is pending and approval request is approved.',
+  documentation: 'Updates Cico status for transaction if status is sent. Rule for transaction.',
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -12,7 +12,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.approval.ApprovalRequest',
+    'net.nanopay.tx.ExpediteCICOApprovalRequest',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'static foam.mlang.MLang.*'
@@ -24,10 +24,10 @@ foam.CLASS({
       javaCode: `
         CITransaction ci = (CITransaction) obj;
         DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
-        ApprovalRequest approvalRequest = (ApprovalRequest) approvalRequestDAO.find(
+        ExpediteCICOApprovalRequest approvalRequest = (ExpediteCICOApprovalRequest) approvalRequestDAO.find(
           AND(
-            EQ(ApprovalRequest.OBJ_ID, ci.getId()),
-            EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO")
+            EQ(ExpediteCICOApprovalRequest.OBJ_ID, ci.getId()),
+            EQ(ExpediteCICOApprovalRequest.DAO_KEY, "localTransactionDAO")
           )
         );
         if ( ci.getStatus() == TransactionStatus.SENT && approvalRequest.getStatus() == ApprovalStatus.APPROVED ) {

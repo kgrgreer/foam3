@@ -11,7 +11,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'net.nanopay.approval.ApprovalRequest',
+    'net.nanopay.tx.ExpediteCICOApprovalRequest',
     'net.nanopay.tx.cico.CITransaction'
   ],
 
@@ -20,12 +20,10 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         CITransaction ci = (CITransaction) obj;
-        ApprovalRequest req = new ApprovalRequest.Builder(x)
-          .setDaoKey("localTransactionDAO")
+        ExpediteCICOApprovalRequest req = new ExpediteCICOApprovalRequest.Builder(x)
           .setObjId(ci.getId())
           .setGroup("payment-ops")
           .setDescription("Main Summary txn: "+ci.getSummary()+" The Id of Summary txn: "+ci.getId())
-          .setClassification("Validate Transaction for modifying status")
           .build();
 
         agency.submit(x, new ContextAgent() {
