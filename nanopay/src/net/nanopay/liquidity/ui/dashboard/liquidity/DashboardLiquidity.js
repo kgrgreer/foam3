@@ -3,9 +3,6 @@ foam.CLASS({
   name: 'DashboardLiquidity',
   extends: 'foam.u2.Element',
 
-  implements: [
-    'foam.mlang.Expressions'
-  ],
 
   requires: [
     'foam.dao.DAOSink',
@@ -14,6 +11,8 @@ foam.CLASS({
     'foam.nanos.analytics.Candlestick',
     'foam.u2.detail.SectionedDetailPropertyView',
     'foam.u2.layout.Cols',
+    'foam.glang.EndOfDay',
+    'foam.mlang.IdentityExpr',
     'net.nanopay.account.DigitalAccount',
     'org.chartjs.CandlestickDAOChartView',
   ],
@@ -104,20 +103,13 @@ foam.CLASS({
       class: 'Date',
       name: 'endDate',
       factory: function() {
-        var today = new Date();
-        today.setHours(23,59,59,999);
-
-        return today;
+        return new Date();
       },
       preSet: function(_, n) {
-        var today = new Date();
-        today.setHours(23,59,59,999);
+        var today = this.EndOfDay.create({ delegate: this.IdentityExpr.create() }).f(n);
+        var newDay = this.EndOfDay.create({ delegate: this.IdentityExpr.create() }).f(new Date());
 
-        if ( n > today ){
-          return today;
-        }
-
-        return n;
+        return today < newDay ? today : newDay;
       }
     },
     {
