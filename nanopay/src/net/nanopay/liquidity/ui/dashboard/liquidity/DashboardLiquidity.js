@@ -3,6 +3,9 @@ foam.CLASS({
   name: 'DashboardLiquidity',
   extends: 'foam.u2.Element',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
 
   requires: [
     'foam.dao.DAOSink',
