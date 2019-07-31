@@ -44,6 +44,9 @@ foam.CLASS({
     'org.chartjs.HorizontalBarDAOChartView',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
+    'foam.glang.EndOfWeek',
+    'foam.glang.EndOfDay',
+    'foam.mlang.IdentityExpr',
     'foam.u2.detail.SectionedDetailPropertyView',
     'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
     'net.nanopay.liquidity.ui.dashboard.DateFrequency'
@@ -77,51 +80,13 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'startDate',
-      expression: function(dateFrequency) {
-        debugger;
-        const resultDate = this.endDate;
-        switch(dateFrequency){
-          case this.DateFrequency.DAILY:
-            resultDate.setDate(
-              resultDate.getDate() - this.DateFrequency.DAILY.timeFactor
-            );
-            resultDate.setHours(23, 59, 59);
-            resultDate.setMilliseconds(999);
-            break;
-          case this.DateFrequency.WEEKLY:
-            resultDate.setDate(
-              resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
-            );
-            resultDate.setHours(23, 59, 59);
-            resultDate.setMilliseconds(999);
-            break;
-          case this.DateFrequency.MONTHLY:
-            resultDate.setMonth(
-              resultDate.getMonth() - this.DateFrequency.MONTHLY.timeFactor
-            );
-            resultDate.setDate(0);
-            resultDate.setHours(23, 59, 59);
-            resultDate.setMilliseconds(999);
-            break;
-          case this.DateFrequency.QUARTERLY:
-            resultDate.setMonth(
-              resultDate.getMonth() + 3 - ( resultDate.getMonth() % 3 ) - (3 * this.DateFrequency.QUARTERLY.timeFactor)
-            );
-            resultDate.setDate(0);
-            resultDate.setHours(23, 59, 59);
-            resultDate.setMilliseconds(999);
-            break;
-          case this.DateFrequency.ANNUALLY:
-            resultDate.setFullYear(
-              resultDate.getFullYear() - this.DateFrequency.ANNUALLY.timeFactor
-            );
-            resultDate.setMonth(11);
-            resultDate.setDate(31);
-            resultDate.setHours(23, 59, 59);
-            resultDate.setMilliseconds(999);
-            break;
-        }
-        return resultDate;
+      factory: function() {
+        let resultDate = new Date (this.endDate.getTime());
+        resultDate.setDate(
+          resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
+        );
+        
+        return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
       },
     },
     {
@@ -129,6 +94,12 @@ foam.CLASS({
       name: 'endDate',
       factory: function () {
         return new Date();
+      },
+      preSet: function(_, n) {
+        var today = this.EndOfDay.create({ delegate: this.IdentityExpr.create() }).f(n);
+        var newDay = this.EndOfDay.create({ delegate: this.IdentityExpr.create() }).f(new Date());
+
+        return today < newDay ? today : newDay;
       }
     },
     {

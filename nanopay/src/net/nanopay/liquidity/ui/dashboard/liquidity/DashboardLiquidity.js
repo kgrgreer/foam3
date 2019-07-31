@@ -15,9 +15,11 @@ foam.CLASS({
     'foam.u2.detail.SectionedDetailPropertyView',
     'foam.u2.layout.Cols',
     'foam.glang.EndOfDay',
+    'foam.glang.EndOfWeek',
     'foam.mlang.IdentityExpr',
     'net.nanopay.account.DigitalAccount',
     'org.chartjs.CandlestickDAOChartView',
+    'net.nanopay.liquidity.ui.dashboard.DateFrequency',
   ],
 
   imports: [
@@ -99,13 +101,18 @@ foam.CLASS({
       class: 'Date',
       name: 'startDate',
       factory: function() {
-        return new Date(0);
-      }
+        let resultDate = new Date (this.endDate.getTime());
+        resultDate.setDate(
+          resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
+        );
+        
+        return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
+      },
     },
     {
       class: 'Date',
       name: 'endDate',
-      factory: function() {
+      factory: function () {
         return new Date();
       },
       preSet: function(_, n) {
