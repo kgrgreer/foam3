@@ -317,6 +317,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/LastStatusUpdate' },
+  { name: 'net/nanopay/tx/ruler/ObserverRule' },
+  { name: 'net/nanopay/tx/ruler/ObserverRuleAction' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },

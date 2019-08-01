@@ -322,6 +322,8 @@ var classes = [
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.LastStatusUpdate',
+  'net.nanopay.tx.ruler.ObserverRule',
+  'net.nanopay.tx.ruler.ObserverRuleAction',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
