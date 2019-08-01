@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'TransactionQuotedStatusRule',
 
-  documentation: `Flag PAUSED or SCHEDULED transactions as quoted to prevent quoting of transaction.`,
+  documentation: `Flag PAUSED or SCHEDULED transaction as quoted to prevent quoting.`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
