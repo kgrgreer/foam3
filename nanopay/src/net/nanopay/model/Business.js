@@ -69,13 +69,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
-      name: 'dualPartyAgreement',
-      documentation: 'Verifies if the user is accept the dual-party agreement.',
-      docName: 'dualPartyAgreementCAD',
-      label: ''
-    },
-    {
       class: 'Int',
       name: 'countQBO',
       documentation: 'the number of times that this business has synced to QuickBook Online.',
