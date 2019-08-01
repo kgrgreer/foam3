@@ -14,12 +14,12 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'currencyDAO',
-    'userDAO',
+    'approvalRequestDAO',
     'complianceHistoryDAO',
+    'currencyDAO',
     'homeDenomination',
     'stack?',
-    'transactionDAO'
+    'userDAO'
   ],
 
   javaImports: [
@@ -54,6 +54,9 @@ foam.CLASS({
   ],
 
   requires: [
+   'foam.u2.dialog.NotificationMessage',
+   'net.nanopay.approval.ApprovalStatus',
+   'net.nanopay.tx.ExpediteCICOApprovalRequest',
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
@@ -1008,9 +1011,23 @@ for ( Balance b : getBalances() ) {
       isAvailable: function() {
         return this.CITransaction.isInstance(this);
       },
-      confirmationRequired: true,
       code: function(X) {
         // approve approval request associated to ci transaction
+        var self = this;
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.approvalRequestDAO.where(
+          m.EQ(this.ExpediteCICOApprovalRequest.OBJ_ID, this.id)
+        ).select().then(function(a) {
+          a.array.forEach(function(request) {
+            if ( request.status == self.ApprovalStatus.APPROVED ) {
+              ctrl.add(self.NotificationMessage.create({ message: 'Cash In transaction has already been marked for expedition.' }));
+              return;
+            }
+            request.status = self.ApprovalStatus.APPROVED;
+            self.approvalRequestDAO.put(request);
+            ctrl.add(self.NotificationMessage.create({ message: 'Cash In transaction successfully marked for expedition.' }));
+          });
+        });
       }
     }
   ]
