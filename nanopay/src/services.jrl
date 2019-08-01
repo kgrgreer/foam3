@@ -33,7 +33,26 @@ p({"class":"foam.nanos.boot.NSpec", "name":"invoiceDAO",                       "
 p({"class":"foam.nanos.boot.NSpec", "name":"invoicePaymentService",            "serve":true,  "serviceScript":"return new net.nanopay.invoice.service.DefaultInvoicePaymentService(x);","boxClass":"net.nanopay.invoice.service.InvoicePaymentServiceSkeleton","client":"{\"class\":\"net.nanopay.invoice.service.ClientInvoicePaymentService\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"txnProcessorDAO",                  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.TxnProcessor.getOwnClassInfo(), \"txnProcessors\")));", "client":"{\"of\":\"net.nanopay.tx.TxnProcessor\"}"})
 // TODO: Add ,\"cache\":true back to currencyDAO
-p({"class":"foam.nanos.boot.NSpec", "name":"currencyDAO",                      "serve":true,  "serviceScript":"import net.nanopay.model.Currency; return new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"currencies\").setPm(true).setPipelinePm(true).setOf(net.nanopay.model.Currency.getOwnClassInfo()).setName(\"currency\").build().addPropertyIndex(new foam.core.PropertyInfo[] {Currency.COUNTRY});", "client":"{\"of\":\"net.nanopay.model.Currency\",\"cache\":true}"})
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"currencyDAO",                      
+  "serve":true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName(\"currencies\")
+      .setPm(true)
+      .setPipelinePm(true)
+      .setOf(net.nanopay.model.Currency.getOwnClassInfo())
+      .setName(\"currency\")
+      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.model.Currency.COUNTRY})
+      .build();
+  """, 
+  "client":"{\"of\":\"net.nanopay.model.Currency\",\"cache\":true}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"localCorridorDAO",                 "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.fx.Corridor.getOwnClassInfo(), \"corridors\")));"})
 p({"class":"foam.nanos.boot.NSpec", "name":"corridorDAO",                      "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.nanos.auth.AuthorizationDAO(x, x.get(\"localCorridorDAO\"), new foam.nanos.auth.StandardAuthorizer(\"corridor\"))));","client":"{\"of\":\"net.nanopay.fx.Corridor\"}"})
 // p({"class":"foam.nanos.boot.NSpec", "name":"localPayoutOptionsDAO",         "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.fx.interac.ValidatePayoutOptionsDAO(x, new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.fx.interac.model.PayoutOptions.getOwnClassInfo(), \"payoutOptions\")))));"})
