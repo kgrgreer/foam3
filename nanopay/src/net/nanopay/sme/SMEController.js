@@ -180,7 +180,11 @@ foam.CLASS({
     {
       name: 'ABILITY_TO_RECEIVE_ERROR',
       message: 'Error occurred when checking the ability to receive payment'
-    }
+    },
+    {
+      name: 'QUERY_SIGNING_OFFICERS_ERROR',
+      message: 'An unexpected error occurred while querying signing officers: '
+    },
   ],
 
   properties: [
@@ -473,6 +477,18 @@ foam.CLASS({
       var accountArray = await this.getBankAccountArray();
 
       /*
+       * Weigh in signing officers compliance
+       */
+      if ( user.compliance === this.ComplianceStatus.PASSED ) {
+        var signingOfficers = await this.getSigningOfficersArray();
+        if ( signingOfficers !== undefined
+          && signingOfficers[0].compliance !== this.ComplianceStatus.PASSED
+        ) {
+          user.compliance = signingOfficers[0].compliance;
+        }
+      }
+
+      /*
        * Get the complianceStatus object from the complianceStatusArray
        * when it matches the condition of business onboarding status
        * and bank account status, also when showBanner is true.
@@ -495,9 +511,21 @@ foam.CLASS({
     async function checkComplianceAndBanking() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
+      
+      /*
+       * Weigh in signing officers compliance
+       */
+      if ( user.compliance === this.ComplianceStatus.PASSED ) {
+        var signingOfficers = await this.getSigningOfficersArray();
+        if ( signingOfficers !== undefined
+          && signingOfficers[0].compliance !== this.ComplianceStatus.PASSED
+        ) {
+          user.compliance = signingOfficers[0].compliance;
+        }
+      }
 
       var toastElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray);
+        return complianceStatus.condition(user, accountArray, signingOfficers);
       });
 
       if ( toastElement ) {
@@ -574,6 +602,19 @@ foam.CLASS({
           .select()).array;
       } catch (err) {
         console.warn(this.QUERY_BANK_AMOUNT_ERROR, err);
+      }
+    },
+
+    /**
+     * Returns an array containing all signing officers of the business.
+     */
+    async function getSigningOfficersArray() {
+      if ( this.Business.isInstance(this.user) ) {
+        try {
+          return (await this.user.signingOfficers.dao.select()).array;
+        } catch (err) {
+          console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
+        }
       }
     }
   ],
