@@ -35,7 +35,7 @@ jobs:
             - gradle-repo-v1-{{ .Branch }}-
             - gradle-repo-v1-
 
-      - run: ./build.sh -t
+      - run: ./build.sh -ct
 
       - save_cache:
           paths:
