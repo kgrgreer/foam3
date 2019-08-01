@@ -291,7 +291,7 @@ public class BmoEftFileGenerator {
       displayName = user.getFirstName() + " " + user.getLastName();
     }
 
-    return displayName;
+    return BmoFormatUtil.filterASCII(displayName);
   }
 
   public String getInstitutionById(long id) {
