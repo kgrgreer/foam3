@@ -42,11 +42,11 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName(\"currencies\")
+      .setJournalName("currencies")
       .setPm(true)
       .setPipelinePm(true)
       .setOf(net.nanopay.model.Currency.getOwnClassInfo())
-      .setName(\"currency\")
+      .setName("currency")
       .setIndex(new foam.core.PropertyInfo[] {net.nanopay.model.Currency.COUNTRY})
       .build();
   """, 
