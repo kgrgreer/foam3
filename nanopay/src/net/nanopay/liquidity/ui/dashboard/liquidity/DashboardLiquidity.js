@@ -108,6 +108,16 @@ foam.CLASS({
         
         return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
       },
+      preSet: function(_, n) {
+        var dayBeforeEndDate = new Date(this.endDate);
+        dayBeforeEndDate.setDate(this.endDate.getDate() - 1);
+
+        return this.EndOfDay.create({
+          delegate: this.IdentityExpr.create()
+        }).f(
+              new Date(Math.min(dayBeforeEndDate.getTime(), n.getTime()))
+            )
+      }
     },
     {
       class: 'Date',
@@ -116,10 +126,11 @@ foam.CLASS({
         return new Date();
       },
       preSet: function(_, n) {
-        var today = this.EndOfDay.create({ delegate: this.IdentityExpr.create() }).f(n);
-        var newDay = this.EndOfDay.create({ delegate: this.IdentityExpr.create() }).f(new Date());
-
-        return today < newDay ? today : newDay;
+        return this.EndOfDay.create({
+          delegate: this.IdentityExpr.create()
+        }).f(
+              new Date(Math.min(Date.now(), n.getTime()))
+            )
       }
     },
     {
