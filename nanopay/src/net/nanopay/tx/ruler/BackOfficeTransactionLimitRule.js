@@ -25,16 +25,10 @@ foam.CLASS({
         view: function(_, x) {
           var prop = this;
           var data$ = x.data.slot(prop.name);
-          return foam.u2.Tabs.create(null, x)
-            .start(foam.u2.Tab, { label: 'Select'})
-              .style({
-                'padding-top': '20px',
-              })
-              .tag({
+          return {
                 class: 'net.nanopay.tx.ui.BackOfficeTransactionLimitRulePredicateView',
                 data$: data$
-              })
-            .end()
+          }
         }
       }
     ],
