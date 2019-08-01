@@ -2,18 +2,23 @@ foam.CLASS({
   package: 'net.nanopay.tx.ui',
   name: 'BackOfficeTransactionLimitRulePredicateView',
   extends: 'net.nanopay.tx.ui.AccountTransactionLimitRulePredicateView',
+
   requires: [
     'foam.u2.view.ReferenceArrayView',
+    'foam.u2.view.FilteredReferenceView',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.account.Account'
   ],
+
   implements: [
     'foam.mlang.Expressions'
   ],
+
   imports: [
     'accountDAO',
     'businessDAO'
   ],
+
   properties: [
     {
       class: 'Reference',
@@ -34,20 +39,10 @@ foam.CLASS({
   methods: [
     function initE() {
       this
-        .start()
-          .startContext({ data: this })
-            .add(this.BUSINESS)
-          .endContext()
-        .end()
-      
-        .tag(this.ReferenceArrayView, {
-          dao$: this.business$.map((business) => this.accountDAO.where(
-            this.AND(
-              this.EQ(this.Account.OWNER, business),
-              this.EQ(this.Account.TYPE, "OverdraftAccount")
-            )
-          )),
-          data$: this.references$
+        .tag(this.FilteredReferenceView, {
+          firstDAO: this.businessDAO,
+          secondDAO: this.accountDAO.where(this.EQ(this.Account.TYPE, "OverdraftAccount")),
+          filteredProperty: this.Account.OWNER
         });
     }
   ],
