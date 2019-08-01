@@ -1010,6 +1010,7 @@ for ( Balance b : getBalances() ) {
       },
       confirmationRequired: true,
       code: function(X) {
+        // approve approval request associated to ci transaction
       }
     }
   ]
