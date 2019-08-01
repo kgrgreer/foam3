@@ -44,8 +44,12 @@ foam.CLASS({
     'org.chartjs.HorizontalBarDAOChartView',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
+    'foam.glang.EndOfWeek',
+    'foam.glang.EndOfDay',
+    'foam.mlang.IdentityExpr',
     'foam.u2.detail.SectionedDetailPropertyView',
-    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType'
+    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
+    'net.nanopay.liquidity.ui.dashboard.DateFrequency'
   ],
 
   exports: [
@@ -76,17 +80,26 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'startDate',
-      factory: function () {
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        return oneWeekAgo;
-      }
+      factory: function() {
+        let resultDate = new Date (this.endDate.getTime());
+        resultDate.setDate(
+          resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
+        );
+        
+        return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
+      },
     },
     {
       class: 'Date',
       name: 'endDate',
       factory: function () {
         return new Date();
+      },
+      preSet: function(_, n) {
+        var today = this.EndOfDay.create({ delegate: this.IdentityExpr.create() }).f(n);
+        var newDay = this.EndOfDay.create({ delegate: this.IdentityExpr.create() }).f(new Date());
+
+        return today < newDay ? today : newDay;
       }
     },
     {
