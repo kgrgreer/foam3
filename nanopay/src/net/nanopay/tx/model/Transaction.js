@@ -18,7 +18,8 @@ foam.CLASS({
     'userDAO',
     'complianceHistoryDAO',
     'homeDenomination',
-    'stack?'
+    'stack?',
+    'transactionDAO'
   ],
 
   javaImports: [
@@ -57,7 +58,7 @@ foam.CLASS({
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
    'net.nanopay.tx.model.TransactionStatus',
-   'net.nanopay.tx.ui.ModifyTransactionState'
+   'net.nanopay.tx.cico.CITransaction'
  ],
 
   constants: [
@@ -1003,16 +1004,12 @@ for ( Balance b : getBalances() ) {
       }
     },
     {
-      name: 'modifyTransactionState',
-      label: 'Modify Transaction State',
+      name: 'expedite',
       isAvailable: function() {
-        return net.nanopay.tx.AbliiTransaction.isInstance(this);
+        return this.CITransaction.isInstance(this);
       },
+      confirmationRequired: true,
       code: function(X) {
-        this.stack.push({
-          class: 'foam.u2.detail.SectionedDetailView',
-          data: this.ModifyTransactionState.create({ transaction: this.id })
-        });
       }
     }
   ]
