@@ -479,14 +479,7 @@ foam.CLASS({
       /*
        * Weigh in signing officers compliance
        */
-      if ( user.compliance === this.ComplianceStatus.PASSED ) {
-        var signingOfficers = await this.getSigningOfficersArray();
-        if ( signingOfficers !== undefined
-          && signingOfficers[0].compliance !== this.ComplianceStatus.PASSED
-        ) {
-          user.compliance = signingOfficers[0].compliance;
-        }
-      }
+      await this.weighInSigningOfficersCompliance(user);
 
       /*
        * Get the complianceStatus object from the complianceStatusArray
@@ -515,17 +508,10 @@ foam.CLASS({
       /*
        * Weigh in signing officers compliance
        */
-      if ( user.compliance === this.ComplianceStatus.PASSED ) {
-        var signingOfficers = await this.getSigningOfficersArray();
-        if ( signingOfficers !== undefined
-          && signingOfficers[0].compliance !== this.ComplianceStatus.PASSED
-        ) {
-          user.compliance = signingOfficers[0].compliance;
-        }
-      }
+      await this.weighInSigningOfficersCompliance(user);
 
       var toastElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray, signingOfficers);
+        return complianceStatus.condition(user, accountArray);
       });
 
       if ( toastElement ) {
@@ -608,10 +594,17 @@ foam.CLASS({
     /**
      * Returns an array containing all signing officers of the business.
      */
-    async function getSigningOfficersArray() {
-      if ( this.Business.isInstance(this.user) ) {
+    async function weighInSigningOfficersCompliance(user) {
+      if ( this.Business.isInstance(user)
+        && user.compliance === this.ComplianceStatus.PASSED
+      ) {
         try {
-          return (await this.user.signingOfficers.dao.select()).array;
+          var signingOfficers = (await this.user.signingOfficers.dao.select()).array;
+          if ( signingOfficers !== undefined
+            && signingOfficers[0].compliance !== this.ComplianceStatus.PASSED
+          ) {
+            user.compliance = signingOfficers[0].compliance;
+          }
         } catch (err) {
           console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
         }
