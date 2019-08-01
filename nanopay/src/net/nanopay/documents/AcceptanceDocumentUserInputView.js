@@ -14,14 +14,6 @@ foam.CLASS({
     'acceptanceDocumentService'
   ],
 
-  css: `
-  ^ .fontSet {
-    font-size: 14px;
-    vertical-align: middle;
-    line-height: 1.5;
-  }
-  `,
-
   properties: [
     {
       class: 'Boolean',
@@ -66,16 +58,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'agreed',
-      expression: function() {
+      expression: function(data) {
         // used for reloading value on stack back
-        if ( this.data != 0 ) return true;
+        if ( data != 0 ) return true;
         return false;
       },
       postSet: function(o, n) {
         this.data = n ? this.doc.id : 0;
-      },
-      label2Formatter: function() {
-        this.add('I agree to '); // another option: 'I acknowledge that I have read and accept the '
       }
     }
   ],
@@ -84,13 +73,16 @@ foam.CLASS({
     function initE() {
       this.start().addClass(this.myClass())
       .startContext({ data: this })
-        .start().show(this.isLoading)
-          .start(this.AGREED).end()
-          .start('span').addClass('sme').addClass('link').addClass('fontSet')
-            .add(this.title$)
-            .on('click', () => {
-              window.open(this.doc.link);
-            })
+        .start().hide(this.isLoading$)
+          .start(this.AGREED)
+            .add('I agree to ')
+            .start('a')
+              .add(this.title$)
+              .attrs({
+                href: this.doc$.dot('link'),
+                target: '_blank'
+              })
+            .end()
           .end()
         .end()
         .add(this.isLoading$.map((b) => b ? this.LoadingSpinner.create() : null))
