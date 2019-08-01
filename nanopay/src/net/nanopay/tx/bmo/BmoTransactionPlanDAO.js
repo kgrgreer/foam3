@@ -27,7 +27,10 @@ foam.CLASS({
 
     'net.nanopay.tx.alterna.*',
     'net.nanopay.tx.bmo.cico.*',
-    'net.nanopay.tx.cico.VerificationTransaction'
+    'net.nanopay.tx.cico.VerificationTransaction',
+    'net.nanopay.payment.PaymentProvider',
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   properties: [
@@ -64,6 +67,8 @@ foam.CLASS({
 
     if ( sourceAccount instanceof CABankAccount &&
       destinationAccount instanceof DigitalAccount ) {
+      
+      if ( ! useBmoAsPaymentProvider(x, (BankAccount) sourceAccount) ) return this.getDelegate().put_(x, obj);
 
       if ( ((CABankAccount) sourceAccount).getStatus() != BankAccountStatus.VERIFIED ) {
         logger.warning("Bank account needs to be verified for cashin for bank account id: " + sourceAccount.getId() +
@@ -80,6 +85,8 @@ foam.CLASS({
       quote.addPlan(t);
     } else if ( destinationAccount instanceof CABankAccount &&
       sourceAccount instanceof DigitalAccount ) {
+      
+      if ( ! useBmoAsPaymentProvider(x, (BankAccount) destinationAccount) ) return this.getDelegate().put_(x, obj);
 
       if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) { 
         logger.warning("Bank account needs to be verified for cashout for bank account id: " + sourceAccount.getId() +
@@ -99,5 +106,23 @@ foam.CLASS({
     return getDelegate().put_(x, quote);
     `
     },
+    {
+      name: 'useBmoAsPaymentProvider',
+      type: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'bankAccount',
+          type: 'net.nanopay.bank.BankAccount'
+        }
+      ],
+      javaCode: `
+      ArrayList<PaymentProvider> paymentProviders = PaymentProvider.findPaymentProvider(x, bankAccount);
+      return paymentProviders.stream().filter( (paymentProvider)-> paymentProvider.getName().equals("BMO")).count() > 0;
+      `
+    }
   ]
 });
