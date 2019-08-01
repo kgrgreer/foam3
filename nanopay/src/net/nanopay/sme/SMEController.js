@@ -476,9 +476,6 @@ foam.CLASS({
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
 
-      /*
-       * Weigh in signing officers compliance
-       */
       await this.weighInSigningOfficersCompliance(user);
 
       /*
@@ -504,10 +501,7 @@ foam.CLASS({
     async function checkComplianceAndBanking() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
-      
-      /*
-       * Weigh in signing officers compliance
-       */
+
       await this.weighInSigningOfficersCompliance(user);
 
       var toastElement = this.complianceStatusArray.find((complianceStatus) => {
@@ -592,18 +586,18 @@ foam.CLASS({
     },
 
     /**
-     * Returns an array containing all signing officers of the business.
+     * Weigh in signing officers compliance to the business.
      */
-    async function weighInSigningOfficersCompliance(user) {
-      if ( this.Business.isInstance(user)
-        && user.compliance === this.ComplianceStatus.PASSED
+    async function weighInSigningOfficersCompliance(business) {
+      if ( this.Business.isInstance(business)
+        && business.compliance === this.ComplianceStatus.PASSED
       ) {
         try {
-          var signingOfficers = (await this.user.signingOfficers.dao.select()).array;
+          var signingOfficers = (await business.signingOfficers.dao.select()).array;
           if ( signingOfficers !== undefined
             && signingOfficers[0].compliance !== this.ComplianceStatus.PASSED
           ) {
-            user.compliance = signingOfficers[0].compliance;
+            business.compliance = signingOfficers[0].compliance;
           }
         } catch (err) {
           console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
