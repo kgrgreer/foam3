@@ -475,8 +475,9 @@ foam.CLASS({
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
+      var signingOfficers = await this.getSigningOfficersArray();
 
-      await this.weighInSigningOfficersCompliance(user);
+      this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
 
       /*
        * Get the complianceStatus object from the complianceStatusArray
@@ -501,8 +502,9 @@ foam.CLASS({
     async function checkComplianceAndBanking() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
+      var signingOfficers = await this.getSigningOfficersArray();
 
-      await this.weighInSigningOfficersCompliance(user);
+      this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
 
       var toastElement = this.complianceStatusArray.find((complianceStatus) => {
         return complianceStatus.condition(user, accountArray);
@@ -586,22 +588,24 @@ foam.CLASS({
     },
 
     /**
-     * Weigh in signing officers compliance to the business.
+     * Returns an array containing all signing officers of the business.
      */
-    async function weighInSigningOfficersCompliance(business) {
-      if ( this.Business.isInstance(business)
-        && business.compliance === this.ComplianceStatus.PASSED
-      ) {
+    async function getSigningOfficersArray() {
+      if ( this.Business.isInstance(this.user) ) {
         try {
-          var signingOfficers = (await business.signingOfficers.dao.select()).array;
-          if ( signingOfficers !== undefined
-            && signingOfficers[0].compliance !== this.ComplianceStatus.PASSED
-          ) {
-            business.compliance = signingOfficers[0].compliance;
-          }
+          return (await this.user.signingOfficers.dao.select()).array;
         } catch (err) {
           console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
         }
+      }
+    },
+
+    /*
+     * Update user compliance by coalescing it with signing officers compliance.
+     */
+    function coalesceUserAndSigningOfficersCompliance(user, signingOfficers) {
+      if ( user.compliance == this.ComplianceStatus.PASSED && signingOfficers !== undefined ) {
+        user.compliance = signingOfficers[0].compliance;
       }
     }
   ],
