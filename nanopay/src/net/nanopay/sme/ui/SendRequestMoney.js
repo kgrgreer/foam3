@@ -392,7 +392,7 @@ foam.CLASS({
             await this.transactionDAO.put(transaction);
           } catch (error) {
             console.error('@SendRequestMoney (Transaction put): ' + error.message);
-            if ( error.message.substr(-17) == 'limit is exceeded' ) {
+            if ( error.message.substr(-38) == 'limit is exceeded. Please contact us. ' ) {
               this.notify(error.message, 'error');
             } else {
               this.notify(this.TRANSACTION_ERROR + this.type, 'error');

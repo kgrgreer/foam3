@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.tx.ui.AccountTransactionLimitRulePredicateView',
 
   requires: [
+    'foam.core.SimpleSlot',
     'foam.u2.view.ReferenceArrayView',
     'foam.u2.view.FilteredReferenceView',
     'net.nanopay.tx.model.Transaction',
@@ -24,26 +25,36 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'business',
-      view: function(_, X) {
-          return foam.u2.view.ChoiceView.create({
-            objToChoice: function(business) {
-              return [business.id, business.businessName];
-            },
-            placeholder: '-- Please select a business --',
-            dao: X.businessDAO
-          });
-      },
+      // view: function(_, X) {
+      //     return foam.u2.view.ChoiceView.create({
+      //       objToChoice: function(business) {
+      //         return [business.id, business.businessName];
+      //       },
+      //       placeholder: '-- Please select a business --',
+      //       dao: X.businessDAO
+      //     });
+      // },
     },
   ],
 
   methods: [
     function initE() {
+      var elementSlot = this.SimpleSlot.create();
+
       this
         .tag(this.FilteredReferenceView, {
           firstDAO: this.businessDAO,
           secondDAO: this.accountDAO.where(this.EQ(this.Account.TYPE, "OverdraftAccount")),
-          filteredProperty: this.Account.OWNER
-        });
+          filteredProperty: this.Account.OWNER,
+          selection_$: this.business$,
+          data: this.references.length ? this.references[0] : undefined
+        }, elementSlot);
+      
+      var filteredReferenceView = elementSlot.get();
+
+      this.onDetach(filteredReferenceView.data$.sub((_, __, ___, valueSlot) => {
+        this.references = [valueSlot.get()];
+      }));
     }
   ],
 

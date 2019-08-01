@@ -24,10 +24,8 @@ foam.CLASS({
         section: 'accounts',
         view: function(_, x) {
           var prop = this;
-          var data$ = x.data.slot(prop.name);
           return {
-                class: 'net.nanopay.tx.ui.BackOfficeTransactionLimitRulePredicateView',
-                data$: data$
+            class: 'net.nanopay.tx.ui.BackOfficeTransactionLimitRulePredicateView',
           }
         }
       }
