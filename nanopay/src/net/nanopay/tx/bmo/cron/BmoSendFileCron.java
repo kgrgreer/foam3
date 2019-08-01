@@ -166,6 +166,7 @@ public class BmoSendFileCron implements ContextAgent {
       passedTransaction.forEach(transaction -> {
         ((BmoTransaction)transaction).addHistory("Sent to BMO.");
         ((BmoTransaction)transaction).setBmoFileCreationNumber(eftFile.getHeaderRecord().getFileCreationNumber());
+        transaction.setProcessDate(new Date());
         transaction.setCompletionDate(Date.from(LocalDate.now().plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
         transaction.setStatus(TransactionStatus.SENT);
       });
