@@ -42,6 +42,12 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
       throw new IllegalArgumentException("Cannot put null");
     }
 
+    // Check if the user has invoice.create permission
+    Invoice oldInvoice = (Invoice) getDelegate().find(obj);
+    if ( oldInvoice == null && ! auth.check(x, "invoice.create") ) {
+      throw new AuthorizationException();
+    }
+
     // Check if the user has global access permission.
     if ( ! auth.check(x, GLOBAL_INVOICE_READ) ) {
       Invoice existingInvoice = (Invoice) super.find_(x, invoice.getId());
