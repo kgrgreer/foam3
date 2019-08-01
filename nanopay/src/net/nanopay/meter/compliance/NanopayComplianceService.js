@@ -9,12 +9,14 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
     'foam.nanos.session.Session',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
+    'java.util.List'
   ],
 
   properties: [
@@ -132,14 +134,17 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        User cachedBusiness = (User) x.get("cachedComplianceBusiness");
+        Business cachedBusiness = (Business) x.get("cachedComplianceBusiness");
         User user = (cachedBusiness != null) ? cachedBusiness : (User) x.get("user");
         if ( user instanceof Business ) {
           if ( cachedBusiness == null && user != null ) {
             DAO businessDao = (DAO) x.get("localBusinessDAO");
             if ( businessDao != null ) {
-              user = (User) businessDao.find(user.getId());
-              x.put("cachedComplianceBusiness", user);
+              cachedBusiness = (Business) businessDao.find(user.getId());
+              List<User> signingOfficers = ((ArraySink) cachedBusiness
+                .getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
+              coalesceBusinessAndSigningOfficersCompliance(cachedBusiness, signingOfficers);
+              x.put("cachedComplianceBusiness", cachedBusiness);
             }
           }
           return user != null && user.getCompliance() == ComplianceStatus.PASSED;
@@ -159,6 +164,24 @@ foam.CLASS({
       javaCode: `
         // return true for now until we design a way to retrieve the active account
         return true;
+      `
+    },
+    {
+      name: 'coalesceBusinessAndSigningOfficersCompliance',
+      args: [
+        {
+          name: 'business',
+          type: 'net.nanopay.model.Business'
+        },
+        {
+          name: 'signingOfficers',
+          type: 'List<User>'
+        }
+      ],
+      javaCode: `
+        if ( ! signingOfficers.isEmpty() ) {
+          business.setCompliance(signingOfficers.get(0).getCompliance());
+        }
       `
     }
   ]
