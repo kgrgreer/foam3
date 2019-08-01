@@ -33,18 +33,18 @@ foam.CLASS({
         
         public static ArrayList<PaymentProvider> findPaymentProvider(X x, BankAccount account){
       
-          DAO paymentProviderConfigDAO = (DAO) x.get("paymentProviderConfigDAO");
+          DAO InstitutionPaymentProviderDAO = (DAO) x.get("InstitutionPaymentProviderDAO");
           DAO paymentProviderDAO = (DAO) x.get("paymentProviderDAO");
       
-          ArraySink sink = (ArraySink) paymentProviderConfigDAO.where(
-            MLang.EQ(PaymentProviderConfig.INSTITUTION, account.getInstitution())
+          ArraySink sink = (ArraySink) InstitutionPaymentProviderDAO.where(
+            MLang.EQ(InstitutionPaymentProvider.INSTITUTION, account.getInstitution())
           ).select(new ArraySink());
-          List<PaymentProviderConfig> array = sink.getArray();
+          List<InstitutionPaymentProvider> array = sink.getArray();
       
           ArrayList<PaymentProvider> paymentProviders = new ArrayList<>();
       
           if ( array.size() > 0 ) {
-            for ( PaymentProviderConfig config : array ) {
+            for ( InstitutionPaymentProvider config : array ) {
               PaymentProvider paymentProvider = (PaymentProvider) paymentProviderDAO.find(config.getPaymentProvider());
               paymentProviders.add(paymentProvider);
             }

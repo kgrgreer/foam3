@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.payment',
-  name: 'PaymentProviderConfig',
+  name: 'InstitutionPaymentProvider',
 
   properties: [
     {
