@@ -125,12 +125,16 @@ foam.CLASS({
       factory: function () {
         return new Date();
       },
-      preSet: function(_, n) {
-        return this.EndOfDay.create({
-          delegate: this.IdentityExpr.create()
-        }).f(
-              new Date(Math.min(Date.now(), n.getTime()))
-            )
+      preSet: function(o, n) {
+        if ( this.startDate && n.getTime() < this.startDate.getTime()  ) {
+          return o;
+        } else {
+          return this.EndOfDay.create({
+            delegate: this.IdentityExpr.create()
+          }).f(
+                new Date(Math.min(Date.now(), n.getTime()))
+              )
+        }
       }
     },
     {
