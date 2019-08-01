@@ -27,9 +27,9 @@ foam.CLASS({
       Transaction txn = (Transaction) obj;
       DAO transactionDAO = (DAO) x.get("localTransactionDAO");
       Transaction oldTxn = (Transaction) transactionDAO.find_(x, obj);
-      // if (! (txn instanceof AbliiTransaction) && ( ! txn.canTransfer(x, oldTxn) )) {
-      //   return;
-      // }
+      if (! (txn instanceof AbliiTransaction) && ( ! txn.canTransfer(x, oldTxn) )) {
+        return;
+      }
       Object id = rule_.getObjectToMap(txn, x);
 
       TransactionLimitState limitState = getLimitState(id);
@@ -40,7 +40,7 @@ foam.CLASS({
         ((TestedRule)agency).setProbeInfo(info);
       }
       if ( ! limitState.check(rule_, txn.getAmount()) ) {
-        throw new RuntimeException("Your limit is exceeded");
+        throw new RuntimeException("Your " + rule_.getPeriod() + " limit is exceeded");
       }
       agency.submit(x, x1 -> limitState.updateLastSpentAmount(Double.valueOf(txn.getAmount())), "Your transaciton will be proccessed.");
       `

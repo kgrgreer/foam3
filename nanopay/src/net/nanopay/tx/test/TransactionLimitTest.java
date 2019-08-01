@@ -94,7 +94,7 @@ public class TransactionLimitTest extends Test {
     tx2.setDestinationAccount(receiver_.getId());
     test(TestUtils.testThrows(
       () -> txDAO.put_(x, tx2),
-      "Your limit is exceeded",
+      "Your DAILY limit is exceeded",
       RuntimeException.class), "next transaction for 100L throws exception");
 
     Transaction tx3 = new Transaction();
