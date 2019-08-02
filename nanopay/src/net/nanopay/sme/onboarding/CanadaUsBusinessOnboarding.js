@@ -147,20 +147,6 @@ foam.CLASS({
       name: 'businessRegistrationNumber',
       documentation: 'Federal Tax ID Number (EIN) or Business Registration Number'
     },
-    {
-      documentation: 'Creation date.',
-      name: 'created',
-      class: 'DateTime',
-      visibility: 'RO',
-      section: 'adminReferenceSection',
-    },
-    {
-      documentation: 'Last modified date.',
-      name: 'lastModified',
-      class: 'DateTime',
-      visibility: 'RO',
-      section: 'adminReferenceSection',
-    },
   ],
 
   methods: [
