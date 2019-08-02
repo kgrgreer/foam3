@@ -34,8 +34,8 @@ foam.CLASS({
 
       this
         .tag(this.FilteredReferenceView, {
-          firstDAO: this.businessDAO,
-          secondDAO: this.accountDAO.where(this.EQ(this.Account.TYPE, "OverdraftAccount")),
+          filteringDAO: this.businessDAO,
+          dao: this.accountDAO.where(this.EQ(this.Account.TYPE, "OverdraftAccount")),
           filteredProperty: this.Account.OWNER,
           selection_$: this.business$,
           data: this.references.length ? this.references[0] : undefined
