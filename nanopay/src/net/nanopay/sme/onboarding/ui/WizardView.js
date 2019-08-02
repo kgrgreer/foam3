@@ -175,7 +175,7 @@ foam.CLASS({
       },
       // TODO: Find a better place for this. It shouldnt be baked into WizardView.
       code: function(x) {
-        var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
+        var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
           put(this.data.clone().copyFrom({ status: 'SUBMITTED' })).
           then(function() {
