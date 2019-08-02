@@ -140,7 +140,27 @@ p({
   "client":"{\"of\":\"foam.nanos.auth.User\",\"cache\":false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"localUserUserDAO",                 "description":"A filter on localUserDAO that filters out all subclasses of User.", "authenticate": false, "serviceScript":"foam.mlang.predicate.Predicate[] predicates = { foam.mlang.MLang.NOT(foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class)), foam.mlang.MLang.NOT(foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class)) }; return new foam.dao.PMDAO(x, new foam.dao.FilteredDAO(x, new foam.mlang.predicate.And(predicates), x.get(\"localUserDAO\"), foam.nanos.auth.User.getOwnClassInfo(), foam.nanos.auth.User.ID));","client":"{\"of\":\"foam.nanos.auth.User\",\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localUserUserDAO",
+  "description":"A filter on localUserDAO that filters out all subclasses of User.",
+  "authenticate": false,
+  "serviceScript":"""
+    foam.mlang.predicate.Predicate[] predicates = {
+      foam.mlang.MLang.NOT(foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class)), 
+      foam.mlang.MLang.NOT(foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class)) 
+    };
+    inner = x.get("localUserDAO");
+    filtered = inner.where(new foam.mlang.predicate.And(predicates));
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setInnerDAO(filtered)
+      .setAuthorize(false)
+      .build();
+  """,
+  "client":"{\"of\":\"foam.nanos.auth.User\",\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
