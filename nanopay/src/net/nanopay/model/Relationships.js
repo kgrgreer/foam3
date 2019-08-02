@@ -571,7 +571,7 @@ foam.RELATIONSHIP({
 
 foam.CLASS({
   package: 'net.nanopay.model',
-  name: 'BusinessUserJunctionRefine',
+  name: 'BusinessUserJunctionPropertyRefinement',
   refines: 'net.nanopay.model.BusinessUserJunction',
 
   properties: [
