@@ -23,6 +23,7 @@ import foam.dao.ArraySink;
 import foam.dao.MDAO;
 import foam.mlang.MLang;
 import foam.mlang.sink.Count;
+import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.tx.model.Transaction;
@@ -203,12 +204,18 @@ public class ReportBusinessSummary extends AbstractReport {
     Date lastMonthDate = c.getTime();
     // create an empty DAO to convert list to DAO
     businesses = new MDAO(Business.getOwnClassInfo());
+    // select accounts under the business
+    DAO accountDAO = (DAO) x.get("localTransactionDAO");
+    DAO filteredAccountDAO = new MDAO(Account.getOwnClassInfo());
     for (Object obj : busLst) {
       Business business = (Business) obj;
+      filteredAccountDAO = accountDAO.where(
+        MLang.EQ(net.nanopay.account.Account.OWNER, business.getId())
+      );
       boolean active = (transactionDAO.find(
         MLang.AND(
           MLang.GTE(Transaction.CREATED, lastMonthDate),
-          MLang.EQ(Transaction.CREATED_BY, business.getId())
+          MLang.IN(Transaction.SOURCE_ACCOUNT, filteredAccountDAO)
         )
       ) != null);
       if (active) {
