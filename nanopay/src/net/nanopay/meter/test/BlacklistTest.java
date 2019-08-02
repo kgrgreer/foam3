@@ -1,18 +1,16 @@
 package net.nanopay.meter.test;
 
 import foam.core.X;
-import foam.dao.*;
-import foam.nanos.test.Test;
-import foam.nanos.auth.AuthorizationException;
+import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.test.Test;
 import foam.util.Auth;
-
 import net.nanopay.account.Account;
+import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.model.Transaction;
-import net.nanopay.admin.model.ComplianceStatus;
 
 
 public class BlacklistTest extends Test {
@@ -63,14 +61,16 @@ public class BlacklistTest extends Test {
     ///////////////////////////////// TEST CODE ///////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
 
-
     Invoice invoice = new Invoice();
     invoice.setAmount(1);
     invoice.setPayerId(busAdmin.getId());
     invoice.setPayeeId(employee2.getId());
     invoice.setDestinationCurrency("CAD");
     invoice.setAccount(busAdminBankAccount.getId());
-    invoice = (Invoice) invoiceDAO.inX(busAdminContext).put(invoice);
+
+    // Use system context to create invoice since invoice must exist for testing
+    // the `transaction` below.
+    invoice = (Invoice) invoiceDAO.put(invoice);
 
     Transaction transaction = new Transaction();
     transaction.setSourceAccount(invoice.getAccount());
@@ -87,13 +87,35 @@ public class BlacklistTest extends Test {
       test(false, "Unexpected exception: " + t);
     }
 
-    // Set compliance to passed and try to put the transaction again
+    Invoice invoice2 = new Invoice();
+    invoice2.setAmount(2);
+    invoice2.setPayerId(busAdmin.getId());
+    invoice2.setPayeeId(employee2.getId());
+    invoice2.setDestinationCurrency("CAD");
+    invoice2.setAccount(busAdminBankAccount.getId());
+    try {
+      invoiceDAO.inX(busAdminContext).put(invoice2);
+    } catch (Throwable t) {
+      test(true, "Invoice not created until business passes compliance passing proper compliance.");
+    }
+
+    // Set compliance to passed and try to put the invoice and transaction again
     busAdmin = (User) busAdmin.fclone();
     busAdmin.setCompliance(ComplianceStatus.PASSED);
     busAdmin = (User) bareUserDAO.put(busAdmin);
     busAdminContext = Auth.sudo(x, busAdmin);
+
+    invoice2 = (Invoice) invoiceDAO.inX(busAdminContext).put(invoice2);
+    Transaction transaction2 = new Transaction();
+    transaction2.setSourceAccount(invoice2.getAccount());
+    transaction2.setDestinationAccount(invoice2.getDestinationAccount());
+    transaction2.setPayerId(invoice2.getPayerId());
+    transaction2.setPayeeId(invoice2.getPayeeId());
+    transaction2.setAmount(invoice2.getAmount());
+    transaction2.setInvoiceId(invoice2.getId());
+
     try {
-      Transaction result = (Transaction) transactionDAO.inX(busAdminContext).put(transaction);
+      Transaction result = (Transaction) transactionDAO.inX(busAdminContext).put(transaction2);
       test(result != null, "Successfully put the transaction to the TransactionDAO after setting compliance to passed.");
     } catch (Throwable t) {
       test(false, "Unexpected exception putting transaction: " + t);
