@@ -188,8 +188,12 @@ var classes = [
   'net.nanopay.sme.onboarding.OnboardingStatus',
   'net.nanopay.sme.onboarding.BusinessOnboardingDAO',
   'net.nanopay.sme.onboarding.BusinessOnboardingDAOTest',
+  'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
+  'net.nanopay.sme.onboarding.CanadaUsBusinessOnboardingDAO',
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboarding',
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
+  'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
+  'net.nanopay.sme.onboarding.USBusinessOnboardingDAO',
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 

@@ -175,7 +175,8 @@ foam.CLASS({
       },
       // TODO: Find a better place for this. It shouldnt be baked into WizardView.
       code: function(x) {
-        x.businessOnboardingDAO.
+        var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
+        dao.
           put(this.data.clone().copyFrom({ status: 'SUBMITTED' })).
           then(function() {
             // TODO: Instead of manually setting to true, we should pull the latest

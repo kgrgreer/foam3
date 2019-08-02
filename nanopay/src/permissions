@@ -157,6 +157,8 @@ p({"class":"foam.nanos.auth.Permission","id":"service.branchDAO","description":"
 p({"class":"foam.nanos.auth.Permission","id":"service.businessDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.businessInvitationDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.businessOnboardingDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.uSBusinessOnboardingDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.canadaUsBusinessOnboardingDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.businessSectorDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.canReceiveCurrencyDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.complianceItemDAO"})

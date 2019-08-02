@@ -13,12 +13,16 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCardType',
-    'net.nanopay.sme.onboarding.BusinessOnboarding'
+    'net.nanopay.sme.onboarding.BusinessOnboarding',
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding'
   ],
 
   imports: [
     'agent',
     'businessOnboardingDAO',
+    'canadaUsBusinessOnboardingDAO',
+    'uSBusinessOnboardingDAO',
     'menuDAO',
     'stack',
     'user',
@@ -120,6 +124,10 @@ foam.CLASS({
     },
     {
       name: 'PENDING',
+      message: 'Pending!'
+    },
+    {
+      name: 'COMING_SOON',
       message: 'Coming soon!'
     }
   ],
@@ -192,6 +200,12 @@ foam.CLASS({
       name: 'hasUSDPermission',
       value: false
     },
+    {
+      name: 'isCanadianBusiness',
+      expression: function(user) {
+        return user.address.countryId === 'CA';
+      }
+    }
   ],
 
   methods: [
@@ -209,11 +223,17 @@ foam.CLASS({
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
           .add(this.slot(function(isComplete, type, hasUSDPermission) {
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! hasUSDPermission ) {
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! this.isCanadianBusiness ) {
+              return this.E().start().addClass(self.myClass('complete-container'))
+                .start('p').addClass(self.myClass('complete')).add(self.COMING_SOON).end()
+              .end();
+            }
+
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness && ( ! hasUSDPermission || ! this.user.onboarded ) ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
-            }
+            }            
 
             if ( ! isComplete ) {
               return this.E()
@@ -244,9 +264,9 @@ foam.CLASS({
       name: 'getStarted',
       label: 'Get started',
       code: function(x) {
+          var userId = this.agent.id;
+          var businessId = this.user.id;
           if ( ! this.user.onboarded ) {
-            var userId = this.agent.id;
-            var businessId = this.user.id;
             var isDomesticOnboarding = this.type === this.UnlockPaymentsCardType.DOMESTIC;
 
             // We need to find the BusinessOnboarding by checking both the
@@ -257,17 +277,50 @@ foam.CLASS({
             // BusinessOnboarding for the existing user's other business instead
             // of the one they were recently added to. By including the
             // businessId in our search criteria we avoid this problem.
-            this.businessOnboardingDAO.find(
+            if ( isDomesticOnboarding && this.isCanadianBusiness ) {
+              this.businessOnboardingDAO.find(
+                this.AND(
+                  this.EQ(this.BusinessOnboarding.USER_ID, userId),
+                  this.EQ(this.BusinessOnboarding.BUSINESS_ID, businessId)
+                )
+              ).then((o) => {
+                o = o || this.BusinessOnboarding.create({
+                  userId: userId,
+                  businessId: businessId
+                });
+                this.stack.push({
+                  class: 'net.nanopay.sme.onboarding.ui.WizardView',
+                  data: o
+                });
+              });
+            }  else if ( ! this.isCanadianBusiness ) {
+              this.uSBusinessOnboardingDAO.find(
+                this.AND(
+                  this.EQ(this.USBusinessOnboarding.USER_ID, userId),
+                  this.EQ(this.USBusinessOnboarding.BUSINESS_ID, businessId)
+                )
+              ).then((o) => {
+                o = o || this.USBusinessOnboarding.create({
+                  userId: userId,
+                  businessId: businessId
+                });
+                this.stack.push({
+                  class: 'net.nanopay.sme.onboarding.ui.WizardView',
+                  data: o
+                });
+              });
+            }
+          }  else if ( ! isDomesticOnboarding && this.isCanadianBusiness ) {
+            this.canadaUsBusinessOnboardingDAO.find(
               this.AND(
-                this.EQ(this.BusinessOnboarding.USER_ID, userId),
-                this.EQ(this.BusinessOnboarding.BUSINESS_ID, businessId)
+                this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, userId),
+                this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, businessId)
               )
             ).then((o) => {
-              o = o || this.BusinessOnboarding.create({
+              o = o || this.CanadaUsBusinessOnboarding.create({
                 userId: userId,
                 businessId: businessId
               });
-              o.hasUSDPermission = ! isDomesticOnboarding && this.hasUSDPermission;
               this.stack.push({
                 class: 'net.nanopay.sme.onboarding.ui.WizardView',
                 data: o
