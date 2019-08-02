@@ -1013,7 +1013,6 @@ for ( Balance b : getBalances() ) {
       },
       code: function(X) {
         // approve approval request associated to ci transaction
-        var self = this;
         var m = foam.mlang.ExpressionsSingleton.create({});
         this.approvalRequestDAO.where(
           m.EQ(this.ExpediteCICOApprovalRequest.OBJ_ID, this.id)
