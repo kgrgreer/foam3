@@ -7,7 +7,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.bmo.BmoFormatUtil',
     'java.time.LocalDate',
-    'org.apache.commons.lang3.StringUtils'
+    'foam.nanos.logger.Logger'
   ],
 
   implements: [
@@ -70,10 +70,11 @@ foam.CLASS({
       if ( this.getAmount() > 9999999999L ) {
         throw new RuntimeException("Transaction amount is larger than the max.");
       }
-  
-      //if ( ! StringUtils.isAlphanumericSpace(this.getClientName()) ) {
-      //  throw new RuntimeException("User name contains invalid characters.");
-      //}
+      
+      if ( this.getClientName().length() > 29 ) {
+        ((Logger)x.get("logger")).warning("User name is longer than 19 char.");
+        this.setClientName(this.getClientName().substring(0, 29));
+      }
   
       if ( this.getReferenceNumber().length() > 19 ) {
         throw new RuntimeException("Transaction reference number is longer than 19 char.");
