@@ -40,7 +40,7 @@ foam.CLASS({
     {
       name: 'INTRO_TEXT',
       message: `I’ll be asking you just a few information about your business and 
-      signing officer to help me enable international payments for you.!`
+      signing officer to help me enable international payments for you.`
 		},
 		{
 			name: 'INTRO_TITLE_1',
