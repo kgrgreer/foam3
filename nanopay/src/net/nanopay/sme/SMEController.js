@@ -593,7 +593,7 @@ foam.CLASS({
     async function getSigningOfficersArray(user) {
       if ( this.Business.isInstance(user) ) {
         try {
-          return (await this.user.signingOfficers.dao.select()).array;
+          return (await this.user.signingOfficers.junctionDAO.select()).array;
         } catch (err) {
           console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
         }
