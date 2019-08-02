@@ -570,7 +570,7 @@ foam.CLASS({
     {
       name: 'toSummary',
       code: function() {
-        return this.type + ' ' + this.status + ' ' + this.lastModified;
+        return this.type;
       }
     },
     {
