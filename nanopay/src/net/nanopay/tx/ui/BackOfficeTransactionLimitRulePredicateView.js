@@ -25,15 +25,6 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'business',
-      // view: function(_, X) {
-      //     return foam.u2.view.ChoiceView.create({
-      //       objToChoice: function(business) {
-      //         return [business.id, business.businessName];
-      //       },
-      //       placeholder: '-- Please select a business --',
-      //       dao: X.businessDAO
-      //     });
-      // },
     },
   ],
 
