@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler.predicate',
   name: 'IsCompletedTransaction',
 
-  documentation: 'Returns true is new object is a transaction with COMPLETED',
+  documentation: 'Returns true if new object is a transaction with status COMPLETED',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
