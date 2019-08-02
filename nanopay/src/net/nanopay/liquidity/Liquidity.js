@@ -51,7 +51,7 @@ foam.CLASS({
           search: true,
           sections: [
             {
-              dao: X.accountDAO
+              dao: X.accountDAO.where(X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)))
             }
           ]
         }, X);

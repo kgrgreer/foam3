@@ -9,6 +9,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
+  { name: 'net/nanopay/payment/InstitutionPaymentProvider' },
   { name: 'net/nanopay/payment/Payroll' },
   { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
@@ -206,6 +207,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXUserStatus' },
   { name: 'net/nanopay/fx/KotakFxTransaction' },
   { name: 'net/nanopay/fx/ManualFxApprovalRequest' },
+  { name: 'net/nanopay/fx/GenericFXPlanDAO' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
@@ -943,7 +945,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ui/ComplianceItemController'},
 
   // ruler
-  { name: 'net/nanopay/meter/compliance/ruler/AbstractComplianceApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/CanadianSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/ComplianceTransactionApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/PruneApprovalRequests' },
