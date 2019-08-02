@@ -119,6 +119,10 @@ foam.CLASS({
       message: 'We are adding the ability to make FX payments around the world using Ablii. '
     },
     {
+      name: 'DESCRIPTION_CAD_INTERNATIONAL',
+      message: 'Complete the requirements and unlock international payments'
+    },
+    {
       name: 'COMPLETE',
       message: 'Completed'
     },
@@ -183,6 +187,10 @@ foam.CLASS({
       class: 'String',
       name: 'info',
       expression: function(type) {
+        if ( type === this.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness ) {
+          return this.DESCRIPTION_CAD_INTERNATIONAL;
+        }
+
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return this.DESCRIPTION_INTERNATIONAL;
         }
