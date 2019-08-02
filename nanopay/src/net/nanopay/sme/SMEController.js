@@ -475,7 +475,7 @@ foam.CLASS({
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
-      var signingOfficers = await this.getSigningOfficersArray();
+      var signingOfficers = await this.getSigningOfficersArray(user);
 
       this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
 
@@ -502,7 +502,7 @@ foam.CLASS({
     async function checkComplianceAndBanking() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
-      var signingOfficers = await this.getSigningOfficersArray();
+      var signingOfficers = await this.getSigningOfficersArray(user);
 
       this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
 
@@ -590,8 +590,8 @@ foam.CLASS({
     /**
      * Returns an array containing all signing officers of the business.
      */
-    async function getSigningOfficersArray() {
-      if ( this.Business.isInstance(this.user) ) {
+    async function getSigningOfficersArray(user) {
+      if ( this.Business.isInstance(user) ) {
         try {
           return (await this.user.signingOfficers.dao.select()).array;
         } catch (err) {
