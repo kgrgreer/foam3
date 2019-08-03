@@ -14,6 +14,7 @@ foam.CLASS({
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.model.Business',
+    'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.ui.AbliiActionView',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.banner.ComplianceBannerData',
@@ -593,7 +594,9 @@ foam.CLASS({
     async function getSigningOfficersArray(user) {
       if ( this.Business.isInstance(user) ) {
         try {
-          return (await user.signingOfficers.junctionDAO.select()).array;
+          return (await user.signingOfficers.junctionDAO.where(
+            this.EQ(this.BusinessUserJunction.SOURCE_ID, user.id)).select()
+          ).array;
         } catch (err) {
           console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
         }

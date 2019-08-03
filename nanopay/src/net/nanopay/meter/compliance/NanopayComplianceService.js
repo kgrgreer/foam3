@@ -16,7 +16,9 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
-    'java.util.List'
+    'net.nanopay.model.BusinessUserJunction',
+    'java.util.List',
+    'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
@@ -141,8 +143,10 @@ foam.CLASS({
             DAO businessDao = (DAO) x.get("localBusinessDAO");
             if ( businessDao != null ) {
               cachedBusiness = (Business) businessDao.find(user.getId());
-              List<User> signingOfficers = ((ArraySink) cachedBusiness
-                .getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
+              List<BusinessUserJunction> signingOfficers = ((ArraySink) cachedBusiness
+                .getSigningOfficers(x).getJunctionDAO().where(
+                  EQ(BusinessUserJunction.SOURCE_ID, cachedBusiness.getId()))
+                .select(new ArraySink())).getArray();
               coalesceBusinessAndSigningOfficersCompliance(cachedBusiness, signingOfficers);
               x.put("cachedComplianceBusiness", cachedBusiness);
             }
@@ -175,7 +179,7 @@ foam.CLASS({
         },
         {
           name: 'signingOfficers',
-          type: 'List<User>'
+          type: 'List<BusinessUserJunction>'
         }
       ],
       javaCode: `
