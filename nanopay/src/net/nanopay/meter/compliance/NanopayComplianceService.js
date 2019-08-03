@@ -147,7 +147,7 @@ foam.CLASS({
               x.put("cachedComplianceBusiness", cachedBusiness);
             }
           }
-          return user != null && user.getCompliance() == ComplianceStatus.PASSED;
+          return cachedBusiness != null && cachedBusiness.getCompliance() == ComplianceStatus.PASSED;
         }
         return true;
       `

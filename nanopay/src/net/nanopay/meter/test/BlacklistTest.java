@@ -10,6 +10,7 @@ import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.model.Business;
 import net.nanopay.tx.model.Transaction;
 
 
@@ -28,11 +29,11 @@ public class BlacklistTest extends Test {
 
     // Setup the business admin and account to pay from
     bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "busadmin@example.com")).removeAll();
-    User busAdmin = new User();
+    Business busAdmin = new Business();
     busAdmin.setEmail("busadmin@example.com");
     busAdmin.setGroup("smeBusinessAdmin");
     busAdmin.setEmailVerified(true); // Required to send or receive money.
-    busAdmin = (User) bareUserDAO.put(busAdmin);
+    busAdmin = (Business) bareUserDAO.put(busAdmin);
     X busAdminContext = Auth.sudo(x, busAdmin);
 
     accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests business admin test account")).removeAll();
@@ -100,9 +101,9 @@ public class BlacklistTest extends Test {
     }
 
     // Set compliance to passed and try to put the invoice and transaction again
-    busAdmin = (User) busAdmin.fclone();
+    busAdmin = (Business) busAdmin.fclone();
     busAdmin.setCompliance(ComplianceStatus.PASSED);
-    busAdmin = (User) bareUserDAO.put(busAdmin);
+    busAdmin = (Business) bareUserDAO.put(busAdmin);
     busAdminContext = Auth.sudo(x, busAdmin);
 
     invoice2 = (Invoice) invoiceDAO.inX(busAdminContext).put(invoice2);
