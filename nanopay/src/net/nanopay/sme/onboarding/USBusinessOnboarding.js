@@ -675,7 +675,21 @@ foam.CLASS({
       section: 'businessDetailsSection',
       class: 'Date',
       name: 'businessFormationDate',
-      documentation: 'Date of Business Formation or Incorporation.'
+      documentation: 'Date of Business Formation or Incorporation.',
+      validationPredicates: [
+        {
+          args: ['businessFormationDate'],
+          predicateFactory: function(e) {
+            return e.OR(
+              foam.mlang.predicate.OlderThan.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_FORMATION_DATE,
+                timeMs: 24 * 60 * 60 * 1000
+              })
+            );
+          },
+          errorString: 'Must be at least a before now.'
+        }
+      ]
     },   
     {
       section: 'businessDetailsSection',
@@ -698,11 +712,25 @@ foam.CLASS({
           }
         };
       },
+      validationPredicates: [
+        {
+          args: ['countryOfBusinessFormation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'US')
+            );
+          },
+          errorString: 'Ablii does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.'
+        },
+      ],
     },
     {
       section: 'businessDetailsSection',
       class: 'String',
       name: 'businessRegistrationNumber',
+      label: 'Federal Tax ID Number (EIN) or Business Registration Number',
+      minLength: 1,
       documentation: 'Federal Tax ID Number (EIN) or Business Registration Number'
     },
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.clone().copyFrom({
