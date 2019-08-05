@@ -610,13 +610,13 @@ foam.CLASS({
               .end()
             .end()
 
-            .callIf(this.invoice.AFXConfirmationPDF != null, function() {
+            .callIf(this.invoice.transactionConfirmationPDF != null, function() {
               this
                 .start()
                   .addClass('confirmation-link-content')
                   .tag({
                     class: 'net.nanopay.sme.ui.Link',
-                    data: self.invoice.AFXConfirmationPDF.address,
+                    data: self.invoice.transactionConfirmationPDF.address,
                     text: self.TXN_CONFIRMATION_LINK_TEXT
                   })
                 .end();

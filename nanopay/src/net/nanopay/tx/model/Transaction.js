@@ -984,6 +984,19 @@ for ( Balance b : getBalances() ) {
       logger.warning("Transaction failed to send notitfication. " + e.getMessage());
     }
     `
+  },
+  {
+    name: 'getTransactionConfirmation',
+    args: [
+      {
+        name: 'x',
+        type: 'Context'
+      }
+    ],
+    type: 'String',
+    javaCode: `
+      return "";
+    `
   }
 ],
   actions: [
