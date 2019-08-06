@@ -355,7 +355,7 @@ foam.CLASS({
         if ( oldTxn == null ) {
           File pdf = new TransactionConfirmationFileGenerator.Builder(x).build()
           .generateTransactionConfirmationPDF(x, this);
-          addLineItems(new TransactionLineItem[] {new ConfirmationFileLineItem.Builder(x).setGroup("fx").setPdf(pdf).build()}, null);
+          addLineItems(new TransactionLineItem[] {new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
           ((DAO) x.get("transactionDAO")).inX(x).put(this.fclone());
         }
       `

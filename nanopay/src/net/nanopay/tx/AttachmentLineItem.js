@@ -5,7 +5,7 @@
  */
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'AttachmentLineItem ',
+  name: 'AttachmentLineItem',
 
   extends: 'net.nanopay.tx.InfoLineItem',
 
