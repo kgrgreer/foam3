@@ -169,16 +169,7 @@ p({
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
         .setInnerDAO(validatingDAO)
         .build();
-    /*
-    // Note: AuthorizationDAO may need to be set as decorator :/
-    return new foam.dao.PMDAO(x, 
-      new foam.dao.PipelinePMDAO(x, 
-        new foam.nanos.auth.AuthorizationDAO(x, 
-          new foam.nanos.auth.PermissionedPropertyDAO(x, 
-            new foam.dao.ValidatingDAO(x, x.get("localUserDAO"), 
-              new foam.nanos.auth.validators.UserGroupAndSpidValidator())), 
-              new foam.nanos.auth.AuthorizableAuthorizer(\"user\"))));
-    */
+    // Note: AuthorizationDAO may need to be set as decorator
   """,
   "client":
   """
