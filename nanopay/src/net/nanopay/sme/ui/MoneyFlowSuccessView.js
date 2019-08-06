@@ -13,7 +13,7 @@ foam.CLASS({
   `,
 
   requires: [
-    'net.nanopay.tx.ConfirmationPDFLineItem'
+    'net.nanopay.tx.ConfirmationFileLineItem'
   ],
 
   imports: [
@@ -190,8 +190,8 @@ foam.CLASS({
       this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
         if ( transaction ) {
           for ( var i = 0; i < transaction.lineItems.length; i++ ) {
-            if ( this.ConfirmationPDFLineItem.isInstance( transaction.lineItems[i] ) ) {
-              this.transactionConfirmationPDF = transaction.lineItems[i].pdf;
+            if ( this.ConfirmationFileLineItem.isInstance( transaction.lineItems[i] ) ) {
+              this.transactionConfirmationPDF = transaction.lineItems[i].file;
               break;
             }
           }

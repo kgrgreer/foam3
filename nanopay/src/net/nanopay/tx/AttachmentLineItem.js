@@ -5,8 +5,14 @@
  */
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'ConfirmationPDFLineItem',
+  name: 'AttachmentLineItem ',
 
-  extends: 'net.nanopay.tx.PDFLineItem',
+  extends: 'net.nanopay.tx.InfoLineItem',
 
+  properties: [
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'file'
+    }
+  ]
 });
