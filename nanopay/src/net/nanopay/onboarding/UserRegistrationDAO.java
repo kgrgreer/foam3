@@ -144,8 +144,8 @@ public class UserRegistrationDAO
     Address businessAddress = user.getBusinessAddress();
 
     // Prevent non cad accounts
-    if ( ! businessAddress.getCountryId().equals("CA") ) {
-      throw new IllegalStateException("Only canadian businesses permitted.");
+    if ( ! businessAddress.getCountryId().equals("CA") && ! businessAddress.getCountryId().equals("US") ) {
+      throw new IllegalStateException("Only Canadian and US businesses supported at this time.");
     }
 
     return super.put_(sysContext, user);
