@@ -568,7 +568,6 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.CanadianUserOnboarded',
   'net.nanopay.meter.compliance.ruler.predicate.DowJonesApprovalRequested',
   'net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction',
-  'net.nanopay.meter.compliance.ruler.predicate.PausedOrScheduledTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction',
   'net.nanopay.meter.compliance.ruler.predicate.IsRejectedComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ruler.predicate.LoginSuccess',
