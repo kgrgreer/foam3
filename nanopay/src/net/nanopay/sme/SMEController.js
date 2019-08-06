@@ -14,6 +14,7 @@ foam.CLASS({
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.model.Business',
+    'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.ui.AbliiActionView',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.banner.ComplianceBannerData',
@@ -180,7 +181,11 @@ foam.CLASS({
     {
       name: 'ABILITY_TO_RECEIVE_ERROR',
       message: 'Error occurred when checking the ability to receive payment'
-    }
+    },
+    {
+      name: 'QUERY_SIGNING_OFFICERS_ERROR',
+      message: 'An unexpected error occurred while querying signing officers: '
+    },
   ],
 
   properties: [
@@ -472,6 +477,11 @@ foam.CLASS({
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
 
+      if ( user.compliance == this.ComplianceStatus.PASSED ) {
+        var signingOfficers = await this.getSigningOfficersArray(user);
+        this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
+      }
+
       /*
        * Get the complianceStatus object from the complianceStatusArray
        * when it matches the condition of business onboarding status
@@ -495,6 +505,11 @@ foam.CLASS({
     async function checkComplianceAndBanking() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
+
+      if ( user.compliance == this.ComplianceStatus.PASSED ) {
+        var signingOfficers = await this.getSigningOfficersArray(user);
+        this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
+      }
 
       var toastElement = this.complianceStatusArray.find((complianceStatus) => {
         return complianceStatus.condition(user, accountArray);
@@ -574,6 +589,35 @@ foam.CLASS({
           .select()).array;
       } catch (err) {
         console.warn(this.QUERY_BANK_AMOUNT_ERROR, err);
+      }
+    },
+
+    /**
+     * Returns an array containing all signing officers of the business.
+     */
+    async function getSigningOfficersArray(user) {
+      if ( this.Business.isInstance(user) ) {
+        try {
+          return (await user.signingOfficers.junctionDAO.where(
+            this.EQ(this.BusinessUserJunction.SOURCE_ID, user.id)).select()
+          ).array;
+        } catch (err) {
+          console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
+        }
+      }
+    },
+
+    /*
+     * Update user compliance by coalescing it with signing officers compliance.
+     */
+    function coalesceUserAndSigningOfficersCompliance(user, signingOfficers) {
+      if ( signingOfficers === undefined ) return;
+
+      for ( let i = 0; i < signingOfficers.length; i++ ) {
+        if ( user.compliance != signingOfficers[i].compliance ) {
+          user.compliance = signingOfficers[0].compliance;
+          return;
+        }
       }
     }
   ],
