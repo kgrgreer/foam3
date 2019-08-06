@@ -52,7 +52,7 @@ foam.CLASS({
 
     ^ .foam-u2-tag-Select {
       width: 320px;
-      height: 40px;
+      height: 48px;
       border-radius: 0;
 
       -webkit-appearance: none;
@@ -263,7 +263,12 @@ foam.CLASS({
           .where(
             this.AND(
               this.EQ(this.Account.OWNER, newValue || ''),
-              this.NEQ(this.Account.TYPE, 'TrustAccount')))
+              this.AND(
+                this.NOT(this.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+                this.NOT(this.INSTANCE_OF(net.nanopay.account.TrustAccount))
+              )
+            )
+          )
           .select()
           .then(function(a) {
             var accounts = a.array;
@@ -300,7 +305,9 @@ foam.CLASS({
           .where(
             this.AND(
               this.EQ(this.Account.OWNER, this.accountOwner),
-              this.EQ(this.Account.TYPE, newValue || '')))
+              this.EQ(this.Account.TYPE, newValue || '')
+            )
+          )
           .select()
           .then(function(a) {
             var accounts = a.array;
@@ -544,7 +551,7 @@ foam.CLASS({
           let name = account.name ? account.name : 'Digital Account';
           choices.push(
             [account.id,
-            name + ' Balance: ' + currency.format(balance)]);
+            name + ': ' + currency.format(balance)]);
         }
         if ( this.types == 'DigitalAccount' ) view.choices = choices;
       }
@@ -577,7 +584,12 @@ foam.CLASS({
         .where(
           this.AND(
             this.EQ(this.Account.OWNER, this.accountOwner || ''),
-            this.NEQ(this.Account.TYPE, 'TrustAccount')))
+            this.AND(
+              this.NOT(this.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+              this.NOT(this.INSTANCE_OF(net.nanopay.account.TrustAccount))
+            )
+          )
+        )
         .select(this.GROUP_BY(net.nanopay.account.Account.TYPE, this.COUNT()))        
         .then(function(g) {
           view.choices = Object.keys(g.groups).map(function(t) {

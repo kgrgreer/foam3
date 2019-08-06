@@ -11,6 +11,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
+  { name: 'net/nanopay/payment/InstitutionPaymentProvider' },
   { name: 'net/nanopay/payment/Payroll' },
   { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
@@ -208,6 +209,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/FXUserStatus' },
   { name: 'net/nanopay/fx/KotakFxTransaction' },
   { name: 'net/nanopay/fx/ManualFxApprovalRequest' },
+  { name: 'net/nanopay/fx/GenericFXPlanDAO' },
 
   // ascendant fx
   { name: 'net/nanopay/fx/ascendantfx/AscendantFX' },
@@ -317,6 +319,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/InvoicePaymentRule' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
+  { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
@@ -863,12 +866,14 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/BusinessRegistrationWizard', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/IntroductionView', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/IntroOnboarding', flags: ['web'] },
+  { name: 'net/nanopay/sme/onboarding/ui/IntroUSOnboarding', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BusinessForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/SigningOfficerForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
   { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
+  { name: 'net/nanopay/sme/onboarding/CanadaUsBusinessOnboarding' },
   { name: 'net/nanopay/sme/onboarding/USBusinessOnboarding' },
   { name: 'net/nanopay/sme/onboarding/OnboardingStatus' },
   { name: 'net/nanopay/sme/onboarding/ReceiveOnlyOnboarding' },
@@ -943,7 +948,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ui/ComplianceItemController'},
 
   // ruler
-  { name: 'net/nanopay/meter/compliance/ruler/AbstractComplianceApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/CanadianSanctionValidator' },
   { name: 'net/nanopay/meter/compliance/ruler/ComplianceTransactionApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/PruneApprovalRequests' },
@@ -1082,6 +1086,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
   { name: 'net/nanopay/business/JoinBusinessTokenService' },
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
+  { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },

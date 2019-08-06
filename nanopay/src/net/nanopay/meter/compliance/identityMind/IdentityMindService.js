@@ -46,6 +46,11 @@ foam.CLASS({
       class: 'String',
       name: 'defaultProfile',
       value: 'DEFAULT'
+    },
+    {
+      class: 'Boolean',
+      name: 'alwaysUseDefaultProfile',
+      value: false
     }
   ],
 
@@ -75,7 +80,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getConsumerKYCRequest(x, consumer);
         request.setUrl(getBaseUrl() + "/account/consumer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
-        request.setProfile(getProfile(consumer));
+        request.setProfile(getProfile((Address) consumer.getProperty("address")));
         request.setStage(stage);
 
         Integer memo3 = (Integer) memos.get("memo3");
@@ -146,7 +151,7 @@ foam.CLASS({
         IdentityMindRequest request = IdentityMindRequestGenerator.getMerchantKYCRequest(x, business);
         request.setUrl(getBaseUrl() + "/account/merchant");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
-        request.setProfile(getProfile(business));
+        request.setProfile(getProfile(business.getAddress()));
 
         Integer memo3 = (Integer) memos.get("memo3");
         Boolean memo5 = (Boolean) memos.get("memo5");
@@ -250,13 +255,13 @@ foam.CLASS({
       type: 'String',
       args: [
         {
-          name: 'obj',
-          type: 'FObject'
+          name: 'address',
+          type: 'foam.nanos.auth.Address'
         }
       ],
       javaCode: `
-        Address address = (Address) obj.getProperty("address");
-        if ( address != null
+        if ( ! getAlwaysUseDefaultProfile()
+          && address != null
           && ! SafetyUtil.isEmpty(address.getCountryId())
         ) {
           // Use hard-coded "nanopay" prefix for IdentityMind profile as we only

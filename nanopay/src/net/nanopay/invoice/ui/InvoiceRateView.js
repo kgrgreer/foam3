@@ -288,7 +288,6 @@ foam.CLASS({
             .end()
             .start().addClass('float-right').addClass('body-copy')
               .add(this.formattedAmount$)
-              .add(` ${this.invoice.destinationCurrency}`)
             .end()
           .end()
 
@@ -404,9 +403,7 @@ foam.CLASS({
                           return quote$fxFees$totalFees ?
                             sourceCurrency.format(quote$fxFees$totalFees) :
                             sourceCurrency.format(0);
-                        }),
-                        ' ',
-                        this.quote$.dot('fxFees').dot('totalFeesCurrency')
+                        })
                       )
 
                     .end()
@@ -428,7 +425,7 @@ foam.CLASS({
               .add(this.chosenBankAccount$.map((bankAccount) => {
                 if ( ! bankAccount ) return '';
                 return this.currencyDAO.find(bankAccount.denomination).then((currency) => {
-                  return `${ currency.format(0) } ${ bankAccount.denomination}`;
+                  return currency.format(0);
                 });
               }))
             .end()
@@ -453,8 +450,7 @@ foam.CLASS({
                           if ( ! sourceCurrency ) return;
                           return this.sourceCurrency.format(amount);
                         }
-                      }), ' ',
-                      this.quote$.dot('sourceCurrency'),
+                      }),
                       this.exchangeRateNotice$.map((value) => value ? '*' : '')
                     )
                   .end()

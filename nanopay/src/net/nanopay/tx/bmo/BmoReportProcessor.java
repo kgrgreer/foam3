@@ -149,9 +149,8 @@ public class BmoReportProcessor {
 
       Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
 
-      ((BmoTransaction)transaction).addHistory("Transaction completed.");
-      transaction.setCompletionDate(new Date());
-      transaction.setStatus(TransactionStatus.COMPLETED);
+      ((BmoTransaction)transaction).addHistory("Transaction was settled by BMO.");
+      ((BmoTransaction)transaction).setSettled(true);
 
       transactionDAO.inX(this.x).put(transaction);
     } catch ( Exception e ) {

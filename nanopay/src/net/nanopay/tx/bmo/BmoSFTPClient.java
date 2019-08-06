@@ -198,7 +198,7 @@ public class BmoSFTPClient {
         this.statefulSFTPClient.close();
       }
 
-      if ( this.sshClient != null ) {
+      if ( this.sshClient != null && this.sshClient.isConnected()) {
         this.sshClient.disconnect();
       }
     } catch ( Exception e ) {
