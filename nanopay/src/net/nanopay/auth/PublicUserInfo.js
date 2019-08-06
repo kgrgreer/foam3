@@ -134,8 +134,8 @@ foam.CLASS({
             setEmail(user.getEmail());
             setProfilePicture(user.getProfilePicture());
             setBusinessProfilePicture(user.getBusinessProfilePicture());
-            setBusinessAddress(user.getBusinessAddress());
-            setBusinessPhone(user.getBusinessPhone());
+            setBusinessAddress(user.getAddress());
+            setBusinessPhone(user.getPhone());
             setType(user.getType());
           }
         `);

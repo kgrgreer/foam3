@@ -87,7 +87,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
-            onboardingRequest.setContactBusinessPhone(business.getBusinessPhone().getNumber());
+            onboardingRequest.setContactBusinessPhone(business.getPhone().getNumber());
             String businessRegDate = null;
             try {
               businessRegDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(business.getBusinessRegistrationDate()); 
@@ -193,7 +193,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
-    Address userAddress = user.getAddress() == null ? user.getBusinessAddress() : user.getAddress();
+    Address userAddress = user.getAddress();
     if ( null == userAddress ) throw new RuntimeException("User Address is null " + userId );
     
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);

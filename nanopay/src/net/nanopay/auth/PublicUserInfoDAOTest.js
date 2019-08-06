@@ -72,10 +72,10 @@ foam.CLASS({
         testUser.setProfilePicture(profilePicFile);
         Address businessAddress = new Address();
         businessAddress.setCity("Toronto");
-        testUser.setBusinessAddress(businessAddress);
-        Phone businessPhone = new Phone();
-        businessPhone.setNumber("123-456-7890");
-        testUser.setBusinessPhone(businessPhone);
+        testUser.setAddress(businessAddress);
+        Phone phone = new Phone();
+        phone.setNumber("123-456-7890");
+        testUser.setPhone(phone);
         File businessProfilePicFile = new File();
         businessProfilePicFile.setFilename("Business profile picture");
         testUser.setBusinessProfilePicture(businessProfilePicFile);
@@ -109,12 +109,12 @@ foam.CLASS({
         test(owner.getProfilePicture().getFilename().equals("Profile picture"), "'owner.getProfilePicture().getFilename()' should match the user's profile picture file name (Profile picture).");
 
         test(owner.getBusinessAddress() instanceof Address, "'owner.getBusinessAddress()' should be of type 'Address'.");
-        test(owner.getBusinessAddress().equals(john.getBusinessAddress()), "'owner.getBusinessAddress()' should match the user's business address.");
-        test(owner.getBusinessAddress().getCity().equals(john.getBusinessAddress().getCity()), "'owner.getBusinessAddress().getCity()' should match the user's business address city (Toronto).");
+        test(owner.getBusinessAddress().equals(john.getAddress()), "'owner.getBusinessAddress()' should match the user's business address.");
+        test(owner.getBusinessAddress().getCity().equals(john.getAddress().getCity()), "'owner.getBusinessAddress().getCity()' should match the user's business address city (Toronto).");
 
         test(owner.getBusinessPhone() instanceof Phone, "'owner.getBusinessPhone()' should be of type 'Phone'.");
-        test(owner.getBusinessPhone().equals(john.getBusinessPhone()), "'owner.getBusinessPhone()' should match the user's business phone.");
-        test(owner.getBusinessPhone().getNumber().equals(john.getBusinessPhone().getNumber()), "'owner.getBusinessPhone().getNumber()' should match the user's business phone number (123-456-7890).");
+        test(owner.getBusinessPhone().equals(john.getPhone()), "'owner.getBusinessPhone()' should match the user's business phone.");
+        test(owner.getBusinessPhone().getNumber().equals(john.getPhone().getNumber()), "'owner.getBusinessPhone().getNumber()' should match the user's business phone number (123-456-7890).");
 
         test(owner.getBusinessProfilePicture() instanceof File, "'owner.getBusinessProfilePicture()' should be of type 'File'.");
         test(owner.getBusinessProfilePicture().equals(john.getBusinessProfilePicture()), "'owner.getBusinessProfilePicture()' should match the user's business profile picture.");

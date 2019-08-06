@@ -141,7 +141,7 @@ public class UserRegistrationDAO
     // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
     if ( ! isInternal ) checkUserDuplication(x, user);
 
-    Address businessAddress = user.getBusinessAddress();
+    Address businessAddress = user.getAddress();
 
     // Prevent non cad accounts
     if ( ! businessAddress.getCountryId().equals("CA") ) {

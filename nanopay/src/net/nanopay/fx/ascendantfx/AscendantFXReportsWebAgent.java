@@ -126,20 +126,20 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     boolean isTypeSet, isBusinessSet, isBusinessAddressSet;
     isTypeSet = type != null;
     isBusinessSet = business != null;
-    isBusinessAddressSet = isBusinessSet && business.getBusinessAddress() != null;
+    isBusinessAddressSet = isBusinessSet && business.getAddress() != null;
     String businessType  = isTypeSet ? type.getName() : "-";
     String businessName  = isBusinessSet ? business.getBusinessName() : "-";;
     String operatingName = isBusinessSet ? business.getOperatingBusinessName() : "-";;
-    String streetAddress = isBusinessAddressSet ? business.getBusinessAddress().getStreetNumber() + " " + business.getBusinessAddress().getStreetName() : "-";;
-    String city = isBusinessAddressSet ? business.getBusinessAddress().getCity() : "-";;
-    String province = isBusinessAddressSet ? business.getBusinessAddress().getRegionId() : "-";;
-    String country = isBusinessAddressSet ? business.getBusinessAddress().getCountryId() : "-";;
-    String postalCode = isBusinessAddressSet ? business.getBusinessAddress().getPostalCode() : "-";;
+    String streetAddress = isBusinessAddressSet ? business.getAddress().getStreetNumber() + " " + business.getAddress().getStreetName() : "-";;
+    String city = isBusinessAddressSet ? business.getAddress().getCity() : "-";;
+    String province = isBusinessAddressSet ? business.getAddress().getRegionId() : "-";;
+    String country = isBusinessAddressSet ? business.getAddress().getCountryId() : "-";;
+    String postalCode = isBusinessAddressSet ? business.getAddress().getPostalCode() : "-";;
 
     String businessPhoneNumber;
-    if ( isBusinessSet && business.getBusinessPhone() != null ) {
-      if ( ! SafetyUtil.isEmpty(business.getBusinessPhone().getNumber()) ) {
-        businessPhoneNumber = business.getBusinessPhone().getNumber();
+    if ( isBusinessSet && business.getPhone() != null ) {
+      if ( ! SafetyUtil.isEmpty(business.getPhone().getNumber()) ) {
+        businessPhoneNumber = business.getPhone().getNumber();
       } else {
         businessPhoneNumber = "N/A";
       }

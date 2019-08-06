@@ -74,7 +74,6 @@ public class AFEXTransactionPlanDAOTest
     user1.setLastName("AFEX");
     user1.setGroup("business");
     user1.setEmail("testAFEXTransaction@nanopay.net");
-    user1.setBusinessAddress(businessAddress);
     user1.setAddress(businessAddress);
     user1.setEmailVerified(true);
     localUserDAO.put(user1);
@@ -84,7 +83,6 @@ public class AFEXTransactionPlanDAOTest
     user2.setLastName("AFEX");
     user2.setGroup("business");
     user2.setEmail("testAFEXTransaction1@nanopay.net");
-    user2.setBusinessAddress(businessAddress);
     user2.setAddress(businessAddress);
     user2.setEmailVerified(true);
     localUserDAO.put(user2);

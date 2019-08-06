@@ -33,6 +33,17 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: 'businessName',
+      documentation: 'The name of the business associated with the User.',
+      width: 50,
+      validateObj: function(businessName) {
+        if ( businessName.length > 35 ) {
+          return 'Business name cannot be greater than 35 characters.';
+        }
+      }
+    },
+    {
+      class: 'String',
       name: 'businessPermissionId',
       documentation: `A generated name used in permission strings related to the business.
         The name does not contain any special characters.
@@ -80,10 +91,191 @@ foam.CLASS({
       label: 'Sync Count to QBO'
     },
     {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.AccountStatus',
+      name: 'status',
+      documentation: `Tracks the type of status of the User.`,
+      tableCellFormatter: function(status) {
+        var bgColour = '#a4b3b8';
+        var borderColour = '#a4b3b8';
+        var textColour = '#ffffff';
+        if ( status.label == 'Submitted' ) {
+          bgColour = 'transparent';
+          borderColour = '#2cab70';
+          textColour = '#2cab70';
+        } else if ( status.label == 'Active' ) {
+          bgColour = '#2cab70';
+          borderColour = '#2cab70';
+          textColour = '#ffffff';
+        }
+        if ( status.label != '' ) {
+          this.start()
+            .add(status.label)
+            .style({
+              'color': textColour,
+              'border': '1px solid ' + borderColour,
+              'border-radius': '100px',
+              'background': bgColour,
+              'padding': '3px 10px 3px 10px',
+              'display': 'inline-block'
+            })
+          .end();
+        }
+      }
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.AccountStatus',
+      name: 'previousStatus',
+      documentation: `Tracks the previous status of the User.`
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationAuthority',
+      documentation: `An organization that has the power to issue and process a
+        business registration.`,
+      width: 35,
+      validateObj: function(businessRegistrationAuthority) {
+        var re = /^[a-zA-Z0-9 ]{1,35}$/;
+        if ( businessRegistrationAuthority.length > 0 &&
+            ! re.test(businessRegistrationAuthority) ) {
+          return 'Invalid issuing authority.';
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'issuingAuthority',
+      transient: true,
+      documentation: 'An organization that has the power to issue an official document.',
+      getter: function() {
+        return this.businessRegistrationAuthority;
+      },
+      setter: function(x) {
+        this.businessRegistrationAuthority = x;
+      },
+      javaGetter: `return getBusinessRegistrationAuthority();`,
+      javaSetter: `setBusinessRegistrationAuthority(val);`
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'countryOfBusinessRegistration',
+      documentation: `Country where business was registered.`,
+    },
+    {
+      class: 'Date',
+      name: 'businessRegistrationDate',
+      documentation: 'The date that the business was registered by their issuing authority.'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Phone',
+      name: 'phone',
+      documentation: 'The phone number of the business.',
+      factory: function() {
+        return this.Phone.create();
+      },
+      view: { class: 'foam.u2.detail.VerticalDetailView' }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      documentation: `Returns the postal address of the business associated with the
+        User from the Address model.`,
+      factory: function() {
+        return this.Address.create();
+      },
+      view: { class: 'foam.nanos.auth.AddressDetailView' }
+    },
+    {
+      class: 'Boolean',
+      name: 'onboarded',
+      documentation: `Determines whether completed business registration. This property
+        dictates portal views after compliance and account approval.`,
+      value: false,
+      permissionRequired: true
+    },
+    {
       class: 'Int',
       name: 'countXero',
       documentation: 'the number of times that this business has synced to Xero.',
       label: 'Sync Count to Xero'
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.auth.User',
+      name: 'principalOwners',
+      documentation: 'Represents the people who own the majority shares in a business.'
+    },
+    {
+      class: 'Boolean',
+      name: 'holdingCompany',
+      documentation: `Determines whether a Business is a holding company.  A holding company
+        represent a corporate group which owns shares of multiple companies.`
+    },
+    {
+      class: 'String',
+      name: 'sourceOfFunds',
+      documentation: 'The entities that provide funding to the business.'
+    },
+    {
+      class: 'String',
+      name: 'targetCustomers',
+      label: 'Who do you market your products and services to?',
+      documentation: `The type of clients that the business markets its products and
+        services.`
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'suggestedUserTransactionInfo',
+      of: 'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+      documentation: `Returns the expected transaction types, frequency, amount and
+        currencies that the User anticipates making with the platform. This
+        information is required for KYC purposes.  It is drawn from the
+        suggestedUserTransactionInfo object.
+        `
+    },
+    {
+      class: 'String',
+      name: 'taxIdentificationNumber',
+      documentation: `The tax identification number associated with the business of
+      the User.`
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationNumber',
+      width: 35,
+      documentation: `The Business Identification Number (BIN) that identifies your business
+        to federal, provincial or municipal governments and is used by the business
+        for tax purposes. This number is typically issued by an Issuing Authority such as
+        the CRA.`,
+
+      validateObj: function(businessRegistrationNumber) {
+        var re = /^[a-zA-Z0-9 ]{1,35}$/;
+        if ( businessRegistrationNumber.length > 0 &&
+              ! re.test(businessRegistrationNumber) ) {
+          return 'Invalid registration number.';
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'businessIdentificationNumber',
+      transient: true,
+      documentation: `The Business Identification Number (BIN) that identifies your business
+        to federal, provincial or municipal governments and is used by the business
+        for tax purposes. This number is typically issued by an Issuing Authority such as
+        the CRA.`,
+      getter: function() {
+        return this.businessRegistrationNumber;
+      },
+      setter: function(x) {
+        this.businessRegistrationNumber = x;
+      },
+      javaGetter: `return getBusinessRegistrationNumber();`,
+      javaSetter: `setBusinessRegistrationNumber(val);`
     }
   ],
 
@@ -120,7 +312,7 @@ foam.CLASS({
         }
 
         // Temporarily prohibit businesses based in Quebec.
-        Address businessAddress = this.getBusinessAddress();
+        Address businessAddress = this.getAddress();
 
         if ( businessAddress != null && SafetyUtil.equals(businessAddress.getRegionId(), "QC") ) {
           throw new IllegalStateException("Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.");

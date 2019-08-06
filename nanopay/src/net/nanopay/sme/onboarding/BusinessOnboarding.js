@@ -562,7 +562,8 @@ foam.CLASS({
         }
       ]
     },
-    foam.nanos.auth.User.BUSINESS_ADDRESS.clone().copyFrom({
+    net.nanopay.model.Business.ADDRESS.clone().copyFrom({
+      name: 'businessAddress',
       label: '',
       section: 'businessAddressSection',
       view: function(args, X) {
@@ -613,7 +614,7 @@ foam.CLASS({
       ],
       validationTextVisible: true
     }),
-    foam.nanos.auth.User.BUSINESS_TYPE_ID.clone().copyFrom({
+    net.nanopay.model.Business.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Type of business',
       section: 'businessDetailsSection',
       placeholder: 'Select...',
@@ -651,7 +652,7 @@ foam.CLASS({
         }
       ]
     },
-    foam.nanos.auth.User.SOURCE_OF_FUNDS.clone().copyFrom({
+    net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
       label: 'Primary source of funds',
       view: {
@@ -853,7 +854,7 @@ foam.CLASS({
       ]
     }),
 
-    foam.nanos.auth.User.TARGET_CUSTOMERS.clone().copyFrom({
+    net.nanopay.model.Business.TARGET_CUSTOMERS.clone().copyFrom({
       section: 'transactionDetailsSection',
       view: {
         class: 'foam.u2.tag.TextArea',
