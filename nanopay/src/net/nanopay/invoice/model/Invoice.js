@@ -546,13 +546,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.nanos.fs.FileProperty',
-      name: 'transactionConfirmationPDF',
-      documentation: `Generates an order confirmation, as a PDF, for the Payer. This property exists 
-        to keep  that PDF in such a scenario.
-      `
-    },
-    {
       class: 'Boolean',
       name: 'isSyncedWithAccounting',
       factory: function() {
