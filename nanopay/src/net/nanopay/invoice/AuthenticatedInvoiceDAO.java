@@ -45,7 +45,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
     // Check if the user has invoice.create permission
     Invoice oldInvoice = (Invoice) getDelegate().find(obj);
     if ( oldInvoice == null && ! auth.check(x, "invoice.create") ) {
-      throw new AuthorizationException();
+      throw new AuthorizationException("You do not have permission to create invoices.");
     }
 
     // Check if the user has global access permission.
