@@ -14,12 +14,10 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'approvalRequestDAO',
     'complianceHistoryDAO',
     'currencyDAO',
     'homeDenomination',
-    'stack?',
-    'userDAO'
+    'stack?'
   ],
 
   javaImports: [
@@ -54,14 +52,10 @@ foam.CLASS({
   ],
 
   requires: [
-   'foam.u2.dialog.NotificationMessage',
-   'net.nanopay.approval.ApprovalStatus',
-   'net.nanopay.tx.ExpediteCICOApprovalRequest',
    'net.nanopay.tx.ETALineItem',
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
-   'net.nanopay.tx.model.TransactionStatus',
-   'net.nanopay.tx.cico.CITransaction'
+   'net.nanopay.tx.model.TransactionStatus'
  ],
 
   constants: [
@@ -568,12 +562,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'toSummary',
-      code: function() {
-        return this.type;
-      }
-    },
-    {
       name: 'doFolds',
       javaCode: `
 for ( Balance b : getBalances() ) {
@@ -1003,29 +991,6 @@ for ( Balance b : getBalances() ) {
             m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
             m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
           ))
-        });
-      }
-    },
-    {
-      name: 'expedite',
-      isAvailable: function() {
-        return this.CITransaction.isInstance(this);
-      },
-      code: function(X) {
-        // approve approval request associated to ci transaction
-        var m = foam.mlang.ExpressionsSingleton.create({});
-        this.approvalRequestDAO.where(
-          m.EQ(this.ExpediteCICOApprovalRequest.OBJ_ID, this.id)
-        ).select().then(function(a) {
-          a.array.forEach(function(request) {
-            if ( request.status == self.ApprovalStatus.APPROVED ) {
-              ctrl.add(self.NotificationMessage.create({ message: 'Cash In transaction has already been marked for expedition.' }));
-              return;
-            }
-            request.status = self.ApprovalStatus.APPROVED;
-            self.approvalRequestDAO.put(request);
-            ctrl.add(self.NotificationMessage.create({ message: 'Cash In transaction successfully marked for expedition.' }));
-          });
         });
       }
     }
