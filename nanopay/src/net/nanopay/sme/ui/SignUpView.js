@@ -275,7 +275,7 @@ foam.CLASS({
                   placeholder: 'Select your country',
                   dao: this.countryDAO.where(this.OR(
                     this.EQ(this.Country.NAME, 'Canada'),
-                    // this.EQ(this.Country.NAME, 'USA')
+                    this.EQ(this.Country.NAME, 'USA')
                   )),
                   objToChoice: function(a) {
                     return [a.id, a.name];
