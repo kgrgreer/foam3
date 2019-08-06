@@ -229,3 +229,26 @@ for ( Business business : businesses ) {
 }
   """
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Migrate Business",
+  "status": 2,
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import net.nanopay.model.Business;
+    import java.util.List;
+
+    DAO localBusinessDAO = ((DAO) x.get(\"localBusinessDAO\")).inX(x);
+    ArraySink businessSink = (ArraySink) localBusinessDAO.select(new ArraySink());
+    businessList = businessSink.getArray();
+    for (Business business : businessList) {
+      business = (Business) business.fclone();
+      business.setAddress(business.getBusinessAddress());
+      business.setPhone(business.getBusinessPhone());
+      localBusinessDAO.put(business);
+    }
+  """,
+  "output": ""
+})
