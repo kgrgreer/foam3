@@ -340,7 +340,8 @@ p({
   "client":
   """
   {
-    "of":"net.nanopay.auth.PublicBusinessInfo", "remoteListenerSupport": false
+    "of":"net.nanopay.auth.PublicBusinessInfo",
+    "remoteListenerSupport": false
   }
   """
 })
