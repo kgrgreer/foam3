@@ -273,3 +273,118 @@ for ( Business business : businesses ) {
 }
   """
 })
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "AuthService.check Performance Check",
+  "description": "Outputs the time it takes to make calls to the AuthService.check method under different circumstances.",
+  "code": """
+// A script to measure time it takes to call AuthService.check under different
+// conditions.
+
+// The number of calls to do.
+NUM_CALLS = 1000;
+
+// The permission that will be checked.
+PERMISSION_TO_CHECK = "fake.permission";
+
+// Set to true if you want the user to have passed compliance. This is relevant
+// because ComplianceAuthService has to do more work if it's checking a
+// permission for a user and/or business that hasn't passed compliance.
+PASSED_COMPLIANCE = true;
+
+// Set this if you want a specific existing user to be in the context when
+// running the script.
+USER_ID = x.get("user").getId();
+
+// Set this if you want the user identified by USER_ID to act as another user.
+BUSINESS_TO_ACT_AS = 0;
+
+
+// -----------------------------------------------------------------------------
+
+import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.auth.AuthService;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.Permission;
+import foam.nanos.auth.User;
+import foam.nanos.session.Session;
+import java.util.Arrays;
+
+AuthService authService = (AuthService) x.get("auth");
+DAO localGroupDAO = (DAO) x.get("localGroupDAO");
+DAO localUserDAO = (DAO) x.get("localUserDAO");
+
+void printContextInfo(X context) {
+  Group g = context.get("group");
+  print(String.format("Group:\t%s", new Object[] { g.getId() }));
+  User u = context.get("user");
+  print(String.format("Label:\t%s", new Object[] { u.label() }));
+  print(String.format("Uid:\t%s", new Object[] { u.getId() }));
+}
+
+void executeCalls(X context) {
+  double sum = 0.0;
+  durations = new double[NUM_CALLS];
+  double worst = 0.0;
+  double best = Double.MAX_VALUE;
+
+  print(String.format("Calling AuthService.check %d times...", new Object[] { NUM_CALLS }));
+
+  printContextInfo(context);
+
+  for ( int i = 0; i < NUM_CALLS; i++ ) {
+    long startTime = System.nanoTime();
+
+    authService.check(context, PERMISSION_TO_CHECK);
+
+    long endTime = System.nanoTime();
+
+    double duration = (double) ((endTime - startTime) / 1000000.0);
+    if ( duration < best ) best = duration;
+    if ( duration > worst ) worst = duration;
+    durations[i] = duration;
+    sum += duration;
+  }
+
+  // Calculate and print mean
+  mean = (double) sum / NUM_CALLS;
+  print(String.format("Mean:\t%.3f\tms", new Object[] { mean }));
+
+  // Calculate and print median
+  Arrays.sort(durations);
+
+  if ( NUM_CALLS % 2 == 0 ) {
+    double median = (double) (durations[NUM_CALLS / 2 - 1] + durations[NUM_CALLS / 2]) / 2.0;
+    print(String.format("Median:\t%.3f\tms", new Object[] { median }));
+  } else {
+    long median = durations[N / 2];
+    print(String.format("Median:\t%.3f\tms", new Object[] { median }));
+  }
+
+  // Print longest and shortest durations.
+  print(String.format("Best:\t%.3f\tms", new Object[] { best }));
+  print(String.format("Worst:\t%.3f\tms", new Object[] { worst }));
+
+  // Print the total duration.
+  print(String.format("Total:\t%.3f\tms", new Object[] { sum }));
+}
+
+context = null;
+
+if ( USER_ID == x.get("user").getId() ) {
+  context = x;
+} else {
+  userContext = foam.util.Auth.sudo(x, USER_ID);
+  if ( BUSINESS_TO_ACT_AS == 0 ) {
+    context = userContext;
+  } else {
+    business = localUserDAO.find(BUSINESS_TO_ACT_AS);
+    userContext.get("agentAuth").actAs(userContext, business);
+    context = userContext.get(Session.class).getContext();
+  }
+}
+
+executeCalls(context);
+  """
+})
