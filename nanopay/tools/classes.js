@@ -48,6 +48,7 @@ var classes = [
   'net.nanopay.payment.PayrollEntry',
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
+  'net.nanopay.payment.InstitutionPaymentProvider',
   'net.nanopay.account.Balance',
   'net.nanopay.account.DuplicateAccountRule',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
@@ -667,6 +668,7 @@ var classes = [
   'net.nanopay.business.EnforceOneBusinessAdminDAO',
   'net.nanopay.business.JoinBusinessTokenService',
   'net.nanopay.business.UpdateBusinessEmailRule',
+  'net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',

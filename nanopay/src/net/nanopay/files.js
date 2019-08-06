@@ -11,6 +11,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/Institution' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
+  { name: 'net/nanopay/payment/InstitutionPaymentProvider' },
   { name: 'net/nanopay/payment/Payroll' },
   { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
@@ -1082,6 +1083,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
   { name: 'net/nanopay/business/JoinBusinessTokenService' },
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
+  { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
