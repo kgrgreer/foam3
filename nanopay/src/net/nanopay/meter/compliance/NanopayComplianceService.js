@@ -136,22 +136,20 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        Business cachedBusiness = (Business) x.get("cachedComplianceBusiness");
-        User user = (cachedBusiness != null) ? cachedBusiness : (User) x.get("user");
+        User user = (User) x.get("user");
         if ( user instanceof Business ) {
-          if ( cachedBusiness == null && user != null ) {
-            DAO businessDao = (DAO) x.get("localBusinessDAO");
-            if ( businessDao != null ) {
-              cachedBusiness = (Business) businessDao.find(user.getId());
-              List<BusinessUserJunction> signingOfficers = ((ArraySink) cachedBusiness
-                .getSigningOfficers(x).getJunctionDAO().where(
-                  EQ(BusinessUserJunction.SOURCE_ID, cachedBusiness.getId()))
-                .select(new ArraySink())).getArray();
-              coalesceBusinessAndSigningOfficersCompliance(cachedBusiness, signingOfficers);
-              x.put("cachedComplianceBusiness", cachedBusiness);
-            }
+          DAO businessDao = (DAO) x.get("localBusinessDAO");
+          assert businessDao != null : "localBusinessDAO must not be null";
+
+          Business business = (Business) businessDao.find(user);
+          if ( ComplianceStatus.PASSED == business.getCompliance() ) {
+            List<BusinessUserJunction> signingOfficers = ((ArraySink) business
+              .getSigningOfficers(x).getJunctionDAO().where(
+                EQ(BusinessUserJunction.SOURCE_ID, business.getId()))
+              .select(new ArraySink())).getArray();
+            coalesceBusinessAndSigningOfficersCompliance(business, signingOfficers);
           }
-          return cachedBusiness != null && cachedBusiness.getCompliance() == ComplianceStatus.PASSED;
+          return business.getCompliance() == ComplianceStatus.PASSED;
         }
         return true;
       `
