@@ -30,6 +30,8 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.Currency',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.tx.ConfirmationPDFLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionConfirmationFileGenerator',
@@ -105,6 +107,19 @@ foam.CLASS({
       `
     },
     {
+      name: 'limitedCopyFrom',
+      args: [
+        {
+          name: 'other',
+          javaType: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      javaCode: `
+      super.limitedCopyFrom(other);
+      setLineItems(other.getLineItems());
+      `
+    },
+    {
       name: 'executeAfterPut',
       args: [
         {
@@ -118,26 +133,14 @@ foam.CLASS({
       ],
       javaCode: `
         super.executeAfterPut(x, oldTxn);
+        if ( oldTxn == null ) {
+          // Generate a transaction confirmation PDF and store it as a ConfirmationPDFLineItem
+          File pdf = new TransactionConfirmationFileGenerator.Builder(x).build()
+          .generateTransactionConfirmationPDF(x, this);
+          addLineItems(new TransactionLineItem[] {new ConfirmationPDFLineItem.Builder(x).setGroup("fx").setPdf(pdf).build()}, null);
+          ((DAO) x.get("transactionDAO")).inX(x).put(this.fclone());
+        } 
 
-        long invoiceId = this.getInvoiceId();
-
-        if ( invoiceId == 0 ) {
-          return;
-        }
-
-        DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-        Invoice invoice = (Invoice) invoiceDAO.find(invoiceId).fclone();
-
-        if ( invoice == null ) {
-          throw new RuntimeException(String.format("Invoice with id %d not found. Could not save AFX transaction confirmation PDF.", invoiceId));
-        }
-
-        // Generate a transaction confirmation PDF and store it as an attachment
-        // on the invoice associated with this transaction.
-        File pdf = new TransactionConfirmationFileGenerator.Builder(x).build()
-        .generateTransactionConfirmationPDF(x, this);
-        invoice.setTransactionConfirmationPDF(pdf);
-        invoiceDAO.put(invoice);
       `
     },
     {
@@ -150,8 +153,11 @@ foam.CLASS({
       ],
       javaCode: `
       DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
-      BankAccount sourceAccount = (BankAccount) findSourceAccount(x);
-      User payee = (User) localUserDAO.find(findDestinationAccount(x).getOwner());
+      DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
+
+      BankAccount sourceAccount = (BankAccount) localAccountDAO.find(getSourceAccount());
+      BankAccount destinationAccount = (BankAccount) localAccountDAO.find(getDestinationAccount());
+      User payee = (User) localUserDAO.find(destinationAccount.getOwner());
       User payer = (User) localUserDAO.find(sourceAccount.getOwner());
   
       Address payerAddress = payer.getBusinessAddress();
@@ -229,52 +235,52 @@ foam.CLASS({
       }
   
       StringBuilder doc = new StringBuilder();
-      doc.append(\"<html>\");
-      doc.append(\"<head>\");       
-      doc.append(\"<meta charset=\\\"utf-8\\\">\");
-      doc.append(\"<title>Order Confirmation</title>\");
-      doc.append(\"<style>\");  
-      doc.append(\"body {\");     
-      doc.append(\"  width: 8.5in;\");      
-      doc.append(\"  min-height: 11in;\");      
-      doc.append(\"  font-family: sans-serif;\");      
-      doc.append(\"  font-size: 12px;\");      
-      doc.append(\"}\");      
-      doc.append(\"img {\");       
-      doc.append(\"  width: 250px\");      
-      doc.append(\"}\");     
-      doc.append(\"h1 {\");       
-      doc.append(\"  text-align: center;\");       
-      doc.append(\"}\");       
-      doc.append(\"h2 {\");       
-      doc.append(\"  text-decoration: underline;\");       
-      doc.append(\"}\");      
-      doc.append(\"footer {\");       
-      doc.append(\"  position: fixed;\");       
-      doc.append(\"  bottom: 0;\");       
-      doc.append(\"}\");      
-      doc.append(\"table {\");      
-      doc.append(\"  border-collapse: collapse;\");       
-      doc.append(\"  width: 100%;\");       
-      doc.append(\"}\");      
-      doc.append(\".transaction td, .transaction th {\");      
-      doc.append(\"  border: 1px solid #ddd;\");       
-      doc.append(\"  padding: 3px;\");      
-      doc.append(\"  vertical-align: top;\");       
-      doc.append(\"}\");        
-      doc.append(\".transaction th {\");       
-      doc.append(\"  background: #ddd;\");       
-      doc.append(\"}\");     
-      doc.append(\".r-align {\");       
-      doc.append(\"  text-align: right;\");      
-      doc.append(\"}\");      
-      doc.append(\"</style>\");       
-      doc.append(\"</head>\");       
-      doc.append(\"<body>\"); 
-      doc.append(\"<img src=\\\"https://ablii.com/wp-content/uploads/2019/01/AFX-Logo.png\\\">\"); 
-      doc.append(\"<h1>ORDER CONFIRMATION</h1>\");
-      doc.append(\"<table>\");
-      doc.append(\"  <tr>\");
+      doc.append("<html>");
+      doc.append("<head>");
+      doc.append("<meta charset=\\"utf-8\\">");
+      doc.append("<title>Order Confirmation</title>");
+      doc.append("<style>");
+      doc.append("body {");
+      doc.append("  width: 8.5in;");
+      doc.append("  min-height: 11in;");
+      doc.append("  font-family: sans-serif;");
+      doc.append("  font-size: 12px;");
+      doc.append("}");
+      doc.append("img {");
+      doc.append("  width: 250px");
+      doc.append("}");
+      doc.append("h1 {");
+      doc.append("  text-align: center;");
+      doc.append("}");
+      doc.append("h2 {");
+      doc.append("  text-decoration: underline;");
+      doc.append("}");
+      doc.append("footer {");
+      doc.append("  position: fixed;");
+      doc.append("  bottom: 0;");
+      doc.append("}");
+      doc.append("table {");
+      doc.append("  border-collapse: collapse;");
+      doc.append("  width: 100%;");
+      doc.append("}");
+      doc.append(".transaction td, .transaction th {");
+      doc.append("  border: 1px solid #ddd;");
+      doc.append("  padding: 3px;");
+      doc.append("  vertical-align: top;");
+      doc.append("}");
+      doc.append(".transaction th {");
+      doc.append("  background: #ddd;");
+      doc.append("}");
+      doc.append(".r-align {");
+      doc.append("  text-align: right;");
+      doc.append("}");
+      doc.append("</style>");
+      doc.append("</head>");
+      doc.append("<body>");
+      doc.append("<img src=\\\"https://ablii.com/wp-content/uploads/2019/01/AFX-Logo.png\\\">"); 
+      doc.append("<h1>ORDER CONFIRMATION</h1>");
+      doc.append("<table>");
+      doc.append("  <tr>");
       doc.append(\"    <td><b>Client ID:</b></td>\");
       doc.append(\"    <td>\").append(clientId).append(\"</td>\");
       doc.append(\"    <td><b>Transaction Number:</b></td>\");
