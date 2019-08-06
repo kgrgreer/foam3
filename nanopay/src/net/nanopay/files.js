@@ -1084,6 +1084,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/EnforceOneBusinessAdminDAO' },
   { name: 'net/nanopay/business/JoinBusinessTokenService' },
   { name: 'net/nanopay/business/UpdateBusinessEmailRule' },
+  { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
 
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
