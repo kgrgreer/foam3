@@ -73,13 +73,11 @@ p({"class":"foam.nanos.boot.NSpec", "name":"alterna",                          "
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localTokenDAO",
-  "lazy":true,
-  "serve":false,
   "authenticate": false,
   "serviceScript":
   """
   return new foam.dao.EasyDAO.Builder(x)
-    .setAuthenticate(false)
+    .setAuthorize(false)
     .setPm(true)
     .setPipelinePm(true)
     .setSeqNo(true)
@@ -98,7 +96,7 @@ p({
   "serviceScript":
   """
   return new foam.dao.EasyDAO.Builder(x)
-    .setInnerDAO((DAO) x.get("localTokenDAO"))
+    .setInnerDAO(x.get("localTokenDAO"))
     .setOf(foam.nanos.auth.token.Token.getOwnClassInfo())
     .build();
   """,
