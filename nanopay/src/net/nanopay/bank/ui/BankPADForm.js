@@ -177,7 +177,7 @@ foam.CLASS({
         this.viewData.agree2 = this.TC2;
         this.viewData.agree3 = this.TC3;
       }
-      this.viewData.user.address = this.user.businessAddress;
+      this.viewData.user.address = this.user.address;
 
       this.addClass(this.myClass())
         .start('p').add(this.LABEL_LEGAL_NAME).addClass(this.myClass('section-header')).end()
