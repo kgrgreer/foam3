@@ -29,7 +29,7 @@ foam.CLASS({
     {
       /*
        * It's possible to set the 'deleted' property to 'true' directly rather
-       * than by calling 'remove' and letting 'CreatedAwareDAO' do it for you.
+       * than by calling 'remove' and letting 'DeletedAwareDAO' do it for you.
        * Therefore we cover that case here. That's also the reason this is a
        * decorator instead of a rule. We'd need two rules, one for remove and
        * one for update otherwise. We could have also switched the order that
