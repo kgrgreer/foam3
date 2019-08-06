@@ -17,6 +17,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.dashboard.cards.BankIntegrationCard',
     'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard',
@@ -31,6 +32,7 @@ foam.CLASS({
     'agent',
     'businessOnboardingDAO',
     'businessInvitationDAO',
+    'canadaUsBusinessOnboardingDAO',
     'user',
     'userDAO'
   ],
@@ -131,6 +133,10 @@ foam.CLASS({
     },
     'userData',
     'bankAccount',
+    {
+      class: 'Boolean',
+      name: 'internationalPaymentEnabled',
+    },
     'userHasPermissionsForAccounting',
     'businessOnboarding',
     'onboardingStatus'
@@ -142,6 +148,16 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.canadaUsBusinessOnboardingDAO.find(
+        this.AND(
+          this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, this.agent.id),
+          this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, this.userData.id)
+        )
+      ).then((o) => {
+        this.internationalPaymentEnabled = o && o.status === this.OnboardingStatus.SUBMITTED;
+      });
+    },
     function initE() {
       this.addClass(this.myClass())
         .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
@@ -164,7 +180,9 @@ foam.CLASS({
                 .style({ 'margin-bottom': '20px' })
               .end()
               .start('span')
-                .tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus })
+                .add(this.slot(function(internationalPaymentEnabled) {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.INTERNATIONAL, isComplete: this.onboardingStatus && internationalPaymentEnabled }).end()
+                }))
               .end()
             .end();
         })

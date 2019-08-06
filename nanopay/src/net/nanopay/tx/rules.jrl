@@ -9,3 +9,66 @@ p({"class":"foam.nanos.ruler.Rule","id":3005,"name":"Set Approved By","priority"
 p({"class":"foam.nanos.ruler.Rule","id":3006,"name":"SwitchToSlowPay","priority":100,"ruleGroup":"FastPay","documentation":"If we know that fast pay will fail due to nsf in some account, transition to slowpay","daoKey":"localTransactionDAO","operation":1,"after":false,"action":{"class":"net.nanopay.tx.ruler.SlowDownRule"},"enabled":true,"saveHistory":true})
 p({"class":"foam.nanos.ruler.Rule","id":3100,"name":"Account Liquification","priority":100,"ruleGroup":"Liquidity","documentation":"Triggers liquidity settings","daoKey":"localTransactionDAO","operation":3,"after":true,"enabled":true,"action":{"class":"net.nanopay.liquidity.LiquidityRule"},"saveHistory":true})
 p({"class":"foam.nanos.ruler.Rule","id":3020,"name":"observeStatus","priority":100,"ruleGroup":"Observer","documentation":"Change the last status field to the current time for all transaction status changes","daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"net.nanopay.tx.ruler.ObservePredicate","observedProperty":"status","observedClass":"net.nanopay.tx.model.Transaction"},"enabled":true,"saveHistory":true,"action":{"class":"net.nanopay.tx.ruler.ChangeFieldAction","changeProperty":"lastStatusChange","to":{"class":"foam.mlang.CurrentTime"}}})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":3008,
+  "name":"Quote Transaction Based on Status",
+  "priority":100,
+  "ruleGroup":"Quote Transaction",
+  "documentation":"Sets is quoted to true on transaction that are in a PAUSED or SCHEDULED state",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":false,
+  "action":{
+    "class":"net.nanopay.tx.ruler.TransactionQuotedStatusRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.OR",
+    "args":[
+    {
+      "class":"foam.mlang.predicate.Eq",
+      "arg1":{
+        "class":"foam.mlang.expr.Dot",
+        "arg1":{
+          "class":"foam.mlang.ContextObject","key":"NEW"
+        },
+        "arg2":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.tx.model.Transaction",
+          "name":"status"
+        }
+      },
+      "arg2":{
+        "class":"foam.mlang.Constant",
+        "value":{
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":10
+        }
+      }
+    },
+    {
+      "class":"foam.mlang.predicate.Eq",
+      "arg1":{
+        "class":"foam.mlang.expr.Dot",
+        "arg1":{
+          "class":"foam.mlang.ContextObject","key":"NEW"
+        },
+        "arg2":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.tx.model.Transaction",
+          "name":"status"
+        }
+      },
+      "arg2":{
+        "class":"foam.mlang.Constant",
+        "value":{
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":13
+        }
+      }
+    }
+  ]}
+})
+
