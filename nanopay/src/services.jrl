@@ -179,12 +179,14 @@ p({
   """,
   "client":"{\"of\":\"foam.nanos.auth.User\",\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
 })
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localBusinessDAO",
   "description":"A Business filter on localUserDAO",
   "authenticate": false,
-  "serviceScript": """
+  "serviceScript":
+  """
     foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class);
     inner = x.get("localUserDAO").where(predicate);
     return new foam.dao.EasyDAO.Builder(x)
@@ -193,7 +195,21 @@ p({
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.model.Business\", \"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
+  "client":
+  """
+  {
+    "of":"net.nanopay.model.Business",
+    "remoteListenerSupport": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"businessDAO",                      "serve":true,  "description":"Adds authorization to localBusinessDAO and is served to the client", "serviceScript": "return new foam.nanos.auth.AuthorizationDAO(x, x.get(\"localBusinessDAO\"), new foam.nanos.auth.AuthorizableAuthorizer(\"business\"));", "client": "{\"of\":\"net.nanopay.model.Business\", \"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
