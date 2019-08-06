@@ -317,7 +317,7 @@ foam.CLASS({
         if ( this.Invoice.isInstance(this.dataFromNewInvoiceForm) ) {
           this.invoice.copyFrom(this.dataFromNewInvoiceForm);
         } else {
-          // if not restoring an invoice, clear fields.
+         // if not resorting an invoice, clear fields.
           this.invoice = this.Invoice.create({});
         }
       }
