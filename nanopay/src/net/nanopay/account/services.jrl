@@ -66,6 +66,7 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setInnerDAO(AAD)
+      .setAuthorize(false)
       .setOf(net.nanopay.account.Account.getOwnClassInfo())
       .build();
   """,
