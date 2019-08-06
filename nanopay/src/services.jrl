@@ -208,7 +208,27 @@ p({"class":"foam.nanos.boot.NSpec", "name":"settlementReports",                "
 p({"class":"foam.nanos.boot.NSpec","name":"securefactSIDniDAO",                "lazy":true,"serve":true,"serviceScript":"ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo(), \"securefactSIDni\"), \"securefactSIDniDAO\"); dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setInnerDAO(ruler).setName(\"securefactSIDni\").setOf(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo()).build(); return dao;","client":"{\"of\":\"net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse\"}"})
 p({"class":"foam.nanos.boot.NSpec","name":"securefactLEVDAO",                  "lazy":true,"serve":true,"serviceScript":"ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo(), \"securefactLEV\"), \"securefactLEVDAO\"); dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setInnerDAO(ruler).setName(\"securefactLEV\").setOf(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo()).build(); return dao;","client":"{\"of\":\"net.nanopay.meter.compliance.secureFact.lev.LEVResponse\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"securefactService",                "lazy":false, "serve":false, "service":{"class":"net.nanopay.meter.compliance.secureFact.SecurefactService"}})
-p({"class":"foam.nanos.boot.NSpec","name":"identityMindResponseDAO",           "lazy":true,"serve":true,"serviceScript":"ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.compliance.identityMind.IdentityMindResponse.getOwnClassInfo(), \"identityMindResponses\"), \"identityMindResponseDAO\"); dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setInnerDAO(ruler).setName(\"identityMindResponse\").setOf(net.nanopay.meter.compliance.identityMind.IdentityMindResponse.getOwnClassInfo()).build(); return dao;","client":"{\"of\":\"net.nanopay.meter.compliance.identityMind.IdentityMindResponse\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "identityMindResponseDAO",
+  "lazy": true,
+  "serve": true,
+  "serviceScript": """
+    of = net.nanopay.meter.compliance.identityMind.IdentityMindResponse.getOwnClassInfo();
+    hd = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, of, "identityMindResponses");
+    rd = new foam.nanos.ruler.RulerDAO(x, hd, "identityMindResponseDAO");
+    ed = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setInnerDAO(rd)
+      .setName("identityMindResponse")
+      .setOf(of)
+      .build();
+    return ed;
+  """,
+  "client":"{\"of\":\"net.nanopay.meter.compliance.identityMind.IdentityMindResponse\"}"
+})
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "identityMindService",
