@@ -104,7 +104,7 @@ address.setRegionId(regionDAO.find("ON").getCode());
 birthday = new GregorianCalendar(2000, 1, 1).getTime();
 
 for(int j = 0; j < emails.length; j+=2) {
-    print("\nCompany "+(i+j));
+    print("Company "+(i+j));
     user = new User();
     user.setFirstName("Test");
     user.setLastName("Admin");
@@ -148,7 +148,7 @@ for(int j = 0; j < emails.length; j+=2) {
 
     accountDAO.put(account);
 
-    print("ADMIN CREATED :\n . "+user.getEmail() + "\n . " + (passwords.length<j+1?passwords[0]:passwords[j]));
+    print("ADMIN CREATED : . "+user.getEmail() + " . " + (passwords.length<j+1?passwords[0]:passwords[j]));
 
     admin = user;
 
@@ -173,7 +173,7 @@ for(int j = 0; j < emails.length; j+=2) {
     junction.setTargetId(business.getId());
     agentJunctionDAO.put(junction);
 
-    print("EMPLOYEE CREATED :\n . "+user.getEmail() + "\n . " + (passwords.length<j+2?passwords[0]:passwords[j+1]));
+    print("EMPLOYEE CREATED : . "+user.getEmail() + " . " + (passwords.length<j+2?passwords[0]:passwords[j+1]));
 }
   """
 })
