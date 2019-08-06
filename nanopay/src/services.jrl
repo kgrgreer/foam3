@@ -123,8 +123,12 @@ p({
   "serviceScript":
   """
     bu = x.get("bareUserDAO");
+
+    // Note: can't use EasyDAO createdAware & deletedAware due to incorrect
+    //       chaining order.
     da = new foam.nanos.auth.DeletedAwareDAO(x, "user", bu);
     ca = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(da).build();
+
     r = new foam.nanos.ruler.RulerDAO(x, ca, "localUserDAO");
     dajoudd = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(r).build();
     ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dajoudd).build();
@@ -144,8 +148,13 @@ p({
     pde = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, pdce);
     cew = new net.nanopay.auth.email.CheckEmailWhitelistDAO(x, pde);
     v = new foam.dao.ValidatingDAO(x, cew);
-    pm = new foam.dao.PMDAO(x, v);
-    return pm;
+
+    return new foam.dao.EasyDAO.Builder(x)
+        .setPm(true)
+        .setOf(foam.nanos.auth.User.getOwnClassInfo())
+        .setInnerDAO(v)
+        .setAuthorize(false)
+        .build();
   """
 })
 
