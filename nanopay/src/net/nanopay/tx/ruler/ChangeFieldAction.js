@@ -17,7 +17,7 @@ foam.CLASS({
     },
     {
       name: 'to',
-      class: 'Expression'
+      class: 'foam.mlang.ExprProperty'
     }
   ],
 
@@ -26,7 +26,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         FObject nu  = (FObject) obj;
-        nu.getClassInfo().getAxiomByName(getChangeProperty()).set(getTo());
+        nu.setProperty(getChangeProperty(),getTo().f(x));
       `
     }
   ]

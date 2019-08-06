@@ -30,7 +30,7 @@ foam.CLASS({
       javaCode: `
        FObject nu  = (FObject) NEW_OBJ.f(obj);
        FObject old = (FObject) OLD_OBJ.f(obj);
-       return ( getObservedClass().isInstance(nu) &&  ( nu.getClassInfo().getAxiomByName(getObservedProperty()) != old.getClassInfo().getAxiomByName(getObservedProperty()) ) );
+       return ( getObservedClass().isInstance(nu) &&  ( nu.getProperty(getObservedProperty()) != old.getProperty(getObservedProperty()) ) );
       `
     }
   ]
