@@ -81,7 +81,8 @@ p({
     da = new foam.nanos.auth.DeletedAwareDAO(x, "user", bu);
     ca = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(da).build();
     r = new foam.nanos.ruler.RulerDAO(x, ca, "localUserDAO");
-    ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(r).build();
+    dajoudd = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(r).build();
+    ldu = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dajoudd).build();
     uph = new foam.nanos.auth.UserPasswordHashingDAO(x, ldu);
     aduih = new net.nanopay.meter.AdditionalDocumentsUpdatedIpHistoryDAO.Builder(x).setDelegate(uph).build();
     uccpfe = new net.nanopay.onboarding.email.UserCompliancePassEmailDAO.Builder(x).setDelegate(aduih).build();
