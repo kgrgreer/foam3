@@ -54,7 +54,6 @@ p({
   "serviceScript":
   """
   return new foam.dao.EasyDAO.Builder(x)
-    .setAuthenticate(false)
     .setPm(true)
     .setPipelinePm(true)
     .setSeqNo(true)
@@ -73,7 +72,7 @@ p({
   "serviceScript":
   """
   return new foam.dao.EasyDAO.Builder(x)
-    .setInnerDAO((DAO) x.get("localTokenDAO"))
+    .setInnerDAO((foam.dao.DAO) x.get("localTokenDAO"))
     .setOf(foam.nanos.auth.token.Token.getOwnClassInfo())
     .build();
   """,
