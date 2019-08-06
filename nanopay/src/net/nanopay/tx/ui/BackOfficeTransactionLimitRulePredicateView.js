@@ -43,9 +43,10 @@ foam.CLASS({
       
       var filteredReferenceView = elementSlot.get();
 
-      this.onDetach(filteredReferenceView.data$.sub((_, __, ___, valueSlot) => {
-        this.references = [valueSlot.get()];
-      }));
+      this.onDetach(this.references$.follow(filteredReferenceView.data$.map((val) => [val])));
+      // this.onDetach(filteredReferenceView.data$.sub((_, __, ___, valueSlot) => {
+      //   this.references = [valueSlot.get()];
+      // }));
     }
   ],
 
