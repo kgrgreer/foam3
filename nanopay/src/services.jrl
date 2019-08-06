@@ -311,7 +311,38 @@ p({
   """
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"localBusinessDAO",                 "description":"A Business filter on localUserDAO", "authenticate": false, "serviceScript": "return new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class), x.get(\"localUserDAO\"), net.nanopay.model.Business.getOwnClassInfo(), net.nanopay.model.Business.ID);", "client": "{\"of\":\"net.nanopay.model.Business\", \"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localBusinessDAO",
+  "description":"A Business filter on localUserDAO",
+  "authenticate": false,
+  "serviceScript":
+  """
+    foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class);
+    inner = x.get("localUserDAO").where(predicate);
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setInnerDAO(inner)
+      .setOf(net.nanopay.model.Business.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.model.Business",
+    "remoteListenerSupport": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"publicBusinessDAO",                "serve":true,  "description":"A read-only version of localBusinessDAO that only returns a few properties of businesses that have been marked as public.", "serviceScript": "return new net.nanopay.auth.BusinessToPublicBusinessInfoDAO.Builder(x).setDelegate(x.get(\"localBusinessDAO\")).build();", "client": "{\"of\":\"net.nanopay.auth.PublicBusinessInfo\", \"remoteListenerSupport\": false}"})
 
 p({
