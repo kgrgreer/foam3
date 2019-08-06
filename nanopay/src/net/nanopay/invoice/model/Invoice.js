@@ -450,6 +450,7 @@ foam.CLASS({
       tableWidth: 70,
       documentation: 'A stored copy of the original invoice document.',
       view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' },
+      tableHeaderFormatter: function() { },
       tableCellFormatter: function(files) {
         if ( ! (Array.isArray(files) && files.length > 0) ) return;
         var actions = files.map((file) => {
