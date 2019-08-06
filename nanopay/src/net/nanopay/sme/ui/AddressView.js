@@ -61,7 +61,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'PROVINCE_LABEL', message: 'Province/State' }
+    { name: 'PROVINCE_LABEL', message: 'Province/State' },
+    { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' }
   ],
 
   methods: [
@@ -161,7 +162,7 @@ foam.CLASS({
           .start().addClass('label-input')
             .tag(this.SectionedDetailPropertyView, {
               data$: this.data$,
-              prop: this.Address.POSTAL_CODE
+              prop: this.Address.POSTAL_CODE.clone().copyFrom({label: this.POSTAL_CODE})
             })
           .end()
         .end();
