@@ -48,7 +48,7 @@ foam.CLASS({
     ^info-box {
       display: inline-block;
 
-      width: 245px;
+      width: 260px;
       height: 100px;
     }
 
@@ -107,12 +107,20 @@ foam.CLASS({
       message: 'Unlock domestic payments'
     },
     {
+      name: 'TITLE_US_DOMESTIC',
+      message: 'Unlock US and Canadian Payments'
+    },
+    {
       name: 'TITLE_INTERNATIONAL',
       message: 'Unlock international payments'
     },
     {
       name: 'DESCRIPTION_DOMESTIC',
       message: 'Complete the requirements and unlock domestic payments'
+    },
+    {
+      name: 'DESCRIPTION_US_DOMESTIC',
+      message: 'Complete the requirements and unlock domestic and Canadian Payments'
     },
     {
       name: 'DESCRIPTION_INTERNATIONAL',
@@ -176,8 +184,9 @@ foam.CLASS({
       expression: function(type) {
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return this.TITLE_INTERNATIONAL;
-        }
-        return this.TITLE_DOMESTIC;
+        }       
+        
+        return this.isCanadianBusiness ? this.TITLE_DOMESTIC : this.TITLE_US_DOMESTIC;
       },
       documentation: `
         The title to be used in the card based on card type
@@ -194,7 +203,7 @@ foam.CLASS({
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return this.DESCRIPTION_INTERNATIONAL;
         }
-        return this.DESCRIPTION_DOMESTIC;
+        return this.isCanadianBusiness ? this.DESCRIPTION_DOMESTIC : this.DESCRIPTION_US_DOMESTIC;
       },
       documentation: `
         The description to be used in the card based on card type
