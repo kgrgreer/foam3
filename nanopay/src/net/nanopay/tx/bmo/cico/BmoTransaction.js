@@ -55,6 +55,20 @@ foam.INTERFACE({
     {
       name: 'getRejectReason',
       type: 'String',
+    },
+    {
+      name: 'setSettled',
+      args: [
+        {
+          type: 'Boolean',
+          name: 'settled'
+        }
+      ],
+      type: 'void'
+    },
+    {
+      name: 'getSettled',
+      type: 'Boolean'
     }
   ]
 });
