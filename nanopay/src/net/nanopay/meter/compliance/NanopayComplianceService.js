@@ -183,8 +183,11 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( ! signingOfficers.isEmpty() ) {
-          business.setCompliance(signingOfficers.get(0).getCompliance());
+        for ( BusinessUserJunction junction : signingOfficers ) {
+          if ( business.getCompliance() != junction.getCompliance() ) {
+            business.setCompliance(junction.getCompliance());
+            return;
+          }
         }
       `
     }
