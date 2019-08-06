@@ -30,7 +30,7 @@ case "$MEMORY_MODEL" in
 
   'MEDIUM')
     JAVA_OPTS="${JAVA_OPTS} -Xms1000m"
-    JAVA_OPTS="${JAVA_OPTS} -Xmx4000m"
+    JAVA_OPTS="${JAVA_OPTS} -Xmx6000m"
     JAVA_OPTS="${JAVA_OPTS} -XX:NewSize=192m"
     JAVA_OPTS="${JAVA_OPTS} -XX:MaxNewSize=512m"
 #    JAVA_OPTS="${JAVA_OPTS} -XX:PermSize=512m"
