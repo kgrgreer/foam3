@@ -973,19 +973,6 @@ for ( Balance b : getBalances() ) {
     }
     `
   },
-  {
-    name: 'getTransactionConfirmation',
-    args: [
-      {
-        name: 'x',
-        type: 'Context'
-      }
-    ],
-    type: 'String',
-    javaCode: `
-      return "";
-    `
-  }
 ],
   actions: [
     {
