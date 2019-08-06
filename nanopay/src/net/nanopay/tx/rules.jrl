@@ -12,3 +12,65 @@ p({"class":"foam.nanos.ruler.Rule","id":3008,"name":"Modify Cico Request Status"
 p({"class":"foam.nanos.ruler.Rule","id":3009,"name":"Modify Cico Status Approval","priority":100,"ruleGroup":"ModifyCicoStatusApproval","documentation":"When a cico transaction is created, create an approval request that allows the status to be modified.","daoKey":"localTransactionDAO","operation":0,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"},"action":{"class":"net.nanopay.tx.ModifyCicoStatusApproval"},"enabled":true,"saveHistory":true})
 p({"class":"foam.nanos.ruler.Rule","id":3010,"name":"Prune Cico Approval Cleanup","priority":100,"ruleGroup":"PruneCicoApprovalCleanup","documentation":"Clear pending approval requests for a cico transaction.","daoKey":"localTransactionDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.TransactionStatusPredicate","status":"net.nanopay.tx.model.TransactionStatus.COMPLETED"},{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"}]},"action":{"class":"net.nanopay.meter.compliance.ruler.PruneApprovalRequests","objDaoKey":"localTransactionDAO"},"enabled":true,"saveHistory":true})
 p({"class":"foam.nanos.ruler.Rule","id":3100,"name":"Account Liquification","priority":100,"ruleGroup":"Liquidity","documentation":"Triggers liquidity settings","daoKey":"localTransactionDAO","operation":3,"after":true,"enabled":true,"action":{"class":"net.nanopay.liquidity.LiquidityRule"},"saveHistory":true})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":3008,
+  "name":"Quote Transaction Based on Status",
+  "priority":100,
+  "ruleGroup":"Quote Transaction",
+  "documentation":"Sets is quoted to true on transaction that are in a PAUSED or SCHEDULED state",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":false,
+  "action":{
+    "class":"net.nanopay.tx.ruler.TransactionQuotedStatusRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.OR",
+    "args":[
+    {
+      "class":"foam.mlang.predicate.Eq",
+      "arg1":{
+        "class":"foam.mlang.expr.Dot",
+        "arg1":{
+          "class":"foam.mlang.ContextObject","key":"NEW"
+        },
+        "arg2":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.tx.model.Transaction",
+          "name":"status"
+        }
+      },
+      "arg2":{
+        "class":"foam.mlang.Constant",
+        "value":{
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":10
+        }
+      }
+    },
+    {
+      "class":"foam.mlang.predicate.Eq",
+      "arg1":{
+        "class":"foam.mlang.expr.Dot",
+        "arg1":{
+          "class":"foam.mlang.ContextObject","key":"NEW"
+        },
+        "arg2":{
+          "class":"__Property__",
+          "forClass_":"net.nanopay.tx.model.Transaction",
+          "name":"status"
+        }
+      },
+      "arg2":{
+        "class":"foam.mlang.Constant",
+        "value":{
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":13
+        }
+      }
+    }
+  ]}
+})
