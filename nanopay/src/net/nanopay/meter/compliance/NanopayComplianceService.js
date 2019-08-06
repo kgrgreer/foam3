@@ -48,6 +48,8 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
+        // QUESTION: Why do we cache compliance user and agent? Shouldn't it be
+        // always checking the latest user/agent when checking for compliance?
         User cachedAgent = (User) x.get("cachedComplianceAgent");
         User agent = (cachedAgent != null) ? cachedAgent : (User) x.get("agent");
         if ( agent != null ) {
