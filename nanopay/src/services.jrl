@@ -40,7 +40,29 @@ p({"class":"foam.nanos.boot.NSpec", "name":"localCorridorDAO",                 "
 p({"class":"foam.nanos.boot.NSpec", "name":"corridorDAO",                      "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.AuthenticatedDAO(\"corridor\", x.get(\"localCorridorDAO\"))));","client":"{\"of\":\"net.nanopay.fx.Corridor\"}"})
 // p({"class":"foam.nanos.boot.NSpec", "name":"localPayoutOptionsDAO",         "lazy":true,  "serve":false, "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.fx.interac.ValidatePayoutOptionsDAO(x, new foam.dao.SequenceNumberDAO(new foam.dao.java.JDAO(x, net.nanopay.fx.interac.model.PayoutOptions.getOwnClassInfo(), \"payoutOptions\")))));"})
 // p({"class":"foam.nanos.boot.NSpec", "name":"payoutOptionsDAO",              "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.AuthenticatedDAO(\"payoutOptions\", x.get(\"localPayoutOptionsDAO\"))));","client":"{\"of\":\"net.nanopay.fx.interac.model.PayoutOptions\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"feeDAO",                           "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.tx.model.Fee.getOwnClassInfo(), \"fees\")));", "client":"{\"of\":\"net.nanopay.tx.model.Fee\"}"})
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"feeDAO",                           
+  "serve":true,  
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalName("fees")
+      .setOf(net.nanopay.tx.model.Fee.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """, 
+  "client":
+  """
+  {
+    "of":"net.nanopay.tx.model.Fee"
+  }
+  """
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"brokerDAO",                        "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.java.JDAO(x, net.nanopay.model.Broker.getOwnClassInfo(), \"brokers\")));", "client":"{\"of\":\"net.nanopay.model.Broker\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"recurringInvoiceDAO",              "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.dao.SequenceNumberDAO(new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.invoice.model.RecurringInvoice.getOwnClassInfo(), \"recurringInvoices\"))));","client":"{\"of\":\"net.nanopay.invoice.model.RecurringInvoice\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"alterna",                          "lazy":true,  "serve":false, "serviceClass":"net.nanopay.tx.alterna.AlternaWebAgent"})
