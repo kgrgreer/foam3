@@ -95,7 +95,8 @@ p({
         "class": "net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"
       },
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction"
+        "class": "net.nanopay.meter.compliance.ruler.predicate.TransactionStatusPredicate",
+        "status": "net.nanopay.tx.model.TransactionStatus.PENDING"
       }
     ]
   },
@@ -116,7 +117,7 @@ p({"class":"foam.nanos.ruler.Rule","id":1440,"name":"IdentityMind transfer trans
 
 // Rollup rules
 p({"class":"foam.nanos.ruler.Rule","id":1500,"name":"Clear user approval requests","priority":80,"ruleGroup":"rollup","documentation":"Clear pending approval requests for a user.","daoKey":"localUserDAO","operation":1,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed"},"action":{"class":"net.nanopay.meter.compliance.ruler.PruneApprovalRequests","objDaoKey":"localUserDAO"},"enabled":true,"saveHistory":true})
-p({"class":"foam.nanos.ruler.Rule","id":1501,"name":"Clear transaction approval requests","priority":40,"ruleGroup":"rollup","documentation":"Clear pending approval requests for a transaction.","daoKey":"localTransactionDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"},{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction"}}]},"action":{"class":"net.nanopay.meter.compliance.ruler.PruneApprovalRequests","objDaoKey":"localTransactionDAO"},"enabled":true,"saveHistory":true})
+p({"class":"foam.nanos.ruler.Rule","id":1501,"name":"Clear transaction approval requests","priority":40,"ruleGroup":"rollup","documentation":"Clear pending approval requests for a transaction.","daoKey":"localTransactionDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"},{"class":"foam.mlang.predicate.Not","arg1":{"class":"net.nanopay.meter.compliance.ruler.predicate.TransactionStatusPredicate","status":"net.nanopay.tx.model.TransactionStatus.PENDING"}}]},"action":{"class":"net.nanopay.meter.compliance.ruler.PruneApprovalRequests","objDaoKey":"localTransactionDAO"},"enabled":true,"saveHistory":true})
 p({
   "class": "foam.nanos.ruler.Rule",
   "id": 1510,
@@ -164,7 +165,8 @@ p({
         "class": "net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"
       },
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.IsPendingTransaction"
+        "class": "net.nanopay.meter.compliance.ruler.predicate.TransactionStatusPredicate",
+        "status": "net.nanopay.tx.model.TransactionStatus.PENDING"
       }
     ]
   },
