@@ -51,17 +51,36 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec", "name":"accountDAO",                       "lazy":false,  "serve":true,  "serviceScript":
+  "class":"foam.nanos.boot.NSpec",
+  "name":"accountDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
   """
-    return new foam.dao.PMDAO(x, 
-      new foam.dao.PipelinePMDAO(x, 
-        new net.nanopay.account.AuthenticatedAccountDAO(x, 
-          new foam.nanos.auth.PermissionedPropertyDAO(x, 
-            new net.nanopay.account.AbliiBankAccountAutoverifyDAO(x,  
-              new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")).where(foam.mlang.MLang.EQ(net.nanopay.account.Account.ENABLED, true)),
-                new net.nanopay.bank.BankAccountValidator()))))));
+    foam.dao.DAO AAD = new net.nanopay.account.AuthenticatedAccountDAO(x, 
+      new foam.nanos.auth.PermissionedPropertyDAO(x, 
+        new net.nanopay.account.AbliiBankAccountAutoverifyDAO(x,  
+          new foam.dao.ValidatingDAO(x, ((foam.dao.DAO) x.get("localAccountDAO")).where(foam.mlang.MLang.EQ(net.nanopay.account.Account.ENABLED, true)),
+            new net.nanopay.bank.BankAccountValidator()))));
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setInnerDAO(AAD)
+      .setAuthorize(false)
+      .setOf(net.nanopay.account.Account.getOwnClassInfo())
+      .build();
   """,
-  "client":"{\"of\":\"net.nanopay.account.Account\", \"decorators\":[{\"class\":\"foam.nanos.fs.FileDAODecorator\"}]}"
+  "client":
+  """
+  {
+    "of":"net.nanopay.account.Account",
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      }
+    ]
+  }
+  """
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"digitalAccount",                      "serve":true, "boxClass":"net.nanopay.account.DigitalAccountServiceInterfaceSkeleton", "serviceClass":"net.nanopay.account.DigitalAccountService","client":"{ \"class\":\"net.nanopay.account.ClientDigitalAccountService\", \"serviceName\": \"service/digitalAccount\" }"})
