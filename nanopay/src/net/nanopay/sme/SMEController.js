@@ -476,9 +476,11 @@ foam.CLASS({
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
-      var signingOfficers = await this.getSigningOfficersArray(user);
 
-      this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
+      if ( user.compliance == this.ComplianceStatus.PASSED ) {
+        var signingOfficers = await this.getSigningOfficersArray(user);
+        this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
+      }
 
       /*
        * Get the complianceStatus object from the complianceStatusArray
@@ -503,9 +505,11 @@ foam.CLASS({
     async function checkComplianceAndBanking() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
-      var signingOfficers = await this.getSigningOfficersArray(user);
 
-      this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
+      if ( user.compliance == this.ComplianceStatus.PASSED ) {
+        var signingOfficers = await this.getSigningOfficersArray(user);
+        this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
+      }
 
       var toastElement = this.complianceStatusArray.find((complianceStatus) => {
         return complianceStatus.condition(user, accountArray);
@@ -607,8 +611,13 @@ foam.CLASS({
      * Update user compliance by coalescing it with signing officers compliance.
      */
     function coalesceUserAndSigningOfficersCompliance(user, signingOfficers) {
-      if ( user.compliance == this.ComplianceStatus.PASSED && signingOfficers !== undefined ) {
-        user.compliance = signingOfficers[0].compliance;
+      if ( signingOfficers === undefined ) return;
+
+      for ( let i = 0; i < signingOfficers.length; i++ ) {
+        if ( user.compliance != signingOfficers[i].compliance ) {
+          user.compliance = signingOfficers[0].compliance;
+          return;
+        }
       }
     }
   ],
