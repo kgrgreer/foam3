@@ -74,6 +74,20 @@ public class BmoFormatUtil {
     return result;
   }
 
+  public static String filterASCII(String str) {
+    StringBuilder sb = new StringBuilder();
+
+    for ( char c : str.toCharArray() ) {
+      if ( c <= 126 && c >= 32 ) {
+        sb.append(c);
+      } else {
+        sb.append(' ');
+      }
+    }
+
+    return sb.toString();
+  }
+
   public static void sendEmail(X x, String subject, Exception e) {
     EmailMessage message = new EmailMessage();
 
