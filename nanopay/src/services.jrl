@@ -240,6 +240,7 @@ p({"class":"foam.nanos.boot.NSpec", "name":"encryptedBankAccountDAO",          "
 p({"class":"foam.nanos.boot.NSpec", "name":"privateKeyDAO",                    "serviceScript":"return new net.nanopay.security.PrivateKeyDAO.Builder(x).setAlias(\"net.nanopay.security.PrivateKeyDAO\").setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"privateKeys\").setOf(net.nanopay.security.PrivateKeyEntry.getOwnClassInfo()).build()).build();"})
 p({"class":"foam.nanos.boot.NSpec", "name":"keyPairDAO",                       "serve":true,  "serviceScript":"foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.security.KeyPairEntry.getOwnClassInfo(), \"keyPairs\"); return new net.nanopay.security.KeyPairDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setInnerDAO(hashingJDAO).setSeqNo(true).setOf(net.nanopay.security.KeyPairEntry.getOwnClassInfo()).build()).build();","client":"{\"of\":\"net.nanopay.security.KeyPairEntry\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"publicKeyDAO",                     "serve":true,  "serviceScript":"return new net.nanopay.security.PublicKeyDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"publicKeys\").setOf(net.nanopay.security.PublicKeyEntry.getOwnClassInfo()).build()).build();","client":"{\"of\":\"net.nanopay.security.PublicKeyEntry\"}"})
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"publicUserDAO",
@@ -247,18 +248,26 @@ p({
   "description":"A DAO served to the client that lists all Users in the system. However, it only returns the public user info instead of the entire User object.",
   "serviceScript":
   """
-    /*
-    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.auth.UserToPublicUserInfoDAO(x, x.get(\"localUserUserDAO\"))));"
-    */
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setPipelinePm(true)
-      .setInnerDAO(
-        new net.nanopay.auth.UserToPublicUserInfoDAO(x, x.get("localUserUserDAO")))
+      .setInnerDAO(new net.nanopay.auth.UserToPublicUserInfoDAO(x, x.get("localUserUserDAO")))
       .build()
   """,
-  "client":"{\"of\":\"net.nanopay.auth.PublicUserInfo\",\"cache\":true,\"decorators\": [{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
+  "client":
+  """
+  {
+    "of":"net.nanopay.auth.PublicUserInfo",
+    "cache":true,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
 })
+
 p({"class":"foam.nanos.boot.NSpec", "name":"testReportDAO",                    "description":"DAO to store all of the meta-data related to tests.","serve":true,"pm":false,"serviceScript":"return new foam.dao.EasyDAO.Builder(x).setJournalName(\"testreports\").setName(\"testReportDAO\").setOf(net.nanopay.test.TestReport.getOwnClassInfo()).build();"})
 p({"class":"foam.nanos.boot.NSpec", "name":"P2PTxnRequestDAO",                 "serve":true,   "parameters": false, "pm": true, "serviceScript": "foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.retail.model.P2PTxnRequest.getOwnClassInfo(), \"p2pTxnRequests\");\n\nreturn new net.nanopay.retail.P2PTxnRequestUserInfoDAO(x, new net.nanopay.retail.AuthenticatedP2PTxnRequestDAO(x, new net.nanopay.retail.NewP2PTxnRequestDAO(x, new net.nanopay.retail.ExistingP2PTxnRequestDAO(x, new net.nanopay.retail.P2PTxnRequestNotificationDAO(x, new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setInnerDAO(hashingJDAO).setSeqNo(true).setOf(net.nanopay.retail.NewP2PTxnRequestDAO.getOwnClassInfo()).build())))));","client":"{\"of\":\"net.nanopay.retail.model.P2PTxnRequest\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"SPSCredentials",                   "lazy":false, "serve":true, "authenticate":false, "service":{"class":"net.nanopay.sps.SPSCredentials"}})
