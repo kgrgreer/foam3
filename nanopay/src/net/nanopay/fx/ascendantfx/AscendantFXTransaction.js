@@ -30,7 +30,7 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.Currency',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.tx.ConfirmationPDFLineItem',
+    'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -134,10 +134,10 @@ foam.CLASS({
       javaCode: `
         super.executeAfterPut(x, oldTxn);
         if ( oldTxn == null ) {
-          // Generate a transaction confirmation PDF and store it as a ConfirmationPDFLineItem
+          // Generate a transaction confirmation PDF and store it as a ConfirmationFileLineItem
           File pdf = new TransactionConfirmationFileGenerator.Builder(x).build()
           .generateTransactionConfirmationPDF(x, this);
-          addLineItems(new TransactionLineItem[] {new ConfirmationPDFLineItem.Builder(x).setGroup("fx").setPdf(pdf).build()}, null);
+          addLineItems(new TransactionLineItem[] {new ConfirmationFileLineItem.Builder(x).setGroup("fx").setPdf(pdf).build()}, null);
           ((DAO) x.get("transactionDAO")).inX(x).put(this.fclone());
         } 
 

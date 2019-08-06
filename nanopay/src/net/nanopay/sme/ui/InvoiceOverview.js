@@ -30,7 +30,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
     'net.nanopay.model.Invitation',
-    'net.nanopay.tx.ConfirmationPDFLineItem'
+    'net.nanopay.tx.ConfirmationFileLineItem'
   ],
 
   imports: [
@@ -443,8 +443,8 @@ foam.CLASS({
           });
 
           for ( var i = 0; i < transaction.lineItems.length; i++ ) {
-            if ( this.ConfirmationPDFLineItem.isInstance( transaction.lineItems[i] ) ) {
-              this.transactionConfirmationPDF = transaction.lineItems[i].pdf;
+            if ( this.ConfirmationFileLineItem.isInstance( transaction.lineItems[i] ) ) {
+              this.transactionConfirmationPDF = transaction.lineItems[i].file;
               break;
             }
           }
