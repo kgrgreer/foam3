@@ -549,10 +549,12 @@ var classes = [
   'net.nanopay.meter.compliance.ComplianceApprovalRequest',
   'net.nanopay.meter.compliance.ComplianceAuthService',
   'net.nanopay.meter.compliance.ComplianceAware',
+  'net.nanopay.meter.compliance.ComplianceItem',
   'net.nanopay.meter.compliance.ComplianceValidationStatus',
   'net.nanopay.meter.compliance.ComplianceService',
   'net.nanopay.meter.compliance.NanopayComplianceService',
-  'net.nanopay.meter.compliance.ComplianceItem',
+  'net.nanopay.meter.compliance.SigningOfficerComplianceStatusDAO',
+  'net.nanopay.meter.compliance.SigningOfficerComplianceStatusSink',
   'net.nanopay.meter.reports.DateColumnOfReports',
   'net.nanopay.meter.reports.RowOfBusSumReports',
 

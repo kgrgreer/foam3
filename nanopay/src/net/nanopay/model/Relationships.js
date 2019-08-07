@@ -574,6 +574,21 @@ foam.RELATIONSHIP({
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });
 
+foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'BusinessUserJunctionPropertyRefinement',
+  refines: 'net.nanopay.model.BusinessUserJunction',
+
+  properties: [
+    {
+      class: 'Enum',
+      of: 'net.nanopay.admin.model.ComplianceStatus',
+      name: 'compliance',
+      storageTransient: true
+    }
+  ]
+});
+
 /*
  * Originally this was intended to be a many-to-many relationship because it
  * makes sense that a user could be a beneficial owner in multiple businesses.
