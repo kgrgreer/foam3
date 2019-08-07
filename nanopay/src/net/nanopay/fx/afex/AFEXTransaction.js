@@ -43,6 +43,11 @@ foam.CLASS({
       javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
+      class: 'Long',
+      name: 'afexTradeResponseNumber',
+      documentation: 'id of the AFEX trade response'
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'initialStatus',
