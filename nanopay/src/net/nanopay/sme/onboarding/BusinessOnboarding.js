@@ -216,6 +216,13 @@ foam.CLASS({
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
+      name: 'ownershipYesOrNoSection',
+      title: 'Does your company have anyone that owns 25% or more of the business?',
+      help: `Great, almost done! In accordance with banking laws, we need to document
+          the percentage of ownership of any individual with a 25% + stake in the company.`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
+    },
+    {
       name: 'ownershipAmountSection',
       title: 'How many individuals directly or indirectly own 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document
@@ -224,7 +231,7 @@ foam.CLASS({
     },
     {
       name: 'personalOwnershipSection',
-      title: 'Please select your percentage of ownership',
+      title: 'Please select your principal type and percentage of ownership',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
       isAvailable: function(signingOfficer, amountOfOwners, userOwnsPercent) {
         return signingOfficer && amountOfOwners > 0 && userOwnsPercent;
@@ -861,6 +868,22 @@ foam.CLASS({
         }
       ]
     }),
+    {
+      class: 'Boolean',
+      name: 'ownershipAbovePercent',
+      label: '',
+      section: 'ownershipYesOrNoSection',
+      postSet: function(_, n) {
+        if ( ! n ) this.amountOfOwners = 0;
+      },
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          [false, 'No (or this is a publicly traded company)'],
+          [true, 'Yes, we have owners with 25% +']
+        ],
+      },
+    },
     {
       class: 'Long',
       name: 'amountOfOwners',
