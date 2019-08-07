@@ -43,6 +43,27 @@ public class TransactionDAOTest
     testNoneTxn();
     testCashIn();
     testCashOut();
+    testIsQuoted();
+  }
+
+  public void testIsQuoted() {
+    Transaction txn = new Transaction();
+    txn.setAmount(999L);
+    txn.setPayerId(sender_.getId());
+    txn.setPayeeId(receiver_.getId());
+    txn.setStatus(TransactionStatus.PAUSED);
+    txn.setIsQuoted(false);
+    txn = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, txn);
+    test(txn.getIsQuoted(), "Transaction is quoted when PAUSED");
+
+    Transaction txn2 = new Transaction();
+    txn2.setAmount(999L);
+    txn2.setPayerId(sender_.getId());
+    txn2.setPayeeId(receiver_.getId());
+    txn2.setStatus(TransactionStatus.SCHEDULED);
+    txn2.setIsQuoted(false);
+    txn2 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, txn2);
+    test(txn2.getIsQuoted(), "Transaction is quoted when SCHEDULED");
   }
 
   public X addUsers() {
