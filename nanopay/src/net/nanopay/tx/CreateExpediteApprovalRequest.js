@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'CreateExpediteApprovalRequest',
+  // Rename extended class to something not related to compliance
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: 'Creates an approval request when a Cico transaction is created',
@@ -15,6 +16,14 @@ foam.CLASS({
     'net.nanopay.tx.cico.CITransaction'
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'approverGroupId',
+      value: 'payment-ops'
+    }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -22,7 +31,6 @@ foam.CLASS({
         CITransaction ci = (CITransaction) obj;
         ExpediteCICOApprovalRequest req = new ExpediteCICOApprovalRequest.Builder(x)
           .setObjId(ci.getId())
-          .setGroup("payment-ops")
           .setDescription("Transaction ID: "+ci.getId())
           .build();
 
