@@ -270,6 +270,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Business'
   ],
@@ -486,6 +487,12 @@ foam.CLASS({
         DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
         Business targetUser = (Business) localBusinessDAO.inX(x).find(junctionObj.getTargetId());
 
+        if ( targetUser == null ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.error(String.format("Could not find business with id = %d in localBusinessDAO. The source id, which is the id of the user, is %d.", junctionObj.getTargetId(), junctionObj.getSourceId()));
+          throw new RuntimeException("An unexpected error occured. Please try again later.");
+        }
+
         // Permission string to check authorization.
         String permissionString = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
 
@@ -567,6 +574,21 @@ foam.RELATIONSHIP({
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
   targetProperty: { hidden: true },
   junctionDAOKey: 'signingOfficerJunctionDAO'
+});
+
+foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'BusinessUserJunctionPropertyRefinement',
+  refines: 'net.nanopay.model.BusinessUserJunction',
+
+  properties: [
+    {
+      class: 'Enum',
+      of: 'net.nanopay.admin.model.ComplianceStatus',
+      name: 'compliance',
+      storageTransient: true
+    }
+  ]
 });
 
 /*
