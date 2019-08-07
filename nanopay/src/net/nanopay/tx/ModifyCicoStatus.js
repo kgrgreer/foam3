@@ -8,8 +8,6 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'foam.core.ContextAgent',
-    'foam.core.X',
     'foam.dao.DAO',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.tx.ExpediteCICOApprovalRequest',
