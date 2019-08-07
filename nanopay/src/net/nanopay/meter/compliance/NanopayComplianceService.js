@@ -9,12 +9,16 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
     'foam.nanos.session.Session',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
+    'net.nanopay.model.BusinessUserJunction',
+    'java.util.List',
+    'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
@@ -44,6 +48,8 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
+        // QUESTION: Why do we cache compliance user and agent? Shouldn't it be
+        // always checking the latest user/agent when checking for compliance?
         User cachedAgent = (User) x.get("cachedComplianceAgent");
         User agent = (cachedAgent != null) ? cachedAgent : (User) x.get("agent");
         if ( agent != null ) {
@@ -132,17 +138,20 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        User cachedBusiness = (User) x.get("cachedComplianceBusiness");
-        User user = (cachedBusiness != null) ? cachedBusiness : (User) x.get("user");
+        User user = (User) x.get("user");
         if ( user instanceof Business ) {
-          if ( cachedBusiness == null && user != null ) {
-            DAO businessDao = (DAO) x.get("localBusinessDAO");
-            if ( businessDao != null ) {
-              user = (User) businessDao.find(user.getId());
-              x.put("cachedComplianceBusiness", user);
-            }
+          DAO businessDao = (DAO) x.get("localBusinessDAO");
+          assert businessDao != null : "localBusinessDAO must not be null";
+
+          Business business = (Business) businessDao.find(user);
+          if ( ComplianceStatus.PASSED == business.getCompliance() ) {
+            List<BusinessUserJunction> signingOfficers = ((ArraySink) business
+              .getSigningOfficers(x).getJunctionDAO().where(
+                EQ(BusinessUserJunction.SOURCE_ID, business.getId()))
+              .select(new ArraySink())).getArray();
+            coalesceBusinessAndSigningOfficersCompliance(business, signingOfficers);
           }
-          return user != null && user.getCompliance() == ComplianceStatus.PASSED;
+          return business.getCompliance() == ComplianceStatus.PASSED;
         }
         return true;
       `
@@ -159,6 +168,27 @@ foam.CLASS({
       javaCode: `
         // return true for now until we design a way to retrieve the active account
         return true;
+      `
+    },
+    {
+      name: 'coalesceBusinessAndSigningOfficersCompliance',
+      args: [
+        {
+          name: 'business',
+          type: 'net.nanopay.model.Business'
+        },
+        {
+          name: 'signingOfficers',
+          type: 'List<BusinessUserJunction>'
+        }
+      ],
+      javaCode: `
+        for ( BusinessUserJunction junction : signingOfficers ) {
+          if ( business.getCompliance() != junction.getCompliance() ) {
+            business.setCompliance(junction.getCompliance());
+            return;
+          }
+        }
       `
     }
   ]
