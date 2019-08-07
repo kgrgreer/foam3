@@ -14,10 +14,10 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'currencyDAO',
-    'userDAO',
     'complianceHistoryDAO',
-    'homeDenomination'
+    'currencyDAO',
+    'homeDenomination',
+    'stack?'
   ],
 
   javaImports: [
@@ -981,7 +981,7 @@ for ( Balance b : getBalances() ) {
       availablePermissions: ['service.compliancehistorydao'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
+        this.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
           editEnabled: true,

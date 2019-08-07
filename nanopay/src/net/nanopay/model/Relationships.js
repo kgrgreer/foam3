@@ -240,9 +240,7 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.model.Transaction',
   forwardName: 'children',
-  inverseName: 'parent',
-  sourceProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } },
-  targetProperty: { view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' } }
+  inverseName: 'parent'
 });
 
 
@@ -574,6 +572,21 @@ foam.RELATIONSHIP({
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
   targetProperty: { hidden: true },
   junctionDAOKey: 'signingOfficerJunctionDAO'
+});
+
+foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'BusinessUserJunctionPropertyRefinement',
+  refines: 'net.nanopay.model.BusinessUserJunction',
+
+  properties: [
+    {
+      class: 'Enum',
+      of: 'net.nanopay.admin.model.ComplianceStatus',
+      name: 'compliance',
+      storageTransient: true
+    }
+  ]
 });
 
 /*

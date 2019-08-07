@@ -71,6 +71,9 @@ foam.CLASS({
           contextMenuActions: [
             foam.core.Action.create({
               name: 'verifyAccount',
+              isAvailable: function() {
+                return this.type != self.USBankAccount.name;
+              },
               isEnabled: function() {
                 return this.status === self.BankAccountStatus.UNVERIFIED;
               },

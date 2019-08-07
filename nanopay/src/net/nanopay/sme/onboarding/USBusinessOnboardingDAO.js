@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
-  name: 'BusinessOnboardingDAO',
+  name: 'USBusinessOnboardingDAO',
   extends: 'foam.dao.ProxyDAO',
 
   documentation: `
@@ -42,10 +42,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
+        USBusinessOnboarding businessOnboarding = (USBusinessOnboarding) obj;
         // TODO: Please call the java validator of the businessOnboarding here
 
-        BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
+        USBusinessOnboarding old = (USBusinessOnboarding)getDelegate().find_(x, obj);
 
         if ( old == null || old.getDualPartyAgreement() != businessOnboarding.getDualPartyAgreement() ) {
           net.nanopay.documents.AcceptanceDocumentService documentService =
@@ -75,6 +75,7 @@ foam.CLASS({
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
+        user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
@@ -83,7 +84,6 @@ foam.CLASS({
 
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
-          user.setThirdParty(businessOnboarding.getThirdParty());
           business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
           
           localUserDAO.put(user);
@@ -100,6 +100,9 @@ foam.CLASS({
           business.setBusinessAddress(businessOnboarding.getBusinessAddress());
           business.setPhone(businessOnboarding.getPhone());
           business.setBusinessPhone(businessOnboarding.getPhone());
+          business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
+          business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistrationNumber());
+          business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
 
           // Business info: business details
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());

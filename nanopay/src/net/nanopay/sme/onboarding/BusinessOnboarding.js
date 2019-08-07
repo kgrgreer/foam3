@@ -216,10 +216,11 @@ foam.CLASS({
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
-      name: 'internationalTransactionSection',
-      title: 'Are you going to be sending International Payments?',
-      help: `Thanks! That’s all the details I need to setup local transactions. Now let’s get some more details on your US transactions`,
-      isAvailable: function (signingOfficer) { return signingOfficer && this.hasUSDPermission }
+      name: 'ownershipYesOrNoSection',
+      title: 'Does your company have anyone that owns 25% or more of the business?',
+      help: `Great, almost done! In accordance with banking laws, we need to document
+          the percentage of ownership of any individual with a 25% + stake in the company.`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
       name: 'ownershipAmountSection',
@@ -478,8 +479,7 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = ! X.data.hasUSDPermission ? X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')) 
-          : X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao
@@ -561,8 +561,7 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = ! X.data.hasUSDPermission ? X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA')) 
-        : X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        var dao = X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA'))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao
@@ -870,23 +869,20 @@ foam.CLASS({
       ]
     }),
     {
-      section: 'internationalTransactionSection',
-      class: 'FObjectProperty',
-      name: 'USBusinessDetails',
-      label: 'US Business Details',
-      of: 'net.nanopay.sme.onboarding.USBusinessOnboarding',
-      visibilityExpression: function(appConfig) {
-        return this.hasUSDPermission ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      },
-      factory: function() {
-        return this.USBusinessOnboarding.create({});
-      },
-    },
-    {
       class: 'Boolean',
-      name: 'hasUSDPermission',
-      value: false,
-      hidden: true
+      name: 'ownershipAbovePercent',
+      label: '',
+      section: 'ownershipYesOrNoSection',
+      postSet: function(_, n) {
+        if ( ! n ) this.amountOfOwners = 0;
+      },
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          [false, 'No (or this is a publicly traded company)'],
+          [true, 'Yes, we have owners with 25% +']
+        ],
+      },
     },
     {
       class: 'Long',
