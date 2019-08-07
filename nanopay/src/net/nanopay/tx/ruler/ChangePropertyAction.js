@@ -1,15 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
-  name: 'ChangeFieldAction',
+  name: 'ChangePropertyAction',
 
   documentation: `set the value of a field to the result of an expression`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
-  javaImports: [
-    'foam.core.FObject',
-    'foam.core.PropertyInfo',
-  ],
   properties: [
     {
       name: 'changeProperty',
@@ -25,8 +21,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        FObject nu  = (FObject) obj;
-        nu.setProperty(getChangeProperty(),getTo().f(x));
+        obj.setProperty(getChangeProperty(),getTo().f(x));
       `
     }
   ]

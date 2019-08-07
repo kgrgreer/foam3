@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
-  name: 'ObservePredicate',
+  name: 'PropertyChangePredicate',
 
   documentation: 'Predicate for observing a property',
 
@@ -8,19 +8,14 @@ foam.CLASS({
   implements: ['foam.core.Serializable'],
 
   javaImports: [
-    'foam.core.X',
     'foam.core.FObject',
-    'foam.core.PropertyInfo',
-    'static foam.mlang.MLang.*',
+    'static foam.mlang.MLang.*'
   ],
   properties: [
     {
-      name: 'observedProperty',
-      class: 'String'
-    },
-    {
-      name: 'observedClass',
-      class: 'Class'
+      class: 'String',
+      name: 'propName'
+
     }
   ],
 
@@ -30,7 +25,7 @@ foam.CLASS({
       javaCode: `
        FObject nu  = (FObject) NEW_OBJ.f(obj);
        FObject old = (FObject) OLD_OBJ.f(obj);
-       return ( getObservedClass().isInstance(nu) &&  ( nu.getProperty(getObservedProperty()) != old.getProperty(getObservedProperty()) ) );
+       return ( old != null && nu != null &&  ! foam.util.SafetyUtil.equals( nu.getProperty(getPropName()),old.getProperty(getPropName()) ) );
       `
     }
   ]
