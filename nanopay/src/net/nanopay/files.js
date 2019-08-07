@@ -938,11 +938,11 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/ComplianceApprovalRequest' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
+  { name: 'net/nanopay/meter/compliance/ComplianceItem' },
   { name: 'net/nanopay/meter/compliance/ComplianceValidationStatus' },
   { name: 'net/nanopay/meter/compliance/ComplianceService' },
   { name: 'net/nanopay/meter/compliance/NanopayComplianceService' },
   { name: 'net/nanopay/meter/compliance/refinements' },
-  { name: 'net/nanopay/meter/compliance/ComplianceItem' },
   { name: 'net/nanopay/meter/compliance/ui/ComplianceItemController'},
 
   // ruler
