@@ -53,21 +53,11 @@ foam.CLASS({
         filteredInvoiceHistoryDAO.select(function(o) {
           var status = o.updates.find((u) => u.name === 'status');
           
-          // canBeFailed is added for CPF-2131 to eliminate a possible
-          // side-effect of this fix. (i.e. an "invoice created" item
-          // cannot be a failed transaction)
           var canBeFailed = true;
           if ( status === undefined ) {
             canBeFailed = false;
-
-            // [CPF-2131] At this point, in the code this callback used to
-            // always return null, but this prevents the "Invoice Created"
-            // item from being displayed.
-            if (o.updates.length != 0) {
-              // If the length is not zero, then it's not the "Invoice Created"
-              // item, so the callback can return here as it used to.
-              return null;
-            }
+            // Do not return if updates length is zero ("Invoice Created")
+            if (o.updates.length != 0) return null;
           }
 
           if (
