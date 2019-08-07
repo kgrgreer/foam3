@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'ModifyCicoRequestStatus',
-  extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: 'Updates Cico status for transaction if request is approved. Rule for request.',
 

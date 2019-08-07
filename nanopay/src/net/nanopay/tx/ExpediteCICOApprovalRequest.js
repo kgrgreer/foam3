@@ -8,7 +8,7 @@ foam.CLASS({
   properties: [
     {
       name: 'classification',
-      value: 'Validate Transaction for modifying status'
+      value: 'Expedite transaction'
     },
     {
       name: 'daoKey',
