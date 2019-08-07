@@ -283,7 +283,6 @@ var classes = [
   'net.nanopay.tx.ConfirmationFileLineItem',
   'net.nanopay.fx.ManualFxApprovalRequest',
   'net.nanopay.tx.ManualFxRule',
-  'net.nanopay.tx.ModifyCicoRequestStatus',
   'net.nanopay.tx.ModifyCicoStatus',
   'net.nanopay.util.Frequency',
   'net.nanopay.tx.model.Fee',
