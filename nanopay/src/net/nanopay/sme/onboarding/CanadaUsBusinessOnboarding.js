@@ -92,7 +92,6 @@ foam.CLASS({
       label: 'Business Name',
       section: 'adminReferenceSection',
       postSet: function(_, n) {
-        debugger
         var m = foam.mlang.Expressions.create();
         this.businessOnboardingDAO.find(
           m.AND(
