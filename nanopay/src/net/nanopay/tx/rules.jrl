@@ -21,25 +21,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
     {
-      "class":"foam.mlang.predicate.Eq",
-      "arg1":{
-        "class":"foam.mlang.expr.Dot",
-        "arg1":{
-          "class":"foam.mlang.ContextObject","key":"NEW"
-        }
-        “arg2":{
-          "class":"__Property__",
-          "forClass_":"net.nanopay.tx.model.Transaction",
-          "name":"status"
-        }
-      },
-      "arg2":{
-        "class":"foam.mlang.Constant",
-        "value":{
-          "class":"net.nanopay.tx.model.TransactionStatus",
-          "ordinal”:3
-        }
-      }
+      "class":"net.nanopay.meter.compliance.ruler.predicate.IsSentTransaction"
     },
     {
       "class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"
@@ -66,25 +48,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"foam.mlang.predicate.Eq",
-        "arg1":{
-          "class":"foam.mlang.expr.Dot",
-          "arg1":{
-            "class":"foam.mlang.ContextObject","key":"NEW"
-          }
-          “arg2":{
-            "class":"__Property__",
-            "forClass_":"net.nanopay.tx.model.Transaction",
-            "name":"status"
-          }
-        },
-        "arg2":{
-          "class":"foam.mlang.Constant",
-          "value":{
-            "class":"net.nanopay.tx.model.TransactionStatus",
-            "ordinal”:5
-          }
-        }
+        "class":"net.nanopay.meter.compliance.ruler.predicate.IsCompletedTransaction"
       },
       {
         "class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"
