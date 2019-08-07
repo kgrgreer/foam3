@@ -355,16 +355,17 @@ public class CsvUtil {
             out.put(cashout, sub);
           }
 
-          out.eof();
-          if ( o instanceof PrintWriter ) {
-            o.write(out.getCsv());
-            o.flush();
-          }
         } catch (Exception e) {
           logger.error("CsvUtil.writeCsvFile", e);
         }
       }
     });
+
+    out.eof();
+    if ( o instanceof PrintWriter ) {
+      o.write(out.getCsv());
+      o.flush();
+    }
   }
 
   public static String removeComma(String str) {
