@@ -49,16 +49,20 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.notification.Notification',
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',
+    'java.io.FileOutputStream',
     'java.io.PrintWriter',
+    'java.io.File',
     'java.util.Date',
     'java.util.Properties',
     'java.util.Vector',
     'java.util.Timer',
     'java.util.TimerTask',
-    'net.nanopay.cico.model.EFTReturnFileCredentials'
+    'net.nanopay.cico.model.EFTReturnFileCredentials',
+    'org.apache.commons.io.FileUtils'
 ],
 
   methods: [
@@ -68,6 +72,7 @@ foam.CLASS({
         `Date now = new Date();
 X x = getX();
 DAO notificationDAO = (DAO) x.get("localNotificationDAO");
+String SEND_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/alterna_eft/send/";
 
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 PrintWriter printWriter = new PrintWriter(baos);
@@ -78,7 +83,7 @@ if ( baos.toByteArray().length == 0 ) {
 }
 
 EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("EFTReturnFileCredentials");
-final Logger logger = (Logger) x.get("logger");
+final Logger logger = new PrefixLogger(new String[] {"Alterna: "}, (Logger) x.get("logger"));
 Session session = null;
 Channel channel = null;
 ChannelSftp channelSftp;
@@ -129,23 +134,28 @@ try {
       .build();
     notificationDAO.put(notification);
   } else if ( rootFolderCsvFileExist ) {
-    logger.debug("Same CSV file is being processed. Duplicate CSV file not sent", filename, System.getProperty("user.name"));
+    logger.warning("Same CSV file is being processed. Duplicate CSV file not sent", filename, System.getProperty("user.name"));
     Notification notification = new Notification.Builder(x)
       .setTemplate("NOC")
       .setBody("CSV file is being processed. Duplicate CSV file not sent. FileName: " + filename)
       .build();
     notificationDAO.put(notification);
   } else {
+    FileUtils.touch(new File(SEND_FOLDER + filename));
+    FileOutputStream fileOutputStream = new FileOutputStream(SEND_FOLDER + filename);
+    baos.writeTo(fileOutputStream);
+    fileOutputStream.close();
+    
     // send CSV file
     channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
-    logger.debug("CICO CSV file sent");
+    logger.info("CICO CSV file sent");
   }
 
   getTimer().cancel();
   setRetryCount(0);
   channelSftp.exit();
 } catch ( Exception e ) {
-  logger.error(e);
+  logger.error("Error during sending alterna EFT, retrying.", e);
   retry();
 } finally {
   // close channels
@@ -171,7 +181,7 @@ try {
       if ( getTimer() != null ) getTimer().cancel();
       setRetryCount(0);
       final Logger logger = (Logger) getX().get("logger");
-      logger.debug("Maximum SFTP retry exceeded.");
+      logger.info("Maximum SFTP retry exceeded.");
     }
   }
   `
