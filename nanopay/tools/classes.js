@@ -279,6 +279,8 @@ var classes = [
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ReferenceLineItem',
   'net.nanopay.tx.ExpiryLineItem',
+  'net.nanopay.tx.AttachmentLineItem',
+  'net.nanopay.tx.ConfirmationFileLineItem',
   'net.nanopay.fx.ManualFxApprovalRequest',
   'net.nanopay.tx.ManualFxRule',
   'net.nanopay.tx.ModifyCicoStatus',

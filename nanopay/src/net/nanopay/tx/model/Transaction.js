@@ -972,7 +972,7 @@ for ( Balance b : getBalances() ) {
       logger.warning("Transaction failed to send notitfication. " + e.getMessage());
     }
     `
-  }
+  },
 ],
   actions: [
     {
