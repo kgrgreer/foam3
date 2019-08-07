@@ -491,7 +491,7 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        var dao = X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'US'))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao
