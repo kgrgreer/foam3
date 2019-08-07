@@ -16,29 +16,12 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Boolean',
-      name: 'isLoading'
-    },
-    {
       class: 'String',
       name: 'docLabel'
     },
     {
       class: 'String',
-      name: 'docName',
-      postSet: function(_, n) {
-        this.isLoading = true;
-        this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, n, '')
-          .then((doc) => {
-            this.doc = doc;
-          })
-          .catch((e) => {
-            console.warn('Error occurred finding Terms Agreement: ', e);
-          })
-          .finally(() => {
-            this.isLoading = false;
-          });
-      }
+      name: 'docName'
     },
     {
       class: 'FObjectProperty',
@@ -49,11 +32,6 @@ foam.CLASS({
           this.title = n.title;
         }
       }
-    },
-    {
-      class: 'String',
-      name: 'title',
-      documentation: 'This is equivalent to AcceptanceDocument.TITLE'
     },
     {
       class: 'Boolean',
@@ -71,13 +49,16 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.docName$.sub(this.updateDoc);
+      this.updateDoc();
+
       this.start().addClass(this.myClass())
       .startContext({ data: this })
-        .start().hide(this.isLoading$)
+        .start().hide(this.doc$.map((d) => ! d))
           .start(this.AGREED)
             .add('I agree to ')
             .start('a')
-              .add(this.title$)
+              .add(this.doc$.dot('title'))
               .attrs({
                 href: this.doc$.dot('link'),
                 target: '_blank'
@@ -85,9 +66,25 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .add(this.isLoading$.map((b) => b ? this.LoadingSpinner.create() : null))
+        .add(this.doc$.map( (d) => ! d ? this.LoadingSpinner.create() : null ))
       .endContext()
       .end();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updateDoc',
+      code: function() {
+        this.doc = null;
+        this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.docName, '')
+          .then((doc) => {
+            this.doc = doc;
+          })
+          .catch((e) => {
+            console.warn('Error occurred finding Terms Agreement: ', e);
+          });
+      }
     }
   ]
 });

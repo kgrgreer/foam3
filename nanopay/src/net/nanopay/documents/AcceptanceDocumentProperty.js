@@ -20,7 +20,7 @@ foam.CLASS({
     },
     {
       name: 'view',
-      expression: function() {
+      factory: function() {
         return {
           class: 'net.nanopay.documents.AcceptanceDocumentUserInputView',
           docName$: this.docName$
