@@ -53,15 +53,13 @@ foam.CLASS({
         filteredInvoiceHistoryDAO.select(function(o) {
           var status = o.updates.find((u) => u.name === 'status');
           
-          var canBeFailed = true;
-          if ( status === undefined ) {
-            canBeFailed = false;
-            // Do not return if updates length is zero ("Invoice Created")
-            if (o.updates.length != 0) return null;
+          // Do not check for failed status if there is no status property
+          if ( ! status ) {
+            mdao.put(o);
+            return null;
           }
 
           if (
-            canBeFailed &&
             previousStatus &&
             status.newValue === self.InvoiceStatus.UNPAID &&
             previousStatus.newValue === self.InvoiceStatus.PROCESSING
