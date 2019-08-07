@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'ModifyCicoStatusApproval',
+  name: 'CreateExpediteApprovalRequest',
   extends: 'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
 
   documentation: 'Creates an approval request when a Cico transaction is created',
@@ -23,7 +23,7 @@ foam.CLASS({
         ExpediteCICOApprovalRequest req = new ExpediteCICOApprovalRequest.Builder(x)
           .setObjId(ci.getId())
           .setGroup("payment-ops")
-          .setDescription("Main Summary txn: "+ci.getSummary()+" The Id of Summary txn: "+ci.getId())
+          .setDescription("Transaction ID: "+ci.getId())
           .build();
 
         agency.submit(x, new ContextAgent() {
@@ -31,7 +31,7 @@ foam.CLASS({
           public void execute(X x) {
             requestApproval(x, req);
           }
-        }, "Expedite CICO Approval On Create");
+        }, "Expedite CICO Approval Request On Create");
       `
     }
   ]
