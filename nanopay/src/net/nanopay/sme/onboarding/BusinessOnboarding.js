@@ -224,7 +224,7 @@ foam.CLASS({
     },
     {
       name: 'personalOwnershipSection',
-      title: 'Please select your principal type and percentage of ownership',
+      title: 'Please select your percentage of ownership',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
       isAvailable: function(signingOfficer, amountOfOwners, userOwnsPercent) {
         return signingOfficer && amountOfOwners > 0 && userOwnsPercent;
