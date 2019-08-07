@@ -174,6 +174,7 @@ foam.CLASS({
       getter: function() {
          return this.cls_.name;
       },
+      javaToCSVLabel: 'outputter.outputValue("Transaction Type");',
       javaGetter: `
     return getClass().getSimpleName();
       `,
@@ -213,6 +214,7 @@ foam.CLASS({
       section: 'basicInfo',
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
+      javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
       tableWidth: 150
     },
     {
@@ -221,6 +223,7 @@ foam.CLASS({
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
       section: 'basicInfo',
+      javaToCSVLabel: 'outputter.outputValue("Transaction Request Date");',
       tableWidth: 172
     },
     {
@@ -290,6 +293,16 @@ foam.CLASS({
       value: 'COMPLETED',
       permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
+      javaToCSVLabel: `
+        // Outputting two columns: "this transaction status" and "Returns childrens status"
+        outputter.outputValue("Transaction Status");
+        outputter.outputValue("Transaction State");
+      `,
+      javaToCSV: `
+        // Outputting two columns: "this transaction status" and "Returns childrens status"
+        outputter.outputValue(get_(obj));
+        outputter.outputValue(((Transaction)obj).getState(x));
+      `,
       tableWidth: 130,
       view: function(args, x) {
         self = this;
@@ -337,6 +350,19 @@ foam.CLASS({
           .end()
         .end();
       },
+      javaToCSVLabel: `
+      // Format that Reports use: can be moved onto another property
+      // but if that is done the Reportxxxxxx.java props list should be adjusted
+      outputter.outputValue("Sender User Id");
+      outputter.outputValue("Sender Name");
+      outputter.outputValue("Sender Email");
+      `,
+      javaToCSV: `
+      User sender = ((Account)((Transaction)obj).findSourceAccount(x)).findOwner(x);
+      outputter.outputValue(sender.getId());
+      outputter.outputValue(sender.label());
+      outputter.outputValue(sender.getEmail());
+      `
     },
     {
       // FIXME: move to a ViewTransaction used on the client
@@ -353,7 +379,20 @@ foam.CLASS({
             .add(value ? value.displayName : 'na')
           .end()
         .end();
-      }
+      },
+      javaToCSVLabel: `
+      // Format that Reports use: can be moved onto another property
+      // but if that is done the Reportxxxxxx.java props list should be adjusted
+      outputter.outputValue("Receiver User Id");
+      outputter.outputValue("Receiver Name");
+      outputter.outputValue("Receiver Email");
+      `,
+      javaToCSV: `
+      User receiver = ((Account)((Transaction)obj).findDestinationAccount(x)).findOwner(x);
+      outputter.outputValue(receiver.getId());
+      outputter.outputValue(receiver.label());
+      outputter.outputValue(receiver.getEmail());
+      `
     },
     {
       class: 'Long',
@@ -371,7 +410,22 @@ foam.CLASS({
       class: 'Currency',
       name: 'amount',
       section: 'paymentInfo',
-      visibility: 'RO'
+      visibility: 'RO',
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        String srcCurrency = ((Transaction)obj).getSourceCurrency();
+        net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(srcCurrency);
+        
+        // Outputting two columns: "amount", "Currency"
+          // Hacky way of making get_(obj) into String below
+        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(srcCurrency);
+      `,
+      javaToCSVLabel: `
+        // Outputting two columns: "amount", "Currency"
+        outputter.outputValue("Source Amount");
+        outputter.outputValue("Source Currency");
+      `
     },
     {
       class: 'String',
@@ -452,7 +506,21 @@ foam.CLASS({
           .start()
             .add('$', X.addCommas(formattedAmount.toFixed(2)))
           .end();
-      }
+      },
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        String dstCurrency = ((Transaction)obj).getDestinationCurrency();
+        net.nanopay.model.Currency currency = (net.nanopay.model.Currency) currencyDAO.find(dstCurrency);
+        
+        // Outputting two columns: "amount", "Currency"
+        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(dstCurrency);
+      `,
+      javaToCSVLabel: `
+        // Outputting two columns: "amount", "Currency"
+        outputter.outputValue("Destination Amount");
+        outputter.outputValue("Destination Currency");
+      `
     },
     {
       // REVIEW: processDate and completionDate are Alterna specific?
