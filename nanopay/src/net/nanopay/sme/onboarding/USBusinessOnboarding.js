@@ -403,26 +403,6 @@ foam.CLASS({
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
-    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
-      section: 'personalInformationSection',
-      label: 'I am taking instructions from and/or conducting transactions on behalf of a 3rd party',
-      help: `
-        A third party is a person or entity who instructs another person or entity
-        to conduct an activity or financial transaction on their behalf
-      `,
-      value: false,
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
-      },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
-    }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       label: '',
       section: 'homeAddressSection',
