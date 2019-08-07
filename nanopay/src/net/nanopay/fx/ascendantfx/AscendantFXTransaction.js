@@ -12,12 +12,19 @@ foam.CLASS({
   documentation: `Hold Ascendant FX specific properties`,
 
   javaImports: [
+    'com.itextpdf.html2pdf.HtmlConverter',
+    'foam.blob.BlobService',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'java.io.ByteArrayInputStream',
+    'java.io.ByteArrayOutputStream',
+    'java.io.IOException',
+    'java.io.InputStream',
     'java.util.ArrayList',
     'java.util.Arrays',
     'net.nanopay.bank.BankAccount',
@@ -34,7 +41,6 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionConfirmationFileGenerator',
 
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
@@ -134,13 +140,36 @@ foam.CLASS({
       javaCode: `
         super.executeAfterPut(x, oldTxn);
         if ( oldTxn == null ) {
-          // Generate a transaction confirmation PDF and store it as a ConfirmationFileLineItem
-          File pdf = new TransactionConfirmationFileGenerator.Builder(x).build()
-          .generateTransactionConfirmationPDF(x, this);
-          addLineItems(new TransactionLineItem[] {new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
-          ((DAO) x.get("transactionDAO")).inX(x).put(this.fclone());
+          // Generate the HTML.
+          String html = getTransactionConfirmation(x);
+          if ( ! SafetyUtil.isEmpty(html) ) {
+            // Use the library to generate a PDF from the HTML.
+            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            try {
+              HtmlConverter.convertToPdf(html, outStream);
+            } catch (IOException e) {
+              Logger logger = (Logger) x.get("logger");
+              logger.error("Error converting to PDF.");
+              throw new RuntimeException(e);
+            }
+            int size = outStream.size();
+            InputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
+      
+            // Save the PDF on disk.
+            BlobService blobStore = (BlobService) x.get("blobStore");
+            foam.blob.Blob data = blobStore.put(new foam.blob.InputStreamBlob(inStream, size));
+      
+            // Save the file in fileDAO.
+            DAO fileDAO = (DAO) x.get("fileDAO");
+            foam.nanos.fs.File thePDF = new foam.nanos.fs.File.Builder(x).setData(data)
+                .setOwner(findSourceAccount(x).getOwner()).setFilesize(size)
+                .setFilename("TransactionConfirmation_" + getId() + ".pdf").setMimeType("application/pdf").build();
+          
+            File pdf = (File) fileDAO.inX(x).put(thePDF);
+            addLineItems(new TransactionLineItem[] {new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
+            ((DAO) x.get("transactionDAO")).inX(x).put(this.fclone());
+          }
         } 
-
       `
     },
     {
@@ -151,6 +180,7 @@ foam.CLASS({
           type: 'Context'
         }
       ],
+      type: 'String',
       javaCode: `
       DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
       DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
