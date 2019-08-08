@@ -479,7 +479,7 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        var dao = X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'CA'))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao
@@ -1084,13 +1084,22 @@ foam.CLASS({
         }
       ]
     },
-    {
-      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
       section: 'reviewOwnersSection',
-      name: 'dualPartyAgreement',
-      documentation: 'Verifies if the user is accept the dual-party agreement.',
-      docName: 'dualPartyAgreementCAD',
       label: '',
+      //      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
+      label2Formatter: function() {
+        this.
+          add('I acknowledge that I have read and accept the ').
+          start('a').
+            attrs({
+              href: "https://nanopay.net/wp-content/uploads/2019/05/nanopay-Canada-Dual-Agreement.pdf",
+              target: "blank"
+            }).
+            add('Dual Party Agreement').
+          end().
+          add(' for Ablii Canadian Payment Services.');
+      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
@@ -1100,13 +1109,13 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-              e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, 0)
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.DUAL_PARTY_AGREEMENT, true)
             );
           },
           errorString: 'Must acknowledge the dual party agreement.'
         }
       ]
-    }
+    })
   ].map((a) => net.nanopay.sme.onboarding.SpecialOutputter.objectify(a)),
 
   reactions: [
@@ -1137,13 +1146,10 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
-
         if ( user.getId() == getUserId() ) return;
-
         String permission = "businessOnboarding.create." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
-
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1152,13 +1158,10 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
-
         if ( user.getId() == getUserId() ) return;
-
         String permission = "businessOnboarding.read." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
-
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1167,13 +1170,10 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
-
         if ( user.getId() == getUserId() ) return;
-
         String permission = "businessOnboarding.update." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
-
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1182,13 +1182,10 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
-
         if ( user.getId() == getUserId() ) return;
-
         String permission = "businessOnboarding.delete." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
-
         throw new foam.nanos.auth.AuthorizationException();
       `
     }
