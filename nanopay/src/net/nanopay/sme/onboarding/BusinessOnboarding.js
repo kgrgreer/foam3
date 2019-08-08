@@ -1146,10 +1146,13 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+
         if ( user.getId() == getUserId() ) return;
+
         String permission = "businessOnboarding.create." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
+
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1158,10 +1161,13 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+
         if ( user.getId() == getUserId() ) return;
+
         String permission = "businessOnboarding.read." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
+
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1170,10 +1176,13 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+
         if ( user.getId() == getUserId() ) return;
+
         String permission = "businessOnboarding.update." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
+
         throw new foam.nanos.auth.AuthorizationException();
       `
     },
@@ -1182,10 +1191,13 @@ foam.CLASS({
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
         if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+
         if ( user.getId() == getUserId() ) return;
+
         String permission = "businessOnboarding.delete." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
+        
         throw new foam.nanos.auth.AuthorizationException();
       `
     }

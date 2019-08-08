@@ -44,13 +44,17 @@ foam.CLASS({
       javaCode: `
         BusinessOnboarding businessOnboarding = (BusinessOnboarding) obj;
         // TODO: Please call the java validator of the businessOnboarding here
+
         BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
+
         if ( old == null || old.getDualPartyAgreement() != businessOnboarding.getDualPartyAgreement() ) {
           net.nanopay.documents.AcceptanceDocumentService documentService =
             (net.nanopay.documents.AcceptanceDocumentService)(x.get("acceptanceDocumentService"));
+
           net.nanopay.documents.AcceptanceDocument document = documentService.getAcceptanceDocument(x, "dualPartyAgreementCAD", "");
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), document.getId(), businessOnboarding.getDualPartyAgreement());
         }
+
         Session session = x.get(Session.class);
         if ( session != null ) {
           businessOnboarding.setRemoteHost(session.getRemoteHost());
@@ -58,15 +62,20 @@ foam.CLASS({
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
           return getDelegate().put_(x, businessOnboarding);
         }
+
         businessOnboarding.validate(x);
+
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
         DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO businessInvitationDAO = ((DAO) x.get("businessInvitationDAO")).inX(x);
+
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
         User user = (User)localUserDAO.find(businessOnboarding.getUserId());
+
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
+
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
           user.setBirthday(businessOnboarding.getBirthday());
@@ -74,27 +83,33 @@ foam.CLASS({
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
+
           business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
           
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business
           business.getSigningOfficers(x).add(user);
+
           // Update the business because the put to signingOfficerJunctionDAO
           // will have updated the email property of the business.
           business = (Business) localBusinessDAO.find(business.getId());
+          
           // * Step 6: Business info
           // Business info: business address
           business.setAddress(businessOnboarding.getBusinessAddress());
           business.setBusinessAddress(businessOnboarding.getBusinessAddress());
           business.setPhone(businessOnboarding.getPhone());
           business.setBusinessPhone(businessOnboarding.getPhone());
+
           // Business info: business details
           business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());
           business.setBusinessSectorId(businessOnboarding.getBusinessSectorId());
           business.setSourceOfFunds(businessOnboarding.getSourceOfFunds());
+
           if ( businessOnboarding.getOperatingUnderDifferentName() ) {
             business.setOperatingBusinessName(businessOnboarding.getOperatingBusinessName());
           }
+
           // Business info: transaction details
           SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
           suggestedUserTransactionInfo.setBaseCurrency("CAD");
@@ -103,21 +118,28 @@ foam.CLASS({
           suggestedUserTransactionInfo.setAnnualDomesticVolume(businessOnboarding.getAnnualDomesticVolume());
           suggestedUserTransactionInfo.setTransactionPurpose(businessOnboarding.getTransactionPurpose());
           suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
+
           business.setTargetCustomers(businessOnboarding.getTargetCustomers());
           business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
+
           // * Step 7: Percent of ownership
           business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
           for ( int i = 1; i <= businessOnboarding.getAmountOfOwners() ; i++ ) {
             business.getBeneficialOwners(x).put((BeneficialOwner) businessOnboarding.getProperty("owner"+i));
           }
+
           business.setOnboarded(true);
+
           if ( business.getCompliance().equals(ComplianceStatus.NOTREQUESTED) ) {
             business.setCompliance(ComplianceStatus.REQUESTED);
           }
+
           localBusinessDAO.put(business);
+
         } else {
           // If the user needs to invite the signing officer
           String signingOfficerEmail = businessOnboarding.getSigningOfficerEmail();
+
           Invitation invitation = new Invitation();
           /**
            * Summary: the group set in the invitation obj is not the final(real) group
@@ -142,9 +164,11 @@ foam.CLASS({
           invitation.setGroup("admin");
           invitation.setCreatedBy(business.getId());
           invitation.setEmail(signingOfficerEmail);
+
           // Send invitation to email to the signing officer
           businessInvitationDAO.put(invitation);
         }
+        
         return getDelegate().put_(x, businessOnboarding);
       `
     }
