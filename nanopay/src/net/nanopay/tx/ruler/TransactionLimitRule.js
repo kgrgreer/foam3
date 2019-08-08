@@ -8,10 +8,20 @@ foam.CLASS({
   'by models that would provide logic for getObjectToMap method. See example: AccountTransactionLimitRule.',
 
   javaImports: [
-    'foam.core.X'
+    'foam.core.X',
+    'net.nanopay.tx.model.Transaction',
+    'static foam.mlang.MLang.*'
   ],
 
   properties: [
+    // String array of accounts
+    // Send or receive?
+    // Period
+    // Limit
+
+
+
+
     {
       name: 'name',
       visibility: 'RO',
@@ -63,6 +73,20 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'transactionType',
+      value: 'net.nanopay.tx.AbliiTransaction',
+      label: 'Transaction Type',
+      section: 'basicInfo',
+      view: {
+        class: 'foam.u2.view.ChoiceView',
+        choices: [
+          ['net.nanopay.tx.AbliiTransaction', 'Ablii Transaction'],
+          ['null', 'Other Transaction'],
+        ]
+      }
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'period',
@@ -86,18 +110,32 @@ foam.CLASS({
     },
     {
       name: 'action',
-      javaGetter: `
-      return new TransactionLimitRuleAction(this);
+      javaFactory: `
+        return new TransactionLimitRuleAction.Builder(getX())
+          .setSend(this.getSend())
+          .setLimit(this.getLimit())
+          .setPeriod(this.getPeriod())
+          .setCurrentLimits(this.getCurrentLimits())
+          .build();
       `,
     },
     {
       name: 'predicate',
       javaFactory: `
-        return foam.mlang.MLang.EQ(
-          foam.mlang.MLang.DOT(
-            foam.mlang.MLang.NEW_OBJ,
-            net.nanopay.tx.model.Transaction.IS_QUOTED),
-          false);
+        return 
+          foam.mlang.MLang.AND(
+            foam.mlang.MLang.EQ(
+              foam.mlang.MLang.DOT(
+                foam.mlang.MLang.NEW_OBJ,
+                net.nanopay.tx.model.Transaction.IS_QUOTED
+              ),
+              false
+            )
+            // foam.mlang.MLang.AND(
+            //   foam.mlang.MLang.INSTANCE_OF(getTransactionType()), 
+            //   foam.mlang.MLang.IN(net.nanopay.tx.model.Transaction.PAYEE, getAccounts())
+            // )
+          );
       ` 
     }
   ],
@@ -135,7 +173,6 @@ foam.CLASS({
         throw new RuntimeException("send property cannot be changed");
       }
       ret.clearAction();
-      ret.setCurrentLimits(getCurrentLimits());
       return ret;
       `
     }
@@ -146,6 +183,9 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
+        public void setX(X x) {
+          this.x_ = x;
+        };
         // finds an object to map. E.g., if limit is set per account, the method will return source/destination account'
         //when set per business, will return business.
         public abstract Object getObjectToMap(net.nanopay.tx.model.Transaction txn, foam.core.X x);
