@@ -156,13 +156,6 @@ foam.CLASS({
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
-      name: 'ownershipYesOrNoSection',
-      title: 'Does your company have anyone that owns 25% or more of the business?',
-      help: `Great, almost done! In accordance with banking laws, we need to document
-          the percentage of ownership of any individual with a 25% + stake in the company.`,
-      isAvailable: function (signingOfficer) { return signingOfficer }
-    },
-    {
       name: 'ownershipAmountSection',
       title: 'How many individuals directly or indirectly own 25% or more of the business?',
       help: `Great, almost done! In accordance with banking laws, we need to document
@@ -171,7 +164,7 @@ foam.CLASS({
     },
     {
       name: 'personalOwnershipSection',
-      title: 'Please select your principal type and percentage of ownership',
+      title: 'Please select your percentage of ownership',
       help: `I’ve gone ahead and filled out the owner details for you, but I’ll need you to confirm your percentage of ownership…`,
       isAvailable: function(signingOfficer, amountOfOwners, userOwnsPercent) {
         return signingOfficer && amountOfOwners > 0 && userOwnsPercent;
@@ -403,26 +396,6 @@ foam.CLASS({
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       }
     }),
-    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
-      section: 'personalInformationSection',
-      label: 'I am taking instructions from and/or conducting transactions on behalf of a 3rd party',
-      help: `
-        A third party is a person or entity who instructs another person or entity
-        to conduct an activity or financial transaction on their behalf
-      `,
-      value: false,
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
-      },
-      visibilityExpression: function(signingOfficer) {
-        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
-      }
-    }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       label: '',
       section: 'homeAddressSection',
@@ -511,7 +484,7 @@ foam.CLASS({
       view: function(args, X) {
         // Temporarily only allow businesses in Canada to sign up.
         var m = foam.mlang.Expressions.create();
-        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
+        var dao = X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, 'US'))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao
@@ -880,22 +853,6 @@ foam.CLASS({
         }
       ]
     }),
-    {
-      class: 'Boolean',
-      name: 'ownershipAbovePercent',
-      label: '',
-      section: 'ownershipYesOrNoSection',
-      postSet: function(_, n) {
-        if ( ! n ) this.amountOfOwners = 0;
-      },
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [false, 'No (or this is a publicly traded company)'],
-          [true, 'Yes, we have owners with 25% +']
-        ],
-      },
-    },
     {
       class: 'Long',
       name: 'amountOfOwners',
