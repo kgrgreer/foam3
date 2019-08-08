@@ -30,6 +30,7 @@ import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.model.PersonalIdentification;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
 
 public class AFEXServiceProviderTest
     extends foam.nanos.test.Test {
@@ -127,6 +128,12 @@ public class AFEXServiceProviderTest
       business.setCompliance(ComplianceStatus.PASSED);
       business.setBusinessPhone(phone);
       business.setBusinessRegistrationDate(new Date());
+      SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
+      suggestedUserTransactionInfo.setBaseCurrency("CAD");
+      suggestedUserTransactionInfo.setAnnualDomesticVolume("$2000");
+      suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
+      business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
+
       try {
         business = (Business) businessDAO.put(business);
       } catch (Exception e) {

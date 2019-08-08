@@ -260,7 +260,7 @@ foam.CLASS({
               .call( function() {
                 let contactErrors = self.reportResult.contactErrors;
                 for ( key of Object.keys(contactErrors) ) {
-                  if ( contactErrors[key].length !== 0 ) {
+                  if ( contactErrors[key].length !== 0 && key !== 'MISS_ADDRESS' ) {
                     this.showContactError = true;
                     this.start('div').addClass('report-table-container').addClass('contact-tables')
                       .start().tag({

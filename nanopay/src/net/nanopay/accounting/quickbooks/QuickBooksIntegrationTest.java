@@ -89,7 +89,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickBooksContact.setPrimaryEmailAddr(email);
       quickBooksContact.setId("3");
       quickBooksContact.setMetaData(metaData);
-      quickbooksService.importContact(x,quickBooksContact);
+      quickbooksService.importContact(x,quickBooksContact, contactErrors);
       test(false, "Invalid Email");
     } catch (Exception e) {
       e.printStackTrace();
@@ -119,7 +119,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickBooksContact.setPrimaryEmailAddr(email);
       quickBooksContact.setId("5");
       quickBooksContact.setMetaData(metaData);
-      result = quickbooksService.importContact(x, quickBooksContact);
+      result = quickbooksService.importContact(x, quickBooksContact, contactErrors);
       if ( result == null ) {
         test(true, "Optional First & last Names");
       } else {
@@ -141,7 +141,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickBooksContact.setPrimaryEmailAddr(email);
       quickBooksContact.setId("6");
       quickBooksContact.setMetaData(metaData);
-      quickbooksService.importContact(x,quickBooksContact);
+      quickbooksService.importContact(x,quickBooksContact, contactErrors);
       test(false, "Number in First Name");
     } catch (Exception e) {
       e.printStackTrace();
@@ -157,7 +157,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickBooksContact.setPrimaryEmailAddr(email);
       quickBooksContact.setId("7");
       quickBooksContact.setMetaData(metaData);
-      quickbooksService.importContact(x,quickBooksContact);
+      quickbooksService.importContact(x,quickBooksContact, contactErrors);
       test(false, "Number in Last Name");
     } catch (Exception e) {
       e.printStackTrace();
@@ -175,7 +175,7 @@ public class QuickBooksIntegrationTest extends foam.nanos.test.Test {
       quickBooksContact.setPrimaryEmailAddr(email);
       quickBooksContact.setId("8");
       quickBooksContact.setMetaData(metaData);
-      result = quickbooksService.importContact(x, quickBooksContact);
+      result = quickbooksService.importContact(x, quickBooksContact, contactErrors);
       if ( result == null ) {
         test(true, "All Valid Fields Contact");
       } else {
