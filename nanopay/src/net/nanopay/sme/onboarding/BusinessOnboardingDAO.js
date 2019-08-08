@@ -80,6 +80,7 @@ foam.CLASS({
         if ( businessOnboarding.getSigningOfficer() ) {
           user.setBirthday(businessOnboarding.getBirthday());
           user.setAddress(businessOnboarding.getAddress());
+
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
@@ -93,7 +94,7 @@ foam.CLASS({
           // Update the business because the put to signingOfficerJunctionDAO
           // will have updated the email property of the business.
           business = (Business) localBusinessDAO.find(business.getId());
-          
+
           // * Step 6: Business info
           // Business info: business address
           business.setAddress(businessOnboarding.getBusinessAddress());
@@ -168,7 +169,6 @@ foam.CLASS({
           // Send invitation to email to the signing officer
           businessInvitationDAO.put(invitation);
         }
-        
         return getDelegate().put_(x, businessOnboarding);
       `
     }
