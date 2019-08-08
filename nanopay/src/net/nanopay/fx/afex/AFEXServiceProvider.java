@@ -55,7 +55,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return onboardBusiness(business, bankAccount);
   }
 
-  public boolean onboardBusiness(Business business, BankAccount bankAccount) {
+  public boolean onboardBusiness(Business business, BankAccount bankAccount) throws RuntimeException{
     Logger logger = (Logger) this.x.get("logger");
 
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
@@ -78,7 +78,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             try {
               identificationExpiryDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getIdentification().getExpirationDate()); 
             } catch(Throwable t) {
-              logger.error("Error creating AFEX beneficiary.", t);
+              logger.error("Error onboarding business. Cound not parse signing officer identification expiry date.", t);
+              throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
             } 
             OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate(identificationExpiryDate);
@@ -101,7 +102,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             try {
               businessRegDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(business.getBusinessRegistrationDate()); 
             } catch(Throwable t) {
-              logger.error("Error onboarding business. Error parsing business registration date", t);
+              logger.error("Error onboarding business. Error parsing business registration date.", t);
+              throw new RuntimeException("Error onboarding business. Error parsing business registration date.");
             } 
             onboardingRequest.setDateOfIncorporation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
@@ -123,6 +125,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               onboardingRequest.setDateOfBirth(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getBirthday()));
             } catch(Throwable t) {
               logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
+              throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
             } 
             onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
             onboardingRequest.setExpectedMonthlyPayments(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount());
