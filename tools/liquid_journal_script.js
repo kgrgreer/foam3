@@ -361,7 +361,8 @@ function virtual(X, a) {
     lastModifiedBy: X.userId,
     parent: X.parentAccount,
     owner: X.userId,
-    liquiditySetting: a.liquiditySetting
+    liquiditySetting: a.liquiditySetting,
+    isDefault: a.isDefault
   }, X);
 
   a.obj = obj;
@@ -656,7 +657,8 @@ function virtualAccounts(root) {
 }
 
 function randomItem(a) {
-  return a[Math.floor(Math.random() * a.length)];
+  const filteredA = a.filter(root => ! root.isDefault );
+  return filteredA[Math.floor(Math.random() * filteredA.length)];
 }
 
 function main() {
@@ -705,17 +707,19 @@ function main() {
   });
 
   accountTree.forEach(function (root) {
-    var balance = 10000000;
+    if ( ! root.isDefault ){
+      var balance = 10000000;
 
-    cashIn(X, root.bank, root.shadow, balance);
-
-    var virtuals = virtualAccounts(root);
-
-    var amount = Math.floor(balance / virtuals.length);
-
-    virtuals.forEach(function (v) {
-      transfer(X, root.shadow, v, amount);
-    });
+      cashIn(X, root.bank, root.shadow, balance);
+  
+      var virtuals = virtualAccounts(root);
+  
+      var amount = Math.floor(balance / virtuals.length);
+  
+      virtuals.forEach(function (v) {
+        transfer(X, root.shadow, v, amount);
+      });
+    }
   });
 
   createLiquiditySettings(X);
@@ -730,12 +734,14 @@ function main() {
 
   // Seeding the shadows with money before the random CICO transactions
   accountTree.forEach(root => {
-    var amount = 10000000;
+    if ( ! root.isDefault ){
+      var amount = 10000000;
 
-    var bank = accountNamesToAccount[`${root.name} Bank Account`];
-    var shadow = accountNamesToAccount[`${root.name} Shadow Account`];
-
-    cashIn(X, bank, shadow, amount);
+      var bank = accountNamesToAccount[`${root.name} Bank Account`];
+      var shadow = accountNamesToAccount[`${root.name} Shadow Account`];
+  
+      cashIn(X, bank, shadow, amount);
+    }
   })
 
   while ( foam.Date.compare(currentDate, end) < 0 ) {
