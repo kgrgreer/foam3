@@ -16,6 +16,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: "accountPrimaryIdentificationIssuer"
+    },
+    {
+      class: 'String',
       name: "businessAddress1"
     },
     {
@@ -34,6 +38,34 @@ foam.CLASS({
       class: 'String',
       name: "businessZip"
     },
+    {
+      class: 'String',
+      name: "businessStateRegion"
+    },
+    {
+      class: 'String',
+      name: "contactAddress1"
+    },  
+    {
+      class: 'String',
+      name: "contactCity"
+    }, 
+    {
+      class: 'String',
+      name: "contactCountryCode"
+    }, 
+    {
+      class: 'String',
+      name: "contactStateRegion"
+    }, 
+    {
+      class: 'String',
+      name: "contactZip"
+    },   
+    {
+      class: 'String',
+      name: "dateOfBirth"
+    }, 
     {
       class: 'String',
       name: "companyType"
@@ -61,6 +93,26 @@ foam.CLASS({
     {
       class: 'String',
       name: "primaryEmailAddress"
+    },
+    {
+      class: 'String',
+      name: "expectedMonthlyPayments"
+    },
+    {
+      class: 'String',
+      name: "expectedMonthlyVolume"
+    },
+    {
+      class: 'String',
+      name: "jobTitle"
+    },
+    {
+      class: 'String',
+      name: "NAICS"
+    },
+    {
+      class: 'String',
+      name: "tradeName"
     },
     {
       class: 'String',
