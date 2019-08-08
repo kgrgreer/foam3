@@ -17,27 +17,17 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'docLabel'
-    },
-    {
-      class: 'String',
       name: 'docName'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.documents.AcceptanceDocument',
-      name: 'doc',
-      postSet: function(_, n) {
-        if ( n ) {
-          this.title = n.title;
-        }
-      }
+      name: 'doc'
     },
     {
       class: 'Boolean',
       name: 'agreed',
       expression: function(data) {
-        // used for reloading value on stack back
         if ( data != 0 ) return true;
         return false;
       },
@@ -52,9 +42,11 @@ foam.CLASS({
       this.docName$.sub(this.updateDoc);
       this.updateDoc();
 
-      this.start().addClass(this.myClass())
+      this.start()
+      .addClass(this.myClass())
       .startContext({ data: this })
-        .start().hide(this.doc$.map((d) => ! d))
+        .start()
+          .hide(this.doc$.map((d) => ! d))
           .start(this.AGREED)
             .add('I agree to ')
             .start('a')
@@ -75,6 +67,7 @@ foam.CLASS({
   listeners: [
     {
       name: 'updateDoc',
+      isFramed: true,
       code: function() {
         this.doc = null;
         this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.docName, '')
