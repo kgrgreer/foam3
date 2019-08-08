@@ -6,6 +6,8 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.Country;
+import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -17,6 +19,7 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.model.Business;
+import net.nanopay.model.BusinessSector;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -85,7 +88,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setAccountPrimaryIdentificationType(getAFEXIdentificationType(signingOfficer.getIdentification().getIdentificationTypeId())); // TODO: This should ref AFEX ID type
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
-            onboardingRequest.setBusinessCountryCode(business.getAddress().getCountryId());
+            Region businessRegion = business.getAddress().findRegionId(this.x);
+            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
+            Country businessCountry = business.getAddress().findCountryId(this.x);
+            if ( businessCountry != null ) {
+              onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
+              onboardingRequest.setAccountPrimaryIdentificationIssuer(businessCountry.getName());
+            }
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
@@ -94,13 +103,42 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             try {
               businessRegDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(business.getBusinessRegistrationDate()); 
             } catch(Throwable t) {
-              logger.error("Error creating AFEX beneficiary.", t);
+              logger.error("Error onboarding business. Error parsing business registration date", t);
             } 
             onboardingRequest.setDateOfIncorporation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
             onboardingRequest.setGender("Male"); // TO be removed in API by AFEX
             onboardingRequest.setLastName(signingOfficer.getLastName());
             onboardingRequest.setPrimaryEmailAddress(signingOfficer.getEmail());
+            Address contactAddress = signingOfficer.getAddress();
+            if ( contactAddress != null ) {
+              onboardingRequest.setContactAddress1(contactAddress.getAddress());
+              onboardingRequest.setContactCity(contactAddress.getCity());
+              Region region = contactAddress.findRegionId(this.x);
+              if ( region != null ) onboardingRequest.setContactStateRegion(region.getCode());
+              Country country = contactAddress.findCountryId(this.x);
+              if ( country != null ) onboardingRequest.setContactCountryCode(country.getCode());
+              onboardingRequest.setContactZip(contactAddress.getPostalCode());
+            }
+
+            try {
+              onboardingRequest.setDateOfBirth(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getBirthday()));
+            } catch(Throwable t) {
+              logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
+            } 
+            onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
+            onboardingRequest.setExpectedMonthlyPayments(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount());
+            onboardingRequest.setExpectedMonthlyVolume(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume());
+            onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
+
+            BusinessSector businessSector = (BusinessSector) ((DAO) this.x.get("businessSectorDAO")).find(business.getBusinessSectorId());
+            if ( businessSector != null ) onboardingRequest.setNAICS(businessSector.getName());
+            
+            if ( ! SafetyUtil.isEmpty(business.getOperatingBusinessName()) ) {
+              onboardingRequest.setTradeName(business.getOperatingBusinessName());
+            } else {
+              onboardingRequest.setTradeName(business.getOrganization());
+            }
             onboardingRequest.setTermsAndConditions("true");
             OnboardCorporateClientResponse newClient = afexClient.onboardCorporateClient(onboardingRequest);
             if ( newClient != null ) {
