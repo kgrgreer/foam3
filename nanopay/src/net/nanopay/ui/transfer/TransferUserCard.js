@@ -50,7 +50,7 @@ foam.CLASS({
       font-size: 12px;
       line-height: 1.17;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^ .bold {

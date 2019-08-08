@@ -16,7 +16,8 @@ foam.CLASS({
     'appConfig',
     'auth',
     'canReceiveCurrencyDAO',
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'contactDAO',
     'ctrl',
     'fxService',
@@ -182,7 +183,7 @@ foam.CLASS({
     {
       name: 'isLoading',
       value: false,
-      postSet: function(_,n) {
+      postSet: function(_, n) {
         if ( n ) {
           this.loadingSpin.show();
           return;
@@ -282,7 +283,7 @@ foam.CLASS({
           label: 'Payment details',
           subtitle: 'Select payment method',
           view: {
-            class: 'net.nanopay.sme.ui.Payment',
+            class: 'net.nanopay.sme.ui.SendRequestMoneyPayment',
             type: this.type
           }
         });
@@ -309,13 +310,17 @@ foam.CLASS({
     },
 
     function initE() {
-      this.checkComplianceAndBanking().then((result) => {
+      var checkAndNotifyAbility;
+
+      var checkAndNotifyAbility = this.isPayable ?
+        this.checkAndNotifyAbilityToPay :
+        this.checkAndNotifyAbilityToReceive;
+
+      checkAndNotifyAbility().then((result) => {
         if ( ! result ) {
           this.pushMenu('sme.main.dashboard');
           return;
         }
-      }).catch((err) => {
-        console.warn('Error occured when checking the compliance: ', err);
       });
 
       this.SUPER();
@@ -353,14 +358,14 @@ foam.CLASS({
 
     async function submit() {
       this.isLoading = true;
-      try {
-        var result = await this.checkComplianceAndBanking();
-        if ( ! result ) {
-          this.notify(this.COMPLIANCE_ERROR, 'error');
-          return;
-        }
-      } catch (err) {
-        console.warn('Error occured when checking the compliance: ', err);
+      var checkAndNotifyAbility;
+
+      var checkAndNotifyAbility = this.isPayable ?
+        this.checkAndNotifyAbilityToPay :
+        this.checkAndNotifyAbilityToReceive;
+
+      var result = await checkAndNotifyAbility();
+      if ( ! result ) {
         return;
       }
 
@@ -414,8 +419,8 @@ foam.CLASS({
         else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
 
         let service = null;
-        if ( this.invoice.xeroId && this.invoice.status == this.InvoiceStatus.PENDING )  service = this.xeroService;
-        if ( this.invoice.quickId && this.invoice.status == this.InvoiceStatus.PENDING ) service = this.quickbooksService;
+        if ( this.invoice.xeroId && this.invoice.status == this.InvoiceStatus.PROCESSING )  service = this.xeroService;
+        if ( this.invoice.quickId && this.invoice.status == this.InvoiceStatus.PROCESSING ) service = this.quickbooksService;
 
         if ( service != null ) service.invoiceResync(null, this.invoice);
 
@@ -512,7 +517,7 @@ foam.CLASS({
             });
             break;
           case this.REVIEW_VIEW_ID:
-            if ( ! this.viewData.quote && this.isPayable ) {
+            if ( ! this.viewData.quote && this.isPayable && ! this.viewData.isDomestic ) {
               this.notify(this.WAITING_FOR_RATE, 'warning');
               return;
             }

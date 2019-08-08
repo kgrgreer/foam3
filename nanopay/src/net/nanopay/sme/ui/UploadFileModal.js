@@ -64,7 +64,7 @@ foam.CLASS({
       line-height: 1.43;
       letter-spacing: 0.2px;
       text-align: center;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .inputRestrictText{
       width: 480px;
@@ -78,7 +78,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-left: -140px;
     }
     ^ .subheading {

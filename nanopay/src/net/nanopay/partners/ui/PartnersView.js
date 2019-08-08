@@ -89,7 +89,7 @@ foam.CLASS({
     ^ .contacts-button {
       width: 153px;
       height: 40px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
       line-height: 40px;
       text-align: center;
@@ -114,7 +114,7 @@ foam.CLASS({
     ^ .connected-contacts-button {
       width: 109px;
       height: 40px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
       line-height: 40px;
       text-align: center;
@@ -134,7 +134,7 @@ foam.CLASS({
       line-height: 12px;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       float: right;
       margin-right: 15px;
     }

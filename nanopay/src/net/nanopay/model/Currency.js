@@ -2,28 +2,40 @@ foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Currency',
 
-  documentation: `The base model for storing, using and managing currency information. 
+  documentation: `The base model for storing, using and managing currency information.
     All class properties require a return of *true* in order to pass.`,
 
   ids: [
     'alphabeticCode'
   ],
 
+  imports: [
+    'homeDenomination'
+  ],
   javaImports: [
     'foam.util.SafetyUtil'
+  ],
+
+  tableColumns: [
+    'name',
+    'alphabeticCode',
+    'country',
+    'symbol',
+    'emoji'
   ],
 
   properties: [
     {
       class: 'String',
       name: 'name',
-      documentation: `This is the [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html) 
+      documentation: `This is the [ISO 4217](https://www.iso.org/iso-4217-currency-codes.html)
         international standard for currency codes.`,
       required: true
     },
     {
       class: 'String',
       name: 'alphabeticCode',
+      label: 'Code',
       documentation: 'The alphabetic code associated with a type of currency.',
       required: true
     },
@@ -42,7 +54,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
-      documentation: `The name of the country associated with the currency. 
+      documentation: `The name of the country associated with the currency.
         This should be set by the child class.`,
       name: 'country',
       required: true
@@ -70,8 +82,8 @@ foam.CLASS({
       name: 'leftOrRight',
       documentation: `The side of the digits that the symbol should be displayed on.`,
       required: true,
-      validateObj: function(value) {
-        if ( value !== 'left' && value !== 'right' ) return `Property 'leftOrRight' must be set to either "left" or "right".`;
+      validateObj: function(leftOrRight) {
+        if ( leftOrRight !== 'left' && leftOrRight !== 'right' ) return `Property 'leftOrRight' must be set to either "left" or "right".`;
       }
     },
     {
@@ -81,9 +93,20 @@ foam.CLASS({
         supported by the platform.`,
     },
     {
+      class: 'String',
+      name: 'colour',
+      value: '#406dea',
+      documentation: `The colour that represents this currency`
+    },
+    {
+      class: 'String',
+      name: 'emoji',
+      value: '💰'
+    },
+    {
       class: 'Boolean',
       name: 'showSpace',
-      documentation: `Determines whether there is a space between the symbol and 
+      documentation: `Determines whether there is a space between the symbol and
         the number when the currency is displayed.
       `,
       required: true
@@ -93,12 +116,11 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
-      documentation: `When using a reference to the currencyDAO, the labels associated 
-        to it will show a chosen property rather than the first alphabetical string 
+      documentation: `When using a reference to the currencyDAO, the labels associated
+        to it will show a chosen property rather than the first alphabetical string
         property. In this case, we are using the alphabeticCode.
       `,
       code: function(x) {
-        var self = this;
         return this.alphabeticCode;
       }
     },
@@ -109,13 +131,25 @@ foam.CLASS({
          * Given a number, display it as a currency using the appropriate
          * precision, decimal character, delimiter, symbol, and placement
          * thereof.
+         * 
+         * With the new home denomination feature, we will append (if left) or 
+         * prepend (if right) the alphabetic code if the currency's alphabetic code
+         * is not equal to the homeDenomination 
+         * 
          */
+        amount = Math.floor(amount);
         var isNegative = amount < 0;
         amount = amount.toString();
         if ( isNegative ) amount = amount.substring(1);
         while ( amount.length < this.precision ) amount = '0' + amount;
         var beforeDecimal = amount.substring(0, amount.length - this.precision);
         var formatted = isNegative ? '-' : '';
+
+        if ( this.leftOrRight === 'right' && this.homeDenomination !== this.id ) {
+          formatted += this.id;
+          formatted += ' ';
+        }
+
         if ( this.leftOrRight === 'left' ) {
           formatted += this.symbol;
           if ( this.showSpace ) formatted += ' ';
@@ -129,6 +163,12 @@ foam.CLASS({
           if ( this.showSpace ) formatted += ' ';
           formatted += this.symbol;
         }
+
+        if ( this.leftOrRight === 'left' && this.homeDenomination !== this.id ) {
+          formatted += ' ';
+          formatted += this.id;
+        }
+
         return formatted;
       },
       args: [
@@ -147,25 +187,40 @@ foam.CLASS({
         }
         String beforeDecimal = amountStr.substring(0, amountStr.length() - this.getPrecision());
         String formatted = isNegative ? "-" : "";
+
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "right") && SafetyUtil.equals(this.getHomeDenomination(), this.getId()) ) {
+          formatted += this.getId();
+          formatted += " ";
+        }
+
         if ( SafetyUtil.equals(this.getLeftOrRight(), "left") ) {
           formatted += this.getSymbol();
           if ( this.getShowSpace() ) {
             formatted += " ";
           }
         }
+
         formatted += beforeDecimal.length() > 0 ?
           beforeDecimal.replaceAll("\\\\B(?=(\\\\d{3})+(?!\\\\d))", this.getDelimiter()) :
           "0";
+
         if ( this.getPrecision() > 0 ) {
           formatted += this.getDecimalCharacter();
           formatted += amountStr.substring(amountStr.length() - this.getPrecision());
         }
+
         if ( SafetyUtil.equals(this.getLeftOrRight(), "right") ) {
           if ( this.getShowSpace() ) {
             formatted += " ";
           }
           formatted += this.getSymbol();
         }
+
+        if ( SafetyUtil.equals(this.getLeftOrRight(), "left") && SafetyUtil.equals(this.getHomeDenomination(), this.getId()) ) {
+          formatted += " ";
+          formatted += this.getId();
+        }
+
         return formatted;
       `
     }

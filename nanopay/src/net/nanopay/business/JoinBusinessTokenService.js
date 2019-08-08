@@ -16,7 +16,7 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'net.nanopay.model.Business',
     'net.nanopay.model.Invitation',
     'net.nanopay.model.InvitationStatus',
@@ -45,7 +45,6 @@ foam.CLASS({
 
           token = (Token) tokenDAO.put(token);
 
-          EmailService email = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage();
           message.setTo(new String[]{user.getEmail()});
 
@@ -61,7 +60,7 @@ foam.CLASS({
           args.put("inviterName", user.getFirstName());
           args.put("business", business.label());
           args.put("link", url + "/service/joinBusiness?token=" + token.getData() + "&redirect=/" );
-          email.sendEmailFromTemplate(x, user, message, "join-business-internal", args);
+          EmailsUtility.sendEmailFromTemplate(x, user, message, "join-business-internal", args);
           return true;
         } catch(Throwable t) {
           Logger logger = (Logger) x.get("logger");

@@ -39,72 +39,55 @@ foam.CLASS({
         }
       ],
       type: 'foam.core.FObject',
-      javaCode: `
-        TransactionQuote quote = (TransactionQuote) obj;
-        Transaction request = (Transaction) quote.getRequestTransaction().fclone();
-        DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-        User destAccOwner;
-        if ( ! ( request instanceof AbliiTransaction ) ) {
-          return super.put_(x, obj);
+      javaCode: `TransactionQuote quote = (TransactionQuote) obj;
+      Transaction request = quote.getRequestTransaction();
+      if ( ! ( request instanceof AbliiTransaction ) ) {
+        return super.put_(x, obj);
+      }
+      DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+      User destAccOwner;
+      Account destAcc = quote.getDestinationAccount();
+      Account sourceAcc = quote.getSourceAccount();
+      DAO localUserDAO = (DAO) x.get("localUserDAO");
+      User sender = (User) localUserDAO.inX(x).find(sourceAcc.getOwner());
+      User receiver = (User) localUserDAO.inX(x).find(destAcc.getOwner());
+
+      if ( receiver instanceof Contact ) {
+        Contact contact = (Contact) receiver;
+        destAccOwner = (User) localBusinessDAO.find(contact.getBusinessId());
+        if ( destAccOwner == null ) {
+          destAccOwner = receiver;
         }
+      } else {
+        destAccOwner = receiver;
+      }
 
-        Account destAcc = request.findDestinationAccount(getX());
-        DAO localUserDAO = (DAO) x.get("localUserDAO");
-        User owner = (User) localUserDAO.inX(x).find(destAcc.getOwner());
+      if ( destAcc instanceof DigitalAccount ) {
+        BankAccount destBankAccount = BankAccount.findDefault(getX(), destAccOwner, request.getDestinationCurrency());
 
-        if ( owner instanceof Contact ) {
-          Contact contact = (Contact) owner;
-          destAccOwner = (User) localBusinessDAO.find(contact.getBusinessId());
-          if ( destAccOwner == null ) {
-            destAccOwner = (User) owner;
-          }
-        } else {
-          destAccOwner = (User) owner;
+        if ( destBankAccount == null ) {
+          ((Logger) x.get("logger")).error("Contact does not have a " + request.getDestinationAccount() + " bank account for request " + request );
+          throw new RuntimeException("Contact does not have a " + request.getDestinationCurrency() + " bank account.");
         }
+        request.setDestinationAccount(destBankAccount.getId());
+        quote.setDestinationAccount(destBankAccount);
+      }
 
-        if ( destAcc instanceof DigitalAccount ) {
-          BankAccount destBankAccount = BankAccount.findDefault(getX(), destAccOwner, request.getDestinationCurrency());
-
-          if ( destBankAccount == null ) {
-            throw new RuntimeException("Contact does not have a " + request.getDestinationCurrency() + " bank account.");
-          }
-
-          request.setDestinationAccount(destBankAccount.getId());
-          quote.setRequestTransaction(request);
-        }
-
-        // Logger logger = (Logger) x.get("logger");
-        // try {
-        //   // check if we can make the CO at th same time as CI
-        //   Account account = DigitalAccount.findDefault(getX(), destAccOwner, request.getSourceCurrency());
-        //   logger.info("AbliiTransactionDAO michal ", account);
-        //   if (account instanceof Debtable &&
-        //       ((Debtable) account).findDebtAccount(x) != null &&
-        //       ((Debtable) account).findDebtAccount(x).getLimit() < 0 ) {
-
-        //     CompositeTransaction ct = new CompositeTransaction();
-        //     ct.copyFrom(request);
-        //     ct.setIsQuoted(true);
-        //     ct.setName("Composite Transaction for FastPay");
-        //     request.addNext(ct);
-        //   }
-          
-        //   // NOTE: DebtTransaction takes care of generating Transfers.
-        //   // in TransactionDAO ignore transfers from DebtAccounts.
-        //   // The transfers below are not necesary.
-        //   // at time of Transfer if NSF then DECLINE Transaction, and
-        //   // append a new CO dependent on the CI.
-        //   // need IncurDebtTransaction and PayDebtTransaction, the CI
-        //   // would delegate to a PayDebtTransaction which can pay the correct account,
-        //   // else we call getTransfers from an Account.
-        //   // debtAccount.getTransfers(x, +/-amount); - incur, + pay.
-
-        // } catch ( RuntimeException e) {
-        //   // transaction not eligible for fast pay
-        //   logger.error(e);
-        // }
-        return super.put_(x, quote);
-      `
+      // Check if we can do FastPay from sender's business
+      Account senderDigitalAccount = DigitalAccount.findDefault(getX(), sender, request.getSourceCurrency());
+      if (senderDigitalAccount instanceof Debtable &&
+        ((Debtable) senderDigitalAccount).findDebtAccount(x) != null && // should be system context?
+        ((Debtable) senderDigitalAccount).findDebtAccount(x).getLimit() >= ( request.getAmount() - (long) senderDigitalAccount.findBalance(x) ) &&
+        SafetyUtil.equals(request.getSourceCurrency(), request.getDestinationCurrency()) &&
+        request.getSourceCurrency().equals("CAD") &&
+        ( ((Debtable) senderDigitalAccount).findDebtAccount(x).findCreditorAccount(x) ) != null ) {
+          CompositeTransaction ct = new CompositeTransaction();
+          ct.copyFrom(request);
+          ct.setIsQuoted(true);
+          ct.setName("Composite Transaction for FastPay");
+          request.addNext(ct);
+      }
+      return super.put_(x, quote);`
     },
   ]
 });

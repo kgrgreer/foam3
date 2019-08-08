@@ -15,12 +15,20 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  imports: [
+    'homeDenomination',
+    'fxService',
+    'user'
+  ],
+
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'java.util.List',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.Balance',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.model.Currency'
   ],
 
   searchColumns: [
@@ -33,7 +41,67 @@ foam.CLASS({
     'name',
     'type',
     'denomination',
-    'balance'
+    'balance',
+    'homeBalance'
+  ],
+
+  axioms: [
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'All',
+      predicateFactory: function(e) {
+        return e.TRUE;
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Shadow Accounts',
+      predicateFactory: function(e) {
+        return e.INSTANCE_OF(net.nanopay.account.ShadowAccount);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Aggregate Accounts',
+      predicateFactory: function(e) {
+        return e.INSTANCE_OF(net.nanopay.account.AggregateAccount);
+      }
+    },
+    {
+      class: 'foam.comics.v2.CannedQuery',
+      label: 'Virtual Accounts',
+      predicateFactory: function(e) {
+        return foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' });
+      }
+    },
+    {
+      class: 'foam.comics.v2.namedViews.NamedViewCollection',
+      name: 'Table',
+      view: { class: 'foam.comics.v2.DAOBrowserView' },
+      icon: 'images/list-view.svg',
+    },
+    {
+      class: 'foam.comics.v2.namedViews.NamedViewCollection',
+      name: 'Tree',
+      view: { class: 'net.nanopay.account.ui.AccountTreeView' },
+      icon: 'images/tree-view.svg',
+    }
+  ],
+
+  sections: [
+    {
+      name: 'accountType',
+      isAvailable: function(id) { return !! id; },
+      order: 1
+    },
+    {
+      name: 'accountDetails',
+      order: 2
+    },
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    }
   ],
 
   properties: [
@@ -70,14 +138,18 @@ foam.CLASS({
         if ( /^\s+$/.test(name) ) {
           return 'Account name may not consist of only whitespace.';
         }
-      }
+      },
+      section: 'accountDetails',
+      order: 1
     },
     {
       class: 'String',
       name: 'desc',
       documentation: `The given description of the account, provided by
         the individual person, or real user.`,
-      label: 'Description'
+      label: 'Memo',
+      section: 'accountDetails',
+      order: 2
     },
     {
       class: 'Boolean',
@@ -92,12 +164,15 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
       name: 'denomination',
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
       `,
-      tableWidth: 127
+      tableWidth: 127,
+      section: 'accountDetails',
+      order: 3
     },
     {
       class: 'Boolean',
@@ -112,30 +187,68 @@ foam.CLASS({
       name: 'type',
       documentation: 'The type of the account.',
       transient: true,
-      visibility: 'RO',
-      factory: function() {
+      getter: function() {
         return this.cls_.name;
       },
-      javaFactory: `
+      javaGetter: `
         return getClass().getSimpleName();
       `,
-      tableWidth: 125
+      tableWidth: 135,
+      section: 'accountType',
+      visibility: 'RO'
     },
     {
       class: 'Long',
       name: 'balance',
+      label: 'Balance (local)',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
       tableCellFormatter: function(value, obj, id) {
         var self = this;
-        this.__subSubContext__.balanceDAO.find(obj.id).then( function( balance ) {
-          self.__subSubContext__.currencyDAO.find(obj.denomination).then(function(curr) {
-            self.add(balance != null ?  curr.format(balance.balance) : 0);
-          });
-        });
+        // React to homeDenomination because it's used in the currency formatter.
+        this.add(obj.homeDenomination$.map(_ => {
+          return obj.findBalance(this.__subSubContext__)
+            .then(balance => self.__subSubContext__.currencyDAO.find(obj.denomination)
+            .then(curr => curr.format(balance != null ? balance : 0)))
+        }))
       },
-      tableWidth: 100
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        long balance  = (Long) ((Account)obj).findBalance(x);
+        Currency curr = (Currency) currencyDAO.find(((Account)obj).getDenomination());
+        
+        // Output formatted balance or zero
+        outputter.outputValue(curr.format(balance));
+      `,
+      tableWidth: 145
+    },
+    {
+      class: 'Long',
+      name: 'homeBalance',
+      label: 'Balance (home)',
+      documentation: `
+        A numeric value representing the available funds in the 
+        bank account converted to home denomination.
+      `,
+      storageTransient: true,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, id) {
+        var self = this;
+
+        this.add(
+          obj.slot(homeDenomination => 
+            obj.fxService.getFXRate(obj.denomination, homeDenomination, 0, 1, 'BUY', null, obj.user.id, 'nanopay').then(r => 
+              obj.findBalance(self.__subSubContext__).then(balance => 
+                self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => 
+                  curr.format(balance != null ? Math.floor(balance * r.rate) : 0)
+                )
+              )
+            )
+          )
+        );
+      },
+      tableWidth: 145
     },
     {
       class: 'DateTime',
@@ -181,6 +294,14 @@ foam.CLASS({
     },
     {
       name: 'findBalance',
+      type: 'Any',
+      async: true,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
       code: function(x) {
         var self = this;
         return new Promise(function(resolve, reject) {
@@ -189,13 +310,6 @@ foam.CLASS({
           });
         });
       },
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      type: 'Any',
       javaCode: `
         DAO balanceDAO = (DAO) x.get("balanceDAO");
         Balance balance = (Balance) balanceDAO.find(this.getId());

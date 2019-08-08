@@ -24,11 +24,7 @@ foam.CLASS({
     'padCaptureDAO',
     'user',
     'validateAccountNumber',
-    'validateAddress',
-    'validateCity',
     'validateInstitutionNumber',
-    'validatePostalCode',
-    'validateStreetNumber',
     'validateTransitNumber'
   ],
 
@@ -81,7 +77,8 @@ foam.CLASS({
         var spinner = this.LoadingSpinner.create();
         return spinner;
       }
-    }
+    },
+    'error'
   ],
 
   messages: [
@@ -161,8 +158,7 @@ foam.CLASS({
 
         this.bank = await this.bankAccountDAO.put(this.bank);
       } catch (error) {
-        ctrl.notify(error.message, 'error');
-        return;
+        this.error = error.message;
       } finally {
         this.isConnecting = false;
       }
@@ -185,10 +181,11 @@ foam.CLASS({
         if ( model.isConnecting ) return;
         this.bank.address = this.viewData.user.address;
         if ( ! model.validateInputs() ) return;
-        model.capturePADAndPutBankAccounts();
-        this.ctrl.stack.back();
-        this.ctrl.notify(this.SUCCESS);
-        X.closeDialog();
+        model.capturePADAndPutBankAccounts().then(() => {
+          this.error ? this.ctrl.notify(this.error, 'error') : this.ctrl.notify(this.SUCCESS);
+          this.ctrl.stack.back();
+          X.closeDialog();
+        });
       }
     }
   ]

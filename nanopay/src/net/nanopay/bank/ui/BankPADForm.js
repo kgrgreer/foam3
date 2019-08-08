@@ -5,8 +5,19 @@ foam.CLASS({
 
   documentation: 'Agreement form for PAD Authorization',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
+    'auth',
+    'countryDAO',
     'user'
+  ],
+
+  requires: [
+    'foam.dao.PromisedDAO',
+    'foam.nanos.auth.Country'
   ],
 
   css: `
@@ -191,10 +202,24 @@ foam.CLASS({
 
         .start('p').add('Business Address').addClass(this.myClass('section-header')).end()
 
-        .tag({
-          class: 'net.nanopay.sme.ui.AddressView',
-          data: this.viewData.user.address
+        .startContext({
+          controllerMode: ! this.viewData.user.address.errors_ ?
+          foam.u2.ControllerMode.VIEW :
+          foam.u2.ControllerMode.EDIT
         })
+          .tag({
+            class: 'net.nanopay.sme.ui.AddressView',
+            data: this.viewData.user.address,
+            // Temporarily only allow businesses based in Canada for new users.
+            customCountryDAO: this.PromisedDAO.create({
+              promise: this.auth.check(null, 'currency.read.USD').then((hasPermission) => {
+                return hasPermission
+                  ? this.countryDAO.where(this.IN(this.Country.ID, ['CA', 'US']))
+                  : this.countryDAO.where(this.EQ(this.Country.ID, 'CA'));
+              })
+            })
+          })
+        .endContext()
 
         .start().addClass(this.myClass('divider')).end()
 

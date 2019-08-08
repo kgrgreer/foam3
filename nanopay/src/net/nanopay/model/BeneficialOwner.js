@@ -18,7 +18,12 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.util.SafetyUtil'
+  ],
+
+  imports: [
+    'complianceHistoryDAO'
   ],
 
   tableColumns: [
@@ -84,6 +89,18 @@ foam.CLASS({
             });
           },
           errorString: 'Must be at least 18 years old.'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.NOT(
+                foam.mlang.predicate.OlderThan.create({
+                  arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
+                  timeMs: 125 * 365 * 24 * 60 * 60 * 1000
+                })
+              );
+          },
+          errorString: 'Must be under the age of 125 years old.'
         }
       ]
     },
@@ -177,6 +194,38 @@ foam.CLASS({
           throw new AuthorizationException("Permission denied: Cannot remove beneficial owners owned by other businesses.");
         }
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function toSummary() {
+        return this.lastName ? this.firstName + " " + this.lastName : this.firstName;
+      },
+      javaCode: `
+        if ( ! SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
+        return getFirstName() + " " + getLastName();
+      `
+    }
+  ],
+  actions: [
+    {
+      name: 'viewComplianceHistory',
+      label: 'View Compliance History',
+      availablePermissions: ['service.compliancehistorydao'],
+      code: async function(X) {
+        var m = foam.mlang.ExpressionsSingleton.create({});
+        this.__context__.stack.push({
+          class: 'foam.comics.BrowserView',
+          createEnabled: false,
+          editEnabled: true,
+          exportEnabled: true,
+          title: `${this.legalName}'s Compliance History`,
+          data: this.complianceHistoryDAO.where(m.AND(
+              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id + ''),
+              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'beneficialOwnerDAO')
+          ))
+        });
+      }
     }
   ]
 });

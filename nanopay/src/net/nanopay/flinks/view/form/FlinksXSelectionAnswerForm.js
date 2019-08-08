@@ -17,114 +17,110 @@ foam.CLASS({
     'foam.u2.tag.Input'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 492px;
-        }
-        ^ .subContent {
-          height: 285px;
-        }
-        ^ .sub-header {
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-        }
-        ^ .foam-u2-tag-Input {
-          width: 100%;
-          height: 30px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          outline: none;
-          padding-left: 10px;
-          padding-top: 5px;
-          padding-bottom: 5px;
-        }
-        ^ .qa-block {
-          border: 2px solid #ffffff;
-          width: 436px;
-          height: 155px;
-          margin-left:20px;
-          margin-top: 10px;
-          overflow: auto;
-          padding: 5px;
-        }
-        ^ .header1 {
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-        }
-        ^ .foam-u2-ActionView-nextButton {
-          float: right;
-          margin: 0;
-          box-sizing: border-box;
-          background-color: #59a5d5;
-          outline: none;
-          border:none;
-          width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          color: #FFFFFF;
-        }
-        ^ .foam-u2-ActionView-closeButton:hover:enabled {
-          cursor: pointer;
-        }
-        ^ .foam-u2-ActionView-closeButton {
-          float: left;
-          margin: 0;
-          outline: none;
-          min-width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          // background-color: rgba(164, 179, 184, 0.1);
-          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          margin-right: 40px;
-          margin-left: 1px;
-        }
-        ^ .foam-u2-ActionView-nextButton:disabled {
-          background-color: #7F8C8D;
-        }
+  css: `
+    ^ {
+      width: 492px;
+    }
+    ^ .subContent {
+      height: 285px;
+    }
+    ^ .sub-header {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: 300;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ .foam-u2-tag-Input {
+      width: 100%;
+      height: 30px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      outline: none;
+      padding-left: 10px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+    ^ .qa-block {
+      border: 2px solid #ffffff;
+      width: 436px;
+      height: 155px;
+      margin-left:20px;
+      margin-top: 10px;
+      overflow: auto;
+      padding: 5px;
+    }
+    ^ .header1 {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: 300;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ .foam-u2-ActionView-nextButton {
+      float: right;
+      margin: 0;
+      box-sizing: border-box;
+      background-color: #59a5d5;
+      outline: none;
+      border:none;
+      width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      color: #FFFFFF;
+    }
+    ^ .foam-u2-ActionView-closeButton:hover:enabled {
+      cursor: pointer;
+    }
+    ^ .foam-u2-ActionView-closeButton {
+      float: left;
+      margin: 0;
+      outline: none;
+      min-width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      // background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      margin-right: 40px;
+      margin-left: 1px;
+    }
+    ^ .foam-u2-ActionView-nextButton:disabled {
+      background-color: #7F8C8D;
+    }
 
-        ^ .foam-u2-ActionView-nextButton:hover:enabled {
-          cursor: pointer;
-        }
-        ^ select {
-          width: 100%;
-          height: 30px;
-          background-color: #ffffff;
-          border: solid 1px rgba(29, 100, 123, 0.5);
-        }
-        ^ .select:first-child {
-          margin-top: 0px;
-        }
-        ^ .select {
-          width: 100%;
-          height: 30px;
-          background-color: #ffffff;
-          margin-top: 15px;
-        }
-      */}
-    })
-  ],
+    ^ .foam-u2-ActionView-nextButton:hover:enabled {
+      cursor: pointer;
+    }
+    ^ select {
+      width: 100%;
+      height: 30px;
+      background-color: #ffffff;
+      border: solid 1px rgba(29, 100, 123, 0.5);
+    }
+    ^ .select:first-child {
+      margin-top: 0px;
+    }
+    ^ .select {
+      width: 100%;
+      height: 30px;
+      background-color: #ffffff;
+      margin-top: 15px;
+    }
+  `,
 
   properties: [
     {

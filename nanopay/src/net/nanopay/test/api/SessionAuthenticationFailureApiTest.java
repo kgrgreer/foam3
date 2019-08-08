@@ -1,17 +1,29 @@
 package net.nanopay.test.api;
 
 import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+
+import static foam.mlang.MLang.EQ;
 
 import java.net.HttpURLConnection;
 
 // API Authentication tests.
 public class SessionAuthenticationFailureApiTest extends ApiTestBase { 
   
+  public static final String TEST_USER_EMAIL_ADDRESS = "developer@nanopay.net";
+
   // Create the transaction summary report
   public void runTest(X x) {
     try 
     {
+      // Enable the test user.
+      DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
+      User user = (User) (localUserDAO.find(EQ(User.EMAIL, TEST_USER_EMAIL_ADDRESS))).fclone();
+      user.setLoginEnabled(true);
+      localUserDAO.put(user);
+
       // Create the request
       String digUrl = this.getBaseUrl(x) + "/service/dig";
       HttpURLConnection connection = this.createRequest(digUrl);
@@ -45,6 +57,10 @@ public class SessionAuthenticationFailureApiTest extends ApiTestBase {
       responseData = this.getResponseData(connection);
       test(200 == responseCode, "Response status when using an invalid session ID is still 200, but response data should not be empty - actual: " + responseCode);
       test(!SafetyUtil.isEmpty(responseData), "Response data should not be empty It should redirect to the login screen: (" + responseData + ")");
+
+      // Disable the test user.
+      user.setLoginEnabled(false);
+      localUserDAO.put(user);
     }
     catch (Exception ex)
     {

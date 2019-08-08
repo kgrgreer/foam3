@@ -88,6 +88,8 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   targetProperty: {
+    section: 'accountDetails',
+    order: 4,
     view: function(_, X) {
       var E = foam.mlang.Expressions.create();
       return {
@@ -107,19 +109,16 @@ foam.RELATIONSHIP({
   forwardName: 'accounts',
   cardinality: '1:*',
   targetDAOKey: 'accountDAO',
+  sourceProperty: {
+    section: 'accountsSection',
+    label: ''
+  },
   targetProperty: {
-    value: null,
-    view: function(_, X) {
-      return foam.u2.view.RichChoiceView.create({
-        search: true,
-        selectionView: { class: 'net.nanopay.liquidity.LiquiditySettingsSelectionView' },
-        rowView: { class: 'net.nanopay.liquidity.LiquiditySettingsRowView' },
-        sections: [
-          {
-            dao: X.liquiditySettingsDAO,
-          }
-        ]
-      });
+    section: 'liquiditySettingsSection',
+    label: '',
+    value: 0,
+    view: {
+      class: 'foam.u2.view.FullReferenceView'
     }
   }
 });
@@ -144,6 +143,42 @@ foam.RELATIONSHIP({
             dao: X.userDAO,
           }
         ],
+      });
+    },
+    tableCellFormatter: function(value, obj, axiom) {
+      this.__subSubContext__.userDAO
+        .find(value)
+        .then((user) => {
+          this.add('[', user.cls_.name, '] ', user.label());
+        })
+        .catch((error) => {
+          this.add(value);
+        });
+    },
+    tableWidth: 220
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.payment.PayrollEntry',
+  forwardName: 'payrolls',
+  inverseName: 'owner',
+  cardinality: '1:*',
+  sourceProperty: {
+    hidden: true
+  },
+  targetProperty: {
+    view: function(_, X) {
+      return foam.u2.view.RichChoiceView.create({
+        search: true,
+        selectionView: { class: 'net.nanopay.ui.UserSelectionView', userDAO: X.userDAO },
+        rowView: { class: 'net.nanopay.ui.UserRowView' },
+        sections: [
+          {
+            dao: X.userDAO
+          }
+        ]
       });
     },
     tableCellFormatter: function(value, obj, axiom) {
@@ -235,6 +270,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Business'
   ],
@@ -451,6 +487,12 @@ foam.CLASS({
         DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
         Business targetUser = (Business) localBusinessDAO.inX(x).find(junctionObj.getTargetId());
 
+        if ( targetUser == null ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.error(String.format("Could not find business with id = %d in localBusinessDAO. The source id, which is the id of the user, is %d.", junctionObj.getTargetId(), junctionObj.getSourceId()));
+          throw new RuntimeException("An unexpected error occured. Please try again later.");
+        }
+
         // Permission string to check authorization.
         String permissionString = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
 
@@ -468,17 +510,6 @@ foam.RELATIONSHIP({
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
-});
-
-foam.RELATIONSHIP({
-  cardinality: '1:*',
-  sourceModel: 'net.nanopay.model.Business',
-  targetModel: 'foam.nanos.auth.Group',
-  forwardName: 'groups',
-  inverseName: 'business',
-  targetProperty: {
-    hidden: true
-  }
 });
 
 foam.RELATIONSHIP({
@@ -543,6 +574,21 @@ foam.RELATIONSHIP({
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
   targetProperty: { hidden: true },
   junctionDAOKey: 'signingOfficerJunctionDAO'
+});
+
+foam.CLASS({
+  package: 'net.nanopay.model',
+  name: 'BusinessUserJunctionPropertyRefinement',
+  refines: 'net.nanopay.model.BusinessUserJunction',
+
+  properties: [
+    {
+      class: 'Enum',
+      of: 'net.nanopay.admin.model.ComplianceStatus',
+      name: 'compliance',
+      storageTransient: true
+    }
+  ]
 });
 
 /*
@@ -614,5 +660,71 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
+  forwardName: 'flinksResponses',
+  inverseName: 'flinksAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'accountDAO',
+  targetDAOKey: 'flinksAccountsDetailResponseDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.Account',
+  targetModel: 'net.nanopay.plaid.model.PlaidAccountDetail',
+  forwardName: 'plaidResponses',
+  inverseName: 'plaidAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'accountDAO',
+  targetDAOKey: 'plaidAccountDetailDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
+  forwardName: 'complianceResponses',
+  inverseName: 'entityId',
+  cardinality: '1:*',
+  sourceDAOKey: 'userDAO',
+  targetDAOKey: 'complianceItemDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'foam.nanos.ruler.RuleHistory',
+  forwardName: 'complianceHistories',
+  inverseName: 'entityId',
+  cardinality: '1:*',
+  sourceDAOKey: 'userDAO',
+  targetDAOKey: 'complianceHistoryDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.approval.ApprovalRequest',
+  forwardName: 'approvalRequests',
+  inverseName: 'entityId',
+  cardinality: '1:*',
+  sourceDAOKey: 'userDAO',
+  targetDAOKey: 'approvalRequestDAO',
+  targetProperty: { visibility: 'RO' }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
+  forwardName: 'complianceItems',
+  inverseName: 'transactionId',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' }
 });

@@ -5,24 +5,20 @@ foam.CLASS({
 
   documentation: 'view for account and balance',
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .label {
-          height: 13px;
-          font-family: Roboto;
-          font-size: 13px;
-          font-weight: normal;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.3px;
-          text-align: left;
-          color: #093649;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ .label {
+      height: 13px;
+      font-family: Roboto;
+      font-size: 13px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.3px;
+      text-align: left;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+  `,
 
   methods: [
     function initE() {

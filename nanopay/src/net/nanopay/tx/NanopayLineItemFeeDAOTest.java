@@ -33,7 +33,6 @@ public class NanopayLineItemFeeDAOTest
     extends foam.nanos.test.Test {
 
   private FXService fxService;
-  protected DAO userDAO_;
   protected User payer_ ;
   protected User payee_;
   protected User feeUser_;
@@ -44,16 +43,13 @@ public class NanopayLineItemFeeDAOTest
 
   @Override
   public void runTest(X x) {
-
-    userDAO_ = (DAO) x.get("localUserDAO");
     x_ = x;
 
     fxService = (FXService) x.get("ascendantFXService");
 
     setUpTest();
     testTransactionFee();
-    //tearDownTest();
-
+    tearDownTest();
   }
 
   private void setUpTest() {
@@ -108,6 +104,7 @@ public class NanopayLineItemFeeDAOTest
     payeeBankAccount_.setStatus(BankAccountStatus.VERIFIED);
     payeeBankAccount_.setIsDefault(true);
     payeeBankAccount_.setDenomination("CAD");
+
     payeeBankAccount_ = (CABankAccount) ((DAO) x_.get("localAccountDAO")).put_(x_, payeeBankAccount_).fclone();
 
     // LineItemTypes
@@ -170,7 +167,7 @@ public class NanopayLineItemFeeDAOTest
 
   private void tearDownTest() {
     ((DAO) x_.get("localAccountDAO")).remove(payeeBankAccount_);
-    userDAO_.remove(payee_);
+    ((DAO) x_.get("localUserDAO")).remove(payee_);
   }
 
   public void testTransactionFee(){
@@ -206,7 +203,7 @@ public class NanopayLineItemFeeDAOTest
     FeeLineItem feeApplied = null;
     for ( int i = 0; i < quote.getPlans().length; i++ ) {
       Transaction plan = quote.getPlans()[i];
-      if ( null != plan ) {
+      if ( null != plan && plan.getNext() != null && plan.getNext().length > 0 ) {
         plan = plan.getNext()[0];
         TransactionLineItem[] lineItems = plan.getLineItems();
         test( lineItems != null && lineItems.length > 0, "Transaction has LineItems");

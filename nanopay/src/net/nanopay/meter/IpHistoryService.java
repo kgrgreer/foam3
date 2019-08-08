@@ -4,9 +4,8 @@ import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.session.Session;
 import net.nanopay.model.Business;
-
-import javax.servlet.http.HttpServletRequest;
 
 public class IpHistoryService extends ContextAwareSupport {
   public IpHistoryService(X x) {
@@ -31,8 +30,8 @@ public class IpHistoryService extends ContextAwareSupport {
       user = (User) agent;
     }
 
-    HttpServletRequest request = x.get(HttpServletRequest.class);
-    String ipAddress = request.getRemoteAddr();
+    Session session = x.get(Session.class);
+    String ipAddress = session.getRemoteHost();
     IpHistory record = new IpHistory.Builder(x)
       .setUser(user.getId())
       .setIpAddress(ipAddress)

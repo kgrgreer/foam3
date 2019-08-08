@@ -28,13 +28,14 @@ foam.CLASS({
     'type',
     'groupDAO',
     'invoice',
-    'invoiceMode'
+    'invoiceMode',
+    'auth'
   ],
 
   css: `
     ^ .foam-u2-tag-Select {
       width: 320px;
-      height: 40px;
+      height: 48px;
       border-radius: 0;
 
       -webkit-appearance: none;
@@ -123,6 +124,12 @@ foam.CLASS({
       background-color: black;
     }
 
+    /*
+      TODO: Need to merge all these rich choice view changes instead of custom styling
+      The base in SectionedPropertyDetailView have not been merged to the
+      actual foam-u2-view-RichChoiceView file
+    */
+
     ^ .foam-u2-view-RichChoiceView-container {
       z-index: 1;
     }
@@ -134,6 +141,30 @@ foam.CLASS({
     
     ^  .foam-u2-view-RichChoiceView-chevron {
       display: none;
+    }
+
+    ^ .foam-u2-view-RichChoiceView .search img {
+      top: 8px;
+    }
+
+    ^ .foam-u2-view-RichChoiceView-heading {
+      padding: 8px 16px;
+    }
+
+    ^ .foam-u2-view-RichChoiceView .search input {
+      padding: 8px 16px;
+    }
+
+    ^ .DefaultRowView-row {
+      background: white;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: #424242;
+    }
+
+    ^ .DefaultRowView-row:hover {
+      background: #f4f4f9;
+      cursor: pointer;
     }
   `,
 
@@ -248,7 +279,6 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
-          rowView: { class: 'net.nanopay.tx.ui.PayeeRowView' },
           selectionView: { class: 'net.nanopay.tx.ui.PayeeSelectionView', viewData: X.data.viewData },
           search: true,
           sections: [
@@ -346,7 +376,13 @@ foam.CLASS({
               this.NEQ(this.Account.ID, this.viewData.payerAccount),
               this.AND(
                 this.EQ(this.Account.OWNER, newValue || ''),
-                this.NEQ(this.Account.TYPE, 'TrustAccount'))))
+                this.AND(
+                  this.NOT(this.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+                  this.NOT(this.INSTANCE_OF(net.nanopay.account.TrustAccount))
+                )
+              )
+            )
+          )
           .select()
           .then(function(a) {
             var accounts = a.array;
@@ -521,7 +557,9 @@ foam.CLASS({
     },
 
     function initE() {
-      this.checkPermission();
+      this.auth.check(null, 'transfer.to.contact').then((result) => {
+        this.hasContactPermission = result;
+      });
       this.SUPER();
       
       this
@@ -612,19 +650,6 @@ foam.CLASS({
             .tag({ class: 'net.nanopay.ui.transfer.TransferUserCard', user$: this.payee$ })
           .end()
         .end();
-    },
-
-    // TODO: Use AuthService.checkUserPermission instead.
-    function checkPermission() {
-      var self = this;
-      this.groupDAO.find(this.group).then(function(group) {
-        if ( group )  {
-          var permissions = group.permissions;
-          self.hasContactPermission = permissions.filter(function(p) {
-            return p.id == '*' || p.id == 'transfer.to.contact';
-          }).length > 0;
-        }
-      })
     }
   ],
 
@@ -636,7 +661,13 @@ foam.CLASS({
             this.NEQ(this.Account.ID, this.viewData.payerAccount),
             this.AND(
               this.EQ(this.Account.OWNER, this.accountOwner || ''),
-              this.NEQ(this.Account.TYPE, 'TrustAccount'))))
+              this.AND(
+                this.NOT(this.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
+                this.NOT(this.INSTANCE_OF(net.nanopay.account.TrustAccount))
+              )
+            )
+          )
+        )
         .select(this.GROUP_BY(net.nanopay.account.Account.TYPE, this.COUNT()))        
         .then(function(g) {
           view.choices = Object.keys(g.groups).map(function(t) {

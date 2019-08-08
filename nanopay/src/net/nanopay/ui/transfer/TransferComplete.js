@@ -5,80 +5,78 @@ foam.CLASS({
 
   documentation: 'Interac transfer completion and loading screen.',
 
+  requires: [
+    'foam.u2.dialog.Popup'
+  ],
   imports: [
     'addCommas',
     'complete'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          height: 355px;
-        }
-        ^ p{
-          width: 464px;
-          font-family: Roboto;
-          font-size: 12px;
-          line-height: 1.45;
-          letter-spacing: 0.3px;
-          color: #093649;
-        }
-        ^ h3{
-          font-family: Roboto;
-          font-size: 12px;
-          letter-spacing: 0.2px;
-          color: #093649;
-        }
-        ^ h2{
-          width: 600px;
-          font-size: 14px;
-          letter-spacing: 0.4px;
-          color: #093649;
-        }
-        ^status-check p {
-          display: inline-block;
-          margin-left: 10px;
-          font-size: 12px;
-          letter-spacing: 0.2px;
-          color: grey;
-          margin-top: 5px;
-        }
-        ^status-check img {
-          position: relative;
-          top: 5;
-          display: none;
-        }
-        ^status-check-container{
-          margin-top: 35px;
-          margin-bottom: 35px;
-        }
-        ^ .show-green{
-          color: #2cab70;
-        }
-        ^status-check-container{
-          height: 170px;
-        }
-        ^status-check{
-          height: 32px;
-        }
-        ^ .show{
-          display: inline-block;
-        }
-        ^ .hide{
-          display: none;
-        }
-        ^ .show-yes{
-          display: inline-block;
-        }
-        ^ .foam-u2-ActionView-exportButton{
-          position: relative;
-          top: -55px;
-          float: none;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      height: 355px;
+    }
+    ^ p{
+      width: 464px;
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 1.45;
+      letter-spacing: 0.3px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ h3{
+      font-family: Roboto;
+      font-size: 12px;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ h2{
+      width: 600px;
+      font-size: 14px;
+      letter-spacing: 0.4px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^status-check p {
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 12px;
+      letter-spacing: 0.2px;
+      color: grey;
+      margin-top: 5px;
+    }
+    ^status-check img {
+      position: relative;
+      top: 5;
+      display: none;
+    }
+    ^status-check-container{
+      margin-top: 35px;
+      margin-bottom: 35px;
+    }
+    ^ .show-green{
+      color: #2cab70;
+    }
+    ^status-check-container{
+      height: 170px;
+    }
+    ^status-check{
+      height: 32px;
+    }
+    ^ .show{
+      display: inline-block;
+    }
+    ^ .hide{
+      display: none;
+    }
+    ^ .show-yes{
+      display: inline-block;
+    }
+    ^ .foam-u2-ActionView-exportButton{
+      position: relative;
+      float: none;
+    }
+  `,
 
   properties: [
     {
@@ -118,29 +116,17 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .start(this.EXPORT_BUTTON).addClass('import-button').addClass('hide').enableClass('show-yes', this.time$.map(function(value) { return value > 5 }) ).end()
+        .start(this.EXPORT_BUTTON, { buttonStyle: foam.u2.ButtonStyle.SECONDARY })
+          .addClass('import-button')
+          .addClass('hide')
+          .enableClass('show-yes', this.time$.map(function(value) { return value > 5 }) )
+        .end()
         .start().addClass(this.myClass('status-check-container'))
           .start().addClass(this.myClass('status-check'))
             .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function(value) { return value > 0 }))
-            .start('p').add('Sending Bank Compliance Checks...').enableClass('show-green', this.time$.map(function(value) { return value > 0; })).end()
+            .start('p').add('Payment Request Submitted...').enableClass('show-green', this.time$.map(function(value) { return value > 0; })).end()
           .end()
-          .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function(value) { return value > 1; }))
-            .start('p').add('Receiving Bank Compliance Checks...').enableClass('show-green', this.time$.map(function(value) { return value > 1; })).end().end()
-          .end()
-          // .start().addClass(this.myClass('status-check'))
-          //   .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 3 }))
-          //   .start('p').add('Booking FX Rate...').enableClass('show-green', this.time$.map(function (value) { return value > 3 })).end().end()
-          // .end()
-          // .start().addClass(this.myClass('status-check'))
-          //   .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png'}).enableClass('show-yes', this.time$.map(function (value) { return value > 4 }))
-          //   .start('p').add('Generating IMPS Transaction...').enableClass('show-green', this.time$.map(function (value) { return value > 4 })).end().end()
-          // .end()
-          .start().addClass(this.myClass('status-check'))
-            .start({ class: 'foam.u2.tag.Image', data:'images/c-yes.png' }).enableClass('show-yes', this.time$.map(function(value) { return value > 3; }))
-            .start('p').add('Payment Successful...').enableClass('show-green', this.time$.map(function(value) { if ( value > 3 ) { self.complete = true; return true; } })).end().end()
-          .end()
-        .end();
+        .end()
     }
   ],
 
@@ -150,7 +136,10 @@ foam.CLASS({
       label: 'Export',
       icon: 'images/ic-export.png',
       code: function(X) {
-        X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({ class: 'net.nanopay.ui.modal.ExportModal', exportObj: X.viewData.transaction }));
+        this.add(this.Popup.create().tag({
+          class: 'foam.u2.ExportModal',
+          exportObj: X.viewData.transaction
+        }));
       }
     }
   ],

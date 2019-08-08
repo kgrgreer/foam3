@@ -19,10 +19,10 @@ foam.CLASS({
   ],
 
   css: `
-    ^{
+    ^ {
       margin: auto;
       background: #fff;
-      width: 100%;
+      height: 100vh;
     }
     ^ .text-container{
       width: 350px;
@@ -41,7 +41,7 @@ foam.CLASS({
       line-height: 48px;
       letter-spacing: 0.5px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       font-weight: 900;
       margin-bottom: 8px;
     }

@@ -30,7 +30,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background: #f9fbff;
+      background: /*%GREY5%*/ #f5f7fa;
     }
     ^ .link {
       color: #7404EA;
@@ -168,8 +168,7 @@ foam.CLASS({
     function populateVariables() {
       this.currencyDAO.find(this.invoice.destinationCurrency)
         .then((currency) => {
-        this.formattedAmount_ = currency.format(this.invoice.amount) + ' ' +
-          currency.alphabeticCode;
+        this.formattedAmount_ = currency.format(this.invoice.amount);
       });
       this.auth.check(null, 'invoice.pay').then((result) => {
         this.isApprover_ = result;

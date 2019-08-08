@@ -4,12 +4,12 @@ foam.CLASS({
   extends: 'net.nanopay.merchant.ui.ToolbarView',
 
   imports: [
+    'copyright',
+    'theme',
     'showAbout',
     'toolbarIcon',
     'toolbarTitle',
-    'webApp',
-    'copyright',
-    'logo'
+    'webApp'
   ],
 
   css: `
@@ -18,7 +18,7 @@ foam.CLASS({
       height: 480px;
       display: table;
       position: absolute;
-      background-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
       margin-top: -56px;
     }
     ^ .wrapper {
@@ -59,7 +59,7 @@ foam.CLASS({
           .start('div').addClass('about-mintchip')
             .start('div').addClass('mintchip-logo')
               .attrs({ 'aria-hidden': true })
-              .tag({ class: 'foam.u2.tag.Image', data: this.logo })
+              .tag({ class: 'foam.u2.tag.Image', data: this.theme.logo })
             .end()
             .start('h3').add(this.webApp).end()
             .start().add('Version ' + this.version).end().br()

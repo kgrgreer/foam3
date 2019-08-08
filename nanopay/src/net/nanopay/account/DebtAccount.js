@@ -14,6 +14,11 @@ foam.CLASS({
   'net.nanopay.account.Account'
   ],
 
+  imports: [
+    'accountDAO',
+    'stack'
+  ],
+
   properties: [
     // name: 'terms' - future - capture the repayment, interest, ...
     {
@@ -87,10 +92,26 @@ foam.CLASS({
         if ( amount > 0 &&
              amount > -bal ||
              amount < 0 &&
-             amount + bal < this.getLimit() ) {
-          throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain between [limit, 0]" + this.getClass().getSimpleName()+"."+getName());
+             amount + bal < -this.getLimit() ) {
+              throw new RuntimeException("Invalid transfer, "+this.getClass().getSimpleName()+" account balance must remain between ["+this.getLimit()+", 0]" + this.getClass().getSimpleName()+"."+getName()+ "would be... "+ amount + bal) ;
         }
       `
+    }
+  ],
+
+  actions: [
+    {
+      name: 'viewExposure',
+      isAvailable: function() {
+        if (this.stack.top[0].class == 'net.nanopay.tx.ui.exposure.ExposureOverview') {
+          return false;
+        }
+        return true;
+      },
+      code: async function(X) {
+        var creditorAccount = await this.accountDAO.find(this.creditorAccount);
+        X.stack.push({ class: 'net.nanopay.tx.ui.exposure.ExposureOverview', data: creditorAccount });
+      }
     }
   ]
 });

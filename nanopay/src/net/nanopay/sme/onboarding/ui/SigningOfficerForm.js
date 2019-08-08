@@ -167,7 +167,7 @@ foam.CLASS({
     }
 
     ^ .date-display-text {
-    color: #2b2b2b !important;
+    color: /*%BLACK%*/ #1e1f21 !important;
     }
 
     ^ .property-birthdayField .date-display-box {
@@ -216,7 +216,7 @@ foam.CLASS({
     },
     {
       name: 'politicallyExposed',
-      documentation: 'Radio button determining if user is the sigining officer of the business.',
+      documentation: 'Radio button determining if user is the signing officer of the business.',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -617,19 +617,19 @@ foam.CLASS({
       try {
         this.triPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementCAD', '');
       } catch (error) {
-        console.warn('Error occured finding Tri-Party Agreement CAD: ', error);
+        console.warn('Error occurred finding Tri-Party Agreement CAD: ', error);
       }
 
       try {
         this.triPartyAgreementUsd = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'triPartyAgreementUSD', '');
       } catch (error) {
-        console.warn('Error occured finding Tri-Party Agreement USD: ', error);
+        console.warn('Error occurred finding Tri-Party Agreement USD: ', error);
       }
 
       try {
         this.dualPartyAgreementCad = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, 'dualPartyAgreementCAD', '');
       } catch (error) {
-        console.warn('Error occured finding Dual-Party Agreement CAD: ', error);
+        console.warn('Error occurred finding Dual-Party Agreement CAD: ', error);
       }
     },
 

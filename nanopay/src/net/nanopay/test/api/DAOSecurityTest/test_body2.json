@@ -1,0 +1,15 @@
+{
+    "class":"foam.box.Message",
+    "attributes":{
+        "replyBox":{
+            "class":"foam.box.HTTPReplyBox"
+        },
+        "sessionId":"6d2df1a2-982e-4537-9fcd-randomabc123"
+    },
+    "object":{
+        "class":"foam.box.RPCMessage",
+        "name":"find_",
+        "args":[null,188],
+        "attributes":{}
+    }
+}

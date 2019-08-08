@@ -8,7 +8,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
@@ -53,7 +53,6 @@ public class AccountVerifiedEmailDAO
       return getDelegate().put_(x, obj);
 
     account = (BankAccount) super.put_(x , obj);
-    EmailService            email   = (EmailService) x.get("email");
     EmailMessage            message = new EmailMessage();
     HashMap<String, Object> args    = new HashMap<>();
 
@@ -63,7 +62,7 @@ public class AccountVerifiedEmailDAO
     args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
 
     try {
-      email.sendEmailFromTemplate(x, owner, message, "verifiedBank", args);
+      EmailsUtility.sendEmailFromTemplate(x, owner, message, "verifiedBank", args);
     } catch(Throwable t) {
       ((Logger) x.get(Logger.class)).error("Error sending account verified email.", t);
     }

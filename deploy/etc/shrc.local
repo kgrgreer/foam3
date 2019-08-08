@@ -1,0 +1,177 @@
+#!/bin/bash
+#
+#########################
+# JVM Configuration and Tuning parameters
+# See shrc.custom to override memory parameters
+#
+# See https://www.oracle.com/technetwork/articles/java/vmoptions-jsp-140102.htmlString
+#########################
+
+###### Customer parameter File
+CUSTOM_CONFIG="${NANOPAY_HOME}/conf/shrc.custom"
+if [ -f "${CUSTOM_CONFIG}" ]; then
+  . ${CUSTOM_CONFIG} $1
+fi
+
+###### Project parameter File
+PROJECT_CONFIG="$NANOPAY_HOME/etc/shrc.project"
+if [ -f "${PROJECT_CONFIG}" ]; then
+  . ${PROJECT_CONFIG} $1
+fi
+
+###### Memory
+# MEMORY_MODEL defaults to SMALL and can be defined in shrc.custom
+
+case "$MEMORY_MODEL" in
+
+  'SMALL')
+    # SMALL is the DEFAULT of this file.
+  ;;
+
+  'MEDIUM')
+    JAVA_OPTS="${JAVA_OPTS} -Xms1000m"
+    JAVA_OPTS="${JAVA_OPTS} -Xmx6000m"
+    JAVA_OPTS="${JAVA_OPTS} -XX:NewSize=192m"
+    JAVA_OPTS="${JAVA_OPTS} -XX:MaxNewSize=512m"
+#    JAVA_OPTS="${JAVA_OPTS} -XX:PermSize=512m"
+#    JAVA_OPTS="${JAVA_OPTS} -XX:MaxPermSize=1024m"
+  ;;
+
+  'LARGE')
+    JAVA_OPTS="${JAVA_OPTS} -Xms1000m"
+    JAVA_OPTS="${JAVA_OPTS} -Xmx12000m"
+    JAVA_OPTS="${JAVA_OPTS} -XX:NewSize=192m"
+    JAVA_OPTS="${JAVA_OPTS} -XX:MaxNewSize=512m"
+#    JAVA_OPTS="${JAVA_OPTS} -XX:PermSize=512m"
+#    JAVA_OPTS="${JAVA_OPTS} -XX:MaxPermSiz=1024m"
+  ;;
+
+esac
+
+# memory - heap
+if [ -z "`echo "${JAVA_OPTS}" | grep "Xms"`" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -Xms512m"
+fi
+
+if [ -z "`echo "${JAVA_OPTS}" | grep "Xmx"`" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -Xmx2048m"
+fi
+
+# memory - stack
+if [ -z "`echo "${JAVA_OPTS}" | grep "Xss"`" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -Xss1m"
+fi
+if [ -z "`echo "${JAVA_OPTS}" | grep "Xoss"`" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -Xoss1m"
+fi
+
+if [ -z "`echo "${JAVA_OPTS}" | grep "XX:.*NewSize"`" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -XX:NewSize=192m"
+  JAVA_OPTS="${JAVA_OPTS} -XX:MaxNewSize=512m"
+fi
+# if [ -z "`echo "${JAVA_OPTS}" | grep "XX:.*PermSize"`" ]; then
+#   JAVA_OPTS="${JAVA_OPTS} -XX:PermSize=256m"
+#   JAVA_OPTS="${JAVA_OPTS} -XX:MaxPermSize=512m"
+# fi
+
+# Attempt to avoid unnecessary class unloading/loading
+JAVA_OPTS="${JAVA_OPTS} -XX:ReservedCodeCacheSize=128m"
+
+# out of memory heap dump
+JAVA_OPTS="${JAVA_OPTS} -XX:+HeapDumpOnOutOfMemoryError"
+
+# TTL caching policy for Name Service lookup. Default is -1 (forever)
+# which prevents DNS spoofing but does not allow us to reconfigure
+# (change an ipaddress of a clustered node) without restarting all
+# other cluster nodes. Time in seconds.
+JAVA_OPTS=$JAVA_OPTS" -Dnetworkaddress.cache.ttl=3600"
+
+##### Debugging / Diagnostic
+# Troubleshooting debug setup.
+
+# Uncomment in shrc.custom to enable all Debug/Diagnostic parameters.
+#DEBUG=1 - enable in shrc.custom
+
+if [ "${DEBUG}" = "1" ]; then
+  # Turn on to debug random JVM pauses
+  JAVA_OPTS="${JAVA_OPTS} -XX:+UnlockDiagnosticVMOptions"
+  JAVA_OPTS="${JAVA_OPTS} -XX:+LogCompilation"
+  JAVA_OPTS="${JAVA_OPTS} -XX:+PrintCompilation"
+  JAVA_OPTS="${JAVA_OPTS} -XX:+PrintVMQWaitTime"
+
+  # Free List Statistics
+  JAVA_OPTS="${JAVA_OPTS} -XX:PrintFLSStatistics=1"
+  JAVA_OPTS="${JAVA_OPTS} -XX:+LogVMOutput"
+
+  # DTrace
+  JAVA_OPTS="${JAVA_OPTS} -XX:+ExtendedDTraceProbes"
+  JAVA_OPTS="${JAVA_OPTS} -XX:+DTraceAllocProbes"
+  JAVA_OPTS="${JAVA_OPTS} -XX:+DTraceMethodProbes"
+  JAVA_OPTS="${JAVA_OPTS} -XX:+DTraceMonitorProbes"
+fi
+# Uncomment in shrc.custom to enable only the following Dev Debug/Diagnostic parameters.
+# NOTE: these parameters are also enabled when DEBUG is enabled.
+#DEBUG_DEV=1 - enable in shrc.custom
+
+if [ "${DEBUG}" = "1" -o "${DEBUG_DEV}" = "1" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -Xdebug"
+  JAVA_OPTS="${JAVA_OPTS} -Xnoagent"
+  JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUG_PORT}"
+fi
+
+##### Garbage Collection
+case "$MEMORY_MODEL" in
+
+  'SMALL')
+    JVM_ARGS="${JVM_ARGS} -XX:+UseParNewGC"
+    JVM_ARGS="${JVM_ARGS} -XX:+UseConcMarkSweepGC"
+    JVM_ARGS="${JVM_ARGS} -XX:-CMSParallelRemarkEnabled"
+  ;;
+  *)
+    JAVA_OPTS="${JAVA_OPTS} -XX:+UseG1GC"
+  ;;
+esac
+
+# String heap optimization
+JAVA_OPTS=$"${JAVA_OPTS} -XX:+UseStringCache"
+
+if [ -z "`echo "${JAVA_OPTS}" | grep "DisableExplicitGC"`" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -XX:+ExplicitGCInvokesConcurrent"
+fi
+
+# Garbage Collection logging
+# NOTE: disabled - we are experiencing lockup on GC for 4-5 seconds
+# see https://nanopay.atlassian.net/browse/CPF-2417
+#JAVA_OPTS=$JAVA_OPTS" -XX:+PrintGCDetails"
+if [ -z "`echo "${JAVA_OPTS}" | grep "XX:.*PrintGC"`" ]; then
+  JAVA_OPTS=$JAVA_OPTS" -XX:+PrintGCTimeStamps"
+
+  JAVA_OPTS=$JAVA_OPTS" -XX:+PrintTenuringDistribution"
+
+  # include class histogram in thread dumps, makes thread
+  # dumps more costly but can be useful for troubleshooting
+  # memory leaks. This feature can cause extended pauses while
+  # gc occurs. Do not enable this feature if you perform
+  # non troubleshooting 'routine' threaddumps.
+  #JAVA_OPTS="${JAVA_OPTS} -XX:+PrintClassHistogram"
+
+  export GC_LOG="${NANOPAY_HOME}/logs/gcstats.log.$$"
+  JAVA_OPTS=$JAVA_OPTS" -XX:+UseGCLogFileRotation"
+  JAVA_OPTS=$JAVA_OPTS" -XX:NumberOfGCLogFiles=10"
+  JAVA_OPTS=$JAVA_OPTS" -XX:GCLogFileSize=100m"
+  JAVA_OPTS=$JAVA_OPTS" -Xloggc:${GC_LOG}"
+  JAVA_OPTS=$JAVA_OPTS" -verbose:gc"
+fi
+
+# OutOfMemory
+JAVA_OPTS=$JAVA_OPTS" -XX:+HeapDumpOnOutOfMemoryError"
+JAVA_OPTS=$JAVA_OPTS" -XX:HeapDumpPath=${PROJECT_HOME}/logs/java_pid<pid>.hprof"
+#JAVA_OPTS=$JAVA_OPTS" -XX:OnOutOfMemoryError="< cmd args >;< cmd args >" // shutdown -r for example.
+JAVA_OPTS=$JAVA_OPTS" -XX:+UseGCOverheadLimit"
+
+
+# default on Solaris but not Linux
+JAVA_OPTS="${JAVA_OPTS} -XX:+UseLargePages"
+
+##### File
+JAVA_OPTS="${JAVA_OPTS} -XX:+MaxFDLimit"

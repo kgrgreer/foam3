@@ -8,7 +8,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import java.util.HashMap;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.contacts.Contact;
@@ -37,7 +37,6 @@ public class RegistrationSubmissionEmailDAO
       user = (User) super.put_(x , obj);
       User                    admin        = (User) getDelegate().find(user.getInvitedBy());
       AppConfig               config       = (AppConfig) x.get("appConfig");
-      EmailService            email        = (EmailService) x.get("email");
       EmailMessage            message      = new EmailMessage();
       EmailMessage            adminMessage = new EmailMessage();
       HashMap<String, Object> args         = new HashMap<>();
@@ -50,14 +49,14 @@ public class RegistrationSubmissionEmailDAO
       args.put("memberLink",  config.getUrl()+"#members");
 
       try {
-        email.sendEmailFromTemplate(x, user, message, "reg-pending", args);
+        EmailsUtility.sendEmailFromTemplate(x, user, message, "reg-pending", args);
       } catch (Throwable t) {
         (x.get(Logger.class)).error("Error sending pending submission email.", t);
       }
 
       adminMessage.setTo(new String[]{admin.getEmail()});
       try {
-        email.sendEmailFromTemplate(x, admin, adminMessage, "reg-note", args);
+        EmailsUtility.sendEmailFromTemplate(x, admin, adminMessage, "reg-note", args);
       } catch (Throwable t) {
         (x.get(Logger.class)).error("Error sending admin notification submission email.", t);
       }

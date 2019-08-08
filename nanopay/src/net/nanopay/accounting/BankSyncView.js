@@ -72,11 +72,11 @@ foam.CLASS({
     ^ .sideBar {
       width: 6px;
       height: 100%;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       position: absolute;
     }
     ^ .balanceBoxTitle {
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 12px;
       margin-left: 44px;
       padding-top: 14px;
@@ -90,7 +90,7 @@ foam.CLASS({
       letter-spacing: 0.5px;
       overflow-wrap: break-word;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-top: 27px;
       margin-left: 44px;
       margin-right: 44px;
@@ -105,7 +105,7 @@ foam.CLASS({
       width: 135px;
       height: 50px;
       border-radius: 2px;
-      background: %SECONDARYCOLOR%;
+      background: /*%PRIMARY3%*/ #406dea;
       color: white;
       margin: 0;
       padding: 0;
@@ -118,7 +118,7 @@ foam.CLASS({
       box-shadow: none;
     }
     ^ .foam-u2-ActionView-cashInBtn:hover {
-      background: %SECONDARYCOLOR%;
+      background: /*%PRIMARY3%*/ #406dea;
       opacity: 0.9;
     }
     ^ .foam-u2-ActionView-cashOutButton {
@@ -127,7 +127,7 @@ foam.CLASS({
       border-radius: 2px;
       background: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin: 0;
       padding: 0;
       border: 0;
@@ -148,7 +148,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-top: 15px;
     }
     ^ .foam-u2-ActionView-create {
@@ -163,7 +163,7 @@ foam.CLASS({
       left: 95px;
     }
     ^ .foam-u2-view-TableView-row:hover {
-      background: %TABLEHOVERCOLOR%;
+      background: /*%GREY4%*/ #e7eaec;
     }
     ^ .foam-u2-view-TableView-row {
       height: 40px;

@@ -3,7 +3,6 @@ package net.nanopay.fx;
 import foam.core.X;
 import foam.dao.DAO;
 import net.nanopay.fx.localfx.LocalFXService;
-import net.nanopay.fx.ExchangeRatesCron;
 
 public class FXServiceTest
     extends foam.nanos.test.Test {
@@ -20,14 +19,19 @@ public class FXServiceTest
 
     fxService = (FXService) x.get("fxService");
 
+    setupRates(x);
     testGetFXRate();
     testAcceptFXRate();
 
   }
 
+  public void setupRates(X x) {
+    DAO rates = (DAO) x.get("exchangeRateDAO");
+    ExchangeRate rate = new ExchangeRate.Builder(x).setFromCurrency("USD").setToCurrency("INR").setRate(0.1).build();
+    rates.put(rate);
+  }
+
   public void testGetFXRate() {
-    ExchangeRatesCron cron = new ExchangeRatesCron();
-    cron.execute(x_);
     FXQuote fxQuote = fxService.getFXRate("USD", "INR", 100l, 0l, "Buy", null, 1002, null);
     test( null != fxQuote, "FX Quote was returned" );
     test( fxQuote.getId() > 0, "Quote has an ID: " + fxQuote.getId() );

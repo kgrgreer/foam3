@@ -21,11 +21,17 @@ foam.CLASS({
   ],
 
   imports: [
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToReceive',
     'currencyDAO',
+    'notify',
     'stack',
     'user',
     'accountingIntegrationUtil'
+  ],
+
+  messages: [
+    { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.' },
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' }
   ],
 
   properties: [
@@ -56,12 +62,12 @@ foam.CLASS({
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({
               label: 'Invoice No.',
-              tableWidth: 145
+              tableWidth: 115
             }),
-            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 145 }),
-            this.Invoice.ISSUE_DATE.clone().copyFrom({ tableWidth: 145 }),
-            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 145 }),
-            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 145 }),
+            this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.ISSUE_DATE.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.DUE_DATE.clone().copyFrom({ tableWidth: 115 }),
+            this.Invoice.STATUS.clone().copyFrom({ tableWidth: 115 }),
             'invoiceFile'
           ],
           contextMenuActions: [
@@ -83,7 +89,7 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function(X) {
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAndNotifyAbilityToReceive().then((result) => {
                   if ( ! result ) return;
                   X.menuDAO.find('sme.quickAction.request').then((menu) => {
                     var clone = menu.clone();
@@ -110,12 +116,18 @@ foam.CLASS({
                 if ( self.user.id != this.createdBy ) return false;
                 return this.status === self.InvoiceStatus.UNPAID ||
                   this.status === self.InvoiceStatus.PAID ||
-                  this.status === self.InvoiceStatus.PENDING ||
+                  this.status === self.InvoiceStatus.PROCESSING ||
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               code: function(X) {
                 this.paymentMethod = self.PaymentStatus.VOID;
-                self.user.sales.put(this);
+                self.user.sales.put(this).then((invoice)=> {
+                  if (invoice.paymentMethod == self.PaymentStatus.VOID) {
+                    self.notify(self.VOID_SUCCESS, 'success');
+                  }
+                }).catch((err) => {
+                  if ( err ) self.notify(self.VOID_ERROR, 'error');
+                });;
               }
             }),
             foam.core.Action.create({
@@ -141,7 +153,7 @@ foam.CLASS({
           name: 'reqMoney',
           label: 'Request payment',
           code: function(X) {
-            self.checkComplianceAndBanking().then((result) => {
+            self.checkAndNotifyAbilityToReceive().then((result) => {
               if ( result ) {
                 X.menuDAO.find('sme.quickAction.request').then((menu) => {
                   var clone = menu.clone();
@@ -155,8 +167,6 @@ foam.CLASS({
                   clone.launch(X, X.controllerView);
                 });
               }
-            }).catch((err) => {
-              console.warn('Error occured when checking the compliance: ', err);
             });
           }
         });

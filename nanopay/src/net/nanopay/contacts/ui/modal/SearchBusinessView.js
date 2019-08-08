@@ -53,15 +53,10 @@ foam.CLASS({
       margin-left: 10px;
       margin-top: 14px;
     }
-    ^filter-search {
-      height: 40px;
-      border-radius: 3px;
-      border-color: #e2e2e3;
-      background-color: #ffffff;
+    ^ ^filter-search {
       vertical-align: top;
       box-shadow:none;
-      padding: 10px 10px 10px 31px;
-      font-size: 14px;
+      padding-left: 31px;
     }
     ^create-new-block {
       margin-top: 120px;

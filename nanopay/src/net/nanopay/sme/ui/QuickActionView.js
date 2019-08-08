@@ -10,7 +10,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'menuDAO',
     'pushMenu'
   ],
@@ -70,12 +71,16 @@ foam.CLASS({
 
   listeners: [
     function quickActionRedirect(menu) {
-      this.checkComplianceAndBanking().then((result) => {
+      var checkAndNotifyAbility;
+
+      var checkAndNotifyAbility = menu.id === 'sme.quickAction.send' ?
+        this.checkAndNotifyAbilityToPay :
+        this.checkAndNotifyAbilityToReceive;
+
+      checkAndNotifyAbility().then((result) => {
         if ( result ) {
           this.pushMenu(menu.id);
         }
-      }).catch((err) => {
-        console.warn('Error occured when checking the compliance: ', err);
       });
     }
   ]

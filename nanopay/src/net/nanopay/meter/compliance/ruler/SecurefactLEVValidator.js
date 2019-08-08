@@ -6,6 +6,8 @@ foam.CLASS({
   documentation: `Validates a business using SecureFact LEV api.`,
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -25,14 +27,20 @@ foam.CLASS({
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           if ( ! response.hasCloseMatches() ) {
             status = ComplianceValidationStatus.INVESTIGATING;
-            requestApproval(x,
-              new ComplianceApprovalRequest.Builder(x)
-                .setObjId(Long.toString(business.getId()))
-                .setDaoKey("localUserDAO")
-                .setCauseId(response.getId())
-                .setCauseDaoKey("securefactLEVDAO")
-                .build()
-            );
+            agency.submit(x, new ContextAgent() {
+              @Override
+              public void execute(X x) {
+                requestApproval(x,
+                  new ComplianceApprovalRequest.Builder(x)
+                    .setObjId(Long.toString(business.getId()))
+                    .setDaoKey("localUserDAO")
+                    .setCauseId(response.getId())
+                    .setClassification("Validate Business Using SecureFact")
+                    .setCauseDaoKey("securefactLEVDAO")
+                    .build()
+                );
+              }
+            }, "Securefact LEV Validator");
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {
@@ -40,23 +48,6 @@ foam.CLASS({
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'canExecute',
-      javaCode: `
-      // TODO: add an actual implementation
-      return true;
-      `
-    },
-    {
-      name: 'describe',
-      javaCode: `
-      // TODO: add an actual implementation
-      return "";`
     }
   ]
 });

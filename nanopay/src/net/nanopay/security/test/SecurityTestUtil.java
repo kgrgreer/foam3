@@ -37,7 +37,7 @@ class SecurityTestUtil {
     try {
       // create new test token
       Process process = new ProcessBuilder("softhsm2-util",
-        "--init-token", "--slot", "0",
+        "--init-token", "--free",
         "--label", "SecurityTestUtil",
         "--so-pin", "test",
         "--pin", "test")
@@ -63,8 +63,8 @@ class SecurityTestUtil {
    */
   static X CreateSecurityTestContext(X x) {
     return CreateSecurityTestContext(x, new PKCS12KeyStoreManager.Builder(x)
-      .setKeyStorePath("/tmp/nanopay/keys/keystore.p12")
-      .setPassphrasePath("/tmp/nanopay/keys/passphrase")
+      .setKeyStorePath(System.getenv("NANOPAY_HOME") + "/keys/keystore.p12")
+      .setPassphrasePath(System.getenv("NANOPAY_HOME") + "/keys/passphrase")
       .build());
   }
 

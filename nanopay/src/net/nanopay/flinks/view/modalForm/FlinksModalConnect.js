@@ -43,7 +43,7 @@ foam.CLASS({
       transition: all .15s ease-in-out;
     }
     ^ .foam-u2-tag-Input:focus {
-      border: 1px solid %SECONDARYCOLOR% !important;
+      border: 1px solid /*%PRIMARY3%*/ #406dea !important;
     }
     ^ .property-username {
       width: 100%;
@@ -238,7 +238,7 @@ foam.CLASS({
       try {
         this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
       } catch (error) {
-        console.warn('Error occured finding Terms Agreement: ', error);
+        console.warn('Error occurred finding Terms Agreement: ', error);
       }
     }
   ]

@@ -22,154 +22,150 @@ foam.CLASS({
 
   documentation: 'Pop up modal for confirming top up.',
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 448px;
-          height: 288px;
-          margin: auto;
-        }
-        ^ .cashInContainer {
-          width: 448px;
-          height: 288px;
-          border-radius: 2px;
-          background-color: #ffffff;
-          box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.02);
-          position: relative;
-        }
-        ^ .popUpHeader {
-          width: 448px;
-          height: 40px;
-          background-color: %PRIMARYCOLOR%;
-        }
-        ^ .popUpTitle {
-          width: 198px;
-          height: 40px;
-          font-family: Roboto;
-          font-size: 14px;
-          line-height: 40.5px;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #ffffff;
-          margin-left: 20px;
-          display: inline-block;
-        }
-        ^ .foam-u2-ActionView-closeButton {
-          width: 24px;
-          height: 24px;
-          margin: 0;
-          margin-top: 7px;
-          margin-right: 20px;
-          cursor: pointer;
-          display: inline-block;
-          float: right;
-          outline: 0;
-          border: none;
-          background: transparent;
-          box-shadow: none;
-        }
-        ^ .foam-u2-ActionView-closeButton:hover {
-          background: transparent;
-          background-color: transparent;
-        }
-        ^ .label {
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: bold;
-          letter-spacing: 0.2px;
-          color: #093649;
-          margin-top: 20px;
-          margin-bottom: 0;
-          display: inline-block;
-          vertical-align: top;
-        }
-        ^ .bankInfoDiv {
-          display: inline-block;
-          margin-left: 35px;
-          margin-top: 18px;
-        }
-        ^ .bankLogo {
-          width: 24px;
-          height: 24px;
-          float: left;
-          clear: both;
-          margin-bottom: 5px;
-        }
-        ^ .bankName {
-          width: 200px;
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.2px;
-          color: #093649;
-          clear: both;
-        }
-        ^ .accountNumber {
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.2px;
-          color: #093649;
-          margin-top: 5px;
-        }
-        ^ .amount {
-          font-size: 12px;
-          line-height: 1.33;
-          letter-spacing: 0.2px;
-          color: #093649;
-          display: inline-block;
-          margin-top: 22px;
-          margin-left: 75px;
-        }
-        ^ .foam-u2-ActionView-cashInBtn {
-          font-family: Roboto;
-          width: 136px;
-          height: 40px;
-          position: static;
-          border-radius: 2px;
-          background: %SECONDARYCOLOR%;
-          border: solid 1px %SECONDARYCOLOR%;
-          display: inline-block;
-          color: white;
-          text-align: center;
-          cursor: pointer;
-          font-size: 14px;
-          margin: 0;
-          outline: none;
-          float: right;
-          box-shadow: none;
-          font-weight: normal;
-          line-height: 40px;
-        }
-        ^ .foam-u2-ActionView-cashInBtn:hover {
-          background: %SECONDARYCOLOR%;
-          border-color: %SECONDARYCOLOR%;
-          opacity: 0.9;
-        }
-        ^ .foam-u2-ActionView-back {
-          font-family: Roboto;
-          width: 136px;
-          height: 40px;
-          position: static;
-          background: rgba(164, 179, 184, 0.1);
-          border-radius: 2px;
-          border: solid 1px #ebebeb;
-          display: inline-block;
-          color: #093649;
-          text-align: center;
-          cursor: pointer;
-          font-size: 14px;
-          margin: 0;
-          outline: none;
-          float: left;
-          box-shadow: none;
-          font-weight: normal;
-        }
-        ^ .foam-u2-ActionView-back:hover {
-          background: lightgray;
-        }
-    */}
-    })
-  ],
+  css: `
+    ^ {
+      width: 448px;
+      height: 288px;
+      margin: auto;
+    }
+    ^ .cashInContainer {
+      width: 448px;
+      height: 288px;
+      border-radius: 2px;
+      background-color: #ffffff;
+      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.02);
+      position: relative;
+    }
+    ^ .popUpHeader {
+      width: 448px;
+      height: 40px;
+      background-color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ .popUpTitle {
+      width: 198px;
+      height: 40px;
+      font-family: Roboto;
+      font-size: 14px;
+      line-height: 40.5px;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #ffffff;
+      margin-left: 20px;
+      display: inline-block;
+    }
+    ^ .foam-u2-ActionView-closeButton {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+      margin-top: 7px;
+      margin-right: 20px;
+      cursor: pointer;
+      display: inline-block;
+      float: right;
+      outline: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+    ^ .foam-u2-ActionView-closeButton:hover {
+      background: transparent;
+      background-color: transparent;
+    }
+    ^ .label {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+      margin-top: 20px;
+      margin-bottom: 0;
+      display: inline-block;
+      vertical-align: top;
+    }
+    ^ .bankInfoDiv {
+      display: inline-block;
+      margin-left: 35px;
+      margin-top: 18px;
+    }
+    ^ .bankLogo {
+      width: 24px;
+      height: 24px;
+      float: left;
+      clear: both;
+      margin-bottom: 5px;
+    }
+    ^ .bankName {
+      width: 200px;
+      font-size: 12px;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+      clear: both;
+    }
+    ^ .accountNumber {
+      font-size: 12px;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+      margin-top: 5px;
+    }
+    ^ .amount {
+      font-size: 12px;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+      display: inline-block;
+      margin-top: 22px;
+      margin-left: 75px;
+    }
+    ^ .foam-u2-ActionView-cashInBtn {
+      font-family: Roboto;
+      width: 136px;
+      height: 40px;
+      position: static;
+      border-radius: 2px;
+      background: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
+      display: inline-block;
+      color: white;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 0;
+      outline: none;
+      float: right;
+      box-shadow: none;
+      font-weight: normal;
+      line-height: 40px;
+    }
+    ^ .foam-u2-ActionView-cashInBtn:hover {
+      background: /*%PRIMARY3%*/ #406dea;
+      border-color: /*%PRIMARY3%*/ #406dea;
+      opacity: 0.9;
+    }
+    ^ .foam-u2-ActionView-back {
+      font-family: Roboto;
+      width: 136px;
+      height: 40px;
+      position: static;
+      background: rgba(164, 179, 184, 0.1);
+      border-radius: 2px;
+      border: solid 1px #ebebeb;
+      display: inline-block;
+      color: /*%BLACK%*/ #1e1f21;
+      text-align: center;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 0;
+      outline: none;
+      float: left;
+      box-shadow: none;
+      font-weight: normal;
+    }
+    ^ .foam-u2-ActionView-back:hover {
+      background: lightgray;
+    }
+  `,
 
   properties: [],
 

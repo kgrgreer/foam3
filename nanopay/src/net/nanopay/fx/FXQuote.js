@@ -13,6 +13,16 @@ foam.CLASS({
       'foam.core.Detachable',
       'foam.util.SafetyUtil'
     ],
+
+    tableColumns: [
+      'id',
+      'user',
+      'sourceCurrency',
+      'targetCurrency',
+      'rate',
+      'fee'
+    ],
+
     properties: [{
             class: 'foam.core.Date',
             name: 'expiryTime'
@@ -67,6 +77,14 @@ foam.CLASS({
           name: 'rate'
         },
         {
+          class: 'Double',
+          name: 'invertedRate'
+        },
+        {
+          class: 'Boolean',
+          name: 'hasSourceAmount'
+        },
+        {
           class: 'Currency',
           name: 'fee'
         },
@@ -77,6 +95,10 @@ foam.CLASS({
         {
           class: 'String',
           name: 'paymentMethod'
+        },
+        {
+          class: 'Date',
+          name: 'valueDate'
         }
     ],
     axioms: [

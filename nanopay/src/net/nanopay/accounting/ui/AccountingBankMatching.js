@@ -35,8 +35,8 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background: #f9fbff;
       overflow-y: scroll;
+      background-color: /*%GREY5%*/ #f5f7fa;
     }
     ^ {
       text-align: center
@@ -49,7 +49,7 @@ foam.CLASS({
     ^ .bank-matching-container {
       width: 530px;
       display: inline-block;
-      height: 90vh;
+      height: calc(100vh - 92px);
     }
     ^ .button-bar {
       margin-top:20px;
@@ -60,7 +60,7 @@ foam.CLASS({
       padding-right: 24px;
     }
     ^ .bank-matching-box {
-      background-color: #f9fbff;
+      background-color: /*%GREY5%*/ #f5f7fa;
       padding: 24px;
       border-top-right-radius: 5px;
       border-top-left-radius: 5px;
@@ -75,7 +75,7 @@ foam.CLASS({
     ^ .drop-down-label {
       font-size: 12px;
       font-weight: 600;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       margin-bottom: 8px;
     }
     ^ .foam-u2-tag-Select {
@@ -103,7 +103,7 @@ foam.CLASS({
       display: inline-block;
       font-size: 16px;
       font-weight: 900;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .save-button {
       width: 158px;
@@ -136,7 +136,7 @@ foam.CLASS({
       font-size: 16px;
       font-weight: lighter;
     }
-    ^ .foam-u2-ActionView-cancel:hover {
+    ^ .cancel-button:hover {
       cursor : selector;
       background-color: transparent !important
     }

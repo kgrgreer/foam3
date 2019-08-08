@@ -61,6 +61,7 @@ public class IdentityMindRequestGenerator {
     return new IdentityMindRequest.Builder(x)
       .setEntityType(user.getClass().getName())
       .setEntityId(user.getId())
+      .setDaoKey("localUserDAO")
       .setMan(Long.toString(login.getLoginAttemptedFor()))
       .setTea(login.getEmail())
       .setIp(login.getIpAddress())
@@ -73,6 +74,7 @@ public class IdentityMindRequestGenerator {
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
       .setEntityType(business.getClass().getName())
       .setEntityId(business.getId())
+      .setDaoKey("businessDAO")
       .setMan(Long.toString(business.getId()))
       .setTid(getUUID(business))
       .setIp(getRemoteAddr(x))
@@ -109,22 +111,30 @@ public class IdentityMindRequestGenerator {
   }
 
   public static IdentityMindRequest getTransferRequest(X x, Transaction transaction) {
+    DAO localUserDAO = (DAO) x.get("localUserDAO");
     Account sourceAccount = transaction.findSourceAccount(x);
     Account destinationAccount = transaction.findDestinationAccount(x);
     // The owner of destination account is a business but we need to know
     // the person who actually sends the payment therefore uses agent as sender.
-    User sender = (User) x.get("agent");
-    DAO localUserDAO = (DAO) x.get("localUserDAO");
+    User sender = getRealUser(x);
+    if ( sender == null ) {
+      // REVIEW: it is not always the case that a user is logged in when
+      // Transactions are created. Also, this logic fails the transaction
+      // pipeline during non-ablii tests as they have no knowledge of
+      // user/agent setup.
+      ((Logger) x.get("logger")).warning("IdentityMindRequestGenerator.getTransferRequest agent not found in context, using sourceAccount owner.");
+      sender = (User) localUserDAO.inX(x).find(sourceAccount.getOwner());
+    }
     User receiver = (User) localUserDAO.inX(x).find(destinationAccount.getOwner());
 
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
+      .setEntityType(transaction.getClass().getName())
+      .setDaoKey("transactionDAO")
+      .setEntityId(transaction.getId())
+      .setTid(transaction.getId())
       .setIp(getRemoteAddr(x))
       .build();
 
-    if ( transaction.getInvoiceId() != 0 ) {
-      request.setEntityType(Invoice.class.getName());
-      request.setEntityId(transaction.getInvoiceId());
-    }
     request.setAmt(Double.toString(transaction.getAmount() / 100.0));
     request.setCcy(sourceAccount.getDenomination());
 
@@ -136,7 +146,8 @@ public class IdentityMindRequestGenerator {
     request.setTags(tags);
 
     // Sender information
-    request.setMerchantAid(getUUID(sourceAccount.findOwner(x)));
+    User owner = (User) localUserDAO.find(sourceAccount.getOwner());
+    request.setMerchantAid(getUUID(owner));
     request.setMan(Long.toString(sender.getId()));
     request.setPach(getBankAccountHash(x, (BankAccount) sourceAccount));
     request.setBfn(prepareString(sender.getFirstName()));
@@ -195,10 +206,11 @@ public class IdentityMindRequestGenerator {
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
       .setEntityType(user.getClass().getName())
       .setEntityId(user.getId())
+      .setDaoKey("userDAO")
       .setMan(Long.toString(user.getId()))
       .setTid(getUUID(user))
       .setTea(user.getEmail())
-      .setIp(getRemoteAddr(x))
+      .setIp(prepareString(getRemoteAddr(x)))
       .setBfn(prepareString(user.getFirstName()))
       .setBln(prepareString(user.getLastName()))
       .setAccountCreationTime(timestampSdf.get().format(user.getCreated()))
@@ -217,7 +229,10 @@ public class IdentityMindRequestGenerator {
       request.setPhn(prepareString(phone.getNumber()));
     }
     request.setTitle(prepareString(user.getJobTitle()));
-    request.setDob(isoDateSdf.get().format(user.getBirthday()));
+    Date birthDay = user.getBirthday();
+    if ( birthDay != null ) {
+      request.setDob(isoDateSdf.get().format(birthDay));
+    }
     return request;
   }
 
@@ -225,6 +240,7 @@ public class IdentityMindRequestGenerator {
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
       .setEntityType(owner.getClass().getName())
       .setEntityId(owner.getId())
+      .setDaoKey("beneficialOwnerDAO")
       .setMan("owner." + owner.getId())
       .setIp(getRemoteAddr(x))
       .setBfn(prepareString(owner.getFirstName()))

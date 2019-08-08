@@ -14,89 +14,85 @@ foam.CLASS({
     'bankInstitutions'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          overflow-y: scroll;
-        }
-        ^ .optionSpacer {
-          display: inline-block;
-          background-color: white;
-          margin-right: 30px;
-          box-sizing: border-box;
-          border: solid 1px white;
-        }
-        ^ .optionSpacer:last-child {
-          margin-right: 0;
-        }
-        ^ .institution {
-          margin-bottom: 30px
-        }
-        ^ .institution:hover {
-          cursor: pointer;
-        }
-        ^ .optionSpacer.selected {
-          border: solid 1px %ACCENTCOLOR%;
-        }
-        ^ .subContent {
-          display: contents;
-          background-color: %BACKGROUNDCOLOR%;
-          border: 1px solid %BACKGROUNDCOLOR%;
-        }
-        ^ .image {
-          width: 170px;
-          height: 115px;
-        }
-        ^ .foam-u2-ActionView-nextButton {
-          float: right;
-          margin: 0;
-          box-sizing: border-box;
-          background-color: %PRIMARYCOLOR%;
-          outline: none;
-          border: none;
-          width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          color: #FFFFFF;
-        }
-        ^ .foam-u2-ActionView-closeButton:hover:enabled {
-          cursor: pointer;
-        }
-        ^ .foam-u2-ActionView-closeButton {
-          float: left;
-          margin-left : 2px;
-          outline: none;
-          color: black;
-          min-width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          // background-color: rgba(164, 179, 184, 0.1);
-          box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          margin-right: 40px;
-        }
-        ^ .foam-u2-ActionView-nextButton:disabled {
-          background-color: #7F8C8D;
-        }
-        ^ .foam-u2-ActionView-nextButton:hover:enabled {
-          cursor: pointer;
-        }
-        ^ .net-nanopay-ui-wizard-WizardOverview {
-          display: none;
-        }
-        ^ .linkk{
-          margin: auto;
-          width: max-content;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ {
+      overflow-y: scroll;
+    }
+    ^ .optionSpacer {
+      display: inline-block;
+      background-color: white;
+      margin-right: 30px;
+      box-sizing: border-box;
+      border: solid 1px white;
+    }
+    ^ .optionSpacer:last-child {
+      margin-right: 0;
+    }
+    ^ .institution {
+      margin-bottom: 30px
+    }
+    ^ .institution:hover {
+      cursor: pointer;
+    }
+    ^ .optionSpacer.selected {
+      border: solid 1px /*%PRIMARY5%*/ #e5f1fc;
+    }
+    ^ .subContent {
+      display: contents;
+      background-color: /*%GREY5%*/ #f5f7fa;
+      border: 1px solid /*%GREY5%*/ #f5f7fa;
+    }
+    ^ .image {
+      width: 170px;
+      height: 115px;
+    }
+    ^ .foam-u2-ActionView-nextButton {
+      float: right;
+      margin: 0;
+      box-sizing: border-box;
+      background-color: /*%BLACK%*/ #1e1f21;
+      outline: none;
+      border: none;
+      width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      color: #FFFFFF;
+    }
+    ^ .foam-u2-ActionView-closeButton:hover:enabled {
+      cursor: pointer;
+    }
+    ^ .foam-u2-ActionView-closeButton {
+      float: left;
+      margin-left : 2px;
+      outline: none;
+      color: black;
+      min-width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      // background-color: rgba(164, 179, 184, 0.1);
+      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      margin-right: 40px;
+    }
+    ^ .foam-u2-ActionView-nextButton:disabled {
+      background-color: #7F8C8D;
+    }
+    ^ .foam-u2-ActionView-nextButton:hover:enabled {
+      cursor: pointer;
+    }
+    ^ .net-nanopay-ui-wizard-WizardOverview {
+      display: none;
+    }
+    ^ .linkk{
+      margin: auto;
+      width: max-content;
+    }
+  `,
 
   properties: [
     'newView',

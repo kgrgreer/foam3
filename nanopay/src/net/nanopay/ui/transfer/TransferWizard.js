@@ -41,178 +41,178 @@ foam.CLASS({
   ],
 
   axioms: [
-    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' },
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-      ^ {
-        height: auto !important;
-      }
-
-      ^ .overviewTopMargin {
-        margin-top: 21px;
-      }
-
-      ^ .title {
-        margin-top: 15px !important;
-      }
-
-      ^ .topRow {
-        margin-top: 15px;
-        width: 100%;
-        height: 40px;
-        padding: 0 !important;
-        box-sizing: border-box;
-        margin-bottom: 20px;
-      }
-
-      ^ .net-nanopay-interac-ui-CountdownView {
-        display: inline-block;
-        line-height: 40px;
-      }
-
-      ^ .timerText {
-        display: inline-block;
-        margin-left: 20px;
-        margin-top: 6px;
-        opacity: 1 !important;
-      }
-
-      ^ .hidden {
-        display: none !important;
-      }
-
-      ^ .interacImage {
-        display: inline-block;
-        vertical-align: top;
-        width: 90px;
-        height: 40px;
-        object-fit: contain;
-        float: right;
-      }
-
-      ^ p {
-        margin: 0;
-        color: #093649;
-        font-size: 14px;
-        font-weight: 300;
-        letter-spacing: 0.2px;
-        margin-bottom: 8;
-      }
-
-      ^ .pDetails {
-        opacity: 0.7;
-        font-size: 12px;
-        line-height: 1.17;
-        letter-spacing: 0.2px;
-        color: #093649;
-      }
-
-      ^ .bold {
-        font-weight: bold;
-        margin-bottom: 20px;
-        letter-spacing: 0.4px;
-      }
-
-      ^ .detailsCol {
-        display: inline-block;
-        vertical-align: top;
-        width: 320px;
-      }
-
-      ^ .divider {
-        display: inline-block;
-        vertical-align: top;
-        width: 2px;
-        height: 520;
-        box-sizing: border-box;
-        background-color: #a4b3b8;
-        opacity: 0.3;
-        margin: auto 51px;
-      }
-
-      ^ .fromToCol {
-        display: inline-block;
-        vertical-align: top;
-        width: 300px;
-      }
-
-      ^ .fromToCard {
-        box-sizing: border-box;
-        padding: 20px;
-        width: 300px;
-        border-radius: 2px;
-        background-color: #ffffff;
-        border: solid 1px rgba(164, 179, 184, 0.5);
-        margin-bottom: 20px;
-      }
-
-      ^ .pricingCol {
-        display: inline-block;
-        vertical-align: top;
-        width: 160px;
-        box-sizing: border-box;
-      }
-
-      ^ .pPricing {
-        font-size: 12px;
-        margin-bottom: 10px;
-      }
-
-      ^ .invoiceDetailContainer {
-        width: 100%;
-        margin-bottom: 20px;
-      }
-
-      ^ .invoiceLabel {
-        display: inline-block;
-        vertical-align: top;
-        box-sizing: border-box;
-        width: 100px;
-        margin: 0;
-        margin-right: 35px;
-      }
-
-      ^ .invoiceLabel:first-child {
-        margin-bottom: 10px;
-      }
-
-      ^ .invoiceDetail {
-        display: inline-block;
-        vertical-align: top;
-
-        font-size: 12px;
-        padding-top: 2px;
-        letter-spacing: 0.2px;
-        color: #093649;
-        margin: 0;
-      }
-
-      ^ .invoiceLink {
-        display: block;
-        font-size: 12px;
-        line-height: 1.33;
-        letter-spacing: 0.2px;
-        text-align: left;
-        color: #59a5d5;
-        margin-bottom: 20px;
-      }
-
-      ^ .invoiceLink:hover {
-        cursor: pointer;
-      }
-
-      ^ .foam-u2-ActionView-goNext {
-        margin-left: 40px !important;
-        font-size: 12px;
-      }
-
-      ^ .foam-u2-ActionView-goBack {
-          min-width: 136px;
-          height: 40px;
-          font-size: 12px;
-      }
-    */} })
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
+
+  css: `
+    ^ {
+      height: auto !important;
+    }
+
+    ^ .overviewTopMargin {
+      margin-top: 21px;
+    }
+
+    ^ .title {
+      margin-top: 15px !important;
+    }
+
+    ^ .topRow {
+      margin-top: 15px;
+      width: 100%;
+      height: 40px;
+      padding: 0 !important;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+
+    ^ .net-nanopay-interac-ui-CountdownView {
+      display: inline-block;
+      line-height: 40px;
+    }
+
+    ^ .timerText {
+      display: inline-block;
+      margin-left: 20px;
+      margin-top: 6px;
+      opacity: 1 !important;
+    }
+
+    ^ .hidden {
+      display: none !important;
+    }
+
+    ^ .interacImage {
+      display: inline-block;
+      vertical-align: top;
+      width: 90px;
+      height: 40px;
+      object-fit: contain;
+      float: right;
+    }
+
+    ^ p {
+      margin: 0;
+      color: /*%BLACK%*/ #1e1f21;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      margin-bottom: 8;
+    }
+
+    ^ .pDetails {
+      opacity: 0.7;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+
+    ^ .bold {
+      font-weight: bold;
+      margin-bottom: 20px;
+      letter-spacing: 0.4px;
+    }
+
+    ^ .detailsCol {
+      display: inline-block;
+      vertical-align: top;
+      width: 320px;
+    }
+
+    ^ .divider {
+      display: inline-block;
+      vertical-align: top;
+      width: 2px;
+      height: 520;
+      box-sizing: border-box;
+      background-color: #a4b3b8;
+      opacity: 0.3;
+      margin: auto 51px;
+    }
+
+    ^ .fromToCol {
+      display: inline-block;
+      vertical-align: top;
+      width: 300px;
+    }
+
+    ^ .fromToCard {
+      box-sizing: border-box;
+      padding: 20px;
+      width: 300px;
+      border-radius: 2px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      margin-bottom: 20px;
+    }
+
+    ^ .pricingCol {
+      display: inline-block;
+      vertical-align: top;
+      width: 160px;
+      box-sizing: border-box;
+    }
+
+    ^ .pPricing {
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    ^ .invoiceDetailContainer {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    ^ .invoiceLabel {
+      display: inline-block;
+      vertical-align: top;
+      box-sizing: border-box;
+      width: 100px;
+      margin: 0;
+      margin-right: 35px;
+    }
+
+    ^ .invoiceLabel:first-child {
+      margin-bottom: 10px;
+    }
+
+    ^ .invoiceDetail {
+      display: inline-block;
+      vertical-align: top;
+
+      font-size: 12px;
+      padding-top: 2px;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+      margin: 0;
+    }
+
+    ^ .invoiceLink {
+      display: block;
+      font-size: 12px;
+      line-height: 1.33;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: #59a5d5;
+      margin-bottom: 20px;
+    }
+
+    ^ .invoiceLink:hover {
+      cursor: pointer;
+    }
+
+    ^ .foam-u2-ActionView-goNext {
+      margin-left: 40px !important;
+      font-size: 12px;
+    }
+
+    ^ .foam-u2-ActionView-goBack {
+        min-width: 136px;
+        height: 40px;
+        font-size: 12px;
+    }
+  `,
 
   messages: [
     { name: 'TimerText', message: 'before exchange rate expires.' }

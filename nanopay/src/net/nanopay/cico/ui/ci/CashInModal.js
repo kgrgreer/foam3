@@ -39,7 +39,7 @@ foam.CLASS({
     ^ .popUpHeader {
       width: 448px;
       height: 40px;
-      background-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
     }
     ^ .popUpTitle {
       width: 198px;
@@ -76,7 +76,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-top: 20px;
       margin-left: 20px;
     }
@@ -95,8 +95,8 @@ foam.CLASS({
       width: 136px;
       height: 40px;
       border-radius: 2px;
-      background: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       display: inline-block;
       color: white;
       text-align: center;
@@ -110,8 +110,8 @@ foam.CLASS({
       font-weight: normal;
     }
     ^ .foam-u2-ActionView-nextButton:hover {
-      background: %SECONDARYCOLOR%;
-      border-color: %SECONDARYCOLOR%;
+      background: /*%PRIMARY3%*/ #406dea;
+      border-color: /*%PRIMARY3%*/ #406dea;
       opacity: 0.9;
     }
     ^ .foam-u2-ActionView-goToBank {
@@ -121,7 +121,7 @@ foam.CLASS({
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.3px;
-      color: %SECONDARYCOLOR%;
+      color: /*%PRIMARY3%*/ #406dea;
       text-decoration: underline;
       display: inline-block;
       margin: 0;

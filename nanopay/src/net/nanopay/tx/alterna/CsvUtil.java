@@ -3,8 +3,9 @@ package net.nanopay.tx.alterna;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
+import foam.lib.csv.CSVOutputterImpl;
+import foam.dao.CSVSink;
 import foam.dao.DAO;
-import foam.lib.csv.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -103,8 +104,8 @@ public class CsvUtil {
    * @param date date to use in the filename
    * @return the filename
    */
-  public static String generateFilename(Date date) {
-    return filenameSdf.get().format(date) + "_B2B.csv";
+  public static String generateFilename(Date date, String identifier) {
+    return filenameSdf.get().format(date) + "_" + identifier + ".csv";
   }
 
   /**
@@ -126,15 +127,20 @@ public class CsvUtil {
    */
   public static void writeCsvFile(X x, PrintWriter o, OutputterMode mode) {
     final Date now            = new Date();
-
     final DAO bankAccountDAO  = (DAO) x.get("localAccountDAO");
     final DAO transactionDAO  = (DAO) x.get("localTransactionDAO");
     final DAO userDAO         = (DAO) x.get("localUserDAO");
     final DAO institutionDAO  = (DAO) x.get("institutionDAO");
     final DAO branchDAO       = (DAO) x.get("branchDAO");
-    final DAO notificationDAO = (DAO) x.get("notificationDAO");
+    final DAO notificationDAO = (DAO) x.get("localNotificationDAO");
     Logger logger = (Logger) x.get("logger");
-    Outputter out = new Outputter(o, mode, false);
+
+    CSVSink out = new CSVSink.Builder(x)
+      .setOutputter(new CSVOutputterImpl.Builder(x)
+        .setIsFirstRow(false)
+        .setOf((new net.nanopay.tx.alterna.AlternaFormat()).getClassInfo())
+        .build()
+      ).build();
     transactionDAO
       .where(
              AND(
@@ -244,8 +250,8 @@ public class CsvUtil {
           boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
           AlternaFormat alternaFormat = new AlternaFormat();
 
-          alternaFormat.setFirstName(!isOrganization ? user.getFirstName() : user.getOrganization());
-          alternaFormat.setLastName(!isOrganization ? user.getLastName() : "");
+          alternaFormat.setFirstName( removeComma(!isOrganization ? user.getFirstName() : user.getOrganization()) );
+          alternaFormat.setLastName(  removeComma(!isOrganization ? user.getLastName() : "") );
           alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf(( branch.getBranchId() )), 5));
           alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((    institution.getInstitutionNumber() )), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());
@@ -256,11 +262,11 @@ public class CsvUtil {
           if ( t instanceof AlternaCITransaction ) {
             AlternaCITransaction txn = (AlternaCITransaction) t;
 
-            // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+            // if transaction padType is set, write it to csv. Otherwise set padType based on if it has organization
             if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
               alternaFormat.setPadType(txn.getPadType());
-            }
-            else {
+            } else {
+              alternaFormat.setPadType(isOrganization ? "Business" : "Personal");
               txn.setPadType(alternaFormat.getPadType());
             }
 
@@ -284,11 +290,11 @@ public class CsvUtil {
           } else if ( t instanceof AlternaCOTransaction ) {
             AlternaCOTransaction txn = (AlternaCOTransaction) t;
 
-            // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+            // if transaction padType is set, write it to csv. Otherwise set padType based on if it has organization
             if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
               alternaFormat.setPadType(txn.getPadType());
-            }
-            else {
+            } else {
+              alternaFormat.setPadType(isOrganization ? "Business" : "Personal");
               txn.setPadType(alternaFormat.getPadType());
             }
 
@@ -312,11 +318,11 @@ public class CsvUtil {
           } else if ( t instanceof AlternaVerificationTransaction ) {
             AlternaVerificationTransaction txn = (AlternaVerificationTransaction) t;
 
-            // if transaction padType is set, write it to csv. otherwise set default alterna padType to transaction
+            // if transaction padType is set, write it to csv. Otherwise set padType based on if it has organization
             if ( ! SafetyUtil.isEmpty(txn.getPadType()) ) {
               alternaFormat.setPadType(txn.getPadType());
-            }
-            else {
+            } else {
+              alternaFormat.setPadType(isOrganization ? "Business" : "Personal");
               txn.setPadType(alternaFormat.getPadType());
             }
 
@@ -349,11 +355,20 @@ public class CsvUtil {
             out.put(cashout, sub);
           }
 
-          out.flush();
         } catch (Exception e) {
           logger.error("CsvUtil.writeCsvFile", e);
         }
       }
     });
+
+    out.eof();
+    if ( o instanceof PrintWriter ) {
+      o.write(out.getCsv());
+      o.flush();
+    }
+  }
+
+  public static String removeComma(String str) {
+    return str.replace("," , " ");
   }
 }

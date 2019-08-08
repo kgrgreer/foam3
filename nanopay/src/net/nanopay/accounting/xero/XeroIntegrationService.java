@@ -187,6 +187,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     newContact.setGroup("sme");
     newContact.setXeroOrganizationId(token.getOrganizationId());
     newContact.setLastUpdated(xeroContact.getUpdatedDateUTC().getTime().getTime());
+    newContact.setLastDateUpdated(new Date());
 
     return newContact;
   }
@@ -476,6 +477,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     newInvoice.setXeroOrganizationId(token.getOrganizationId());
     newInvoice.setBusinessName(token.getBusinessName());
     newInvoice.setLastUpdated(xeroInvoice.getUpdatedDateUTC().getTime().getTime());
+    newInvoice.setLastDateUpdated(new Date());
 
 //    // get invoice attachments
 //    if ( ! xeroInvoice.isHasAttachments() ) {
@@ -592,7 +594,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
     if ( invoice != null ) {
       XeroInvoice nanoInvoice =  (XeroInvoice) invoice;
-      if ( invoice.getStatus() == InvoiceStatus.PENDING  ) {
+      if ( invoice.getStatus() == InvoiceStatus.PROCESSING  ) {
         nanoInvoice.setDesync(true);
         invoiceDAO.put(nanoInvoice.fclone());
       }
@@ -687,7 +689,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
           return saveResult(x, "invoiceResync", new ResultResponse.Builder(x)
             .setResult(false)
-            .setReason("An Error has occured.")
+            .setReason("An Error has occurred.")
             .setErrorCode(AccountingErrorCodes.ACCOUNTING_ERROR)
             .build());
         }

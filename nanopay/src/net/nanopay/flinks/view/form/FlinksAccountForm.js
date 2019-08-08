@@ -45,7 +45,7 @@ foam.CLASS({
       cursor: pointer;
     }
     ^ .account:hover{
-      border: solid 1px %ACCENTCOLOR%;
+      border: solid 1px /*%PRIMARY5%*/ #e5f1fc;
     }
     ^ .account.selected {
       border: solid 3px #1cc2b7;

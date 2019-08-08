@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'payerName', 'nextInvoiceDate', 'amount', 'frequency', 'endsAfter', 'status'
+    'id', 'payerName', 'nextInvoiceDate', 'amount', 'frequency'
   ],
 
   properties: [
@@ -26,7 +26,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      label: 'Recurring ID'
+      tableWidth: 50
     },
     { 
       class: 'String',

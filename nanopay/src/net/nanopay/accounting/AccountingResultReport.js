@@ -12,8 +12,13 @@ foam.CLASS({
       name: 'userId'
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'time'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.accounting.IntegrationCode',
+      name: 'integrationCode'
     },
     {
       class: 'FObjectProperty',

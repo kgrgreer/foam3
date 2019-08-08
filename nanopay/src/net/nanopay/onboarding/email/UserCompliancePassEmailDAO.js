@@ -16,7 +16,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'java.util.HashMap',
     'java.util.Map',
     'net.nanopay.admin.model.ComplianceStatus'
@@ -51,7 +51,6 @@ foam.CLASS({
 
       user = (User) getDelegate().put_(x , obj);
 
-      EmailService            email        = (EmailService) x.get("email");
       EmailMessage            message      = new EmailMessage();
       Map<String, Object>     args         = new HashMap<>();
       Group                   group        = (Group) user.findGroup(x);
@@ -68,7 +67,7 @@ foam.CLASS({
       args.put("link",   url + "#sme.main.dashboard");
 
       try {
-        email.sendEmailFromTemplate(x, user, message, "compliance-notification-to-user", args);
+        EmailsUtility.sendEmailFromTemplate(x, user, message, "compliance-notification-to-user", args);
       } catch (Exception e) {
         logger.error("Error sending compliance-notification-to-user email.", e);
       }

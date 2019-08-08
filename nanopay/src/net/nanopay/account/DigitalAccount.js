@@ -28,16 +28,44 @@ foam.CLASS({
     'java.util.List'
   ],
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'net.nanopay.account.DebtAccount'
+  ],
+
   imports: [
-    'accountDAO'
+    'accountDAO',
+    'debtAccountDAO'
   ],
 
   properties: [
     {
-      class: 'String',
       name: 'denomination',
       aliases: ['currencyCode', 'currency'],
       value: 'CAD'
+    }
+  ],
+
+  actions: [
+    {
+      name: 'viewExposure',
+      isAvailable: async function() {
+        var account = await this.debtAccountDAO.find(this.EQ(this.DebtAccount.CREDITOR_ACCOUNT, this.id));
+        return (account != null);
+      },
+      code: function(X) {
+        X.stack.push({ class: 'net.nanopay.tx.ui.exposure.ExposureOverview', data: this });
+      }
+    }
+  ],
+
+  sections: [
+    {
+      name: 'liquiditySettingsSection',
+      title: 'Liquidity Settings'
     }
   ],
 
@@ -45,68 +73,51 @@ foam.CLASS({
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          static public DigitalAccount findDefault(X x, User user, String currency) {
-            return (DigitalAccount) findDefault(x, user, currency, null).fclone();
-          }
-          static public DigitalAccount findDefault(X x, User user, String currency, DigitalAccount instance) {
-            Logger logger = (Logger) x.get("logger");
-            DigitalAccount account = null;
-
-            synchronized(String.valueOf(user.getId()).intern()) {
-              logger.info(DigitalAccount.class.getSimpleName(), "findDefault", "user", user.getId(), "currency", currency);
-
-              // Select currency of user's country.
-              String denomination = currency;
-              if ( denomination == null ) {
-                denomination = "CAD";
-                String country = "CA";
-                Address address = user.getAddress();
-
-                if ( address != null && address.getCountryId() != null ) {
-                  country = address.getCountryId().toString();
-                }
-
-                DAO currencyDAO = (DAO) x.get("currencyDAO");
-                List currencies = ((ArraySink) currencyDAO
-                  .where(EQ(Currency.COUNTRY, country))
-                  .select(new ArraySink())).getArray();
-
-                if ( currencies.size() == 1 ) {
-                  denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
-                } else if ( currencies.size() > 1 ) {
-                  logger.warning(DigitalAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
-                }
-              }
-
-              DAO accountDAO  = user.getAccounts(x);
-
-              List accounts = ((ArraySink) accountDAO
-                .where(
-                  AND(
-                    EQ(Account.ENABLED, true),
-                    INSTANCE_OF(instance == null ? DigitalAccount.class : instance.getClass()),
-                    EQ(Account.DENOMINATION, denomination),
-                    EQ(Account.IS_DEFAULT, true)
-                  )
-                )
+        static public DigitalAccount findDefault(X x, User user, String currency) {
+          return findDefault(x, user, currency, null);
+        }
+        static public DigitalAccount findDefault(X x, User user, String currency, DigitalAccount instance) {
+          Logger logger = (Logger) x.get("logger");
+          DigitalAccount account;
+          // Select currency of user's country.
+          String denomination = currency;
+          if ( denomination == null ) {
+            denomination = "CAD";
+            Address address = user.getAddress();
+            if ( address != null && address.getCountryId() != null ) {
+              String country = address.getCountryId();
+              DAO currencyDAO = (DAO) x.get("currencyDAO");
+              List currencies = ((ArraySink) currencyDAO
+                .where(EQ(Currency.COUNTRY, country)).limit(2)
                 .select(new ArraySink())).getArray();
-
-              if ( accounts.size() == 0 ) {
-                account = instance == null ? new DigitalAccount() : instance;
-                account.setDenomination(denomination);
-                account.setIsDefault(true);
-                account.setOwner(user.getId()); // required until user.getAccounts()
-                account = (DigitalAccount) accountDAO.put(account);
-              } else {
-                if ( accounts.size() > 1 ) {
-                  logger.warning(DigitalAccount.class.getClass().getSimpleName(), "user", user.getId(), "multiple accounts found for denomination", denomination, "Using first found.");
-                }
-                account = (DigitalAccount) accounts.get(0);
+              if ( currencies.size() == 1 ) {
+                denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
+              } else if ( currencies.size() > 1 ) {
+                logger.warning(DigitalAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
               }
             }
-
-            return account;
           }
+          synchronized(String.valueOf(user.getId()).intern()) {
+            DAO accountDAO  = ((DAO) x.get("localAccountDAO")).where(EQ(Account.OWNER, user.getId()));
+            account = (DigitalAccount) accountDAO
+              .find(
+                AND(
+                  EQ(Account.ENABLED, true),
+                  INSTANCE_OF(instance == null ? DigitalAccount.class : instance.getClass()),
+                  EQ(Account.DENOMINATION, denomination),
+                  EQ(Account.IS_DEFAULT, true)
+                )
+              );
+            if ( account == null ) {
+              account = instance == null ? new DigitalAccount() : instance;
+              account.setDenomination(denomination);
+              account.setIsDefault(true);
+              account.setOwner(user.getId()); // required until user.getAccounts()
+              account = (DigitalAccount) accountDAO.put(account);
+            }
+          }
+          return account;
+        }
         `);
       }
     }

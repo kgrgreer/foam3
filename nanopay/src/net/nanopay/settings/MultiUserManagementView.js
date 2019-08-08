@@ -38,7 +38,7 @@ foam.CLASS({
     line-height: 1;
     letter-spacing: 0.3px;
     text-align: left;
-    color: #093649;
+    color: /*%BLACK%*/ #1e1f21;
     display: inline-block;
   }
   ^ h2{
@@ -48,7 +48,7 @@ foam.CLASS({
     font-weight: 300;
     letter-spacing: 0.2px;
     text-align: left;
-    color: #093649;
+    color: /*%BLACK%*/ #1e1f21;
     display: inline-block;
   }
   ^ .mum-Text{

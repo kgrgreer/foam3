@@ -24,8 +24,8 @@ foam.CLASS({
     ^ .Pending{
       width: 105px;
       border-radius: 100px;
-      border: solid 1px #093649;
-      color: #093649;
+      border: solid 1px /*%BLACK%*/ #1e1f21;
+      color: /*%BLACK%*/ #1e1f21;
       padding: 3px 3px 3px 15px;
     }
     ^ .Overdue{
@@ -91,7 +91,7 @@ foam.CLASS({
     ^ .amount{
       line-height: 0.86;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       opacity: 0.6;
       float: right;
       margin-right: 15px;

@@ -67,7 +67,7 @@ foam.CLASS({
       javaCode:
         `Date now = new Date();
 X x = getX();
-DAO notificationDAO = (DAO) x.get("notificationDAO");
+DAO notificationDAO = (DAO) x.get("localNotificationDAO");
 
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 PrintWriter printWriter = new PrintWriter(baos);
@@ -101,7 +101,7 @@ try {
 
   channelSftp.cd("/");
 
-  String filename = CsvUtil.generateFilename(now);
+  String filename = CsvUtil.generateFilename(now, credentials.getIdentifier());
 
   Vector rootList = channelSftp.ls("/");
   boolean rootFolderCsvFileExist = false;
@@ -159,7 +159,7 @@ try {
   synchronized ( this ) {
     if ( getRetryCount() < getMaxRetry() ) {
       setRetryCount(getRetryCount() + 1);
-      getTimer().cancel();
+      if ( getTimer() != null ) getTimer().cancel();
       setTimer(new Timer());
       TimerTask task = new TimerTask() {
         public void run() {
@@ -168,7 +168,7 @@ try {
       };
       getTimer().schedule(task, getRetryDelay());
     } else {
-      getTimer().cancel();
+      if ( getTimer() != null ) getTimer().cancel();
       setRetryCount(0);
       final Logger logger = (Logger) getX().get("logger");
       logger.debug("Maximum SFTP retry exceeded.");

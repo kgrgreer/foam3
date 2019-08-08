@@ -12,12 +12,12 @@ import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.tx.AbliiTransaction;
+import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.Transfer;
 import net.nanopay.tx.alterna.AlternaCITransaction;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
 import net.nanopay.tx.alterna.AlternaVerificationTransaction;
-import net.nanopay.liquidity.LiquiditySettings;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -37,7 +37,7 @@ public class TransactionTest
     receiver_ = addUser("txntest2@transactiontest.com");
 
     testTransactionMethods();
-    //testAbliiTransaction();
+    testAbliiTransaction();
     testVerificationTransaction();
     testFXTransaction();
     testLoanTransaction();
@@ -203,7 +203,7 @@ public class TransactionTest
     Transaction txn1 = tq.getPlan();
     test(txn1.getClass() == AbliiTransaction.class, "Parent transaction is of type AbliiTransaction");
 
-    Transaction txn2 = txn1.getNext()[0];
+    Transaction txn2 = txn1.getNext()[0];//compliance txn
     Transaction txn3 = txn2.getNext()[0];
 
     // Future with CompositeTransaction
@@ -214,19 +214,21 @@ public class TransactionTest
     // test(txn1.getDestinationAccount()==txn3.getDestinationAccount(), "txn1 and txn3 destination accounts are the same");
 
     // Non Composite
-    Transaction txn4 = txn2.getNext()[1];
-    test(txn3.getClass() == AlternaCITransaction.class, " 1st child is of type "+txn3.getClass().getName()+" should be AlternaCITransaction");
-    test(txn4.getClass() == AlternaCOTransaction.class, " 2nd child is of type "+txn4.getClass().getName()+" should be AlternaCOTransaction");
+    Transaction txn4 = txn3.getNext()[0];
+    Transaction txn5 = txn4.getNext()[0];
+    test(txn3.getClass() == AlternaCITransaction.class, " 2nd child is of type "+txn3.getClass().getName()+" should be AlternaCITransaction");
+    test(txn4.getClass() == DigitalTransaction.class, " 3rd child is of type "+txn4.getClass().getName()+" should be DigitalTransaction");
+    test(txn5.getClass() == AlternaCOTransaction.class, " 4th child is of type "+txn5.getClass().getName()+" should be AlternaCOTransaction");
 
-    test(txn3.getAmount()== txn4.getAmount(), "CI and CO transactions have same amount");
-    test(txn3.getDestinationAccount()==txn4.getSourceAccount(),"CI and CO use same digital account");
-    test(txn1.getDestinationAccount()==txn4.getDestinationAccount(), "txn1 and txn3 destination accounts are the same");
+    test(txn3.getAmount()== txn5.getAmount(), "CI and CO transactions have same amount");
+    test(txn3.getDestinationAccount()==txn4.getSourceAccount(),"CI and digital use same digital account");
+    test(txn1.getDestinationAccount()==txn5.getDestinationAccount(), "txn1 and txn5 destination accounts are the same");
 
 
-    test(txn1.getSourceAccount()==txn2.getSourceAccount(), "txn1 and txn2 source accounts are the same");
+    test(txn1.getSourceAccount()==txn3.getSourceAccount(), "txn1 and txn3 source accounts are the same");
     test(txn1.getStatus() == COMPLETED," Ablii transaction is COMPLETED");
-    test(txn2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CI transaction is "+txn2.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
-    test(txn3.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CO transaction is "+txn3.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
+    test(txn3.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CI transaction is "+txn3.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
+    test(txn5.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED," CO transaction is "+txn5.getStatus().getName()+" should be PENDING_PARENT_COMPLETED");
 
     // Transaction tx1 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_,tq.getPlan()).fclone();
     // test(true,tx1.toString());

@@ -39,15 +39,8 @@ foam.CLASS({
       width: 375px;
       margin-top: 20vh;
     }
-    ^ .input-field {
+    ^ input {
       width: 100%;
-      height: 40px;
-      outline: none;
-      padding-top: 10px;
-      padding-left: 10px;
-      padding-bottom: 10px;
-      padding-right: 30px;
-      background: white;
     }
     ^ .login-logo-img {
       height: 19.4;
@@ -95,6 +88,14 @@ foam.CLASS({
     ^ .foam-u2-dialog-InlineNotificationMessage-message {
       width: 80%;
       margin: 10px;
+    }
+    ^ .password-link {
+      display: inline-block;
+      margin: 0;
+      font-size: 12px;
+      float: right;
+      color: #604aff;
+      cursor: pointer;
     }
   `,
 
@@ -149,6 +150,9 @@ foam.CLASS({
       var emailDisplayMode = this.disableEmail ?
       foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
+      var searchParams = new URLSearchParams(location.search);
+      this.email = searchParams.get('email');
+
       var left = this.Element.create()
         .addClass('cover-img-block')
         .start('img')
@@ -165,17 +169,31 @@ foam.CLASS({
           .start().addClass('input-wrapper')
             .start().addClass('input-label').add(this.EMAIL_LABEL).end()
             .start().addClass('input-field-wrapper')
-              .start(this.EMAIL, { mode: emailDisplayMode })
-                .addClass('input-field')
+              .start(this.EMAIL, {
+                mode: emailDisplayMode,
+                focused: true
+              })
                 .attr('placeholder', 'you@example.com')
               .end()
             .end()
           .end()
           .start().addClass('input-wrapper')
-            .start().addClass('input-label').add(this.PASSWORD_LABEL).end()
+            .start()
+              .addClass('input-label')
+              .addClass('inline')
+              .add(this.PASSWORD_LABEL)
+            .end()
+            .start('p').addClass('password-link')
+              .add(this.FORGET_PASSWORD_LABEL)
+              .on('click', function() {
+                self.stack.push({
+                  class: 'foam.nanos.auth.resetPassword.EmailView'
+                });
+              })
+            .end()
             .add(this.PASSWORD)
           .end()
-          .start(this.LOG_IN).addClass('sme-button').addClass('block').addClass('login').end()
+          .start(this.LOG_IN, { size: 'LARGE' }).addClass('block').addClass('login').end()
         .end()
         .start()
           .start().addClass('sme-subtitle')
@@ -186,14 +204,6 @@ foam.CLASS({
                 self.stack.push({ class: 'net.nanopay.sme.ui.SignUpView' });
               })
             .end()
-          .end()
-          .start('p').addClass('forgot-link')
-            .add(this.FORGET_PASSWORD_LABEL)
-            .on('click', function() {
-              self.stack.push({
-                class: 'foam.nanos.auth.resetPassword.EmailView'
-              });
-            })
           .end()
         .end();
 
@@ -280,7 +290,7 @@ foam.CLASS({
       if ( returnedTempUser ) {
         this.user.copyFrom(returnedTempUser);
       } else {
-        this.notify('User was invited to a business however an error has occured during processing.', 'error');
+        this.notify('User was invited to a business however an error has occurred during processing.', 'error');
       }
     }
   ]

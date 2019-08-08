@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   imports: [
-    'user'
+    'user',
+    'pushMenu'
   ],
 
   requires: [
@@ -96,6 +97,11 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'Boolean',
+      name: 'goDashboard',
+      value: false
+    }
   ],
 
   methods: [
@@ -124,6 +130,9 @@ foam.CLASS({
       label: 'Cancel',
       code: function(X) {
         X.closeDialog();
+        if ( this.goDashboard ) {
+          this.pushMenu('sme.main.dashboard');
+        }
       }
     },
     {

@@ -31,7 +31,7 @@ foam.CLASS({
       display: inline-block;
       font-family: 'Roboto';
       font-size: 11px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       padding-left: 9px;
       font-weight: 300;
       line-height: 20px;

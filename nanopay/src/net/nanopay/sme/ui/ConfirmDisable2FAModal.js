@@ -25,7 +25,7 @@ foam.CLASS({
     ^title {
       font-size: 24px;
       font-weight: 800;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       margin: 0;
     }
 
@@ -72,7 +72,7 @@ foam.CLASS({
     { name: 'TITLE', message: 'Disable two-factor authentication?' },
     { name: 'INSTRUCTIONS_1', message: 'Two-factor authentication provides an added layer of security to your account by decreasing the probability that an attacker can impersonate you or gain access to your sensitve account information.' },
     { name: 'INSTRUCTIONS_2', message: 'We strongly recommend keeping it enabled.' },
-    { name: 'FIELD_LABEL', message: 'Enter validation code' },
+    { name: 'FIELD_LABEL', message: 'Enter verification code' },
     { name: 'FIELD_PLACEHOLDER', message: 'Enter code' },
     { name: 'ERROR_NO_TOKEN', message: 'Please enter a verification token.' },
     { name: 'ERROR_DISABLE', message: 'Could not disable two-factor authentication. Please try again.' },

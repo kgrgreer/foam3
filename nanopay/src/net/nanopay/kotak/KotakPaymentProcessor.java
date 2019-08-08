@@ -38,7 +38,7 @@ public class KotakPaymentProcessor implements ContextAgent {
       public void put(Object obj, Detachable sub) {
         try {
           KotakCOTransaction kotakCOTxn = (KotakCOTransaction) ((KotakCOTransaction) obj).fclone();
-          User payee = (User) userDAO.find(EQ(User.ID, kotakCOTxn.getPayee().getId()));
+          User payee = (User) userDAO.find(EQ(User.ID, kotakCOTxn.getPayeeId()));
 
           RequestHeaderType paymentHeader = new RequestHeaderType();
           String paymentMessageId = KotakUtils.getUniqueId();
@@ -116,6 +116,6 @@ public class KotakPaymentProcessor implements ContextAgent {
       .setBody(body)
       .build();
 
-    ((DAO) x.get("notificationDAO")).put(notification);
+    ((DAO) x.get("localNotificationDAO")).put(notification);
   }
 }

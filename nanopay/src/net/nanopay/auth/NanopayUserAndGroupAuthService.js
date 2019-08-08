@@ -49,6 +49,7 @@ foam.CLASS({
         // This case is for business user of sme
         if ( user instanceof Business) {
           user = (User) x.get("agent");
+          user = (User) ((DAO) getLocalUserDAO()).find(user.getId());
         }
 
         if ( user == null ) {
@@ -82,7 +83,6 @@ foam.CLASS({
         // TODO: modify line to allow actual setting of password expiry in cases where users are required to periodically update their passwords
         user.setPasswordExpiry(null);
         user = (User) ((DAO) getLocalUserDAO()).put(user);
-        session.setContext(session.getContext().put("user", user));
         return user;
       `
     },
@@ -140,7 +140,12 @@ foam.CLASS({
         Group group = user.findGroup(x);
         String supportEmail = (String) group.getSupportEmail();
 
-        if ( ! user.getLoginEnabled() || ! user.getEnabled() ) {
+        if (
+          ! user.getLoginEnabled() ||
+          ! user.getEnabled() ||
+          user.getStatus() == AccountStatus.REVOKED ||
+          user.getStatus() == AccountStatus.DISABLED
+        ) {
           throw new AuthenticationException("Your account has been disabled. Please contact us at " + supportEmail + " for more information.");
         }
 

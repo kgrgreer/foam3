@@ -24,7 +24,7 @@ foam.CLASS({
 
   css: `
   ^ {
-    background-color: #f9fbff;
+    background-color: /*%GREY5%*/ #f5f7fa;
   }
   ^ .bank-currency-pick-height {
     height: 100%;
@@ -63,7 +63,7 @@ foam.CLASS({
     margin-right: 22px;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm {
-    background-color: #f9fbff;
+    background-color: /*%GREY5%*/ #f5f7fa;
     margin-left: 28px;
     height: auto;
     padding: 0;
@@ -82,7 +82,7 @@ foam.CLASS({
     margin: auto;
   }
   ^ .net-nanopay-flinks-view-form-FlinksForm .foam-u2-ActionView {
-    background-color: %SECONDARYCOLOR%;
+    background-color: /*%PRIMARY3%*/ #406dea;
   }
   .foam-u2-ActionView-closeModal {
     background-color: transparent !important;
@@ -108,14 +108,14 @@ foam.CLASS({
   }
   ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .optionSpacer.selected,
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account:hover {
-    border: solid 1px %SECONDARYCOLOR%;
+    border: solid 1px /*%PRIMARY3%*/ #406dea;
   }
   ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .foam-u2-ActionView-closeButton,
   ^ .net-nanopay-flinks-view-form-FlinksInstitutionForm .foam-u2-ActionView-nextButton {
     display: none;
   }
   ^ .net-nanopay-flinks-view-form-FlinksAccountForm .account.selected {
-    border: solid 3px %SECONDARYCOLOR%;
+    border: solid 3px /*%PRIMARY3%*/ #406dea;
   }
   .net-nanopay-flinks-view-form-FlinksForm .institution,
   .net-nanopay-flinks-view-form-FlinksForm .subContent,
@@ -152,7 +152,7 @@ foam.CLASS({
     padding-left: 36px;
   }
   ^link-text {
-    color: %SECONDARYCOLOR%;
+    color: /*%PRIMARY3%*/ #406dea;
     margin-top: 0px;
     cursor: pointer;
     margin-left: 3px;
@@ -230,6 +230,7 @@ foam.CLASS({
               .start('p')
                 .addClass(this.myClass('link-text'))
                 .add(this.CONNECT_LABEL)
+                .attrs({name: "connectWithVoidCheck"})
                 .on('click', function() {
                   var bankModal = self.selection == 1 ? 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal' :
                       'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard';
@@ -243,12 +244,12 @@ foam.CLASS({
             .end()
             .start('span').addClass('resting')
             .startContext({ data: this })
-              .start(this.CURRENCY_ONE)
+              .start(this.CURRENCY_ONE, { buttonStyle: 'UNSTYLED' })
                 .addClass('white-radio').show(this.cadAvailable)
                 .enableClass('selected', this.selection$.map(function(v) { return v === 1; }))
                 .style({ 'margin-left': '5px', 'margin-right': '10px' })
               .end()
-              .start(this.CURRENCY_TWO)
+              .start(this.CURRENCY_TWO, { buttonStyle: 'UNSTYLED' })
                 .addClass('white-radio').show(this.usdAvailable)
                 .enableClass('selected', this.selection$.map(function(v) { return v === 2; }))
                 .style({ 'margin-left': '5px', 'margin-right': '5px' })

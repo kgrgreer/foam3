@@ -362,8 +362,8 @@ foam.CLASS({
     }
 
     ^ .checkBoxContainer .foam-u2-md-CheckBox:checked {
-      background-color: %PRIMARYCOLOR%;
-      border-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
+      border-color: /*%BLACK%*/ #1e1f21;
     }
 
     ^ .checkBoxContainer .foam-u2-md-CheckBox-label {
@@ -453,7 +453,7 @@ foam.CLASS({
       border-radius: 2px;
       // background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px rgba(164, 179, 184, 0.3);
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       padding: 1px 5px;
       box-sizing: border-box;
     }
@@ -465,7 +465,7 @@ foam.CLASS({
     ^ .deleteButton .buttonLabel, ^ .editButton .buttonLabel {
       width: 29px;
       font-size: 10px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
       vertical-align: middle;
       text-align: center;
@@ -484,7 +484,7 @@ foam.CLASS({
       line-height: 1.17;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-top: 5px;
       margin-bottom: 0px;
     }

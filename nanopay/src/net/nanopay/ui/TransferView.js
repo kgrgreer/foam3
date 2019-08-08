@@ -33,122 +33,118 @@ foam.CLASS({
   ],
 
   axioms: [
-    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' },
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-      ^ {
-        height: auto !important;
-      }
-
-      ^ .overviewTopMargin {
-        margin-top: 21px;
-      }
-
-      ^ .title {
-        margin-top: 15px !important;
-      }
-
-      ^ .topRow {
-        margin-top: 15px;
-        width: 100%;
-        height: 40px;
-        padding: 0 !important;
-        box-sizing: border-box;
-        margin-bottom: 20px;
-      }
-
-      ^ .net-nanopay-interac-ui-CountdownView {
-        display: inline-block;
-        line-height: 40px;
-      }
-
-      ^ .hidden {
-        display: none !important;
-      }
-
-      ^ p {
-        margin: 0;
-        color: #093649;
-        font-size: 14px;
-        font-weight: 300;
-        letter-spacing: 0.2px;
-        margin-bottom: 8;
-      }
-
-      ^ .pDetails {
-        opacity: 0.7;
-        font-size: 12px;
-        line-height: 1.17;
-        letter-spacing: 0.2px;
-        color: #093649;
-      }
-
-      ^ .bold {
-        font-weight: bold;
-        margin-bottom: 20px;
-        letter-spacing: 0.4px;
-      }
-
-      ^ .detailsCol {
-        display: inline-block;
-        vertical-align: top;
-        width: 320px;
-      }
-
-      ^ .divider {
-        display: inline-block;
-        vertical-align: top;
-        width: 2px;
-        height: 520;
-        box-sizing: border-box;
-        background-color: #a4b3b8;
-        opacity: 0.3;
-        margin: auto 24px;
-      }
-
-      ^ .fromToCol {
-        display: inline-block;
-        vertical-align: top;
-        width: 300px;
-      }
-
-      ^ .foam-u2-ActionView-goNext {
-        margin-left: 40px !important;
-        font-size: 12px;
-      }
-
-      ^ .foam-u2-ActionView-goBack {
-          min-width: 136px;
-          height: 40px;
-          font-size: 12px;
-      }
-
-      ^ .invoiceDetailContainer {
-        width: 100%;
-        margin-bottom: 20px;
-      }
-
-      ^ .invoiceLabel {
-        display: inline-block;
-        vertical-align: top;
-        box-sizing: border-box;
-        width: 100px;
-        margin: 0;
-        margin-right: 35px;
-      }
-
-      ^ .invoiceDetail {
-        display: inline-block;
-        vertical-align: top;
-
-        font-size: 12px;
-        padding-top: 2px;
-        letter-spacing: 0.2px;
-        color: #093649;
-        margin: 0;
-      }
-    */} })
+    { class: 'net.nanopay.ui.wizard.WizardCssAxiom' }
   ],
+
+  css: `
+    ^ {
+      height: auto !important;
+    }
+
+    ^ .overviewTopMargin {
+      margin-top: 21px;
+    }
+
+    ^ .topRow {
+      margin-top: 15px;
+      width: 100%;
+      height: 40px;
+      padding: 0 !important;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+
+    ^ .net-nanopay-interac-ui-CountdownView {
+      display: inline-block;
+      line-height: 40px;
+    }
+
+    ^ .hidden {
+      display: none !important;
+    }
+
+    ^ p {
+      margin: 0;
+      color: /*%BLACK%*/ #1e1f21;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      margin-bottom: 8;
+    }
+
+    ^ .pDetails {
+      opacity: 0.7;
+      font-size: 12px;
+      line-height: 1.17;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+
+    ^ .bold {
+      font-weight: bold;
+      margin-bottom: 20px;
+      letter-spacing: 0.4px;
+    }
+
+    ^ .detailsCol {
+      display: inline-block;
+      vertical-align: top;
+      width: 320px;
+    }
+
+    ^ .divider {
+      display: inline-block;
+      vertical-align: top;
+      width: 2px;
+      height: 520;
+      box-sizing: border-box;
+      background-color: #a4b3b8;
+      opacity: 0.3;
+      margin: auto 24px;
+    }
+
+    ^ .fromToCol {
+      display: inline-block;
+      vertical-align: top;
+      width: 300px;
+    }
+
+    ^ .foam-u2-ActionView-goNext {
+      margin-left: 40px !important;
+      font-size: 12px;
+    }
+
+    ^ .foam-u2-ActionView-goBack {
+        min-width: 136px;
+        height: 40px;
+        font-size: 12px;
+    }
+
+    ^ .invoiceDetailContainer {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    ^ .invoiceLabel {
+      display: inline-block;
+      vertical-align: top;
+      box-sizing: border-box;
+      width: 100px;
+      margin: 0;
+      margin-right: 35px;
+    }
+
+    ^ .invoiceDetail {
+      display: inline-block;
+      vertical-align: top;
+
+      font-size: 12px;
+      padding-top: 2px;
+      letter-spacing: 0.2px;
+      color: /*%BLACK%*/ #1e1f21;
+      margin: 0;
+    }
+  `,
 
   messages: [
     { name: 'PayInvoice', message: 'Pay Another Invoice' },

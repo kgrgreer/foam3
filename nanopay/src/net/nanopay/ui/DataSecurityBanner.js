@@ -7,7 +7,7 @@ foam.CLASS({
     ^ {
       width: 456px;
       height: 56px;
-      border: 1px solid %BACKGROUNDCOLOR%;
+      border: 1px solid /*%GREY5%*/ #f5f7fa;
       border-radius: 3px;
       background-color: white;
       padding: 12px 13px;
@@ -34,7 +34,7 @@ foam.CLASS({
 
     ^title {
       font-weight: 900;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^subtitle {

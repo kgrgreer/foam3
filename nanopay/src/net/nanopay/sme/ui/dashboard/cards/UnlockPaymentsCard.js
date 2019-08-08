@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'UnlockPaymentsCard',
   extends: 'foam.u2.View',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   documentation: `
     The cards displayed to the user telling them if they have enabled domestic/international payments
   `,
@@ -14,16 +18,17 @@ foam.CLASS({
 
   imports: [
     'agent',
+    'businessOnboardingDAO',
     'menuDAO',
     'stack',
-    'user'
+    'user',
+    'auth'
   ],
 
   css: `
     ^ {
-      width: 504px;
+      width: 500px;
       height: 173px;
-
       box-sizing: border-box;
 
       border-radius: 4px;
@@ -51,7 +56,7 @@ foam.CLASS({
       font-size: 16px;
       font-weight: 900;
       line-height: 1.5;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^description {
@@ -88,7 +93,7 @@ foam.CLASS({
 
       font-size: 14px;
       line-height: 1.71;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
   `,
 
@@ -183,18 +188,28 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isComplete'
     },
+    {
+      name: 'hasUSDPermission',
+      value: false
+    },
   ],
 
   methods: [
+    function init() {
+      this.auth.check(null, 'currency.read.USD').then((result) => {
+        this.hasUSDPermission = result;
+      });
+    },
     function initE() {
+
       var self = this;
       this.addClass(this.myClass())
         .style({ 'background-image': this.flagImgPath })
         .start().addClass(this.myClass('info-box'))
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
-          .add(this.slot(function(isComplete, type) {
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL ) {
+          .add(this.slot(function(isComplete, type, hasUSDPermission) {
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! hasUSDPermission ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
@@ -208,8 +223,16 @@ foam.CLASS({
             }
 
             return this.E().start().addClass(self.myClass('complete-container'))
-              .start({ class: 'foam.u2.tag.Image', data: 'images/c-yes.png'}).addClass(self.myClass('icon')).end()
-              .start('p').addClass(self.myClass('complete')).add(self.COMPLETE).end()
+              .start({
+                class: 'foam.u2.tag.Image',
+                data: 'images/checkmark-small-green.svg'
+              })
+                .addClass(self.myClass('icon'))
+              .end()
+              .start('p')
+                .addClass(self.myClass('complete'))
+                .add(self.COMPLETE)
+              .end()
             .end();
           }))
         .end();
@@ -221,15 +244,30 @@ foam.CLASS({
       name: 'getStarted',
       label: 'Get started',
       code: function(x) {
-        if ( this.type === this.UnlockPaymentsCardType.DOMESTIC ) {
           if ( ! this.user.onboarded ) {
             var userId = this.agent.id;
             var businessId = this.user.id;
-            x.businessOnboardingDAO.find(userId).then((o) => {
+            var isDomesticOnboarding = this.type === this.UnlockPaymentsCardType.DOMESTIC;
+
+            // We need to find the BusinessOnboarding by checking both the
+            // userId and the businessId. Previously we were only checking the
+            // userId, which caused a bug when trying to add a user that's
+            // already on the platform as a signing officer for another
+            // business. The bug was caused by the search by userId finding the
+            // BusinessOnboarding for the existing user's other business instead
+            // of the one they were recently added to. By including the
+            // businessId in our search criteria we avoid this problem.
+            this.businessOnboardingDAO.find(
+              this.AND(
+                this.EQ(this.BusinessOnboarding.USER_ID, userId),
+                this.EQ(this.BusinessOnboarding.BUSINESS_ID, businessId)
+              )
+            ).then((o) => {
               o = o || this.BusinessOnboarding.create({
                 userId: userId,
                 businessId: businessId
               });
+              o.hasUSDPermission = ! isDomesticOnboarding && this.hasUSDPermission;
               this.stack.push({
                 class: 'net.nanopay.sme.onboarding.ui.WizardView',
                 data: o
@@ -238,7 +276,6 @@ foam.CLASS({
           } else {
             this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
           }
-        }
       }
     }
   ]

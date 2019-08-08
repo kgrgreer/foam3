@@ -288,7 +288,6 @@ foam.CLASS({
             .end()
             .start().addClass('float-right').addClass('body-copy')
               .add(this.formattedAmount$)
-              .add(` ${this.invoice.destinationCurrency}`)
             .end()
           .end()
 
@@ -404,9 +403,7 @@ foam.CLASS({
                           return quote$fxFees$totalFees ?
                             sourceCurrency.format(quote$fxFees$totalFees) :
                             sourceCurrency.format(0);
-                        }),
-                        ' ',
-                        this.quote$.dot('fxFees').dot('totalFeesCurrency')
+                        })
                       )
 
                     .end()
@@ -428,7 +425,7 @@ foam.CLASS({
               .add(this.chosenBankAccount$.map((bankAccount) => {
                 if ( ! bankAccount ) return '';
                 return this.currencyDAO.find(bankAccount.denomination).then((currency) => {
-                  return `${ currency.format(0) } ${ bankAccount.denomination}`;
+                  return currency.format(0);
                 });
               }))
             .end()
@@ -453,8 +450,7 @@ foam.CLASS({
                           if ( ! sourceCurrency ) return;
                           return this.sourceCurrency.format(amount);
                         }
-                      }), ' ',
-                      this.quote$.dot('sourceCurrency'),
+                      }),
                       this.exchangeRateNotice$.map((value) => value ? '*' : '')
                     )
                   .end()
@@ -468,6 +464,7 @@ foam.CLASS({
 
     async function getDomesticQuote() {
       this.viewData.isDomestic = true;
+
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,
@@ -475,7 +472,8 @@ foam.CLASS({
         destinationCurrency: this.invoice.destinationCurrency,
         payerId: this.invoice.payerId,
         payeeId: this.invoice.payeeId,
-        amount: this.invoice.amount
+        amount: this.invoice.amount,
+        destinationAmount: this.invoice.targetAmount,
       });
       var quote = await this.transactionQuotePlanDAO.put(
         this.TransactionQuote.create({
@@ -517,12 +515,10 @@ foam.CLASS({
         destinationAmount: fxQuote.targetAmount,
         sourceCurrency: this.invoice.sourceCurrency,
         destinationCurrency: this.invoice.destinationCurrency,
-        invoiceId: this.invoice.id,
         fxExpiry: fxQuote.expiryTime,
         fxQuoteId: fxQuote.id,
         fxRate: fxQuote.rate,
         fxFees: fees,
-        invoiceId: this.invoice.id,
         isQuoted: true,
         paymentMethod: fxQuote.paymentMethod
       });

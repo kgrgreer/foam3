@@ -44,7 +44,7 @@ foam.CLASS({
       letter-spacing: 0.2px;
       padding-bottom: 4px;
       margin: 0;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     } 
     ^ .profilePicture {
       width: 50px;
@@ -124,7 +124,7 @@ foam.CLASS({
       width: 157px;
       font-size: 14px;
       font-weight: 300;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 30px;
     }
     ^ .optionsDropDown > div:hover {

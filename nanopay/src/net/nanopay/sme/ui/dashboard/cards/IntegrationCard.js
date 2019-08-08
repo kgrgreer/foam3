@@ -14,9 +14,9 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      width: 500px;
       height: 72px;
-
+      min-width: 100%;
       box-sizing: border-box;
 
       border-radius: 3px;
@@ -25,6 +25,7 @@ foam.CLASS({
       background-color: #ffffff;
 
       padding: 16px 24px;
+      margin-bottom: 2px;
     }
 
     ^flex-container {
@@ -52,7 +53,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 900;
       line-height: 1.5;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^subtitle {

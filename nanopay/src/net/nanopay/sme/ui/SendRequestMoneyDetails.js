@@ -189,10 +189,16 @@ foam.CLASS({
               .add(this.DETAILS_SUBTITLE)
             .end()
             .start('span').addClass('resting')
-              .start(this.NEW, { label: newButtonLabel })
+              .start(this.NEW, {
+                label: newButtonLabel,
+                buttonStyle: 'UNSTYLED'
+              })
                 .addClass('white-radio').enableClass('selected', this.newButton$)
               .end()
-              .start(this.EXISTING, { label: existingButtonLabel })
+              .start(this.EXISTING, {
+                label: existingButtonLabel,
+                buttonStyle: 'UNSTYLED'
+              })
                 .addClass('tab-right')
                 .addClass('white-radio').enableClass('selected', this.existingButton$)
               .end()
@@ -230,11 +236,12 @@ foam.CLASS({
                         .on('click', async () => {
                           // check if invoice is in sync with accounting software
                           let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
-                          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
+                          if ( ! updatedInvoice ) return;
                           this.isForm = false;
                           this.isList = false;
                           this.isDetailView = true;
                           this.invoice = updatedInvoice;
+                          this.dataFromNewInvoiceForm = null;
                         })
                       .end();
                     })
@@ -309,6 +316,9 @@ foam.CLASS({
         // Get the previous temp invoice data
         if ( this.Invoice.isInstance(this.dataFromNewInvoiceForm) ) {
           this.invoice.copyFrom(this.dataFromNewInvoiceForm);
+        } else {
+         // if not resorting an invoice, clear fields.
+          this.invoice = this.Invoice.create({});
         }
       }
     },

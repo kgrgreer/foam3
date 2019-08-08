@@ -54,7 +54,7 @@ foam.CLASS({
           font-size: 14px;
           font-weight: bold;
           letter-spacing: 0.3px;
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
           padding: 0;
           padding-left: 30px;
           display: inline-block;
@@ -118,7 +118,7 @@ foam.CLASS({
           font-family: 'Roboto';
           font-size: 14px;
           background-color: rgba(110, 174, 195, 0.2);
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
           line-height: 1.14;
           letter-spacing: 0.3px;
           border-spacing: 0;
@@ -131,7 +131,7 @@ foam.CLASS({
           font-size: 12px;
           letter-spacing: 0.2px;
           text-align: left;
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
           padding-left: 15px;
           height: 60px;
         }
@@ -142,7 +142,7 @@ foam.CLASS({
           font-size: 14px;
           line-height: 1;
           letter-spacing: 0.4px;
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
           font-style: normal;
         }
 
@@ -153,7 +153,7 @@ foam.CLASS({
           letter-spacing: 0.2px;
           padding-left: 15px;
           font-size: 12px;
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
         }
 
         ^ tbody > tr {

@@ -27,8 +27,8 @@ foam.CLASS({
     }
     ^ .foam-u2-ActionView-option {
       background-color: ffffff;
-      color: %SECONDARYCOLOR%;
-      border: 1px solid %SECONDARYCOLOR% !important;
+      color: /*%PRIMARY3%*/ #406dea;
+      border: 1px solid /*%PRIMARY3%*/ #406dea !important;
       margin-right: 10px;
     }
     ^ .foam-u2-ActionView-option:hover {
@@ -49,7 +49,7 @@ foam.CLASS({
     }
     ^ .foam-u2-ActionView-next {
       padding: 8px 24px;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
     }
   `,
 

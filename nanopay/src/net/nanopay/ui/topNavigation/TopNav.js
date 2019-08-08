@@ -5,11 +5,19 @@ foam.CLASS({
 
   documentation: 'Top navigation bar',
 
-  imports: [ 'menuDAO', 'user', 'loginSuccess' ],
+  imports: [
+    'loginSuccess'
+  ],
+
+  requires: [
+    'foam.nanos.menu.MenuBar',
+    'foam.nanos.u2.navigation.BusinessLogoView',
+    'net.nanopay.ui.topNavigation.UserTopNavView'
+  ],
 
   css: `
     ^ {
-      background: %PRIMARYCOLOR%;
+      background: /*%BLACK%*/ #1e1f21;
       width: 100%;
       min-width: 992px;
       height: 60px;
@@ -47,7 +55,7 @@ foam.CLASS({
       border-bottom: 1px solid white;
     }
     ^ .selected {
-      border-bottom: 4px solid %ACCENTCOLOR% !important;
+      border-bottom: 4px solid /*%PRIMARY5%*/ #e5f1fc !important;
       padding-bottom: 5px;
       text-shadow: 0 0 0px white, 0 0 0px white;
     }
@@ -67,17 +75,17 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE(){
+    function initE() {
       this
         .addClass(this.myClass())
-        .start().addClass('topNavContainer')
-          .show( this.loginSuccess$)
-          .start({class: 'net.nanopay.ui.topNavigation.BusinessLogoView', data: this.user })
+        .start()
+          .addClass('topNavContainer')
+          .show(this.loginSuccess$)
+          .tag(this.BusinessLogoView)
+          .start(this.MenuBar)
+            .addClass('menuBar')
           .end()
-          .start({class: 'foam.nanos.menu.MenuBar'}).addClass('menuBar')
-          .end()
-          .start({class: 'net.nanopay.ui.topNavigation.UserTopNavView'})
-          .end()
+          .tag(this.UserTopNavView)
         .end();
     }
   ]

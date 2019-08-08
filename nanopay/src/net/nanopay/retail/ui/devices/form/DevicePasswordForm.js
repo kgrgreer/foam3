@@ -5,17 +5,13 @@ foam.CLASS({
 
   documentation: 'Form to display device password.',
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ .passwordLabel {
-          font-size: 45px;
-          letter-spacing: 24px;
-          color: #093649;
-        }
-      */}
-    })
-  ],
+  css: `
+    ^ .passwordLabel {
+      font-size: 45px;
+      letter-spacing: 24px;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+  `,
 
   requires: [
     'net.nanopay.retail.model.Device'

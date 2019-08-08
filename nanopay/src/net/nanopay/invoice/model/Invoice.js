@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'invoiceNumber', 'purchaseOrder', 'payerId',
+    'id', 'invoiceNumber', 'payerId',
     'payeeId', 'issueDate', 'dueDate', 'amount', 'status'
   ],
 
@@ -93,6 +93,7 @@ foam.CLASS({
       documentation: `The date and time that the invoice was issued (created).`,
       label: 'Date Issued',
       required: true,
+      view: { class: 'foam.u2.DateView' },
       factory: function() {
         if ( this.draft ) {
           return null;
@@ -182,6 +183,11 @@ foam.CLASS({
         who last modified the Invoice.`,
     },
     {
+      class: 'DateTime',
+      name: 'lastDateUpdated',
+      documentation: 'Last time a XeroInvoice or QuickbooksInvoice was updated.'
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
@@ -222,6 +228,17 @@ foam.CLASS({
     },
     {
       class: 'Currency',
+      name: 'chequeAmount',
+      documentation: `The amount paid for an invoice using an external transaction system.`
+    },
+    {
+      class: 'String',
+      name: 'chequeCurrency',
+      documentation: `The currency of a transaction using by external transaction system.`,
+      value: 'CAD'
+    },
+    {
+      class: 'Currency',
       name: 'amount',
       documentation: `
         The amount transferred or paid as per the invoice. The amount of money that will be 
@@ -243,11 +260,25 @@ foam.CLASS({
           .find(invoice.destinationCurrency)
           .then((currency) => {
             this.start()
-              .add(currency.format(value) + ' ' + invoice.destinationCurrency)
+              .add(currency.format(value))
             .end();
           });
       },
-      tableWidth: 120
+      tableWidth: 120,
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        String dstCurrency = ((Invoice)obj).getDestinationCurrency();
+        Currency currency = (Currency) currencyDAO.find(dstCurrency);
+        
+        // Outputting two columns: "amount", "destination Currency"
+        outputter.outputValue(currency.format(get_(obj)));
+        outputter.outputValue(dstCurrency);
+      `,
+      javaToCSVLabel: `
+        // Outputting two columns: "amount", "destination Currency"
+        outputter.outputValue(getName());
+        outputter.outputValue("Destination Currency");
+      `
     },
     { // How is this used? - display only?,
       class: 'Currency',
@@ -258,7 +289,7 @@ foam.CLASS({
         this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
           .then(function(currency) {
             this.start()
-              .add(invoice.sourceCurrency + ' ' + currency.format(value))
+              .add(currency.format(value))
             .end();
         }.bind(this));
       }
@@ -311,6 +342,25 @@ foam.CLASS({
     },
     {
       class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'approvedBy',
+      documentation: 'the ID of the user that approved this invoice within the business.',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          sections: [
+            {
+              heading: 'Users',
+              dao: X.userDAO.orderBy(foam.nanos.auth.User.LEGAL_NAME)
+            }
+          ]
+        };
+      }
+    },
+    {
+      class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'account',
       aliases: [
@@ -335,10 +385,10 @@ foam.CLASS({
       expression: function(draft, paymentId, dueDate, paymentDate, paymentMethod) {
         if ( draft ) return this.InvoiceStatus.DRAFT;
         if ( paymentMethod === this.PaymentStatus.VOID ) return this.InvoiceStatus.VOID;
-        if ( paymentMethod === this.PaymentStatus.PENDING ) return this.InvoiceStatus.PENDING;
+        if ( paymentMethod === this.PaymentStatus.PROCESSING ) return this.InvoiceStatus.PROCESSING;
         if ( paymentMethod === this.PaymentStatus.CHEQUE ) return this.InvoiceStatus.PAID;
         if ( paymentMethod === this.PaymentStatus.NANOPAY ) return this.InvoiceStatus.PAID;
-        if ( paymentMethod === this.PaymentStatus.TRANSIT_PAYMENT ) return this.InvoiceStatus.PENDING;
+        if ( paymentMethod === this.PaymentStatus.TRANSIT_PAYMENT ) return this.InvoiceStatus.PROCESSING;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_PAYMENT ) return this.InvoiceStatus.PENDING_ACCEPTANCE;
         if ( paymentMethod === this.PaymentStatus.DEPOSIT_MONEY ) return this.InvoiceStatus.DEPOSITING_MONEY;
         if ( paymentMethod === this.PaymentStatus.PENDING_APPROVAL ) return this.InvoiceStatus.PENDING_APPROVAL;
@@ -352,10 +402,10 @@ foam.CLASS({
       javaGetter: `
         if ( getDraft() ) return InvoiceStatus.DRAFT;
         if ( getPaymentMethod() == PaymentStatus.VOID ) return InvoiceStatus.VOID;
-        if ( getPaymentMethod() == PaymentStatus.PENDING ) return InvoiceStatus.PENDING;
+        if ( getPaymentMethod() == PaymentStatus.PROCESSING ) return InvoiceStatus.PROCESSING;
         if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return InvoiceStatus.PAID;
         if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return InvoiceStatus.PAID;
-        if ( getPaymentMethod() == PaymentStatus.TRANSIT_PAYMENT ) return InvoiceStatus.PENDING;
+        if ( getPaymentMethod() == PaymentStatus.TRANSIT_PAYMENT ) return InvoiceStatus.PROCESSING;
         if ( getPaymentMethod() == PaymentStatus.DEPOSIT_PAYMENT ) return InvoiceStatus.PENDING_ACCEPTANCE;
         if ( getPaymentMethod() == PaymentStatus.DEPOSIT_MONEY ) return InvoiceStatus.DEPOSITING_MONEY;
         if ( getPaymentMethod() == PaymentStatus.PENDING_APPROVAL ) return InvoiceStatus.PENDING_APPROVAL;
@@ -400,6 +450,7 @@ foam.CLASS({
       tableWidth: 70,
       documentation: 'A stored copy of the original invoice document.',
       view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' },
+      tableHeaderFormatter: function() { },
       tableCellFormatter: function(files) {
         if ( ! (Array.isArray(files) && files.length > 0) ) return;
         var actions = files.map((file) => {
@@ -419,7 +470,21 @@ foam.CLASS({
           hoverImageURL: '/images/attachment.svg',
           disabledImageURL: '/images/attachment.svg',
         });
-      }
+      },
+      javaToCSV: `
+        StringBuilder sb = new StringBuilder();
+        foam.nanos.fs.File[] filesList = get_(obj);
+        foam.nanos.fs.File file;
+  
+        sb.append("[");
+        for(int i = 0; i < filesList.length; i++ ) {
+          if ( i != 0 ) sb.append(",");
+          file = filesList[i];
+          sb.append(file.isPropertySet("address") ? file.getAddress() : file.getFilename());
+        }
+        sb.append("]");
+        outputter.outputValue(sb.toString());
+      `
     },
     {
       class: 'Boolean',
@@ -446,6 +511,7 @@ foam.CLASS({
       targetDAOKey: 'contactDAO',
       of: 'net.nanopay.contacts.Contact',
       name: 'contactId',
+      value: 0,
       documentation: `The unique identifier for the Contact, representing people who, 
         although they are not registered on the platform, can still receive invoices from
         platform users.`,
@@ -486,6 +552,16 @@ foam.CLASS({
         if the invoice is associated with an AFX transaction. This property exists 
         to keep  that PDF in such a scenario.
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'isSyncedWithAccounting',
+      factory: function() {
+        return net.nanopay.accounting.xero.model.XeroInvoice.isInstance(this) ||
+        net.nanopay.accounting.quickbooks.model.QuickbooksInvoice.isInstance(this);
+      },
+      documentation: 'Checks if invoice has been synced with accounting software.',
+      visibility: 'RO'
     }
   ],
 
@@ -624,7 +700,14 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payee ? obj.payee.label() : 'N/A');
-    }
+    },
+    javaToCSV: `
+      User payee = ((Invoice)obj).findPayeeId(x);
+      outputter.outputValue(payee.label());
+    `,
+    javaToCSVLabel: `
+      outputter.outputValue("Payee");
+    `
   },
 });
 
@@ -671,6 +754,13 @@ foam.RELATIONSHIP({
     },
     tableCellFormatter: function(value, obj, rel) {
       this.add(obj.payer ? obj.payer.label() : 'N/A');
-    }
+    },
+    javaToCSV: `
+    User payer = ((Invoice)obj).findPayerId(x);
+    outputter.outputValue(payer.label());
+    `,
+    javaToCSVLabel: `
+    outputter.outputValue("Payer");
+    `
   },
 });

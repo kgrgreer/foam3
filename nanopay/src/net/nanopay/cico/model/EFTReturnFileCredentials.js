@@ -20,6 +20,10 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'port'
+    },
+    {
+      class: 'String',
+      name: 'identifier'
     }
   ]
 });

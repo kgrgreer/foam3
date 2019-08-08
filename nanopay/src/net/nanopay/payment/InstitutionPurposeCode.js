@@ -7,7 +7,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 50
     },
     // { via RELATIONSHIP
     //   class: 'Reference',

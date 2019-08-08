@@ -134,7 +134,7 @@ foam.CLASS({
       margin: 0;
       margin-bottom: 8px;
 
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       font-weight: 300;
     }
 
@@ -282,7 +282,7 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
 
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^ .streetFieldCol {
@@ -318,7 +318,7 @@ foam.CLASS({
       z-index: 1;
     }
     ^ .foam-nanos-auth-ProfilePictureView {
-      background: %BACKGROUNDCOLOR%;
+      background: /*%GREY5%*/ #f5f7fa;
     }
     ^ .foam-u2-ActionView-Save {
       float: right;
@@ -337,7 +337,7 @@ foam.CLASS({
       line-height: 1.17;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-top: 5px;
       margin-bottom: 0px;
     }
