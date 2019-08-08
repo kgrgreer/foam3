@@ -88,7 +88,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setAccountPrimaryIdentificationType(getAFEXIdentificationType(signingOfficer.getIdentification().getIdentificationTypeId())); // TODO: This should ref AFEX ID type
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
-            System.out.println("RegionID - " + business.getAddress().getRegionId());
             Region businessRegion = business.getAddress().findRegionId(this.x);
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             Country businessCountry = business.getAddress().findCountryId(this.x);
