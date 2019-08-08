@@ -8,12 +8,12 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'changeProperty',
       class: 'String'
+      name: 'propName',
     },
     {
-      name: 'to',
-      class: 'foam.mlang.ExprProperty'
+      class: 'foam.mlang.ExprProperty',
+      name: 'valueExpr'
     }
   ],
 
@@ -21,7 +21,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        obj.setProperty(getChangeProperty(),getTo().f(x));
+        obj.setProperty(getPropName(),getValueExpr().f(x));
       `
     }
   ]
