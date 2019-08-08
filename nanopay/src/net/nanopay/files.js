@@ -339,6 +339,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/RepayDebtOnCIRule'},
   { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule'},
+  { name: 'net/nanopay/tx/GsScript'},
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
