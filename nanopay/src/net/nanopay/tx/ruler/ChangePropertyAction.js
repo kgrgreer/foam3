@@ -8,8 +8,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String'
-      name: 'propName',
+      class: 'String',
+      name: 'propName'
     },
     {
       class: 'foam.mlang.ExprProperty',

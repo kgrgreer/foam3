@@ -15,7 +15,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'propName'
-
     }
   ],
 
@@ -28,7 +27,7 @@ foam.CLASS({
         return old != null && nu != null &&
           ! foam.util.SafetyUtil.equals(
             nu.getProperty(getPropName()),
-            old.getProperty(getPropName()) );
+            old.getProperty(getPropName()));
       `
     }
   ]
