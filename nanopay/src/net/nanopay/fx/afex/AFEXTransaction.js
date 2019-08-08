@@ -93,6 +93,29 @@ foam.CLASS({
 
   methods: [ 
     {
+      name: 'findRootTransaction',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'transaction',
+          type: 'net.nanopay.tx.model.Transaction '
+        }
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+      Transaction txn = transaction;
+      Transaction parent = txn;
+      while ( txn != null ) {
+        parent = txn;
+        txn = (Transaction) parent.findParent(x);
+      }
+      return parent;
+      `
+    },
+    {
       name: 'getTransactionConfirmation',
       args: [
         {
@@ -125,8 +148,9 @@ foam.CLASS({
           payerAddress.findCountryId(x).getName();
     
         // Get the initiator, the person who created the invoice.
+        Transaction root = findRootTransaction(x, this);
         DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-        Invoice invoice = (Invoice) invoiceDAO.find(getInvoiceId());
+        Invoice invoice = (Invoice) invoiceDAO.find(root.getInvoiceId());
         long initiatorId = invoice.getCreatedBy();
         User initiator = (User) localUserDAO.find(initiatorId);
     
