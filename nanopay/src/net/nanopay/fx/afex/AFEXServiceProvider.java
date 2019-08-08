@@ -152,10 +152,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         fxQuote.setHasSourceAmount(isAmountSettlement);
         LocalDateTime time;
         AFEXCredentials credentials = (AFEXCredentials) getX().get("AFEXCredentials");
-        if ( credentials.getQuoteExpiryTime() != 0 ) {
+        if ( credentials != null && credentials.getQuoteExpiryTime() != 0 ) {
           time = LocalDateTime.now().plusSeconds(credentials.getQuoteExpiryTime());
         } else {
-          ((Logger) getX().get("logger")).warning("AFEX quote expiry time not set, using default");
           time = LocalDateTime.now().plusSeconds(30);
         }
         fxQuote.setExpiryTime(Date.from( time.atZone( ZoneId.systemDefault()).toInstant()));
