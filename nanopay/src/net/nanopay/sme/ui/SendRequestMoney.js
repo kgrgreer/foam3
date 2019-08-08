@@ -43,7 +43,8 @@ foam.CLASS({
     'isPayable',
     'loadingSpin',
     'newButton',
-    'predicate'
+    'predicate',
+    'refreshIntervalId'
   ],
 
   requires: [
@@ -228,6 +229,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'permitToPay'
+    },
+    {
+      class: 'String',
+      name: 'refreshIntervalId'
     }
   ],
 
