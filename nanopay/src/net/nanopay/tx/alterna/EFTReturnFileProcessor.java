@@ -7,7 +7,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.cico.model.EFTReturnRecord;
 import net.nanopay.tx.model.Transaction;
@@ -77,28 +77,6 @@ public class EFTReturnFileProcessor implements ContextAgent
         }
       }
 
-      Vector folderList = channelSftp.ls("/");
-      boolean exist = false;
-      for ( Object entry : folderList ) {
-        ChannelSftp.LsEntry e = (ChannelSftp.LsEntry) entry;
-        if ( "Archive_EFTReturnFile".equals(e.getFilename()) ) {
-          exist = true;
-          break;
-        }
-      }
-
-      if ( ! exist ) {
-        channelSftp.mkdir("Archive_EFTReturnFile");
-      }
-
-      String srcFileDirectory = "/Returns/";
-      String dstFileDirectory = "/Archive_EFTReturnFile/";
-
-      // move processed files
-      for ( String fileName : fileNames ) {
-        channelSftp.rename(srcFileDirectory + fileName, dstFileDirectory + fileName);
-      }
-
       logger.debug("EFT Return file processing finished");
 
     } catch ( JSchException | SftpException e ) {
@@ -150,12 +128,11 @@ public class EFTReturnFileProcessor implements ContextAgent
   }
 
   public static void sendEmail(X x, String subject, String content) {
-    EmailService emailService = (EmailService) x.get("email");
     EmailMessage message = new EmailMessage();
 
     message.setTo(new String[]{"ops@nanopay.net"});
     message.setSubject(subject);
     message.setBody(content);
-    emailService.sendEmail(x, message);
+    EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
   }
 }

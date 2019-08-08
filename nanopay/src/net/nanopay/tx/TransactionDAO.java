@@ -21,7 +21,6 @@ import java.util.*;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.ReadOnlyDAO;
@@ -30,10 +29,6 @@ import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.Balance;
 import net.nanopay.account.DebtAccount;
-import net.nanopay.fx.FXTransaction;
-import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
-import net.nanopay.tx.DigitalTransaction;
-import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -45,15 +40,9 @@ import net.nanopay.tx.model.TransactionStatus;
 public class TransactionDAO
   extends ProxyDAO
 {
-  // blacklist of status where balance transfer is not performed
-  protected final Set<TransactionStatus> STATUS_BLACKLIST =
-    Collections.unmodifiableSet(new HashSet<TransactionStatus>() {{
-      add(TransactionStatus.REFUNDED);
-    }});
-
   protected DAO balanceDAO_;
   protected DAO userDAO_;
-  private   DAO writableBalanceDAO_ = new foam.dao.MDAO(Balance.getOwnClassInfo());
+  private   DAO writableBalanceDAO_ = new foam.dao.MutableMDAO(Balance.getOwnClassInfo());
 
   public TransactionDAO(DAO delegate) {
     setDelegate(delegate);
@@ -67,7 +56,7 @@ public class TransactionDAO
 
   protected DAO getBalanceDAO() {
     if ( balanceDAO_ == null ) {
-      balanceDAO_ = new ReadOnlyDAO.Builder(getX()).setDelegate(writableBalanceDAO_).build();
+      balanceDAO_ = new ReadOnlyDAO.Builder(getX()).setDelegate(new foam.dao.FreezingDAO(getX(), writableBalanceDAO_)).build();
     }
     return balanceDAO_;
   }
@@ -113,10 +102,12 @@ public class TransactionDAO
     throws RuntimeException
   {
     HashMap hm = new HashMap();
+    Logger logger = (Logger) x.get("logger");
     for ( Transfer tr : ts ) {
       tr.validate();
       Account account = tr.findAccount(getX());
       if ( account == null ) {
+        logger.error("Unknown account: " + tr.getAccount(), tr);
         throw new RuntimeException("Unknown account: " + tr.getAccount());
       }
       account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
@@ -125,7 +116,10 @@ public class TransactionDAO
     }
 
     for ( Object value : hm.values() ) {
-      if ( (long)value != 0 ) throw new RuntimeException("Debits and credits don't match.");
+      if ( (long)value != 0 ) {
+        logger.error("Debits and credits don't match.", value);
+        throw new RuntimeException("Debits and credits don't match.");
+      }
     }
   }
 
@@ -161,16 +155,17 @@ public class TransactionDAO
   /** Called once all locks are locked. **/
   FObject execute(X x, Transaction txn, Transfer[] ts) {
     Balance [] finalBalanceArr = new Balance[ts.length];
+    DAO localAccountDAO = (DAO) x.get("localAccountDAO");
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
-      Account account = t.findAccount(getX());
-      Balance balance = (Balance) getBalanceDAO().find(account.getId());
+      Account account = (Account) localAccountDAO.find(t.getAccount());
+      Balance balance = (Balance) writableBalanceDAO_.find(account.getId());
       if ( balance == null ) {
         balance = new Balance();
         balance.setId(account.getId());
         balance = (Balance) writableBalanceDAO_.put(balance);
       }
-
+      finalBalanceArr[i] = balance;
       try {
         account.validateAmount(x, balance, t.getAmount());
       } catch (RuntimeException e) {
@@ -178,6 +173,7 @@ public class TransactionDAO
           txn.setStatus(TransactionStatus.REVERSE_FAIL);
           return super.put_(x, txn);
         }
+        ((Logger) x.get("logger")).error(" Failed to validate amount for account " + account.getId(), e);
         throw e;
       }
     }
@@ -185,9 +181,9 @@ public class TransactionDAO
     for ( int i = 0 ; i < ts.length ; i++ ) {
       Transfer t = ts[i];
       t.validate();
-      Balance balance = (Balance) getBalanceDAO().find(t.getAccount());
+      Balance balance = finalBalanceArr[i];
       t.execute(balance);
-      finalBalanceArr[i] = (Balance) writableBalanceDAO_.put(balance).fclone();
+      finalBalanceArr[i] = (Balance) balance.fclone();
     }
     txn.setBalances(finalBalanceArr);
 

@@ -87,7 +87,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-bottom: 30px;
     }
     ^ .inputErrorLabel {
@@ -117,7 +117,7 @@ foam.CLASS({
       vertical-align: middle;
     }
     ^ .subHeader {
-      background: %PRIMARYCOLOR%;
+      background: /*%BLACK%*/ #1e1f21;
       height: 65px;
       margin-bottom: 20px;
       margin-top: 20px;

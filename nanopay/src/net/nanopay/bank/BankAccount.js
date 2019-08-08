@@ -33,10 +33,7 @@ foam.CLASS({
     'name',
     'flagImage',
     'denomination',
-    'institution',
-    'branch',
-    'accountNumber',
-    'status',
+    'institution'
   ],
 
   // relationships: branch (Branch)
@@ -47,6 +44,7 @@ foam.CLASS({
       value: 70
     }
   ],
+
   properties: [
     {
       class: 'String',
@@ -335,42 +333,37 @@ foam.CLASS({
           static public BankAccount findDefault(X x, User user, String currency) {
             BankAccount bankAccount = null;
             Logger logger = (Logger) x.get("logger");
-            synchronized (String.valueOf(user.getId()).intern()) {
-              logger.info(BankAccount.class.getSimpleName(), "findDefault", "user", user.getId(), "currency", currency);
               // Select currency of user's country
               String denomination = currency;
               if ( SafetyUtil.isEmpty(denomination) ) {
                 denomination = "CAD";
-                String country = "CA";
                 Address address = user.getAddress();
                 if ( address != null && address.getCountryId() != null ) {
-                  country = address.getCountryId();
-                }
-                DAO currencyDAO = (DAO) x.get("currencyDAO");
-                List currencies = ((ArraySink) currencyDAO
-                    .where(
-                        EQ(Currency.COUNTRY, country)
-                    )
-                    .select(new ArraySink())).getArray();
-                if ( currencies.size() == 1 ) {
-                  denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
-                } else if ( currencies.size() > 1 ) {
-                  logger.warning(BankAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
+                  String country = address.getCountryId();
+                  DAO currencyDAO = (DAO) x.get("currencyDAO");
+                  List currencies = ((ArraySink) currencyDAO
+                      .where(
+                          EQ(Currency.COUNTRY, country)
+                      ).limit(2)
+                      .select(new ArraySink())).getArray();
+                  if ( currencies.size() == 1 ) {
+                    denomination = ((Currency) currencies.get(0)).getAlphabeticCode();
+                  } else if ( currencies.size() > 1 ) {
+                    logger.warning(BankAccount.class.getClass().getSimpleName(), "multiple currencies found for country ", address.getCountryId(), ". Defaulting to ", denomination);
+                  }
                 }
               }
 
               bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO"))
-                              .find(
-                                AND(
-                                  EQ(Account.ENABLED, true),
-                                  EQ(BankAccount.OWNER, user.getId()),
-                                  INSTANCE_OF(BankAccount.class),
-                                  EQ(Account.DENOMINATION, denomination),
-                                  EQ(Account.IS_DEFAULT, true)
-                                )
-                              );
-
-            }
+                .find(
+                  AND(
+                    EQ(Account.ENABLED, true),
+                    EQ(BankAccount.OWNER, user.getId()),
+                    INSTANCE_OF(BankAccount.class),
+                    EQ(Account.DENOMINATION, denomination),
+                    EQ(Account.IS_DEFAULT, true)
+                  )
+                );
             return bankAccount;
           }
         `);

@@ -16,6 +16,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.u2.navigation.FooterView',
+    'foam.nanos.u2.navigation.TopNavigation',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
     'net.nanopay.account.Balance',
@@ -25,6 +26,7 @@ foam.CLASS({
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
     'net.nanopay.ui.modal.ModalStyling',
+    'net.nanopay.ui.modal.SessionTimeoutModal',
     'net.nanopay.ui.style.AppStyles',
     'net.nanopay.ui.NanoConnectStyles'
   ],
@@ -43,7 +45,8 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'privacyUrl',
-    'termsUrl'
+    'termsUrl',
+    'homeDenomination'
   ],
 
   css: `
@@ -147,49 +150,75 @@ foam.CLASS({
           denomination: 'CAD'
         });
       }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Currency',
+      name: 'homeDenomination',
+      factory: function() {
+        /**
+         * TODO: Currently our storing the home denomination preferences, just need it 
+         * to default to USD for Goldman, also added a hacky way to persist it via local storage
+         * we will later on think of a better way to handle default user preferences
+         */
+        const defaultDenomination = 'USD';
+        const storedHomeDenomination = localStorage.getItem('homeDenomination');
+
+        let startingDenomination;
+        if ( storedHomeDenomination ){
+          localStorage.setItem('homeDenomination', storedHomeDenomination);
+          startingDenomination = storedHomeDenomination;
+        } else {
+          startingDenomination = defaultDenomination
+        }
+
+        return startingDenomination
+      }
     }
   ],
 
   methods: [
     function initE() {
+      // adding a listener to track the display width here as well since we don't call super
+      window.addEventListener('resize', this.updateDisplayWidth);
+      this.updateDisplayWidth();
 
       // enable session timer
       this.sessionTimer.enable = true;
       this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
 
-      var self = this;
-      self.clientPromise.then(function() {
+      // If we don't wait for the Theme object to load then we'll get
+      // errors when trying to expand the CSS macros in these models.
+      this.clientPromise.then(() => {
+        this.fetchTheme().then(() => {
+          this.AppStyles.create();
+          this.NanoConnectStyles.create();
+          this.InvoiceStyles.create();
+          this.ModalStyling.create();
 
-        self.AppStyles.create();
-        self.NanoConnectStyles.create();
-        self.InvoiceStyles.create();
-        self.ModalStyling.create();
-
-        self.findBalance();
-        self
-          .addClass(self.myClass())
-          .start('div', null, self.topNavigation_$)
-            .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })
-          .end()
-          .start()
-            .addClass('stack-wrapper')
-            .tag({
-              class: 'foam.u2.stack.StackView',
-              data: self.stack,
-              showActions: false
-            })
-          .end()
-          .start('div', null, self.footerView_$)
-            .tag({ class: 'foam.nanos.u2.navigation.FooterView' })
-          .end();
+          this.findBalance();
+          this
+            .addClass(this.myClass())
+            .start('div', null, this.topNavigation_$)
+              .tag(this.TopNavigation)
+            .end()
+            .start()
+              .addClass('stack-wrapper')
+              .tag(this.StackView, {
+                data: this.stack,
+                showActions: false
+              })
+            .end()
+            .start('div', null, this.footerView_$)
+              .tag(this.FooterView)
+            .end();
+        });
       });
     },
 
     function onSessionTimeout() {
       if ( this.user.emailVerified ) {
-        this.add(this.Popup.create( {closeable: false} ).tag({
-          class: 'net.nanopay.ui.modal.SessionTimeoutModal',
-        }));
+        this.add(this.Popup.create({ closeable: false }).tag(this.SessionTimeoutModal));
       }
     },
 

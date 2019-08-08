@@ -24,10 +24,9 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-
     TransactionQuote quote = (TransactionQuote) obj;
     Transaction txn = quote.getRequestTransaction();
-    if ( txn.findSourceAccount(x) instanceof DigitalAccount && txn.findDestinationAccount(x) instanceof DigitalAccount ) {
+   if ( quote.getSourceAccount() instanceof DigitalAccount && quote.getDestinationAccount() instanceof DigitalAccount ) {
       if (SafetyUtil.equals(txn.getSourceCurrency(),txn.getDestinationCurrency()) ) {
         Transaction dt;
         if ( ! ( txn instanceof DigitalTransaction ) ) {
@@ -36,7 +35,6 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
         } else {
           dt = (Transaction) txn.fclone();
         }
-        //dt.setStatus(TransactionStatus.COMPLETED);
         dt.setIsQuoted(true);
         quote.addPlan(dt);
       }
@@ -44,3 +42,4 @@ public class DigitalTransactionPlanDAO extends ProxyDAO {
     return super.put_(x, quote);
   }
 }
+

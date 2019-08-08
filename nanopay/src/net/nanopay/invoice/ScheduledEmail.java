@@ -7,7 +7,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailMessage;
-import foam.nanos.notification.email.EmailService;
+import foam.util.Emails.EmailsUtility;
 import foam.util.SafetyUtil;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -44,7 +44,6 @@ public class ScheduledEmail
       )
     );
     List<Invoice>    invoicesList = (List)((ArraySink)invoiceListDAO.select(new ArraySink())).getArray();
-    EmailService     email        = (EmailService) x.get("email");
     NumberFormat     formatter    = NumberFormat.getCurrencyInstance();
     SimpleDateFormat dateFormat   = new SimpleDateFormat("dd-MMM-YYYY");
     EmailMessage            message;
@@ -72,7 +71,7 @@ public class ScheduledEmail
       args.put("link",    config.getUrl());
       args.put("name",    user.getFirstName());
       args.put("toEmail", payee.getEmail());
-      email.sendEmailFromTemplate(x, user, message, "schedule-paid", args);
+      EmailsUtility.sendEmailFromTemplate(x, user, message, "schedule-paid", args);
       invoice = (Invoice) invoice.fclone();
       invoice.setScheduledEmailSent(true);
       invoiceDAO.put(invoice);

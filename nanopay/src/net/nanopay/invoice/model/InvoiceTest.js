@@ -56,7 +56,7 @@ foam.CLASS({
         voidTest(invoice, invoiceDAO);
 
         // test for PENDING status
-        invoice.setPaymentMethod(PaymentStatus.PENDING);
+        invoice.setPaymentMethod(PaymentStatus.PROCESSING);
         pendingTest(invoice, invoiceDAO);
 
         // test for PAID status
@@ -260,7 +260,7 @@ foam.CLASS({
         invoice1.setAmount(200l);
         invoice1.setPayeeId(1368l);
         invoice1.setPayerId(1380l);
-        invoice1.setPaymentMethod(PaymentStatus.PENDING);
+        invoice1.setPaymentMethod(PaymentStatus.PROCESSING);
 
         Invoice invoice2 = new Invoice();
         invoice2.setId(11l);
@@ -269,7 +269,7 @@ foam.CLASS({
         invoice2.setAmount(200l);
         invoice2.setPayeeId(1368l);
         invoice2.setPayerId(1380l);
-        invoice2.setPaymentMethod(PaymentStatus.PENDING);
+        invoice2.setPaymentMethod(PaymentStatus.PROCESSING);
 
         // tests
         invoiceDAO.put(invoice1);

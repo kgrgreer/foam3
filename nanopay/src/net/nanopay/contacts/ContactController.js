@@ -21,7 +21,8 @@ foam.CLASS({
 
   imports: [
     'accountingIntegrationUtil',
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'stack',
     'user'
   ],
@@ -58,6 +59,7 @@ foam.CLASS({
               name: 'warning',
               label: '',
               tableWidth: 55,
+              tableHeaderFormatter: function() { },
               tableCellFormatter: function(value, obj, axiom) {
                 if ( obj.bankAccount === 0 && obj.businessId === 0 ) {
                   this.start()
@@ -103,7 +105,7 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAndNotifyAbilityToReceive().then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.request').then((menu) => {
                       var clone = menu.clone();
@@ -114,8 +116,6 @@ foam.CLASS({
                       clone.launch(X, X.controllerView);
                     });
                   }
-                }).catch((err) => {
-                  console.warn('Error occured when checking the compliance: ', err);
                 });
               }
             }),
@@ -128,7 +128,7 @@ foam.CLASS({
                 ) || this.bankAccount;
               },
               code: function(X) {
-                self.checkComplianceAndBanking().then((result) => {
+                self.checkAndNotifyAbilityToPay().then((result) => {
                   if ( result ) {
                     X.menuDAO.find('sme.quickAction.send').then((menu) => {
                       var clone = menu.clone();
@@ -139,8 +139,6 @@ foam.CLASS({
                       clone.launch(X, X.controllerView);
                     });
                   }
-                }).catch((err) => {
-                  console.warn('Error occured when checking the compliance: ', err);
                 });
               }
             }),
@@ -164,7 +162,7 @@ foam.CLASS({
           name: 'addContact',
           label: 'Add a Contact',
           code: function(X) {
-            this.add(this.Popup.create().tag({
+            X.controllerView.add(this.Popup.create().tag({
               class: 'net.nanopay.contacts.ui.modal.ContactWizardModal'
             }));
           }

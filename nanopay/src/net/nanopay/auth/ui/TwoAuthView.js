@@ -12,7 +12,7 @@ foam.CLASS({
           width: 990px;
           margin: auto;
           text-align: center;
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
           font-weight: 400;
         }
         ^ h2{
@@ -20,7 +20,7 @@ foam.CLASS({
           font-size: 14px;
           line-height: 1;
           letter-spacing: 0.4px;
-          color: #093649;
+          color: /*%BLACK%*/ #1e1f21;
           font-family: Roboto;
           margin: 50px 0;
         }

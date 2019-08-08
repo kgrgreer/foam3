@@ -45,7 +45,7 @@ foam.CLASS({
       margin-bottom: 10px;
     }
     ^ .balanceBoxTitle {
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 12px;
       margin-left: 44px;
       padding-top: 14px;
@@ -59,7 +59,7 @@ foam.CLASS({
       letter-spacing: 0.5px;
       overflow-wrap: break-word;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-top: 27px;
       margin-left: 44px;
       margin-right: 44px;
@@ -67,7 +67,7 @@ foam.CLASS({
     ^ .sideBar {
       width: 6px;
       height: 100%;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       position: absolute;
     }
     ^ table {
@@ -79,7 +79,7 @@ foam.CLASS({
       font-family: 'Roboto';
       font-size: 14px;
       background: %TABLECOLOR%;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 1.14;
       letter-spacing: 0.3px;
       border-spacing: 0;
@@ -91,13 +91,13 @@ foam.CLASS({
       font-size: 12px;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       padding-left: 15px;
       height: 60px;
     }
     ^ .foam-u2-view-TableView-row:hover {
       cursor: pointer;
-      background: %TABLEHOVERCOLOR%;
+      background: /*%GREY4%*/ #e7eaec;
     }
     ^ .foam-u2-view-TableView-row {
       height: 40px;

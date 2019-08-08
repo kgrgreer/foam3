@@ -1,0 +1,35 @@
+{
+    "class": "foam.box.Message",
+    "attributes": {
+        "replyBox": {
+            "class": "foam.box.HTTPReplyBox"
+        },
+        "sessionId": "6d2df1a2-982e-4537-9fcd-randomabc123"
+    },
+    "object": {
+        "class": "foam.box.RPCMessage",
+        "name": "select_",
+        "args": [
+            null,
+            {
+                "class": "foam.dao.ArraySink"
+            },
+            0,
+            9007199254740991,
+            null,
+            {
+                "class": "foam.mlang.predicate.Eq",
+                "arg1": {
+                    "class": "__Property__",
+                    "forClass_": "foam.nanos.boot.NSpec",
+                    "name": "serve"
+                },
+                "arg2": {
+                    "class": "foam.mlang.Constant",
+                    "value": true
+                }
+            }
+        ],
+        "attributes": {}
+    }
+}

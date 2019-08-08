@@ -39,14 +39,14 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background: #f9fbff;
+      background: /*%GREY5%*/ #f5f7fa;
       text-align: center;
       overflow-y: scroll;
     }
     ^ .report-container {
       display: inline-block;
       width: 100%;
-      height: 90vh;
+      height: calc(100vh - 92px);
       overflow-y: scroll;
     }
     ^ .button-bar {
@@ -184,6 +184,9 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      if ( ! this.reportResult ) {
+        return null;
+      }
       this
         .start().addClass(this.myClass())
 

@@ -2,9 +2,6 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
-  requires: [
-    'foam.u2.layout.Item'
-  ],
   css: `
     ^ {
       display: flex;
@@ -66,6 +63,9 @@ foam.CLASS({
       border: solid 1px #edf0f5;
 
       align-items: center !important;
+    }
+    ^ .foam-u2-view-RadioView-horizontal-radio {
+      margin-top: 10px;
     }
   `,
   properties: [
@@ -137,13 +137,16 @@ foam.CLASS({
               });
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })
-            .start(self.Cols).addClass(this.myClass('footer'))
-              .tag(this.PREV, {
-                buttonStyle: 'TERTIARY',
-                icon: '/images/ablii/gobackarrow-grey.svg',
-                size: 'LARGE'
-              })
-              .start(this.Item)
+            .start(self.Cols)
+              .addClass(this.myClass('footer'))
+              .start()
+                .tag(this.PREV, {
+                  buttonStyle: 'TERTIARY',
+                  icon: '/images/ablii/gobackarrow-grey.svg',
+                  size: 'LARGE'
+                })
+              .end()
+              .start()
                 .tag(this.NEXT, { size: 'LARGE' })
                 .tag(this.SUBMIT, { size: 'LARGE' })
               .end()
@@ -166,8 +169,9 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
-      isAvailable: function(data$errors_) {
-        return ! data$errors_;
+      label: 'Finish',
+      isAvailable: function(data$errors_, nextIndex) {
+        return ! data$errors_ && nextIndex === -1;
       },
       // TODO: Find a better place for this. It shouldnt be baked into WizardView.
       code: function(x) {

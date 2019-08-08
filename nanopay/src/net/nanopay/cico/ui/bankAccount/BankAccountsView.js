@@ -43,7 +43,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
       vertical-align: top;
       margin: 0;
@@ -72,7 +72,7 @@ foam.CLASS({
       width: 218px;
       height: 100px;
       float: right;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       letter-spacing: 0.3px;
       color: #FFFFFF;
       border-radius: 2px;
@@ -89,7 +89,7 @@ foam.CLASS({
     ^ .foam-u2-ActionView-addBank:hover {
       background: none;
       cursor: pointer;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       opacity: 0.9;
     }
     ^ .foam-u2-dialog-Popup-inner {
@@ -114,7 +114,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 30px;
     }
     ^ .foam-u2-PopupView > div:hover {
@@ -132,7 +132,7 @@ foam.CLASS({
       transform: translate(-24px, -106px);
     }
     ^ .foam-u2-view-TableView-row:hover {
-      background: %TABLEHOVERCOLOR%;
+      background: /*%GREY4%*/ #e7eaec;
     }
     ^ .foam-u2-view-TableView-row {
       height: 40px;

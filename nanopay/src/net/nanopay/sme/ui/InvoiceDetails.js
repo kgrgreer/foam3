@@ -85,6 +85,10 @@ foam.CLASS({
       cursor: pointer;
       display: inline-block;
       vertical-align: middle;
+      white-space: nowrap;
+      width: 400px;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     ^attachment-icon {
       margin-right: 8px;
@@ -267,7 +271,7 @@ foam.CLASS({
                     if ( payer != null ) {
                       var address = payer.businessAddress;
                       return self.E()
-                        .start().add(payer.businessName).end()
+                        .start().add(payer.label()).end()
                         .start().add(self.formatStreetAddress(address)).end()
                         .start().add(self.formatRegionAddress(address)).end()
                         .start().add(address != undefined ? address.postalCode : '').end();
@@ -287,9 +291,7 @@ foam.CLASS({
                   return payee.then(function(payee) {
                     if ( payee != null ) {
                       return self.E()
-                        .start().add(payee.firstName + ' ' + payee.lastName).end()
-                        .start().add(payee.businessPhone != undefined ? payee.businessPhone.number : '').end()
-                        .start().add(payee.email).end();
+                        .start().add(payee.label()).end();
                     }
                   });
                 }))
@@ -309,8 +311,6 @@ foam.CLASS({
                   promise$: this.formattedAmount$,
                   value: '--',
                 }))
-                .add(' ')
-                .add(this.invoice$.dot('destinationCurrency'))
               .end()
             .end()
             .start()

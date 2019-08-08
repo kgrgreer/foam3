@@ -46,7 +46,7 @@ foam.CLASS({
       font-size: 20px;
       font-weight: 300;
       line-height: 1;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .foam-u2-ActionView-backAction {
       border: 1px solid lightgrey;
@@ -67,10 +67,10 @@ foam.CLASS({
       z-index: 10;
     }
     ^ .foam-u2-ActionView-payNow:hover {
-      background: %SECONDARYHOVERCOLOR%;
+      background: /*%PRIMARY2%*/ #144794;
     }
     ^ .foam-u2-ActionView-payNowDropDown:focus {
-      background: %SECONDARYHOVERCOLOR%;
+      background: /*%PRIMARY2%*/ #144794;
     }
     ^ .foam-u2-ActionView-payNowDropDown {
       width: 30px;
@@ -79,7 +79,7 @@ foam.CLASS({
       float: right;
     }
     ^ .foam-u2-ActionView-payNowDropDown:hover{
-      background: %SECONDARYHOVERCOLOR%;
+      background: /*%PRIMARY2%*/ #144794;
     }
     ^ .foam-u2-ActionView-payNowDropDown::after {
       content: ' ';
@@ -105,7 +105,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 30px;
     }
     ^ .popUpDropDown > div:hover {
@@ -126,7 +126,7 @@ foam.CLASS({
     {
       name: 'verbTenseMsg',
       expression: function(data) {
-        return data.paymentMethod === this.PaymentStatus.PENDING ?
+        return data.paymentMethod === this.PaymentStatus.PROCESSING ?
             'Invoice is' :
             'Invoice has been';
       }

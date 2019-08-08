@@ -157,7 +157,7 @@ extends Test
 
     payableInvoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(payableInvoice.getId());
 
-    test(payableInvoice.getStatus() == InvoiceStatus.PENDING,
+    test(payableInvoice.getStatus() == InvoiceStatus.PROCESSING,
       "Flow 1: Given an payable invoice from User1 (with a Bank account) and User2 (no Bank account) " +
         "When a transaction is made to from user1 to user2 to pay the invoice " +
         "Then the status of the invoice should be 'PENDING' ");
@@ -297,11 +297,11 @@ extends Test
     payableInvoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(payableInvoice.getId());
 
     // Was status set correctly for an in progress Cashin from Bank to Digital.
-    test(payableInvoice.getStatus() == InvoiceStatus.PENDING,
+    test(payableInvoice.getStatus() == InvoiceStatus.PROCESSING,
       "Flow 2: Given an payable invoice from User1 (with a Bank account) and Contact " +
         "When a transaction is made to from user1 to Contact to pay the invoice " +
         "Then the status of the invoice should be 'PENDING' " +
-        "Expected Status: " + InvoiceStatus.PENDING.getLabel() +
+        "Expected Status: " + InvoiceStatus.PROCESSING.getLabel() +
         "Actual Status: " + payableInvoice.getStatus().getLabel());
 
     // complete the transaction
@@ -496,7 +496,7 @@ extends Test
     invoice = (Invoice) mainUser_.getExpenses(mainUserContext_).find(invoice.getId());
 
     // Was status set correctly for an in progress Cashin from Bank to Digital.
-    test(invoice.getStatus() == InvoiceStatus.PENDING,
+    test(invoice.getStatus() == InvoiceStatus.PROCESSING,
       "Flow 4: Given an payable invoice from User1 (with a Bank account) and User2 (no Bank account) " +
         "When a transaction is made to from user1 to user2 to pay the invoice " +
         "Then the status of the invoice should be 'PENDING' ");

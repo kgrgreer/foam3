@@ -1,5 +1,4 @@
 #!/bin/sh
 
-# -z to daemonize
-# -c to ensure clean build, shouldn't be necessary but nice to make sure
-/pkg/stack/stage/NANOPAY/build.sh -z -c
+# -u run from jar
+/pkg/stack/stage/NANOPAY/build.sh -zu -U nanopay

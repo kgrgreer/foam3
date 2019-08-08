@@ -36,7 +36,7 @@ foam.CLASS({
       left: 0;
       height: 100vh !important;
       width: 100vw !important;
-      background-color: #f9fbff;
+      background-color: /*%GREY5%*/ #f5f7fa;
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
@@ -102,7 +102,7 @@ foam.CLASS({
     }
     ^current-signin-email {
       display: inline-block;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 16px;
       margin-left: 3px;
     }

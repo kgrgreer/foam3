@@ -36,7 +36,7 @@ foam.CLASS({
       font-weight: 300;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin: 0px;
     }
     ^ .input,
@@ -60,7 +60,7 @@ foam.CLASS({
       line-height: 0.1;
       letter-spacing: 0.1px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       border: 1px solid red;
     }
     ^ .foam-u2-ActionView-nextButton {
@@ -124,7 +124,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       word-wrap: break-word;
     }
     ^ .foam-u2-view-PasswordView {
@@ -305,7 +305,7 @@ foam.CLASS({
       try {
         this.termsAgreementDocument = await this.acceptanceDocumentService.getAcceptanceDocument(this.__context__, this.TERMS_AGREEMENT_DOCUMENT_NAME, '');
       } catch (error) {
-        console.warn('Error occured finding Terms Agreement: ', error);
+        console.warn('Error occurred finding Terms Agreement: ', error);
       }
     }
   ]

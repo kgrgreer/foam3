@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.lib.json.JSONParser',
     'foam.lib.json.Outputter',
+    'foam.lib.NetworkPropertyPredicate',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'foam.nanos.auth.Address',
@@ -333,7 +334,7 @@ if ( ! query.getResult() ) {
 }
 
 try {
-  DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
+  DAO notification = ((DAO) x.get("localNotificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
@@ -506,7 +507,7 @@ if ( ! query.getResult() ) {
 }
 
 try {
-  DAO notification = ((DAO) x.get("notificationDAO")).inX(x);
+  DAO notification = ((DAO) x.get("localNotificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
@@ -703,7 +704,7 @@ return true;
 `
 Logger         logger         = (Logger) x.get("logger");
 DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
-DAO            notification   = ((DAO) x.get("notificationDAO")).inX(x);
+DAO            notification   = ((DAO) x.get("localNotificationDAO")).inX(x);
 DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
 DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
 DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
@@ -1009,22 +1010,22 @@ return files;`,
         },
       ],
       javaCode:
-`DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-DAO               userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
-User              user         = (User) x.get("user");
-DAO               currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
-QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
-Group             group        = user.findGroup(x);
-AppConfig         app          = group.getAppConfig(x);
-DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
-QuickConfig       config       = (QuickConfig)configDAO.find(app.getUrl());
-Logger            logger       = (Logger) x.get("logger");
-HttpClient        httpclient   = HttpClients.createDefault();
-Outputter         outputter    = new Outputter(foam.lib.json.OutputterMode.NETWORK);
-QuickContact      sUser;
-BankAccount       account;
-HttpPost          httpPost;
-outputter.setOutputClassNames(false);
+`DAO                       store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
+DAO                        userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
+User                       user         = (User) x.get("user");
+DAO                        currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
+QuickTokenStorage          tokenStorage = (QuickTokenStorage) store.find(user.getId());
+Group                      group        = user.findGroup(x);
+AppConfig                  app          = group.getAppConfig(x);
+DAO                        configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
+QuickConfig                config       = (QuickConfig)configDAO.find(app.getUrl());
+Logger                     logger       = (Logger) x.get("logger");
+HttpClient                 httpclient   = HttpClients.createDefault();
+Outputter                  outputter    = new Outputter(x);
+QuickContact               sUser;
+BankAccount                account;
+HttpPost                   httpPost;
+outputter.setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
 
 // Determines if the user is making a payment or bill payment and creates the right request to POST to QuickBooks
 try {
@@ -1458,7 +1459,7 @@ return null;
       ],
       javaCode:`
 User user = (User) x.get("user");
-DAO notification   = ((DAO) x.get("notificationDAO")).inX(x);
+DAO notification   = ((DAO) x.get("localNotificationDAO")).inX(x);
 
 Notification notify = new Notification();
 notify.setUserId(user.getId());

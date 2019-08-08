@@ -6,6 +6,11 @@ foam.CLASS({
     'com.xero.api.Config'
   ],
   ids: ['url'],
+
+  tableColumns: [
+    'url', 'appType', 'filesUrl'
+   ],
+
   properties: [
     {
       class: 'String',

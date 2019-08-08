@@ -13,21 +13,14 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-
+    'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
-    'net.nanopay.tx.FeeTransfer',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
     'foam.dao.DAO',
-
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FXDirection',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXService',
-    'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.FXTransaction',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.fx.FXLineItem',
@@ -59,19 +52,12 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      javaCode: `
-
-      Logger logger = (Logger) x.get("logger");
-      TransactionQuote quote = (TransactionQuote) obj;
+      javaCode: `TransactionQuote quote = (TransactionQuote) obj;
       Transaction request = quote.getRequestTransaction();
-
-      logger.debug(this.getClass().getSimpleName(), "put", quote);
-
-      Account sourceAccount = request.findSourceAccount(x);
-      Account destinationAccount = request.findDestinationAccount(x);
-
+      if (SafetyUtil.equals(request.getSourceCurrency(), request.getDestinationCurrency())) return getDelegate().put_(x, obj);
+      Account sourceAccount = quote.getSourceAccount();
+      Account destinationAccount = quote.getDestinationAccount();
       if ( ! (sourceAccount instanceof DigitalAccount) || ! (destinationAccount instanceof DigitalAccount) ) return getDelegate().put_(x, obj);
-
       // Check if NanoPayFXTransactionPlanDAO can handle the currency combination
       FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(),
           request.getDestinationCurrency(), NANOPAY_FX_SERVICE_NSPEC_ID);
@@ -118,8 +104,7 @@ foam.CLASS({
         quote.addPlan(fxTransaction);
       }
 
-      return super.put_(x, quote);
-    `
+      return super.put_(x, quote);`
     },
   ]
 });

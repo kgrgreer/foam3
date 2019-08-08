@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
@@ -18,7 +19,6 @@ foam.CLASS({
     'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.account.Account'
   ],
-
   properties: [
     {
       name: 'name',
@@ -70,16 +70,28 @@ foam.CLASS({
             ['CANCELLED', 'CANCELLED']
           ];
         }
+        if ( this.status == this.TransactionStatus.PENDING_PARENT_COMPLETED ) {
+          return [
+            'choose status',
+            ['PAUSED', 'PAUSED']
+          ];
+        }
         if ( this.status == this.TransactionStatus.PAUSED ) {
           return [
             'choose status',
-            ['PENDING', 'PENDING'],
+            ['PENDING_PARENT_COMPLETED', 'UNPAUSE'],
             ['CANCELLED', 'CANCELLED']
-         ];
+          ];
         }
-       return ['No status to choose'];
+        return ['No status to choose'];
       }
-    }
+    },
+    {
+      name: 'institutionNumber',
+      class: 'String',
+      value: "",
+      visibility: 'Hidden'
+    },
   ],
 
   methods: [
@@ -105,14 +117,17 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
       super.validate(x);
+      Logger logger = (Logger) x.get("logger");
 
       if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
+        logger.error("Bank account must be verified");
         throw new RuntimeException("Bank account must be verified");
       }
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) ||
             oldTxn.getStatus().equals(TransactionStatus.COMPLETED) ) &&
             ! getStatus().equals(TransactionStatus.DECLINED) ) {
+        logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
       }
       `
@@ -200,8 +215,8 @@ if (acc == null) {
             }
           }
           all.add(new Transfer.Builder(x)
-            .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-Out")
-            .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
+            .setDescription(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getName()+" Cash-Out")
+            .setAccount(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getId())
             .setAmount(getTotal())
             .build());
           all.add(new Transfer.Builder(x)
@@ -238,24 +253,6 @@ if (acc == null) {
             setStatus(TransactionStatus.REVERSE);
           }
         return (Transfer[]) all.toArray(new Transfer[0]);
-      `
-    },
-    {
-      documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
-      name: 'checkLiquidity',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      javaCode: `
-      LiquidityService ls = (LiquidityService) x.get("liquidityService");
-      Account source = findSourceAccount(x);
-      Account destination = findDestinationAccount(x);
-      if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) && getStatus() == TransactionStatus.COMPLETED ) {
-        ls.liquifyAccount(source.getId(), net.nanopay.util.Frequency.PER_TRANSACTION, -getAmount());
-      }
       `
     }
   ]

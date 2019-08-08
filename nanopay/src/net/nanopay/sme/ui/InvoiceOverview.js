@@ -21,6 +21,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
@@ -34,7 +36,8 @@ foam.CLASS({
     'accountDAO',
     'auth',
     'canReceiveCurrencyDAO',
-    'checkComplianceAndBanking',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'ctrl',
     'currencyDAO',
     'email',
@@ -151,10 +154,6 @@ foam.CLASS({
     ^annotation {
       font-size: 10px;
     }
-    ^primary-disable {
-      background: #bdb4fd !important;
-      cursor: default !important;
-    }
     ^ .date-display-box {
       width: 403px !important;
       font-size: 14px !important;
@@ -167,7 +166,7 @@ foam.CLASS({
       padding-top: 2px;
     }
     ^ .date-display-text {
-      color: #2b2b2b !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
     }
     ^ .net-nanopay-invoice-ui-modal-RecordPaymentModal {
       overflow: scroll;
@@ -186,7 +185,7 @@ foam.CLASS({
     { name: 'INVOICE_HISTORY', message: 'History' },
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
     { name: 'VOID_MESSAGE', message: 'Mark as void' },
-    { name: 'EMAIL_MSG_ERROR', message: 'An error occured while sending a reminder, please try again later.' },
+    { name: 'EMAIL_MSG_ERROR', message: 'An error occurred while sending a reminder, please try again later.' },
     { name: 'EMAIL_MSG', message: 'Invitation sent!' },
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
@@ -274,7 +273,7 @@ foam.CLASS({
       name: 'showBankAccount',
       expression: function(invoice) {
         return invoice.status === this.InvoiceStatus.PENDING_APPROVAL ||
-          invoice.status === this.InvoiceStatus.PENDING ||
+          invoice.status === this.InvoiceStatus.PROCESSING ||
           invoice.status === this.InvoiceStatus.PAID;
       },
       documentation: `Only show bank accounts when it is requires
@@ -310,14 +309,14 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isProcess',
       expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.PENDING;
+        return invoice.status === this.InvoiceStatus.PROCESSING;
       }
     },
     {
       class: 'Boolean',
       name: 'isProcessOrComplete',
       expression: function(invoice) {
-        return invoice.status === this.InvoiceStatus.PENDING ||
+        return invoice.status === this.InvoiceStatus.PROCESSING ||
           invoice.status === this.InvoiceStatus.PAID;
       }
     },
@@ -359,7 +358,9 @@ foam.CLASS({
       expression: function(invoice$status, invoice$createdBy) {
         return this.user.id === invoice$createdBy &&
         ( invoice$status === this.InvoiceStatus.UNPAID ||
-          invoice$status === this.InvoiceStatus.OVERDUE );
+          invoice$status === this.InvoiceStatus.OVERDUE ||
+          invoice$status === this.InvoiceStatus.PENDING_APPROVAL ) && !
+        ( ( this.QuickbooksInvoice.isInstance(this.invoice) || this.XeroInvoice.isInstance(this.invoice) ) && this.isPayable );
       }
     },
     {
@@ -408,27 +409,23 @@ foam.CLASS({
           if ( transaction.type === 'AscendantFXTransaction' && transaction.fxRate ) {
             if ( transaction.fxRate !== 1 ) {
               this.exchangeRateInfo = `1 ${transaction.destinationCurrency} = `
-                + `${(1 / transaction.fxRate).toFixed(4)} `
-                + `${transaction.sourceCurrency}`;
+                + `${(1 / transaction.fxRate).toFixed(4)} `;
             }
 
             this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
               .then((currency) => {
-                this.fee = `${currency.format(transaction.fxFees.totalFees)} `
-                  + `${currency.alphabeticCode}`;
+                this.fee = currency.format(transaction.fxFees.totalFees);
               });
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = `${currency.format(0)} ${currency.alphabeticCode}`;
+                this.fee = currency.format(0);
               });
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
             this.currencyDAO.find(account.denomination).then((currency) => {
-              this.formattedAmountPaid =
-                `${currency.format(transaction.amount)} ` +
-                `${currency.alphabeticCode}`;
+              this.formattedAmountPaid = currency.format(transaction.amount);
             });
 
             if ( this.invoice.destinationCurrency === account.denomination ) {
@@ -436,6 +433,10 @@ foam.CLASS({
             } else {
               this.isCrossBorder = true;
             }
+          });
+        } else {
+          this.currencyDAO.find(this.invoice.chequeCurrency).then((currency) => {
+            this.formattedAmountPaid = currency.format(this.invoice.chequeAmount);
           });
         }
       });
@@ -477,25 +478,10 @@ foam.CLASS({
                 // Dynamic create the primary action
                 .start()
                   .addClass(this.myClass('header-align-right'))
-                  .start(this.PAY_NOW)
-                    .addClass('sme').addClass('button').addClass('primary')
-                  .end()
-                  .start(this.EDIT)
-                    .addClass('sme').addClass('button').addClass('primary')
-                  .end()
-                  .start(this.PAID)
-                    .addClass('sme').addClass('button').addClass('primary')
-                    .addClass(this.myClass('primary-disable'))
-                  .end()
-                  .start(this.APPROVE)
-                    .addClass('sme').addClass('button').addClass('primary')
-                    .enableClass(
-                      this.myClass('primary-disable'),
-                      this.slot(function(canApproveInvoice) {
-                        return ! canApproveInvoice;
-                      })
-                    )
-                  .end()
+                  .tag(this.PAY_NOW, { size: 'LARGE' })
+                  .tag(this.EDIT, { size: 'LARGE' })
+                  .tag(this.PAID, { size: 'LARGE' })
+                  .tag(this.APPROVE, { size: 'LARGE' })
                 .end()
               .end()
             .endContext();
@@ -572,8 +558,6 @@ foam.CLASS({
                       promise$: this.formattedAmountDue$,
                       value: '--',
                     }))
-                    .add(' ')
-                    .add(this.invoice$.dot('destinationCurrency'))
                   .end()
                   .start().addClass('invoice-text')
                     .start().addClass('table-content').add(this.AMOUNT_PAID).end()
@@ -683,7 +667,11 @@ foam.CLASS({
         return this.invoice.status === this.InvoiceStatus.DRAFT;
       },
       code: function(X) {
-        this.checkComplianceAndBanking().then((result) => {
+        var checkAndNotifyAbility = this.isPayable ?
+          this.checkAndNotifyAbilityToPay :
+          this.checkAndNotifyAbilityToReceive;
+
+        checkAndNotifyAbility().then((result) => {
           if ( ! result ) return;
           var menuName = this.isPayable ? 'send' : 'request';
           X.menuDAO.find(`sme.quickAction.${menuName}`).then((menu) => {
@@ -710,17 +698,20 @@ foam.CLASS({
         // TODO: auth.check(this.user, 'invoice.pay');
       },
       code: function(X) {
-        var self = this;
-        this.checkComplianceAndBanking().then((result) => {
+        var checkAndNotifyAbility = this.isPayable ?
+          this.checkAndNotifyAbilityToPay :
+          this.checkAndNotifyAbilityToReceive;
+
+        checkAndNotifyAbility().then((result) => {
           if ( result ) {
             // Check if payee has a supported bank account. Needed for Xero/Quickbook invoices
-            var request = self.CanReceiveCurrency.create({
-              userId: self.invoice.payeeId,
-              currencyId: self.invoice.destinationCurrency
+            var request = this.CanReceiveCurrency.create({
+              userId: this.invoice.payeeId,
+              currencyId: this.invoice.destinationCurrency
             });
-            self.canReceiveCurrencyDAO.put(request).then((responseObj) => {
+            this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
               if ( ! responseObj.response ) {
-                self.notify(responseObj.message, 'error');
+                this.notify(responseObj.message, 'error');
                 return;
               }
               X.menuDAO.find('sme.quickAction.send').then((menu) => {
@@ -732,8 +723,6 @@ foam.CLASS({
                   invoice: this.invoice.clone()
                 });
                 clone.launch(X, X.controllerView);
-              }).catch((err) => {
-                console.warn('Error occured when checking the compliance: ', err);
               });
             });
           }
@@ -760,6 +749,7 @@ foam.CLASS({
       isEnabled: function(canApproveInvoice) {
         return canApproveInvoice;
       },
+      availablePermissions: ['invoice.pay'],
       code: function(X) {
         X.menuDAO.find('sme.quickAction.send').then((menu) => {
           var clone = menu.clone();
@@ -771,7 +761,7 @@ foam.CLASS({
           });
           clone.launch(X, X.controllerView);
         }).catch((err) => {
-          console.warn('Error occured when checking the compliance: ', err);
+          console.warn('Error occurred when redirecting to approval payment flow: ', err);
         });
       }
     },

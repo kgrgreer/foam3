@@ -38,7 +38,7 @@ foam.CLASS({
       line-height: 20px;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
       position: relative;
       top: 10px;
@@ -71,7 +71,7 @@ foam.CLASS({
       line-height: 2.86;
       letter-spacing: 0.2px;
       text-align: center;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       cursor: pointer;
       display: inline-block;
       float: right;

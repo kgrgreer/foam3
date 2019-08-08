@@ -1,6 +1,7 @@
 package net.nanopay.fx.ascendantfx.test;
 
 import foam.core.ProxyX;
+import foam.core.X;
 import foam.lib.json.Outputter;
 import net.nanopay.fx.ascendantfx.AscendantFXService;
 import net.nanopay.fx.ascendantfx.model.Deal;
@@ -10,7 +11,8 @@ import net.nanopay.fx.ascendantfx.model.GetQuoteRequest;
 public class Test {
 
   public static void main(String[] args) {
-    AscendantFXService service = new AscendantFXService(new ProxyX());
+    X x = new ProxyX();
+    AscendantFXService service = new AscendantFXService(x);
     GetQuoteRequest request = new GetQuoteRequest();
     request.setMethodID("AFXEWSGQ");
     request.setOrgID("5904960");
@@ -30,6 +32,6 @@ public class Test {
     request.setPayment(new Deal[] { deal });
 
     request.setTotalNumberOfPayment(1);
-    System.out.println(new Outputter().stringify(service.getQuote(request)));
+    System.out.println(new Outputter(x).stringify(service.getQuote(request)));
   }
 }

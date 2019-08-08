@@ -2,7 +2,9 @@ package net.nanopay.business;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.auth.token.Token;
 import foam.nanos.http.WebAgent;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Map;
 
@@ -57,7 +60,6 @@ public class JoinBusinessWebAgent implements WebAgent {
       DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
       Business business = (Business) localBusinessDAO.inX(x).find(businessId);
       message = "You've been successfully added to " + business.label();
-
       // Look up the user.
       if ( token.getUserId() == 0 ) throw new Exception("User not found.");
       DAO localUserDAO = (DAO) x.get("localUserDAO");
@@ -88,6 +90,20 @@ public class JoinBusinessWebAgent implements WebAgent {
         .and().and()
         .build();
     }
+
+    Group group = user.findGroup(x);
+    AppConfig appConfig = group.getAppConfig(x);
+    String url = appConfig.getUrl().replaceAll("/$", "");
+
+    // Encoding business name and email to handle special characters.
+    String encodedBusinessName, encodedEmail;
+    try {
+      encodedEmail =  URLEncoder.encode(user.getEmail(), "UTF-8");
+    } catch(Exception e) {
+      throw new RuntimeException(e);
+    }
+
+    if ( redirect.equals("/") ) redirect = url + "?email=" + encodedEmail;
 
     EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(x, "join-business-splash-page", user.getGroup());
     JtwigTemplate template = JtwigTemplate.inlineTemplate(emailTemplate.getBody(), config_);

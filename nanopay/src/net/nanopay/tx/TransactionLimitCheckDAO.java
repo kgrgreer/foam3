@@ -9,6 +9,7 @@ import static foam.mlang.MLang.*;
 import foam.mlang.sink.Count;
 import foam.mlang.sink.Sum;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
 import net.nanopay.model.Broker;
 import net.nanopay.tx.model.Transaction;
@@ -40,12 +41,14 @@ public class TransactionLimitCheckDAO
     Transaction transaction = (Transaction) fObject;
 
     DAO accountDAO = (DAO) x.get("localAccountDAO");
+    Logger logger = (Logger) x.get("logger");
     Account payerAcc = (Account) transaction.findSourceAccount(x);
     Account payeeAcc = (Account) transaction.findDestinationAccount(x);
     User payee  = (User) ((DAO) x.get("localUserDAO")).find_(x,payeeAcc.getOwner());
     User payer  = (User) ((DAO) x.get("localUserDAO")).find_(x,payerAcc.getOwner());
 
     if ( payee == null || payer == null ) {
+      logger.error("No payer or payee for transaction " + transaction.getId());
       throw new RuntimeException("No Payer or Payee.");
     }
 
@@ -63,6 +66,7 @@ public class TransactionLimitCheckDAO
 
         if ( ! limitsNotAbove(transaction, payer, isBroker(payer), TransactionLimitType.SEND,    true) ||
              ! limitsNotAbove(transaction, payee, isBroker(payee), TransactionLimitType.RECEIVE, false) ) {
+          logger.error("Transaction limits overstepped for " + transaction.getId());
           throw new RuntimeException("Transaction Limits overstepped.");
         }
 

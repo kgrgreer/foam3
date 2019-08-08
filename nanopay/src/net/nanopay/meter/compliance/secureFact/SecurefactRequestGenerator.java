@@ -84,15 +84,19 @@ public class SecurefactRequestGenerator {
 
   private static SIDniAddress[] buildAddress(X x, User user) {
     Address userAddress = user.getAddress();
+    String address = userAddress.getAddress();
     if (userAddress == null
-      || SafetyUtil.isEmpty(userAddress.getAddress())
+      || SafetyUtil.isEmpty(address)
     ) {
       throw new IllegalStateException("User address can't be blank");
+    }
+    if ( ! SafetyUtil.isEmpty(userAddress.getSuite()) ) {
+      address = userAddress.getSuite() + " - " + userAddress.getAddress();
     }
     return new SIDniAddress[] {
       new SIDniAddress.Builder(x)
         .setAddressType("Current")
-        .setAddressLine(userAddress.getAddress())
+        .setAddressLine(address)
         .setCity(userAddress.getCity())
         .setProvince(userAddress.getRegionId())
         .setPostalCode(userAddress.getPostalCode().replaceAll(" ", ""))
@@ -105,7 +109,7 @@ public class SecurefactRequestGenerator {
     boolean hasMobile = false;
 
     Phone mobile = user.getMobile();
-    if ( ! SafetyUtil.isEmpty(mobile.getNumber()) ) {
+    if ( mobile != null && ! SafetyUtil.isEmpty(mobile.getNumber()) ) {
       list.add(
         new SIDniPhone.Builder(x)
           .setType("MOBILE")
@@ -115,7 +119,7 @@ public class SecurefactRequestGenerator {
       hasMobile = true;
     }
     Phone phone = user.getPhone();
-    if ( ! SafetyUtil.isEmpty(phone.getNumber()) ) {
+    if ( phone != null && ! SafetyUtil.isEmpty(phone.getNumber()) ) {
       list.add(
         new SIDniPhone.Builder(x)
           .setType("HOME")

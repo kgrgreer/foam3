@@ -40,7 +40,7 @@ foam.CLASS({
       line-height: 1;
       font-weight: 500;
       text-align: center;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ h4{
       width: 150px;
@@ -49,7 +49,7 @@ foam.CLASS({
       line-height: 1;
       font-weight: 500;
       text-align: center;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^table-body{
       width: 962px;

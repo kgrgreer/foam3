@@ -18,10 +18,15 @@ foam.CLASS({
     'foam.nanos.auth.Authorizable'
   ],
 
+  tableColumns: [
+      'id', 'user', 'acceptedDocument', 'createdBy'
+  ],
+
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      tableWidth: 50
     },
     {
       class: 'Reference',

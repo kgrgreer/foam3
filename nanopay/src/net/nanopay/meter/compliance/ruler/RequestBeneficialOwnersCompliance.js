@@ -9,7 +9,9 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.ContextAgent',
     'foam.core.Detachable',
+    'foam.core.X',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -21,36 +23,25 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        Business business = (Business) obj;
+        final Business business = (Business) obj;
         DAO beneficialOwnerDAO = business.getBeneficialOwners(x);
         beneficialOwnerDAO.select(new AbstractSink() {
           @Override
           public void put(Object obj, Detachable sub) {
-            BeneficialOwner owner = (BeneficialOwner) obj;
-            owner = (BeneficialOwner) owner.fclone();
 
-            owner.setCompliance(ComplianceStatus.REQUESTED);
-            beneficialOwnerDAO.put(owner);
+            agency.submit(x, new ContextAgent() {
+              @Override
+              public void execute(X x) {
+                BeneficialOwner owner = (BeneficialOwner) ((BeneficialOwner) obj).fclone();
+                owner.setCompliance(ComplianceStatus.REQUESTED);
+
+                DAO beneficialOwnerDAO = (DAO) business.getBeneficialOwners(x);
+                beneficialOwnerDAO.put(owner);
+              }
+            }, "Request Beneficial Owners Compliance");
           }
         });
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: '//noop'
-    },
-    {
-      name: 'canExecute',
-      javaCode: `
-      // TODO: add an actual implementation
-      return true;
-      `
-    },
-    {
-      name: 'describe',
-      javaCode: `
-      // TODO: add an actual implementation
-      return "";`
     }
   ]
 });

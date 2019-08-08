@@ -14,32 +14,8 @@ foam.CLASS({
       font-size: 14px;
       letter-spacing: 0.2px;
       color: #373a3c;
-      background: %BACKGROUNDCOLOR%;
+      background: /*%GREY5%*/ #f5f7fa;
       margin: 0;
-    }
-    table {
-      border-collapse: collapse;
-      margin: auto;
-    }
-    thead > tr > th {
-      font-family: 'Roboto';
-      font-size: 14px;
-      background-color: %TABLECOLOR%;
-      color: #093649;
-      line-height: 1.14;
-      letter-spacing: 0.3px;
-      border-spacing: 0;
-      text-align: left;
-      padding-left: 15px;
-      height: 40px;
-    }
-    tbody > tr > th > td {
-      font-size: 12px;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: #093649;
-      padding-left: 15px;
-      height: 60px;
     }
     .foam-u2-DetailView {
       background: #fafafa;
@@ -58,23 +34,13 @@ foam.CLASS({
       border: none;
       outline: none;
     }
-    .foam-u2-ActionView-back {
-      position: absolute;
-      top: 110px;
-      width: 135px;
-      height: 40px;
-      border-radius: 2px;
-      // background-color: rgba(164, 179, 184, 0.1);
-      box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      color: black;
-    }
     .foam-u2-search-TextSearchView input {
       background-image: url("images/ic-search.svg");
       background-repeat: no-repeat;
       background-position: 8px;
       border-radius: 2px;
       border: 1px solid #dce0e7;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
       height: 40px;
       padding: 0 21px 0 38px;
@@ -97,11 +63,11 @@ foam.CLASS({
     .foam-u2-ActionView-deleteDraft {
       // background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px #8C92AC;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
     }
     .foam-u2-ActionView-saveAndPreview {
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       color: white;
       font-size: 14px;
       float: right;
@@ -111,8 +77,8 @@ foam.CLASS({
     }
     .foam-u2-ActionView-saveAsDraft {
       background-color: #EDF0F5;
-      border: solid 1px %SECONDARYCOLOR%;
-      color: %SECONDARYCOLOR%;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
+      color: /*%PRIMARY3%*/ #406dea;
       margin-right: 15px;
       float: right;
     }
@@ -135,7 +101,7 @@ foam.CLASS({
       margin-left: 5%;
       font-size: 12px;
       font-weight: 300;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       text-align: left;
       border: 1px solid lightgrey;
     }
@@ -177,31 +143,31 @@ foam.CLASS({
       line-height: 2.86;
     }
     .blue-button{
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       color: #ffffff;
       margin: 20px 20px;
       float: right;
     }
     .blue-button:hover {
-      background: %SECONDARYHOVERCOLOR%;
+      background: /*%PRIMARY2%*/ #144794;
     }
     .grey-button{
       background-color: rgba(164, 179, 184, 0.1);
       border: solid 1px #8C92AC;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     .white-blue-button{
-      border: solid 1px %SECONDARYCOLOR%;
-      color: %SECONDARYCOLOR%;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
+      color: /*%PRIMARY3%*/ #406dea;
       background: none;
     }
     .full-width-button{
       width: 90%;
       height: 40px;
       border-radius: 2px;
-      border: solid 1px %SECONDARYCOLOR%;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       margin: 0 auto;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       text-align: center;
       line-height: 40px;
       cursor: pointer;
@@ -218,14 +184,14 @@ foam.CLASS({
       font-size: 14px;
     }
     .link{
-      color: %SECONDARYCOLOR%;
+      color: /*%PRIMARY3%*/ #406dea;
       cursor: pointer;
     }
     .light-roboto-h2 {
       font-size: 20px;
       font-weight: 300;
       line-height: 1;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       opacity: 0.6;
       margin-bottom: 30px;
       display: inline-block;
@@ -272,13 +238,13 @@ foam.CLASS({
       margin: 10px 0 0 0;
     }
     .blue-card-title{
-      border: 3px solid %SECONDARYCOLOR%;
+      border: 3px solid /*%PRIMARY3%*/ #406dea;
       display: block;
       width: 135px;
       height: 70px;
       padding-top: 30px;
       border-radius: 2px;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       text-align: center;
       color: white;
       font-weight: 16px;
@@ -313,23 +279,23 @@ foam.CLASS({
     }
     .foam-u2-tag-Select:focus {
       outline: none;
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
     .foam-u2-TextField:focus {
       outline: none;
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
     .foam-u2-tag-TextArea:focus {
       outline: none;
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
     .foam-u2-CurrencyView:focus {
       outline: none;
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
     .foam-u2-DateView:focus {
       outline: none;
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
     .foam-u2-ActionView-backAction:hover {
       background: rgba(164, 179, 184, 0.3);
@@ -343,14 +309,14 @@ foam.CLASS({
     }
     .filter-search:focus {
       outline: none;
-      border: 1px solid %SECONDARYCOLOR% !important;
+      border: 1px solid /*%PRIMARY3%*/ #406dea !important;
     }
     .foam-u2-ActionView-signUp{
       position: relative;
       width: 100% !important;
       height: 40px;
       background: none;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       font-size: 14px;
       border: none;
       color: white;
@@ -361,10 +327,10 @@ foam.CLASS({
     }
     .foam-u2-ActionView-signUp:hover{
       background: none;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
     }
     .foam-u2-ActionView-saveAndPreview:hover {
-      background: %SECONDARYHOVERCOLOR%;
+      background: /*%PRIMARY2%*/ #144794;
     }
     .foam-u2-ActionView-close{
       width: 30px;
@@ -413,7 +379,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     .inputSmall {
       width: 65px;
@@ -474,7 +440,7 @@ foam.CLASS({
       line-height: 20px;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
       vertical-align: top;
     }
@@ -494,7 +460,7 @@ foam.CLASS({
       color: #ffffff;
       padding: 0 10px 0 10px;
       border-radius: 100px;
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       display: inline-block;
     }
     .Compliance-Status-Passed {
@@ -603,7 +569,7 @@ foam.CLASS({
       color: #ffffff;
       padding: 0 10px 0 10px;
       border-radius: 100px;
-      background-color: #093649;
+      background-color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
     }
     .wizardDescription {
@@ -615,19 +581,19 @@ foam.CLASS({
       line-height: 1.5;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     .wizardBoldLabel {
       font-size: 14px;
       font-weight: bold;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-top: 20px;
     }
     .wizardBoxTitleContainer {
       width: 540px;
       height: 40px;
       border-radius: 2px;
-      background-color: %PRIMARYCOLOR%;
+      background-color: /*%BLACK%*/ #1e1f21;
       margin-top: 30px;
     }
     .wizardBoxTitleLabel {
@@ -664,8 +630,8 @@ foam.CLASS({
       margin-right: 5px;
     }
     .foam-u2-ActionView-submitAs {
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       color: white;
       float: right;
       margin-right: 1px;
@@ -675,8 +641,8 @@ foam.CLASS({
     button.foam-u2-ActionView-submitAsDropDown {
       width: 30px;
       height: 40px;
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       float: right;
     }
     button.foam-u2-ActionView-submitAsDropDown::after {
@@ -689,8 +655,8 @@ foam.CLASS({
       transform: translate(-6.5px, -1px);
     }
     .foam-u2-ActionView-followUp {
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       color: white;
     }
   `

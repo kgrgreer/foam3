@@ -11,98 +11,95 @@ foam.CLASS({
   imports: [
     'isConnecting'
   ],
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          width: 492px;
-        }
-        ^ .subContent {
-          height: 405px;
-        }
-        ^ .sub-header {
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-        }
-        ^ .foam-u2-view-StringArrayView {
-          width: 450px;
-          height: 30px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          outline: none;
-          padding: 5px;
-        }
-        ^ .header1 {
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 300;
-          font-style: normal;
-          font-stretch: normal;
-          line-height: normal;
-          letter-spacing: 0.2px;
-          text-align: left;
-          color: #093649;
-        }
-        ^ .foam-u2-ActionView-closeButton {
-          float: right;
-          margin: 0;
-          box-sizing: border-box;
-          background-color: #A93226;
-          outline: none;
-          border:none;
-          width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          color: #FFFFFF;
-        }
 
-        ^ .foam-u2-ActionView-closeButton:hover:enabled {
-          cursor: pointer;
-        }
+  css: `
+    ^ {
+      width: 492px;
+    }
+    ^ .subContent {
+      height: 405px;
+    }
+    ^ .sub-header {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: 300;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ .foam-u2-view-StringArrayView {
+      width: 450px;
+      height: 30px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      outline: none;
+      padding: 5px;
+    }
+    ^ .header1 {
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: 300;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.2px;
+      text-align: left;
+      color: /*%BLACK%*/ #1e1f21;
+    }
+    ^ .foam-u2-ActionView-closeButton {
+      float: right;
+      margin: 0;
+      box-sizing: border-box;
+      background-color: #A93226;
+      outline: none;
+      border:none;
+      width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      color: #FFFFFF;
+    }
 
-        ^ .foam-u2-ActionView-nextButton {
-          float: right;
-          margin: 0;
-          outline: none;
-          border:none;
-          min-width: 136px;
-          height: 40px;
-          border-radius: 2px;
-          background-color: #148F77;
-          font-size: 12px;
-          font-weight: lighter;
-          letter-spacing: 0.2px;
-          color: #FFFFFF;
-          margin-right: 40px;
-        }
+    ^ .foam-u2-ActionView-closeButton:hover:enabled {
+      cursor: pointer;
+    }
 
-        ^ .foam-u2-ActionView-nextButton:disabled {
-          background-color: #7F8C8D;
-        }
+    ^ .foam-u2-ActionView-nextButton {
+      float: right;
+      margin: 0;
+      outline: none;
+      border:none;
+      min-width: 136px;
+      height: 40px;
+      border-radius: 2px;
+      background-color: #148F77;
+      font-size: 12px;
+      font-weight: lighter;
+      letter-spacing: 0.2px;
+      color: #FFFFFF;
+      margin-right: 40px;
+    }
 
-        ^ .foam-u2-ActionView-nextButton:hover:enabled {
-          cursor: pointer;
-        }
+    ^ .foam-u2-ActionView-nextButton:disabled {
+      background-color: #7F8C8D;
+    }
 
-        ^ .foam-u2-tag-Select {
-          width: 450px;
-          height: 30px;
-          background-color: #ffffff;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-        }
-      */}
-    })
-  ],
+    ^ .foam-u2-ActionView-nextButton:hover:enabled {
+      cursor: pointer;
+    }
+
+    ^ .foam-u2-tag-Select {
+      width: 450px;
+      height: 30px;
+      background-color: #ffffff;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+    }
+  `,
 
   properties: [
     {

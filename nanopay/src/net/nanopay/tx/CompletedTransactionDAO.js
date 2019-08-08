@@ -11,7 +11,9 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ'
   ],
 
   methods: [
@@ -33,18 +35,22 @@ foam.CLASS({
       Transaction txn = (Transaction) getDelegate().put_(x, obj);
       if ( oldTxn != null && txn.getStatus() == TransactionStatus.COMPLETED && oldTxn.getStatus() != TransactionStatus.COMPLETED ||
         oldTxn == null && txn.getStatus() == TransactionStatus.COMPLETED ) {
-        DAO children = txn.getChildren(x);
+        DAO children = ((DAO) x.get("localTransactionDAO")).inX(x).where(AND(
+          EQ(Transaction.PARENT, txn.getId()),
+          EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)));
         for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
-          Transaction child = (Transaction) o;
-          child.setStatus(child.getInitialStatus());
-
+          Transaction child = (Transaction) ((Transaction) o).fclone();
+          if( child.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED){
+            child.setStatus(child.getInitialStatus());
+            children.put_(getX(), child);
+          }
           /**
            * need to use the put_ override because of the newly added transaction.status permissionRequired: true property
            * we call put_ with the DAO context rather than the calling context instead
            * this is because the user in the calling context may not have permission to update
            * all neccessary properties
            */
-          child = (Transaction) children.put_(getX(), child);
+
         }
       }
       return txn;

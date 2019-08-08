@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
   name: 'Match',
 
-  description: 'Matched profile from Dow Jones Risk Database.',
+  documentation: 'Matched profile from Dow Jones Risk Database.',
 
   properties: [
     {

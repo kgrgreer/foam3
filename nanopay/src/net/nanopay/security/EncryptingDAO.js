@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'EncryptingDAO',
   extends: 'foam.dao.ProxyDAO',
 
+  javaImports: [
+  'foam.lib.json.Outputter'
+  ],
+
   imports: [
     'logger'
   ],
@@ -76,7 +80,7 @@ foam.CLASS({
             new javax.crypto.spec.GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
           cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, getSecretKey(), spec);
 
-          foam.lib.json.Outputter outputter = x.create(foam.lib.json.Outputter.class);
+          Outputter outputter = new Outputter(x);
           byte[] input = outputter.stringify(obj).getBytes(java.nio.charset.StandardCharsets.UTF_8);
           byte[] cipherText = new byte[cipher.getOutputSize(input.length)];
           int updated = cipher.update(input, 0, input.length, cipherText, 0);

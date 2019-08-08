@@ -25,19 +25,17 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 400px;
-      position: fixed;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
       z-index: 790;
     }
     ^ .side-nav {
       height: 100vh;
       width: 220px;
-      top: 0;
-      left: 0;
       background-color: white;
       display: inline-block;
       overflow-x: hidden;
-      position: fixed;
       z-index: 800;
       box-shadow: 0 1px 1px 0 #dae1e9;
       color: #525455;
@@ -88,7 +86,9 @@ foam.CLASS({
       outline: 0;
     }
     ^ .net-nanopay-sme-ui-AccountProfileView {
-      margin-left: 200px;
+      position: absolute;
+      top: 0;
+      left: 200px;
     }
     ^ .accountProfileView-hidden {
       display: none;
@@ -120,7 +120,7 @@ foam.CLASS({
     ^ .account-button-info-detail {
       font-size: 16px;
       line-height: 24px;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .account-button-info-detail-small {
       font-size: 10px;

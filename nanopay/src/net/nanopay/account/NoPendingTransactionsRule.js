@@ -23,7 +23,7 @@ foam.CLASS({
         if ( obj instanceof DigitalAccount ) {
           Count count = new Count();
           DigitalAccount digitalAccount = (DigitalAccount) obj;
-          count = (Count) ((DAO) x.get("transactionDAO"))
+          count = (Count) ((DAO) x.get("localTransactionDAO"))
             .where(
               AND(
                 OR(
@@ -47,23 +47,6 @@ foam.CLASS({
           }
         }
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'canExecute',
-      javaCode: `
-      // TODO: add an actual implementation
-      return true;
-      `
-    },
-    {
-      name: 'describe',
-      javaCode: `
-      // TODO: add an actual implementation
-      return "";`
     }
   ]
 });

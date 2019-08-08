@@ -8,7 +8,7 @@ foam.CLASS({
       border-radius: 0px;
       padding: 8px 24px;
       font-size: 16px;
-      color: #2b2b2b;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^action[disabled] {

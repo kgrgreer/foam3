@@ -5,13 +5,13 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.users","label":"Users","handle
 p({"class":"foam.nanos.menu.Menu","id":"operation.businesses","label":"Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessDAO","detailView":"net.nanopay.meter.BusinessDetailView"},"order":1200,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.accounts","label":"Bank Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","title":"Bank Accounts","customDAOController":"net.nanopay.meter.BankAccountController","detailView":"net.nanopay.meter.BankAccountDetailView"},"order":1300,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.contacts","label":"Contacts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"contactDAO","detailView":"net.nanopay.meter.ContactDetailView"},"order":1250,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","createEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":1400,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"tableViewTransactionDAO","createEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":1400,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.invoices","label":"Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO","detailView":"net.nanopay.meter.InvoiceDetailView"},"order":1500,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.flinksResponses","label":"Flinks Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"flinksAccountsDetailResponseDAO","createEnabled":false,"editEnabled":false,"toggleEnabled":false},"order":1600,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.plaidResultReport","label":"Plaid Result Report","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"plaidResultReportDAO","createEnabled":false,"editEnabled":false,"toggleEnabled":false},"order":1600,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.loginAttempts","label":"Login History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"loginAttemptDAO","createEnabled":false,"editEnabled":false},"order":1700,"parent":"operation"})
 p({"class":"foam.nanos.menu.Menu","id":"operation.ipHistories","label":"IP History","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ipHistoryDAO","createEnabled":false,"editEnabled":false},"order":1800,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"approvalRequestDAO","createEnabled":false,"editEnabled":false},"order":1900,"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests","label":"Approval Requests","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"approvalRequestDAO","customDAOController":"net.nanopay.ui.ApprovalRequestController","title":"Approval Requests","createEnabled":false,"editEnabled":false},"order":1900,"parent":"operation"})
 
 // Payment Operations Functionality
 p({"class":"foam.nanos.menu.Menu","id":"operation.tickets","label":"Tickets","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.support.view.TicketView"}},"order":2000,"parent":"operation"})
@@ -30,15 +30,8 @@ p({"class":"foam.nanos.menu.Menu","id":"operation.emailmessage","label":"Email M
 // Extra Menu Items
 p({"class":"foam.nanos.menu.Menu","id":"operation.spids","label":"Service Providers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"serviceProviderDAO"},"order":4000,"parent":"operation"})
 
-//Securefact Responses
-p({"class":"foam.nanos.menu.Menu","id":"operation.sidni","label":"SIDni Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"securefactSIDniDAO"},"order":3300,"parent":"operation"})
-p({"class":"foam.nanos.menu.Menu","id":"operation.lev","label":"LEV Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"securefactLEVDAO"},"order":3400,"parent":"operation"})
-
-//Dow Jones Responses
-p({"class":"foam.nanos.menu.Menu","id":"operation.dowjones","label":"Dow Jones Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"dowJonesResponseDAO"},"order":3500,"parent":"operation"})
-
 // Business Onboarding
-p({"class":"foam.nanos.menu.Menu","id":"BusinessOnboarding","label":"Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
+p({"class":"foam.nanos.menu.Menu","id":"operation.BusinessOnboarding","label":"Business Onboarding","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"businessOnboardingDAO","detailView":"foam.u2.detail.SectionedDetailView"},"parent":"operation"})
 
-// IdentityMind Responses
-p({"class":"foam.nanos.menu.Menu","id":"operation.identitymind","label":"IdentityMind Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"identityMindResponseDAO"},"order":3600,"parent":"operation"})
+// ComplianceItem
+p({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem","label":"Compliance Responses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"complianceItemDAO","title":"Compliance Responses","createEnabled":false,"editEnabled":false,"customDAOController":"net.nanopay.meter.compliance.ui.ComplianceItemController"},"order":1550,"parent":"operation"})

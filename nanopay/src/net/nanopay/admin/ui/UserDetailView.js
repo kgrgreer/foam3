@@ -72,11 +72,11 @@ foam.CLASS({
       line-height: 2;
       letter-spacing: 0.2px;
       text-align: center;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .foam-u2-ActionView-enableProfile {
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       color: white;
       float: right;
       margin-right: 1px;
@@ -84,8 +84,8 @@ foam.CLASS({
       z-index: 10;
     }
     ^ .foam-u2-ActionView-approveProfile {
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       color: white;
       float: right;
       margin-right: 1px;
@@ -93,8 +93,8 @@ foam.CLASS({
       z-index: 10;
     }
     ^ .foam-u2-ActionView-disableProfile {
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       color: white;
       float: right;
       margin-right: 1px;
@@ -105,8 +105,8 @@ foam.CLASS({
     ^ .foam-u2-ActionView-approveProfileDropDown {
       width: 30px;
       height: 40px;
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       float: right;
     }
     ^ .foam-u2-ActionView-approveProfileDropDown::after {
@@ -120,8 +120,8 @@ foam.CLASS({
     }
 
     ^ .foam-u2-ActionView-activateProfile {
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       color: white;
       float: right;
       margin-right: 1px;
@@ -131,8 +131,8 @@ foam.CLASS({
     ^ .foam-u2-ActionView-activateProfileDropDown {
       width: 30px;
       height: 40px;
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       float: right;
     }
     ^ .foam-u2-ActionView-activateProfileDropDown::after {
@@ -146,8 +146,8 @@ foam.CLASS({
     }
 
     ^ .foam-u2-ActionView-editProfile {
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       color: white;
       float: right;
       margin-right: 1px;
@@ -157,8 +157,8 @@ foam.CLASS({
     ^ .foam-u2-ActionView-editProfileDropDown {
       width: 30px;
       height: 40px;
-      background-color: %SECONDARYCOLOR%;
-      border: solid 1px %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
+      border: solid 1px /*%PRIMARY3%*/ #406dea;
       float: right;
     }
     ^ .foam-u2-ActionView-editProfileDropDown::after {
@@ -186,11 +186,11 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 30px;
     }
     ^ .popUpDropDown > div:hover {
-      background-color: %SECONDARYCOLOR%;
+      background-color: /*%PRIMARY3%*/ #406dea;
       color: white;
       cursor: pointer;
     }

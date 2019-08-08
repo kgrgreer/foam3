@@ -7,6 +7,8 @@ import foam.dao.ProxyDAO;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import foam.nanos.logger.Logger;
 import net.nanopay.fx.ascendantfx.AscendantFX;
 import net.nanopay.fx.ascendantfx.AscendantFXServiceProvider;
 import net.nanopay.fx.ascendantfx.AscendantFXTransaction;
@@ -52,6 +54,7 @@ public class AscendantFXTransactionDAO
     } catch (Throwable t) {
       transaction.setStatus(TransactionStatus.DECLINED);
       getDelegate().put_(x, transaction);
+      ((Logger) x.get("logger")).error("AscendantFxTransactionDAO unexepected exception ", t);
       throw new RuntimeException(t.getMessage());
     }
 

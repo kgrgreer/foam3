@@ -16,6 +16,7 @@ foam.CLASS({
     ],
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'net.nanopay.account.DebtAccount',
     'foam.dao.DAO',
     'foam.mlang.MLang'
@@ -26,7 +27,7 @@ foam.CLASS({
       name: 'debtAccount',
       class: 'Reference',
       of: 'net.nanopay.account.DebtAccount',
-      targetDAOKey:'localDebtAccountDAO',
+      targetDAOKey:'localDebtAccountDAO', // should change this back to authenticateD?
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.debtAccountDAO,
@@ -76,7 +77,7 @@ foam.CLASS({
 
         if ( amount < 0 &&
              -amount > bal ) {
-          foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+          ((Logger) x.get("logger")).error("Insufficient balance in account and overdraft exceeded" + this.getId());
           throw new RuntimeException("Insufficient balance in account and overdraft exceeded " + this.getId());
         }
       `

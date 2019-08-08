@@ -9,6 +9,105 @@ foam.CLASS({
   name: 'AccountTreeGraph',
   extends: 'foam.graphics.TreeGraph',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  requires: [
+    'foam.u2.view.TableView',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.AggregateAccount',
+  ],
+
+  imports: [
+    'accountDAO'
+  ],
+
+  properties: [
+    {
+      name: 'nodeWidth',
+      value: 185
+    },
+    {
+      name: 'nodeHeight',
+      value: 80
+    },
+    {
+      name: 'padding',
+      value: 10
+    },
+    {
+      name: 'width',
+      value: 1460
+    },
+    {
+      name: 'height',
+      value: 1000
+    },
+    {
+      name: 'x',
+      value: 0
+    },
+    {
+      name: 'y',
+      value: 0
+    },
+    {
+      name: 'relationship',
+      factory: function() {
+        return net.nanopay.account.AccountAccountChildrenRelationship;
+      }
+    },
+    {
+      name: 'data',
+      factory: function() {
+        return this.AggregateAccount.create({ id: 0, name: ' ', denomination: 'CAD' });
+      }
+    },
+    {
+      name: 'formatNode',
+      value: function() {
+        this.homeDenomination$.sub(this.invalidate);
+
+        // var isShadow = this.data.name.indexOf('Shadow') != -1;
+        const leftPos  = -this.width/2+8;
+        let type     = this.data.type.replace('Account', '');
+        // Account Name
+        this.add(this.Label.create({color: '#1d1f21', x: leftPos, y: 7, text: this.data.name, font: '500 12px sans-serif'}));
+
+        // Balance and Denomination Indicator
+        this.data.findBalance(this.__subContext__).then(function(balance) {
+          this.__subContext__.currencyDAO.find(this.data.denomination).then(function(denom) {
+            this.add(this.Line.create({
+              startX: -this.width/2+1,
+              startY: 0,
+              endX: -this.width/2+1,
+              endY: this.height,
+              color: type === 'Aggregate' ? '#9ba1a6' : denom.colour,
+              lineWidth: 6
+            }));
+
+            const circleColour = balance && ! (type === 'Aggregate') ? '#32bf5e' : '#cbcfd4';
+            this.add(foam.graphics.Circle.create({color: circleColour, x: this.width/2-14, y: this.height-14, radius: 5, border: null}));
+
+            // Account Type
+            if ( type == 'Digital' ) type = 'Virtual';
+            this.add(this.Label.create({color: 'gray',  x: leftPos, y: 22, text: type + ' (' + denom.alphabeticCode + ')'}));
+
+            const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
+            const balanceFont   = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
+            this.add(this.Label.create({
+              color: balanceColour,
+              font: balanceFont,
+              x: leftPos,
+              y: this.height-21,
+              text$: this.homeDenomination$.map(_ =>  denom.format(balance))
+            }))
+          }.bind(this));
+        }.bind(this));
+      }
+    }
+  ],
 
   classes: [
     {
@@ -29,7 +128,8 @@ foam.CLASS({
         'nodeWidth',
         'padding',
         'parentNode?',
-        'relationship'
+        'relationship',
+        'homeDenomination'
       ],
       exports: [ 'as parentNode' ],
 
@@ -50,6 +150,11 @@ foam.CLASS({
           class: 'Boolean',
           name: 'expanded',
           value: true
+        },
+        {
+          class: 'Boolean',
+          name: 'useShadow',
+          value: false
         },
         [ 'color', 'white' ]
       ],
@@ -79,11 +184,13 @@ foam.CLASS({
         function paintSelf(x) {
           x.save();
 
-          // Add shadow blur to box
-          x.shadowBlur    = 5;
-          x.shadowOffsetX = 5;
-          x.shadowOffsetY = 5;
-          x.shadowColor   = "gray";
+          if (this.useShadow){
+            // Add shadow blur to box
+            x.shadowBlur    = 5;
+            x.shadowOffsetX = 5;
+            x.shadowOffsetY = 5;
+            x.shadowColor   = "gray";
+          }
 
           x.translate(-this.width/2, 0);
           this.SUPER(x);
@@ -113,15 +220,8 @@ foam.CLASS({
             line(0, this.height, 0, h);
             for ( var i = 0 ; i < l ; i++ ) {
               var c = this.childNodes[i];
-              var isShadow = c.data.name.indexOf('Shadow') != -1;
-
-              if ( ! isShadow ) {
-                line(0, h, c.x, h);
-                line(c.x, h, c.x, c.y);
-              } else {
-                var c0 = this.childNodes[i-1];
-                line(c0.x, c0.y+c.height/2, c.x, c.y+c.height/2);
-              }
+              line(0, h, c.x, h);
+              line(c.x, h, c.x, c.y);
             }
           }
 

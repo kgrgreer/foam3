@@ -160,7 +160,7 @@ try {
   e.printStackTrace();
   logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new ResultResponse(false, "An error has occured please sync again ");
+    return new ResultResponse(false, "An error has occurred please sync again ");
   }
   return new ResultResponse(false, e.getMessage() + " ");
 }`
@@ -342,7 +342,7 @@ try {
   e.printStackTrace();
   logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new ResultResponse(false, "An error has occured please sync again");
+    return new ResultResponse(false, "An error has occurred please sync again");
   }
   return new ResultResponse(false, e.getMessage() + " ");
 }`
@@ -357,7 +357,7 @@ XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
 AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
-DAO              notification = ((DAO) x.get("notificationDAO")).inX(x);
+DAO              notification = ((DAO) x.get("localNotificationDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
 Logger           logger       = (Logger) x.get("logger");
@@ -552,7 +552,7 @@ try {
   e.printStackTrace();
   logger.error(e);
   if ( e.getMessage().contains("token_rejected") || e.getMessage().contains("token_expired") ) {
-    return new ResultResponse(false, "An error has occured please sync again");
+    return new ResultResponse(false, "An error has occurred please sync again");
   }
   return new ResultResponse(false, e.getMessage() + " ");
 }`
@@ -598,7 +598,7 @@ if ( user.getId() == nano.getPayeeId() ) {
 client_.setOAuthToken(tokenStorage.getToken(), tokenStorage.getTokenSecret());
 try {
   if ( SafetyUtil.isEmpty(account.getIntegrationId()) ) {
-    return new ResultResponse(false, "The follow error has occured: Bank Account not linked to Xero");
+    return new ResultResponse(false, "The follow error has occurred: Bank Account not linked to Xero");
   }
   com.xero.model.Account           xeroAccount = client_.getAccount(account.getIntegrationId());
   List<com.xero.model.Invoice>     xeroInvoiceList = new ArrayList<>();
@@ -624,7 +624,7 @@ try {
 } catch ( Throwable e ) {
   e.printStackTrace();
   logger.error(e);
-  return new ResultResponse(false, "The follow error has occured: " + e.getMessage() + " ");
+  return new ResultResponse(false, "The follow error has occurred: " + e.getMessage() + " ");
 }`
     },
     {

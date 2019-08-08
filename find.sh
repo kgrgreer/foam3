@@ -1,153 +1,45 @@
 #!/bin/bash
 # Concatenate JDAO files from subdirectories into one JDAO
 
-IN_DIR=$1
-OUT_DIR=$2
-MODE=$3
-VERSION=$4
-INSTANCE=$5
+IN_FILE=
+OUT_DIR=
 
-if [[ -d $IN_DIR ]]; then
-    cd $IN_DIR
-fi
+function usage {
+    echo "Usage: $0 [OPTIONS]"
+    echo ""
+    echo "Options are:"
+    echo "  -I : Input File, no option defaults to stdin"
+    echo "  -O : Output Directory"
+}
+
+while getopts "I:O:" opt ; do
+    case $opt in
+        I) IN_FILE=$OPTARG ;;
+        O) OUT_DIR=$OPTARG ;;
+        ?) usage ; exit 1;;
+    esac
+done
+
+echo "INFO :: $0 IN_FILE=${IN_FILE} OUT_DIR=${OUT_DIR}"
 
 if [[ ! -d $OUT_DIR ]]; then
     OUT_DIR=target/journals
 fi
 mkdir -p "$OUT_DIR"
 
-# Sets varuables to lowercase
-MODE=$(echo "$MODE" | tr '[:upper:]' '[:lower:]')
-VERSION=$(echo "$VERSION" | tr '[:upper:]' '[:lower:]')
-INSTANCE=$(echo "$INSTANCE" | tr '[:upper:]' '[:lower:]')
+rm ${OUT_DIR}/*.0
 
-echo "$0 MODE=${MODE} INSTANCE=${INSTANCE} VERSION=${VERSION}"
+while read -r filePath; do
+  # Add a comment in the journal to indicate the source of the lines that follow
+  # in the .0 file.
+  echo "// The following $(wc -l < ${filePath} | tr -d ' ') lines were copied from \"${filePath}\"" >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
 
-# Creates an array of the file names
-declare -a arr=(
-  "acceptanceDocuments"
-  "accounts"
-  "ascendantfxusers"
-  "ascendantUserPayeeJunctions"
-  "blacklists"
-  "branches"
-  "brokers"
-  "businessSectors"
-  "identificationTypes"
-  "businessTypes"
-  "corridors"
-  "countries"
-  "cronjobs"
-  "currencies"
-  "currencyfxServices"
-  "dugs"
-  "emailTemplates"
-  "exportDriverRegistrys"
-  "fundTransferSystems"
-  "groups"
-  "htmlDoc"
-  "institutions"
-  "institutionPurposeCodes"
-  "languages"
-  "lineItemTypes"
-  "lineItemTypeAccounts"
-  "lineItemFees"
-  "lineItemTax"
-  "menus"
-  "notificationTemplates"
-  "payoutOptions"
-  "permissions"
-  "questionnaires"
-  "quickbooksConfig"
-  "quickbooksToken"
-  "regions"
-  "reports"
-  "rules"
-  "scripts"
-  "services"
-  "spids"
-  "tests"
-  "transactionfees"
-  "transactionLimits"
-  "transactionPurposes"
-  "zeroAccountUserAssociations"
-  "txnProcessors"
-  "users"
-  "xeroConfig"
-  "xeroToken"
-  )
+  # Append the journal entries from the current file to the .0 file.
+  cat ${filePath} >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
 
-# Array of source directories
-declare -a sources=(
-  "foam2/src"
-  "nanopay/src"
- # "interac/src"
-)
-
-# Go through the array and check each location for the file and concatenate into one JDAO
-# create journals file used by build.sh
-# FIXME: this printf is generating two files, one at OUT_DIR/journals, but another in the current directory.
-printf "%s\n" "${arr[@]}" > "$OUT_DIR"/journals
-
-for file in "${arr[@]}"
-do
-  journal_file="$file".0
-
-  # Emptys the file
-  > "$OUT_DIR/$journal_file"
-
-  # non .jrl files
-  # Recursively go through the directory and find if the files exists.
-  # If they do, then concatenate the files into one.
-  for s in ${sources[*]}
-  do
-    for f in $(find $s -name "$file")
-    do
-        cat $f >> "$OUT_DIR/$journal_file"
-    done
-    for f in $(find $s -name "${file}.jrl")
-    do
-      cat "$f" >> "$OUT_DIR/$journal_file"
-    done
-  done
-
-  if  [[ -f "deployment/$file" ]]; then
-      cat "deployment/$file" >> "$OUT_DIR/$journal_file"
-  fi
-  if  [[ -f "deployment/${file}.jrl" ]]; then
-      cat "deployment/${file}.jrl" >> "$OUT_DIR/$journal_file"
-  fi
-  if [[ ! -z "$MODE" ]]; then
-      if  [[ -f "deployment/$MODE/$file" ]]; then
-          cat "deployment/$MODE/$file" >> "$OUT_DIR/$journal_file"
-      fi
-      if  [[ -f "deployment/$MODE/${file}.jrl" ]]; then
-          cat "deployment/$MODE/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      fi
-  fi
-  if [[ ! -z "$INSTANCE" ]]; then
-      if  [[ -f "deployment/$MODE/$INSTANCE/$file" ]]; then
-          cat "deployment/$MODE/$INSTANCE/$file" >> "$OUT_DIR/$journal_file"
-      fi
-      if  [[ -f "deployment/$MODE/$INSTANCE/${file}.jrl" ]]; then
-          cat "deployment/$MODE/$INSTANCE/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      fi
-  fi
-  if [[ ! -z "$VERSION" ]]; then
-      if  [[ -f "deployment/$MODE/$VERSION/$file" ]]; then
-          cat "deployment/$MODE/$VERSION/$file" >> "$OUT_DIR/$journal_file"
-      fi
-      if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/$file" ]]; then
-          cat "deployment/$MODE/$INSTANCE/$VERSION/$file" >> "$OUT_DIR/$journal_file"
-      fi
-      if  [[ -f "deployment/$MODE/$VERSION/${file}.jrl" ]]; then
-          cat "deployment/$MODE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      fi
-
-      if  [[ -f "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" ]]; then
-          cat "deployment/$MODE/$INSTANCE/$VERSION/${file}.jrl" >> "$OUT_DIR/$journal_file"
-      fi
-  fi
-done
+  # Add a newline if one is missing so we don't put two journal entries on
+  # the same line.
+  test "$(tail -c 1 "${filePath}" | wc -l)" -eq 0 && echo "" >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
+done < ${IN_FILE:-/dev/stdin}
 
 exit 0

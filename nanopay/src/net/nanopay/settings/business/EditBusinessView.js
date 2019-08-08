@@ -31,7 +31,7 @@ foam.CLASS({
     ^{
       width: 100%;
       margin: auto;
-      background-color: %BACKGROUNDCOLOR%;
+      background-color: /*%GREY5%*/ #f5f7fa;
     }
     ^ .settingsBar {
       width: 100%;
@@ -50,7 +50,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.3px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       padding: 0;
       padding-left: 30px;
       display: inline-block;
@@ -80,7 +80,7 @@ foam.CLASS({
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-bottom: 50px;
     }
     ^registration-container{
@@ -113,7 +113,7 @@ foam.CLASS({
     }
     ^ p{
       font-size: 10px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       font-weight: 300;
       display: inline-block;
       position: relative;
@@ -128,7 +128,7 @@ foam.CLASS({
     ^ label{
       font-weight: 300;
       font-size: 14px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     .input-container{
       width: 46%;

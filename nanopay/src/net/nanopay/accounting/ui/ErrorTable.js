@@ -61,7 +61,7 @@ foam.CLASS({
   
   .error-table-container .foam-u2-view-TableView tbody > tr {
     text-align: center;
-    background-color: #f9fbff;
+    background-color: /*%GREY5%*/ #f5f7fa;
   }
   
   .error-table-container .arrow-icon {
@@ -98,13 +98,17 @@ foam.CLASS({
   }
 
 
-  .error-table-container .table-container .foam-u2-view-TableView-context-menu-cell {
+  .error-table-container .table-container .foam-u2-view-TableView-td:last-child {
     display: none;
   }
 
   .error-table-container .table-container tr > td {
     padding: 5px;
     text-align: left;
+  }
+
+  .error-table-container .table-container .foam-u2-view-TableView-th:last-child {
+    display: none;
   }
   `,
 

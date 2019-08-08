@@ -53,7 +53,7 @@ foam.CLASS({
       box-sizing: border-box;
       border-radius: 3px;
       box-shadow: 0 1px 1px 0 #dae1e9;
-      border: 1px solid %BACKGROUNDCOLOR%;
+      border: 1px solid /*%GREY5%*/ #f5f7fa;
 
       margin-bottom: 16px;
 

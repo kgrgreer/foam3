@@ -45,7 +45,7 @@ foam.CLASS({
     { name: 'NEW_LABEL', message: 'New' },
     { name: 'SCHEDULED_LABEL', message: 'Scheduled' },
     { name: 'PAID_LABEL', message: 'Paid' },
-    { name: 'PENDING_LABEL', message: 'Pending' },
+    { name: 'PROCESSING_LABEL', message: 'Processing' },
   ],
 
   properties: [
@@ -180,9 +180,9 @@ foam.CLASS({
           .tag(this.SummaryCard, {
             count$: this.pendingCount$,
             amount$: this.pendingAmount$,
-            status: this.PENDING_LABEL
+            status: this.PROCESSING_LABEL
           }, this.pendingSummaryCard$)
-          .on('click', this.handleClick(this.pendingSummaryCard$, 'Pending'))
+          .on('click', this.handleClick(this.pendingSummaryCard$, 'Processing'))
         .end()
         .start('span')
           .tag(this.SummaryCard, {
@@ -259,7 +259,7 @@ foam.CLASS({
         this.calculatePropertiesForStatus(this.InvoiceStatus.UNPAID, 'unpaid');
         this.calculatePropertiesForStatus(this.InvoiceStatus.SCHEDULED, 'scheduled');
         this.calculatePropertiesForStatus(this.InvoiceStatus.PAID, 'paid');
-        this.calculatePropertiesForStatus(this.InvoiceStatus.PENDING, 'pending');
+        this.calculatePropertiesForStatus(this.InvoiceStatus.PROCESSING, 'processing');
       }
     }
   ]

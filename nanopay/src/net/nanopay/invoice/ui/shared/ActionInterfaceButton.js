@@ -26,100 +26,95 @@ foam.CLASS({
     'detailActions'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS(){/*
-        ^pay-button{
-          width: 157px;
-          height: 40px;
-          border-radius: 2px;
-          background-color: #59aadd;
-          color: white;
-          font-size: 14px;
-          font-weight: 200;
-          line-height: 2.86;
-          text-align: center;
-          float: right;
-          margin-right: 10px;
-        }
-        ^expand-button{
-          width: 27px;
-          height: 40px;
-          border-radius: 2px;
-          background-color: #59aadd;
-          border-left: 0.5px solid #ffffff;
-          float: right;
-        }
-        ^expand-triangle{
-          width: 0; 
-          height: 0; 
-          border-left: 5px solid transparent;
-          border-right: 5px solid transparent;
-          border-top: 5px solid white;
-          margin-left: 9px;    
-          position: relative;
-          top: -20px;
-        }
-        ^top-action-buttons{
-          float: right;
-        }
-        ^ .optionsDropDown {
-          padding: 0;
-          z-index: 1;
-          width: 157px;
-          background: white;
-          opacity: 1;
-          box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
-          position: absolute;
-          text-align: left;
-        }
-        ^ .optionsDropDown > div {
-          width: 139px;
-          height: 30px;
-          padding-left: 18px;
-          font-size: 14px;
-          font-weight: 300;
-          color: #093649;
-          line-height: 30px;
-        }
-        ^ .optionsDropDown > div:hover {
-          background-color: #59aadd;
-          color: white;
-          cursor: pointer;
-        }
-        ^ .foam-u2-ActionView{
-          position: absolute;
-          width: 75px;
-          height: 35px;
-          z-index: 1;
-          opacity: 0.01;
-        }
-        ^ .foam-u2-ActionView-PopUp{
-          position: relative;
-          width: 30px;
-          height: 40px;
-        }
-        ^ .foam-u2-ActionView-mainAction{
-          opacity: 0.01;
-          z-index: 1;
-          position: absolute;
-          height: 35px;
-          width: 125px;
-          right: 185px;
-        }
-        .foam-u2-ActionView-backAction{
-          position: relative;
-          top: 40;
-          width: 135px;
-          height: 40px;
-          border-radius: 2px;
-          border: 1px solid lightgrey;
-          // background-color: rgba(164, 179, 184, 0.1);
-        }
-        */
-      }
-    })
-  ],
+  css: `
+    ^pay-button{
+      width: 157px;
+      height: 40px;
+      border-radius: 2px;
+      background-color: #59aadd;
+      color: white;
+      font-size: 14px;
+      font-weight: 200;
+      line-height: 2.86;
+      text-align: center;
+      float: right;
+      margin-right: 10px;
+    }
+    ^expand-button{
+      width: 27px;
+      height: 40px;
+      border-radius: 2px;
+      background-color: #59aadd;
+      border-left: 0.5px solid #ffffff;
+      float: right;
+    }
+    ^expand-triangle{
+      width: 0; 
+      height: 0; 
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid white;
+      margin-left: 9px;    
+      position: relative;
+      top: -20px;
+    }
+    ^top-action-buttons{
+      float: right;
+    }
+    ^ .optionsDropDown {
+      padding: 0;
+      z-index: 1;
+      width: 157px;
+      background: white;
+      opacity: 1;
+      box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
+      position: absolute;
+      text-align: left;
+    }
+    ^ .optionsDropDown > div {
+      width: 139px;
+      height: 30px;
+      padding-left: 18px;
+      font-size: 14px;
+      font-weight: 300;
+      color: /*%BLACK%*/ #1e1f21;
+      line-height: 30px;
+    }
+    ^ .optionsDropDown > div:hover {
+      background-color: #59aadd;
+      color: white;
+      cursor: pointer;
+    }
+    ^ .foam-u2-ActionView{
+      position: absolute;
+      width: 75px;
+      height: 35px;
+      z-index: 1;
+      opacity: 0.01;
+    }
+    ^ .foam-u2-ActionView-PopUp{
+      position: relative;
+      width: 30px;
+      height: 40px;
+    }
+    ^ .foam-u2-ActionView-mainAction{
+      opacity: 0.01;
+      z-index: 1;
+      position: absolute;
+      height: 35px;
+      width: 125px;
+      right: 185px;
+    }
+    .foam-u2-ActionView-backAction{
+      position: relative;
+      top: 40;
+      width: 135px;
+      height: 40px;
+      border-radius: 2px;
+      border: 1px solid lightgrey;
+      // background-color: rgba(164, 179, 184, 0.1);
+    }
+  `,
 
   methods: [
     function initE(){

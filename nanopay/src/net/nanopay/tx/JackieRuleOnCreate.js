@@ -8,28 +8,13 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAgent',
+    'foam.core.X',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.*',
-    'foam.mlang.sink.Count',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.app.Mode',
-    'foam.nanos.auth.Group',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'net.nanopay.approval.ApprovalRequest',
-    'net.nanopay.approval.ApprovalStatus',
-    'net.nanopay.tx.ComplianceTransaction',
-    'net.nanopay.tx.model.TransactionStatus',
-  ],
+    'foam.util.SafetyUtil',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
+    'net.nanopay.tx.model.Transaction',
 
-  properties: [
-    {
-      name: 'jackieId',
-      class: 'Long',
-      value: 8233
-      //class: 'Reference',
-      //of: 'foam.nanos.auth.Group',
-    }
   ],
 
   methods: [
@@ -37,26 +22,25 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         ComplianceTransaction ct = (ComplianceTransaction) obj;
-
-        ApprovalRequest req = new ApprovalRequest.Builder(x)
+        Transaction headTx = ct;
+        while ( ! SafetyUtil.isEmpty(headTx.getParent()) ) {
+          headTx = headTx.findParent(x);
+        }
+        ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
           .setDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
-          .setApprover(getJackieId())
+          .setGroup("fraud-ops")
+          .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
+          .setClassification("Validate Transaction Using Jackie Rule")
           .build();
-        requestApproval(x, req);
+
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            requestApproval(x, req);
+          }
+        }, "Jackie Rule On Create");
       `
-    },
-    {
-      name: 'applyReverseAction',
-      javaCode: ` `
-    },
-    {
-      name: 'describe',
-      javaCode: ` return ""; `
-    },
-    {
-      name: 'canExecute',
-      javaCode: ` return true;`
     }
   ]
 });

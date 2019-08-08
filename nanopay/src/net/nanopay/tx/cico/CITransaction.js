@@ -7,6 +7,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'java.text.NumberFormat',
     'foam.util.SafetyUtil',
@@ -26,7 +27,6 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer'
   ],
-
   properties: [
     {
       name: 'name',
@@ -62,6 +62,12 @@ foam.CLASS({
             ['DECLINED', 'DECLINED']
           ];
         }
+        if ( this.status == this.TransactionStatus.PENDING_PARENT_COMPLETED ) {
+          return [
+            'choose status',
+            ['PAUSED', 'PAUSED']
+          ];
+        }
         if ( this.status == this.TransactionStatus.SENT ) {
           return [
             'choose status',
@@ -81,12 +87,18 @@ foam.CLASS({
         if ( this.status == this.TransactionStatus.PAUSED ) {
           return [
             'choose status',
-            ['PENDING', 'PENDING'],
+            ['PENDING_PARENT_COMPLETED', 'UNPAUSE'],
             ['CANCELLED', 'CANCELLED']
           ];
         }
         return ['No status to choose'];
       }
+    },
+    {
+      name: 'institutionNumber',
+      class: 'String',
+      value: "",
+      visibility: 'Hidden'
     }
   ],
 
@@ -120,7 +132,7 @@ foam.CLASS({
           getStatus() != TransactionStatus.DECLINED
         ) return;
 
-        DAO notificationDAO = ((DAO) x.get("notificationDAO"));
+        DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
 
         if ( getStatus() == TransactionStatus.REVERSE_FAIL ) {
           Notification notification = new Notification();
@@ -156,7 +168,7 @@ foam.CLASS({
           notification.setEmailName("pay-from-bank-account-reject");
 
           HashMap<String, Object> args = new HashMap<>();
-          AppConfig config = (AppConfig) x.get("appConfig");
+          AppConfig config = (AppConfig) (sender.findGroup(x)).getAppConfig(x);
 
           DAO invoiceDAO = (DAO) x.get("invoiceDAO");
           Invoice invoice = (Invoice) invoiceDAO.find(invoiceId);
@@ -186,7 +198,13 @@ foam.CLASS({
           notification.setEmailName("cashin-reject");
           NumberFormat formatter = NumberFormat.getCurrencyInstance();
           HashMap<String, Object> args = new HashMap<>();
-          AppConfig config       = (AppConfig) x.get("appConfig");
+          AppConfig config;
+          String group = receiver.getGroup();
+          if ( SafetyUtil.isEmpty(group) ) {
+            config = (AppConfig) x.get("appConfig");
+          } else {
+            config = (AppConfig) (receiver.findGroup(x)).getAppConfig(x);
+          }
 
           String bankAccountNumber = ((BankAccount)findSourceAccount(x)).getAccountNumber();
           args.put("amount", formatter.format(getAmount() / 100.00));
@@ -250,8 +268,8 @@ foam.CLASS({
             }
           }
           all.add(new Transfer.Builder(x)
-              .setDescription(TrustAccount.find(x, findSourceAccount(x)).getName()+" Cash-In COMPLETED")
-              .setAccount(TrustAccount.find(x, findSourceAccount(x)).getId())
+              .setDescription(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getName()+" Cash-In COMPLETED")
+              .setAccount(TrustAccount.find(x, findSourceAccount(x),getInstitutionNumber()).getId())
               .setAmount(-getTotal())
               .build());
             all.add( new Transfer.Builder(getX())
@@ -299,33 +317,18 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
       super.validate(x);
+      Logger logger = (Logger) x.get("logger");
 
       if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
+        logger.error("Bank account must be verified");
         throw new RuntimeException("Bank account must be verified");
       }
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED) || oldTxn.getStatus().equals(TransactionStatus.REVERSE) ||
         oldTxn.getStatus().equals(TransactionStatus.REVERSE_FAIL) ||
         oldTxn.getStatus().equals(TransactionStatus.COMPLETED) ) && ! getStatus().equals(TransactionStatus.DECLINED) ) {
+        logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-      }
-      `
-    },
-    {
-      documentation: `LiquidityService checks whether digital account has any min or/and max balance if so, does appropriate actions(cashin/cashout)`,
-      name: 'checkLiquidity',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        }
-      ],
-      javaCode: `
-      LiquidityService ls = (LiquidityService) x.get("liquidityService");
-      Account source = findSourceAccount(x);
-      Account destination = findDestinationAccount(x);
-      if ( ! SafetyUtil.equals(source.getOwner(), destination.getOwner()) && getStatus() == TransactionStatus.COMPLETED ) {
-        ls.liquifyAccount(destination.getId(), net.nanopay.util.Frequency.PER_TRANSACTION, getAmount());
       }
       `
     }

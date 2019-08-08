@@ -21,7 +21,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'foam.util.Email',
     'java.util.Calendar',
     'java.util.HashMap',
@@ -88,7 +88,6 @@ token.setExpiry(generateExpiryDate());
 token.setData(UUID.randomUUID().toString());
 token = (Token) tokenDAO.put(token);
 
-EmailService email = (EmailService) getEmail();
 EmailMessage message = new EmailMessage();
 message.setTo(new String[] { user.getEmail() });
 
@@ -96,7 +95,7 @@ HashMap<String, Object> args = new HashMap<>();
 args.put("name", String.format("%s %s", user.getFirstName(), user.getLastName()));
 args.put("link", url +"?token=" + token.getData() + "#reset");
 
-email.sendEmailFromTemplate(x, user, message, "reset-password", args);
+EmailsUtility.sendEmailFromTemplate(x, user, message, "reset-password", args);
 return true;`
     },
   ]

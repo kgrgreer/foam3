@@ -1,2 +1,2 @@
 p({"class":"foam.nanos.auth.Group","id":"greenfence-trust","description":"Greenfence Trust accounts","parent":""});
-p({"class":"foam.nanos.auth.Group","id":"greenfence","description":"Greenfence","parent":"business","defaultMenu":"transactions","primaryColor":"black","logo":"images/greenfence.png"})
+p({"class":"foam.nanos.auth.Group","id":"greenfence","description":"Greenfence","parent":"business","defaultMenu":"transactions"})

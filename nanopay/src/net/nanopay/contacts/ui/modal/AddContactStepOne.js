@@ -32,7 +32,7 @@ foam.CLASS({
       padding: 24px;
     }
     ^confirm-explaination {
-      color: /*%PRIMARYCOLOR%*/ #2B2B2B;
+      color: /*%BLACK%*/ #1e1f21;
       font-size: 14px;
       line-height: 1.5;
       margin-top: -25px;
@@ -45,7 +45,7 @@ foam.CLASS({
     }
     /* Customized checkbox */
     .foam-u2-CheckBox-label {
-      color: %PRIMARYCOLOR% !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
       margin-left: 8px !important;
     }
     .foam-u2-CheckBox {
@@ -213,7 +213,7 @@ foam.CLASS({
               this.EQ(this.Contact.EMAIL, this.wizard.data.email)
             ).select();
             if ( contact.array.length != 0 ) {
-              this.ctrl.notify(this.CONTACT_EXIST, 'warning');
+              this.ctrl.notify(this.CONTACT_EXIST, 'error');
               return;
             }
           } catch (err) {

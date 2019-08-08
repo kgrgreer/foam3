@@ -16,4 +16,4 @@ node tools/xsd/index.js net.nanopay.kotak.model.paymentRequest KotakPaymentReque
 node tools/xsd/index.js net.nanopay.kotak.model.paymentResponse KotakPaymentResponse.xsd
 node tools/xsd/index.js net.nanopay.kotak.model.reversal KotakReversal.xsd
 
-node foam2/tools/genjava.js tools/classes.js build $PWD
+node foam2/tools/genjava.js $1 $2 $PWD

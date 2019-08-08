@@ -5,31 +5,24 @@ foam.CLASS({
 
   documentation: 'Top navigation bar with no menu',
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^ {
-          background: #093649;
-          width: 100%;
-          height: 60px;
-          color: white;
-          padding-top: 5px;
-        }
-        ^ .topNavContainer {
-          width: 100%;
-          margin: auto;
-        }
-        ^ h1{
-          text-align: center;
-          font-weight: 100;
-          font-size: 20px;
-        }
-
-      */}
-    })
-  ],
-
-  
+  css: `
+    ^ {
+      background: /*%BLACK%*/ #1e1f21;
+      width: 100%;
+      height: 60px;
+      color: white;
+      padding-top: 5px;
+    }
+    ^ .topNavContainer {
+      width: 100%;
+      margin: auto;
+    }
+    ^ h1{
+      text-align: center;
+      font-weight: 100;
+      font-size: 20px;
+    }
+  `,
 
   methods: [
     function initE(){

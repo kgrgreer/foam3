@@ -49,7 +49,7 @@ foam.CLASS({
       width: 100%;
       height: 40px;
 
-      border: 1px solid %BACKGROUNDCOLOR%;
+      border: 1px solid /*%GREY5%*/ #f5f7fa;
       border-radius: 2px;
       box-shadow: 0 1px 1px 0 #dae1e9;
       margin-top: 8px;
@@ -72,7 +72,7 @@ foam.CLASS({
       box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.16);
     }
     ^multiple-choice-box.selected {
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
     ^instructions {
       font-size: 16px;

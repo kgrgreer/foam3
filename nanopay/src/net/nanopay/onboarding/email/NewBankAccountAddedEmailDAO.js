@@ -17,7 +17,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'java.util.HashMap',
@@ -77,8 +77,7 @@ foam.CLASS({
       account = (BankAccount) getDelegate().put_(x, obj);
 
       // Send email only after passing above checks
-      EmailService emailService = (EmailService) x.get("email");
-      EmailMessage      message = new EmailMessage();
+      EmailMessage message = new EmailMessage.Builder(x).build();
       Map<String, Object>  args = new HashMap<>();
 
       args.put("userId", owner.getId());
@@ -98,7 +97,7 @@ foam.CLASS({
       }
 
       try {
-        emailService.sendEmailFromTemplate(x, owner, message, "notification-to-onboarding-team", args);
+        EmailsUtility.sendEmailFromTemplate(x, owner, message, "notification-to-onboarding-team", args);
       } catch (Throwable t) {
         String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has added a BankAccount (id = %2$d).", owner.getId(), account.getId());
         ((Logger) x.get("logger")).error(msg, t);

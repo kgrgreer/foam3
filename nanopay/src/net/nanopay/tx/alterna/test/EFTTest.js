@@ -19,6 +19,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.cico.model.EFTConfirmationFileRecord',
     'net.nanopay.cico.model.EFTReturnRecord',
+    'net.nanopay.cico.model.EFTReturnFileCredentials',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.TransactionQuote',
@@ -55,9 +56,10 @@ String lastName = user.getLastName();
 Date now            = new Date();
 String processDate = CsvUtil.csvSdf.get().format(CsvUtil.generateProcessDate(x, now));
 String completionDate = CsvUtil.csvSdf.get().format(CsvUtil.generateCompletionDate(x, now));
+boolean isOrganization = (user.getOrganization() != null && !user.getOrganization().isEmpty());
 
 StringBuilder sb = new StringBuilder();
-sb.append("Business,");
+sb.append(isOrganization ? "Business," : "Personal,");
 if ( SafetyUtil.isEmpty(user.getOrganization()) ) {
   sb.append(user.getFirstName());
   sb.append(",");
@@ -241,6 +243,7 @@ try {
       ],
       javaCode: `
 DAO transactionDao = (DAO)x.get("localTransactionDAO");
+EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("EFTReturnFileCredentials");
 
 InputStream confirmationFileStream = new ByteArrayInputStream(testConfirmationFile.getBytes());
 EFTConfirmationFileParser eftConfirmationFileParser = new EFTConfirmationFileParser();
@@ -255,7 +258,7 @@ for ( int i = 0; i < confirmationFile.size(); i++ ) {
   AlternaFormat eftUploadFileRecord = (AlternaFormat) uploadFileList.get(i);
 
   EFTConfirmationFileProcessor.processTransaction(x, transactionDao, eftConfirmationFileRecord,
-  eftUploadFileRecord,"UploadLog_test_B2B.csv.txt");
+  eftUploadFileRecord,"UploadLog_test_" + credentials.getIdentifier() + ".csv.txt");
 
   AlternaCITransaction tran = (AlternaCITransaction)transactionDao.find(EQ(Transaction.ID, eftConfirmationFileRecord.getReferenceId()));
 

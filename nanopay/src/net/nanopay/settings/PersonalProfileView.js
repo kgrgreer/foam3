@@ -58,7 +58,7 @@
       line-height: 1;
       letter-spacing: 0.3px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
     }
     ^ h2{
@@ -67,7 +67,7 @@
       font-weight: 300;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       display: inline-block;
     }
     ^ input{
@@ -79,7 +79,7 @@
       line-height: 1.33;
       letter-spacing: 0.2;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .firstName-Input{
       width: 215px;
@@ -111,7 +111,7 @@
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-right: 10px;
     }
     ^ .emailAddress-Input{
@@ -138,13 +138,13 @@
       text-align: center;
       color: #ffffff;
       cursor: pointer;
-      border: 1px solid %SECONDARYCOLOR%;
-      background-color: %SECONDARYCOLOR%;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
+      background-color: /*%PRIMARY3%*/ #406dea;
       margin-top: 19px;
     }
     ^ .update-BTN:hover {
       opacity: 0.9;
-      border: 1px solid %SECONDARYCOLOR%;
+      border: 1px solid /*%PRIMARY3%*/ #406dea;
     }
     ^ .check-Box{
       border: solid 1px rgba(164, 179, 184, 0.5);
@@ -165,7 +165,7 @@
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       display: block;
       margin-bottom: 11px;
     }
@@ -261,7 +261,7 @@
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .tfa-download {
       width: 45%;
@@ -276,7 +276,7 @@
       line-height: 1.33;
       letter-spacing: 0.2px;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
     ^ .tfa-download a {
       height: 16px;
@@ -486,22 +486,25 @@
       .start(twoFactorProfile)
         .start()
           .addClass('status-Text')
-          .addClass(this.user.twoFactorEnabled$.map(function (e) {
+          .addClass(this.user.twoFactorEnabled$.map(function(e) {
             return e ? 'enabled' : 'disabled';
           }))
-          .add(this.user.twoFactorEnabled$.map(function (e) {
-            return e ? 'Status: Enabled' : 'Status: Disabled'
+          .add(this.user.twoFactorEnabled$.map(function(e) {
+            return e ? 'Status: Enabled' : 'Status: Disabled';
           }))
         .end()
         .start()
-          .add(this.slot(function (twoFactorEnabled) {
+          .add(this.slot(function(twoFactorEnabled) {
             if ( ! twoFactorEnabled ) {
               // two factor not enabled
               var self = this;
-              this.twofactor.generateKey(null, true)
-              .then(function (qrCode) {
-                self.twoFactorQrCode = qrCode;
-              });
+              this.twofactor.generateKeyAndQR(null)
+                .then(function(otpKey) {
+                  self.twoFactorQrCode = otpKey.qrCode;
+                })
+                .catch(function(err) {
+                  self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+                });
 
               return this.E()
                 .start('div').addClass('tfa-desc-container')

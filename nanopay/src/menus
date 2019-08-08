@@ -1,15 +1,19 @@
 // admin
 p({"class":"foam.nanos.menu.Menu","id":"allAccounts","label":"Accounts","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","createControllerView":{"class":"net.nanopay.tx.ui.DAOCreateControllerView"},"editEnabled":false,"toggleEnabled":false,"detailView":"net.nanopay.account.ui.AccountDetailView","summaryView":{"class":"net.nanopay.account.ui.AccountSummaryView"}, "updateView":{"class":"net.nanopay.tx.ui.TransactionsAccountsView"}} ,"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"allUsers","label":"All Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"userDAO","summaryView":{"class":"net.nanopay.auth.ui.UserTableView"},"updateView":{"class":"net.nanopay.auth.ui.UserDetailView"}},"order":570,"parent":"admin"})
-p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"All Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"transactionDAO","createEnabled":false,"editEnabled":false,"exportEnabled":false,"toggleEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"},"view":{"class":"foam.u2.DetailView"}},"order":580,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"allTransactions","label":"All Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"tableViewTransactionDAO","createEnabled":false,"editEnabled":false,"exportEnabled":false,"toggleEnabled":true,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"},"view":{"class":"foam.u2.DetailView"}},"order":580,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"allInvoices","label":"All Invoices","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO"},"order":590,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"ascendantFXUsers","label":"AscendantFX Users","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"ascendantFXUserDAO","summaryView":{"class":"net.nanopay.fx.ascendantfx.ui.AscendantFXUserTableView"}},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"afexBusinesses","label":"AFEX Businesses","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"afexBusinessDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"afexBeneficiaries","label":"AFEX Beneficiaries","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"afexBeneficiaryDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"brokers","label":"Brokers","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"brokerDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"PII-download","label":"My Personal Information","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.security.pii.PIIReportDownload"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"account-balance","label":"GS Account Balance Dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.AccountBalanceDashboard"}},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"acceptanceDocumentDAO","label":"Acceptance Documents","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"acceptanceDocumentDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"accountingResultResponse","label":"Accounting Result Report","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountingReportDAO"},"order":1000,"parent":"admin"})
+p({"class":"foam.nanos.menu.Menu","id":"alarm","label":"Alarms","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"alarmDAO"},"order":1000,"parent":"admin"})
+
 
 p({"class":"foam.nanos.menu.Menu","id":"lineItemTypes","label":"LineItem Types","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemTypeDAO"},"order":1000,"parent":"admin"})
 p({"class":"foam.nanos.menu.Menu","id":"lineItemFees","label":"LineItem Fees","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"lineItemFeeDAO"},"order":1000,"parent":"admin"})
@@ -45,7 +49,7 @@ p({"class":"foam.nanos.menu.Menu","id":"set-multi-user","label":"Multi-User","ha
 p({"class":"foam.nanos.menu.Menu","id":"set-integrate","label":"Integration","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.IntegrationView"}},"order":80,"parent":"settings"})
 
 // transactions
-p({"class":"foam.nanos.menu.Menu","id":"transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.tx.ui.TransactionsView"}},"order":502,"parent":""})
+p({"class":"foam.nanos.menu.Menu","id":"transactions","label":"Transactions","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"tableViewTransactionDAO","createEnabled":false,"summaryView":{"class":"net.nanopay.admin.ui.TransactionAltView"}},"order":502,"parent":""})
 
 // transfers
 p({"class":"foam.nanos.menu.Menu","id":"transfer","label":"Transfer","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.ui.TransferView"}},"order":1000,"parent":""})

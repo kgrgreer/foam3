@@ -12,7 +12,7 @@ foam.CLASS({
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.email.EmailService',
+    'foam.util.Emails.EmailsUtility',
     'foam.nanos.session.Session',
     'net.nanopay.onboarding.model.ShortLinksRequest',
     'net.nanopay.onboarding.model.ShortLinksResponse',
@@ -184,7 +184,6 @@ foam.CLASS({
             throw new RuntimeException(builder.toString());
           }
 
-          EmailService email = (EmailService) x.get("email");
           EmailMessage message = new EmailMessage.Builder(x)
               .setTo(new String[]{user.getEmail()})
               .build();
@@ -198,7 +197,7 @@ foam.CLASS({
             args.put("amount", parameters.get("amount"));
           }
 
-          email.sendEmailFromTemplate(x, result, message, "welcome-email", args);
+          EmailsUtility.sendEmailFromTemplate(x, result, message, "welcome-email", args);
           return true;
         } catch (Throwable t) {
           ((Logger) x.get("logger")).error(t);

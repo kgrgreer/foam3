@@ -52,6 +52,7 @@ public class TransactionDAOTest
     if ( sender_ == null ) {
       sender_ = new User();
       sender_.setEmail("testUser1@nanopay.net");
+      sender_.setGroup("basicUser");
       sender_.setFirstName("Francis");
       sender_.setLastName("Filth");
     }
@@ -66,6 +67,7 @@ public class TransactionDAOTest
     }
     receiver_ = (User) receiver_.fclone();
     receiver_.setEmailVerified(true);
+    receiver_.setGroup("basicUser");
     receiver_.setFirstName("Francis");
     receiver_.setLastName("Filth");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
@@ -206,18 +208,18 @@ public class TransactionDAOTest
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, txn).fclone();
     DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
-    ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, tx.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
-    request.setStatus(ApprovalStatus.APPROVED);
-    approvalDAO.put_(x_, request);
+   // ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, tx.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+  //  request.setStatus(ApprovalStatus.APPROVED);
+   // approvalDAO.put_(x_, request);
 
-    tx = (Transaction) txnDAO.find_(x_, tx).fclone();
-    test(tx instanceof ComplianceTransaction, "Transaction type is ComplianceTransaction" );
-    test(tx.getStatus() == TransactionStatus.COMPLETED, "tx was completed automatically as approval request was approved." );
+    Transaction t = (Transaction) txnDAO.find_(x_, tx).fclone();
+    //test(tx instanceof ComplianceTransaction, "Transaction type is ComplianceTransaction" );
+    //test(tx.getStatus() == TransactionStatus.COMPLETED, "tx was completed automatically as approval request was approved." );
 
-    ArraySink s = new ArraySink.Builder(x_).build();
-    tx.getChildren(x_).select(s);
-    Transaction t = (Transaction) s.getArray().get(0);
-    test(s.getArray().size() == 1, " size of children is 1");
+    //ArraySink s = new ArraySink.Builder(x_).build();
+    //tx.getChildren(x_).select(s);
+    //Transaction t = (Transaction) s.getArray().get(0);
+   // test(s.getArray().size() == 1, " size of children is 1");
     test( t instanceof COTransaction, "Transaction type is CASHOUT" );
 
     test( t.getStatus()  == TransactionStatus.PENDING, "CashOUT transaction has status pending" );

@@ -43,7 +43,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      background: #f9fbff;
+      background: /*%GREY5%*/ #f5f7fa;
     }
   .net-nanopay-accounting-ui-AccountingCallbackPage {
       margin: auto;
@@ -56,7 +56,7 @@ foam.CLASS({
     font-stretch: normal;
     line-height: 1.5;
     letter-spacing: normal;
-    color: #2b2b2b;
+    color: /*%BLACK%*/ #1e1f21;
   }
 
   ^ .ablii-accounting-software-icon {
@@ -153,7 +153,7 @@ foam.CLASS({
         .end();
 
       if ( this.doSync ) {
-        let result = await this.accountingIntegrationUtil.doSync(this);
+        let result = await this.accountingIntegrationUtil.doSync(this, true);
         this.stack.push({
           class: 'net.nanopay.accounting.ui.AccountingReportPage1',
           reportResult: result
@@ -167,7 +167,7 @@ foam.CLASS({
           class: 'net.nanopay.accounting.ui.AccountingBankMatching'
         });
       } else {
-        let result = await this.accountingIntegrationUtil.doSync(this);
+        let result = await this.accountingIntegrationUtil.doSync(this, true);
         this.stack.push({
           class: 'net.nanopay.accounting.ui.AccountingReportPage1',
           reportResult: result

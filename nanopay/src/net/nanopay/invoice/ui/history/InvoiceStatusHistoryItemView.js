@@ -52,7 +52,7 @@ foam.CLASS({
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
   `,
 
@@ -69,10 +69,16 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
-        case this.InvoiceStatus.PENDING:
+        case this.InvoiceStatus.FAILED:
           return {
-            labelText: this.InvoiceStatus.PENDING.label,
-            labelDecoration: 'Invoice-Status-Pending',
+            labelText: this.InvoiceStatus.FAILED.label,
+            labelDecoration: 'Invoice-Status-Void',
+            icon: 'images/ic-void.svg'
+          };
+        case this.InvoiceStatus.PROCESSING:
+          return {
+            labelText: this.InvoiceStatus.PROCESSING.label,
+            labelDecoration: 'Invoice-Status-Processing',
             icon: 'images/ic-pending.svg',
           };
         case this.InvoiceStatus.PAID:
@@ -100,11 +106,15 @@ foam.CLASS({
             icon: 'images/ic-scheduled.svg'
           };
         case this.InvoiceStatus.PENDING_APPROVAL:
-          return {
-            labelText: this.InvoiceStatus.PENDING_APPROVAL.label,
-            labelDecoration: 'Invoice-Status-Pending-approval',
-            icon: 'images/ic-scheduled.svg'
-          };
+          var user = ctrl.user;
+          var currentUser = `${user.lastName}, ${user.firstName}(${user.id})`;
+          if (record.user === currentUser)
+            return {
+              labelText: this.InvoiceStatus.PENDING_APPROVAL.label,
+              labelDecoration: 'Invoice-Status-Pending-approval',
+              icon: 'images/ic-scheduled.svg'
+            };
+          else return null;
         case this.InvoiceStatus.PENDING_ACCEPTANCE:
           return {
             labelText: this.InvoiceStatus.PENDING_ACCEPTANCE.label,

@@ -6,7 +6,6 @@ foam.CLASS({
     'foam.u2.detail.SectionView',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.layout.Item'
   ],
   css: `
     ^ {
@@ -47,6 +46,19 @@ foam.CLASS({
       padding-right: 128px;
     }
 
+    ^left-section {
+      flex: 1;
+      flex-basis: 0;
+      justify-content: center;
+      display: flex;
+      align-items: center;
+    }
+
+    ^left-section * {
+      display: flex;
+      justify-content: center;
+    }
+
     ^ .property-signingOfficer .foam-u2-view-RadioView:last-child {
       margin: 0;
     }
@@ -62,33 +74,26 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       this.addClass(this.myClass())
-        .start(this.Cols, {
-          defaultChildStyle: {
-            flex: 1,
-            basis: 0,
-            'justify-content' : 'center',
-            display: 'flex'
-          }
-        }).addClass(this.myClass('sections-container'))
-          .start(this.Rows, {
-            defaultChildStyle: {
-              'display' : 'flex',
-              'justify-content' : 'center'
-            }
-          }).addClass(this.myClass('left-section'))
-            .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/joanne@2x.jpg' }).addClass(this.myClass('joanne')).end()
+        .start(this.Cols)
+          .addClass(this.myClass('sections-container'))
+          .start(this.Rows)
+            .addClass(this.myClass('left-section'))
+            .start({ class: 'foam.u2.tag.Image', data: 'images/ablii/joanne@2x.jpg' })
+              .addClass(this.myClass('joanne'))
+            .end()
             .start('h1').addClass(this.myClass('help'))
               .add(this.section$.dot('help'))
             .end()
           .end()
 
-          .start(this.Item).addClass(this.myClass('right-section'))
+          .start()
+            .addClass(this.myClass('right-section'))
             .start(this.SectionView, {
               section$: this.section$,
               data$: this.data$
             }).style({ 'flex': 1 }).end()
           .end()
-        .end()
+        .end();
     }
   ]
 });

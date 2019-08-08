@@ -48,7 +48,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       margin-left: 0; /* Override */
     }
     ^ .one-col {
@@ -80,7 +80,7 @@ foam.CLASS({
       line-height: 1.33;
       letter-spacing: 0.2;
       text-align: left;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       width: 100%;
       white-space: normal !important; /* Override */
     }

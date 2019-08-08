@@ -25,6 +25,10 @@ foam.CLASS({
     'net.nanopay.contacts.Contact'
   ],
 
+  imports: [
+    'complianceHistoryDAO'
+  ],
+
   requires: [
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -38,13 +42,6 @@ foam.CLASS({
   ],
 
   properties: [
-    // TODO: Remove this after migration.
-    {
-      class: 'Int',
-      name: 'ownershipPercent',
-      documentation: `Defines the percentage of ownership if the user is a principal
-        owner.`
-    },
     {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
@@ -251,6 +248,12 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'countryOfBusinessRegistration',
+      documentation: `Country where business was registered.`,
+    },
+    {
       class: 'Date',
       name: 'businessRegistrationDate',
       documentation: 'The date that the business was registered by their issuing authority.'
@@ -332,15 +335,6 @@ foam.CLASS({
       documentation: `Determines whether the user is a domestic or foreign _Politically
         Exposed Person (PEP), Head of an International Organization (HIO)_, or
         related to any such person.
-      `
-    },
-    // TODO: Remove
-    {
-      class: 'Boolean',
-      name: 'signingOfficer',
-      documentation: `Determines whether the user is the signing officer capable of
-        acting as the business and providing additional information on behalf of
-        the business.
       `
     },
     {
@@ -456,6 +450,20 @@ foam.CLASS({
         } else if ( ! isValidEmail ) {
           throw new IllegalStateException("Invalid email address.");
         }
+      `
+    },
+    {
+      name: 'label',
+      type: 'String',
+      code: function label() {
+        return ( this.lastName ? this.firstName + ' ' + this.lastName : this.firstName ) || this.organization || this.businessName;
+      },
+      javaCode: `
+        if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
+        if ( ! SafetyUtil.isEmpty(getLegalName()) ) return getLegalName();
+        if ( ! SafetyUtil.isEmpty(getOrganization()) ) return getOrganization();
+        if ( ! SafetyUtil.isEmpty(getBusinessName()) ) return getBusinessName();
+        return "";
       `
     }
   ],

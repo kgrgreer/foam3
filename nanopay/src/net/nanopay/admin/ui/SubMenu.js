@@ -20,7 +20,7 @@ foam.CLASS({
       padding-left: 0;
       font-weight: 100;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
     }
 
     ^ .div > ul > li{

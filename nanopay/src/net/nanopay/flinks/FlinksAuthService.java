@@ -52,7 +52,7 @@ public class FlinksAuthService
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Authorize]: " + t);
-        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
+        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks");
       }
 
       int httpCode = respMsg.getHttpStatusCode();
@@ -97,7 +97,7 @@ public class FlinksAuthService
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [MFA]: " + t);
-        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
+        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks");
       }
       FlinksResponse feedback;
       int httpCode = respMsg.getHttpStatusCode();
@@ -138,7 +138,7 @@ public class FlinksAuthService
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Account Detail]: " + t);
-        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
+        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks");
       }
       int httpCode = respMsg.getHttpStatusCode();
       FlinksResponse feedback;
@@ -174,7 +174,7 @@ public class FlinksAuthService
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Poll Async]: " + t);
-        throw new AuthenticationException("An error has occured in an attempt to connect to Flinks");
+        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks");
       }
       int httpCode = respMsg.getHttpStatusCode();
       FlinksResponse feedback;

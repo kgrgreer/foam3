@@ -29,7 +29,7 @@ foam.CLASS({
         background: #e49339;
       }
 
-      .Invoice-Status-Pending {
+      .Invoice-Status-Processing {
         color: #000000 !important;
       }
 

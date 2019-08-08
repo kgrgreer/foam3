@@ -17,105 +17,100 @@ foam.CLASS({
     'data'
   ],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-          width: 970px;
-          margin: auto;
-        }
-        ^{
-          font-weight: 100;
-        }
-        ^ .customer-div {
-          display: inline-block;
-          margin-bottom: 20px;
-        }
-        ^ .po-amount-div {
-          margin-left: 20px;
-        }
-        ^ .frequency-div {
-          display: inline-block;
-          margin: 0 36px 20px 0;
-        }
-        ^ .attachment-btn {
-          margin: 10px 0;
-        }
-        ^ .new-invoice-title {
-          opacity: 0.6;
-          font-size: 20px;
-          font-weight: 300;
-          color: #093649;
-          margin: 0;
-        }
-        ^ .enable-recurring-text {
-          font-size: 12px;
-          margin: 20px 0;
-        }
-        ^ .company-card {
-          width: 480px;
-          height: 155px;
-          border-radius: 2px;
-          border: solid 1px rgba(164, 179, 184, 0.5);
-          margin-top: 20px;
-        }
-        ^ .company-picture{
-          width: 80px;
-          height: 80px;
-          margin: 17px 30px 0 20px;
-        }
-        ^ .company-name {
-          font-size: 14px;
-          font-weight: 300;
-          margin-bottom: 10px;
-        }
-        ^ .vendor-name {
-          opacity: 0.6;
-          font-size: 14px;
-          color: #093649;
-          margin: 0;
-          margin-bottom: 6px;
-        }
-        ^ .company-address {
-          font-size: 12px;
-          margin: 0;
-        }
-        ^ .connection-icon {
-          width: 24px;
-          height: 24px;
-          float: right;
-          margin: 110px 20px 0 0;
-        }
-        ^ .small-input-box{
-          margin: 20px 0;
-        }
-        ^ .label{
-          margin: 0;
-        }
-        ^ .foam-u2-ActionView-cancel {
-          margin-left: 457px;
-          margin-top: 20px;
-        }
-        ^ .foam-u2-tag-Select {
-          width: 228px;
-          height: 40px;
-          margin-top: 10px;
-        }
-        ^ .grey-button{
-          margin-top: 20px;
-          top: 0;
-        }
-        ^ .white-blue-button{
-          margin-top: 20px
-        }
-        ^ .payerName{
-          margin: 20px 0;
-          font-size: 25px;
-        }
-        */
-      }
-    })
-  ],
+  css: `
+    ^{
+      width: 970px;
+      margin: auto;
+    }
+    ^{
+      font-weight: 100;
+    }
+    ^ .customer-div {
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    ^ .po-amount-div {
+      margin-left: 20px;
+    }
+    ^ .frequency-div {
+      display: inline-block;
+      margin: 0 36px 20px 0;
+    }
+    ^ .attachment-btn {
+      margin: 10px 0;
+    }
+    ^ .new-invoice-title {
+      opacity: 0.6;
+      font-size: 20px;
+      font-weight: 300;
+      color: /*%BLACK%*/ #1e1f21;
+      margin: 0;
+    }
+    ^ .enable-recurring-text {
+      font-size: 12px;
+      margin: 20px 0;
+    }
+    ^ .company-card {
+      width: 480px;
+      height: 155px;
+      border-radius: 2px;
+      border: solid 1px rgba(164, 179, 184, 0.5);
+      margin-top: 20px;
+    }
+    ^ .company-picture{
+      width: 80px;
+      height: 80px;
+      margin: 17px 30px 0 20px;
+    }
+    ^ .company-name {
+      font-size: 14px;
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+    ^ .vendor-name {
+      opacity: 0.6;
+      font-size: 14px;
+      color: /*%BLACK%*/ #1e1f21;
+      margin: 0;
+      margin-bottom: 6px;
+    }
+    ^ .company-address {
+      font-size: 12px;
+      margin: 0;
+    }
+    ^ .connection-icon {
+      width: 24px;
+      height: 24px;
+      float: right;
+      margin: 110px 20px 0 0;
+    }
+    ^ .small-input-box{
+      margin: 20px 0;
+    }
+    ^ .label{
+      margin: 0;
+    }
+    ^ .foam-u2-ActionView-cancel {
+      margin-left: 457px;
+      margin-top: 20px;
+    }
+    ^ .foam-u2-tag-Select {
+      width: 228px;
+      height: 40px;
+      margin-top: 10px;
+    }
+    ^ .grey-button{
+      margin-top: 20px;
+      top: 0;
+    }
+    ^ .white-blue-button{
+      margin-top: 20px
+    }
+    ^ .payerName{
+      margin: 20px 0;
+      font-size: 25px;
+    }
+  `,
 
   methods: [
     function initE() {

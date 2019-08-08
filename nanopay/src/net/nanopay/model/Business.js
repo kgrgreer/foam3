@@ -12,10 +12,10 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus'
   ],
 
-  documentation: `Business is an object that extends the user class. A business is an 
-    entity on behalf of which multiple users can act.  A business is associated with 
-    the company name provided by the user upon registraton. The business object allows 
-    business information to be updated and retrieved.  The body parameters refer to 
+  documentation: `Business is an object that extends the user class. A business is an
+    entity on behalf of which multiple users can act.  A business is associated with
+    the company name provided by the user upon registraton. The business object allows
+    business information to be updated and retrieved.  The body parameters refer to
     the business as the 'organization'.
   `,
 
@@ -34,7 +34,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'businessPermissionId',
-      documentation: `A generated name used in permission strings related to the business. 
+      documentation: `A generated name used in permission strings related to the business.
         The name does not contain any special characters.
       `,
       expression: function(businessName, id) {
@@ -59,7 +59,7 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'beneficialOwnerDocuments',
-      documentation: `A stored copy of the documents that verify a person as a 
+      documentation: `A stored copy of the documents that verify a person as a
         beneficial owner.`,
       view: function(_, X) {
         return {
@@ -72,6 +72,18 @@ foam.CLASS({
       class: 'Boolean',
       name: 'dualPartyAgreement',
       documentation: 'Verifies if the user is accept the dual-party agreement.',
+    },
+    {
+      class: 'Int',
+      name: 'countQBO',
+      documentation: 'the number of times that this business has synced to QuickBook Online.',
+      label: 'Sync Count to QBO'
+    },
+    {
+      class: 'Int',
+      name: 'countXero',
+      documentation: 'the number of times that this business has synced to Xero.',
+      label: 'Sync Count to Xero'
     }
   ],
 
@@ -175,7 +187,7 @@ foam.CLASS({
         User user = (User) x.get("user");
         AuthService auth = (AuthService) x.get("auth");
         boolean isUpdatingSelf = SafetyUtil.equals(this.getId(), user.getId());
-        
+
         // to allow update authorization for users with permissions
         boolean hasUserEditPermission = auth.check(x, "business.update." + this.getId());
 
@@ -213,6 +225,19 @@ foam.CLASS({
         if ( ! SafetyUtil.equals(group.getId(), "admin") ) {
           throw new AuthorizationException("Businesses cannot be deleted.");
         }
+      `
+    },
+    {
+      name: 'label',
+      type: 'String',
+      code: function label() {
+        return this.organization || this.businessName || ( this.lastName ? this.firstName + ' ' + this.lastName : this.firstName );
+      },
+      javaCode: `
+        if ( ! SafetyUtil.isEmpty(getOrganization()) ) return getOrganization();
+        if ( ! SafetyUtil.isEmpty(getBusinessName()) ) return getBusinessName();
+        if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
+        return getFirstName() + " " + getLastName();
       `
     }
   ],

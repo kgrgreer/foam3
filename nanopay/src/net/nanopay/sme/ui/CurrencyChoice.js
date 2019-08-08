@@ -57,7 +57,7 @@ foam.CLASS({
       margin-left: 5px;
     }
     ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice > span {
-      color: #2b2b2b !important;
+      color: /*%BLACK%*/ #1e1f21 !important;
       font-family: lato !important;
       font-size: 12px;
       font-weight: 300;
@@ -81,7 +81,7 @@ foam.CLASS({
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
-      color: #093649;
+      color: /*%BLACK%*/ #1e1f21;
       line-height: 30px;
       padding: 4px 12px;
       border-radius: 3px;
@@ -192,8 +192,14 @@ foam.CLASS({
   listeners: [
     {
       name: 'onClick',
-      code: function() {
+      code: function(e) {
         var self = this;
+        if (
+          this.mode === foam.u2.DisplayMode.DISABLED ||
+          this.mode === foam.u2.DisplayMode.RO
+        ) {
+          e.preventDefault();
+        }
 
         this.optionPopup_ = this.View.create({});
 

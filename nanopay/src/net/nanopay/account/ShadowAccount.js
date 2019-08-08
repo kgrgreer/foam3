@@ -13,6 +13,7 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccount',
       targetDAOKey: 'accountDAO',
       name: 'bank',
+      section: 'accountDetails',
       view: function(args, X) {
         var E = foam.mlang.Expressions.create();
         return {
