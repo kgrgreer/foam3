@@ -43,23 +43,23 @@ foam.CLASS({
       this.updateDoc();
 
       this.start()
-      .addClass(this.myClass())
-      .startContext({ data: this })
-        .start()
-          .hide(this.doc$.map((d) => ! d))
-          .start(this.AGREED)
-            .add('I agree to ')
-            .start('a')
-              .add(this.doc$.dot('title'))
-              .attrs({
-                href: this.doc$.dot('link'),
-                target: '_blank'
-              })
+        .addClass(this.myClass())
+        .startContext({ data: this })
+          .start()
+            .hide(this.doc$.map((d) => ! d))
+            .start(this.AGREED)
+              .add('I agree to ')
+              .start('a')
+                .add(this.doc$.dot('title'))
+                .attrs({
+                  href: this.doc$.dot('link'),
+                  target: '_blank'
+                })
+              .end()
             .end()
           .end()
-        .end()
-        .add(this.doc$.map( (d) => ! d ? this.LoadingSpinner.create() : null ))
-      .endContext()
+          .add(this.doc$.map( (d) => ! d ? this.LoadingSpinner.create() : null ))
+        .endContext()
       .end();
     }
   ],
