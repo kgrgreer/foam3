@@ -125,6 +125,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationIssuer", request.getAccountPrimaryIdentificationIssuer()));
       nvps.add(new BasicNameValuePair("BusinessAddress1", request.getBusinessAddress1()));
       nvps.add(new BasicNameValuePair("BusinessCity", request.getBusinessCity()));
+      nvps.add(new BasicNameValuePair("BusinessStateRegion", request.getBusinessStateRegion()));
       nvps.add(new BasicNameValuePair("BusinessCountryCode", request.getBusinessCountryCode()));
       nvps.add(new BasicNameValuePair("BusinessName", request.getBusinessName()));
       nvps.add(new BasicNameValuePair("BusinessZip", request.getBusinessZip()));
@@ -145,7 +146,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("ExpectedMonthlyVolume", request.getExpectedMonthlyVolume()));
       nvps.add(new BasicNameValuePair("JobTitle", request.getJobTitle()));
       nvps.add(new BasicNameValuePair("NAICS", request.getNAICS()));
-      nvps.add(new BasicNameValuePair("TradeName	", request.getTradeName	()));
+      nvps.add(new BasicNameValuePair("TradeName	", request.getTradeName()));
       nvps.add(new BasicNameValuePair("TermsAndConditions", request.getTermsAndConditions()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
@@ -153,6 +154,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       omLogger.log("AFEX onboardCorpateClient starting");
 
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+      System.out.println(EntityUtils.toString(httpPost.getEntity()));
 
       omLogger.log("AFEX onboardCorpateClient complete");
 
