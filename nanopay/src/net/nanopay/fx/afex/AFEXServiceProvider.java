@@ -6,6 +6,8 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.Country;
+import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -17,12 +19,15 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.model.Business;
+import net.nanopay.model.BusinessSector;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
@@ -83,7 +88,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setAccountPrimaryIdentificationType(getAFEXIdentificationType(signingOfficer.getIdentification().getIdentificationTypeId())); // TODO: This should ref AFEX ID type
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
-            onboardingRequest.setBusinessCountryCode(business.getAddress().getCountryId());
+            Region businessRegion = business.getAddress().findRegionId(this.x);
+            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
+            Country businessCountry = business.getAddress().findCountryId(this.x);
+            if ( businessCountry != null ) {
+              onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
+              onboardingRequest.setAccountPrimaryIdentificationIssuer(businessCountry.getName());
+            }
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
@@ -92,13 +103,42 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             try {
               businessRegDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(business.getBusinessRegistrationDate()); 
             } catch(Throwable t) {
-              logger.error("Error creating AFEX beneficiary.", t);
+              logger.error("Error onboarding business. Error parsing business registration date", t);
             } 
             onboardingRequest.setDateOfIncorporation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
             onboardingRequest.setGender("Male"); // TO be removed in API by AFEX
             onboardingRequest.setLastName(signingOfficer.getLastName());
             onboardingRequest.setPrimaryEmailAddress(signingOfficer.getEmail());
+            Address contactAddress = signingOfficer.getAddress();
+            if ( contactAddress != null ) {
+              onboardingRequest.setContactAddress1(contactAddress.getAddress());
+              onboardingRequest.setContactCity(contactAddress.getCity());
+              Region region = contactAddress.findRegionId(this.x);
+              if ( region != null ) onboardingRequest.setContactStateRegion(region.getCode());
+              Country country = contactAddress.findCountryId(this.x);
+              if ( country != null ) onboardingRequest.setContactCountryCode(country.getCode());
+              onboardingRequest.setContactZip(contactAddress.getPostalCode());
+            }
+
+            try {
+              onboardingRequest.setDateOfBirth(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getBirthday()));
+            } catch(Throwable t) {
+              logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
+            } 
+            onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
+            onboardingRequest.setExpectedMonthlyPayments(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount());
+            onboardingRequest.setExpectedMonthlyVolume(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume());
+            onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
+
+            BusinessSector businessSector = (BusinessSector) ((DAO) this.x.get("businessSectorDAO")).find(business.getBusinessSectorId());
+            if ( businessSector != null ) onboardingRequest.setNAICS(businessSector.getName());
+            
+            if ( ! SafetyUtil.isEmpty(business.getOperatingBusinessName()) ) {
+              onboardingRequest.setTradeName(business.getOperatingBusinessName());
+            } else {
+              onboardingRequest.setTradeName(business.getOrganization());
+            }
             onboardingRequest.setTermsAndConditions("true");
             OnboardCorporateClientResponse newClient = afexClient.onboardCorporateClient(onboardingRequest);
             if ( newClient != null ) {
@@ -148,6 +188,14 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         fxQuote.setValueDate(date);
         fxQuote.setExternalId(quote.getQuoteId());
         fxQuote.setHasSourceAmount(isAmountSettlement);
+        LocalDateTime time;
+        AFEXCredentials credentials = (AFEXCredentials) getX().get("AFEXCredentials");
+        if ( credentials != null && credentials.getQuoteExpiryTime() != 0 ) {
+          time = LocalDateTime.now().plusSeconds(credentials.getQuoteExpiryTime());
+        } else {
+          time = LocalDateTime.now().plusSeconds(30);
+        }
+        fxQuote.setExpiryTime(Date.from( time.atZone( ZoneId.systemDefault()).toInstant()));
         fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
       }
 
@@ -332,19 +380,34 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return payeeInfo;
   }
 
-  public Transaction submitPayment(Transaction transaction) throws RuntimeException {
-    if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
+  public Boolean createTrade(Transaction transaction) throws  RuntimeException {
 
+    Logger logger = (Logger) x.get("logger");
+    DAO txnDAO = (DAO) x.get("localTransactionDAO");
+
+    if ( ! (transaction instanceof AFEXTransaction) ) {
+      logger.error("Transaction id: " + transaction.getId() + " not an instance of AFEXTransaction.");
+      throw new RuntimeException("Transaction id: " + transaction.getId() + " not an instance of AFEXTransaction.");
+    }
     AFEXTransaction afexTransaction = (AFEXTransaction) transaction;
 
     AFEXBusiness afexBusiness = getAFEXBusiness(x,afexTransaction.getPayerId());
-    if ( null == afexBusiness ) throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+    if ( null == afexBusiness ) {
+      logger.error("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+      throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+    }
 
     AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x,afexTransaction.getPayeeId(), afexTransaction.getPayerId());
-    if ( null == afexBeneficiary ) throw new RuntimeException("Ontact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
+    if ( null == afexBeneficiary ) {
+      logger.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
+      throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
+    }
 
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(afexTransaction.getFxQuoteId()));
-    if  ( null == quote ) throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
+    if  ( null == quote ) {
+      logger.error("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
+      throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
+    }
 
     long tradeAmount = 0;
     tradeAmount =  afexTransaction.getDestinationAmount();
@@ -359,33 +422,76 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       CreateTradeResponse tradeResponse = this.afexClient.createTrade(createTradeRequest);
       if ( null != tradeResponse && tradeResponse.getTradeNumber() > 0 ) {
-        CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
-        createPaymentRequest.setClientAPIKey(afexBusiness.getApiKey());
-        createPaymentRequest.setPaymentDate(tradeResponse.getValueDate());
-        createPaymentRequest.setAmount(String.valueOf(tradeResponse.getAmount()));
-        createPaymentRequest.setCurrency(tradeResponse.getTradeCcy());
-        createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()));
-        try {
-          CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest);
-          if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
-            AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
-            txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
-            try {
-              Date valueDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(tradeResponse.getValueDate());
-              txn.setCompletionDate(valueDate);
-            } catch(Throwable t) {
-              ((Logger) x.get("logger")).error("Error parsing date.", t);
-            }
-            return txn;
-          }
-        } catch(Throwable t) {
-          ((Logger) x.get("logger")).error("Error sending payment to AFEX.", t);
-          throw new RuntimeException(t);
-        }
+        DAO traderesponseDAO = (DAO) x.get("afexTradeResponseDAO");
+        traderesponseDAO.put(tradeResponse);
+
+        afexTransaction.setAfexTradeResponseNumber(tradeResponse.getTradeNumber());
+        txnDAO.put(afexTransaction);
+
       }
     } catch(Throwable t) {
-      ((Logger) x.get("logger")).error("Error createing AFEX Trade.", t);
+      logger.error("Error creating AFEX Trade.", t);
       throw new RuntimeException(t);
+    }
+
+    return true;
+  }
+
+  public Transaction submitPayment(Transaction transaction) throws RuntimeException {
+
+    Logger logger = (Logger) x.get("logger");
+    if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
+
+    AFEXTransaction afexTransaction = (AFEXTransaction) transaction;
+
+    AFEXBusiness afexBusiness = getAFEXBusiness(x,afexTransaction.getPayerId());
+    if ( null == afexBusiness ) {
+      logger.error("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+      throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+    }
+
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x,afexTransaction.getPayeeId(), afexTransaction.getPayerId());
+    if ( null == afexBeneficiary ) {
+      logger.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
+      throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
+    }
+
+    FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(afexTransaction.getFxQuoteId()));
+    if  ( null == quote ) {
+      logger.error("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
+      throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
+    }
+
+    DAO traderesponseDAO = (DAO) x.get("afexTradeResponseDAO");
+    CreateTradeResponse tradeResponse = (CreateTradeResponse) traderesponseDAO.find(EQ(CreateTradeResponse.TRADE_NUMBER, afexTransaction.getAfexTradeResponseNumber()));
+
+    if ( null != tradeResponse && tradeResponse.getTradeNumber() > 0 ) {
+      CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
+      createPaymentRequest.setClientAPIKey(afexBusiness.getApiKey());
+      createPaymentRequest.setPaymentDate(tradeResponse.getValueDate());
+      createPaymentRequest.setAmount(String.valueOf(tradeResponse.getAmount()));
+      createPaymentRequest.setCurrency(tradeResponse.getTradeCcy());
+      createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()));
+      try {
+        CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest);
+        if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
+          AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
+          txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
+          try {
+            Date valueDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(tradeResponse.getValueDate());
+            txn.setCompletionDate(valueDate);
+          } catch(Throwable t) {
+            logger.error("Error parsing date.", t);
+          }
+          return txn;
+        }
+      } catch(Throwable t) {
+        logger.error("Error sending payment to AFEX.", t);
+        throw new RuntimeException(t);
+      }
+    } else {
+      logger.error("Unable to find afexTradeResponse for transaction id: " + transaction.getId());
+      throw new RuntimeException("Unable to find afexTradeResponse for transaction id: " + transaction.getId());
     }
 
     return afexTransaction;

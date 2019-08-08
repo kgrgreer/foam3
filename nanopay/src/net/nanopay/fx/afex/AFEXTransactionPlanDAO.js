@@ -177,7 +177,8 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
   afexTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
   afexTransaction.setFxFees(fees);
-  
+  afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
+
   afexTransaction.setIsQuoted(true);
   afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
@@ -213,6 +214,7 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setSourceAccount(sourceAccount.getId());
   summary.setDestinationAccount(destinationAccount.getId());
   summary.setFxRate(tx.getFxRate());
+  summary.setFxExpiry(tx.getFxExpiry());
   summary.addNext(tx);
   summary.setIsQuoted(true);
   return summary;
