@@ -539,8 +539,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         return "Corporation";
       case 4:
         return "Registered Charity";
+      case 5: 
+        return "Limited Liability Company (LLC)";
+      case 6:
+        return "Public Limited Company";
       default:
-        return "";
+        return ((BusinessType) ((DAO) this.x.get("businessTypeDAO")).find(companyType)).getName();
     }
   }  
 
