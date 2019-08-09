@@ -374,6 +374,9 @@ foam.CLASS({
       factory: function() {
         return this.PersonalIdentification.create({});
       },
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
     },
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'personalInformationSection',

@@ -20,6 +20,7 @@ import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
+import net.nanopay.model.BusinessType;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -57,7 +58,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return onboardBusiness(business, bankAccount);
   }
 
-  public boolean onboardBusiness(Business business, BankAccount bankAccount) {
+  public boolean onboardBusiness(Business business, BankAccount bankAccount) throws RuntimeException{
     Logger logger = (Logger) this.x.get("logger");
 
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
@@ -80,12 +81,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             try {
               identificationExpiryDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getIdentification().getExpirationDate()); 
             } catch(Throwable t) {
-              logger.error("Error creating AFEX beneficiary.", t);
+              identificationExpiryDate = "01/01/2099"; // Asked to hardcode this by Madlen(AFEX)
+              logger.error("Error onboarding business. Cound not parse signing officer identification expiry date.", t);
             } 
+            String identificationType = signingOfficer.getIdentification() == null || 
+              signingOfficer.getIdentification().getIdentificationTypeId() < 1 ? "Passport" 
+                : getAFEXIdentificationType(signingOfficer.getIdentification().getIdentificationTypeId()); // Madlen asked it is hardcoded
             OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate(identificationExpiryDate);
-            onboardingRequest.setAccountPrimaryIdentificationNumber(String.valueOf(signingOfficer.getIdentification().getIdentificationNumber()));
-            onboardingRequest.setAccountPrimaryIdentificationType(getAFEXIdentificationType(signingOfficer.getIdentification().getIdentificationTypeId())); // TODO: This should ref AFEX ID type
+            onboardingRequest.setAccountPrimaryIdentificationNumber(business.getBusinessRegistrationNumber());
+            onboardingRequest.setAccountPrimaryIdentificationType(identificationType); 
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
             Region businessRegion = business.getAddress().findRegionId(this.x);
@@ -93,8 +98,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             Country businessCountry = business.getAddress().findCountryId(this.x);
             if ( businessCountry != null ) {
               onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
-              onboardingRequest.setAccountPrimaryIdentificationIssuer(businessCountry.getName());
             }
+            Country businessFormationCountry = (Country) ((DAO) this.x.get("countryDAO")).find(business.getCountryOfBusinessRegistration());
+            if ( businessFormationCountry != null ) {
+              onboardingRequest.setAccountPrimaryIdentificationIssuer(businessFormationCountry.getName());
+            }
+
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
@@ -103,7 +112,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             try {
               businessRegDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(business.getBusinessRegistrationDate()); 
             } catch(Throwable t) {
-              logger.error("Error onboarding business. Error parsing business registration date", t);
+              logger.error("Error onboarding business. Error parsing business registration date.", t);
+              throw new RuntimeException("Error onboarding business. Error parsing business registration date.");
             } 
             onboardingRequest.setDateOfIncorporation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
@@ -125,10 +135,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               onboardingRequest.setDateOfBirth(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getBirthday()));
             } catch(Throwable t) {
               logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
+              throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
             } 
             onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
             onboardingRequest.setExpectedMonthlyPayments(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount());
             onboardingRequest.setExpectedMonthlyVolume(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume());
+            onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());
             onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
 
             BusinessSector businessSector = (BusinessSector) ((DAO) this.x.get("businessSectorDAO")).find(business.getBusinessSectorId());
@@ -615,8 +627,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         return "Corporation";
       case 4:
         return "Registered Charity";
+      case 5: 
+        return "Limited Liability Company (LLC)";
+      case 6:
+        return "Public Limited Company";
       default:
-        return "";
+        return ((BusinessType) ((DAO) this.x.get("businessTypeDAO")).find(companyType)).getName();
     }
   }  
 
