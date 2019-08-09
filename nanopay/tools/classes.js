@@ -152,6 +152,7 @@ var classes = [
   'net.nanopay.fx.afex.GetRateResponse',
   'net.nanopay.fx.afex.Quote',
   'net.nanopay.fx.afex.GetQuoteRequest',
+  'net.nanopay.fx.afex.GetConfirmationPDFRequest',
   'net.nanopay.fx.afex.CreateTradeRequest',
   'net.nanopay.fx.afex.CreateTradeResponse',
   'net.nanopay.fx.afex.CheckTradeStatusRequest',

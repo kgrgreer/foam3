@@ -552,9 +552,28 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       bankInformation = this.afexClient.findBankByNationalID(findBankByNationalIDRequest);
     } catch(Throwable t) {
-      ((Logger) x.get("logger")).error("Error findind bank information from AFEX.", t);
+      ((Logger) x.get("logger")).error("Error finding bank information from AFEX.", t);
     }
     return bankInformation;
+  }
+
+  public byte[] getConfirmationPDF(Transaction txn) {
+    if ( ! (txn instanceof AFEXTransaction) ) {
+      return null;
+    }
+    AFEXTransaction afexTransaction = (AFEXTransaction) txn;
+
+    AFEXBusiness business = getAFEXBusiness(x, afexTransaction.getPayerId());
+    GetConfirmationPDFRequest pdfRequest = new GetConfirmationPDFRequest.Builder(x)
+      .setClientAPIKey(business.getApiKey())
+      .setTradeNumber(afexTransaction.getAfexTradeResponseNumber()+"")
+      .build();
+    try {
+      return afexClient.getTradeConfirmation(pdfRequest);
+    } catch (Throwable t) {
+      ((Logger) x.get("logger")).error("Error getting trade confirmation PDF from AFEX.", t);
+    }
+    return null;
   }
 
   protected AFEXBusiness getAFEXBusiness(X x, Long userId) {
