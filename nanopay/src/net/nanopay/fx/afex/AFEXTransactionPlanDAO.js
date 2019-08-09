@@ -216,6 +216,7 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setDestinationAccount(destinationAccount.getId());
   summary.setFxRate(tx.getFxRate());
   summary.setFxExpiry(tx.getFxExpiry());
+  summary.setInvoiceId(tx.getInvoiceId());
   summary.addNext(tx);
   summary.setIsQuoted(true);
   return summary;
