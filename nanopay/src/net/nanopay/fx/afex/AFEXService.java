@@ -6,6 +6,9 @@ import foam.lib.json.JSONParser;
 import foam.nanos.logger.Logger;
 import foam.nanos.om.OMLogger;
 import foam.util.SafetyUtil;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -825,6 +828,38 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         omLogger.log("AFEX checkPaymentStatus timeout");
       }
       logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
+
+    OkHttpClient client = new OkHttpClient();
+    Response response = null;
+
+    Request request = new Request.Builder()
+      .header("Content-Type", "application/json")
+      .header("API-Key", confirmationPDFRequest.getClientAPIKey())
+      .url(AFEXAPI + "api/confirmations?TradeNumber=" + confirmationPDFRequest.getTradeNumber())
+      .build();
+
+    try {
+      response = client.newCall(request).execute();
+      byte[] bytes = response.body().bytes();
+      return bytes;
+
+    } catch ( Throwable t ) {
+      if ( t instanceof IOException ) {
+        omLogger.log("AFEX checkPaymentStatus timeout");
+      }
+      logger.error(t);
+
+    } finally {
+      if ( response != null ) {
+        response.close();
+      }
     }
 
     return null;
