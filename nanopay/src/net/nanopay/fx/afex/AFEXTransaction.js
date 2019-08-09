@@ -409,9 +409,9 @@ foam.CLASS({
             ((DAO) x.get("transactionDAO")).inX(x).put(this.fclone());
             
             // Append file to related invoice.
-            if ( getInvoiceId() != 0 ) {
+            if ( findRootTransaction(x,this).getInvoiceId() != 0 ) {
               DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-              Invoice invoice = (Invoice) invoiceDAO.find(getInvoiceId());
+              Invoice invoice = (Invoice) invoiceDAO.find(findRootTransaction(x,this).getInvoiceId());
 
               if ( invoice == null ) {
                 throw new RuntimeException("Couldn't fetch invoice associated to AFEX transaction");

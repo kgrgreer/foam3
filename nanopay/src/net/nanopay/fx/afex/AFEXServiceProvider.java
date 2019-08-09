@@ -380,7 +380,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return payeeInfo;
   }
 
-  public Boolean createTrade(Transaction transaction) throws  RuntimeException {
+  public int createTrade(Transaction transaction) throws  RuntimeException {
 
     Logger logger = (Logger) x.get("logger");
     DAO txnDAO = (DAO) x.get("localTransactionDAO");
@@ -425,8 +425,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         DAO traderesponseDAO = (DAO) x.get("afexTradeResponseDAO");
         traderesponseDAO.put(tradeResponse);
 
-        afexTransaction.setAfexTradeResponseNumber(tradeResponse.getTradeNumber());
-        txnDAO.put(afexTransaction);
+      return tradeResponse.getTradeNumber();
 
       }
     } catch(Throwable t) {
@@ -434,7 +433,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       throw new RuntimeException(t);
     }
 
-    return true;
+    return -1;
   }
 
   public Transaction submitPayment(Transaction transaction) throws RuntimeException {
