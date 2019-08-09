@@ -6,6 +6,9 @@ import foam.lib.json.JSONParser;
 import foam.nanos.logger.Logger;
 import foam.nanos.om.OMLogger;
 import foam.util.SafetyUtil;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -122,11 +125,20 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationExpirationDate", request.getAccountPrimaryIdentificationExpirationDate()));
       nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationNumber", request.getAccountPrimaryIdentificationNumber()));
       nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationType", request.getAccountPrimaryIdentificationType()));
+      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationIssuer", request.getAccountPrimaryIdentificationIssuer()));
       nvps.add(new BasicNameValuePair("BusinessAddress1", request.getBusinessAddress1()));
       nvps.add(new BasicNameValuePair("BusinessCity", request.getBusinessCity()));
+      nvps.add(new BasicNameValuePair("BusinessStateRegion", request.getBusinessStateRegion()));
       nvps.add(new BasicNameValuePair("BusinessCountryCode", request.getBusinessCountryCode()));
+      nvps.add(new BasicNameValuePair("Description", request.getDescription()));
       nvps.add(new BasicNameValuePair("BusinessName", request.getBusinessName()));
       nvps.add(new BasicNameValuePair("BusinessZip", request.getBusinessZip()));
+      nvps.add(new BasicNameValuePair("ContactAddress1", request.getContactAddress1()));
+      nvps.add(new BasicNameValuePair("ContactCity", request.getContactCity()));
+      nvps.add(new BasicNameValuePair("ContactCountryCode", request.getContactCountryCode()));
+      nvps.add(new BasicNameValuePair("ContactStateRegion", request.getContactStateRegion()));
+      nvps.add(new BasicNameValuePair("ContactZip", request.getContactZip()));
+      nvps.add(new BasicNameValuePair("DateOfBirth", request.getDateOfBirth()));
       nvps.add(new BasicNameValuePair("CompanyType", request.getCompanyType()));
       nvps.add(new BasicNameValuePair("ContactBusinessPhone", request.getContactBusinessPhone()));
       nvps.add(new BasicNameValuePair("DateOfIncorporation", request.getDateOfIncorporation()));
@@ -134,6 +146,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("Gender", request.getGender()));
       nvps.add(new BasicNameValuePair("LastName", request.getLastName()));
       nvps.add(new BasicNameValuePair("PrimaryEmailAddress", request.getPrimaryEmailAddress()));
+      nvps.add(new BasicNameValuePair("ExpectedMonthlyPayments", request.getExpectedMonthlyPayments()));
+      nvps.add(new BasicNameValuePair("ExpectedMonthlyVolume", request.getExpectedMonthlyVolume()));
+      nvps.add(new BasicNameValuePair("JobTitle", request.getJobTitle()));
+      nvps.add(new BasicNameValuePair("NAICS", request.getNAICS()));
+      nvps.add(new BasicNameValuePair("TradeName", request.getTradeName()));
       nvps.add(new BasicNameValuePair("TermsAndConditions", request.getTermsAndConditions()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
@@ -812,6 +829,38 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         omLogger.log("AFEX checkPaymentStatus timeout");
       }
       logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
+
+    OkHttpClient client = new OkHttpClient();
+    Response response = null;
+
+    Request request = new Request.Builder()
+      .header("Content-Type", "application/json")
+      .header("API-Key", confirmationPDFRequest.getClientAPIKey())
+      .url(AFEXAPI + "api/confirmations?TradeNumber=" + confirmationPDFRequest.getTradeNumber())
+      .build();
+
+    try {
+      response = client.newCall(request).execute();
+      byte[] bytes = response.body().bytes();
+      return bytes;
+
+    } catch ( Throwable t ) {
+      if ( t instanceof IOException ) {
+        omLogger.log("AFEX checkPaymentStatus timeout");
+      }
+      logger.error(t);
+
+    } finally {
+      if ( response != null ) {
+        response.close();
+      }
     }
 
     return null;

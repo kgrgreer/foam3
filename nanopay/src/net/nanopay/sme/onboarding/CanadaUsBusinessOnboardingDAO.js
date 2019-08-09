@@ -11,7 +11,6 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Business',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
@@ -43,11 +42,6 @@ foam.CLASS({
         businessOnboarding.validate(x);
 
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
-        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
-
-        User user = (User)localUserDAO.find(businessOnboarding.getUserId());
-        user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
-        localUserDAO.put(user);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
         business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());

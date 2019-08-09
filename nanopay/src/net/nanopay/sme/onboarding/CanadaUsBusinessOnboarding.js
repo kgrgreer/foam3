@@ -18,9 +18,11 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.Business',
     'net.nanopay.model.PersonalIdentification',
+    'net.nanopay.sme.onboarding.BusinessOnboarding',
   ],
 
   imports: [
+    'businessOnboardingDAO',
     'countryDAO',
     'ctrl',
   ],
@@ -42,6 +44,7 @@ foam.CLASS({
       name: 'internationalTransactionSection',
       title: 'We need a few information about your buisness and signing officer',
       help: `Thanks! Now let’s get some more details on your US transactions`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
   ],
 
@@ -65,27 +68,6 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Business',
-      name: 'businessId',
-      label: 'Business Name',
-      section: 'adminReferenceSection'
-    },
-    {
-      documentation: 'Creation date.',
-      name: 'created',
-      class: 'DateTime',
-      visibility: 'RO',
-      section: 'adminReferenceSection',
-    },
-    {
-      documentation: 'Last modified date.',
-      name: 'lastModified',
-      class: 'DateTime',
-      visibility: 'RO',
-      section: 'adminReferenceSection',
-    },
-    {
-      class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',
       section: 'adminReferenceSection',
@@ -104,14 +86,41 @@ foam.CLASS({
       }
     },
     {
-      section: 'internationalTransactionSection',
-      class: 'FObjectProperty',
-      name: 'signingOfficerIdentification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
-      factory: function() {
-        return this.PersonalIdentification.create({});
-      },
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'businessId',
+      label: 'Business Name',
+      section: 'adminReferenceSection',
+      postSet: function(_, n) {
+        var m = foam.mlang.Expressions.create();
+        this.businessOnboardingDAO.find(
+          m.AND(
+            m.EQ(this.BusinessOnboarding.USER_ID, this.userId),
+            m.EQ(this.BusinessOnboarding.BUSINESS_ID, this.businessId)
+          )
+        ).then((o) => {
+          this.signingOfficer = o && o.signingOfficer ;
+        });
+      }
+    },
+    {
+      documentation: 'Creation date.',
+      name: 'created',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
+      documentation: 'Last modified date.',
+      name: 'lastModified',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
+      class: 'Boolean',
+      name: 'signingOfficer',
+      hidden: true,
     },
     {
       section: 'internationalTransactionSection',
