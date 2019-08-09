@@ -84,7 +84,6 @@ foam.CLASS({
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
-
           business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
           
           localUserDAO.put(user);
@@ -169,6 +168,7 @@ foam.CLASS({
           // Send invitation to email to the signing officer
           businessInvitationDAO.put(invitation);
         }
+
         return getDelegate().put_(x, businessOnboarding);
       `
     }
