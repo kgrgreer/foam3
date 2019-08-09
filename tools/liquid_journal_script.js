@@ -41,74 +41,967 @@ global.FOAM_ROOT = oldRoot;
       country
     }
  */
-var newCurrencies = [];
-var newTrustAccountDenominations = ['USD'];
+var newCurrencies = [
+  {
+    name: "Yuan Renminbi",
+    alphabeticCode: "CNY",
+    numericCode: 156,
+    precision: 2,
+    colour: "#382D43",
+    leftOrRight: "left",
+    symbol: "¥",
+    delimiter: ",",
+    decimalCharacter: ".",
+    showSpace: false
+  },
+  {
+    name: "Hong Kong Dollar",
+    alphabeticCode: "HKD",
+    numericCode: 344,
+    precision: 2,
+    colour: "#2E89E6",
+    leftOrRight: "left",
+    symbol: "$",
+    delimiter: ",",
+    decimalCharacter: ".",
+    showSpace: false
+  },
+  {
+    name: "Yen",
+    alphabeticCode: "JPY",
+    numericCode: 392,
+    precision: 0,
+    colour: "#AB7439",
+    leftOrRight: "left",
+    symbol: "¥",
+    delimiter: ",",
+    decimalCharacter: ".",
+    showSpace: false
+  },
+  {
+    name: "Mexican Peso",
+    alphabeticCode: "MXN",
+    numericCode: 484,
+    precision: 2,
+    colour: "#9C7920",
+    leftOrRight: "left",
+    symbol: "$",
+    delimiter: ",",
+    decimalCharacter: ".",
+    showSpace: false
+  }
+
+];
+var newTrustAccountDenominations = ['USD', 'CNY', 'HKD', 'JPY', 'MXN'];
 
 // can enter banks with new currencies just by typing the denomination ('alphabetic code')
 var accountTree = [
   {
-    type: 'Bank',
-    name: 'ABC Toronto',
-    denomination: 'CAD',
+    type: 'Aggregate', denomination: 'USD',
+    name: 'Goldman Sachs Group, Inc',
     children: [
       {
-        type: 'Aggregate',
-        name: 'CA East',
+        type: 'Aggregate', denomination: 'USD',
+        name: 'Goldman Sachs Asia',
         children: [
           {
-            type: 'Virtual',
-            name: 'Widgets and Things'
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS02',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS02 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 CASH (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 CASH (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS02 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (ARS)',
+                    denomination: 'ARS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (CAD)',
+                    denomination: 'CAD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (PEN)',
+                    denomination: 'PEN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                ]
+              },
+            ]
           },
           {
-            type: 'Virtual',
-            name: 'Odds and Ends'
-          }
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS03',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS03 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS03 CASH (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS03 CASH (HKD)',
+                    denomination: 'HKD'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS03 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS03 SECURITIES (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS03 SECURITIES (HKD)',
+                    denomination: 'HKD'
+                  }
+                ]
+              },
+            ]
+          },
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS10',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS10 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 CASH (JPY)',
+                    denomination: 'JPY'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS10 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  }
+                ]
+              },
+            ]
+          },
+          {
+            type: 'Aggregate',
+            denomination: 'USD',
+            name: 'GS11',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS11 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS11 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  },
+                ]
+              }
+            ]
+          },
+          {
+            type: 'Aggregate',
+            denomination: 'USD',
+            name: 'GS13',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS13 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS13 (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS13 (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS13 (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              },
+            ]
+          },
         ]
       },
       {
-        type: 'Aggregate',
-        name: 'CA West',
+        type: 'Aggregate', denomination: 'USD',
+        name: 'Goldman Sachs Int`l (EU)',
         children: [
           {
-            type: 'Virtual',
-            name: 'West Coast Communications'
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS00',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS00 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS00 CASH (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS00 CASH (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS00 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS00 SECURITIES (AUD)',
+                    denomination: 'AUD'
+                  },
+                ]
+              },
+            ]
+          },
+
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS01',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS01 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 CASH (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 CASH (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 CASH (TRY)',
+                    denomination: 'TRY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 CASH (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS01 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (ARS)',
+                    denomination: 'ARS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (CLP)',
+                    denomination: 'CLP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (DKK)',
+                    denomination: 'DKK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (EGP)',
+                    denomination: 'EGP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (INR)',
+                    denomination: 'INR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (NLG)',
+                    denomination: 'NLG'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (PEN)',
+                    denomination: 'PEN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (THB)',
+                    denomination: 'THB'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (TRY)',
+                    denomination: 'TRY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (ZAR)',
+                    denomination: 'ZAR'
+                  },
+                ]
+              },
+            ]
+          },
+          {
+            type: 'Aggregate',
+            denomination: 'USD',
+            name: 'GS05',
+            children: [
+              {
+                type: 'Aggregate',
+                denomination: 'USD',
+                name: 'GS05 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS05 SECURITIES (BRL)',
+                    denomination: 'BRL'
+                  },
+                ]
+              },
+            ]
+          },
+          {
+            type: 'Aggregate',
+            denomination: 'USD',
+            name: 'GS06',
+            children: [
+              {
+                type: 'Aggregate',
+                denomination: 'USD',
+                name: 'GS06 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (CAD)',
+                    denomination: 'CAD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (RUB)',
+                    denomination: 'RUB'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (SAR)',
+                    denomination: 'SAR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (SEK)',
+                    denomination: 'SEK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (TRY)',
+                    denomination: 'TRY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 CASH (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS06 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 SECURITIES (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 SECURITIES (ILS)',
+                    denomination: 'ILS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS06 SECURITIES (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              },
+
+            ]
+
+          },
+
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS07',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS07 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 CASH (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 CASH (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 CASH (TRY)',
+                    denomination: 'TRY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 CASH (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 CASH (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 CASH (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 CASH (TRY)',
+                    denomination: 'TRY'
+                  },
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS07 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (ARS)',
+                    denomination: 'ARS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (AUD)',
+                    denomination: 'AUD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (BRL)',
+                    denomination: 'BRL'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (CAD)',
+                    denomination: 'CAD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (CHF)',
+                    denomination: 'CHF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (CLP)',
+                    denomination: 'CLP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (DKK)',
+                    denomination: 'DKK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (EGP)',
+                    denomination: 'EGP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (HKD)',
+                    denomination: 'HKD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (HUF)',
+                    denomination: 'HUF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (ILS)',
+                    denomination: 'ILS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (MXN)',
+                    denomination: 'MXN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (NZD)',
+                    denomination: 'NZD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (PEN)',
+                    denomination: 'PEN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (PLN)',
+                    denomination: 'PLN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (RUB)',
+                    denomination: 'RUB'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS07 SECURITIES (SGD)',
+                    denomination: 'SGD'
+                  },
+                ]
+              },
+            ]
+          },
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS08',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS08 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS08 CASH (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS08 CASH (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS08 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS08 SECURITIES (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS08 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS08 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                ]
+              },
+            ]
+          },
+
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS09',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS09 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (CAD)',
+                    denomination: 'CAD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (HKD)',
+                    denomination: 'HKD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (RUB)',
+                    denomination: 'RUB'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (SAR)',
+                    denomination: 'SAR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (SEK)',
+                    denomination: 'SEK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 CASH (TRY)',
+                    denomination: 'TRY'
+                  },
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS09 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (ARS)',
+                    denomination: 'ARS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (AUD)',
+                    denomination: 'AUD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (CHF)',
+                    denomination: 'CHF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (CZK)',
+                    denomination: 'CZK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (DKK)',
+                    denomination: 'DKK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (HKD)',
+                    denomination: 'HKD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (HUF)',
+                    denomination: 'HUF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (ILS)',
+                    denomination: 'ILS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (KRW)',
+                    denomination: 'KRW'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (MXN)',
+                    denomination: 'MXN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (NLG)',
+                    denomination: 'NLG'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (NZD)',
+                    denomination: 'NZD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (NOK)',
+                    denomination: 'NOK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (PLN)',
+                    denomination: 'PLN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (RUB)',
+                    denomination: 'RUB'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (PEN)',
+                    denomination: 'PEN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (SGD)',
+                    denomination: 'SGD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (SEK)',
+                    denomination: 'SEK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (THB)',
+                    denomination: 'THB'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (TRY)',
+                    denomination: 'TRY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS09 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                ]
+              },
+            ]
+          },
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS12',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS12 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS12 CASH (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS12 CASH (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS12 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS12 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                ]
+              },
+            ]
+          },
+        ]
+      },
+      {
+        type: 'Aggregate', denomination: 'USD',
+        name: 'Goldman Sachs CO',
+        children: [
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS04',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS04 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS04 (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              },
+            ]
+          },
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS14',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS14 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS14 SECURITY (MXN)',
+                    denomination: 'MXN'
+                  }
+                ]
+              },
+            ]
           }
         ]
       }
     ],
-  },
-  {
-    name: 'ABC New York',
-    type: 'Bank',
-    denomination: 'USD',
-    children: [
-      {
-        type: 'Aggregate',
-        name: 'US East',
-        children: [
-          {
-            type: 'Virtual',
-            name: 'Boston Bookends'
-          },
-          {
-            type: 'Virtual',
-            name: 'Purchasable Potables'
-          }
-        ]
-      }
-    ]
   }
 ];
-
-// need this declared outside of the tree because we first create the accounts, then add the settings after they have an initial balance
-var accountNamesToLiquidity = {
-  'Widgets and Things': 'Low And High Rebalance Email',
-  'Odds and Ends': 'Low Rebalance Only',
-  'West Coast Communications': 'Low and High Email Only',
-  'Boston Bookends': 'High Rebalance Only',
-  'Purchasable Potables': 'Low And High Rebalance Email'
-}
-
 
 // to be filled out as accounts are created
 const accountNamesToId = {};
@@ -117,51 +1010,9 @@ const accountNamesToAccount = {};
 var cashInCounter = 0;
 var cashOutCounter = 0;
 
-// creation date liquidity settings
-var liquidityLastModifiedDate = new Date(new Date().setFullYear(new Date().getFullYear() - 5))
-
-// assign to only CAD accounts and push/pull from CAD accounts for now
-const liquiditySettings = [
-  {
-    type: 'email',
-    name: 'Low and High Email Only',
-    userToEmail: 8005,
-    highLiquidity: 10000000,
-    lowLiquidity: 1500000
-  },
-  {
-    type: 'rebalance',
-    name: 'Low Rebalance Only',
-    lowLiquidity: 1500000,
-    lowPull: 'ABC Toronto Shadow Account',
-    lowResetBalance: 2000000
-  },
-  {
-    type: 'rebalance',
-    name: 'High Rebalance Only',
-    highLiquidity: 10000000,
-    highPush: 'ABC Toronto Shadow Account',
-    highResetBalance: 8000000
-  },
-  {
-    type: 'emailRebalance',
-    name: 'Low And High Rebalance Email',
-    userToEmail: 8005,
-    highLiquidity: 10000000,
-    highPush: 'ABC Toronto Shadow Account',
-    highResetBalance: 8000000,
-    lowLiquidity: 1500000,
-    lowPull: 'ABC Toronto Shadow Account',
-    lowResetBalance: 2000000
-  }
-];
-
-// to be filled out as liquidity settings get created
-const liquidityNamesToId = {};
-
 function* referenceIdMaker() {
   var index = 10000000;
-  while (index < index+1)
+  while (index < index + 1)
     yield index++;
 }
 
@@ -177,7 +1028,7 @@ function createCurrency(X, cObj) {
     precision: 2,
     numericCode: 0,
     ...cObj
-  });
+  }, X);
 
   X.currencyDAO.put(currency);
 }
@@ -193,114 +1044,12 @@ function createTrustAccount(X, d) {
   X.accountDAO.put(trust);
 }
 
-
-function createEmailLiquiditySetting(X, s) {
-  var liquiditySettingsObj = {
-    id: foam.next$UID(),
-    name: s.name,
-    userToEmail: s.userToEmail,
-    cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
-    lastModified: liquidityLastModifiedDate
-  };
-
-  if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
-    liquiditySettingsObj.lowLiquidity = net.nanopay.liquidity.Liquidity.create({
-      enabled: true,
-      threshold: s.lowLiquidity
-    });
-  }
-
-  if (s.highLiquidity !== undefined && s.highLiquidity >= 0) {
-    liquiditySettingsObj.highLiquidity = net.nanopay.liquidity.Liquidity.create({
-      enabled: true,
-      threshold: s.highLiquidity
-    });
-  }
-
-  var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
-
-  liquidityNamesToId[liquiditySettings.name] = liquiditySettings.id;
-
-  X.liquiditySettingsDAO.put(liquiditySettings);
-}
-
-function createRebalanceLiquiditySetting(X, s) {
-  var liquiditySettingsObj = {
-    id: foam.next$UID(),
-    name: s.name,
-    cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
-    lastModified: liquidityLastModifiedDate
-  };
-
-  if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
-    liquiditySettingsObj.lowLiquidity = net.nanopay.liquidity.Liquidity.create({
-      enabled: true,
-      threshold: s.lowLiquidity,
-      rebalancingEnabled: true,
-      pushPullAccount: accountNamesToId[s.lowPull],
-      resetBalance: s.lowResetBalance
-    });
-  }
-
-  if (s.highLiquidity !== undefined && s.highLiquidity >= 0) {
-    liquiditySettingsObj.highLiquidity = net.nanopay.liquidity.Liquidity.create({
-      enabled: true,
-      threshold: s.highLiquidity,
-      rebalancingEnabled: true,
-      pushPullAccount: accountNamesToId[s.highPush],
-      resetBalance: s.highResetBalance
-    });
-  }
-
-  var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
-
-  liquidityNamesToId[liquiditySettings.name] = liquiditySettings.id;
-
-  X.liquiditySettingsDAO.put(liquiditySettings);
-}
-
-function createEmailRebalanceLiquiditySetting(X, s) {
-  var liquiditySettingsObj = {
-    id: foam.next$UID(),
-    name: s.name,
-    userToEmail: s.userToEmail,
-    cashOutFrequency: net.nanopay.util.Frequency.PER_TRANSACTION,
-    lastModified: liquidityLastModifiedDate
-  };
-
-  if (s.lowLiquidity !== undefined && s.lowLiquidity >= 0) {
-    liquiditySettingsObj.lowLiquidity = net.nanopay.liquidity.Liquidity.create({
-      enabled: true,
-      threshold: s.lowLiquidity,
-      rebalancingEnabled: true,
-      pushPullAccount: accountNamesToId[s.lowPull],
-      resetBalance: s.lowResetBalance
-    });
-  }
-
-  if (s.highLiquidity !== undefined && s.highLiquidity >= 0) {
-    liquiditySettingsObj.highLiquidity = net.nanopay.liquidity.Liquidity.create({
-      enabled: true,
-      threshold: s.highLiquidity,
-      rebalancingEnabled: true,
-      pushPullAccount: accountNamesToId[s.highPush],
-      resetBalance: s.highResetBalance
-    });
-  }
-
-  var liquiditySettings = net.nanopay.liquidity.LiquiditySettings.create(liquiditySettingsObj);
-
-  liquidityNamesToId[liquiditySettings.name] = liquiditySettings.id;
-
-  X.liquiditySettingsDAO.put(liquiditySettings);
-}
-
 function bank(X, a) {
   var cls = a.denomination == 'CAD'
-      ? net.nanopay.bank.CABankAccount
-      : a.denomination == 'USD'
-          ? net.nanopay.bank.USBankAccount
-          : net.nanopay.bank.BankAccount
+    ? net.nanopay.bank.CABankAccount
+    : a.denomination == 'USD'
+      ? net.nanopay.bank.USBankAccount
+      : net.nanopay.bank.BankAccount
 
   var bank = cls.create({
     id: foam.next$UID(),
@@ -353,7 +1102,7 @@ function bank(X, a) {
 function virtual(X, a) {
   var obj = net.nanopay.account.DigitalAccount.create({
     id: foam.next$UID(),
-    denomination: X.denomination,
+    denomination: a.denomination,
     name: a.name,
     created: X.currentDate,
     createdBy: X.userId,
@@ -371,14 +1120,18 @@ function virtual(X, a) {
 
   X.accountDAO.put(obj);
 
-  X.balances[obj.id] = 0;
+  X = X.createSubContext({
+    parentAccount: obj.id
+  });
+
+  a.children = a.children ? a.children.map(inflate.bind(null, X)) : [];
 
   return a;
 }
 
 function aggregate(X, a) {
   var obj = net.nanopay.account.AggregateAccount.create({
-    denomination: X.denomination,
+    denomination: a.denomination,
     id: foam.next$UID(),
     created: X.currentDate,
     createdBy: X.userId,
@@ -425,7 +1178,7 @@ function jdao(journal) {
     formatDatesAsNumbers: false,
     outputDefaultValues: false,
     useShortNames: false,
-    propertyPredicate: function (o, p) { return ! p.storageTransient; }
+    propertyPredicate: function (o, p) { return !p.storageTransient; }
   });
 
   var stream = require('fs').createWriteStream(journal, { flags: 'a' });
@@ -537,130 +1290,6 @@ function cashOut(X, source, bank, amount) {
   X.balances[source.id] -= amount;
 }
 
-function transfer(X, source, dest, amount) {
-  if ( source.id == dest.id ) {
-    throw new Error("Transfer from same account " + source.id);
-  }
-
-  X.balances[source.id] -= amount;
-  X.balances[dest.id] += amount
-
-  var tx = net.nanopay.tx.DigitalTransaction.create({
-    name: 'Digital Transfer',
-    isQuoted: true,
-    id: foam.next$UID(),
-    amount: amount,
-    completionDate: X.currentDate,
-    status: net.nanopay.tx.model.TransactionStatus.COMPLETED,
-    initialStatus: net.nanopay.tx.model.TransactionStatus.COMPLETED,
-    sourceCurrency: source.denomination,
-    destinationCurrency: dest.denomination,
-    destinationAccount: dest.id,
-    sourceAccount: source.id,
-    lastModified: X.currentDate,
-    lastModifiedBy: X.userId,
-    created: X.currentDate,
-    createdBy: X.userId,
-    lineItems: [
-      net.nanopay.tx.ReferenceLineItem.create({
-        referenceId: refIdGenerator.next().value
-      })
-    ],
-  }, X);
-
-  X.transactionDAO.put(tx);
-}
-
-function createLiquiditySettings(X) {
-  liquiditySettings.forEach(s => {
-    switch (s.type) {
-      case 'email':
-        return createEmailLiquiditySetting(X, s);
-      case 'rebalance':
-        return createRebalanceLiquiditySetting(X, s);
-      case 'emailRebalance':
-        return createEmailRebalanceLiquiditySetting(X, s);
-    }
-  })
-}
-
-function addLiquiditySettingsToAccounts(X) {
-  Object.keys(accountNamesToLiquidity).forEach(accountName => {
-    var account = accountNamesToAccount[accountName];
-
-    var liquiditySettingName = accountNamesToLiquidity[accountName];
-
-    account.liquiditySetting = liquidityNamesToId[liquiditySettingName];
-
-    X.accountDAO.put(account);
-  })
-}
-
-function randomDigitalTransfer(X) {
-  var root = randomItem(accountTree);
-  var accounts = virtualAccounts(root);
-
-  if ( accounts.length < 2 ) {
-    throw new Error("Cannot created transfer in account tree " + root.name + " as there is only one virtual account.");
-  }
-
-  var source = randomItem(accounts);
-  var dest;
-  do {
-    dest = randomItem(accounts);
-  } while ( dest === source );
-
-  var amount = Math.floor(
-    X.balances[source.id] * 0.05 +
-    X.balances[source.id] * Math.random() * 0.02);
-
-  transfer(X, source, dest, amount);
-}
-
-function randomCICOTransfer(X) {
-  var root = randomItem(accountTree);
-
-  var bank = accountNamesToAccount[`${root.name} Bank Account`];
-  var shadow = accountNamesToAccount[`${root.name} Shadow Account`];
-
-  if (Math.random() < 0.5) {
-    var amount = Math.floor(
-      X.balances[shadow.id] * 0.05 +
-      X.balances[shadow.id] * Math.random() * 0.02);
-
-    cashIn(X, bank, shadow, amount);
-
-  } else {
-    var amount = Math.floor(
-      X.balances[shadow.id] * 0.05 +
-      X.balances[shadow.id] * Math.random() * 0.02);
-
-    cashOut(X, shadow, bank, amount);
-  }
-}
-
-function virtualAccounts(root) {
-  var ret = [];
-
-  function collect(node) {
-    if ( ! net.nanopay.account.AggregateAccount.isInstance(node.obj) &&
-      net.nanopay.account.DigitalAccount.isInstance(node.obj) ) {
-      ret.push(node.obj);
-    }
-
-    if ( node.children ) node.children.forEach(collect);
-  }
-
-  collect(root);
-
-  return ret;
-}
-
-function randomItem(a) {
-  const filteredA = a.filter(root => ! root.isDefault );
-  return filteredA[Math.floor(Math.random() * filteredA.length)];
-}
-
 function main() {
   var currentDate = new Date();
   currentDate.setFullYear(currentDate.getFullYear() - 5);
@@ -679,7 +1308,7 @@ function main() {
     addCommas: function (a) { return a; }
   });
 
-  X = X.createSubContext({ 
+  X = X.createSubContext({
     user: foam.nanos.auth.User.create({ id: 8005 }, X),
     accountDAO: jdao("target/journals/accounts.0"),
     debtAccountDAO: foam.dao.NullDAO.create(),
@@ -696,59 +1325,31 @@ function main() {
   accountTree = accountTree.map(inflate.bind(null, X));
 
   accountTree.forEach(function foo(a) {
-    if ( a.bank )
+    if (a.bank)
       console.log("Bank: ", a.name, a.bank.id, a.shadow.id);
-    else if ( a.obj )
+    else if (a.obj)
       console.log(a.obj.cls_.name, a.name, a.obj.id);
     else
       console.log("Wut:", a);
 
-    if ( a.children ) a.children.forEach(foo);
+    if (a.children) a.children.forEach(foo);
   });
 
-  accountTree.forEach(function (root) {
-    if ( ! root.isDefault ){
-      var balance = 10000000;
+  // accountTree.forEach(function (root) {
+  //   if ( ! root.isDefault ){
+  //     var balance = 10000000;
 
-      cashIn(X, root.bank, root.shadow, balance);
-  
-      var virtuals = virtualAccounts(root);
-  
-      var amount = Math.floor(balance / virtuals.length);
-  
-      virtuals.forEach(function (v) {
-        transfer(X, root.shadow, v, amount);
-      });
-    }
-  });
+  //     cashIn(X, root.bank, root.shadow, balance);
 
-  createLiquiditySettings(X);
+  //     var virtuals = virtualAccounts(root);
 
-  addLiquiditySettingsToAccounts(X);
+  //     var amount = Math.floor(balance / virtuals.length);
 
-  var end = new Date();
-  end.setDate(end.getDate() - 1);
-
-  var targetTransactionCount = 5000;
-  var timeStep = Math.floor((end.getTime() - currentDate.getTime()) / targetTransactionCount);
-
-  // Seeding the shadows with money before the random CICO transactions
-  accountTree.forEach(root => {
-    if ( ! root.isDefault ){
-      var amount = 10000000;
-
-      var bank = accountNamesToAccount[`${root.name} Bank Account`];
-      var shadow = accountNamesToAccount[`${root.name} Shadow Account`];
-  
-      cashIn(X, bank, shadow, amount);
-    }
-  })
-
-  while ( foam.Date.compare(currentDate, end) < 0 ) {
-    currentDate.setTime(currentDate.getTime() + timeStep);
-    randomDigitalTransfer(X);
-    randomCICOTransfer(X);
-  }
+  //     virtuals.forEach(function (v) {
+  //       transfer(X, root.shadow, v, amount);
+  //     });
+  //   }
+  // });
 
   X.accountDAO.close();
   X.transactionDAO.close();
