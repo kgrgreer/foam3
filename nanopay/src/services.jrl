@@ -557,7 +557,25 @@ p({"class":"foam.nanos.boot.NSpec", "name":"routingJournal",                   "
 p({"class":"foam.nanos.boot.NSpec", "name":"blacklistDAO",                     "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.nanos.auth.AuthorizationDAO(x, new foam.dao.java.JDAO(x, net.nanopay.meter.Blacklist.getOwnClassInfo(), \"blacklists\"), new foam.nanos.auth.GlobalReadAuthorizer(\"blacklist\"))));","client":"{\"of\":\"net.nanopay.meter.Blacklist\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXReports",               "authenticate": false, "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXReportsWebAgent(x, new foam.nanos.blob.HttpBlobService(x, x.get(\"blobStore\")));"})
 p({"class":"foam.nanos.boot.NSpec", "name":"complianceService",                "service":{"class":"net.nanopay.meter.compliance.NanopayComplianceService","enabled":true}})
-p({"class":"foam.nanos.boot.NSpec", "name":"beneficialOwnerDAO",               "description":"Contains beneficial owners of businesses.","serve":true,"serviceScript":"ed = new foam.dao.EasyDAO.Builder(x)\n.setOf(net.nanopay.model.BeneficialOwner.getOwnClassInfo())\n.setAuthorize(false)\n.setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)\n.setJournalName(\"beneficialOwners\")\n.setSeqNo(true)\n.setPm(true)\n.build();\n\nr = new foam.nanos.ruler.RulerDAO(x, ed, \"beneficialOwnerDAO\");\n\nreturn new foam.nanos.auth.AuthorizationDAO(x, r, new foam.nanos.auth.AuthorizableAuthorizer(\"beneficialOwner\"));","client":"{\"of\": \"net.nanopay.model.BeneficialOwner\"}"})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"beneficialOwnerDAO",
+  "description":"Contains beneficial owners of businesses.",
+  "serve":true,
+  "serviceScript":"""
+    ed = new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.model.BeneficialOwner.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName(\"beneficialOwners\")
+      .setSeqNo(true)
+      .setPm(true)
+      .build();
+    return new foam.nanos.ruler.RulerDAO(x, ed, \"beneficialOwnerDAO\");
+  """,
+  "client":"{\"of\": \"net.nanopay.model.BeneficialOwner\"}"
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"signingOfficerJunctionDAO",        "description":"Stores the junctions for the relationship between signing officers of a business and the business itself.","serve":true,"serviceScript":"ed = new foam.dao.EasyDAO.Builder(x)\n.setOf(net.nanopay.model.BusinessUserJunction.getOwnClassInfo())\n.setAuthorize(false)\n.setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)\n.setJournalName(\"signingOfficerJunctions\")\n.setPm(true)\n.build();\n\nrd = new foam.nanos.ruler.RulerDAO(x, ed,\"signingOfficerJunctionDAO\");\n\nsoaihd = new net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO.Builder(x)\n.setDelegate(rd)\n.build();\n\nreturn new foam.nanos.auth.AuthorizationDAO(x, soaihd, new foam.nanos.auth.AuthorizableAuthorizer(\"signingOfficerJunction\"));","client":"{\u000a  \"of\": \"net.nanopay.model.BusinessUserJunction\"\u000a}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"canadianSanctionDAO",              "lazy":false, "serve":true, "description":"In-memeory datastore for Canadian sanction records.", "authenticate": false, "serviceScript":"new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer(\"canadianSanctionDAO\")).setName(\"canadianSanction\").setOf(net.nanopay.meter.compliance.canadianSanction.Record.getOwnClassInfo()).build();","client":"{\"of\":\"net.nanopay.meter.compliance.canadianSanction.Record\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"acceptanceDocumentDAO",            "serve":true,  "serviceScript":"return new foam.nanos.auth.AuthorizationDAO(x, new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setAuthorize(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"acceptanceDocuments\").setSeqNo(true).setOf(net.nanopay.documents.AcceptanceDocument.getOwnClassInfo()).build(), new foam.nanos.auth.AuthorizableAuthorizer(\"acceptanceDocument\"));","client":"{\"of\":\"net.nanopay.documents.AcceptanceDocument\"}"})
