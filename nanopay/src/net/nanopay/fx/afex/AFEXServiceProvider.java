@@ -20,6 +20,7 @@ import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
+import net.nanopay.model.BusinessType;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
