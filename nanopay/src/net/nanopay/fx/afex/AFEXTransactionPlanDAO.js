@@ -103,6 +103,7 @@ foam.CLASS({
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setPayeeId(destinationAccount.getOwner());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
+            afexTransaction.setInvoiceId(request.getInvoiceId());
             FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
             quote.addPlan(summary);
           }
