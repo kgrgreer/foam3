@@ -57,8 +57,7 @@ foam.CLASS({
    'net.nanopay.tx.FeeLineItem',
    'net.nanopay.tx.TransactionLineItem',
    'net.nanopay.tx.model.TransactionStatus',
-   'net.nanopay.tx.model.Transaction'
- ],
+  ],
 
   constants: [
     {
