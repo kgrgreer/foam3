@@ -78,13 +78,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             try {
               identificationExpiryDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getIdentification().getExpirationDate()); 
             } catch(Throwable t) {
+              identificationExpiryDate = "01/01/2099"; // Asked to hardcode this by Madlen(AFEX)
               logger.error("Error onboarding business. Cound not parse signing officer identification expiry date.", t);
-              throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
             } 
+            String identificationType = signingOfficer.getIdentification() == null || 
+              signingOfficer.getIdentification().getIdentificationTypeId() < 1 ? "Passport" 
+                : getAFEXIdentificationType(signingOfficer.getIdentification().getIdentificationTypeId()); // Madlen asked it is hardcoded
             OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
-            onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
+            onboardingRequest.setAccountPrimaryIdentificationExpirationDate(identificationExpiryDate);
             onboardingRequest.setAccountPrimaryIdentificationNumber(business.getBusinessRegistrationNumber());
-            onboardingRequest.setAccountPrimaryIdentificationType("Passport"); // Madlen asked it is hardcoded
+            onboardingRequest.setAccountPrimaryIdentificationType(identificationType); 
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
             Region businessRegion = business.getAddress().findRegionId(this.x);

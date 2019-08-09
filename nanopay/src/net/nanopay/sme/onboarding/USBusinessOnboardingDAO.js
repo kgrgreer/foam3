@@ -75,6 +75,7 @@ foam.CLASS({
         // * Step 4+5: Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
         user.setPhone(businessOnboarding.getPhone());
+        user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
