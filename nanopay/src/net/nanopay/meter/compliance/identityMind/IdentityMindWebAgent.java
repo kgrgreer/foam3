@@ -1,8 +1,7 @@
 package net.nanopay.meter.compliance.identityMind;
 
 import foam.core.X;
-import foam.core.Detachable;
-import foam.dao.AbstractSink;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.nanos.http.HttpParameters;
@@ -12,6 +11,8 @@ import foam.nanos.notification.Notification;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -42,50 +43,65 @@ public class IdentityMindWebAgent implements WebAgent {
       IdentityMindResponse webhookResponse = (IdentityMindResponse)
         jsonParser.parseString(data, IdentityMindResponse.class);
 
-      identityMindResponseDAO.where(
+      ArraySink sink = (ArraySink) identityMindResponseDAO.where(
         EQ(IdentityMindResponse.TID, webhookResponse.getTid())
-      ).select(new AbstractSink() {
-        @Override
-        public void put(Object obj, Detachable sub) {
-          IdentityMindResponse idmResponse = (IdentityMindResponse) ((IdentityMindResponse) obj).fclone();
-          idmResponse.copyFrom(webhookResponse);
-          identityMindResponseDAO.put(idmResponse);
+      ).select(new ArraySink());
 
-          ComplianceApprovalRequest approvalRequest = (ComplianceApprovalRequest) approvalRequestDAO.find(
-            AND(
-              EQ(ComplianceApprovalRequest.CAUSE_ID, idmResponse.getId()),
-              EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, "identityMindResponseDAO"),
-              EQ(ComplianceApprovalRequest.APPROVER, identityMindUserId)
-            )
-          );
+      if ( sink.getArray().size() == 0 ) {
+        JSONObject jsonObject = new JSONObject(data);
+        JSONObject tad = jsonObject.getJSONObject("tad");
+        String tid = tad.getString("tid");
 
-          if ( approvalRequest != null ) {
-            approvalRequest = (ComplianceApprovalRequest) approvalRequest.fclone();
-            ApprovalStatus status = approvalRequest.getStatus();
+        sink = (ArraySink) identityMindResponseDAO.where(
+          EQ(IdentityMindResponse.TID, tid)
+        ).select(new ArraySink());
+
+        String decision = jsonObject.getString("decision");
+        if ( decision.equals("ACCEPTED") ) {
+          webhookResponse.setRes("ACCEPT");
+          webhookResponse.setFrp("ACCEPT");
+        }
+        if ( decision.equals("REJECTED") ) {
+          webhookResponse.setRes("DENY");
+          webhookResponse.setFrp("DENY");
+        }
+        webhookResponse.setTid(tid);
+      }
+
+      for ( int i = 0; i < sink.getArray().size(); i ++ ) {
+        IdentityMindResponse idmResponse = (IdentityMindResponse) ((IdentityMindResponse) sink.getArray().get(i)).fclone();
+        idmResponse.copyFrom(webhookResponse);
+        identityMindResponseDAO.put(idmResponse);
+
+        ComplianceApprovalRequest approvalRequest = (ComplianceApprovalRequest) approvalRequestDAO.find(
+          AND(
+            EQ(ComplianceApprovalRequest.CAUSE_ID, idmResponse.getId()),
+            EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, "identityMindResponseDAO"),
+            EQ(ComplianceApprovalRequest.APPROVER, identityMindUserId)
+          )
+        );
+
+        if ( approvalRequest != null ) {
+          approvalRequest = (ComplianceApprovalRequest) approvalRequest.fclone();
+          ApprovalStatus status = approvalRequest.getStatus();
+          if ( status == ApprovalStatus.REQUESTED ) {
             if ( idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.VALIDATED ) {
-              if ( status != ApprovalStatus.APPROVED ) {
-                approvalRequest.setStatus(ApprovalStatus.APPROVED);
-                approvalRequestDAO.put(approvalRequest);
-              }
+              approvalRequest.setStatus(ApprovalStatus.APPROVED);
             } else if ( idmResponse.getComplianceValidationStatus() == ComplianceValidationStatus.REJECTED ) {
-              if ( status != ApprovalStatus.REJECTED ) {
-                approvalRequest.setStatus(ApprovalStatus.REJECTED);
-                approvalRequestDAO.put(approvalRequest);
-              }
-            } else {
-              if ( status == ApprovalStatus.APPROVED || status == ApprovalStatus.REJECTED ) {
-                Notification notification = new Notification();
-                notification.setEmailIsEnabled(true);
-                notification.setBody("The approval request has already been rejected or approved.");
-                notification.setNotificationType("Approval request already updated.");
-                notification.setGroupId("fraud-ops");
-                notificationDAO.put(notification);
-                logger.error("Illegal transition approval request has already been rejected or approved.");
-              }
-            }    
+              approvalRequest.setStatus(ApprovalStatus.REJECTED);
+            }
+            approvalRequestDAO.put(approvalRequest);
+          } else {
+            Notification notification = new Notification();
+            notification.setEmailIsEnabled(true);
+            notification.setBody("The approval request has already been rejected or approved.");
+            notification.setNotificationType("Approval request already updated.");
+            notification.setGroupId("fraud-ops");
+            notificationDAO.put(notification);
+            logger.error("Illegal transition approval request has already been rejected or approved.");
           }
         }
-      });
+      }
     } catch (Exception e) {
       String message = String.format("IdentityMindWebAgent failed.", request.getClass().getSimpleName());
       logger.error(message, e);
