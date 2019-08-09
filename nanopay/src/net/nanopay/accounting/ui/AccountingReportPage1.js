@@ -162,10 +162,20 @@ foam.CLASS({
     .error-table-container .foam-u2-view-TableView-net-nanopay-accounting-resultresponse-ContactResponseItem tbody > tr > td:nth-child(2) {
       padding-left: 144px;
     }
+
+    ^ .report-2-description {
+      margin-top: 14px;
+      margin-left: 4px;
+      margin-bottom: -10px;
+      font-size: 14px;
+      text-align: left;
+      padding-bottom: 16px;
+    }
   `,
 
   messages: [
-    { name: 'SUCCESS_MESSAGE', message: 'Successfully synced contacts and invoices' }
+    { name: 'SUCCESS_MESSAGE', message: 'Successfully synced contacts and invoices' },
+    { name: 'ADDRESS_WARNING', message: `The following contacts are missing a business address. You'll need to add an address before sending them a payment.` }
   ],
 
   properties: [
@@ -173,6 +183,11 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'contactCount',
+      value: 0
+    },
+    {
+      class: 'Int',
+      name: 'contactWarnings',
       value: 0
     },
     {
@@ -210,8 +225,17 @@ foam.CLASS({
                 return invoiceCount > 0 ? true : false;
               }))
               .end()
-              .addClass('aaaaa')
-
+              .start()
+                .start()
+                  .add(this.ADDRESS_WARNING)
+                  .addClass('report-2-description')
+                .end()
+                .tag({
+                  class: 'net.nanopay.accounting.ui.ErrorTable', data: this.initContactWarnings(), columns: ['businessName', 'name'], header: 'Missing Business Address (' + this.contactWarnings + ')'
+                }).show(this.slot(function(contactWarnings) {
+                  return contactWarnings > 0 ? true : false;
+                }))
+              .end()
             .end()
           .end()
 
@@ -250,6 +274,25 @@ foam.CLASS({
           dueDate: myData[x].dueDate
         }))
         this.invoiceCount++;
+      }
+
+      return myDAO;
+    },
+
+    function initContactWarnings() {
+      let myData = this.reportResult.contactErrors;
+      let myDAO = foam.dao.MDAO.create( { of: this.ContactResponseItem } );
+      for ( key in myData ) {
+        if ( key === 'MISS_ADDRESS' ) {
+          for ( x in myData[key] ) {
+            myDAO.put(this.ContactResponseItem.create({
+              id: x,
+              businessName: myData[key][x].businessName,
+              name: myData[key][x].name
+            }))
+            this.contactWarnings++;
+          }
+        }
       }
 
       return myDAO;

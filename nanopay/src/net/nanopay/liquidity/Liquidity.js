@@ -49,14 +49,12 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.RichChoiceView.create({
           search: true,
-          selectionView: { class: 'net.nanopay.ui.AccountSelectionView' },
-          rowView: { class: 'net.nanopay.ui.AccountRowView' },
           sections: [
             {
-              dao: X.accountDAO
+              dao: X.accountDAO.where(X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)))
             }
           ]
-        });
+        }, X);
       }
     }
   ]

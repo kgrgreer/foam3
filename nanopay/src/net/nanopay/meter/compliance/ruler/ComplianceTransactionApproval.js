@@ -1,7 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler',
   name: 'ComplianceTransactionApproval',
-  extends: 'net.nanopay.meter.compliance.ruler.AbstractComplianceApproval',
 
   documentation: 'Updates compliance transaction according to approval.',
 
@@ -12,39 +11,39 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
+    'net.nanopay.approval.ApprovalRequest',
+    'net.nanopay.approval.ApprovalRequestUtil',
     'net.nanopay.approval.ApprovalStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
-  ],
-
-  properties: [
-    {
-      name: 'objDaoKey',
-      value: 'localTransactionDAO'
-    }
+    'net.nanopay.tx.model.TransactionStatus',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
     {
-      name: 'updateObj',
+      name: 'applyAction',
       javaCode: `
-      agency.submit(x, new ContextAgent() {
-        @Override
-        public void execute(X x) {
-          Transaction transaction = (Transaction) obj;
-          if ( transaction.getStatus() == TransactionStatus.PENDING ) {
-            transaction.setStatus(
-              ApprovalStatus.APPROVED == approvalStatus
-                ? TransactionStatus.COMPLETED
-                : TransactionStatus.DECLINED);
-          } else {
-            transaction.setInitialStatus(
-              ApprovalStatus.APPROVED == approvalStatus
-                ? TransactionStatus.COMPLETED
-                : TransactionStatus.DECLINED);
+        agency.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            Transaction transaction = (Transaction) obj.fclone();
+            DAO dao = ((DAO) x.get("approvalRequestDAO"))
+              .where(AND(
+                EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
+                EQ(ApprovalRequest.OBJ_ID, transaction.getId())
+              ));
+
+            ApprovalStatus approval = ApprovalRequestUtil.getState(dao);
+            if ( approval != null && approval != ApprovalStatus.REQUESTED ) {
+              transaction.setStatus(
+                ApprovalStatus.APPROVED == approval
+                  ? TransactionStatus.COMPLETED
+                  : TransactionStatus.DECLINED);
+              ((DAO) x.get("localTransactionDAO")).put(transaction);
+            }
           }
-        }}, 
-        "Update transaction status");
+        }, "Compliance Transaction Approval");
       `
     }
   ]

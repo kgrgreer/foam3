@@ -39,7 +39,7 @@ foam.CLASS({
             ).removeAll();
           }
         }
-      });
+      }, "Remove Compliance Approval Request");
       `
     }
   ]

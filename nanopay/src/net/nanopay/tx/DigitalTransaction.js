@@ -124,7 +124,7 @@ foam.CLASS({
         // args.put("playlink" , config.getPlayLink());
 
         // notification.setEmailArgs(args);
-        // ((DAO)x.get("notificationDAO")).put_(x, notification);
+        // ((DAO)x.get("localNotificationDAO")).put_(x, notification);
       `
     }
   ]

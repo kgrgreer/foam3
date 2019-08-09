@@ -4,7 +4,9 @@ foam.CLASS({
   extends: 'foam.u2.DetailView',
 
   requires: [
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
+    'net.nanopay.accounting.xero.model.XeroInvoice'
   ],
 
   css: `
@@ -42,6 +44,7 @@ foam.CLASS({
           }),
           this.Invoice.CREATED_BY,
           this.Invoice.STATUS,
+          this.Invoice.APPROVED_BY,
           this.Invoice.ISSUE_DATE.clone().copyFrom({
             label: 'Issue Date'
           }),
@@ -56,6 +59,9 @@ foam.CLASS({
           this.Invoice.DESTINATION_CURRENCY,
           this.Invoice.AMOUNT,
           this.Invoice.EXCHANGE_RATE,
+          this.Invoice.IS_SYNCED_WITH_ACCOUNTING,
+          this.XeroInvoice.LAST_DATE_UPDATED,
+          this.QuickbooksInvoice.LAST_DATE_UPDATED,
           this.Invoice.PAYER_ID.clone().copyFrom({
             label: 'Payer'
           }),

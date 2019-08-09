@@ -3,20 +3,30 @@ foam.CLASS({
   name: 'UnlockPaymentsCard',
   extends: 'foam.u2.View',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   documentation: `
     The cards displayed to the user telling them if they have enabled domestic/international payments
   `,
 
   requires: [
     'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCardType',
-    'net.nanopay.sme.onboarding.BusinessOnboarding'
+    'net.nanopay.sme.onboarding.BusinessOnboarding',
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding'
   ],
 
   imports: [
     'agent',
+    'businessOnboardingDAO',
+    'canadaUsBusinessOnboardingDAO',
+    'uSBusinessOnboardingDAO',
     'menuDAO',
     'stack',
-    'user'
+    'user',
+    'auth'
   ],
 
   css: `
@@ -38,7 +48,7 @@ foam.CLASS({
     ^info-box {
       display: inline-block;
 
-      width: 245px;
+      width: 260px;
       height: 100px;
     }
 
@@ -97,6 +107,10 @@ foam.CLASS({
       message: 'Unlock domestic payments'
     },
     {
+      name: 'TITLE_US_DOMESTIC',
+      message: 'Unlock US and Canadian Payments'
+    },
+    {
       name: 'TITLE_INTERNATIONAL',
       message: 'Unlock international payments'
     },
@@ -105,8 +119,16 @@ foam.CLASS({
       message: 'Complete the requirements and unlock domestic payments'
     },
     {
+      name: 'DESCRIPTION_US_DOMESTIC',
+      message: 'Complete the requirements and unlock domestic and Canadian Payments'
+    },
+    {
       name: 'DESCRIPTION_INTERNATIONAL',
       message: 'We are adding the ability to make FX payments around the world using Ablii. '
+    },
+    {
+      name: 'DESCRIPTION_CAD_INTERNATIONAL',
+      message: 'Complete the requirements to unlock US payments. More corridors coming soon!'
     },
     {
       name: 'COMPLETE',
@@ -114,6 +136,10 @@ foam.CLASS({
     },
     {
       name: 'PENDING',
+      message: 'Pending!'
+    },
+    {
+      name: 'COMING_SOON',
       message: 'Coming soon!'
     }
   ],
@@ -158,8 +184,9 @@ foam.CLASS({
       expression: function(type) {
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return this.TITLE_INTERNATIONAL;
-        }
-        return this.TITLE_DOMESTIC;
+        }       
+        
+        return this.isCanadianBusiness ? this.TITLE_DOMESTIC : this.TITLE_US_DOMESTIC;
       },
       documentation: `
         The title to be used in the card based on card type
@@ -169,10 +196,14 @@ foam.CLASS({
       class: 'String',
       name: 'info',
       expression: function(type) {
+        if ( type === this.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness ) {
+          return this.DESCRIPTION_CAD_INTERNATIONAL;
+        }
+
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return this.DESCRIPTION_INTERNATIONAL;
         }
-        return this.DESCRIPTION_DOMESTIC;
+        return this.isCanadianBusiness ? this.DESCRIPTION_DOMESTIC : this.DESCRIPTION_US_DOMESTIC;
       },
       documentation: `
         The description to be used in the card based on card type
@@ -182,22 +213,44 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isComplete'
     },
+    {
+      name: 'hasUSDPermission',
+      value: false
+    },
+    {
+      name: 'isCanadianBusiness',
+      expression: function(user) {
+        return user.address.countryId === 'CA';
+      }
+    }
   ],
 
   methods: [
+    function init() {
+      this.auth.check(null, 'currency.read.USD').then((result) => {
+        this.hasUSDPermission = result;
+      });
+    },
     function initE() {
+
       var self = this;
       this.addClass(this.myClass())
         .style({ 'background-image': this.flagImgPath })
         .start().addClass(this.myClass('info-box'))
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
-          .add(this.slot(function(isComplete, type) {
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL ) {
+          .add(this.slot(function(isComplete, type, hasUSDPermission) {
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! this.isCanadianBusiness ) {
+              return this.E().start().addClass(self.myClass('complete-container'))
+                .start('p').addClass(self.myClass('complete')).add(self.COMING_SOON).end()
+              .end();
+            }
+
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness && ( ! hasUSDPermission || ! this.user.onboarded ) ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
-            }
+            }            
 
             if ( ! isComplete ) {
               return this.E()
@@ -228,12 +281,60 @@ foam.CLASS({
       name: 'getStarted',
       label: 'Get started',
       code: function(x) {
-        if ( this.type === this.UnlockPaymentsCardType.DOMESTIC ) {
+          var userId = this.agent.id;
+          var businessId = this.user.id;
           if ( ! this.user.onboarded ) {
-            var userId = this.agent.id;
-            var businessId = this.user.id;
-            x.businessOnboardingDAO.find(userId).then((o) => {
-              o = o || this.BusinessOnboarding.create({
+            var isDomesticOnboarding = this.type === this.UnlockPaymentsCardType.DOMESTIC;
+
+            // We need to find the BusinessOnboarding by checking both the
+            // userId and the businessId. Previously we were only checking the
+            // userId, which caused a bug when trying to add a user that's
+            // already on the platform as a signing officer for another
+            // business. The bug was caused by the search by userId finding the
+            // BusinessOnboarding for the existing user's other business instead
+            // of the one they were recently added to. By including the
+            // businessId in our search criteria we avoid this problem.
+            if ( isDomesticOnboarding && this.isCanadianBusiness ) {
+              this.businessOnboardingDAO.find(
+                this.AND(
+                  this.EQ(this.BusinessOnboarding.USER_ID, userId),
+                  this.EQ(this.BusinessOnboarding.BUSINESS_ID, businessId)
+                )
+              ).then((o) => {
+                o = o || this.BusinessOnboarding.create({
+                  userId: userId,
+                  businessId: businessId
+                });
+                this.stack.push({
+                  class: 'net.nanopay.sme.onboarding.ui.WizardView',
+                  data: o
+                });
+              });
+            }  else if ( ! this.isCanadianBusiness ) {
+              this.uSBusinessOnboardingDAO.find(
+                this.AND(
+                  this.EQ(this.USBusinessOnboarding.USER_ID, userId),
+                  this.EQ(this.USBusinessOnboarding.BUSINESS_ID, businessId)
+                )
+              ).then((o) => {
+                o = o || this.USBusinessOnboarding.create({
+                  userId: userId,
+                  businessId: businessId
+                });
+                this.stack.push({
+                  class: 'net.nanopay.sme.onboarding.ui.WizardView',
+                  data: o
+                });
+              });
+            }
+          }  else if ( ! isDomesticOnboarding && this.isCanadianBusiness ) {
+            this.canadaUsBusinessOnboardingDAO.find(
+              this.AND(
+                this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, userId),
+                this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, businessId)
+              )
+            ).then((o) => {
+              o = o || this.CanadaUsBusinessOnboarding.create({
                 userId: userId,
                 businessId: businessId
               });
@@ -245,7 +346,6 @@ foam.CLASS({
           } else {
             this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
           }
-        }
       }
     }
   ]

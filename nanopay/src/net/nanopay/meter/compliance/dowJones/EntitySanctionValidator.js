@@ -51,8 +51,7 @@ foam.CLASS({
                     .setMatches(response.getResponseBody().getMatches())
                     .build());
               }
-            });
-            
+            }, "Entity Sanction Validator");
           }
           ruler.putResult(status);
         } catch (IllegalStateException e) {

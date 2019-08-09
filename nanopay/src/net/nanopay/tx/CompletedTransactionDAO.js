@@ -11,7 +11,9 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ'
   ],
 
   methods: [
@@ -33,7 +35,9 @@ foam.CLASS({
       Transaction txn = (Transaction) getDelegate().put_(x, obj);
       if ( oldTxn != null && txn.getStatus() == TransactionStatus.COMPLETED && oldTxn.getStatus() != TransactionStatus.COMPLETED ||
         oldTxn == null && txn.getStatus() == TransactionStatus.COMPLETED ) {
-        DAO children = txn.getChildren(x);
+        DAO children = ((DAO) x.get("localTransactionDAO")).inX(x).where(AND(
+          EQ(Transaction.PARENT, txn.getId()),
+          EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)));
         for ( Object o : ((ArraySink) children.select(new ArraySink())).getArray() ) {
           Transaction child = (Transaction) ((Transaction) o).fclone();
           if( child.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED){

@@ -14,11 +14,16 @@ foam.CLASS({
     'foam.nanos.analytics.Candlestick',
     'foam.u2.detail.SectionedDetailPropertyView',
     'foam.u2.layout.Cols',
+    'foam.glang.EndOfDay',
+    'foam.glang.EndOfWeek',
+    'foam.mlang.IdentityExpr',
     'net.nanopay.account.DigitalAccount',
     'org.chartjs.CandlestickDAOChartView',
+    'net.nanopay.liquidity.ui.dashboard.DateFrequency',
   ],
 
   imports: [
+    'accountBalanceDailyCandlestickDAO',
     'accountBalanceWeeklyCandlestickDAO',
     'accountBalanceMonthlyCandlestickDAO',
     'accountBalanceQuarterlyCandlestickDAO',
@@ -96,14 +101,40 @@ foam.CLASS({
       class: 'Date',
       name: 'startDate',
       factory: function() {
-        return new Date(0);
+        let resultDate = new Date (this.endDate.getTime());
+        resultDate.setDate(
+          resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
+        );
+        
+        return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
+      },
+      preSet: function(_, n) {
+        var dayBeforeEndDate = new Date(this.endDate);
+        dayBeforeEndDate.setDate(this.endDate.getDate() - 1);
+
+        return this.EndOfDay.create({
+          delegate: this.IdentityExpr.create()
+        }).f(
+              new Date(Math.min(dayBeforeEndDate.getTime(), n.getTime()))
+            )
       }
     },
     {
       class: 'Date',
       name: 'endDate',
-      factory: function() {
+      factory: function () {
         return new Date();
+      },
+      preSet: function(o, n) {
+        if ( this.startDate && n.getTime() < this.startDate.getTime()  ) {
+          return o;
+        } else {
+          return this.EndOfDay.create({
+            delegate: this.IdentityExpr.create()
+          }).f(
+                new Date(Math.min(Date.now(), n.getTime()))
+              )
+        }
       }
     },
     {
@@ -169,14 +200,12 @@ foam.CLASS({
           .end()
         .end()
         .start()
-          .style({ 'width': '700px', 'height': '600px' })
+          .style({ 'height': '550px' })
           .addClass(this.myClass('chart'))
           .add(this.CandlestickDAOChartView.create({
             data: this.aggregatedDAO$proxy,
             config$: this.config$,
-            customDatasetStyling$: this.styling$,
-            width: 700,
-            height: 600
+            customDatasetStyling$: this.styling$
           }))
         .end()
         .start(this.Cols)
@@ -224,6 +253,8 @@ foam.CLASS({
                 return;
               }
 
+              var liquiditySetting = await account.liquiditySetting$find;
+
               // Only put liquidity history that spans the range of the balance history.
               // i.e. If the startDate is May 1st but balance histories don't start until
               // July 1st, we want liquidity settings to start at July 1st but if liquidity
@@ -235,10 +266,13 @@ foam.CLASS({
               maxTime = maxTime.value || new Date();
 
               var fillLiquidityHistory = async function(threshold) {
+                // If the liquidity setting is not enabled, just do not display
+                if ( ! liquiditySetting[threshold + 'Liquidity'].enabled ) return;
+
                 var key = account.liquiditySetting + ':' + threshold;
                 var liquidityHistoryDAO = this.liquidityThresholdCandlestickDAO
                   .where(this.EQ(this.Candlestick.KEY, key));
-                
+
                 var first = (await liquidityHistoryDAO
                   .where(this.LTE(this.Candlestick.CLOSE_TIME, minTime))
                   .orderBy(this.DESC(this.Candlestick.CLOSE_TIME))
@@ -249,7 +283,7 @@ foam.CLASS({
                   first.closeTime = minTime;
                   await dao.put(first);
                 }
-                
+
                 var last = (await liquidityHistoryDAO
                   .where(this.GTE(this.Candlestick.CLOSE_TIME, maxTime))
                   .orderBy(this.Candlestick.CLOSE_TIME)
@@ -260,7 +294,6 @@ foam.CLASS({
                   last.closeTime = maxTime;
                   await dao.put(last);
                 } else {
-                  var liquiditySetting = await account.liquiditySetting$find;
                   await dao.put(this.Candlestick.create({
                     closeTime: maxTime,
                     key: key,
@@ -297,13 +330,18 @@ foam.CLASS({
         this.config.options.scales.yAxes = [{
             ticks: {
               callback: function(v) {
-                return c.format(Math.floor(v));
+                return `${c.format(v)}`;
               }
             }
         }];
-        this.config.options.tooltips.callbacks.label = function(v) {
-          return c.format(Math.floor(v.yLabel));
-        };
+        this.config.options.tooltips = {
+          displayColors: false,
+          callbacks: {
+            label: function(v) {
+              return `${c.format(v.yLabel)}`;
+            }
+          }
+        }
 
         var style = {};
         style[a.id] = {
@@ -320,9 +358,9 @@ foam.CLASS({
         }
         style[a.liquiditySetting+':high'] = {
           steppedLine: true,
-          borderColor: ['#a61414'],
+          borderColor: ['#32bf5e'],
           backgroundColor: 'rgba(0, 0, 0, 0.0)',
-          label: this.LABEL_HIGH_THRESHOLD
+          label: this.LABEL_HIGH_THRESHOLD,
         }
         this.styling = style;
       }

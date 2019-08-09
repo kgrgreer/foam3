@@ -44,9 +44,15 @@ public class BankAccountBranchDAO
     }
 
     BankAccount bankAccount = (BankAccount) obj;
-    Institution institution = bankAccount.findInstitution(x);
 
-    // institution should be created/attached to bank account before reaching here.
+    Institution institution = null;
+    Branch branch = bankAccount.findBranch(x);
+    if ( branch != null ) {
+      institution = branch.findInstitution(x);
+    } else {
+      institution = bankAccount.findInstitution(x);
+    }
+
     if ( institution == null ) {
       bankAccount = (BankAccount) super.put_(x, obj);
       String message = "Insititution not set for BankAccount with Id: " + bankAccount.getId();
@@ -55,7 +61,6 @@ public class BankAccountBranchDAO
       return bankAccount;
     }
 
-    Branch branch = bankAccount.findBranch(x);
     if ( branch == null && ! foam.util.SafetyUtil.isEmpty(bankAccount.getBranchId()) ) {
       // add branch.
       addBranch(x, institution, bankAccount);
@@ -105,7 +110,7 @@ public class BankAccountBranchDAO
         .setTemplate("NOC")
         .setBody(message)
         .build();
-    ((DAO) x.get("notificationDAO")).put(notification);
+    ((DAO) x.get("localNotificationDAO")).put(notification);
     ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
     return newBranch;
   }

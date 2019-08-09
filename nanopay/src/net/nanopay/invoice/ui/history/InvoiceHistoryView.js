@@ -52,11 +52,17 @@ foam.CLASS({
         var mdao = foam.dao.MDAO.create({ of: this.HistoryRecord });
         filteredInvoiceHistoryDAO.select(function(o) {
           var status = o.updates.find((u) => u.name === 'status');
-          if ( status === undefined ) return null;
+          
+          // Do not check for failed status if there is no status property
+          if ( ! status ) {
+            mdao.put(o);
+            return null;
+          }
+
           if (
             previousStatus &&
             status.newValue === self.InvoiceStatus.UNPAID &&
-            previousStatus.newValue === self.InvoiceStatus.PENDING
+            previousStatus.newValue === self.InvoiceStatus.PROCESSING
           ) {
             var declinedTimestamp = new Date(o.timestamp);
             declinedTimestamp.setSeconds(declinedTimestamp.getSeconds() - 1) // Failed status will appear before unpaid

@@ -32,7 +32,11 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*',
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'net.nanopay.tx.cico.VerificationTransaction',
+    'net.nanopay.payment.PaymentProvider',
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   properties: [
@@ -46,18 +50,31 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
-      javaCode: `TransactionQuote quote = (TransactionQuote) obj;
+      javaCode: `
+      
+      if ( ! this.getEnabled() ) {
+        return getDelegate().put_(x, obj);
+      }
+      
+      TransactionQuote quote = (TransactionQuote) obj;
       Transaction request = quote.getRequestTransaction();
       Logger logger = (Logger) x.get("logger");
+      
       if ( request instanceof AlternaVerificationTransaction ) {
         request.setIsQuoted(true);
         quote.addPlan(request);
         return quote;
+      } else if ( request instanceof VerificationTransaction ) {
+        return getDelegate().put_(x, obj);
       }
+      
       Account sourceAccount = quote.getSourceAccount();
       Account destinationAccount = quote.getDestinationAccount();
       if ( sourceAccount instanceof CABankAccount &&
         destinationAccount instanceof DigitalAccount ) {
+        
+        if ( ! useAlternaAsPaymentProvider(x, (BankAccount) sourceAccount) ) return getDelegate().put_(x, obj);
+        
         if ( ((CABankAccount) sourceAccount).getStatus() != BankAccountStatus.VERIFIED ) {
           logger.error("Bank account needs to be verified for cashin " + sourceAccount.getId());
           throw new RuntimeException("Bank account needs to be verified for cashin");
@@ -70,6 +87,9 @@ foam.CLASS({
         quote.addPlan(t);
       } else if ( destinationAccount instanceof CABankAccount &&
         sourceAccount instanceof DigitalAccount ) {
+        
+        if ( ! useAlternaAsPaymentProvider(x, (BankAccount) destinationAccount) ) return getDelegate().put_(x, obj);
+        
         if ( ((CABankAccount) destinationAccount).getStatus() != BankAccountStatus.VERIFIED ) {
           logger.error("Bank account needs to be verified for cashout");
           throw new RuntimeException("Bank account needs to be verified for cashout");
@@ -83,5 +103,26 @@ foam.CLASS({
       }
       return getDelegate().put_(x, quote);`
     },
+    {
+      name: 'useAlternaAsPaymentProvider',
+      type: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'foam.core.X'
+        },
+        {
+          name: 'bankAccount',
+          type: 'net.nanopay.bank.BankAccount'
+        }
+      ],
+      javaCode: `
+      ArrayList<PaymentProvider> paymentProviders = PaymentProvider.findPaymentProvider(x, bankAccount);
+  
+      // no payment provider found, default to alterna
+      if ( paymentProviders.size() == 0 ) return true;
+      return paymentProviders.stream().filter( (paymentProvider)-> paymentProvider.getName().equals("Alterna")).count() > 0;
+      `
+    }
   ]
 });

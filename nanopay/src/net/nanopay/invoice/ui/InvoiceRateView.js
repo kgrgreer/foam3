@@ -48,7 +48,8 @@ foam.CLASS({
     'transactionQuotePlanDAO',
     'user',
     'viewData',
-    'wizard'
+    'wizard',
+    'refreshIntervalId',
   ],
 
   javaImports: [
@@ -190,9 +191,17 @@ foam.CLASS({
     },
     {
       name: 'exchangeRateNotice',
-      expression: function(isEmployee, isFx) {
-        return isEmployee && isFx;
+      expression: function(isEmployee) {
+        return isEmployee ? this.AFEX_RATE_NOTICE + this.NOTICE_WARNING : this.AFEX_RATE_NOTICE;
       }
+    },
+    {
+      class: 'Int',
+      name: 'refreshTime'
+    },
+    {
+      class: 'Boolean',
+      name: 'quotePassedIn'
     }
   ],
 
@@ -216,7 +225,8 @@ foam.CLASS({
     { name: 'CURRENCY_FIND_ERROR', message: 'Error: Could not find currency.' },
     { name: 'RATE_FETCH_FAILURE', message: 'Error fetching rates: ' },
     { name: 'NOTICE_TITLE', message: '*NOTICE: EXCHANGE RATE SUBJECT TO CHANGE.' },
-    { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' }
+    { name: 'NOTICE_WARNING', message: 'The final exchange rate and resulting amount to be paid will be displayed to the approver.' },
+    { name: 'AFEX_RATE_NOTICE', message: 'Rates provided are indicative until the payment is submitted. ' }
   ],
 
   methods: [
@@ -236,6 +246,11 @@ foam.CLASS({
 
       if ( this.chosenBankAccount && ! this.sourceCurrency ) {
         this.setSourceCurrency();
+      }
+      if ( this.quotePassedIn && this.quote != null ) {
+        clearTimeout(this.refreshIntervalId);
+        this.getExpiryTime(new Date(), this.quote.fxExpiry);
+        this.updateQuote(this);
       }
     },
     function initE() {
@@ -288,7 +303,6 @@ foam.CLASS({
             .end()
             .start().addClass('float-right').addClass('body-copy')
               .add(this.formattedAmount$)
-              .add(` ${this.invoice.destinationCurrency}`)
             .end()
           .end()
 
@@ -404,9 +418,7 @@ foam.CLASS({
                           return quote$fxFees$totalFees ?
                             sourceCurrency.format(quote$fxFees$totalFees) :
                             sourceCurrency.format(0);
-                        }),
-                        ' ',
-                        this.quote$.dot('fxFees').dot('totalFeesCurrency')
+                        })
                       )
 
                     .end()
@@ -428,7 +440,7 @@ foam.CLASS({
               .add(this.chosenBankAccount$.map((bankAccount) => {
                 if ( ! bankAccount ) return '';
                 return this.currencyDAO.find(bankAccount.denomination).then((currency) => {
-                  return `${ currency.format(0) } ${ bankAccount.denomination}`;
+                  return currency.format(0);
                 });
               }))
             .end()
@@ -453,16 +465,15 @@ foam.CLASS({
                           if ( ! sourceCurrency ) return;
                           return this.sourceCurrency.format(amount);
                         }
-                      }), ' ',
-                      this.quote$.dot('sourceCurrency'),
+                      }),
                       this.exchangeRateNotice$.map((value) => value ? '*' : '')
                     )
                   .end()
                 .end();
           }))
         .end()
-        .start().show(this.exchangeRateNotice$)
-          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.NOTICE_WARNING, title: this.NOTICE_TITLE })
+        .start().show(this.isFx$)
+          .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.exchangeRateNotice, title: this.NOTICE_TITLE })
         .end();
     },
 
@@ -479,13 +490,11 @@ foam.CLASS({
         amount: this.invoice.amount,
         destinationAmount: this.invoice.targetAmount,
       });
-      console.log(transaction);
       var quote = await this.transactionQuotePlanDAO.put(
         this.TransactionQuote.create({
           requestTransaction: transaction
         })
       );
-      console.log(quote);
       return quote.plan;
     },
     async function getFXQuote() {
@@ -504,7 +513,16 @@ foam.CLASS({
           requestTransaction: transaction
         })
       );
+      clearTimeout(this.refreshIntervalId);
+      this.getExpiryTime(new Date(), quote.plan.fxExpiry);
+      this.updateQuote(this);
       return quote.plan;
+    },
+
+    function getExpiryTime( time, expiryTime) {
+      let utc1 =  Date.UTC(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
+      let utc2 = Date.UTC(expiryTime.getFullYear(), expiryTime.getMonth(), expiryTime.getDate(), expiryTime.getHours(), expiryTime.getMinutes(), expiryTime.getSeconds());
+      this.refreshTime = Math.floor(( utc2-utc1 ));
     },
 
     function createFxTransaction(fxQuote) {
@@ -529,6 +547,33 @@ foam.CLASS({
         paymentMethod: fxQuote.paymentMethod
       });
     },
+
+    function updateQuote(self) {
+      this.refreshIntervalId = setTimeout(function() {
+      var transaction = self.AbliiTransaction.create({
+        sourceAccount: self.invoice.account,
+        destinationAccount: self.invoice.destinationAccount,
+        sourceCurrency: self.invoice.sourceCurrency,
+        destinationCurrency: self.invoice.destinationCurrency,
+        payerId: self.invoice.payerId,
+        payeeId: self.invoice.payeeId,
+        destinationAmount: self.invoice.amount
+      });
+
+      self.transactionQuotePlanDAO.put(
+        self.TransactionQuote.create({
+          requestTransaction: transaction
+        })
+      ).then(function(quote) {
+        self.quote = quote.plan;
+        self.getExpiryTime(new Date, quote.plan.fxExpiry);
+      });
+      if ( self.state == self.LOADED ) {
+        loopOnce = false;
+        updateQuote(self);
+      }
+      }, self.refreshTime);
+    }
   ],
 
   listeners: [

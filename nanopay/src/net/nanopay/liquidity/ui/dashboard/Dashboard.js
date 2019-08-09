@@ -8,10 +8,11 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.comics.v2.DAOBrowserView',
     'foam.u2.layout.Card',
-    'foam.u2.layout.Cards',
+    'foam.u2.layout.Grid',
     'foam.u2.layout.Rows',
+    'foam.u2.layout.Cols',
+    'foam.comics.v2.DAOBrowserView',
     'net.nanopay.liquidity.ui.dashboard.accounts.DashboardAccounts',
     'net.nanopay.liquidity.ui.dashboard.cicoShadow.DashboardCicoShadow',
     'net.nanopay.liquidity.ui.dashboard.currencyExposure.CurrencyExposureDAO',
@@ -26,43 +27,38 @@ foam.CLASS({
     'transactionDAO'
   ],
 
-  exports: [
-    'baseDenomination',
-    'conversionService'
-  ],
-
   css: `
+    ^header-container {
+      padding: 32px 32px 0px 32px;
+    }
+
     ^header {
       font-size: 36px;
       font-weight: 600;
       line-height: 1.33;
-      padding: 32px 0px 0px 32px;;
+    }
+
+    ^last-updated {
+      margin-left: 24px;
     }
 
     ^dashboard-container {
+      grid-column-gap: 16px;
+      grid-row-gap: 32px;
       padding: 32px;
     }
 
-    ^dashboard-container .foam-u2-layout-Cards {
-      margin-bottom: 32px;
+    ^ .foam-u2-ActionView-refresh span {
+      vertical-align: middle;
     }
   `,
 
   properties: [
     {
-      class: 'Reference',
-      of: 'net.nanopay.model.Currency',
-      name: 'baseDenomination',
-      targetDAOKey: 'currencyDAO',
-      value: 'CAD'
-    },
-    {
-      name: 'conversionService',
-      hidden: true,
-      value: {
-        getRate: function(from, to) {
-          return Promise.resolve(1);
-        }
+      class: 'DateTime',
+      name: 'lastUpdated',
+      factory: function() {
+        return new Date();
       }
     },
     {
@@ -85,38 +81,59 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    {
+      name: 'UPDATED',
+      message: 'Last updated at',
+    },
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
       this
         .addClass(this.myClass())
-          .start().add(this.cls_.name).addClass(this.myClass('header')).end()
-          .start(this.Rows).addClass(this.myClass('dashboard-container'))
-            .start(this.Cards)
+          .start(this.Cols).addClass(this.myClass('header-container'))
+            .start(this.Cols).style({'align-items': 'baseline'})
+              .start().add(this.cls_.name).addClass(this.myClass('header')).end()
+              .start()
+                .add(this.lastUpdated$.map(v => `${this.UPDATED}: ${v.toLocaleString()}`))
+                .addClass(this.myClass('last-updated'))
+              .end()
+            .end()
+            .startContext({data: this})
+              .tag(this.REFRESH, { icon: 'images/refresh-icon.svg' })
+            .endContext()
+          .end()
+          .tag(this.lastUpdated$.map(_ => {
+            return this.Grid.create()
+              .addClass(this.myClass('dashboard-container'))
               .start(this.Card, { columns: 7 }).addClass(this.myClass('accounts'))
                 .tag(this.DashboardAccounts, { 
-                  currency$: this.currencyExposureDAO$,
-                  denomination$: this.baseDenomination$,
+                  currency$: this.currencyExposureDAO$
                 })
               .end()
               .start(this.Card, { columns: 5 }).addClass(this.myClass('liquidity'))
                 .tag(this.DashboardLiquidity)
               .end()
-            .end()
-            .start(this.Cards)
-              .start(this.Card, { columns: 1 }).addClass(this.myClass('currency-exposure'))
+              .start(this.Card, { columns: 3 }).addClass(this.myClass('currency-exposure'))
                 .tag(this.DashboardCurrencyExposure, { data: this.currencyExposureDAO })
               .end()
-              .start(this.Card, { columns: 11 })
+              .start(this.Card, { columns: 9 })
                 .tag(this.DashboardCicoShadow)
               .end()
-            .end()
-            .start(this.Cards)
               .start(this.Card, { columns: 12 }).addClass(this.myClass('recent-transactions'))
                 .tag(this.DashboardRecentTransactions, { data: this.recentTransactionsDAO })
               .end()
-            .end()
-          .end();
+          }))
     }
+  ],
+  actions: [
+    {
+      name: 'refresh',
+      code: function() {
+        this.lastUpdated = undefined;
+      }
+    },
   ]
 });

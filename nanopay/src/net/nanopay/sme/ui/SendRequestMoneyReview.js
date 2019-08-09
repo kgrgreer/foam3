@@ -87,6 +87,7 @@ foam.CLASS({
             isPayable: this.type,
             isReadOnly: true,
             quote: this.viewData.quote,
+            quotePassedIn: true,
             chosenBankAccount: this.viewData.bankAccount
           })
           .end()

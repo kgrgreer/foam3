@@ -30,6 +30,12 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'lastUpdated'
+    },
+    {
+      class: 'DateTime',
+      name: 'lastDateUpdated',
+      label: 'Xero Last Updated',
+      visibility: 'RO'
     }
   ]
 });

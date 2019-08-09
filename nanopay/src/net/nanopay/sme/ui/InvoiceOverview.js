@@ -29,7 +29,8 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
-    'net.nanopay.model.Invitation'
+    'net.nanopay.model.Invitation',
+    'net.nanopay.tx.ConfirmationFileLineItem'
   ],
 
   imports: [
@@ -358,7 +359,8 @@ foam.CLASS({
       expression: function(invoice$status, invoice$createdBy) {
         return this.user.id === invoice$createdBy &&
         ( invoice$status === this.InvoiceStatus.UNPAID ||
-          invoice$status === this.InvoiceStatus.OVERDUE ) && !
+          invoice$status === this.InvoiceStatus.OVERDUE ||
+          invoice$status === this.InvoiceStatus.PENDING_APPROVAL ) && !
         ( ( this.QuickbooksInvoice.isInstance(this.invoice) || this.XeroInvoice.isInstance(this.invoice) ) && this.isPayable );
       }
     },
@@ -392,6 +394,12 @@ foam.CLASS({
         return Promise.resolve();
       }
     },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'transactionConfirmationPDF',
+      documentation: `Order confirmation, as a PDF, for the Payer.
+    `
+    }
   ],
 
   methods: [
@@ -408,27 +416,23 @@ foam.CLASS({
           if ( transaction.type === 'AscendantFXTransaction' && transaction.fxRate ) {
             if ( transaction.fxRate !== 1 ) {
               this.exchangeRateInfo = `1 ${transaction.destinationCurrency} = `
-                + `${(1 / transaction.fxRate).toFixed(4)} `
-                + `${transaction.sourceCurrency}`;
+                + `${(1 / transaction.fxRate).toFixed(4)} `;
             }
 
             this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
               .then((currency) => {
-                this.fee = `${currency.format(transaction.fxFees.totalFees)} `
-                  + `${currency.alphabeticCode}`;
+                this.fee = currency.format(transaction.fxFees.totalFees);
               });
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = `${currency.format(0)} ${currency.alphabeticCode}`;
+                this.fee = currency.format(0);
               });
           }
 
           this.accountDAO.find(bankAccountId).then((account) => {
             this.currencyDAO.find(account.denomination).then((currency) => {
-              this.formattedAmountPaid =
-                `${currency.format(transaction.amount)} ` +
-                `${currency.alphabeticCode}`;
+              this.formattedAmountPaid = currency.format(transaction.amount);
             });
 
             if ( this.invoice.destinationCurrency === account.denomination ) {
@@ -437,11 +441,17 @@ foam.CLASS({
               this.isCrossBorder = true;
             }
           });
+
+          for ( var i = 0; i < transaction.lineItems.length; i++ ) {
+            if ( this.ConfirmationFileLineItem.isInstance( transaction.lineItems[i] ) ) {
+              this.transactionConfirmationPDF = transaction.lineItems[i].file;
+              break;
+            }
+          }
+
         } else {
           this.currencyDAO.find(this.invoice.chequeCurrency).then((currency) => {
-            this.formattedAmountPaid =
-              `${currency.format(this.invoice.chequeAmount)} ` +
-              `${currency.alphabeticCode}`;
+            this.formattedAmountPaid = currency.format(this.invoice.chequeAmount);
           });
         }
       });
@@ -563,8 +573,6 @@ foam.CLASS({
                       promise$: this.formattedAmountDue$,
                       value: '--',
                     }))
-                    .add(' ')
-                    .add(this.invoice$.dot('destinationCurrency'))
                   .end()
                   .start().addClass('invoice-text')
                     .start().addClass('table-content').add(this.AMOUNT_PAID).end()
@@ -617,17 +625,16 @@ foam.CLASS({
               .end()
             .end()
 
-            .callIf(this.invoice.AFXConfirmationPDF != null, function() {
-              this
-                .start()
-                  .addClass('confirmation-link-content')
-                  .tag({
-                    class: 'net.nanopay.sme.ui.Link',
-                    data: self.invoice.AFXConfirmationPDF.address,
-                    text: self.TXN_CONFIRMATION_LINK_TEXT
-                  })
-                .end();
-            })
+            .add(this.slot(function(transactionConfirmationPDF) {
+              if ( transactionConfirmationPDF != null ) {
+                return this.E().start()
+                .tag({
+                  class: 'net.nanopay.sme.ui.Link',
+                  data: self.transactionConfirmationPDF.address,
+                  text: self.TXN_CONFIRMATION_LINK_TEXT
+                })
+              }
+            }))
 
             .start()
               .addClass('invoice-history-content')

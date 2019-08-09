@@ -11,8 +11,19 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.INBankAccount',
+    'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.fx.FXService',
+    'net.nanopay.fx.FXQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
+  ],
+
+  constants: [
+    {
+      type: 'String',
+      name: 'LOCAL_FX_SERVICE_NSPEC_ID',
+      value: 'localFXService'
+    }
   ],
 
   methods: [
@@ -24,6 +35,7 @@ foam.CLASS({
       if ( ! ( sourceAccount instanceof CABankAccount && destinationAccount instanceof INBankAccount ) ) {
         return super.put_(x, quote);
       }
+
       Transaction request = quote.getRequestTransaction();
       Transaction txn;
       if ( request.getType().equals("Transaction") ) {
@@ -69,6 +81,11 @@ foam.CLASS({
       } else {
         return super.put_(x, quote);
       }
+
+      FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, request.getSourceCurrency(), request.getDestinationCurrency(), LOCAL_FX_SERVICE_NSPEC_ID);
+      FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"");
+      txn.addLineItems(new TransactionLineItem[] { new FeeLineItem.Builder(x).setName("Foreign Exchange Fee ( rate: " + fxQuote.getRate() + " )").setAmount((long)fxQuote.getRate() * (quote.getRequestTransaction().getAmount()) ).build()},null);
+
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.setIsQuoted(true);
       ((SummaryTransaction) txn).collectLineItems();

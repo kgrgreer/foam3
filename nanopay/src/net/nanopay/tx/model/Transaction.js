@@ -14,42 +14,43 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'currencyDAO',
-    'userDAO',
     'complianceHistoryDAO',
-    'localTransactionDAO',
-    'transactionDAO'
+    'currencyDAO',
+    'homeDenomination',
+    'stack?'
   ],
 
   javaImports: [
     'foam.core.PropertyInfo',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.EQ',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
+    'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.liquidity.LiquidityService',
     'net.nanopay.model.Business',
-    'net.nanopay.tx.alterna.AlternaVerificationTransaction',
+    'net.nanopay.tx.cico.VerificationTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.liquidity.LiquidityService',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.account.Balance',
     'net.nanopay.tx.model.Transaction'
+    'static foam.mlang.MLang.EQ'
   ],
 
   requires: [
@@ -93,6 +94,33 @@ foam.CLASS({
     'completionDate'
   ],
 
+  sections: [
+    {
+      name: 'basicInfo'
+    },
+    {
+      name: 'paymentInfo'
+    },
+    {
+      name: 'lineItemsSection',
+      title: 'Line Items',
+      isAvailable: function(id, lineItems) {
+        return ! id || lineItems.length;
+      }
+    },
+    {
+      name: 'reverseLineItemsSection',
+      title: 'Reverse Line Items',
+      isAvailable: function(reverseLineItems) {
+        return reverseLineItems.length;
+      }
+    },
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    },
+  ],
+
   axioms: [
     {
       class: 'foam.comics.v2.CannedQuery',
@@ -132,6 +160,7 @@ foam.CLASS({
       name: 'name',
       class: 'String',
       visibility: 'RO',
+      section: 'basicInfo',
       factory: function() {
         return this.type;
       },
@@ -144,6 +173,7 @@ foam.CLASS({
       class: 'String',
       visibility: 'RO',
       storageTransient: true,
+      section: 'basicInfo',
       getter: function() {
          return this.cls_.name;
       },
@@ -183,16 +213,18 @@ foam.CLASS({
       name: 'id',
       label: 'ID',
       visibility: 'RO',
+      section: 'basicInfo',
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
-      javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`
-
+      javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
+      tableWidth: 150
     },
     {
       class: 'DateTime',
       name: 'created',
       documentation: `The date the transaction was created.`,
       visibility: 'RO',
-      tableWidth: 140
+      section: 'basicInfo',
+      tableWidth: 172
     },
     {
       class: 'Reference',
@@ -200,6 +232,7 @@ foam.CLASS({
       name: 'createdBy',
       documentation: `The id of the user who created the transaction.`,
       visibility: 'RO',
+      section: 'basicInfo',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
           if ( user ) {
@@ -256,6 +289,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
+      section: 'basicInfo',
       value: 'COMPLETED',
       permissionRequired: true,
       javaFactory: 'return TransactionStatus.COMPLETED;',
@@ -298,6 +332,7 @@ foam.CLASS({
       label: 'Receiver',
       storageTransient: true,
       visibility: 'RO',
+      section: 'paymentInfo',
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
@@ -312,6 +347,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
       label: 'Sender',
+      section: 'paymentInfo',
       visibility: 'RO',
       storageTransient: true,
       tableCellFormatter: function(value) {
@@ -337,7 +373,7 @@ foam.CLASS({
     {
       class: 'Currency',
       name: 'amount',
-      label: 'Amount',
+      section: 'paymentInfo',
       visibility: 'RO'
     },
     {
@@ -348,30 +384,36 @@ foam.CLASS({
         Used to display a lot of information in a visually compact way in table
         views of Transactions.
       `,
-      tableWidth: 320,
-      tableCellFormatter: async function(_, obj) {
-        var [srcCurrency, dstCurrency] = await Promise.all([
-          obj.currencyDAO.find(obj.sourceCurrency),
-          obj.currencyDAO.find(obj.destinationCurrency)
-        ]);
+      tableCellFormatter: function(_, obj) {
+        this.add(obj.slot(function(
+            sourceCurrency,
+            destinationCurrency,
+            currencyDAO,
+            homeDenomination  /* Do not remove b/c the cell needs to re-render if homeDenomination changes */
+          ){
+            return Promise.all([
+              currencyDAO.find(sourceCurrency),
+              currencyDAO.find(destinationCurrency)
+            ]).then(([srcCurrency, dstCurrency]) => {
+              let output = "";
 
-        if ( obj.payer ) {
-          this.add(
-            obj.sourceCurrency + ' ' +
-              srcCurrency.format(obj.amount) + ' → ' +
-              obj.destinationCurrency + ' ' +
-              dstCurrency.format(obj.destinationAmount) + '  |  ' +
-              obj.payer.displayName + ' → ' +
-              obj.payee.displayName
-          );
-        } else {
-          this.add(
-            obj.sourceCurrency + ' ' +
-              srcCurrency.format(obj.amount) + ' → ' +
-              obj.destinationCurrency + ' ' +
-              dstCurrency.format(obj.destinationAmount)
-          );
-        }
+              if ( sourceCurrency === destinationCurrency ) {
+                output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
+              } else {
+                output += srcCurrency ? srcCurrency.format(obj.amount) : `${obj.amount} ${sourceCurrency}`;
+                output += ' → ';
+                output += dstCurrency 
+                            ? dstCurrency.format(obj.destinationAmount) 
+                            : `${obj.destinationAmount} ${destinationCurrency}`;
+              }
+
+              if ( obj.payer ) {
+                output += (' | ' + obj.payer.displayName + ' → ' + obj.payee.displayName);
+              }
+
+              return output;
+            })
+        }))
       }
     },
     {
@@ -401,7 +443,12 @@ foam.CLASS({
       name: 'destinationAmount',
       label: 'Destination Amount',
       documentation: 'Amount in Receiver Currency',
-      visibility: 'RO',
+      section: 'paymentInfo',
+      visibilityExpression: function(sourceCurrency, destinationCurrency) {
+        return sourceCurrency == destinationCurrency ?
+          foam.u2.Visibility.HIDDEN :
+          foam.u2.Visibility.RO;
+      },
       tableCellFormatter: function(destinationAmount, X) {
         var formattedAmount = destinationAmount/100;
         this
@@ -420,7 +467,8 @@ foam.CLASS({
       class: 'DateTime',
       name: 'completionDate',
       visibility: 'RO',
-      tableWidth: 145
+      section: 'basicInfo',
+      tableWidth: 172
     },
     {
       documentation: `Defined by ISO 20220 (Pacs008)`,
@@ -433,6 +481,7 @@ foam.CLASS({
       name: 'sourceCurrency',
       label: 'Currency',
       visibility: 'RO',
+      section: 'paymentInfo',
       value: 'CAD'
     },
     {
@@ -440,13 +489,17 @@ foam.CLASS({
       name: 'referenceData',
       class: 'FObjectArray',
       of: 'foam.core.FObject',
-      storageTransient: true,
       visibility: 'RO'
     },
     {
       class: 'String',
       name: 'destinationCurrency',
-      visibility: 'RO',
+      visibilityExpression: function(sourceCurrency, destinationCurrency) {
+        return sourceCurrency == destinationCurrency ?
+          foam.u2.Visibility.HIDDEN :
+          foam.u2.Visibility.RO;
+      },
+      section: 'paymentInfo',
       value: 'CAD'
     },
     {
@@ -462,12 +515,27 @@ foam.CLASS({
     },
     // schedule TODO: future
     {
+      // TODO: Why do we have this and scheduledTime?
       name: 'scheduled',
       class: 'DateTime',
+      section: 'basicInfo',
+      visibilityExpression: function(scheduled) {
+        return scheduled ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      }
+    },
+    {
+      name: 'lastStatusChange',
+      class: 'DateTime',
+      section: 'basicInfo',
+      documentation: `The date that a transaction changed to its current status`,
       visibility: 'RO'
     },
     {
       name: 'lineItems',
+      label: '',
+      section: 'lineItemsSection',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
@@ -475,6 +543,8 @@ foam.CLASS({
     },
     {
       name: 'reverseLineItems',
+      label: '',
+      section: 'reverseLineItemsSection',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
@@ -483,6 +553,12 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'scheduledTime',
+      section: 'basicInfo',
+      visibilityExpression: function(scheduledTime) {
+        return scheduledTime ?
+          foam.u2.Visibility.RO :
+          foam.u2.Visibility.HIDDEN;
+      },
       documentation: `The scheduled date when transaction should be processed.`
     },
     {
@@ -490,8 +566,8 @@ foam.CLASS({
       name: 'deleted',
       value: false,
       permissionRequired: true,
-      visibility: 'hidden'
-    }
+      visibility: 'HIDDEN'
+    },
   ],
 
   methods: [
@@ -581,7 +657,7 @@ for ( Balance b : getBalances() ) {
       ],
       type: 'Boolean',
       javaCode: `
-      if ( getStatus() == TransactionStatus.COMPLETED &&  
+      if ( getStatus() == TransactionStatus.COMPLETED &&
       ( oldTxn == null || oldTxn.getStatus() != TransactionStatus.COMPLETED ) ) {
    return true;
  }
@@ -663,7 +739,7 @@ for ( Balance b : getBalances() ) {
         throw new RuntimeException("Payer user is disabled.");
       }
 
-      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof AlternaVerificationTransaction) ) {
+      if ( sourceOwner instanceof Business && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) && ! (this instanceof VerificationTransaction) ) {
         throw new RuntimeException("Sender or receiver needs to pass business compliance.");
       }
 
@@ -898,10 +974,15 @@ for ( Balance b : getBalances() ) {
       }
     ],
     javaCode: `
-    sendReverseNotification(x, oldTxn);
-    sendCompletedNotification(x, oldTxn);
+    try {
+      sendReverseNotification(x, oldTxn);
+      sendCompletedNotification(x, oldTxn);
+    } catch (Exception e) {
+      Logger logger = (Logger) x.get("logger");
+      logger.warning("Transaction failed to send notitfication. " + e.getMessage());
+    }
     `
-  }
+  },
 ],
   actions: [
     {
@@ -910,14 +991,14 @@ for ( Balance b : getBalances() ) {
       availablePermissions: ['service.compliancehistorydao'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
+        this.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
           editEnabled: true,
           exportEnabled: true,
           title: `${this.id}'s Compliance History`,
           data: this.complianceHistoryDAO.where(m.AND(
-            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id), 
+            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
             m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
           ))
         });

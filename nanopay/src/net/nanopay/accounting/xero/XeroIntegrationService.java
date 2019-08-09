@@ -187,6 +187,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     newContact.setGroup("sme");
     newContact.setXeroOrganizationId(token.getOrganizationId());
     newContact.setLastUpdated(xeroContact.getUpdatedDateUTC().getTime().getTime());
+    newContact.setLastDateUpdated(new Date());
 
     return newContact;
   }
@@ -476,6 +477,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     newInvoice.setXeroOrganizationId(token.getOrganizationId());
     newInvoice.setBusinessName(token.getBusinessName());
     newInvoice.setLastUpdated(xeroInvoice.getUpdatedDateUTC().getTime().getTime());
+    newInvoice.setLastDateUpdated(new Date());
 
 //    // get invoice attachments
 //    if ( ! xeroInvoice.isHasAttachments() ) {

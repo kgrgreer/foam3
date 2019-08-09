@@ -9,11 +9,13 @@ brokers
 businessSectors
 businessTypes
 complianceItems
+capabilities
 corridors
 countries
 cronjobs
 currencies
 currencyfxServices
+deprecatedCapabilityJunctions
 dugs
 emailTemplates
 exportDriverRegistrys
@@ -32,9 +34,12 @@ lineItemTypeAccounts
 lineItemTypes
 liquiditySettings
 menus
+notifications
 notificationTemplates
 payoutOptions
+paymentProviders
 permissions
+prerequisiteCapabilityJunctions
 questionnaires
 quickbooksToken
 regions
@@ -50,6 +55,7 @@ transactionLimits
 transactionPurposes
 transactions
 txnProcessors
+userCapabilityJunctions
 users
 xeroConfig
 xeroToken

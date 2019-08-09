@@ -41,7 +41,7 @@ foam.CLASS({
 
                   localUserDAO.inX(x).put(signingOfficer);
                 }
-              });
+              }, "Request Signing Officers Compliance");
             }
           });
       `

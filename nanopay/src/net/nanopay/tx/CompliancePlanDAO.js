@@ -3,9 +3,10 @@ foam.CLASS({
   name: 'CompliancePlanDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: 'Adds a compliance transaction to all COTransaction Plans.',
+  documentation: 'Adds a compliance transaction right after SummaryTransaction Plan.',
 
   javaImports: [
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -17,7 +18,7 @@ foam.CLASS({
         Transaction [] plans = quote.getPlans();
         for ( Transaction plan : plans ) {
         // should this be instanceof AbliiTransaction? Does SummaryTransaction necessarily have COTxn in it?
-          if ( plan instanceof SummaryTransaction ) {
+          if ( plan instanceof SummaryTransaction || plan instanceof FXSummaryTransaction) {
             ComplianceTransaction ct = new ComplianceTransaction.Builder(x).build();
             ct.copyFrom(plan);
             ct.setIsQuoted(true);

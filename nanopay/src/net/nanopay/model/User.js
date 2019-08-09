@@ -248,6 +248,12 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'countryOfBusinessRegistration',
+      documentation: `Country where business was registered.`,
+    },
+    {
       class: 'Date',
       name: 'businessRegistrationDate',
       documentation: 'The date that the business was registered by their issuing authority.'
@@ -331,15 +337,6 @@ foam.CLASS({
         related to any such person.
       `
     },
-    // TODO: Remove
-    {
-      class: 'Boolean',
-      name: 'signingOfficer',
-      documentation: `Determines whether the user is the signing officer capable of
-        acting as the business and providing additional information on behalf of
-        the business.
-      `
-    },
     {
       class: 'FObjectProperty',
       name: 'suggestedUserTransactionInfo',
@@ -411,7 +408,14 @@ foam.CLASS({
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/ic-placeholder.png'
       }
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'internationalPaymentEnabled',
+      value: false,
+      documentation: `Determines whether a user has been onboarded to 
+        a partner platform to support international payments.`
+    },
   ],
 
   methods: [

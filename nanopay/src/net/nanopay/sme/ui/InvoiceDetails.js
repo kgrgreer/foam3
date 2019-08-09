@@ -311,8 +311,6 @@ foam.CLASS({
                   promise$: this.formattedAmount$,
                   value: '--',
                 }))
-                .add(' ')
-                .add(this.invoice$.dot('destinationCurrency'))
               .end()
             .end()
             .start()

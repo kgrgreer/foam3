@@ -4,12 +4,33 @@ foam.CLASS({
 
   implements: [
     'foam.mlang.Expressions',
-    'foam.nanos.analytics.Foldable'
+    'foam.nanos.analytics.Foldable',
+    'foam.nanos.auth.LastModifiedAware'
   ],
 
   requires: [
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount'
+  ],
+
+  sections: [
+    {
+      name: 'basicInfo'
+    },
+    {
+      name: 'thresholds'
+    },
+    {
+      name: 'accountsSection',
+      title: 'Accounts',
+      isAvailable: function(id) {
+        return !! id;
+      }
+    },
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    }
   ],
 
   //relationship: 1:* LiquiditySettings : DigitalAccount
@@ -21,48 +42,34 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id',
-      label: 'ID',
-      visibility: 'RO'
+      name: 'id'
     },
     {
       class: 'String',
-      name: 'name'
+      name: 'name',
+      section: 'basicInfo'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userToEmail',
-      documentation: 'The user that is supposed to receive emails for this liquidity Setting'
+      documentation: 'The user that is supposed to receive emails for this liquidity Setting',
+      section: 'basicInfo'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'cashOutFrequency',
       factory: function() { return net.nanopay.util.Frequency.DAILY; },
-      documentation: 'Determines how often an automatic cash out can occur.'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.liquidity.Liquidity',
-      name: 'highLiquidity',
-      factory: function() {
-        return net.nanopay.liquidity.Liquidity.create({
-          rebalancingEnabled: false,
-          enabled: false,
-        });
-      },
-      javaFactory: `
-        return new net.nanopay.liquidity.Liquidity.Builder(getX())
-          .setRebalancingEnabled(false)
-          .setEnabled(false)
-          .build();
-      `,
+      documentation: 'Determines how often an automatic cash out can occur.',
+      section: 'basicInfo'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.liquidity.Liquidity',
       name: 'lowLiquidity',
+      section: 'thresholds',
+      gridColumns: 6,
       factory: function() {
         return net.nanopay.liquidity.Liquidity.create({
           rebalancingEnabled: false,
@@ -75,6 +82,30 @@ foam.CLASS({
           .setEnabled(false)
           .build();
       `,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.liquidity.Liquidity',
+      name: 'highLiquidity',
+      section: 'thresholds',
+      gridColumns: 6,
+      factory: function() {
+        return net.nanopay.liquidity.Liquidity.create({
+          rebalancingEnabled: false,
+          enabled: false,
+        });
+      },
+      javaFactory: `
+        return new net.nanopay.liquidity.Liquidity.Builder(getX())
+          .setRebalancingEnabled(false)
+          .setEnabled(false)
+          .build();
+      `,
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      documentation: 'Last modified date'
     }
   ],
   methods: [
@@ -92,8 +123,9 @@ foam.CLASS({
     {
       name: 'doFolds',
       javaCode: `
-fm.foldForState(getId()+":high", new java.util.Date(), getHighLiquidity().getThreshold());
-fm.foldForState(getId()+":low", new java.util.Date(), getLowLiquidity().getThreshold());
+if ( getLastModified() == null ) return;
+fm.foldForState(getId()+":high", getLastModified(), getHighLiquidity().getThreshold());
+fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshold());
       `
     }
   ]

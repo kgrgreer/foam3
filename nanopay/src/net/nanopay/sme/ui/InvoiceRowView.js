@@ -156,8 +156,7 @@ foam.CLASS({
         '';
       this.currencyDAO.find(this.data.destinationCurrency)
         .then((currency) => {
-        this.currencyFormatted = currency.format(this.data.amount) + ' ' +
-          currency.alphabeticCode;
+        this.currencyFormatted = currency.format(this.data.amount);
      });
 
       this

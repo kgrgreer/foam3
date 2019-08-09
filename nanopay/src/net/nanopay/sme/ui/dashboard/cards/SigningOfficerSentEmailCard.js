@@ -80,7 +80,7 @@ foam.CLASS({
   messages: [
     {
       name: 'TITLE',
-      message: 'We’ve sent an email to a sigining officer at your company!'
+      message: 'We’ve sent an email to a signing officer at your company!'
     },
     {
       name: 'DESCRIPTION',

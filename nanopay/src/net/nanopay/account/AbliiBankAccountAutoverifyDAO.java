@@ -74,11 +74,6 @@ public class AbliiBankAccountAutoverifyDAO
     }
    }
 
-   // 2. US BANK ACCOUNTS
-   if ( bankAccountObj instanceof USBankAccount ) {
-     obj.setProperty("status", BankAccountStatus.VERIFIED);
-   }
-
    // 3. FLINKS ACCOUNTS
    // ! IMPORTANT: Need to update this as needed once more bank account verification via bank clients are added
    // As recommended above, should later change this to check if the institution id is between 1 and 23 (these are the current institutions on the system)
