@@ -408,6 +408,22 @@ foam.CLASS({
             addLineItems(new TransactionLineItem[]{new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
             ((DAO) x.get("transactionDAO")).inX(x).put(this.fclone());
             
+            // Append file to related invoice.
+            if ( findRootTransaction(x,this).getInvoiceId() != 0 ) {
+              DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+              Invoice invoice = (Invoice) invoiceDAO.find(findRootTransaction(x,this).getInvoiceId());
+
+              if ( invoice == null ) {
+                throw new RuntimeException("Couldn't fetch invoice associated to AFEX transaction");
+              }
+
+              File[] files = invoice.getInvoiceFile();
+              File[] fileArray = new File[files.length + 1];
+              System.arraycopy(files, 0, fileArray, 0, files.length);
+              fileArray[files.length] = pdf;
+              invoice.setInvoiceFile(fileArray);
+              invoiceDAO.put(invoice);
+            }
           } catch (Throwable t) {
             ((Logger) x.get("logger")).error("Error creating AFEX trade request pdf", t);
           }
