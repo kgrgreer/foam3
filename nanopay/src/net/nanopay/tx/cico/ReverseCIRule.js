@@ -55,7 +55,7 @@ foam.CLASS({
                 ((DAO) x.get("notificationDAO")).put(notification);
               }
             }
-          });
+          },"Reverse CI Rule");
         }
       `
     }

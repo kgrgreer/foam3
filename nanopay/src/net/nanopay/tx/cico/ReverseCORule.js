@@ -33,7 +33,7 @@ foam.CLASS({
         ( txn.getStatus() == TransactionStatus.CANCELLED && oldTxn != null &&
         ( oldTxn.getStatus() == TransactionStatus.PENDING || oldTxn.getStatus() == TransactionStatus.PAUSED ) ) ) {
 
-          agency.submit(getX(), new ContextAgent() {
+          agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
               DigitalTransaction revTxn = new DigitalTransaction.Builder(x)
@@ -58,7 +58,7 @@ foam.CLASS({
                 ((DAO) x.get("notificationDAO")).put(notification);
               }
             }
-          });
+          },"Reverse CO Rule");
         }
       `
     }
