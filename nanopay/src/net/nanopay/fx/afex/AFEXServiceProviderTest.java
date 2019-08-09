@@ -129,6 +129,7 @@ public class AFEXServiceProviderTest
       business.setCompliance(ComplianceStatus.PASSED);
       business.setBusinessPhone(phone);
       business.setBusinessRegistrationDate(new Date());
+      business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
       suggestedUserTransactionInfo.setBaseCurrency("CAD");
       suggestedUserTransactionInfo.setAnnualDomesticVolume("$2000");
