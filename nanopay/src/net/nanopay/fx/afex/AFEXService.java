@@ -147,7 +147,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("ExpectedMonthlyVolume", request.getExpectedMonthlyVolume()));
       nvps.add(new BasicNameValuePair("JobTitle", request.getJobTitle()));
       nvps.add(new BasicNameValuePair("NAICS", request.getNAICS()));
-      nvps.add(new BasicNameValuePair("TradeName", "Sons and CO"));
+      nvps.add(new BasicNameValuePair("TradeName", request.getTradeName()));
       nvps.add(new BasicNameValuePair("TermsAndConditions", request.getTermsAndConditions()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
