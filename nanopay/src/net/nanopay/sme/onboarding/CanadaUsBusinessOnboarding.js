@@ -124,16 +124,6 @@ foam.CLASS({
     },
     {
       section: 'internationalTransactionSection',
-      class: 'FObjectProperty',
-      name: 'signingOfficerIdentification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
-      factory: function() {
-        return this.PersonalIdentification.create({});
-      },
-    },
-    {
-      section: 'internationalTransactionSection',
       class: 'Date',
       name: 'businessFormationDate',
       documentation: 'Date of Business Formation or Incorporation.',

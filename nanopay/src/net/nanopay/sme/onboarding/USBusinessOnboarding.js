@@ -92,7 +92,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
-    'net.nanopay.model.PersonalIdentification',
     'net.nanopay.sme.onboarding.USBusinessOnboarding',
   ],
 
@@ -365,16 +364,6 @@ foam.CLASS({
         }
       ]
     }),
-    {
-      section: 'personalInformationSection',
-      class: 'FObjectProperty',
-      name: 'signingOfficerIdentification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
-      factory: function() {
-        return this.PersonalIdentification.create({});
-      },
-    },
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'personalInformationSection',
       label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',

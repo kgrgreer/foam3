@@ -82,9 +82,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
             } 
             OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
-            onboardingRequest.setAccountPrimaryIdentificationExpirationDate(identificationExpiryDate);
-            onboardingRequest.setAccountPrimaryIdentificationNumber(String.valueOf(signingOfficer.getIdentification().getIdentificationNumber()));
-            onboardingRequest.setAccountPrimaryIdentificationType(getAFEXIdentificationType(signingOfficer.getIdentification().getIdentificationTypeId())); // TODO: This should ref AFEX ID type
+            onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
+            onboardingRequest.setAccountPrimaryIdentificationNumber(business.getBusinessRegistrationNumber());
+            onboardingRequest.setAccountPrimaryIdentificationType("Passport"); // Madlen asked it is hardcoded
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
             Region businessRegion = business.getAddress().findRegionId(this.x);
@@ -92,8 +92,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             Country businessCountry = business.getAddress().findCountryId(this.x);
             if ( businessCountry != null ) {
               onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
-              onboardingRequest.setAccountPrimaryIdentificationIssuer(businessCountry.getName());
             }
+            Country businessFormationCountry = (Country) ((DAO) this.x.get("countryDAO")).find(business.getCountryOfBusinessRegistration());
+            if ( businessFormationCountry != null ) {
+              onboardingRequest.setAccountPrimaryIdentificationIssuer(businessFormationCountry.getName());
+            }
+
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
@@ -130,6 +134,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
             onboardingRequest.setExpectedMonthlyPayments(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount());
             onboardingRequest.setExpectedMonthlyVolume(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume());
+            onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());
             onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
 
             BusinessSector businessSector = (BusinessSector) ((DAO) this.x.get("businessSectorDAO")).find(business.getBusinessSectorId());
