@@ -49,7 +49,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.account.Balance',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.EQ'
   ],
 
