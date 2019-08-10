@@ -75,7 +75,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
         boolean hasCurrencyReadUSDPermission = auth.checkUser(this.x, business, "currency.read.USD");
         if ( hasFXProvisionPayerPermission && hasCurrencyReadUSDPermission) {
+          OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
           User signingOfficer = getSigningOfficer(this.x, business);
+          Region businessRegion = business.getAddress().findRegionId(this.x);
+          Country businessCountry = business.getAddress().findCountryId(this.x);
+
           if ( signingOfficer != null ) {
             String identificationExpiryDate = null;
             try {
@@ -84,21 +88,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               identificationExpiryDate = "01/01/2099"; // Asked to hardcode this by Madlen(AFEX)
               logger.error("Error onboarding business. Cound not parse signing officer identification expiry date.", t);
             } 
-            String identificationType = signingOfficer.getIdentification() == null || 
-              signingOfficer.getIdentification().getIdentificationTypeId() < 1 ? "Passport" 
-                : getAFEXIdentificationType(signingOfficer.getIdentification().getIdentificationTypeId()); // Madlen asked it is hardcoded
-            OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
+            String identificationType = businessCountry == null || businessCountry.getId().equals("CA") ? "Passport" 
+              : "EmployerIdentificationNumber_EIN"; // Madlen asked it is hardcoded
+            String identificationNumber = SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ? "N/A" 
+              : business.getBusinessRegistrationNumber(); // Madlen asked it is hardcoded              
+            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate(identificationExpiryDate);
-            onboardingRequest.setAccountPrimaryIdentificationNumber(business.getBusinessRegistrationNumber());
+            onboardingRequest.setAccountPrimaryIdentificationNumber(identificationNumber);
             onboardingRequest.setAccountPrimaryIdentificationType(identificationType); 
+            if ( businessCountry != null ) onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
+            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
-            Region businessRegion = business.getAddress().findRegionId(this.x);
-            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
-            Country businessCountry = business.getAddress().findCountryId(this.x);
-            if ( businessCountry != null ) {
-              onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
-            }
+
             Country businessFormationCountry = (Country) ((DAO) this.x.get("countryDAO")).find(business.getCountryOfBusinessRegistration());
             if ( businessFormationCountry != null ) {
               onboardingRequest.setAccountPrimaryIdentificationIssuer(businessFormationCountry.getName());
