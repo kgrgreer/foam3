@@ -662,13 +662,15 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
+      BasicNameValuePair accountNumber = new BasicNameValuePair("AccountNumber", request.getAccountNumber());
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("Amount", request.getAmount()));
-      // todo: need quote id?
-      //nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
+      nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
       nvps.add(new BasicNameValuePair("SettlementCcy", request.getSettlementCcy()));
       nvps.add(new BasicNameValuePair("TradeCcy", request.getTradeCcy()));
       nvps.add(new BasicNameValuePair("ValueDate", valueDate));
+      nvps.add(accountNumber);
+      nvps.add(new BasicNameValuePair("IsAmountSettlement", request.getIsAmountSettlement()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
@@ -677,21 +679,40 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       omLogger.log("AFEX createTrade completed");
-
+      CloseableHttpResponse httpResponse2 = null;
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String errorMsg = "Create AFEX trade failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          String errorMsg = "Create AFEX trade with account number failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-
           logger.error(errorMsg);
-          throw new RuntimeException(errorMsg);
+
+          // try again without account number
+          nvps.remove(accountNumber);
+          httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+          omLogger.log("AFEX createTrade starting");
+
+          httpResponse2 = httpClient.execute(httpPost);
+
+          omLogger.log("AFEX createTrade completed");
+          
+          if ( httpResponse2.getStatusLine().getStatusCode() / 100 != 2 ) {
+            String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
+              + httpResponse2.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse2.getEntity(), "UTF-8");
+            logger.error(errorMsg);
+
+            throw new RuntimeException(errorMsg);
+          }
+          httpResponse = httpResponse2;
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         return (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
       } finally {
         httpResponse.close();
+        if ( httpResponse2 != null ) {
+          httpResponse2.close();
+        }
       }
 
     } catch (IOException e) {
