@@ -140,8 +140,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
             } 
             onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
-            onboardingRequest.setExpectedMonthlyPayments(business.getSuggestedUserTransactionInfo().getAnnualDomesticTransactionAmount());
-            onboardingRequest.setExpectedMonthlyVolume(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume());
+            onboardingRequest.setExpectedMonthlyPayments(mapAFEXRevenueEstimates(business.getSuggestedUserTransactionInfo().getAnnualRevenue()));
+            onboardingRequest.setExpectedMonthlyVolume(mapAFEXRevenueEstimates(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()));
             onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());
             onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
 
@@ -635,7 +635,20 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       default:
         return ((BusinessType) ((DAO) this.x.get("businessTypeDAO")).find(companyType)).getName();
     }
-  }  
+  }
+  
+  private String mapAFEXRevenueEstimates(String estimates) {
+    switch (estimates) {
+    case "$0 to $50,000":
+      return "50000";
+    case "$50,001 to $100,000":
+      return "100000";
+    case "$100,001 to $500,000":
+      return "500000";
+    default:
+      return "1000000";
+    }
+  }
 
   private Double toDecimal(Long amount) {
     BigDecimal x100 = new BigDecimal(100);

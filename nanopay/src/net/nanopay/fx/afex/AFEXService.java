@@ -3,6 +3,8 @@ package net.nanopay.fx.afex;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.lib.json.JSONParser;
+import foam.lib.json.Outputter;
+import foam.lib.NetworkPropertyPredicate;
 import foam.nanos.logger.Logger;
 import foam.nanos.om.OMLogger;
 import foam.util.SafetyUtil;
@@ -22,6 +24,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -118,42 +121,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       HttpPost httpPost = new HttpPost(partnerAPI + "api/v1/corporateClient");
 
       httpPost.addHeader("API-Key", apiKey);
-      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      httpPost.addHeader("Content-Type", "application/json");
       httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
-      List<NameValuePair> nvps = new ArrayList<>();
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationExpirationDate", request.getAccountPrimaryIdentificationExpirationDate()));
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationNumber", request.getAccountPrimaryIdentificationNumber()));
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationType", request.getAccountPrimaryIdentificationType()));
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationIssuer", request.getAccountPrimaryIdentificationIssuer()));
-      nvps.add(new BasicNameValuePair("BusinessAddress1", request.getBusinessAddress1()));
-      nvps.add(new BasicNameValuePair("BusinessCity", request.getBusinessCity()));
-      nvps.add(new BasicNameValuePair("BusinessStateRegion", request.getBusinessStateRegion()));
-      nvps.add(new BasicNameValuePair("BusinessCountryCode", request.getBusinessCountryCode()));
-      nvps.add(new BasicNameValuePair("Description", request.getDescription()));
-      nvps.add(new BasicNameValuePair("BusinessName", request.getBusinessName()));
-      nvps.add(new BasicNameValuePair("BusinessZip", request.getBusinessZip()));
-      nvps.add(new BasicNameValuePair("ContactAddress1", request.getContactAddress1()));
-      nvps.add(new BasicNameValuePair("ContactCity", request.getContactCity()));
-      nvps.add(new BasicNameValuePair("ContactCountryCode", request.getContactCountryCode()));
-      nvps.add(new BasicNameValuePair("ContactStateRegion", request.getContactStateRegion()));
-      nvps.add(new BasicNameValuePair("ContactZip", request.getContactZip()));
-      nvps.add(new BasicNameValuePair("DateOfBirth", request.getDateOfBirth()));
-      nvps.add(new BasicNameValuePair("CompanyType", request.getCompanyType()));
-      nvps.add(new BasicNameValuePair("ContactBusinessPhone", request.getContactBusinessPhone()));
-      nvps.add(new BasicNameValuePair("DateOfIncorporation", request.getDateOfIncorporation()));
-      nvps.add(new BasicNameValuePair("FirstName", request.getFirstName()));
-      nvps.add(new BasicNameValuePair("Gender", request.getGender()));
-      nvps.add(new BasicNameValuePair("LastName", request.getLastName()));
-      nvps.add(new BasicNameValuePair("PrimaryEmailAddress", request.getPrimaryEmailAddress()));
-      nvps.add(new BasicNameValuePair("ExpectedMonthlyPayments", request.getExpectedMonthlyPayments()));
-      nvps.add(new BasicNameValuePair("ExpectedMonthlyVolume", request.getExpectedMonthlyVolume()));
-      nvps.add(new BasicNameValuePair("JobTitle", request.getJobTitle()));
-      nvps.add(new BasicNameValuePair("NAICS", request.getNAICS()));
-      nvps.add(new BasicNameValuePair("TradeName", request.getTradeName()));
-      nvps.add(new BasicNameValuePair("TermsAndConditions", request.getTermsAndConditions()));
+      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
+      String requestJson = jsonOutputter.stringify(request);
+      StringEntity params =new StringEntity(requestJson); 
 
-      httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+      httpPost.setEntity(params);
 
       omLogger.log("AFEX onboardCorpateClient starting");
 
