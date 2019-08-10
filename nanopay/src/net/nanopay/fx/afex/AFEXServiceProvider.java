@@ -16,6 +16,8 @@ import static foam.mlang.MLang.*;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
+import net.nanopay.bank.CABankAccount;
+import net.nanopay.bank.USBankAccount;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.model.Business;
@@ -261,16 +263,23 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
 
-    Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress(); 
-    if ( null == bankAddress ) throw new RuntimeException("Bank Account Address is null " + bankAccountId );
-
     AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
+
+    Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
+    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
+    if ( null == bankAddress ) {
+      if ( bankInformation == null ) {
+        throw new RuntimeException("Bank Account Address is null " + bankAccountId );
+      }
+      bankAddress = new Address.Builder(x)
+        .setCountryId(bankInformation.getIsoCountryCode())
+        .build();
+    }
 
     // Check payee does not already exists on AFEX
     FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexBusiness.getApiKey());
     if ( null == beneficiaryResponse ) {
-      FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
       String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
       CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();
       createBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
@@ -553,15 +562,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   public FindBankByNationalIDResponse getBankInformation(X x, String clientAPIKey, BankAccount bankAccount) {
     FindBankByNationalIDResponse bankInformation = null;
-    Address bankAddress =  bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
-    if ( null == bankAddress || SafetyUtil.isEmpty(bankAddress.getCity())) return bankInformation;
-
     FindBankByNationalIDRequest findBankByNationalIDRequest = new FindBankByNationalIDRequest();
     findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
-    findBankByNationalIDRequest.setCity(bankAddress.getCity());
-    findBankByNationalIDRequest.setCountryCode(bankAddress.getCountryId());
-    findBankByNationalIDRequest.setInstitution(bankAccount.getBankCode(x));
-    findBankByNationalIDRequest.setNationalID(bankAccount.getRoutingCode(x));
+    findBankByNationalIDRequest.setCountryCode(bankAccount.getCountry());
+    if ( bankAccount instanceof CABankAccount ) {
+      findBankByNationalIDRequest.setNationalID("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
+    } else if ( bankAccount instanceof USBankAccount ) {
+      findBankByNationalIDRequest.setNationalID(bankAccount.getBranchId());
+    } else {
+      return null;
+    }
     try {
       bankInformation = this.afexClient.findBankByNationalID(findBankByNationalIDRequest);
     } catch(Throwable t) {
