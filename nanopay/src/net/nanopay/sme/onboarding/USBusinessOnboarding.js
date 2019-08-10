@@ -706,8 +706,10 @@ foam.CLASS({
       class: 'String',
       name: 'businessRegistrationNumber',
       label: 'Federal Tax ID Number (EIN) or Business Registration Number',
-      minLength: 1,
       documentation: 'Federal Tax ID Number (EIN) or Business Registration Number',
+      visibilityExpression: function(countryOfBusinessFormation) {
+        return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
       minLength: 9,
       maxLength: 9
     },
