@@ -484,9 +484,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
-      nvps.add(new BasicNameValuePair("City", request.getCity()));
       nvps.add(new BasicNameValuePair("CountryCode", request.getCountryCode()));
-      nvps.add(new BasicNameValuePair("Institution", request.getInstitution()));
       nvps.add(new BasicNameValuePair("NationalID", request.getNationalID()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
