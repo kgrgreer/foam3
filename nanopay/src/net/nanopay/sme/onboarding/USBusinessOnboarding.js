@@ -707,7 +707,9 @@ foam.CLASS({
       name: 'businessRegistrationNumber',
       label: 'Federal Tax ID Number (EIN) or Business Registration Number',
       minLength: 1,
-      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number'
+      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number',
+      minLength: 9,
+      maxLength: 9
     },
     net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.clone().copyFrom({
       section: 'transactionDetailsSection',
