@@ -664,7 +664,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-      BasicNameValuePair accountNumber = new BasicNameValuePair("AccountNumber", "0");
+      BasicNameValuePair accountNumber = new BasicNameValuePair("AccountNumber", request.getAccountNumber());
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("Amount", request.getAmount()));
       nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
