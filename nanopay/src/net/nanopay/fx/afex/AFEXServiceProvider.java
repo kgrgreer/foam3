@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
@@ -375,7 +376,39 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   }
 
-  public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {}
+  private boolean accountDataIsStale(long  bankAccountId, AFEXBeneficiary afexBeneficiary) throws RuntimeException {
+    if ( null == afexBeneficiary ) return false;
+    if ( null == afexBeneficiary.getLastModified() ) return true; 
+    BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
+    if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
+    Calendar accountLastModifiedDate = Calendar.getInstance();
+    accountLastModifiedDate.setTime(bankAccount.getLastModified());
+    Calendar afexBeneficiaryLastModifiedDate = Calendar.getInstance();
+    afexBeneficiaryLastModifiedDate.setTime(afexBeneficiary.getLastModified());
+    return (accountLastModifiedDate.after(afexBeneficiaryLastModifiedDate));
+  }
+
+  public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, payerUserId);
+    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + payerUserId);
+
+    try{
+      DisableBeneficiaryRequest request = new DisableBeneficiaryRequest();
+      request.setClientAPIKey(afexBusiness.getApiKey());
+      request.setVendorId(String.valueOf(payeeUserId));
+      this.afexClient.disableBeneficiary(request);
+      DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO")).inX(x);
+      AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(AND(
+        EQ(AFEXBeneficiary.CONTACT, payeeUserId),
+        EQ(AFEXBeneficiary.OWNER, payerUserId)
+      ));
+      if ( afexBeneficiary != null ) afexBeneficiaryDAO.remove(afexBeneficiary);
+      
+    } catch(Throwable t) {
+      Logger l = (Logger) x.get("logger");
+      l.error("Unexpected error disabling AFEX Beneficiary history record.", t);
+    }
+  }
 
   public FindBeneficiaryResponse getPayeeInfo(String payeeUserId, Long businessId) throws RuntimeException {
     FindBeneficiaryResponse payeeInfo = null;
