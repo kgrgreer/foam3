@@ -1056,22 +1056,13 @@ foam.CLASS({
         }
       ]
     },
-    net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
+    {
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
       section: 'reviewOwnersSection',
+      name: 'dualPartyAgreement',
+      documentation: 'Verifies if the user is accept the dual-party agreement.',
+      docName: 'dualPartyAgreementCAD', // TODO Make this the USD version. Waiting on USD doc from complaince
       label: '',
-      //      label2: 'I acknowledge that I have read and accept the Dual Party Agreement for Ablii Canadian Payment Services.',
-      label2Formatter: function() {
-        this.
-          add('I acknowledge that I have read and accept the ').
-          start('a').
-            attrs({
-              href: "https://nanopay.net/wp-content/uploads/2019/05/nanopay-Canada-Dual-Agreement.pdf",
-              target: "blank"
-            }).
-            add('Dual Party Agreement').
-          end().
-          add(' for Ablii Canadian Payment Services.');
-      },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
@@ -1081,13 +1072,13 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.DUAL_PARTY_AGREEMENT, true)
+              e.NEQ(net.nanopay.sme.onboarding.USBusinessOnboarding.DUAL_PARTY_AGREEMENT, 0)
             );
           },
           errorString: 'Must acknowledge the dual party agreement.'
         }
       ]
-    })
+    }
   ].map((a) => net.nanopay.sme.onboarding.SpecialOutputter.objectify(a)),
 
   reactions: [
