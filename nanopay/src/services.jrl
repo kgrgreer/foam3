@@ -134,9 +134,11 @@ p({
   "serviceScript":
   """
     return new foam.dao.FilteredDAO(
-      x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class),
+      x,
+      foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class),
       new net.nanopay.contacts.UpdateExternalContactDAO(x, x.get(\"localUserDAO\")),
-      net.nanopay.model.Business.getOwnClassInfo(), net.nanopay.model.Business.ID
+      net.nanopay.model.Business.getOwnClassInfo(),
+      net.nanopay.model.Business.ID
     );
   """,
   "client": "{\"of\":\"net.nanopay.model.Business\", \"remoteListenerSupport\": false,\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
