@@ -113,12 +113,6 @@ fi
 # NOTE: these parameters are also enabled when DEBUG is enabled.
 #DEBUG_DEV=1 - enable in shrc.custom
 
-if [ "${DEBUG}" = "1" -o "${DEBUG_DEV}" = "1" ]; then
-  JAVA_OPTS="${JAVA_OPTS} -Xdebug"
-  JAVA_OPTS="${JAVA_OPTS} -Xnoagent"
-  JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${DEBUG_PORT}"
-fi
-
 ##### Garbage Collection
 case "$MEMORY_MODEL" in
 

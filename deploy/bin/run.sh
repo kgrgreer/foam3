@@ -55,7 +55,7 @@ fi
 
 JAVA_RUN_OPTS=""
 if [ ${DEBUG} -eq 1 ]; then
-    JAVA_RUN_OPTS="${JAVA_RUN_OPTS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT}"
+    JAVA_RUN_OPTS="${JAVA_RUN_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT}"
 fi
 
 JAVA_OPTS=""
@@ -79,7 +79,7 @@ else
     JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
 fi
 
-#export RES_JAR_HOME="${JAR}"
+export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
@@ -91,3 +91,5 @@ else
 fi
 
 exit 0
+
+-Dresource.journals.dir=journals -Dhostname=NickMacBook -Dhttp.port=8080 -DNANOPAY_HOME=/opt/nanopay -DJOURNAL_HOME=/opt/nanopay/journals -DLOG_HOME=/opt/nanopay/logs -Xms512m -Xmx2048m -Xss1m -Xoss1m -XX:NewSize=192m -XX:MaxNewSize=512m -XX:ReservedCodeCacheSize=128m -XX:+HeapDumpOnOutOfMemoryError -Dnetworkaddress.cache.ttl=3600 -XX:+UnlockDiagnosticVMOptions -XX:+LogCompilation -XX:+PrintCompilation -XX:+PrintVMQWaitTime -XX:PrintFLSStatistics=1 -XX:+LogVMOutput -XX:+ExtendedDTraceProbes -XX:+DTraceAllocProbes -XX:+DTraceMethodProbes -XX:+DTraceMonitorProbes -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000 -XX:+UseStringCache -XX:+ExplicitGCInvokesConcurrent -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100m -Xloggc:/opt/nanopay/logs/gcstats.log.50615 -verbose:gc -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/Users/nick/nanopay/NANOPAY/logs/java_pid<pid>.hprof -XX:+UseGCOverheadLimit -XX:+UseLargePages -XX:+MaxFDLimit
