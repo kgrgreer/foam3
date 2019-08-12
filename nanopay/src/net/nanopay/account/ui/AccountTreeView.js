@@ -32,6 +32,24 @@ foam.CLASS({
     },
   ],
 
+  properties: [ 'cview' ],
+  actions: [
+    {
+      name: 'zoomIn',
+      code: function() {
+        this.cview.scaleX += 0.25;
+        this.cview.scaleY += 0.25; 
+      }
+    },
+    {
+      name: 'zoomOut',
+      code: function() {
+        this.cview.scaleX -= 0.25;
+        this.cview.scaleY -= 0.25;
+      }
+    }
+  ],
+
   methods: [
       function initE(){
         var self = this;
@@ -41,8 +59,12 @@ foam.CLASS({
           .start().addClass(this.myClass('header'))
             .add(this.VIEW_HEADER)
           .end()
+          .startContext({data: this})
+            .start().add(this.ZOOM_IN).end()
+            .start().add(this.ZOOM_OUT).end()
+          .endContext()
           .start()
-            .tag(self.AccountTreeGraph)
+            .tag(self.AccountTreeGraph, null, self.cview$)
           .end()
       }
   ],
