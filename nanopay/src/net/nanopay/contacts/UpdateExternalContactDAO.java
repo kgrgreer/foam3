@@ -10,7 +10,7 @@ import static foam.mlang.MLang.*;
 
 /**
  * A decorator of localBusinessDAO which is for adding the businessId to the associated external contact token
- * during the external contact signing up and becoming the internal contact.
+ * when the external contact is signing up.
  */
 public class UpdateExternalContactDAO extends ProxyDAO {
   public  UpdateExternalContactDAO(X x, DAO delegate) {
