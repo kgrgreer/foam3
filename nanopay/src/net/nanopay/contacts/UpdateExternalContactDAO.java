@@ -9,7 +9,7 @@ import net.nanopay.model.Business;
 import static foam.mlang.MLang.*;
 
 /**
- * A decorator of localBusinessDAO which is for adding the businessId to the associated external contact token
+ * A decorator of localBusinessDAO which adds the businessId to the associated external contact token
  * when the external contact is signing up.
  */
 public class UpdateExternalContactDAO extends ProxyDAO {
