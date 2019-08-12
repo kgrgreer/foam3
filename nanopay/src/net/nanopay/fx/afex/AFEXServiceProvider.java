@@ -143,11 +143,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
               throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
             } 
-            onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
+            onboardingRequest.setJobTitle("Other"); //Temporarily harcode pending proper design for this
             onboardingRequest.setExpectedMonthlyPayments(mapAFEXRevenueEstimates(business.getSuggestedUserTransactionInfo().getAnnualRevenue()));
             onboardingRequest.setExpectedMonthlyVolume(mapAFEXRevenueEstimates(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()));
             onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());
-            onboardingRequest.setJobTitle(signingOfficer.getJobTitle());
 
             BusinessSector businessSector = (BusinessSector) ((DAO) this.x.get("businessSectorDAO")).find(business.getBusinessSectorId());
             if ( businessSector != null ) onboardingRequest.setNAICS(businessSector.getName());
