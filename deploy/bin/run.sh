@@ -53,7 +53,6 @@ if [ ! -z ${RUN_USER} ] && [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "${R
     exec sudo -u "${RUN_USER}" -- "$0" "$@"
 fi
 
-echo "Debug port ${DEBUG_PORT}"
 JAVA_RUN_OPTS=
 if [ ${DEBUG} -eq 1 ]; then
     JAVA_RUN_OPTS="${JAVA_RUN_OPTS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT}"
