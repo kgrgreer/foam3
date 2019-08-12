@@ -48,7 +48,7 @@ foam.CLASS({
           .start()
             .hide(this.doc$.map((d) => ! d))
             .start(this.AGREED)
-              .add('I agree to ')
+              .add(this.doc$.dot('checkboxText'))
               .start('a')
                 .add(this.doc$.dot('title'))
                 .attrs({
