@@ -24,9 +24,6 @@ import static foam.mlang.MLang.*;
 
 public class IdentityMindWebAgent implements WebAgent {
 
-  // ID associated to identity mind user
-  public static long identityMindUserId = 1013;
-
   public void execute(X x) {
     DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
     DAO identityMindResponseDAO = (DAO) x.get("identityMindResponseDAO");
@@ -76,8 +73,7 @@ public class IdentityMindWebAgent implements WebAgent {
         ComplianceApprovalRequest approvalRequest = (ComplianceApprovalRequest) approvalRequestDAO.find(
           AND(
             EQ(ComplianceApprovalRequest.CAUSE_ID, idmResponse.getId()),
-            EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, "identityMindResponseDAO"),
-            EQ(ComplianceApprovalRequest.APPROVER, identityMindUserId)
+            EQ(ComplianceApprovalRequest.CAUSE_DAO_KEY, "identityMindResponseDAO")
           )
         );
 
