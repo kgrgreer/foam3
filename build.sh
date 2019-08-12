@@ -392,6 +392,8 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
+    export DOCUMENT_HOME="${NANOPAY_HOME}/documents"
+
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
     fi
@@ -416,6 +418,9 @@ function setenv {
     fi
     if [ ! -d "${JOURNAL_HOME}" ]; then
         mkdir -p "${JOURNAL_HOME}"
+    fi
+    if [ ! -d "${DOCUMENT_HOME}" ]; then
+        mkdir -p "${DOCUMENT_HOME}"
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
