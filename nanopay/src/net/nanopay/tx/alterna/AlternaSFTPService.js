@@ -140,7 +140,7 @@ try {
       .setBody("CSV file is being processed. Duplicate CSV file not sent. FileName: " + filename)
       .build();
     notificationDAO.put(notification);
-  } else {
+  } else {    
     FileUtils.touch(new File(SEND_FOLDER + filename));
     FileOutputStream fileOutputStream = new FileOutputStream(SEND_FOLDER + filename);
     baos.writeTo(fileOutputStream);

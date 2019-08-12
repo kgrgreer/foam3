@@ -36,7 +36,7 @@ public class CsvSentCron
     // Don't run on holidays
     if ( CsvUtil.cadHolidays.contains(today.get(Calendar.DAY_OF_YEAR)) ) return;
 
-    logger.info("Start sending alterna EFT file.");
+    logger.info("Starting Alterna EFT sending process.");
     sftp.sendCICOFile();
     logger.info("Alterna EFT sending process finished.");
   }
