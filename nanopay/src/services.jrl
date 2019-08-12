@@ -225,7 +225,7 @@ p({
     ed = new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.model.BusinessUserJunction.getOwnClassInfo())
       .setAuthenticate(false)\n.setAuthenticateRead(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName(\"signingOfficerJunctions\")
+      .setJournalName("signingOfficerJunctions")
       .setPm(true).build();
     rd = new foam.nanos.ruler.RulerDAO(x, ed,\"signingOfficerJunctionDAO\");
     soaihd = new net.nanopay.meter.SigningOfficerAssignedIpHistoryDAO.Builder(x).setDelegate(rd).build();
