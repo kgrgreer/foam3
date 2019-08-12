@@ -3,7 +3,7 @@ foam.CLASS({
   name: 'ExternalContactToken',
   extends: 'foam.nanos.auth.token.Token',
 
-  documentation: 'A special token which can help the system to migration external contacts.',
+  documentation: 'A special token which can help the system to migrate external contacts.',
 
   properties: [
     {
