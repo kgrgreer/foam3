@@ -133,36 +133,35 @@ foam.CLASS({
       ],
       javaCode: `
         DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
-        Logger logger = (Logger) getX().get("logger");
 
         ExternalContactToken token = (ExternalContactToken) tokenDAO
           .find(EQ(ExternalContactToken.BUSINESS_ID, business.getId()));
 
         if ( token == null ) {
+          Logger logger = (Logger) x.get("logger");
           logger.warning("Token is null when migrating the contact.");
+          return;
         }
 
-        if ( token != null ) {
-          String inviteeEmail = token.getBusinessEmail();
+        String inviteeEmail = token.getBusinessEmail();
 
-          DAO localContactDAO = ((DAO) x.get("localContactDAO")).inX(x);
-          ArraySink contactSink = (ArraySink) localContactDAO
-            .where(EQ(Contact.EMAIL, inviteeEmail))
-            .select(new ArraySink());
-          List<Contact> contacts = contactSink.getArray();
+        DAO localContactDAO = ((DAO) x.get("localContactDAO")).inX(x);
+        ArraySink contactSink = (ArraySink) localContactDAO
+          .where(EQ(Contact.EMAIL, inviteeEmail))
+          .select(new ArraySink());
+        List<Contact> contacts = contactSink.getArray();
 
-          /**
-           * Update the contacts based on the original contact's email 
-           * which is stored in the external contact token.
-           */
-          for ( Contact contact : contacts ) {
-            Contact updatedContact = (Contact) contact.fclone();
-            updatedContact.setBusinessId(business.getId());
-            updatedContact.setSignUpStatus(ContactStatus.ACTIVE);
-            updatedContact.setEmail(business.getEmail());
-            localContactDAO.put(updatedContact);
-            migrateInvoices(x, contact, business);
-          }
+        /**
+         * Update the contacts based on the original contact's email 
+         * which is stored in the external contact token.
+         */
+        for ( Contact contact : contacts ) {
+          Contact updatedContact = (Contact) contact.fclone();
+          updatedContact.setBusinessId(business.getId());
+          updatedContact.setSignUpStatus(ContactStatus.ACTIVE);
+          updatedContact.setEmail(business.getEmail());
+          localContactDAO.put(updatedContact);
+          migrateInvoices(x, contact, business);
         }
       `
     },
