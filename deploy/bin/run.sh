@@ -84,8 +84,6 @@ export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
-echo "INFO :: Running ${JAR} with ${JAVA_OPTS}"
-
 if [ "$DAEMONIZE" -eq 1 ]; then
     nohup java ${JAVA_RUN_OPTS} -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 2>&1 &
     echo $! > "${NANOS_PIDFILE}"
