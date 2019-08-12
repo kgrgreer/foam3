@@ -7,6 +7,14 @@
 # See https://www.oracle.com/technetwork/articles/java/vmoptions-jsp-140102.htmlString
 #########################
 
+if [ -z "${DEBUG_PORT}" ]; then
+  DEBUG_PORT=8000
+fi
+
+if [ -z "${DEBUG_SUSPEND}" ]; then
+  DEBUG_SUSPEND=n
+fi
+
 ###### Customer parameter File
 CUSTOM_CONFIG="${NANOPAY_HOME}/conf/shrc.custom"
 if [ -f "${CUSTOM_CONFIG}" ]; then
@@ -112,6 +120,12 @@ fi
 # Uncomment in shrc.custom to enable only the following Dev Debug/Diagnostic parameters.
 # NOTE: these parameters are also enabled when DEBUG is enabled.
 #DEBUG_DEV=1 - enable in shrc.custom
+
+if [ "${DEBUG}" = "1" -o "${DEBUG_DEV}" = "1" ]; then
+  JAVA_OPTS="${JAVA_OPTS} -Xdebug"
+  JAVA_OPTS="${JAVA_OPTS} -Xnoagent"
+  JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT}"
+fi
 
 ##### Garbage Collection
 case "$MEMORY_MODEL" in

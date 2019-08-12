@@ -12,6 +12,7 @@ NANOPAY_HOME=/opt/nanopay
 WEB_PORT=8080
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
+DEBUG_DEV=0
 NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
 VERSION=
@@ -36,7 +37,7 @@ function usage {
 
 while getopts "D:h:N:P:S:U:V:W:Z:" opt ; do
     case $opt in
-        D) DEBUG=$OPTARG;;
+        D) DEBUG_DEV=$OPTARG;;
         h) usage; exit 0;;
         N) NANOPAY_HOME=$OPTARG;;
         P) DEBUG_PORT=$OPTARG;;
@@ -51,11 +52,6 @@ done
 
 if [ ! -z ${RUN_USER} ] && [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "${RUN_USER}" ]; then
     exec sudo -u "${RUN_USER}" -- "$0" "$@"
-fi
-
-JAVA_RUN_OPTS=""
-if [ ${DEBUG} -eq 1 ]; then
-    JAVA_RUN_OPTS="${JAVA_RUN_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT}"
 fi
 
 JAVA_OPTS=""
@@ -84,12 +80,10 @@ export RES_JAR_HOME="${JAR}"
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
 if [ "$DAEMONIZE" -eq 1 ]; then
-    nohup java ${JAVA_RUN_OPTS} -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 2>&1 &
+    nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 2>&1 &
     echo $! > "${NANOS_PIDFILE}"
 else
-    java ${JAVA_RUN_OPTS} -server -jar "${JAR}"
+    java -server -jar "${JAR}"
 fi
 
 exit 0
-
--Dresource.journals.dir=journals -Dhostname=NickMacBook -Dhttp.port=8080 -DNANOPAY_HOME=/opt/nanopay -DJOURNAL_HOME=/opt/nanopay/journals -DLOG_HOME=/opt/nanopay/logs -Xms512m -Xmx2048m -Xss1m -Xoss1m -XX:NewSize=192m -XX:MaxNewSize=512m -XX:ReservedCodeCacheSize=128m -XX:+HeapDumpOnOutOfMemoryError -Dnetworkaddress.cache.ttl=3600 -XX:+UnlockDiagnosticVMOptions -XX:+LogCompilation -XX:+PrintCompilation -XX:+PrintVMQWaitTime -XX:PrintFLSStatistics=1 -XX:+LogVMOutput -XX:+ExtendedDTraceProbes -XX:+DTraceAllocProbes -XX:+DTraceMethodProbes -XX:+DTraceMonitorProbes -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000 -XX:+UseStringCache -XX:+ExplicitGCInvokesConcurrent -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100m -Xloggc:/opt/nanopay/logs/gcstats.log.50615 -verbose:gc -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/Users/nick/nanopay/NANOPAY/logs/java_pid<pid>.hprof -XX:+UseGCOverheadLimit -XX:+UseLargePages -XX:+MaxFDLimit
