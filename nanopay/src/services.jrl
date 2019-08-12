@@ -224,7 +224,8 @@ p({
   """
     ed = new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.model.BusinessUserJunction.getOwnClassInfo())
-      .setAuthenticate(false)\n.setAuthenticateRead(false)
+      .setAuthenticate(false)
+      .setAuthenticateRead(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("signingOfficerJunctions")
       .setPm(true).build();
