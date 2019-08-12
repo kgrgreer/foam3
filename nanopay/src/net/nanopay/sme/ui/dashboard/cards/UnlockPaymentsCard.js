@@ -214,7 +214,7 @@ foam.CLASS({
       name: 'isComplete'
     },
     {
-      name: 'hasUSDPermission',
+      name: 'hasFXProvisionPermission',
       value: false
     },
     {
@@ -227,8 +227,8 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.auth.check(null, 'currency.read.USD').then((result) => {
-        this.hasUSDPermission = result;
+      this.auth.check(null, 'fx.provision.payer').then((result) => {
+        this.hasFXProvisionPermission = result;
       });
     },
     function initE() {
@@ -239,14 +239,15 @@ foam.CLASS({
         .start().addClass(this.myClass('info-box'))
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
-          .add(this.slot(function(isComplete, type, hasUSDPermission) {
+          .add(this.slot(function(isComplete, type, hasFXProvisionPermission) {
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! this.isCanadianBusiness ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.COMING_SOON).end()
               .end();
             }
 
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness && ( ! hasUSDPermission || ! this.user.onboarded ) ) {
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness 
+                && ( ! hasFXProvisionPermission || ! this.user.onboarded ) ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();

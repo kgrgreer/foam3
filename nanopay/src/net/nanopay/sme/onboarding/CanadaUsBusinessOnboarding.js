@@ -181,9 +181,36 @@ foam.CLASS({
       class: 'String',
       name: 'businessRegistrationNumber',
       label: 'Federal Tax ID Number (EIN) or Business Registration Number',
-      minLength: 1,
-      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number'
+      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number',
+      visibilityExpression: function(countryOfBusinessFormation) {
+        return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      minLength: 9,
+      maxLength: 9
     },
+    {
+      section: 'internationalTransactionSection',
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+      name: 'agreementAFEX',
+      documentation: 'Verifies if the user has accepted CAD_AFEX_Terms.',
+      docName: 'CAD_AFEX_Terms',
+      label: '',
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'agreementAFEX'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.AGREEMENT_AFEX, 0)
+            );
+          },
+          errorString: 'Must acknowledge the AFEX agreement.'
+        }
+      ]
+    }
   ],
 
   methods: [

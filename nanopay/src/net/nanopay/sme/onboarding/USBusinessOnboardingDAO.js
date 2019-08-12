@@ -47,12 +47,17 @@ foam.CLASS({
         // TODO: Please call the java validator of the businessOnboarding here
 
         USBusinessOnboarding old = (USBusinessOnboarding)getDelegate().find_(x, obj);
+
+        // ACCEPTANCE DOCUMENTS
+        AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
+        Long oldAgreementAFEX = old == null ? 0 : old.getAgreementAFEX();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
-          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
           documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
         }
-
+        if ( oldAgreementAFEX != businessOnboarding.getAgreementAFEX() ) {
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getAgreementAFEX(), (businessOnboarding.getAgreementAFEX() != 0));
+        }
 
         Session session = x.get(Session.class);
         if ( session != null ) {
