@@ -75,7 +75,7 @@ else
     JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
 fi
 
-export RES_JAR_HOME="${JAR}"
+# export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 
