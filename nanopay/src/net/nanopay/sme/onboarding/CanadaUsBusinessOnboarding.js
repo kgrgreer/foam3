@@ -129,9 +129,10 @@ foam.CLASS({
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
         {
-          args: ['businessFormationDate'],
+          args: ['signingOfficer','businessFormationDate'],
           predicateFactory: function(e) {
             return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
               foam.mlang.predicate.OlderThan.create({
                 arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_FORMATION_DATE,
                 timeMs: 24 * 60 * 60 * 1000
@@ -165,9 +166,10 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['countryOfBusinessFormation'],
+          args: ['signingOfficer', 'countryOfBusinessFormation'],
           predicateFactory: function(e) {
             return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'US')
             );
@@ -185,8 +187,21 @@ foam.CLASS({
       visibilityExpression: function(countryOfBusinessFormation) {
         return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
-      minLength: 9,
-      maxLength: 9
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'businessRegistrationNumber'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_REGISTRATION_NUMBER
+                }), 9),
+            );
+          },
+          errorString: 'Please enter a valid Federal Tax ID Number (EIN) or Business Registration Number.'
+        }
+      ]
     },
     {
       section: 'internationalTransactionSection',
