@@ -178,8 +178,24 @@ p({"class":"foam.nanos.boot.NSpec", "name":"P2PTxnRequestDAO",                 "
 p({"class":"foam.nanos.boot.NSpec", "name":"SPSCredentials",                   "lazy":false, "serve":true, "authenticate":false, "service":{"class":"net.nanopay.sps.SPSCredentials"}})
 p({"class":"foam.nanos.boot.NSpec", "name":"bankHolidayDAO",                   "description":"DAO to store bank holidays for EFT processing.","lazy":true,"serve":true,"serviceScript":"return new foam.dao.EasyDAO.Builder(x).setAuthenticate(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"bankHolidays\").setSeqNo(true).setOf(net.nanopay.bank.BankHoliday.getOwnClassInfo()).build();", "client":"{\"of\":\"net.nanopay.bank.BankHoliday\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"externalInvoiceToken",             "description":"Generate and process tokens pertaining to external user registration.", "lazy":true, "serve":true, "authenticate":false, "serviceClass":"net.nanopay.auth.ExternalInvoiceTokenService","boxClass":"foam.nanos.auth.token.TokenServiceSkeleton","client":"{\"class\":\"foam.nanos.auth.token.ClientTokenService\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"documentDAO",                      "lazy":true, "serve": true, "serviceScript": "new foam.dao.AuthenticatedDAO(\"flow\", new foam.flow.DocumentationFolderDAO.Builder(x).setDir(\"documents\").build());","client":"{\"of\":\"foam.flow.Document\"\}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"nanopayDocumentDAO",               "lazy": true, "serve": true, "serviceScript": "new foam.dao.ReadOnlyDAO.Builder(x).setDelegate(new foam.flow.DocumentationFolderDAO.Builder(x).setDir(\"documents\").build()).build();","client":"{\"of\":\"foam.flow.Document\"\}"})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localDocumentDAO",
+  "serve":false,
+  "serviceScript": 
+  """
+  X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FallbackStorage(
+    new foam.nanos.fs.FileSystemStorage(System.getProperty("DOCUMENT_HOME")),
+    new foam.nanos.fs.ResourceStorage("documents")
+  ));
+  return new foam.dao.ReadOnlyDAO.Builder(x).setDelegate(new foam.flow.DocumentationFolderDAO.Builder(storageX).build()).build();
+  """
+})
+
+p({"class":"foam.nanos.boot.NSpec", "name":"documentDAO",                      "lazy":true, "serve": true, "serviceScript": "new foam.dao.AuthenticatedDAO(\"flow\", (DAO) x.get(\"localDocumentDAO\")));","client":"{\"of\":\"foam.flow.Document\"\}"})
+p({"class":"foam.nanos.boot.NSpec", "name":"nanopayDocumentDAO",               "lazy":true, "serve": true, "serviceScript": "new foam.dao.ReadOnlyDAO.Builder(x).setDelegate((DAO) x.get(\"localDocumentDAO\")).build();","client":"{\"of\":\"foam.flow.Document\"\}"})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"receiptDAO",                       "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.security.receipt.Receipt.getOwnClassInfo()).setGuid(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"receipts\").setOf(net.nanopay.security.receipt.Receipt.getOwnClassInfo()).build();","client":"{\"of\":\"net.nanopay.security.receipt.Receipt\"}"})
 p({"class":"foam.nanos.boot.NSpec", "name":"passwordEntropyService",           "lazy":true,  "serve":true,  "authenticate": false, "boxClass":"net.nanopay.auth.passwordutil.PasswordEntropySkeleton","client":"{ \"class\":\"net.nanopay.auth.passwordutil.ClientPasswordEntropy\", \"delegate\": { \"class\":\"foam.box.HTTPBox\", \"url\":\"service/passwordEntropyService\" } }","serviceClass":"net.nanopay.auth.passwordutil.PasswordStrengthCalculator"});
 p({"class":"foam.nanos.boot.NSpec", "name":"identificationTypeDAO",            "lazy":true,  "serve":true,  "serviceScript":"return new foam.dao.ReadOnlyDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setAuthenticate(false).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"identificationTypes\").setSeqNo(true).setOf(net.nanopay.model.IdentificationType.getOwnClassInfo()).build()).build();","client":"{\"of\":\"net.nanopay.model.IdentificationType\"}"})
