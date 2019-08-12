@@ -189,8 +189,8 @@ foam.CLASS({
       maxLength: 9
     },
     {
-      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
       section: 'internationalTransactionSection',
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
       name: 'agreementAFEX',
       documentation: 'Verifies if the user has accepted CAD_AFEX_Terms.',
       docName: 'CAD_AFEX_Terms',

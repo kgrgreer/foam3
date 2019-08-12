@@ -1060,7 +1060,9 @@ foam.CLASS({
         }
       ]
     },
-    { 
+    {
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+      section: 'reviewOwnersSection',
       name: 'agreementAFEX',
       documentation: 'Verifies if the user has accepted USD_AFEX_Terms.',
       docName: 'USD_AFEX_Terms',
