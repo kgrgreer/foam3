@@ -198,6 +198,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"account.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"account.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"balance.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"business.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"bankaccount.rw.verificationattempts"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"complianceitem.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"dowjonesresponse.read.*"})
