@@ -3,9 +3,14 @@ package net.nanopay.fx.afex;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.lib.json.JSONParser;
+import foam.lib.json.Outputter;
+import foam.lib.NetworkPropertyPredicate;
 import foam.nanos.logger.Logger;
 import foam.nanos.om.OMLogger;
 import foam.util.SafetyUtil;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -19,6 +24,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -115,41 +121,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       HttpPost httpPost = new HttpPost(partnerAPI + "api/v1/corporateClient");
 
       httpPost.addHeader("API-Key", apiKey);
-      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      httpPost.addHeader("Content-Type", "application/json");
       httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
-      List<NameValuePair> nvps = new ArrayList<>();
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationExpirationDate", request.getAccountPrimaryIdentificationExpirationDate()));
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationNumber", request.getAccountPrimaryIdentificationNumber()));
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationType", request.getAccountPrimaryIdentificationType()));
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationIssuer", request.getAccountPrimaryIdentificationIssuer()));
-      nvps.add(new BasicNameValuePair("BusinessAddress1", request.getBusinessAddress1()));
-      nvps.add(new BasicNameValuePair("BusinessCity", request.getBusinessCity()));
-      nvps.add(new BasicNameValuePair("BusinessStateRegion", request.getBusinessStateRegion()));
-      nvps.add(new BasicNameValuePair("BusinessCountryCode", request.getBusinessCountryCode()));
-      nvps.add(new BasicNameValuePair("BusinessName", request.getBusinessName()));
-      nvps.add(new BasicNameValuePair("BusinessZip", request.getBusinessZip()));
-      nvps.add(new BasicNameValuePair("ContactAddress1", request.getContactAddress1()));
-      nvps.add(new BasicNameValuePair("ContactCity", request.getContactCity()));
-      nvps.add(new BasicNameValuePair("ContactCountryCode", request.getContactCountryCode()));
-      nvps.add(new BasicNameValuePair("ContactStateRegion", request.getContactStateRegion()));
-      nvps.add(new BasicNameValuePair("ContactZip", request.getContactZip()));
-      nvps.add(new BasicNameValuePair("DateOfBirth", request.getDateOfBirth()));
-      nvps.add(new BasicNameValuePair("CompanyType", request.getCompanyType()));
-      nvps.add(new BasicNameValuePair("ContactBusinessPhone", request.getContactBusinessPhone()));
-      nvps.add(new BasicNameValuePair("DateOfIncorporation", request.getDateOfIncorporation()));
-      nvps.add(new BasicNameValuePair("FirstName", request.getFirstName()));
-      nvps.add(new BasicNameValuePair("Gender", request.getGender()));
-      nvps.add(new BasicNameValuePair("LastName", request.getLastName()));
-      nvps.add(new BasicNameValuePair("PrimaryEmailAddress", request.getPrimaryEmailAddress()));
-      nvps.add(new BasicNameValuePair("ExpectedMonthlyPayments", request.getExpectedMonthlyPayments()));
-      nvps.add(new BasicNameValuePair("ExpectedMonthlyVolume", request.getExpectedMonthlyVolume()));
-      nvps.add(new BasicNameValuePair("JobTitle", request.getJobTitle()));
-      nvps.add(new BasicNameValuePair("NAICS", request.getNAICS()));
-      nvps.add(new BasicNameValuePair("TradeName	", request.getTradeName()));
-      nvps.add(new BasicNameValuePair("TermsAndConditions", request.getTermsAndConditions()));
+      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
+      String requestJson = jsonOutputter.stringify(request);
+      StringEntity params =new StringEntity(requestJson); 
 
-      httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+      httpPost.setEntity(params);
 
       omLogger.log("AFEX onboardCorpateClient starting");
 
@@ -480,9 +459,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
-      nvps.add(new BasicNameValuePair("City", request.getCity()));
       nvps.add(new BasicNameValuePair("CountryCode", request.getCountryCode()));
-      nvps.add(new BasicNameValuePair("Institution", request.getInstitution()));
       nvps.add(new BasicNameValuePair("NationalID", request.getNationalID()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
@@ -660,13 +637,15 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
+      BasicNameValuePair accountNumber = new BasicNameValuePair("AccountNumber", request.getAccountNumber());
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("Amount", request.getAmount()));
-      // todo: need quote id?
-      //nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
+      nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
       nvps.add(new BasicNameValuePair("SettlementCcy", request.getSettlementCcy()));
       nvps.add(new BasicNameValuePair("TradeCcy", request.getTradeCcy()));
       nvps.add(new BasicNameValuePair("ValueDate", valueDate));
+      nvps.add(accountNumber);
+      nvps.add(new BasicNameValuePair("IsAmountSettlement", request.getIsAmountSettlement()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
@@ -675,21 +654,40 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       omLogger.log("AFEX createTrade completed");
-
+      CloseableHttpResponse httpResponse2 = null;
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String errorMsg = "Create AFEX trade failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          String errorMsg = "Create AFEX trade with account number failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-
           logger.error(errorMsg);
-          throw new RuntimeException(errorMsg);
+
+          // try again without account number
+          nvps.remove(accountNumber);
+          httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+          omLogger.log("AFEX createTrade starting");
+
+          httpResponse2 = httpClient.execute(httpPost);
+
+          omLogger.log("AFEX createTrade completed");
+          
+          if ( httpResponse2.getStatusLine().getStatusCode() / 100 != 2 ) {
+            String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
+              + httpResponse2.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse2.getEntity(), "UTF-8");
+            logger.error(errorMsg);
+
+            throw new RuntimeException(errorMsg);
+          }
+          httpResponse = httpResponse2;
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         return (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
       } finally {
         httpResponse.close();
+        if ( httpResponse2 != null ) {
+          httpResponse2.close();
+        }
       }
 
     } catch (IOException e) {
@@ -825,6 +823,38 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         omLogger.log("AFEX checkPaymentStatus timeout");
       }
       logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
+
+    OkHttpClient client = new OkHttpClient();
+    Response response = null;
+
+    Request request = new Request.Builder()
+      .header("Content-Type", "application/json")
+      .header("API-Key", confirmationPDFRequest.getClientAPIKey())
+      .url(AFEXAPI + "api/confirmations?TradeNumber=" + confirmationPDFRequest.getTradeNumber())
+      .build();
+
+    try {
+      response = client.newCall(request).execute();
+      byte[] bytes = response.body().bytes();
+      return bytes;
+
+    } catch ( Throwable t ) {
+      if ( t instanceof IOException ) {
+        omLogger.log("AFEX checkPaymentStatus timeout");
+      }
+      logger.error(t);
+
+    } finally {
+      if ( response != null ) {
+        response.close();
+      }
     }
 
     return null;

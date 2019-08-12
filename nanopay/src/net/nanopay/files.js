@@ -246,6 +246,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/Quote' },
   { name: 'net/nanopay/fx/afex/GetQuoteRequest' },
   { name: 'net/nanopay/fx/afex/CreateTradeRequest' },
+  { name: 'net/nanopay/fx/afex/GetConfirmationPDFRequest' },
   { name: 'net/nanopay/fx/afex/CreateTradeResponse' },
   { name: 'net/nanopay/fx/afex/CheckTradeStatusRequest' },
   { name: 'net/nanopay/fx/afex/CheckTradeStatusResponse' },
@@ -318,6 +319,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/InvoicePaymentRule' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
+  { name: 'net/nanopay/tx/ruler/PropertyChangePredicate' },
+  { name: 'net/nanopay/tx/ruler/ChangePropertyAction' },
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
@@ -563,6 +566,8 @@ FOAM_FILES([
 
   // documents
   { name: 'net/nanopay/documents/AcceptanceDocument' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentProperty' },
+  { name: 'net/nanopay/documents/AcceptanceDocumentUserInputView' },
   { name: 'net/nanopay/documents/UserAcceptanceDocument' },
   { name: 'net/nanopay/documents/ClientAcceptanceDocumentService' },
   { name: 'net/nanopay/documents/AcceptanceDocumentService' },

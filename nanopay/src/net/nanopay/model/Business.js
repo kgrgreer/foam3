@@ -69,11 +69,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'dualPartyAgreement',
-      documentation: 'Verifies if the user is accept the dual-party agreement.',
-    },
-    {
       class: 'Int',
       name: 'countQBO',
       documentation: 'the number of times that this business has synced to QuickBook Online.',
