@@ -188,6 +188,29 @@ foam.CLASS({
       minLength: 9,
       maxLength: 9
     },
+    {
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+      section: 'internationalTransactionSection',
+      name: 'agreementAFEX',
+      documentation: 'Verifies if the user has accepted CAD_AFEX_Terms.',
+      docName: 'CAD_AFEX_Terms',
+      label: '',
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'agreementAFEX'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.AGREEMENT_AFEX, 0)
+            );
+          },
+          errorString: 'Must acknowledge the AFEX agreement.'
+        }
+      ]
+    }
   ],
 
   methods: [
