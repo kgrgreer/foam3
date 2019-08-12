@@ -29,7 +29,8 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
-    'net.nanopay.model.Invitation'
+    'net.nanopay.model.Invitation',
+    'net.nanopay.tx.ConfirmationFileLineItem'
   ],
 
   imports: [
@@ -393,6 +394,12 @@ foam.CLASS({
         return Promise.resolve();
       }
     },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'transactionConfirmationPDF',
+      documentation: `Order confirmation, as a PDF, for the Payer.
+    `
+    }
   ],
 
   methods: [
@@ -434,6 +441,14 @@ foam.CLASS({
               this.isCrossBorder = true;
             }
           });
+
+          for ( var i = 0; i < transaction.lineItems.length; i++ ) {
+            if ( this.ConfirmationFileLineItem.isInstance( transaction.lineItems[i] ) ) {
+              this.transactionConfirmationPDF = transaction.lineItems[i].file;
+              break;
+            }
+          }
+
         } else {
           this.currencyDAO.find(this.invoice.chequeCurrency).then((currency) => {
             this.formattedAmountPaid = currency.format(this.invoice.chequeAmount);
@@ -610,17 +625,16 @@ foam.CLASS({
               .end()
             .end()
 
-            .callIf(this.invoice.AFXConfirmationPDF != null, function() {
-              this
-                .start()
-                  .addClass('confirmation-link-content')
-                  .tag({
-                    class: 'net.nanopay.sme.ui.Link',
-                    data: self.invoice.AFXConfirmationPDF.address,
-                    text: self.TXN_CONFIRMATION_LINK_TEXT
-                  })
-                .end();
-            })
+            .add(this.slot(function(transactionConfirmationPDF) {
+              if ( transactionConfirmationPDF != null ) {
+                return this.E().start()
+                .tag({
+                  class: 'net.nanopay.sme.ui.Link',
+                  data: self.transactionConfirmationPDF.address,
+                  text: self.TXN_CONFIRMATION_LINK_TEXT
+                })
+              }
+            }))
 
             .start()
               .addClass('invoice-history-content')

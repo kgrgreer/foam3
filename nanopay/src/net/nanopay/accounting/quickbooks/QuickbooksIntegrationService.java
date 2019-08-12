@@ -100,7 +100,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           }
 
           // import
-          ContactMismatchPair mismatch = importContact(x, contact);
+          ContactMismatchPair mismatch = importContact(x, contact, contactErrors);
 
           if ( mismatch != null ) {
             result.add(mismatch);
@@ -435,7 +435,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     return true;
   }
 
-  public ContactMismatchPair importContact(foam.core.X x, NameBase importContact) {
+  public ContactMismatchPair importContact(foam.core.X x, NameBase importContact, HashMap<String, List<ContactResponseItem>> contactErrors) {
     User              user         = (User) x.get("user");
     DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
@@ -484,13 +484,13 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       if ( existContact instanceof  QuickbooksContact &&
            (( QuickbooksContact ) existContact).getQuickId().equals(importContact.getId()) ) {
         contactDAO.inX(x).put(
-          updateQuickbooksContact(x, importContact, (QuickbooksContact) existContact.fclone(), false)
+          updateQuickbooksContact(x, importContact, (QuickbooksContact) existContact.fclone(), false, contactErrors)
         );
       } else {
         return new ContactMismatchPair.Builder(x)
           .setResultCode(ContactMismatchCode.EXISTING_CONTACT)
           .setExistContact(existContact)
-          .setNewContact(createQuickbooksContactFrom(x, importContact, false))
+          .setNewContact(createQuickbooksContactFrom(x, importContact, false, contactErrors))
           .build();
       }
     }
@@ -509,7 +509,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         }
 
         if ( sink.getArray().size() == 1 ) {
-          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true);
+          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true, contactErrors);
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
           temp.setFirstName(existUser.getFirstName());
@@ -525,7 +525,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         }
 
         if ( sink.getArray().size() > 1) {
-          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true);
+          QuickbooksContact temp = createQuickbooksContactFrom(x, importContact, true, contactErrors);
           temp.setChooseBusiness(true);
           temp.setEmail(email.getAddress().toLowerCase());
           temp.setFirstName(existUser.getFirstName());
@@ -540,18 +540,18 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       }
 
       if ( existUser == null ) {
-        contactDAO.inX(x).put(createQuickbooksContactFrom(x, importContact, false));
+        contactDAO.inX(x).put(createQuickbooksContactFrom(x, importContact, false, contactErrors));
       }
     }
 
     return null;
   }
 
-  public QuickbooksContact createQuickbooksContactFrom(foam.core.X x, NameBase importContact, boolean existUser) {
-    return updateQuickbooksContact(x, importContact, new QuickbooksContact(), existUser);
+  public QuickbooksContact createQuickbooksContactFrom(foam.core.X x, NameBase importContact, boolean existUser,  HashMap<String, List<ContactResponseItem>> contactErrors) {
+    return updateQuickbooksContact(x, importContact, new QuickbooksContact(), existUser, contactErrors);
   }
 
-  public QuickbooksContact updateQuickbooksContact(X x, NameBase importContact, QuickbooksContact existContact, boolean existUser) {
+  public QuickbooksContact updateQuickbooksContact(X x, NameBase importContact, QuickbooksContact existContact, boolean existUser,  HashMap<String, List<ContactResponseItem>> contactErrors) {
     User            user           = (User) x.get("user");
     CountryService  countryService = (CountryService) x.get("countryService");
     RegionService   regionService  = (RegionService) x.get("regionService");
@@ -586,6 +586,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
         portalAddress.setCountryId(country != null ? country.getCode() : null);
 
         newContact.setBusinessAddress(portalAddress);
+      } else {
+          ContactResponseItem error = new ContactResponseItem();
+          error.setName(importContact.getDisplayName());
+          error.setBusinessName(importContact.getCompanyName());
+          contactErrors.get("MISS_ADDRESS").add(error);
       }
 
       /*
@@ -1079,6 +1084,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     contactErrors.put("MISS_BUSINESS_EMAIL", new ArrayList<>());
     contactErrors.put("MISS_BUSINESS", new ArrayList<>());
     contactErrors.put("MISS_EMAIL", new ArrayList<>());
+    contactErrors.put("MISS_ADDRESS", new ArrayList<>());
     contactErrors.put("OTHER", new ArrayList<>());
 
     return contactErrors;

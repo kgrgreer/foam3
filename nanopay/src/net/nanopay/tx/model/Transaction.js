@@ -14,10 +14,10 @@ foam.CLASS({
 
   imports: [
     'addCommas',
-    'currencyDAO',
-    'userDAO',
     'complianceHistoryDAO',
-    'homeDenomination'
+    'currencyDAO',
+    'homeDenomination',
+    'stack?'
   ],
 
   javaImports: [
@@ -523,6 +523,13 @@ foam.CLASS({
       }
     },
     {
+      name: 'lastStatusChange',
+      class: 'DateTime',
+      section: 'basicInfo',
+      documentation: `The date that a transaction changed to its current status`,
+      visibility: 'RO'
+    },
+    {
       name: 'lineItems',
       label: '',
       section: 'lineItemsSection',
@@ -972,7 +979,7 @@ for ( Balance b : getBalances() ) {
       logger.warning("Transaction failed to send notitfication. " + e.getMessage());
     }
     `
-  }
+  },
 ],
   actions: [
     {
@@ -981,7 +988,7 @@ for ( Balance b : getBalances() ) {
       availablePermissions: ['service.compliancehistorydao'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
+        this.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
           editEnabled: true,

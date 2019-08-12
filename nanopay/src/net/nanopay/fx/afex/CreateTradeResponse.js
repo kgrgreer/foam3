@@ -3,6 +3,10 @@ foam.CLASS({
   name: "CreateTradeResponse",
   properties: [
     {
+      class: 'Long',
+      name: 'id'
+    },
+    {
       class: 'Int',
       name: "TradeNumber"
     },
