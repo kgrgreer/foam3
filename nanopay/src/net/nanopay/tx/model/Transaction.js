@@ -34,7 +34,6 @@ foam.CLASS({
     'java.util.Arrays',
     'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.account.Balance',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
