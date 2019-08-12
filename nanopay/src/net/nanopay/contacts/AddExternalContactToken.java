@@ -31,7 +31,7 @@ public class AddExternalContactToken extends ProxyDAO {
     if ( externalContactUser instanceof Contact ) {
       DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
 
-      if (externalContactUser.getId() != 0) {
+      if ( externalContactUser.getId() != 0 ) {
         /**
          * Check the amount of tokens to see if it is an existing contact with the tokens
          * or it is a newly created contact without any token that is related.
