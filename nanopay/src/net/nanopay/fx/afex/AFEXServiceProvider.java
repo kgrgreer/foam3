@@ -649,13 +649,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected AFEXBusiness getAFEXBusiness(X x, Long userId) {
     DAO dao = (DAO) x.get("afexBusinessDAO");
-    return (AFEXBusiness) dao.find(AND(EQ(AFEXBusiness.USER, userId), EQ(AFEXBusiness.STATUS, "Active")));
+    return (AFEXBusiness) dao.find(EQ(AFEXBusiness.USER, userId));
   }
 
   protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
     DAO dao = (DAO) x.get("afexBeneficiaryDAO");
-    return (AFEXBeneficiary) dao.find(AND(EQ(AFEXBeneficiary.CONTACT, beneficiaryId), EQ(AFEXBeneficiary.OWNER, ownerId), 
-      EQ(AFEXBeneficiary.STATUS, "Active")));
+    return (AFEXBeneficiary) dao.find(AND(EQ(AFEXBeneficiary.CONTACT, beneficiaryId), EQ(AFEXBeneficiary.OWNER, ownerId)));
   }
 
   protected User getSigningOfficer(X x, Business business) {
