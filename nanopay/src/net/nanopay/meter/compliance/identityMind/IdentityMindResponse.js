@@ -41,6 +41,11 @@ foam.CLASS({
       tableWidth: 80
     },
     {
+      class: 'DateTime',
+      name: 'created',
+      visibility: 'RO'
+    },
+    {
       class: 'String',
       name: 'apiName',
       documentation: 'The name of the IdentityMind API that was requested.'

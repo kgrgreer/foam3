@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import net.nanopay.approval.ApprovalStatus;
 import net.nanopay.meter.compliance.ComplianceApprovalRequest;
@@ -42,16 +43,22 @@ public class IdentityMindWebAgent implements WebAgent {
 
       ArraySink sink = (ArraySink) identityMindResponseDAO.where(
         EQ(IdentityMindResponse.TID, webhookResponse.getTid())
-      ).select(new ArraySink());
+      ).orderBy(DESC(IdentityMindResponse.CREATED)).select(new ArraySink());
 
-      if ( sink.getArray().size() == 0 ) {
+      List<IdentityMindResponse> list = sink.getArray();
+
+      if ( list.size() == 0 ) {
+        // Added check for TID field within TAD field if webhook 
+        // TID does not match any IdentityMindResponses
         JSONObject jsonObject = new JSONObject(data);
         JSONObject tad = jsonObject.getJSONObject("tad");
         String tid = tad.getString("tid");
 
         sink = (ArraySink) identityMindResponseDAO.where(
           EQ(IdentityMindResponse.TID, tid)
-        ).select(new ArraySink());
+        ).orderBy(DESC(IdentityMindResponse.CREATED)).select(new ArraySink());
+
+        list = sink.getArray();
 
         String decision = jsonObject.getString("decision");
         if ( decision.equals("ACCEPTED") ) {
@@ -65,8 +72,8 @@ public class IdentityMindWebAgent implements WebAgent {
         webhookResponse.setTid(tid);
       }
 
-      for ( int i = 0; i < sink.getArray().size(); i ++ ) {
-        IdentityMindResponse idmResponse = (IdentityMindResponse) ((IdentityMindResponse) sink.getArray().get(i)).fclone();
+      for ( int i = 0; i < list.size(); i++ ) {
+        IdentityMindResponse idmResponse = (IdentityMindResponse) ((IdentityMindResponse) list.get(i)).fclone();
         idmResponse.copyFrom(webhookResponse);
         identityMindResponseDAO.put(idmResponse);
 
