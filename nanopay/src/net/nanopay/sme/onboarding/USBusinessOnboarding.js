@@ -1060,6 +1060,29 @@ foam.CLASS({
         }
       ]
     },
+    {
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+      section: 'reviewOwnersSection',
+      name: 'agreementAFEX',
+      documentation: 'Verifies if the user has accepted USD_AFEX_Terms.',
+      docName: 'USD_AFEX_Terms',
+      label: '',
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'agreementAFEX'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AGREEMENT_AFEX, 0)
+            );
+          },
+          errorString: 'Must acknowledge the AFEX agreement.'
+        }
+      ]
+    },
     net.nanopay.model.Business.DUAL_PARTY_AGREEMENT.clone().copyFrom({
       section: 'reviewOwnersSection',
       label: '',
