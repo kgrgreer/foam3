@@ -37,11 +37,24 @@ public class AFEXTransactionDAO
     }
 
     AFEXTransaction transaction = (AFEXTransaction) obj;
+    AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
+    Logger logger = (Logger) x.get("logger");
+
+    if (transaction.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED && transaction.getAfexTradeResponseNumber() == 0 ) {
+      try {
+        int result = afexService.createTrade(transaction);
+        if ( result != -1 ) {
+          transaction.setAfexTradeResponseNumber(result);
+        }
+      } catch (Throwable t) {
+        logger.error(" Error creating trade for AfexTransaction " + transaction.getId(), t);
+        throw new RuntimeException(t.getMessage());
+      }
+    }
+    
     if ( transaction.getStatus() != TransactionStatus.PENDING || ! ( SafetyUtil.isEmpty( transaction.getReferenceNumber()) ) ) {
       return getDelegate().put_(x, obj);
     }
-
-    AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
   ///Submit transation to AFEX
     try {
@@ -51,7 +64,7 @@ public class AFEXTransactionDAO
         transaction.setReferenceNumber(txn.getReferenceNumber());
       } else {
         transaction.setStatus(TransactionStatus.DECLINED);
-        ((Logger) x.get("logger")).error("Error submitting payment to AFEX.");
+        logger.error("Error submitting payment to AFEX.");
         return getDelegate().put_(x, obj);
       }
     } catch (Throwable t) {

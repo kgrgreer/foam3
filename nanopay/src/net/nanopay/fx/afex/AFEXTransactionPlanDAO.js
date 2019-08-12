@@ -103,6 +103,7 @@ foam.CLASS({
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setPayeeId(destinationAccount.getOwner());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
+            afexTransaction.setInvoiceId(request.getInvoiceId());
             FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
             quote.addPlan(summary);
           }
@@ -177,7 +178,8 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
   afexTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
   afexTransaction.setFxFees(fees);
-  
+  afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
+
   afexTransaction.setIsQuoted(true);
   afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
@@ -213,6 +215,8 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setSourceAccount(sourceAccount.getId());
   summary.setDestinationAccount(destinationAccount.getId());
   summary.setFxRate(tx.getFxRate());
+  summary.setFxExpiry(tx.getFxExpiry());
+  summary.setInvoiceId(tx.getInvoiceId());
   summary.addNext(tx);
   summary.setIsQuoted(true);
   return summary;
