@@ -1,4 +1,4 @@
-p({"class":"net.nanopay.payment.Institution", "id":1,   "name":"ATB",                 "abbreviation":"ATB",    "institutionNumber":"219"});
+p({"class":"net.nanopay.payment.Institution", "id":1,   "name":"Alberta Treasury Bank",                 "abbreviation":"ATB",    "institutionNumber":"219", "countryId":"CA"});
 p({"class":"net.nanopay.payment.Institution", "id":2,   "name":"Bank of Montreal",    "abbreviation":"BMO",    "institutionNumber":"001", "countryId":"CA"})
 p({"class":"net.nanopay.payment.Institution", "id":3,   "name":"Canadian Imperial Bank of Canada", "abbreviation":"CIBC","institutionNumber":"010", "countryId":"CA"})
 p({"class":"net.nanopay.payment.Institution", "id":4,   "name":"CoastCapital",        "abbreviation":"",       "institutionNumber":"809"})
@@ -21,3 +21,4 @@ p({"class":"net.nanopay.payment.Institution", "id":20,  "name":"ICICI Bank of Ca
 p({"class":"net.nanopay.payment.Institution", "id":21,  "name":"ICICI Bank Limited",  "abbreviation":"",       "institutionNumber":"ICIC0006438"})
 p({"class":"net.nanopay.payment.Institution", "id":22,  "name":"IndusInd Bank",       "abbreviation":"INBD",   "institutionNumber":"", "countryId":"IN"})
 p({"class":"net.nanopay.payment.Institution", "id":23,  "name":"Kotak Mahindra Bank", "abbreviation":"KKBK",   "institutionNumber":"", "countryId":"IN"})
+p({"class":"net.nanopay.payment.Institution", "id":24,  "name":"Alterna Savings and Credit Union", "abbreviation":"Alterna",   "institutionNumber":"842", "countryId":"CA"})
