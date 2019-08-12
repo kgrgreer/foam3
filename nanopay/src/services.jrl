@@ -222,7 +222,8 @@ p({
   "serve": true,
   "serviceScript": 
   """
-    ed = new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.model.BusinessUserJunction.getOwnClassInfo())
+    ed = new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.model.BusinessUserJunction.getOwnClassInfo())
       .setAuthenticate(false)\n.setAuthenticateRead(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("signingOfficerJunctions")
