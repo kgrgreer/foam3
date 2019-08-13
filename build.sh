@@ -207,7 +207,6 @@ function build_jar {
         cp -r deploy/bin/* "${NANOPAY_HOME}/bin/"
         cp -r deploy/etc/* "${NANOPAY_HOME}/etc/"
         cp -r target/lib/* "${NANOPAY_HOME}/lib/"
-        # export RES_JAR_HOME="$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')"
     fi
 }
 
@@ -299,7 +298,7 @@ function start_nanos {
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 

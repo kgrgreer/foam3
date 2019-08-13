@@ -132,6 +132,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       omLogger.log("AFEX onboardCorpateClient starting");
 
+      logger.debug(params);
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       omLogger.log("AFEX onboardCorpateClient complete");
@@ -188,6 +190,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logger.debug(response);
         return (GetClientAccountStatusResponse) jsonParser.parseString(response, GetClientAccountStatusResponse.class);
       } finally {
         httpResponse.close();
@@ -664,6 +667,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
           // try again without account number
           nvps.remove(accountNumber);
+          nvps.add(new BasicNameValuePair("Note", request.getNote()));
           httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
           omLogger.log("AFEX createTrade starting");
 
@@ -751,7 +755,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("Amount", request.getAmount()));
       nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
-      nvps.add(new BasicNameValuePair("PaymentDate", valueDate));
+      nvps.add(new BasicNameValuePair("PaymentDate", request.getPaymentDate()));
       nvps.add(new BasicNameValuePair("VendorId", request.getVendorId()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
