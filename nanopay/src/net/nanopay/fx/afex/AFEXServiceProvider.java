@@ -467,7 +467,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     createTradeRequest.setSettlementCcy(afexTransaction.getSourceCurrency());
     createTradeRequest.setTradeCcy(afexTransaction.getDestinationCurrency());
     createTradeRequest.setQuoteID(quote.getExternalId());
-    createTradeRequest.setAccountNumber(((BankAccount)transaction.findSourceAccount(x)).getAccountNumber());
+    BankAccount account = (BankAccount)transaction.findSourceAccount(x);
+    createTradeRequest.setAccountNumber(account.getAccountNumber());
+    createTradeRequest.setNote(account.getAccountNumber() + ", " + account.getDenomination());
+
     try {
       CreateTradeResponse tradeResponse = this.afexClient.createTrade(createTradeRequest);
       if ( null != tradeResponse && tradeResponse.getTradeNumber() > 0 ) {
