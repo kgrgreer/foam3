@@ -755,7 +755,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("Amount", request.getAmount()));
       nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
-      nvps.add(new BasicNameValuePair("PaymentDate", valueDate));
+      nvps.add(new BasicNameValuePair("PaymentDate", request.getPaymentDate()));
       nvps.add(new BasicNameValuePair("VendorId", request.getVendorId()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
