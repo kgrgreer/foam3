@@ -32,7 +32,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
-    'name', 'id', 'denomination', 'type'
+    'name', 'id', 'denomination', 'type', 'isDefault'
   ],
 
   tableColumns: [
@@ -42,7 +42,8 @@ foam.CLASS({
     'type',
     'denomination',
     'balance',
-    'homeBalance'
+    'homeBalance',
+    'isDefault'
   ],
 
   axioms: [
@@ -179,7 +180,19 @@ foam.CLASS({
       name: 'isDefault',
       documentation: `Determines whether an account is the first preferred option of the User.`,
       label: 'Set As Default',
-      value: false
+      value: false,
+      tableHeaderFormatter: function(axiom) {
+        this.add('Default');
+      },
+      tableCellFormatter: function(value, obj, property) {
+        this
+          .start()
+            .callIf(value, function() {
+              this.style({ color: '#32bf5e' });
+            })
+            .add(value ? 'Y' : '-')
+          .end();
+      },
     },
     // TODO: access/scope: public, private
     {
