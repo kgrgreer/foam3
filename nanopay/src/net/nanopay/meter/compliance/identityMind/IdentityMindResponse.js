@@ -2,6 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.meter.compliance.identityMind',
   name: 'IdentityMindResponse',
 
+  implements: [
+    'foam.nanos.auth.CreatedAware'
+  ],
+
   tableColumns: [
     'id',
     'entityId',
