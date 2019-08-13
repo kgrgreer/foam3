@@ -86,11 +86,11 @@ foam.CLASS({
       label: 'Sync Count to Xero'
     },
     {
-      class: 'String',
+      class: 'StringArray',
       name: 'businessDirectors',
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.TextArea'
+          class: 'foam.u2.view.ArrayView'
         }
       }
     }
