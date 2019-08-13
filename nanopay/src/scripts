@@ -239,13 +239,79 @@ p({
     import foam.dao.DAO;
     import net.nanopay.model.Business;
     import java.util.List;
+    import foam.util.SafetyUtil;
 
-    DAO localBusinessDAO = ((DAO) x.get(\"localBusinessDAO\")).inX(x);
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
     ArraySink businessSink = (ArraySink) localBusinessDAO.select(new ArraySink());
-    businessList = businessSink.getArray();
-    for (Business business : businessList) {
+    businessArray = businessSink.getArray();
+    print(" ");
+
+    for (Business business : businessArray) {
+      print(business.getOrganization());
+      print(" ");
       business = (Business) business.fclone();
-      business.setAddress(business.getBusinessAddress());
+      businessAddress = business.getBusinessAddress();
+      address = business.getAddress();
+
+      if( businessAddress == null )
+        continue;
+
+      // Migrate streetName
+      if ( SafetyUtil.isEmpty(address.getStreetName()) && ! SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
+        address.setStreetName(businessAddress.getStreetName());
+      } else if ( ! SafetyUtil.equals(address.getStreetName(), businessAddress.getStreetName()) ) {
+        print(business.getOrganization() + "'s street name needs to verify manually.");
+        continue;
+      }
+
+      // Migrate streetNumber
+      if ( SafetyUtil.isEmpty(address.getStreetNumber()) && ! SafetyUtil.isEmpty(businessAddress.getStreetNumber()) ) {
+        address.setStreetNumber(businessAddress.getStreetName());
+      } else if ( ! SafetyUtil.equals(address.getStreetNumber(), businessAddress.getStreetNumber()) ) {
+        print(business.getOrganization() + "'s street number needs to verify manually.");
+        continue;
+      }
+
+      // Migrate address 2
+      if ( SafetyUtil.isEmpty(address.getAddress2()) && ! SafetyUtil.isEmpty(businessAddress.getAddress2()) ) {
+        address.setAddress2(businessAddress.getAddress2());
+      } else if ( ! SafetyUtil.equals(address.getAddress2(), businessAddress.getAddress2()) ) {
+        print(business.getOrganization() + "'s address2 needs to verify manually.");
+        continue;
+      }
+
+      // Migrate postalCode
+      if ( SafetyUtil.isEmpty(address.getPostalCode()) && ! SafetyUtil.isEmpty(businessAddress.getPostalCode()) ) {
+        address.setPostalCode(businessAddress.getPostalCode());
+      } else if ( ! SafetyUtil.equals(address.getPostalCode(), businessAddress.getPostalCode()) ) {
+        print(business.getOrganization() + "'s postal code needs to verify manually.");
+        continue;
+      }
+
+      // Migrate city
+      if ( SafetyUtil.isEmpty(address.getCity()) && ! SafetyUtil.isEmpty(businessAddress.getCity()) ) {
+        address.setCity(businessAddress.getCity());
+      } else if ( ! SafetyUtil.equals(address.getCity(), businessAddress.getCity()) ) {
+        print(business.getOrganization() + "'s city needs to verify manually.");
+        continue;
+      }
+
+      // Migrate countryId
+      if ( SafetyUtil.isEmpty(address.getCountryId()) && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
+        address.setCountryId(businessAddress.getCountryId());
+      } else if ( ! SafetyUtil.equals(address.getCountryId(), businessAddress.getCountryId()) ) {
+        print(business.getOrganization() + "'s country needs to verify manually.");
+        continue;
+      }
+
+      // Migrate regionId
+      if ( SafetyUtil.isEmpty(address.getRegionId()) && ! SafetyUtil.isEmpty(businessAddress.getRegionId()) ) {
+        address.setRegionId(businessAddress.getRegionId());
+      } else if ( ! SafetyUtil.equals(address.getRegionId(), businessAddress.getRegionId()) ) {
+        print(business.getOrganization() + "'s region/province needs to verify manually.");
+        continue;
+      }
+
       business.setPhone(business.getBusinessPhone());
       localBusinessDAO.put(business);
     }
