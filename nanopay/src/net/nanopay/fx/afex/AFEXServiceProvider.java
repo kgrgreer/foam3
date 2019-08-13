@@ -171,6 +171,20 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   }
 
+  public String getClientAccountStatus(AFEXBusiness afexBusiness) throws RuntimeException {
+    String status = null;
+    if ( afexBusiness == null ) return null;
+    try {
+      GetClientAccountStatusResponse response = this.afexClient.getClientAccountStatus(afexBusiness.getApiKey());
+      if ( response != null ) {
+        status = response.getAccountStatus();
+      }
+    } catch(Throwable t) {
+      ((Logger) x.get("logger")).error("Error getting afex business compliance status.", t);
+    }
+    return status;
+  }  
+
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,  long destinationAmount,
     String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
