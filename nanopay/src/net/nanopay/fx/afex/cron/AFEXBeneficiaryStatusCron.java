@@ -34,7 +34,7 @@ public class AFEXBeneficiaryStatusCron implements ContextAgent {
     List<AFEXBeneficiary> pendingBeneficiaries = sink.getArray();
     System.out.println("Pending beneficiaries size is: " + pendingBeneficiaries.size());
     for (AFEXBeneficiary beneficiary : pendingBeneficiaries) {
-      AFEXBusiness afexBusiness =  (AFEXBusiness) afexBusinessDAO.find(AND(EQ(AFEXBusiness.USER, beneficiary.getOwner()), EQ(AFEXBusiness.STATUS, "Active")));
+      AFEXBusiness afexBusiness =  (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, beneficiary.getOwner()));
       if ( afexBusiness != null ) {
         FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey());
         if ( beneficiaryResponse != null ) {
@@ -52,6 +52,10 @@ public class AFEXBeneficiaryStatusCron implements ContextAgent {
               txn.setStatus(TransactionStatus.COMPLETED);
               txnDAO.put(txn);
             }
+          } else {
+            AFEXBeneficiary obj = (AFEXBeneficiary) beneficiary.fclone();
+            obj.setStatus(beneficiaryResponse.getStatus());
+            afexBeneficiaryDAO.put(obj);
           }
         }
       }
