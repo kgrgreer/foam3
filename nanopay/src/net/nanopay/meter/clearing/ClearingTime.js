@@ -16,7 +16,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      visibility: 'RO'
     },
     {
       class: 'Class',
@@ -35,7 +36,7 @@ foam.CLASS({
       of: 'foam.mlang.predicate.Predicate',
       name: 'predicate',
       view: { class: 'foam.u2.view.JSONTextView' },
-      javaFactory: `
+      javaGetter: `
         if ( getOf() != null && ! SafetyUtil.isEmpty(getObjId()) ) {
           PropertyInfo idProp = (PropertyInfo) getOf().getAxiomByName("id");
           if ( idProp != null ) {
@@ -46,8 +47,14 @@ foam.CLASS({
             );
           }
         }
-        return foam.mlang.MLang.FALSE;
-      `
+
+        return predicateIsSet_ ? predicate_ : foam.mlang.MLang.FALSE;
+      `,
+      visibilityExpression: function(of, objId) {
+        return of === undefined || objId === ''
+          ? foam.u2.Visibility.RW
+          : foam.u2.Visibility.HIDDEN;
+      }
     },
     {
       class: 'Int',
