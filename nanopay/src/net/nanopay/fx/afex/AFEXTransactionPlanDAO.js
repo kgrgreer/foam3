@@ -217,8 +217,24 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setFxRate(tx.getFxRate());
   summary.setFxExpiry(tx.getFxExpiry());
   summary.setInvoiceId(tx.getInvoiceId());
-  summary.addNext(tx);
   summary.setIsQuoted(true);
+
+  // create AFEXBeneficiaryComplianceTransaction
+  AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
+  afexCT.setAmount(tx.getAmount());
+  afexCT.setDestinationAmount(tx.getDestinationAmount());
+  afexCT.setSourceCurrency(tx.getSourceCurrency());
+  afexCT.setDestinationCurrency(tx.getDestinationCurrency());
+  afexCT.setSourceAccount(sourceAccount.getId());
+  afexCT.setDestinationAccount(destinationAccount.getId());
+  afexCT.setInvoiceId(tx.getInvoiceId());
+  afexCT.setIsQuoted(true);
+  afexCT.setPayeeId(tx.getPayeeId());
+  afexCT.setPayerId(tx.getPayerId());
+  afexCT.addNext(tx);
+  
+  summary.addNext(afexCT);
+
   return summary;
 }
         `);
