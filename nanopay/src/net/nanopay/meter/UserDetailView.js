@@ -40,7 +40,9 @@ foam.CLASS({
           this.User.CREATED,
           this.User.TWO_FACTOR_ENABLED,
           this.User.ENTITIES.clone().copyFrom({ label: 'Businesses' }),
-          this.User.COMPLIANCE_RESPONSES
+          this.User.COMPLIANCE_HISTORIES,
+          this.User.COMPLIANCE_RESPONSES,
+          this.User.APPROVAL_REQUESTS
         ];
       }
     }
