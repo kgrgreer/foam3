@@ -27,18 +27,18 @@ public class AddExternalContactToken extends ProxyDAO {
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User externalContactUser = (User) obj;
-    if ( externalContactUser instanceof Contact ) {
+    User externalContact = (User) obj;
+    if ( externalContact instanceof Contact ) {
       DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
 
       // Handle the existing external contact
-      if ( externalContactUser.getId() != 0 ) {
+      if ( externalContact.getId() != 0 ) {
         /**
          * Check the amount of tokens to see if it is an existing contact with the tokens
          * or it is a newly created contact without any token that is related.
          */
         List<Token> tokensList = ((ArraySink) tokenDAO
-          .where(EQ(Token.USER_ID, externalContactUser.getId())).select(new ArraySink())).getArray();
+          .where(EQ(Token.USER_ID, externalContact.getId())).select(new ArraySink())).getArray();
 
         Token token;
         if ( tokensList.size() > 1 ) {
@@ -53,12 +53,12 @@ public class AddExternalContactToken extends ProxyDAO {
           ExternalContactToken externalToken = new ExternalContactToken();
 
           Map tokenParams = new HashMap();
-          tokenParams.put("inviteeEmail", externalContactUser.getEmail());
+          tokenParams.put("inviteeEmail", externalContact.getEmail());
 
           externalToken.setParameters(tokenParams);
-          externalToken.setUserId(externalContactUser.getId());
+          externalToken.setUserId(externalContact.getId());
           externalToken.setData(UUID.randomUUID().toString());
-          externalToken.setBusinessEmail(externalContactUser.getEmail());
+          externalToken.setBusinessEmail(externalContact.getEmail());
           tokenDAO.put(externalToken);
         } else {
           /**
@@ -71,11 +71,11 @@ public class AddExternalContactToken extends ProxyDAO {
         ExternalContactToken externalToken = new ExternalContactToken();
         Map tokenParams = new HashMap();
 
-        tokenParams.put("inviteeEmail", externalContactUser.getEmail());
+        tokenParams.put("inviteeEmail", externalContact.getEmail());
         externalToken.setParameters(tokenParams);
-        externalToken.setUserId(externalContactUser.getId());
+        externalToken.setUserId(externalContact.getId());
         externalToken.setData(UUID.randomUUID().toString());
-        externalToken.setBusinessEmail(externalContactUser.getEmail());
+        externalToken.setBusinessEmail(externalContact.getEmail());
         tokenDAO.put(externalToken);
       }
     }
