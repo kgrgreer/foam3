@@ -51,11 +51,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.notification.Notification',
-    'java.io.ByteArrayInputStream',
-    'java.io.ByteArrayOutputStream',
-    'java.io.FileOutputStream',
-    'java.io.PrintWriter',
-    'java.io.File',
+    'java.io.*',
     'java.util.Date',
     'java.util.Properties',
     'java.util.Vector',
@@ -73,6 +69,7 @@ foam.CLASS({
 X x = getX();
 DAO notificationDAO = (DAO) x.get("localNotificationDAO");
 String SEND_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/alterna_eft/send/";
+String SEND_FAILED_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/alterna_eft/send_failed/";
 
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 PrintWriter printWriter = new PrintWriter(baos);
@@ -87,6 +84,8 @@ final Logger logger = new PrefixLogger(new String[] {"Alterna: "}, (Logger) x.ge
 Session session = null;
 Channel channel = null;
 ChannelSftp channelSftp;
+String filename = CsvUtil.generateFilename(now, credentials.getIdentifier());
+
 try {
   // create session with user name and password
   JSch jsch = new JSch();
@@ -105,8 +104,6 @@ try {
   channelSftp = (ChannelSftp) channel;
 
   channelSftp.cd("/");
-
-  String filename = CsvUtil.generateFilename(now, credentials.getIdentifier());
 
   Vector rootList = channelSftp.ls("/");
   boolean rootFolderCsvFileExist = false;
@@ -141,14 +138,12 @@ try {
       .build();
     notificationDAO.put(notification);
   } else {    
-    FileUtils.touch(new File(SEND_FOLDER + filename));
-    FileOutputStream fileOutputStream = new FileOutputStream(SEND_FOLDER + filename);
-    baos.writeTo(fileOutputStream);
-    fileOutputStream.close();
-    
     // send CSV file
     channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
     logger.info("CICO CSV file sent");
+    
+    // save CSV file
+    saveFile(baos, SEND_FOLDER + filename);
   }
 
   getTimer().cancel();
@@ -156,12 +151,39 @@ try {
   channelSftp.exit();
 } catch ( Exception e ) {
   logger.error("Error during sending alterna EFT, retrying.", e);
+  saveFile(baos, SEND_FAILED_FOLDER + filename);
   retry();
 } finally {
   // close channels
   if ( channel != null ) channel.disconnect();
   if ( session != null ) session.disconnect();
 }`
+},
+{
+  name: 'saveFile',
+  args: [
+    {
+      name: 'baos',
+      type: 'ByteArrayOutputStream'
+    },
+    {
+      name: 'pathToFile',
+      type: 'String'
+    }
+  ],
+  javaCode: `
+try {
+
+  FileUtils.touch(new File(pathToFile));
+  FileOutputStream fileOutputStream = new FileOutputStream(pathToFile);
+  baos.writeTo(fileOutputStream);
+  fileOutputStream.close();
+
+} catch (IOException e) {
+  Logger logger = (Logger) getX().get("logger");
+  logger.error("Error when save the eft file to local.", e);
+}
+  `
 },
 {
   name: 'retry',
