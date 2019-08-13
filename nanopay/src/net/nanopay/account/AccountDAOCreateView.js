@@ -47,7 +47,17 @@ foam.CLASS({
       name: 'save',
       code: function() {
         this.data.owner = this.__subContext__.user.id;
-        this.SUPER();
+        this.config.dao.put(this.data).then(o => {
+          this.data = o;
+          this.finished.pub();
+          this.stack.back();
+        }, e => {
+          this.throwError.pub(e);
+          this.add(this.NotificationMessage.create({
+            message: e.message,
+            type: 'error'
+          }));
+        });
       }
     },
   ],

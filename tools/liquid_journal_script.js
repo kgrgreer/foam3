@@ -146,6 +146,7 @@ const liquiditySettings = [
   {
     type: 'emailRebalance',
     name: 'Low And High Rebalance Email',
+    userToEmail: 8005,
     highLiquidity: 10000000,
     highPush: 'ABC Toronto Shadow Account',
     highResetBalance: 8000000,
@@ -663,8 +664,6 @@ function main() {
   currentDate.setFullYear(currentDate.getFullYear() - 5);
 
   var X = foam.createSubContext({
-    accountDAO: jdao("target/journals/accounts.0"),
-    debtAccountDAO: foam.dao.NullDAO.create(),
     transactionDAO: jdao("target/journals/transactions.0"),
     liquiditySettingsDAO: jdao("target/journals/liquiditySettings.0"),
     currencyDAO: jdao("target/journals/currencies.0"),
@@ -674,10 +673,15 @@ function main() {
     userDAO: foam.dao.NullDAO.create(),
     complianceHistoryDAO: foam.dao.NullDAO.create(),
     userId: 8005,
-    user: foam.nanos.auth.User.create({ id: 8005 }),
     fxService: foam.dao.NullDAO.create(),
     addCommas: function (a) { return a; }
   });
+
+  X = X.createSubContext({ 
+    user: foam.nanos.auth.User.create({ id: 8005 }, X),
+    accountDAO: jdao("target/journals/accounts.0"),
+    debtAccountDAO: foam.dao.NullDAO.create(),
+  })
 
   newCurrencies.forEach(c => {
     createCurrency(X, c);
@@ -719,6 +723,7 @@ function main() {
   addLiquiditySettingsToAccounts(X);
 
   var end = new Date();
+  end.setDate(end.getDate() - 1);
 
   var targetTransactionCount = 5000;
   var timeStep = Math.floor((end.getTime() - currentDate.getTime()) / targetTransactionCount);

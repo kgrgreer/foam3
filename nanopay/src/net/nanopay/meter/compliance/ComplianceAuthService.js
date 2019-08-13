@@ -47,32 +47,31 @@ foam.CLASS({
         Permission permission_ = new AuthPermission(permission);
     
         try {
-          if ( ! complianceService.checkUserCompliance(x) ) {
-            Group userBlacklist   = (Group) ((DAO) getBlacklistDAO()).find(
-              MLang.EQ(Blacklist.ENTITY_TYPE, BlacklistEntityType.USER)
-            );
-            assert userBlacklist != null : "User compliance blacklist does not exist";
-            if ( userBlacklist.implies(x, permission_) ) {
-              throw new AuthorizationException("Permission denied. User compliance check failed for permission: " + permission);
-            }
+          Group userBlacklist = (Group) ((DAO) getBlacklistDAO()).find(
+            MLang.EQ(Blacklist.ENTITY_TYPE, BlacklistEntityType.USER)
+          );
+          if ( userBlacklist != null && userBlacklist.implies(x, permission_)
+            && ! complianceService.checkUserCompliance(x)
+          ) {
+            throw new AuthorizationException("Permission denied. User compliance check failed for permission: " + permission);
           }
-          if ( ! complianceService.checkBusinessCompliance(x) ) {
-            Group businessBlacklist = (Group) ((DAO) getBlacklistDAO()).find(
-              MLang.EQ(Blacklist.ENTITY_TYPE, BlacklistEntityType.BUSINESS)
-            );
-            assert businessBlacklist != null : "Business compliance blacklist does not exist";
-            if ( businessBlacklist.implies(x, permission_) ) {
-              throw new AuthorizationException("Permission denied. Business compliance check failed for permission: " + permission);
-            }
+
+          Group businessBlacklist = (Group) ((DAO) getBlacklistDAO()).find(
+            MLang.EQ(Blacklist.ENTITY_TYPE, BlacklistEntityType.BUSINESS)
+          );
+          if ( businessBlacklist != null && businessBlacklist.implies(x, permission_)
+            && ! complianceService.checkBusinessCompliance(x)
+          ) {
+            throw new AuthorizationException("Permission denied. Business compliance check failed for permission: " + permission);
           }
-          if ( ! complianceService.checkAccountCompliance(x) ) {
-            Group accountBlacklist = (Group) ((DAO) getBlacklistDAO()).find(
-              MLang.EQ(Blacklist.ENTITY_TYPE, BlacklistEntityType.ACCOUNT)
-            );
-            assert accountBlacklist != null : "Account compliance blacklist does not exist";
-            if ( accountBlacklist.implies(x, permission_) ) {
-              throw new AuthorizationException("Permission denied. Account compliance check failed for permission: " + permission);
-            }
+
+          Group accountBlacklist = (Group) ((DAO) getBlacklistDAO()).find(
+            MLang.EQ(Blacklist.ENTITY_TYPE, BlacklistEntityType.ACCOUNT)
+          );
+          if ( accountBlacklist != null && accountBlacklist.implies(x, permission_)
+            && ! complianceService.checkAccountCompliance(x)
+          ) {
+            throw new AuthorizationException("Permission denied. Account compliance check failed for permission: " + permission);
           }
         } catch ( AuthorizationException ae ) {
           Logger logger = (Logger) x.get("logger");

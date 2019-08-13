@@ -17,12 +17,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'whiteListEnabled',
       documentation: `Enables white labeling on ablii sign up.`
-    },
-    {
-      class: 'Boolean',
-      name: 'enableInternationalPayment',
-      value: false,
-      documentation: `Enables onboarding to partners for international transacions.`
     }
   ]
 });
