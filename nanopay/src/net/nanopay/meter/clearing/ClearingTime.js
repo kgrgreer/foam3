@@ -7,6 +7,12 @@ foam.CLASS({
     'foam.util.SafetyUtil'
   ],
 
+  tableColumns: [
+    'id',
+    'description',
+    'duration'
+  ],
+
   properties: [
     {
       class: 'Long',
