@@ -39,7 +39,11 @@ foam.CLASS({
         if ( getOf() != null && ! SafetyUtil.isEmpty(getObjId()) ) {
           PropertyInfo idProp = (PropertyInfo) getOf().getAxiomByName("id");
           if ( idProp != null ) {
-            return foam.mlang.MLang.EQ(idProp, getObjId());
+            return foam.mlang.MLang.EQ(
+              idProp, idProp.getValueClass() == long.class
+                ? Long.valueOf(getObjId())
+                : getObjId()
+            );
           }
         }
         return foam.mlang.MLang.FALSE;
