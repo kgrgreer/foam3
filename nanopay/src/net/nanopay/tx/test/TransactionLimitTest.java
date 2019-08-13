@@ -161,7 +161,7 @@ public class TransactionLimitTest extends Test {
     limitRule.setLimit(10000L);
     limitRule.setDaoKey("transactionDAO");
     limitRule.setTransactionType(null);
-    limitRule.setAccount(183);
+    limitRule.setAccount(sender_.getId());
     rule = (AccountTransactionLimitRule) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
   }
 }
