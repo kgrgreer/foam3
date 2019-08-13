@@ -63,7 +63,7 @@ foam.CLASS({
             .start().add(this.ZOOM_IN).end()
             .start().add(this.ZOOM_OUT).end()
           .endContext()
-          .start()
+          .start().style({overflow: 'scroll'})
             .tag(self.AccountTreeGraph, null, self.cview$)
           .end()
       }
