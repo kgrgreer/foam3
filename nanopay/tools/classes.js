@@ -134,6 +134,9 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBusiness',
   'net.nanopay.fx.afex.AFEXCredentials',
   'net.nanopay.fx.afex.AFEXBeneficiary',
+  'net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction',
+  'net.nanopay.fx.afex.AFEXComplianceTransactionPredicate',
+  'net.nanopay.fx.afex.AFEXComplianceTransactionRule',
   'net.nanopay.fx.afex.Token',
   'net.nanopay.fx.afex.OnboardCorporateClientRequest',
   'net.nanopay.fx.afex.OnboardCorporateClientResponse',
@@ -173,6 +176,7 @@ var classes = [
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
   'net.nanopay.contacts.ContactMigrationRule',
+  'net.nanopay.contacts.ExternalContactToken',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',

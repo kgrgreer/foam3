@@ -667,6 +667,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
           // try again without account number
           nvps.remove(accountNumber);
+          nvps.add(new BasicNameValuePair("Note", request.getNote()));
           httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
           omLogger.log("AFEX createTrade starting");
 
