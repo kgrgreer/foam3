@@ -6,13 +6,17 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
 import net.nanopay.cico.model.EFTConfirmationFileRecord;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +29,14 @@ import static foam.mlang.MLang.EQ;
 
 public class EFTConfirmationFileProcessor implements ContextAgent
 {
+
+  final static String CONFIRMATION_FILES = System.getProperty("NANOPAY_HOME") + "/var" + "/alterna_eft/confirmation/";
+
   @Override
   public void execute(X x) {
-    Logger logger = (Logger) x.get("logger");
+    Logger logger = new PrefixLogger(new String[] {"Alterna: "}, (Logger) x.get("logger"));
+    logger.info("starting EFT Confirmation file processing.");
+
     EFTReturnFileCredentials credentials = (EFTReturnFileCredentials) x.get("EFTReturnFileCredentials");
 
     EFTConfirmationFileParser eftConfirmationFileParser = new EFTConfirmationFileParser();
@@ -69,8 +78,11 @@ public class EFTConfirmationFileProcessor implements ContextAgent
         }
       }
 
+      if ( fileNames.size() == 0 ) logger.warning("No confirmation file found.");
+
+      InputStream confirmationFileStream = null;
       for ( String fileName : fileNames ) {
-        InputStream confirmationFileStream = channelSftp.get("/Returns/" + fileName);
+        confirmationFileStream = channelSftp.get("/Returns/" + fileName);
         List<FObject> confirmationFile = eftConfirmationFileParser.parse(confirmationFileStream);
 
         // UploadLog_yyyyMMdd_identifier.csv.txt -> yyyyMMdd_identifier.csv
@@ -121,11 +133,13 @@ public class EFTConfirmationFileProcessor implements ContextAgent
       // move processed files
       for ( String fileName : fileNames ) {
         channelSftp.rename(srcFileDirectory + fileName, dstFileDirectory + fileName);
+        FileUtils.touch(new File(CONFIRMATION_FILES + fileName));
+        FileUtils.copyInputStreamToFile(confirmationFileStream, new File(CONFIRMATION_FILES + fileName));
       }
 
-      logger.debug("EFT Confirmation file processing finished");
+      logger.info("EFT Confirmation file processing finished");
 
-    } catch ( JSchException | SftpException e ) {
+    } catch ( JSchException | SftpException | IOException e ) {
       logger.error(e);
     } finally {
       if ( channel != null ) channel.disconnect();
