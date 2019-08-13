@@ -260,7 +260,7 @@ foam.CLASS({
           .find(invoice.destinationCurrency)
           .then((currency) => {
             this.start()
-              .add(currency.format(value) + ' ' + invoice.destinationCurrency)
+              .add(currency.format(value))
             .end();
           });
       },
@@ -289,7 +289,7 @@ foam.CLASS({
         this.__subContext__.currencyDAO.find(invoice.sourceCurrency)
           .then(function(currency) {
             this.start()
-              .add(invoice.sourceCurrency + ' ' + currency.format(value))
+              .add(currency.format(value))
             .end();
         }.bind(this));
       }
@@ -450,6 +450,7 @@ foam.CLASS({
       tableWidth: 70,
       documentation: 'A stored copy of the original invoice document.',
       view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' },
+      tableHeaderFormatter: function() { },
       tableCellFormatter: function(files) {
         if ( ! (Array.isArray(files) && files.length > 0) ) return;
         var actions = files.map((file) => {
@@ -543,14 +544,6 @@ foam.CLASS({
           ]
         };
       }
-    },
-    {
-      class: 'foam.nanos.fs.FileProperty',
-      name: 'AFXConfirmationPDF',
-      documentation: `Generates an order confirmation, as a PDF, for the Payer, 
-        if the invoice is associated with an AFX transaction. This property exists 
-        to keep  that PDF in such a scenario.
-      `
     },
     {
       class: 'Boolean',

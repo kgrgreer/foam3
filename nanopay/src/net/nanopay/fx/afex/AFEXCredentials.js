@@ -2,7 +2,7 @@ foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXCredentials',
 
-  axioms: [foam.pattern.Singleton.create()],
+  //axioms: [foam.pattern.Singleton.create()],
 
   properties: [
     {
@@ -20,6 +20,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'AFEXApi'
+    },
+    {
+      class: 'Int',
+      name: 'quoteExpiryTime'
     }
   ]
 });

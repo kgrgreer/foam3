@@ -3,8 +3,14 @@ package net.nanopay.fx.afex;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.lib.json.JSONParser;
+import foam.lib.json.Outputter;
+import foam.lib.NetworkPropertyPredicate;
 import foam.nanos.logger.Logger;
+import foam.nanos.om.OMLogger;
 import foam.util.SafetyUtil;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -16,6 +22,9 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -33,6 +42,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   private JSONParser jsonParser;
   private Logger logger;
   private String valueDate;
+  private OMLogger omLogger;
 
   public AFEXService(X x) {
     setX(x);
@@ -46,6 +56,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     jsonParser = new JSONParser();
     jsonParser.setX(x);
     logger = (Logger) x.get("logger");
+    omLogger = (OMLogger) x.get("OMLogger");
   }
 
   protected AFEXCredentials getCredentials() {
@@ -75,7 +86,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
+      omLogger.log("AFEX getToken starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX getToken complete");
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -93,6 +108,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException e) {
+      omLogger.log("AFEX getToken timeout");
       logger.error(e);
     }
 
@@ -105,29 +121,23 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       HttpPost httpPost = new HttpPost(partnerAPI + "api/v1/corporateClient");
 
       httpPost.addHeader("API-Key", apiKey);
-      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      httpPost.addHeader("Content-Type", "application/json");
       httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
-      List<NameValuePair> nvps = new ArrayList<>();
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationExpirationDate", request.getAccountPrimaryIdentificationExpirationDate()));
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationNumber", request.getAccountPrimaryIdentificationNumber()));
-      nvps.add(new BasicNameValuePair("AccountPrimaryIdentificationType", request.getAccountPrimaryIdentificationType()));
-      nvps.add(new BasicNameValuePair("BusinessAddress1", request.getBusinessAddress1()));
-      nvps.add(new BasicNameValuePair("BusinessCity", request.getBusinessCity()));
-      nvps.add(new BasicNameValuePair("BusinessCountryCode", request.getBusinessCountryCode()));
-      nvps.add(new BasicNameValuePair("BusinessName", request.getBusinessName()));
-      nvps.add(new BasicNameValuePair("BusinessZip", request.getBusinessZip()));
-      nvps.add(new BasicNameValuePair("CompanyType", request.getCompanyType()));
-      nvps.add(new BasicNameValuePair("ContactBusinessPhone", request.getContactBusinessPhone()));
-      nvps.add(new BasicNameValuePair("DateOfIncorporation", request.getDateOfIncorporation()));
-      nvps.add(new BasicNameValuePair("FirstName", request.getFirstName()));
-      nvps.add(new BasicNameValuePair("Gender", request.getGender()));
-      nvps.add(new BasicNameValuePair("LastName", request.getLastName()));
-      nvps.add(new BasicNameValuePair("PrimaryEmailAddress", request.getPrimaryEmailAddress()));
-      nvps.add(new BasicNameValuePair("TermsAndConditions", request.getTermsAndConditions()));
+      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
+      String requestJson = jsonOutputter.stringify(request);
+      StringEntity params =new StringEntity(requestJson); 
 
-      httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+      httpPost.setEntity(params);
+
+      omLogger.log("AFEX onboardCorpateClient starting");
+
+      logger.debug(params);
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX onboardCorpateClient complete");
+
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -145,6 +155,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException e) {
+      omLogger.log("AFEX onboardCorpateClient timeout");
       logger.error(e);
     }
 
@@ -163,7 +174,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("Content-Type", "application/x-www-form-urlencoded");
       httpGet.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
+      omLogger.log("AFEX getClientAccountStatus starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      omLogger.log("AFEX getClientAccountStatus complete");
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -175,12 +190,16 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logger.debug(response);
         return (GetClientAccountStatusResponse) jsonParser.parseString(response, GetClientAccountStatusResponse.class);
       } finally {
         httpResponse.close();
       }
 
     } catch (IOException | URISyntaxException e) {
+      if ( e instanceof IOException ) {
+        omLogger.log("AFEX getClientAccountStatus timeout");
+      }
       logger.error(e);
     }
 
@@ -189,6 +208,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   @Override
   public RetrieveClientAccountDetailsResponse retrieveClientAccountDetails(String clientAPIKey) {
+
     try {
       URIBuilder uriBuilder = new URIBuilder(partnerAPI + "api/v1/privateclient");
       uriBuilder.setParameter("ApiKey", clientAPIKey);
@@ -199,7 +219,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("Content-Type", "application/x-www-form-urlencoded");
       httpGet.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
+      omLogger.log("AFEX retrieveClientAccountDetails starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      omLogger.log("AFEX retrieveClientAccountDetails complete");
+
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -218,6 +243,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException | URISyntaxException e) {
+      if ( e instanceof IOException ) {
+        omLogger.log("AFEX retrieveClientAccountDetails timeout");
+      }
       logger.error(e);
     }
 
@@ -247,7 +275,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       if ( !request.getVendorId().equals("") ) nvps.add(new BasicNameValuePair("VendorId", request.getVendorId()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+
+      omLogger.log("AFEX createBeneficiary starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX createBeneficiary completed");
+
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -268,6 +302,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException e) {
+      omLogger.log("AFEX createBeneficiary timeout");
       logger.error(e);
     }
 
@@ -276,6 +311,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   @Override
   public UpdateBeneficiaryResponse updateBeneficiary(UpdateBeneficiaryRequest request) {
+
     try {
       HttpPost httpPost = new HttpPost(AFEXAPI + "api/beneficiaryUpdate");
 
@@ -297,7 +333,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("VendorId",  request.getVendorId()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+
+      omLogger.log("AFEX updateBeneficiary starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX updateBeneficiary completed");
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -323,6 +364,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException e) {
+      omLogger.log("AFEX updateBeneficiary timeout");
       logger.error(e);
     }
 
@@ -340,7 +382,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
+      omLogger.log("AFEX disableBeneficiary starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX disableBeneficiary completed");
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -358,6 +404,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException | URISyntaxException e) {
+      if ( e instanceof  IOException ) {
+        omLogger.log("AFEX disableBeneficiary timeout");
+      }
       logger.error(e);
     }
 
@@ -375,7 +424,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
 
+      omLogger.log("AFEX findBeneficiary starting");
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+      omLogger.log("AFEX findBeneficiary completed");
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -393,6 +444,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException | URISyntaxException e) {
+      if ( e instanceof IOException ) {
+        omLogger.log("AFEX findBeneficiary timeout");
+      }
       logger.error(e);
     }
 
@@ -408,13 +462,16 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
-      nvps.add(new BasicNameValuePair("City", request.getCity()));
       nvps.add(new BasicNameValuePair("CountryCode", request.getCountryCode()));
-      nvps.add(new BasicNameValuePair("Institution", request.getInstitution()));
       nvps.add(new BasicNameValuePair("NationalID", request.getNationalID()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+
+      omLogger.log("AFEX findBankByNationalID starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX findBankByNationalID completed");
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -436,6 +493,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException e) {
+      omLogger.log("AFEX findBankByNationalID timeout");
       logger.error(e);
     }
 
@@ -454,7 +512,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpGet.addHeader("API-Key", apiKey);
       httpGet.addHeader("Content-Type", "application/json");
 
+      omLogger.log("AFEX getValueDate starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      omLogger.log("AFEX getValueDate completed");
+
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -472,6 +535,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException | URISyntaxException e) {
+      if ( e instanceof IOException ) {
+        omLogger.log("AFEX getValueDate timeout");
+      }
       logger.error(e);
     }
 
@@ -488,7 +554,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       HttpGet httpGet = new HttpGet(uriBuilder.build());
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
+
+      omLogger.log("AFEX getRate starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      omLogger.log("AFEX getRate completed");
+
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -506,6 +578,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException | URISyntaxException e) {
+      if ( e instanceof  IOException ) {
+        omLogger.log("AFEX getRate timeout");
+      }
       logger.error(e);
     }
 
@@ -524,7 +599,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       HttpGet httpGet = new HttpGet(uriBuilder.build());
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
+
+      omLogger.log("AFEX getQuote starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      omLogger.log("AFEX getQuote complete");
+
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -534,7 +615,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           logger.error(errorMsg);
           throw new RuntimeException(errorMsg);
         }
-
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         return (Quote) jsonParser.parseString(response, Quote.class);
       } finally {
@@ -542,6 +622,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException | URISyntaxException e) {
+      if ( e instanceof  IOException ) {
+        omLogger.log("AFEX getQuote timeout");
+      }
       logger.error(e);
     }
 
@@ -557,33 +640,62 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
+      BasicNameValuePair accountNumber = new BasicNameValuePair("AccountNumber", request.getAccountNumber());
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("Amount", request.getAmount()));
-      // todo: need quote id?
-      //nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
+      nvps.add(new BasicNameValuePair("QuoteID", request.getQuoteID()));
       nvps.add(new BasicNameValuePair("SettlementCcy", request.getSettlementCcy()));
       nvps.add(new BasicNameValuePair("TradeCcy", request.getTradeCcy()));
       nvps.add(new BasicNameValuePair("ValueDate", valueDate));
+      nvps.add(accountNumber);
+      nvps.add(new BasicNameValuePair("IsAmountSettlement", request.getIsAmountSettlement()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+
+      omLogger.log("AFEX createTrade starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX createTrade completed");
+      CloseableHttpResponse httpResponse2 = null;
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String errorMsg = "Create AFEX trade failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
+          String errorMsg = "Create AFEX trade with account number failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-
           logger.error(errorMsg);
-          throw new RuntimeException(errorMsg);
+
+          // try again without account number
+          nvps.remove(accountNumber);
+          nvps.add(new BasicNameValuePair("Note", request.getNote()));
+          httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+          omLogger.log("AFEX createTrade starting");
+
+          httpResponse2 = httpClient.execute(httpPost);
+
+          omLogger.log("AFEX createTrade completed");
+          
+          if ( httpResponse2.getStatusLine().getStatusCode() / 100 != 2 ) {
+            String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
+              + httpResponse2.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse2.getEntity(), "UTF-8");
+            logger.error(errorMsg);
+
+            throw new RuntimeException(errorMsg);
+          }
+          httpResponse = httpResponse2;
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         return (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
       } finally {
         httpResponse.close();
+        if ( httpResponse2 != null ) {
+          httpResponse2.close();
+        }
       }
 
     } catch (IOException e) {
+      omLogger.log("AFEX createTrade timeout");
       logger.error(e);
     }
 
@@ -599,7 +711,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       HttpGet httpGet = new HttpGet(uriBuilder.build());
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
+
+      omLogger.log("AFEX checkTradeStatus starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      omLogger.log("AFEX checkTradeStatus completed");
+
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -617,6 +735,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException | URISyntaxException e) {
+      if ( e instanceof  IOException ) {
+        omLogger.log("AFEX checkTradeStatus timeout");
+      }
       logger.error(e);
     }
 
@@ -634,11 +755,17 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("Amount", request.getAmount()));
       nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
-      nvps.add(new BasicNameValuePair("PaymentDate", valueDate));
+      nvps.add(new BasicNameValuePair("PaymentDate", request.getPaymentDate()));
       nvps.add(new BasicNameValuePair("VendorId", request.getVendorId()));
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+
+      omLogger.log("AFEX createPayment starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
+
+      omLogger.log("AFEX createPayment completed");
+
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -656,6 +783,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException e) {
+      omLogger.log("AFEX createPayment timeout");
       logger.error(e);
     }
 
@@ -671,7 +799,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       HttpGet httpGet = new HttpGet(uriBuilder.build());
       httpGet.addHeader("API-Key", request.getClientAPIKey());
       httpGet.addHeader("Content-Type", "application/json");
+
+      omLogger.log("AFEX checkPaymentStatus starting");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
+
+      omLogger.log("AFEX checkPaymentStatus completed");
+
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
@@ -689,7 +823,42 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       }
 
     } catch (IOException | URISyntaxException e) {
+      if ( e instanceof IOException ) {
+        omLogger.log("AFEX checkPaymentStatus timeout");
+      }
       logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
+
+    OkHttpClient client = new OkHttpClient();
+    Response response = null;
+
+    Request request = new Request.Builder()
+      .header("Content-Type", "application/json")
+      .header("API-Key", confirmationPDFRequest.getClientAPIKey())
+      .url(AFEXAPI + "api/confirmations?TradeNumber=" + confirmationPDFRequest.getTradeNumber())
+      .build();
+
+    try {
+      response = client.newCall(request).execute();
+      byte[] bytes = response.body().bytes();
+      return bytes;
+
+    } catch ( Throwable t ) {
+      if ( t instanceof IOException ) {
+        omLogger.log("AFEX checkPaymentStatus timeout");
+      }
+      logger.error(t);
+
+    } finally {
+      if ( response != null ) {
+        response.close();
+      }
     }
 
     return null;

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class BmoReportProcessor {
 
-  private static final String PATH = System.getenv("NANOPAY_HOME") + "/var" + "/bmo_eft/";
+  private static final String PATH = System.getProperty("NANOPAY_HOME") + "/var" + "/bmo_eft/";
   private static final String RECEIPT_PROCESSED_FOLDER = PATH + "/processed/receipt/";
   private static final String REPORT_PROCESSED_FOLDER = PATH + "/processed/report/";
   private static final String REPORT_PROCESSED_FAILED_FOLDER = PATH + "/processed/report_failed/";
@@ -149,9 +149,8 @@ public class BmoReportProcessor {
 
       Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
 
-      ((BmoTransaction)transaction).addHistory("Transaction completed.");
-      transaction.setCompletionDate(new Date());
-      transaction.setStatus(TransactionStatus.COMPLETED);
+      ((BmoTransaction)transaction).addHistory("Transaction was settled by BMO.");
+      ((BmoTransaction)transaction).setSettled(true);
 
       transactionDAO.inX(this.x).put(transaction);
     } catch ( Exception e ) {

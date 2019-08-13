@@ -44,7 +44,7 @@ foam.CLASS({
                       .build();
                       ((DAO) x.get("localTransactionDAO")).put(repayment);
                     }
-                  });   
+                  }, "Repay Debt On CI Rule");
                 }
               }
             }

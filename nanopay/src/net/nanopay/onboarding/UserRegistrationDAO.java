@@ -97,11 +97,17 @@ public class UserRegistrationDAO
         checkUserDuplication(x, user);
       }
 
-      // Make sure the email the user is signing up with matches the email the invite was sent to
+      // Make sure the email which the user is signing up with matches the email the invite was sent to
       if ( params.containsKey("inviteeEmail") ) {
         if ( ! ((String) params.get("inviteeEmail")).equalsIgnoreCase(user.getEmail()) ) {
           Logger logger = (Logger) x.get("logger");
-          logger.warning(String.format("A user was signing up via an email invitation. The email address we expected them to use was '%s' but the email address of the user in the context was actually '%s'. The user in the context's id was %d.", params.get("inviteeEmail"), user.getEmail(), user.getId()));
+          String warningString = String.format(
+            "A user was signing up via an email invitation. The email address we expected them to use was '%s' but the email address of the user in the context was actually '%s'. The user in the context's id was %d.",
+            params.get("inviteeEmail"),
+            user.getEmail(),
+            user.getId()
+          );
+          logger.warning(warningString);
           throw new RuntimeException("Email does not match invited email.");
         }
       } else {
@@ -144,8 +150,8 @@ public class UserRegistrationDAO
     Address businessAddress = user.getBusinessAddress();
 
     // Prevent non cad accounts
-    if ( ! businessAddress.getCountryId().equals("CA") ) {
-      throw new IllegalStateException("Only canadian businesses permitted.");
+    if ( ! businessAddress.getCountryId().equals("CA") && ! businessAddress.getCountryId().equals("US") ) {
+      throw new IllegalStateException("Only Canadian and US businesses supported at this time.");
     }
 
     return super.put_(sysContext, user);

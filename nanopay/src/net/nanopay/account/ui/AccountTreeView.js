@@ -34,9 +34,16 @@ foam.CLASS({
 
   methods: [
       function initE(){
+        var self = this;
+
         this.addClass(this.myClass());
-        this.start().addClass(this.myClass('header')).add(this.VIEW_HEADER).end();
-        this.tag(this.AccountTreeGraph);
+        this
+          .start().addClass(this.myClass('header'))
+            .add(this.VIEW_HEADER)
+          .end()
+          .start()
+            .tag(self.AccountTreeGraph)
+          .end()
       }
   ],
 });

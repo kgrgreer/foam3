@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.comics.v2.DAOCreateView',
 
   requires: [
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'foam.u2.dialog.NotificationMessage'
   ],
   
   documentation: `
@@ -52,6 +53,10 @@ foam.CLASS({
           this.stack.back();
         }, e => {
           this.throwError.pub(e);
+          this.add(this.NotificationMessage.create({
+            message: e.message,
+            type: 'error'
+          }));
         });
       }
     },

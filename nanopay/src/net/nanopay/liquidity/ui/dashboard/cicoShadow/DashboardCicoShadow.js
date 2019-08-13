@@ -44,8 +44,12 @@ foam.CLASS({
     'org.chartjs.HorizontalBarDAOChartView',
     'foam.u2.layout.Rows',
     'foam.u2.layout.Cols',
+    'foam.glang.EndOfWeek',
+    'foam.glang.EndOfDay',
+    'foam.mlang.IdentityExpr',
     'foam.u2.detail.SectionedDetailPropertyView',
-    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType'
+    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
+    'net.nanopay.liquidity.ui.dashboard.DateFrequency'
   ],
 
   exports: [
@@ -54,13 +58,21 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'transactionDAO',
-    'currencyDAO',
+    'currencyDAO'
   ],
 
   messages: [
     {
       name: 'CARD_HEADER',
       message: 'CASH IN / OUT OF SHADOW ACCOUNTS',
+    },
+    {
+      name: 'TOOLTIP_TOTAL_CI',
+      message: '+'
+    },
+    {
+      name: 'TOOLTIP_TOTAL_CO',
+      message: '−'
     }
   ],
 
@@ -68,10 +80,23 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'startDate',
-      factory: function () {
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        return oneWeekAgo;
+      factory: function() {
+        let resultDate = new Date (this.endDate.getTime());
+        resultDate.setDate(
+          resultDate.getDate() - 7 * this.DateFrequency.WEEKLY.timeFactor
+        );
+        
+        return resultDate = this.EndOfWeek.create({ delegate: this.IdentityExpr.create() }).f(resultDate);
+      },
+      preSet: function(_, n) {
+        var dayBeforeEndDate = new Date(this.endDate);
+        dayBeforeEndDate.setDate(this.endDate.getDate() - 1);
+
+        return this.EndOfDay.create({
+          delegate: this.IdentityExpr.create()
+        }).f(
+              new Date(Math.min(dayBeforeEndDate.getTime(), n.getTime()))
+            )
       }
     },
     {
@@ -79,6 +104,17 @@ foam.CLASS({
       name: 'endDate',
       factory: function () {
         return new Date();
+      },
+      preSet: function(o, n) {
+        if ( this.startDate && n.getTime() < this.startDate.getTime()  ) {
+          return o;
+        } else {
+          return this.EndOfDay.create({
+            delegate: this.IdentityExpr.create()
+          }).f(
+                new Date(Math.min(Date.now(), n.getTime()))
+              )
+        }
       }
     },
     {
@@ -227,10 +263,21 @@ foam.CLASS({
                   config.options.scales.xAxes = [{
                     ticks: {
                       callback: function (value) {
-                        return c.format(value);
+                        return `${c.format(value)}`;
                       }
                     }
                   }];
+                  config.options.tooltips = {
+                    callbacks: {
+                      label: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var currentValue = dataset.data[tooltipItem.index];
+
+                        var label = dataset.label === 'CITransaction' ? self.TOOLTIP_TOTAL_CI : self.TOOLTIP_TOTAL_CO;
+                        return [`${label} ${c.format(currentValue)}`];
+                      }
+                    }
+                  };
                 }
                 return self.HorizontalBarDAOChartView.create({
                   data$: self.cicoTransactionsDAO$,
@@ -284,16 +331,16 @@ foam.CLASS({
     {
       name: 'f',
       code: function (obj) {
-        return this.CITransaction.isInstance(obj) 
+        return this.CITransaction.isInstance(obj)
           ? 'CITransaction'
-          : this.COTransaction.isInstance(obj) 
-            ? 'COTransaction' 
+          : this.COTransaction.isInstance(obj)
+            ? 'COTransaction'
             : 'Other';
       },
       javaCode: `
-        return obj instanceof CITransaction 
+        return obj instanceof CITransaction
           ? "CITransaction"
-          : obj instanceof COTransaction 
+          : obj instanceof COTransaction
             ? "COTransaction"
             : "Other";
       `
