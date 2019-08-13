@@ -34,6 +34,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.mlang.predicate.Predicate',
       name: 'predicate',
+      view: { class: 'foam.u2.view.JSONTextView' },
       javaFactory: `
         if ( getOf() != null && ! SafetyUtil.isEmpty(getObjId()) ) {
           PropertyInfo idProp = (PropertyInfo) getOf().getAxiomByName("id");
