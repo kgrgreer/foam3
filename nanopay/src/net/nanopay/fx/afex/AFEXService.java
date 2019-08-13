@@ -190,6 +190,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logger.debug(response);
         return (GetClientAccountStatusResponse) jsonParser.parseString(response, GetClientAccountStatusResponse.class);
       } finally {
         httpResponse.close();
