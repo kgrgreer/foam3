@@ -31,6 +31,7 @@ public class AddExternalContactToken extends ProxyDAO {
     if ( externalContactUser instanceof Contact ) {
       DAO tokenDAO = ((DAO) x.get("tokenDAO")).inX(x);
 
+      // Handle the existing external contact
       if ( externalContactUser.getId() != 0 ) {
         /**
          * Check the amount of tokens to see if it is an existing contact with the tokens
@@ -72,7 +73,7 @@ public class AddExternalContactToken extends ProxyDAO {
            */
         }
       } else {
-        // When adding a contact without banking information
+        // When adding a new external contact, it will generate the externalContactToken
         ExternalContactToken externalToken = new ExternalContactToken();
         Map tokenParams = new HashMap();
 
