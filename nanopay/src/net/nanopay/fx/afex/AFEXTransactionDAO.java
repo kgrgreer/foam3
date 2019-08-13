@@ -42,7 +42,10 @@ public class AFEXTransactionDAO
 
     if (transaction.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED && transaction.getAfexTradeResponseNumber() == 0 ) {
       try {
-        afexService.createTrade(transaction);
+        int result = afexService.createTrade(transaction);
+        if ( result != -1 ) {
+          transaction.setAfexTradeResponseNumber(result);
+        }
       } catch (Throwable t) {
         logger.error(" Error creating trade for AfexTransaction " + transaction.getId(), t);
         throw new RuntimeException(t.getMessage());

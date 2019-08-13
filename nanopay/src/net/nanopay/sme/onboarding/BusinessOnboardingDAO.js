@@ -18,6 +18,7 @@ foam.CLASS({
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Invitation',
@@ -46,13 +47,10 @@ foam.CLASS({
         // TODO: Please call the java validator of the businessOnboarding here
 
         BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
-
-        if ( old == null || old.getDualPartyAgreement() != businessOnboarding.getDualPartyAgreement() ) {
-          net.nanopay.documents.AcceptanceDocumentService documentService =
-            (net.nanopay.documents.AcceptanceDocumentService)(x.get("acceptanceDocumentService"));
-
-          net.nanopay.documents.AcceptanceDocument document = documentService.getAcceptanceDocument(x, "dualPartyAgreementCAD", "");
-          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), document.getId(), businessOnboarding.getDualPartyAgreement());
+        Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
+        if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
+          AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
+          documentService.updateUserAcceptanceDocument(x, businessOnboarding.getUserId(), businessOnboarding.getDualPartyAgreement(), (businessOnboarding.getDualPartyAgreement() != 0));
         }
 
         Session session = x.get(Session.class);
@@ -84,7 +82,6 @@ foam.CLASS({
           // Agreenments (tri-party, dual-party & PEP/HIO)
           user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
           user.setThirdParty(businessOnboarding.getThirdParty());
-          business.setDualPartyAgreement(businessOnboarding.getDualPartyAgreement());
           
           localUserDAO.put(user);
           // Set the signing officer junction between the user and the business

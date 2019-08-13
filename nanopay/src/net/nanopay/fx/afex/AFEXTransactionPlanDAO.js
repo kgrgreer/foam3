@@ -103,6 +103,7 @@ foam.CLASS({
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setPayeeId(destinationAccount.getOwner());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
+            afexTransaction.setInvoiceId(request.getInvoiceId());
             FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
             quote.addPlan(summary);
           }
@@ -215,8 +216,25 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setDestinationAccount(destinationAccount.getId());
   summary.setFxRate(tx.getFxRate());
   summary.setFxExpiry(tx.getFxExpiry());
-  summary.addNext(tx);
+  summary.setInvoiceId(tx.getInvoiceId());
   summary.setIsQuoted(true);
+
+  // create AFEXBeneficiaryComplianceTransaction
+  AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
+  afexCT.setAmount(tx.getAmount());
+  afexCT.setDestinationAmount(tx.getDestinationAmount());
+  afexCT.setSourceCurrency(tx.getSourceCurrency());
+  afexCT.setDestinationCurrency(tx.getDestinationCurrency());
+  afexCT.setSourceAccount(sourceAccount.getId());
+  afexCT.setDestinationAccount(destinationAccount.getId());
+  afexCT.setInvoiceId(tx.getInvoiceId());
+  afexCT.setIsQuoted(true);
+  afexCT.setPayeeId(tx.getPayeeId());
+  afexCT.setPayerId(tx.getPayerId());
+  afexCT.addNext(tx);
+  
+  summary.addNext(afexCT);
+
   return summary;
 }
         `);

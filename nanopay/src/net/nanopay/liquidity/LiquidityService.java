@@ -152,7 +152,7 @@ public class LiquidityService
           notifyUser(account, true, ls.getHighLiquidity().getThreshold(), ls.getUserToEmail());
       }
       if ( liquidity.getRebalancingEnabled() && currentBalance - liquidity.getResetBalance() != 0 ) {
-        addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId());
+        addCICOTransaction(currentBalance - liquidity.getResetBalance(),account.getId(), fundAccount.getId(),ls);
       }
     }
   }
@@ -182,7 +182,7 @@ public class LiquidityService
           notifyUser(account, false, ls.getLowLiquidity().getThreshold(), ls.getUserToEmail());
       }
       if ( liquidity.getRebalancingEnabled() && liquidity.getResetBalance() - currentBalance != 0 ) {
-        addCICOTransaction(liquidity.getResetBalance() - currentBalance, fundAccount.getId(), account.getId());
+        addCICOTransaction(liquidity.getResetBalance() - currentBalance, fundAccount.getId(), account.getId(),ls);
       }
     }
 
@@ -214,9 +214,9 @@ public class LiquidityService
     ((DAO) x_.get("notificationDAO")).put(notification);
   }
 
-  //Add cash in and cash out transaction, set transaction type to seperate if it is an cash in or cash out transaction
+  //Add cash in and cash out transaction, set transaction type to separate if it is an cash in or cash out transaction
 
-  public void addCICOTransaction(long amount, long source, long destination)
+  public void addCICOTransaction(long amount, long source, long destination, LiquiditySettings ls)
     throws RuntimeException
   {
     Transaction transaction = new Transaction.Builder(x_)
@@ -234,10 +234,11 @@ public class LiquidityService
         approvalDAO.put_(x_, request);
       }
     } catch (Exception e) {
-      getLogger().error("Error generating Liquidity transactions.", e);
       Notification notification = new Notification();
-      notification.setTemplate("NOC");
-      notification.setBody("Error generating Liquidity transactions. "+e.getMessage());
+      notification.setEmailName("Failure to Rebalance");
+      notification.setBody("An error occurred and the rebalancing operation for liquidity setting "+ls.getName()+" has failed.");
+      notification.setEmailIsEnabled(true);
+      notification.setUserId(ls.getUserToEmail());
       ((DAO) x_.get("notificationDAO")).put(notification);
     }
   }
