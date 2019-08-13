@@ -79,6 +79,15 @@ foam.CLASS({
       name: 'countXero',
       documentation: 'the number of times that this business has synced to Xero.',
       label: 'Sync Count to Xero'
+    },
+    {
+      class: 'StringArray',
+      name: 'businessDirectors',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ArrayView'
+        }
+      }
     }
   ],
 
