@@ -132,6 +132,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       omLogger.log("AFEX onboardCorpateClient starting");
 
+      logger.debug(params);
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       omLogger.log("AFEX onboardCorpateClient complete");
