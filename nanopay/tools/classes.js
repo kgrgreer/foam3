@@ -176,6 +176,7 @@ var classes = [
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
   'net.nanopay.contacts.ContactMigrationRule',
+  'net.nanopay.contacts.ExternalContactToken',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',

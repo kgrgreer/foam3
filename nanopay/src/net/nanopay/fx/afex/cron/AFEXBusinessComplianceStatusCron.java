@@ -26,6 +26,12 @@ public class AFEXBusinessComplianceStatusCron implements ContextAgent {
     List<AFEXBusiness> pendingBusinesses = sink.getArray();
     System.out.println("Pending beneficiaries size is: " + pendingBusinesses.size());
     for (AFEXBusiness afexBusiness : pendingBusinesses) {
+      String status = afexServiceProvider.getClientAccountStatus(afexBusiness);
+      if ( null != status) {
+        afexBusiness = (AFEXBusiness) afexBusiness.fclone();
+        afexBusiness.setStatus(status);
+        afexBusinessDAO.put(afexBusiness);
+      }
     }
   }
 }
