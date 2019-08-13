@@ -50,13 +50,7 @@ public class AddExternalContactToken extends ProxyDAO {
         }
 
         if ( token == null || ! (token instanceof ExternalContactToken) ) {
-
-          ExternalContactToken externalToken;
-          if ( token == null ) {
-            externalToken = new ExternalContactToken();
-          } else {
-            externalToken = (ExternalContactToken) token.fclone();
-          }
+          ExternalContactToken externalToken = new ExternalContactToken();
 
           Map tokenParams = new HashMap();
           tokenParams.put("inviteeEmail", externalContactUser.getEmail());
