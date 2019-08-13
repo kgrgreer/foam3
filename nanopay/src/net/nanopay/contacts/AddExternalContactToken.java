@@ -50,16 +50,7 @@ public class AddExternalContactToken extends ProxyDAO {
         }
 
         if ( token == null || ! (token instanceof ExternalContactToken) ) {
-          ExternalContactToken externalToken = new ExternalContactToken();
-
-          Map tokenParams = new HashMap();
-          tokenParams.put("inviteeEmail", externalContact.getEmail());
-
-          externalToken.setParameters(tokenParams);
-          externalToken.setUserId(externalContact.getId());
-          externalToken.setData(UUID.randomUUID().toString());
-          externalToken.setBusinessEmail(externalContact.getEmail());
-          tokenDAO.put(externalToken);
+          this.addToken(externalContact, tokenDAO);
         } else {
           /**
            * Do nothing. We have already created the ExternalContactToken
@@ -68,18 +59,21 @@ public class AddExternalContactToken extends ProxyDAO {
         }
       } else {
         // When adding a new external contact, it will generate the externalContactToken
-        ExternalContactToken externalToken = new ExternalContactToken();
-        Map tokenParams = new HashMap();
-
-        tokenParams.put("inviteeEmail", externalContact.getEmail());
-        externalToken.setParameters(tokenParams);
-        externalToken.setUserId(externalContact.getId());
-        externalToken.setData(UUID.randomUUID().toString());
-        externalToken.setBusinessEmail(externalContact.getEmail());
-        tokenDAO.put(externalToken);
+        this.addToken(externalContact, tokenDAO);
       }
     }
 
     return super.put_(x, obj);
+  }
+
+  public void addToken(User externalContact, DAO tokenDAO) {
+    Map tokenParams = new HashMap();
+    tokenParams.put("inviteeEmail", externalContact.getEmail());
+    ExternalContactToken externalToken = new ExternalContactToken();
+    externalToken.setParameters(tokenParams);
+    externalToken.setUserId(externalContact.getId());
+    externalToken.setData(UUID.randomUUID().toString());
+    externalToken.setBusinessEmail(externalContact.getEmail());
+    tokenDAO.put(externalToken);
   }
 }
