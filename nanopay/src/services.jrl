@@ -249,6 +249,7 @@ p({
       .setInnerDAO(rd)
       .setName("identityMindResponse")
       .setOf(of)
+      .setCreatedAware(true)
       .build();
     return ed;
   """,

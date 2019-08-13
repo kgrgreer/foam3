@@ -12,7 +12,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.Base64',
-    'java.util.Date',
     'net.nanopay.tx.model.Transaction',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
@@ -98,7 +97,6 @@ foam.CLASS({
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
         response.setDaoKey(request.getDaoKey());
-        response.setCreated(new Date());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -128,7 +126,6 @@ foam.CLASS({
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
         response.setDaoKey(request.getDaoKey());
-        response.setCreated(new Date());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -170,7 +167,6 @@ foam.CLASS({
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
         response.setDaoKey(request.getDaoKey());
-        response.setCreated(new Date());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
@@ -199,7 +195,6 @@ foam.CLASS({
         response.setEntityType(request.getEntityType());
         response.setEntityId(request.getEntityId());
         response.setDaoKey(request.getDaoKey());
-        response.setCreated(new Date());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
       `
