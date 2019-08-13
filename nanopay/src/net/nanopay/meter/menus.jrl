@@ -26,9 +26,9 @@ p({
       "daoKey": "ruleDAO",
       "predicate": {
         "class": "foam.mlang.predicate.IsInstanceOf",
-        "targetClass": "net.nanopay.tx.ruler.BackOfficeTransactionLimitRule"
+        "targetClass": "net.nanopay.tx.ruler.AccountTransactionLimitRule"
       },
-      "of": "net.nanopay.tx.ruler.BackOfficeTransactionLimitRule"
+      "of": "net.nanopay.tx.ruler.AccountTransactionLimitRule"
     }
   },
   "order": 2100,

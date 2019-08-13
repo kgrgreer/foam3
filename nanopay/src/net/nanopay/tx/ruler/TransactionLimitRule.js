@@ -7,21 +7,28 @@ foam.CLASS({
   documentation: 'Abstract class for transaction limits, never to be instantiated. Meant to be extended' +
   'by models that would provide logic for getObjectToMap method. See example: AccountTransactionLimitRule.',
 
+  imports: [
+    'accountDAO'
+  ],
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   javaImports: [
     'foam.core.X',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
 
+  sections: [
+    {
+      name: 'accounts',
+      order: 500
+    }
+  ],
+
   properties: [
-    // String array of accounts
-    // Send or receive?
-    // Period
-    // Limit
-
-
-
-
     {
       name: 'name',
       visibility: 'RO',
@@ -75,14 +82,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'transactionType',
-      value: 'net.nanopay.tx.AbliiTransaction',
+      value: null,
       label: 'Transaction Type',
       section: 'basicInfo',
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          ['net.nanopay.tx.AbliiTransaction', 'Ablii Transaction'],
-          ['null', 'Other Transaction'],
+          ['DigitalTransaction', 'Digital Transaction'],
+          ['AlternaCITransaction', 'Alterna Cash In'],
+          ['AlternaCOTransaction', 'Alterna Cash Out'],
+          [null, 'Any Transaction']
         ]
       }
     },
@@ -109,6 +118,22 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'account',
+      label: '',
+      section: 'accounts',
+      view: function(_, x) {
+        var M = foam.mlang.Expressions.create();
+        return foam.u2.view.FilteredReferenceView.create({
+          filteringDAO: x.businessDAO,
+          dao: x.accountDAO.where(M.EQ(net.nanopay.account.Account.TYPE, "OverdraftAccount")),
+          filteredProperty: net.nanopay.account.Account.OWNER,
+          data$: x.data.slot(this.name)
+        }, x);
+      }
+    },
+    {
       name: 'action',
       javaFactory: `
         return new TransactionLimitRuleAction.Builder(getX())
@@ -122,20 +147,16 @@ foam.CLASS({
     {
       name: 'predicate',
       javaFactory: `
-        return 
-          foam.mlang.MLang.AND(
-            foam.mlang.MLang.EQ(
-              foam.mlang.MLang.DOT(
-                foam.mlang.MLang.NEW_OBJ,
-                net.nanopay.tx.model.Transaction.IS_QUOTED
-              ),
-              false
-            )
-            // foam.mlang.MLang.AND(
-            //   foam.mlang.MLang.INSTANCE_OF(getTransactionType()), 
-            //   foam.mlang.MLang.IN(net.nanopay.tx.model.Transaction.PAYEE, getAccounts())
-            // )
-          );
+        if ( getTransactionType() == null ) {
+          return 
+            foam.mlang.MLang.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, getAccount());
+        } else {
+          return
+            foam.mlang.MLang.AND(
+              foam.mlang.MLang.EQ(net.nanopay.tx.model.Transaction.TYPE, getTransactionType()),
+              foam.mlang.MLang.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, getAccount())
+            );
+        }
       ` 
     }
   ],

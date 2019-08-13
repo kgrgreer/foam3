@@ -153,16 +153,15 @@ public class TransactionLimitTest extends Test {
   }
 
   public void createRule(X x) {
-
 //    AccountTransactionLimitRule limitRule2 = new AccountTransactionLimitRule();
 //    limitRule2.setLimit(100L);
 //    limitRule2.setDaoKey("transactionDAO");
 //    rule2 = (AccountTransactionLimitRule) ((DAO)x.get("ruleDAO")).put(limitRule2).fclone();
-
-AccountTransactionLimitRule limitRule = new AccountTransactionLimitRule();
-     limitRule.setLimit(10000L);
-     limitRule.setDaoKey("transactionDAO");
-     rule = (AccountTransactionLimitRule) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
-
+    AccountTransactionLimitRule limitRule = new AccountTransactionLimitRule();
+    limitRule.setLimit(10000L);
+    limitRule.setDaoKey("transactionDAO");
+    limitRule.setTransactionType(null);
+    limitRule.setAccount(183);
+    rule = (AccountTransactionLimitRule) ((DAO)x.get("ruleDAO")).put(limitRule).fclone();
   }
 }
