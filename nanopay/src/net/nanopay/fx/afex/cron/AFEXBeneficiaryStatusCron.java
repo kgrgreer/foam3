@@ -49,6 +49,7 @@ public class AFEXBeneficiaryStatusCron implements ContextAgent {
             List<Transaction> txnList = txnSink.getArray();
 
             for ( Transaction txn : txnList ) {
+              txn = (Transaction) txn.fclone();
               txn.setStatus(TransactionStatus.COMPLETED);
               txnDAO.put(txn);
             }
