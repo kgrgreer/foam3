@@ -44,7 +44,8 @@ foam.CLASS({
   properties: [
     {
       class: 'net.nanopay.model.DateOnlyProperty',
-      name: 'birthdayTwo'
+      name: 'birthdayTwo',
+      label: 'Birthday'
     },
     {
       class: 'Reference',
