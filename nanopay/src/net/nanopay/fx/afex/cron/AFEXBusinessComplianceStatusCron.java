@@ -22,7 +22,11 @@ public class AFEXBusinessComplianceStatusCron implements ContextAgent {
     afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
     afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-    ArraySink sink = (ArraySink) afexBusinessDAO.where(EQ(AFEXBusiness.STATUS, "Pending")).select(new ArraySink());
+    ArraySink sink = (ArraySink) afexBusinessDAO.where(OR(
+      EQ(AFEXBusiness.STATUS, "Pending"),
+      EQ(AFEXBusiness.STATUS, "PendingApproval")
+      
+      )).select(new ArraySink());
     List<AFEXBusiness> pendingBusinesses = sink.getArray();
     System.out.println("Pending beneficiaries size is: " + pendingBusinesses.size());
     for (AFEXBusiness afexBusiness : pendingBusinesses) {
