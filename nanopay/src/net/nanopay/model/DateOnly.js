@@ -15,7 +15,19 @@ foam.CLASS({
       class: 'Int',
       name: 'day'
     }
+  ],
+  methods: [
+    {
+      name: 'toString',
+      code: function() {
+        return `${this.year}-${this.month}-${this.day}`;
+      },
+      javaCode: `
+        return getYear() + "-" + getMonth() + "-" + getDay();
+      `
+    }
   ]
+
 });
 
 foam.CLASS({
@@ -32,7 +44,7 @@ foam.CLASS({
     {
       name: 'view',
       value: {
-        class: 'net.nanopay.model.DateOnlyView',
+        class: 'net.nanopay.model.DateOnlyView'
       }
     }
   ]
