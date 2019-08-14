@@ -516,9 +516,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String province = beneficialOwner.getAddress().getRegionId();
           String country = beneficialOwner.getAddress().getCountryId();
           String postalCode = beneficialOwner.getAddress().getPostalCode();
-          SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("MMM d, yyyy");
-          dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-          String dateOfBirth = dateOfBirthFormatter.format(beneficialOwner.getBirthday());
+          String dateOfBirth = ((net.nanopay.model.DateOnly)beneficialOwner.getBirthdayTwo()).toString();
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));
