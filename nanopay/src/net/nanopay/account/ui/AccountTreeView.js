@@ -12,7 +12,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.account.ui.AccountTreeGraph'
+    'net.nanopay.account.ui.AccountTreeGraph',
+    'foam.u2.layout.Cols'
   ],
 
   documentation: `
@@ -31,6 +32,36 @@ foam.CLASS({
       line-height: 1.5;
       color: #1e1f21;
     }
+
+    ^nav-container {
+      border-radius: 3px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 2px 8px 0 rgba(0, 0, 0, 0.16);
+      border: solid 1px #cbcfd4;
+      position: fixed;
+      top: 50vh;
+      right: 45;
+      height: 144px;
+      width: 56px;
+      background-color: white;
+      vertical-align: middle;
+    }
+
+    ^ .foam-u2-ActionView-secondary {
+      font-size: 18px;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+    }
+
+    ^ .foam-u2-ActionView + .foam-u2-ActionView {
+      margin-left: 0px;
+    }
+
+    ^ .foam-u2-ActionView img {
+      height: 16px;
+      width: 16px;
+      margin-right: 0;
+    }
   `,
 
   messages: [
@@ -40,12 +71,12 @@ foam.CLASS({
     },
   ],
 
-  properties: [ 'cview' ],
+  properties: [ 'cview', 'canvasContainer' ],
   actions: [
     {
       name: 'zoomIn',
       isEnabled: function(cview$scaleX, cview$scaleY) {
-        return (cview$scaleX || 0) < 4.5 && (cview$scaleY || 0) < 4.5;
+        return (cview$scaleX || 0) < 2 && (cview$scaleY || 0) < 2;
       },
       code: function() {
         this.cview.scaleX += 0.25;
@@ -64,11 +95,12 @@ foam.CLASS({
     },
     {
       name: 'home',
+      isEnabled: function(canvasContainer) {
+        return !! canvasContainer;
+      },
       code: function() {
-        window.scroll({
-          left: this.cview.width * 0.50,
-          behaviour: 'smooth'
-        })
+        var e = this.canvasContainer.el();
+        e.scrollTo(this.cview.root.x * this.cview.scaleX - e.clientWidth/2, 0);
       }
     }
   ],
@@ -83,11 +115,26 @@ foam.CLASS({
             .add(this.VIEW_HEADER)
           .end()
           .startContext({data: this})
-            .start().add(this.ZOOM_IN).end()
-            .start().add(this.ZOOM_OUT).end()
-            .start().add(this.HOME).end()
+            .start(this.Cols).style({'flex-direction':'column','align-items':'center','justify-content':'space-around'}).addClass(this.myClass('nav-container'))
+              .tag(this.HOME, {
+                buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+                icon: 'images/ic-round-home.svg',
+                label: '',
+                size: foam.u2.ButtonSize.SMALL
+              })
+              .tag(this.ZOOM_IN, {
+                buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+                label: '+',
+                size: foam.u2.ButtonSize.SMALL
+              })
+              .tag(this.ZOOM_OUT, {
+                buttonStyle: foam.u2.ButtonStyle.SECONDARY,
+                label: '-',
+                size: foam.u2.ButtonSize.SMALL
+              })
+            .end()
           .endContext()
-          .start().style({overflow: 'scroll'})
+          .start('div', null, this.canvasContainer$).style({overflow: 'scroll'})
             .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
               self.cview = self.AccountTreeGraph.create({ data: a.array[0] });
               return self.cview;
