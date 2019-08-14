@@ -647,27 +647,26 @@ foam.CLASS({
         }
       ]
     }),
-    {
+    foam.nanos.auth.User.BUSINESS_REGISTRATION_DATE_TWO.clone().copyFrom({
       section: 'businessDetailsSection',
-      class: 'Date',
-      name: 'businessFormationDate',
       documentation: 'Date of Business Formation or Incorporation.',
-      validationPredicates: [
-        {
-          args: ['signingOfficer','businessFormationDate'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-              foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_FORMATION_DATE,
-                timeMs: 24 * 60 * 60 * 1000
-              })
-            );
-          },
-          errorString: 'Must be at least a before now.'
-        }
-      ]
-    },   
+      // TODO Fix mlang age validation
+      // validationPredicates: [
+      //   {
+      //     args: ['signingOfficer','businessFormationDate'],// TODO <- NAME ERROR 
+      //     predicateFactory: function(e) {
+      //       return e.OR(
+      //         e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+      //         foam.mlang.predicate.OlderThan.create({
+      //           arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_FORMATION_DATE, // TODO <- NAME ERROR
+      //           timeMs: 24 * 60 * 60 * 1000
+      //         })
+      //       );
+      //     },
+      //     errorString: 'Must be at least a before now.'
+      //   }
+      // ]
+    }),
     {
       section: 'businessDetailsSection',
       class: 'Reference',

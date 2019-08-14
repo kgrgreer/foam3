@@ -104,7 +104,7 @@ foam.CLASS({
           business.setBusinessAddress(businessOnboarding.getBusinessAddress());
           business.setPhone(businessOnboarding.getPhone());
           business.setBusinessPhone(businessOnboarding.getPhone());
-          business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
+          business.setBusinessRegistrationDateTwo(businessOnboarding.getBusinessRegistrationDateTwo());
           business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistrationNumber());
           business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
 
