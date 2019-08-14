@@ -41,6 +41,7 @@ foam.CLASS({
           this.Business.EMAIL,
           this.Business.BUSINESS_PHONE,
           this.Business.BUSINESS_ADDRESS,
+          this.Business.BUSINESS_DIRECTORS,
           this.Business.ACCOUNTS,
           this.Business.CONTACTS,
           this.Business.AGENTS,
