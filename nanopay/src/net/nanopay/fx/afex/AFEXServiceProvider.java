@@ -201,6 +201,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest);
       if ( null != quote ) {
+        Boolean sameCurrency = sourceCurrency.equals(targetCurrency);
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
         Date date = format.parse(quote.getValueDate());
         Double fxAmount = isAmountSettlement ? getConvertedAmount(quote,sourceAmount, true):  getConvertedAmount(quote,destinationAmount, false);
@@ -212,6 +213,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         fxQuote.setValueDate(date);
         fxQuote.setExternalId(quote.getQuoteId());
         fxQuote.setHasSourceAmount(isAmountSettlement);
+        fxQuote.setFee(sameCurrency ? 100 : 500);
+        fxQuote.setFeeCurrency(sourceCurrency);
         LocalDateTime time;
         AFEXCredentials credentials = (AFEXCredentials) getX().get("AFEXCredentials");
         if ( credentials != null && credentials.getQuoteExpiryTime() != 0 ) {
