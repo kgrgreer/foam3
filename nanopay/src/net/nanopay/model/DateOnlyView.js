@@ -12,7 +12,18 @@ foam.CLASS({
   ],
 
   properties: [
-    [ 'placeholder', 'yyyy-mm-dd' ]
+    [ 'placeholder', 'yyyy-mm-dd' ],
+    {
+      name: 'data',
+      preSet: function(o, d) {
+        var f = ! d || net.nanopay.model.DateOnly.isInstance(d);
+        if ( ! f ) {
+          this.__context__.warn('Set Input data to non-primitive:' + d);
+          return o;
+        }
+        return d;
+      }
+    },
   ],
 
   listeners: [
@@ -55,11 +66,10 @@ foam.CLASS({
 
     function dataToInput(data) {
       if ( ! data ) return data;
-      // let year = data.year;
-      // let month = data.month;
-      // let day = data.day;
-      return '';
-      // return `${year}-${month}-${day}`;
+      let year = data.year;
+      let month = data.month.toString().length == 1 ? '0' + data.month : data.month;
+      let day = data.day.toString().length == 1 ? '0' + data.day : data.day;
+      return `${year}-${month}-${day}`;
     }
   ]
 });
