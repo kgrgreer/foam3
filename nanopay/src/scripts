@@ -317,11 +317,28 @@ p({
         continue;
       }
 
+
+      // Migrate address 1
+      if ( SafetyUtil.isEmpty(address.getAddress1()) && ! SafetyUtil.isEmpty(businessAddress.getAddress1()) ) {
+        address.setAddress1(businessAddress.getAddress1());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getAddress1()) && ! SafetyUtil.equals(address.getAddress1(), businessAddress.getAddress1()) ) {
+        print(business.getOrganization() + "'s address1 needs to be verified manually.");
+        continue;
+      }
+
       // Migrate address 2
       if ( SafetyUtil.isEmpty(address.getAddress2()) && ! SafetyUtil.isEmpty(businessAddress.getAddress2()) ) {
         address.setAddress2(businessAddress.getAddress2());
       } else if ( ! SafetyUtil.isEmpty(businessAddress.getAddress2()) && ! SafetyUtil.equals(address.getAddress2(), businessAddress.getAddress2()) ) {
         print(business.getOrganization() + "'s address2 needs to be verified manually.");
+        continue;
+      }
+
+      // Migrate suite
+      if ( SafetyUtil.isEmpty(address.getSuite()) && ! SafetyUtil.isEmpty(businessAddress.getSuite()) ) {
+        address.setSuite(businessAddress.getSuite());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getSuite()) && ! SafetyUtil.equals(address.getSuite(), businessAddress.getSuite()) ) {
+        print(business.getOrganization() + "'s suite needs to be verified manually.");
         continue;
       }
 
