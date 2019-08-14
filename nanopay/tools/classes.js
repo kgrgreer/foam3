@@ -713,6 +713,7 @@ var classes = [
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
 
+  'net.nanopay.tx.gs.GsTxCsvRow',
 ];
 
 var abstractClasses = [
