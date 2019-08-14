@@ -248,11 +248,13 @@ foam.CLASS({
 
           if ( ! this.expanded ) return false;
 
-          var moved      = false;
           var childNodes = this.childNodes;
           var l          = childNodes.length;
+          var moved      = false;
 
-          // Layout children
+          for ( var pass = 0 ; pass < 50 ; pass++ ) {
+            var movedNow = false;
+            // Layout children
           for ( var i = 0 ; i < l ; i++ ) {
             var c = childNodes[i];
             if ( c.y < this.height*2 ) { moved = true; c.y += 2; }
@@ -269,7 +271,7 @@ foam.CLASS({
             var n2 = childNodes[i+1];
             var d  = n2.x-n1.x+n2.left-n1.right;
             if ( d != this.width + this.padding ) {
-              moved = true;
+              moved = movedNow = true;
               var w = Math.min(Math.abs(this.width+this.padding-d), 10);
               if ( d > this.width + this.padding ) w = -w;
               if ( i+1 == m ) {
@@ -294,6 +296,9 @@ foam.CLASS({
             this.maxRight = Math.max(c.x + c.maxRight, this.maxRight);
           }
 
+            if ( ! movedNow ) return moved; 
+          }
+
           return moved;
         },
 
@@ -304,7 +309,7 @@ foam.CLASS({
             slot.set(newValue);
             return false;
           }
-          slot.set(newValue);
+          slot.set((2*slot.get() + newValue)/3);
           return true;
         }
       ],
@@ -326,8 +331,9 @@ foam.CLASS({
 
             var x = (-this.maxLeft+25)/w * gw + 55;
             needsLayout = this.convergeTo(this.x$, x) || needsLayout;
-            if ( this.layout() || needsLayout ) this.doLayout();
-            else {
+            if ( this.layout() || needsLayout ) {
+              this.doLayout();
+            } else {
               this.graph.updateCWidth();
             }
             this.graph.invalidate();

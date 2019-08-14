@@ -97,6 +97,81 @@ var newTrustAccountDenominations = ['USD', 'CNY', 'HKD', 'JPY', 'MXN'];
 // can enter banks with new currencies just by typing the denomination ('alphabetic code')
 var accountTree = [
   {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS02'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS03'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS10'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS11'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS13'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS00'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS01'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS05'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS06'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS07'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS08'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS09'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS12'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS04'
+  },
+  {
+    type: 'Bank',
+    denomination: 'USD',
+    name: 'GS14'
+  },
+  {
     type: 'Aggregate', denomination: 'USD',
     name: 'Goldman Sachs Group, Inc',
     children: [
@@ -1071,7 +1146,8 @@ function bank(X, a) {
     createdBy: X.userId,
     lastModified: X.currentDate,
     lastModifiedBy: X.userId,
-    owner: X.userId
+    owner: X.userId,
+    isDefault: a.isDefault
   }, X);
 
   accountNamesToId[bank.name] = bank.id;
@@ -1090,8 +1166,6 @@ function bank(X, a) {
 
   X.balances[shadow.id] = 0;
   X.balances[bank.id] = 0;
-
-  a.children = a.children.map(inflate.bind(null, X));
 
   a.bank = bank;
   a.shadow = shadow;
@@ -1140,7 +1214,8 @@ function aggregate(X, a) {
     parent: X.parentAccount,
     owner: X.userId,
     name: a.name,
-    liquiditySetting: a.liquiditySetting
+    liquiditySetting: a.liquiditySetting,
+    isDefault: a.isDefault
   }, X);
 
   X.accountDAO.put(obj);

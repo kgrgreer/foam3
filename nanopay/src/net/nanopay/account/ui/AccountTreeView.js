@@ -3,6 +3,14 @@ foam.CLASS({
   name: 'AccountTreeView',
   extends: 'foam.u2.Element',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
+  imports: [
+    'accountDAO'
+  ],
+
   requires: [
     'net.nanopay.account.ui.AccountTreeGraph'
   ],
@@ -64,7 +72,10 @@ foam.CLASS({
             .start().add(this.ZOOM_OUT).end()
           .endContext()
           .start().style({overflow: 'scroll'})
-            .tag(self.AccountTreeGraph, null, self.cview$)
+            .add(self.accountDAO.where(this.AND(this.INSTANCE_OF(net.nanopay.account.AggregateAccount), this.EQ(net.nanopay.account.Account.PARENT, 0))).limit(1).select().then((a) => {
+              self.cview = self.AccountTreeGraph.create({ data: a.array[0] });
+              return self.cview;
+            }))      
           .end()
       }
   ],
