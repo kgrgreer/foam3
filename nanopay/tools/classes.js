@@ -724,6 +724,7 @@ var classes = [
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
 
+  'net.nanopay.model.DateOnly',
 ];
 
 var abstractClasses = [

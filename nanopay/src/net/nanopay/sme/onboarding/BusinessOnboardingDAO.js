@@ -76,7 +76,7 @@ foam.CLASS({
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
-          user.setBirthday(businessOnboarding.getBirthday());
+          user.setBirthdayTwo(businessOnboarding.getBirthdayTwo());
           user.setAddress(businessOnboarding.getAddress());
 
           // Agreenments (tri-party, dual-party & PEP/HIO)
