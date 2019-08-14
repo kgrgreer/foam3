@@ -23,7 +23,15 @@ foam.CLASS({
         return `${this.year}-${this.month}-${this.day}`;
       },
       javaCode: `
-        return getYear() + "-" + getMonth() + "-" + getDay();
+        StringBuilder sb = new StringBuilder();
+        sb.append(getYear());
+        sb.append("-");
+        if ( String.valueOf(getMonth()).length() == 1 ) sb.append("0");
+        sb.append(getMonth());
+        sb.append("-");
+        if ( String.valueOf(getDay()).length() == 1 ) sb.append("0");
+        sb.append(getDay());
+        return sb.toString();
       `
     }
   ]
