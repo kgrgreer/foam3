@@ -92,7 +92,7 @@ foam.CLASS({
 
             // Account Type
             if ( type == 'Digital' ) type = 'Virtual';
-            this.add(this.Label.create({color: 'gray',  x: leftPos, y: 22, text: type + ' (' + denom.alphabeticCode + ')'}));
+            this.add(this.Label.create({color: 'gray',  x: leftPos, y: 22, text: type + ' (' + denom ? denom.alphabeticCode : 'N/A' + ')'}));
 
             const balanceColour = type == 'Aggregate' ? 'gray' : 'black';
             const balanceFont   = type == 'Aggregate' ? '12px sans-serif' : 'bold 12px sans-serif';
@@ -101,7 +101,7 @@ foam.CLASS({
               font: balanceFont,
               x: leftPos,
               y: this.height-21,
-              text$: this.homeDenomination$.map(_ =>  denom.format(balance))
+              text$: this.homeDenomination$.map(_ =>  denom ? denom.format(balance) : 'N/A')
             }))
           }.bind(this));
         }.bind(this));
