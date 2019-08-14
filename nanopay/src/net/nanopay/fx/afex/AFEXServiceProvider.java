@@ -93,7 +93,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
             onboardingRequest.setAccountPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
-            onboardingRequest.setAccountPrimaryIdentificationType(useHardCoded ? "Business Registration Number" : identificationType);
+            onboardingRequest.setAccountPrimaryIdentificationType(useHardCoded ? "BusinessRegistrationNumber" : identificationType);
             if ( businessCountry != null ) onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
