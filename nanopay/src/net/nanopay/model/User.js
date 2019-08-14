@@ -43,6 +43,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'net.nanopay.model.DateOnlyProperty',
+      name: 'birthdayTwo'
+    },
+    {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
