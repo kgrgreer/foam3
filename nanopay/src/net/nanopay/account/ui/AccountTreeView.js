@@ -44,9 +44,9 @@ foam.CLASS({
   actions: [
     {
       name: 'zoomIn',
-      // isEnabled: function(cview$scaleX, cview$scaleY) {
-      //   return cview$scaleX <= 5 && cview$scaleY <= 5;
-      // },
+      isEnabled: function(cview$scaleX, cview$scaleY) {
+        return (cview$scaleX || 0) < 4.5 && (cview$scaleY || 0) < 4.5;
+      },
       code: function() {
         this.cview.scaleX += 0.25;
         this.cview.scaleY += 0.25; 
@@ -55,10 +55,9 @@ foam.CLASS({
     {
       name: 'zoomOut',
       isEnabled: function(cview$scaleX, cview$scaleY) {
-        return (cview$scaleX || 0) >= 0.25 && (cview$scaleY || 0) >= 0.25;
+        return (cview$scaleX || 0) > 0.25 && (cview$scaleY || 0) > 0.25;
       },
       code: function() {
-        debugger;
         this.cview.scaleX -= 0.25;
         this.cview.scaleY -= 0.25;
       }
