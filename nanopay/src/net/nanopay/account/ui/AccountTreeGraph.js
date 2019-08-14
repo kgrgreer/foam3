@@ -83,7 +83,7 @@ foam.CLASS({
               startY: 0,
               endX: -this.width/2+1,
               endY: this.height,
-              color: type === 'Aggregate' ? '#9ba1a6' : denom.colour,
+              color: type === 'Aggregate' ? '#9ba1a6' : denom ? denom.colour : '#ffffff',
               lineWidth: 6
             }));
 
