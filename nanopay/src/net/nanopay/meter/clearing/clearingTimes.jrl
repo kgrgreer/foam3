@@ -1,1 +1,1 @@
-p({"class":"net.nanopay.meter.clearing.ClearingTime","id":1,"description":"Default clearing time.","predicate":{"class":"foam.mlang.predicate.False"},"duration":2})
+p({"class":"net.nanopay.meter.clearing.ClearingTime","id":1,"description":"Default clearing time.","duration":2})
