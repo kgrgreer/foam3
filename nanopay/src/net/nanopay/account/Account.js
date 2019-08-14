@@ -178,7 +178,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isDefault',
-      documentation: `Determines whether an account is the first preferred option of the User.`,
+      documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
       label: 'Set As Default',
       value: false,
       tableHeaderFormatter: function(axiom) {
