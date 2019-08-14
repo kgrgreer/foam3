@@ -201,6 +201,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest);
       if ( null != quote ) {
+        Boolean sameCurrency = sourceCurrency.equals(targetCurrency);
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
         Date date = format.parse(quote.getValueDate());
         Double fxAmount = isAmountSettlement ? getConvertedAmount(quote,sourceAmount, true):  getConvertedAmount(quote,destinationAmount, false);
@@ -212,6 +213,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         fxQuote.setValueDate(date);
         fxQuote.setExternalId(quote.getQuoteId());
         fxQuote.setHasSourceAmount(isAmountSettlement);
+        fxQuote.setFee(sameCurrency ? 100 : 500);
+        fxQuote.setFeeCurrency(sourceCurrency);
         LocalDateTime time;
         AFEXCredentials credentials = (AFEXCredentials) getX().get("AFEXCredentials");
         if ( credentials != null && credentials.getQuoteExpiryTime() != 0 ) {
@@ -288,6 +291,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     // Check payee does not already exists on AFEX
     FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexBusiness.getApiKey());
     if ( null == beneficiaryResponse ) {
+      String allowedChars = "[^a-zA-Z0-9,.+()?/:‘\\s-]";
+      String beneficiaryName = user.getBusinessName().replaceAll(allowedChars,"");;
       String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
       CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();
       createBeneficiaryRequest.setBankAccountNumber(bankAccount.getAccountNumber());
@@ -297,7 +302,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress());
       createBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
       createBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
-      createBeneficiaryRequest.setBeneficiaryName(user.getBusinessName());
+      createBeneficiaryRequest.setBeneficiaryName(beneficiaryName);
       createBeneficiaryRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
       createBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId());
       createBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
