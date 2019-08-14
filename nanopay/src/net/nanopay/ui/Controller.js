@@ -25,6 +25,8 @@ foam.CLASS({
     'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
+    'net.nanopay.sme.ui.banner.ComplianceBannerData',
+    'net.nanopay.sme.ui.banner.ComplianceBannerMode',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.modal.SessionTimeoutModal',
     'net.nanopay.ui.style.AppStyles',
@@ -165,16 +167,26 @@ foam.CLASS({
         const storedHomeDenomination = localStorage.getItem('homeDenomination');
 
         let startingDenomination;
-        if ( storedHomeDenomination ){
+        if ( storedHomeDenomination ) {
           localStorage.setItem('homeDenomination', storedHomeDenomination);
           startingDenomination = storedHomeDenomination;
         } else {
-          startingDenomination = defaultDenomination
+          startingDenomination = defaultDenomination;
         }
 
-        return startingDenomination
+        return startingDenomination;
       }
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.sme.ui.banner.ComplianceBannerData',
+      name: 'bannerData',
+      factory: function() {
+        return this.ComplianceBannerData.create({
+          isDismissed: true
+        });
+      }
+    },
   ],
 
   methods: [
@@ -191,6 +203,9 @@ foam.CLASS({
       // errors when trying to expand the CSS macros in these models.
       this.clientPromise.then(() => {
         this.fetchTheme().then(() => {
+          this.client.nSpecDAO.find('appConfig').then((config) => {
+            this.appConfig.copyFrom(config.service);
+          });
           this.AppStyles.create();
           this.NanoConnectStyles.create();
           this.InvoiceStyles.create();
@@ -204,6 +219,10 @@ foam.CLASS({
             .end()
             .start()
               .addClass('stack-wrapper')
+              .start({
+                class: 'net.nanopay.sme.ui.banner.ComplianceBanner',
+                data$: this.bannerData$
+              }).end()
               .tag(this.StackView, {
                 data: this.stack,
                 showActions: false
@@ -214,6 +233,18 @@ foam.CLASS({
             .end();
         });
       });
+    },
+
+    function bannerizeTwoFactorAuth() {
+      if ( ! this.user.twoFactorEnabled ) {
+        this.setBanner(this.ComplianceBannerMode.NOTICE, 'Please enable Two-Factor Authentication in Personal Settings.');
+      }
+    },
+
+    function setBanner(bannerMode, message) {
+      this.bannerData.isDismissed = false;
+      this.bannerData.mode = bannerMode;
+      this.bannerData.message = message;
     },
 
     function onSessionTimeout() {
@@ -328,6 +359,10 @@ foam.CLASS({
 
       this.SUPER();
       this.findBalance();
+
+      if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION ) {
+        this.bannerizeTwoFactorAuth();
+      }
     }
   ]
 });
