@@ -80,7 +80,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'Class',
       name: 'transactionType',
       value: null,
       label: 'Transaction Type',
@@ -88,9 +88,9 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ChoiceView',
         choices: [
-          ['DigitalTransaction', 'Digital Transaction'],
-          ['AlternaCITransaction', 'Alterna Cash In'],
-          ['AlternaCOTransaction', 'Alterna Cash Out'],
+          ['net.nanopay.txDigitalTransaction', 'Digital'],
+          ['net.nanopay.tx.cico.CITransaction', 'Cash-In'],
+          ['net.nanopay.tx.cico.COTransaction', 'Cash-Out'],
           [null, 'Any Transaction']
         ]
       }
@@ -127,7 +127,7 @@ foam.CLASS({
         var M = foam.mlang.Expressions.create();
         return foam.u2.view.FilteredReferenceView.create({
           filteringDAO: x.businessDAO,
-          dao: x.accountDAO.where(M.EQ(net.nanopay.account.Account.TYPE, "OverdraftAccount")),
+          dao: x.accountDAO.where(M.INSTANCE_OF(net.nanopay.account.DigitalAccount)),
           filteredProperty: net.nanopay.account.Account.OWNER,
           data$: x.data.slot(this.name)
         }, x);
@@ -153,7 +153,7 @@ foam.CLASS({
         } else {
           return
             foam.mlang.MLang.AND(
-              foam.mlang.MLang.EQ(net.nanopay.tx.model.Transaction.TYPE, getTransactionType()),
+              foam.mlang.MLang.INSTANCE_OF(getTransactionType()),
               foam.mlang.MLang.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, getAccount())
             );
         }

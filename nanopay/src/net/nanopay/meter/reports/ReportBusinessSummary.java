@@ -205,17 +205,16 @@ public class ReportBusinessSummary extends AbstractReport {
     // create an empty DAO to convert list to DAO
     businesses = new MDAO(Business.getOwnClassInfo());
     // select accounts under the business
-    DAO accountDAO = (DAO) x.get("localTransactionDAO");
-    DAO filteredAccountDAO = new MDAO(Account.getOwnClassInfo());
+    DAO accountDAO = (DAO) x.get("localAccountDAO");
     for (Object obj : busLst) {
       Business business = (Business) obj;
-      filteredAccountDAO = accountDAO.where(
+      DAO filteredAccountDAO = accountDAO.where(
         MLang.EQ(net.nanopay.account.Account.OWNER, business.getId())
       );
       boolean active = (transactionDAO.find(
         MLang.AND(
           MLang.GTE(Transaction.CREATED, lastMonthDate),
-          MLang.IN(Transaction.SOURCE_ACCOUNT, filteredAccountDAO)
+          MLang.IN(Transaction.SOURCE_ACCOUNT, ((ArraySink) filteredAccountDAO.select(new ArraySink())).getArray())
         )
       ) != null);
       if (active) {

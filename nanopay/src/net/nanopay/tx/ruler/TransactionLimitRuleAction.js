@@ -13,7 +13,6 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.ruler.TestedRule',
     'java.util.HashMap',
-    'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction'
   ],
 
