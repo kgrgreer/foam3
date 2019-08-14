@@ -23,7 +23,7 @@ foam.CLASS({
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.tx.ExpiryLineItem',
-    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoiceFeeLineItem',
     'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.FXDirection',
     'net.nanopay.fx.FXService',
@@ -176,7 +176,6 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   FeesFields fees = new FeesFields.Builder(x).build();
   fees.setTotalFees(fxQuote.getFee());
   fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-  afexTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
   afexTransaction.setFxFees(fees);
   afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
 
@@ -194,11 +193,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   }
 
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(fxQuote.getValueDate().getTime() - new Date().getTime()).build()}, null);
-
-  // TODO ADD FEES
-  // DAO lineItemDAO = (DAO) x.get("lineItemDAO");
-  // afexTransaction.addLineItems(new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
-
+  afexTransaction.addLineItems(new TransactionLineItem[] {new InvoiceFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
   afexTransaction.setIsQuoted(true);
 
   return afexTransaction;
@@ -218,6 +213,7 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setFxExpiry(tx.getFxExpiry());
   summary.setInvoiceId(tx.getInvoiceId());
   summary.setIsQuoted(true);
+  summary.setFxFees(tx.getFxFees());
 
   // create AFEXBeneficiaryComplianceTransaction
   AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
