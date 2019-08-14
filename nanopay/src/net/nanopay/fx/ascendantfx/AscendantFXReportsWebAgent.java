@@ -136,6 +136,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String province = isBusinessAddressSet ? business.getBusinessAddress().getRegionId() : "-";;
     String country = isBusinessAddressSet ? business.getBusinessAddress().getCountryId() : "-";;
     String postalCode = isBusinessAddressSet ? business.getBusinessAddress().getPostalCode() : "-";;
+    String businessReg = business.getBusinessRegistrationDateTwo() != null ? ((DateOnly)business.getBusinessRegistrationDateTwo()).toString() : (business.getBusinessRegistrationDate() != null ? business.getBusinessRegistrationDate().toString() : "-");
 
     String businessPhoneNumber;
     if ( isBusinessSet && business.getBusinessPhone() != null ) {
@@ -191,6 +192,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String annualDomesticVolume;
     String annualRevenue;
     String firstTradeDateDomestic;
+    
 
     if ( isBusinessSet && business.getSuggestedUserTransactionInfo() != null ) {
       internationalTransactions = business.getSuggestedUserTransactionInfo().getInternationalPayments() ? "Yes" : "No";
@@ -252,6 +254,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       document.add(new Paragraph("Company Information"));
 
       List list = new List(List.UNORDERED);
+      list.add(new ListItem("Currency choices for this business will be USD and CAD")); // TODO
+      list.add(new ListItem("Business Registration: " + businessReg));
       list.add(new ListItem("Type of Business: " + businessType));
       list.add(new ListItem("Legal Name of Business: " + businessName));
       if ( operatingName.length() != 0 ) {
@@ -392,8 +396,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String isPEPHIORelated = signingOfficer.getPEPHIORelated() ? "Yes" : "No";
 
     String birthday = null;
-    if ( signingOfficer.getBirthday() != null ) {
-      birthday = sdf.format(signingOfficer.getBirthday());
+    if ( signingOfficer.getBirthdayTwo() != null ) {
+      birthday = ((net.nanopay.model.DateOnly)signingOfficer.getBirthdayTwo()).toString();
     }
     String phoneNumber = null;
     if ( signingOfficer.getPhone() != null ) {
@@ -517,9 +521,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           String province = beneficialOwner.getAddress().getRegionId();
           String country = beneficialOwner.getAddress().getCountryId();
           String postalCode = beneficialOwner.getAddress().getPostalCode();
-          SimpleDateFormat dateOfBirthFormatter = new SimpleDateFormat("MMM d, yyyy");
-          dateOfBirthFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-          String dateOfBirth = dateOfBirthFormatter.format(beneficialOwner.getBirthday());
+          String dateOfBirth = ((net.nanopay.model.DateOnly)beneficialOwner.getBirthdayTwo()).toString();
           // currently we don't store the info for Ownership (direct/indirect), will add later
 
           document.add(new Paragraph("Beneficial Owner " + (i + 1) + ":"));

@@ -122,27 +122,26 @@ foam.CLASS({
       name: 'signingOfficer',
       hidden: true,
     },
-    {
+    foam.nanos.auth.User.BUSINESS_REGISTRATION_DATE_TWO.clone().copyFrom({
       section: 'internationalTransactionSection',
-      class: 'Date',
-      name: 'businessFormationDate',
       documentation: 'Date of Business Formation or Incorporation.',
-      validationPredicates: [
-        {
-          args: ['signingOfficer','businessFormationDate'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
-              foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_FORMATION_DATE,
-                timeMs: 24 * 60 * 60 * 1000
-              })
-            );
-          },
-          errorString: 'Must be at least a before now.'
-        }
-      ]
-    },   
+      // TODO ANNA: fix validation of age mlang
+      // validationPredicates: [
+      //   {
+      //     args: ['signingOfficer','businessFormationDate'],
+      //     predicateFactory: function(e) {
+      //       return e.OR(
+      //         e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+      //         foam.mlang.predicate.OlderThan.create({
+      //           arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_FORMATION_DATE,
+      //           timeMs: 24 * 60 * 60 * 1000
+      //         })
+      //       );
+      //     },
+      //     errorString: 'Must be at least a before now.'
+      //   }
+      // ]
+    }),
     {
       section: 'internationalTransactionSection',
       class: 'Reference',

@@ -107,13 +107,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
             onboardingRequest.setContactBusinessPhone(business.getBusinessPhone().getNumber());
-            String businessRegDate = null;
-            try {
-              businessRegDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(business.getBusinessRegistrationDate()); 
-            } catch(Throwable t) {
-              logger.error("Error onboarding business. Error parsing business registration date.", t);
-              throw new RuntimeException("Error onboarding business. Error parsing business registration date.");
-            } 
+            String businessRegDate = ((net.nanopay.model.DateOnly) business.getBusinessRegistrationDateTwo()).toString();
             onboardingRequest.setDateOfIncorporation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
             onboardingRequest.setGender("Male"); // TO be removed in API by AFEX
@@ -131,7 +125,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             }
 
             try {
-              onboardingRequest.setDateOfBirth(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getBirthday()));
+              onboardingRequest.setDateOfBirth(((net.nanopay.model.DateOnly)signingOfficer.getBirthdayTwo()).toString());
             } catch(Throwable t) {
               logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
               throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
