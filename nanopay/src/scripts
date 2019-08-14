@@ -259,56 +259,56 @@ p({
       // Migrate streetName
       if ( SafetyUtil.isEmpty(address.getStreetName()) && ! SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
         address.setStreetName(businessAddress.getStreetName());
-      } else if ( ! SafetyUtil.equals(address.getStreetName(), businessAddress.getStreetName()) ) {
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getStreetName()) && ! SafetyUtil.equals(address.getStreetName(), businessAddress.getStreetName()) ) {
         print(business.getOrganization() + "'s street name needs to be verified manually.");
         continue;
       }
 
       // Migrate streetNumber
       if ( SafetyUtil.isEmpty(address.getStreetNumber()) && ! SafetyUtil.isEmpty(businessAddress.getStreetNumber()) ) {
-        address.setStreetNumber(businessAddress.getStreetName());
-      } else if ( ! SafetyUtil.equals(address.getStreetNumber(), businessAddress.getStreetNumber()) ) {
-        print(business.getOrganization() + "'s street number needs to verify manually.");
+        address.setStreetNumber(businessAddress.getStreetNumber());
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getStreetNumber()) && ! SafetyUtil.equals(address.getStreetNumber(), businessAddress.getStreetNumber()) ) {
+        print(business.getOrganization() + "'s street number needs to be verified manually.");
         continue;
       }
 
       // Migrate address 2
       if ( SafetyUtil.isEmpty(address.getAddress2()) && ! SafetyUtil.isEmpty(businessAddress.getAddress2()) ) {
         address.setAddress2(businessAddress.getAddress2());
-      } else if ( ! SafetyUtil.equals(address.getAddress2(), businessAddress.getAddress2()) ) {
-        print(business.getOrganization() + "'s address2 needs to verify manually.");
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getAddress2()) && ! SafetyUtil.equals(address.getAddress2(), businessAddress.getAddress2()) ) {
+        print(business.getOrganization() + "'s address2 needs to be verified manually.");
         continue;
       }
 
       // Migrate postalCode
       if ( SafetyUtil.isEmpty(address.getPostalCode()) && ! SafetyUtil.isEmpty(businessAddress.getPostalCode()) ) {
         address.setPostalCode(businessAddress.getPostalCode());
-      } else if ( ! SafetyUtil.equals(address.getPostalCode(), businessAddress.getPostalCode()) ) {
-        print(business.getOrganization() + "'s postal code needs to verify manually.");
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getPostalCode()) && ! SafetyUtil.equals(address.getPostalCode(), businessAddress.getPostalCode()) ) {
+        print(business.getOrganization() + "'s postal code needs to be verified manually.");
         continue;
       }
 
       // Migrate city
       if ( SafetyUtil.isEmpty(address.getCity()) && ! SafetyUtil.isEmpty(businessAddress.getCity()) ) {
         address.setCity(businessAddress.getCity());
-      } else if ( ! SafetyUtil.equals(address.getCity(), businessAddress.getCity()) ) {
-        print(business.getOrganization() + "'s city needs to verify manually.");
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getCity()) && ! SafetyUtil.equals(address.getCity(), businessAddress.getCity()) ) {
+        print(business.getOrganization() + "'s city needs to be verified manually.");
         continue;
       }
 
       // Migrate countryId
       if ( SafetyUtil.isEmpty(address.getCountryId()) && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
         address.setCountryId(businessAddress.getCountryId());
-      } else if ( ! SafetyUtil.equals(address.getCountryId(), businessAddress.getCountryId()) ) {
-        print(business.getOrganization() + "'s country needs to verify manually.");
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getCountryId()) && ! SafetyUtil.equals(address.getCountryId(), businessAddress.getCountryId()) ) {
+        print(business.getOrganization() + "'s country needs to be verified manually.");
         continue;
       }
 
       // Migrate regionId
       if ( SafetyUtil.isEmpty(address.getRegionId()) && ! SafetyUtil.isEmpty(businessAddress.getRegionId()) ) {
         address.setRegionId(businessAddress.getRegionId());
-      } else if ( ! SafetyUtil.equals(address.getRegionId(), businessAddress.getRegionId()) ) {
-        print(business.getOrganization() + "'s region/province needs to verify manually.");
+      } else if ( ! SafetyUtil.isEmpty(businessAddress.getRegionId()) && ! SafetyUtil.equals(address.getRegionId(), businessAddress.getRegionId()) ) {
+        print(business.getOrganization() + "'s region/province needs to be verified manually.");
         continue;
       }
 
