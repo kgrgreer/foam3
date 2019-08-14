@@ -84,15 +84,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           Region businessRegion = business.getAddress().findRegionId(this.x);
           Country businessCountry = business.getAddress().findCountryId(this.x);
 
-          if ( signingOfficer != null ) { 
+          if ( signingOfficer != null ) {
+            Boolean useHardCoded = business.getAddress().getCountryId().equals("CA");
             String identificationType = businessCountry == null || businessCountry.getId().equals("CA") ? "Passport" 
               : "EmployerIdentificationNumber_EIN"; // Madlen asked it is hardcoded
             String identificationNumber = SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ? "N/A" 
               : business.getBusinessRegistrationNumber(); // Madlen asked it is hardcoded              
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
-            onboardingRequest.setAccountPrimaryIdentificationNumber(identificationNumber);
-            onboardingRequest.setAccountPrimaryIdentificationType(identificationType); 
+            onboardingRequest.setAccountPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
+            onboardingRequest.setAccountPrimaryIdentificationType(useHardCoded ? "Business Registration Number" : identificationType);
             if ( businessCountry != null ) onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
@@ -100,7 +101,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
             Country businessFormationCountry = (Country) ((DAO) this.x.get("countryDAO")).find(business.getCountryOfBusinessRegistration());
             if ( businessFormationCountry != null ) {
-              onboardingRequest.setAccountPrimaryIdentificationIssuer(businessFormationCountry.getName());
+              onboardingRequest.setAccountPrimaryIdentificationIssuer( useHardCoded ? "Canada" : businessFormationCountry.getName());
             }
 
             onboardingRequest.setBusinessName(business.getBusinessName());
