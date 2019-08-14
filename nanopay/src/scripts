@@ -260,7 +260,7 @@ p({
       if ( SafetyUtil.isEmpty(address.getStreetName()) && ! SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
         address.setStreetName(businessAddress.getStreetName());
       } else if ( ! SafetyUtil.equals(address.getStreetName(), businessAddress.getStreetName()) ) {
-        print(business.getOrganization() + "'s street name needs to verify manually.");
+        print(business.getOrganization() + "'s street name needs to be verified manually.");
         continue;
       }
 
