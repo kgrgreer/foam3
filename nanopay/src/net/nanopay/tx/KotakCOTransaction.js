@@ -64,6 +64,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'UTRNumber'
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.tx.TransactionLineItem',
+      name: 'purposeCode'
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'net.nanopay.tx.TransactionLineItem',
+      name: 'accountRelationship'
     }
   ],
 
