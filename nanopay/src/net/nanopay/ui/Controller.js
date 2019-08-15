@@ -219,10 +219,10 @@ foam.CLASS({
             .end()
             .start()
               .addClass('stack-wrapper')
-              .start({
+              .tag({
                 class: 'net.nanopay.ui.banner.Banner',
                 data$: this.bannerData$
-              }).end()
+              })
               .tag(this.StackView, {
                 data: this.stack,
                 showActions: false
@@ -360,7 +360,7 @@ foam.CLASS({
       this.SUPER();
       this.findBalance();
 
-      if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION ) {
+      if ( this.appConfig.mode == foam.nanos.app.Mode.DEVELOPMENT ) {
         this.bannerizeTwoFactorAuth();
       }
     }
