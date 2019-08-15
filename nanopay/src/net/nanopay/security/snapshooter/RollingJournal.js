@@ -36,6 +36,10 @@ foam.CLASS({
     'java.io.BufferedWriter',
     'java.io.FileReader',
     'java.io.FileWriter',
+    'java.io.InputStream',
+    'java.io.InputStreamReader',
+    'java.io.OutputStream',
+    'java.io.OutputStreamWriter',
     'java.io.File',
     'java.security.*',
     'java.util.ArrayList',
@@ -387,12 +391,14 @@ foam.CLASS({
       documentation: `Reset the delegate\'s reader. This usually occurs once the
         journals have rolled and a new file is set.`,
       javaCode: `
-        try {
-          ((FileJournal) getDelegate()).setReader(new BufferedReader(new FileReader(((FileJournal) getDelegate()).getFile())));
-        } catch ( Throwable t ) {
-          getLogger().error("RollingJournal :: Failed to read from journal", t);
-          throw new RuntimeException(t);
-        }
+try {
+  FileJournal fj = (FileJournal) getDelegate();
+  InputStream is = fj.getX().get(foam.nanos.fs.Storage.class).getInputStream(fj.getFilename());
+  ((FileJournal) getDelegate()).setReader(new BufferedReader(new InputStreamReader(is)));
+} catch ( Throwable t ) {
+  getLogger().error("RollingJournal :: Failed to read from journal", t);
+  throw new RuntimeException(t);
+}
       `
     },
     {
@@ -401,8 +407,9 @@ foam.CLASS({
               journals have rolled and a new file is set.`,
       javaCode: `
         try {
-          BufferedWriter writer = new BufferedWriter(new FileWriter(((FileJournal) getDelegate()).getFile(), true), 16 * 1024);
-          ((FileJournal) getDelegate()).setWriter(writer);
+          FileJournal fj = (FileJournal) getDelegate();
+          OutputStream os = fj.getX().get(foam.nanos.fs.Storage.class).getOutputStream(fj.getFilename());
+          ((FileJournal) getDelegate()).setWriter(new BufferedWriter(new OutputStreamWriter(os)));
         } catch ( Throwable t ) {
           getLogger().error("RollingJournal :: Failed to create writer", t);
           throw new RuntimeException(t);
@@ -545,7 +552,8 @@ foam.CLASS({
         setJournalNumber(getJournalNumber() + 1);
         FileJournal delegate = (FileJournal) getDelegate();
         delegate.setFilename("journal." + getJournalNumber());
-        delegate.setFile(createJournal(delegate.getFilename()));
+        createJournal(delegate.getFilename());
+//        delegate.setFile();
         setJournalReader();
         setJournalWriter();
 

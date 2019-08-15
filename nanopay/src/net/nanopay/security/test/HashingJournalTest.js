@@ -12,7 +12,7 @@ foam.CLASS({
     'net.nanopay.security.HashedJSONParser',
     'net.nanopay.security.HashingJournal',
     'net.nanopay.security.HashingOutputter',
-
+    'foam.core.X',
     'java.io.BufferedReader',
     'java.io.BufferedWriter',
     'java.io.File',
@@ -38,6 +38,12 @@ foam.CLASS({
       name: 'EXPECTED',
       documentation: 'Expected journal output',
       value: 'p({"class":"foam.nanos.auth.User","id":1000,"firstName":"Kirk","lastName":"Eaton","email":"kirk@nanopay.net"},{"algorithm":"SHA-256","digest":"1f62e5366081be2b9ac3ff75bacec01bad128e64ab758438361b5e11ba90f5d5"})'
+    },
+    {
+      type: 'String',
+      name: 'INVALID',
+      documentation: 'Expected journal output',
+      value: 'p({"class":"foam.nanos.auth.User","id":1000,"firstName":"Kirk","lastName":"Eaton","email":"kirk@nanopay.net"},{"algorithm":"SHA-256","digest":"1f62e5366081be2b9ac3ff75bacec01bad128e64ab758438361b5e11barandom"})'
     }
   ],
 
@@ -109,8 +115,9 @@ foam.CLASS({
         try {
           DAO dao = new MDAO(User.getOwnClassInfo());
           File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-          HashingJournal journal = new HashingJournal.Builder(x)
-            .setFile(file)
+          X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
+          HashingJournal journal = new HashingJournal.Builder(storageX)
+            .setFilename(file.getName())
             .setDao(dao)
             .build();
 
@@ -143,8 +150,9 @@ foam.CLASS({
         try {
           DAO dao = new MDAO(User.getOwnClassInfo());
           File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-          HashingJournal journal = new HashingJournal.Builder(x)
-            .setFile(file)
+          X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
+          HashingJournal journal = new HashingJournal.Builder(storageX)
+            .setFilename(file.getName())
             .setDao(dao)
             .build();
 
@@ -183,15 +191,15 @@ foam.CLASS({
         try {
           DAO dao = new MDAO(User.getOwnClassInfo());
           File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
-          HashingJournal journal = new HashingJournal.Builder(x)
-            .setAlgorithm("SHA-1")
-            .setFile(file)
+          X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
+          HashingJournal journal = new HashingJournal.Builder(storageX)
+            .setFilename(file.getName())
             .setDao(dao)
             .build();
 
           // write entry with bad digest to journal
           try ( BufferedWriter writer = journal.getWriter() ) {
-            writer.write(EXPECTED);
+            writer.write(INVALID);
             writer.flush();
           }
 
