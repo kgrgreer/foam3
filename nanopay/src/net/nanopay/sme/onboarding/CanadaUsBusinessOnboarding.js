@@ -42,7 +42,7 @@ foam.CLASS({
     },
     {
       name: 'internationalTransactionSection',
-      title: 'We need a few information about your buisness and signing officer',
+      title: 'We need some more information about your business.',
       help: `Thanks! Now let’s get some more details on your US transactions`,
       isAvailable: function (signingOfficer) { return signingOfficer }
     },

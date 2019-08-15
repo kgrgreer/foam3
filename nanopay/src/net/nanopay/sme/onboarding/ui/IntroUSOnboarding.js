@@ -39,16 +39,11 @@ foam.CLASS({
   messages: [
     {
       name: 'INTRO_TEXT',
-      message: `I’ll be asking you just a few information about your business and 
-      signing officer to help me enable international payments for you.`
+      message: `I’ll be asking you a few questions about your business to help me enable international payments for you.`
 		},
 		{
 			name: 'INTRO_TITLE_1',
-			message: 'Your signing officer personal identification'
-		},
-		{
-			name: 'INTRO_TITLE_2',
-			message: 'Your business registration details.'
+			message: 'Your business registration details'
 		},
   ],
 
@@ -62,11 +57,7 @@ foam.CLASS({
         .start().addClass('table-heading')
 					.start('img').attrs({ src: 'images/checkmark-small-green.svg' }).end()
 					.start('p').add(this.INTRO_TITLE_1).end()
-				.end()
-				.start().addClass('table-heading')
-					.start('img').attrs({ src: 'images/checkmark-small-green.svg' }).end()
-					.start('p').add(this.INTRO_TITLE_2).end()
-				.end()
+				.end();
     }
   ]
 });

@@ -153,7 +153,7 @@ foam.CLASS({
     { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor Authentication' },
     { name: 'TwoFactorInstr1', message: 'Download and use your Google Authenticator ' },
-    { name: 'TwoFactorInstr2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into Google Authenticator app manually.' },
+    { name: 'TwoFactorInstr2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into the Google Authenticator app manually.' },
     { name: 'IOSName', message: 'iOS' },
     { name: 'AndroidName', message: 'Android' },
     { name: 'StepOne', message: 'Step 1' },
