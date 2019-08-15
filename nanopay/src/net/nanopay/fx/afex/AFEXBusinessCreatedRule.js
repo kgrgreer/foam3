@@ -39,7 +39,6 @@ foam.CLASS({
           Logger logger = (Logger) x.get("logger");
           
           if ( ! (obj instanceof AFEXBusiness) ) {
-            System.out.println("Not AFEXBusiness");
             return;
           }
           
@@ -56,7 +55,6 @@ foam.CLASS({
               Permission permission = new Permission.Builder(x).setId(permissionString).build();
               Group group = business.findGroup(x);
               if ( null != group && ! group.implies(x, new AuthPermission(permissionString)) ) {
-                System.out.println("Group does  not have permission before now " + group.getId());
                 try {
                   group.getPermissions(x).add(permission);  
                   // Send Notifications
