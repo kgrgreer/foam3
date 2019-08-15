@@ -324,10 +324,6 @@ foam.CLASS({
             // Scale and translate the view to fit in the available window
             var gw = this.graph.width-110;
             var w  = this.maxRight - this.maxLeft + 55;
-            // if ( w > gw ) {
-            //   var scaleX = Math.min(1, gw / w);
-            //   needsLayout = this.convergeTo(this.scaleX$, scaleX) || needsLayout;
-            // }
 
             var x = (-this.maxLeft+25)/w * gw + 55;
             needsLayout = this.convergeTo(this.x$, x) || needsLayout;
