@@ -17,8 +17,6 @@ foam.CLASS({
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.ui.AbliiActionView',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
-    'net.nanopay.sme.ui.banner.ComplianceBannerData',
-    'net.nanopay.sme.ui.banner.ComplianceBannerMode',
     'net.nanopay.sme.ui.ChangePasswordView',
     'net.nanopay.sme.ui.ResendPasswordView',
     'net.nanopay.sme.ui.ResetPasswordView',
@@ -29,6 +27,8 @@ foam.CLASS({
     'net.nanopay.sme.ui.ToastNotification as NotificationMessage',
     'net.nanopay.sme.ui.TwoFactorSignInView',
     'net.nanopay.sme.ui.VerifyEmailView',
+    'net.nanopay.ui.banner.BannerData',
+    'net.nanopay.ui.banner.BannerMode',
     'foam.u2.Element',
   ],
 
@@ -211,10 +211,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.sme.ui.banner.ComplianceBannerData',
+      of: 'net.nanopay.ui.banner.BannerData',
       name: 'bannerData',
       factory: function() {
-        return this.ComplianceBannerData.create({
+        return this.BannerData.create({
           isDismissed: true
         });
       }
@@ -240,7 +240,7 @@ foam.CLASS({
         return [
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_NO_BANK,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return user.compliance === self.ComplianceStatus.NOTREQUESTED
                 && accountArray.length === 0;
@@ -250,7 +250,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.NOTREQUESTED
@@ -261,7 +261,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.NOTREQUESTED
@@ -272,7 +272,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_REQUESTED_NO_BANK,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return user.compliance === self.ComplianceStatus.REQUESTED
                 && accountArray.length === 0;
@@ -282,7 +282,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_REQUESTED_BANK_NEED_VERIFY,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.REQUESTED
@@ -293,7 +293,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_PASSED_NO_BANK,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length === 0
                 && user.compliance === self.ComplianceStatus.PASSED;
@@ -303,7 +303,7 @@ foam.CLASS({
           },
           {
             msg: this.COMPLIANCE_PASSED_BANK_NEED_VERIFY,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
@@ -314,7 +314,7 @@ foam.CLASS({
           },
           {
             msg: this.BUSINESS_INFO_UNDER_REVIEW,
-            bannerMode: this.ComplianceBannerMode.NOTICE,
+            bannerMode: this.BannerMode.NOTICE,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.REQUESTED
@@ -325,7 +325,7 @@ foam.CLASS({
           },
           {
             msg: this.PASSED_BANNER,
-            bannerMode: this.ComplianceBannerMode.ACCOMPLISHED,
+            bannerMode: this.BannerMode.ACCOMPLISHED,
             condition: function(user, accountArray) {
               return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
@@ -412,7 +412,7 @@ foam.CLASS({
             .start()
               .addClass('stack-wrapper')
               .start({
-                class: 'net.nanopay.sme.ui.banner.ComplianceBanner',
+                class: 'net.nanopay.ui.banner.Banner',
                 data$: this.bannerData$
               })
               .end()
