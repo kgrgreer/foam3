@@ -17,7 +17,7 @@ public class CheckQuotedTransactionDAO extends ProxyDAO {
   @Override
   public FObject put_(X x, FObject obj) {
     Transaction txn = (Transaction) obj;
-    if ( ! txn.getIsQuoted() && txn.getStatus() != TransactionStatus.SCHEDULED ) {
+    if ( ! txn.getIsQuoted() ) {
       TransactionQuote quote = new TransactionQuote();
       quote.setRequestTransaction(txn);
       quote = (TransactionQuote) ((DAO) x.get("localTransactionQuotePlanDAO")).inX(x).put(quote);

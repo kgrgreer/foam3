@@ -84,6 +84,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       srcFiles[1] = generateBeneficialOwners(x, business);
       srcFiles[2] = generateBankInfo(x, business);
       srcFiles[3] = getBusinessDoc(x, business);
+      srcFiles[4] = generateCompanyDirectorsList(x, business);
       // srcFiles[4] = getUSBankAccountProof(x, business);
       // srcFiles[5] = getBeneficialOwnersDoc(x, business);
       int signingOfficerReportLength = signingOfficerReports == null ? 0 : signingOfficerReports.length;
@@ -549,6 +550,34 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       logger.error(e);
     }
 
+    return null;
+  }
+
+  private File generateCompanyDirectorsList(X x, Business business) {
+    if ( null == business ) return null;
+    Logger logger = (Logger) x.get("logger");
+    String path = "/tmp/ComplianceReport/[" + business.getBusinessName() + "]Directors.pdf";
+    try {
+      Document document = new Document();
+      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+      document.open();
+      document.add(new Paragraph("Company Directors"));
+
+      document.add(Chunk.NEWLINE);
+      List list = new List(List.UNORDERED);
+      for ( String directorName : business.getBusinessDirectors()) {
+        list.add(new ListItem(directorName));
+      }
+      document.add(list);
+      document.add(Chunk.NEWLINE);
+      document.close();
+      writer.close();
+
+      return new File(path);
+
+    } catch (DocumentException | IOException e) {
+      logger.error(e);
+    }
     return null;
   }
 

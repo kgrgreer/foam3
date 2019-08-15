@@ -96,7 +96,7 @@ foam.CLASS({
         onboarding.setBirthday(birthday);
         onboarding.setPEPHIORelated(true);
         onboarding.setThirdParty(true);
-        onboarding.setDualPartyAgreement(true);
+        onboarding.setDualPartyAgreement(3);
         onboarding.setAddress(signingOfficerAddress);
 
         onboarding.setBusinessTypeId(6);
