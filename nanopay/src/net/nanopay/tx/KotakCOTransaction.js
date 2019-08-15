@@ -107,7 +107,7 @@ foam.CLASS({
           return item.getNote();
         }
       }
-      return "nanopay";
+      return "P1099";
       `
     },
     {
@@ -119,7 +119,7 @@ foam.CLASS({
           return item.getNote();
         }
       }
-      return "nanopay";
+      return "Employee";
       `
     }
   ]
