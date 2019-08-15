@@ -12,9 +12,9 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
+      if ( ! (NEW_OBJ.f(obj) instanceof AFEXBusiness) ) return false;
       AFEXBusiness afexBusiness = (AFEXBusiness) NEW_OBJ.f(obj);
-      return afexBusiness instanceof AFEXBusiness
-        && afexBusiness.getApiKey() != null
+      return afexBusiness.getApiKey() != null
         && afexBusiness.getAccountNumber() != null;
       `
     }
