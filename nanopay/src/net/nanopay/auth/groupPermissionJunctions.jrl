@@ -208,6 +208,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"foam.nanos.auth.User.permission.viewPayables"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"foam.nanos.auth.User.permission.viewReceivables"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"foam.nanos.auth.User.permission.viewTransactions"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"foam.nanos.auth.User.permission.viewApprovalRequests"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"foam.nanos.auth.User.permission.viewComplianceHistory"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"identitymindresponse.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"invoice.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"ipHistory.read.*"})
