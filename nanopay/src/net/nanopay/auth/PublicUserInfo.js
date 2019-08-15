@@ -61,7 +61,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
-      name: 'businessAddress',
+      name: 'address',
       documentation: `Returns the postal address of the business associated with the 
         public information of a User.  It is drawn from the Address model.`,
       view: { class: 'foam.nanos.auth.AddressDetailView' },
@@ -70,7 +70,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Phone',
-      name: 'businessPhone',
+      name: 'phone',
       documentation: `Returns the phone number of the business associated with the 
         public information of a User. It is drawn from the Phone model.`,
       view: { class: 'foam.u2.detail.VerticalDetailView' },
@@ -134,8 +134,8 @@ foam.CLASS({
             setEmail(user.getEmail());
             setProfilePicture(user.getProfilePicture());
             setBusinessProfilePicture(user.getBusinessProfilePicture());
-            setBusinessAddress(user.getAddress());
-            setBusinessPhone(user.getPhone());
+            setAddress(user.getAddress());
+            setPhone(user.getPhone());
             setType(user.getType());
           }
         `);

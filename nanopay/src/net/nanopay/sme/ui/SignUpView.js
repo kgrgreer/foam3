@@ -465,7 +465,7 @@ foam.CLASS({
           signUpToken: this.signUpToken,
           // Address is removed from the user and used as the business address for the business created in
           // the smeRegistrationDAO
-          businessAddress: businessAddress,
+          address: businessAddress,
           // Don't send the "welcome to nanopay" email, send the email
           // verification email instead.
           welcomeEmailSent: true,
