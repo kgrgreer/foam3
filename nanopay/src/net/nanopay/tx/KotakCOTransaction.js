@@ -64,16 +64,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'UTRNumber'
-    },
-    {
-      class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.tx.TransactionLineItem',
-      name: 'purposeCode'
-    },
-    {
-      class: 'foam.core.FObjectProperty',
-      of: 'net.nanopay.tx.TransactionLineItem',
-      name: 'accountRelationship'
     }
   ],
 
@@ -106,6 +96,30 @@ foam.CLASS({
       javaCode: `
       super.limitedCopyFrom(other);
       setAmount(((KotakCOTransaction) other).getAmount());
+      `
+    },
+    {
+      name: 'getPurposeCode',
+      type: 'String',
+      javaCode: `
+      for ( TransactionLineItem item : getLineItems() ) {
+        if ( "PurposeCode".equals(item.getName()) ) {
+          return item.getNote();
+        }
+      }
+      return "nanopay";
+      `
+    },
+    {
+      name: 'getAccountRelationship',
+      type: 'String',
+      javaCode: `
+      for ( TransactionLineItem item : getLineItems() ) {
+        if ( "AccountRelationship".equals(item.getName()) ) {
+          return item.getNote();
+        }
+      }
+      return "nanopay";
       `
     }
   ]
