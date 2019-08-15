@@ -395,7 +395,6 @@ foam.CLASS({
                       .addClass('float-right')
                       .add(this.slot(function(sourceCurrency, quote) {
                         if ( sourceCurrency && quote && quote.amount ) {
-                          console.log(sourceCurrency.format(quote.amount));
                           return sourceCurrency.format(quote.amount);
                         }
                         return '(-)';
@@ -494,8 +493,6 @@ foam.CLASS({
           requestTransaction: transaction
         })
       );
-      console.log("DOEMSTIC");
-      console.log(quote);
       return quote.plan;
     },
     async function getFXQuote() {
@@ -517,7 +514,6 @@ foam.CLASS({
       clearTimeout(this.refreshIntervalId);
       this.getExpiryTime(new Date(), quote.plan.fxExpiry);
       this.updateQuote(this);
-      console.log(quote);
       return quote.plan;
     },
 
@@ -567,7 +563,6 @@ foam.CLASS({
           requestTransaction: transaction
         })
       ).then(function(quote) {
-        console.log(self.quote.fxRate);
         self.quote = quote.plan;
         self.getExpiryTime(new Date, quote.plan.fxExpiry);
       });
