@@ -72,6 +72,30 @@ public class AFEXContactDAO
     return super.put_(x, obj);
   }
 
+  @Override
+  public FObject remove_(X x, FObject obj) {
+    Contact contact = (Contact) obj;
+
+    if ( contact == null ) return null;
+
+    DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+    AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
+    Business contactOwner = (Business) localBusinessDAO.find(contact.getOwner());
+    if (null == contactOwner ) return super.remove_(x, obj);
+    Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
+    long contactId = contact.getId();
+    if ( business != null ) contactId = business.getId();
+    
+    try {
+      afexServiceProvider.deletePayee(contactId, contactOwner.getId());
+    } catch(Throwable t) {
+      Logger l = (Logger) x.get("logger");
+      l.error("Unexpected error disabling AFEX Beneficiary history record.", t);
+    }
+    
+    return super.remove_(x, obj);
+  }
+
   protected boolean afexBeneficiaryExists(X x, Long contactId, Long ownerId) {
     boolean beneficiaryExists = false;
     DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO")).inX(x);

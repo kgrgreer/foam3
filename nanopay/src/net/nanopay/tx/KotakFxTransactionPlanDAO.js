@@ -75,7 +75,13 @@ foam.CLASS({
         // txn 3: Kotak IN bank -> destination IN bank
         KotakCOTransaction t3 = new KotakCOTransaction.Builder(x).build();
         t3.copyFrom(request);
-        t3.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+        t3.addLineItems(
+          new TransactionLineItem[] {
+            new InfoLineItem.Builder(x).setName("PurposeCode").setNote("P1099").build(),
+            new InfoLineItem.Builder(x).setName("AccountRelationship").setNote("Employee").build(),
+            new ETALineItem.Builder(x).setEta(/* 12 hours */ 43200000L).build()
+          },
+          null);
         t3.setIsQuoted(true);
         t3.setSourceAccount(kotakINPartnerBank.getId());
         t3.setSourceCurrency(request.getDestinationCurrency());
