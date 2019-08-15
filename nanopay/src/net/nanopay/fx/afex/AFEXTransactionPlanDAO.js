@@ -193,7 +193,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   }
 
   afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(fxQuote.getValueDate().getTime() - new Date().getTime()).build()}, null);
-  afexTransaction.addLineItems(new TransactionLineItem[] {new InvoiceFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+  afexTransaction.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
   afexTransaction.setIsQuoted(true);
 
   return afexTransaction;
