@@ -204,9 +204,9 @@ var classes = [
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 
-  // sme compliance banner
-  'net.nanopay.sme.ui.banner.ComplianceBannerData',
-  'net.nanopay.sme.ui.banner.ComplianceBannerMode',
+  // banner
+  'net.nanopay.ui.banner.BannerData',
+  'net.nanopay.ui.banner.BannerMode',
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',

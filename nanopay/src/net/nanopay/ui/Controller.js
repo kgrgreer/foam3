@@ -25,8 +25,8 @@ foam.CLASS({
     'net.nanopay.auth.ui.SignInView',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Currency',
-    'net.nanopay.sme.ui.banner.ComplianceBannerData',
-    'net.nanopay.sme.ui.banner.ComplianceBannerMode',
+    'net.nanopay.ui.banner.BannerData',
+    'net.nanopay.ui.banner.BannerMode',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.modal.SessionTimeoutModal',
     'net.nanopay.ui.style.AppStyles',
@@ -179,10 +179,10 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.sme.ui.banner.ComplianceBannerData',
+      of: 'net.nanopay.ui.banner.BannerData',
       name: 'bannerData',
       factory: function() {
-        return this.ComplianceBannerData.create({
+        return this.BannerData.create({
           isDismissed: true
         });
       }
@@ -220,7 +220,7 @@ foam.CLASS({
             .start()
               .addClass('stack-wrapper')
               .start({
-                class: 'net.nanopay.sme.ui.banner.ComplianceBanner',
+                class: 'net.nanopay.ui.banner.Banner',
                 data$: this.bannerData$
               }).end()
               .tag(this.StackView, {
@@ -237,7 +237,7 @@ foam.CLASS({
 
     function bannerizeTwoFactorAuth() {
       if ( ! this.user.twoFactorEnabled ) {
-        this.setBanner(this.ComplianceBannerMode.NOTICE, 'Please enable Two-Factor Authentication in Personal Settings.');
+        this.setBanner(this.BannerMode.NOTICE, 'Please enable Two-Factor Authentication in Personal Settings.');
       }
     },
 
