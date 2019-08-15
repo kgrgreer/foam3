@@ -174,7 +174,7 @@ foam.CLASS({
       name: 'isFx',
       expression: function(chosenBankAccount, invoice$destinationCurrency) {
         return chosenBankAccount != null &&
-          invoice$destinationCurrency !== chosenBankAccount.denomination;
+          ! (invoice$destinationCurrency == chosenBankAccount.denomination === 'CAD');
       }
     },
     {
@@ -393,14 +393,13 @@ foam.CLASS({
                     .end()
                     .start()
                       .addClass('float-right')
-                      .add(this.slot(function(sourceCurrency) {
-                        if ( sourceCurrency && this.quote && this.quote.amount ) {
-                          return sourceCurrency.format(this.quote.amount);
+                      .add(this.slot(function(sourceCurrency, quote) {
+                        if ( sourceCurrency && quote && quote.amount ) {
+                          console.log(sourceCurrency.format(quote.amount));
+                          return sourceCurrency.format(quote.amount);
                         }
                         return '(-)';
                       }),
-                        ' ',
-                        this.quote$.dot('sourceCurrency'),
                         this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
                     .end()
@@ -416,7 +415,7 @@ foam.CLASS({
                         this.slot( function(quote$fxFees$totalFees, sourceCurrency) {
                           if ( ! sourceCurrency ) return;
                           return quote$fxFees$totalFees ?
-                            sourceCurrency.format(quote$fxFees$totalFees) + ' ' + sourceCurrency.alphabeticCode:
+                            sourceCurrency.format(quote$fxFees$totalFees):
                             sourceCurrency.format(0);
                         })
                       )
@@ -495,6 +494,8 @@ foam.CLASS({
           requestTransaction: transaction
         })
       );
+      console.log("DOEMSTIC");
+      console.log(quote);
       return quote.plan;
     },
     async function getFXQuote() {
@@ -516,6 +517,7 @@ foam.CLASS({
       clearTimeout(this.refreshIntervalId);
       this.getExpiryTime(new Date(), quote.plan.fxExpiry);
       this.updateQuote(this);
+      console.log(quote);
       return quote.plan;
     },
 
@@ -565,6 +567,7 @@ foam.CLASS({
           requestTransaction: transaction
         })
       ).then(function(quote) {
+        console.log(self.quote.fxRate);
         self.quote = quote.plan;
         self.getExpiryTime(new Date, quote.plan.fxExpiry);
       });
