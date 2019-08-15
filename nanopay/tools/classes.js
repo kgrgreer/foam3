@@ -298,7 +298,7 @@ var classes = [
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.FeeLineItem',
-  'net.nanopay.tx.InvoiceFeeLineItem',
+  'net.nanopay.tx.InvoicedFeeLineItem',
   'net.nanopay.tx.ExpediteCICOApprovalRequest',
   'net.nanopay.tx.ExpenseLineItem',
   'net.nanopay.tx.ServiceLineItem',
