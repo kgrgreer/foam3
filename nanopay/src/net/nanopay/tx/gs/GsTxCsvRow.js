@@ -117,6 +117,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'LiquidityBucket'
+    },
+    {
+      class: 'Double',
+      name: 'Mval'
     }
   ]
 });
