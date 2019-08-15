@@ -807,7 +807,7 @@ foam.CLASS({
             test(false, "Generating and saving a new PrivateKey in the Keystore shouldn't be throwing exceptions.");
           }
 
-          foam.dao.FileJournal fileJournal = new foam.dao.FileJournal.Builder(nuX).setFile(RollingJournal.getNextJournal()).build();
+          foam.dao.FileJournal fileJournal = new foam.dao.FileJournal.Builder(nuX).setFilename(RollingJournal.getNextJournal().getName()).build();
           RollingJournal rj = new RollingJournal.Builder(nuX).setDelegate(fileJournal).setJournalNumber(RollingJournal.getNextJournalNumber()).setSigned(true).setAlias("dtrain").build();
 
           rj.rollJournal();
