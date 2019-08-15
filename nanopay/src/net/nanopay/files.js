@@ -347,7 +347,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
   { name: 'net/nanopay/tx/ModifyCicoStatus' },
-  { name: 'net/nanopay/tx/InvoiceFeeLineItem' },
+  { name: 'net/nanopay/tx/InvoicedFeeLineItem' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },

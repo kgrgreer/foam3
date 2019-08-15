@@ -23,7 +23,7 @@ foam.CLASS({
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.tx.ExpiryLineItem',
-    'net.nanopay.tx.InvoiceFeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.FXDirection',
     'net.nanopay.fx.FXService',
