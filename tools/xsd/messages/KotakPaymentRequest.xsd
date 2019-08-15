@@ -36,6 +36,7 @@
       <xs:element name="PayMode" type="MaxChar10_ST" minOccurs="0"/>
       <xs:element name="TxnAmnt" type="Amount_ST"/>
       <xs:element name="AccountNo" type="MaxChar20_ST" minOccurs="0"/>
+      <xs:element name="accountRelationship" type="MinChar1_MaxChar10_ST" minOccurs="0"/>
       <xs:element name="DrRefNmbr" type="MaxChar14_ST" minOccurs="0"/>
       <xs:element name="DrDesc" type="MaxChar40_ST" minOccurs="0"/>
       <xs:element name="PaymentDt" type="MaxChar20_ST" minOccurs="0"/>
@@ -74,6 +75,7 @@
       <xs:element name="PaymentDtl1" type="MaxChar200_ST" minOccurs="0"/>
       <xs:element name="PaymentDtl2" type="MaxChar200_ST" minOccurs="0"/>
       <xs:element name="PaymentDtl3" type="MaxChar200_ST" minOccurs="0"/>
+      <xs:element name="PurposeCode" type="PurposeCode_ST" minOccurs="0"/>
       <xs:element name="MailToAddr1" type="MaxChar200_ST" minOccurs="0"/>
       <xs:element name="MailToAddr2" type="MaxChar200_ST" minOccurs="0"/>
       <xs:element name="MailToAddr3" type="MaxChar200_ST" minOccurs="0"/>
@@ -237,6 +239,11 @@
     <xs:restriction base="xs:string">
       <xs:pattern value="[0-9]{0,10}"/>
       <xs:minLength value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="PurposeCode_ST">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="P[0-9]{4,5}"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
