@@ -152,7 +152,7 @@ foam.CLASS({
     {
       name: 'transactionDetailsSection',
       title: 'Enter your transaction details',
-      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on your company…`,
+      help: `Thanks! Now let’s get some details on your company's transactions.`,
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
     {
