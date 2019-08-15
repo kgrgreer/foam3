@@ -173,8 +173,13 @@ foam.CLASS({
     {
       name: 'isFx',
       expression: function(chosenBankAccount, invoice$destinationCurrency) {
+        console.log(invoice$destinationCurrency);
+        console.log( chosenBankAccount == null ? '' : chosenBankAccount.denomination);
+        if ( chosenBankAccount != null ) {
+        console.log( invoice$destinationCurrency == 'CAD' );
+        }
         return chosenBankAccount != null &&
-          ! (invoice$destinationCurrency == chosenBankAccount.denomination === 'CAD');
+          ! (invoice$destinationCurrency == chosenBankAccount.denomination && chosenBankAccount.denomination === 'CAD');
       }
     },
     {
@@ -247,7 +252,8 @@ foam.CLASS({
       if ( this.chosenBankAccount && ! this.sourceCurrency ) {
         this.setSourceCurrency();
       }
-      if ( this.quotePassedIn && this.quote != null ) {
+      if ( this.quotePassedIn && this.quote != null && this.isFx ) {
+        console.log(this.isFx);
         clearTimeout(this.refreshIntervalId);
         this.getExpiryTime(new Date(), this.quote.fxExpiry);
         this.updateQuote(this);
@@ -496,6 +502,8 @@ foam.CLASS({
       return quote.plan;
     },
     async function getFXQuote() {
+      console.log(this.isFx);
+
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,
