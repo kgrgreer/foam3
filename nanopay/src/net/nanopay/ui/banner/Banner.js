@@ -1,15 +1,14 @@
 foam.CLASS({
-  package: 'net.nanopay.sme.ui.banner',
-  name: 'ComplianceBanner',
+  package: 'net.nanopay.ui.banner',
+  name: 'Banner',
   extends: 'foam.u2.View',
 
   documentation: `
     Displays a thin view that takes up 100% width of its container and displays a message.
-    This is purely
   `,
 
   requires: [
-    'net.nanopay.sme.ui.banner.ComplianceBannerMode'
+    'net.nanopay.ui.banner.BannerMode'
   ],
 
   css: `
@@ -56,14 +55,14 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start('div').addClass('banner')
           .enableClass('hidden', this.data$.dot('isDismissed'))
-          .enableClass('alert', this.data$.dot('mode').map(function(m) { return m === self.ComplianceBannerMode.ALERT; }))
-          .enableClass('notice', this.data$.dot('mode').map(function(m) { return m === self.ComplianceBannerMode.NOTICE; }))
-          .enableClass('accomplished', this.data$.dot('mode').map(function(m) { return m === self.ComplianceBannerMode.ACCOMPLISHED; }))
+          .enableClass('alert', this.data$.dot('mode').map(function(m) { return m === self.BannerMode.ALERT; }))
+          .enableClass('notice', this.data$.dot('mode').map(function(m) { return m === self.BannerMode.NOTICE; }))
+          .enableClass('accomplished', this.data$.dot('mode').map(function(m) { return m === self.BannerMode.ACCOMPLISHED; }))
           .start('div').addClass('message')
             .add(this.data$.dot('message').map(function(v) { return v; }))
           .end()
           // TODO: Use isDismissable
-        .end()
+        .end();
     }
   ]
 });

@@ -416,7 +416,7 @@ foam.CLASS({
                         this.slot( function(quote$fxFees$totalFees, sourceCurrency) {
                           if ( ! sourceCurrency ) return;
                           return quote$fxFees$totalFees ?
-                            sourceCurrency.format(quote$fxFees$totalFees) :
+                            sourceCurrency.format(quote$fxFees$totalFees) + ' ' + sourceCurrency.alphabeticCode:
                             sourceCurrency.format(0);
                         })
                       )

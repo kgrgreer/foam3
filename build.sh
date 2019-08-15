@@ -391,6 +391,8 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
+    export DOCUMENT_HOME="${NANOPAY_HOME}/documents"
+
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
     fi
@@ -415,6 +417,9 @@ function setenv {
     fi
     if [ ! -d "${JOURNAL_HOME}" ]; then
         mkdir -p "${JOURNAL_HOME}"
+    fi
+    if [ ! -d "${DOCUMENT_HOME}" ]; then
+        mkdir -p "${DOCUMENT_HOME}"
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -444,6 +449,7 @@ function setenv {
 
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
+    JAVA_OPTS="${JAVA_OPTS} -DOCUMENT_HOME=$DOCUMENT_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     # keystore
@@ -589,7 +595,6 @@ while getopts "bcdD:ghijJ:klmM:N:opqQrsStT:uU:vV:W:xz" opt ; do
            echo "MODE=${MODE}"
            ;;
         q) MODE=STAGING
-           CLEAN_BUILD=1
            echo "MODE=${MODE}"
            ;;
         Q) LIQUID_DEMO=1
