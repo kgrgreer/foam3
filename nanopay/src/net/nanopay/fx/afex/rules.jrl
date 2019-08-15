@@ -1,1 +1,21 @@
 p({"class":"foam.nanos.ruler.Rule","id":8000,"name":"AFEX Beneficiary Compliance Transaction","priority":80,"ruleGroup":"AFEX","documentation":"Check if AFEX Beneficiary is apporved before preceeding with payment","daoKey":"localTransactionDAO","operation":3,"after":false,"predicate":{"class":"net.nanopay.fx.afex.AbstractPredicate"},"action":{"class":"net.nanopay.fx.afex.AFEXComplianceTransactionRule"},"enabled":true,"saveHistory":true})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":800001,
+  "name":"AFEX Business Created Rule",
+  "documentation":"Rule for when a business is pushed to AFEX and AFEXBusiness is created.",
+  "priority":100,
+  "ruleGroup":"onboarding",
+  "daoKey":"afexBusinessDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
+    "strict":true
+  },
+  "action":{
+    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedRule"
+  },
+  "enabled":true,
+  "saveHistory":true
+})

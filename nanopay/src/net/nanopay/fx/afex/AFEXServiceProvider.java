@@ -77,8 +77,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
         AuthService auth = (AuthService) this.x.get("auth");
         boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
-        boolean hasCurrencyReadUSDPermission = auth.checkUser(this.x, business, "currency.read.USD");
-        if ( hasFXProvisionPayerPermission && hasCurrencyReadUSDPermission) {
+        if ( hasFXProvisionPayerPermission) {
           OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
           User signingOfficer = getSigningOfficer(this.x, business);
           Region businessRegion = business.getAddress().findRegionId(this.x);

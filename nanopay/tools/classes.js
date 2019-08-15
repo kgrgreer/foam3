@@ -132,6 +132,8 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBMOTransactionPlanDAO',
   'net.nanopay.fx.afex.AFEX',
   'net.nanopay.fx.afex.AFEXBusiness',
+  'net.nanopay.fx.afex.AFEXBusinessCreatedRule',
+  'net.nanopay.fx.afex.AFEXBusinessCreatedPredicate',
   'net.nanopay.fx.afex.AFEXCredentials',
   'net.nanopay.fx.afex.AFEXBeneficiary',
   'net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction',
