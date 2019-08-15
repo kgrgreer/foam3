@@ -360,7 +360,7 @@ foam.CLASS({
       this.SUPER();
       this.findBalance();
 
-      if ( this.appConfig.mode == foam.nanos.app.Mode.DEVELOPMENT ) {
+      if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION ) {
         this.bannerizeTwoFactorAuth();
       }
     }
