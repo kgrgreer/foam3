@@ -78,12 +78,25 @@ foam.CLASS({
         // Balance and Denomination Indicator
         this.data.findBalance(this.__subContext__).then(function(balance) {
           this.__subContext__.currencyDAO.find(this.data.denomination).then(function(denom) {
+
+            // securities and cash colouring are for the liquid accounts
+            let color;
+            if ( this.data.name.toLowerCase().includes('securities')) {
+              color = '#406dea';
+            } else if ( this.data.name.toLowerCase().includes('cash')) {
+              color = '#d9170e';
+            } else if ( type === 'Aggregate' ) {
+              color = '#9ba1a6';
+            } else {
+              color  = denom ? denom.colour : '#ffffff';
+            }
+
             this.add(this.Line.create({
               startX: -this.width/2+1,
               startY: 0,
               endX: -this.width/2+1,
               endY: this.height,
-              color: type === 'Aggregate' ? '#9ba1a6' : denom ? denom.colour : '#ffffff',
+              color: color,
               lineWidth: 6
             }));
 
