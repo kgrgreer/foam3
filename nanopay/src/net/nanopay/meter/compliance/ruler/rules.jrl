@@ -189,3 +189,37 @@ p({"class":"foam.nanos.ruler.Rule","id":1670,"name":"Remove ComplianceItem - Sec
 
 // Reput object rules
 p({"class":"foam.nanos.ruler.Rule","id":1700,"name":"Reset transaction lastModified/By properties","ruleGroup":"(Default)","priority":1000,"daoKey":"localTransactionDAO","operation":1,after:false,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.NewEqOld"},"action":{"class":"net.nanopay.meter.compliance.ruler.ResetLastModified"},"enabled":true,"saveHistory":false})
+
+// User Corridor Permission
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1301,
+  "name": "Update User Domestic Currency Permission",
+  "documentation": "This rule gives user currency.read.COUNTRY_CURRENCY Permission when compliance is passed.",
+  "priority": 10,
+  "ruleGroup": "onboarding",
+  "daoKey": "localUserDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+        }
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassed",
+        "strict": true,
+        "of": "net.nanopay.model.Business"
+      }
+    ]
+  },
+  "asyncAction": {
+    "class": "net.nanopay.meter.compliance.ruler.UpdateBusinessPermissions"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
