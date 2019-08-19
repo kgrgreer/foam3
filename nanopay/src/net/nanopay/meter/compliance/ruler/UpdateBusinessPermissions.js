@@ -5,16 +5,18 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Updates business permissions.`,
+  documentation: `Updates business permissions. Specifically adds currency.read.Currency 
+    and fx.provision.payer permissions to a business.`,
 
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
-	  'foam.nanos.auth.Group',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'javax.security.auth.AuthPermission',
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
@@ -34,29 +36,29 @@ foam.CLASS({
 	            return;
             }
             Business business = (Business) obj.fclone();
-            DAO groupDAO = (DAO) x.get("groupDAO");
+            DAO localGroupDAO = (DAO) x.get("localGroupDAO");
             Address businessAddress = business.getBusinessAddress();
             
-            if ( null != businessAddress && null != businessAddress.getCountryId() ) {
+            if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
               String currencyPermissionString = "currency.read.";
               currencyPermissionString = businessAddress.getCountryId().equals("CA") ? currencyPermissionString + "CAD" : currencyPermissionString + "USD";
               Permission currencyPermission = new Permission.Builder(x).setId(currencyPermissionString).build();
-              Group group = business.findGroup(x);
+              Group group = (Group) localGroupDAO.find(business.getGroup());
               while ( group != null ) {
                 group = (Group) group.findParent(x);
-                if ( group != null && group.getId().contains("employee") ) break;
+                if ( group != null && group.getId().endsWith("employee") ) break;
               }
 
               if ( null != group && ! group.implies(x, new AuthPermission(currencyPermissionString)) ) {
                 try {
                   group.getPermissions(x).add(currencyPermission);  
                 } catch(Throwable t) {
-                    ((Logger) x.get("logger")).error("Error Updating business domestic currency permission.", t);
+                    ((Logger) x.get("logger")).error("Error adding " + currencyPermissionString + " permission to business " + business.getId(), t);
                 } 
               }
 
               Permission fxProvisionPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
-              group = business.findGroup(x);
+              group = (Group) localGroupDAO.find(business.getGroup());
               if ( null != group && ! group.implies(x, new AuthPermission(fxProvisionPermission.getId())) ) {
                 try {
                   group.getPermissions(x).add(fxProvisionPermission);  
@@ -66,7 +68,7 @@ foam.CLASS({
               } 
             }
           }
-        }, "Update Business Permissions");
+        }, "Update Business Permissions with currency.read.Currency and fx.provision.payer");
       `
     }
   ]

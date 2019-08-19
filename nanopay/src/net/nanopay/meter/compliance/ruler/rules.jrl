@@ -193,7 +193,7 @@ p({"class":"foam.nanos.ruler.Rule","id":1700,"name":"Reset transaction lastModif
 // User Corridor Permission
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id": 1301,
+  "id": 1701,
   "name": "Update Business Domestic Permissions",
   "documentation": "This rule gives user currency.read.COUNTRY_CURRENCY and fx.provision.payer Permission when compliance is passed.",
   "priority": 10,
@@ -212,11 +212,10 @@ p({
       },
       {
         "class": "net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassed",
-        "of": "net.nanopay.model.Business"
       }
     ]
   },
-  "asyncAction": {
+  "action": {
     "class": "net.nanopay.meter.compliance.ruler.UpdateBusinessPermissions"
   },
   "enabled": true,
