@@ -1,6 +1,6 @@
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
-  name: 'AFEXBusinessCreatedPredicate',
+  name: 'AFEXBusinessDisabledPredicate',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
@@ -15,10 +15,8 @@ foam.CLASS({
       javaCode: `
       if ( ! (NEW_OBJ.f(obj) instanceof AFEXBusiness) ) return false;
       AFEXBusiness afexBusiness = (AFEXBusiness) NEW_OBJ.f(obj);
-      return ! SafetyUtil.isEmpty(afexBusiness.getApiKey())
-        && ! SafetyUtil.isEmpty(afexBusiness.getAccountNumber())
-        && ! "Disabled".equals(afexBusiness.getStatus())
-        && afexBusiness.getEnabled();
+      return ! afexBusiness.getEnabled()
+        || "Disabled".equals(afexBusiness.getStatus());
       `
     }
   ]
