@@ -104,7 +104,7 @@ foam.CLASS({
             afexTransaction.setPayeeId(destinationAccount.getOwner());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
             afexTransaction.setInvoiceId(request.getInvoiceId());
-            FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
+            FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote);
             quote.addPlan(summary);
           }
           
@@ -123,7 +123,7 @@ foam.CLASS({
         afexTransaction.setPayeeId(destinationAccount.getOwner());
 
         // create summary transaction and add to quote
-        FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount);
+        FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote);
         quote.addPlan(summary);
       }
       return quote;
@@ -173,10 +173,6 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
   afexTransaction.setFxRate(fxQuote.getRate());
   afexTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
 
-  FeesFields fees = new FeesFields.Builder(x).build();
-  fees.setTotalFees(fxQuote.getFee());
-  fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-  afexTransaction.setFxFees(fees);
   afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
 
   afexTransaction.setIsQuoted(true);
@@ -200,7 +196,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, Transaction reque
 }
 
 
-public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAccount, Account destinationAccount ) {
+public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAccount, Account destinationAccount, FXQuote fxQuote ) {
   FXSummaryTransaction summary = new FXSummaryTransaction();
   summary.setAmount(tx.getAmount());
   summary.setDestinationAmount(tx.getDestinationAmount());
@@ -213,7 +209,10 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setFxExpiry(tx.getFxExpiry());
   summary.setInvoiceId(tx.getInvoiceId());
   summary.setIsQuoted(true);
-  summary.setFxFees(tx.getFxFees());
+  FeesFields fees = new FeesFields.Builder(getX()).build();
+  fees.setTotalFees(fxQuote.getFee());
+  fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
+  summary.setFxFees(fees);
 
   // create AFEXBeneficiaryComplianceTransaction
   AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
