@@ -667,9 +667,9 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/passwordutil/PasswordEntropy' },
   { name: 'net/nanopay/auth/passwordutil/PasswordStrengthCalculator' },
 
-  // sme compliance banner
-  { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
+  // banner
+  { name: 'net/nanopay/ui/banner/Banner', flags: ['web'] },
+  { name: 'net/nanopay/ui/banner/BannerData' },
 
   // sme dashboard cards
   { name: 'net/nanopay/sme/ui/dashboard/cards/UnlockPaymentsCard', flags: ['web'] },
