@@ -209,10 +209,7 @@ public FXSummaryTransaction getSummaryTx ( AFEXTransaction tx, Account sourceAcc
   summary.setFxExpiry(tx.getFxExpiry());
   summary.setInvoiceId(tx.getInvoiceId());
   summary.setIsQuoted(true);
-  FeesFields fees = new FeesFields.Builder(getX()).build();
-  fees.setTotalFees(fxQuote.getFee());
-  fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-  summary.setFxFees(fees);
+  summary.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
 
   // create AFEXBeneficiaryComplianceTransaction
   AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
