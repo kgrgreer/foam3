@@ -378,23 +378,25 @@ p({
     ]
   }
   """
-})ator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"})
-
-
+})
 
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"userHistoryDAO",
   "description":"DAO containing any modifications made to users",
   "serve":true,
-  "serviceScript":"""
-    foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, foam.dao.history.HistoryRecord.getOwnClassInfo(), \"userHistory\"); 
-    return new foam.dao.EasyDAO.Builder(x)
+  "lazy":false,
+  "serviceScript":
+  """
+  //foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, foam.dao.history.HistoryRecord.getOwnClassInfo(), "userHistory"); 
+  return new foam.dao.EasyDAO.Builder(x)
     .setAuthorize(false)
     .setSeqNo(true)
-    .setSeqPropertyName(\"seqNo\")
-    .setInnerDAO(hashingJDAO)
-    .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo()).build();
+    .setSeqPropertyName("seqNo")
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("userHistory")
+    .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo())
+    .build();
   """, 
   "client":
   """
