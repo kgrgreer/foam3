@@ -38,9 +38,7 @@ foam.CLASS({
           }
           
           AFEXBusiness afexBusiness = (AFEXBusiness) obj;
-          DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
-          DAO groupDAO = (DAO) x.get("groupDAO");
-          
+          DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");          
           Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser())); 
           if ( null != business ) {
             sendOperationsNotification(x, business);
