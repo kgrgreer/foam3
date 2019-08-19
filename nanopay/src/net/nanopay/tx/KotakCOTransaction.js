@@ -7,10 +7,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.account.TrustAccount',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.account.TrustAccount'
   ],
 
   properties: [
@@ -64,6 +61,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'UTRNumber'
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.tx.AccountRelationship',
+      name: 'accountRelationship'
     }
   ],
 
@@ -103,23 +105,11 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       for ( TransactionLineItem item : getLineItems() ) {
-        if ( "PurposeCode".equals(item.getName()) ) {
-          return item.getNote();
+        if ( item instanceof PurposeCodeLineItem ) {
+          return ((PurposeCodeLineItem) item).getPurposeCode();
         }
       }
       return "P1099";
-      `
-    },
-    {
-      name: 'getAccountRelationship',
-      type: 'String',
-      javaCode: `
-      for ( TransactionLineItem item : getLineItems() ) {
-        if ( "AccountRelationship".equals(item.getName()) ) {
-          return item.getNote();
-        }
-      }
-      return "Employee";
       `
     }
   ]
