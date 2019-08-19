@@ -227,8 +227,11 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: 'net/nanopay/fx/afex/AFEX' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficiary' },
+  { name: 'net/nanopay/fx/afex/AFEXBeneficiaryComplianceTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXBusiness' },
   { name: 'net/nanopay/fx/afex/AFEXCredentials' },
+  { name: 'net/nanopay/fx/afex/AFEXComplianceTransactionPredicate' },
+  { name: 'net/nanopay/fx/afex/AFEXComplianceTransactionRule' },
   { name: 'net/nanopay/fx/afex/Token' },
   { name: 'net/nanopay/fx/afex/OnboardCorporateClientRequest' },
   { name: 'net/nanopay/fx/afex/OnboardCorporateClientResponse' },
@@ -346,6 +349,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
   { name: 'net/nanopay/tx/ModifyCicoStatus' },
+  { name: 'net/nanopay/tx/InvoiceFeeLineItem' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -662,9 +666,9 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/passwordutil/PasswordEntropy' },
   { name: 'net/nanopay/auth/passwordutil/PasswordStrengthCalculator' },
 
-  // sme compliance banner
-  { name: 'net/nanopay/sme/ui/banner/ComplianceBanner', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/banner/ComplianceBannerData' },
+  // banner
+  { name: 'net/nanopay/ui/banner/Banner', flags: ['web'] },
+  { name: 'net/nanopay/ui/banner/BannerData' },
 
   // sme dashboard cards
   { name: 'net/nanopay/sme/ui/dashboard/cards/UnlockPaymentsCard', flags: ['web'] },
@@ -770,6 +774,7 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/Contact' },
   { name: 'net/nanopay/contacts/ContactStatus' },
   { name: 'net/nanopay/contacts/ContactMigrationRule' },
+  { name: 'net/nanopay/contacts/ExternalContactToken' },
   { name: 'net/nanopay/contacts/ui/modal/InviteContactModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/ContactWizardModal', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },

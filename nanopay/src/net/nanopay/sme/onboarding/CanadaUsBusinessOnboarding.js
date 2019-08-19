@@ -189,9 +189,10 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficer', 'businessRegistrationNumber'],
+          args: ['signingOfficer', 'businessRegistrationNumber', 'countryOfBusinessFormation'],
           predicateFactory: function(e) {
             return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(
                 foam.mlang.StringLength.create({
