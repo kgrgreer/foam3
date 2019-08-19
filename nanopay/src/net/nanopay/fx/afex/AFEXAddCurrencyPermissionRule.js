@@ -58,7 +58,7 @@ foam.CLASS({
                 try {
                   group.getPermissions(x).add(permission);  
                 } catch(Throwable t) {
-                    logger.error("Error applying AFEXBusinessComplianceTransactionRule.", t);
+                  logger.error("Error adding " + permissionString + " to business " + business.getId(), t);
                   }
                 } 
               }
