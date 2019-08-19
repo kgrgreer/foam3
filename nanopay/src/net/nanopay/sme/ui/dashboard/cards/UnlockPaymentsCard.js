@@ -48,7 +48,7 @@ foam.CLASS({
     ^info-box {
       display: inline-block;
 
-      width: 245px;
+      width: 260px;
       height: 100px;
     }
 
@@ -107,6 +107,10 @@ foam.CLASS({
       message: 'Unlock domestic payments'
     },
     {
+      name: 'TITLE_US_DOMESTIC',
+      message: 'Unlock US and Canadian Payments'
+    },
+    {
       name: 'TITLE_INTERNATIONAL',
       message: 'Unlock international payments'
     },
@@ -115,12 +119,16 @@ foam.CLASS({
       message: 'Complete the requirements and unlock domestic payments'
     },
     {
+      name: 'DESCRIPTION_US_DOMESTIC',
+      message: 'Complete the requirements and unlock domestic and Canadian Payments'
+    },
+    {
       name: 'DESCRIPTION_INTERNATIONAL',
       message: 'We are adding the ability to make FX payments around the world using Ablii. '
     },
     {
       name: 'DESCRIPTION_CAD_INTERNATIONAL',
-      message: 'Complete the requirements and unlock international payments'
+      message: 'Complete the requirements to unlock US payments. More corridors coming soon!'
     },
     {
       name: 'COMPLETE',
@@ -176,8 +184,9 @@ foam.CLASS({
       expression: function(type) {
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return this.TITLE_INTERNATIONAL;
-        }
-        return this.TITLE_DOMESTIC;
+        }       
+        
+        return this.isCanadianBusiness ? this.TITLE_DOMESTIC : this.TITLE_US_DOMESTIC;
       },
       documentation: `
         The title to be used in the card based on card type
@@ -194,7 +203,7 @@ foam.CLASS({
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return this.DESCRIPTION_INTERNATIONAL;
         }
-        return this.DESCRIPTION_DOMESTIC;
+        return this.isCanadianBusiness ? this.DESCRIPTION_DOMESTIC : this.DESCRIPTION_US_DOMESTIC;
       },
       documentation: `
         The description to be used in the card based on card type
@@ -205,7 +214,7 @@ foam.CLASS({
       name: 'isComplete'
     },
     {
-      name: 'hasUSDPermission',
+      name: 'hasFXProvisionPermission',
       value: false
     },
     {
@@ -218,8 +227,8 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.auth.check(null, 'currency.read.USD').then((result) => {
-        this.hasUSDPermission = result;
+      this.auth.check(null, 'fx.provision.payer').then((result) => {
+        this.hasFXProvisionPermission = result;
       });
     },
     function initE() {
@@ -230,14 +239,15 @@ foam.CLASS({
         .start().addClass(this.myClass('info-box'))
           .start('p').addClass(this.myClass('title')).add(this.title).end()
           .start('p').addClass(this.myClass('description')).add(this.info).end()
-          .add(this.slot(function(isComplete, type, hasUSDPermission) {
+          .add(this.slot(function(isComplete, type, hasFXProvisionPermission) {
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && ! this.isCanadianBusiness ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.COMING_SOON).end()
               .end();
             }
 
-            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness && ( ! hasUSDPermission || ! this.user.onboarded ) ) {
+            if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness 
+                && ( ! hasFXProvisionPermission || ! this.user.onboarded ) ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();

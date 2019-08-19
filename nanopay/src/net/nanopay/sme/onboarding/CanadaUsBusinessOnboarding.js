@@ -18,9 +18,11 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.Business',
     'net.nanopay.model.PersonalIdentification',
+    'net.nanopay.sme.onboarding.BusinessOnboarding',
   ],
 
   imports: [
+    'businessOnboardingDAO',
     'countryDAO',
     'ctrl',
   ],
@@ -42,6 +44,7 @@ foam.CLASS({
       name: 'internationalTransactionSection',
       title: 'We need a few information about your buisness and signing officer',
       help: `Thanks! Now let’s get some more details on your US transactions`,
+      isAvailable: function (signingOfficer) { return signingOfficer }
     },
   ],
 
@@ -65,27 +68,6 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.model.Business',
-      name: 'businessId',
-      label: 'Business Name',
-      section: 'adminReferenceSection'
-    },
-    {
-      documentation: 'Creation date.',
-      name: 'created',
-      class: 'DateTime',
-      visibility: 'RO',
-      section: 'adminReferenceSection',
-    },
-    {
-      documentation: 'Last modified date.',
-      name: 'lastModified',
-      class: 'DateTime',
-      visibility: 'RO',
-      section: 'adminReferenceSection',
-    },
-    {
-      class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'userId',
       section: 'adminReferenceSection',
@@ -104,14 +86,41 @@ foam.CLASS({
       }
     },
     {
-      section: 'internationalTransactionSection',
-      class: 'FObjectProperty',
-      name: 'signingOfficerIdentification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
-      factory: function() {
-        return this.PersonalIdentification.create({});
-      },
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'businessId',
+      label: 'Business Name',
+      section: 'adminReferenceSection',
+      postSet: function(_, n) {
+        var m = foam.mlang.Expressions.create();
+        this.businessOnboardingDAO.find(
+          m.AND(
+            m.EQ(this.BusinessOnboarding.USER_ID, this.userId),
+            m.EQ(this.BusinessOnboarding.BUSINESS_ID, this.businessId)
+          )
+        ).then((o) => {
+          this.signingOfficer = o && o.signingOfficer ;
+        });
+      }
+    },
+    {
+      documentation: 'Creation date.',
+      name: 'created',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
+      documentation: 'Last modified date.',
+      name: 'lastModified',
+      class: 'DateTime',
+      visibility: 'RO',
+      section: 'adminReferenceSection',
+    },
+    {
+      class: 'Boolean',
+      name: 'signingOfficer',
+      hidden: true,
     },
     {
       section: 'internationalTransactionSection',
@@ -120,9 +129,10 @@ foam.CLASS({
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
         {
-          args: ['businessFormationDate'],
+          args: ['signingOfficer','businessFormationDate'],
           predicateFactory: function(e) {
             return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
               foam.mlang.predicate.OlderThan.create({
                 arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_FORMATION_DATE,
                 timeMs: 24 * 60 * 60 * 1000
@@ -156,9 +166,10 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['countryOfBusinessFormation'],
+          args: ['signingOfficer', 'countryOfBusinessFormation'],
           predicateFactory: function(e) {
             return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
               e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'US')
             );
@@ -172,9 +183,50 @@ foam.CLASS({
       class: 'String',
       name: 'businessRegistrationNumber',
       label: 'Federal Tax ID Number (EIN) or Business Registration Number',
-      minLength: 1,
-      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number'
+      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number',
+      visibilityExpression: function(countryOfBusinessFormation) {
+        return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'businessRegistrationNumber', 'countryOfBusinessFormation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.COUNTRY_OF_BUSINESS_FORMATION, 'CA'),
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_REGISTRATION_NUMBER
+                }), 9),
+            );
+          },
+          errorString: 'Please enter a valid Federal Tax ID Number (EIN) or Business Registration Number.'
+        }
+      ]
     },
+    {
+      section: 'internationalTransactionSection',
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
+      name: 'agreementAFEX',
+      documentation: 'Verifies if the user has accepted CAD_AFEX_Terms.',
+      docName: 'CAD_AFEX_Terms',
+      label: '',
+      visibilityExpression: function(signingOfficer) {
+        return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'agreementAFEX'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+              e.NEQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.AGREEMENT_AFEX, 0)
+            );
+          },
+          errorString: 'Must acknowledge the AFEX agreement.'
+        }
+      ]
+    }
   ],
 
   methods: [

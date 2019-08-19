@@ -69,11 +69,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'dualPartyAgreement',
-      documentation: 'Verifies if the user is accept the dual-party agreement.',
-    },
-    {
       class: 'Int',
       name: 'countQBO',
       documentation: 'the number of times that this business has synced to QuickBook Online.',
@@ -84,6 +79,15 @@ foam.CLASS({
       name: 'countXero',
       documentation: 'the number of times that this business has synced to Xero.',
       label: 'Sync Count to Xero'
+    },
+    {
+      class: 'StringArray',
+      name: 'businessDirectors',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ArrayView'
+        }
+      }
     }
   ],
 
