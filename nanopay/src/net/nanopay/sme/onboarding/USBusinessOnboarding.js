@@ -706,8 +706,8 @@ foam.CLASS({
       section: 'businessDetailsSection',
       class: 'String',
       name: 'businessRegistrationNumber',
-      label: 'Federal Tax ID Number (EIN) or Business Registration Number',
-      documentation: 'Federal Tax ID Number (EIN) or Business Registration Number',
+      label: 'Federal Tax ID Number (EIN)',
+      documentation: 'Federal Tax ID Number (EIN)',
       visibilityExpression: function(countryOfBusinessFormation) {
         return countryOfBusinessFormation === 'US' ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
@@ -723,7 +723,7 @@ foam.CLASS({
                 }), 9),
             );
           },
-          errorString: 'Please enter a valid Federal Tax ID Number (EIN) or Business Registration Number.'
+          errorString: 'Please enter a valid Federal Tax ID Number (EIN).'
         }
       ]
     },
