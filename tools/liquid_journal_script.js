@@ -327,17 +327,17 @@ var accountTree = [
                 children: [
                   {
                     type: 'Virtual',
-                    name: 'GS13 (EUR)',
+                    name: 'GS13 CASH (EUR)',
                     denomination: 'EUR'
                   },
                   {
                     type: 'Virtual',
-                    name: 'GS13 (JPY)',
+                    name: 'GS13 CASH (JPY)',
                     denomination: 'JPY'
                   },
                   {
                     type: 'Virtual',
-                    name: 'GS13 (USD)',
+                    name: 'GS13 CASH (USD)',
                     denomination: 'USD'
                   }
                 ]
@@ -1048,7 +1048,7 @@ var accountTree = [
                 children: [
                   {
                     type: 'Virtual',
-                    name: 'GS04 (USD)',
+                    name: 'GS04 CASH (USD)',
                     denomination: 'USD'
                   }
                 ]
