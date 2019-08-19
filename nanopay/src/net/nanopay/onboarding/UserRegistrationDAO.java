@@ -44,7 +44,7 @@ public class UserRegistrationDAO
     setDelegate(delegate);
     spid_  = spid;
     group_ = group;
-    tokenDAO_ = (DAO) x.get("tokenDAO");
+    tokenDAO_ = (DAO) x.get("localTokenDAO");
     localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     invitationDAO_ = (DAO) x.get("businessInvitationDAO");
   }
