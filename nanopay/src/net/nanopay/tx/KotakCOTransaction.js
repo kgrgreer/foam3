@@ -97,6 +97,30 @@ foam.CLASS({
       super.limitedCopyFrom(other);
       setAmount(((KotakCOTransaction) other).getAmount());
       `
+    },
+    {
+      name: 'getPurposeCode',
+      type: 'String',
+      javaCode: `
+      for ( TransactionLineItem item : getLineItems() ) {
+        if ( "PurposeCode".equals(item.getName()) ) {
+          return item.getNote();
+        }
+      }
+      return "P1099";
+      `
+    },
+    {
+      name: 'getAccountRelationship',
+      type: 'String',
+      javaCode: `
+      for ( TransactionLineItem item : getLineItems() ) {
+        if ( "AccountRelationship".equals(item.getName()) ) {
+          return item.getNote();
+        }
+      }
+      return "Employee";
+      `
     }
   ]
 });

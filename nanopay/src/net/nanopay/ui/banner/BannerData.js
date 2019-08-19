@@ -1,6 +1,6 @@
 foam.CLASS({
-  package: 'net.nanopay.sme.ui.banner',
-  name: 'ComplianceBannerData',
+  package: 'net.nanopay.ui.banner',
+  name: 'BannerData',
   documentation: 'Data for banner display',
 
   properties: [
@@ -20,15 +20,15 @@ foam.CLASS({
     },
     {
       class: 'foam.core.Enum',
-      of: 'net.nanopay.sme.ui.banner.ComplianceBannerMode',
+      of: 'net.nanopay.ui.banner.BannerMode',
       name: 'mode'
     }
   ]
 });
 
 foam.ENUM({
-  package: 'net.nanopay.sme.ui.banner',
-  name: 'ComplianceBannerMode',
+  package: 'net.nanopay.ui.banner',
+  name: 'BannerMode',
 
   documentation: 'Mode that determines banner color',
 
