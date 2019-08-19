@@ -194,8 +194,8 @@ p({"class":"foam.nanos.ruler.Rule","id":1700,"name":"Reset transaction lastModif
 p({
   "class": "foam.nanos.ruler.Rule",
   "id": 1301,
-  "name": "Update User Domestic Currency Permission",
-  "documentation": "This rule gives user currency.read.COUNTRY_CURRENCY Permission when compliance is passed.",
+  "name": "Update Business Domestic Permissions",
+  "documentation": "This rule gives user currency.read.COUNTRY_CURRENCY and fx.provision.payer Permission when compliance is passed.",
   "priority": 10,
   "ruleGroup": "onboarding",
   "daoKey": "localUserDAO",
@@ -212,7 +212,6 @@ p({
       },
       {
         "class": "net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassed",
-        "strict": true,
         "of": "net.nanopay.model.Business"
       }
     ]

@@ -38,18 +38,18 @@ foam.CLASS({
             Address businessAddress = business.getBusinessAddress();
             
             if ( null != businessAddress && null != businessAddress.getCountryId() ) {
-              String permissionString = "currency.read.";
-              permissionString = businessAddress.getCountryId().equals("CA") ? permissionString + "CAD" : permissionString + "USD";
-              Permission permission = new Permission.Builder(x).setId(permissionString).build();
+              String currencyPermissionString = "currency.read.";
+              currencyPermissionString = businessAddress.getCountryId().equals("CA") ? currencyPermissionString + "CAD" : currencyPermissionString + "USD";
+              Permission currencyPermission = new Permission.Builder(x).setId(currencyPermissionString).build();
               Group group = business.findGroup(x);
               while ( group != null ) {
                 group = (Group) group.findParent(x);
                 if ( group != null && group.getId().contains("employee") ) break;
               }
 
-              if ( null != group && ! group.implies(x, new AuthPermission(permissionString)) ) {
+              if ( null != group && ! group.implies(x, new AuthPermission(currencyPermissionString)) ) {
                 try {
-                  group.getPermissions(x).add(permission);  
+                  group.getPermissions(x).add(currencyPermission);  
                 } catch(Throwable t) {
                     ((Logger) x.get("logger")).error("Error Updating business domestic currency permission.", t);
                 } 
