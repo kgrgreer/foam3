@@ -175,7 +175,9 @@ foam.CLASS({
     {
       name: 'selection',
       class: 'Int',
-      value: 1
+      factory: function(user) {
+        return this.user.address.countryId === 'CA' ? 1 : 2;
+      }
     },
     {
       class: 'Boolean',
@@ -311,7 +313,10 @@ foam.CLASS({
     {
       name: 'currencyOne',
       label: 'Canada',
-      enabledPermissions: ['currency.read.CAD'],
+      isAvailable: function() {
+        console.log(this.user);
+        return this.user.address.countryId === 'CA';
+      },
       code: function() {
         this.selection = 1;
       }
@@ -319,7 +324,9 @@ foam.CLASS({
     {
       name: 'currencyTwo',
       label: 'US',
-      enabledPermissions: ['currency.read.USD'],
+      isAvailable: function() {
+        return this.user.address.countryId === 'US';
+      },
       code: function() {
         this.selection = 2;
       }
