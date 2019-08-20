@@ -185,6 +185,107 @@ var accountTree = [
             children: [
               {
                 type: 'Aggregate', denomination: 'USD',
+                name: 'GS02 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (ARS)',
+                    denomination: 'ARS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (BRL)',
+                    denomination: 'BRL'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (CHF)',
+                    denomination: 'CHF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (CLP)',
+                    denomination: 'CLP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (DEM)',
+                    denomination: 'DEM'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (EGP)',
+                    denomination: 'EGP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (IDR)',
+                    denomination: 'IDR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (KRW)',
+                    denomination: 'KRW'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (MXN)',
+                    denomination: 'MXN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (NLG)',
+                    denomination: 'NLG'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (PEN)',
+                    denomination: 'PEN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (SEK)',
+                    denomination: 'SEK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (TRY)',
+                    denomination: 'TRY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (CAD)',
+                    denomination: 'CAD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS02 SECURITIES (HKD)',
+                    denomination: 'HKD'
+                  },
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
                 name: 'GS02 (CASH)',
                 children: [
                   {
@@ -196,62 +297,35 @@ var accountTree = [
                     type: 'Virtual',
                     name: 'GS02 CASH (USD)',
                     denomination: 'USD'
-                  }
-                ]
-              },
-              {
-                type: 'Aggregate', denomination: 'USD',
-                name: 'GS02 (SECURITIES)',
-                children: [
-                  {
-                    type: 'Virtual',
-                    name: 'GS02 SECURITIES (ARS)',
-                    denomination: 'ARS'
                   },
                   {
                     type: 'Virtual',
-                    name: 'GS02 SECURITIES (CAD)',
-                    denomination: 'CAD'
+                    name: 'GS02 CASH (CHF)',
+                    denomination: 'CHF'
                   },
                   {
                     type: 'Virtual',
-                    name: 'GS02 SECURITIES (JPY)',
-                    denomination: 'JPY'
+                    name: 'GS02 CASH (EUR)',
+                    denomination: 'EUR'
                   },
                   {
                     type: 'Virtual',
-                    name: 'GS02 SECURITIES (PEN)',
-                    denomination: 'PEN'
+                    name: 'GS02 CASH (TRY)',
+                    denomination: 'TRY'
                   },
                   {
                     type: 'Virtual',
-                    name: 'GS02 SECURITIES (USD)',
-                    denomination: 'USD'
+                    name: 'GS02 CASH (HKD)',
+                    denomination: 'HKD'
                   },
                 ]
-              },
+              }
             ]
           },
           {
             type: 'Aggregate', denomination: 'USD',
             name: 'GS03',
             children: [
-              {
-                type: 'Aggregate', denomination: 'USD',
-                name: 'GS03 (CASH)',
-                children: [
-                  {
-                    type: 'Virtual',
-                    name: 'GS03 CASH (CNY)',
-                    denomination: 'CNY'
-                  },
-                  {
-                    type: 'Virtual',
-                    name: 'GS03 CASH (HKD)',
-                    denomination: 'HKD'
-                  }
-                ]
-              },
               {
                 type: 'Aggregate', denomination: 'USD',
                 name: 'GS03 (SECURITIES)',
@@ -268,6 +342,27 @@ var accountTree = [
                   }
                 ]
               },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS03 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS03 CASH (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS03 CASH (HKD)',
+                    denomination: 'HKD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS03 CASH (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              }
             ]
           },
           {
@@ -276,26 +371,246 @@ var accountTree = [
             children: [
               {
                 type: 'Aggregate', denomination: 'USD',
-                name: 'GS10 (CASH)',
+                name: 'GS10 (SECURITIES)',
                 children: [
                   {
                     type: 'Virtual',
-                    name: 'GS10 CASH (JPY)',
+                    name: 'GS10 SECURITIES (AUD)',
+                    denomination: 'AUD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (ARS)',
+                    denomination: 'ARS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (BRL)',
+                    denomination: 'BRL'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (CAD)',
+                    denomination: 'CAD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (CHF)',
+                    denomination: 'CHF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (CZK)',
+                    denomination: 'CZK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (DKK)',
+                    denomination: 'DKK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (HKD)',
+                    denomination: 'HKD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (HUF)',
+                    denomination: 'HUF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (ILS)',
+                    denomination: 'ILS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (JPY)',
                     denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (KRW)',
+                    denomination: 'KRW'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (MXN)',
+                    denomination: 'MXN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (NLG)',
+                    denomination: 'NLG'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (NOK)',
+                    denomination: 'NOK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (NZD)',
+                    denomination: 'NZD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (PEN)',
+                    denomination: 'PEN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (PLN)',
+                    denomination: 'PLN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (RUB)',
+                    denomination: 'RUB'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (SEK)',
+                    denomination: 'SEK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (SGD)',
+                    denomination: 'SGD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (THB)',
+                    denomination: 'THB'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (ZAR)',
+                    denomination: 'ZAR'
                   }
                 ]
               },
               {
                 type: 'Aggregate', denomination: 'USD',
-                name: 'GS10 (SECURITIES)',
+                name: 'GS10 (CASH)',
                 children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (AUD)',
+                    denomination: 'AUD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (BRL)',
+                    denomination: 'BRL'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (CAD)',
+                    denomination: 'CAD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (CHF)',
+                    denomination: 'CHF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (GBP)',
+                    denomination: 'GBP'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (HKD)',
+                    denomination: 'HKD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (HUF)',
+                    denomination: 'HUF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (ILS)',
+                    denomination: 'ILS'
+                  },
                   {
                     type: 'Virtual',
                     name: 'GS10 SECURITIES (JPY)',
                     denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (MXN)',
+                    denomination: 'MXN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (ILS)',
+                    denomination: 'ILS'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (PLN)',
+                    denomination: 'PLN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (RUB)',
+                    denomination: 'RUB'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (TRY)',
+                    denomination: 'TRY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (CZK)',
+                    denomination: 'CZK'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS10 SECURITIES (THB)',
+                    denomination: 'THB'
                   }
                 ]
-              },
+              }
             ]
           },
           {
@@ -312,6 +627,27 @@ var accountTree = [
                     name: 'GS11 SECURITIES (JPY)',
                     denomination: 'JPY'
                   },
+                  {
+                    type: 'Virtual',
+                    name: 'GS11 SECURITIES (EUR)',
+                    denomination: 'EUR'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS11 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS11 SECURITIES (EUR)',
+                    denomination: 'EUR'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS11 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  }
                 ]
               }
             ]
@@ -321,6 +657,32 @@ var accountTree = [
             denomination: 'USD',
             name: 'GS13',
             children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS13 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS13 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS13 SECURITIES (MXN)',
+                    denomination: 'MXN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS13 SECURITIES (MXV)',
+                    denomination: 'MXV'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS13 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  }
+                ]
+              },
               {
                 type: 'Aggregate', denomination: 'USD',
                 name: 'GS13 (CASH)',
@@ -339,9 +701,14 @@ var accountTree = [
                     type: 'Virtual',
                     name: 'GS13 CASH (USD)',
                     denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS13 CASH (MXN)',
+                    denomination: 'MXN'
                   }
                 ]
-              },
+              }
             ]
           },
         ]
