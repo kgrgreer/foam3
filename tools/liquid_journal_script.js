@@ -1367,11 +1367,13 @@ var accountTree = [
             ]
           },
           {
-            type: 'Aggregate', denomination: 'USD',
+            type: 'Aggregate',
+            denomination: 'USD',
             name: 'GS12',
             children: [
               {
-                type: 'Aggregate', denomination: 'USD',
+                type: 'Aggregate',
+                denomination: 'USD',
                 name: 'GS12 (CASH)',
                 children: [
                   {
@@ -1387,7 +1389,8 @@ var accountTree = [
                 ]
               },
               {
-                type: 'Aggregate', denomination: 'USD',
+                type: 'Aggregate',
+                denomination: 'USD',
                 name: 'GS12 (SECURITIES)',
                 children: [
                   {
@@ -1402,15 +1405,30 @@ var accountTree = [
         ]
       },
       {
-        type: 'Aggregate', denomination: 'USD',
-        name: 'Goldman Sachs CO',
+        type: 'Aggregate',
+        denomination: 'USD',
+        name: 'Goldman Sachs CO (NA)',
         children: [
           {
-            type: 'Aggregate', denomination: 'USD',
+            type: 'Aggregate',
+            denomination: 'USD',
             name: 'GS04',
             children: [
               {
-                type: 'Aggregate', denomination: 'USD',
+                type: 'Aggregate',
+                denomination: 'USD',
+                name: 'GS04 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS04 SECURITIES (BRL)',
+                    denomination: 'BRL'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate',
+                denomination: 'USD',
                 name: 'GS04 (CASH)',
                 children: [
                   {
@@ -1419,7 +1437,7 @@ var accountTree = [
                     denomination: 'USD'
                   }
                 ]
-              },
+              }
             ]
           },
           {
@@ -1432,13 +1450,99 @@ var accountTree = [
                 children: [
                   {
                     type: 'Virtual',
-                    name: 'GS14 SECURITY (MXN)',
+                    name: 'GS14 SECURITIES (MXN)',
                     denomination: 'MXN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS14 SECURITIES (USD)',
+                    denomination: 'USD'
                   }
                 ]
               },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS14 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS14 SECURITIES (AUD)',
+                    denomination: 'AUD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS14 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS14 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  }
+                ]
+              }
             ]
-          }
+          },
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS15',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS15 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS15 SECURITIES (JPY)',
+                    denomination: 'JPY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS15 SECURITIES (USD)',
+                    denomination: 'USD'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            type: 'Aggregate', denomination: 'USD',
+            name: 'GS16',
+            children: [
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS16 (SECURITIES)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS16 SECURITIES (MXN)',
+                    denomination: 'MXN'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS16 SECURITIES (MXV)',
+                    denomination: 'MXV'
+                  }
+                ]
+              },
+              {
+                type: 'Aggregate', denomination: 'USD',
+                name: 'GS16 (CASH)',
+                children: [
+                  {
+                    type: 'Virtual',
+                    name: 'GS16 SECURITIES (USD)',
+                    denomination: 'USD'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS16 SECURITIES (MXN)',
+                    denomination: 'MXN'
+                  }
+                ]
+              }
+            ]
+          },
         ]
       }
     ],
