@@ -26,6 +26,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.dashboard.DashboardBorder',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
+    'net.nanopay.sme.onboarding.USBusinessOnboarding',
     'net.nanopay.sme.ui.dashboard.RequireActionView'
   ],
 
@@ -42,6 +43,7 @@ foam.CLASS({
     'pushMenu',
     'stack',
     'quickbooksService',
+    'uSBusinessOnboardingDAO',
     'user',
     'userDAO',
     'xeroService'
@@ -235,6 +237,11 @@ foam.CLASS({
         this.AND(
           this.EQ(this.BusinessOnboarding.USER_ID, this.agent.id),
           this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
+        )
+      ) || await this.uSBusinessOnboardingDAO.find(
+        this.AND(
+          this.EQ(this.USBusinessOnboarding.USER_ID, this.agent.id),
+          this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );
       this.onboardingStatus = this.user.onboarded;

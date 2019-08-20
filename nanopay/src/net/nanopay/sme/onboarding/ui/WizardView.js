@@ -2,6 +2,11 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
+
+  imports: [
+    'userDAO'
+  ],
+
   css: `
     ^ {
       display: flex;
@@ -162,7 +167,9 @@ foam.CLASS({
       mergeDelay: 2000,
       code: function() {
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data.clone().copyFrom({ status: 'DRAFT' }));
+        dao.put(this.data);  // dao.put(this.data.clone().copyFrom({ status: 'DRAFT' })); the default value is DRAFT anyways
+        // saveDraft was putting onboarding data into onboardingdaos for a second time after submit is executed
+        // so all the entries in onboardingDAOs had the status DRAFT whether or not they were actually drafts
       }
     }
   ],
@@ -178,10 +185,9 @@ foam.CLASS({
         var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
           put(this.data.clone().copyFrom({ status: 'SUBMITTED' })).
-          then(function() {
-            // TODO: Instead of manually setting to true, we should pull the latest
-            // user from the userDAO.
-            x.user.onboarded = true;
+          then(async function() {
+            let user = await x.userDAO.find( x.user.id);
+            if ( user ) x.user.onboarded = user.onboarded;
             x.ctrl.notify('Business profile complete.');
             x.stack.back();
           }, function(err) {
