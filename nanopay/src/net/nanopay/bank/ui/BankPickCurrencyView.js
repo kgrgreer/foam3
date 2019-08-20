@@ -314,7 +314,6 @@ foam.CLASS({
       name: 'currencyOne',
       label: 'Canada',
       isAvailable: function() {
-        console.log(this.user);
         return this.user.address.countryId === 'CA';
       },
       code: function() {
