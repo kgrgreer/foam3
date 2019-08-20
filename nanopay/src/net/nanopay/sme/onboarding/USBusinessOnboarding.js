@@ -377,6 +377,19 @@ foam.CLASS({
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
+      validationPredicates: [
+        {
+          args: ['signingOfficerIdentification', 'signingOfficerIdentification$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER_IDENTIFICATION
+              }), true)
+            );
+          },
+          errorString: 'Invalid identification.'
+        }
+      ]
     },
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'personalInformationSection',

@@ -7,7 +7,8 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Country',
-    'net.nanopay.model.PersonalIdentification'
+    'net.nanopay.model.PersonalIdentification',
+    'foam.u2.detail.SectionedDetailPropertyView'
   ],
 
   implements: [
@@ -71,71 +72,49 @@ foam.CLASS({
         .addClass(this.myClass())
         .start()
           .addClass('label-input')
-          .start()
-            .addClass('label')
-            .add(this.ID_LABEL)
-          .end()
-          .tag(this.PersonalIdentification.IDENTIFICATION_TYPE_ID, { placeholder: '- Please Select -' })
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.PersonalIdentification.IDENTIFICATION_TYPE_ID
+          })
         .end()
         .start()
           .addClass('label-input')
-          .start()
-            .addClass('label')
-            .add(this.IDENTIFICATION_NUMBER_LABEL)
-          .end()
-          .tag(this.PersonalIdentification.IDENTIFICATION_NUMBER)
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.PersonalIdentification.IDENTIFICATION_NUMBER
+          })
         .end()
         .start()
           .addClass('label-input-half')
           .enableClass('changingField', this.isPassport$)
-          .start()
-            .addClass('label')
-            .add(this.COUNTRY_OF_ISSUE_LABEL)
-          .end()
-            .add(this.data.identificationTypeId$.map((identificationType) => {
-              return this.E()
-                .tag(this.data.COUNTRY_ID.clone().copyFrom({
-                  view: {
-                    class: 'foam.u2.view.ChoiceView',
-                    placeholder: '- Please select -',
-                    dao: this.countryDAO.where(this.data.OR(
-                      this.data.EQ(this.Country.NAME, 'Canada'),
-                      this.data.EQ(this.Country.NAME, 'USA')
-                    )),
-                    objToChoice: function(a) {
-                      return [a.id, a.name];
-                    }
-                  }
-                }));
-            }))
-          .endContext()
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.PersonalIdentification.COUNTRY_ID
+          })
         .end()
         .start()
           .hide(this.isPassport$)
           .addClass('label-input-half')
           .addClass('float-right')
-          .start()
-            .addClass('label')
-            .add(this.REGION_OF_ISSUE_LABEL)
-          .end()
-          .tag(this.PersonalIdentification.REGION_ID)
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.PersonalIdentification.REGION_ID
+          })
         .end()
         .start()
           .addClass('label-input-half')
-          .start()
-            .addClass('label')
-            .add(this.DATE_ISSUED_LABEL)
-          .end()
-          .tag(this.PersonalIdentification.ISSUE_DATE)
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.PersonalIdentification.ISSUE_DATE
+          })
         .end()
         .start()
           .addClass('label-input-half')
           .addClass('float-right')
-          .start()
-            .addClass('label')
-            .add(this.EXPIRE_LABEL)
-          .end()
-          .tag(this.PersonalIdentification.EXPIRATION_DATE)
+          .tag(this.SectionedDetailPropertyView, {
+            data$: this.data$,
+            prop: this.PersonalIdentification.EXPIRATION_DATE
+          })
         .end();
     }
   ]
