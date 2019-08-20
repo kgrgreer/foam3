@@ -464,7 +464,7 @@ foam.CLASS({
                           return this.sourceCurrency.format(amount);
                         }
                       }),
-                      this.exchangeRateNotice$.map((value) => value ? '*' : '')
+                      this.isFx$.map((value) => value ? '*' : '')
                     )
                   .end()
                 .end();
