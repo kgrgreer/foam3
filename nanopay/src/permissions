@@ -525,3 +525,6 @@ p({"class":"foam.nanos.auth.Permission","id":"currency.read.XPD","description":"
 p({"class":"foam.nanos.auth.Permission","id":"currency.read.XPT","description":"Permission to create invoices, transactions, bank accounts, and contacts in the XPT currency."})
 p({"class":"foam.nanos.auth.Permission","id":"currency.read.XSU","description":"Permission to create invoices, transactions, bank accounts, and contacts in the XSU currency."})
 p({"class":"foam.nanos.auth.Permission","id":"currency.read.XUA","description":"Permission to create invoices, transactions, bank accounts, and contacts in the XUA currency."})
+p({"class":"foam.nanos.auth.Permission","id":"currency.read.NLG","description":"Permission to create invoices, transactions, bank accounts, and contacts in the NLG currency."})
+p({"class":"foam.nanos.auth.Permission","id":"currency.read.DEM","description":"Permission to create invoices, transactions, bank accounts, and contacts in the DEM currency."})
+p({"class":"foam.nanos.auth.Permission","id":"currency.read.CNH","description":"Permission to create invoices, transactions, bank accounts, and contacts in the CNH currency."})
