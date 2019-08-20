@@ -41,58 +41,11 @@ global.FOAM_ROOT = oldRoot;
       country
     }
  */
-var newCurrencies = [
-  {
-    name: "Yuan Renminbi",
-    alphabeticCode: "CNY",
-    numericCode: 156,
-    precision: 2,
-    colour: "#382D43",
-    leftOrRight: "left",
-    symbol: "¥",
-    delimiter: ",",
-    decimalCharacter: ".",
-    showSpace: false
-  },
-  {
-    name: "Hong Kong Dollar",
-    alphabeticCode: "HKD",
-    numericCode: 344,
-    precision: 2,
-    colour: "#2E89E6",
-    leftOrRight: "left",
-    symbol: "$",
-    delimiter: ",",
-    decimalCharacter: ".",
-    showSpace: false
-  },
-  {
-    name: "Yen",
-    alphabeticCode: "JPY",
-    numericCode: 392,
-    precision: 0,
-    colour: "#AB7439",
-    leftOrRight: "left",
-    symbol: "¥",
-    delimiter: ",",
-    decimalCharacter: ".",
-    showSpace: false
-  },
-  {
-    name: "Mexican Peso",
-    alphabeticCode: "MXN",
-    numericCode: 484,
-    precision: 2,
-    colour: "#9C7920",
-    leftOrRight: "left",
-    symbol: "$",
-    delimiter: ",",
-    decimalCharacter: ".",
-    showSpace: false
-  }
-
-];
+var newCurrencies = [];
 var newTrustAccountDenominations = ['USD', 'CNY', 'HKD', 'JPY', 'MXN'];
+
+// what number the account IDs should start up
+var startAccountIds = 1000;
 
 // can enter banks with new currencies just by typing the denomination ('alphabetic code')
 var accountTree = [
@@ -2001,6 +1954,12 @@ function* referenceIdMaker() {
     yield index++;
 }
 
+function seedIdIterator(start) {
+  for ( var i = 0; i < start; i++){
+    foam.next$UID();
+  }
+}
+
 const refIdGenerator = referenceIdMaker();
 
 function createCurrency(X, cObj) {
@@ -2276,6 +2235,8 @@ function cashOut(X, source, bank, amount) {
 }
 
 function main() {
+  seedIdIterator(startAccountIds);
+
   var currentDate = new Date();
   currentDate.setFullYear(currentDate.getFullYear() - 5);
 
