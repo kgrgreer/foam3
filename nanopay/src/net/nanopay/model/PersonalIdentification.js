@@ -59,7 +59,7 @@ foam.CLASS({
       name: 'countryId',
       label: 'Country of Issue',
       of: 'foam.nanos.auth.Country',
-      gridColumns: 6,
+      gridColumns: 12,
       documentation: `Country where identification was issued.`,
       validateObj: function(countryId) {
         if ( ! countryId ) {
@@ -82,7 +82,7 @@ foam.CLASS({
       name: 'regionId',
       of: 'foam.nanos.auth.Region',
       label: 'Province/State of Issue',
-      gridColumns: 6,
+      gridColumns: 12,
       documentation: `Region where identification was isssued.`,
       view: function(_, X) {
         var choices = X.data.slot(function(countryId) {
@@ -120,7 +120,6 @@ foam.CLASS({
       name: 'expirationDate',
       label: 'Expiry Date',
       gridColumns: 6,
-      width: 160,
       documentation: `Date identification expires.`,
       validateObj: function(expirationDate) {
         if ( ! expirationDate ) {

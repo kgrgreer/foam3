@@ -67,6 +67,13 @@ foam.CLASS({
     ^ .foam-u2-view-RadioView-horizontal-radio {
       margin-top: 10px;
     }
+    ^ .inner-card {
+      padding: 15px 0px;
+    }
+    ^ .foam-u2-borders-CardBorder {
+      box-shadow: none;
+      border: none;
+    }
   `,
   properties: [
     {

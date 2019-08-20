@@ -370,7 +370,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'signingOfficerIdentification',
       of: 'net.nanopay.model.PersonalIdentification',
-      // view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
       factory: function() {
         return this.PersonalIdentification.create({});
       },
