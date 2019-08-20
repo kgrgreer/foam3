@@ -355,6 +355,13 @@ foam.CLASS({
                     withoutCountrySelection: true
                   }
                 }))
+                .startContext({ data: this.wizard })
+                  .start()
+                    .hide(this.isEdit)
+                    .addClass(this.myClass('invite'))
+                    .add(this.wizard.SHOULD_INVITE)
+                  .end()
+                .endContext()
               .endContext();
           }
         }))
