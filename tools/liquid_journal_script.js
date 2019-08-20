@@ -1779,7 +1779,7 @@ var accountTree = [
                   {
                     type: 'Virtual',
                     name: 'GS09 CASH (CZK)',
-                    denomination: 'CZK '
+                    denomination: 'CZK'
                   }
                 ]
               },
