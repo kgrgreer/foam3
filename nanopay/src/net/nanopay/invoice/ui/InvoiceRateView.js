@@ -174,7 +174,7 @@ foam.CLASS({
       name: 'isFx',
       expression: function(chosenBankAccount, invoice$destinationCurrency) {
         return chosenBankAccount != null &&
-          invoice$destinationCurrency !== chosenBankAccount.denomination;
+          ! (invoice$destinationCurrency == chosenBankAccount.denomination && chosenBankAccount.denomination === 'CAD');
       }
     },
     {
@@ -247,7 +247,7 @@ foam.CLASS({
       if ( this.chosenBankAccount && ! this.sourceCurrency ) {
         this.setSourceCurrency();
       }
-      if ( this.quotePassedIn && this.quote != null ) {
+      if ( this.quotePassedIn && this.quote != null && this.isFx ) {
         clearTimeout(this.refreshIntervalId);
         this.getExpiryTime(new Date(), this.quote.fxExpiry);
         this.updateQuote(this);
@@ -393,14 +393,12 @@ foam.CLASS({
                     .end()
                     .start()
                       .addClass('float-right')
-                      .add(this.slot(function(sourceCurrency) {
-                        if ( sourceCurrency && this.quote && this.quote.amount ) {
-                          return sourceCurrency.format(this.quote.amount);
+                      .add(this.slot(function(sourceCurrency, quote) {
+                        if ( sourceCurrency && quote && quote.amount ) {
+                          return sourceCurrency.format(quote.amount);
                         }
                         return '(-)';
                       }),
-                        ' ',
-                        this.quote$.dot('sourceCurrency'),
                         this.exchangeRateNotice$.map((value) => value ? '*' : '')
                       )
                     .end()
@@ -413,10 +411,10 @@ foam.CLASS({
                     .start()
                       .addClass('float-right')
                       .add(
-                        this.slot( function(quote$fxFees$totalFees, sourceCurrency) {
+                        this.slot( function(quote, sourceCurrency) {
                           if ( ! sourceCurrency ) return;
-                          return quote$fxFees$totalFees ?
-                            sourceCurrency.format(quote$fxFees$totalFees) + ' ' + sourceCurrency.alphabeticCode:
+                          return quote.getCost() ?
+                            sourceCurrency.format(quote.getCost()):
                             sourceCurrency.format(0);
                         })
                       )
@@ -466,7 +464,7 @@ foam.CLASS({
                           return this.sourceCurrency.format(amount);
                         }
                       }),
-                      this.exchangeRateNotice$.map((value) => value ? '*' : '')
+                      this.isFx$.map((value) => value ? '*' : '')
                     )
                   .end()
                 .end();
@@ -498,6 +496,7 @@ foam.CLASS({
       return quote.plan;
     },
     async function getFXQuote() {
+
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,
         destinationAccount: this.invoice.destinationAccount,

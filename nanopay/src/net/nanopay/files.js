@@ -97,6 +97,8 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
+  { name: 'net/nanopay/model/DateOnly' },
+  { name: 'net/nanopay/model/DateOnlyView' },
   { name: 'net/nanopay/model/Currency' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
@@ -347,7 +349,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/GenericCIPlanner' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
   { name: 'net/nanopay/tx/ModifyCicoStatus' },
-  { name: 'net/nanopay/tx/InvoiceFeeLineItem' },
+  { name: 'net/nanopay/tx/InvoicedFeeLineItem' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -451,8 +453,10 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/history/InviteAttemptsHistoryItemView', flags: ['web'] },
 
   { name: 'net/nanopay/plaid/ClientPlaidService' },
+  { name: 'net/nanopay/plaid/PlaidResponseItem' },
   { name: 'net/nanopay/plaid/model/PlaidAccountDetail' },
   { name: 'net/nanopay/plaid/model/PlaidBalances' },
+  { name: 'net/nanopay/plaid/model/PlaidItem' },
   { name: 'net/nanopay/plaid/model/ACH' },
   { name: 'net/nanopay/plaid/model/EFT' },
   { name: 'net/nanopay/plaid/PlaidResultReport' },

@@ -42,7 +42,7 @@ foam.CLASS({
     },
     {
       name: 'internationalTransactionSection',
-      title: 'We need a few information about your buisness and signing officer',
+      title: 'We need some more information about your business.',
       help: `Thanks! Now let’s get some more details on your US transactions`,
       isAvailable: function (signingOfficer) { return signingOfficer }
     },
@@ -122,27 +122,26 @@ foam.CLASS({
       name: 'signingOfficer',
       hidden: true,
     },
-    {
+    foam.nanos.auth.User.BUSINESS_REGISTRATION_DATE_TWO.clone().copyFrom({
       section: 'internationalTransactionSection',
-      class: 'Date',
-      name: 'businessFormationDate',
       documentation: 'Date of Business Formation or Incorporation.',
-      validationPredicates: [
-        {
-          args: ['signingOfficer','businessFormationDate'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
-              foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_FORMATION_DATE,
-                timeMs: 24 * 60 * 60 * 1000
-              })
-            );
-          },
-          errorString: 'Must be at least a before now.'
-        }
-      ]
-    },   
+      // TODO ANNA: fix validation of age mlang
+      // validationPredicates: [
+      //   {
+      //     args: ['signingOfficer','businessFormationDate'],
+      //     predicateFactory: function(e) {
+      //       return e.OR(
+      //         e.EQ(net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.SIGNING_OFFICER, false),
+      //         foam.mlang.predicate.OlderThan.create({
+      //           arg1: net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding.BUSINESS_FORMATION_DATE,
+      //           timeMs: 24 * 60 * 60 * 1000
+      //         })
+      //       );
+      //     },
+      //     errorString: 'Must be at least a before now.'
+      //   }
+      // ]
+    }),
     {
       section: 'internationalTransactionSection',
       class: 'Reference',
@@ -156,8 +155,7 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           placeholder: '- Please select -',
           dao: X.countryDAO.where(m.OR(
-            m.EQ(foam.nanos.auth.Country.NAME, 'Canada'),
-            m.EQ(foam.nanos.auth.Country.NAME, 'USA')
+            m.EQ(foam.nanos.auth.Country.ID, 'CA')
           )),
           objToChoice: function(a) {
             return [a.id, a.name];

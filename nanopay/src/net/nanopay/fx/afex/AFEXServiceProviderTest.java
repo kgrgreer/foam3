@@ -107,7 +107,7 @@ public class AFEXServiceProviderTest
       user1.setOrganization("Test Company");
       user1.setBusinessName("Test Company");
       user1.setLanguage("en");
-      user1.setBirthday(new Date());
+      user1.setBirthdayTwo(new net.nanopay.model.DateOnly());
       user1.setBusinessAddress(businessAddress);
       user1.setAddress(businessAddress);
       user1.setEnabled(true);
@@ -128,7 +128,7 @@ public class AFEXServiceProviderTest
       business.setOnboarded(true);
       business.setCompliance(ComplianceStatus.PASSED);
       business.setBusinessPhone(phone);
-      business.setBusinessRegistrationDate(new Date());
+      business.setBusinessRegistrationDateTwo(new net.nanopay.model.DateOnly());
       business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
       suggestedUserTransactionInfo.setBaseCurrency("CAD");
@@ -142,9 +142,7 @@ public class AFEXServiceProviderTest
       }
       Group group = (Group) ((DAO) x.get("localGroupDAO")).find(business.getGroup());
       Permission newPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
-      Permission currencyPermission = new Permission.Builder(x).setId("currency.read.USD").build();
       group.getPermissions(x).add(newPermission);
-      group.getPermissions(x).add(currencyPermission);
       business.getSigningOfficers(x).add(user1);
 
     } else {

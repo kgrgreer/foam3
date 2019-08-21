@@ -131,7 +131,13 @@ var classes = [
   'net.nanopay.fx.afex.AFEXTransactionPlanDAO',
   'net.nanopay.fx.afex.AFEXBMOTransactionPlanDAO',
   'net.nanopay.fx.afex.AFEX',
+  'net.nanopay.fx.afex.AFEXAddCurrencyPermissionRule',
   'net.nanopay.fx.afex.AFEXBusiness',
+  'net.nanopay.fx.afex.AFEXBusinessCreatedPredicate',
+  'net.nanopay.fx.afex.AFEXBusinessDisabledPredicate',
+  'net.nanopay.fx.afex.AFEXRemoveCurrencyPermissionRule',
+  'net.nanopay.fx.afex.AFEXBusinessCreatedNotificationRule',
+  'net.nanopay.fx.afex.AFEXCoridorEnabledNotificationRule',
   'net.nanopay.fx.afex.AFEXCredentials',
   'net.nanopay.fx.afex.AFEXBeneficiary',
   'net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction',
@@ -298,7 +304,7 @@ var classes = [
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.FeeLineItem',
-  'net.nanopay.tx.InvoiceFeeLineItem',
+  'net.nanopay.tx.InvoicedFeeLineItem',
   'net.nanopay.tx.ExpediteCICOApprovalRequest',
   'net.nanopay.tx.ExpenseLineItem',
   'net.nanopay.tx.ServiceLineItem',
@@ -599,6 +605,8 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassedOrFailed',
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
   'net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule',
+  'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassed',
+  'net.nanopay.meter.compliance.ruler.UpdateBusinessPermissions',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',
@@ -729,6 +737,7 @@ var classes = [
   'net.nanopay.alarming.AlarmAndMonitoring',
   'net.nanopay.alarming.Alarming',
 
+  'net.nanopay.model.DateOnly',
 ];
 
 var abstractClasses = [

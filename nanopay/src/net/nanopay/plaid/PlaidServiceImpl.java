@@ -52,12 +52,14 @@ public class PlaidServiceImpl implements PlaidService {
    * @param publicToken public token we get from front-end
    */
   @Override
-  public PlaidError startIntegration(X x, PlaidPublicToken publicToken) throws IOException {
+  public PlaidResponseItem startIntegration(X x, PlaidPublicToken publicToken) throws IOException {
     Long   userId          = publicToken.getUserId();
     String institutionId   = publicToken.getInstitutionId();
     Map    selectedAccount = publicToken.getSelectedAccount();
     Logger logger          = (Logger) x.get("logger");
-
+    PlaidResponseItem responseItem = new PlaidResponseItem();
+    responseItem.setUserId(userId);
+    responseItem.setInstitutionId(institutionId);
     PlaidError error = null;
     logger.info(userId + " start plaid integration.");
 
@@ -65,7 +67,8 @@ public class PlaidServiceImpl implements PlaidService {
 
       exchangeForAccessToken        (x, publicToken);
       fetchAccountsDetail           (x, userId, institutionId);
-      importSelectedAccountToSystem (x, userId, institutionId, selectedAccount);
+      importSelectedAccountToSystem (x, userId, institutionId, selectedAccount, responseItem);
+      return responseItem;
 
     } catch ( PlaidException e ) {
 
@@ -83,8 +86,8 @@ public class PlaidServiceImpl implements PlaidService {
       logger.error(userId + " " + e.getMessage());
       throw e;
     }
-
-    return error;
+    responseItem.setPlaidError(error);
+    return responseItem;
   }
 
 
@@ -229,7 +232,7 @@ public class PlaidServiceImpl implements PlaidService {
    *                        Key is the account mask, value is account name
    */
   @Override
-  public void importSelectedAccountToSystem(X x, long userId, String plaidInstitutionId, Map selectedAccount) throws IOException {
+  public void importSelectedAccountToSystem(X x, long userId, String plaidInstitutionId, Map selectedAccount, PlaidResponseItem responseItem) throws IOException {
     DAO plaidAccountDetailDAO = (DAO) x.get("plaidAccountDetailDAO");
     DAO accountDAO            = (DAO) x.get("localAccountDAO");
     PlaidItem
@@ -247,7 +250,7 @@ public class PlaidServiceImpl implements PlaidService {
           selectedAccount.get(accountDetail.getMask()).equals(accountDetail.getName())
       ).collect(Collectors.toList());
 
-
+    responseItem.setPlaidItem(plaidItem);
     for (PlaidAccountDetail accountDetail : accountDetails) {
 
       Institution institution =
@@ -258,8 +261,8 @@ public class PlaidServiceImpl implements PlaidService {
       }
 
       if (accountDetail.getACH() != null) {
-        BankAccount account = (BankAccount) accountDAO.inX(x).put(
-          new USBankAccount.Builder(x)
+        responseItem.setAccountDetail(accountDetail);
+        responseItem.setAccount(new USBankAccount.Builder(x)
             .setBranchId      (accountDetail.getACH().getRouting())
             .setWireRouting   (accountDetail.getACH().getWireRouting())
             .setAccountNumber (accountDetail.getACH().getAccount())
@@ -271,10 +274,38 @@ public class PlaidServiceImpl implements PlaidService {
             .setInstitution   (institution.getId())
             .build());
 
-        // create a report for each imported bank account
-        createReport(x, accountDetail, account.getId(), plaidItem);
       }
     }
+  }
+
+  public PlaidResponseItem saveAccount(X x, PlaidResponseItem plaidResponseItem) throws IOException{
+    DAO accountDAO            = (DAO) x.get("localAccountDAO");
+    PlaidResponseItem responseItem = new PlaidResponseItem();
+    PlaidError error = null;
+    Logger logger          = (Logger) x.get("logger");
+
+    try {
+      USBankAccount account = (USBankAccount) accountDAO.put(plaidResponseItem.getAccount());
+      createReport(x, plaidResponseItem.getAccountDetail(),account.getId(), plaidResponseItem.getPlaidItem());
+      return responseItem;
+    } catch ( PlaidException e ) {
+
+      try {
+        error =
+          (PlaidError) jsonParser.parseString(e.getErrorBody(), PlaidError.class);
+        PlaidItem item = findItemBy(x, plaidResponseItem.getUserId(), plaidResponseItem.getInstitutionId());
+        new PlaidErrorHandler(x, item.getItemId()).handleError(error);
+        logger.error(plaidResponseItem.getUserId() + " " + error);
+      } catch ( Exception e2 ) {
+        throw e2;
+      }
+
+    } catch ( Exception e ) {
+      logger.error(plaidResponseItem.getUserId() + " " + e.getMessage());
+      throw e;
+    }
+    responseItem.setPlaidError(error);
+    return responseItem;
   }
 
   public PlaidResultReport createReport(X x, PlaidAccountDetail accountDetail, Long nanopayAccountId, PlaidItem plaidItem) throws IOException {

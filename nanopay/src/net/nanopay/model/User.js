@@ -43,6 +43,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'net.nanopay.model.DateOnlyProperty',
+      name: 'birthdayTwo',
+      label: 'Birthday'
+    },
+    {
       class: 'Reference',
       targetDAOKey: 'businessTypeDAO',
       name: 'businessTypeId',
@@ -252,6 +257,12 @@ foam.CLASS({
       of: 'foam.nanos.auth.Country',
       name: 'countryOfBusinessRegistration',
       documentation: `Country where business was registered.`,
+    },
+    {
+      class: 'net.nanopay.model.DateOnlyProperty',
+      name: 'businessRegistrationDateTwo',
+      label: 'Business Registration Date',
+      documentation: 'The date that the business was registered by their issuing authority.'
     },
     {
       class: 'Date',

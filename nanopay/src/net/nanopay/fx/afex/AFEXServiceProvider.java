@@ -77,22 +77,22 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
         AuthService auth = (AuthService) this.x.get("auth");
         boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
-        boolean hasCurrencyReadUSDPermission = auth.checkUser(this.x, business, "currency.read.USD");
-        if ( hasFXProvisionPayerPermission && hasCurrencyReadUSDPermission) {
+        if ( hasFXProvisionPayerPermission) {
           OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
           User signingOfficer = getSigningOfficer(this.x, business);
           Region businessRegion = business.getAddress().findRegionId(this.x);
           Country businessCountry = business.getAddress().findCountryId(this.x);
 
-          if ( signingOfficer != null ) { 
+          if ( signingOfficer != null ) {
+            Boolean useHardCoded = business.getAddress().getCountryId().equals("CA");
             String identificationType = businessCountry == null || businessCountry.getId().equals("CA") ? "Passport" 
               : "EmployerIdentificationNumber_EIN"; // Madlen asked it is hardcoded
             String identificationNumber = SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ? "N/A" 
               : business.getBusinessRegistrationNumber(); // Madlen asked it is hardcoded              
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
-            onboardingRequest.setAccountPrimaryIdentificationNumber(identificationNumber);
-            onboardingRequest.setAccountPrimaryIdentificationType(identificationType); 
+            onboardingRequest.setAccountPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
+            onboardingRequest.setAccountPrimaryIdentificationType(useHardCoded ? "BusinessRegistrationNumber" : identificationType);
             if ( businessCountry != null ) onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
@@ -100,20 +100,14 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
             Country businessFormationCountry = (Country) ((DAO) this.x.get("countryDAO")).find(business.getCountryOfBusinessRegistration());
             if ( businessFormationCountry != null ) {
-              onboardingRequest.setAccountPrimaryIdentificationIssuer(businessFormationCountry.getName());
+              onboardingRequest.setAccountPrimaryIdentificationIssuer( useHardCoded ? "Canada" : businessFormationCountry.getName());
             }
 
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
             onboardingRequest.setContactBusinessPhone(business.getBusinessPhone().getNumber());
-            String businessRegDate = null;
-            try {
-              businessRegDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(business.getBusinessRegistrationDate()); 
-            } catch(Throwable t) {
-              logger.error("Error onboarding business. Error parsing business registration date.", t);
-              throw new RuntimeException("Error onboarding business. Error parsing business registration date.");
-            } 
+            String businessRegDate = ((net.nanopay.model.DateOnly) business.getBusinessRegistrationDateTwo()).toString();
             onboardingRequest.setDateOfIncorporation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
             onboardingRequest.setGender("Male"); // TO be removed in API by AFEX
@@ -131,7 +125,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             }
 
             try {
-              onboardingRequest.setDateOfBirth(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getBirthday()));
+              onboardingRequest.setDateOfBirth(((net.nanopay.model.DateOnly)signingOfficer.getBirthdayTwo()).toString());
             } catch(Throwable t) {
               logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
               throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
