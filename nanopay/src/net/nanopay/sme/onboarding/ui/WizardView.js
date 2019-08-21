@@ -108,6 +108,10 @@ foam.CLASS({
     {
       name: 'sectionView',
       value: { class: 'net.nanopay.sme.onboarding.ui.WizardPageView' }
+    },
+    {
+      name: 'submitted',
+      type: 'Boolean'
     }
   ],
   reactions: [
@@ -166,10 +170,9 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 2000,
       code: function() {
+        if ( this.submitted ) return;
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
-        dao.put(this.data);  // dao.put(this.data.clone().copyFrom({ status: 'DRAFT' })); the default value is DRAFT anyways
-        // saveDraft was putting onboarding data into onboardingdaos for a second time after submit is executed
-        // so all the entries in onboardingDAOs had the status DRAFT whether or not they were actually drafts
+        dao.put(this.data.clone().copyFrom({ status: 'DRAFT' }));
       }
     }
   ],
@@ -182,11 +185,12 @@ foam.CLASS({
       },
       // TODO: Find a better place for this. It shouldnt be baked into WizardView.
       code: function(x) {
+        this.submitted = true;
         var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
           put(this.data.clone().copyFrom({ status: 'SUBMITTED' })).
           then(async function() {
-            let user = await x.userDAO.find( x.user.id);
+            let user = await x.userDAO.find(x.user.id);
             if ( user ) x.user.onboarded = user.onboarded;
             x.ctrl.notify('Business profile complete.');
             x.stack.back();

@@ -47,6 +47,10 @@ foam.CLASS({
         // TODO: Please call the java validator of the businessOnboarding here
 
         BusinessOnboarding old = (BusinessOnboarding)getDelegate().find_(x, obj);
+
+        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) throw new RuntimeException("SUBMITTED Onboarding objects cannot be modified");
+
         Long oldDualPartyAgreement = old == null ? 0 : old.getDualPartyAgreement();
         if ( oldDualPartyAgreement != businessOnboarding.getDualPartyAgreement() ) {
           AcceptanceDocumentService documentService = (AcceptanceDocumentService) x.get("acceptanceDocumentService");
