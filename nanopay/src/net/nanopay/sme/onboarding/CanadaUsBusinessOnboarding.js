@@ -29,6 +29,13 @@ foam.CLASS({
 
   ids: ['userId'],
 
+  tableColumns: [
+    'userId',
+    'status',
+    'created',
+    'lastModified'
+  ],
+
   sections: [
     {
       name: 'gettingStartedSection',
