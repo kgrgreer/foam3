@@ -376,15 +376,17 @@ foam.CLASS({
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
+      view: {
+        class: 'foam.u2.detail.SectionedDetailView',
+        border: 'foam.u2.border.NullBorder'
+      },
       validationPredicates: [
         {
           args: ['signingOfficerIdentification', 'signingOfficerIdentification$errors_'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(foam.mlang.IsValid.create({
+            return e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER_IDENTIFICATION
-              }), true)
-            );
+              }), true);
           },
           errorString: 'Invalid identification.'
         }

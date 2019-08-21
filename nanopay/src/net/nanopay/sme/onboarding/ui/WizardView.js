@@ -70,10 +70,6 @@ foam.CLASS({
     ^ .inner-card {
       padding: 15px 0px;
     }
-    ^ .foam-u2-borders-CardBorder {
-      box-shadow: none;
-      border: none;
-    }
   `,
   properties: [
     {
