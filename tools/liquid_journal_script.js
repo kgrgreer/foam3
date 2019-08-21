@@ -631,8 +631,8 @@ var accountTree = [
                   },
                   {
                     type: 'Virtual',
-                    name: 'GS13 SECURITIES (MXV)',
-                    denomination: 'MXV'
+                    name: 'GS13 SECURITIES (UDI)',
+                    denomination: 'UDI'
                   },
                   {
                     type: 'Virtual',
@@ -754,8 +754,13 @@ var accountTree = [
                   },
                   {
                     type: 'Virtual',
-                    name: 'GS01 SECURITIES (CNH)',
-                    denomination: 'CNH'
+                    name: 'GS01 SECURITIES (CNY)',
+                    denomination: 'CNY'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS01 SECURITIES (CZK)',
+                    denomination: 'CZK'
                   },
                   {
                     type: 'Virtual',
@@ -1078,6 +1083,11 @@ var accountTree = [
                   },
                   {
                     type: 'Virtual',
+                    name: 'GS07 SECURITIES (CLP)',
+                    denomination: 'CLP'
+                  },
+                  {
+                    type: 'Virtual',
                     name: 'GS07 SECURITIES (CNY)',
                     denomination: 'CNY'
                   },
@@ -1341,6 +1351,11 @@ var accountTree = [
                   },
                   {
                     type: 'Virtual',
+                    name: 'GS08 SECURITIES (CZK)',
+                    denomination: 'CZK'
+                  },
+                  {
+                    type: 'Virtual',
                     name: 'GS08 SECURITIES (DKK)',
                     denomination: 'DKK'
                   },
@@ -1353,6 +1368,11 @@ var accountTree = [
                     type: 'Virtual',
                     name: 'GS08 SECURITIES (HUF)',
                     denomination: 'HUF'
+                  },
+                  {
+                    type: 'Virtual',
+                    name: 'GS08 SECURITIES (IDR)',
+                    denomination: 'IDR'
                   },
                   {
                     type: 'Virtual',
@@ -1912,8 +1932,8 @@ var accountTree = [
                   },
                   {
                     type: 'Virtual',
-                    name: 'GS16 SECURITIES (MXV)',
-                    denomination: 'MXV'
+                    name: 'GS16 SECURITIES (UDI)',
+                    denomination: 'UDI'
                   }
                 ]
               },
