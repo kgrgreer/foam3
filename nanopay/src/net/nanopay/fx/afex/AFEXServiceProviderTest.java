@@ -142,9 +142,7 @@ public class AFEXServiceProviderTest
       }
       Group group = (Group) ((DAO) x.get("localGroupDAO")).find(business.getGroup());
       Permission newPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
-      Permission currencyPermission = new Permission.Builder(x).setId("currency.read.USD").build();
       group.getPermissions(x).add(newPermission);
-      group.getPermissions(x).add(currencyPermission);
       business.getSigningOfficers(x).add(user1);
 
     } else {

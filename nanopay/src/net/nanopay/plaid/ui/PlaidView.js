@@ -16,6 +16,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.plaid.model.PlaidPublicToken',
+    'net.nanopay.plaid.PlaidResponseItem',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup'
   ],
@@ -212,7 +213,8 @@ foam.CLASS({
       }
 
       try {
-        let error = await this.plaidService.startIntegration
+        let responseItem = this.PlaidResponseItem.create();        
+        let response = await this.plaidService.startIntegration
           ( null,
             this.PlaidPublicToken.create({
               userId: this.user.id,
@@ -222,23 +224,35 @@ foam.CLASS({
               selectedAccount: selectedAccount,
               isUpdateMode: this.isUpdateMode
             }));
+        responseItem.userId = response.userId;
+        responseItem.InstitutionId = response.InstitutionId;
+        responseItem.accountDetail = response.accountDetail;
+        responseItem.account = response.account;
+        responseItem.plaidItem = response.plaidItem;
+        responseItem.plaidError = response.plaidError;
 
         // No errors, success
-        if ( error === undefined ) {
+        if ( responseItem.plaidError === undefined ) {
           if ( this.isUpdateMode ) {
             this.hint = 'Congratulations, you have re-connected to Nanopay, you can add a new Bank account now';
             this.isUpdateMode = false;
           } else {
             this.hint = 'You can add another bank account by clicking the Connect button again';
-            this.showNotification('Congratulations, your USD Bank Account has been added to your usable accounts.');
+
+            this.ctrl.add(this.Popup.create().tag({
+              class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
+              plaidResponseItem: responseItem
+            }));
           }
-          this.stack.back();
+          this.stack.push({
+            class: 'net.nanopay.sme.ui.dashboard.Dashboard'
+          });
         }
 
         // if error returns, we have to handle the error
-        if ( error !== undefined ) {
+        if ( responseItem.plaidError !== undefined ) {
           this.hint = 'Oops! Retry?';
-          this.errorHandler(error)
+          this.errorHandler(responseItem.plaidError);
         }
 
         // Any Exception
