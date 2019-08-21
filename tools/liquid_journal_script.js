@@ -754,6 +754,11 @@ var accountTree = [
                   },
                   {
                     type: 'Virtual',
+                    name: 'GS01 SECURITIES (CNH)',
+                    denomination: 'CNH'
+                  },
+                  {
+                    type: 'Virtual',
                     name: 'GS01 SECURITIES (CNY)',
                     denomination: 'CNY'
                   },
