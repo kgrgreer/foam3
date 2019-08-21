@@ -206,7 +206,11 @@ foam.CLASS({
           // starting with the current level which is the current nodes left and right
           var outlineArray = [ [this.left, this.right] ];
 
-          var childOutlines = collectChildOutlines(childNodes);
+          var childOutlines = [];
+
+          for ( let i = 0; i < children.length; i++ ){
+            childOutlines.push(children[i].getOutline())
+          }
 
           var mergedOutlines = mergedOutlines(childOutlines, childNodes);
 
@@ -218,16 +222,6 @@ foam.CLASS({
           this.outline = outlineArray;
 
           return outlineArray;
-        },
-
-        function collectChildOutlines(children) {
-          var childOutlines = [];
-
-          for ( let i = 0; i < children.length; i++ ){
-            childOutlines.push(children[i].getOutline())
-          }
-
-          return childOutlines;
         },
 
         function mergeOutlines(outlines, childNodes){
