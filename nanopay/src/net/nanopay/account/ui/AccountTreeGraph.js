@@ -148,6 +148,7 @@ foam.CLASS({
 
       properties: [
         'data',
+        'outline',
         { name: 'height', factory: function() { return this.nodeHeight; } },
         { name: 'width',  factory: function() { return this.nodeWidth; } },
         [ 'border', 'gray' ],
@@ -190,7 +191,12 @@ foam.CLASS({
            }
         },
 
-        function getOutline(x) {
+        function getOutline() {
+          // for implementing dynamic programming
+          if ( this.outline ) {
+            return this.outline;
+          }
+
           if ( this.childNodes.length === 0 ){
             return [ [ this.left, this.right] ];
           }
@@ -200,51 +206,102 @@ foam.CLASS({
           // starting with the current level which is the current nodes left and right
           var outlineArray = [ [this.left, this.right] ];
 
-          var childOutlines = collectChildOutlines(x, childNodes);
+          var childOutlines = collectChildOutlines(childNodes);
 
-          var mergedOutlines = mergedOutlines(x, childOutlines);
+          var mergedOutlines = mergedOutlines(childOutlines, childNodes);
 
           for ( let i = 0; i < mergedOutlines.length; i++ ){
             outlineArray.push(mergedOutlines[i]);  
           }
 
+          // going to memoize the outline
+          this.outline = outlineArray;
+
           return outlineArray;
         },
 
-        function collectChildOutlines(x, children) {
+        function collectChildOutlines(children) {
           var childOutlines = [];
 
           for ( let i = 0; i < children.length; i++ ){
-            childOutlines.push(children[i].getOutline(x))
+            childOutlines.push(children[i].getOutline())
           }
 
           return childOutlines;
         },
 
-        function mergeOutlines(x, outlines){
+        function mergeOutlines(outlines, childNodes){
           var mergedOutlines = [[]];
           var totalLevels = 1;
 
+          /**
+           * here we are getting the total amount of levels so that
+           * we can later merge from the bottom up
+           */
           for ( let i = 0; i < outlines.length; i++ ){
             const currentLevels = outlines[i].length;
 
-            if (  currentLevels > levels ) {
+            if ( currentLevels > levels ) {
               totalLevels++;
               mergeOutlines.push([]);
             }
-            
-            for ( let j = 0; j < currentLevels; j++ ){
-              
+          }
+
+          for ( let l = totalLevels - 1; l >= 0; l-- ){
+            let levelLeft;
+            let levelRight;
+
+            /**
+             * Here we are iterating through all the outlines from the bottom up
+             * of the CURRENT OUTLINE, meaning the outlines will not always have
+             * the same number of levels and so if that is the case we will skip 
+             * them for that level
+             */
+            for ( let i = 0; i < outlines.length; i++ ){
+              if ( outlines[i].length < l ) {
+                continue;
+              }
+
+              let currentLeft = outlines[i][l][0];
+              let currentRight = outlines[i][l][1];
+              let previousRight = outlines[i - 1][l][1];
+
+              if ( i === 0 ) {
+                levelLeft = currentLeft;
+              } else if ( i === outlines.length - 1 ){
+                levelRight = currentRight;
+                if ( currentLeft <= previousRight ){
+                  const shift = previousRight - currentLeft + this.padding;
+                  pushApart(childNodes[i], shift);
+                }
+              }
             }
+
+            mergeOutlines[l][0] = levelLeft;
+            mergeOutlines[l][1] = levelRight;
           }
 
           return mergedOutlines;
         },
 
-        // TODO: could perhaps implement some sort of dynamic programming here
-        // increase the left, x, right and outlines
-        function pushApartNode(x , root, distance){
+        function pushApart(root, shift){
+          root.left += shift;
+          root.x += shift;
+          root.right += shift;
 
+          const { childNodes, outline } = root;
+
+          // iterate through outline array and adjust for dynamic programming
+          for ( let i = 0; i < outline.length; i++ ){
+            for ( let j = 0; j < outline[i].length; j++ ){
+              outline[i][j] += shift;
+            }
+          }
+          
+          // iterate through all children and shift as well
+          for ( let i = 0; i < childNodes.length; i++ ){
+            pushApart(childNodes[i], shift);
+          }
         },
 
         function paint(x) {
@@ -335,25 +392,25 @@ foam.CLASS({
           }
 
           // Move children away from each other if required
-          var m = l/2;
-          for ( var i = 0 ; i < l-1 ; i++ ) {
-            var n1 = childNodes[i];
-            var n2 = childNodes[i+1];
-            var d  = n2.x-n1.x+n2.left-n1.right;
-            if ( d != this.width + this.padding ) {
-              moved = movedNow = true;
-              var w = Math.min(Math.abs(this.width+this.padding-d), 10);
-              if ( d > this.width + this.padding ) w = -w;
-              if ( i+1 == m ) {
-                n1.x -= w/2;
-                n2.x += w/2;
-              } else if ( i < Math.floor(m) ) {
-                n1.x -= w;
-              } else {
-                n2.x += w;
-              }
-            }
-          }
+          // var m = l/2;
+          // for ( var i = 0 ; i < l-1 ; i++ ) {
+          //   var n1 = childNodes[i];
+          //   var n2 = childNodes[i+1];
+          //   var d  = n2.x-n1.x+n2.left-n1.right;
+          //   if ( d != this.width + this.padding ) {
+          //     moved = movedNow = true;
+          //     var w = Math.min(Math.abs(this.width+this.padding-d), 10);
+          //     if ( d > this.width + this.padding ) w = -w;
+          //     if ( i+1 == m ) {
+          //       n1.x -= w/2;
+          //       n2.x += w/2;
+          //     } else if ( i < Math.floor(m) ) {
+          //       n1.x -= w;
+          //     } else {
+          //       n2.x += w;
+          //     }
+          //   }
+          // }
           // TODO/BUG: I'm not sure why this is necessary, but without, center
           // nodes are a few pixels off.
           if ( l%2 == 1 ) childNodes[Math.floor(m)].x = 0;
