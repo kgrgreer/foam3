@@ -223,19 +223,22 @@ foam.CLASS({
 
         function mergeOutlines(x, outlines){
           var mergedOutlines = [[]];
-          var levels = 1;
+          var totalLevels = 1;
 
           for ( let i = 0; i < outlines.length; i++ ){
-            if ( checkLevels(x, outlines[i]) > levels ) {
-              levels++;
+            const currentLevels = outlines[i].length;
+
+            if (  currentLevels > levels ) {
+              totalLevels++;
               mergeOutlines.push([]);
             }
-            // TODO: 
+            
+            for ( let j = 0; j < currentLevels; j++ ){
+              
+            }
           }
-        },
 
-        function checkLevels(x, outline){
-
+          return mergedOutlines;
         },
 
         // TODO: could perhaps implement some sort of dynamic programming here
