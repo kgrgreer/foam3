@@ -7,7 +7,8 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',
-      name: 'purposeCode'
+      name: 'purposeCode',
+      view: 'net.nanopay.tx.PurposeCodeSelectionView'
     }
   ]
 });

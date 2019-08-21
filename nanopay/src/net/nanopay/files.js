@@ -497,6 +497,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ExpenseLineItem' },
   { name: 'net/nanopay/tx/PurposeCode' },
   { name: 'net/nanopay/tx/PurposeCodeLineItem' },
+  { name: 'net/nanopay/tx/PurposeCodeSelectionView' },
+  { name: 'net/nanopay/tx/PurposeGroup' },
   { name: 'net/nanopay/tx/ServiceLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItem' },
   { name: 'net/nanopay/tx/TransactionLineItemCitationView' },
