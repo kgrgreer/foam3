@@ -48,7 +48,7 @@ foam.CLASS({
     'termsUrl',
   ],
 
-  imports:[
+  imports: [
     'canadaUsBusinessOnboardingDAO',
   ],
 
@@ -653,18 +653,18 @@ foam.CLASS({
       }
     },
     /**
-     * Returns true if CA/US oboarding completed.
+     * Set caUsOnboardingComplete based on CA/US oboarding status.
      */
     async function getCAUSPaymentEnabled(user, agent) {
-      var self = this;
       if ( this.Business.isInstance(user) ) {
+        debugger
         this.__subSubContext__.canadaUsBusinessOnboardingDAO.find(
           this.AND(
             this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, agent.id),
             this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, user.id)
           )
         ).then((o) => {
-          self.caUsOnboardingComplete = o && o.status === this.OnboardingStatus.SUBMITTED;
+          this.caUsOnboardingComplete = o && o.status === this.OnboardingStatus.SUBMITTED;
         });
       }
     },
