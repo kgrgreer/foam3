@@ -2,7 +2,7 @@ p({"class":"foam.nanos.ruler.Rule","id":8000,"name":"AFEX Beneficiary Compliance
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":8001,
-  "name":"AFEX Business Created Rule",
+  "name":"Add FX Currency Permission to Business",
   "documentation":"Rule to add currency.read.FX_CURRENCY when a business is pushed to AFEX and AFEXBusiness is created.",
   "priority":100,
   "ruleGroup":"onboarding",
@@ -21,7 +21,7 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":8002,
-  "name":"AFEX Business Created Rule",
+  "name":"Send Operations Email Notification When AFEXBusiness is Created",
   "documentation":"Rule to send email notification to Operations team when AFEXBusiness is created.",
   "priority":100,
   "ruleGroup":"onboarding",
@@ -40,7 +40,7 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":8003,
-  "name":"AFEX Business Created Rule",
+  "name":"Send User Email Notification When AFEXBusiness is Created",
   "documentation":"Rule to send email notification to business team when AFEXBusiness is created and corridor is enabled.",
   "priority":100,
   "ruleGroup":"onboarding",
@@ -59,7 +59,7 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":8004,
-  "name":"AFEX Business Created Rule",
+  "name":"Remove FX Currency Permission When AFEXBusiness is Disabled",
   "documentation":"Rule to remove currency.read.FX_CURRENCY when a AFEXBusiness is disabled.",
   "priority":100,
   "ruleGroup":"onboarding",
