@@ -190,6 +190,52 @@ foam.CLASS({
            }
         },
 
+        function getOutline(x) {
+          if ( this.childNodes.length === 0 ){
+            return [ [ this.left, this.right] ];
+          }
+
+          const { childNodes } = this;
+
+          // starting with the first level which is the current nodes left and right
+          var outlineArray = [ [this.left, this.right] ];
+
+          var childOutlines = collectChildOutlines(x, childNodes);
+
+          var mergedOutlines = mergedOutlines(x, childOutlines);
+
+          for ( let i = 0; i < mergedOutlines.length; i++ ){
+            outlineArray.push(mergedOutlines[i]);  
+          }
+
+          return outlineArray;
+        },
+
+        function collectChildOutlines(x, children) {
+          var childOutlines = [];
+
+          for ( let i = 0; i < children.length; i++ ){
+            childOutlines.push(children[i].getOutline(x))
+          }
+
+          return childOutlines;
+        },
+
+        function mergeOutlines(x, outlines){
+          var mergedOutlines = [[]];
+          var levels = 1;
+
+          for ( let i = 0; i < outlines.length; i++ ){
+            // 1. check how many levels exist
+
+            
+          }
+        },
+
+        function pushApartNode(x , root, distance){
+
+        },
+
         function paint(x) {
           if ( ! this.parentNode || this.parentNode.expanded ) this.SUPER(x);
         },
