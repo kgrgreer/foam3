@@ -194,8 +194,8 @@ p({"class":"foam.nanos.ruler.Rule","id":1700,"name":"Reset transaction lastModif
 p({
   "class": "foam.nanos.ruler.Rule",
   "id": 1701,
-  "name": "Update Business Domestic Permissions",
-  "documentation": "This rule gives user currency.read.COUNTRY_CURRENCY and fx.provision.payer Permission when compliance is passed.",
+  "name": "Add Domestic Currency Permission",
+  "documentation": "This rule gives user currency.read.COUNTRY_CURRENCY Permission when compliance is passed.",
   "priority": 10,
   "ruleGroup": "onboarding",
   "daoKey": "localUserDAO",
@@ -216,7 +216,97 @@ p({
     ]
   },
   "action": {
-    "class": "net.nanopay.meter.compliance.ruler.UpdateBusinessPermissions"
+    "class": "net.nanopay.meter.compliance.ruler.AddDomesticCurrencyPermission"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1702,
+  "name": "Remove Domestic Currency Permission",
+  "documentation": "This rule removes user currency.read.DOMESTIC_CURRENCY Permission when compliance is not passed.",
+  "priority": 10,
+  "ruleGroup": "onboarding",
+  "daoKey": "localUserDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+        }
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.UserComplianceNotPassed",
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.meter.compliance.ruler.RemoveDomesticCurrencyPermission"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1703,
+  "name": "Add FX Provision Payer Permission after Business is onboarded",
+  "documentation": "This rule gives business fx.provision.payer Permission when onboarded.",
+  "priority": 10,
+  "ruleGroup": "onboarding",
+  "daoKey": "localUserDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+        }
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarded",
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.meter.compliance.ruler.AddFXProvisionPayerPermission"
+  },
+  "enabled": true,
+  "saveHistory": true
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": 1704,
+  "name": "Remove FX Provision Payer Permission after Business is not onboarded",
+  "documentation": "This rule removes business fx.provision.payer Permission when business is not onboarded.",
+  "priority": 10,
+  "ruleGroup": "onboarding",
+  "daoKey": "localUserDAO",
+  "operation": 1,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "net.nanopay.meter.compliance.ruler.predicate.NewEqOld"
+        }
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessNotOnboarded",
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission"
   },
   "enabled": true,
   "saveHistory": true

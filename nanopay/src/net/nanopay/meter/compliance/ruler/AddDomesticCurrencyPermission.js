@@ -1,12 +1,11 @@
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler',
-  name: 'UpdateBusinessPermissions',
+  name: 'AddDomesticCurrencyPermission',
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Updates business permissions. Specifically adds currency.read.Currency 
-    and fx.provision.payer permissions to a business.`,
+  documentation: `Rule to add currency.read.Currency permissions to a business.`,
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -52,20 +51,10 @@ foam.CLASS({
                 } catch(Throwable t) {
                     ((Logger) x.get("logger")).error("Error adding " + currencyPermissionString + " permission to business " + business.getId(), t);
                 } 
-              }
-
-              Permission fxProvisionPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
-              group = (Group) localGroupDAO.find(business.getGroup());
-              if ( null != group && ! group.implies(x, new AuthPermission(fxProvisionPermission.getId())) ) {
-                try {
-                  group.getPermissions(x).add(fxProvisionPermission);  
-                } catch(Throwable t) {
-                    ((Logger) x.get("logger")).error("Error adding fx.provision.payer permission to business " + business.getId(), t);
-                }
               } 
             }
           }
-        }, "Update Business Permissions with currency.read.Currency and fx.provision.payer");
+        }, "Rule to add currency.read.Currency permissions to a business.");
       `
     }
   ]
