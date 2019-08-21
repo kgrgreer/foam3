@@ -197,7 +197,7 @@ foam.CLASS({
 
           const { childNodes } = this;
 
-          // starting with the first level which is the current nodes left and right
+          // starting with the current level which is the current nodes left and right
           var outlineArray = [ [this.left, this.right] ];
 
           var childOutlines = collectChildOutlines(x, childNodes);
@@ -226,12 +226,20 @@ foam.CLASS({
           var levels = 1;
 
           for ( let i = 0; i < outlines.length; i++ ){
-            // 1. check how many levels exist
-
-            
+            if ( checkLevels(x, outlines[i]) > levels ) {
+              levels++;
+              mergeOutlines.push([]);
+            }
+            // TODO: 
           }
         },
 
+        function checkLevels(x, outline){
+
+        },
+
+        // TODO: could perhaps implement some sort of dynamic programming here
+        // increase the left, x, right and outlines
         function pushApartNode(x , root, distance){
 
         },
