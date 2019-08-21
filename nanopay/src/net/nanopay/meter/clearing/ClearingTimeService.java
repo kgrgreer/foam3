@@ -18,9 +18,9 @@ public class ClearingTimeService {
    * The completion date should equal processDate + clearingTime (days). If it
    * lands on Saturday, Sunday and bank holidays then moves it the next day.
    *
-   * @param x Context
-   * @param transaction
-   * @param processDate
+   * @param x - the context
+   * @param transaction - transaction to be estimated
+   * @param processDate - date from which to start the calculation
    * @return The estimated completion date of the transaction
    */
   public Date estimateCompletionDate(X x, Transaction transaction, Date processDate) {
@@ -50,8 +50,8 @@ public class ClearingTimeService {
    *
    * If transaction processDate is null then use today as the processDate.
    *
-   * @param x Context
-   * @param transaction
+   * @param x - the context
+   * @param transaction - transaction to be estimated
    * @return The estimated completion date of the transaction
    */
   public Date estimateCompletionDate(X x, Transaction transaction) {
