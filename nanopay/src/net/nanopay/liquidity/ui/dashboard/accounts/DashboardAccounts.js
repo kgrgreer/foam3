@@ -21,7 +21,7 @@ foam.CLASS({
   ],
 
   documentation: `
-    A configurable view to to render a card with 
+    A configurable view to to render a card with
     configurable contents and rich choice view dropdowns
   `,
 
@@ -37,7 +37,11 @@ foam.CLASS({
     }
 
     ^card-container {
-      padding: 34px 16px;
+      padding: 34px 0;
+    }
+
+    ^balance-card {
+      padding: 0 16px;
     }
 
     ^balance-note {
@@ -59,15 +63,11 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.ControllerMode',
     'foam.mlang.sink.GroupBy',
     'foam.u2.borders.CardBorder',
     'net.nanopay.account.Account',
     'foam.comics.v2.DAOBrowserView',
     'foam.comics.v2.DAOControllerConfig'
-  ],
-  exports: [
-    'controllerMode'
   ],
 
   messages: [
@@ -87,17 +87,11 @@ foam.CLASS({
       name: 'currency'
     },
     {
-      name: 'controllerMode',
-      factory: function() {
-        return this.ControllerMode.VIEW;
-      }
-    },
-    {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.DAOControllerConfig',
       name: 'config',
       factory: function() {
-        return this.DAOControllerConfig.create({ 
+        return this.DAOControllerConfig.create({
           defaultColumns: ["name","balance","homeBalance","type","owner"],
           dao: this.accountDAO,
         });

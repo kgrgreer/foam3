@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   documentation: `
-    A configurable view to to render a card with 
+    A configurable view to to render a card with
     configurable contents and rich choice view dropdowns
   `,
 
@@ -34,11 +34,7 @@ foam.CLASS({
   requires: [
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.ControllerMode',
     'foam.comics.v2.DAOBrowserView'
-  ],
-  exports: [
-    'controllerMode'
   ],
 
   messages: [
@@ -52,12 +48,6 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'data'
-    },
-    {
-      name: 'controllerMode',
-      factory: function() {
-        return this.ControllerMode.VIEW;
-      }
     }
   ],
 
