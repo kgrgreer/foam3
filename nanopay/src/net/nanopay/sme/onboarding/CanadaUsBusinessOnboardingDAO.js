@@ -37,6 +37,10 @@ foam.CLASS({
         
         CanadaUsBusinessOnboarding businessOnboarding = (CanadaUsBusinessOnboarding) obj;
         CanadaUsBusinessOnboarding old = (CanadaUsBusinessOnboarding)getDelegate().find_(x, obj);
+
+        // if the businessOnboarding is already set to SUBMITTED, do not allow modification
+        if ( old != null && old.getStatus() == net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) throw new RuntimeException("SUBMITTED Onboarding objects cannot be modified");
+
         // TODO: Please call the java validator of the businessOnboarding here
 
         if ( businessOnboarding.getStatus() != net.nanopay.sme.onboarding.OnboardingStatus.SUBMITTED ) {
