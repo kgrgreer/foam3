@@ -378,7 +378,7 @@ foam.CLASS({
       },
       view: {
         class: 'foam.u2.detail.SectionedDetailView',
-        border: 'foam.u2.border.NullBorder'
+        border: 'foam.u2.borders.NullBorder'
       },
       validationPredicates: [
         {
