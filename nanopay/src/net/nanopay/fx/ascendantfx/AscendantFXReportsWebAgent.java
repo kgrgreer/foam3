@@ -9,6 +9,8 @@ import foam.blob.ProxyBlobService;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ArraySink;
+import foam.nanos.auth.Country;
+import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.http.WebAgent;
@@ -409,15 +411,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String province = signingOfficer.getAddress().getRegionId();
     String country = signingOfficer.getAddress().getCountryId();
     String postalCode = signingOfficer.getAddress().getPostalCode();
-    // AFX RELATED
-    // IdentificationType idType = (IdentificationType) identificationTypeDAO
-    //   .find(signingOfficer.getIdentification().getIdentificationTypeId());
-    // String identificationType = idType.getName();
-    // String provinceOfIssue = signingOfficer.getIdentification().getRegionId();
-    // String countryOfIssue = signingOfficer.getIdentification().getCountryId();
-    // String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
-    // String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
-    // String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
+
     IpHistory ipHistory = (IpHistory) ipHistoryDAO.find(EQ(IpHistory.USER, signingOfficer.getId()));
     String nameOfPerson = ipHistory.findUser(x).getLegalName();
     String timestamp = sdf.format(ipHistory.getCreated());
@@ -448,18 +442,34 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("State/Province: " + province));
       list.add(new ListItem("Country: " + country));
       list.add(new ListItem("ZIP/Postal Code: " + postalCode));
-      // AFX RELATED
-      // list.add(new ListItem("Type of identification: " + identificationType));
-      // if ( ! identificationType.equals("Passport") && ! SafetyUtil.isEmpty(provinceOfIssue) ) {
-      //   list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
-      // }
-      // list.add(new ListItem("Country of issue: " + countryOfIssue));
-      // list.add(new ListItem("Identification number: " + identificationNumber));
-      // list.add(new ListItem("Issue date: " + issueDate));
-      // list.add(new ListItem("Expiration date: " + expirationDate));
+
       list.add(new ListItem("Digital signature_Name of person: " + nameOfPerson));
       list.add(new ListItem("Digital signature_Timestamp: " + timestamp));
       list.add(new ListItem("Digital signature_Ip address: " + ipAddress));
+
+      if ( null != signingOfficer.getIdentification() 
+        && signingOfficer.getIdentification().getIdentificationTypeId() != 0 ) {
+        IdentificationType idType = (IdentificationType) identificationTypeDAO
+          .find(signingOfficer.getIdentification().getIdentificationTypeId());
+        String identificationType = idType.getName();
+        Region Identificationegion = (Region) ((DAO) getX().get("regionDAO")).find(signingOfficer.getIdentification().getRegionId());
+        String provinceOfIssue = null == Identificationegion ? "" : Identificationegion.getName();
+        Country identificationCountry = (Country) ((DAO) getX().get("countryDAO")).find(signingOfficer.getIdentification().getCountryId());
+        String countryOfIssue = null == identificationCountry ? "" : identificationCountry.getName();
+        String identificationNumber = signingOfficer.getIdentification().getIdentificationNumber();
+        String issueDate = sdf.format(signingOfficer.getIdentification().getIssueDate());
+        String expirationDate = sdf.format(signingOfficer.getIdentification().getExpirationDate());
+
+        list.add(new ListItem("Type of identification: " + identificationType));
+        if ( ! identificationType.equals("Passport") && ! SafetyUtil.isEmpty(provinceOfIssue) ) {
+          list.add(new ListItem("State/Province of issue: " + provinceOfIssue));
+        }
+        list.add(new ListItem("Country of issue: " + countryOfIssue));
+        list.add(new ListItem("Identification number: " + identificationNumber));
+        list.add(new ListItem("Issue date: " + issueDate));
+        list.add(new ListItem("Expiration date: " + expirationDate));
+        
+      }
 
       document.add(list);
       document.add(Chunk.NEWLINE);

@@ -173,11 +173,6 @@ foam.CLASS({
     {
       name: 'isFx',
       expression: function(chosenBankAccount, invoice$destinationCurrency) {
-        console.log(invoice$destinationCurrency);
-        console.log( chosenBankAccount == null ? '' : chosenBankAccount.denomination);
-        if ( chosenBankAccount != null ) {
-        console.log( invoice$destinationCurrency == 'CAD' );
-        }
         return chosenBankAccount != null &&
           ! (invoice$destinationCurrency == chosenBankAccount.denomination && chosenBankAccount.denomination === 'CAD');
       }
@@ -253,7 +248,6 @@ foam.CLASS({
         this.setSourceCurrency();
       }
       if ( this.quotePassedIn && this.quote != null && this.isFx ) {
-        console.log(this.isFx);
         clearTimeout(this.refreshIntervalId);
         this.getExpiryTime(new Date(), this.quote.fxExpiry);
         this.updateQuote(this);
@@ -417,10 +411,10 @@ foam.CLASS({
                     .start()
                       .addClass('float-right')
                       .add(
-                        this.slot( function(quote$fxFees$totalFees, sourceCurrency) {
+                        this.slot( function(quote, sourceCurrency) {
                           if ( ! sourceCurrency ) return;
-                          return quote$fxFees$totalFees ?
-                            sourceCurrency.format(quote$fxFees$totalFees):
+                          return quote.getCost() ?
+                            sourceCurrency.format(quote.getCost()):
                             sourceCurrency.format(0);
                         })
                       )
@@ -470,7 +464,7 @@ foam.CLASS({
                           return this.sourceCurrency.format(amount);
                         }
                       }),
-                      this.exchangeRateNotice$.map((value) => value ? '*' : '')
+                      this.isFx$.map((value) => value ? '*' : '')
                     )
                   .end()
                 .end();
@@ -502,7 +496,6 @@ foam.CLASS({
       return quote.plan;
     },
     async function getFXQuote() {
-      console.log(this.isFx);
 
       var transaction = this.AbliiTransaction.create({
         sourceAccount: this.invoice.account,

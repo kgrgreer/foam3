@@ -420,10 +420,17 @@ foam.CLASS({
                 + `${(1 / transaction.fxRate).toFixed(4)} ${transaction.sourceCurrency}`;
             }
 
-            this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
+            if ( this.FXSummaryTransaction.isInstance(transaction) ) {
+              this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
-                this.fee = currency.format(transaction.fxFees.totalFees);
+                this.fee = currency.format(transaction.getCost());
               });
+            } else {
+              this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
+                .then((currency) => {
+                  this.fee = currency.format(transaction.fxFees.totalFees);
+                });
+            }
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
