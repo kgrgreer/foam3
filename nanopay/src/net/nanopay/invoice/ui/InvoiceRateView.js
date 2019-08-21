@@ -110,6 +110,9 @@ foam.CLASS({
     ^exchange-rate-text {
       color: #8e9090
     }
+    ^ .fees {
+      margin-top: 50px;
+    }
   `,
 
   properties: [
@@ -214,7 +217,8 @@ foam.CLASS({
     { name: 'AMOUNT_DUE_LABEL', message: 'Amount Due' },
     { name: 'EXCHANGE_RATE_LABEL', message: 'Exchange Rate' },
     { name: 'CONVERTED_AMOUNT_LABEL', message: 'Converted Amount' },
-    { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction Fees' },
+    { name: 'TRANSACTION_FEE_LABEL', message: 'Transaction fee of ' },
+    { name: 'TRANSACTION_FEE_LABEL_2', message: ' will be charged at the end of the monthly billing cycle.' },
     { name: 'AMOUNT_PAID_LABEL', message: 'Amount To Be Paid' },
     { name: 'AMOUNT_PAID_TO_LABEL', message: 'Amount Paid To You' },
     { name: 'CROSS_BORDER_PAYMENT_LABEL', message: 'Cross-border Payment' },
@@ -254,6 +258,7 @@ foam.CLASS({
       }
     },
     function initE() {
+      let self = this;
       // Update the rates every time the selected account changes.
       if ( this.isPayable ) {
         this.invoice.account$.sub(this.fetchRates);
@@ -403,24 +408,6 @@ foam.CLASS({
                       )
                     .end()
                   .end()
-                  .start().show(this.chosenBankAccount$)
-                    .start()
-                      .addClass('inline')
-                      .add(this.TRANSACTION_FEE_LABEL)
-                    .end()
-                    .start()
-                      .addClass('float-right')
-                      .add(
-                        this.slot( function(quote, sourceCurrency) {
-                          if ( ! sourceCurrency ) return;
-                          return quote.getCost() ?
-                            sourceCurrency.format(quote.getCost()):
-                            sourceCurrency.format(0);
-                        })
-                      )
-
-                    .end()
-                  .end()
                 .end()
               .end();
           }))
@@ -469,6 +456,26 @@ foam.CLASS({
                   .end()
                 .end();
           }))
+          .start().show(this.slot(function(quote) {
+            if ( quote == null ) {
+              return false;
+            }
+            return quote.getCost() == 0 ? false : true;
+          }))
+            .start()
+              .addClass('inline')
+              .addClass('fees')
+              .add(this.TRANSACTION_FEE_LABEL)
+              .add(
+                this.slot( function(quote, sourceCurrency) {
+                  if ( ! sourceCurrency || ! quote ) return;
+                  return quote.getCost() ?
+                    sourceCurrency.format(quote.getCost()) + this.TRANSACTION_FEE_LABEL_2:
+                    sourceCurrency.format(0) + this.TRANSACTION_FEE_LABEL_2;
+                })
+              )
+            .end()
+          .end()
         .end()
         .start().show(this.isFx$)
           .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.exchangeRateNotice, title: this.NOTICE_TITLE })
