@@ -2,6 +2,11 @@ foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
+
+  imports: [
+    'userDAO'
+  ],
+
   css: `
     ^ {
       display: flex;
@@ -103,6 +108,10 @@ foam.CLASS({
     {
       name: 'sectionView',
       value: { class: 'net.nanopay.sme.onboarding.ui.WizardPageView' }
+    },
+    {
+      name: 'submitted',
+      type: 'Boolean'
     }
   ],
   reactions: [
@@ -161,6 +170,7 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 2000,
       code: function() {
+        if ( this.submitted ) return;
         var dao = this.__context__[foam.String.daoize(this.data.model_.name)];
         dao.put(this.data.clone().copyFrom({ status: 'DRAFT' }));
       }
@@ -175,13 +185,13 @@ foam.CLASS({
       },
       // TODO: Find a better place for this. It shouldnt be baked into WizardView.
       code: function(x) {
+        this.submitted = true;
         var dao = x[foam.String.daoize(this.data.model_.name)];
         dao.
           put(this.data.clone().copyFrom({ status: 'SUBMITTED' })).
-          then(function() {
-            // TODO: Instead of manually setting to true, we should pull the latest
-            // user from the userDAO.
-            x.user.onboarded = true;
+          then(async function() {
+            let user = await x.userDAO.find(x.user.id);
+            if ( user ) x.user.onboarded = user.onboarded;
             x.ctrl.notify('Business profile complete.');
             x.stack.back();
           }, function(err) {
