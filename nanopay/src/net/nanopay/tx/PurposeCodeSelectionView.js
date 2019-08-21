@@ -49,7 +49,6 @@ foam.CLASS({
   ],
   methods: [
     function initE() {
-      debugger
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -93,4 +92,4 @@ foam.CLASS({
         .end();
     }
   ]
-})
+});

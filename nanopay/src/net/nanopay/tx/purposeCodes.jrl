@@ -1,1 +1,1 @@
-p({"class":"net.nanopay.tx.PurposeCode","code":"P1099","subPurposeCode":"P10991","description":"Trade transaction"})
+p({"class":"net.nanopay.tx.PurposeCode","group":0,"code":"P1099","description":"Trade transaction","send":true})

@@ -7,7 +7,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Enum',
+      class: 'Reference',
       of: 'net.nanopay.tx.PurposeGroup',
       name: 'group'
     },
@@ -18,16 +18,6 @@ foam.CLASS({
         var regex = /^[PS][0-9]{4}$/;
         if ( ! regex.test(code) ) {
           return 'Please enter a valid purpose code.';
-        }
-      }
-    },
-    {
-      class: 'String',
-      name: 'subPurposeCode',
-      validateObj: function(subPurposeCode) {
-        var regex = /^[PS][0-9]{5}$/;
-        if ( ! regex.test(subPurposeCode) ) {
-          return 'Please enter a valid sub purpose code.';
         }
       }
     },
