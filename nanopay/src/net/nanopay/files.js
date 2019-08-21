@@ -952,6 +952,7 @@ FOAM_FILES([
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTime' },
+  { name: 'net/nanopay/meter/clearing/TransactionRefinement' },
 
   // compliance
   { name: 'net/nanopay/meter/compliance/AbstractComplianceRuleAction' },
