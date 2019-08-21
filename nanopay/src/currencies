@@ -178,4 +178,3 @@ p({"class":"net.nanopay.model.Currency","name":"ADB Unit of Account","alphabetic
 p({"class":"net.nanopay.model.Currency","name":"Dutch Guilder","alphabeticCode":"NLG","numericCode":528,"precision":2,"owner":1,"colour":"#FA37C2","leftOrRight":"left","symbol":"ƒ","delimiter":",","decimalCharacter":".","showSpace":false})
 p({"class":"net.nanopay.model.Currency","name":"Deutsche Mark","alphabeticCode":"DEM","numericCode":280,"precision":2,"owner":1,"colour":"#967874","leftOrRight":"left","symbol":"DM","delimiter":",","decimalCharacter":".","showSpace":false})
 p({"class":"net.nanopay.model.Currency","name":"Chinese Yuan Remninbi","alphabeticCode":"CNH","numericCode":156,"precision":2,"owner":1,"colour":"#4C8B98","leftOrRight":"left","symbol":"¥","delimiter":",","decimalCharacter":".","showSpace":false})
-
