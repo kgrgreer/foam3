@@ -657,7 +657,6 @@ foam.CLASS({
      */
     async function getCAUSPaymentEnabled(user, agent) {
       if ( this.Business.isInstance(user) ) {
-        debugger
         this.__subSubContext__.canadaUsBusinessOnboardingDAO.find(
           this.AND(
             this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, agent.id),
