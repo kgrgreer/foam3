@@ -443,12 +443,11 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
     EmailAddress email = importContact.getPrimaryEmailAddr();
-    
+
     Contact existContact = (Contact) contactDAO.inX(x).find(AND(
       EQ(Contact.EMAIL, email.getAddress().toLowerCase()),
       EQ(Contact.OWNER, user.getId())
     ));
-    existContact = (Contact) existContact.fclone();
 
     if ( existContact instanceof QuickbooksContact ) {
       if ( ((QuickbooksContact) existContact).getLastUpdated() >= importContact.getMetaData().getLastUpdatedTime().getTime() ) {
@@ -463,6 +462,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     // If the contact is a existing contact
     if ( existContact != null ) {
+      existContact = (Contact) existContact.fclone();
 
       // existing user
       if ( existUser != null ) {
