@@ -5,11 +5,8 @@ foam.CLASS({
   abstract: true,
 
   javaImports: [
-    'net.nanopay.tx.cico.CITransaction',
-    'net.nanopay.tx.cico.COTransaction',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'static foam.mlang.MLang.*'
+    'net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate',
+    'net.nanopay.tx.cico.COTransaction'
   ],
 
   properties: [
@@ -36,16 +33,7 @@ foam.CLASS({
     },
     {
       name: 'predicate',
-      javaFactory: `
-        return AND(
-          OR(
-            EQ(DOT(NEW_OBJ, INSTANCE_OF(CITransaction.class)), true),
-            EQ(DOT(NEW_OBJ, INSTANCE_OF(COTransaction.class)), true)
-          ),
-          NEQ(DOT(OLD_OBJ, Transaction.STATUS), TransactionStatus.SENT),
-          EQ(DOT(NEW_OBJ, Transaction.STATUS), TransactionStatus.SENT)
-        );
-      `,
+      javaFactory: 'return new DefaultClearingTimeRulePredicate();',
       visibility: 'RO'
     },
     {

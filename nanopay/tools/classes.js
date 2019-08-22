@@ -560,6 +560,7 @@ var classes = [
   'net.nanopay.meter.clearing.ruler.ClearingTimeRule',
   'net.nanopay.meter.clearing.ruler.InstitutionClearingTimeRule',
   'net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule',
+  'net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate',
 
   // compliance
   'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
