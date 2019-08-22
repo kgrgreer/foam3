@@ -64,6 +64,9 @@ foam.CLASS({
       ],
       javaCode: `
         int clearingTime = transaction.getClearingTime();
+        if ( clearingTime <= 0 ) {
+          clearingTime = getDefaultClearingTime();
+        }
         LocalDate completionDate = processDate.toInstant()
           .atZone(ZoneId.systemDefault())
           .toLocalDate();
