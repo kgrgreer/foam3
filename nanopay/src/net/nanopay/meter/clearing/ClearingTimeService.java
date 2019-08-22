@@ -33,7 +33,7 @@ public class ClearingTimeService {
 
     int i = 0;
     while ( i < clearingTime ) {
-      completionDate.plusDays(1);
+      completionDate = completionDate.plusDays(1);
       if ( completionDate.getDayOfWeek() != DayOfWeek.SATURDAY
         && completionDate.getDayOfWeek() != DayOfWeek.SUNDAY
         && ! bankHolidays.contains(completionDate.getDayOfYear())
