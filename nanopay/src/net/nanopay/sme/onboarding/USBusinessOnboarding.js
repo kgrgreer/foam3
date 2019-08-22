@@ -313,16 +313,38 @@ foam.CLASS({
         ],
       }
     },
-
-    foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
+    {
+      class: 'String',
+      name: 'jobTitle',
       section: 'personalInformationSection',
-      view: {
-        class: 'foam.u2.TextField',
-        placeholder: 'Chief Visionary Officer'
+      label: 'Job Title',
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: 'Select...',
+            dao: X.jobTitleDAO,
+            objToChoice: function(a) {
+              return [a.name, a.label];
+            }
+          }
+        };
       },
-      minLength: 1,
-      maxLength: 50
-    }),
+      validationPredicates: [
+        {
+          args: ['jobTitle'],
+          predicateFactory: function(e) {
+            return e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.JOB_TITLE
+              }), 0)
+          },
+          errorString: 'Please select a job title.'
+        }
+      ]
+    },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
