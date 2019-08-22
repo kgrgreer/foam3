@@ -19,7 +19,7 @@ p({"class":"net.nanopay.model.JobTitle","id":18,"name":"Financial Controller","l
 p({"class":"net.nanopay.model.JobTitle","id":19,"name":"Financial Director","label":"Financial Director"})
 p({"class":"net.nanopay.model.JobTitle","id":20,"name":"General Manager","label":"General Manager"})
 p({"class":"net.nanopay.model.JobTitle","id":21,"name":"Group Finance Director","label":"Group Finance Director"})
-p({"class":"net.nanopay.model.JobTitle","id":22,"name":"Group Treasurey Manager","label":"Group Treasurey Manager"})
+p({"class":"net.nanopay.model.JobTitle","id":22,"name":"Group Treasury Manager","label":"Group Treasury Manager"})
 p({"class":"net.nanopay.model.JobTitle","id":23,"name":"Head of Finance","label":"Head of Finance"})
 p({"class":"net.nanopay.model.JobTitle","id":24,"name":"Head of Treasury","label":"Head of Treasury"})
 p({"class":"net.nanopay.model.JobTitle","id":25,"name":"Managing Director","label":"Managing Director"})
