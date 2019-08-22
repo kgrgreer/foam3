@@ -25,7 +25,9 @@ public class ClearingTimeService {
    */
   public Date estimateCompletionDate(X x, Transaction transaction, Date processDate) {
     int clearingTime = transaction.getClearingTime();
-    LocalDate completionDate = LocalDate.from(processDate.toInstant());
+    LocalDate completionDate = processDate.toInstant()
+      .atZone(ZoneId.systemDefault())
+      .toLocalDate();
     // TODO: Use bankHolidayDAO instead of the hard-coded cadHolidays
     List<Integer> bankHolidays = CsvUtil.cadHolidays;
 
