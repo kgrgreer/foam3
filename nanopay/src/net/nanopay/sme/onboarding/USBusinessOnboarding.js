@@ -383,11 +383,14 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['signingOfficerIdentification', 'signingOfficerIdentification$errors_'],
+          args: ['signingOfficer', 'signingOfficerIdentification', 'signingOfficerIdentification$errors_'],
           predicateFactory: function(e) {
-            return e.EQ(foam.mlang.IsValid.create({
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER_IDENTIFICATION
-              }), true);
+              }), true)
+            );
           },
           errorString: 'Invalid identification.'
         }
