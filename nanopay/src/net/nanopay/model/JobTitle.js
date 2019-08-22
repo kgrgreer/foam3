@@ -4,11 +4,9 @@ foam.CLASS({
 
   documentation: 'Job Title',
 
+  ids: [ 'name' ],
+
   properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
     {
       class: 'String',
       name: 'name'
