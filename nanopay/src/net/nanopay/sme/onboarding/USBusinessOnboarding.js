@@ -338,7 +338,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.GT(
               foam.mlang.StringLength.create({
-                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.JOB_TITLE
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.JOB_TITLE
               }), 0)
           },
           errorString: 'Please select a job title.'
