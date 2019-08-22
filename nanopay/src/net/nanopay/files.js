@@ -152,7 +152,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/PostalCodeFormat', flags: ['web'] },
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
-  { name: 'net/nanopay/ui/PersonalIdentificationView', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
 
   // AddCABankModal
