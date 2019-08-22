@@ -27,7 +27,7 @@ foam.CLASS({
     'stack',
     'user',
     'auth',
-    'EnableAFEXService'
+    'appConfigService'
   ],
 
   css: `
@@ -239,8 +239,8 @@ foam.CLASS({
     async function initE() {
 
       var self = this;
-      let EnableAFEX = await this.EnableAFEXService.getEnableAFEX();
-      this.AFEXEnabled = EnableAFEX.enabled;
+      let EnableAFEX = await this.appConfigService.getAppConfig();
+      this.AFEXEnabled = EnableAFEX.afexEnabled;
       this.addClass(this.myClass())
         .style({ 'background-image': this.flagImgPath })
         .start().addClass(this.myClass('info-box'))

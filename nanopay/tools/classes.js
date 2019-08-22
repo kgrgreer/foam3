@@ -137,10 +137,6 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction',
   'net.nanopay.fx.afex.AFEXComplianceTransactionPredicate',
   'net.nanopay.fx.afex.AFEXComplianceTransactionRule',
-  'net.nanopay.fx.afex.EnableAFEX',
-  'net.nanopay.fx.afex.EnableAFEXService',
-  'net.nanopay.fx.afex.EnableAFEXServiceImpl',
-  'net.nanopay.fx.afex.ClientEnableAFEXService',
   'net.nanopay.fx.afex.Token',
   'net.nanopay.fx.afex.OnboardCorporateClientRequest',
   'net.nanopay.fx.afex.OnboardCorporateClientResponse',
@@ -754,7 +750,6 @@ var skeletons = [
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.PaymentService',
   'net.nanopay.invoice.service.InvoicePaymentService',
-  'net.nanopay.fx.afex.EnableAFEXService'
 ];
 
 var proxies = [

@@ -21,7 +21,7 @@ foam.CLASS({
     'stack',
     'user',
     'validateEmail',
-    'EnableAFEXService'
+    'appConfigService'
   ],
 
   requires: [
@@ -240,9 +240,9 @@ foam.CLASS({
           .add(this.QUEBEC_DISCLAIMER)
         .end();
 
-      let enableAFEX = await this.EnableAFEXService.getEnableAFEX();
+      let enableAFEX = await this.appConfigService.getAppConfig();
 
-      var country = enableAFEX.enabled ?
+      var country = enableAFEX.afexEnabled ?
         this.countryDAO.where(this.OR(this.EQ(this.Country.NAME, 'Canada'), this.EQ(this.Country.NAME, 'USA'))) :
         this.countryDAO.where(this.EQ(this.Country.NAME, 'Canada'));
 
