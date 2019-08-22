@@ -107,7 +107,7 @@ public class AFEXServiceProviderTest
       user1.setOrganization("Test Company");
       user1.setBusinessName("Test Company");
       user1.setLanguage("en");
-      user1.setBirthdayTwo(new net.nanopay.model.DateOnly());
+      user1.setBirthday(new Date());
       user1.setBusinessAddress(businessAddress);
       user1.setAddress(businessAddress);
       user1.setEnabled(true);
@@ -128,7 +128,7 @@ public class AFEXServiceProviderTest
       business.setOnboarded(true);
       business.setCompliance(ComplianceStatus.PASSED);
       business.setBusinessPhone(phone);
-      business.setBusinessRegistrationDateTwo(new net.nanopay.model.DateOnly());
+      business.setBusinessRegistrationDate(new Date());
       business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
       suggestedUserTransactionInfo.setBaseCurrency("CAD");

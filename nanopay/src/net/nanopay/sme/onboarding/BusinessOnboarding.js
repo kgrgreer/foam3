@@ -395,43 +395,42 @@ foam.CLASS({
       label: '',
       autoValidate: true
     }),
-    foam.nanos.auth.User.BIRTHDAY_TWO.clone().copyFrom({
+    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       label: 'Date of birth',
       section: 'personalInformationSection',
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
-      // TODO - correct age mlangs for DateOnlyProperty
-      // validationPredicates: [
-      //   {
-      //     args: ['birthdayTwo'],
-      //     predicateFactory: function(e) {
-      //       return e.OR(
-      //         e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-      //         foam.mlang.predicate.OlderThan.create({
-      //           arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY_TWO,
-      //           timeMs: 18 * 365 * 24 * 60 * 60 * 1000
-      //         })
-      //       );
-      //     },
-      //     errorString: 'Must be at least 18 years old.'
-      //   },
-      //   {
-      //     args: ['birthdayTwo'],
-      //     predicateFactory: function(e) {
-      //       return e.OR(
-      //         e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
-      //         e.NOT(
-      //           foam.mlang.predicate.OlderThan.create({
-      //             arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY_TWO,
-      //             timeMs: 125 * 365 * 24 * 60 * 60 * 1000
-      //           })
-      //         )
-      //       );
-      //     },
-      //     errorString: 'Must be under the age of 125 years old.'
-      //   }
-      // ]
+      validationPredicates: [
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              foam.mlang.predicate.OlderThan.create({
+                arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY,
+                timeMs: 18 * 365 * 24 * 60 * 60 * 1000
+              })
+            );
+          },
+          errorString: 'Must be at least 18 years old.'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false),
+              e.NOT(
+                foam.mlang.predicate.OlderThan.create({
+                  arg1: net.nanopay.sme.onboarding.BusinessOnboarding.BIRTHDAY,
+                  timeMs: 125 * 365 * 24 * 60 * 60 * 1000
+                })
+              )
+            );
+          },
+          errorString: 'Must be under the age of 125 years old.'
+        }
+      ]
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'personalInformationSection',
@@ -988,7 +987,7 @@ foam.CLASS({
         this.onDetach(n.jobTitle$.follow(this.jobTitle$));
         this.onDetach(n.firstName$.follow(this.firstName$));
         this.onDetach(n.lastName$.follow(this.lastName$));
-        this.onDetach(n.birthdayTwo$.follow(this.birthdayTwo$));
+        this.onDetach(n.birthday$.follow(this.birthday$));
         this.onDetach(n.address$.follow(this.address$));
       }
     },
