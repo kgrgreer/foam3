@@ -731,10 +731,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_REGISTRATION_NUMBER
-                }), 9),
+              e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_REGISTRATION_NUMBER,/^[0-9]{9}$/),
             );
           },
           errorString: 'Please enter a valid Federal Tax ID Number (EIN).'
