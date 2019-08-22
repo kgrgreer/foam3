@@ -75,7 +75,6 @@ foam.CLASS({
 
       // contact sync
       let contactResult = await service.contactSync(null);
-      console.log(contactResult);
       if ( contactResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
         this.ctrl.add(this.Popup.create({ closeable: false }).tag({
           class: 'net.nanopay.accounting.AccountingTimeOutModal',
