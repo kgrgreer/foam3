@@ -610,6 +610,7 @@ for ( Balance b : getBalances() ) {
       setStatus(other.getStatus());
       setReferenceData(other.getReferenceData());
       setReferenceNumber(other.getReferenceNumber());
+      setClearingTime(other.getClearingTime());
       `
     },
     {
