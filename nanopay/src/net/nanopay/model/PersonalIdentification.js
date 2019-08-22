@@ -109,11 +109,18 @@ foam.CLASS({
       label: 'Date Issued',
       gridColumns: 6,
       documentation: `Date identification was issued.`,
-      validateObj: function(issueDate) {
-        if ( ! issueDate ) {
-          return 'Date issued is required';
+      validationPredicates: [
+        {
+          args: ['issueDate'],
+          predicateFactory: function(e) {
+            return foam.mlang.predicate.OlderThan.create({
+                arg1: net.nanopay.model.PersonalIdentification.ISSUE_DATE,
+                timeMs: 0
+              });
+          },
+          errorString: 'Must be before today.'
         }
-      }
+      ]
     },
     {
       class: 'Date',
@@ -121,11 +128,18 @@ foam.CLASS({
       label: 'Expiry Date',
       gridColumns: 6,
       documentation: `Date identification expires.`,
-      validateObj: function(expirationDate) {
-        if ( ! expirationDate ) {
-          return 'Expiry date is required';
+      validationPredicates: [
+        {
+          args: ['issueDate'],
+          predicateFactory: function(e) {
+            return foam.mlang.predicate.OlderThan.create({
+                arg1: net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
+                timeMs: 24 * 60 * 60 * 1000
+              });
+          },
+          errorString: 'Must be after today.'
         }
-      }
+      ]
     }
   ]
 });
