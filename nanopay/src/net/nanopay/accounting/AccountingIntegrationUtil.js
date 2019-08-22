@@ -75,6 +75,7 @@ foam.CLASS({
 
       // contact sync
       let contactResult = await service.contactSync(null);
+      console.log(contactResult);
       if ( contactResult.errorCode === this.AccountingErrorCodes.TOKEN_EXPIRED ) {
         this.ctrl.add(this.Popup.create({ closeable: false }).tag({
           class: 'net.nanopay.accounting.AccountingTimeOutModal',
@@ -83,13 +84,13 @@ foam.CLASS({
         return null;
       }
       if ( ! contactResult.result ) {
-        this.ctrl.notify(contactsResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, 'error');
       }
 
       // invoice sync
       let invoiceResult = await service.invoiceSync(null);
       if ( ! invoiceResult.result ) {
-        this.ctrl.notify(contactsResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, 'error');
       }
 
       // build final result
