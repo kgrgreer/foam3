@@ -317,6 +317,8 @@ p({
   "name": "clearingTimeService",
   "lazy": false,
   "serve": false,
-  "serviceClass": "net.nanopay.meter.clearing.ClearingTimeService",
+  "service": {
+    "class": "net.nanopay.meter.clearing.ClearingTimeService",
+    "defaultClearingTime": 2
   }
 })

@@ -23,7 +23,7 @@ foam.CLASS({
       javaCode: `
         Transaction transaction = (Transaction) obj.fclone();
         ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
-        Date completionDate = clearingTimeService.estimateCompletionDate(x, transaction);
+        Date completionDate = clearingTimeService.estimateCompletionDateSimple(x, transaction);
         transaction.setCompletionDate(completionDate);
 
         agency.submit(x, new ContextAgent() {

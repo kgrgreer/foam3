@@ -951,6 +951,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
 
   // clearing
+  { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
   { name: 'net/nanopay/meter/clearing/TransactionRefinement' },
   { name: 'net/nanopay/meter/clearing/ruler/BusinessClearingTimeRule' },
   { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRule' },

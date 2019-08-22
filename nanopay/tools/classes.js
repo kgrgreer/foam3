@@ -556,6 +556,7 @@ var classes = [
   'net.nanopay.meter.BusinessStatusContactDAO',
 
   // clearing
+  'net.nanopay.meter.clearing.ClearingTimeService',
   'net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule',
   'net.nanopay.meter.clearing.ruler.ClearingTimeRule',
   'net.nanopay.meter.clearing.ruler.EstimateTransactionCompletionDate',
