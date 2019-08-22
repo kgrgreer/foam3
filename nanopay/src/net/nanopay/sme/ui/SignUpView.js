@@ -20,7 +20,8 @@ foam.CLASS({
     'smeBusinessRegistrationDAO',
     'stack',
     'user',
-    'validateEmail'
+    'validateEmail',
+    'EnableAFEXService'
   ],
 
   requires: [
@@ -217,7 +218,7 @@ foam.CLASS({
       this.loadAcceptanceDocument();
     },
 
-    function initE() {
+    async function initE() {
       this.SUPER();
 
       var self = this;
@@ -238,6 +239,12 @@ foam.CLASS({
           .addClass(this.myClass('disclaimer'))
           .add(this.QUEBEC_DISCLAIMER)
         .end();
+
+      let enableAFEX = await this.EnableAFEXService.getEnableAFEX();
+
+      var country = enableAFEX.enabled ?
+        this.countryDAO.where(this.OR(this.EQ(this.Country.NAME, 'Canada'), this.EQ(this.Country.NAME, 'USA'))) :
+        this.countryDAO.where(this.EQ(this.Country.NAME, 'Canada'));
 
       var right = this.Element.create()
         .addClass('content-form')
@@ -273,10 +280,7 @@ foam.CLASS({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
                   placeholder: 'Select your country',
-                  dao: this.countryDAO.where(this.OR(
-                    this.EQ(this.Country.NAME, 'Canada'),
-                    this.EQ(this.Country.NAME, 'USA')
-                  )),
+                  dao: country,
                   objToChoice: function(a) {
                     return [a.id, a.name];
                   }

@@ -26,7 +26,8 @@ foam.CLASS({
     'menuDAO',
     'stack',
     'user',
-    'auth'
+    'auth',
+    'EnableAFEXService'
   ],
 
   css: `
@@ -222,6 +223,10 @@ foam.CLASS({
       expression: function(user) {
         return user.address.countryId === 'CA';
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'AFEXEnabled'
     }
   ],
 
@@ -231,9 +236,11 @@ foam.CLASS({
         this.hasFXProvisionPermission = result;
       });
     },
-    function initE() {
+    async function initE() {
 
       var self = this;
+      let EnableAFEX = await this.EnableAFEXService.getEnableAFEX();
+      this.AFEXEnabled = EnableAFEX.enabled;
       this.addClass(this.myClass())
         .style({ 'background-image': this.flagImgPath })
         .start().addClass(this.myClass('info-box'))
@@ -281,6 +288,13 @@ foam.CLASS({
     {
       name: 'getStarted',
       label: 'Get started',
+      isAvailable: function() {
+        if ( this.type === this.UnlockPaymentsCardType.DOMESTIC ) {
+          return true;
+        } else {
+          return this.AFEXEnabled;
+        }
+      },
       code: function(x) {
           var userId = this.agent.id;
           var businessId = this.user.id;
