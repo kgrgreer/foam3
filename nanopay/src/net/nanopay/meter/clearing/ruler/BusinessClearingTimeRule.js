@@ -18,7 +18,14 @@ foam.CLASS({
     },
     {
       name: 'duration',
-      validationPredicates: []
+      validationPredicates: [
+        {
+          args: ['duration'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.meter.clearing.ruler.ClearingTimeRule.DURATION, 0);
+          }
+        }
+      ]
     },
     {
       name: 'action',
