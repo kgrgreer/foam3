@@ -309,13 +309,6 @@ foam.CLASS({
                 .start()
                   .addClass('divider')
                 .end()
-                .startContext({ data: this.wizard })
-                  .start()
-                    .hide(this.isEdit)
-                    .addClass(this.myClass('invite'))
-                    .add(this.wizard.SHOULD_INVITE)
-                  .end()
-                .endContext()
               .endContext();
           } else {
             return this.E()
@@ -358,6 +351,13 @@ foam.CLASS({
               .endContext();
           }
         }))
+        .startContext({ data: this.wizard })
+          .start()
+            .hide(this.isEdit)
+            .addClass(this.myClass('invite'))
+            .add(this.wizard.SHOULD_INVITE)
+          .end()
+        .endContext()
         .start(this.ADDING_BANK_ACCOUNT)
           .addClass(this.myClass('adding-account'))
         .end()
