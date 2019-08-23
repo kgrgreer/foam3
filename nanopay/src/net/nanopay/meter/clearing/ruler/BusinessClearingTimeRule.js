@@ -40,11 +40,15 @@ foam.CLASS({
             && getBusiness() == owner.getId()
           ) {
             incrClearingTime(transaction);
-            if ( getDuration() < 0 && transaction.getClearingTime() <= 0 ) {
-              String message = String.format(
-                "Rule %d (duration: %d) set transaction %s clearingTime: %d.",
-                getId(), getDuration(), transaction.getId(), transaction.getClearingTime());
-              ((Logger) x.get("logger")).info(message, this, transaction);
+            if ( getDuration() < 0 ) {
+              int totalClearingTime = transaction.getClearingTimes().values()
+                .stream().reduce(0, Integer::sum);
+              if ( totalClearingTime <= 0 ) {
+                String message = String.format(
+                  "Rule %d (duration: %d) causes transaction %s total clearing time: %d.",
+                  getId(), getDuration(), transaction.getId(), totalClearingTime);
+                ((Logger) x.get("logger")).info(message, this, transaction);
+              }
             }
           }
         };

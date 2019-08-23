@@ -5,10 +5,13 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Int',
-      name: 'clearingTime',
-      documentation: 'Clearing time (in days).',
-      permissionRequired: true
+      class: 'Map',
+      name: 'clearingTimes',
+      documentation: 'Clearing times of a transaction.',
+      help: 'A map of ClearingTimeRule (sub-)class name and duration (in days).',
+      permissionRequired: true,
+      javaType: 'java.util.Map<String, Integer>',
+      javaFactory: 'return new java.util.HashMap<>();'
     }
   ]
 });

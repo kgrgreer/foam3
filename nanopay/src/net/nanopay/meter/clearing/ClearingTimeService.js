@@ -64,13 +64,15 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        int clearingTime = transaction.getClearingTime();
-        if ( clearingTime <= 0 ) {
-          clearingTime = getDefaultClearingTime();
+        int totalClearingTime = transaction.getClearingTimes().values().stream()
+          .reduce(0, Integer::sum);
+        if ( totalClearingTime <= 0 ) {
           String message = String.format(
-            "Transaction %s has nonpositive clearingTime: %d. Use defaultClearingTime: %d instead.",
-            transaction.getId(), transaction.getClearingTime(), clearingTime);
+            "Transaction %s has nonpositive clearing time: %d. Use defaultClearingTime: %d instead.",
+            transaction.getId(), totalClearingTime, getDefaultClearingTime());
           ((Logger) x.get("logger")).warning(message, transaction);
+
+          totalClearingTime = getDefaultClearingTime();
         }
         LocalDate completionDate = processDate.toInstant()
           .atZone(ZoneId.systemDefault())
@@ -79,7 +81,7 @@ foam.CLASS({
         List<Integer> bankHolidays = CsvUtil.cadHolidays;
 
         int i = 0;
-        while ( i < clearingTime ) {
+        while ( i < totalClearingTime ) {
           completionDate = completionDate.plusDays(1);
           if ( completionDate.getDayOfWeek() != DayOfWeek.SATURDAY
             && completionDate.getDayOfWeek() != DayOfWeek.SUNDAY
