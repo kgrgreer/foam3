@@ -68,7 +68,7 @@ foam.CLASS({
       },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO.where(X.data.IN(X.data.Country.ID, 'US')),
+          dao: X.countryDAO.where(X.data.IN(X.data.Country.ID, ['US', 'CAD'])),
           objToChoice: function(a) {
             return [a.id, a.name];
           },
