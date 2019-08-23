@@ -37,6 +37,10 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      name: 'action',
+      transient: true
+    },
+    {
       class: 'Int',
       name: 'duration',
       value: 2,

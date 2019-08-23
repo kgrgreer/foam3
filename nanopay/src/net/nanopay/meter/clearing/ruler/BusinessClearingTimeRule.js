@@ -30,7 +30,7 @@ foam.CLASS({
     },
     {
       name: 'action',
-      javaFactory: `
+      javaGetter: `
         return (x, obj, oldObj, ruler, agency) -> {
           Transaction transaction = (Transaction) obj;
           Account account = findAccount(x, transaction);

@@ -15,7 +15,7 @@ foam.CLASS({
     },
     {
       name: 'action',
-      javaFactory: `
+      javaGetter: `
         return (x, obj, oldObj, ruler, agency) -> {
           if ( getOf() != null && getOf().getObjClass().isInstance(obj) ) {
             incrClearingTime((Transaction) obj);
