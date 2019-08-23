@@ -128,18 +128,18 @@ foam.CLASS({
       label: 'Expiry Date',
       gridColumns: 6,
       documentation: `Date identification expires.`,
-      // validationPredicates: [
-      //   {
-      //     args: ['expirationDate'],
-      //     predicateFactory: function(e) {
-      //       return foam.mlang.predicate.OlderThan.create({ // TODO : NEED a youngerThen predicate
-      //           arg1: net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
-      //           timeMs: -24 * 60 * 60 * 1000
-      //         });
-      //     },
-      //     errorString: 'Must be after today.'
-      //   }
-      // ]
+      validationPredicates: [
+        {
+          args: ['expirationDate'],
+          predicateFactory: function(e) {
+            return foam.mlang.predicate.YoungerThan.create({
+                arg1: net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
+                timeMs: 24 * 60 * 60 * 1000
+              });
+          },
+          errorString: 'Must be after today.'
+        }
+      ]
     }
   ]
 });
