@@ -197,10 +197,10 @@ foam.CLASS({
             return this.outline;
           }
 
-          // starting with the current level which is the current nodes left and right
-          var outlineArray = [ [this.left, this.right] ];
+          var outlineArray = [];
 
           if  ( this.childNodes.length === 0 ){
+            outlineArray.push([this.left, this.right]);
             this.outline = outlineArray;
             return outlineArray;
           }
@@ -219,6 +219,14 @@ foam.CLASS({
           for ( let i = 0; i < mergedOutlines.length; i++ ){
             outlineArray.push(mergedOutlines[i]);  
           }
+
+          // now we need to set the current level (first element) in the middle based on the outline of the first child
+          this.left = (outlineArray[0][0] + outlineArray[0][1] - this.width) / 2;
+          this.right = (outlineArray[0][0] + this.width + outlineArray[0][1] ) / 2;
+          var currentLevel = [ this.left, this.right ];
+
+          // moving the current level to the front of the outline array
+          outlineArray.unshift(currentLevel);
 
           // going to memoize the outline
           this.outline = outlineArray;
@@ -289,7 +297,6 @@ foam.CLASS({
           return mergedOutlines;
         },
 
-        // TODO: Figure out how to shift the current node over as well so everything stays centered 
 
         function pushApart(root, shift){
           root.left += shift;
