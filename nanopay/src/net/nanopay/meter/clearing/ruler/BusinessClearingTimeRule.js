@@ -4,6 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.meter.clearing.ruler.ClearingTimeRule',
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'foam.nanos.auth.User',
     'net.nanopay.account.Account',
     'net.nanopay.model.Business',
@@ -39,6 +40,12 @@ foam.CLASS({
             && getBusiness() == owner.getId()
           ) {
             incrClearingTime(transaction);
+            if ( getDuration() < 0 && transaction.getClearingTime() <= 0 ) {
+              String message = String.format(
+                "Rule %d (duration: %d) set transaction %s clearingTime: %d.",
+                getId(), getDuration(), transaction.getId(), transaction.getClearingTime());
+              ((Logger) x.get("logger")).info(message, this, transaction);
+            }
           }
         };
       `

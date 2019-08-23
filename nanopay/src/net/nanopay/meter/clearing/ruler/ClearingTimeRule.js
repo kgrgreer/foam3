@@ -80,8 +80,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        int clearingTime = transaction.getClearingTime();
-        transaction.setClearingTime(clearingTime + getDuration());
+        int clearingTime = transaction.getClearingTime() + getDuration();
+        transaction.setClearingTime(clearingTime);
       `
     }
   ]

@@ -21,15 +21,15 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        Transaction transaction = (Transaction) obj.fclone();
-        ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
-        Date completionDate = clearingTimeService.estimateCompletionDateSimple(x, transaction);
-        transaction.setCompletionDate(completionDate);
-
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
             DAO dao = (DAO) x.get("localTransactionDAO");
+            Transaction transaction = (Transaction) obj.fclone();
+            ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
+
+            Date completionDate = clearingTimeService.estimateCompletionDateSimple(x, transaction);
+            transaction.setCompletionDate(completionDate);
             dao.put(transaction);
           }
         }, "Estimate Transaction Completion Date");

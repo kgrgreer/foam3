@@ -6,6 +6,7 @@ foam.CLASS({
     transaction based on transaction clearing time and process date.`,
 
   javaImports: [
+    'foam.nanos.logger.Logger',
     'java.time.DayOfWeek',
     'java.time.LocalDate',
     'java.time.ZoneId',
@@ -66,6 +67,10 @@ foam.CLASS({
         int clearingTime = transaction.getClearingTime();
         if ( clearingTime <= 0 ) {
           clearingTime = getDefaultClearingTime();
+          String message = String.format(
+            "Transaction %s has nonpositive clearingTime: %d. Use defaultClearingTime: %d instead.",
+            transaction.getId(), transaction.getClearingTime(), clearingTime);
+          ((Logger) x.get("logger")).warning(message, transaction);
         }
         LocalDate completionDate = processDate.toInstant()
           .atZone(ZoneId.systemDefault())
