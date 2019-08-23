@@ -17,6 +17,10 @@ foam.CLASS({
       name: 'business'
     },
     {
+      name: 'duration',
+      validationPredicates: []
+    },
+    {
       name: 'action',
       javaFactory: `
         return (x, obj, oldObj, ruler, agency) -> {

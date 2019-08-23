@@ -39,7 +39,15 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'duration',
-      value: 2
+      value: 2,
+      validationPredicates:  [
+        {
+          args: ['duration'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.meter.clearing.ruler.ClearingTimeRule.DURATION, 0);
+          }
+        }
+      ]
     }
   ],
 
