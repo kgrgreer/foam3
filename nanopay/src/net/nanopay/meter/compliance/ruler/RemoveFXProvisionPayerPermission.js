@@ -5,7 +5,7 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to remove fx.provision.payer permissions from a business after it is not onboarded.`,
+  documentation: 'Rule to remove fx.provision.payer permissions from a business after it is not onboarded.',
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -17,8 +17,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'javax.security.auth.AuthPermission',
-	  'net.nanopay.model.Business',
-    'static foam.mlang.MLang.*'
+    'net.nanopay.model.Business',
   ],
 
   methods: [

@@ -7,7 +7,6 @@ foam.CLASS({
   documentation: 'Returns true if user compliance is moved from passed to not passed.',
 
   javaImports: [
-    'foam.nanos.auth.User',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*',

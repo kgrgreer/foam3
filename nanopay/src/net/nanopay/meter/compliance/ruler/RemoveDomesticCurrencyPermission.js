@@ -5,7 +5,7 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Removes currency.read.Domestic_Currency from business, typically when busness fails compliance`,
+  documentation: 'Removes currency.read.Domestic_Currency from business, typically when busness fails compliance',
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -20,8 +20,7 @@ foam.CLASS({
     'net.nanopay.approval.ApprovalRequest',
     'net.nanopay.approval.ApprovalRequestUtil',
     'net.nanopay.approval.ApprovalStatus',
-	  'net.nanopay.model.Business',
-    'static foam.mlang.MLang.*'
+    'net.nanopay.model.Business',
   ],
 
   methods: [
@@ -40,7 +39,7 @@ foam.CLASS({
             
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
               String currencyPermissionString = "currency.read.";
-              currencyPermissionString = businessAddress.getCountryId().equals("CA") ? currencyPermissionString + "CAD" : currencyPermissionString + "USD";
+              currencyPermissionString += businessAddress.getCountryId().equals("CA") ? "CAD" :  "USD";
               Permission currencyPermission = new Permission.Builder(x).setId(currencyPermissionString).build();
               Group group = (Group) localGroupDAO.find(business.getGroup());
               while ( group != null ) {

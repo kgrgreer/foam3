@@ -5,7 +5,7 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to add currency.read.Currency permissions to a business.`,
+  documentation: 'Rule to add currency.read.Currency permissions to a business.',
 
   javaImports: [
     'foam.core.ContextAgent',
