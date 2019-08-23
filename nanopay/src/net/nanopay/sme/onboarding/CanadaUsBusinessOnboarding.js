@@ -21,9 +21,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'businessOnboardingDAO',
     'countryDAO',
-    'ctrl',
   ],
 
   ids: ['userId'],
@@ -99,13 +97,11 @@ foam.CLASS({
       section: 'adminReferenceSection',
       postSet: function(_, n) {
         var m = foam.mlang.Expressions.create();
-        this.businessOnboardingDAO.find(
-          m.AND(
-            m.EQ(this.BusinessOnboarding.USER_ID, this.userId),
-            m.EQ(this.BusinessOnboarding.BUSINESS_ID, this.businessId)
-          )
-        ).then((o) => {
-          this.signingOfficer = o && o.signingOfficer ;
+        this.businessId$find.then((business) => {
+          business.signingOfficers.dao.find(m.EQ(this.User.ID, this.userId))
+          .then((o) => {
+            this.signingOfficer = o && o.id != 0 ;
+          });
         });
       }
     },

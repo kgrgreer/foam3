@@ -101,6 +101,10 @@ foam.CLASS({
         if ( ! regionId && ! isPassport ) {
           return 'Region of issue is required';
         }
+      },
+      visibilityExpression: function(identificationTypeId) {
+        var isPassport = identificationTypeId === 3;
+        return isPassport ? foam.u2.Visibility.HIDDEN : foam.u2.Visibility.RW;
       }
     },
     {

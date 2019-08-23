@@ -16,6 +16,8 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.ui.AbliiActionView',
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
+    'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.ChangePasswordView',
     'net.nanopay.sme.ui.ResendPasswordView',
@@ -44,6 +46,10 @@ foam.CLASS({
     'currentAccount',
     'privacyUrl',
     'termsUrl',
+  ],
+
+  imports: [
+    'canadaUsBusinessOnboardingDAO',
   ],
 
   implements: [
@@ -151,6 +157,14 @@ foam.CLASS({
       message: 'Congratulations! Your business is now fully verified and ready to make domestic payments!'
     },
     {
+      name: 'PASSED_BANNER_DOMESTIC_US',
+      message: 'Congratulations! Your business is now fully verified and ready to send recieve payments from US and Canada!'
+    },
+    {
+      name: 'PASSED_BANNER_INTERNATIONAL',
+      message: 'Congratulations! Your business is now fully verified and ready to make domestic and international payments to USA!'
+    },
+    {
       name: 'TWO_FACTOR_REQUIRED_ONE',
       message: 'For your security, two factor authentication is required to send payment.'
     },
@@ -226,6 +240,10 @@ foam.CLASS({
       factory: function() {
         return this.AccountingIntegrationUtil.create();
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'caUsOnboardingComplete'
     },
     {
       class: 'Array',
@@ -328,8 +346,35 @@ foam.CLASS({
             bannerMode: this.BannerMode.ACCOMPLISHED,
             condition: function(user, accountArray) {
               return accountArray.length > 0
+              && user.compliance === self.ComplianceStatus.PASSED
+              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && user.address.countryId === 'CA'
+              && ! self.caUsOnboardingComplete;
+            },
+            passed: true,
+            showBanner: true
+          },
+          {
+            msg: this.PASSED_BANNER_INTERNATIONAL,
+            bannerMode: this.BannerMode.ACCOMPLISHED,
+            condition: function(user, accountArray) {
+              return accountArray.length > 0
+              && user.compliance === self.ComplianceStatus.PASSED
+              && accountArray[0].status === self.BankAccountStatus.VERIFIED
+              && user.address.countryId === 'CA'
+              && self.caUsOnboardingComplete;
+            },
+            passed: true,
+            showBanner: true
+          },
+          {
+            msg: this.PASSED_BANNER_DOMESTIC_US,
+            bannerMode: this.BannerMode.ACCOMPLISHED,
+            condition: function(user, accountArray) {
+              return accountArray.length > 0
                 && user.compliance === self.ComplianceStatus.PASSED
-                && accountArray[0].status === self.BankAccountStatus.VERIFIED;
+                && accountArray[0].status === self.BankAccountStatus.VERIFIED
+                && user.address.countryId === 'US';
             },
             passed: true,
             showBanner: true
@@ -476,6 +521,7 @@ foam.CLASS({
     async function bannerizeCompliance() {
       var user = await this.client.userDAO.find(this.user.id);
       var accountArray = await this.getBankAccountArray();
+      await this.getCAUSPaymentEnabled(user, this.agent);
 
       if ( user.compliance == this.ComplianceStatus.PASSED ) {
         var signingOfficers = await this.getSigningOfficersArray(user);
@@ -604,6 +650,21 @@ foam.CLASS({
         } catch (err) {
           console.warn(this.QUERY_SIGNING_OFFICERS_ERROR, err);
         }
+      }
+    },
+    /**
+     * Set caUsOnboardingComplete based on CA/US oboarding status.
+     */
+    async function getCAUSPaymentEnabled(user, agent) {
+      if ( this.Business.isInstance(user) ) {
+        this.__subSubContext__.canadaUsBusinessOnboardingDAO.find(
+          this.AND(
+            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, agent.id),
+            this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, user.id)
+          )
+        ).then((o) => {
+          this.caUsOnboardingComplete = o && o.status === this.OnboardingStatus.SUBMITTED;
+        });
       }
     },
 
