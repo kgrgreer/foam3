@@ -34,6 +34,7 @@ foam.CLASS({
     'auth',
     'accountingIntegrationUtil',
     'agent',
+    'businessDAO',
     'businessOnboardingDAO',
     'businessInvitationDAO',
     'ctrl',
@@ -244,6 +245,7 @@ foam.CLASS({
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );
+      this.user = await this.businessDAO.find(this.user.id);
       this.onboardingStatus = this.user.onboarded;
     },
 
