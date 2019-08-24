@@ -498,3 +498,83 @@ executeCalls(context);
 })
 
 p({"class":"foam.nanos.script.Script","id":"Toggle Transaction Planner","enabled":false,"code":"plannerName = \"net.nanopay.fx.afex.AFEXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.bmo.BmoTransactionPlanDAO\";\n//plannerName = \"net.nanopay.tx.alterna.AlternaTransactionPlanDAO\";\n\nenable = true;\n\nlocalTxnQuoteDAO = x.get(\"localTransactionQuotePlanDAO\");\npointer = localTxnQuoteDAO;\n\nwhile ( pointer != null ) {\n\n  if ( pointer.getClass().getName().equals(plannerName) ) {\n    pointer.setEnabled(enable);\n    print(pointer.getClass().getName() + \"'s setEnabled() been set to \" + pointer.getEnabled());\n    break;\n  }\n\n  if ( pointer.getClass().getName().equals(\"foam.dao.NullDAO\") ) {\n    break;\n  }\n  \n  pointer = pointer.getDelegate();\n}\n\nprint(\"done\");"})
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Add Clearing Time Rules",
+  "description": "Edit and run the script to add clearing time rules",
+  "server": false,
+  "code": """
+/**
+  * Add clearing time rules
+  */
+
+// -----------------------------------------------------------------------------
+// Edit main() function to add clearing time rules.
+//
+// Uncomment (remove //) before `addClearingTimeRule` lines below to add 3
+// clearing time rules.
+// 1. 2-day clearing time for all CITransaction
+// 2. 1-day clearing time for institution 2 (BMO)
+// 3. 1-day clearing time for Business 8013
+//
+// Add `addClearingTimeRule` line to add more clearing time rules.
+// -----------------------------------------------------------------------------
+function main() {
+    // addClearingTimeRule(TransactionTypeClearingTimeRule, { of: CITransaction, duration: 2, name: 'CITransaction clearing time' });
+    // addClearingTimeRule(InstitutionClearingTimeRule, { institution: 2, duration: 1, name: 'BMO institution clearing time' });
+    // addClearingTimeRule(BusinessClearingTimeRule, { business: 8013, duration: 1, name: 'Business (8013) clearing time' });
+}
+
+// -----------------------------------------------------------------------------
+// Define constants
+// -----------------------------------------------------------------------------
+// CLEARING_TIME_RULE_TYPE
+TransactionTypeClearingTimeRule = net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule;
+InstitutionClearingTimeRule     = net.nanopay.meter.clearing.ruler.InstitutionClearingTimeRule;
+BusinessClearingTimeRule        = net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule;
+
+// TRANSACTION_TYPE
+CITransaction                   = net.nanopay.tx.cico.CITransaction;
+COTransaction                   = net.nanopay.tx.cico.COTransaction;
+AlternaCITransaction            = net.nanopay.tx.alterna.AlternaCITransaction;
+AlternaCOTransaction            = net.nanopay.tx.alterna.AlternaCOTransaction;
+BmoCITransaction                = net.nanopay.tx.bmo.cico.BmoCITransaction;
+BmoCOTransaction                = net.nanopay.tx.bmo.cico.BmoCOTransaction;
+
+// MLang expression
+E = foam.mlang.ExpressionsSingleton.create();
+
+// -----------------------------------------------------------------------------
+// Helper methods
+// -----------------------------------------------------------------------------
+function finderPredicate(T, data) {
+    if ( T === TransactionTypeClearingTimeRule ) return E.EQ(T.OF, data.of);
+    if ( T === InstitutionClearingTimeRule ) return E.EQ(T.INSTITUTION, data.institution);
+    if ( T === BusinessClearingTimeRule ) return E.EQ(T.BUSINESS, data.business);
+}
+
+function finder(T, data) {
+    return x.ruleDAO.find(E.AND(
+        E.INSTANCE_OF(T),
+        finderPredicate(T, data)
+    ));
+}
+
+function addClearingTimeRule(T, data) {
+    finder(T, data).then((ret) => {
+      if ( ret === null )  {
+            x.ruleDAO.put(T.create(data))
+                .then((o) => { print("Added " + T.name + ", id: " + o.id + ".") });
+      } else {
+          print("Found existing rule (" + ret.id + ") with the same config as <" + data.name + "> rule.");
+      }
+    });
+}
+
+// -----------------------------------------------------------------------------
+// Run script
+// -----------------------------------------------------------------------------
+main();
+  """
+})
