@@ -12,8 +12,19 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
-      name: 'institution'
+      class: 'Reference',
+      of: 'net.nanopay.payment.Institution',
+      name: 'institution',
+      required: true,
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.institutionDAO,
+          placeholder: '--',
+          objToChoice: function(institution) {
+            return [institution.id, institution.name];
+          }
+        });
+      }
     },
     {
       name: 'action',

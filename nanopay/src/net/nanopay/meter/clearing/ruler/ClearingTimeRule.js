@@ -13,32 +13,42 @@ foam.CLASS({
     {
       name: 'daoKey',
       value: 'localTransactionDAO',
-      visibility: 'RO'
+      visibility: 'HIDDEN'
     },
     {
       name: 'ruleGroup',
       value: 'ClearingTime',
-      visibility: 'RO',
+      visibility: 'HIDDEN',
       permissionRequired: true
     },
     {
       name: 'operation',
       value: 'UPDATE',
-      visibility: 'RO'
+      visibility: 'HIDDEN'
     },
     {
       name: 'after',
       value: false,
-      visibility: 'RO'
+      visibility: 'HIDDEN'
     },
     {
       name: 'predicate',
       javaFactory: 'return new DefaultClearingTimeRulePredicate();',
-      visibility: 'RO'
+      visibility: 'HIDDEN'
     },
     {
       name: 'action',
       transient: true
+    },
+    {
+      name: 'saveHistory',
+      value: false,
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'validity',
+      value: 0,
+      visibility: 'HIDDEN'
     },
     {
       class: 'Int',

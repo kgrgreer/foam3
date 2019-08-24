@@ -9,6 +9,7 @@ foam.CLASS({
       name: 'clearingTimes',
       documentation: 'Clearing times of a transaction.',
       help: 'A map of ClearingTimeRule (sub-)class name and duration (in days).',
+      visibility: 'RO',
       permissionRequired: true,
       javaType: 'java.util.Map<String, Integer>',
       javaFactory: 'return new java.util.HashMap<>();'

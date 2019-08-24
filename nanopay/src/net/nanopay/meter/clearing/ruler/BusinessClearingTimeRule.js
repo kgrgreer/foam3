@@ -14,8 +14,24 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
-      name: 'business'
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'business',
+      required: true,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.auth.ui.UserSelectionView' },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          search: true,
+          sections: [
+            {
+              heading: 'Businesses',
+              dao: X.businessDAO
+            }
+          ]
+        };
+      }
     },
     {
       name: 'duration',
