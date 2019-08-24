@@ -49,7 +49,8 @@ foam.CLASS({
           args: ['duration'],
           predicateFactory: function(e) {
             return e.GT(net.nanopay.meter.clearing.ruler.ClearingTimeRule.DURATION, 0);
-          }
+          },
+          errorString: 'Clearing time duration must be greater than zero'
         }
       ]
     }

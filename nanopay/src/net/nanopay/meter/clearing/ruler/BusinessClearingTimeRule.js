@@ -24,7 +24,8 @@ foam.CLASS({
           args: ['duration'],
           predicateFactory: function(e) {
             return e.NEQ(net.nanopay.meter.clearing.ruler.ClearingTimeRule.DURATION, 0);
-          }
+          },
+          errorString: 'Business clearing time duration must not be zero'
         }
       ]
     },
