@@ -14,5 +14,14 @@ foam.CLASS({
       name: 'name',
       documentation: 'Name of purpose group.'
     }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      code: function(x) {
+        return this.name;
+      },
+    },
   ]
 });

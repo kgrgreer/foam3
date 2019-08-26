@@ -1,24 +1,14 @@
-foam.ENUM({
+foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'AccountRelationship',
   documentation: 'Account relationship to sender for Indian payments.',
 
-  values: [
+  ids: ['name'],
+
+  properties: [
     {
-      name: 'EMPLOYEE',
-      label: 'Employee'
-    },
-    {
-      name: 'CONTRACTOR',
-      label: 'Contractor'
-    },
-    {
-      name: 'CLIENT',
-      label: 'Client'
-    },
-    {
-      name: 'OTHER',
-      label: 'Other'
+      class: 'String',
+      name: 'name'
     }
   ]
 });

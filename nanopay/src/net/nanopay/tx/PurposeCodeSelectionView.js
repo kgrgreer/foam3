@@ -11,7 +11,8 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
   imports: [
-    'purposeCodeDAO'
+    'purposeCodeDAO',
+    'purposeGroupDAO'
   ],
 
   properties: [
@@ -60,7 +61,7 @@ foam.CLASS({
               sections: [
                 {
                   heading: 'Purpose groups',
-                  dao: this.purposeCodeDAO.where(this.EQ(this.PurposeCode.GROUP, 0))
+                  dao: this.purposeGroupDAO
                 }
               ],
               search: true,

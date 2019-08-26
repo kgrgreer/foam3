@@ -481,6 +481,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/cico/CITransaction' },
   { name: 'net/nanopay/tx/AttachmentLineItem' },
   { name: 'net/nanopay/tx/AccountRelationship' },
+  { name: 'net/nanopay/tx/AccountRelationshipLineItem' },
   { name: 'net/nanopay/tx/ConfirmationFileLineItem' },
   { name: 'net/nanopay/tx/LineItemType' },
   { name: 'net/nanopay/tx/LineItemTypeAccount' },

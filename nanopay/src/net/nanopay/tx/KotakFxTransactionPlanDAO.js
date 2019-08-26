@@ -78,6 +78,7 @@ foam.CLASS({
         t3.addLineItems(
           new TransactionLineItem[] {
             new PurposeCodeLineItem.Builder(x).setPurposeCode("P1099").build(),
+            new AccountRelationshipLineItem.Builder(x).setAccountRelationship("Employee").build(),
             new ETALineItem.Builder(x).setEta(/* 12 hours */ 43200000L).build()
           },
           null);

@@ -282,6 +282,7 @@ var classes = [
   'net.nanopay.tx.JackieRuleOnPut',
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.AccountRelationship',
+  'net.nanopay.tx.AccountRelationshipLineItem',
   'net.nanopay.tx.ETALineItem',
   'net.nanopay.tx.ReferenceLineItem',
   'net.nanopay.tx.ExpiryLineItem',

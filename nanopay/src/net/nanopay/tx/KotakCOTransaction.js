@@ -61,11 +61,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'UTRNumber'
-    },
-    {
-      class: 'Enum',
-      of: 'net.nanopay.tx.AccountRelationship',
-      name: 'accountRelationship'
     }
   ],
 
@@ -98,6 +93,7 @@ foam.CLASS({
       javaCode: `
       super.limitedCopyFrom(other);
       setAmount(((KotakCOTransaction) other).getAmount());
+      setLineItems(((KotakCOTransaction) other).getLineItems());
       `
     },
     {
@@ -110,6 +106,18 @@ foam.CLASS({
         }
       }
       return "P1099";
+      `
+    },
+    {
+      name: 'getAccountRelationship',
+      type: 'String',
+      javaCode: `
+      for ( TransactionLineItem item : getLineItems() ) {
+        if ( item instanceof AccountRelationshipLineItem ) {
+          return ((AccountRelationshipLineItem) item).getAccountRelationship();
+        }
+      }
+      return "Employee";
       `
     }
   ]

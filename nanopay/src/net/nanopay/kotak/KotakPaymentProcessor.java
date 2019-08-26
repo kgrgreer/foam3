@@ -59,7 +59,7 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setAccountNo(String.valueOf(kotakCOTxn.getSourceAccount()));
           requestInstrument.setTxnAmnt((double) kotakCOTxn.getAmount());
           requestInstrument.setPurposeCode(kotakCOTxn.getPurposeCode());
-          requestInstrument.setAccountRelationship(kotakCOTxn.getAccountRelationship().getName());
+          requestInstrument.setAccountRelationship(kotakCOTxn.getAccountRelationship());
 
           requestInstrument.setBeneAcctNo(String.valueOf(kotakCOTxn.getDestinationAccount()));
           requestInstrument.setBeneName(kotakCOTxn.getPayee().getFirstName() + " " + kotakCOTxn.getPayee().getLastName());
