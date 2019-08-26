@@ -136,10 +136,11 @@ foam.CLASS({
         {
           args: ['expirationDate'],
           predicateFactory: function(e) {
-            return foam.mlang.predicate.YoungerThan.create({
+            return e.NOT(
+              foam.mlang.predicate.OlderThan.create({
                 arg1: net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
-                timeMs: 24 * 60 * 60 * 1000
-              });
+                timeMs: 0
+              }));
           },
           errorString: 'Must be after today.'
         }
