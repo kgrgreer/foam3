@@ -5,11 +5,7 @@ foam.CLASS({
   abstract: true,
 
   documentation: 'Abstract class for transaction limits, never to be instantiated. Meant to be extended' +
-  'by models that would provide logic for getObjectToMap method. See example: AccountTransactionLimitRule.',
-
-  imports: [
-    'accountDAO'
-  ],
+  'by models that would provide logic for getObjectToMap method. See example: BusinessLimit.',
 
   implements: [
     'foam.mlang.Expressions'
@@ -17,15 +13,9 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.dao.DAO',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
-  ],
-
-  sections: [
-    {
-      name: 'accounts',
-      order: 500
-    }
   ],
 
   properties: [
@@ -48,12 +38,12 @@ foam.CLASS({
       of: 'foam.nanos.ruler.Operations',
       name: 'operation',
       value: 'CREATE',
-      visibility: 'RO'
+      visibility: 'RO',
     },
     {
       class: 'Double',
       name: 'limit',
-      label: 'Maximum transaction size',
+      label: 'Maximum Transaction Size',
       section: 'basicInfo',
       validationPredicates: [
         {
@@ -69,7 +59,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'send',
       value: true,
-      label: 'Apply limit to...',
+      label: 'Apply Limit To',
       section: 'basicInfo',
       view: {
         class: 'foam.u2.view.ChoiceView',
@@ -82,25 +72,15 @@ foam.CLASS({
     {
       class: 'Class',
       name: 'transactionType',
-      value: null,
       label: 'Transaction Type',
-      section: 'basicInfo',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        choices: [
-          ['net.nanopay.txDigitalTransaction', 'Digital'],
-          ['net.nanopay.tx.cico.CITransaction', 'Cash-In'],
-          ['net.nanopay.tx.cico.COTransaction', 'Cash-Out'],
-          [null, 'Any Transaction']
-        ]
-      }
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'period',
       value: 'DAILY',
-      label: 'Transaction limit time frame.'
+      section: 'basicInfo',
+      label: 'Transaction Limit Time Frame'
     },
     {
       class: 'Map',
@@ -118,22 +98,6 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'account',
-      label: '',
-      section: 'accounts',
-      view: function(_, x) {
-        var M = foam.mlang.Expressions.create();
-        return foam.u2.view.FilteredReferenceView.create({
-          filteringDAO: x.businessDAO,
-          dao: x.accountDAO.where(M.INSTANCE_OF(net.nanopay.account.DigitalAccount)),
-          filteredProperty: net.nanopay.account.Account.OWNER,
-          data$: x.data.slot(this.name)
-        }, x);
-      }
-    },
-    {
       name: 'action',
       javaFactory: `
         return new TransactionLimitRuleAction.Builder(getX())
@@ -146,18 +110,7 @@ foam.CLASS({
     },
     {
       name: 'predicate',
-      javaFactory: `
-        if ( getTransactionType() == null ) {
-          return 
-            foam.mlang.MLang.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, getAccount());
-        } else {
-          return
-            foam.mlang.MLang.AND(
-              foam.mlang.MLang.INSTANCE_OF(getTransactionType()),
-              foam.mlang.MLang.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, getAccount())
-            );
-        }
-      ` 
+      transient: true
     }
   ],
 
