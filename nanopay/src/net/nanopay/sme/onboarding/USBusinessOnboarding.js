@@ -371,13 +371,30 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'signingOfficerIdentification',
       of: 'net.nanopay.model.PersonalIdentification',
-      view: { class: 'net.nanopay.ui.PersonalIdentificationView' },
       factory: function() {
         return this.PersonalIdentification.create({});
       },
       visibilityExpression: function(signingOfficer) {
         return signingOfficer ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
       },
+      view: {
+        class: 'foam.u2.detail.SectionedDetailView',
+        border: 'foam.u2.borders.NullBorder'
+      },
+      validationPredicates: [
+        {
+          args: ['signingOfficer', 'signingOfficerIdentification', 'signingOfficerIdentification$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER_IDENTIFICATION
+              }), true)
+            );
+          },
+          errorString: 'Invalid identification.'
+        }
+      ]
     },
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'personalInformationSection',
@@ -717,10 +734,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_REGISTRATION_NUMBER
-                }), 9),
+              e.REG_EXP(net.nanopay.sme.onboarding.USBusinessOnboarding.BUSINESS_REGISTRATION_NUMBER,/^[0-9]{9}$/),
             );
           },
           errorString: 'Please enter a valid Federal Tax ID Number (EIN).'
@@ -909,7 +923,7 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
-        this.clearProperty('owner1');
+        if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners > 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;
@@ -922,7 +936,7 @@ foam.CLASS({
       label: '',
       label2: 'This is a publicly traded company',
       postSet: function(_, n) {
-        this.clearProperty('owner1');
+        if ( n ) this.clearProperty('owner1');
       },
       visibilityExpression: function(amountOfOwners) {
         return amountOfOwners == 0 ? foam.u2.Visibility.RW : foam.u2.Visibility.HIDDEN;

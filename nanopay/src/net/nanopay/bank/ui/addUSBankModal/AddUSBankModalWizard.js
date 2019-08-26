@@ -19,7 +19,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'user'
+    'user',
+    'X'
   ],
 
   css: `
@@ -82,6 +83,11 @@ foam.CLASS({
         });
       }
     },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.plaid.PlaidResponseItem',
+      name: 'plaidResponseItem'
+    },
     'onDismiss',
     'onComplete'
   ],
@@ -94,9 +100,12 @@ foam.CLASS({
       this.onDetach(function() {
         if ( self.onDismiss ) self.onDismiss();
       });
+      if ( this.plaidResponseItem && this.plaidResponseItem.account != null ) {
+        this.bank = this.plaidResponseItem.account;
+      }
       this.views = {
-        'voidCheck'  : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankVoidForm' }, startPoint: true },
-        'pad'        : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankPADForm', onComplete: self.onComplete } }
+        'voidCheck'  : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankVoidForm', skip: this.plaidResponseItem && this.plaidResponseItem.account != null }, startPoint: true },
+        'pad'        : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankPADForm', plaidResponseItem: this.plaidResponseItem, onComplete: self.onComplete } }
       };
     },
 
