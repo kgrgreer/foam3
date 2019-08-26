@@ -21,14 +21,12 @@ foam.CLASS({
     'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
     'net.nanopay.model.BeneficialOwner',
-    'net.nanopay.model.DateOnly',
     'net.nanopay.model.Invitation',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF',
-    'java.util.Date'
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
   methods: [
@@ -89,9 +87,7 @@ foam.CLASS({
 
         // If the user is the signing officer
         if ( businessOnboarding.getSigningOfficer() ) {
-          DateOnly birthday = businessOnboarding.getBirthdayTwo();
-          user.setBirthdayTwo(birthday);
-          user.setBirthday( new Date(birthday.getYear(), birthday.getMonth(), birthday.getDay(), 12, 0) );
+          user.setBirthday(businessOnboarding.getBirthday());
           user.setAddress(businessOnboarding.getAddress());
 
           // Agreenments (tri-party, dual-party & PEP/HIO)
@@ -111,9 +107,7 @@ foam.CLASS({
           business.setBusinessAddress(businessOnboarding.getBusinessAddress());
           business.setPhone(businessOnboarding.getPhone());
           business.setBusinessPhone(businessOnboarding.getPhone());
-          DateOnly businessRegistrationDate = businessOnboarding.getBusinessRegistrationDateTwo();
-          business.setBusinessRegistrationDateTwo(businessRegistrationDate);
-          business.setBusinessRegistrationDate( new Date(businessRegistrationDate.getYear(), businessRegistrationDate.getMonth(), businessRegistrationDate.getDay(), 12, 0) );
+          business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
           business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistrationNumber());
           business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
 

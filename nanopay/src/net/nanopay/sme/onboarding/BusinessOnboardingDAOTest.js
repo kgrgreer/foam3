@@ -93,11 +93,8 @@ foam.CLASS({
         Phone signingOfficerPhone = new Phone();
         signingOfficerPhone.setNumber("123-456-7890");
         onboarding.setPhone(signingOfficerPhone);
-        net.nanopay.model.DateOnly birthday = new net.nanopay.model.DateOnly.Builder(getX()).build(); 
-        birthday.setYear(1985);
-        birthday.setMonth(9);
-        birthday.setDay(17);
-        onboarding.setBirthdayTwo(birthday);
+        Date birthday = new Date(1992, 11, 21); 
+        onboarding.setBirthday(birthday);
         onboarding.setPEPHIORelated(true);
         onboarding.setThirdParty(true);
         onboarding.setDualPartyAgreement(3);
