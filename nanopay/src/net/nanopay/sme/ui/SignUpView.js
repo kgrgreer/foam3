@@ -184,6 +184,18 @@ foam.CLASS({
         fails. Used to prevent the user from clicking multiple times on the
         button which will create duplicate users.
       `
+    },
+    {
+      name: 'predicate',
+      expression: function(choice) {
+        return this.OR(
+          this.EQ(this.Country.ID, choice)
+        );
+      }
+    },
+    {
+      name: 'choice',
+      value: ['CA', 'US']
     }
   ],
 
@@ -219,7 +231,6 @@ foam.CLASS({
 
     function initE() {
       this.SUPER();
-
       var self = this;
       var emailDisplayMode = this.disableEmail ?
           foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
@@ -273,10 +284,7 @@ foam.CLASS({
                 view: {
                   class: 'foam.u2.view.ChoiceView',
                   placeholder: 'Select your country',
-                  dao: this.countryDAO.where(this.OR(
-                    this.EQ(this.Country.NAME, 'Canada'),
-                    this.EQ(this.Country.NAME, 'USA')
-                  )),
+                  dao: this.countryDAO.where(this.predicate),
                   objToChoice: function(a) {
                     return [a.id, a.name];
                   }

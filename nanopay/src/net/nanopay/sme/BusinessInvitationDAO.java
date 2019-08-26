@@ -181,7 +181,12 @@ public class BusinessInvitationDAO
       throw new RuntimeException(e);
     }
 
-    url += "?token=" + token.getData() + "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";
+    String country = business.isPropertySet("businessAddress") ?
+      ((foam.nanos.auth.Address)business.getBusinessAddress()).getCountryId() : null ;
+    
+    url += "?token=" + token.getData();
+    if ( country != null ) url += "&country=" + country;
+    url += "&email=" + encodedEmail + "&companyName=" + encodedBusinessName + "#sign-up";
     args.put("link", url);
     EmailsUtility.sendEmailFromTemplate(x, business, message, "join-business-external", args);
   }
