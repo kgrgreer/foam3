@@ -136,7 +136,7 @@ foam.CLASS({
     },
     {
       name: 'PENDING',
-      message: 'Pending!'
+      message: 'pending domestic completion!'
     },
     {
       name: 'COMING_SOON',
