@@ -24,6 +24,7 @@ import net.nanopay.fx.FXService;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
+import net.nanopay.model.JobTitle;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -140,8 +141,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             } catch(Throwable t) {
               logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
               throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
-            } 
-            onboardingRequest.setJobTitle("Other"); //Temporarily harcode pending proper design for this
+            }
+            JobTitle jobTitle = (JobTitle) ((DAO) this.x.get("jobTitleDAO")).find(EQ(JobTitle.NAME, signingOfficer.getJobTitle()));
+            String jobTitleName = jobTitle == null ? "Other" : jobTitle.getName();
+            onboardingRequest.setJobTitle(jobTitleName);
             onboardingRequest.setExpectedMonthlyPayments(mapAFEXTransactionCount(business.getSuggestedUserTransactionInfo().getAnnualTransactionFrequency()));
             onboardingRequest.setExpectedMonthlyVolume(mapAFEXVolumeEstimates(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()));
             onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());

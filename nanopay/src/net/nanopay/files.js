@@ -108,6 +108,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/InvitationStatus' },
   { name: 'net/nanopay/model/IdentificationType' },
   { name: 'net/nanopay/model/PersonalIdentification' },
+  { name: 'net/nanopay/model/JobTitle' },
   { name: 'net/nanopay/bank/BankHoliday' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },

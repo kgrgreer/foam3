@@ -94,7 +94,6 @@ foam.CLASS({
 
   methods: [
     function init() {
-      console.log(this.plaidResponseItem);
       this.SUPER();
       var self = this;
       this.viewData.user = this.user;
@@ -105,7 +104,7 @@ foam.CLASS({
         this.bank = this.plaidResponseItem.account;
       }
       this.views = {
-        'voidCheck'  : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankVoidForm' }, startPoint: true },
+        'voidCheck'  : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankVoidForm', skip: this.plaidResponseItem && this.plaidResponseItem.account != null }, startPoint: true },
         'pad'        : { view: { class: 'net.nanopay.bank.ui.addUSBankModal.USBankPADForm', plaidResponseItem: this.plaidResponseItem, onComplete: self.onComplete } }
       };
     },

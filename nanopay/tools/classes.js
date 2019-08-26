@@ -101,6 +101,7 @@ var classes = [
   'net.nanopay.model.InvitationStatus',
   'net.nanopay.model.IdentificationType',
   'net.nanopay.model.PersonalIdentification',
+  'net.nanopay.model.JobTitle',
   'net.nanopay.bank.BankHoliday',
 
   // sps
@@ -606,7 +607,13 @@ var classes = [
   'net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested',
   'net.nanopay.meter.compliance.ruler.CreateRemoveComplianceItemRule',
   'net.nanopay.meter.compliance.ruler.predicate.UserCompliancePassed',
-  'net.nanopay.meter.compliance.ruler.UpdateBusinessPermissions',
+  'net.nanopay.meter.compliance.ruler.AddDomesticCurrencyPermission',
+  'net.nanopay.meter.compliance.ruler.AddFXProvisionPayerPermission',
+  'net.nanopay.meter.compliance.ruler.predicate.BusinessNotOnboarded',
+  'net.nanopay.meter.compliance.ruler.predicate.BusinessOnboarded',
+  'net.nanopay.meter.compliance.ruler.predicate.UserComplianceNotPassed',
+  'net.nanopay.meter.compliance.ruler.RemoveDomesticCurrencyPermission',
+  'net.nanopay.meter.compliance.ruler.RemoveFXProvisionPayerPermission',
 
   // canadian sanction
   'net.nanopay.meter.compliance.canadianSanction.Record',

@@ -97,6 +97,8 @@ foam.CLASS({
     { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
     { name: 'ERROR_FLENGTH', message: 'First name cannot exceed 70 characters.' },
     { name: 'ERROR_LLENGTH', message: 'Last name cannot exceed 70 characters.' },
+    { name: 'ERROR_FNUMBER', message: 'First name cannot contain numbers.' },
+    { name: 'ERROR_LNUMBER', message: 'Last name cannot contain numbers.' },
     { name: 'ERROR_BUSINESS_NAME_REQUIRED', message: 'Business name required.' }
   ],
 
@@ -180,6 +182,14 @@ foam.CLASS({
       }
       if ( user.lastName.length > 70 ) {
         ctrl.notify(this.ERROR_LLENGTH, 'error');
+        return false;
+      }
+      if ( /\d/.test(user.firstName) ) {
+        ctrl.notify(this.ERROR_FNUMBER, 'error');
+        return false;
+      }
+      if ( /\d/.test(user.lastName) ) {
+        ctrl.notify(this.ERROR_LNUMBER, 'error');
         return false;
       }
       if ( ! user.businessName ) {
