@@ -503,7 +503,8 @@ foam.CLASS({
             companyNameField: searchParams.has('companyName')
               ? searchParams.get('companyName')
               : '',
-            disableCompanyName: searchParams.has('companyName')
+            disableCompanyName: searchParams.has('companyName'),
+            choice: searchParams.has('country') ? searchParams.get('country') : ['CAD', 'US']
           };
         }
       }
