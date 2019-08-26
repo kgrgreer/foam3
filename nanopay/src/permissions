@@ -55,6 +55,8 @@ p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.vi
 p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.viewPayables","description":"Controls visibility of View Payables button on User models. Does not actually enforce any access control."})
 p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.viewReceivables","description":"Controls visibility of View Receivables button on Uesr models. Does not actually enforce any access control."})
 p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.viewTransactions","description":"Controls visibility of View Transactions button on Uesr models. Does not actually enforce any access control."})
+p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.viewApprovalRequests","description":"Controls visibility of View ApprovalRequests action on User models. Does not actually enforce any access control."})
+p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.viewComplianceHistory","description":"Controls visibility of View ComplianceHistory action on User models. Does not actually enforce any access control."})
 p({"class":"foam.nanos.auth.Permission","id":"fx.provision.payer"})
 p({"class":"foam.nanos.auth.Permission","id":"goldman-sachs.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"group.create","description":""})

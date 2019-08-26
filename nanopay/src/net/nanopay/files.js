@@ -1110,6 +1110,7 @@ FOAM_FILES([
   // approval
   { name: 'net/nanopay/approval/ApprovalRequest' },
   { name: 'net/nanopay/approval/ApprovalStatus' },
+  { name: 'net/nanopay/approval/UserRefines' },
 
   // bmo
   { name: 'net/nanopay/tx/bmo/BmoAssignedClientValue' },

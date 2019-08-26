@@ -695,31 +695,9 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
-  sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'foam.nanos.ruler.RuleHistory',
-  forwardName: 'complianceHistories',
-  inverseName: 'entityId',
-  cardinality: '1:*',
-  sourceDAOKey: 'userDAO',
-  targetDAOKey: 'complianceHistoryDAO',
-  targetProperty: { visibility: 'RO' }
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.approval.ApprovalRequest',
-  forwardName: 'approvalRequests',
-  inverseName: 'entityId',
-  cardinality: '1:*',
-  sourceDAOKey: 'userDAO',
-  targetDAOKey: 'approvalRequestDAO',
-  targetProperty: { visibility: 'RO' }
-});
-
-foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
-  forwardName: 'complianceItems',
+  forwardName: 'complianceResponses',
   inverseName: 'transactionId',
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
