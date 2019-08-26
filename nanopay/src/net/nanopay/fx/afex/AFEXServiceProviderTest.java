@@ -108,14 +108,17 @@ public class AFEXServiceProviderTest
       user1.setBirthday(new Date());
       user1.setBusinessAddress(businessAddress);
       user1.setAddress(businessAddress);
-      user1.setEmailVerified(true);
       PersonalIdentification identification = new PersonalIdentification();
       identification.setExpirationDate(new Date());
       user1.setIdentification(identification);
       Phone phone = new Phone();
       phone.setNumber("123-456-7890");
       user1.setPhone(phone);
-      smeBusinessRegistrationDAO.put(user1);
+      user1 = (User) smeBusinessRegistrationDAO.put(user1).fclone();
+
+      // Set properties that can't be set during registration.
+      user1.setEmailVerified(true);
+      user1 = (User) localUserDAO.put(user1);
 
       business = (Business) businessDAO.find(EQ(Business.EMAIL, user1.getEmail()));
       business = (Business) business.fclone();

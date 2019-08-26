@@ -42,6 +42,7 @@ foam.CLASS({
           .setSignUpToken(user.getSignUpToken())
           .setBusinessAddress(user.getBusinessAddress())
           .setAddress(user.getAddress())
+          .setBirthday(user.getBirthday())
 
           // TODO: Remove the need for this property.
           .setWelcomeEmailSent(user.getWelcomeEmailSent())
