@@ -31,12 +31,13 @@ import net.nanopay.tx.model.TransactionStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
+import java.util.TimeZone;
 import java.util.Locale;
 
 public class AFEXServiceProvider extends ContextAwareSupport implements FXService, PaymentService {
@@ -108,7 +109,15 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
             onboardingRequest.setContactBusinessPhone(business.getBusinessPhone().getNumber());
-            String businessRegDate = ((net.nanopay.model.DateOnly) business.getBusinessRegistrationDateTwo()).toString();
+            String businessRegDate = null;
+            try {
+              SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+              sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+              businessRegDate = sdf.format(business.getBusinessRegistrationDate()); 
+            } catch(Throwable t) {
+              logger.error("Error onboarding business. Error parsing business registration date.", t);
+              throw new RuntimeException("Error onboarding business. Error parsing business registration date.");
+            } 
             onboardingRequest.setDateOfIncorporation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
             onboardingRequest.setGender("Male"); // TO be removed in API by AFEX
@@ -126,7 +135,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             }
 
             try {
-              onboardingRequest.setDateOfBirth(((net.nanopay.model.DateOnly)signingOfficer.getBirthdayTwo()).toString());
+              SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+              sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+              onboardingRequest.setDateOfBirth(sdf.format(signingOfficer.getBirthday()));
             } catch(Throwable t) {
               logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
               throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");

@@ -100,7 +100,7 @@ foam.CLASS({
       this.onDetach(function() {
         if ( self.onDismiss ) self.onDismiss();
       });
-      if ( this.plaidResponseItem && this.plaidResponseItem.account != null ) {
+      if ( this.plaidResponseItem && this.plaidResponseItem.account ) {
         this.bank = this.plaidResponseItem.account;
       }
       this.views = {

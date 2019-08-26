@@ -14,9 +14,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.model.Business',
-    'net.nanopay.model.DateOnly',
-    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
-    'java.util.Date'
+    'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding'
   ],
 
   methods: [
@@ -52,9 +50,7 @@ foam.CLASS({
         DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
 
         Business business = (Business)localBusinessDAO.find(businessOnboarding.getBusinessId());
-        DateOnly businessRegistrationDate = businessOnboarding.getBusinessRegistrationDateTwo();
-        business.setBusinessRegistrationDateTwo(businessRegistrationDate);
-        business.setBusinessRegistrationDate( new Date(businessRegistrationDate.getYear(), businessRegistrationDate.getMonth(), businessRegistrationDate.getDay(), 12, 0) );
+        business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
         business.setBusinessRegistrationNumber(businessOnboarding.getBusinessRegistrationNumber());
         business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation()); 
         localBusinessDAO.put(business);
