@@ -98,10 +98,8 @@ public class AFEXServiceProviderTest
       user1 = new User();
       user1.setFirstName("AFEXTestPayer");
       user1.setLastName("AFEXTwo");
-      user1.setGroup("business");
       user1.setEmail("afexpayee@nanopay.net");
       user1.setDesiredPassword("AFXTestPassword123$");
-      user1.setGroup("sme");
       user1.setAddress(businessAddress);
       user1.setType("Business");
       user1.setOrganization("Test Company");
@@ -110,8 +108,6 @@ public class AFEXServiceProviderTest
       user1.setBirthday(new Date());
       user1.setBusinessAddress(businessAddress);
       user1.setAddress(businessAddress);
-      user1.setEnabled(true);
-      user1.setLoginEnabled(true);
       user1.setEmailVerified(true);
       PersonalIdentification identification = new PersonalIdentification();
       identification.setExpirationDate(new Date());
