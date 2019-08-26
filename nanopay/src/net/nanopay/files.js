@@ -1,4 +1,6 @@
 FOAM_FILES([
+  // DAO
+  { name: 'net/nanopay/dao/EasyDAO'},
   // Payment
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
@@ -1095,7 +1097,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/test/BlockDisabledUserTransactionTest' },
   { name: 'net/nanopay/meter/test/BlockDisabledUserInvoiceTest' },
   { name: 'net/nanopay/meter/test/ComplianceAwareDummy' },
-  { name: 'net/nanopay/meter/test/IdentityMindIntegrationTest' },
 
   { name: 'net/nanopay/security/auth/LogoutDisabledUserDAO' },
 
