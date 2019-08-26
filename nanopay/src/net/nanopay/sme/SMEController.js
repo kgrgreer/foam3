@@ -154,15 +154,15 @@ foam.CLASS({
     },
     {
       name: 'PASSED_BANNER',
-      message: 'Congratulations! Your business is now fully verified and ready to make domestic payments!'
+      message: 'Congratulations, your business is now fully verified! You\'re now ready to make domestic payments!'
     },
     {
       name: 'PASSED_BANNER_DOMESTIC_US',
-      message: 'Congratulations! Your business is now fully verified and ready to send recieve payments from US and Canada!'
+      message: 'Congratulations, your business is now fully verified! You\'re now ready to send and receive payments between Canada and the US!'
     },
     {
       name: 'PASSED_BANNER_INTERNATIONAL',
-      message: 'Congratulations! Your business is now fully verified and ready to make domestic and international payments to USA!'
+      message: 'Congratulations, your business is now fully verified! You\'re now ready to make domestic and international payments to USA!'
     },
     {
       name: 'TWO_FACTOR_REQUIRED_ONE',
