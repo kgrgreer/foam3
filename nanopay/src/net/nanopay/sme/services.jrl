@@ -1,28 +1,28 @@
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"smeBusinessRegistrationDAO",
-  "lazy":false,
-  "serve":true,
+  "class": "foam.nanos.boot.NSpec",
+  "name": "smeBusinessRegistrationDAO",
+  "lazy": false,
+  "serve": true,
   "authenticate": false,
-  "serviceScript":
-  """
-  return new foam.dao.ValidatingDAO(x, new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new foam.nanos.auth.UserPasswordHashingDAO(x, new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, x.get("localUserDAO")))))), new net.nanopay.onboarding.UserRegistrationValidator());
+  "serviceScript": """
+    newUserCreateBusinessDAO = new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, x.get(\"localUserDAO\"));
+    userRegistrationDAO = new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", newUserCreateBusinessDAO);
+    userPasswordHashingDAO = new foam.nanos.auth.UserPasswordHashingDAO(x, userRegistrationDAO);
+    userRegistrationSanitationDAO = new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(userPasswordHashingDAO).build();
+    piplinePMDAO = new foam.dao.PipelinePMDAO(x, userRegistrationSanitationDAO);
+    pmDAO = new foam.dao.PMDAO(x, piplinePMDAO);
+    return new foam.dao.ValidatingDAO(x, pmDAO, new net.nanopay.onboarding.UserRegistrationValidator());
   """,
-  "client":
+  "client": """
+    {
+      "of": "foam.nanos.auth.User",
+      "cache": true,
+      "decorators": [
+        { "class": "foam.nanos.fs.FileDAODecorator" },
+        { "class": "foam.nanos.fs.FileArrayDAODecorator"}
+      ]
+    }
   """
-  {
-    "of":"foam.nanos.auth.User",
-    "cache":true,
-    "decorators": [
-      {
-        "class":"foam.nanos.fs.FileDAODecorator"
-      },
-      {
-        "class":"foam.nanos.fs.FileArrayDAODecorator"
-      }
-    ]
-  }
-  "
 })
 
 p({

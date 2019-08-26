@@ -44,7 +44,7 @@ public class UserRegistrationDAO
     setDelegate(delegate);
     spid_  = spid;
     group_ = group;
-    tokenDAO_ = (DAO) x.get("tokenDAO");
+    tokenDAO_ = (DAO) x.get("localTokenDAO");
     localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     invitationDAO_ = (DAO) x.get("businessInvitationDAO");
   }
@@ -170,6 +170,11 @@ public class UserRegistrationDAO
     if ( userWithSameEmail != null ) {
       throw new RuntimeException("User with same email address already exists: " + user.getEmail());
     }
+  }
+
+  @Override
+  public FObject find_(X x, Object id) {
+    return null;
   }
 
   @Override
