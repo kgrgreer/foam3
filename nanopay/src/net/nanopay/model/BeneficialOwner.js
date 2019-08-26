@@ -78,6 +78,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'birthday',
+      label: 'Date of birth',
       section: 'requiredSection',
       validationPredicates: [
         {
