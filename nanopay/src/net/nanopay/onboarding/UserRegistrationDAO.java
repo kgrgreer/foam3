@@ -173,6 +173,11 @@ public class UserRegistrationDAO
   }
 
   @Override
+  public FObject find_(X x, Object id) {
+    return null;
+  }
+
+  @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     // Return an empty sink instead of null to avoid breaking calling code that
     // expects this method to return a sink.
