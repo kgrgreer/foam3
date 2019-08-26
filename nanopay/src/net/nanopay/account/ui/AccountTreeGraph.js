@@ -193,9 +193,11 @@ foam.CLASS({
 
         function getOutline() {
           // for implementing dynamic programming
-          if ( this.outline ) {
-            return this.outline;
-          }
+          // if ( this.outline ) {
+          //   return this.outline;
+          // }
+
+          debugger;
 
           var outlineArray = [];
 
@@ -230,6 +232,8 @@ foam.CLASS({
 
           // going to memoize the outline
           this.outline = outlineArray;
+
+          console.log(this.outline);
 
           return outlineArray;
         },
@@ -475,6 +479,7 @@ foam.CLASS({
             if ( this.layout() || needsLayout ) {
               this.doLayout();
             } else {
+              this.getOutline();
               this.graph.updateCWidth();
             }
             this.graph.invalidate();
