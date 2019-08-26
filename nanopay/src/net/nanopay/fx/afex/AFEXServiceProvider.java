@@ -42,11 +42,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   private  AFEX afexClient;
   protected DAO fxQuoteDAO_;
   private  X x;
+  private final Logger logger_;
 
   public AFEXServiceProvider(X x, final AFEX afexClient) {
     this.afexClient = afexClient;
     fxQuoteDAO_ = (DAO) x.get("fxQuoteDAO");
     this.x = x;
+    this.logger_ = (Logger) x.get("logger");
   }
 
   public boolean onboardBusiness(Business business) {
@@ -62,8 +64,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public boolean onboardBusiness(Business business, BankAccount bankAccount) throws RuntimeException{
-    Logger logger = (Logger) this.x.get("logger");
-
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
 
     if ( bankAccount == null ||  bankAccount.getStatus() != BankAccountStatus.VERIFIED ) return false;
@@ -110,7 +110,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             try {
               businessRegDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(business.getBusinessRegistrationDate()); 
             } catch(Throwable t) {
-              logger.error("Error onboarding business. Error parsing business registration date.", t);
+              logger_.error("Error onboarding business. Error parsing business registration date.", t);
               throw new RuntimeException("Error onboarding business. Error parsing business registration date.");
             } 
             onboardingRequest.setDateOfIncorporation(businessRegDate);
@@ -132,7 +132,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             try {
               onboardingRequest.setDateOfBirth(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(signingOfficer.getBirthday()));
             } catch(Throwable t) {
-              logger.error("Error onboarding business. Cound not parse signing officer birthday", t);
+              logger_.error("Error onboarding business. Cound not parse signing officer birthday", t);
               throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
             } 
             onboardingRequest.setJobTitle("Other"); //Temporarily harcode pending proper design for this
@@ -163,7 +163,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       }
 
     } catch(Exception e) {
-      ((Logger) getX().get("logger")).error("Failed to onboard client to AFEX.", e);
+      logger_.error("Failed to onboard client to AFEX.", e);
     }
 
     return false;
@@ -179,7 +179,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         status = response.getAccountStatus();
       }
     } catch(Throwable t) {
-      ((Logger) x.get("logger")).error("Error getting afex business compliance status.", t);
+      logger_.error("Error getting afex business compliance status.", t);
     }
     return status;
   }  
@@ -226,7 +226,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       }
 
     } catch(Exception e) {
-      ((Logger) getX().get("logger")).error("Error to get FX Rate from AFEX.", e);
+      logger_.error("Error to get FX Rate from AFEX.", e);
     }
 
     return fxQuote;
@@ -314,7 +314,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         if ( createBeneficiaryResponse.getCode() != 0 ) throw new RuntimeException("Unable to create Beneficiary at this time. " +  createBeneficiaryResponse.getInformationMessage());
         addBeneficiary(x, userId, sourceUser, createBeneficiaryResponse.getStatus());
       } catch(Throwable t) {
-        ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
+        logger_.error("Error creating AFEX beneficiary.", t);
       }
     } else {
       addBeneficiary(x, userId, sourceUser, beneficiaryResponse.getStatus());
@@ -329,7 +329,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       beneficiaryResponse = this.afexClient.findBeneficiary(findBeneficiaryRequest);
     } catch(Throwable t) {
-      ((Logger) x.get("logger")).error("Error finding AFEX beneficiary.", t);
+      logger_.error("Error finding AFEX beneficiary.", t);
     }
     return beneficiaryResponse;
   }
@@ -394,7 +394,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( updateBeneficiaryResponse.getCode() != 0 ) throw new RuntimeException("Unable to update Beneficiary at this time. " +  updateBeneficiaryResponse.getInformationMessage());
       addBeneficiary(x, userId, sourceUser, updateBeneficiaryResponse.getStatus());
     } catch(Throwable t) {
-      ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
+      logger_.error("Error creating AFEX beneficiary.", t);
     }    
 
   }
@@ -427,8 +427,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( afexBeneficiary != null ) afexBeneficiaryDAO.remove(afexBeneficiary);
       
     } catch(Throwable t) {
-      Logger l = (Logger) x.get("logger");
-      l.error("Unexpected error disabling AFEX Beneficiary history record.", t);
+      logger_.error("Unexpected error disabling AFEX Beneficiary history record.", t);
     }
   }
 
@@ -442,37 +441,35 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       payeeInfo = this.afexClient.findBeneficiary(request);
     } catch(Throwable t) {
-      ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
+      logger_.error("Error creating AFEX beneficiary.", t);
     }
     return payeeInfo;
   }
 
   public int createTrade(Transaction transaction) throws  RuntimeException {
-
-    Logger logger = (Logger) x.get("logger");
     DAO txnDAO = (DAO) x.get("localTransactionDAO");
 
     if ( ! (transaction instanceof AFEXTransaction) ) {
-      logger.error("Transaction id: " + transaction.getId() + " not an instance of AFEXTransaction.");
+      logger_.error("Transaction id: " + transaction.getId() + " not an instance of AFEXTransaction.");
       throw new RuntimeException("Transaction id: " + transaction.getId() + " not an instance of AFEXTransaction.");
     }
     AFEXTransaction afexTransaction = (AFEXTransaction) transaction;
 
     AFEXBusiness afexBusiness = getAFEXBusiness(x,afexTransaction.getPayerId());
     if ( null == afexBusiness ) {
-      logger.error("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+      logger_.error("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
     }
 
     AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x,afexTransaction.getPayeeId(), afexTransaction.getPayerId());
     if ( null == afexBeneficiary ) {
-      logger.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
+      logger_.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
       throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
     }
 
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(afexTransaction.getFxQuoteId()));
     if  ( null == quote ) {
-      logger.error("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
+      logger_.error("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
       throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
     }
 
@@ -499,7 +496,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
       }
     } catch(Throwable t) {
-      logger.error("Error creating AFEX Trade.", t);
+      logger_.error("Error creating AFEX Trade.", t);
       throw new RuntimeException(t);
     }
 
@@ -507,8 +504,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public Transaction submitPayment(Transaction transaction) throws RuntimeException {
-
-    Logger logger = (Logger) x.get("logger");
     if ( ! (transaction instanceof AFEXTransaction) ) return transaction;
 
     AFEXTransaction afexTransaction = (AFEXTransaction) transaction;
@@ -517,13 +512,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     AFEXBusiness afexBusiness = getAFEXBusiness(x,sourceAccount.getOwner());
     if ( null == afexBusiness ) {
-      logger.error("Business has not been completely onboarded on partner system. " + sourceAccount.getOwner());
+      logger_.error("Business has not been completely onboarded on partner system. " + sourceAccount.getOwner());
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + sourceAccount.getOwner());
     }
 
     AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, destinationAccount.getOwner(), sourceAccount.getOwner());
     if ( null == afexBeneficiary ) {
-      logger.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + destinationAccount.getOwner());
+      logger_.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + destinationAccount.getOwner());
       throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + destinationAccount.getOwner());
     }
 
@@ -534,7 +529,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         try {
           updatePayee(afexTransaction.getPayeeId(), beneficiaryBankAccount.getId(), afexTransaction.getPayerId());
         } catch(Throwable t) {
-          logger.error("Bank account details is stale but unable to update afex beneficiary." );
+          logger_.error("Bank account details is stale but unable to update afex beneficiary." );
         }
       }
     }
@@ -542,7 +537,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(afexTransaction.getFxQuoteId()));
     if  ( null == quote ) {
-      logger.error("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
+      logger_.error("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
       throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
     }
 
@@ -565,16 +560,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             Date valueDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(tradeResponse.getValueDate());
             txn.setCompletionDate(valueDate);
           } catch(Throwable t) {
-            logger.error("Error parsing date.", t);
+            logger_.error("Error parsing date.", t);
           }
           return txn;
         }
       } catch(Throwable t) {
-        logger.error("Error sending payment to AFEX.", t);
+        logger_.error("Error sending payment to AFEX.", t);
         throw new RuntimeException(t);
       }
     } else {
-      logger.error("Unable to find afexTradeResponse for transaction id: " + transaction.getId());
+      logger_.error("Unable to find afexTradeResponse for transaction id: " + transaction.getId());
       throw new RuntimeException("Unable to find afexTradeResponse for transaction id: " + transaction.getId());
     }
 
@@ -598,7 +593,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       transaction.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
       
     } catch(Throwable t) {
-      ((Logger) x.get("logger")).error("Error creating AFEX beneficiary.", t);
+      logger_.error("Error creating AFEX beneficiary.", t);
     }   
     
     return transaction;
@@ -637,7 +632,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       bankInformation = this.afexClient.findBankByNationalID(findBankByNationalIDRequest);
     } catch(Throwable t) {
-      ((Logger) x.get("logger")).error("Error finding bank information from AFEX.", t);
+      logger_.error("Error finding bank information from AFEX.", t);
     }
     return bankInformation;
   }
@@ -656,7 +651,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     try {
       return afexClient.getTradeConfirmation(pdfRequest);
     } catch (Throwable t) {
-      ((Logger) x.get("logger")).error("Error getting trade confirmation PDF from AFEX.", t);
+      logger_.error("Error getting trade confirmation PDF from AFEX.", t);
     }
     return null;
   }
