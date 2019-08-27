@@ -127,6 +127,7 @@ var classes = [
   'net.nanopay.kotak.KotakCredentials',
 
   // AFEX
+  'net.nanopay.fx.afex.AFEXLogging',
   'net.nanopay.fx.FXSummaryTransaction',
   'net.nanopay.fx.afex.AFEXTransaction',
   'net.nanopay.fx.afex.AFEXTransactionPlanDAO',
