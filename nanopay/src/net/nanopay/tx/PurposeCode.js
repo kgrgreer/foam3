@@ -17,7 +17,7 @@ foam.CLASS({
       validateObj: function(code) {
         var regex = /^[PS][0-9]{4}$/;
         if ( ! regex.test(code) ) {
-          return 'Please enter a valid purpose code.';
+          return 'Please enter a purpose code.';
         }
       }
     },
