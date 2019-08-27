@@ -109,13 +109,6 @@ foam.CLASS({
     ^adding-account{
       margin-top: 16px;
     }
-    ^ .net-nanopay-sme-ui-AddressView .label-input .label {
-      margin-top: 16px;
-      padding-bottom: 0px !important;
-    }
-    ^ .net-nanopay-sme-ui-AddressView .foam-u2-TextField {
-      margin-bottom: 0px !important;
-    }
   `,
 
   messages: [
@@ -342,12 +335,6 @@ foam.CLASS({
                     .setAttribute('placeholder', this.US_ACCOUNT_NAME_PLACEHOLDER)
                   .end()
                 .end()
-                .tag(self.usAccount.ADDRESS.clone().copyFrom({
-                  view: {
-                    class: 'net.nanopay.sme.ui.AddressView',
-                    withoutCountrySelection: true
-                  }
-                }))
               .endContext();
           }
         }))
@@ -427,7 +414,6 @@ foam.CLASS({
         else correctFields = this.validateBank(this.usAccount, 'US');
         if ( ! correctFields ) return;
 
-        // // Validate the contact address fields.
         X.pushToId('AddContactStepThree');
       }
     },

@@ -189,9 +189,10 @@ foam.CLASS({
     {
       name: 'predicate',
       expression: function(choice) {
-        return this.OR(
-          this.EQ(this.Country.ID, choice)
-        );
+        if ( choice instanceof Array ) {
+          return this.IN(this.Country.ID, choice);
+        }
+        return this.EQ(this.Country.ID, choice);
       }
     },
     {
@@ -252,10 +253,9 @@ foam.CLASS({
         .end();
 
       let enableAFEX = await this.appConfigService.getAppConfig();
-
       var country = enableAFEX.afexEnabled ?
-        this.countryDAO.where(this.OR(this.EQ(this.Country.NAME, 'Canada'), this.EQ(this.Country.NAME, 'USA'))) :
-        this.countryDAO.where(this.EQ(this.Country.NAME, 'Canada'));
+        this.countryDAO.where(this.predicate) :
+        this.countryDAO.where(this.IN(this.Country.ID, ['US', 'CA']));
 
       var right = this.Element.create()
         .addClass('content-form')

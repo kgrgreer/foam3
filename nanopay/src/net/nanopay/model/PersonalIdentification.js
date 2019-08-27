@@ -68,12 +68,12 @@ foam.CLASS({
       },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO.where(X.data.IN(X.data.Country.ID, ['US', 'CAD'])),
+          dao: X.countryDAO.where(X.data.IN(X.data.Country.ID, ['US', 'CA'])),
           objToChoice: function(a) {
             return [a.id, a.name];
           },
           placeholder: '- Please select -'
-        })
+        });
       }
     },
     {
@@ -136,11 +136,18 @@ foam.CLASS({
         {
           args: ['expirationDate'],
           predicateFactory: function(e) {
-            return e.NOT(
-              foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
-                timeMs: 0
-              }));
+            return e.AND(
+              e.NOT(
+                foam.mlang.predicate.OlderThan.create({
+                  arg1: net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
+                  timeMs: 0
+                })
+              ),
+              e.NEQ(
+                net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
+                null
+              )
+            );
           },
           errorString: 'Must be after today.'
         }

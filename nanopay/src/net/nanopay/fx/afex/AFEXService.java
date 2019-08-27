@@ -2,6 +2,7 @@ package net.nanopay.fx.afex;
 
 import foam.core.ContextAwareSupport;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.lib.NetworkPropertyPredicate;
@@ -606,7 +607,16 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       omLogger.log("AFEX getQuote complete");
 
-
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+      DAO afexLogger =(DAO) getX().get("afexLoggingDAO");
+      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
+      AFEXLogging afexLogging = new AFEXLogging.Builder(getX())
+        .setUser(request.getAmount() + "   " + request.getClientAPIKey())
+        .setOther("Fx quote request")
+        .setRequest(jsonOutputter.stringify(request))
+        .setResponse(response)
+        .build();
+      afexLogger.put(afexLogging);
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
           String errorMsg = "Get AFEX quote failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
@@ -615,7 +625,6 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           logger.error(errorMsg);
           throw new RuntimeException(errorMsg);
         }
-        String response = new BasicResponseHandler().handleResponse(httpResponse);
         return (Quote) jsonParser.parseString(response, Quote.class);
       } finally {
         httpResponse.close();
@@ -657,6 +666,17 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 
       omLogger.log("AFEX createTrade completed");
+      String response = new BasicResponseHandler().handleResponse(httpResponse);
+
+      DAO afexLogger =(DAO) getX().get("afexLoggingDAO");
+      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
+      AFEXLogging afexLogging = new AFEXLogging.Builder(getX())
+        .setUser(request.getAmount() + "   " + request.getClientAPIKey())
+        .setOther("First trade request")
+        .setRequest(EntityUtils.toString(httpPost.getEntity()))
+        .setResponse(response)
+        .build();
+      afexLogger.put(afexLogging);
       CloseableHttpResponse httpResponse2 = null;
 
       try {
@@ -674,7 +694,16 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           httpResponse2 = httpClient.execute(httpPost);
 
           omLogger.log("AFEX createTrade completed");
-          
+          response = new BasicResponseHandler().handleResponse(httpResponse2);
+
+          AFEXLogging afexLogging2 = new AFEXLogging.Builder(getX())
+            .setUser(request.getAmount() + "   " + request.getClientAPIKey())
+            .setOther("2nd trade request")
+            .setRequest(EntityUtils.toString(httpPost.getEntity()))
+            .setResponse(response)
+            .build();
+          afexLogger.put(afexLogging2);
+
           if ( httpResponse2.getStatusLine().getStatusCode() / 100 != 2 ) {
             String errorMsg2 = "Create AFEX trade failed: " + httpResponse2.getStatusLine().getStatusCode() + " - "
               + httpResponse2.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse2.getEntity(), "UTF-8");
@@ -682,10 +711,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
             throw new RuntimeException(errorMsg);
           }
-          httpResponse = httpResponse2;
+
         }
 
-        String response = new BasicResponseHandler().handleResponse(httpResponse);
         return (CreateTradeResponse) jsonParser.parseString(response, CreateTradeResponse.class);
       } finally {
         httpResponse.close();

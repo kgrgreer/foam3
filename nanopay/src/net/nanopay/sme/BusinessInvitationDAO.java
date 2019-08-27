@@ -182,7 +182,8 @@ public class BusinessInvitationDAO
     }
 
     String country = business.isPropertySet("businessAddress") ?
-      ((foam.nanos.auth.Address)business.getBusinessAddress()).getCountryId() : null ;
+      ((foam.nanos.auth.Address)business.getBusinessAddress()).getCountryId() : (business.isPropertySet("address") ?
+      ((foam.nanos.auth.Address)business.getAddress()).getCountryId() : null);
     
     url += "?token=" + token.getData();
     if ( country != null ) url += "&country=" + country;
