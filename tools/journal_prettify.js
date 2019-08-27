@@ -196,9 +196,6 @@ foam.CLASS({
                             literal('null', null),
                             ), sym('ws')),
                     
-                    // 'xjson': seq1(1, '(', sym('json-string'), ")\n"),
-                    // 'xjson': seq1(1, '(', seq1(1, '"', join(until('"'))), ")\n"),
-
                     'foam-multiline': seq1(1, '"""', join(until('"""'))),
                     
                     // https://www.json.org/img/string.png
@@ -258,7 +255,6 @@ foam.CLASS({
                     v = v[0]
                     this.result = v;
                     return v;
-                    // util.inspect(v);
                 },
                 'operation': function(v) {
                     console.log("operation", v);
@@ -484,15 +480,7 @@ function main() {
     var fileName = args[0];
     var fileStuff = fs.readFileSync(fileName, 'utf8');
     var rawJournal = net.nanopay.toolsfolder.RawJournal.create();
-//     fileStuff = `p("ab\\"cd")
-// r("ef\\"g\\nhello")
-// `;
-//     fileStuff = `p([1])
-// p([123,2])
-// p([1,0.5,-3.6e2])
-// p({"test": 1, "two": 2})
-// r([1,0.5,"he\\"\\nllo",-3.6e2])
-// `;
+
     rawJournal.text = fileStuff;
     rawJournal.testParse();
     var result = rawJournal.result;
@@ -510,43 +498,6 @@ function main() {
         // output 'p(' or 'r('
         output += action[0] + '(';
 
-        /*
-        var keyVals = [];
-        for ( var k in actionInput ) {
-            var strKeyVal = '  "'+k+'": ';
-
-            // For this purpose, hard-coding these specific keys to be
-            // rendered as multiline strings is sufficient.
-            // TODO: Format object inside client parameter.
-            if (
-                k == 'serviceScript' || (
-                    k == 'client' &&
-                    looksLikeObject(actionInput[k])
-                )
-            ) {
-                strKeyVal += '\n  """\n'
-                strKeyVal += blockTrim(
-                    reIndent(4, actionInput[k]));
-                strKeyVal += '\n  """'
-            } else if ( typeof actionInput[k] !== 'string' ) {
-                if ( actionInput[k] === true ) {
-                    strKeyVal += 'true';
-                }
-                else if ( actionInput[k] === false ) {
-                    strKeyVal += 'false';
-                }
-                else if ( actionInput[k] === null ) {
-                    strKeyVal += 'null';
-                }
-            } else {
-                // TODO: Add escapes
-                strKeyVal += '"' + addEscapes(actionInput[k]) + '"';
-            }
-
-            keyVals.push(strKeyVal);
-        }
-        output += keyVals.join(',\n') + '\n';
-        */
         output += printObject(actionInput, '');
 
         output += ')\n'
@@ -554,10 +505,7 @@ function main() {
         fileOutput += output;
     }
 
-    // console.log(fileOutput);
     fs.writeFileSync(fileName, fileOutput);
-    // eval(fileStuff);
-    //console.log(fileStuff);
 }
 
 main();
