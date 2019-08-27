@@ -30,9 +30,94 @@ require(npRoot + 'nanopay/src/net/nanopay/flinks/utils/files.js');
 global.FOAM_FLAGS.src = old;
 global.FOAM_ROOT = oldRoot;
 
+// Not ideal; for hack to access requires from grammar
+global.globalThis = {};
+
+// TODO: replace with parser primitives
 foam.CLASS({
-    package: 'net.nanopay.rootutils',
+  package: 'net.nanopay.toolsfolder',
+  name: 'UntilEscaped',
+  extends: 'foam.parse.ParserDecorator',
+
+  documentation: `Matches any characters until the terminating pattern,
+    unless terminating pattern has a leading escape pattern.
+    Consumes and discards the terminating pattern when found.  Fails if termination was never found.`,
+
+  properties: [
+    {
+      name: 'esc',
+      class: 'foam.parse.ParserProperty',
+      final: true
+    },
+    {
+      name: 'term',
+      class: 'foam.parse.ParserProperty',
+      final: true
+    }
+  ],
+
+  methods: [
+    function parse(ps, obj) {
+      var ret = [];
+      var esc = this.esc;
+      var term = this.term;
+
+      while ( ps.valid ) {
+        var res;
+
+        if ( res = ps.apply(esc, obj) ) {
+          ret.push(res.value);
+          ps = res;
+          continue;
+        }
+
+        if ( res = ps.apply(term, obj) ) {
+          return res.setValue(ret);
+        }
+
+        ret.push(ps.head);
+        ps = ps.tail;
+      }
+      return undefined;
+    },
+
+    function toString() {
+      return 'untilEscaped(' + this.SUPER() + ')';
+    }
+  ]
+});
+
+// TODO: Move to foam.parse package
+foam.CLASS({
+  package: 'net.nanopay.toolsfolder',
+  name: 'Implied',
+
+  documentation: `Returns a value without affecting the
+    parser state.`,
+
+  properties: [
+    {
+      name: 'value',
+    }
+  ],
+
+  methods: [
+    function parse(ps) {
+      return ps.setValue(this.value);
+    },
+
+    function toString() { return 'implied(' + this.SUPER() + ')'; }
+  ]
+});
+
+
+foam.CLASS({
+    package: 'net.nanopay.toolsfolder',
     name: 'RawJournal',
+    requires: [
+        'net.nanopay.toolsfolder.UntilEscaped',
+        'net.nanopay.toolsfolder.Implied'
+    ],
     properties: [
         {
             class: 'String',
@@ -44,6 +129,10 @@ foam.CLASS({
         }
     ],
     methods: [
+        function init() {
+            globalThis = this;
+        },
+
         function testParse () {
             this.journal.parseString(this.text, this.cls_.id);
         },
@@ -61,7 +150,7 @@ foam.CLASS({
             name: 'journal',
             symbols: function() {
                 return {
-                    "net.nanopay.rootutils.RawJournal": seq(
+                    "net.nanopay.toolsfolder.RawJournal": seq(
                         repeat(alt(
                             sym('method'),
                             sym('comment'))),
@@ -72,7 +161,7 @@ foam.CLASS({
                             seq1(1, '(', sym('json-value'), ')', optional(';')),
                         ),
                         sym('ws')),
-                    'operation': chars1("pr"),
+                    'operation': chars("pr"),
                     'comment': seq0('//', join(until('\n'))),
 
                     // https://www.json.org/img/object.png
@@ -113,7 +202,12 @@ foam.CLASS({
                     'foam-multiline': seq1(1, '"""', join(until('"""'))),
                     
                     // https://www.json.org/img/string.png
-                    'json-string': seq1(1, '"', join(untilEscaped(sym('json-escape'), '"'))),
+                    'json-string': seq1(1, '"', join(
+                        globalThis.UntilEscaped.create({
+                            esc: sym('json-escape'),
+                            term: '"'
+                        })
+                    )),
                     'json-escape': seq1(1, '\\', alt(
                             '\\',
                             '"',
@@ -125,7 +219,8 @@ foam.CLASS({
                     'json-number': alt(
                         seq('-', sym('json-number-unsigned')),
                         seq(
-                            implied('+'),
+                            globalThis.Implied.create({
+                                value: '+'}),
                             seq1(1, optional('+'), sym('json-number-unsigned')))),
                     'json-number-unsigned': alt(
                         seq(
@@ -137,8 +232,8 @@ foam.CLASS({
                             optional(sym('json-number-fraction')),
                             optional(sym('json-number-exponent')))),
                     'json-number-integer': seq(
-                        chars1('123456789'),
-                        optional(repeat(chars1('0123456789')))),
+                        chars('123456789'),
+                        optional(repeat(chars('0123456789')))),
                     'json-number-fraction': seq1(1,
                         '.',
                         repeat(chars('0123456789'))),
@@ -151,14 +246,15 @@ foam.CLASS({
                         chars('eE'), alt(
                         seq('-', repeat(chars('0123456789'))),
                         seq(
-                            implied('+'),
+                            globalThis.Implied.create({
+                                value: '+'}),
                             seq1(1, optional('+'), repeat(chars('0123456789')))))),
 
                     'ws': repeat0(alt(' ', '\t', '\r', '\n')),
                 }
             },
             actions: {
-                "net.nanopay.rootutils.RawJournal": function(v) {
+                "net.nanopay.toolsfolder.RawJournal": function(v) {
                     v = v[0]
                     this.result = v;
                     return v;
@@ -337,7 +433,7 @@ function main() {
     var args = process.argv.slice(2);
     var fileName = args[0];
     var fileStuff = fs.readFileSync(fileName, 'utf8');
-    var rawJournal = net.nanopay.rootutils.RawJournal.create();
+    var rawJournal = net.nanopay.toolsfolder.RawJournal.create();
 //     fileStuff = `p("ab\\"cd")
 // r("ef\\"g\\nhello")
 // `;
@@ -381,6 +477,16 @@ function main() {
                 strKeyVal += blockTrim(
                     reIndent(4, actionInput[k]));
                 strKeyVal += '\n  """'
+            } else if ( typeof actionInput[k] !== 'string' ) {
+                if ( actionInput[k] === true ) {
+                    strKeyVal += 'true';
+                }
+                else if ( actionInput[k] === false ) {
+                    strKeyVal += 'false';
+                }
+                else if ( actionInput[k] === null ) {
+                    strKeyVal += 'null';
+                }
             } else {
                 // TODO: Add escapes
                 strKeyVal += '"' + addEscapes(actionInput[k]) + '"';
@@ -395,7 +501,8 @@ function main() {
         fileOutput += output;
     }
 
-    console.log(fileOutput);
+    // console.log(fileOutput);
+    fs.writeFileSync(fileName, fileOutput);
     // eval(fileStuff);
     //console.log(fileStuff);
 }
