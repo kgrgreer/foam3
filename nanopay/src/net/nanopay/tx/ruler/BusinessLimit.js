@@ -6,7 +6,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
-    'net.nanopay.tx.ruler.BusinessLimitPredicate'
+    'net.nanopay.tx.ruler.BusinessLimitPredicate',
+    'static foam.mlang.MLang.*',
   ],
 
   properties: [
@@ -16,7 +17,10 @@ foam.CLASS({
     },
     {
       name: 'priority',
-      hidden: true
+      hidden: true,
+      javaGetter: `
+        return getPeriod().ordinal() * 10;
+      `
     },
     {
       name: 'documentation',
@@ -24,10 +28,6 @@ foam.CLASS({
     },
     {
       name: 'after',
-      hidden: true
-    },
-    {
-      name: 'enabled',
       hidden: true
     },
     {
@@ -100,6 +100,29 @@ foam.CLASS({
         }
       ],
       javaCode: 'return getSend() ? txn.getSourceAccount() : txn.getDestinationAccount();'
+    },
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        // already exists
+        DAO ruleDAO = (DAO) x.get("ruleDAO");
+        ruleDAO = ruleDAO.where(
+          AND(
+            EQ(BusinessLimit.BUSINESS, getBusiness()),
+            EQ(BusinessLimit.PERIOD, getPeriod())
+          ));
+        if ( ruleDAO != null ) {
+          throw new IllegalStateException("Bank account with same name already registered.");
+        }
+      `
     }
   ]
 });
