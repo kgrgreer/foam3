@@ -5,6 +5,16 @@ foam.CLASS({
 
   documentation: `Transaction used as a summary to for AFEX BMO transactions`,
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.User',
+    'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.model.Currency',
+    'net.nanopay.tx.model.TransactionStatus'
+  ],
+
   methods: [
     {
      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
