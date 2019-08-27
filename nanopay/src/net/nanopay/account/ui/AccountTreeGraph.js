@@ -38,7 +38,7 @@ foam.CLASS({
     },
     {
       name: 'width',
-      value: 2000
+      value: 1600
     },
     {
       name: 'height',
@@ -192,17 +192,11 @@ foam.CLASS({
         },
 
         function getOutline() {
-          // for implementing dynamic programming
-          // if ( this.outline ) {
-          //   return this.outline;
-          // }
-
-          debugger;
-
-          var outlineArray = [];
+          var nodeLeftEdge = this.x - this.nodeWidth / 2;
+          var nodeRightEdge = this.x + this.nodeWidth / 2;
+          var outlineArray = [ [nodeLeftEdge, nodeRightEdge] ];
 
           if  ( this.childNodes.length === 0 ){
-            outlineArray.push([this.left, this.right]);
             this.outline = outlineArray;
             return outlineArray;
           }
@@ -222,23 +216,19 @@ foam.CLASS({
             outlineArray.push(mergedOutlines[i]);  
           }
 
-          // now we need to set the current level (first element) in the middle based on the outline of the first child
-          this.left = (outlineArray[0][0] + outlineArray[0][1] - this.width) / 2;
-          this.right = (outlineArray[0][0] + this.width + outlineArray[0][1] ) / 2;
-          var currentLevel = [ this.left, this.right ];
-
-          // moving the current level to the front of the outline array
-          outlineArray.unshift(currentLevel);
+          // TODO: Figure out a better way to integrate this but the outline values compound on eachother
+          for ( var i = 1; i < outlineArray.length; i++ ){
+            outlineArray[i][0] += outlineArray[i - 1][0];
+            outlineArray[i][1] += outlineArray[i - 1][1];
+          }
 
           // going to memoize the outline
           this.outline = outlineArray;
 
-          console.log(this.outline);
-
           return outlineArray;
         },
 
-        function mergeOutlines(outlines, childNodes){
+        function mergeOutlines(outlines){
           var mergedOutlines = [[]];
           var totalLevels = 1;
 
@@ -277,21 +267,7 @@ foam.CLASS({
               // for the situation when its the only node that goes down to that level
               // by the time it gets to the end of the outline array we will have the level right
               levelRight = currentRight;
-
-              if ( i === 0 ) {
-                levelLeft = currentLeft;
-              } else {
-                let previousRight = outlines[i - 1][l][1];
-                if ( currentLeft <= previousRight + this.padding ){
-                  const shift = previousRight - currentLeft + this.padding;
-                  const shiftedOutline = this.pushApart(childNodes[i], shift);
-
-                  // replace the current outline with the shifted outline and reset levelRight value
-                  // so that the next outline can properly adjust for the push
-                  outlines[i] = shiftedOutline;
-                  levelRight = outlines[i][l][1];
-                }
-              }
+              levelLeft = currentLeft;
             }
 
             mergedOutlines[l][0] = levelLeft;
@@ -299,31 +275,6 @@ foam.CLASS({
           }
 
           return mergedOutlines;
-        },
-
-
-        function pushApart(root, shift){
-          root.left += shift;
-          root.x += shift;
-          root.right += shift;
-
-          const { childNodes, outline } = root;
-
-          // iterate through outline array if exists and adjust for dynamic programming
-          if ( outline ){
-            for ( let i = 0; i < outline.length; i++ ){
-              for ( let j = 0; j < outline[i].length; j++ ){
-                outline[i][j] += shift;
-              }
-            }
-          }
-          
-          // iterate through all children and shift as well
-          for ( let i = 0; i < childNodes.length; i++ ){
-            this.pushApart(childNodes[i], shift);
-          }
-
-          return root.outline;
         },
 
         function paint(x) {
@@ -392,6 +343,31 @@ foam.CLASS({
           return this;
         },
 
+        function findOverlap(outlineA, outlineB){
+          levelsA = this.checkLevels(outlineA);
+          levelsB = this.checkLevels(outlineB);
+          maxLevels = Math.max(levelsA, levelsB);
+
+          for ( var i = 0; i <= maxLevels; i++ ){
+            if ( i > outlineA.length - 1 || i > outlineB.length - 1 ) return 0;
+            // we only need to check if the right of outlineA overlaps with the left of outlineB
+            var overlapDistance = outlineA[i][1] - outlineB[i][0] + this.padding;
+
+            if ( overlapDistance > 0 ) {
+              return overlapDistance;
+            }
+          }
+          return 0;
+        },
+
+        function checkLevels(outline){
+          var levels = 0;
+          for ( var i = 0; i < outline.length; i++ ){
+            levels++;
+          }
+          return levels;
+        },
+
         function layout() {
           this.left = this.right = 0;
 
@@ -418,11 +394,16 @@ foam.CLASS({
           for ( var i = 0 ; i < l-1 ; i++ ) {
             var n1 = childNodes[i];
             var n2 = childNodes[i+1];
-            var d  = n2.x-n1.x+n2.left-n1.right;
-            if ( d != this.width + this.padding ) {
+
+            var o1 = n1.getOutline();
+            var o2 = n2.getOutline();
+
+            var overlapDistance = this.findOverlap(o1, o2);
+
+            // if overlap is 0 then there is no overlap otherwise we should adjust accordingly
+            if ( overlapDistance > 0 ) {
               moved = movedNow = true;
-              var w = Math.min(Math.abs(this.width+this.padding-d), 10);
-              if ( d > this.width + this.padding ) w = -w;
+              var w = Math.min(Math.abs(overlapDistance), 10);
               if ( i+1 == m ) {
                 n1.x -= w/2;
                 n2.x += w/2;
@@ -479,7 +460,6 @@ foam.CLASS({
             if ( this.layout() || needsLayout ) {
               this.doLayout();
             } else {
-              this.getOutline();
               this.graph.updateCWidth();
             }
             this.graph.invalidate();
