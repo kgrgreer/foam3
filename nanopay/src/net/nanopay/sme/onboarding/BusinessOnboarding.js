@@ -918,7 +918,6 @@ foam.CLASS({
       label: '',
       label2: 'I am one of these owners',
       postSet: function(_, n) {
-        // if ( ! n ) this.clearProperty('owner1');
         if ( n ) {
           this.owner1.ownershipPercent = this.ownershipPercent;
           this.owner1.jobTitle = this.jobTitle;
