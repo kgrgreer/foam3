@@ -112,7 +112,7 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-        // already exists
+        // check if the rule already exists
         DAO ruleDAO = (DAO) x.get("ruleDAO");
         ruleDAO = ruleDAO.where(
           AND(
@@ -120,7 +120,7 @@ foam.CLASS({
             EQ(BusinessLimit.PERIOD, getPeriod())
           ));
         if ( ruleDAO != null ) {
-          throw new IllegalStateException("Bank account with same name already registered.");
+          throw new IllegalStateException("Duplicated business limit set up for the same business and the same frequency.");
         }
       `
     }
