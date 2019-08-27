@@ -212,6 +212,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest);
+      ((Logger) getX().get("logger")).debug("AFEXQUOTE ", quote);
       if ( null != quote ) {
         Boolean sameCurrency = sourceCurrency.equals(targetCurrency);
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
