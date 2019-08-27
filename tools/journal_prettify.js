@@ -429,6 +429,56 @@ function addEscapes(s) {
     return newS;
 }
 
+function printObject(actionInput, ws) {
+    var output = '{\n';
+    var keyVals = [];
+    for ( var k in actionInput ) {
+        var strKeyVal = ws + '  "'+k+'": ';
+
+        // For this purpose, hard-coding these specific keys to be
+        // rendered as multiline strings is sufficient.
+        // TODO: Format object inside client parameter.
+        if (
+            k == 'serviceScript' || (
+                k == 'client' &&
+                looksLikeObject(actionInput[k])
+            )
+        ) {
+            strKeyVal += '\n'+ws+'  """\n'
+            strKeyVal += blockTrim(
+                reIndent(4, actionInput[k]));
+            strKeyVal += '\n'+ws+'  """'
+        } else if ( typeof actionInput[k] !== 'string' ) {
+            if ( actionInput[k] === true ) {
+                strKeyVal += 'true';
+            }
+            else if ( actionInput[k] === false ) {
+                strKeyVal += 'false';
+            }
+            else if ( actionInput[k] === null ) {
+                strKeyVal += 'null';
+            }
+            else if ( typeof actionInput[k] === 'object' ){
+                strKeyVal += printObject(
+                    actionInput[k], '  ');
+            }
+            else {
+                strKeyVal += '' + actionInput[k];
+            }
+        } else {
+            // TODO: Add escapes
+            strKeyVal += '"' + addEscapes(actionInput[k]) + '"';
+        }
+
+        keyVals.push(strKeyVal);
+    }
+
+    output += keyVals.join(',\n') + '\n';
+
+    output += ws+'}'
+    return output;
+}
+
 function main() {
     var args = process.argv.slice(2);
     var fileName = args[0];
@@ -458,8 +508,9 @@ function main() {
         var output = '';
 
         // output 'p(' or 'r('
-        output += action[0] + '({\n';
+        output += action[0] + '(';
 
+        /*
         var keyVals = [];
         for ( var k in actionInput ) {
             var strKeyVal = '  "'+k+'": ';
@@ -495,8 +546,10 @@ function main() {
             keyVals.push(strKeyVal);
         }
         output += keyVals.join(',\n') + '\n';
+        */
+        output += printObject(actionInput, '');
 
-        output += '})\n'
+        output += ')\n'
 
         fileOutput += output;
     }
