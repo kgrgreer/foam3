@@ -116,6 +116,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: "Description"
+    },
+    {
+      class: 'String',
       name: "termsAndConditions"
     }
   ]
