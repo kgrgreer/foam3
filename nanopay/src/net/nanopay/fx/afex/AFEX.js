@@ -193,6 +193,18 @@ foam.INTERFACE({
           name: 'request'
         }
       ]
+    },
+    {
+      name: 'getTradeConfirmation',
+      documentation: 'retreives trade confirmatiom PDF for a trade',
+      async: true,
+      type: 'byte[]',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.GetConfirmationPDFRequest',
+          name: 'confirmationPDFRequest'
+        }
+      ]
     }
   ]
 });

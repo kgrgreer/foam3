@@ -188,7 +188,7 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function onEdit(account) {
-        if ( account.status === this.BankAccountStatus.UNVERIFIED ) {
+        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination != 'CAD') {
           this.ctrl.add(this.Popup.create().tag({
             class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
             bank: account

@@ -44,7 +44,7 @@ public class UserRegistrationDAO
     setDelegate(delegate);
     spid_  = spid;
     group_ = group;
-    tokenDAO_ = (DAO) x.get("tokenDAO");
+    tokenDAO_ = (DAO) x.get("localTokenDAO");
     localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     invitationDAO_ = (DAO) x.get("businessInvitationDAO");
   }
@@ -97,11 +97,17 @@ public class UserRegistrationDAO
         checkUserDuplication(x, user);
       }
 
-      // Make sure the email the user is signing up with matches the email the invite was sent to
+      // Make sure the email which the user is signing up with matches the email the invite was sent to
       if ( params.containsKey("inviteeEmail") ) {
         if ( ! ((String) params.get("inviteeEmail")).equalsIgnoreCase(user.getEmail()) ) {
           Logger logger = (Logger) x.get("logger");
-          logger.warning(String.format("A user was signing up via an email invitation. The email address we expected them to use was '%s' but the email address of the user in the context was actually '%s'. The user in the context's id was %d.", params.get("inviteeEmail"), user.getEmail(), user.getId()));
+          String warningString = String.format(
+            "A user was signing up via an email invitation. The email address we expected them to use was '%s' but the email address of the user in the context was actually '%s'. The user in the context's id was %d.",
+            params.get("inviteeEmail"),
+            user.getEmail(),
+            user.getId()
+          );
+          logger.warning(warningString);
           throw new RuntimeException("Email does not match invited email.");
         }
       } else {
@@ -164,6 +170,11 @@ public class UserRegistrationDAO
     if ( userWithSameEmail != null ) {
       throw new RuntimeException("User with same email address already exists: " + user.getEmail());
     }
+  }
+
+  @Override
+  public FObject find_(X x, Object id) {
+    return null;
   }
 
   @Override

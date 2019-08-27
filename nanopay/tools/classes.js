@@ -134,6 +134,9 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBusiness',
   'net.nanopay.fx.afex.AFEXCredentials',
   'net.nanopay.fx.afex.AFEXBeneficiary',
+  'net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction',
+  'net.nanopay.fx.afex.AFEXComplianceTransactionPredicate',
+  'net.nanopay.fx.afex.AFEXComplianceTransactionRule',
   'net.nanopay.fx.afex.Token',
   'net.nanopay.fx.afex.OnboardCorporateClientRequest',
   'net.nanopay.fx.afex.OnboardCorporateClientResponse',
@@ -152,6 +155,7 @@ var classes = [
   'net.nanopay.fx.afex.GetRateResponse',
   'net.nanopay.fx.afex.Quote',
   'net.nanopay.fx.afex.GetQuoteRequest',
+  'net.nanopay.fx.afex.GetConfirmationPDFRequest',
   'net.nanopay.fx.afex.CreateTradeRequest',
   'net.nanopay.fx.afex.CreateTradeResponse',
   'net.nanopay.fx.afex.CheckTradeStatusRequest',
@@ -172,6 +176,7 @@ var classes = [
   'net.nanopay.contacts.Contact',
   'net.nanopay.contacts.ContactStatus',
   'net.nanopay.contacts.ContactMigrationRule',
+  'net.nanopay.contacts.ExternalContactToken',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',
@@ -199,9 +204,9 @@ var classes = [
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
 
-  // sme compliance banner
-  'net.nanopay.sme.ui.banner.ComplianceBannerData',
-  'net.nanopay.sme.ui.banner.ComplianceBannerMode',
+  // banner
+  'net.nanopay.ui.banner.BannerData',
+  'net.nanopay.ui.banner.BannerMode',
 
   // invoice
   'net.nanopay.invoice.model.PaymentStatus',
@@ -293,6 +298,7 @@ var classes = [
   'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.FeeLineItem',
+  'net.nanopay.tx.InvoiceFeeLineItem',
   'net.nanopay.tx.ExpediteCICOApprovalRequest',
   'net.nanopay.tx.ExpenseLineItem',
   'net.nanopay.tx.ServiceLineItem',
@@ -332,6 +338,8 @@ var classes = [
   'net.nanopay.tx.ruler.InvoicePaymentRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
+  'net.nanopay.tx.ruler.PropertyChangePredicate',
+  'net.nanopay.tx.ruler.ChangePropertyAction',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -477,6 +485,7 @@ var classes = [
   'net.nanopay.security.RightCondition',
   'net.nanopay.security.Signature',
   'net.nanopay.security.PayerAssentTransactionDAO',
+  'net.nanopay.security.UserRegistrationSanitationDAO',
 
   // security tests
   'net.nanopay.security.test.EncryptingDAOTest',
@@ -677,7 +686,6 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
   'net.nanopay.meter.test.ComplianceAwareDummy',
-  'net.nanopay.meter.test.IdentityMindIntegrationTest',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 

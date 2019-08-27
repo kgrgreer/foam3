@@ -523,6 +523,13 @@ foam.CLASS({
       }
     },
     {
+      name: 'lastStatusChange',
+      class: 'DateTime',
+      section: 'basicInfo',
+      documentation: `The date that a transaction changed to its current status`,
+      visibility: 'RO'
+    },
+    {
       name: 'lineItems',
       label: '',
       section: 'lineItemsSection',
