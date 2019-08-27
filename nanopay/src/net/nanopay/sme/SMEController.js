@@ -504,7 +504,7 @@ foam.CLASS({
               ? searchParams.get('companyName')
               : '',
             disableCompanyName: searchParams.has('companyName'),
-            choice: searchParams.has('country') ? searchParams.get('country') : ['CAD', 'US']
+            choice: searchParams.has('country') ? searchParams.get('country') : ['CA', 'US']
           };
         }
       }
