@@ -33,6 +33,18 @@ global.FOAM_ROOT = oldRoot;
 // Not ideal; for hack to access requires from grammar
 global.globalThis = {};
 
+var HELP_TEXT = `Journal Prettify (journal formatting tool)
+
+This script rewrites the specified journal and ensures multiline
+formatting is used.
+
+Usage:
+  journal_prettify.js <FILE>
+
+Example:
+  node ./tools/journal_prettify.js ./nanopay/src/services.jrl
+`;
+
 // TODO: replace with parser primitives
 foam.CLASS({
   package: 'net.nanopay.toolsfolder',
@@ -477,6 +489,13 @@ function printObject(actionInput, ws) {
 
 function main() {
     var args = process.argv.slice(2);
+
+    // Exit if no argument is present
+    if ( args.length < 1 ) {
+        console.log(HELP_TEXT);
+        return;
+    }
+
     var fileName = args[0];
     var fileStuff = fs.readFileSync(fileName, 'utf8');
     var rawJournal = net.nanopay.toolsfolder.RawJournal.create();
