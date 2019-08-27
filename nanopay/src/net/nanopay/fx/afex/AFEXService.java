@@ -590,6 +590,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
   @Override
   public Quote getQuote(GetQuoteRequest request) {
+    logger.debug("Entered getquote", request);
     try {
       URIBuilder uriBuilder = new URIBuilder(AFEXAPI + "api/quote");
       uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair())
@@ -603,38 +604,31 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       omLogger.log("AFEX getQuote starting");
 
+      logger.debug("before execute");
+
       CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
 
       omLogger.log("AFEX getQuote complete");
+      logger.debug("after execute", httpResponse);
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
-
+      DAO afexLogger =(DAO) getX().get("afexLoggingDAO");
+      Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
+      AFEXLogging afexLogging = new AFEXLogging.Builder(getX())
+        .setUser(request.getAmount() + "   " + request.getClientAPIKey())
+        .setOther("Fx quote request")
+        .setRequest(jsonOutputter.stringify(request))
+        .setResponse(response)
+        .build();
+      afexLogger.inX(getX()).put(afexLogging);
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
           String errorMsg = "Get AFEX quote failed: " + httpResponse.getStatusLine().getStatusCode() + " - "
             + httpResponse.getStatusLine().getReasonPhrase() + " " + EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 
           logger.error(errorMsg);
-          DAO afexLogger =(DAO) getX().get("afexLoggingDAO");
-          Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
-          AFEXLogging afexLogging = new AFEXLogging.Builder(getX())
-            .setUser(request.getAmount() + "   " + request.getClientAPIKey())
-            .setOther("Fx quote request")
-            .setRequest(jsonOutputter.stringify(request))
-            .setResponse(response)
-            .build();
-          afexLogger.put(afexLogging);
           throw new RuntimeException(errorMsg);
         }
-        DAO afexLogger =(DAO) getX().get("afexLoggingDAO");
-        Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
-        AFEXLogging afexLogging = new AFEXLogging.Builder(getX())
-          .setUser(request.getAmount() + "   " + request.getClientAPIKey())
-          .setOther("Fx quote request")
-          .setRequest(jsonOutputter.stringify(request))
-          .setResponse(response)
-          .build();
-        afexLogger.put(afexLogging);
         return (Quote) jsonParser.parseString(response, Quote.class);
       } finally {
         httpResponse.close();
@@ -644,7 +638,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       if ( e instanceof  IOException ) {
         omLogger.log("AFEX getQuote timeout");
       }
-      logger.error(e);
+      logger.error("AFEX GetQoute failed",e);
     }
 
     return null;
