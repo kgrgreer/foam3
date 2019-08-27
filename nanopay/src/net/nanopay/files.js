@@ -220,7 +220,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/ascendantfx/ui/AscendantFXUserTableView' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXCredientials' },
 
-  // AFEX
+  //
+  { name: 'net/nanopay/fx/afex/AFEXLogging' },
   { name: 'net/nanopay/fx/FXSummaryTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: 'net/nanopay/fx/afex/AFEX' },
