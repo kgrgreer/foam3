@@ -29,7 +29,7 @@ p({
       .setEnabled(false).setDelegate(atpd)
       .build(); 
     afextpd = new net.nanopay.fx.afex.AFEXTransactionPlanDAO.Builder(x)
-      .setEnabled(true)
+      .setEnabled(false)
       .setDelegate(bmopd)
       .build(); 
     afxtpd = new net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAO.Builder(x)
