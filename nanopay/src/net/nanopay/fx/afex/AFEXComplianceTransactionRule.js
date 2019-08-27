@@ -37,7 +37,7 @@ foam.CLASS({
           
           AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-          AFEXBeneficiary beneficiary = afexServiceProvider.getAFEXBeneficiary(x, txn.getPayeeId(), txn.getPayerId());
+          AFEXBeneficiary beneficiary = afexServiceProvider.getAFEXBeneficiary(getX(), txn.getPayeeId(), txn.getPayerId());
 
           if ( beneficiary == null ) {
             ((Logger) x.get("logger")).error("beneficiary not found for transaction " + txn.getId() + " with beneficiary id " + txn.getPayeeId() + " with owner id " + txn.getPayerId() );
