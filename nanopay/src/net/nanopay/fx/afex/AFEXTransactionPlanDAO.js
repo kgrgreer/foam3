@@ -84,7 +84,7 @@ foam.CLASS({
       DAO afexLogger =(DAO) x.get("afexLoggingDAO");
 
       // Validate that Payer is provisioned for AFEX before proceeding
-      AFEXBusiness afexBusiness = afexService.getAFEXBusiness(x, sourceAccount.getOwner());
+      AFEXBusiness afexBusiness = afexService.getAFEXBusiness(getX(), sourceAccount.getOwner());
       if (afexBusiness == null) {
         AFEXLogging afexLogging = new AFEXLogging.Builder(x)
         .setUser(quote.getRequestTransaction().getPayerId()+"")
@@ -101,6 +101,12 @@ foam.CLASS({
       if ( fxQuote.getId() < 1 ) {
         try {
 
+          AFEXLogging afexLogging = new AFEXLogging.Builder(x)
+            .setUser(quote.getRequestTransaction().getPayerId()+"")
+            .setOther("Pre quote request " + request.getAmount() + " dest amount " + request.getDestinationAmount()  +" DEST " +request.getDestinationCurrency() + " SRC " + request.getSourceCurrency())
+            .build();
+          afexLogger.put(afexLogging);
+
           fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
             null, null, request.findSourceAccount(x).getOwner(), null);
           if ( fxQuote != null && fxQuote.getId() > 0 ) {
@@ -113,11 +119,11 @@ foam.CLASS({
             FXSummaryTransaction summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote);
             quote.addPlan(summary);
           }else {
-            AFEXLogging afexLogging = new AFEXLogging.Builder(x)
+            AFEXLogging afexLogging2 = new AFEXLogging.Builder(x)
             .setUser(quote.getRequestTransaction().getPayerId()+"")
-            .setOther("fxquote is null" + quote.getRequestTransaction().getAmount())
+            .setOther("fxquote is null " + quote.getRequestTransaction().getAmount())
             .build();
-           afexLogger.put(afexLogging);
+           afexLogger.put(afexLogging2);
           }
           
         } catch (Throwable t) {
